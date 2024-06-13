@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
-import { INJ_DENOM } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import { AccountBalance } from '@/types'
@@ -25,35 +25,38 @@ const hasCw20Balance = computed(() => {
     return false
   }
 
-  return new BigNumberInWei(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
+  return new BigNumberInBase(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
     0
   )
 })
 
 const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.availableMargin).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.availableMargin,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalanceInUsd,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -61,11 +64,12 @@ const {
   valueToString: reservedToString,
   valueToBigNumber: reservedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.inOrderBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.inOrderBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -73,11 +77,12 @@ const {
   valueToString: unrealizedPnlToString,
   valueToBigNumber: unrealizedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.unrealizedPnl).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.unrealizedPnl,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -111,7 +116,10 @@ function toggleStakingRow() {
           <p class="text-xs text-gray-500">{{ balance.token.name }}</p>
         </div>
 
-        <button v-if="balance.denom === INJ_DENOM" @click="toggleStakingRow">
+        <button
+          v-if="balance.denom === injToken.denom"
+          @click="toggleStakingRow"
+        >
           <SharedIcon
             name="chevron"
             is-lg
@@ -213,9 +221,12 @@ function toggleStakingRow() {
       </div>
     </div>
 
-    <AppCollapse v-if="balance.denom === INJ_DENOM" :is-open="isStakingVisible">
+    <AppCollapse
+      v-if="balance.denom === injToken.denom"
+      :is-open="isStakingVisible"
+    >
       <PartialsPortfolioBalancesSubaccountTableStakingRow
-        v-if="balance.denom === INJ_DENOM"
+        v-if="balance.denom === injToken.denom"
       />
     </AppCollapse>
   </div>

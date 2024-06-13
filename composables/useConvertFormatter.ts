@@ -1,5 +1,5 @@
 import { OrderSide } from '@injectivelabs/ts-types'
-import { TokenStatic } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { UiSpotMarket } from '@/types'
 
 export default function useConvertFormatter() {

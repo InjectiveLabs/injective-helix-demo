@@ -90,7 +90,7 @@ provide(PortfolioStatusKey, portfolioStatus)
     <!-- <ModalsNewFeature /> -->
     <ModalsPostOnlyMode />
     <ModalsDevMode />
-    <AppConfetti />
+    <SharedPageConfetti />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

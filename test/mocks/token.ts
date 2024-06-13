@@ -1,4 +1,4 @@
-import { TokenType } from '@injectivelabs/token-metadata'
+import { TokenType } from '@injectivelabs/sdk-ts'
 
 export const btcTokenMeta = {
   denom: 'btc',

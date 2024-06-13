@@ -3,7 +3,7 @@ import {
   TokenType,
   TokenStatic,
   TokenVerification
-} from '@injectivelabs/token-metadata'
+} from '@injectivelabs/sdk-ts'
 import { tokenCacheApi, tokenPriceService } from '@shared/Service'
 import tokens from '@/app/data/tokens.json'
 import { getToken } from '@/app/utils/helpers'

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
-import { INJ_DENOM } from '@shared/utils/constant'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
 const accountStore = useAccountStore()
@@ -23,35 +22,38 @@ const hasCw20Balance = computed(() => {
     return false
   }
 
-  return new BigNumberInWei(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
+  return new BigNumberInBase(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
     0
   )
 })
 
 const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.availableMargin).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.availableMargin,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalanceInUsd,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -59,11 +61,12 @@ const {
   valueToString: reservedToString,
   valueToBigNumber: reservedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.inOrderBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.inOrderBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -71,11 +74,12 @@ const {
   valueToString: unrealizedPnlToString,
   valueToBigNumber: unrealizedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.unrealizedPnl).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.unrealizedPnl,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -167,7 +171,7 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
-    <CommonHeadlessTotalBalance v-if="balance.denom === INJ_DENOM">
+    <CommonHeadlessTotalBalance v-if="balance.denom === injToken.denom">
       <template #default="{ stakedAmount, stakedAmountInUsd }">
         <div
           class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
