@@ -20,5 +20,5 @@ export function hexToString(hex: string) {
     str += char
   }
 
-  return decodeURIComponent(str)
+  return str
 }
