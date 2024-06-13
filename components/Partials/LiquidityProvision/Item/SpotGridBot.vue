@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
   GridMarket,

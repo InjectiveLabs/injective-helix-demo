@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
