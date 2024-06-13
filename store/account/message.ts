@@ -2,12 +2,11 @@ import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
+  TokenStatic,
   MsgExternalTransfer,
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
-
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TokenStatic } from '@injectivelabs/token-metadata'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({

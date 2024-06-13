@@ -6,6 +6,7 @@ import {
   indexerRestMarketChronosApi
 } from '@shared/Service'
 import {
+  TokenStatic,
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
@@ -14,12 +15,11 @@ import {
   toUiMarketHistory,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
-import type { Token } from '@injectivelabs/token-metadata'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { SharedUiMarketHistory, SharedUiMarketSummary } from '@shared/types'
 import { getToken } from '@/app/utils/helpers'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { UiMarketWithToken, UiMarketAndSummary } from '@/types'
 
 type ExchangeStoreState = {
@@ -131,7 +131,7 @@ export const useExchangeStore = defineStore('exchange', {
           feeDiscountSchedule.quoteDenomsList.map(
             async (denom) => await getToken(denom)
           )
-        )) as Token[]
+        )) as TokenStatic[]
 
         const feeDiscountScheduleWithToken = {
           ...feeDiscountSchedule,
@@ -193,7 +193,7 @@ export const useExchangeStore = defineStore('exchange', {
           await Promise.all(
             quoteDenomsList.map(async (denom) => await getToken(denom))
           )
-        ).filter((token) => token) as Token[]
+        ).filter((token) => token) as TokenStatic[]
       ).map((token) => token.symbol)
 
       const tradingRewardCampaignInfo = {

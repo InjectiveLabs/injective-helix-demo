@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { INJ_LOGO_URL } from '@shared/utils/constant'
-import { TokenStatic } from '@injectivelabs/token-metadata'
 
 const tokenStore = useTokenStore()
 

@@ -1,4 +1,4 @@
-import { TokenStatic } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from './enums'
 
 export type SubaccountTransferForm = {

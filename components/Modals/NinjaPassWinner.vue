@@ -5,7 +5,7 @@ const appStore = useAppStore()
 const walletStore = useWalletStore()
 const ninjaPassStore = useNinjaPassStore()
 const modalStore = useModalStore()
-const confetti = useConfetti()
+const confetti = useSharedConfetti()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.NinjaPassWinner])
 

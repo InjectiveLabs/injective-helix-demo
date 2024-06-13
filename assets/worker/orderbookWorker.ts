@@ -197,12 +197,12 @@ self.addEventListener(
               aggregation,
               isBuy: true,
               priceMap: buys
-            }),
+            }).slice(0, 2000),
             sells: priceMapToAggregatedArray({
               aggregation,
               isBuy: false,
               priceMap: sells
-            })
+            }).slice(0, 2000)
           }
         } as OrderbookWorkerResult)
       }

@@ -5,9 +5,9 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/token-metadata'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
