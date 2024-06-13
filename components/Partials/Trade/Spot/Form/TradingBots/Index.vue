@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {
+  MarketKey,
   BusEvents,
   UiSpotMarket,
-  SpotMarketKey,
   GridStrategyType,
   InvestmentTypeGst,
   SpotGridTradingForm
 } from '@/types'
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const gridStrategyStore = useGridStrategyStore()
 const strategyType = ref(GridStrategyType.Auto)

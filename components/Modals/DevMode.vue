@@ -4,10 +4,10 @@ import { Modal, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
-const { success } = useNotifications()
-const { $onError } = useNuxtApp()
-const { resetForm } = useForm()
 const { t } = useLang()
+const { resetForm } = useForm()
+const { $onError } = useNuxtApp()
+const { success } = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 

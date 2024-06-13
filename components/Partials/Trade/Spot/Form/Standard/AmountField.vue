@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
-import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
-} from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  calculateTotalQuantity,
-  calculateWorstPrice
+  calculateWorstPrice,
+  calculateTotalQuantity
 } from '@/app/utils/helpers'
 import {
   BusEvents,
+  MarketKey,
   TradeTypes,
   UiSpotMarket,
-  SpotMarketKey,
   SpotTradeForm,
   TradeAmountOption,
   SpotTradeFormField
@@ -36,13 +32,12 @@ const props = defineProps({
     required: true
   }
 })
-
-const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
-const isShowTensMultiplierNote = ref(false)
-
 const { userBalancesWithToken } = useBalance()
 const spotFormValues = useFormValues<SpotTradeForm>()
 const orderbookStore = useOrderbookStore()
+
+const market = inject(MarketKey) as Ref<UiSpotMarket>
+const isShowTensMultiplierNote = ref(false)
 
 const validateLimitField = useValidateField(SpotTradeFormField.Price)
 
@@ -81,9 +76,10 @@ const {
       (balance) => balance.token.denom === market.value.baseToken.denom
     )?.availableMargin
 
-    return new BigNumberInWei(balance || 0).toBase(
-      market.value.baseToken.decimals
-    )
+    return sharedToBalanceInToken({
+      value: balance || 0,
+      decimalPlaces: market.value.baseToken.decimals
+    })
   })
 )
 
@@ -96,9 +92,10 @@ const {
       (balance) => balance.token.denom === market.value.quoteToken.denom
     )?.availableMargin
 
-    return new BigNumberInWei(balance || 0).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInToken({
+      value: balance || 0,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 )
 

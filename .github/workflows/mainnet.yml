@@ -95,21 +95,22 @@ jobs:
       - name: Invalidate Cloudfront CDN
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
-  notify_slack_on_success:
+  notify-slack-on-deployment:
     runs-on: ubuntu-latest
     needs: [mainnet]
-    if: always() && (needs.mainnet.result == 'success')
+    if: always() && github.event_name == 'push' && (needs.mainnet.result == 'success')
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
       - name: "Notify Slack"
         run: |
-          git fetch origin master
+          # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
+          last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
           payload='{
-            "text": "'"<!here> Helix - Deployed to Mainnet!.\n View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\n The commits deployed are:\n $(git log remotes/origin/master..HEAD --pretty=format:'%h - %s')"'",
+            "text": "'"<!here> Helix - Deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n$(git log $last_merge_commit..HEAD --pretty=format:'%h - %s')"'",
             "attachments": [
                 {
                 "text": "Helix deployed to Mainnet ✅",
@@ -117,4 +118,22 @@ jobs:
                 }
             ]
             }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" https://hooks.slack.com/services/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
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+
+  notify-slack-on-redeployment:
+    runs-on: ubuntu-latest
+    needs: [mainnet]
+    if: always() && github.event_name == 'workflow_dispatch' && (needs.mainnet.result == 'success')
+    steps:
+      - name: "Notify Slack"
+        run: |  
+          payload='{
+            "text": "'"<!here> 🚀 Helix Redeployed on Mainnet! Good guys, close your eyes! 🛠️😄."'",
+            "attachments": [
+                {
+                "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
+                "color": "#22bb33"
+                }
+            ]
+            }'
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}

@@ -2,8 +2,8 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  MarketKey,
   TradeTypes,
-  SpotMarketKey,
   SpotTradeForm,
   SpotTradeFormField
 } from '@/types'
@@ -44,19 +44,18 @@ const props = defineProps({
     required: true
   }
 })
-
-const spotMarket = inject(SpotMarketKey)
+const spotMarket = inject(MarketKey)
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(true)
 
-const { valueToString: totalToString } = useBigNumberFormatter(
+const { valueToString: totalToString } = useSharedBigNumberFormatter(
   computed(() => props.totalWithFee),
   { decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS }
 )
 
-const { valueToString: quantityToString } = useBigNumberFormatter(
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   computed(() => props.quantity),
   {
     decimalPlaces: spotMarket?.value?.quantityDecimals

@@ -5,14 +5,20 @@ type Size = 'xs' | 'sm' | 'md' | 'lg'
 type Variant =
   | 'primary'
   | 'primary-outline'
+  | 'primary-ghost'
   | 'danger'
   | 'danger-outline'
   | 'danger-ghost'
   | 'success'
   | 'success-outline'
 
+defineOptions({
+  inheritAttrs: false
+})
+
 const props = defineProps({
   isLoading: Boolean,
+  disabled: Boolean,
 
   size: {
     type: String as PropType<Size>,
@@ -27,6 +33,11 @@ const props = defineProps({
   status: {
     type: Object as PropType<Status>,
     default: () => new Status(StatusType.Idle)
+  },
+
+  tooltip: {
+    type: String,
+    default: ''
   }
 })
 
@@ -44,14 +55,42 @@ const outlineStyle = computed(() => {
 </script>
 
 <template>
-  <button
-    class="flex items-center justify-center transition-all ring-0"
-    :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant, outlineStyle]"
-    v-bind="$attrs"
+  <SharedTooltip
+    v-bind="{
+      disabled: !tooltip
+    }"
+    :triggers="['hover', 'click']"
   >
-    <span v-if="status.isLoading() || isLoading">&#8202;</span>
-    <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />
+    <button
+      class="flex items-center justify-center transition-all ring-0"
+      :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant, outlineStyle]"
+      :disabled="disabled"
+      v-bind="$attrs"
+    >
+      <span v-if="status.isLoading() || isLoading">&#8202;</span>
+      <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />
 
-    <slot v-else />
-  </button>
+      <slot v-else />
+    </button>
+
+    <template #content>
+      <slot name="content">
+        <span>{{ tooltip }}</span>
+      </slot>
+    </template>
+  </SharedTooltip>
 </template>
+
+<style>
+.tooltip,
+.v-popper--theme-tooltip {
+  .v-popper__inner {
+    @apply bg-gray-900 text-gray-200 border-none max-w-xs text-xs px-3 py-1 shadow-sm;
+  }
+
+  .v-popper__arrow-outer,
+  .v-popper__arrow-inner {
+    @apply border-gray-900;
+  }
+}
+</style>

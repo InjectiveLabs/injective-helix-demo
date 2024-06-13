@@ -1,48 +1,40 @@
 <script setup lang="ts">
 import { BigNumber } from '@injectivelabs/utils'
 import { MARKETS_INFO } from '@/app/data/marketInfo'
-import {
-  IsSpotKey,
-  SpotMarketKey,
-  UiDerivativeMarket,
-  DerivativeMarketKey
-} from '@/types'
+import { IsSpotKey, MarketKey, UiDerivativeMarket } from '@/types'
 
 const isSpot = inject(IsSpotKey)
-const spotMarket = inject(SpotMarketKey, undefined)
-const derivativeMarket = inject(DerivativeMarketKey, undefined) as
-  | ComputedRef<UiDerivativeMarket>
-  | undefined
-
-const market = computed(() =>
-  isSpot ? spotMarket?.value : derivativeMarket?.value
-)
+const market = inject(MarketKey)
 
 const priceTickSize = computed(() => {
-  if (!market.value) {
+  if (!market || !market.value) {
     return ''
   }
 
-  return BigNumber(10).pow(market.value.priceTensMultiplier)
+  return BigNumber(10).pow(market.value.priceTensMultiplier).toFixed()
 })
 
 const quantityTickSize = computed(() => {
-  if (!market.value) {
+  if (!market || !market.value) {
     return ''
   }
-  return BigNumber(10).exponentiatedBy(market.value.quantityTensMultiplier)
+  return BigNumber(10)
+    .exponentiatedBy(market.value.quantityTensMultiplier)
+    .toFixed()
 })
 
 const maxLeverage = computed(() => {
-  if (!derivativeMarket || isSpot) {
+  if (!market || !market.value || isSpot) {
     return ''
   }
 
-  return BigNumber(1).dividedBy(derivativeMarket.value.initialMarginRatio).dp(0)
+  return BigNumber(1)
+    .dividedBy((market.value as UiDerivativeMarket).initialMarginRatio)
+    .dp(0)
 })
 
 const description = computed(() => {
-  if (!market.value) {
+  if (!market || !market.value) {
     return ''
   }
 
@@ -80,27 +72,24 @@ const description = computed(() => {
 
     <div class="flex-1 p-8 text-gray-400 text-xs tracking-wider space-y-2">
       <div class="flex justify-between border-b pb-1">
-        <p>Market Name:</p>
+        <p>{{ $t('trade.marketName') }}:</p>
         <p>{{ market.ticker }}</p>
       </div>
 
       <div class="flex justify-between border-b pb-1">
-        <p>Tick Size:</p>
+        <p>{{ $t('trade.tickSize') }}:</p>
         <p>
           {{ priceTickSize }}
         </p>
       </div>
 
       <div class="flex justify-between border-b pb-1">
-        <p>Min. Limit Order Size:</p>
+        <p>{{ $t('trade.minLimitOrderSize') }}:</p>
         <p>{{ quantityTickSize }}</p>
       </div>
 
-      <div
-        v-if="!isSpot && derivativeMarket"
-        class="flex justify-between border-b pb-1"
-      >
-        <p>Max. Leverage:</p>
+      <div v-if="!isSpot" class="flex justify-between border-b pb-1">
+        <p>{{ $t('trade.maxLeverage') }}:</p>
         <p>{{ maxLeverage }}</p>
       </div>
     </div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { SharedDropdownOption } from '@shared/types'
 
 const props = defineProps({
   options: {
-    type: Array as PropType<BaseDropdownOption[]>,
+    type: Array as PropType<SharedDropdownOption[]>,
     required: true
   },
 
@@ -33,7 +33,7 @@ const selected = computed(() =>
 </script>
 
 <template>
-  <BaseDropdown
+  <SharedDropdown
     position="bottom-left"
     :placement="placement"
     :distance="0"
@@ -68,5 +68,5 @@ const selected = computed(() =>
         </div>
       </div>
     </template>
-  </BaseDropdown>
+  </SharedDropdown>
 </template>

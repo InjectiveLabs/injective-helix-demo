@@ -44,7 +44,6 @@ const marketOrders = computed(() =>
   )
 )
 
-// todo: Ivan => change subaccount onMounted
 function fetchData() {
   status.setLoading()
 
@@ -103,6 +102,10 @@ onWalletConnected(() => {
   spotStore.resetOrderbookAndTrades()
 
   fetchData()
+})
+
+onMounted(() => {
+  accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
 })
 
 onUnmounted(() => {

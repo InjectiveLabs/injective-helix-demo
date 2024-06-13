@@ -9,7 +9,7 @@ const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const props = defineProps({
   isDisabled: Boolean,
@@ -67,7 +67,7 @@ function onSubmit() {
       guildId: props.guild.guildId
     })
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('guild.joinGuild.toast')
       })
       onCloseModal()

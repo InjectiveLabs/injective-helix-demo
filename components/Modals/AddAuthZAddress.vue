@@ -21,7 +21,7 @@ const modalStore = useModalStore()
 const authZStore = useAuthZStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const { validate } = useForm<{
   address: string
@@ -51,7 +51,7 @@ async function grantAuthorization() {
       grantee: addressValue.value,
       messageTypes: msgs.value
     })
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -102,7 +102,7 @@ function closeModal() {
       <div class="mt-4">
         <AppButton
           v-bind="{ status }"
-          :disabled="errorMessage || msgs.length === 0"
+          :disabled="!!errorMessage || msgs.length === 0"
           class="w-full"
           variant="primary"
           @click="grantAuthorization"

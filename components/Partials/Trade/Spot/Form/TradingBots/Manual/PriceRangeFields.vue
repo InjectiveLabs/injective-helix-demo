@@ -5,14 +5,14 @@ import {
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
 import {
+  MarketKey,
   UiSpotMarket,
-  SpotMarketKey,
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField
 } from '@/types'
 
-const market = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 defineProps({
   isDisabled: Boolean

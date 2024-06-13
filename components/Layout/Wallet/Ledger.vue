@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
-import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
+import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 import { WalletConnectStatus } from '@/types'
 
 const walletStore = useWalletStore()
@@ -19,7 +19,7 @@ const options = [
     display: t('connect.ledgerLegacy'),
     value: LedgerDerivationPathType.LedgerMew
   }
-] as BaseDropdownOption[]
+] as SharedDropdownOption[]
 
 const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))

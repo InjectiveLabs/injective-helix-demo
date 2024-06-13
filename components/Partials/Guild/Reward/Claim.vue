@@ -17,7 +17,7 @@ const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { error, success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const props = defineProps({
   isVolume: Boolean,
@@ -117,7 +117,7 @@ function onClaimRewards() {
   campaignStore
     .claimReward(contractAddress)
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
@@ -126,7 +126,7 @@ function onClaimRewards() {
     })
     .catch((err: any) => {
       if ((err.originalMessage as string).includes('has already claimed')) {
-        error({
+        notificationStore.error({
           title: t('campaign.error'),
           description: t('campaign.errorAlreadyClaimed')
         })

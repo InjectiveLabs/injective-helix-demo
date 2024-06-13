@@ -1,26 +1,21 @@
 import {
-  BigNumber,
-  BigNumberInBase,
-  BigNumberInWei,
-  SECONDS_IN_A_DAY
-} from '@injectivelabs/utils'
-import {
-  PriceLevel,
-  SpotMarket,
-  DerivativeMarket,
-  ExpiryFuturesMarket,
-  MsgExecuteContractCompat,
-  ExecArgCW20Send,
-  isCw20ContractAddress
-} from '@injectivelabs/sdk-ts'
-import {
   SharedMarketType,
   SharedMarketStatus,
   SharedUiMarketHistory
 } from '@shared/types'
+import {
+  PriceLevel,
+  SpotMarket,
+  TokenStatic,
+  ExecArgCW20Send,
+  DerivativeMarket,
+  ExpiryFuturesMarket,
+  isCw20ContractAddress,
+  MsgExecuteContractCompat
+} from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import type { TokenStatic } from '@injectivelabs/token-metadata'
 import {
   newMarketsSlug,
   upcomingMarkets,
@@ -336,7 +331,7 @@ export const updateOrderbookRecord = (
   })
 
   return Object.values(currentRecordsMap).filter((record) =>
-    new BigNumber(record.quantity).gt(0)
+    new BigNumberInBase(record.quantity).gt(0)
   )
 }
 
@@ -419,7 +414,7 @@ export const convertCw20ToBankBalance = ({
       return
     }
 
-    const hasSufficientBalanceInBank = new BigNumberInWei(
+    const hasSufficientBalanceInBank = new BigNumberInBase(
       bankBalancesMap[market.quoteDenom] || 0
     ).gte(new BigNumberInBase(order.price).times(order.quantity))
 
@@ -446,11 +441,11 @@ export const convertCw20ToBankBalance = ({
       return
     }
 
-    const hasSufficientBalanceInBank = new BigNumberInWei(
+    const hasSufficientBalanceInBank = new BigNumberInBase(
       bankBalancesMap[market.baseDenom] || 0
     ).gte(order.quantity)
 
-    if (!hasSufficientBalanceInBank) {
+    if (hasSufficientBalanceInBank) {
       return
     }
 
@@ -497,7 +492,7 @@ export const convertCw20ToBankBalanceForSwap = ({
   }
 
   const quantityInWei = new BigNumberInBase(quantity).toWei(token.decimals)
-  const hasSufficientBalanceInBank = new BigNumberInWei(
+  const hasSufficientBalanceInBank = new BigNumberInBase(
     bankBalancesMap[token.denom] || 0
   ).gte(quantityInWei.toFixed())
 

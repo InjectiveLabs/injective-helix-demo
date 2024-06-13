@@ -2,6 +2,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
 
 const props = defineProps({
   search: {
@@ -20,6 +21,7 @@ const emit = defineEmits<{
   'update:showUnverifiedAssets': [value: boolean]
 }>()
 
+const appStore = useAppStore()
 const accountStore = useAccountStore()
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -32,6 +34,10 @@ const showUnverifiedAssets = computed({
   get: () => props.showUnverifiedAssets,
   set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
+
+const isGridTradingAccount = computed(() =>
+  isSgtSubaccountId(accountStore.subaccountId)
+)
 
 const { valueToString: accountTotalBalanceInUsdToString } =
   useSharedBigNumberFormatter(
@@ -55,11 +61,17 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 
 <template>
   <div class="lg:h-header lg:flex grid grid-cols-1 lg:divide-x max-lg:divide-y">
-    <CommonSubaccountTabSelector wrapper-class="py-4 w-full " />
+    <CommonSubaccountTabSelector
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts
+      }"
+      wrapper-class="py-4 w-full "
+    />
 
     <div class="flex items-center">
       <p
-        class="text-xs text-gray-300 px-4 max-md:py-3 flex items-center space-x-2 font-mono"
+        class="text-xs text-gray-300 px-4 max-lg:py-3 flex items-center space-x-2 font-mono"
       >
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
@@ -68,7 +80,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
       </p>
     </div>
 
-    <label class="flex px-4 flex-1">
+    <label class="flex px-4 flex-1 min-w-0">
       <div class="flex items-center">
         <SharedIcon is-md name="search" class="text-gray-500" />
       </div>
@@ -78,6 +90,13 @@ const { valueToString: accountTotalBalanceInUsdToString } =
         placeholder="Filter by asset"
       />
     </label>
+
+    <div
+      v-if="isGridTradingAccount"
+      class="flex items-center px-2 max-lg:py-2 [&>*]:flex-1"
+    >
+      <PartialsPortfolioBalancesSubaccountTransferToMain />
+    </div>
 
     <div class="flex items-center px-2 max-md:py-2 shrink-0 overflow-hidden">
       <AppCheckbox2 v-model="showUnverifiedAssets">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TokenStatic } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const props = defineProps({
   token: {

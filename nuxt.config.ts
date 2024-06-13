@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: ['@injectivelabs/ui-shared', '@funken-studio/sitemap-nuxt-3'],
+  modules: ['@funken-studio/sitemap-nuxt-3'],
 
   // @ts-ignore
   sitemap: {

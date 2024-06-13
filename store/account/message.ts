@@ -2,13 +2,11 @@ import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  msgsOrMsgExecMsgs,
+  TokenStatic,
   MsgExternalTransfer,
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
-import { msgBroadcaster } from '@shared/WalletService'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TokenStatic } from '@injectivelabs/token-metadata'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({
@@ -43,14 +41,7 @@ export const deposit = async ({
     }
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -87,14 +78,7 @@ export const withdraw = async ({
     }
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -132,15 +116,7 @@ export const transfer = async ({
     }
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    memo,
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message, memo)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -181,15 +157,7 @@ export const externalTransfer = async ({
     }
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    memo,
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message, memo)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -226,14 +194,7 @@ export const withdrawToMain = async () => {
       })
     )
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)
-    : msgs
-
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(msgs)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }

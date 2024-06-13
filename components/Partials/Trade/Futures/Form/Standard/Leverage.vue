@@ -4,14 +4,14 @@ import { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
+  MarketKey,
   UiDerivativeMarket,
-  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
 
-const market = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 

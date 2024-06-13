@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
+import { SharedDropdownOption } from '@shared/types'
 import { spotGridMarkets } from '@/app/data/grid-strategy'
+
 const gridStrategyStore = useGridStrategyStore()
 
 const spotStore = useSpotStore()
@@ -24,7 +25,7 @@ const value = computed({
   }
 })
 
-const options = computed<BaseDropdownOption[]>(() =>
+const options = computed<SharedDropdownOption[]>(() =>
   liquidityBotsMarkets.value.map((m) => ({
     display: `${m.baseToken.symbol}/${m.quoteToken.symbol}`,
     value: m.slug

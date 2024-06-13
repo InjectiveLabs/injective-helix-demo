@@ -9,6 +9,10 @@ export default {
     all: 'All',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
+    tickSize: 'Tick Size',
+    marketName: 'Market Name',
+    maxLeverage: 'Max. Leverage',
+    minLimitOrderSize: 'Min. Limit Order Size',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',
@@ -124,6 +128,8 @@ export default {
     spots: 'Spot',
     futures: 'Futures',
     trading: 'Trading',
+    staked: 'Staked',
+    stakedUsd: 'Staked (USD)',
     high_execution_price_deviation_warning_note: ({
       named
     }: I18nMessageFunction) =>

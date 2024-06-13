@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { SpotOrdersStandardView, UiSpotMarket, SpotMarketKey } from '@/types'
+import { SharedDropdownOption } from '@shared/types'
+import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
 
 const props = defineProps({
   modelValue: {
@@ -19,7 +19,7 @@ const emit = defineEmits<{
   'update:isTickerOnly': [value: boolean]
 }>()
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const walletStore = useWalletStore()
 const spotStore = useSpotStore()
@@ -33,21 +33,21 @@ const view = useVModel(props, 'modelValue', emit)
 const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
-  const items: BaseDropdownOption[] = [
+  const items: SharedDropdownOption[] = [
     {
       display: `activity.${SpotOrdersStandardView.OpenOrders}`,
       value: SpotOrdersStandardView.OpenOrders,
-      amount: spotStore.subaccountOrdersCount
+      description: `${spotStore.subaccountOrdersCount}`
     },
     {
       display: `activity.${SpotOrdersStandardView.OrderHistory}`,
       value: SpotOrdersStandardView.OrderHistory,
-      amount: spotStore.subaccountOrderHistoryCount
+      description: `${spotStore.subaccountOrderHistoryCount}`
     },
     {
       display: `activity.${SpotOrdersStandardView.TradeHistory}`,
       value: SpotOrdersStandardView.TradeHistory,
-      amount: spotStore.subaccountTradesCount
+      description: `${spotStore.subaccountTradesCount}`
     }
   ]
 
@@ -86,20 +86,28 @@ watch(
       <template #default="{ selected }">
         <button class="px-2">
           {{ $t(selected?.display || '') }}
-          {{ selected?.amount ? `(${selected.amount})` : '' }}
+          {{
+            Number.isInteger(Number(selected?.description))
+              ? `(${selected?.description || 0})`
+              : ''
+          }}
         </button>
       </template>
 
       <template #option="{ option }">
         <button>
           {{ $t(option.display) }}
-          {{ option.amount ? `(${option.amount})` : '' }}
+          {{
+            Number.isInteger(Number(option.description))
+              ? `(${option.description})`
+              : ''
+          }}
         </button>
       </template>
     </AppTabSelect>
 
     <AppButtonSelect
-      v-for="{ value, amount, display } in options"
+      v-for="{ value, display, description } in options"
       v-else
       :key="value"
       v-model="view"
@@ -107,7 +115,8 @@ watch(
       class="flex items-center px-4 tab-field"
       active-classes="!text-white"
     >
-      {{ $t(display) }} {{ Number.isInteger(amount) ? `(${amount})` : '' }}
+      {{ $t(display) }}
+      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">

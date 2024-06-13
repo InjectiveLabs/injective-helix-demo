@@ -15,7 +15,6 @@ import {
   CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP,
   LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP
 } from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   Modal,
   MainPage,
@@ -56,24 +55,6 @@ const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
 const { userBalancesWithToken } = useBalance()
-
-const hasActiveStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find((strategy) => {
-    const subaccountId = addressAndMarketSlugToSubaccountId(
-      walletStore.address,
-      props.market.slug
-    )
-
-    const contractAddress = spotGridMarkets.find(
-      (m) => m.slug === props.market.slug
-    )?.contractAddress
-
-    return (
-      strategy.subaccountId === subaccountId &&
-      strategy.contractAddress === contractAddress
-    )
-  })
-)
 
 const quoteDenomBalance = computed(() =>
   userBalancesWithToken.value.find(
@@ -193,6 +174,10 @@ const newMarketSlug = computed(
 
 const isDisabled = computed(() => {
   const investmentType = formValues.value[SpotGridTradingField.InvestmentType]
+
+  if (walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled) {
+    return true
+  }
 
   if (Object.keys(formErrors.value).length > 0) {
     return true
@@ -341,15 +326,15 @@ function goToNewMarket() {
       v-if="!hasActiveLegacyStrategy && !isLegacyMarket"
       class="w-full shadow-none select-none"
       v-bind="{ status, disabled: isDisabled }"
-      :class="[
-        hasActiveStrategy
-          ? 'bg-gray-475 text-white hover:opacity-80 pointer-events-none'
-          : 'bg-blue-500 text-blue-900'
-      ]"
-      is-lg
       @click="onCheckBalanceFees"
     >
-      <span>{{ $t('sgt.create') }}</span>
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else-if="walletStore.isAutoSignEnabled">
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+      <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
     <p v-if="hasActiveLegacyStrategy" class="text-xs text-red-500 mt-4">
@@ -359,10 +344,21 @@ function goToNewMarket() {
     <AppButton
       v-if="hasActiveLegacyStrategy"
       class="bg-red-500 text-black w-full mt-4"
-      v-bind="{ status }"
+      v-bind="{
+        status,
+        disabled:
+          walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+      }"
       @click="removeLegacyStrategy"
     >
-      {{ $t('sgt.endBot') }}
+      <span v-if="walletStore.isAuthzWalletConnected">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else-if="walletStore.isAutoSignEnabled">
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+
+      <span v-else>{{ $t('sgt.endBot') }}</span>
     </AppButton>
 
     <AppButton

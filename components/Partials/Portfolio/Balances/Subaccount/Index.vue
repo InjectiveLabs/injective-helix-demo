@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { INJ_DENOM } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 const {
@@ -48,6 +49,10 @@ const balancesSorted = computed(() => {
       decimalPlaces: b.token.decimals
     })
 
+    if (b.denom === INJ_DENOM) {
+      return 1
+    }
+
     return aBalanceInToken.gt(bBalanceInToken) ? -1 : 1
   })
 })
@@ -71,6 +76,7 @@ const balancesSorted = computed(() => {
             :key="balance.denom"
           />
         </template>
+
         <template v-else>
           <PartialsPortfolioBalancesSubaccountTableRow
             v-for="balance in balancesSorted"

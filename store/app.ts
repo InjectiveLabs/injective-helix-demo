@@ -53,6 +53,7 @@ export interface UserBasedState {
     orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
     skipExperimentalConfirmationModal: boolean
+    showGridTradingSubaccounts: boolean
   }
 }
 
@@ -111,7 +112,8 @@ const initialStateFactory = (): AppStoreState => ({
       skipTradeConfirmationModal: false,
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
-      orderbookLayout: OrderbookLayout.Default
+      orderbookLayout: OrderbookLayout.Default,
+      showGridTradingSubaccounts: false
     }
   }
 })

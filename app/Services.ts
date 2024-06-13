@@ -1,5 +1,7 @@
 import {
+  TokenStatic,
   ChainGrpcAuthZApi,
+  TokenFactoryStatic,
   IndexerGrpcTradingApi,
   ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
@@ -7,7 +9,7 @@ import {
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
-import { TokenStatic, TokenFactoryStatic } from '@injectivelabs/token-metadata'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
 import tokens from '@/app/data/tokens.json'
 
@@ -28,7 +30,9 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 )
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
-  'https://devnet.api.injective.dev'
+  IS_MAINNET
+    ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
+    : ENDPOINTS.indexer
 )
 
 export const indexerRestLeaderboardChronosApi =

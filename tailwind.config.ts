@@ -21,7 +21,6 @@ const extraSizings = {
 }
 
 export default {
-  presets: [require('@injectivelabs/ui-shared/lib/tailwind-preset.cjs')],
   content: ['./components/**/*.vue', './pages/**/*.vue', './layouts/*.vue'],
   safelist: [
     'border-4',
@@ -119,6 +118,26 @@ export default {
           border: `1px solid ${theme('colors.blue.500')}`,
           cursor: 'not-allowed'
         },
+
+        '.btn-primary-ghost': {
+          color: theme('colors.gray-200'),
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme('colors.green.500')}`
+        },
+
+        '.btn-primary-ghost:hover': {
+          color: theme('colors.white'),
+          backgroundColor: `${theme('colors.green.500')}33`
+        },
+
+        '.btn-primary-ghost:disabled': {
+          backgroundColor: 'transparent',
+          color: theme('colors.gray.400'),
+          border: `1px solid ${theme('colors.green.500')}`,
+          cursor: 'not-allowed'
+        },
+
+        // Success
 
         '.btn-success': {
           color: theme('colors.green.900'),

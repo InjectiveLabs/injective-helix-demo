@@ -1,4 +1,5 @@
 import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   WorkerMessageType,
   OrderbookWorkerResult,
@@ -9,7 +10,13 @@ import { spotMarketStream } from '@/app/client/streams/spot'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import { derivativesMarketStream } from '@/app/client/streams/derivatives'
-import { UiMarketWithToken, AggregationKey, OrderbookWorkerKey } from '@/types'
+
+import {
+  UiMarketWithToken,
+  AggregationKey,
+  OrderbookWorkerKey,
+  OrderbookStatusKey
+} from '@/types'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
   postMessage(message: OrderbookWorkerMessage): void
@@ -37,6 +44,7 @@ export function useOrderbook(
 ) {
   const orderbookStore = useOrderbookStore()
 
+  const orderbookStatus = reactive(new Status(StatusType.Loading))
   const aggregation = ref(market.value?.priceDecimals || 0)
 
   const worker = shallowRef<OrderbookWorker | null>(null)
@@ -81,6 +89,8 @@ export function useOrderbook(
         return
       }
 
+      orderbookStatus.setIdle()
+
       worker.value?.postMessage({
         type: WorkerMessageType.Fetch,
         data: {
@@ -88,7 +98,8 @@ export function useOrderbook(
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals,
           orderbook: data,
-          aggregation: aggregation.value
+          aggregation: aggregation.value,
+          sequence: data.sequence
         }
       })
     })
@@ -106,6 +117,8 @@ export function useOrderbook(
           return
         }
 
+        orderbookStatus.setIdle()
+
         worker.value?.postMessage({
           type: WorkerMessageType.Fetch,
           data: {
@@ -113,7 +126,8 @@ export function useOrderbook(
             baseDecimals: market.value.baseToken.decimals,
             quoteDecimals: market.value.quoteToken.decimals,
             orderbook: data,
-            aggregation: aggregation.value
+            aggregation: aggregation.value,
+            sequence: data.sequence
           }
         })
       })
@@ -134,7 +148,8 @@ export function useOrderbook(
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals,
             orderbook: data.orderbook!,
-            aggregation: aggregation.value
+            aggregation: aggregation.value,
+            sequence: data.orderbook!.sequence
           }
         })
       }
@@ -159,7 +174,8 @@ export function useOrderbook(
               baseDecimals: market.baseToken.decimals,
               quoteDecimals: market.quoteToken.decimals,
               orderbook: data.orderbook!,
-              aggregation: aggregation.value
+              aggregation: aggregation.value,
+              sequence: data.orderbook!.sequence
             }
           })
         }
@@ -169,6 +185,7 @@ export function useOrderbook(
     fetchDerivativeOrderbook()
   }
 
+  provide(OrderbookStatusKey, orderbookStatus)
   provide(OrderbookWorkerKey, worker)
   provide(AggregationKey, aggregation)
 

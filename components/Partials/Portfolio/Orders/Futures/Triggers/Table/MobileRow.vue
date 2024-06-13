@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import { MsgType } from '@injectivelabs/ts-types'
 
 import { Status, StatusType } from '@injectivelabs/utils'
 
@@ -10,10 +11,12 @@ const props = defineProps({
   }
 })
 
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const {
@@ -33,6 +36,14 @@ const {
   priceDecimals,
   quantityDecimals
 } = useTrigger(computed(() => props.trigger))
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
+})
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
@@ -67,11 +78,11 @@ function cancelOrder() {
   derivativeStore
     .cancelOrder(props.trigger)
     .catch((e) => {
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
       $onError(e)
     })
     .then(() => {
-      success({ title: t('common.success') })
+      notificationStore.success({ title: t('common.success') })
     })
     .finally(() => {
       status.setIdle()
@@ -167,11 +178,12 @@ function cancelOrder() {
       <AppButton
         variant="danger-ghost"
         v-bind="{ status }"
-        :disabled="!isCancelable"
+        :disabled="!isCancelable || !isAuthorized"
         class="w-full"
         @click="cancelOrder"
       >
-        {{ $t('trade.cancelTrigger') }}
+        <span v-if="!isAuthorized">{{ $t('common.unauthorized') }}</span>
+        <span v-else>{{ $t('trade.cancelTrigger') }}</span>
       </AppButton>
     </div>
   </div>
