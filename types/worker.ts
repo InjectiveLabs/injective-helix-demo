@@ -26,6 +26,7 @@ type sendFetchOrStreamType = {
     baseDecimals: number
     quoteDecimals: number
     aggregation: number
+    sequence: number
   }
 }
 
