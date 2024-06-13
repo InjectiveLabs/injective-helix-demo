@@ -4,6 +4,7 @@ import { OrderbookFormattedRecord } from '@/types/worker'
 import { colors } from '~/nuxt-config/tailwind'
 
 const HEIGHT = 550
+const MOBILE_HEIGHT = 450
 const TOOLTIP_OFFSET = 10
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
@@ -38,6 +39,8 @@ function update() {
     return
   }
 
+  const isMobile = window.innerWidth < 1024
+
   ctx = canvasEl.value.getContext('2d')
 
   if (!ctx) {
@@ -46,7 +49,7 @@ function update() {
 
   const width = (canvasEl.value.width =
     containerEl.value?.getBoundingClientRect().width || 0)
-  const height = HEIGHT
+  const height = isMobile ? MOBILE_HEIGHT : HEIGHT
 
   canvasEl.value.height = height
 
@@ -146,9 +149,11 @@ function update() {
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
 
-  for (let i = 0; i < 11; i++) {
-    const x = (i / 10) * width
-    const price = lerp(lowerPrice, upperPrice, i / 10)
+  const nOfLabels = isMobile ? 5 : 10
+
+  for (let i = 0; i <= nOfLabels; i++) {
+    const x = (i / nOfLabels) * width
+    const price = lerp(lowerPrice, upperPrice, i / nOfLabels)
     ctx.fillText(price.toFixed(2), x, height - 40)
   }
 
