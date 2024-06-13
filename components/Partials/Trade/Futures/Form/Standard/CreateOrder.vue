@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {
+  MsgType,
   OrderSide,
   TradeDirection,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import {
+  MarketKey,
   UiDerivativeMarket,
-  DerivativeMarketKey,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
@@ -50,15 +51,17 @@ const props = defineProps({
 })
 
 const resetForm = useResetForm()
-const formErrors = useFormErrors()
+const authZStore = useAuthZStore()
 const validate = useValidateForm()
+const formErrors = useFormErrors()
+const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
 
-const derivativeMarket = inject(DerivativeMarketKey) as Ref<UiDerivativeMarket>
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -83,6 +86,26 @@ const limitPrice = computed(
 const isOrderTypeReduceOnly = computed(
   () => !!derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
 )
+
+const isLimitOrder = computed(() =>
+  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  const msg = isLimitOrder.value
+    ? MsgType.MsgCreateDerivativeLimitOrder
+    : MsgType.MsgCreateDerivativeMarketOrder
+
+  return authZStore.hasAuthZPermission(msg)
+})
 
 const isBuy = computed(
   () =>
@@ -154,6 +177,10 @@ const isDisabled = computed(() => {
     return true
   }
 
+  if (!isAuthorized.value) {
+    return true
+  }
+
   if (
     [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
       tradeType
@@ -192,7 +219,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -246,7 +273,7 @@ async function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -298,7 +325,7 @@ async function submitMarketOrder() {
       takeProfit: takeProfitValue.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -352,7 +379,7 @@ async function submitStopMarketOrder() {
       margin: props.margin
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -407,9 +434,13 @@ function onSubmit() {
         class="w-full"
         @click="onSubmit"
       >
-        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-        /
-        {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+        <span v-if="isAuthorized">
+          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+          /
+          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+        </span>
+
+        <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
   </div>

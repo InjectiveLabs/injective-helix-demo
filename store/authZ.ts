@@ -6,6 +6,7 @@ import {
   getGenericAuthorizationFromMessageType,
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
+import { MsgType } from '@injectivelabs/ts-types'
 import { authZApi } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
 
@@ -71,7 +72,18 @@ export const useAuthZStore = defineStore('authZ', {
           },
           {} as Record<string, GrantAuthorizationWithDecodedAuthorization[]>
         )
+      ),
+
+    hasAuthZPermission: (state) => (messageType: MsgType) => {
+      const walletStore = useWalletStore()
+      const msg = messageType.startsWith('/') ? messageType : `/${messageType}`
+
+      return state.granteeGrants.some(
+        (grant) =>
+          grant.granter === walletStore.authZ.injectiveAddress &&
+          grant.authorization?.msg === msg
       )
+    }
   },
   actions: {
     async fetchGrants() {

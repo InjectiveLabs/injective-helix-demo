@@ -18,7 +18,7 @@ import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 declare let useBugsnag: () => any
 
 const reportToUser = (error: ThrownException) => {
-  const { error: errorToast } = useNotifications()
+  const notificationStore = useSharedNotificationStore()
 
   console.log(error.toJson())
 
@@ -34,7 +34,7 @@ const reportToUser = (error: ThrownException) => {
     error instanceof GrpcUnaryRequestException &&
     error.contextCode === GRPC_REQUEST_FAILED
   ) {
-    return errorToast({
+    return notificationStore.error({
       title: 'The product is experiencing higher than usual demand',
       description:
         'Hang tight, engineers are doing their best to improve the performance and efficiency.'
@@ -42,12 +42,15 @@ const reportToUser = (error: ThrownException) => {
   }
 
   if (!(error instanceof TransactionException)) {
-    return errorToast({
+    return notificationStore.error({
       title: error.message || 'Something happened'
     })
   }
 
-  errorToast({ title: error.message, context: error.originalMessage })
+  notificationStore.error({
+    title: error.message,
+    context: error.originalMessage
+  })
 }
 
 const reportToBugSnag = (error: ThrownException) => {

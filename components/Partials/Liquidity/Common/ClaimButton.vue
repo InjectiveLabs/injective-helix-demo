@@ -13,7 +13,7 @@ const props = defineProps({
 })
 
 const campaignStore = useCampaignStore()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -32,7 +32,7 @@ function claimRewards() {
   campaignStore
     .claimReward(props.campaign.rewardContract, campaignId)
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('campaign.success'),
         description: t('campaign.successfullyClaimedRewards')
       })
@@ -41,7 +41,7 @@ function claimRewards() {
     })
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {
-        error({
+        notificationStore.error({
           title: t('campaign.error'),
           description: t('campaign.errorAlreadyClaimed')
         })
@@ -58,10 +58,7 @@ function claimRewards() {
 <template>
   <AppButton
     v-bind="{ status }"
-    :class="{
-      'bg-blue-500 border-blue-500 border':
-        !campaign.userClaimed && campaign.isClaimable
-    }"
+    size="xs"
     :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
     @click="claimRewards"
   >

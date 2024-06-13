@@ -100,7 +100,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
-  <BaseModalWrapper
+  <SharedModalWrapper
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
     :is-open="isModalOpen"
@@ -234,5 +234,5 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
         </div>
       </div>
     </section>
-  </BaseModalWrapper>
+  </SharedModalWrapper>
 </template>

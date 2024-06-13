@@ -72,11 +72,7 @@ watch(isModalOpen, (newShowModalState) => {
 <template>
   <LayoutWalletDetails v-if="walletStore.isUserWalletConnected" />
 
-  <AppButton
-    v-else
-    class="bg-blue-500 text-blue-900 font-semibold whitespace-nowrap"
-    @click="onWalletConnect"
-  >
+  <AppButton v-else @click="onWalletConnect">
     {{ $t('connect.connectWallet') }}
   </AppButton>
 

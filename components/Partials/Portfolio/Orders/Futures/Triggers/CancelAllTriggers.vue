@@ -5,7 +5,7 @@ import { backupPromiseCall } from '@/app/utils/async'
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 function cancelAllTriggers() {
@@ -14,13 +14,13 @@ function cancelAllTriggers() {
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountConditionalOrders)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('common.success')
       })
     )
     .catch((e) => {
       $onError(e)
-      error({ title: t('common.error') })
+      notificationStore.error({ title: t('common.error') })
     })
     .finally(() => {
       status.setIdle()

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { SharedMarketChange, SharedMarketType } from '@shared/types'
+import { SharedMarketChange } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 defineProps({
@@ -22,7 +23,9 @@ defineProps({
         isNonUsdtQuoteAsset,
         percentageChangeStatus,
         lastTradedPriceToFormat,
-        lastTradedPriceInUsdToFormat
+        lastTradedPriceInUsdToFormat,
+        countdown,
+        fundingRate
       }"
     >
       <div class="hidden lg:flex max-lg:justify-between max-lg:[&>*]:border">
@@ -108,12 +111,54 @@ defineProps({
           <p class="text-gray-400">{{ $t('trade.low') }}</p>
           <p class="font-mono font-semibold mt-auto">{{ lowToFormat }}</p>
         </div>
+
+        <div
+          v-if="(market as UiDerivativeMarket)?.isPerpetual"
+          class="p-2 text-xs flex flex-col max-lg:text-center"
+        >
+          <CommonHeaderTooltip
+            :tooltip="$t('trade.funding_rate_tooltip')"
+            text-color-class="text-gray-400"
+          >
+            {{ $t('trade.est_funding_rate') }}
+          </CommonHeaderTooltip>
+          <span
+            v-if="!fundingRate.isNaN()"
+            class="mt-auto lg:text-right font-mono block"
+          >
+            <span
+              :class="{
+                'text-green-500': fundingRate.gte(0),
+                'text-red-500': fundingRate.lt(0)
+              }"
+              data-cy="market-info-funding-rate-span"
+            >
+              {{
+                (fundingRate.gt(0) ? '+' : '') +
+                fundingRate.toFormat(5, BigNumberInBase.ROUND_DOWN)
+              }}%
+            </span>
+          </span>
+          <span v-else class="mt-auto lg:text-right font-mono block">
+            &mdash;
+          </span>
+        </div>
+
+        <div
+          v-if="(market as UiDerivativeMarket)?.isPerpetual"
+          class="p-2 text-xs flex flex-col max-lg:text-center"
+        >
+          <CommonHeaderTooltip
+            :tooltip="$t('trade.next_funding_tooltip')"
+            text-color-class="text-gray-400"
+          >
+            {{ $t('trade.next_funding') }}
+          </CommonHeaderTooltip>
+          <p class="font-mono font-semibold lg:text-right mt-auto">
+            {{ countdown }}
+          </p>
+        </div>
       </div>
     </template>
   </CommonHeadlessMarketSummary>
-  <PartialsTradeStatsDerivative
-    v-if="market && market.type !== SharedMarketType.Spot"
-    class="hidden lg:flex"
-    v-bind="{ market: market as UiDerivativeMarket }"
-  />
 </template>

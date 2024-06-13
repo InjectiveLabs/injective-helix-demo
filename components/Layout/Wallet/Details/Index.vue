@@ -24,7 +24,7 @@ function disconnect() {
 
 <template>
   <div class="flex items-center min-h-[40.2px]">
-    <BaseHoverMenu
+    <SharedHoverMenu
       popper-class="min-w-[310px] sm:min-w-[356px]  shadow-dropdown rounded-md"
     >
       <template #default="{ toggle }">
@@ -98,7 +98,7 @@ function disconnect() {
           </div>
         </div>
       </template>
-    </BaseHoverMenu>
+    </SharedHoverMenu>
 
     <ModalsQRCode />
   </div>

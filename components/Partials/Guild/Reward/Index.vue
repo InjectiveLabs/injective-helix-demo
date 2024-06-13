@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { formatSecondsToDisplay } from '@/app/utils/formatters'
 import { GUILD_CAMPAIGN_END_DATE } from '@/app/utils/constants'
 
-const confetti = useConfetti()
+const confetti = useSharedConfetti()
 const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
 

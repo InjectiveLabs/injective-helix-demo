@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DropdownOptionWithToken } from '@/types'
+import { SharedDropdownOptionWithToken } from '@shared/types'
 
 const props = defineProps({
   isClearable: Boolean,
@@ -7,7 +7,7 @@ const props = defineProps({
   isDisabled: Boolean,
 
   options: {
-    type: Array as PropType<DropdownOptionWithToken[]>,
+    type: Array as PropType<SharedDropdownOptionWithToken[]>,
     default: () => []
   },
 
@@ -70,7 +70,7 @@ function handleClear() {
 </script>
 
 <template>
-  <BaseDropdown
+  <SharedDropdown
     class="w-full"
     :disabled="isDisabled"
     :delay="300"
@@ -155,7 +155,7 @@ function handleClear() {
         </div>
       </slot>
     </template>
-  </BaseDropdown>
+  </SharedDropdown>
 </template>
 
 <style>

@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import {
+  Msgs,
   MsgGrant,
   PrivateKey,
   getEthereumAddress,
   getInjectiveAddress,
   getDefaultSubaccountId,
   getGenericAuthorizationFromMessageType,
-  Msgs,
   msgsOrMsgExecMsgs
 } from '@injectivelabs/sdk-ts'
+import { GeneralException } from '@injectivelabs/exceptions'
 import { msgBroadcaster } from '@shared/WalletService'
 import { CosmosChainId, MsgType } from '@injectivelabs/ts-types'
 import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
@@ -22,13 +23,14 @@ import {
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
 import { GrantDirection } from '@/types/authZ'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 
 export interface AutoSign {
   privateKey: string
@@ -781,20 +783,9 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
-      const tradingMessages = [
-        MsgType.MsgCancelSpotOrder,
-        MsgType.MsgCreateSpotLimitOrder,
-        MsgType.MsgCancelDerivativeOrder,
-        MsgType.MsgCreateSpotMarketOrder,
-        MsgType.MsgBatchCancelSpotOrders,
-        MsgType.MsgCreateDerivativeLimitOrder,
-        MsgType.MsgCreateDerivativeMarketOrder,
-        MsgType.MsgBatchCancelDerivativeOrders
-      ]
-
       const expirationInSeconds = autoSign.duration || 3600
 
-      const authZMsgs = tradingMessages.map((messageType) =>
+      const authZMsgs = TRADING_MESSAGES.map((messageType) =>
         MsgGrant.fromJSON({
           grantee: autoSign.injectiveAddress,
           granter: walletStore.injectiveAddress,
@@ -823,29 +814,47 @@ export const useWalletStore = defineStore('wallet', {
       })
     },
 
-    async broadcastMessages(messages: Msgs[]) {
+    async broadcastMessages(messages: Msgs | Msgs[], memo?: string) {
       const walletStore = useWalletStore()
+      const msgs = Array.isArray(messages) ? messages : [messages]
+
+      if (!walletStore.isUserWalletConnected) {
+        return
+      }
 
       let actualMessage
 
-      if (walletStore.isAuthzWalletConnected) {
-        actualMessage = msgsOrMsgExecMsgs(
-          messages,
-          walletStore.injectiveAddress
+      if (walletStore.autoSign && walletStore.isAuthzWalletConnected) {
+        // error becase we don't support authz + auto-sign
+        throw new GeneralException(
+          new Error('Authz and auto-sign cannot be used together')
         )
-      } else if (walletStore.autoSign && walletStore.isAutoSignEnabled) {
+
+        // TODO: uncomment this when we support authz + auto-sign
+        // actualMessage = msgsOrMsgExecMsgs(
+        //   msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress),
+        //   walletStore.autoSign.injectiveAddress
+        // )
+      } else if (walletStore.autoSign && !walletStore.isAuthzWalletConnected) {
         actualMessage = msgsOrMsgExecMsgs(
-          messages,
+          msgs,
           walletStore.autoSign.injectiveAddress
         )
+      } else if (walletStore.isAuthzWalletConnected) {
+        actualMessage = msgsOrMsgExecMsgs(msgs, walletStore.injectiveAddress)
       } else {
-        actualMessage = messages
+        actualMessage = msgs
       }
 
-      await msgBroadcaster.broadcastWithFeeDelegation({
+      const response = await msgBroadcaster.broadcastWithFeeDelegation({
         msgs: actualMessage,
-        injectiveAddress: walletStore.injectiveAddress
+        injectiveAddress: walletStore.autoSign
+          ? walletStore.autoSign.injectiveAddress
+          : walletStore.injectiveAddress,
+        memo
       })
+
+      return response
     }
   }
 })

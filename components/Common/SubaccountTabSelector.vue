@@ -2,6 +2,13 @@
 const walletStore = useWalletStore()
 
 defineProps({
+  includeBotsSubaccounts: Boolean,
+
+  showLowBalance: {
+    type: Boolean,
+    default: true
+  },
+
   wrapperClass: {
     type: String,
     default: ''
@@ -12,7 +19,10 @@ defineProps({
 <template>
   <CommonSubaccountSelector
     v-if="walletStore.isUserWalletConnected"
-    show-low-balance
+    v-bind="{
+      showLowBalance,
+      includeBotsSubaccounts
+    }"
   >
     <template #default="{ isOpen, activeSubaccountLabel }">
       <button

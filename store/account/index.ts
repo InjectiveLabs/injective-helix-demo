@@ -17,12 +17,12 @@ import {
   withdrawToMain,
   externalTransfer
 } from '@/store/account/message'
-import { SubaccountBalance } from '@/types'
-import { isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
   subaccountId: string

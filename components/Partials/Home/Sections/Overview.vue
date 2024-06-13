@@ -57,7 +57,7 @@ const options = [
 
     <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-10">
       <div class="space-y-4">
-        <BaseSelectorItem
+        <SharedSelectorItem
           v-for="item in options"
           :key="`home-${item.type}`"
           v-model="activeType"
@@ -101,7 +101,7 @@ const options = [
               </p>
             </div>
           </div>
-        </BaseSelectorItem>
+        </SharedSelectorItem>
       </div>
 
       <div class="flex justify-center lg:ml-20">

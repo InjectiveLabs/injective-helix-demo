@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
+import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
 
@@ -20,6 +20,8 @@ const emit = defineEmits<{
 
 const { validate } = useForm<ClosePositionLimitForm>()
 
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()
@@ -39,11 +41,27 @@ const {
   effectiveLeverage
 } = useDerivativePosition(computed(() => props.position))
 
-const { success, error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
 const limitCloseStatus = reactive(new Status(StatusType.Idle))
+
+const isMarketOrderAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCreateDerivativeMarketOrder)
+})
+
+const isLimitOrderAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgCreateDerivativeLimitOrder)
+})
 
 const reduceOnlyCurrentOrders = computed(() =>
   derivativeStore.subaccountOrders.filter(
@@ -116,7 +134,7 @@ function closePositionClicked() {
   }
 
   if (pnl.value.isNaN()) {
-    return error({ title: t('trade.no_liquidity') })
+    return notificationStore.error({ title: t('trade.no_liquidity') })
   }
 
   if (hasReduceOnlyOrders.value) {
@@ -138,7 +156,9 @@ function closePosition() {
       position: props.position,
       market: market.value
     })
-    .then(() => success({ title: t('trade.position_closed') }))
+    .then(() =>
+      notificationStore.success({ title: t('trade.position_closed') })
+    )
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()
@@ -158,7 +178,9 @@ function closePositionAndReduceOnlyOrders() {
       position: props.position,
       reduceOnlyOrders: reduceOnlyCurrentOrders.value
     })
-    .then(() => success({ title: t('trade.position_closed') }))
+    .then(() =>
+      notificationStore.success({ title: t('trade.position_closed') })
+    )
     .catch($onError)
     .finally(() => {
       marketCloseStatus.setIdle()
@@ -185,7 +207,7 @@ async function closePositionLimit() {
           ? OrderSide.SellPO
           : OrderSide.BuyPO
     })
-    .then(() => success({ title: t('common.success') }))
+    .then(() => notificationStore.success({ title: t('common.success') }))
     .catch($onError)
     .finally(() => {
       limitCloseStatus.setIdle()
@@ -257,7 +279,7 @@ function addTpSl() {
       <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
         <span>{{ marginToString }}</span>
         <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-          <BaseIcon name="plus" is-xs />
+          <SharedIcon name="plus" is-xs />
         </button>
       </div>
 
@@ -274,13 +296,17 @@ function addTpSl() {
           class="p-2 rounded-full bg-blue-500 hover:bg-blue-600"
           @click="addTpSl"
         >
-          <BaseIcon name="plus" is-xs />
+          <SharedIcon name="plus" is-xs />
         </button>
       </div>
 
       <div class="flex-[3] flex items-center p-2 overflow-hidden space-x-2">
         <AppButton
-          v-bind="{ status: marketCloseStatus }"
+          v-bind="{
+            status: marketCloseStatus,
+            disabled: !isMarketOrderAuthorized,
+            tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
+          }"
           size="sm"
           variant="danger-ghost"
           class="min-w-20"
@@ -291,7 +317,9 @@ function addTpSl() {
 
         <AppButton
           v-bind="{
-            status: limitCloseStatus
+            status: limitCloseStatus,
+            disabled: !isLimitOrderAuthorized,
+            tooltip: isLimitOrderAuthorized ? '' : $t('common.unauthorized')
           }"
           class="min-w-20"
           size="sm"

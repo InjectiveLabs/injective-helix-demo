@@ -1,5 +1,4 @@
-import { Campaign } from '@injectivelabs/sdk-ts'
-import { TokenStatic } from '@injectivelabs/token-metadata'
+import { Campaign, TokenStatic } from '@injectivelabs/sdk-ts'
 
 export type Epoch = {
   epoch: number

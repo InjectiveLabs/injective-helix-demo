@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PortfolioSubPage } from '@/types'
+import { BusEvents, PortfolioSubPage } from '@/types'
 
 const walletStore = useWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
@@ -12,6 +14,14 @@ function connectAutoSign() {
 
   walletStore
     .connectAutoSign()
+    .then(() => {
+      useEventBus(BusEvents.AutoSignConnected).emit()
+
+      notificationStore.success({
+        title: t('portfolio.settings.autoSign.enabledToast.title'),
+        description: t('portfolio.settings.autoSign.enabledToast.description')
+      })
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -21,6 +31,11 @@ function disconnectAutoSign() {
 
   walletStore
     .disconnectAutoSign()
+    .then(() => {
+      notificationStore.success({
+        title: t('portfolio.settings.autoSign.disabledToast.title')
+      })
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -43,8 +58,13 @@ function disconnectAutoSign() {
         <p class="max-w-3xl text-sm mb-8">
           {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
+
+        <AppButton v-if="walletStore.isAuthzWalletConnected" :disabled="true">
+          {{ $t('common.notAvailableinAuthZMode') }}
+        </AppButton>
+
         <AppButton
-          v-if="!walletStore.isAutoSignEnabled"
+          v-else-if="!walletStore.isAutoSignEnabled"
           variant="success"
           :status="status"
           @click="connectAutoSign"

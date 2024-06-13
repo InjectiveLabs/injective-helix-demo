@@ -1,4 +1,4 @@
-import { TokenStatic } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const POLL_USD_PRICE_INTERVAL = 30 * 1000
 

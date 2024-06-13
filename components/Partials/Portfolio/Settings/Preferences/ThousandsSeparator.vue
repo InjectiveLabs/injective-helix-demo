@@ -17,6 +17,8 @@ const value = computed({
 <template>
   <div class="p-4 flex items-center space-x-4">
     <AppSwitch v-model="value" />
-    <p class="text-sm font-semibold">Thousands Separator</p>
+    <p class="text-sm font-semibold">
+      {{ $t('portfolio.settings.preferences.thousandsSeparator') }}
+    </p>
   </div>
 </template>

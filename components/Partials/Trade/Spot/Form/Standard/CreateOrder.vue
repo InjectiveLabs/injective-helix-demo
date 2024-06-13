@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { MsgType, OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
+  MarketKey,
   TradeTypes,
-  SpotMarketKey,
+  UiSpotMarket,
   SpotTradeForm,
   OrderAttemptStatus,
   SpotTradeFormField
@@ -24,12 +25,16 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const validate = useValidateForm()
+const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
+const validate = useValidateForm()
+const walletStore = useWalletStore()
 const resetForm = useResetForm<SpotTradeForm>()
-const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+
+const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -59,8 +64,6 @@ const orderTypeToSubmit = computed(() => {
   }
 })
 
-const market = inject(SpotMarketKey)
-
 const currentFormValues = computed(
   () =>
     ({
@@ -73,6 +76,22 @@ const currentFormValues = computed(
     }) as SpotTradeForm
 )
 
+const isLimitOrder = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  const msg = isLimitOrder.value
+    ? MsgType.MsgCreateSpotLimitOrder
+    : MsgType.MsgCreateSpotMarketOrder
+
+  return authZStore.hasAuthZPermission(msg)
+})
+
 const isDisabled = computed(() => {
   if (Object.keys(formErrors.value).length > 0) {
     return true
@@ -82,13 +101,17 @@ const isDisabled = computed(() => {
     return true
   }
 
+  if (!isAuthorized.value) {
+    return true
+  }
+
   if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
     return !spotFormValues.value[SpotTradeFormField.Price]
   }
 })
 
 function submitLimitOrder() {
-  if (!market?.value) {
+  if (!market || !market?.value) {
     return
   }
 
@@ -104,16 +127,16 @@ function submitLimitOrder() {
     .submitLimitOrder({
       quantity,
       price: limitPrice,
-      market: market?.value,
+      market: market.value,
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
         amount: quantity.toFixed(),
-        market: market.value?.slug as string,
+        market: market.value.slug as string,
         marketType: SharedMarketType.Spot,
         orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
         tradingType: TradeExecutionType.LimitFill,
@@ -157,12 +180,13 @@ function submitMarketOrder() {
   spotStore
     .submitMarketOrder({
       quantity,
-      orderSide: orderTypeToSubmit.value,
       market: market.value,
-      price: props.worstPrice
+      price: props.worstPrice,
+      orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('trade.order_placed') })
+
       resetForm({ values: currentFormValues.value })
 
       mixpanelAnalytics.trackPlaceOrderConfirm({
@@ -207,7 +231,7 @@ async function submitOrder() {
     return
   }
 
-  if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
+  if (isLimitOrder.value) {
     submitLimitOrder()
   } else {
     submitMarketOrder()
@@ -224,7 +248,11 @@ async function submitOrder() {
       v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >
-      {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      <span v-if="isAuthorized">
+        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      </span>
+
+      <span v-else>{{ $t('common.unauthorized') }}</span>
     </AppButton>
   </div>
 </template>

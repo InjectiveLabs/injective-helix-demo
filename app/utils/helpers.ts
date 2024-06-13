@@ -5,9 +5,9 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/token-metadata'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
@@ -295,7 +295,7 @@ export function calculateWorstPrice(
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
-      worstPrice = record.price
+      worstPrice = record.avgPrice
       price += remainingQuantity * Number(record.price)
 
       hasEnoughLiquidity = true
@@ -327,10 +327,10 @@ export function calculateTotalQuantity(
     if (remainingTotal - Number(record.volume) >= 0) {
       remainingTotal -= Number(record.volume)
       totalQuantity += Number(record.quantity)
-      worstPrice = record.price
+      worstPrice = record.avgPrice
     } else {
       totalQuantity += remainingTotal / Number(record.price)
-      worstPrice = record.price
+      worstPrice = record.avgPrice
       hasEnoughLiquidity = true
       break
     }
@@ -400,4 +400,26 @@ export const getDerivativeOrderTypeToSubmit = ({
     default:
       return OrderSide.Buy
   }
+}
+
+export function countZerosAfterDecimal(num: string) {
+  const parts = num.split('.')
+
+  if (parts.length < 2) {
+    return 0
+  }
+
+  const decimalPart = parts[1]
+
+  let zeroCount = 0
+
+  for (const char of decimalPart) {
+    if (char === '0') {
+      zeroCount++
+    } else {
+      break
+    }
+  }
+
+  return zeroCount
 }

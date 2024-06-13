@@ -73,10 +73,7 @@ export const createGuild = async ({
     }
   })
 
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: message,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await delayPromiseCall(
     () =>
@@ -113,10 +110,7 @@ export const joinGuild = async ({
     }
   })
 
-  await msgBroadcaster.broadcastWithFeeDelegation({
-    msgs: message,
-    injectiveAddress: walletStore.injectiveAddress
-  })
+  await walletStore.broadcastMessages(message)
 
   await delayPromiseCall(
     () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),

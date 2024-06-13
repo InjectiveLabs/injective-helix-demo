@@ -107,12 +107,14 @@ export const MENU_ITEMS: MenuItem[] = [
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [
-  // {
-  //   type: MenuItemType.Link,
-  //   label: 'navigation.portfolio',
-  //   to: { name: PortfolioSubPage.Balances },
-  //   icon: 'pie-chart'
-  // },
+  {
+    type: MenuItemType.Link,
+    label: 'navigation.portfolio',
+    to: { name: MainPage.Portfolio },
+    icon: 'pie-chart',
+    isExact: true,
+    name: MainPage.Portfolio
+  },
   {
     type: MenuItemType.Link,
     label: 'navigation.balances',
@@ -187,7 +189,8 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     label: 'navigation.settings',
     icon: 'gear-outline',
-    to: { name: PortfolioSubPage.Settings }
+    to: { name: PortfolioSubPage.Settings },
+    name: PortfolioSubPage.Settings
   }
 ]
 
@@ -222,5 +225,7 @@ export const getDepositMenuItem = (): MenuItem => ({
 export const PORTFOLIO_MENU_ITEM: MenuItem = {
   type: MenuItemType.Link,
   label: 'navigation.portfolio',
-  to: { name: PortfolioSubPage.Balances }
+  to: {
+    name: MainPage.Portfolio
+  }
 }

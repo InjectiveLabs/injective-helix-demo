@@ -3,7 +3,7 @@ import {
   TokenType,
   TokenStatic,
   TokenVerification
-} from '@injectivelabs/token-metadata'
+} from '@injectivelabs/sdk-ts'
 import { tokenCacheApi, tokenPriceService } from '@shared/Service'
 import tokens from '@/app/data/tokens.json'
 import { getToken } from '@/app/utils/helpers'
@@ -26,9 +26,14 @@ export const useTokenStore = defineStore('token', {
     tokenBySymbol:
       (_) =>
       (symbol: string): TokenStatic | undefined => {
-        return tokenFactoryStatic.getMetaBySymbol(symbol, {
-          type: TokenType.Symbol
-        })
+        return (
+          tokenFactoryStatic.getMetaBySymbol(symbol, {
+            type: TokenType.Symbol
+          }) ||
+          tokenFactoryStatic.getMetaBySymbol(symbol, {
+            verification: TokenVerification.Verified
+          })
+        )
       },
 
     tokenByDenomOrSymbol:

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { TokenType, TokenVerification } from '@injectivelabs/token-metadata'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
 const accountStore = useAccountStore()
@@ -22,35 +22,38 @@ const hasCw20Balance = computed(() => {
     return false
   }
 
-  return new BigNumberInWei(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
+  return new BigNumberInBase(accountStore.cw20BalancesMap[cw20Address] || 0).gt(
     0
   )
 })
 
-const { valueToString: availableAmountToString } = useBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.availableMargin).toBase(
-      props.balance.token.decimals
-    )
-  }),
+const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.availableMargin,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalanceInUsd,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
 const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.accountTotalBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -58,11 +61,12 @@ const {
   valueToString: reservedToString,
   valueToBigNumber: reservedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.inOrderBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.inOrderBalance,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -70,11 +74,12 @@ const {
   valueToString: unrealizedPnlToString,
   valueToBigNumber: unrealizedToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.unrealizedPnl).toBase(
-      props.balance.token.decimals
-    )
-  }),
+  computed(() =>
+    sharedToBalanceInTokenInBase({
+      value: props.balance.unrealizedPnl,
+      decimalPlaces: props.balance.token.decimals
+    })
+  ),
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
@@ -166,38 +171,56 @@ const isBridgable = computed(() => {
       </CommonSkeletonSubaccountAmount>
     </div>
 
+    <CommonHeadlessTotalBalance v-if="balance.denom === injToken.denom">
+      <template #default="{ stakedAmount, stakedAmountInUsd }">
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.staked') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmount.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+
+        <div
+          class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
+        >
+          <p>{{ $t('trade.stakedUsd') }}:</p>
+
+          <CommonSkeletonSubaccountAmount>
+            <span class="font-mono">{{
+              stakedAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
+            }}</span>
+          </CommonSkeletonSubaccountAmount>
+        </div>
+      </template>
+    </CommonHeadlessTotalBalance>
+
     <div
-      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2 [&>*]:flex-1 [&>*]:flex [&>*>*]:flex-1"
+      class="flex-[3] flex items-center font-mono text-xs space-x-2 shrink-0 max-lg:pt-2 px-2"
     >
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           isDeposit: true,
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary" size="sm">
           {{ $t('account.deposit') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
 
       <PartialsCommonBridgeRedirection
+        v-if="isBridgable"
         v-bind="{
           denom: balance.token.denom
         }"
       >
-        <AppButton
-          variant="primary-outline"
-          :class="{
-            invisible: !isBridgable
-          }"
-          size="sm"
-        >
+        <AppButton variant="primary-outline" size="sm">
           {{ $t('account.withdraw') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>

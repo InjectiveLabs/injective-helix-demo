@@ -1,27 +1,39 @@
 <script setup lang="ts">
+import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
-import { UiSpotMarket, SpotMarketKey } from '@/types'
+import { UiSpotMarket, MarketKey } from '@/types'
 
 const props = defineProps({
   isTickerOnly: Boolean
 })
 
-const spotMarket = inject(SpotMarketKey) as Ref<UiSpotMarket>
+const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
-const { success, error } = useNotifications()
+const authZStore = useAuthZStore()
+const walletStore = useWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const filteredOrders = computed(() =>
-  props.isTickerOnly
+  props.isTickerOnly && spotMarket?.value
     ? spotStore.subaccountOrders.filter(
         (order) => order.marketId === spotMarket.value.marketId
       )
     : spotStore.subaccountOrders
 )
+
+const isAuthorized = computed(() => {
+  if (!walletStore.isAuthzWalletConnected) {
+    return true
+  }
+
+  return authZStore.hasAuthZPermission(MsgType.MsgBatchCancelSpotOrders)
+})
 
 function cancelAllOrders() {
   status.setLoading()
@@ -29,14 +41,11 @@ function cancelAllOrders() {
   spotStore
     .batchCancelOrder(filteredOrders.value)
     .then(() =>
-      success({
+      notificationStore.success({
         title: t('common.success')
       })
     )
-    .catch((e) => {
-      $onError(e)
-      error({ title: t('common.error') })
-    })
+    .catch($onError)
     .finally(() => {
       status.setIdle()
 
@@ -50,9 +59,10 @@ function cancelAllOrders() {
 <template>
   <AppButton
     v-if="filteredOrders.length > 0"
-    v-bind="{ status }"
+    v-bind="{ status, tooltip: isAuthorized ? '' : $t('common.unauthorized') }"
     size="xs"
     variant="danger-ghost"
+    :disabled="!isAuthorized"
     @click="cancelAllOrders"
   >
     {{ $t('trade.cancelAllOrders') }}
