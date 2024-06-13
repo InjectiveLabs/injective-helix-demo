@@ -150,8 +150,6 @@ function priceMapToAggregatedArray({
 const buys = new Map<string, string>()
 const sells = new Map<string, string>()
 
-let isOrderbookFetched = false
-
 let preFetchBuyRecords: { sequence: number; records: PriceLevel[] }[] = []
 let preFetchSellRecords: { sequence: number; records: PriceLevel[] }[] = []
 
@@ -227,7 +225,8 @@ self.addEventListener(
         break
 
       case WorkerMessageType.Fetch:
-        isOrderbookFetched = true
+        buys.clear()
+        sells.clear()
 
         priceLevelsToMap({
           priceMap: buys,
@@ -284,18 +283,14 @@ self.addEventListener(
         break
 
       case WorkerMessageType.Stream:
-        if (!isOrderbookFetched) {
-          preFetchBuyRecords.push({
-            records: data.orderbook.buys,
-            sequence: data.sequence
-          })
-          preFetchSellRecords.push({
-            records: data.orderbook.sells,
-            sequence: data.sequence
-          })
-
-          break
-        }
+        preFetchBuyRecords.push({
+          records: data.orderbook.buys,
+          sequence: data.sequence
+        })
+        preFetchSellRecords.push({
+          records: data.orderbook.sells,
+          sequence: data.sequence
+        })
 
         priceLevelsToMap({
           priceMap: buys,
