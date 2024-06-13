@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 import { IsSpotKey, MarketKey, Modal } from '@/types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
@@ -39,7 +40,10 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    derivativeStore.fetchTrades({ marketId: market.value.marketId }),
+    derivativeStore.fetchTrades({
+      marketId: market.value.marketId,
+      executionSide: TradeExecutionSide.Taker
+    }),
     derivativeStore.getMarketMarkPrice(market.value)
   ])
     .catch($onError)

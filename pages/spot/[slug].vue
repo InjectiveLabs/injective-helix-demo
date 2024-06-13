@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
@@ -25,7 +26,12 @@ onMounted(() => {
 
   status.setLoading()
 
-  Promise.all([spotStore.fetchTrades({ marketId: market.value.marketId })])
+  Promise.all([
+    spotStore.fetchTrades({
+      marketId: market.value.marketId,
+      executionSide: TradeExecutionSide.Taker
+    })
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
