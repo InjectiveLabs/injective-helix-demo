@@ -230,4 +230,12 @@ export function useOrderbook(
 
     orderbookStore.$reset()
   })
+
+  useIntervalFn(() => {
+    if (isSpot) {
+      fetchSpotOrderbook()
+    } else {
+      fetchDerivativeOrderbook()
+    }
+  }, 10000)
 }
