@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const props = defineProps({
   noStyle: Boolean,
@@ -56,7 +57,7 @@ const { el, typed } = useIMask(
             mask: Number,
             thousandsSeparator: thousandsSeparator.value,
             radix: '.',
-            mapToRadix: ['.', ','],
+            mapToRadix: ['.'],
             scale: props.decimals,
             autofix: props.autofix,
             max: props.max,
@@ -82,6 +83,19 @@ const debounceOnBlur = useDebounceFn(
   (value: string) => emit('blur', value),
   500
 )
+
+function onPaste(e: ClipboardEvent) {
+  if (!e.clipboardData) {
+    return
+  }
+
+  e.preventDefault()
+
+  const text = e.clipboardData.getData('text/plain').replaceAll(',', '')
+  const value = new BigNumberInBase(text).toFixed(props.decimals)
+
+  typed.value = value
+}
 
 watch(
   () => props.modelValue,
@@ -129,6 +143,7 @@ onMounted(() => {
         v-bind="$attrs"
         :disabled="disabled"
         @blur="onBlur"
+        @paste="onPaste"
       />
 
       <div v-if="$slots.right" class="flex items-center">
