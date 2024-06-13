@@ -98,7 +98,8 @@ export function useOrderbook(
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals,
           orderbook: data,
-          aggregation: aggregation.value
+          aggregation: aggregation.value,
+          sequence: data.sequence
         }
       })
     })
@@ -125,7 +126,8 @@ export function useOrderbook(
             baseDecimals: market.value.baseToken.decimals,
             quoteDecimals: market.value.quoteToken.decimals,
             orderbook: data,
-            aggregation: aggregation.value
+            aggregation: aggregation.value,
+            sequence: data.sequence
           }
         })
       })
@@ -146,7 +148,8 @@ export function useOrderbook(
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals,
             orderbook: data.orderbook!,
-            aggregation: aggregation.value
+            aggregation: aggregation.value,
+            sequence: data.orderbook!.sequence
           }
         })
       }
@@ -171,7 +174,8 @@ export function useOrderbook(
               baseDecimals: market.baseToken.decimals,
               quoteDecimals: market.quoteToken.decimals,
               orderbook: data.orderbook!,
-              aggregation: aggregation.value
+              aggregation: aggregation.value,
+              sequence: data.orderbook!.sequence
             }
           })
         }

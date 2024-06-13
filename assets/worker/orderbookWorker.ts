@@ -150,6 +150,11 @@ function priceMapToAggregatedArray({
 const buys = new Map<string, string>()
 const sells = new Map<string, string>()
 
+let isOrderbookFetched = false
+
+let preFetchBuyRecords: { sequence: number; records: PriceLevel[] }[] = []
+let preFetchSellRecords: { sequence: number; records: PriceLevel[] }[] = []
+
 function aggregatePrice({
   price,
   aggregation,
@@ -222,6 +227,8 @@ self.addEventListener(
         break
 
       case WorkerMessageType.Fetch:
+        isOrderbookFetched = true
+
         priceLevelsToMap({
           priceMap: buys,
           priceLevels: data.orderbook.buys,
@@ -237,10 +244,59 @@ self.addEventListener(
           quoteDecimals: data.quoteDecimals
         })
 
+        if (preFetchBuyRecords.length) {
+          preFetchBuyRecords.forEach((item) => {
+            if (item.sequence < data.sequence) {
+              return
+            }
+
+            priceLevelsToMap({
+              priceMap: buys,
+              priceLevels: item.records,
+              baseDecimals: data.baseDecimals,
+              isSpot: data.isSpot,
+              quoteDecimals: data.quoteDecimals
+            })
+          })
+
+          preFetchBuyRecords = []
+        }
+
+        if (preFetchSellRecords.length) {
+          preFetchSellRecords.forEach((item) => {
+            if (item.sequence < data.sequence) {
+              return
+            }
+
+            priceLevelsToMap({
+              priceMap: sells,
+              priceLevels: item.records,
+              baseDecimals: data.baseDecimals,
+              isSpot: data.isSpot,
+              quoteDecimals: data.quoteDecimals
+            })
+          })
+
+          preFetchSellRecords = []
+        }
+
         sendReplaceOrderbook()
         break
 
       case WorkerMessageType.Stream:
+        if (!isOrderbookFetched) {
+          preFetchBuyRecords.push({
+            records: data.orderbook.buys,
+            sequence: data.sequence
+          })
+          preFetchSellRecords.push({
+            records: data.orderbook.sells,
+            sequence: data.sequence
+          })
+
+          break
+        }
+
         priceLevelsToMap({
           priceMap: buys,
           priceLevels: data.orderbook.buys,
