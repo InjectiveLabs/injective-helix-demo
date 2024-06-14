@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { colors } from '~/nuxt-config/tailwind'
+import { colors } from '@/nuxt-config/tailwind'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const HEIGHT = 550
 const MOBILE_HEIGHT = 450
@@ -82,14 +83,14 @@ function update() {
   let highestSellVolume = 0
 
   for (const record of props.buys) {
-    if (+record.price < lowerPrice) {
+    if (Number(record.price) < lowerPrice) {
       break
     }
     highestBuyVolume = +record.totalVolume
   }
 
   for (const record of props.sells) {
-    if (+record.price > upperPrice) {
+    if (Number(record.price) > upperPrice) {
       break
     }
     highestSellVolume = +record.totalVolume
@@ -105,7 +106,7 @@ function update() {
     ctx.strokeStyle = color
     ctx.beginPath()
     records.forEach((record, i) => {
-      const x = lerp(0, width, (+record.price - lowerPrice) / range)
+      const x = lerp(0, width, (Number(record.price) - lowerPrice) / range)
       const y = lerp(
         height,
         0,
@@ -133,15 +134,17 @@ function update() {
   drawLine([initialMiddlePriceRecord, ...props.sells], colors.red[500], ctx)
 
   // draw mouse position
-  ctx.strokeStyle = colors.brand[700]
-  ctx.lineWidth = 1
-  ctx.beginPath()
-  ctx.moveTo(mouse.x, 0)
-  ctx.lineTo(mouse.x, height)
-  ctx.stroke()
-  ctx.moveTo(width - mouse.x, 0)
-  ctx.lineTo(width - mouse.x, height)
-  ctx.stroke()
+  if (isTooltipShown) {
+    ctx.strokeStyle = colors.brand[700]
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(mouse.x, 0)
+    ctx.lineTo(mouse.x, height)
+    ctx.stroke()
+    ctx.moveTo(width - mouse.x, 0)
+    ctx.lineTo(width - mouse.x, height)
+    ctx.stroke()
+  }
 
   // price labels at bottom
   ctx.fillStyle = colors.gray[500]
@@ -168,11 +171,13 @@ function update() {
     mouse.x > 0.5 * width
       ? props.sells.find(
           (record) =>
-            +record.price >= lerp(lowerPrice, upperPrice, mouse.x / width)
+            Number(record.price) >=
+            lerp(lowerPrice, upperPrice, mouse.x / width)
         )?.totalVolume
       : props.buys.find(
           (record) =>
-            +record.price <= lerp(lowerPrice, upperPrice, mouse.x / width)
+            Number(record.price) <=
+            lerp(lowerPrice, upperPrice, mouse.x / width)
         )?.totalVolume
 
   updateTooltip({
@@ -225,11 +230,11 @@ function updateTooltip({ price, volume }: { price: number; volume: number }) {
     <div >Price:</div>
     <div class="text-white font-mono text-right">${new BigNumberInBase(
       price
-    ).toFormat(2)}</div>
+    ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}</div>
     <div>Volume:</div>
     <div class="text-white font-mono text-right">${new BigNumberInBase(
       volume
-    ).toFormat(2)}</div>
+    ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}</div>
   `
   tooltipEl.value!.innerHTML = innerHtml
 }
