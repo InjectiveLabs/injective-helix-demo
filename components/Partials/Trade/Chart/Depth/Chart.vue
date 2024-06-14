@@ -210,7 +210,11 @@ function update() {
   for (let i = 0; i <= nOfLabels; i++) {
     const x = (i / nOfLabels) * width
     const price = lerp(lowerPrice, upperPrice, i / nOfLabels)
-    ctx.fillText(price.toFixed(props.priceDecimals), x, height - 40)
+    ctx.fillText(
+      new BigNumberInBase(price).toFormat(props.priceDecimals),
+      x,
+      height - 40
+    )
   }
 
   ctx.strokeStyle = colors.gray[500]
