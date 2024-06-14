@@ -2,7 +2,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import { colors } from '@/nuxt-config/tailwind'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const HEIGHT = 550
 const MOBILE_HEIGHT = 450
@@ -19,6 +18,16 @@ const props = defineProps({
   sells: {
     type: Array as PropType<OrderbookFormattedRecord[]>,
     required: true
+  },
+
+  priceDecimals: {
+    type: Number as PropType<number>,
+    default: 2
+  },
+
+  symbol: {
+    type: String as PropType<string>,
+    default: ''
   }
 })
 
@@ -130,6 +139,50 @@ function update() {
     volume: '0'
   }
 
+  function drawAreaWithGradient(
+    records: OrderbookFormattedRecord[],
+    color: string,
+    ctx: CanvasRenderingContext2D,
+    isBuy: boolean
+  ) {
+    const gradient = ctx.createLinearGradient(0, 0, 0, height)
+    gradient.addColorStop(0, `${color}33`)
+    gradient.addColorStop(1, `${color}00`)
+
+    ctx.fillStyle = gradient
+    ctx.beginPath()
+    records.forEach((record, i) => {
+      const x = lerp(0, width, (Number(record.price) - lowerPrice) / range)
+      const y = lerp(
+        height,
+        0,
+        (+record.totalVolume / highestVolume) * 0.8 + 0.1
+      )
+      if (i === 0) {
+        ctx.moveTo(x, y)
+      } else {
+        ctx.lineTo(x, y)
+      }
+    })
+    ctx.lineTo(isBuy ? 0 : width, height)
+    ctx.lineTo(isBuy ? 0 : width, height * 0.9)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  drawAreaWithGradient(
+    [initialMiddlePriceRecord, ...props.buys],
+    colors.green[500],
+    ctx,
+    true
+  )
+  drawAreaWithGradient(
+    [initialMiddlePriceRecord, ...props.sells],
+    colors.red[500],
+    ctx,
+    false
+  )
+
   drawLine([initialMiddlePriceRecord, ...props.buys], colors.green[500], ctx)
   drawLine([initialMiddlePriceRecord, ...props.sells], colors.red[500], ctx)
 
@@ -157,7 +210,7 @@ function update() {
   for (let i = 0; i <= nOfLabels; i++) {
     const x = (i / nOfLabels) * width
     const price = lerp(lowerPrice, upperPrice, i / nOfLabels)
-    ctx.fillText(price.toFixed(2), x, height - 40)
+    ctx.fillText(price.toFixed(props.priceDecimals), x, height - 40)
   }
 
   ctx.strokeStyle = colors.gray[500]
@@ -173,16 +226,16 @@ function update() {
           (record) =>
             Number(record.price) >=
             lerp(lowerPrice, upperPrice, mouse.x / width)
-        )?.totalVolume
+        )
       : props.buys.find(
           (record) =>
             Number(record.price) <=
             lerp(lowerPrice, upperPrice, mouse.x / width)
-        )?.totalVolume
+        )
 
   updateTooltip({
-    price: lerp(lowerPrice, upperPrice, mouse.x / width),
-    volume: (volumeforPriceAtCursor && +volumeforPriceAtCursor) || 0
+    price: (volumeforPriceAtCursor && +volumeforPriceAtCursor.price) || 0,
+    volume: (volumeforPriceAtCursor && +volumeforPriceAtCursor.totalVolume) || 0
   })
 }
 
@@ -230,11 +283,11 @@ function updateTooltip({ price, volume }: { price: number; volume: number }) {
     <div >Price:</div>
     <div class="text-white font-mono text-right">${new BigNumberInBase(
       price
-    ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}</div>
+    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
     <div>Volume:</div>
     <div class="text-white font-mono text-right">${new BigNumberInBase(
       volume
-    ).toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)}</div>
+    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
   `
   tooltipEl.value!.innerHTML = innerHtml
 }
@@ -277,7 +330,7 @@ useResizeObserver(containerEl, update)
 
     <div
       ref="tooltipEl"
-      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-850/10 backdrop-blur-sm p-2 rounded-lg border-gray-700 border text-[11px] text-gray-500 gap-2 z-50"
+      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-900/60 backdrop-blur-sm p-2 rounded-lg border-gray-700 border text-[11px] text-gray-500 gap-2 z-50"
     ></div>
   </div>
 </template>

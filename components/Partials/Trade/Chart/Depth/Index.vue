@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { OrderbookStatusKey } from '~/types'
+import { MarketKey, OrderbookStatusKey } from '~/types'
 
 const orderbookStore = useOrderbookStore()
 const orderbookStatus = inject(OrderbookStatusKey)
+const market = inject(MarketKey)
 </script>
 
 <template>
@@ -11,7 +12,9 @@ const orderbookStatus = inject(OrderbookStatusKey)
       v-if="!orderbookStatus?.isLoading()"
       v-bind="{
         sells: orderbookStore.sells,
-        buys: orderbookStore.buys
+        buys: orderbookStore.buys,
+        priceDecimals: market?.priceDecimals,
+        symbol: market?.quoteToken.symbol
       }"
     />
   </div>
