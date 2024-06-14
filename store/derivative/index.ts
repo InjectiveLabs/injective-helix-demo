@@ -362,6 +362,9 @@ export const useDerivativeStore = defineStore('derivative', {
         executionSide
       })
 
+      // eslint-disable-next-line no-console
+      console.log({ trades })
+
       derivativeStore.$patch({
         trades
       })
