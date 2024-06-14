@@ -67,7 +67,6 @@ export enum Modal {
   CheckSpotGridAuth = 'check-spot-grid-auth',
   AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
-  LiquidationWarning = 'liquidation-warning',
   GridStrategyDetails = 'grid-strategy-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',

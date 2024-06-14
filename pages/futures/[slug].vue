@@ -52,10 +52,6 @@ onMounted(() => {
     modalStore.openModal(Modal.MarketRestricted)
   }
 
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
-  }
-
   streamDerivativeData()
 })
 
@@ -80,27 +76,6 @@ function cancelDerivativeStream() {
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
 }
-
-function fetchRWAMarketIsOpen() {
-  if (
-    !market.value ||
-    !isRWAMarket ||
-    !isActive.value ||
-    modalStore.modals[Modal.ClosedRWAMarket]
-  ) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(market.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-      }
-    })
-}
-
-const { pause, isActive } = useIntervalFn(fetchRWAMarketIsOpen, 10000)
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
@@ -140,9 +115,5 @@ provide(IsSpotKey, false)
     </PartialsTradeLayout>
 
     <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
-    <ModalsClosedRWAMarket
-      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
-      @terms:agreed="pause"
-    />
   </div>
 </template>

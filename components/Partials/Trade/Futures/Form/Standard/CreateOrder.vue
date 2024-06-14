@@ -9,10 +9,6 @@ import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
-import {
-  calculateLiquidationPrice,
-  calculateIfPositionIsLiquidatable
-} from '@/app/client/utils/derivatives'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import {
   Modal,
@@ -23,6 +19,19 @@ import {
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+
+const route = useRoute()
+const resetForm = useResetForm()
+const modalStore = useModalStore()
+const authZStore = useAuthZStore()
+const validate = useValidateForm()
+const formErrors = useFormErrors()
+const walletStore = useWalletStore()
+const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const props = defineProps({
   margin: {
@@ -56,22 +65,15 @@ const props = defineProps({
   }
 })
 
-const resetForm = useResetForm()
-const authZStore = useAuthZStore()
-const validate = useValidateForm()
-const formErrors = useFormErrors()
-const walletStore = useWalletStore()
-const derivativeStore = useDerivativeStore()
-const notificationStore = useSharedNotificationStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
+const isRWAMarket = slugsToIncludeInRWACategory.includes(
+  route.params.slug as string
+)
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { markPrice, marketMarkPrice } = useDerivativeLastPrice(
+const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
@@ -393,12 +395,8 @@ function submitStopMarketOrder() {
 }
 
 function onSubmit() {
-  const isImmediatelyLiquidatableRWAPosition =
-    slugsToIncludeInRWACategory.includes(derivativeMarket.value.slug) &&
-    checkIfMarketIsLiquidatable()
-
-  if (isImmediatelyLiquidatableRWAPosition) {
-    modalStore.openModal(Modal.LiquidationWarning)
+  if (isRWAMarket) {
+    fetchRWAMarketIsOpen()
 
     return
   }
@@ -425,25 +423,23 @@ async function submit() {
   }
 }
 
-function checkIfMarketIsLiquidatable() {
-  const liquidationPriceBasedOnMarkPrice = calculateLiquidationPrice({
-    price: marketMarkPrice.value,
-    quantity: props.quantity.toString(),
-    orderType: orderTypeToSubmit.value,
-    notionalWithLeverage: props.margin.toString(),
-    market: derivativeMarket.value
-  })
+function fetchRWAMarketIsOpen() {
+  if (!derivativeMarket.value) {
+    return
+  }
 
-  return calculateIfPositionIsLiquidatable({
-    isBuy: isBuy.value,
-    limitPrice: limitPrice.value,
-    triggerPrice: triggerPrice.value,
-    liquidationPrice: liquidationPriceBasedOnMarkPrice,
-    lastTradedPrice: new BigNumberInBase(props.worstPrice),
-    tradeType:
-      derivativeFormValues.value[DerivativesTradeFormField.Type] ||
-      DerivativeTradeTypes.Market
-  })
+  derivativeStore
+    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
+    .then((isMarketOpen) => {
+      if (!isMarketOpen) {
+        modalStore.openModal(Modal.ClosedRWAMarket)
+
+        return
+      }
+
+      submit()
+    })
+    .catch($onError)
 }
 </script>
 
@@ -467,6 +463,10 @@ function checkIfMarketIsLiquidatable() {
       </AppButton>
     </div>
 
-    <ModalsOrderConfirmLiquidationWarning @submit="submit" />
+    <ModalsClosedRWAMarket
+      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
+      v-bind="{ worstPrice: worstPrice.toString() }"
+      @terms:agreed="submit"
+    />
   </div>
 </template>
