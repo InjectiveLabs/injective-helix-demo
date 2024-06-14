@@ -200,7 +200,7 @@ function update() {
   }
 
   // price labels at bottom
-  ctx.fillStyle = colors.gray[500]
+  ctx.fillStyle = colors.gray[300]
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
@@ -219,6 +219,27 @@ function update() {
   ctx.moveTo(0, height * 0.9)
   ctx.lineTo(width, height * 0.9)
   ctx.stroke()
+
+  // draw y axis labels
+  ctx.fillStyle = colors.gray[500]
+  ctx.font = '12px sans-serif'
+  ctx.textAlign = 'right'
+  ctx.textBaseline = 'middle'
+
+  for (let i = 0; i <= 10; i++) {
+    if (i === 0) {
+      continue
+    }
+
+    const y = lerp(height * 0.9, height * 0.1, i / 10)
+
+    const volume = lerp(0, highestVolume, i / 10)
+    ctx.fillText(
+      new BigNumberInBase(volume).toFormat(props.priceDecimals),
+      width - 10,
+      y
+    )
+  }
 
   const volumeforPriceAtCursor =
     mouse.x > 0.5 * width
