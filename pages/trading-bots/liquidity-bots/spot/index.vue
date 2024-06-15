@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OrderState } from '@injectivelabs/ts-types'
+import { OrderState, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   getSgtContractAddressFromSlug,
@@ -65,7 +65,10 @@ function fetchData() {
     authZStore.fetchGrants(),
     spotStore.streamTrades(marketId),
     spotStore.fetchOrderbook(marketId),
-    spotStore.fetchTrades({ marketId }),
+    spotStore.fetchTrades({
+      marketId,
+      executionSide: TradeExecutionSide.Taker
+    }),
     spotStore.streamSubaccountOrders(marketId, subaccountId),
     spotStore.fetchOrdersBySubaccount({
       marketIds: [gridStrategyStore.spotMarket.marketId],
