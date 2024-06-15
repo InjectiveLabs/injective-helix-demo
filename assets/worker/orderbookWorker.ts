@@ -258,7 +258,9 @@ self.addEventListener(
             })
           })
 
-          preFetchBuyRecords = []
+          preFetchBuyRecords = preFetchBuyRecords.filter(
+            (record) => record.sequence >= data.sequence
+          )
         }
 
         if (preFetchSellRecords.length) {
@@ -276,7 +278,9 @@ self.addEventListener(
             })
           })
 
-          preFetchSellRecords = []
+          preFetchSellRecords = preFetchSellRecords.filter(
+            (record) => record.sequence >= data.sequence
+          )
         }
 
         sendReplaceOrderbook()
