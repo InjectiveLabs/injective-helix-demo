@@ -91,12 +91,6 @@ export const streamTrades = (marketId: string) => {
         return
       }
 
-      // eslint-disable-next-line no-console
-      console.log('streamed trade', {
-        trade,
-        executionSide: trade.executionSide
-      })
-
       switch (operation) {
         case StreamOperation.Insert:
           derivativeStore.$patch({

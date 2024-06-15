@@ -392,9 +392,6 @@ export const useSpotStore = defineStore('spot', {
         executionSide
       })
 
-      // eslint-disable-next-line no-console
-      console.log({ trades })
-
       spotStore.$patch({
         trades
       })
