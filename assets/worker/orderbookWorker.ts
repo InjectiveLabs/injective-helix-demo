@@ -5,11 +5,11 @@ import {
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
 import {
-  OrderbookFormattedRecord,
-  OrderbookWorkerMessage,
+  WorkerMessageType,
   OrderbookWorkerResult,
-  WorkerMessageResponseType,
-  WorkerMessageType
+  OrderbookWorkerMessage,
+  OrderbookFormattedRecord,
+  WorkerMessageResponseType
 } from '@/types/worker'
 
 function priceLevelsToMap({
@@ -62,22 +62,23 @@ function priceMapToAggregatedArray({
   >()
 
   priceMap.forEach((quantity, price) => {
+    const priceInBigNumber = new BigNumberInBase(price)
     const aggregatedPrice = aggregatePrice({
-      price: new BigNumberInBase(price),
+      isBuy,
       aggregation,
-      isBuy
+      price: priceInBigNumber
     })
 
     if (!aggregatedMap.has(aggregatedPrice)) {
       aggregatedMap.set(aggregatedPrice, {
-        priceSum: [Number(price)],
+        priceSum: [priceInBigNumber.toNumber()],
         totalQuantity: quantity
       })
     } else {
       const { priceSum, totalQuantity } = aggregatedMap.get(aggregatedPrice)!
 
       aggregatedMap.set(aggregatedPrice, {
-        priceSum: [...priceSum, Number(price)],
+        priceSum: [...priceSum, priceInBigNumber.toNumber()],
         totalQuantity: new BigNumberInBase(totalQuantity)
           .plus(quantity)
           .toFixed()
