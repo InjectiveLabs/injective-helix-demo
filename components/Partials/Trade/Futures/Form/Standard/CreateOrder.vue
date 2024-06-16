@@ -9,14 +9,29 @@ import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
+import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import {
+  Modal,
   MarketKey,
+  OrderAttemptStatus,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  OrderAttemptStatus
+  DerivativesTradeFormField
 } from '@/types'
+
+const route = useRoute()
+const resetForm = useResetForm()
+const modalStore = useModalStore()
+const authZStore = useAuthZStore()
+const validate = useValidateForm()
+const formErrors = useFormErrors()
+const walletStore = useWalletStore()
+const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const props = defineProps({
   margin: {
@@ -50,16 +65,9 @@ const props = defineProps({
   }
 })
 
-const resetForm = useResetForm()
-const authZStore = useAuthZStore()
-const validate = useValidateForm()
-const formErrors = useFormErrors()
-const walletStore = useWalletStore()
-const derivativeStore = useDerivativeStore()
-const notificationStore = useSharedNotificationStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
+const isRWAMarket = slugsToIncludeInRWACategory.includes(
+  route.params.slug as string
+)
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -130,8 +138,8 @@ const currentFormValues = computed(
     }) as DerivativesTradeForm
 )
 
-const orderTypeToSubmit = computed(() => {
-  return getDerivativeOrderTypeToSubmit({
+const orderTypeToSubmit = computed(() =>
+  getDerivativeOrderTypeToSubmit({
     isStopOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
@@ -146,7 +154,7 @@ const orderTypeToSubmit = computed(() => {
     markPrice: markPrice.value,
     triggerPrice: triggerPrice.value.toFixed()
   })
-})
+)
 
 const stopLossValue = computed(() =>
   derivativeFormValues.value[DerivativesTradeFormField.isTpSlEnabled]
@@ -200,13 +208,7 @@ const isDisabled = computed(() => {
   }
 })
 
-async function submitLimitOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitLimitOrder() {
   status.setLoading()
 
   derivativeStore
@@ -249,13 +251,7 @@ async function submitLimitOrder() {
     })
 }
 
-async function submitStopLimitOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitStopLimitOrder() {
   if (!triggerPrice.value) {
     return
   }
@@ -304,13 +300,7 @@ async function submitStopLimitOrder() {
     })
 }
 
-async function submitMarketOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitMarketOrder() {
   status.setLoading()
 
   derivativeStore
@@ -355,13 +345,7 @@ async function submitMarketOrder() {
     })
 }
 
-async function submitStopMarketOrder() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
+function submitStopMarketOrder() {
   if (!triggerPrice.value) {
     return
   }
@@ -411,6 +395,22 @@ async function submitStopMarketOrder() {
 }
 
 function onSubmit() {
+  if (isRWAMarket) {
+    fetchRWAMarketIsOpen()
+
+    return
+  }
+
+  submit()
+}
+
+async function submit() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
   switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
     case DerivativeTradeTypes.Limit:
       return submitLimitOrder()
@@ -421,6 +421,25 @@ function onSubmit() {
     case DerivativeTradeTypes.StopMarket:
       submitStopMarketOrder()
   }
+}
+
+function fetchRWAMarketIsOpen() {
+  if (!derivativeMarket.value) {
+    return
+  }
+
+  derivativeStore
+    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
+    .then((isMarketOpen) => {
+      if (!isMarketOpen) {
+        modalStore.openModal(Modal.ClosedRWAMarket)
+
+        return
+      }
+
+      submit()
+    })
+    .catch($onError)
 }
 </script>
 
@@ -443,5 +462,11 @@ function onSubmit() {
         <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
+
+    <ModalsClosedRWAMarket
+      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
+      v-bind="{ worstPrice: worstPrice.toString() }"
+      @terms:agreed="submit"
+    />
   </div>
 </template>

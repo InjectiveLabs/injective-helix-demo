@@ -40,6 +40,8 @@ export default {
     trigger_price: 'Trigger Price',
     limit_price: 'Limit Price',
     limitPrice: 'Limit Price',
+    triggerPrice: 'Trigger Price',
+    priceDeviation: 'Price Deviation',
     orderStatus: 'Order Status',
     amount: 'Amount',
     tickerOnly: '{ticker} only',
@@ -56,6 +58,7 @@ export default {
     total: 'Total',
     entryPrice: 'Entry Price',
     markPrice: 'Mark Price',
+    previousMarkPrice: 'Previous Mark Price',
     direction: 'Direction',
     reduceOnly: 'Reduce Only',
     total_tooltip:
@@ -443,7 +446,7 @@ export default {
 
     rwa: {
       warning: 'Warning',
-      acknowledge: 'Acknowledge and accept',
+      acknowledge: 'I understand, I accept the risk, and I wish to proceed',
       marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
           'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
@@ -460,6 +463,13 @@ export default {
       marketClosedTimes: ' traditional RWA price feeds',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
       marketIsClosed: 'This market is currently closed.'
+    },
+
+    liquidationModal: {
+      title: 'Warning',
+      description:
+        'Opening a new position in these conditions could result in immediate liquidation. Are you sure you wish to proceed?',
+      cta: 'Proceed anyway'
     }
   }
 }
