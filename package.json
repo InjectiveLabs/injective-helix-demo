@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@funken-studio/sitemap-nuxt-3": "^4.0.4",
-    "@injectivelabs/ts-types": "1.14.11-beta.4",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sitemap": "^2.4.0",
@@ -114,6 +113,7 @@
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
-    "vee-validate": "4.11.7"
+    "vee-validate": "4.11.7",
+    "@injectivelabs/sdk-ts": "1.14.12-beta.7"
   }
 }
