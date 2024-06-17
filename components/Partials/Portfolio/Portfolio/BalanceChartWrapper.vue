@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+
+const props = defineProps({
+  accountTotalBalanceInUsd: {
+    type: Object as PropType<BigNumberInBase>,
+    required: true
+  }
+})
 
 const isMobile = useIsMobile()
 const appStore = useAppStore()
@@ -21,23 +28,18 @@ const balanceSeries = computed(() =>
   leaderboardStore.historicalBalance.map((item) => [item.time, item.value])
 )
 
-const { valueToBigNumber: balanceToBigNumber } = useSharedBigNumberFormatter(
-  computed(() => {
-    const lastValue = balanceSeries.value[balanceSeries.value.length - 1]
-
-    return lastValue ? lastValue[1] : 0
-  })
-)
-
 const percentageChange = computed(() => {
-  const lastValue = balanceSeries.value[balanceSeries.value.length - 1]
-  const firstValue = balanceSeries.value[0]
+  const oldBalance = balanceSeries.value[0]
 
-  if (!lastValue || !firstValue) {
+  if (!oldBalance) {
     return 0
   }
 
-  return ((lastValue[1] - firstValue[1]) / firstValue[1]) * 100
+  return props.accountTotalBalanceInUsd
+    .minus(oldBalance[1])
+    .dividedBy(oldBalance[1])
+    .times(100)
+    .toNumber()
 })
 
 const isProfit = computed(() => {
@@ -59,7 +61,9 @@ const isProfit = computed(() => {
               <span class="lg:text-2xl">$</span>
               <CommonSkeletonSubaccountAmount>
                 <CommonNumberCounter
-                  v-bind="{ value: balanceToBigNumber?.toNumber() || 0 }"
+                  v-bind="{
+                    value: accountTotalBalanceInUsd.toNumber() || 0
+                  }"
                   :size="isMobile ? 16 : 24"
                 />
               </CommonSkeletonSubaccountAmount>

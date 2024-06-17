@@ -5,7 +5,13 @@
     <h1 class="portfolio-title">{{ $t('navigation.portfolio') }}</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-      <PartialsPortfolioPortfolioBalanceChartWrapper />
+      <CommonHeadlessTotalBalance>
+        <template #default="{ accountTotalBalanceInUsd }">
+          <PartialsPortfolioPortfolioBalanceChartWrapper
+            v-bind="{ accountTotalBalanceInUsd }"
+          />
+        </template>
+      </CommonHeadlessTotalBalance>
       <PartialsPortfolioPortfolioPnLChartWrapper />
 
       <PartialsPortfolioPortfolioTradingVolumeChartWrapper />
