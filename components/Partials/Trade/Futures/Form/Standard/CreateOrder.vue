@@ -172,12 +172,32 @@ const takeProfitValue = computed(() =>
     : undefined
 )
 
+const filteredFormErrors = computed(() => {
+  const isLimitOrStopLimit = [
+    DerivativeTradeTypes.Limit,
+    DerivativeTradeTypes.StopLimit
+  ].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+
+  return Object.keys(formErrors.value).filter(
+    (key) =>
+      !isLimitOrStopLimit ||
+      (key === DerivativesTradeFormField.LimitPrice &&
+        !derivativeFormValues.value[
+          DerivativesTradeFormField.BypassPriceWarning
+        ])
+  )
+})
+
 const isDisabled = computed(() => {
   const tradeType = derivativeFormValues.value[
     DerivativesTradeFormField.Type
   ] as DerivativeTradeTypes
 
-  if (Object.keys(formErrors.value).length > 0) {
+  if (filteredFormErrors.value.length > 0) {
     return true
   }
 
