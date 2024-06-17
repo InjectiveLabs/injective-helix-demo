@@ -4,11 +4,12 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { MsgType, OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
+  BusEvents,
   MarketKey,
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
-  OrderAttemptStatus,
+  ChartViewOption,
   SpotTradeFormField
 } from '@/types'
 
@@ -36,6 +37,7 @@ const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
+const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
 
 const spotFormValues = useFormValues<SpotTradeForm>()
@@ -119,17 +121,20 @@ const isDisabled = computed(() => {
   }
 })
 
-function submitLimitOrder() {
-  if (!market || !market?.value) {
-    return
-  }
+onMounted(() => {
+  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
+    chartType.value = chart
+  })
+})
 
+function submitLimitOrder() {
   status.setLoading()
 
   const limitPrice = new BigNumberInBase(
     spotFormValues.value[SpotTradeFormField.Price] || 0
   )
 
+  let err: Error
   const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
@@ -142,48 +147,42 @@ function submitLimitOrder() {
     .then(() => {
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
-
-      mixpanelAnalytics.trackPlaceOrderConfirm({
-        amount: quantity.toFixed(),
-        market: market.value.slug as string,
-        marketType: SharedMarketType.Spot,
-        orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
-        tradingType: TradeExecutionType.LimitFill,
-        limitPrice: limitPrice.toFixed(),
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        status: OrderAttemptStatus.Success
-      })
     })
     .catch((e) => {
-      mixpanelAnalytics.trackPlaceOrderAttempt({
-        amount: quantity.toFixed(),
-        market: market.value?.slug as string,
-        marketType: SharedMarketType.Spot,
-        tradingType: TradeExecutionType.LimitFill,
-        limitPrice: limitPrice.toFixed(),
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        leverage: '',
-        triggerPrice: '',
-        orderType: spotFormValues.value[SpotTradeFormField.Side] as OrderSide
-      })
+      err = e
       $onError(e)
     })
     .finally(() => {
+      const mixPanelProps = {
+        amount: quantity.toFixed(),
+        market: market.value.slug,
+        marketType: SharedMarketType.Spot,
+        orderSide: orderTypeToSubmit.value,
+        tradingType: TradeExecutionType.LimitFill,
+        limitPrice: limitPrice.toFixed(),
+        triggerPrice: '',
+        leverage: '',
+        slippageTolerance:
+          spotFormValues.value[SpotTradeFormField.Slippage] || '',
+        postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
+        chartType: chartType.value
+      }
+
+      mixpanelAnalytics.trackCreateOrder(
+        {
+          ...mixPanelProps
+        },
+        err?.message
+      )
+
       status.setIdle()
     })
 }
 
 function submitMarketOrder() {
-  if (!market?.value) {
-    return
-  }
-
   status.setLoading()
 
+  let err: Error
   const quantity = new BigNumberInBase(props.quantity)
 
   spotStore
@@ -195,40 +194,36 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('trade.order_placed') })
-
       resetForm({ values: currentFormValues.value })
-
-      mixpanelAnalytics.trackPlaceOrderConfirm({
+    })
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
+    .finally(() => {
+      const mixPanelProps = {
         amount: quantity.toFixed(),
-        market: market.value?.slug as string,
+        market: market.value.slug,
         marketType: SharedMarketType.Spot,
+        orderType: spotFormValues.value[SpotTradeFormField.Type],
         orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
         tradingType: TradeExecutionType.Market,
         limitPrice: '',
         slippageTolerance:
           spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        status: OrderAttemptStatus.Success
-      })
-    })
-    .catch((e) => {
-      mixpanelAnalytics.trackPlaceOrderAttempt({
-        amount: quantity.toFixed(),
-        market: market.value?.slug as string,
-        marketType: SharedMarketType.Spot,
-        tradingType: TradeExecutionType.Market,
-        limitPrice: '',
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        leverage: '',
-        triggerPrice: '',
-        orderType: spotFormValues.value[SpotTradeFormField.Side] as OrderSide
-      })
+        postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
+        chartType: chartType.value
+      }
 
-      $onError(e)
-    })
-    .finally(() => {
+      mixpanelAnalytics.trackCreateOrder(
+        {
+          ...mixPanelProps,
+          leverage: '',
+          triggerPrice: ''
+        },
+        err?.message
+      )
+
       status.setIdle()
     })
 }

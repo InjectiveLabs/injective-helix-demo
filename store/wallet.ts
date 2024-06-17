@@ -147,6 +147,12 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
+      if (walletStore.isUserWalletConnected) {
+        mixpanelAnalytics.trackWalletAddress({
+          injectiveAddress: walletStore.injectiveAddress
+        })
+      }
+
       await connect({
         wallet: walletStore.autoSign?.privateKey
           ? Wallet.PrivateKey
@@ -209,7 +215,10 @@ export const useWalletStore = defineStore('wallet', {
       mixpanelAnalytics.trackLogin({
         injectiveAddress: walletStore.injectiveAddress,
         wallet: walletStore.wallet,
-        tierLevel: exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
+        tierLevel:
+          exchangeStore.feeDiscountAccountInfo?.tierLevel ||
+          exchangeStore.feeDiscountAccountInfo?.tierLevel ||
+          0
       })
     },
 

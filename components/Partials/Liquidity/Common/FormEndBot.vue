@@ -52,6 +52,8 @@ function removeStrategy() {
 
   status.setLoading()
 
+  let err: Error
+
   gridStrategyStore
     .removeStrategyForSubaccount(
       activeStrategy.value.contractAddress,
@@ -65,16 +67,22 @@ function removeStrategy() {
         description: t('sgt.strategyRemoved')
       })
     })
-    .catch($onError)
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
     .finally(() => {
       status.setIdle()
 
-      mixpanelAnalytics.trackRemoveStrategy({
-        duration: durationFormatter(props.strategy.createdAt, Date.now()),
-        market: market.value.slug,
-        totalProfit: pnl.value.toFormat(),
-        isLiquidity: true
-      })
+      mixpanelAnalytics.trackRemoveStrategy(
+        {
+          duration: durationFormatter(props.strategy.createdAt, Date.now()),
+          market: market.value.slug,
+          pnl: pnl.value.toFixed(),
+          isLiquidity: true
+        },
+        err?.message
+      )
     })
 }
 </script>

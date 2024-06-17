@@ -184,7 +184,6 @@ export const useAppStore = defineStore('app', {
 
     async validateGeoIp() {
       const appStore = useAppStore()
-      const walletStore = useWalletStore()
 
       if (!GEO_IP_RESTRICTIONS_ENABLED) {
         return
@@ -248,8 +247,7 @@ export const useAppStore = defineStore('app', {
         }
       })
 
-      mixpanelAnalytics.trackWalletSelected({
-        wallet: walletStore.wallet,
+      mixpanelAnalytics.trackBrowserLocation({
         userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
         userCountryFromVpnApi: appStore.userState.geoLocation.country
       })

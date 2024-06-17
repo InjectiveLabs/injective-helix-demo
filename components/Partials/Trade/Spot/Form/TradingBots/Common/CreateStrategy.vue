@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   MarketKey,
@@ -10,14 +11,15 @@ import {
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
+const spotStore = useSpotStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
 const walletStore = useWalletStore()
 const gridStrategyStore = useGridStrategyStore()
-const spotFormValues = useFormValues<SpotGridTradingForm>()
-const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
+const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -45,20 +47,36 @@ async function createStrategy() {
 
   status.setLoading()
 
+  let err: Error
+
   gridStrategyStore
     .createStrategy(spotFormValues.value, market.value)
     .then(() => {
       notificationStore.success({ title: t('common.success') })
+    })
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
+    .finally(async () => {
+      const lastTrade = await spotStore.fetchLastTrade({
+        marketId: market.value.marketId
+      })
+
+      const lastTradedPrice = sharedToBalanceInTokenInBase({
+        value: lastTrade.price,
+        decimalPlaces:
+          market.value.quoteToken.decimals - market.value.baseToken.decimals
+      })
 
       mixpanelAnalytics.trackCreateStrategy({
+        error: err?.message,
         formValues: spotFormValues.value,
         market: market.value.slug || '',
-        marketPrice: '4',
+        marketPrice: lastTradedPrice.toFixed(market.value.priceDecimals),
         isLiquidity: false
       })
-    })
-    .catch($onError)
-    .finally(() => {
+
       status.setIdle()
     })
 }
