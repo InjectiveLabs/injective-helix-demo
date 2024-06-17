@@ -39,6 +39,19 @@ function toggle() {
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsReduceOnly />
 
+        <PartialsTradeFuturesFormStandardAdvancedSettingsBypassWarning
+          v-if="
+            [
+              DerivativeTradeTypes.Limit,
+              DerivativeTradeTypes.StopLimit
+            ].includes(
+              derivativeFormValues[
+                DerivativesTradeFormField.Type
+              ] as DerivativeTradeTypes
+            )
+          "
+        />
+
         <PartialsTradeFuturesFormStandardAdvancedSettingsSlippage
           v-if="
             [

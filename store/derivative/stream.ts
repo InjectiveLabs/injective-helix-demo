@@ -1,4 +1,9 @@
-import { OrderState, OrderSide, StreamOperation } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  OrderState,
+  StreamOperation,
+  TradeExecutionSide
+} from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamsTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -82,7 +87,7 @@ export const streamTrades = (marketId: string) => {
   grpcStreamsTrades({
     marketId,
     callback: ({ trade, operation }) => {
-      if (!trade) {
+      if (!trade || trade.executionSide !== TradeExecutionSide.Taker) {
         return
       }
 

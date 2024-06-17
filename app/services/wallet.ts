@@ -49,18 +49,22 @@ export const getAddresses = async (): Promise<string[]> => {
   }
 
   if (GEO_IP_RESTRICTIONS_ENABLED) {
-    const [address] = addresses
-    const addressIsBlackListed =
-      blacklistedAddresses.find(
-        (blacklistedAddress) =>
-          blacklistedAddress.toLowerCase() === address.toLowerCase()
-      ) !== undefined
+    const someAddressInWalletIsBlackListed = addresses.some(
+      (address) =>
+        blacklistedAddresses.find(
+          (blacklistedAddress) =>
+            blacklistedAddress.toLowerCase() === address.toLowerCase()
+        ) !== undefined
+    )
 
-    if (addressIsBlackListed) {
-      throw new WalletException(new Error('This addresses is restricted.'), {
-        code: UnspecifiedErrorCode,
-        type: ErrorType.WalletError
-      })
+    if (someAddressInWalletIsBlackListed) {
+      throw new WalletException(
+        new Error('This wallet addresses are restricted.'),
+        {
+          code: UnspecifiedErrorCode,
+          type: ErrorType.WalletError
+        }
+      )
     }
   }
 

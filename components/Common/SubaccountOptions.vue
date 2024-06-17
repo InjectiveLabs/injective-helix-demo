@@ -62,7 +62,7 @@ const subaccountOptionsFiltered = computed(() =>
     const includeBotsSubaccounts =
       props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
 
-    const hasBalance = aggregatedPortfolioBalances.value[subaccountId].some(
+    const hasBalance = aggregatedPortfolioBalances.value[subaccountId]?.some(
       (balance) =>
         new BigNumberInBase(balance.accountTotalBalance).gte(
           DUST_AMOUNT_THRESHOLD

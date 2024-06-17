@@ -1,15 +1,14 @@
 import { head, hooks } from './nuxt-config'
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 
 export default defineNuxtConfig({
   hooks,
   ssr: false,
   builder: 'vite',
-  debug: !isProduction,
   css: ['@/assets/css/tailwind.css'],
   extends: [
-    process.env.NODE_ENV === 'development'
+    isLocalLayer
       ? '../injective-ui/layer'
       : 'github:InjectiveLabs/injective-ui/layer#master'
   ],

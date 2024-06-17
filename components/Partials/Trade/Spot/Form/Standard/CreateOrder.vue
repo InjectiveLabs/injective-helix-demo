@@ -92,8 +92,17 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(msg)
 })
 
+const filteredFormErrors = computed(() =>
+  Object.keys(formErrors.value).filter(
+    (key) =>
+      spotFormValues.value[SpotTradeFormField.Type] !== TradeTypes.Limit ||
+      (key === SpotTradeFormField.Price &&
+        !spotFormValues.value[SpotTradeFormField.BypassPriceWarning])
+  )
+)
+
 const isDisabled = computed(() => {
-  if (Object.keys(formErrors.value).length > 0) {
+  if (filteredFormErrors.value.length > 0) {
     return true
   }
 

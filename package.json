@@ -11,6 +11,7 @@
   "scripts": {
     "fetch:data": "ts-node -P tsconfig-script.json ./scripts/slugs.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/wallets.ts",
     "dev": "nuxi dev",
+    "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
     "start": "nuxi start",
     "generate": "nuxt generate",
@@ -54,7 +55,7 @@
     "lightweight-charts": "^4.1.1",
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
-    "nuxt": "^3.11.2",
+    "nuxt": "3.11.2",
     "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
     "vue-jest": "^4.0.0-0"
   },
