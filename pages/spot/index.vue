@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { MarketKey, IsSpotKey } from '@/types'
 
 // permissionless spot market
@@ -28,7 +29,10 @@ onMounted(() => {
   status.setLoading()
 
   spotStore
-    .fetchTrades({ marketId: market.value.marketId })
+    .fetchTrades({
+      marketId: market.value.marketId,
+      executionSide: TradeExecutionSide.Taker
+    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

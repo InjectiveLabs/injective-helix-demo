@@ -530,10 +530,11 @@ export enum SpotTradeFormField {
   Side = 'side',
   Price = 'price',
   Amount = 'amount',
-  AmountOption = 'amountOption',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
-  IsSlippageOn = 'isSlippageOn'
+  AmountOption = 'amountOption',
+  IsSlippageOn = 'isSlippageOn',
+  BypassPriceWarning = 'bypassPriceWarning'
 }
 
 export enum TradeAmountOption {
@@ -545,17 +546,18 @@ export enum DerivativesTradeFormField {
   Type = 'type',
   Side = 'side',
   Amount = 'amount',
-  AmountOption = 'amountOption',
   Leverage = 'leverage',
   PostOnly = 'postOnly',
   Slippage = 'slippage',
+  StopLoss = 'stopLoss',
   LimitPrice = 'limitPrice',
   ReduceOnly = 'reduceOnly',
+  TakeProfit = 'takeProfit',
+  AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
   IsSlippageOn = 'isSlippageOn',
   isTpSlEnabled = 'isTpSlEnabled',
-  TakeProfit = 'takeProfit',
-  StopLoss = 'stopLoss'
+  BypassPriceWarning = 'bypassPriceWarning'
 }
 
 export enum LiquidityProvisionType {

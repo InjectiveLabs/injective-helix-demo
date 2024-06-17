@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
 import { Modal, IsSpotKey, MarketKey } from '@/types'
@@ -35,7 +36,10 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    derivativeStore.fetchTrades({ marketId: market.value.marketId }),
+    derivativeStore.fetchTrades({
+      marketId: market.value.marketId,
+      executionSide: TradeExecutionSide.Taker
+    }),
     derivativeStore.getMarketMarkPrice(market.value)
   ])
     .catch($onError)
@@ -50,10 +54,6 @@ onMounted(() => {
     )
   ) {
     modalStore.openModal(Modal.MarketRestricted)
-  }
-
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
   }
 
   streamDerivativeData()
@@ -80,27 +80,6 @@ function cancelDerivativeStream() {
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
 }
-
-function fetchRWAMarketIsOpen() {
-  if (
-    !market.value ||
-    !isRWAMarket ||
-    !isActive.value ||
-    modalStore.modals[Modal.ClosedRWAMarket]
-  ) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(market.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-      }
-    })
-}
-
-const { pause, isActive } = useIntervalFn(fetchRWAMarketIsOpen, 10000)
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
@@ -140,9 +119,5 @@ provide(IsSpotKey, false)
     </PartialsTradeLayout>
 
     <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
-    <ModalsClosedRWAMarket
-      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
-      @terms:agreed="pause"
-    />
   </div>
 </template>

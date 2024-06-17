@@ -5,11 +5,11 @@ import {
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
 import {
-  OrderbookFormattedRecord,
-  OrderbookWorkerMessage,
+  WorkerMessageType,
   OrderbookWorkerResult,
-  WorkerMessageResponseType,
-  WorkerMessageType
+  OrderbookWorkerMessage,
+  OrderbookFormattedRecord,
+  WorkerMessageResponseType
 } from '@/types/worker'
 
 function priceLevelsToMap({
@@ -62,22 +62,23 @@ function priceMapToAggregatedArray({
   >()
 
   priceMap.forEach((quantity, price) => {
+    const priceInBigNumber = new BigNumberInBase(price)
     const aggregatedPrice = aggregatePrice({
-      price: new BigNumberInBase(price),
+      isBuy,
       aggregation,
-      isBuy
+      price: priceInBigNumber
     })
 
     if (!aggregatedMap.has(aggregatedPrice)) {
       aggregatedMap.set(aggregatedPrice, {
-        priceSum: [Number(price)],
+        priceSum: [priceInBigNumber.toNumber()],
         totalQuantity: quantity
       })
     } else {
       const { priceSum, totalQuantity } = aggregatedMap.get(aggregatedPrice)!
 
       aggregatedMap.set(aggregatedPrice, {
-        priceSum: [...priceSum, Number(price)],
+        priceSum: [...priceSum, priceInBigNumber.toNumber()],
         totalQuantity: new BigNumberInBase(totalQuantity)
           .plus(quantity)
           .toFixed()
@@ -149,8 +150,6 @@ function priceMapToAggregatedArray({
 
 const buys = new Map<string, string>()
 const sells = new Map<string, string>()
-
-let isOrderbookFetched = false
 
 let preFetchBuyRecords: { sequence: number; records: PriceLevel[] }[] = []
 let preFetchSellRecords: { sequence: number; records: PriceLevel[] }[] = []
@@ -227,7 +226,8 @@ self.addEventListener(
         break
 
       case WorkerMessageType.Fetch:
-        isOrderbookFetched = true
+        buys.clear()
+        sells.clear()
 
         priceLevelsToMap({
           priceMap: buys,
@@ -259,7 +259,9 @@ self.addEventListener(
             })
           })
 
-          preFetchBuyRecords = []
+          preFetchBuyRecords = preFetchBuyRecords.filter(
+            (record) => record.sequence >= data.sequence
+          )
         }
 
         if (preFetchSellRecords.length) {
@@ -277,25 +279,23 @@ self.addEventListener(
             })
           })
 
-          preFetchSellRecords = []
+          preFetchSellRecords = preFetchSellRecords.filter(
+            (record) => record.sequence >= data.sequence
+          )
         }
 
         sendReplaceOrderbook()
         break
 
       case WorkerMessageType.Stream:
-        if (!isOrderbookFetched) {
-          preFetchBuyRecords.push({
-            records: data.orderbook.buys,
-            sequence: data.sequence
-          })
-          preFetchSellRecords.push({
-            records: data.orderbook.sells,
-            sequence: data.sequence
-          })
-
-          break
-        }
+        preFetchBuyRecords.push({
+          records: data.orderbook.buys,
+          sequence: data.sequence
+        })
+        preFetchSellRecords.push({
+          records: data.orderbook.sells,
+          sequence: data.sequence
+        })
 
         priceLevelsToMap({
           priceMap: buys,

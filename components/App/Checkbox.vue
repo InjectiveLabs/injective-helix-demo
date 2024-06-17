@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <SharedBaseCheckbox v-bind="$attrs">
+  <SharedCheckbox v-bind="$attrs">
     <template #checkbox="{ isChecked, isDisabled }">
       <div class="grid place-items-center">
         <div class="relative w-4 h-4">
@@ -27,5 +27,5 @@ defineProps({
     <span class="text-xs select-none" :data-cy="dataCy">
       <slot />
     </span>
-  </SharedBaseCheckbox>
+  </SharedCheckbox>
 </template>

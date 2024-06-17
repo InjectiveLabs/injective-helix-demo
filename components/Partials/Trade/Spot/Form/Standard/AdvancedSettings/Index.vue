@@ -28,6 +28,10 @@ function toggle() {
           v-if="spotFormValues[SpotTradeFormField.Type] === TradeTypes.Limit"
         />
 
+        <PartialsTradeSpotFormStandardAdvancedSettingsBypassWarning
+          v-if="spotFormValues[SpotTradeFormField.Type] === TradeTypes.Limit"
+        />
+
         <PartialsTradeSpotFormStandardAdvancedSettingsSlippage
           v-if="spotFormValues[SpotTradeFormField.Type] === TradeTypes.Market"
         />
