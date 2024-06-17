@@ -29,16 +29,15 @@ const balanceSeries = computed(() =>
 )
 
 const percentageChange = computed(() => {
-  const lastValue = props.accountTotalBalanceInUsd
-  const firstValue = balanceSeries.value[0]
+  const oldBalance = balanceSeries.value[0]
 
-  if (!lastValue || !firstValue) {
+  if (!oldBalance) {
     return 0
   }
 
-  return lastValue
-    .minus(firstValue[1])
-    .dividedBy(firstValue[1])
+  return props.accountTotalBalanceInUsd
+    .minus(oldBalance[1])
+    .dividedBy(oldBalance[1])
     .times(100)
     .toNumber()
 })
