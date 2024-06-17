@@ -9,7 +9,7 @@ import {
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
-import { IS_MAINNET } from '@shared/utils/constant'
+import { IS_MAINNET, IS_TESTNET } from '@shared/utils/constant'
 import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
 import tokens from '@/app/data/tokens.json'
 
@@ -32,6 +32,8 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET
     ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
+    : IS_TESTNET
+    ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
     : ENDPOINTS.indexer
 )
 

@@ -51,7 +51,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
 
       leaderboardStore.$patch({
-        historicalBalance
+        historicalBalance: historicalBalance.reverse()
       })
     },
 
@@ -74,7 +74,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
 
       leaderboardStore.$patch({
-        historicalPnl
+        historicalPnl: historicalPnl.reverse()
       })
     },
 
