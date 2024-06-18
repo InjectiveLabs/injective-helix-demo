@@ -216,6 +216,14 @@ export class MixPanelAnalytics {
         increment: () => {}
       }
     } as unknown as OverridedMixpanel
+
+    this.mixpanelClient = mixpanel
+    this.mixpanelClient.init(this.mixpanelKey, {
+      persistence: 'localStorage',
+      batch_requests: false,
+      track_pageview: 'full-url',
+      ignore_dnt: true
+    })
   }
 
   private getMixpanelClient() {
@@ -227,15 +235,7 @@ export class MixPanelAnalytics {
       this.initMixPanel()
     }
 
-    this.mixpanelClient = mixpanel
-    this.mixpanelClient.init(this.mixpanelKey, {
-      persistence: 'localStorage',
-      batch_requests: false,
-      track_pageview: 'full-url',
-      ignore_dnt: true
-    })
-
-    return this.mixpanelClient as OverridedMixpanel
+    return this.mixpanelClient as unknown as OverridedMixpanel
   }
 }
 
