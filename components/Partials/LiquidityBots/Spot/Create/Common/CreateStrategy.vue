@@ -3,10 +3,6 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  spotGridMarkets,
-  gridStrategyAuthorizationMessageTypes
-} from '@/app/data/grid-strategy'
-import {
   LEGACY_MARKET_IDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
@@ -39,7 +35,6 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
 const modalStore = useModalStore()
 const validate = useValidateForm()
@@ -245,23 +240,7 @@ async function onCheckBalanceFees() {
 }
 
 function onCreateStrategy() {
-  const gridMarket = spotGridMarkets.find(
-    (m) => m.slug === gridStrategyStore.spotMarket?.slug
-  )
-
-  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
-    authZStore.granterGrants.some(
-      (grant) =>
-        grant.authorizationType.endsWith(m) &&
-        grant.grantee === gridMarket?.contractAddress
-    )
-  )
-
-  if (isAuthorized) {
-    modalStore.openModal(Modal.CreateSpotGridStrategy)
-  } else {
-    modalStore.openModal(Modal.CheckSpotGridAuth)
-  }
+  modalStore.openModal(Modal.CreateSpotGridStrategy)
 }
 
 function onInvestmentTypeSet() {
