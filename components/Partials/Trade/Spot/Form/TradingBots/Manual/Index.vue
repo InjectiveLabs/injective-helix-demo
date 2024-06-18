@@ -30,6 +30,8 @@ function onViewDetails() {
       }"
     />
 
+    <PartialsTradeSpotFormTradingBotsManualAdvancedSettings />
+
     <div class="py-4">
       <PartialsTradeSpotFormTradingBotsCommonCreateStrategy
         v-if="!hasActiveStrategy"
