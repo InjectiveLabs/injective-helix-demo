@@ -217,6 +217,10 @@ export class MixPanelAnalytics {
       }
     } as unknown as OverridedMixpanel
 
+    if (!this.mixpanelKey) {
+      return
+    }
+
     this.mixpanelClient = mixpanel
     this.mixpanelClient.init(this.mixpanelKey, {
       persistence: 'localStorage',
