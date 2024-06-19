@@ -115,18 +115,19 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelAnalytics.trackSwap({
-        fee: totalFee.value.toFixed(2),
-        rate: summaryRef.value?.priceForDisplayToFormat,
-        inputAmount: formValues[SwapFormField.InputAmount],
-        outputAmount: formValues[SwapFormField.OutputAmount],
-        outputToken: outputToken.value?.token.symbol,
-        inputToken: inputToken.value?.token.symbol,
-        minimumOutput: minimumOutput.value,
-        slippageTolerance: formValues[SwapFormField.Slippage],
-        error: err ? err.message : '',
-        isSuccess: !err
-      })
+      mixpanelAnalytics.trackSwap(
+        {
+          fee: totalFee.value.toFixed(2),
+          minimumOutput: minimumOutput.value,
+          inputToken: inputToken.value?.token.symbol,
+          outputToken: outputToken.value?.token.symbol,
+          rate: summaryRef.value?.priceForDisplayToFormat,
+          inputAmount: formValues[SwapFormField.InputAmount],
+          outputAmount: formValues[SwapFormField.OutputAmount],
+          slippageTolerance: formValues[SwapFormField.Slippage]
+        },
+        err?.message
+      )
 
       if (!err) {
         resetFormValues()

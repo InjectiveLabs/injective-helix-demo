@@ -1,14 +1,15 @@
 import { SharedMarketType } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
 import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
 import { MIXPANEL_KEY } from '@/app/utils/constants/setup'
 import {
   MixPanelEvent,
+  ChartViewOption,
   OrderAttemptStatus,
-  SpotGridTradingField,
   SpotGridTradingForm,
-  TradeClickOrigin
+  SpotGridTradingField
 } from '@/types'
 
 export class MixPanelAnalytics {
@@ -21,14 +22,18 @@ export class MixPanelAnalytics {
     this.mixpanelClient = undefined
   }
 
+  trackWalletAddress({ injectiveAddress }: { injectiveAddress: string }) {
+    this.getMixpanelClient().identify(injectiveAddress)
+  }
+
   trackLogin({
-    injectiveAddress,
     wallet,
-    tierLevel
+    tierLevel,
+    injectiveAddress
   }: {
-    injectiveAddress: string
     wallet: Wallet
     tierLevel: number
+    injectiveAddress: string
   }) {
     this.getMixpanelClient().identify(injectiveAddress)
 
@@ -38,52 +43,48 @@ export class MixPanelAnalytics {
       Address: injectiveAddress
     })
 
-    this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
     this.getMixpanelClient().people.set({ wallet })
+    this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
   }
 
   trackLogout() {
     this.getMixpanelClient().reset()
   }
 
-  trackConnectClicked() {
-    this.getMixpanelClient().track(MixPanelEvent.ConnectClicked)
-  }
-
-  trackSwap(props: {
-    fee: string
-    rate: string | undefined
-    inputAmount: string | undefined
-    outputAmount: string | undefined
-    outputToken: string | undefined
-    inputToken: string | undefined
-    minimumOutput: string
-    slippageTolerance: string
-    error?: string
-    isSuccess: boolean
-  }) {
-    this.getMixpanelClient().track(MixPanelEvent.Swap, props)
-  }
-
-  trackSwapClicked() {
-    this.getMixpanelClient().track(MixPanelEvent.SwapClicked)
-    this.getMixpanelClient().people.increment('Swap Clicked')
-  }
-
-  trackNavigateToTradePage(props: {
-    market: string
-    marketType: SharedMarketType
-    origin: TradeClickOrigin
-  }) {
-    this.getMixpanelClient().track(MixPanelEvent.TradeClicked, props)
-  }
-
-  trackWalletSelected(props: {
-    wallet: Wallet
+  trackBrowserLocation(props: {
     userCountryFromVpnApi: string
     userCountryFromBrowser?: string
   }) {
-    this.getMixpanelClient().track(MixPanelEvent.WalletSelected, props)
+    this.getMixpanelClient().track(MixPanelEvent.BrowserLocation, props)
+  }
+
+  trackSwap(
+    props: {
+      fee: string
+      rate: string | undefined
+      inputAmount: string | undefined
+      outputAmount: string | undefined
+      outputToken: string | undefined
+      inputToken: string | undefined
+      minimumOutput: string
+      slippageTolerance: string
+    },
+    error?: string
+  ) {
+    this.getMixpanelClient().track(MixPanelEvent.Swap, {
+      ...props,
+      fee: new BigNumberInBase(props.fee).toNumber(),
+      rate: new BigNumberInBase(props.rate || 0).toNumber(),
+      inputAmount: new BigNumberInBase(props.inputAmount || 0).toNumber(),
+      outputAmount: new BigNumberInBase(props.outputAmount || 0).toNumber(),
+      minimumOutput: new BigNumberInBase(props.minimumOutput).toNumber(),
+      slippageTolerance: new BigNumberInBase(
+        props.slippageTolerance
+      ).toNumber(),
+      error,
+      status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
+    })
+    this.getMixpanelClient().people.increment(MixPanelEvent.SwapCount)
   }
 
   trackSurveyAccepted(surveyTitle: string) {
@@ -98,47 +99,48 @@ export class MixPanelAnalytics {
     })
   }
 
-  trackPlaceOrderAttempt(props: {
-    amount: string
-    market: string
-    marketType: SharedMarketType
-    orderType: OrderSide
-    postOnly?: boolean
-    tradingType: TradeExecutionType
-    leverage: string
-    triggerPrice: string
-    reduceOnly?: boolean
-    limitPrice: string
-    slippageTolerance: string
-  }) {
-    this.getMixpanelClient().track(MixPanelEvent.PlaceOrderAttempt, props)
-    this.getMixpanelClient().people.increment('Place Order Attempts')
-  }
-
-  trackPlaceOrderConfirm(props: {
-    amount: string
-    market: string
-    marketType: SharedMarketType
-    orderSide: OrderSide
-    postOnly: boolean
-    tradingType: TradeExecutionType
-    leverage?: string
-    triggerPrice?: string
-    reduceOnly?: boolean
-    limitPrice: string
-    slippageTolerance: string
-    status: OrderAttemptStatus
-  }) {
-    this.getMixpanelClient().track(MixPanelEvent.PlaceOrderConfirm, props)
-    this.getMixpanelClient().people.increment('Place Order Confirms')
+  trackCreateOrder(
+    props: {
+      market: string
+      orderSide: OrderSide
+      marketType: SharedMarketType
+      tradingType: TradeExecutionType
+      amount: string
+      leverage: string
+      limitPrice: string
+      triggerPrice: string
+      slippageTolerance: string
+      reduceOnly?: boolean
+      postOnly?: boolean
+      chartType: ChartViewOption
+    },
+    error?: string
+  ) {
+    this.getMixpanelClient().track(MixPanelEvent.CreateOrder, {
+      ...props,
+      amount: new BigNumberInBase(props.amount || 0).toNumber(),
+      leverage: new BigNumberInBase(props.leverage || 0).toNumber(),
+      limitPrice: new BigNumberInBase(props.limitPrice || 0).toNumber(),
+      triggerPrice: new BigNumberInBase(props.triggerPrice || 0).toNumber(),
+      slippageTolerance: new BigNumberInBase(
+        props.slippageTolerance || 0
+      ).toNumber(),
+      reduceOnly: !!props.reduceOnly,
+      postOnly: !!props.postOnly,
+      error,
+      status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
+    })
+    this.getMixpanelClient().people.increment(MixPanelEvent.CreateOrderCount)
   }
 
   trackCreateStrategy({
+    error,
     formValues,
     isLiquidity,
     market,
     marketPrice
   }: {
+    error?: string
     formValues: Partial<SpotGridTradingForm>
     market: string
     marketPrice: string
@@ -148,39 +150,80 @@ export class MixPanelAnalytics {
       ? MixPanelEvent.CreateLiquidityBot
       : MixPanelEvent.CreateStrategy
 
-    const incrementEvent = isLiquidity
-      ? 'Create Liquidity Bot'
-      : 'Create Strategies'
-
     this.getMixpanelClient().track(event, {
-      amountQuote: formValues[SpotGridTradingField.QuoteInvestmentAmount] || '',
-      gridsNumber: formValues[SpotGridTradingField.Grids] || '',
-      lowerPrice: formValues[SpotGridTradingField.LowerPrice] || '',
-      upperPrice: formValues[SpotGridTradingField.UpperPrice] || '',
-      amountDenom: formValues[SpotGridTradingField.BaseInvestmentAmount],
+      amountBase: new BigNumberInBase(
+        formValues[SpotGridTradingField.BaseInvestmentAmount] || 0
+      ).toNumber(),
+      amountQuote: new BigNumberInBase(
+        formValues[SpotGridTradingField.QuoteInvestmentAmount] || 0
+      ).toNumber(),
+      gridsNumber: new BigNumberInBase(
+        formValues[SpotGridTradingField.Grids] || 0
+      ).toNumber(),
+      lowerPrice: new BigNumberInBase(
+        formValues[SpotGridTradingField.LowerPrice] || 0
+      ).toNumber(),
+      upperPrice: new BigNumberInBase(
+        formValues[SpotGridTradingField.UpperPrice] || 0
+      ).toNumber(),
       market,
-      marketPrice
+      marketPrice: new BigNumberInBase(marketPrice).toNumber(),
+      error,
+      status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
     })
-    this.getMixpanelClient().people.increment(incrementEvent)
+
+    this.getMixpanelClient().people.increment(
+      isLiquidity
+        ? MixPanelEvent.CreateLiquidityBotCount
+        : MixPanelEvent.CreateStrategyCount
+    )
   }
 
-  trackRemoveStrategy(props: {
-    error?: Error
-    market: string
-    totalProfit: string
-    duration: string
-    isLiquidity?: boolean
-  }) {
+  trackRemoveStrategy(
+    props: {
+      market: string
+      pnl: string
+      duration: string
+      isLiquidity?: boolean
+    },
+    error?: string
+  ) {
     const event = props.isLiquidity
       ? MixPanelEvent.RemoveLiquidityBot
       : MixPanelEvent.RemoveStrategy
 
-    const incrementEvent = props.isLiquidity
-      ? 'Remove Liquidity Bot'
-      : 'Remove Strategies'
+    this.getMixpanelClient().track(event, {
+      market: props.market,
+      pnl: new BigNumberInBase(props.pnl).toNumber(),
+      duration: new BigNumberInBase(props.duration).toNumber(),
+      error,
+      status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
+    })
+  }
 
-    this.getMixpanelClient().track(event, { ...props, isLiquidity: undefined })
-    this.getMixpanelClient().people.increment(incrementEvent)
+  initMixPanel() {
+    if (this.mixpanelClient) {
+      return
+    }
+
+    this.mixpanelClient = {
+      init: () => {},
+      track: () => {},
+      reset: () => {},
+      identify: () => {},
+      people: {
+        set: () => {},
+        increment: () => {}
+      }
+    } as unknown as OverridedMixpanel
+
+    this.mixpanelClient = mixpanel
+    this.mixpanelClient.init(this.mixpanelKey, {
+      persistence: 'localStorage',
+      batch_requests: false,
+      track_pageview: 'full-url',
+      ignore_dnt: true
+    })
   }
 
   private getMixpanelClient() {
@@ -189,29 +232,10 @@ export class MixPanelAnalytics {
     }
 
     if (!this.mixpanelKey) {
-      this.mixpanelClient = {
-        init: () => {},
-        track: () => {},
-        reset: () => {},
-        identify: () => {},
-        people: {
-          set: () => {},
-          increment: () => {}
-        }
-      } as unknown as OverridedMixpanel
-
-      return this.mixpanelClient
+      this.initMixPanel()
     }
 
-    this.mixpanelClient = mixpanel
-    this.mixpanelClient.init(this.mixpanelKey, {
-      persistence: 'localStorage',
-      batch_requests: false,
-      track_pageview: true,
-      ignore_dnt: true
-    })
-
-    return this.mixpanelClient as OverridedMixpanel
+    return this.mixpanelClient as unknown as OverridedMixpanel
   }
 }
 
