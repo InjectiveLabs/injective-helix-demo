@@ -173,42 +173,21 @@ export enum AveragePriceOptions {
   Percentage = 3
 }
 
-export enum AmplitudeEvent {
-  Swap = 'Swap',
-  Login = 'Login',
-  Transfer = 'Transfer',
-  SwapClicked = 'Swap Clicked',
-  SwapAttempt = 'Swap Attempt',
-  TradeClicked = 'Trade Clicked',
-  ConnectClicked = 'Connect Clicked',
-  WalletSelected = 'Wallet Selected',
-  SurveyAccepted = 'Survey - Accepted',
-  SurveyRejected = 'Survey - Rejected',
-  PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm',
-  CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy',
-  CreateLiquidityBot = 'Create Liquidity Bot',
-  RemoveLiquidityBot = 'Remove Liquidity Bot'
-}
-
 export enum MixPanelEvent {
-  Swap = 'Swap',
   Login = 'Login',
-  Transfer = 'Transfer',
-  SwapClicked = 'Swap Clicked',
-  SwapAttempt = 'Swap Attempt',
-  TradeClicked = 'Trade Clicked',
-  ConnectClicked = 'Connect Clicked',
-  WalletSelected = 'Wallet Selected',
-  SurveyAccepted = 'Survey - Accepted',
-  SurveyRejected = 'Survey - Rejected',
-  PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm',
-  CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy',
-  CreateLiquidityBot = 'Create Liquidity Bot',
-  RemoveLiquidityBot = 'Remove Liquidity Bot'
+  BrowserLocation = 'BrowserLocation',
+  Swap = 'Swap',
+  SwapCount = 'SwapCount',
+  SurveyAccepted = 'Survey-Accepted',
+  SurveyRejected = 'Survey-Rejected',
+  CreateOrder = 'CreateOrder',
+  CreateOrderCount = 'CreateOrderCount',
+  CreateStrategy = 'CreateStrategy',
+  CreateStrategyCount = 'CreateStrategyCount',
+  RemoveStrategy = 'RemoveStrategy',
+  CreateLiquidityBot = 'CreateLiquidityBot',
+  CreateLiquidityBotCount = 'CreateLiquidityBotCount',
+  RemoveLiquidityBot = 'RemoveLiquidityBot'
 }
 
 export enum SurveyTitle {
@@ -219,12 +198,6 @@ export enum DefaultMarket {
   Perpetual = 'btc-usdt-perp',
   PerpetualTestnet = 'btc-usdt-perp-pyth',
   Spot = 'inj-usdt'
-}
-
-export enum TradeClickOrigin {
-  Lander = 'LanderC2A',
-  MarketsPage = 'Markets Page',
-  TopMenu = 'Top Menu'
 }
 
 export enum OrderAttemptStatus {
@@ -257,8 +230,9 @@ export enum BusEvents {
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
-  ShowLedgerConnect = 'show-ledger-connect',
   AutoSignConnected = 'auto-sign-connected',
+  ShowLedgerConnect = 'show-ledger-connect',
+  UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',

@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
@@ -34,8 +32,6 @@ function connectLedger() {
 }
 
 function onWalletConnect() {
-  mixpanelAnalytics.trackConnectClicked()
-
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)
   } else {

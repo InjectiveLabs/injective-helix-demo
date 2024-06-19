@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { MainPage, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
@@ -36,6 +37,8 @@ watch(
  */
 
 onWalletConnected(() => {
+  mixpanelAnalytics.initMixPanel()
+
   portfolioStatus.setLoading()
 
   fetchUserPortfolio()
