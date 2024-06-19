@@ -28,7 +28,6 @@ import {
   slugsToIncludeInInjectiveCategory
 } from '@/app/data/market'
 import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
-import { getCw20FromSymbolOrNameAsString } from '@/app/utils/helper'
 import {
   MarketRoute,
   UiSpotMarket,
@@ -354,28 +353,6 @@ export const combineOrderbookRecords = ({
       ? new BigNumberInBase(b.price).minus(a.price).toNumber()
       : new BigNumberInBase(a.price).minus(b.price).toNumber()
   })
-}
-
-export const getNewMarketSlugFromWHDenom = (denom: string) => {
-  switch (denom) {
-    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
-      return 'sol-usdt'
-    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
-      return 'arb-usdt'
-    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
-      return 'wmatic-usdt'
-  }
-}
-
-export const getNewMarketTickerFromWHDenom = (denom: string) => {
-  switch (denom) {
-    case getCw20FromSymbolOrNameAsString('SOLlegacy'):
-      return 'SOL/USDT'
-    case getCw20FromSymbolOrNameAsString('ARBlegacy'):
-      return 'ARB/USDT'
-    case getCw20FromSymbolOrNameAsString('WMATIClegacy'):
-      return 'WMATIC/USDT'
-  }
 }
 
 /**

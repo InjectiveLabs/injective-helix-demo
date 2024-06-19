@@ -52,7 +52,7 @@ const learnList = [
         </NuxtLink>
 
         <span class="text-gray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
+          &copy; {{ new Date().getFullYear() }} Injective Foundation
         </span>
       </div>
 
