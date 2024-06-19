@@ -656,8 +656,6 @@ export const useWalletStore = defineStore('wallet', {
 
       await walletStrategy.disconnect()
 
-      mixpanelAnalytics.trackLogout()
-
       appStore.reset()
       walletStore.reset()
       spotStore.resetSubaccount()
@@ -670,6 +668,8 @@ export const useWalletStore = defineStore('wallet', {
       authZStore.$reset()
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
+
+      mixpanelAnalytics.trackLogout()
     },
 
     async disconnectAutoSign() {
