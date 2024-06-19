@@ -79,7 +79,7 @@ function removeStrategy() {
           duration: durationFormatter(props.strategy.createdAt, Date.now()),
           market: market.value.slug,
           pnl: pnl.value.toFixed(),
-          isLiquidity: true
+          isLiquidity: props.isLiquidity
         },
         err?.message
       )
