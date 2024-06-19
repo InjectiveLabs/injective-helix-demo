@@ -147,18 +147,18 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
-      if (walletStore.isUserWalletConnected) {
-        mixpanelAnalytics.trackWalletAddress({
-          injectiveAddress: walletStore.injectiveAddress
-        })
-      }
-
       await connect({
         wallet: walletStore.autoSign?.privateKey
           ? Wallet.PrivateKey
           : walletStore.wallet,
         options: { privateKey: walletStore.autoSign?.privateKey }
       })
+
+      if (walletStore.isUserWalletConnected) {
+        mixpanelAnalytics.trackWalletAddress({
+          injectiveAddress: walletStore.injectiveAddress
+        })
+      }
     },
 
     async connectWallet(wallet: Wallet) {
