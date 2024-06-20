@@ -102,7 +102,7 @@ export const useCampaignStore = defineStore('campaign', {
       limit?: number
       campaignId: string
     }) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const campaignStore = useCampaignStore()
 
       const { campaign, paging, users } =
@@ -149,10 +149,10 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchCampaignRewardsForUser() {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const campaignStore = useCampaignStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
@@ -203,7 +203,7 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchUserClaimedStatus(contractAddress: string) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       if (!walletStore.injectiveAddress || !contractAddress) {
         return false
@@ -239,7 +239,7 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchRound(roundId?: number) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({

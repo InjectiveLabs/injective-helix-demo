@@ -14,7 +14,7 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 
 const { $onError } = useNuxtApp()
@@ -175,7 +175,7 @@ function getOutputQuantity() {
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
-      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+      if (walletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })
@@ -205,7 +205,7 @@ function getInputQuantity() {
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
 
-      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+      if (walletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })

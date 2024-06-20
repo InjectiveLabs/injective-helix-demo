@@ -28,7 +28,7 @@ const {
   computed(() => false)
 )
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()

@@ -35,10 +35,10 @@ const fetchBalances = (
 
 export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -58,17 +58,17 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  await walletStore.broadcastMessages(messages)
+  await walletStore.broadcastWithFeeDelegation(messages)
 
   await fetchBalances()
 }
 
 export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -82,7 +82,7 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
     orderHash: order.orderHash
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances()
 }
@@ -99,14 +99,10 @@ export const submitLimitOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
@@ -159,7 +155,7 @@ export const submitLimitOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : orderMessage
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -176,14 +172,10 @@ export const submitMarketOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
@@ -232,7 +224,7 @@ export const submitMarketOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : [orderMessage]
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -251,14 +243,10 @@ export const submitStopLimitOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
@@ -289,7 +277,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances()
 }
@@ -308,14 +296,10 @@ export const submitStopMarketOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
@@ -346,7 +330,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances()
 }

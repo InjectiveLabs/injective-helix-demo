@@ -7,7 +7,7 @@ import {
   isSgtSubaccountId
 } from '@/app/utils/helpers'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 

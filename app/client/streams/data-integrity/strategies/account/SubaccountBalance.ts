@@ -17,10 +17,10 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const walletStore = useWalletStore()
+    const walletStore = useSharedWalletStore()
     const accountStore = useAccountStore()
 
-    if (!walletStore.isUserWalletConnected) {
+    if (!walletStore.isUserConnected) {
       return
     }
 
@@ -84,7 +84,7 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async fetchData(): Promise<Record<string, SubaccountBalance[]>> {
-    const walletStore = useWalletStore()
+    const walletStore = useSharedWalletStore()
 
     const accountPortfolio =
       await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(

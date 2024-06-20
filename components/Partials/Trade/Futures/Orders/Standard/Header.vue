@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
@@ -61,7 +61,7 @@ const options = computed(() => {
     }
   ]
 
-  if (walletStore.isUserWalletConnected) {
+  if (walletStore.isUserConnected) {
     items.unshift({
       display: `activity.${PerpOrdersStandardView.Balances}`,
       value: PerpOrdersStandardView.Balances
@@ -72,7 +72,7 @@ const options = computed(() => {
 })
 
 watch(
-  () => walletStore.isUserWalletConnected,
+  () => walletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === PerpOrdersStandardView.Balances) {
       view.value = PerpOrdersStandardView.OpenOrders

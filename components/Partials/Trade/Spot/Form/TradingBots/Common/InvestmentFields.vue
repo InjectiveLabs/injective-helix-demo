@@ -23,7 +23,7 @@ const props = defineProps({
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 

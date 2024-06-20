@@ -13,7 +13,7 @@ import { Modal, SwapForm, SwapFormField } from '@/types'
 const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
 const { userBalancesWithToken } = useBalance()
@@ -192,7 +192,7 @@ watch(
 <template>
   <div>
     <AppButton
-      v-if="!walletStore.isUserWalletConnected"
+      v-if="!walletStore.isUserConnected"
       is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"

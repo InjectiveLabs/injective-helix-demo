@@ -260,10 +260,10 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchSubaccountOrders(marketIds?: string[]) {
       const spotStore = useSpotStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const accountStore = useAccountStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -292,9 +292,9 @@ export const useSpotStore = defineStore('spot', {
       marketIds: string[]
     }) {
       const spotStore = useSpotStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !subaccountId) {
+      if (!walletStore.isUserConnected || !subaccountId) {
         return
       }
 
@@ -318,10 +318,10 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       if (
-        !walletStore.isUserWalletConnected ||
+        !walletStore.isUserConnected ||
         !(accountStore.subaccountId || options?.subaccountId)
       ) {
         return
@@ -416,9 +416,9 @@ export const useSpotStore = defineStore('spot', {
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

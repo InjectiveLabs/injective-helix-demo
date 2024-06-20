@@ -21,10 +21,10 @@ export class DerivativeSubaccountOrderIntegrityStrategy
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
+    const walletStore = useSharedWalletStore()
     const derivativeStore = useDerivativeStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!walletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 

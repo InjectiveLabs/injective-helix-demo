@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BusEvents, PortfolioSubPage } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const isAutoSignExpiredToastVisible = ref(false)
 

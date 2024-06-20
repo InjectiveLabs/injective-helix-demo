@@ -7,7 +7,7 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const props = defineProps({

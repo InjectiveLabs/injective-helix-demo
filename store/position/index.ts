@@ -43,12 +43,12 @@ export const usePositionStore = defineStore('position', {
     streamSubaccountPositions,
 
     async fetchPositions() {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
 
       if (
-        !walletStore.isUserWalletConnected ||
+        !walletStore.isUserConnected ||
         !walletStore.authZOrInjectiveAddress
       ) {
         return
@@ -96,9 +96,9 @@ export const usePositionStore = defineStore('position', {
       const derivativeStore = useDerivativeStore()
       const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -121,9 +121,9 @@ export const usePositionStore = defineStore('position', {
     async fetchOpenPositionsMarketsOrderbook() {
       const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

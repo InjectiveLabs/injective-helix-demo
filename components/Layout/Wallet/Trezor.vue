@@ -5,7 +5,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { WalletConnectStatus } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 

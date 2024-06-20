@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { WalletConnectStatus } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 
 const { $onError } = useNuxtApp()

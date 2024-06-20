@@ -2,7 +2,7 @@
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const ninjaPassStore = useNinjaPassStore()
 const modalStore = useModalStore()
 const confetti = useSharedConfetti()

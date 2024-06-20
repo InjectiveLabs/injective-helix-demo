@@ -40,10 +40,10 @@ export const submitAtomicOrder = async ({
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !walletStore.defaultSubaccountId ||
     !minimumOutput
   ) {
@@ -89,7 +89,7 @@ export const submitAtomicOrder = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastMessages(message)
+  const response = await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
@@ -111,10 +111,10 @@ export const submitAtomicOrderExactOutput = async ({
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !walletStore.defaultSubaccountId ||
     !maximumInput
   ) {
@@ -160,7 +160,7 @@ export const submitAtomicOrderExactOutput = async ({
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastMessages(message)
+  const response = await walletStore.broadcastWithFeeDelegation(message)
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 

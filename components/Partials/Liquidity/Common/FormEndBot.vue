@@ -18,7 +18,7 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()

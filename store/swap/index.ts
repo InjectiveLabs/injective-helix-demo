@@ -159,7 +159,7 @@ export const useSwapStore = defineStore('swap', {
       limit?: number
     } = {}) {
       const swapStore = useSwapStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       const { pagination, swapHistory } =
         await indexerSpotApi.fetchAtomicSwapHistory({

@@ -4,24 +4,24 @@ import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const status: Status = reactive(new Status(StatusType.Loading))
 const walletModalType = ref<WalletModalType>(WalletModalType.All)
 
 const isModalOpen = computed<boolean>(
-  () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
+  () => modalStore.modals[Modal.Connect] && !walletStore.isUserConnected
 )
 
 onMounted(() => {
   useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
 
   Promise.all([
-    walletStore.isMetamaskInstalled(),
-    walletStore.isTrustWalletInstalled(),
-    walletStore.isPhantomInstalled(),
-    walletStore.isOkxWalletInstalled(),
-    walletStore.isBitGetInstalled()
+    walletStore.checkIsMetamaskInstalled(),
+    walletStore.checkIsTrustWalletInstalled(),
+    walletStore.checkIsPhantomWalletInstalled(),
+    walletStore.checkIsOkxWalletInstalled(),
+    walletStore.checkIsBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -66,7 +66,7 @@ watch(isModalOpen, (newShowModalState) => {
 </script>
 
 <template>
-  <LayoutWalletDetails v-if="walletStore.isUserWalletConnected" />
+  <LayoutWalletDetails v-if="walletStore.isUserConnected" />
 
   <AppButton v-else @click="onWalletConnect">
     {{ $t('connect.connectWallet') }}

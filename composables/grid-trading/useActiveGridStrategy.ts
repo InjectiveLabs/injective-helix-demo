@@ -9,7 +9,7 @@ export default function useActiveGridStrategy(
   strategy: ComputedRef<TradingStrategy>
 ) {
   const spotStore = useSpotStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const tokenStore = useTokenStore()
 

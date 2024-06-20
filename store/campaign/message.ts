@@ -12,7 +12,7 @@ export const claimReward = async (
   campaignId?: string
 ) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   await appStore.queue()
   await walletStore.validate()
@@ -50,7 +50,7 @@ export const createGuild = async ({
   description: string
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
   await appStore.queue()
@@ -73,7 +73,7 @@ export const createGuild = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await delayPromiseCall(
     () =>
@@ -93,7 +93,7 @@ export const joinGuild = async ({
   guildId: string
 }) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
   await appStore.queue()
@@ -110,7 +110,7 @@ export const joinGuild = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await delayPromiseCall(
     () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),

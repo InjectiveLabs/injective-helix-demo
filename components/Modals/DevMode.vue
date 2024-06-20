@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, WalletConnectStatus } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const { t } = useLang()
 const { resetForm } = useForm()
 const { $onError } = useNuxtApp()

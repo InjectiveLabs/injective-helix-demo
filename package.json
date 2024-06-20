@@ -112,6 +112,8 @@
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
-    "vee-validate": "4.11.7"
+    "vee-validate": "4.11.7",
+    "@nuxt/kit": "3.11.2",
+    "@nuxt/schema": "3.11.2"
   }
 }

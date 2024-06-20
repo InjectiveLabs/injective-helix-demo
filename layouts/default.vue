@@ -7,7 +7,7 @@ import { MainPage, PortfolioStatusKey } from '@/types'
 const route = useRoute()
 const authZStore = useAuthZStore()
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -45,6 +45,7 @@ onWalletConnected(() => {
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
+      fetchSubaccountStream()
     })
 })
 

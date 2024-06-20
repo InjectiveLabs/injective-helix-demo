@@ -370,9 +370,9 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -399,9 +399,9 @@ export const useDerivativeStore = defineStore('derivative', {
     ) {
       const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -427,9 +427,9 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
       const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -532,11 +532,11 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

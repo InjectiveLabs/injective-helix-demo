@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const props = defineProps({
   granter: {

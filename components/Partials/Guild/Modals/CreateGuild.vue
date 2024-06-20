@@ -9,6 +9,7 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { validate, resetForm } = useForm()
@@ -169,7 +170,7 @@ watch(
         <AppInput
           is-sm
           is-disabled
-          :model-value="walletStore.injectiveAddress"
+          :model-value="sharedWalletStore.injectiveAddress"
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
         />

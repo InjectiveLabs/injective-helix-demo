@@ -38,13 +38,15 @@ const stateToPersist = {
     subaccountId: ''
   },
 
-  wallet: {
+  sharedWallet: {
+    walletConnectStatus: '',
+    hwAddresses: '',
     wallet: Wallet.Metamask,
     address: '',
     addresses: '',
     injectiveAddress: '',
-    defaultSubaccountId: '',
     addressConfirmation: '',
+    session: '',
 
     authZ: {
       address: '',
@@ -52,7 +54,6 @@ const stateToPersist = {
       injectiveAddress: '',
       defaultSubaccountId: ''
     },
-
     autoSign: {
       privateKey: '',
       expiration: '',

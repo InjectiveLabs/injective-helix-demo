@@ -28,7 +28,7 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 

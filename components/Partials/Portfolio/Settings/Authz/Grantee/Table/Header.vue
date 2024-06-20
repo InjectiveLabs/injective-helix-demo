@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const modalStore = useModalStore()
 
 function openGranteeModal() {

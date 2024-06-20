@@ -21,7 +21,7 @@ const emit = defineEmits<{
 const { validate } = useForm<ClosePositionLimitForm>()
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 const positionStore = usePositionStore()

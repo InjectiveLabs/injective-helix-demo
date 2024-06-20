@@ -5,10 +5,11 @@ import { MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
+const sharedWalletStore = useSharedWalletStore()
 const walletStore = useWalletStore()
 
 const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(walletStore.injectiveAddress)
+  formatWalletAddress(sharedWalletStore.injectiveAddress)
 )
 
 function disconnect() {
@@ -70,7 +71,7 @@ function disconnect() {
                 </span>
               </div>
               <LayoutWalletDetailsConnectedWallet
-                :wallet="walletStore.wallet"
+                :wallet="sharedWalletStore.wallet"
               />
             </div>
 

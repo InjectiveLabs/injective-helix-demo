@@ -20,9 +20,9 @@ export const deposit = async ({
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !walletStore.isUserConnected) {
     return
   }
 
@@ -41,7 +41,7 @@ export const deposit = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -57,9 +57,9 @@ export const withdraw = async ({
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !walletStore.isUserConnected) {
     return
   }
 
@@ -78,7 +78,7 @@ export const withdraw = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -98,9 +98,9 @@ export const transfer = async ({
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 
@@ -116,7 +116,7 @@ export const transfer = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message, memo)
+  await walletStore.broadcastWithFeeDelegation(message, memo)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -138,9 +138,9 @@ export const externalTransfer = async ({
 }) => {
   const accountStore = useAccountStore()
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 
@@ -157,17 +157,17 @@ export const externalTransfer = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message, memo)
+  await walletStore.broadcastWithFeeDelegation(message, memo)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const withdrawToMain = async () => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !walletStore.isUserConnected) {
     return
   }
 
@@ -194,7 +194,7 @@ export const withdrawToMain = async () => {
       })
     )
 
-  await walletStore.broadcastMessages(msgs)
+  await walletStore.broadcastWithFeeDelegation(msgs)
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }

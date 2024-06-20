@@ -2,7 +2,7 @@
 import { isCosmosWalletInstalled, Wallet } from '@injectivelabs/wallet-ts'
 import { WalletConnectStatus } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()

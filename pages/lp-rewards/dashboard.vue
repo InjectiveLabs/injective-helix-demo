@@ -3,7 +3,7 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
 
 const router = useRouter()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 
 const campaignsByRound = computed(() => {
@@ -30,7 +30,7 @@ const activeRound = computed(() =>
 )
 
 watch(
-  () => walletStore.isUserWalletConnected,
+  () => walletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected) {
       router.replace({ name: LiquidityRewardsPage.Home })

@@ -43,7 +43,7 @@ export const createStrategy = async (
 ) => {
   const appStore = useAppStore()
   const authZStore = useAuthZStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -185,7 +185,7 @@ export const createStrategy = async (
   // we need to add it after the authz messages
   msgs.push(message)
 
-  await walletStore.broadcastMessages(msgs)
+  await walletStore.broadcastWithFeeDelegation(msgs)
 
   backupPromiseCall(() =>
     Promise.all([
@@ -199,11 +199,11 @@ export const createStrategy = async (
 
 export const removeStrategy = async (contractAddress?: string) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 
@@ -239,7 +239,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     })
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   backupPromiseCall(() =>
     Promise.all([
@@ -255,11 +255,11 @@ export const removeStrategyForSubaccount = async (
   subaccountId?: string
 ) => {
   const appStore = useAppStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 
@@ -282,7 +282,7 @@ export const removeStrategyForSubaccount = async (
     })
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation(message)
 
   backupPromiseCall(() =>
     Promise.all([

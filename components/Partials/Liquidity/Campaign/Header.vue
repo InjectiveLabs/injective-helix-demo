@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const rewardsWithToken = computed(() => {
   return props.campaign.rewards.map((reward) => {
@@ -100,7 +100,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
 
       <div class="flex items-center ml-auto">
         <NuxtLink
-          v-if="walletStore.isUserWalletConnected"
+          v-if="walletStore.isUserConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
