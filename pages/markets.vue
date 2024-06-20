@@ -41,17 +41,19 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     ...derivativeStore.marketsWithSummary,
     ...exchangeStore.upcomingMarketsWithSummary,
     ...exchangeStore.deprecatedMarketsWithSummary
-  ].map(({ market, summary }) => {
-    const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPrice(market.quoteToken)
-    )
+  ]
+    .map(({ market, summary }) => {
+      const quoteTokenUsdPrice = new BigNumberInBase(
+        tokenStore.tokenUsdPrice(market.quoteToken)
+      )
 
-    return {
-      market,
-      summary,
-      volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
-    }
-  })
+      return {
+        market,
+        summary,
+        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
+      }
+    })
+    .filter(({ summary }) => summary)
 )
 
 const filteredMarkets = computed(() =>
