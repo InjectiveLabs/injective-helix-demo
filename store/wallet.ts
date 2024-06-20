@@ -19,6 +19,12 @@ import {
   confirmCorrectKeplrAddress
 } from '@/app/services/cosmos'
 import {
+  confirm,
+  connect,
+  initWallet,
+  getAddresses
+} from '@/app/services/wallet'
+import {
   validateTrustWallet,
   isTrustWalletInstalled
 } from '@/app/services/trust-wallet'
@@ -27,7 +33,6 @@ import { isOkxWalletInstalled } from '@/app/services/okx'
 import { isBitGetInstalled } from '@/app/services/bitget'
 import { isPhantomInstalled } from '@/app/services/phantom'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { confirm, connect, getAddresses } from '@/app/services/wallet'
 import { validateMetamask, isMetamaskInstalled } from '@/app/services/metamask'
 import { BusEvents, WalletConnectStatus } from '@/types'
 import { TRADING_MESSAGES } from '@/app/data/trade'
@@ -147,7 +152,7 @@ export const useWalletStore = defineStore('wallet', {
         return
       }
 
-      await connect({
+      await initWallet({
         wallet: walletStore.autoSign?.privateKey
           ? Wallet.PrivateKey
           : walletStore.wallet,
