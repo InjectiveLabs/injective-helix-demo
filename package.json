@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@funken-studio/sitemap-nuxt-3": "^4.0.4",
+    "@injectivelabs/token-metadata": "^1.14.11",
     "@injectivelabs/ts-types": "1.14.11-beta.4",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/pwa": "^3.3.5",
