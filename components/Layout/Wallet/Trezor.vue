@@ -3,7 +3,6 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { WalletConnectStatus } from '@/types'
 
 const walletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
@@ -47,7 +46,6 @@ const connect = handleSubmit(() => {
   walletStore
     .connectTrezor(getEthereumAddress(address.value))
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
     })
     .finally(() => {

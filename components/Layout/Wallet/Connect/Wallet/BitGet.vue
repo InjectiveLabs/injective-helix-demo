@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { WalletConnectStatus } from '@/types'
-
 const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 
@@ -17,7 +15,6 @@ function connect() {
         notificationStore.success({ title: t('connect.successfullyConnected') })
       )
       .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
       })
   } else if (downloadBitGetLink.value && downloadBitGetLink.value.$el) {

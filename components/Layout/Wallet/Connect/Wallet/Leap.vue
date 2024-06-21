@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { isCosmosWalletInstalled, Wallet } from '@injectivelabs/wallet-ts'
-import { WalletConnectStatus } from '@/types'
 
 const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -18,7 +17,6 @@ function connect() {
         notificationStore.success({ title: t('connect.successfullyConnected') })
       )
       .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
       })
   } else if (downloadLeapLink.value && downloadLeapLink.value.$el) {

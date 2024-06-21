@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { WalletConnectStatus } from '@/types'
-
 const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
@@ -11,12 +9,11 @@ const downloadPhantomLink = ref<any>(null)
 function connect() {
   if (walletStore.phantomInstalled) {
     walletStore
-      .connectPhantom()
+      .connectPhantomWallet()
       .then(() =>
         notificationStore.success({ title: t('connect.successfullyConnected') })
       )
       .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
       })
   } else if (downloadPhantomLink.value && downloadPhantomLink.value.$el) {
