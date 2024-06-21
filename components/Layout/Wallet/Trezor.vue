@@ -4,7 +4,8 @@ import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 
-const walletStore = useSharedWalletStore()
+const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
@@ -32,7 +33,7 @@ onMounted(() => {
 function fetchAddresses() {
   fetchStatus.setLoading()
 
-  walletStore
+  sharedWalletStore
     .getHWAddresses(Wallet.Trezor)
     .catch($onError)
     .finally(() => {
@@ -44,7 +45,10 @@ const connect = handleSubmit(() => {
   status.setLoading()
 
   walletStore
-    .connectTrezor(getEthereumAddress(address.value))
+    .connect({
+      wallet: Wallet.Trezor,
+      address: getEthereumAddress(address.value)
+    })
     .catch((e) => {
       $onError(e)
     })
@@ -82,7 +86,7 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          walletStore.addresses.length === 0
+          sharedWalletStore.addresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
@@ -92,7 +96,7 @@ const connect = handleSubmit(() => {
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
 
-    <div v-if="walletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.addresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
@@ -101,7 +105,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         is-searchable
         :options="
-          walletStore.addresses.map((address: string) => ({
+          sharedWalletStore.addresses.map((address: string) => ({
             display: address,
             value: address
           }))

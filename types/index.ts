@@ -125,6 +125,12 @@ export type MenuItem =
       items: MenuItem[]
     })
 
+export type WalletOption = {
+  beta?: boolean
+  downloadLink?: string
+  wallet: Wallet
+}
+
 export * from './page'
 export * from './swap'
 export * from './enums'

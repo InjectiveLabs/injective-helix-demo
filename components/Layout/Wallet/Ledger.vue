@@ -3,9 +3,9 @@ import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
-import { WalletConnectStatus } from '@/types'
 
-const walletStore = useSharedWalletStore()
+const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -43,7 +43,7 @@ function fetchAddresses() {
       ? Wallet.Ledger
       : Wallet.LedgerLegacy
 
-  walletStore
+  sharedWalletStore
     .getHWAddresses(wallet)
     .catch($onError)
     .finally(() => {
@@ -56,9 +56,11 @@ const connect = handleSubmit(() => {
 
   if (path.value === LedgerDerivationPathType.LedgerMew) {
     return walletStore
-      .connectLedgerLegacy(getEthereumAddress(address.value))
+      .connect({
+        address: getEthereumAddress(address.value),
+        wallet: Wallet.LedgerLegacy
+      })
       .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
         $onError(e)
       })
       .finally(() => {
@@ -67,9 +69,11 @@ const connect = handleSubmit(() => {
   }
 
   walletStore
-    .connectLedger(getEthereumAddress(address.value))
+    .connect({
+      address: getEthereumAddress(address.value),
+      wallet: Wallet.Ledger
+    })
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
     })
     .finally(() => {
@@ -106,7 +110,7 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          walletStore.addresses.length === 0
+          sharedWalletStore.addresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
@@ -116,7 +120,7 @@ const connect = handleSubmit(() => {
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
 
-    <div v-if="walletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.addresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
@@ -125,7 +129,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         is-searchable
         :options="
-          walletStore.addresses.map((address: string) => ({
+          sharedWalletStore.addresses.map((address: string) => ({
             display: address,
             value: address
           }))

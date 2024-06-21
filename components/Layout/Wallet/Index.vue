@@ -1,21 +1,94 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
+import { IS_DEVNET } from '@shared/utils/constant'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
+import { Modal, WalletConnectStatus, WalletOption } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useSharedWalletStore()
 
 const status: Status = reactive(new Status(StatusType.Loading))
-const walletModalType = ref<WalletModalType>(WalletModalType.All)
+const selectedWallet = ref<Wallet | undefined>(undefined)
 
 const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !walletStore.isUserConnected
 )
 
-onMounted(() => {
-  useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
+const popularOptions = computed(() => [
+  {
+    wallet: Wallet.Metamask,
+    downloadLink: !walletStore.metamaskInstalled
+      ? 'https://metamask.io/download'
+      : undefined
+  },
+  {
+    wallet: Wallet.OkxWallet,
+    downloadLink: !walletStore.okxWalletInstalled
+      ? 'https://www.okx.com/web3'
+      : undefined
+  },
+  {
+    wallet: Wallet.Keplr,
+    downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
+      ? 'https://www.keplr.app/download'
+      : undefined
+  }
+])
 
+const options = computed(
+  () =>
+    [
+      IS_DEVNET
+        ? undefined
+        : {
+            wallet: Wallet.Leap,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+              ? 'https://www.leapwallet.io/downloads'
+              : undefined
+          },
+      IS_DEVNET
+        ? undefined
+        : {
+            wallet: Wallet.BitGet,
+            downloadLink: !walletStore.bitGetInstalled
+              ? 'https://web3.bitget.com/en/wallet-download'
+              : undefined
+          },
+      { wallet: Wallet.Ledger },
+      { wallet: Wallet.Trezor },
+      {
+        wallet: Wallet.TrustWallet,
+        downloadLink: !walletStore.trustWalletInstalled
+          ? 'https://trustwallet.com/browser-extension/'
+          : undefined
+      },
+      {
+        wallet: Wallet.Cosmostation,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
+          ? 'https://www.cosmostation.io/wallet'
+          : undefined
+      },
+      {
+        wallet: Wallet.Torus
+      },
+      IS_DEVNET
+        ? undefined
+        : {
+            beta: true,
+            wallet: Wallet.Ninji,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Ninji)
+              ? 'https://ninji.xyz/#download'
+              : undefined
+          },
+      {
+        beta: true,
+        wallet: Wallet.Phantom
+      }
+    ].filter((option) => option) as WalletOption[]
+)
+
+onMounted(() => {
   Promise.all([
     walletStore.checkIsMetamaskInstalled(),
     walletStore.checkIsTrustWalletInstalled(),
@@ -24,12 +97,6 @@ onMounted(() => {
     walletStore.checkIsBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
-
-function connectLedger() {
-  walletModalType.value = WalletModalType.Ledger
-
-  modalStore.openModal(Modal.Connect)
-}
 
 function onWalletConnect() {
   if (GEO_IP_RESTRICTIONS_ENABLED) {
@@ -43,8 +110,8 @@ function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
 
-function onWalletModalTypeChange(type: WalletModalType) {
-  walletModalType.value = type
+function onWalletModalTypeChange(wallet: Wallet) {
+  selectedWallet.value = wallet
 }
 
 watch(
@@ -60,7 +127,7 @@ watch(
 watch(isModalOpen, (newShowModalState) => {
   if (!newShowModalState) {
     onCloseModal()
-    walletModalType.value = WalletModalType.All
+    selectedWallet.value = undefined
   }
 })
 </script>
@@ -72,12 +139,12 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppHocModal :is-open="isModalOpen" @modal:close="onCloseModal">
+  <AppModal is-md :is-open="isModalOpen" @modal:closed="onCloseModal">
     <template #title>
-      <h3 v-if="walletModalType === WalletModalType.Trezor">
+      <h3 v-if="selectedWallet === Wallet.Trezor">
         {{ $t('connect.connectUsingTrezor') }}
       </h3>
-      <h3 v-else-if="walletModalType === WalletModalType.Ledger">
+      <h3 v-else-if="selectedWallet === Wallet.Ledger">
         {{ $t('connect.connectUsingLedger') }}
       </h3>
       <h3 v-else>
@@ -86,36 +153,31 @@ watch(isModalOpen, (newShowModalState) => {
     </template>
 
     <div class="p-4">
-      <LayoutWalletLedger v-if="walletModalType === WalletModalType.Ledger" />
-      <LayoutWalletTrezor
-        v-else-if="walletModalType === WalletModalType.Trezor"
-      />
+      <LayoutWalletLedger v-if="selectedWallet === Wallet.Ledger" />
+      <LayoutWalletTrezor v-else-if="selectedWallet === Wallet.Trezor" />
 
-      <ul
-        v-else
-        class="divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
-      >
-        <p class="text-gray-400 font-semibold text-sm mb-2">
-          {{ $t('common.popular') }}
-        </p>
-        <LayoutWalletConnectWalletMetamask />
-        <LayoutWalletConnectWalletOkxWallet />
-        <LayoutWalletConnectWalletKeplr />
-        <p class="text-gray-400 font-semibold text-sm mt-4">
-          {{ $t('common.otherWallets') }}
-        </p>
-        <div class="grid grid-cols-4">
-          <LayoutWalletConnectWalletNinji />
-          <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
-          <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
-          <LayoutWalletConnectWalletTrustWallet />
-          <LayoutWalletConnectWalletPhantom />
-          <LayoutWalletConnectWalletLeap />
-          <LayoutWalletConnectWalletCosmostation />
-          <LayoutWalletConnectWalletTorus />
+      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg">
+        <LayoutWalletConnectItem
+          v-for="walletOption in popularOptions"
+          :key="walletOption.wallet"
+          v-bind="{ walletOption }"
+          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+        />
+
+        <div
+          class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] border-t pt-4 mt-4"
+        >
+          <LayoutWalletConnectItem
+            v-for="walletOption in options"
+            :key="walletOption.wallet"
+            v-bind="{ walletOption }"
+            is-compact
+            @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+          />
         </div>
       </ul>
     </div>
-  </AppHocModal>
+  </AppModal>
+
   <ModalsTerms />
 </template>

@@ -5,6 +5,7 @@ export default {
     address: 'Address',
     close: 'Close',
     connect: 'Connect',
+    beta: 'Beta',
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
@@ -57,8 +58,10 @@ export default {
     trustWallet: 'Trust Wallet',
     ninji: 'Ninji',
     phantom: 'Phantom',
-    okxWallet: 'OKX Wallet',
-    bitGet: 'Bitget Wallet'
+    'okx-wallet': 'OKX Wallet',
+    bitGet: 'Bitget Wallet',
+    'trust-wallet': 'Trust Wallet',
+    BitGet: 'Bitget Wallet'
   },
 
   memo: {

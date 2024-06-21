@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 
@@ -24,6 +25,60 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       await sharedWalletStore.init()
+    },
+
+    async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
+      const walletStore = useSharedWalletStore()
+
+      // walletTracker.walletSelected({ wallet })
+
+      if (wallet === Wallet.Metamask) {
+        await walletStore.connectMetamask()
+      }
+
+      if (wallet === Wallet.Keplr) {
+        await walletStore.connectKeplr()
+      }
+
+      if (wallet === Wallet.Leap) {
+        await walletStore.connectLeap()
+      }
+
+      if ([Wallet.Ledger, Wallet.LedgerLegacy].includes(wallet) && address) {
+        await walletStore.connectLedger({
+          wallet,
+          address
+        })
+      }
+
+      if (wallet === Wallet.Phantom) {
+        await walletStore.connectPhantomWallet()
+      }
+
+      if (wallet === Wallet.Ninji) {
+        await walletStore.connectNinji()
+      }
+
+      if (wallet === Wallet.Cosmostation) {
+        await walletStore.connectCosmosStation()
+      }
+
+      if (wallet === Wallet.Trezor && address) {
+        await walletStore.connectTrezor(address)
+      }
+
+      if (wallet === Wallet.BitGet) {
+        await walletStore.connectBitGet()
+      }
+
+      if (wallet === Wallet.OkxWallet) {
+        await walletStore.connectOkxWallet()
+      }
+
+      // walletTracker.login({
+      //   wallet: walletStore.wallet,
+      //   address: walletStore.injectiveAddress
+      // })
     },
 
     // onConnect() {
