@@ -4,6 +4,9 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
+// todo: remove this when oracle mark price issue is resolved
+const ignoreMarkPriceSlugs = ['w-usdt-perp']
+
 export function useDerivativeLastPrice(
   market: Ref<UiMarketWithToken | undefined>
 ) {
@@ -86,6 +89,11 @@ export function useDerivativeLastPrice(
   })
 
   const markPrice = computed(() => {
+    // todo: remove this when oracle mark price issue is resolved
+    if (market.value && ignoreMarkPriceSlugs.includes(market.value.slug)) {
+      return lastTradedPrice.value.toFixed()
+    }
+
     return marketMarkPrice.value || lastTradedPrice.value.toFixed()
   })
 
