@@ -110,7 +110,7 @@ function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
 
-function onWalletModalTypeChange(wallet: Wallet) {
+function onWalletModalTypeChange(wallet: Wallet | undefined) {
   selectedWallet.value = wallet
 }
 
@@ -152,9 +152,32 @@ watch(isModalOpen, (newShowModalState) => {
       </h3>
     </template>
 
-    <div class="p-4">
-      <LayoutWalletLedger v-if="selectedWallet === Wallet.Ledger" />
-      <LayoutWalletTrezor v-else-if="selectedWallet === Wallet.Trezor" />
+    <div class="py-4">
+      <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
+        <LayoutWalletConnectItem
+          is-back-button
+          v-bind="{
+            walletOption: {
+              wallet: Wallet.Ledger
+            }
+          }"
+          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+        />
+        <LayoutWalletLedger />
+      </div>
+
+      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
+        <LayoutWalletConnectItem
+          is-back-button
+          v-bind="{
+            walletOption: {
+              wallet: Wallet.Trezor
+            }
+          }"
+          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+        />
+        <LayoutWalletTrezor />
+      </div>
 
       <ul v-else class="divide-gray-800 border-gray-700 rounded-lg">
         <LayoutWalletConnectItem

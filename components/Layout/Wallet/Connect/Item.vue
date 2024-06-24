@@ -4,6 +4,7 @@ import { WalletOption } from '@/types'
 
 const props = defineProps({
   isCompact: Boolean,
+  isBackButton: Boolean,
 
   walletOption: {
     type: Object as PropType<WalletOption>,
@@ -12,7 +13,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-  'selectedHardwareWallet:toggle': [wallet: Wallet]
+  'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
 }>()
 
 const walletStore = useWalletStore()
@@ -23,6 +24,11 @@ const { t } = useLang()
 const hardwareWallets = [Wallet.Ledger, Wallet.Trezor]
 
 function handleConnect() {
+  if (props.isBackButton) {
+    emit('selectedHardwareWallet:toggle', undefined)
+    return
+  }
+
   if (props.walletOption.downloadLink) {
     return navigateTo(props.walletOption.downloadLink, {
       open: {
@@ -33,6 +39,7 @@ function handleConnect() {
 
   if (hardwareWallets.includes(props.walletOption.wallet)) {
     emit('selectedHardwareWallet:toggle', props.walletOption.wallet)
+    return
   }
 
   walletStore
@@ -83,7 +90,7 @@ function handleConnect() {
         </span>
       </p>
 
-      <p class="text-xs text-gray-500 mt-1">
+      <p class="text-xs text-gray-500">
         <span v-if="hardwareWallets.includes(walletOption.wallet)">
           {{ $t(`connect.${'connectUsingHardware'}`) }}
         </span>

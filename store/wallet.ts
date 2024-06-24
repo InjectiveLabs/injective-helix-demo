@@ -29,6 +29,7 @@ export const useWalletStore = defineStore('wallet', {
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
       const walletStore = useSharedWalletStore()
+      const accountStore = useAccountStore()
 
       // walletTracker.walletSelected({ wallet })
 
@@ -75,37 +76,14 @@ export const useWalletStore = defineStore('wallet', {
         await walletStore.connectOkxWallet()
       }
 
-      // walletTracker.login({
-      //   wallet: walletStore.wallet,
-      //   address: walletStore.injectiveAddress
-      // })
+      if (wallet === Wallet.Torus) {
+        await walletStore.connectTorus()
+      }
+
+      accountStore.$patch({
+        subaccountId: walletStore.defaultSubaccountId
+      })
     },
-
-    // onConnect() {
-    //   const walletStore = useSharedWalletStore()
-    //   const accountStore = useAccountStore()
-    //   // const exchangeStore = useExchangeStore()
-
-    //   accountStore.$patch({
-    //     subaccountId: walletStore.defaultSubaccountId
-    //   })
-
-    //   walletStore.$patch({
-    //     walletConnectStatus: WalletConnectStatus.connected
-    //   })
-
-    //   useEventBus(BusEvents.WalletConnected).emit()
-    //   useEventBus(BusEvents.SubaccountChange).emit()
-
-    //   mixpanelAnalytics.trackLogin({
-    //     injectiveAddress: walletStore.injectiveAddress,
-    //     wallet: walletStore.wallet,
-    //     tierLevel:
-    //       exchangeStore.feeDiscountAccountInfo?.tierLevel ||
-    //       exchangeStore.feeDiscountAccountInfo?.tierLevel ||
-    //       0
-    //   })
-    // },
 
     async validate() {
       const walletStore = useSharedWalletStore()
