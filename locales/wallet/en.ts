@@ -61,7 +61,8 @@ export default {
     'okx-wallet': 'OKX Wallet',
     bitGet: 'Bitget Wallet',
     'trust-wallet': 'Trust Wallet',
-    BitGet: 'Bitget Wallet'
+    BitGet: 'Bitget Wallet',
+    'wallet-connect': 'Wallet Connect'
   },
 
   memo: {

@@ -31,8 +31,6 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useSharedWalletStore()
       const accountStore = useAccountStore()
 
-      // walletTracker.walletSelected({ wallet })
-
       if (wallet === Wallet.Metamask) {
         await walletStore.connectMetamask()
       }
@@ -80,6 +78,10 @@ export const useWalletStore = defineStore('wallet', {
         await walletStore.connectTorus()
       }
 
+      if (wallet === Wallet.WalletConnect) {
+        await walletStore.connectWalletConnect()
+      }
+
       accountStore.$patch({
         subaccountId: walletStore.defaultSubaccountId
       })
@@ -125,9 +127,5 @@ export const useWalletStore = defineStore('wallet', {
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
     }
-
-    // Todo when connectivg wallet, reset account defaultSubaccountId
-    // TODO When Connecting AuthZ, reset account defaultSubaccountId
-    // TODO When Reseting AuthZ, reset account defaultSubaccountId
   }
 })
