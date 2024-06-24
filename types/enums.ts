@@ -185,9 +185,11 @@ export enum MixPanelEvent {
   CreateStrategy = 'CreateStrategy',
   CreateStrategyCount = 'CreateStrategyCount',
   RemoveStrategy = 'RemoveStrategy',
+  RemoveStrategyCount = 'RemoveStrategyCount',
   CreateLiquidityBot = 'CreateLiquidityBot',
   CreateLiquidityBotCount = 'CreateLiquidityBotCount',
-  RemoveLiquidityBot = 'RemoveLiquidityBot'
+  RemoveLiquidityBot = 'RemoveLiquidityBot',
+  RemoveLiquidityBotCount = 'RemoveLiquidityBotCount'
 }
 
 export enum SurveyTitle {

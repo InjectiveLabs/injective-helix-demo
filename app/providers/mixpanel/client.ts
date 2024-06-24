@@ -35,27 +35,45 @@ export class MixPanelAnalytics {
     tierLevel: number
     injectiveAddress: string
   }) {
-    this.getMixpanelClient().identify(injectiveAddress)
+    const client = this.getMixpanelClient()
 
-    this.getMixpanelClient().track(MixPanelEvent.Login, {
+    if (!client) {
+      return
+    }
+
+    client.identify(injectiveAddress)
+
+    client.track(MixPanelEvent.Login, {
       Wallet: wallet,
       TierLevel: tierLevel,
       Address: injectiveAddress
     })
 
-    this.getMixpanelClient().people.set({ wallet })
-    this.getMixpanelClient().people.increment({ Login: 1, [wallet]: 1 })
+    client.people.set({ wallet })
+    client.people.increment({ Login: 1, [wallet]: 1 })
   }
 
   trackLogout() {
-    this.getMixpanelClient().reset()
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.reset()
   }
 
   trackBrowserLocation(props: {
     userCountryFromVpnApi: string
     userCountryFromBrowser?: string
   }) {
-    this.getMixpanelClient().track(MixPanelEvent.BrowserLocation, props)
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(MixPanelEvent.BrowserLocation, props)
   }
 
   trackSwap(
@@ -71,7 +89,13 @@ export class MixPanelAnalytics {
     },
     error?: string
   ) {
-    this.getMixpanelClient().track(MixPanelEvent.Swap, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(MixPanelEvent.Swap, {
       ...props,
       fee: new BigNumberInBase(props.fee).toNumber(),
       rate: new BigNumberInBase(props.rate || 0).toNumber(),
@@ -84,17 +108,32 @@ export class MixPanelAnalytics {
       error,
       status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
     })
-    this.getMixpanelClient().people.increment(MixPanelEvent.SwapCount)
+
+    if (!error) {
+      client.people.increment(MixPanelEvent.SwapCount)
+    }
   }
 
   trackSurveyAccepted(surveyTitle: string) {
-    this.getMixpanelClient().track(MixPanelEvent.SurveyAccepted, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(MixPanelEvent.SurveyAccepted, {
       surveyTitle
     })
   }
 
   trackSurveyRejected(surveyTitle: string) {
-    this.getMixpanelClient().track(MixPanelEvent.SurveyRejected, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(MixPanelEvent.SurveyRejected, {
       surveyTitle
     })
   }
@@ -116,7 +155,13 @@ export class MixPanelAnalytics {
     },
     error?: string
   ) {
-    this.getMixpanelClient().track(MixPanelEvent.CreateOrder, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(MixPanelEvent.CreateOrder, {
       ...props,
       amount: new BigNumberInBase(props.amount || 0).toNumber(),
       leverage: new BigNumberInBase(props.leverage || 0).toNumber(),
@@ -130,7 +175,10 @@ export class MixPanelAnalytics {
       error,
       status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
     })
-    this.getMixpanelClient().people.increment(MixPanelEvent.CreateOrderCount)
+
+    if (!error) {
+      client.people.increment(MixPanelEvent.CreateOrderCount)
+    }
   }
 
   trackCreateStrategy({
@@ -150,7 +198,13 @@ export class MixPanelAnalytics {
       ? MixPanelEvent.CreateLiquidityBot
       : MixPanelEvent.CreateStrategy
 
-    this.getMixpanelClient().track(event, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(event, {
       amountBase: new BigNumberInBase(
         formValues[SpotGridTradingField.BaseInvestmentAmount] || 0
       ).toNumber(),
@@ -172,11 +226,13 @@ export class MixPanelAnalytics {
       status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
     })
 
-    this.getMixpanelClient().people.increment(
-      isLiquidity
-        ? MixPanelEvent.CreateLiquidityBotCount
-        : MixPanelEvent.CreateStrategyCount
-    )
+    if (!error) {
+      client.people.increment(
+        isLiquidity
+          ? MixPanelEvent.CreateLiquidityBotCount
+          : MixPanelEvent.CreateStrategyCount
+      )
+    }
   }
 
   trackRemoveStrategy(
@@ -192,30 +248,33 @@ export class MixPanelAnalytics {
       ? MixPanelEvent.RemoveLiquidityBot
       : MixPanelEvent.RemoveStrategy
 
-    this.getMixpanelClient().track(event, {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    client.track(event, {
       market: props.market,
       pnl: new BigNumberInBase(props.pnl).toNumber(),
       duration: new BigNumberInBase(props.duration).toNumber(),
       error,
       status: error ? OrderAttemptStatus.Error : OrderAttemptStatus.Success
     })
+
+    if (!error) {
+      client.people.increment(
+        props.isLiquidity
+          ? MixPanelEvent.RemoveLiquidityBotCount
+          : MixPanelEvent.RemoveStrategyCount
+      )
+    }
   }
 
   initMixPanel() {
     if (this.mixpanelClient) {
       return
     }
-
-    this.mixpanelClient = {
-      init: () => {},
-      track: () => {},
-      reset: () => {},
-      identify: () => {},
-      people: {
-        set: () => {},
-        increment: () => {}
-      }
-    } as unknown as OverridedMixpanel
 
     if (!this.mixpanelKey) {
       return
