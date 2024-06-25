@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 
 type WalletStoreState = {}
@@ -16,12 +15,6 @@ export const useWalletStore = defineStore('wallet', {
 
       if (!sharedWalletStore.wallet) {
         return
-      }
-
-      if (sharedWalletStore.isUserConnected) {
-        mixpanelAnalytics.trackWalletAddress({
-          injectiveAddress: sharedWalletStore.injectiveAddress
-        })
       }
 
       await sharedWalletStore.init()

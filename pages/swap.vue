@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
@@ -115,7 +115,7 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelAnalytics.trackSwap(
+      EventTracker.trackSwap(
         {
           fee: totalFee.value.toFixed(2),
           minimumOutput: minimumOutput.value,

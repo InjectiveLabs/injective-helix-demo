@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -36,6 +37,7 @@ function connect() {
     .then(() => success({ title: t('connect.successfullyConnected') }))
     .catch((e) => {
       walletStore.disconnect()
+      WalletTracker.trackLogout()
 
       $onError(e)
     })

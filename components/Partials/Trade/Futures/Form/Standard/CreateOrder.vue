@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import {
-  MsgType,
-  TradeDirection,
-  TradeExecutionType
-} from '@injectivelabs/ts-types'
 import { SharedMarketType } from '@shared/types'
+import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   Modal,
   BusEvents,
   MarketKey,
   ChartViewOption,
+  MixPanelOrderType,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
@@ -229,6 +226,21 @@ const isDisabled = computed(() => {
   }
 })
 
+const mixPanelFields = computed(() => ({
+  isAutoSign: walletStore.isAutoSignEnabled,
+  isBuy: isBuy.value,
+  market: derivativeMarket.value.slug,
+  marketType: SharedMarketType.Derivative,
+  amount: props.quantity.toFixed(),
+  leverage:
+    derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
+  slippageTolerance:
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
+  reduceOnly: isOrderTypeReduceOnly.value,
+  postOnly: !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
+  chartType: chartType.value
+}))
+
 onMounted(() => {
   useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
     chartType.value = chart
@@ -264,26 +276,12 @@ async function submitLimitOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: props.quantity.toFixed(),
-        market: derivativeMarket.value.slug,
-        marketType: SharedMarketType.Derivative,
-        tradingType: TradeExecutionType.LimitFill,
-        triggerPrice: triggerPrice.value.toFixed(),
-        limitPrice: limitPrice.value.toFixed(),
-        orderSide: orderTypeToSubmit.value,
-        leverage:
-          derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
-        slippageTolerance:
-          derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
-        postOnly:
-          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.Limit,
+          limitPrice: limitPrice.value.toFixed(),
+          triggerPrice: ''
         },
         err?.message
       )
@@ -319,26 +317,12 @@ function submitStopLimitOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: props.quantity.toFixed(),
-        market: derivativeMarket.value.slug,
-        marketType: SharedMarketType.Derivative,
-        tradingType: TradeExecutionType.LimitFill,
-        triggerPrice: triggerPrice.value.toFixed(),
-        limitPrice: limitPrice.value.toFixed(),
-        orderSide: orderTypeToSubmit.value,
-        leverage:
-          derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
-        slippageTolerance:
-          derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
-        postOnly:
-          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.StopLimit,
+          limitPrice: limitPrice.value.toFixed(),
+          triggerPrice: triggerPrice.value.toFixed()
         },
         err?.message
       )
@@ -372,26 +356,12 @@ function submitMarketOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: props.quantity.toFixed(),
-        market: derivativeMarket.value.slug,
-        marketType: SharedMarketType.Derivative,
-        tradingType: TradeExecutionType.Market,
-        limitPrice: '',
-        triggerPrice: '',
-        leverage:
-          derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
-        slippageTolerance:
-          derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
-        postOnly:
-          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-        orderSide: orderTypeToSubmit.value,
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.Market,
+          limitPrice: '',
+          triggerPrice: ''
         },
         err?.message
       )
@@ -427,26 +397,12 @@ function submitStopMarketOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: props.quantity.toFixed(),
-        market: derivativeMarket.value.slug,
-        marketType: SharedMarketType.Derivative,
-        tradingType: TradeExecutionType.Market,
-        triggerPrice: triggerPrice.value.toFixed(),
-        limitPrice: '',
-        orderSide: orderTypeToSubmit.value,
-        leverage:
-          derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
-        slippageTolerance:
-          derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
-        postOnly:
-          !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.StopMarket,
+          triggerPrice: triggerPrice.value.toFixed(),
+          limitPrice: ''
         },
         err?.message
       )

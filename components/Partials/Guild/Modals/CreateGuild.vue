@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
@@ -71,6 +72,7 @@ const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
 function disconnect() {
   walletStore.disconnect()
+  WalletTracker.trackLogout()
 
   onCloseModal()
 }

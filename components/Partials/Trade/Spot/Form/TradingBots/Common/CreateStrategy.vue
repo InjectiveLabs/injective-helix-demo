@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   MarketKey,
   UiSpotMarket,
@@ -69,7 +69,7 @@ async function createStrategy() {
           market.value.quoteToken.decimals - market.value.baseToken.decimals
       })
 
-      mixpanelAnalytics.trackCreateStrategy({
+      EventTracker.trackCreateStrategy({
         error: err?.message,
         formValues: spotFormValues.value,
         market: market.value.slug || '',

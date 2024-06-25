@@ -27,7 +27,6 @@ import {
 import { tendermintApi } from '@/app/Services'
 import { todayInSeconds } from '@/app/utils/time'
 import { streamProvider } from '@/app/providers/StreamProvider'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   Modal,
   GeoLocation,
@@ -226,11 +225,6 @@ export const useAppStore = defineStore('app', {
           ...geoLocation,
           vpnCheckTimestamp: todayInSeconds()
         }
-      })
-
-      mixpanelAnalytics.trackBrowserLocation({
-        userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
-        userCountryFromVpnApi: appStore.userState.geoLocation.country
       })
     },
 

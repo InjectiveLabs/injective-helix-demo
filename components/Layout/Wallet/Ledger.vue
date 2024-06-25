@@ -3,9 +3,11 @@ import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -54,24 +56,23 @@ function fetchAddresses() {
 const connect = handleSubmit(() => {
   status.setLoading()
 
-  if (path.value === LedgerDerivationPathType.LedgerMew) {
-    return walletStore
-      .connect({
-        address: getEthereumAddress(address.value),
-        wallet: Wallet.LedgerLegacy
-      })
-      .catch((e) => {
-        $onError(e)
-      })
-      .finally(() => {
-        status.setIdle()
-      })
-  }
+  const wallet =
+    path.value === LedgerDerivationPathType.LedgerMew
+      ? Wallet.LedgerLegacy
+      : Wallet.Ledger
 
   walletStore
     .connect({
-      address: getEthereumAddress(address.value),
-      wallet: Wallet.Ledger
+      wallet,
+      address: getEthereumAddress(address.value)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('connect.successfullyConnected') })
+
+      WalletTracker.trackLogin({
+        wallet: sharedWalletStore.wallet,
+        address: sharedWalletStore.injectiveAddress
+      })
     })
     .catch((e) => {
       $onError(e)

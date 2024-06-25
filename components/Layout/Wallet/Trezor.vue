@@ -3,9 +3,12 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
@@ -48,6 +51,14 @@ const connect = handleSubmit(() => {
     .connect({
       wallet: Wallet.Trezor,
       address: getEthereumAddress(address.value)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('connect.successfullyConnected') })
+
+      WalletTracker.trackLogin({
+        wallet: sharedWalletStore.wallet,
+        address: sharedWalletStore.injectiveAddress
+      })
     })
     .catch((e) => {
       $onError(e)

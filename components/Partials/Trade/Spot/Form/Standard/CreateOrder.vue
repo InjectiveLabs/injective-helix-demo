@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
+import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { MsgType, OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   BusEvents,
   MarketKey,
@@ -10,6 +10,7 @@ import {
   UiSpotMarket,
   SpotTradeForm,
   ChartViewOption,
+  MixPanelOrderType,
   SpotTradeFormField
 } from '@/types'
 
@@ -127,6 +128,19 @@ onMounted(() => {
   })
 })
 
+const mixPanelFields = computed(() => ({
+  isAutoSign: walletStore.isAutoSignEnabled,
+  isBuy: isBuy.value,
+  market: market.value.slug,
+  marketType: SharedMarketType.Spot,
+  amount: props.quantity.toFixed(),
+  leverage: '',
+  triggerPrice: '',
+  slippageTolerance: spotFormValues.value[SpotTradeFormField.Slippage] || '',
+  postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
+  chartType: chartType.value
+}))
+
 function submitLimitOrder() {
   status.setLoading()
 
@@ -153,24 +167,11 @@ function submitLimitOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: quantity.toFixed(),
-        market: market.value.slug,
-        marketType: SharedMarketType.Spot,
-        orderSide: orderTypeToSubmit.value,
-        tradingType: TradeExecutionType.LimitFill,
-        limitPrice: limitPrice.toFixed(),
-        triggerPrice: '',
-        leverage: '',
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.Limit,
+          limitPrice: limitPrice.toFixed()
         },
         err?.message
       )
@@ -201,25 +202,11 @@ function submitMarketOrder() {
       $onError(e)
     })
     .finally(() => {
-      const mixPanelProps = {
-        amount: quantity.toFixed(),
-        market: market.value.slug,
-        marketType: SharedMarketType.Spot,
-        orderType: spotFormValues.value[SpotTradeFormField.Type],
-        orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
-        tradingType: TradeExecutionType.Market,
-        limitPrice: '',
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
-        chartType: chartType.value
-      }
-
-      mixpanelAnalytics.trackCreateOrder(
+      EventTracker.trackCreateOrder(
         {
-          ...mixPanelProps,
-          leverage: '',
-          triggerPrice: ''
+          ...mixPanelFields.value,
+          orderType: MixPanelOrderType.Market,
+          limitPrice: ''
         },
         err?.message
       )
