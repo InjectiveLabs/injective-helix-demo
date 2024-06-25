@@ -66,7 +66,7 @@ function handleConnect() {
 <template>
   <button
     v-if="isCompact"
-    class="rounded-lg hover:bg-brand-750 flex flex-col items-center py-4"
+    class="rounded-lg hover:bg-brand-800 flex flex-col items-center py-4"
     @click="handleConnect"
   >
     <SharedIcon class="w-6 h-6" :name="`wallet/${walletOption.wallet}`" />
@@ -75,7 +75,7 @@ function handleConnect() {
 
   <button
     v-else
-    class="flex w-full p-2 px-4 rounded-lg hover:bg-brand-750 items-stretch"
+    class="flex w-full p-2 px-4 rounded-lg hover:bg-brand-800 items-stretch"
     @click="handleConnect"
   >
     <div

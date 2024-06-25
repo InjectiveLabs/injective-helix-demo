@@ -141,7 +141,12 @@ watch(isModalOpen, (newShowModalState) => {
     {{ $t('connect.connectWallet') }}
   </AppButton>
 
-  <AppModal is-md :is-open="isModalOpen" @modal:closed="onCloseModal">
+  <AppModal
+    is-md
+    is-transparent
+    :is-open="isModalOpen"
+    @modal:closed="onCloseModal"
+  >
     <template #title>
       <h3 v-if="selectedWallet === Wallet.Trezor">
         {{ $t('connect.connectUsingTrezor') }}
@@ -182,6 +187,10 @@ watch(isModalOpen, (newShowModalState) => {
       </div>
 
       <ul v-else class="divide-gray-800 border-gray-700 rounded-lg">
+        <p class="text-gray-400 font-semibold text-xs mb-2">
+          {{ $t('common.popular') }}
+        </p>
+
         <LayoutWalletConnectItem
           v-for="walletOption in popularOptions"
           :key="walletOption.wallet"
@@ -189,9 +198,13 @@ watch(isModalOpen, (newShowModalState) => {
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"
         />
 
-        <div
-          class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] border-t pt-4 mt-4"
-        >
+        <div class="border-t pt-4 mt-4"></div>
+
+        <p class="text-gray-400 font-semibold text-xs mb-2">
+          {{ $t('common.otherWallets') }}
+        </p>
+
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
           <LayoutWalletConnectItem
             v-for="walletOption in options"
             :key="walletOption.wallet"

@@ -9,6 +9,7 @@ const props = defineProps({
   isOpen: Boolean,
   isDense: Boolean,
   isAlwaysOpen: Boolean,
+  isTransparent: Boolean,
   isHideCloseButton: Boolean,
 
   modalContentClass: {
@@ -62,9 +63,9 @@ watchDebounced(
   <Transition name="modal" appear>
     <SharedModalWrapper
       v-if="isOpen"
-      class="relative mx-auto sm:rounded-lg bg-brand-900 border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
-      :class="classes"
-      wrapper-class="backdrop-filter backdrop-blur bg-black/90 bg-opacity-90 max-sm:z-40"
+      class="relative mx-auto sm:rounded-lg border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
+      :class="[isTransparent ? 'bg-brand-900/80' : 'bg-brand-900', classes]"
+      wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
       @modal:closed="onModalClose"
     >
