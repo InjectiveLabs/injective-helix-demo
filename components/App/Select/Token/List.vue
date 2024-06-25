@@ -33,9 +33,9 @@ const filteredOptions = computed(() => {
 
     const { name } = balance.token
     const shouldIncludeSupply =
-      name.toLowerCase().includes(formattedSearch) ||
-      balance.token.denom.toLowerCase().includes(formattedSearch) ||
-      balance.token.symbol.toLowerCase().includes(formattedSearch)
+      name.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.denom.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.symbol.toLowerCase().startsWith(formattedSearch)
 
     return shouldIncludeSupply
   })
