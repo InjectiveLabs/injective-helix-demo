@@ -1,13 +1,14 @@
 import {
-  PiniaPluginContext,
   StateTree,
+  PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { StatusType } from '@injectivelabs/utils'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { AppState, OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -149,7 +150,7 @@ const persistState = (
 
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const appStore = useAppStore()
+  const walletStore = useSharedWalletStore()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -161,8 +162,8 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
     after(() => {
       const type = `${$id}/${name}`
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        walletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })
@@ -171,8 +172,8 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        walletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })

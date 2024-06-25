@@ -79,14 +79,6 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum AppState {
-  Busy = 'Busy',
-  Loading = 'Loading',
-  Idle = 'Idle',
-  Error = 'Error',
-  Success = 'Success'
-}
-
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'

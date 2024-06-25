@@ -30,7 +30,6 @@ import { streamProvider } from '@/app/providers/StreamProvider'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   Modal,
-  AppState,
   GeoLocation,
   NoticeBanner,
   TradingLayout,
@@ -67,9 +66,6 @@ type AppStoreState = {
   ethereumChainId: EthereumChainId
   marketsOpen: boolean
 
-  // Loading States
-  state: AppState
-
   // Dev Mode
   devMode: boolean | undefined
 
@@ -86,9 +82,6 @@ const initialStateFactory = (): AppStoreState => ({
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
   marketsOpen: false,
-
-  // Loading States
-  state: AppState.Idle,
 
   // Dev Mode
   devMode: undefined,
@@ -168,18 +161,6 @@ export const useAppStore = defineStore('app', {
           geoLocation
         }
       })
-    },
-
-    queue() {
-      const appStore = useAppStore()
-
-      if (appStore.state === AppState.Busy) {
-        throw new GeneralException(new Error('You have a pending transaction.'))
-      } else {
-        appStore.$patch({
-          state: AppState.Busy
-        })
-      }
     },
 
     async validateGeoIp() {
