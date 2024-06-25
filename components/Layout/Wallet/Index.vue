@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+import { IS_DEVNET } from '@shared/utils/constant'
+import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
-import { IS_DEVNET } from '@shared/utils/constant'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
-import { Modal, WalletConnectStatus, WalletOption } from '@/types'
+import { Modal, WalletOption } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useSharedWalletStore()
