@@ -5,8 +5,8 @@ import {
   durationFormatter,
   getSgtContractAddressFromSlug
 } from '@/app/utils/helpers'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -18,7 +18,7 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
@@ -74,7 +74,7 @@ function removeStrategy() {
     .finally(() => {
       status.setIdle()
 
-      mixpanelAnalytics.trackRemoveStrategy(
+      EventTracker.trackRemoveStrategy(
         {
           duration: durationFormatter(props.strategy.createdAt, Date.now()),
           market: market.value.slug,

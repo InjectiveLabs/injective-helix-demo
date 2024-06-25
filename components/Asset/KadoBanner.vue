@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const url = computed(() => {
-  const suffix = walletStore.isUserWalletConnected
+  const suffix = walletStore.isUserConnected
     ? `&onToAddress=${walletStore.injectiveAddress}`
     : ''
 

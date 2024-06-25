@@ -10,7 +10,7 @@ import { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()

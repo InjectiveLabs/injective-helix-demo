@@ -3,7 +3,7 @@ import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { Modal } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const { copy } = useClipboard()
 const { t } = useLang()
 const notificationStore = useSharedNotificationStore()

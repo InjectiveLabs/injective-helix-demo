@@ -24,19 +24,13 @@ export const closePosition = async ({
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
   const positionStore = usePositionStore()
+  const walletStore = useSharedWalletStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -44,7 +38,7 @@ export const closePosition = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
-  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -58,7 +52,7 @@ export const closePosition = async ({
     })
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => positionStore.fetchPositions())
@@ -70,19 +64,17 @@ export const closeAllPosition = async (
   const appStore = useAppStore()
   const positionStore = usePositionStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const derivativeStore = useDerivativeStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !accountStore.subaccountId ||
     positions.length === 0
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -140,7 +132,7 @@ export const closeAllPosition = async (
     })
   )
 
-  await walletStore.broadcastMessages(messages)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => positionStore.fetchPositions())
@@ -157,20 +149,18 @@ export const closePositionAndReduceOnlyOrders = async ({
   const appStore = useAppStore()
   const positionStore = usePositionStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   const actualMarket = market as UiDerivativeMarket
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !accountStore.subaccountId ||
     !actualMarket
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -178,7 +168,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
-  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -192,7 +182,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => positionStore.fetchPositions())
@@ -207,22 +197,16 @@ export const addMarginToPosition = async ({
 }) => {
   const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !accountStore.subaccountId ||
-    !market
-  ) {
+  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const message = MsgIncreasePositionMargin.fromJSON({
+  const messages = MsgIncreasePositionMargin.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     srcSubaccountId: accountStore.subaccountId,
@@ -233,5 +217,5 @@ export const addMarginToPosition = async ({
     })
   })
 
-  await walletStore.broadcastMessages(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 }

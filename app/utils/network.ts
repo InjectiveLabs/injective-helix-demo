@@ -1,11 +1,11 @@
 import { getBridgeUrl } from '@shared/utils/network'
 
 export const getBridgeRedirectionUrl = (suffix?: string) => {
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   const url = suffix ? `${getBridgeUrl()}/${suffix}` : `${getBridgeUrl()}`
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return `${url}/?origin=helix`
   }
 

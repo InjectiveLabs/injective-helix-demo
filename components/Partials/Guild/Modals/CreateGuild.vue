@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
@@ -9,6 +10,7 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { validate, resetForm } = useForm()
@@ -70,6 +72,7 @@ const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
 function disconnect() {
   walletStore.disconnect()
+  WalletTracker.trackLogout()
 
   onCloseModal()
 }
@@ -169,7 +172,7 @@ watch(
         <AppInput
           is-sm
           is-disabled
-          :model-value="walletStore.injectiveAddress"
+          :model-value="sharedWalletStore.injectiveAddress"
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
         />

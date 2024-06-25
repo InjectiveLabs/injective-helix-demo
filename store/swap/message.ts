@@ -38,20 +38,17 @@ export const submitAtomicOrder = async ({
   outputToken: TokenAndPriceAndDecimals
   minimumOutput: string
 }) => {
-  const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !walletStore.defaultSubaccountId ||
     !minimumOutput
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeInputAmount = formValues[SwapFormField.InputAmount]
@@ -85,11 +82,11 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastMessages(message)
+  const response = await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
@@ -109,20 +106,17 @@ export const submitAtomicOrderExactOutput = async ({
   outputToken: TokenAndPriceAndDecimals
   maximumInput: string
 }) => {
-  const appStore = useAppStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !walletStore.isUserConnected ||
     !walletStore.defaultSubaccountId ||
     !maximumInput
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
@@ -156,11 +150,11 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastMessages(message)
+  const response = await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 

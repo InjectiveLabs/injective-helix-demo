@@ -5,7 +5,7 @@ import { Modal } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -33,7 +33,7 @@ const props = defineProps({
 const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 

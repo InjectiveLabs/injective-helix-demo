@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
@@ -20,7 +20,7 @@ onWalletConnected(() => {
 
 <template>
   <AppHocLoading :status="status">
-    <div v-if="walletStore.isUserWalletConnected" class="my-8">
+    <div v-if="walletStore.isUserConnected" class="my-8">
       <AppHorizontalScrollView>
         <PartialsFeeDiscountsTierInfo class="flex-0-full md:col-span-6" />
         <PartialsFeeDiscountsStakedAmount class="flex-0-full md:col-span-3" />

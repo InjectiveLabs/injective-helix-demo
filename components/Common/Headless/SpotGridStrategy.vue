@@ -13,7 +13,7 @@ import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { StrategyStatus } from '@/types'
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const tokenStore = useTokenStore()
@@ -263,7 +263,7 @@ function removeStrategy() {
     .finally(() => {
       removeStatus.setIdle()
 
-      mixpanelAnalytics.trackRemoveStrategy(
+      EventTracker.trackRemoveStrategy(
         {
           duration: durationFormatter(props.strategy.createdAt, Date.now()),
           market: gridStrategyStore.spotMarket?.slug || '',

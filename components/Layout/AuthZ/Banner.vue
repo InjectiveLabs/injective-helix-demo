@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 </script>
 
 <template>

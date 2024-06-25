@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getDepositMenuItem, PORTFOLIO_MENU_ITEM } from '@/app/data/menu'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const depositMenuItem = getDepositMenuItem()
 </script>
@@ -14,7 +14,7 @@ const depositMenuItem = getDepositMenuItem()
     />
 
     <LayoutNavbarMenuItem
-      v-if="walletStore.isUserWalletConnected"
+      v-if="walletStore.isUserConnected"
       class="hidden lg:block"
       v-bind="{ item: PORTFOLIO_MENU_ITEM }"
     />

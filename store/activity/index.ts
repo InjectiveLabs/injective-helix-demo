@@ -52,9 +52,9 @@ export const useActivityStore = defineStore('activity', {
     async fetchTradingRewardsHistory() {
       const activityStore = useActivityStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -70,9 +70,9 @@ export const useActivityStore = defineStore('activity', {
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -92,11 +92,11 @@ export const useActivityStore = defineStore('activity', {
     },
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

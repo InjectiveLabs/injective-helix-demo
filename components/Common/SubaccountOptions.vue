@@ -13,7 +13,7 @@ const props = defineProps({
   includeBotsSubaccounts: Boolean
 })
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const { t } = useLang()
 const { aggregatedPortfolioBalances } = useBalance()

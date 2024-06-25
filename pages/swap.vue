@@ -2,7 +2,7 @@
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, SwapForm, SwapFormField } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
@@ -14,7 +14,7 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 
 const { $onError } = useNuxtApp()
@@ -115,7 +115,7 @@ async function submit() {
       $onError(error)
     })
     .finally(() => {
-      mixpanelAnalytics.trackSwap(
+      EventTracker.trackSwap(
         {
           fee: totalFee.value.toFixed(2),
           minimumOutput: minimumOutput.value,
@@ -175,7 +175,7 @@ function getOutputQuantity() {
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
-      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+      if (walletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })
@@ -205,7 +205,7 @@ function getInputQuantity() {
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
 
-      if (walletStore.isUserWalletConnected && !hideErrorToast.value) {
+      if (walletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })

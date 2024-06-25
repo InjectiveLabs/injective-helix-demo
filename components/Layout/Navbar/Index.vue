@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MainPage } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const route = useRoute()
 </script>
 

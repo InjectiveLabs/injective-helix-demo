@@ -19,7 +19,7 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const exchangeStore = useExchangeStore()
 const gridStrategyStore = useGridStrategyStore()
 const setFormValues = useSetFormValues()
@@ -229,7 +229,7 @@ function setValuesFromAuto() {
       is-auto
     />
 
-    <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
+    <CommonUserNotConnectedNote v-if="!walletStore.isUserConnected" cta />
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else

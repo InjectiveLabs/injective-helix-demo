@@ -12,7 +12,7 @@ const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()

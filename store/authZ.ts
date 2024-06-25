@@ -75,7 +75,7 @@ export const useAuthZStore = defineStore('authZ', {
       ),
 
     hasAuthZPermission: (state) => (messageType: MsgType) => {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const msg = messageType.startsWith('/') ? messageType : `/${messageType}`
 
       return state.granteeGrants.some(
@@ -88,9 +88,9 @@ export const useAuthZStore = defineStore('authZ', {
   actions: {
     async fetchGrants() {
       const authZStore = useAuthZStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
@@ -122,14 +122,12 @@ export const useAuthZStore = defineStore('authZ', {
       messageTypes: string[]
     }) {
       const authZStore = useAuthZStore()
-      const appStore = useAppStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
-      await appStore.queue()
       await walletStore.validate()
 
       const msgs = messageTypes.map((messageType) =>
@@ -156,9 +154,9 @@ export const useAuthZStore = defineStore('authZ', {
       messageTypes: string[]
     }) {
       const authZStore = useAuthZStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 

@@ -31,7 +31,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const totalRewardsThisRound = computed(() =>
   props.roundCampaigns.reduce((sum, campaign) => {
@@ -98,7 +98,7 @@ const { valueToString: totalRewardsThisRoundToString } =
 
       <div class="space-x-2 flex pb-6">
         <NuxtLink
-          v-if="walletStore.isUserWalletConnected"
+          v-if="walletStore.isUserConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
         >
           <AppButton> {{ $t('campaign.myRewards') }}</AppButton>

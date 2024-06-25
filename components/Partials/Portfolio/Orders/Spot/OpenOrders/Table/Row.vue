@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const spotStore = useSpotStore()
 const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()

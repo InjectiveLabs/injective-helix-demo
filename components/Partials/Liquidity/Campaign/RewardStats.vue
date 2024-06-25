@@ -28,7 +28,7 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 
 const campaignWithReward = computed(() =>

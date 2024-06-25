@@ -35,7 +35,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalBalance(
       resolution: LeaderboardResolution = LeaderboardResolution.Week
     ) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalBalance({
@@ -58,7 +58,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalPnl(
       resolution: LeaderboardResolution = LeaderboardResolution.Week
     ) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
@@ -81,7 +81,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalVolume(
       resolution: LeaderboardResolution = LeaderboardResolution.Week
     ) {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
       const leaderboardStore = useLeaderboardStore()
 
       const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalVolumes({

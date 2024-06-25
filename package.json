@@ -67,7 +67,7 @@
     "@injectivelabs/node-globals-polyfill": "0.1.6",
     "@injectivelabs/prettier-config": "^1.0.3",
     "@injectivelabs/stylelint-config": "1.1.3",
-    "@nuxt/devtools": "^0.7.6",
+    "@nuxt/devtools": "^1.3.6",
     "@nuxt/typescript-build": "^3.0.1",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/i18n": "8.0.0-beta.13",
@@ -112,6 +112,8 @@
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
-    "vee-validate": "4.11.7"
+    "vee-validate": "4.11.7",
+    "@nuxt/kit": "3.11.2",
+    "@nuxt/schema": "3.11.2"
   }
 }
