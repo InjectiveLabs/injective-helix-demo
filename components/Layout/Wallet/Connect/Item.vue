@@ -18,8 +18,8 @@ const emit = defineEmits<{
 
 const walletStore = useWalletStore()
 const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const hardwareWallets = [Wallet.Ledger, Wallet.Trezor]
 

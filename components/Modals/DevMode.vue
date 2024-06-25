@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal, WalletConnectStatus } from '@/types'
+import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
+const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 const { resetForm } = useForm()
 const { $onError } = useNuxtApp()
@@ -30,11 +31,12 @@ function onModalClose() {
 function connect() {
   status.setLoading()
 
-  walletStore
+  sharedWalletStore
     .connectAddress(injectiveAddress.value)
     .then(() => success({ title: t('connect.successfullyConnected') }))
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+      walletStore.disconnect()
+
       $onError(e)
     })
     .finally(() => {

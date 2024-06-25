@@ -29,7 +29,7 @@ export const deposit = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgDeposit.fromJSON({
+  const messages = MsgDeposit.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
@@ -41,7 +41,7 @@ export const deposit = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -66,7 +66,7 @@ export const withdraw = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgWithdraw.fromJSON({
+  const messages = MsgWithdraw.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
@@ -78,7 +78,7 @@ export const withdraw = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -107,7 +107,7 @@ export const transfer = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgSend.fromJSON({
+  const messages = MsgSend.fromJSON({
     srcInjectiveAddress: walletStore.authZOrInjectiveAddress,
     dstInjectiveAddress: destination,
     amount: {
@@ -116,7 +116,7 @@ export const transfer = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message, memo)
+  await walletStore.broadcastWithFeeDelegation({ messages, memo })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -147,7 +147,7 @@ export const externalTransfer = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgExternalTransfer.fromJSON({
+  const messages = MsgExternalTransfer.fromJSON({
     srcSubaccountId,
     dstSubaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
@@ -157,7 +157,7 @@ export const externalTransfer = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message, memo)
+  await walletStore.broadcastWithFeeDelegation({ messages, memo })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -174,7 +174,7 @@ export const withdrawToMain = async () => {
   await appStore.queue()
   await walletStore.validate()
 
-  const msgs = accountStore.subaccountBalancesMap[accountStore.subaccountId]
+  const messages = accountStore.subaccountBalancesMap[accountStore.subaccountId]
     .filter((balance) =>
       new BigNumberInBase(balance.availableBalance)
         .dp(0, BigNumberInBase.ROUND_DOWN)
@@ -194,7 +194,7 @@ export const withdrawToMain = async () => {
       })
     )
 
-  await walletStore.broadcastWithFeeDelegation(msgs)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }

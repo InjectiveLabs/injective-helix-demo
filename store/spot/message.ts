@@ -58,7 +58,7 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  await walletStore.broadcastWithFeeDelegation(messages)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -75,14 +75,14 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgCancelSpotOrder.fromJSON({
+  const messages = MsgCancelSpotOrder.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     subaccountId: order.subaccountId,
     orderHash: order.orderHash
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -151,11 +151,11 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, orderMessage]
     : orderMessage
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -220,11 +220,11 @@ export const submitMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, orderMessage]
     : [orderMessage]
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -255,7 +255,7 @@ export const submitStopLimitOrder = async ({
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
-  const message = MsgCreateSpotLimitOrder.fromJSON({
+  const messages = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
@@ -277,7 +277,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -308,7 +308,7 @@ export const submitStopMarketOrder = async ({
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
-  const message = MsgCreateSpotMarketOrder.fromJSON({
+  const messages = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
@@ -330,7 +330,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }

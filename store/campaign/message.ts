@@ -56,7 +56,7 @@ export const createGuild = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const messages = MsgExecuteContractCompat.fromJSON({
     sender: walletStore.injectiveAddress,
     contractAddress: GUILD_CONTRACT_ADDRESS,
     exec: {
@@ -73,7 +73,7 @@ export const createGuild = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await delayPromiseCall(
     () =>
@@ -99,7 +99,7 @@ export const joinGuild = async ({
   await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const messages = MsgExecuteContractCompat.fromJSON({
     sender: walletStore.injectiveAddress,
     contractAddress: GUILD_CONTRACT_ADDRESS,
     exec: {
@@ -110,7 +110,7 @@ export const joinGuild = async ({
     }
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   await delayPromiseCall(
     () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),

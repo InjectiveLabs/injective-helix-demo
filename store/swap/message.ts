@@ -85,11 +85,11 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastWithFeeDelegation(message)
+  const response = await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 
@@ -156,11 +156,11 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
-  const message = cw20ConvertMessage
+  const messages = cw20ConvertMessage
     ? [cw20ConvertMessage, swapMessage]
     : swapMessage
 
-  const response = await walletStore.broadcastWithFeeDelegation(message)
+  const response = await walletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 

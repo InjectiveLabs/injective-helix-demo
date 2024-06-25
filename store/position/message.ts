@@ -136,7 +136,7 @@ export const closeAllPosition = async (
     })
   )
 
-  await walletStore.broadcastWithFeeDelegation(messages)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => positionStore.fetchPositions())
@@ -174,7 +174,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
   const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
 
-  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
@@ -188,7 +188,7 @@ export const closePositionAndReduceOnlyOrders = async ({
     orderType: orderSideToOrderType(orderType)
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
   backupPromiseCall(() => positionStore.fetchPositions())
@@ -214,7 +214,7 @@ export const addMarginToPosition = async ({
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const message = MsgIncreasePositionMargin.fromJSON({
+  const messages = MsgIncreasePositionMargin.fromJSON({
     injectiveAddress: walletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     srcSubaccountId: accountStore.subaccountId,
@@ -225,5 +225,5 @@ export const addMarginToPosition = async ({
     })
   })
 
-  await walletStore.broadcastWithFeeDelegation(message)
+  await walletStore.broadcastWithFeeDelegation({ messages })
 }

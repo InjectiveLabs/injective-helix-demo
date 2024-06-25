@@ -88,10 +88,12 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
+      const appStore = useAppStore()
       const walletStore = useSharedWalletStore()
 
       const isAutoSignEnabled = !!walletStore.isAutoSignEnabled
 
+      await appStore.validateGeoIp()
       await walletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {
