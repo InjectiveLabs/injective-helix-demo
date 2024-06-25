@@ -147,18 +147,6 @@ watch(isModalOpen, (newShowModalState) => {
     :is-open="isModalOpen"
     @modal:closed="onCloseModal"
   >
-    <template #title>
-      <h3 v-if="selectedWallet === Wallet.Trezor">
-        {{ $t('connect.connectUsingTrezor') }}
-      </h3>
-      <h3 v-else-if="selectedWallet === Wallet.Ledger">
-        {{ $t('connect.connectUsingLedger') }}
-      </h3>
-      <h3 v-else>
-        {{ $t('connect.connectToWallet') }}
-      </h3>
-    </template>
-
     <div class="py-4">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem

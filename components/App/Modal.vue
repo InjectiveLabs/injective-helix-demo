@@ -76,6 +76,7 @@ watchDebounced(
           }"
         >
           <div
+            v-if="$slots.title"
             class="flex items-center justify-between"
             :class="{ 'mb-6 px-6 pt-6': !isDense }"
           >
@@ -92,6 +93,14 @@ watchDebounced(
                 @click="close"
               />
             </div>
+          </div>
+
+          <div v-else class="relative">
+            <SharedIcon
+              name="close"
+              class="top-4 right-4 absolute h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+              @click="close"
+            />
           </div>
 
           <div
