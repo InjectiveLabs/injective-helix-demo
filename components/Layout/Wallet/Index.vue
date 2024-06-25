@@ -85,8 +85,8 @@ const options = computed(
       {
         beta: true,
         wallet: Wallet.Phantom
-      },
-      { wallet: Wallet.WalletConnect }
+      }
+      // { wallet: Wallet.WalletConnect }
     ].filter((option) => option) as WalletOption[]
 )
 
