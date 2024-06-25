@@ -13,7 +13,7 @@ import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
-import { backupPromiseCall } from '~/app/utils/async'
+import { backupPromiseCall } from '@/app/utils/async'
 
 export const closePosition = async ({
   market,
