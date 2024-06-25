@@ -13,6 +13,7 @@ import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
+import { backupPromiseCall } from '~/app/utils/async'
 
 export const closePosition = async ({
   market,
@@ -24,6 +25,7 @@ export const closePosition = async ({
   const appStore = useAppStore()
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const positionStore = usePositionStore()
 
   if (
     !walletStore.isUserWalletConnected ||
@@ -57,6 +59,9 @@ export const closePosition = async ({
   })
 
   await walletStore.broadcastMessages(message)
+
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const closeAllPosition = async (
@@ -137,7 +142,8 @@ export const closeAllPosition = async (
 
   await walletStore.broadcastMessages(messages)
 
-  await positionStore.fetchSubaccountPositions()
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const closePositionAndReduceOnlyOrders = async ({
@@ -188,7 +194,8 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   await walletStore.broadcastMessages(message)
 
-  await positionStore.fetchSubaccountPositions()
+  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const addMarginToPosition = async ({
