@@ -19,14 +19,12 @@ export const deposit = async ({
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
 
   if (!accountStore.subaccountId || !walletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgDeposit.fromJSON({
@@ -56,14 +54,12 @@ export const withdraw = async ({
   subaccountId?: string
 }) => {
   const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
 
   if (!accountStore.subaccountId || !walletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgWithdraw.fromJSON({
@@ -97,14 +93,12 @@ export const transfer = async ({
   token: TokenStatic
 }) => {
   const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
 
   if (!walletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgSend.fromJSON({
@@ -137,14 +131,12 @@ export const externalTransfer = async ({
   token: TokenStatic
 }) => {
   const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
 
   if (!walletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgExternalTransfer.fromJSON({
@@ -163,7 +155,6 @@ export const externalTransfer = async ({
 }
 
 export const withdrawToMain = async () => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
@@ -171,7 +162,6 @@ export const withdrawToMain = async () => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = accountStore.subaccountBalancesMap[accountStore.subaccountId]

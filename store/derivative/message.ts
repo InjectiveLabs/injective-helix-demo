@@ -82,7 +82,6 @@ const createTpSlMessage = ({
 }
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
-  const appStore = useAppStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
   const walletStore = useSharedWalletStore()
@@ -91,7 +90,6 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const market = derivativeStore.markets.find(
@@ -115,7 +113,6 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
@@ -123,7 +120,6 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = orders.map((order: UIDerivativeOrder) => {
@@ -167,8 +163,6 @@ export const submitLimitOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -224,10 +218,8 @@ export const submitStopLimitOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await walletStore.validate()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validate()
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
     value: triggerPrice.toFixed(),
@@ -292,8 +284,6 @@ export const submitMarketOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -387,8 +377,6 @@ export const submitStopMarketOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 

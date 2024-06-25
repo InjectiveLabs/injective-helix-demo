@@ -41,7 +41,6 @@ export const createStrategy = async (
   }: Partial<SpotGridTradingForm>,
   market?: UiSpotMarket
 ) => {
-  const appStore = useAppStore()
   const authZStore = useAuthZStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
@@ -61,7 +60,6 @@ export const createStrategy = async (
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   if (walletStore.isAuthzWalletConnected) {
@@ -198,7 +196,6 @@ export const createStrategy = async (
 }
 
 export const removeStrategy = async (contractAddress?: string) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -211,7 +208,6 @@ export const removeStrategy = async (contractAddress?: string) => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   if (walletStore.isAuthzWalletConnected) {
@@ -254,7 +250,6 @@ export const removeStrategyForSubaccount = async (
   contractAddress?: string,
   subaccountId?: string
 ) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -267,7 +262,6 @@ export const removeStrategyForSubaccount = async (
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   if (walletStore.isAuthzWalletConnected) {

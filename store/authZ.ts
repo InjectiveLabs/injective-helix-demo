@@ -122,14 +122,12 @@ export const useAuthZStore = defineStore('authZ', {
       messageTypes: string[]
     }) {
       const authZStore = useAuthZStore()
-      const appStore = useAppStore()
       const walletStore = useSharedWalletStore()
 
       if (!walletStore.isUserConnected) {
         return
       }
 
-      await appStore.queue()
       await walletStore.validate()
 
       const msgs = messageTypes.map((messageType) =>

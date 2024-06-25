@@ -34,7 +34,6 @@ const fetchBalances = (
 }
 
 export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
@@ -42,7 +41,6 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = orders.map((order) =>
@@ -64,7 +62,6 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
 }
 
 export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
@@ -72,7 +69,6 @@ export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgCancelSpotOrder.fromJSON({
@@ -106,8 +102,6 @@ export const submitLimitOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
@@ -179,8 +173,6 @@ export const submitMarketOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
@@ -250,8 +242,6 @@ export const submitStopLimitOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 
@@ -303,8 +293,6 @@ export const submitStopMarketOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
 

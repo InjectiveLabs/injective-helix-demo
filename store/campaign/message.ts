@@ -11,10 +11,8 @@ export const claimReward = async (
   contractAddress: string,
   campaignId?: string
 ) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
 
-  await appStore.queue()
   await walletStore.validate()
 
   if (!walletStore.address) {
@@ -49,11 +47,9 @@ export const createGuild = async ({
   logo: string
   description: string
 }) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgExecuteContractCompat.fromJSON({
@@ -92,11 +88,9 @@ export const joinGuild = async ({
   limit: number
   guildId: string
 }) => {
-  const appStore = useAppStore()
   const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = MsgExecuteContractCompat.fromJSON({

@@ -38,7 +38,6 @@ export const submitAtomicOrder = async ({
   outputToken: TokenAndPriceAndDecimals
   minimumOutput: string
 }) => {
-  const appStore = useAppStore()
   const accountStore = useAccountStore()
   const walletStore = useSharedWalletStore()
 
@@ -50,8 +49,6 @@ export const submitAtomicOrder = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeInputAmount = formValues[SwapFormField.InputAmount]
@@ -109,7 +106,6 @@ export const submitAtomicOrderExactOutput = async ({
   outputToken: TokenAndPriceAndDecimals
   maximumInput: string
 }) => {
-  const appStore = useAppStore()
   const accountStore = useAccountStore()
   const walletStore = useSharedWalletStore()
 
@@ -121,8 +117,6 @@ export const submitAtomicOrderExactOutput = async ({
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
