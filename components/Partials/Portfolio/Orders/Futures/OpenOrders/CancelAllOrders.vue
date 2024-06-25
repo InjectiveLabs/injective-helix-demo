@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()

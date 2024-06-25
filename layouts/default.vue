@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import { MainPage, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
 const authZStore = useAuthZStore()
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -37,14 +37,15 @@ watch(
  */
 
 onWalletConnected(() => {
-  mixpanelAnalytics.initMixPanel()
-
   portfolioStatus.setLoading()
+
+  mixpanelAnalytics.init()
 
   fetchUserPortfolio()
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
+      fetchSubaccountStream()
     })
 })
 

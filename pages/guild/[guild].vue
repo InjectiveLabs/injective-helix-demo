@@ -15,7 +15,7 @@ import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { copy } = useClipboard()
@@ -276,7 +276,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               </div>
             </article>
 
-            <template v-if="walletStore.isUserWalletConnected">
+            <template v-if="walletStore.isUserConnected">
               <AppButton
                 v-if="campaignStore.userGuildInfo"
                 class="bg-blue-500 text-blue-900"

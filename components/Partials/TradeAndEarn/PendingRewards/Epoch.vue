@@ -15,7 +15,7 @@ import {
 } from '@/app/utils/constants'
 import { getHubUrl } from '@/app/utils/helpers'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 const { rewardsCampaign } = useTradeReward()
@@ -230,7 +230,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
       <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
         <template #value>
           <div
-            v-if="walletStore.isUserWalletConnected"
+            v-if="walletStore.isUserConnected"
             class="flex flex-wrap justify-center"
           >
             <AppNumberEmp :number="pendingTradeRewardPointsFactored">
@@ -258,7 +258,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
       <PartialsCommonStatsItem class="col-span-2 lg:col-span-4">
         <template #value>
           <AppNumberEmp
-            v-if="walletStore.isUserWalletConnected"
+            v-if="walletStore.isUserConnected"
             :number="pendingEstimatedRewardsCapped"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           >
@@ -266,7 +266,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           </AppNumberEmp>
           <span v-else>&mdash;</span>
           <AppNumberEmp
-            v-if="walletStore.isUserWalletConnected"
+            v-if="walletStore.isUserConnected"
             is-sm
             class="text-gray-450"
             prefix="≈"
@@ -284,7 +284,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           #context
         >
           <a
-            v-if="walletStore.isUserWalletConnected"
+            v-if="walletStore.isUserConnected"
             :href="hubUrl"
             class="text-blue-500 flex justify-center"
             target="_blank"

@@ -21,10 +21,10 @@ export class SpotSubaccountOrderIntegrityStrategy
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
+    const walletStore = useSharedWalletStore()
     const spotStore = useSpotStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!walletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 

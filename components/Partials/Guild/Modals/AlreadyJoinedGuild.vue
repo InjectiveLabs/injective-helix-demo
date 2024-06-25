@@ -2,7 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 function onCloseModal() {
   modalStore.closeModal(Modal.AlreadyJoinedGuild)

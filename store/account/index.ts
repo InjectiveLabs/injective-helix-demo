@@ -68,7 +68,7 @@ export const useAccountStore = defineStore('account', {
     },
 
     defaultSubaccountBalances: (state: AccountStoreState) => {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       if (!walletStore.authZOrDefaultSubaccountId) {
         return []
@@ -78,7 +78,7 @@ export const useAccountStore = defineStore('account', {
     },
 
     isDefaultSubaccount: (state: AccountStoreState) => {
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
       return walletStore.authZOrDefaultSubaccountId === state.subaccountId
     },
@@ -102,9 +102,9 @@ export const useAccountStore = defineStore('account', {
 
     async fetchAccountPortfolioBalances() {
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
@@ -142,9 +142,9 @@ export const useAccountStore = defineStore('account', {
 
     async fetchCw20Balances() {
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 

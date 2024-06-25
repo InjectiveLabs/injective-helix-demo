@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BusEvents, PortfolioSubPage } from '@/types'
+import { TRADING_MESSAGES } from '~/app/data/trade'
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -13,7 +14,7 @@ function connectAutoSign() {
   status.setLoading()
 
   walletStore
-    .connectAutoSign()
+    .connectAutoSign(TRADING_MESSAGES)
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 

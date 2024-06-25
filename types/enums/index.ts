@@ -1,9 +1,4 @@
-export enum WalletConnectStatus {
-  connecting = 'Connecting',
-  disconnected = 'Disconnected',
-  idle = 'Idle',
-  connected = 'Connected'
-}
+export * from './mixpanel'
 
 export enum Icon {
   Arrow = 'arrow',
@@ -86,14 +81,6 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum AppState {
-  Busy = 'Busy',
-  Loading = 'Loading',
-  Idle = 'Idle',
-  Error = 'Error',
-  Success = 'Success'
-}
-
 export enum TransferSide {
   Bank = 'Bank',
   TradingAccount = 'TradingAccount'
@@ -173,25 +160,6 @@ export enum AveragePriceOptions {
   Percentage = 3
 }
 
-export enum MixPanelEvent {
-  Login = 'Login',
-  BrowserLocation = 'BrowserLocation',
-  Swap = 'Swap',
-  SwapCount = 'SwapCount',
-  SurveyAccepted = 'Survey-Accepted',
-  SurveyRejected = 'Survey-Rejected',
-  CreateOrder = 'CreateOrder',
-  CreateOrderCount = 'CreateOrderCount',
-  CreateStrategy = 'CreateStrategy',
-  CreateStrategyCount = 'CreateStrategyCount',
-  RemoveStrategy = 'RemoveStrategy',
-  RemoveStrategyCount = 'RemoveStrategyCount',
-  CreateLiquidityBot = 'CreateLiquidityBot',
-  CreateLiquidityBotCount = 'CreateLiquidityBotCount',
-  RemoveLiquidityBot = 'RemoveLiquidityBot',
-  RemoveLiquidityBotCount = 'RemoveLiquidityBotCount'
-}
-
 export enum SurveyTitle {
   HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
@@ -200,11 +168,6 @@ export enum DefaultMarket {
   Perpetual = 'btc-usdt-perp',
   PerpetualTestnet = 'btc-usdt-perp-pyth',
   Spot = 'inj-usdt'
-}
-
-export enum OrderAttemptStatus {
-  Success = 'Success',
-  Error = 'Error'
 }
 
 export enum OrderbookLayout {

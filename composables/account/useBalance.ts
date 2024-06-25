@@ -9,7 +9,7 @@ const showUnverifiedAssets = ref(false)
 export function useBalance() {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()

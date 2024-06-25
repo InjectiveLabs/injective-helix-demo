@@ -20,9 +20,9 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
   actions: {
     async fetchCodes() {
       const ninjaPassStore = useNinjaPassStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 

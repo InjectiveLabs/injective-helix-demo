@@ -25,7 +25,7 @@ defineProps({
 })
 
 const appStore = useAppStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const { allCoinGeckoIdsOnPriceMap } = useTokenUsdPrice()
 
 const portfolioStatus = inject(
@@ -35,7 +35,7 @@ const portfolioStatus = inject(
 </script>
 
 <template>
-  <div v-if="!walletStore.isUserWalletConnected">-</div>
+  <div v-if="!walletStore.isUserConnected">-</div>
 
   <div
     v-else-if="portfolioStatus.isLoading() || !allCoinGeckoIdsOnPriceMap"

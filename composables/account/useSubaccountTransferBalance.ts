@@ -6,7 +6,7 @@ export function useSubaccountTransferBalance(
   formValues: Ref<SubaccountTransferForm>
 ) {
   const tokenStore = useTokenStore()
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
 
   const subaccountBalance = computed(() => {

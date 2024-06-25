@@ -21,7 +21,7 @@ const emit = defineEmits<{
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 const spotStore = useSpotStore()
 const isMobile = useIsMobile()
 const breakpoints = useBreakpointsTw()
@@ -51,7 +51,7 @@ const options = computed(() => {
     }
   ]
 
-  if (walletStore.isUserWalletConnected) {
+  if (walletStore.isUserConnected) {
     items.unshift({
       display: `activity.${SpotOrdersStandardView.Balances}`,
       value: SpotOrdersStandardView.Balances
@@ -62,7 +62,7 @@ const options = computed(() => {
 })
 
 watch(
-  () => walletStore.isUserWalletConnected,
+  () => walletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
       view.value = SpotOrdersStandardView.OpenOrders

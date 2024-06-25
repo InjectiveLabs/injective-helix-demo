@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { ROUTES } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
+const sharedWalletStore = useSharedWalletStore()
 const walletStore = useWalletStore()
 
 const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(walletStore.injectiveAddress)
+  formatWalletAddress(sharedWalletStore.injectiveAddress)
 )
 
 function disconnect() {
   walletStore.disconnect()
+  WalletTracker.trackLogout()
 
   if (
     ROUTES.walletConnectedRequiredRouteNames.includes(route.name as MainPage)
@@ -70,7 +73,7 @@ function disconnect() {
                 </span>
               </div>
               <LayoutWalletDetailsConnectedWallet
-                :wallet="walletStore.wallet"
+                :wallet="sharedWalletStore.wallet"
               />
             </div>
 

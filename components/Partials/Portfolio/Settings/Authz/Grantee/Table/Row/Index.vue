@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const walletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 const status = reactive(new Status(StatusType.Idle))

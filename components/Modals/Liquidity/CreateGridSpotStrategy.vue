@@ -2,7 +2,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
@@ -123,7 +123,7 @@ function onCreateStrategy() {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
       status.setIdle()
 
-      mixpanelAnalytics.trackCreateStrategy({
+      EventTracker.trackCreateStrategy({
         error: err?.message,
         formValues: formValues.value,
         market: gridStrategyStore.spotMarket?.slug || '',

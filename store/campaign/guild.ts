@@ -4,10 +4,10 @@ import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { GuildSortBy } from '@/types'
 
 export const fetchUserIsOptedOutOfRewards = async () => {
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!walletStore.isUserConnected) {
     return
   }
 
@@ -51,10 +51,10 @@ export const fetchGuildsByVolume = async () => {
 }
 
 export const fetchUserGuildInfo = async () => {
-  const walletStore = useWalletStore()
+  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
 
-  if (!walletStore.isUserWalletConnected || campaignStore.userGuildInfo) {
+  if (!walletStore.isUserConnected || campaignStore.userGuildInfo) {
     return
   }
 

@@ -157,9 +157,9 @@ export const useExchangeStore = defineStore('exchange', {
 
     async fetchFeeDiscountAccountInfo() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
@@ -213,9 +213,9 @@ export const useExchangeStore = defineStore('exchange', {
     async fetchTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
 
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
@@ -228,9 +228,9 @@ export const useExchangeStore = defineStore('exchange', {
 
     async fetchPendingTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useWalletStore()
+      const walletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!walletStore.isUserConnected) {
         return
       }
 
