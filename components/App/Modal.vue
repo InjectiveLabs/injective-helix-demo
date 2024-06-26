@@ -67,6 +67,7 @@ watchDebounced(
       :class="[isTransparent ? 'bg-brand-900/80' : 'bg-brand-900', classes]"
       wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
+      :ignore="['.v-popper__inner']"
       @modal:closed="onModalClose"
     >
       <template #default="{ close, isLoading }">
