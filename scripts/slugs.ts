@@ -120,7 +120,57 @@ export const fetchSpotMarketSlugs = async (): Promise<any> => {
   }
 }
 
+export const fetchSpotGridMarkets = async (): Promise<any> => {
+  const client = new HttpClient(
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/spot/'
+  )
+
+  const filePath = getFilePath()
+
+  try {
+    const { data: slugs } = (await client.get(filePath)) as {
+      data: string[]
+    }
+
+    writeFileSync(
+      'app/data/spotGridMarkets.json',
+      JSON.stringify(slugs, null, '\t')
+    )
+
+    console.log('✅✅✅ fetchSpotGridMarkets')
+  } catch (err) {
+    console.error('fetchSpotGridMarkets', err)
+    throw err
+  }
+}
+
+export const fetchDerivativeGridMarkets = async (): Promise<any> => {
+  const client = new HttpClient(
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/derivative/'
+  )
+
+  const filePath = getFilePath()
+
+  try {
+    const { data: slugs } = (await client.get(filePath)) as {
+      data: string[]
+    }
+
+    writeFileSync(
+      'app/data/derivativeGridMarkets.json',
+      JSON.stringify(slugs, null, '\t')
+    )
+
+    console.log('✅✅✅ fetchDerivativeGridMarkets')
+  } catch (err) {
+    console.error('fetchDerivativeGridMarkets', err)
+    throw err
+  }
+}
+
 fetchSpotMarketSlugs()
 fetchMarketCategorySlugs()
 fetchDerivativeMarketSlugs()
 fetchExpiryFuturesMarketSlugs()
+fetchSpotGridMarkets()
+fetchDerivativeGridMarkets()

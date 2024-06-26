@@ -14,10 +14,11 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'
-import { hexToString, stringToHex } from '@/app/utils/converters'
-import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { UiSpotMarket, UiMarketWithToken } from '@/types'
+import spotGridMarkets from '@/app/data/spotGridMarkets.json'
+import { hexToString, stringToHex } from '@/app/utils/converters'
+import perpGridMarkets from '@/app/data/derivativeGridMarkets.json'
+import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -124,19 +125,22 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return perpGridMarkets.find((m) => m.slug.replace('-perp', '-p') === slug)
-    ?.slug
+  return (perpGridMarkets as GridMarket[]).find(
+    (m) => m.slug.replace('-perp', '-p') === slug
+  )?.slug
 }
 
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
-    return [
+    const gridMarkets = [
       ...spotGridMarkets,
-      ...perpGridMarkets.map((m) => ({
+      ...perpGridMarkets.map((m: GridMarket) => ({
         ...m,
         slug: m.slug.replace('-perp', '-p')
       }))
-    ]
+    ] as GridMarket[]
+
+    return gridMarkets
       .find(
         (m) =>
           m.slug.toLowerCase() ===
