@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
@@ -33,7 +32,7 @@ const { value: address, errors: addressErrors } = useStringField({
 
 onMounted(() => {
   walletStore.$patch({
-    addresses: []
+    hwAddresses: []
   })
 })
 
@@ -64,7 +63,7 @@ const connect = handleSubmit(() => {
   walletStore
     .connect({
       wallet,
-      address: getEthereumAddress(address.value)
+      address: address.value
     })
     .then(() => {
       notificationStore.success({ title: t('connect.successfullyConnected') })
@@ -111,7 +110,7 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          sharedWalletStore.addresses.length === 0
+          sharedWalletStore.hwAddresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
@@ -121,7 +120,7 @@ const connect = handleSubmit(() => {
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
 
-    <div v-if="sharedWalletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.hwAddresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
@@ -130,7 +129,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         is-searchable
         :options="
-          sharedWalletStore.addresses.map((address: string) => ({
+          sharedWalletStore.hwAddresses.map((address: string) => ({
             display: address,
             value: address
           }))
