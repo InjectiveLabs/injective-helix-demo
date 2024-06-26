@@ -2,7 +2,6 @@
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
@@ -29,7 +28,7 @@ const { value: address, errors: addressErrors } = useStringField({
 
 onMounted(() => {
   walletStore.$patch({
-    addresses: []
+    hwAddresses: []
   })
 })
 
@@ -50,7 +49,7 @@ const connect = handleSubmit(() => {
   walletStore
     .connect({
       wallet: Wallet.Trezor,
-      address: getEthereumAddress(address.value)
+      address: address.value
     })
     .then(() => {
       notificationStore.success({ title: t('connect.successfullyConnected') })
