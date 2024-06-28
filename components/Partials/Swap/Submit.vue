@@ -13,9 +13,9 @@ import { Modal, SwapForm, SwapFormField } from '@/types'
 const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
-const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
+const formValues = useFormValues<SwapForm>()
+const sharedWalletStore = useSharedWalletStore()
 const { userBalancesWithToken } = useBalance()
 
 defineProps({
@@ -192,7 +192,7 @@ watch(
 <template>
   <div>
     <AppButton
-      v-if="!walletStore.isUserConnected"
+      v-if="!sharedWalletStore.isUserConnected"
       is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
@@ -215,13 +215,14 @@ watch(
 
     <AppButton
       v-else-if="
-        walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+        sharedWalletStore.isAuthzWalletConnected ||
+        sharedWalletStore.isAutoSignEnabled
       "
       variant="danger-ghost"
       class="mb-2 w-full"
       :disabled="true"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
       <span v-else>

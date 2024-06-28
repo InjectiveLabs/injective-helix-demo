@@ -40,13 +40,14 @@ export const createStrategy = async (
   market?: UiSpotMarket
 ) => {
   const authZStore = useAuthZStore()
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
   const levels = Number(grids)
 
-  if (!walletStore.injectiveAddress) {
+  if (!sharedWalletStore.injectiveAddress) {
     return
   }
 
@@ -60,7 +61,7 @@ export const createStrategy = async (
 
   await walletStore.validate()
 
-  if (walletStore.isAuthzWalletConnected) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
@@ -79,7 +80,7 @@ export const createStrategy = async (
   }
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
-    walletStore.address,
+    sharedWalletStore.address,
     gridMarket.slug
   )
 
@@ -133,7 +134,7 @@ export const createStrategy = async (
 
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: gridMarket.contractAddress,
-    sender: walletStore.injectiveAddress,
+    sender: sharedWalletStore.injectiveAddress,
     execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
       levels,
       stopLoss: stopLossValue,
@@ -160,7 +161,7 @@ export const createStrategy = async (
     (messageType) =>
       MsgGrant.fromJSON({
         grantee: gridMarket.contractAddress,
-        granter: walletStore.injectiveAddress,
+        granter: sharedWalletStore.injectiveAddress,
         authorization: getGenericAuthorizationFromMessageType(messageType)
       })
   )
@@ -181,7 +182,7 @@ export const createStrategy = async (
   // we need to add it after the authz messages
   messages.push(message)
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() =>
     Promise.all([
@@ -194,11 +195,12 @@ export const createStrategy = async (
 }
 
 export const removeStrategy = async (contractAddress?: string) => {
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
@@ -208,7 +210,7 @@ export const removeStrategy = async (contractAddress?: string) => {
 
   await walletStore.validate()
 
-  if (walletStore.isAuthzWalletConnected) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
@@ -221,19 +223,19 @@ export const removeStrategy = async (contractAddress?: string) => {
   }
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
-    walletStore.address,
+    sharedWalletStore.address,
     gridStrategyStore.spotMarket.slug
   )
 
   const messages = MsgExecuteContractCompat.fromJSON({
     contractAddress: contractAddress || gridMarket.contractAddress,
-    sender: walletStore.injectiveAddress,
+    sender: sharedWalletStore.injectiveAddress,
     execArgs: ExecArgRemoveGridStrategy.fromJSON({
       subaccountId: gridStrategySubaccountId
     })
   })
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() =>
     Promise.all([
@@ -248,11 +250,12 @@ export const removeStrategyForSubaccount = async (
   contractAddress?: string,
   subaccountId?: string
 ) => {
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const gridStrategyStore = useGridStrategyStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
@@ -262,19 +265,19 @@ export const removeStrategyForSubaccount = async (
 
   await walletStore.validate()
 
-  if (walletStore.isAuthzWalletConnected) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     contractAddress,
-    sender: walletStore.injectiveAddress,
+    sender: sharedWalletStore.injectiveAddress,
     execArgs: ExecArgRemoveGridStrategy.fromJSON({
       subaccountId: subaccountId || accountStore.subaccountId
     })
   })
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() =>
     Promise.all([

@@ -7,8 +7,8 @@ import {
   isSgtSubaccountId
 } from '@/app/utils/helpers'
 
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
@@ -35,7 +35,10 @@ const subaccountsWithoutSgt = computed(() =>
 const newSubaccountIdIndex = computed(() => subaccountsWithoutSgt.value.length)
 
 const newSubaccountId = computed(() =>
-  getSubaccountId(walletStore.injectiveAddress, newSubaccountIdIndex.value)
+  getSubaccountId(
+    sharedWalletStore.injectiveAddress,
+    newSubaccountIdIndex.value
+  )
 )
 
 const sourceOptions = computed(() =>
@@ -77,7 +80,7 @@ const destinationOptions = computed(() => {
         subaccountId: newSubaccountIdIndex.value
       }),
       value: addBaseSubaccountIndexToAddress(
-        walletStore.address,
+        sharedWalletStore.address,
         newSubaccountIdIndex.value
       )
     }

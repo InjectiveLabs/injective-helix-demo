@@ -5,11 +5,11 @@ import { Modal } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const props = defineProps({
   isDisabled: Boolean,
@@ -33,7 +33,7 @@ const props = defineProps({
 const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 

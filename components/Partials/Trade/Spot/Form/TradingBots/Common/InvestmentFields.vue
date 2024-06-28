@@ -15,17 +15,16 @@ import {
   SpotGridTradingForm
 } from '@/types'
 
+const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
+const spotFormValues = useFormValues<SpotGridTradingForm>()
+
 const props = defineProps({
   isAuto: Boolean,
   isDisabled: Boolean
 })
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
-
-const tokenStore = useTokenStore()
-const walletStore = useSharedWalletStore()
-
-const spotFormValues = useFormValues<SpotGridTradingForm>()
 
 const setBaseAmount = useSetFieldValue(
   SpotGridTradingField.BaseInvestmentAmount
@@ -38,7 +37,9 @@ const { lastTradedPrice } = useSpotLastPrice(market)
 
 const accountBalance = computed(
   () =>
-    aggregatedPortfolioBalances.value[walletStore.authZOrDefaultSubaccountId]
+    aggregatedPortfolioBalances.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
 )
 
 const quoteDenomBalance = computed(

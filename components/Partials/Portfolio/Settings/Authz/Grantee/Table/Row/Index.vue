@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const authZStore = useAuthZStore()
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 const status = reactive(new Status(StatusType.Idle))
@@ -73,7 +73,8 @@ function revokeAll() {
     <div class="flex-1 flex items-center p-2" @click.stop>
       <AppButton
         v-if="
-          walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+          sharedWalletStore.isAuthzWalletConnected ||
+          sharedWalletStore.isAutoSignEnabled
         "
         v-bind="{ status }"
         :variant="'danger-ghost'"

@@ -9,8 +9,8 @@ import {
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const TOTAL_INJ_REWARDS = '1,000'
 const TOTAL_TIA_REWARDS = '10,000'
@@ -164,7 +164,7 @@ function onConnectWallet() {
 
           <div>
             <AppButton
-              v-if="!walletStore.isUserConnected"
+              v-if="!sharedWalletStore.isUserConnected"
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10"
               @click="onConnectWallet"
             >

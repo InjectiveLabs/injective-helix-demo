@@ -150,7 +150,7 @@ const persistState = (
 
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const walletStore = useSharedWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -162,7 +162,7 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
     after(() => {
       const type = `${$id}/${name}`
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        walletStore.$patch({
+        sharedWalletStore.$patch({
           queueStatus: StatusType.Idle
         })
       }
@@ -172,7 +172,7 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        walletStore.$patch({
+        sharedWalletStore.$patch({
           queueStatus: StatusType.Idle
         })
       }

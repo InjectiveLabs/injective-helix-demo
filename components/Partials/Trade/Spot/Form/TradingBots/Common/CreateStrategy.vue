@@ -14,7 +14,7 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 const spotStore = useSpotStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const notificationStore = useSharedNotificationStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
@@ -24,7 +24,10 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
-  if (walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected) {
+  if (
+    sharedWalletStore.isAutoSignEnabled ||
+    sharedWalletStore.isAuthzWalletConnected
+  ) {
     return true
   }
 
@@ -89,13 +92,16 @@ async function createStrategy() {
       v-bind="{ status, disabled: isDisabled }"
       @click="createStrategy"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
-    <span v-if="walletStore.isAutoSignEnabled" class="text-xs text-red-500">
+    <span
+      v-if="sharedWalletStore.isAutoSignEnabled"
+      class="text-xs text-red-500"
+    >
       {{ $t('common.notAvailableinAutoSignMode') }}
     </span>
   </div>

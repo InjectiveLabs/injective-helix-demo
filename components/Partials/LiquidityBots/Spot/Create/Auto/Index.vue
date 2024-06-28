@@ -19,10 +19,10 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const walletStore = useSharedWalletStore()
 const exchangeStore = useExchangeStore()
-const gridStrategyStore = useGridStrategyStore()
 const setFormValues = useSetFormValues()
+const sharedWalletStore = useSharedWalletStore()
+const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 const { lastTradedPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket as UiSpotMarket)
@@ -229,7 +229,7 @@ function setValuesFromAuto() {
       is-auto
     />
 
-    <CommonUserNotConnectedNote v-if="!walletStore.isUserConnected" cta />
+    <CommonUserNotConnectedNote v-if="!sharedWalletStore.isUserConnected" cta />
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else

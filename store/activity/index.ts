@@ -50,29 +50,29 @@ export const useActivityStore = defineStore('activity', {
     streamSpotSubaccountTrades,
 
     async fetchTradingRewardsHistory() {
-      const activityStore = useActivityStore()
       const accountStore = useAccountStore()
-      const walletStore = useSharedWalletStore()
+      const activityStore = useActivityStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
       activityStore.$patch({
         tradingRewardsHistory: await indexerAccountApi.fetchRewards({
-          address: walletStore.authZOrInjectiveAddress,
+          address: sharedWalletStore.authZOrInjectiveAddress,
           epoch: -1
         })
       })
     },
 
     async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
+      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
-      const accountStore = useAccountStore()
-      const walletStore = useSharedWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -92,11 +92,11 @@ export const useActivityStore = defineStore('activity', {
     },
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
-      const walletStore = useSharedWalletStore()
-      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

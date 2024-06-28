@@ -23,8 +23,8 @@ const modalStore = useModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
-const walletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
@@ -102,7 +102,7 @@ const isLimitOrder = computed(() =>
 )
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -227,7 +227,7 @@ const isDisabled = computed(() => {
 })
 
 const mixPanelFields = computed(() => ({
-  isAutoSign: walletStore.isAutoSignEnabled,
+  isAutoSign: sharedWalletStore.isAutoSignEnabled,
   isBuy: isBuy.value,
   market: derivativeMarket.value.slug,
   marketType: SharedMarketType.Derivative,

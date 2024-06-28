@@ -8,12 +8,12 @@ export const cancelSubaccountPositionsStream =
   grpcCancelSubaccountPositionsStream
 
 export const streamSubaccountPositions = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
-  const positionStore = usePositionStore()
   const accountStore = useAccountStore()
-  const walletStore = useSharedWalletStore()
+  const positionStore = usePositionStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 

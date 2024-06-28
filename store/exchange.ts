@@ -157,15 +157,15 @@ export const useExchangeStore = defineStore('exchange', {
 
     async fetchFeeDiscountAccountInfo() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useSharedWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const feeDiscountAccountInfo =
         await exchangeApi.fetchFeeDiscountAccountInfo(
-          walletStore.authZOrInjectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         )
 
       if (feeDiscountAccountInfo) {
@@ -213,24 +213,24 @@ export const useExchangeStore = defineStore('exchange', {
     async fetchTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
 
-      const walletStore = useSharedWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       exchangeStore.$patch({
         tradeRewardsPoints: await exchangeApi.fetchTradeRewardPoints([
-          walletStore.authZOrInjectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         ])
       })
     },
 
     async fetchPendingTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useSharedWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
@@ -250,7 +250,7 @@ export const useExchangeStore = defineStore('exchange', {
       const rewards = await Promise.all(
         pendingRewardsList.map(async (pendingReward) => {
           const rewards = await exchangeApi.fetchPendingTradeRewardPoints(
-            [walletStore.authZOrInjectiveAddress],
+            [sharedWalletStore.authZOrInjectiveAddress],
             pendingReward.startTimestamp
           )
 

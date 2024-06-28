@@ -18,12 +18,12 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useSharedWalletStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -91,7 +91,8 @@ function removeStrategy() {
   <div class="grid grid-cols-1 gap-4">
     <AppButton
       :disabled="
-        walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+        sharedWalletStore.isAuthzWalletConnected ||
+        sharedWalletStore.isAutoSignEnabled
       "
       v-bind="{ status }"
       is-lg
@@ -99,7 +100,7 @@ function removeStrategy() {
       class="w-full"
       @click="removeStrategy"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
 

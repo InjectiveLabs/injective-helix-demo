@@ -2,10 +2,9 @@
 import { MainPage } from '@/types'
 
 const spotStore = useSpotStore()
-
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const marketSlugQuery = useQueryRef('market', 'tia-usdt')
 
@@ -20,8 +19,8 @@ function init() {
     )
   })
 
-  if (walletStore.isUserConnected) {
-    accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+  if (sharedWalletStore.isUserConnected) {
+    accountStore.$patch({ subaccountId: sharedWalletStore.defaultSubaccountId })
   }
 }
 
@@ -43,7 +42,7 @@ onUnmounted(() => {
         </NuxtLink>
 
         <NuxtLink
-          v-if="walletStore.isUserConnected"
+          v-if="sharedWalletStore.isUserConnected"
           :to="{ name: MainPage.TradingBotsLiquidityBotsSpotHistory }"
           active-class="underline"
           class="text-lg font-semibold ml-4"

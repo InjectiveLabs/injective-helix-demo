@@ -12,10 +12,10 @@ export class BankBalanceIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const walletStore = useSharedWalletStore()
     const accountStore = useAccountStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserConnected) {
+    if (!sharedWalletStore.isUserConnected) {
       return
     }
 
@@ -55,11 +55,11 @@ export class BankBalanceIntegrityStrategy
   }
 
   async fetchData(): Promise<Coin[]> {
-    const walletStore = useSharedWalletStore()
+    const sharedWalletStore = useSharedWalletStore()
 
     const { bankBalancesList } =
       await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
-        walletStore.authZOrInjectiveAddress
+        sharedWalletStore.authZOrInjectiveAddress
       )
 
     return bankBalancesList || []

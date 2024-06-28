@@ -34,10 +34,11 @@ const fetchBalances = (
 }
 
 export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -45,7 +46,7 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
 
   const messages = orders.map((order) =>
     MsgBatchCancelSpotOrders.fromJSON({
-      injectiveAddress: walletStore.authZOrInjectiveAddress,
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -56,29 +57,30 @@ export const batchCancelOrder = async (orders: SpotLimitOrder[]) => {
     })
   )
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
 
 export const cancelOrder = async (order: SpotLimitOrder | SpotOrderHistory) => {
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
   await walletStore.validate()
 
   const messages = MsgCancelSpotOrder.fromJSON({
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     subaccountId: order.subaccountId,
     orderHash: order.orderHash
   })
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -95,10 +97,15 @@ export const submitLimitOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
+  if (
+    !market ||
+    !accountStore.subaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
     return
   }
 
@@ -117,7 +124,7 @@ export const submitLimitOrder = async ({
 
   const cw20ConvertMessage = convertCw20ToBankBalance({
     market,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: sharedWalletStore.injectiveAddress,
     bankBalancesMap: accountStore.balancesMap,
     cw20BalancesMap: accountStore.cw20BalancesMap,
     order: {
@@ -130,7 +137,7 @@ export const submitLimitOrder = async ({
 
   const orderMessage = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -149,7 +156,7 @@ export const submitLimitOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : orderMessage
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -166,10 +173,15 @@ export const submitMarketOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
+  if (
+    !market ||
+    !accountStore.subaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
     return
   }
 
@@ -188,7 +200,7 @@ export const submitMarketOrder = async ({
 
   const cw20ConvertMessage = convertCw20ToBankBalance({
     market,
-    injectiveAddress: walletStore.injectiveAddress,
+    injectiveAddress: sharedWalletStore.injectiveAddress,
     bankBalancesMap: accountStore.balancesMap,
     cw20BalancesMap: accountStore.cw20BalancesMap,
     order: {
@@ -204,9 +216,9 @@ export const submitMarketOrder = async ({
     quantity: quantityToFixed,
     subaccountId: accountStore.subaccountId,
     injectiveAddress:
-      walletStore.autoSign && walletStore.isAutoSignEnabled
-        ? walletStore.injectiveAddress
-        : walletStore.authZOrInjectiveAddress,
+      sharedWalletStore.autoSign && sharedWalletStore.isAutoSignEnabled
+        ? sharedWalletStore.injectiveAddress
+        : sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     orderType: orderSideToOrderType(orderSide)
@@ -216,7 +228,7 @@ export const submitMarketOrder = async ({
     ? [cw20ConvertMessage, orderMessage]
     : [orderMessage]
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
 }
@@ -235,10 +247,15 @@ export const submitStopLimitOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
+  if (
+    !market ||
+    !accountStore.subaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
     return
   }
 
@@ -247,7 +264,7 @@ export const submitStopLimitOrder = async ({
 
   const messages = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -267,7 +284,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -286,10 +303,15 @@ export const submitStopMarketOrder = async ({
   market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
-  const walletStore = useSharedWalletStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId || !market) {
+  if (
+    !market ||
+    !accountStore.subaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
     return
   }
 
@@ -298,7 +320,7 @@ export const submitStopMarketOrder = async ({
 
   const messages = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
     price: spotPriceToChainPriceToFixed({
@@ -318,7 +340,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }

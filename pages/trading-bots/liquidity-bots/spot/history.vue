@@ -5,8 +5,8 @@ import { Modal, MainPage, UiSpotMarket } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
@@ -30,7 +30,7 @@ onWalletConnected(() => {
 })
 
 watch(
-  () => walletStore.isUserConnected,
+  () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected) {
       router.replace({ name: MainPage.TradingBotsLiquidityBotsSpot })

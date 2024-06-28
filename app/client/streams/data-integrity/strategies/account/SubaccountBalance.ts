@@ -17,14 +17,16 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const walletStore = useSharedWalletStore()
     const accountStore = useAccountStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserConnected) {
+    if (!sharedWalletStore.isUserConnected) {
       return
     }
 
-    if (walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId) {
+    if (
+      sharedWalletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
+    ) {
       return
     }
 
@@ -84,25 +86,25 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async fetchData(): Promise<Record<string, SubaccountBalance[]>> {
-    const walletStore = useSharedWalletStore()
+    const sharedWalletStore = useSharedWalletStore()
 
     const accountPortfolio =
       await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
-        walletStore.authZOrInjectiveAddress
+        sharedWalletStore.authZOrInjectiveAddress
       )
 
     const defaultAccountBalances = getDefaultAccountBalances(
       accountPortfolio.subaccountsList,
-      walletStore.authZOrDefaultSubaccountId
+      sharedWalletStore.authZOrDefaultSubaccountId
     )
 
     const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
       accountPortfolio.subaccountsList,
-      walletStore.authZOrDefaultSubaccountId
+      sharedWalletStore.authZOrDefaultSubaccountId
     )
 
     return {
-      [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
+      [sharedWalletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
       ...nonDefaultSubaccounts
     }
   }

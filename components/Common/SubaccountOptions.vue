@@ -13,8 +13,8 @@ const props = defineProps({
   includeBotsSubaccounts: Boolean
 })
 
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -72,7 +72,7 @@ const subaccountOptionsFiltered = computed(() =>
     const includeLowBalance =
       props.showLowBalance ||
       hasBalance ||
-      subaccountId === walletStore.defaultSubaccountId
+      subaccountId === sharedWalletStore.defaultSubaccountId
 
     return includeBotsSubaccounts && includeLowBalance
   })

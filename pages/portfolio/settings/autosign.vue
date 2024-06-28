@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { BusEvents, PortfolioSubPage } from '@/types'
 import { TRADING_MESSAGES } from '~/app/data/trade'
 
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -13,7 +13,7 @@ const status = reactive(new Status(StatusType.Idle))
 function connectAutoSign() {
   status.setLoading()
 
-  walletStore
+  sharedWalletStore
     .connectAutoSign(TRADING_MESSAGES)
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
@@ -30,7 +30,7 @@ function connectAutoSign() {
 function disconnectAutoSign() {
   status.setLoading()
 
-  walletStore
+  sharedWalletStore
     .disconnectAutoSign()
     .then(() => {
       notificationStore.success({
@@ -60,12 +60,15 @@ function disconnectAutoSign() {
           {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
 
-        <AppButton v-if="walletStore.isAuthzWalletConnected" :disabled="true">
+        <AppButton
+          v-if="sharedWalletStore.isAuthzWalletConnected"
+          :disabled="true"
+        >
           {{ $t('common.notAvailableinAuthZMode') }}
         </AppButton>
 
         <AppButton
-          v-else-if="!walletStore.isAutoSignEnabled"
+          v-else-if="!sharedWalletStore.isAutoSignEnabled"
           variant="success"
           :status="status"
           @click="connectAutoSign"

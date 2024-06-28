@@ -4,7 +4,7 @@ import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { PortfolioStatusKey } from '@/types'
 
 const isBannerVisible = ref(true)
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 
 function hideBanner() {
@@ -12,7 +12,7 @@ function hideBanner() {
 }
 
 const hasBalance = computed(() => {
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return true
   }
 

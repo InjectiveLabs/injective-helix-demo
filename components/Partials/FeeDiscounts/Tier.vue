@@ -20,11 +20,11 @@ const props = defineProps({
   }
 })
 
-const walletStore = useSharedWalletStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isUserTierLevel = computed(() => {
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return false
   }
 

@@ -43,13 +43,13 @@ export const usePositionStore = defineStore('position', {
     streamSubaccountPositions,
 
     async fetchPositions() {
-      const walletStore = useSharedWalletStore()
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       if (
-        !walletStore.isUserConnected ||
-        !walletStore.authZOrInjectiveAddress
+        !sharedWalletStore.isUserConnected ||
+        !sharedWalletStore.authZOrInjectiveAddress
       ) {
         return
       }
@@ -64,7 +64,7 @@ export const usePositionStore = defineStore('position', {
         {} as Record<string, number>
       )
       const { positions } = await indexerDerivativesApi.fetchPositionsV2({
-        address: walletStore.authZOrInjectiveAddress
+        address: sharedWalletStore.authZOrInjectiveAddress
       })
 
       const markPricesMap = positions.reduce((markPrices, position) => {
@@ -93,12 +93,12 @@ export const usePositionStore = defineStore('position', {
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
-      const derivativeStore = useDerivativeStore()
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useSharedWalletStore()
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -119,11 +119,11 @@ export const usePositionStore = defineStore('position', {
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useSharedWalletStore()
+      const positionStore = usePositionStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

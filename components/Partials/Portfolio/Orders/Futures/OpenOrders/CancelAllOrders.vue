@@ -4,15 +4,16 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
-const walletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

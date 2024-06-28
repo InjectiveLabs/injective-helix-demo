@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 </script>
 
 <template>
@@ -8,7 +8,7 @@ const walletStore = useSharedWalletStore()
       <SharedIcon name="show" />
       <p class="text-xs">
         {{ $t('connect.connectedAs') }}
-        <strong>{{ walletStore.authZOrInjectiveAddress }}</strong>
+        <strong>{{ sharedWalletStore.authZOrInjectiveAddress }}</strong>
       </p>
     </div>
 
@@ -16,7 +16,7 @@ const walletStore = useSharedWalletStore()
       <SharedIcon
         name="exit"
         class="text-blue-900"
-        @click="walletStore.resetAuthZ()"
+        @click="sharedWalletStore.resetAuthZ()"
       />
     </div>
   </div>

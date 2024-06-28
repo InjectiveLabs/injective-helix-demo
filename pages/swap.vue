@@ -14,9 +14,8 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
-
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { resetForm, validate, values: formValues } = useForm<SwapForm>()
 const setFormValues = useSetFormValues()
@@ -175,7 +174,7 @@ function getOutputQuantity() {
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
-      if (walletStore.isUserConnected && !hideErrorToast.value) {
+      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })
@@ -205,7 +204,7 @@ function getInputQuantity() {
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
 
-      if (walletStore.isUserConnected && !hideErrorToast.value) {
+      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
         $onError(e)
       }
     })
