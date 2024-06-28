@@ -99,7 +99,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "~9.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.0.4",
+    "typescript": "5.4.5",
     "unplugin-auto-import": "^0.16.0",
     "vite-plugin-circular-dependency": "^0.2.1",
     "vite-plugin-notifier": "latest",
@@ -112,8 +112,6 @@
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
-    "vee-validate": "4.11.7",
-    "@nuxt/kit": "3.11.2",
-    "@nuxt/schema": "3.11.2"
+    "vee-validate": "4.11.7"
   }
 }

@@ -2,10 +2,10 @@
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const walletStore = useSharedWalletStore()
-const ninjaPassStore = useNinjaPassStore()
 const modalStore = useModalStore()
 const confetti = useSharedConfetti()
+const ninjaPassStore = useNinjaPassStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.NinjaPassWinner])
 
@@ -22,7 +22,7 @@ const ninjaPassUrl = computed(() => {
     return
   }
 
-  return `https://ninjapass.injective.com/?code=${ninjaPassCode.value.code}&address=${walletStore.injectiveAddress}`
+  return `https://ninjapass.injective.com/?code=${ninjaPassCode.value.code}&address=${sharedWalletStore.injectiveAddress}`
 })
 
 watch(

@@ -7,25 +7,25 @@ import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { Modal, WalletOption } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const status: Status = reactive(new Status(StatusType.Loading))
 const selectedWallet = ref<Wallet | undefined>(undefined)
 
 const isModalOpen = computed<boolean>(
-  () => modalStore.modals[Modal.Connect] && !walletStore.isUserConnected
+  () => modalStore.modals[Modal.Connect] && !sharedWalletStore.isUserConnected
 )
 
 const popularOptions = computed(() => [
   {
     wallet: Wallet.Metamask,
-    downloadLink: !walletStore.metamaskInstalled
+    downloadLink: !sharedWalletStore.metamaskInstalled
       ? 'https://metamask.io/download'
       : undefined
   },
   {
     wallet: Wallet.OkxWallet,
-    downloadLink: !walletStore.okxWalletInstalled
+    downloadLink: !sharedWalletStore.okxWalletInstalled
       ? 'https://www.okx.com/web3'
       : undefined
   },
@@ -52,7 +52,7 @@ const options = computed(
         ? undefined
         : {
             wallet: Wallet.BitGet,
-            downloadLink: !walletStore.bitGetInstalled
+            downloadLink: !sharedWalletStore.bitGetInstalled
               ? 'https://web3.bitget.com/en/wallet-download'
               : undefined
           },
@@ -60,7 +60,7 @@ const options = computed(
       { wallet: Wallet.Trezor },
       {
         wallet: Wallet.TrustWallet,
-        downloadLink: !walletStore.trustWalletInstalled
+        downloadLink: !sharedWalletStore.trustWalletInstalled
           ? 'https://trustwallet.com/browser-extension/'
           : undefined
       },
@@ -92,11 +92,11 @@ const options = computed(
 
 onMounted(() => {
   Promise.all([
-    walletStore.checkIsMetamaskInstalled(),
-    walletStore.checkIsTrustWalletInstalled(),
-    walletStore.checkIsPhantomWalletInstalled(),
-    walletStore.checkIsOkxWalletInstalled(),
-    walletStore.checkIsBitGetInstalled()
+    sharedWalletStore.checkIsMetamaskInstalled(),
+    sharedWalletStore.checkIsTrustWalletInstalled(),
+    sharedWalletStore.checkIsPhantomWalletInstalled(),
+    sharedWalletStore.checkIsOkxWalletInstalled(),
+    sharedWalletStore.checkIsBitGetInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -117,7 +117,7 @@ function onWalletModalTypeChange(wallet: Wallet | undefined) {
 }
 
 watch(
-  () => walletStore.walletConnectStatus,
+  () => sharedWalletStore.walletConnectStatus,
   (newWalletConnectStatus) => {
     if (newWalletConnectStatus === WalletConnectStatus.connected) {
       modalStore.closeModal(Modal.Connect)
@@ -135,7 +135,7 @@ watch(isModalOpen, (newShowModalState) => {
 </script>
 
 <template>
-  <LayoutWalletDetails v-if="walletStore.isUserConnected" />
+  <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
   <AppButton v-else @click="onWalletConnect">
     {{ $t('connect.connectWallet') }}

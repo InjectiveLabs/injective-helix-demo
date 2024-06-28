@@ -30,8 +30,8 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useSharedWalletStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
 const GREEN_COLOR = '#0EE29B'
@@ -67,7 +67,7 @@ const subaccountMarketOrders = computed(() =>
       order.marketId === props.market.marketId &&
       order.subaccountId ===
         addressAndMarketSlugToSubaccountId(
-          walletStore.address,
+          sharedWalletStore.address,
           props.market.slug
         ) &&
       order.state === OrderState.Booked

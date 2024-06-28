@@ -8,12 +8,12 @@ import {
 } from '@/app/client/streams/spot'
 
 export const streamDerivativeSubaccountOrderHistory = (marketId?: string) => {
+  const accountStore = useAccountStore()
   const activityStore = useActivityStore()
   const derivativeStore = useDerivativeStore()
-  const accountStore = useAccountStore()
-  const walletStore = useSharedWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -39,12 +39,12 @@ export const streamDerivativeSubaccountOrderHistory = (marketId?: string) => {
 }
 
 export const streamDerivativeSubaccountTrades = (marketId?: string) => {
+  const accountStore = useAccountStore()
   const activityStore = useActivityStore()
   const derivativeStore = useDerivativeStore()
-  const accountStore = useAccountStore()
-  const walletStore = useSharedWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -70,12 +70,12 @@ export const streamDerivativeSubaccountTrades = (marketId?: string) => {
 }
 
 export const streamSpotSubaccountOrderHistory = (marketId?: string) => {
-  const activityStore = useActivityStore()
   const spotStore = useSpotStore()
+  const activityStore = useActivityStore()
   const accountStore = useAccountStore()
-  const walletStore = useSharedWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -100,13 +100,12 @@ export const streamSpotSubaccountOrderHistory = (marketId?: string) => {
 }
 
 export const streamSpotSubaccountTrades = (marketId?: string) => {
-  const activityStore = useActivityStore()
   const spotStore = useSpotStore()
-
   const accountStore = useAccountStore()
-  const walletStore = useSharedWalletStore()
+  const activityStore = useActivityStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 

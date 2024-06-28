@@ -2,10 +2,12 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isDisabled = computed(
-  () => walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+  () =>
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
 )
 
 function openTransferModal() {

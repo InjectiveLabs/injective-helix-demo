@@ -6,12 +6,10 @@ import { MainPage, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
 const authZStore = useAuthZStore()
-
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
-
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const portfolioStatus = reactive(new Status(StatusType.Loading))
@@ -82,7 +80,7 @@ provide(PortfolioStatusKey, portfolioStatus)
   <div class="relative">
     <LayoutNavbar />
     <main class="relative pb-6">
-      <LayoutAuthZBanner v-if="walletStore.isAuthzWalletConnected" />
+      <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else />
 
       <NuxtPage v-bind="{ portfolioStatus }" />

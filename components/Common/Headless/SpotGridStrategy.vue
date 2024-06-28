@@ -24,10 +24,10 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useSharedWalletStore()
+const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
-const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const now = useNow({ interval: 1000 })
@@ -71,7 +71,10 @@ const investment = computed(() => {
 const subaccountBalances = computed(
   () =>
     accountStore.subaccountBalancesMap[
-      addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+      addressAndMarketSlugToSubaccountId(
+        sharedWalletStore.address,
+        market.value.slug
+      )
     ]
 )
 
@@ -243,7 +246,10 @@ const duration = computed(() =>
 )
 
 const gridStrategySubaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+  addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.value.slug
+  )
 )
 
 function removeStrategy() {

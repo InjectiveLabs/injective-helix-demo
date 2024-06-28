@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
+import {
+  ErrorType,
+  WalletException,
+  UnspecifiedErrorCode
+} from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import blacklistedAddresses from '@/app/data/ofac.json'
 
 type WalletStoreState = {}
 
@@ -21,76 +27,97 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
-      const walletStore = useSharedWalletStore()
       const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       if (wallet === Wallet.Metamask) {
-        await walletStore.connectMetamask()
+        await sharedWalletStore.connectMetamask()
       }
 
       if (wallet === Wallet.Keplr) {
-        await walletStore.connectKeplr()
+        await sharedWalletStore.connectKeplr()
       }
 
       if (wallet === Wallet.Leap) {
-        await walletStore.connectLeap()
+        await sharedWalletStore.connectLeap()
       }
 
       if ([Wallet.Ledger, Wallet.LedgerLegacy].includes(wallet) && address) {
-        await walletStore.connectLedger({
+        await sharedWalletStore.connectLedger({
           wallet,
           address
         })
       }
 
       if (wallet === Wallet.Phantom) {
-        await walletStore.connectPhantomWallet()
+        await sharedWalletStore.connectPhantomWallet()
       }
 
       if (wallet === Wallet.Ninji) {
-        await walletStore.connectNinji()
+        await sharedWalletStore.connectNinji()
       }
 
       if (wallet === Wallet.Cosmostation) {
-        await walletStore.connectCosmosStation()
+        await sharedWalletStore.connectCosmosStation()
       }
 
       if (wallet === Wallet.Trezor && address) {
-        await walletStore.connectTrezor(address)
+        await sharedWalletStore.connectTrezor(address)
       }
 
       if (wallet === Wallet.BitGet) {
-        await walletStore.connectBitGet()
+        await sharedWalletStore.connectBitGet()
       }
 
       if (wallet === Wallet.OkxWallet) {
-        await walletStore.connectOkxWallet()
+        await sharedWalletStore.connectOkxWallet()
       }
 
       if (wallet === Wallet.Torus) {
-        await walletStore.connectTorus()
+        await sharedWalletStore.connectTorus()
       }
 
       if (wallet === Wallet.WalletConnect) {
-        await walletStore.connectWalletConnect()
+        await sharedWalletStore.connectWalletConnect()
       }
 
       accountStore.$patch({
-        subaccountId: walletStore.defaultSubaccountId
+        subaccountId: sharedWalletStore.defaultSubaccountId
       })
+
+      if (sharedWalletStore.isUserConnected) {
+        const someAddressInWalletIsBlackListed =
+          sharedWalletStore.addresses.some(
+            (address) =>
+              blacklistedAddresses.find(
+                (blacklistedAddress) =>
+                  blacklistedAddress.toLowerCase() === address.toLowerCase()
+              ) !== undefined
+          )
+
+        if (someAddressInWalletIsBlackListed) {
+          throw new WalletException(
+            new Error('This wallet address is restricted.'),
+            {
+              code: UnspecifiedErrorCode,
+              type: ErrorType.WalletError
+            }
+          )
+        }
+      }
     },
 
     async validate() {
       const appStore = useAppStore()
-      const walletStore = useSharedWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      const isAutoSignEnabled = !!walletStore.isAutoSignEnabled
+      const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
       await appStore.validateGeoIp()
-      await walletStore.validateAndQueue()
+      await sharedWalletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {
-        await walletStore.validateAutoSign(TRADING_MESSAGES)
+        await sharedWalletStore.validateAutoSign(TRADING_MESSAGES)
       }
     },
 

@@ -3,6 +3,13 @@ import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+
 const props = defineProps({
   order: {
     required: true,
@@ -26,13 +33,6 @@ const {
   computed(() => false)
 )
 
-const authZStore = useAuthZStore()
-const walletStore = useSharedWalletStore()
-const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
-
 const status = reactive(new Status(StatusType.Idle))
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
@@ -40,7 +40,7 @@ const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
 })
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

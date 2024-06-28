@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 defineProps({
   includeBotsSubaccounts: Boolean,
@@ -18,7 +18,7 @@ defineProps({
 
 <template>
   <CommonSubaccountSelector
-    v-if="walletStore.isUserConnected"
+    v-if="sharedWalletStore.isUserConnected"
     v-bind="{
       showLowBalance,
       includeBotsSubaccounts

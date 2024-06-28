@@ -2,6 +2,11 @@
 import { SharedDropdownOption } from '@shared/types'
 import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
 
+const spotStore = useSpotStore()
+const isMobile = useIsMobile()
+const breakpoints = useBreakpointsTw()
+const sharedWalletStore = useSharedWalletStore()
+
 const props = defineProps({
   modelValue: {
     type: String as PropType<SpotOrdersStandardView>,
@@ -20,11 +25,6 @@ const emit = defineEmits<{
 }>()
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
-
-const walletStore = useSharedWalletStore()
-const spotStore = useSpotStore()
-const isMobile = useIsMobile()
-const breakpoints = useBreakpointsTw()
 
 const xxl = breakpoints['4xl']
 
@@ -51,7 +51,7 @@ const options = computed(() => {
     }
   ]
 
-  if (walletStore.isUserConnected) {
+  if (sharedWalletStore.isUserConnected) {
     items.unshift({
       display: `activity.${SpotOrdersStandardView.Balances}`,
       value: SpotOrdersStandardView.Balances
@@ -62,7 +62,7 @@ const options = computed(() => {
 })
 
 watch(
-  () => walletStore.isUserConnected,
+  () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
       view.value = SpotOrdersStandardView.OpenOrders

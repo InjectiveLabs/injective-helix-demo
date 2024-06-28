@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { BusEvents, PortfolioSubPage } from '@/types'
 
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isAutoSignExpiredToastVisible = ref(false)
 
@@ -18,7 +18,7 @@ function showAutoSignExpiredToast() {
 }
 
 onMounted(() => {
-  if (!walletStore.isAutoSignEnabled) {
+  if (!sharedWalletStore.isAutoSignEnabled) {
     pause()
   }
 
@@ -26,18 +26,18 @@ onMounted(() => {
 })
 
 const { pause, resume } = useIntervalFn(() => {
-  if (!walletStore.isAutoSignEnabled) {
+  if (!sharedWalletStore.isAutoSignEnabled) {
     pause()
 
     return
   }
 
   const nowInSeconds = Math.floor(Date.now() / 1000)
-  const autoSignExpiration = walletStore.autoSign?.expiration || 0
+  const autoSignExpiration = sharedWalletStore.autoSign?.expiration || 0
 
   if (autoSignExpiration <= nowInSeconds) {
     showAutoSignExpiredToast()
-    walletStore.disconnectAutoSign()
+    sharedWalletStore.disconnectAutoSign()
   }
 }, 10 * 1000)
 </script>

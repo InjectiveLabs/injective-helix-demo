@@ -5,11 +5,11 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useSharedWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const {
   values: formValues,
@@ -18,7 +18,8 @@ const {
   resetForm: resetSubaccountTransferForm
 } = useForm<SubaccountTransferForm>({
   initialValues: {
-    [SubaccountTransferField.SrcSubaccountId]: walletStore.defaultSubaccountId,
+    [SubaccountTransferField.SrcSubaccountId]:
+      sharedWalletStore.defaultSubaccountId,
     [SubaccountTransferField.DstSubaccountId]: '',
     [SubaccountTransferField.Token]: injToken,
     [SubaccountTransferField.Denom]: injToken.denom,
@@ -59,14 +60,14 @@ const maxDecimals = computed(() => {
 function onSubaccountTransfer() {
   if (
     formValues[SubaccountTransferField.SrcSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountTransfer()
   }
 
   if (
     formValues[SubaccountTransferField.DstSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountWithdraw()
   }

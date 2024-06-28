@@ -4,15 +4,15 @@ import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { GuildSortBy } from '@/types'
 
 export const fetchUserIsOptedOutOfRewards = async () => {
-  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
   const { isOptedOut } = await exchangeApi.fetchIsOptedOutOfRewards(
-    walletStore.injectiveAddress
+    sharedWalletStore.injectiveAddress
   )
 
   campaignStore.$patch({
@@ -51,17 +51,17 @@ export const fetchGuildsByVolume = async () => {
 }
 
 export const fetchUserGuildInfo = async () => {
-  const walletStore = useSharedWalletStore()
   const campaignStore = useCampaignStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserConnected || campaignStore.userGuildInfo) {
+  if (!sharedWalletStore.isUserConnected || campaignStore.userGuildInfo) {
     return
   }
 
   try {
     const { info: userGuildInfo } =
       await indexerGrpcCampaignApi.fetchGuildMember({
-        address: walletStore.injectiveAddress,
+        address: sharedWalletStore.injectiveAddress,
         campaignContract: GUILD_CONTRACT_ADDRESS
       })
 

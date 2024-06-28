@@ -14,6 +14,16 @@ import {
   SpotTradeFormField
 } from '@/types'
 
+const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const formErrors = useFormErrors()
+const validate = useValidateForm()
+const resetForm = useResetForm<SpotTradeForm>()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+
 const props = defineProps({
   quantity: {
     type: Object as PropType<BigNumberInBase>,
@@ -25,16 +35,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
-const formErrors = useFormErrors()
-const validate = useValidateForm()
-const walletStore = useSharedWalletStore()
-const resetForm = useResetForm<SpotTradeForm>()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -84,7 +84,7 @@ const isLimitOrder = computed(
 )
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -129,7 +129,7 @@ onMounted(() => {
 })
 
 const mixPanelFields = computed(() => ({
-  isAutoSign: walletStore.isAutoSignEnabled,
+  isAutoSign: sharedWalletStore.isAutoSignEnabled,
   isBuy: isBuy.value,
   market: market.value.slug,
   marketType: SharedMarketType.Spot,

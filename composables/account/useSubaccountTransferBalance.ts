@@ -6,13 +6,13 @@ export function useSubaccountTransferBalance(
   formValues: Ref<SubaccountTransferForm>
 ) {
   const tokenStore = useTokenStore()
-  const walletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const subaccountBalance = computed(() => {
     const isDefaultSubaccount =
       formValues.value[SubaccountTransferField.SrcSubaccountId] ===
-      walletStore.defaultSubaccountId
+      sharedWalletStore.defaultSubaccountId
 
     if (isDefaultSubaccount) {
       return accountStore.bankBalances.map((bankBalance) => {

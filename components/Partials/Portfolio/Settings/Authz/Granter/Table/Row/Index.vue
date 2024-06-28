@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
-const walletStore = useSharedWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const props = defineProps({
   granter: {
@@ -22,7 +22,7 @@ function toggle() {
 }
 
 function connectAuthZ() {
-  walletStore.connectAuthZ(props.granter)
+  sharedWalletStore.connectAuthZ(props.granter)
 }
 </script>
 
@@ -47,14 +47,18 @@ function connectAuthZ() {
 
     <div class="flex-1 flex items-center p-2">
       <AppButton
-        v-if="walletStore.authZOrInjectiveAddress === granter"
+        v-if="sharedWalletStore.authZOrInjectiveAddress === granter"
         disabled
         size="sm"
       >
         {{ $t('portfolio.settings.authz.connected') }}
       </AppButton>
 
-      <AppButton v-else-if="walletStore.isAutoSignEnabled" disabled size="sm">
+      <AppButton
+        v-else-if="sharedWalletStore.isAutoSignEnabled"
+        disabled
+        size="sm"
+      >
         {{ $t('common.notAvailableinAutoSignMode') }}
       </AppButton>
 
