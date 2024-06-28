@@ -71,7 +71,7 @@ export const trackCreateOrder = (
   },
   error?: string
 ) => {
-  mixpanelAnalytics.track(MixPanelEvent.CreateOrder, {
+  mixpanelAnalytics.track(MixPanelEvent.PlaceOrderClicked, {
     Market: props.market,
     'Market Type': props.marketType,
     'Buy Sell': props.isBuy ? MixPanelOrderSide.Buy : MixPanelOrderSide.Sell,
@@ -109,7 +109,7 @@ export const trackCreateStrategy = ({
   marketPrice: string
   isLiquidity: boolean
 }) => {
-  mixpanelAnalytics.track(MixPanelEvent.CreateStrategy, {
+  mixpanelAnalytics.track(MixPanelEvent.CreateGridTradingBotClicked, {
     'Lower Price': new BigNumberInBase(
       formValues[SpotGridTradingField.LowerPrice] || 0
     ).toNumber(),

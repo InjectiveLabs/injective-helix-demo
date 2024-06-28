@@ -27,6 +27,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
+      const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -96,8 +97,10 @@ export const useWalletStore = defineStore('wallet', {
           )
 
         if (someAddressInWalletIsBlackListed) {
+          walletStore.disconnect()
+
           throw new WalletException(
-            new Error('This wallet address is restricted.'),
+            new Error('Connected account address is restricted.'),
             {
               code: UnspecifiedErrorCode,
               type: ErrorType.WalletError
