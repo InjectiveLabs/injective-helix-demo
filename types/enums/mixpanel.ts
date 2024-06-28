@@ -8,20 +8,7 @@ export enum MixPanelEvent {
   PlaceOrderClicked = 'Place Order Clicked',
   SwapClicked = 'Swap Clicked',
   CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',
-  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
-
-  Swap = 'Swap',
-  SwapCount = 'SwapCount',
-  SurveyAccepted = 'Survey-Accepted',
-  SurveyRejected = 'Survey-Rejected',
-  CreateOrder = 'CreateOrder',
-  CreateOrderCount = 'CreateOrderCount',
-  CreateStrategy = 'CreateStrategy',
-  CreateStrategyCount = 'CreateStrategyCount',
-  RemoveStrategy = 'RemoveStrategy',
-  CreateLiquidityBot = 'CreateLiquidityBot',
-  CreateLiquidityBotCount = 'CreateLiquidityBotCount',
-  RemoveLiquidityBot = 'RemoveLiquidityBot'
+  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked'
 }
 
 export enum MixPanelCounter {

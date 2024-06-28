@@ -97,7 +97,7 @@ export const useWalletStore = defineStore('wallet', {
 
         if (someAddressInWalletIsBlackListed) {
           throw new WalletException(
-            new Error('This wallet address is restricted.'),
+            new Error('Connected account address is restricted.'),
             {
               code: UnspecifiedErrorCode,
               type: ErrorType.WalletError
