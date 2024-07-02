@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
-import {
-  MarketQuoteType,
-  MarketHeaderType,
-  MarketTypeOption,
-  MarketCategoryType
-} from '@/types'
+import { MarketQuoteType, MarketTypeOption, MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -29,8 +24,6 @@ const activeCategoryOptions = Object.values(MarketCategoryType).map(
 )
 
 const search = ref('')
-const isAscending = ref(false)
-const sortBy = ref(MarketHeaderType.Volume)
 const isLowVolumeMarketsVisible = ref(false)
 const activeQuote = ref(MarketQuoteType.All)
 const activeType = ref(MarketTypeOption.All)
@@ -51,14 +44,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     }
   )
 )
-
-function onSortBy(sortType: MarketHeaderType) {
-  sortBy.value = sortType
-}
-
-function onAscending(ascending: boolean) {
-  isAscending.value = ascending
-}
 </script>
 
 <template>
@@ -138,25 +123,31 @@ function onAscending(ascending: boolean) {
 
     <div class="divide-y overflow-x-auto">
       <div class="min-w-[600px]">
-        <PartialsMarketsCommonHeader
-          v-bind="{ sortBy, isAscending }"
-          @update:is-ascending="onAscending"
-          @update:sort-by="onSortBy"
-        />
-
         <CommonHeadlessMarkets
           v-bind="{
             search,
-            sortBy,
             activeType,
-            isAscending,
             activeQuote,
             activeCategory,
             isLowVolumeMarketsVisible,
             markets: marketsWithSummaryAndVolumeInUsd
           }"
         >
-          <template #default="{ sortedMarkets }">
+          <template
+            #default="{
+              sortBy,
+              onSortBy,
+              onAscending,
+              isAscending,
+              sortedMarkets
+            }"
+          >
+            <PartialsMarketsCommonHeader
+              v-bind="{ sortBy, isAscending }"
+              @update:is-ascending="onAscending"
+              @update:sort-by="onSortBy"
+            />
+
             <PartialsMarketsCommonRow
               v-for="{ market, summary, volumeInUsd } in sortedMarkets"
               :key="market.marketId"

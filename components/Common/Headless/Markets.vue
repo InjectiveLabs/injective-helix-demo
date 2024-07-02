@@ -29,7 +29,6 @@ const positionStore = usePositionStore()
 const appStore = useAppStore()
 
 const props = defineProps({
-  isAscending: Boolean,
   isLowVolumeMarketsVisible: Boolean,
 
   activeCategory: {
@@ -55,13 +54,11 @@ const props = defineProps({
   search: {
     type: String,
     default: ''
-  },
-
-  sortBy: {
-    type: String as PropType<MarketHeaderType>,
-    required: true
   }
 })
+
+const isAscending = ref(false)
+const sortBy = ref(MarketHeaderType.Volume)
 
 const userMarkets = computed(() => {
   const openPositionMarketIds = positionStore.positions.map(
@@ -141,7 +138,7 @@ const sortedMarkets = computed(() => {
   const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
   const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
 
-  if (props.sortBy.trim() === '') {
+  if (sortBy.value.trim() === '') {
     return filteredMarkets.value
   }
 
@@ -157,17 +154,17 @@ const sortedMarkets = computed(() => {
         return 1
       }
 
-      if (props.sortBy === MarketHeaderType.Price) {
+      if (sortBy.value === MarketHeaderType.Price) {
         return new BigNumberInBase(m2.summary.price || 0).comparedTo(
           m1.summary.price || 0
         )
       }
 
-      if (props.sortBy === MarketHeaderType.Market) {
+      if (sortBy.value === MarketHeaderType.Market) {
         return m2.market.ticker.localeCompare(m1.market.ticker)
       }
 
-      if (props.sortBy === MarketHeaderType.Change) {
+      if (sortBy.value === MarketHeaderType.Change) {
         if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
           return m1.market.ticker.localeCompare(m2.market.ticker)
         }
@@ -181,10 +178,27 @@ const sortedMarkets = computed(() => {
     }
   )
 
-  return props.isAscending ? markets.reverse() : markets
+  return isAscending.value ? markets.reverse() : markets
 })
+
+function onAscending(value: boolean) {
+  isAscending.value = value
+}
+
+function onSortBy(value: MarketHeaderType) {
+  sortBy.value = value
+}
 </script>
 
 <template>
-  <slot v-bind="{ sortedMarkets, filteredMarkets }" />
+  <slot
+    v-bind="{
+      sortBy,
+      onSortBy,
+      isAscending,
+      onAscending,
+      sortedMarkets,
+      filteredMarkets
+    }"
+  />
 </template>

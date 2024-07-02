@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   MarketQuoteType,
-  MarketHeaderType,
   MarketTypeOption,
   MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd
@@ -37,51 +36,46 @@ defineProps({
     default: ''
   }
 })
-
-const isAscending = ref(false)
-const sortBy = ref(MarketHeaderType.Volume)
-
-function handleIsAscending(value: boolean) {
-  isAscending.value = value
-}
-
-function handleSortBy(value: MarketHeaderType) {
-  sortBy.value = value
-}
 </script>
 
 <template>
   <AppHocLoading v-bind="{ isLoading }">
     <div class="overflow-x-auto">
       <div class="min-w-[800px]">
-        <PartialsMarketsCommonHeader
-          v-bind="{ isAscending, isMarketsPage, sortBy }"
-          @update:is-ascending="handleIsAscending"
-          @update:sort-by="handleSortBy"
-        />
-
-        <div class="divide-y">
-          <CommonHeadlessMarkets
-            v-bind="{
-              search,
+        <CommonHeadlessMarkets
+          v-bind="{
+            search,
+            markets,
+            activeType,
+            activeQuote,
+            activeCategory,
+            isLowVolumeMarketsVisible
+          }"
+        >
+          <template
+            #default="{
               sortBy,
-              markets,
-              activeType,
+              onSortBy,
+              onAscending,
               isAscending,
-              activeQuote,
-              activeCategory,
-              isLowVolumeMarketsVisible
+              sortedMarkets
             }"
           >
-            <template #default="{ sortedMarkets }">
+            <PartialsMarketsCommonHeader
+              v-bind="{ isAscending, isMarketsPage, sortBy }"
+              @update:is-ascending="onAscending"
+              @update:sort-by="onSortBy"
+            />
+
+            <div class="divide-y">
               <PartialsMarketsCommonRow
                 v-for="{ market, summary, volumeInUsd } in sortedMarkets"
                 :key="market.marketId"
                 v-bind="{ market, summary, volumeInUsd, isMarketsPage }"
               />
-            </template>
-          </CommonHeadlessMarkets>
-        </div>
+            </div>
+          </template>
+        </CommonHeadlessMarkets>
       </div>
     </div>
   </AppHocLoading>
