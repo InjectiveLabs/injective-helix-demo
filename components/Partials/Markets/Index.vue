@@ -1,68 +1,45 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
-import { MarketHeaderType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import {
+  MarketQuoteType,
+  MarketHeaderType,
+  MarketTypeOption,
+  MarketCategoryType,
+  UiMarketAndSummaryWithVolumeInUsd
+} from '@/types'
 
-const props = defineProps({
+defineProps({
   isLoading: Boolean,
   isMarketsPage: Boolean,
+  isLowVolumeMarketsVisible: Boolean,
+
+  activeCategory: {
+    type: String as PropType<MarketCategoryType>,
+    required: true
+  },
+
+  activeQuote: {
+    type: String as PropType<MarketQuoteType>,
+    required: true
+  },
+
+  activeType: {
+    type: String as PropType<MarketTypeOption>,
+    required: true
+  },
 
   markets: {
     type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
     required: true
+  },
+
+  search: {
+    type: String,
+    default: ''
   }
 })
 
 const isAscending = ref(false)
 const sortBy = ref(MarketHeaderType.Volume)
-
-const sortedMarkets = computed(() => {
-  const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
-  const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
-
-  if (sortBy.value.trim() === '') {
-    return props.markets
-  }
-
-  const markets = [...props.markets].sort(
-    (
-      m1: UiMarketAndSummaryWithVolumeInUsd,
-      m2: UiMarketAndSummaryWithVolumeInUsd
-    ) => {
-      if (
-        upcomingMarketsSlugs.includes(m1.market.slug) ||
-        deprecatedMarketsSlugs.includes(m1.market.slug)
-      ) {
-        return 1
-      }
-
-      if (sortBy.value === MarketHeaderType.Price) {
-        return new BigNumberInBase(m2.summary.price || 0).comparedTo(
-          m1.summary.price || 0
-        )
-      }
-
-      if (sortBy.value === MarketHeaderType.Market) {
-        return m1.market.ticker.localeCompare(m2.market.ticker)
-      }
-
-      if (sortBy.value === MarketHeaderType.Change) {
-        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
-          return m1.market.ticker.localeCompare(m2.market.ticker)
-        }
-
-        return new BigNumberInBase(m2.summary.change)
-          .minus(m1.summary.change)
-          .toNumber()
-      }
-
-      // default: sort by volume
-      return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
-    }
-  )
-
-  return isAscending.value ? markets.reverse() : markets
-})
 
 function handleIsAscending(value: boolean) {
   isAscending.value = value
@@ -84,11 +61,26 @@ function handleSortBy(value: MarketHeaderType) {
         />
 
         <div class="divide-y">
-          <PartialsMarketsCommonRow
-            v-for="{ market, summary, volumeInUsd } in sortedMarkets"
-            :key="market.marketId"
-            v-bind="{ market, summary, volumeInUsd, isMarketsPage }"
-          />
+          <CommonHeadlessMarkets
+            v-bind="{
+              search,
+              sortBy,
+              markets,
+              activeType,
+              isAscending,
+              activeQuote,
+              activeCategory,
+              isLowVolumeMarketsVisible
+            }"
+          >
+            <template #default="{ sortedMarkets }">
+              <PartialsMarketsCommonRow
+                v-for="{ market, summary, volumeInUsd } in sortedMarkets"
+                :key="market.marketId"
+                v-bind="{ market, summary, volumeInUsd, isMarketsPage }"
+              />
+            </template>
+          </CommonHeadlessMarkets>
         </div>
       </div>
     </div>

@@ -1,7 +1,12 @@
 import { injToken } from '@shared/data/token'
 import marketCategorySlugs from './category.json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
+import {
+  NotLiquidMarket,
+  MarketPromotion,
+  MarketTypeOption,
+  UiMarketWithToken
+} from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -106,3 +111,8 @@ export const MARKET_THEMES_SLUGS = {
   [MarketTheme.LiquidStaking]: ['hdro-inj', 'hinj/inj'],
   [MarketTheme.Stablecoins]: ['usdc-usdt', 'usde-usdt']
 }
+
+export const marketTypeOptionsToHideCategory = [
+  MarketTypeOption.NewListings,
+  MarketTypeOption.Permissionless
+]
