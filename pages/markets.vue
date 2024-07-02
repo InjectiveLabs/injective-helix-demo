@@ -58,7 +58,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     .filter(({ summary }) => summary)
 )
 
-const userSpecificMarkets = computed(() => {
+const userMarkets = computed(() => {
   const openPositionMarketIds = positionStore.positions.map(
     ({ marketId }) => marketId
   )
@@ -109,10 +109,10 @@ const filteredMarkets = computed(() =>
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
-        userSpecificMarkets:
+        userMarkets:
           type.value === MarketTypeOption.Favorites
             ? appStore.favoriteMarkets
-            : userSpecificMarkets.value,
+            : userMarkets.value,
         activeType: type.value
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
