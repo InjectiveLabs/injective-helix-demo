@@ -15874,7 +15874,7 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#3dfa019d80b52a700340255ea81efa6e12ae3bae"
+  resolved "https://github.com/InjectiveLabs/shared-packages#632d64e41a10f82998cd5a2330f3828e1a9ada3a"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.13"
