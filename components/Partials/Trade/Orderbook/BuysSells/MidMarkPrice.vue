@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SharedMarketChange } from '@shared/types'
-import { usdtToken } from '@shared/data/token'
+import { stableCoinSymbols } from '@/app/data/token'
 import { UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -69,9 +69,9 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
   }
 )
 
-const isNonUsdtQuoteAsset = computed(() => {
-  return props.market.quoteToken.denom !== usdtToken.denom
-})
+const isStableQuoteAsset = computed(() =>
+  stableCoinSymbols.includes(props.market.quoteToken.symbol)
+)
 </script>
 
 <template>
@@ -107,7 +107,7 @@ const isNonUsdtQuoteAsset = computed(() => {
         {{ lastTradedPriceToString }}
       </span>
 
-      <span v-if="isNonUsdtQuoteAsset" class="mx-2 text-xs text-gray-400">
+      <span v-if="!isStableQuoteAsset" class="mx-2 text-xs text-gray-400">
         ${{ lastPriceInUsdToString }}
       </span>
 

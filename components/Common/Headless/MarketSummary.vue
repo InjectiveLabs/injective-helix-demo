@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { USDT_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
-import { stableCoinDenoms } from '@/app/data/token'
+import { stableCoinSymbols } from '@/app/data/token'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -64,12 +64,8 @@ const summary = computed(() => {
   )
 })
 
-const isNonUsdtQuoteAsset = computed(
-  () => props.market.quoteToken.denom !== USDT_DENOM
-)
-
 const isStableQuoteAsset = computed(() =>
-  stableCoinDenoms.includes(props.market.quoteToken.symbol)
+  stableCoinSymbols.includes(props.market.quoteToken.symbol)
 )
 
 const lastTradedPrice = computed(() => {
@@ -98,7 +94,7 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
       return new BigNumberInBase(summary.value.volume)
     }),
     {
-      decimalPlaces: stableCoinDenoms.includes(props.market.quoteToken.symbol)
+      decimalPlaces: stableCoinSymbols.includes(props.market.quoteToken.symbol)
         ? 0
         : props.market.priceDecimals
     }
@@ -267,7 +263,6 @@ useIntervalFn(() => {
       lastTradedPrice,
       isStableQuoteAsset,
       volumeInUsdToFormat,
-      isNonUsdtQuoteAsset,
       lastTradedPriceInUsd,
       percentageChangeStatus,
       lastTradedPriceToFormat,

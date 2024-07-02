@@ -24,7 +24,6 @@ defineProps({
         volumeToFormat,
         isStableQuoteAsset,
         volumeInUsdToFormat,
-        isNonUsdtQuoteAsset,
         percentageChangeStatus,
         lastTradedPriceToFormat,
         lastTradedPriceInUsdToFormat
@@ -85,7 +84,7 @@ defineProps({
         </div>
 
         <div
-          v-if="isNonUsdtQuoteAsset"
+          v-if="!isStableQuoteAsset"
           class="p-2 text-xs flex flex-col max-lg:text-center"
         >
           <p class="text-gray-400">{{ $t('trade.usd_value') }}</p>
