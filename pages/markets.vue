@@ -24,7 +24,9 @@ const marketTypeOptionsToHideCategory = [
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
+const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -56,6 +58,45 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     .filter(({ summary }) => summary)
 )
 
+const userSpecificMarkets = computed(() => {
+  const openPositionMarketIds = positionStore.positions.map(
+    ({ marketId }) => marketId
+  )
+  const openSpotOrdersMarketIds = spotStore.subaccountOrders.map(
+    ({ marketId }) => marketId
+  )
+  const openDerivativeOrdersMarketIds = derivativeStore.subaccountOrders.map(
+    ({ marketId }) => marketId
+  )
+
+  const spotBaseTokenDenomToMarketIdMap = spotStore.markets.reduce(
+    (denomToMarketIdMap, market) => {
+      denomToMarketIdMap[market.baseToken.denom] = market.marketId
+
+      return denomToMarketIdMap
+    },
+    {} as Record<string, string>
+  )
+
+  const userBalanceSpotMarketIds = accountStore.bankBalances.reduce(
+    (marketIds, { amount, denom }) =>
+      new BigNumberInBase(amount).gt(0) &&
+      spotBaseTokenDenomToMarketIdMap[denom]
+        ? [...marketIds, spotBaseTokenDenomToMarketIdMap[denom]]
+        : marketIds,
+    [] as string[]
+  )
+
+  return [
+    ...new Set([
+      ...openPositionMarketIds,
+      ...openSpotOrdersMarketIds,
+      ...userBalanceSpotMarketIds,
+      ...openDerivativeOrdersMarketIds
+    ])
+  ]
+})
+
 const filteredMarkets = computed(() =>
   marketsWithSummaryAndVolumeInUsd.value
     .filter(({ market, volumeInUsd }) => {
@@ -68,7 +109,10 @@ const filteredMarkets = computed(() =>
       const isPartOfSearch = marketIsPartOfSearch(search.value, market)
       const isPartOfType = marketIsPartOfType({
         market,
-        favoriteMarkets: appStore.favoriteMarkets,
+        userSpecificMarkets:
+          type.value === MarketTypeOption.Favorites
+            ? appStore.favoriteMarkets
+            : userSpecificMarkets.value,
         activeType: type.value
       })
       const isQuotePair = marketIsQuotePair(activeQuote.value, market)
@@ -186,7 +230,7 @@ const unknownTokenStatus = inject(
               {{ value }}
             </AppButtonSelect>
           </div>
-          <div v-else></div>
+          <div v-else />
 
           <div
             v-if="type === MarketTypeOption.Permissionless"
