@@ -18,6 +18,14 @@ const { value: limit, errorMessage } = useStringField({
   })
 })
 
+function setMidLimitPrice() {
+  if (!lastTradedPrice.value) {
+    return
+  }
+
+  limit.value = lastTradedPrice.value.toFixed()
+}
+
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
     limit.value = price
@@ -30,6 +38,15 @@ onMounted(() => {
     <p class="field-label">{{ $t('trade.limitPrice') }}</p>
 
     <AppInputField v-model="limit" placeholder="0.00">
+      <template #left>
+        <div
+          class="text-xs text-gray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          @click="setMidLimitPrice"
+        >
+          {{ $t('trade.mid') }}
+        </div>
+      </template>
+
       <template #right>
         <span class="text-sm">
           {{ market.quoteToken.symbol }}
