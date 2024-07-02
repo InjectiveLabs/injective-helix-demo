@@ -10,7 +10,13 @@
     <div class="flex-1 p-2 text-right">{{ $t('trade.amount') }}</div>
     <div class="flex-1 p-2 text-right">{{ $t('trade.unfilled') }}</div>
     <div class="flex-1 p-2 text-right">{{ $t('trade.filled') }}</div>
-    <div class="flex-1 p-2 text-right">{{ $t('sgt.totalAmount') }}</div>
+    <div class="flex-1 p-2 text-right">
+      {{ $t('sgt.totalAmount') }}
+    </div>
+    <div class="flex-1 p-2 flex justify-center space-x-2 items-center">
+      <p>{{ $t('trade.chase') }}</p>
+      <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
+    </div>
     <div class="flex-1 p-2 text-center">{{ $t('trade.cancelOrder') }}</div>
   </div>
 </template>

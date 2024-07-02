@@ -17,6 +17,9 @@ export default {
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     timestamp_tooltip: 'Based on your browser time zone',
     mid: 'Mid',
+    chase: 'Chase',
+    chaseTooltip:
+      'Click Chase to automatically modify this open limit order to the current best bid/ask price. You must have auto-sign enabled to use this feature.',
     quantity: 'Quantity',
     notional: 'Notional',
     chart: 'Chart',

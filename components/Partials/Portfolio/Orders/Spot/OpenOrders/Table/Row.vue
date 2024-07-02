@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
+import { UiSpotMarket } from '@/types'
 
 const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
@@ -17,6 +18,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const orderbookStore = useOrderbookStore()
 
 const {
   isBuy,
@@ -96,6 +99,27 @@ function cancelOrder() {
       })
     })
 }
+
+function chase() {
+  if (!market.value) {
+    return
+  }
+
+  const price = isBuy.value
+    ? orderbookStore.buys[0].price
+    : orderbookStore.sells[0].price
+
+  spotStore
+    .submitChase({
+      market: market.value as UiSpotMarket,
+      order: props.order,
+      price: new BigNumberInBase(price)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+}
 </script>
 
 <template>
@@ -147,6 +171,15 @@ function cancelOrder() {
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
+      </div>
+
+      <div class="flex-1 p-2 flex items-center justify-center">
+        <button
+          class="hover:underline text-green-500 font-semibold"
+          @click="chase"
+        >
+          {{ $t('trade.chase') }}
+        </button>
       </div>
 
       <div class="flex-1 p-2 flex items-center justify-center">

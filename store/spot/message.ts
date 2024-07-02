@@ -344,3 +344,43 @@ export const submitStopMarketOrder = async ({
 
   await fetchBalances()
 }
+
+export async function submitChase({
+  order,
+  market,
+  price
+}: {
+  order: SpotLimitOrder
+  market: UiSpotMarket
+  price: BigNumberInBase
+}) {
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  const cancelOrderMsg = MsgCancelSpotOrder.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: order.marketId,
+    subaccountId: order.subaccountId,
+    orderHash: order.orderHash
+  })
+
+  const createSpotLimitOrderMsg = MsgCreateSpotLimitOrder.fromJSON({
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: market.marketId,
+    feeRecipient: FEE_RECIPIENT,
+    price: spotPriceToChainPriceToFixed({
+      value: price.toFixed(),
+      baseDecimals: market.baseToken.decimals,
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    triggerPrice: '0',
+    quantity: order.quantity,
+    orderType: orderSideToOrderType(order.orderSide)
+  })
+
+  const messages = [cancelOrderMsg, createSpotLimitOrderMsg]
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await fetchBalances()
+}

@@ -37,6 +37,7 @@ import {
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import {
+  submitChase,
   cancelOrder,
   batchCancelOrder,
   submitLimitOrder,
@@ -131,6 +132,7 @@ export const useSpotStore = defineStore('spot', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
+    submitChase,
     streamTrades,
     cancelTradesStream,
     streamOrderbookUpdate,
