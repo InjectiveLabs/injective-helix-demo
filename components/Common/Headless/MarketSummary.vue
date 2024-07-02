@@ -64,9 +64,13 @@ const summary = computed(() => {
   )
 })
 
-const isNonUsdtQuoteAsset = computed(() => {
-  return props.market.quoteToken.denom !== USDT_DENOM
-})
+const isNonUsdtQuoteAsset = computed(
+  () => props.market.quoteToken.denom !== USDT_DENOM
+)
+
+const isStableQuoteAsset = computed(() =>
+  stableCoinDenoms.includes(props.market.quoteToken.symbol)
+)
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
@@ -80,11 +84,9 @@ const lastTradedPrice = computed(() => {
   )
 })
 
-const lastTradedPriceInUsd = computed(() => {
-  return lastTradedPrice.value.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
-  )
-})
+const lastTradedPriceInUsd = computed(() =>
+  lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+)
 
 const { valueToString: volumeToFormat, valueToBigNumber: volume } =
   useSharedBigNumberFormatter(
@@ -101,6 +103,16 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
         : props.market.priceDecimals
     }
   )
+
+const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
+  computed(() =>
+    volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  ),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
+  }
+)
 
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
@@ -253,10 +265,12 @@ useIntervalFn(() => {
       changeToFormat,
       volumeToFormat,
       lastTradedPrice,
+      isStableQuoteAsset,
+      volumeInUsdToFormat,
       isNonUsdtQuoteAsset,
-      lastTradedPriceToFormat,
-      percentageChangeStatus,
       lastTradedPriceInUsd,
+      percentageChangeStatus,
+      lastTradedPriceToFormat,
       lastTradedPriceInUsdToFormat
     }"
   />
