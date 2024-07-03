@@ -1,6 +1,7 @@
 import {
   Position,
   PositionV2,
+  DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
@@ -517,4 +518,46 @@ export const submitTpSlOrder = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: tpSlMessages })
 
   await fetchBalances()
+}
+
+export async function submitChase({
+  market,
+  order,
+  price
+}: {
+  market: UiDerivativeMarket
+  order: DerivativeLimitOrder
+  price: BigNumberInBase
+}) {
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  const cancelOrderMsg = MsgCancelDerivativeOrder.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: order.marketId,
+    orderHash: order.orderHash,
+    subaccountId: accountStore.subaccountId
+  })
+
+  const createDerivativeLimitOrderMsg = MsgCreateDerivativeLimitOrder.fromJSON({
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    orderType: orderSideToOrderType(order.orderType as OrderSide),
+    price: derivativePriceToChainPriceToFixed({
+      value: price.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    triggerPrice: '0',
+    quantity: order.quantity,
+    margin: order.margin,
+    marketId: order.marketId,
+    feeRecipient: FEE_RECIPIENT
+  })
+
+  const messages = [cancelOrderMsg, createDerivativeLimitOrderMsg]
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await fetchBalances()
+
+  return await true
 }

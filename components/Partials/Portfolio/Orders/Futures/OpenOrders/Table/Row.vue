@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { UiDerivativeMarket } from '@/types'
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
+const orderbookStore = useOrderbookStore()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const props = defineProps({
   order: {
@@ -89,6 +91,27 @@ function onCancelOrder() {
       status.setIdle()
     })
 }
+
+function chase() {
+  const price = isBuy.value
+    ? orderbookStore.buys[0].price
+    : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
+
+  derivativeStore
+    .submitChase({
+      market: market.value as UiDerivativeMarket,
+      order: props.order,
+      price: new BigNumberInBase(price)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+}
 </script>
 
 <template>
@@ -143,6 +166,15 @@ function onCancelOrder() {
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
+      </div>
+
+      <div class="flex-1 p-2 flex justify-center">
+        <button
+          class="hover:underline text-green-500 font-semibold"
+          @click="chase"
+        >
+          {{ $t('trade.chase') }}
+        </button>
       </div>
 
       <div class="flex-1 p-2 flex justify-center">

@@ -3,14 +3,7 @@ import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
-import { UiSpotMarket } from '~/types'
-
-const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
-const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
+import { UiSpotMarket } from '@/types'
 
 const props = defineProps({
   order: {
@@ -19,7 +12,13 @@ const props = defineProps({
   }
 })
 
+const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const orderbookStore = useOrderbookStore()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const {
   isBuy,
@@ -97,13 +96,13 @@ function cancelOrder() {
 }
 
 function chase() {
-  if (!market.value) {
-    return
-  }
-
   const price = isBuy.value
     ? orderbookStore.buys[0].price
     : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
 
   spotStore
     .submitChase({
@@ -177,12 +176,7 @@ function chase() {
     </div>
 
     <div class="px-2 pt-2 items-center">
-      <AppButton
-        variant="success-outline"
-        v-bind="{ status }"
-        class="w-full"
-        @click="chase"
-      >
+      <AppButton variant="success-outline" class="w-full" @click="chase">
         <span>{{ $t('trade.chase') }}</span>
       </AppButton>
     </div>

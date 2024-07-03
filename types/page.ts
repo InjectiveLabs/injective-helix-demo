@@ -17,26 +17,8 @@ export enum MainPage {
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
 }
 
-export enum ActivitySubPage {
-  Spot = 'activity-spot',
-  Positions = 'activity-positions',
-  Derivatives = 'activity-derivatives',
-  WalletHistory = 'activity-wallet-history',
-  SpotSwapHistory = 'activity-spot-swap-history',
-  SpotOrderHistory = 'activity-spot-order-history',
-  SpotTradeHistory = 'activity-spot-trade-history',
-  DerivativesTriggers = 'activity-derivatives-triggers',
-  DerivativesOrderHistory = 'activity-derivatives-order-history',
-  DerivativesTradeHistory = 'activity-derivatives-trade-history',
-  PositionsFundingPayments = 'activity-positions-funding-payments'
-}
-
 export enum CampaignSubPage {
   GuildDetails = 'guild-guild'
-}
-
-export enum AccountSubPage {
-  Positions = 'account-positions'
 }
 
 export enum TradingBotsSubPage {

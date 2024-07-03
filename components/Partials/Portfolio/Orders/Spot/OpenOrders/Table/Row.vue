@@ -5,13 +5,6 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket } from '@/types'
 
-const authZStore = useAuthZStore()
-const spotStore = useSpotStore()
-const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
-
 const props = defineProps({
   order: {
     type: Object as PropType<SpotLimitOrder>,
@@ -19,7 +12,13 @@ const props = defineProps({
   }
 })
 
+const authZStore = useAuthZStore()
+const spotStore = useSpotStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const orderbookStore = useOrderbookStore()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const {
   isBuy,
@@ -101,13 +100,13 @@ function cancelOrder() {
 }
 
 function chase() {
-  if (!market.value) {
-    return
-  }
-
   const price = isBuy.value
     ? orderbookStore.buys[0].price
     : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
 
   spotStore
     .submitChase({

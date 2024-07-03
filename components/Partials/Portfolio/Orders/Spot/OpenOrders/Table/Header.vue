@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//
+import { PortfolioSubPage } from '@/types'
 </script>
 
 <template>
@@ -15,7 +15,9 @@
     </div>
     <div class="flex-1 p-2 flex justify-center space-x-2 items-center">
       <p>{{ $t('trade.chase') }}</p>
-      <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
+      <NuxtLink :to="{ name: PortfolioSubPage.SettingsAutosign }">
+        <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
+      </NuxtLink>
     </div>
     <div class="flex-1 p-2 text-center">{{ $t('trade.cancelOrder') }}</div>
   </div>
