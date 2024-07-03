@@ -174,7 +174,8 @@ function chase() {
 
       <div class="flex-1 p-2 flex items-center justify-center">
         <button
-          class="hover:underline text-green-500 font-semibold"
+          class="hover:underline text-green-500 font-semibold disabled:text-gray-600 disabled:cursor-not-allowed"
+          :disabled="!sharedWalletStore.isAutoSignEnabled"
           @click="chase"
         >
           {{ $t('trade.chase') }}

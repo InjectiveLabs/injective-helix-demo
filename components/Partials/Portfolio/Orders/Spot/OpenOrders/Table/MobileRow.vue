@@ -176,7 +176,12 @@ function chase() {
     </div>
 
     <div class="px-2 pt-2 items-center">
-      <AppButton variant="success-outline" class="w-full" @click="chase">
+      <AppButton
+        variant="success-outline"
+        class="w-full"
+        :disabled="!sharedWalletStore.isAutoSignEnabled"
+        @click="chase"
+      >
         <span>{{ $t('trade.chase') }}</span>
       </AppButton>
     </div>

@@ -14,12 +14,14 @@ import { PortfolioSubPage } from '@/types'
     <div class="flex-1 p-2 text-right">{{ $t('trade.filled') }}</div>
     <div class="flex-1 p-2 text-right">{{ $t('trade.leverage') }}</div>
     <div class="flex-1 p-2 text-right">{{ $t('trade.total') }}</div>
-    <div class="flex-1 p-2 flex justify-center space-x-2 items-center">
+    <NuxtLink
+      :to="{ name: PortfolioSubPage.SettingsAutosign }"
+      class="flex-1 p-2 flex justify-center space-x-2 items-center"
+    >
       <p>{{ $t('trade.chase') }}</p>
-      <NuxtLink :to="{ name: PortfolioSubPage.SettingsAutosign }">
-        <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
-      </NuxtLink>
-    </div>
+
+      <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
+    </NuxtLink>
     <div class="flex-1 p-2 text-center">{{ $t('trade.cancelOrder') }}</div>
   </div>
 </template>
