@@ -64,7 +64,7 @@ watchDebounced(
     <SharedModalWrapper
       v-if="isOpen"
       class="relative mx-auto sm:rounded-lg border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
-      :class="[isTransparent ? 'bg-brand-900/80' : 'bg-brand-900', classes]"
+      :class="[isTransparent ? 'bg-brand-900/95' : 'bg-brand-900', classes]"
       wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
       :ignore="['.v-popper__inner']"
