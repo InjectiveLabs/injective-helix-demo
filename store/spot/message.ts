@@ -14,6 +14,7 @@ import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { convertCw20ToBankBalance } from '@/app/utils/market'
+import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { UiSpotMarket } from '@/types'
 
 const fetchBalances = (
@@ -376,7 +377,7 @@ export async function submitChase({
     }),
     triggerPrice: '0',
     quantity: order.quantity,
-    orderType: orderSideToOrderType(order.orderSide)
+    orderType: orderSideToChaseOrderType(order.orderSide)
   })
 
   const messages = [cancelOrderMsg, createSpotLimitOrderMsg]

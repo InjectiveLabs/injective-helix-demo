@@ -126,6 +126,7 @@ export default {
     balance_higher_than_orderbook_liquidity:
       'Balance is higher than orderbook liquidity',
     order_placed: 'Your order has been placed',
+    orderUpdated: 'Your order has been updated',
     error_in_form: 'There are errors in your form',
     volume_asset: ({ named }: I18nMessageFunction) =>
       `24h Volume (${named('asset')})`,

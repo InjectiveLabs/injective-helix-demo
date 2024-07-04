@@ -38,6 +38,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -104,6 +105,8 @@ function chase() {
     return
   }
 
+  chaseStatus.setLoading()
+
   spotStore
     .submitChase({
       market: market.value as UiSpotMarket,
@@ -114,6 +117,9 @@ function chase() {
       notificationStore.success({ title: t('common.success') })
     })
     .catch($onError)
+    .finally(() => {
+      chaseStatus.setIdle()
+    })
 }
 </script>
 
@@ -179,6 +185,7 @@ function chase() {
       <AppButton
         variant="success-outline"
         class="w-full"
+        v-bind="{ status: chaseStatus }"
         :disabled="!sharedWalletStore.isAutoSignEnabled"
         @click="chase"
       >

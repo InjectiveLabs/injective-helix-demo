@@ -16,6 +16,7 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
+import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const fetchBalances = () => {
@@ -542,7 +543,7 @@ export async function submitChase({
   const createDerivativeLimitOrderMsg = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-    orderType: orderSideToOrderType(order.orderType as OrderSide),
+    orderType: orderSideToChaseOrderType(order.orderType as OrderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price.toFixed(),
       quoteDecimals: market.quoteToken.decimals

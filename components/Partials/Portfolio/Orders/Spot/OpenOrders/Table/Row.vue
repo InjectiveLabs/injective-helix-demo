@@ -12,8 +12,8 @@ const props = defineProps({
   }
 })
 
-const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const orderbookStore = useOrderbookStore()
@@ -38,6 +38,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -108,6 +109,8 @@ function chase() {
     return
   }
 
+  chaseStatus.setLoading()
+
   spotStore
     .submitChase({
       market: market.value as UiSpotMarket,
@@ -115,9 +118,12 @@ function chase() {
       price: new BigNumberInBase(price)
     })
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({ title: t('trade.orderUpdated') })
     })
     .catch($onError)
+    .finally(() => {
+      chaseStatus.setIdle()
+    })
 }
 </script>
 
@@ -174,11 +180,12 @@ function chase() {
 
       <div class="flex-1 p-2 flex items-center justify-center">
         <button
-          class="hover:underline text-green-500 font-semibold disabled:text-gray-600 disabled:cursor-not-allowed"
+          class="hover:underline text-green-500 font-semibold disabled:text-gray-600 disabled:cursor-not-allowed flex items-center space-x-1"
           :disabled="!sharedWalletStore.isAutoSignEnabled"
           @click="chase"
         >
-          {{ $t('trade.chase') }}
+          <span>{{ $t('trade.chase') }}</span>
+          <AssetLogoSpinner v-if="chaseStatus.isLoading()" class="!w-4 !h-4" />
         </button>
       </div>
 
