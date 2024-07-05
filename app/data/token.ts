@@ -14,7 +14,7 @@ export const tokenToDecimalsOverrideMap = {
   [TokenSymbols.WETH]: 5
 }
 
-export const stableCoinDenoms = [
+export const stableCoinSymbols = [
   'USDT',
   'USDC',
   'USDCet',

@@ -16,16 +16,17 @@ defineProps({
     <template
       #default="{
         change,
-        highToFormat,
+        countdown,
+        fundingRate,
         lowToFormat,
+        highToFormat,
         changeToFormat,
         volumeToFormat,
-        isNonUsdtQuoteAsset,
+        isStableQuoteAsset,
+        volumeInUsdToFormat,
         percentageChangeStatus,
         lastTradedPriceToFormat,
-        lastTradedPriceInUsdToFormat,
-        countdown,
-        fundingRate
+        lastTradedPriceInUsdToFormat
       }"
     >
       <div class="text-xs p-1 divide-y [&>*]:p-1">
@@ -78,7 +79,7 @@ defineProps({
           </div>
         </div>
 
-        <div v-if="isNonUsdtQuoteAsset" class="flex justify-between">
+        <div v-if="!isStableQuoteAsset" class="flex justify-between">
           <p>{{ $t('trade.usd_value') }}</p>
           <p class="font-mono font-semibold">
             {{ lastTradedPriceInUsdToFormat }}
@@ -87,7 +88,13 @@ defineProps({
 
         <div class="flex justify-between">
           <CommonHeaderTooltip
-            :tooltip="$t('trade.market_volume_24h_tooltip')"
+            :tooltip="
+              isStableQuoteAsset
+                ? $t('trade.market_volume_24h_tooltip')
+                : $t('trade.total_volume_in_usd', {
+                    amount: volumeInUsdToFormat
+                  })
+            "
             text-color-class="text-gray-400"
           >
             {{ $t('trade.total_market_volume_24h') }}

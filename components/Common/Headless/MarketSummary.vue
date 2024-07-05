@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { USDT_DENOM, ZERO_IN_BASE } from '@shared/utils/constant'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
-import { stableCoinDenoms } from '@/app/data/token'
+import { stableCoinSymbols } from '@/app/data/token'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -64,9 +64,9 @@ const summary = computed(() => {
   )
 })
 
-const isNonUsdtQuoteAsset = computed(() => {
-  return props.market.quoteToken.denom !== USDT_DENOM
-})
+const isStableQuoteAsset = computed(() =>
+  stableCoinSymbols.includes(props.market.quoteToken.symbol)
+)
 
 const lastTradedPrice = computed(() => {
   if (props.isCurrentMarket) {
@@ -80,11 +80,9 @@ const lastTradedPrice = computed(() => {
   )
 })
 
-const lastTradedPriceInUsd = computed(() => {
-  return lastTradedPrice.value.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
-  )
-})
+const lastTradedPriceInUsd = computed(() =>
+  lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+)
 
 const { valueToString: volumeToFormat, valueToBigNumber: volume } =
   useSharedBigNumberFormatter(
@@ -96,11 +94,21 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
       return new BigNumberInBase(summary.value.volume)
     }),
     {
-      decimalPlaces: stableCoinDenoms.includes(props.market.quoteToken.symbol)
+      decimalPlaces: stableCoinSymbols.includes(props.market.quoteToken.symbol)
         ? 0
         : props.market.priceDecimals
     }
   )
+
+const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
+  computed(() =>
+    volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  ),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
+  }
+)
 
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
@@ -253,10 +261,11 @@ useIntervalFn(() => {
       changeToFormat,
       volumeToFormat,
       lastTradedPrice,
-      isNonUsdtQuoteAsset,
-      lastTradedPriceToFormat,
-      percentageChangeStatus,
+      isStableQuoteAsset,
+      volumeInUsdToFormat,
       lastTradedPriceInUsd,
+      percentageChangeStatus,
+      lastTradedPriceToFormat,
       lastTradedPriceInUsdToFormat
     }"
   />
