@@ -3,12 +3,14 @@ import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UiDerivativeMarket } from '@/types'
+import { toBalanceInToken } from '@/app/utils/formatters'
 
 const authZStore = useAuthZStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const orderbookStore = useOrderbookStore()
+const { userBalancesWithToken } = useBalance()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -38,10 +40,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -49,6 +48,50 @@ const isAuthorized = computed(() => {
   }
 
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
+})
+
+const accountQuoteBalance = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const balance = userBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
+
+  return toBalanceInToken({
+    value: balance?.availableMargin || 0,
+    decimalPlaces: market.value.quoteToken.decimals
+  })
+})
+
+const newChasePrice = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const price = isBuy.value
+    ? orderbookStore.buys[0]?.price
+    : orderbookStore.sells[0]?.price
+
+  return new BigNumberInBase(price || 0)
+})
+
+const newChaseMargin = computed(() => {
+  return newChasePrice.value.times(total.value).dividedBy(price.value)
+})
+
+const chaseBalanceNeeded = computed(() =>
+  newChaseMargin.value.minus(total.value)
+)
+
+const insufficientBalance = computed(() =>
+  chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+)
+
+const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+  decimalPlaces: priceDecimals.value,
+  displayAbsoluteDecimalPlace: true
 })
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(
@@ -99,6 +142,8 @@ function chase() {
     return
   }
 
+  chaseStatus.setLoading()
+
   derivativeStore
     .submitChase({
       market: market.value as UiDerivativeMarket,
@@ -106,9 +151,12 @@ function chase() {
       price: new BigNumberInBase(price)
     })
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({ title: t('trade.orderUpdated') })
     })
     .catch($onError)
+    .finally(() => {
+      chaseStatus.setLoading()
+    })
 }
 </script>
 
@@ -174,7 +222,8 @@ function chase() {
       <AppButton
         variant="success-outline"
         class="w-full"
-        :disabled="!sharedWalletStore.isAutoSignEnabled"
+        :disabled="!sharedWalletStore.isAutoSignEnabled || insufficientBalance"
+        v-bind="{ status: chaseStatus }"
         @click="chase"
       >
         <span>{{ $t('trade.chase') }}</span>

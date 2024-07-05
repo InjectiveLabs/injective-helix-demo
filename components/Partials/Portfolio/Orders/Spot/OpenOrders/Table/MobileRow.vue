@@ -48,6 +48,37 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
 })
 
+const accountQuoteBalance = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const balance = userBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
+
+  return toBalanceInToken({
+    value: balance?.availableMargin || 0,
+    decimalPlaces: market.value.quoteToken.decimals
+  })
+})
+
+const highestBid = computed(
+  () => new BigNumberInBase(orderbookStore.buys[0]?.price)
+)
+
+const orderTotalQuote = computed(() => price.value.times(quantity.value))
+
+const chaseTotalQuote = computed(() => highestBid.value.times(quantity.value))
+
+const chaseBalanceNeeded = computed(() =>
+  chaseTotalQuote.value.minus(orderTotalQuote.value)
+)
+
+const insufficientBalance = computed(() =>
+  chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+)
+
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
@@ -114,7 +145,7 @@ function chase() {
       price: new BigNumberInBase(price)
     })
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({ title: t('trade.orderUpdated') })
     })
     .catch($onError)
     .finally(() => {
@@ -186,7 +217,7 @@ function chase() {
         variant="success-outline"
         class="w-full"
         v-bind="{ status: chaseStatus }"
-        :disabled="!sharedWalletStore.isAutoSignEnabled"
+        :disabled="!sharedWalletStore.isAutoSignEnabled || insufficientBalance"
         @click="chase"
       >
         <span>{{ $t('trade.chase') }}</span>
