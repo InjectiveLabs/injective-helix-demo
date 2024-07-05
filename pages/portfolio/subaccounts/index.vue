@@ -38,7 +38,7 @@ function openTransferModal() {
         @click="openTransferModal"
       >
         <SharedIcon name="plus" is-xs />
-        <span>{{ $t('portfolio.subaccounts.addSubaccount') }}</span>
+        <span>{{ $t('portfolio.subaccounts.addSubaccountOrTransfer') }}</span>
       </AppButton>
     </div>
 

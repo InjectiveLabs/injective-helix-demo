@@ -113,7 +113,7 @@ function onDestinationSubaccountIdUpdate() {
 </script>
 
 <template>
-  <div class="relative flex items-center w-full">
+  <div class="relative flex items-center w-full flex-wrap gap-2">
     <div class="flex-1">
       <AppSelectField
         v-model="srcSubaccountId"
