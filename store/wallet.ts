@@ -82,9 +82,7 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectWalletConnect()
       }
 
-      accountStore.$patch({
-        subaccountId: sharedWalletStore.defaultSubaccountId
-      })
+      accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
 
       if (sharedWalletStore.isUserConnected) {
         const someAddressInWalletIsBlackListed =

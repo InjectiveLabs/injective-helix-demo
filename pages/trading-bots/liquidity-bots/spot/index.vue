@@ -108,7 +108,7 @@ onWalletConnected(() => {
 })
 
 onMounted(() => {
-  accountStore.$patch({ subaccountId: sharedWalletStore.defaultSubaccountId })
+  accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
 })
 
 onUnmounted(() => {

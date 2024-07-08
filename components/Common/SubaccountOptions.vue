@@ -6,7 +6,6 @@ import {
   getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
 
 const props = defineProps({
   showLowBalance: Boolean,
@@ -30,8 +29,7 @@ onMounted(() => {
   const defaultSubaccountId = Object.keys(accountStore.subaccountBalancesMap)[0]
 
   if (defaultSubaccountId) {
-    accountStore.$patch({ subaccountId: defaultSubaccountId })
-    useEventBus(BusEvents.SubaccountChange).emit()
+    accountStore.updateSubaccount(defaultSubaccountId)
   }
 })
 
