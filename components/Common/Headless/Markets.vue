@@ -27,6 +27,7 @@ const derivativeStore = useDerivativeStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const appStore = useAppStore()
+const { $onError } = useNuxtApp()
 
 const props = defineProps({
   isLowVolumeMarketsVisible: Boolean,
@@ -188,6 +189,16 @@ function onAscending(value: boolean) {
 function onSortBy(value: MarketHeaderType) {
   sortBy.value = value
 }
+
+function fetchUserOrdersAndPositions() {
+  Promise.all([
+    positionStore.fetchPositions(),
+    spotStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountOrders()
+  ]).catch($onError)
+}
+
+onSubaccountChange(fetchUserOrdersAndPositions)
 </script>
 
 <template>
