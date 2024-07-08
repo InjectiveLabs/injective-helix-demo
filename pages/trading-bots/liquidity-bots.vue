@@ -20,7 +20,7 @@ function init() {
   })
 
   if (sharedWalletStore.isUserConnected) {
-    accountStore.$patch({ subaccountId: sharedWalletStore.defaultSubaccountId })
+    accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
   }
 }
 
