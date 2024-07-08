@@ -28,6 +28,7 @@ const {
   market,
   quantity,
   leverage,
+  isReduceOnly,
   priceDecimals,
   // orderFillable,
   filledQuantity,
@@ -86,7 +87,9 @@ const chaseBalanceNeeded = computed(() =>
 )
 
 const insufficientBalance = computed(() =>
-  chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+  isReduceOnly.value
+    ? false
+    : chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
 )
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
