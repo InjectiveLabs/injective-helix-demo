@@ -15,6 +15,7 @@ import {
   marketTypeOptionsToHideCategory
 } from '@/app/data/market'
 import {
+  TradeSubPage,
   MarketQuoteType,
   MarketHeaderType,
   MarketTypeOption,
@@ -22,6 +23,7 @@ import {
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
+const route = useRoute()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const accountStore = useAccountStore()
@@ -190,12 +192,39 @@ function onSortBy(value: MarketHeaderType) {
   sortBy.value = value
 }
 
-function fetchUserOrdersAndPositions() {
+function fetchSpotPageData() {
+  Promise.all([
+    positionStore.fetchPositions(),
+    derivativeStore.fetchSubaccountOrders()
+  ]).catch($onError)
+}
+
+function fetchFuturesPageData() {
+  Promise.all([spotStore.fetchSubaccountOrders()]).catch($onError)
+}
+
+function fetchMarketsPageData() {
   Promise.all([
     positionStore.fetchPositions(),
     spotStore.fetchSubaccountOrders(),
     derivativeStore.fetchSubaccountOrders()
   ]).catch($onError)
+}
+
+function fetchUserOrdersAndPositions() {
+  if ((route?.name as string).includes(TradeSubPage.Spot)) {
+    fetchSpotPageData()
+
+    return
+  }
+
+  if ((route?.name as string).includes(TradeSubPage.Futures)) {
+    fetchFuturesPageData()
+
+    return
+  }
+
+  fetchMarketsPageData()
 }
 
 onSubaccountChange(fetchUserOrdersAndPositions)
