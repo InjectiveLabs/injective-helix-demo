@@ -109,6 +109,7 @@ const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
   </div>
 
   <AppCollapse v-bind="{ isOpen }">
-    <PartialsMarkets v-bind="{ markets }" />
+    <!-- todo: refactor once we redo themes -->
+    <!-- <PartialsMarkets v-bind="{ markets }" /> -->
   </AppCollapse>
 </template>
