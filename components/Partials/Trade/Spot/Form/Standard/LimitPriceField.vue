@@ -43,7 +43,10 @@ onMounted(() => {
 
     <AppInputField
       v-model="value"
-      v-bind="{ placeholder: '0.00', decimals: market.priceDecimals }"
+      v-bind="{
+        placeholder: '0.00',
+        decimals: market.priceDecimals
+      }"
     >
       <template #left>
         <div
