@@ -22,7 +22,7 @@ import {
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
-import { SubaccountBalance } from '@/types'
+import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
   subaccountId: string
@@ -101,6 +101,13 @@ export const useAccountStore = defineStore('account', {
     streamSubaccountBalance,
     cancelBankBalanceStream,
     cancelSubaccountBalanceStream,
+
+    updateSubaccount(subaccountId: string) {
+      const accountStore = useAccountStore()
+
+      accountStore.$patch({ subaccountId })
+      useEventBus(BusEvents.SubaccountChange).emit(subaccountId)
+    },
 
     async fetchAccountPortfolioBalances() {
       const accountStore = useAccountStore()
