@@ -31,6 +31,8 @@ export const injUsdtSpotMarketWithToken: UiSpotMarket = {
   serviceProviderFee: '0.4',
   minPriceTickSize: 1e-15,
   minQuantityTickSize: 1000000000000000,
+  minNotional: 0,
+  minNotionalInToken: '0',
   slug: 'inj-usdt',
   type: SharedMarketType.Spot,
   subType: SharedMarketType.Spot,
@@ -60,6 +62,8 @@ export const injUsdtDerivativeMarketWithToken: UiDerivativeMarket = {
   serviceProviderFee: '0.4',
   minPriceTickSize: 1000,
   minQuantityTickSize: 0.001,
+  minNotional: 0,
+  minNotionalInToken: '0',
   perpetualMarketInfo: {
     hourlyFundingRateCap: '0.0000625',
     hourlyInterestRate: '0.00000416666',
