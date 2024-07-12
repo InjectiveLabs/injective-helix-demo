@@ -490,3 +490,16 @@ export const convertCw20ToBankBalanceForSwap = ({
     })
   })
 }
+
+export const formatPriceToSpotMarketPrice = ({
+  price,
+  market
+}: {
+  price: string
+  market: UiSpotMarket | UiMarketWithToken
+}) =>
+  new BigNumberInBase(
+    new BigNumberInBase(price).toWei(
+      market.baseToken.decimals - market.quoteToken.decimals
+    )
+  )

@@ -6,6 +6,7 @@ import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { formatPriceToSpotMarketPrice } from '@/app/utils/market'
 
 definePageMeta({
   middleware: ['swap']
@@ -24,6 +25,8 @@ const txHash = ref('')
 const summaryRef = ref()
 const queryError = ref('')
 const showPriceWarning = ref(false)
+const inputMarketLastTradedPrice = ref('')
+const outputMarketLastTradedPrice = ref('')
 const status = reactive(new Status(StatusType.Loading))
 const submitStatus = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -33,6 +36,7 @@ const {
   outputToken,
   maximumInput,
   minimumOutput,
+  orderedRouteMarkets,
   orderedRouteTokensAndDecimals
 } = useSwap(computed(() => formValues))
 
@@ -53,6 +57,54 @@ const hasOutputAmount = computed(() =>
 const hideErrorToast = computed(() =>
   Object.values(errorMap).includes(queryError.value)
 )
+
+const inputTokenMarket = computed(() => {
+  const [inputTokenMarket] = orderedRouteMarkets.value
+
+  return inputTokenMarket
+})
+
+const outputTokenMarket = computed(() => {
+  const [outputTokenMarket] = [...orderedRouteMarkets.value].reverse()
+
+  return outputTokenMarket
+})
+
+const inputTokenNotional = computed(() => {
+  const isQuoteToken =
+    inputToken.value?.denom === inputTokenMarket.value.quoteDenom
+
+  return isQuoteToken
+    ? new BigNumberInBase(formValues[SwapFormField.InputAmount])
+    : new BigNumberInBase(formValues[SwapFormField.InputAmount]).times(
+        inputMarketLastTradedPrice.value
+      )
+})
+
+const outpputTokenNotional = computed(() => {
+  const isQuoteToken =
+    outputToken.value?.denom === outputTokenMarket.value.quoteDenom
+
+  return isQuoteToken
+    ? new BigNumberInBase(formValues[SwapFormField.OutputAmount])
+    : new BigNumberInBase(formValues[SwapFormField.OutputAmount]).times(
+        inputMarketLastTradedPrice.value
+      )
+})
+
+const isNotionalLessThanMinNotional = computed(() => {
+  const inputTokenMarketLessThanMinNotional = inputTokenNotional.value.lt(
+    inputTokenMarket.value.minNotionalInToken
+  )
+
+  const outputTokenMarketLessThanMinNotional = outpputTokenNotional.value.lt(
+    outputTokenMarket.value.minNotionalInToken
+  )
+
+  return (
+    inputTokenMarketLessThanMinNotional || outputTokenMarketLessThanMinNotional
+  )
+})
 
 onMounted(() => {
   initRoutes()
@@ -154,6 +206,24 @@ function resetFormValues() {
   )
 }
 
+function fetchLastTradedPrices() {
+  return Promise.all([
+    spotStore.fetchLastTrade({ marketId: inputTokenMarket.value.marketId }),
+    spotStore.fetchLastTrade({ marketId: outputTokenMarket.value.marketId })
+  ])
+    .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
+      inputMarketLastTradedPrice.value = formatPriceToSpotMarketPrice({
+        price: inputTokenLastTradedPrice.price,
+        market: inputTokenMarket.value
+      }).toFixed()
+      outputMarketLastTradedPrice.value = formatPriceToSpotMarketPrice({
+        price: outputTokenLastTradedPrice.price,
+        market: outputTokenMarket.value
+      }).toFixed()
+    })
+    .catch($onError)
+}
+
 function getOutputQuantity() {
   showPriceWarning.value = false
   fetchStatus.setLoading()
@@ -165,12 +235,14 @@ function getOutputQuantity() {
     return
   }
 
-  swapStore
-    .fetchOutputQuantity({
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchOutputQuantity({
       inputAmount: formValues[SwapFormField.InputAmount],
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
+  ])
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
@@ -194,12 +266,14 @@ function getInputQuantity() {
     return
   }
 
-  swapStore
-    .fetchInputQuantity({
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchInputQuantity({
       outputAmount: formValues[SwapFormField.OutputAmount],
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
+  ])
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
@@ -313,6 +387,7 @@ function resetQueryError() {
                 queryError,
                 showErrorState,
                 status: submitStatus,
+                isNotionalLessThanMinNotional,
                 isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
               }"
               @submit="submit"
