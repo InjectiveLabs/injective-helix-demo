@@ -2129,6 +2129,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@injectivelabs/wallet-ts@1.14.14-beta.7":
   version "1.14.14-beta.7"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.14-beta.7.tgz#691ed4f79ce91fecd198be8cf6cd9af3e78eac9b"
@@ -2138,6 +2139,9 @@
 =======
 "@injectivelabs/wallet-ts@1.14.12-dev.8", "@injectivelabs/wallet-ts@1.14.14-beta.4":
 >>>>>>> f2989eb0 (fix: typing)
+=======
+"@injectivelabs/wallet-ts@1.14.12-dev.8", "@injectivelabs/wallet-ts@1.14.14-beta.5":
+>>>>>>> cdef6a26 (chore: package bump)
   version "1.14.12-dev.8"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.12-dev.8.tgz#fd41b975b2e6f2c82a99dc0486a44ede8270f3a4"
   integrity sha512-PHwUX81qslp0dYcADvY+3JguZsa8lR5eF4bKDd2YEt1kBgG0NezLJQufauYgOpZ50PzEQuWTK4MQd4dT1Bz3Gw==
@@ -15984,6 +15988,7 @@ shallow-clone@^3.0.0:
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
 <<<<<<< HEAD
+<<<<<<< HEAD
   resolved "https://github.com/InjectiveLabs/shared-packages#67ede6c4d850b307b2af43cc218f8bd4bd388b38"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
@@ -15996,6 +16001,9 @@ shallow-clone@^3.0.0:
     "@injectivelabs/wallet-ts" "1.14.14-beta.7"
 =======
   resolved "https://github.com/InjectiveLabs/shared-packages#300290af4cc1b589fdb32b22ff28bad77eaab31e"
+=======
+  resolved "https://github.com/InjectiveLabs/shared-packages#58b6dd2b13a8f15ae4fb2b3435f6a0d2cd2ca5ce"
+>>>>>>> cdef6a26 (chore: package bump)
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.14-beta.1"
@@ -16004,8 +16012,12 @@ shallow-clone@^3.0.0:
     "@injectivelabs/sdk-ts" "1.14.14-beta.3"
     "@injectivelabs/ts-types" "1.14.14-beta.1"
     "@injectivelabs/utils" "1.14.14-beta.1"
+<<<<<<< HEAD
     "@injectivelabs/wallet-ts" "1.14.14-beta.4"
 >>>>>>> f2989eb0 (fix: typing)
+=======
+    "@injectivelabs/wallet-ts" "1.14.14-beta.5"
+>>>>>>> cdef6a26 (chore: package bump)
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
     "@vueuse/integrations" "^10.7.1"
