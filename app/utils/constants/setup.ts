@@ -180,7 +180,7 @@ export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
 export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
-  ? 'inj177yh38g3ctu7cemxpa3c2kvwh2yslfxfmfa66h'
+  ? 'inj1qk00h5atutpsv900x202pxx42npjr9thrzhgxn'
   : IS_TESTNET
   ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
   : IS_STAGING
