@@ -6,6 +6,7 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { formatPriceToSpotMarketPrice } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrder(
@@ -78,11 +79,10 @@ export function useOrder(
     }
 
     return isSpot.value && market.value.baseToken
-      ? new BigNumberInBase(
-          new BigNumberInBase(order.value.price).toWei(
-            market.value.baseToken.decimals - market.value.quoteToken.decimals
-          )
-        )
+      ? formatPriceToSpotMarketPrice({
+          price: order.value.price,
+          market: market.value
+        })
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )

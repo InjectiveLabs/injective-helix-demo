@@ -21,6 +21,7 @@ const { userBalancesWithToken } = useBalance()
 defineProps({
   isLoading: Boolean,
   showErrorState: Boolean,
+  isNotionalLessThanMinNotional: Boolean,
 
   queryError: {
     type: String,
@@ -246,7 +247,13 @@ watch(
     >
       <div class="max-auto w-full">
         <Transition name="fade" mode="out-in">
-          <span v-if="!isLoading && swapStore.isInputEntered && invalidInput">
+          <span
+            v-if="
+              !isLoading &&
+              ((swapStore.isInputEntered && invalidInput) ||
+                isNotionalLessThanMinNotional)
+            "
+          >
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
 

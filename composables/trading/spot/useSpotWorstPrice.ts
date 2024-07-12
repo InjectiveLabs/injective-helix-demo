@@ -153,13 +153,11 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     return new BigNumberInBase(worstPrice.value).times(quantity.value)
   })
 
-  const feeAmount = computed(() => {
-    return total.value.times(feePercentage.value.minus(1))
-  })
+  const feeAmount = computed(() =>
+    total.value.times(feePercentage.value.minus(1))
+  )
 
-  const totalWithFee = computed(() => {
-    return total.value.plus(feeAmount.value)
-  })
+  const totalWithFee = computed(() => total.value.plus(feeAmount.value))
 
   return {
     total,

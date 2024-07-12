@@ -1,5 +1,4 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { usdtToken, injToken } from '@shared/data/token'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ONE_IN_BASE,
@@ -95,11 +94,21 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     ) as TokenAndPriceAndDecimals[]
   })
 
-  const orderedRouteTokensAndDecimals = computed(() => {
-    return formValues.value[SwapFormField.InputDenom] ===
-      routeTokensAndDecimals.value[0]?.token.denom
+  const orderedRouteTokensAndDecimals = computed(() =>
+    formValues.value[SwapFormField.InputDenom] ===
+    routeTokensAndDecimals.value[0]?.token.denom
       ? routeTokensAndDecimals.value
       : [...routeTokensAndDecimals.value].reverse()
+  )
+
+  const orderedRouteMarkets = computed(() => {
+    const [firstMarket] = routeMarkets.value
+
+    return [(firstMarket.baseDenom, firstMarket.quoteDenom)].includes(
+      formValues.value[SwapFormField.InputDenom] || ''
+    )
+      ? routeMarkets.value
+      : [...routeMarkets.value].reverse()
   })
 
   const inputToken = computed(() =>
@@ -161,49 +170,12 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   })
 
   return {
-    invalidInput,
-    maximumInput,
-    minimumOutput,
     inputToken,
     outputToken,
-    orderedRouteTokensAndDecimals
-  }
-}
-
-export function useSwapHomepage(formValues: Ref<Partial<SwapForm>>) {
-  const {
     invalidInput,
     maximumInput,
     minimumOutput,
-    inputToken,
-    outputToken,
-    orderedRouteTokensAndDecimals
-  } = useSwap(formValues)
-
-  return {
-    invalidInput,
-    maximumInput,
-    minimumOutput,
-    inputToken: computed(
-      () =>
-        inputToken.value ||
-        ({
-          token: usdtToken,
-          denom: usdtToken.denom,
-          usdPrice: 0,
-          quantityDecimals: 3
-        } as TokenAndPriceAndDecimals)
-    ),
-    outputToken: computed(
-      () =>
-        outputToken.value ||
-        ({
-          token: injToken,
-          denom: injToken.denom,
-          usdPrice: 0,
-          quantityDecimals: 3
-        } as TokenAndPriceAndDecimals)
-    ),
+    orderedRouteMarkets,
     orderedRouteTokensAndDecimals
   }
 }
