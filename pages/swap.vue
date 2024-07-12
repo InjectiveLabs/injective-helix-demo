@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { formatPriceToSpotMarketPrice } from '@shared/utils/market'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { formatPriceToSpotMarketPrice } from '@/app/utils/market'
 
 definePageMeta({
   middleware: ['swap']
