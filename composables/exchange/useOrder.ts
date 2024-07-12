@@ -2,7 +2,6 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-import { formatPriceToSpotMarketPrice } from '@shared/utils/market'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -79,10 +78,11 @@ export function useOrder(
     }
 
     return isSpot.value && market.value.baseToken
-      ? formatPriceToSpotMarketPrice({
-          price: order.value.price,
-          market: market.value as UiSpotMarket
-        })
+      ? sharedToBalanceInWei({
+          value: order.value.price,
+          decimalPlaces:
+            market.value.baseToken.decimals - market.value.quoteToken.decimals
+        }).toFixed()
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )

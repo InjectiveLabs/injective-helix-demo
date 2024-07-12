@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { formatPriceToSpotMarketPrice } from '@shared/utils/market'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
@@ -168,13 +167,17 @@ function fetchLastTradedPrices() {
   ])
     .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
       setFormValues({
-        [SwapFormField.InputLastTradedPrice]: formatPriceToSpotMarketPrice({
-          price: inputTokenLastTradedPrice.price,
-          market: inputTokenMarket.value
+        [SwapFormField.InputLastTradedPrice]: sharedToBalanceInWei({
+          value: inputTokenLastTradedPrice.price,
+          decimalPlaces:
+            inputTokenMarket.value.baseToken.decimals -
+            inputTokenMarket.value.quoteToken.decimals
         }).toFixed(),
-        [SwapFormField.OutputLastTradedPrice]: formatPriceToSpotMarketPrice({
-          price: outputTokenLastTradedPrice.price,
-          market: outputTokenMarket.value
+        [SwapFormField.OutputLastTradedPrice]: sharedToBalanceInWei({
+          value: outputTokenLastTradedPrice.price,
+          decimalPlaces:
+            outputTokenMarket.value.baseToken.decimals -
+            outputTokenMarket.value.quoteToken.decimals
         }).toFixed()
       })
     })
