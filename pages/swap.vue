@@ -18,15 +18,17 @@ const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
-const { resetForm, validate, values: formValues } = useForm<SwapForm>()
-const setFormValues = useSetFormValues()
+const {
+  resetForm,
+  validate,
+  values: formValues,
+  setValues: setFormValues
+} = useForm<SwapForm>()
 
 const txHash = ref('')
 const summaryRef = ref()
 const queryError = ref('')
 const showPriceWarning = ref(false)
-const inputMarketLastTradedPrice = ref('')
-const outputMarketLastTradedPrice = ref('')
 const status = reactive(new Status(StatusType.Loading))
 const submitStatus = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -36,7 +38,8 @@ const {
   outputToken,
   maximumInput,
   minimumOutput,
-  orderedRouteMarkets,
+  inputTokenMarket,
+  outputTokenMarket,
   orderedRouteTokensAndDecimals
 } = useSwap(computed(() => formValues))
 
@@ -57,54 +60,6 @@ const hasOutputAmount = computed(() =>
 const hideErrorToast = computed(() =>
   Object.values(errorMap).includes(queryError.value)
 )
-
-const inputTokenMarket = computed(() => {
-  const [inputTokenMarket] = orderedRouteMarkets.value
-
-  return inputTokenMarket
-})
-
-const outputTokenMarket = computed(() => {
-  const [outputTokenMarket] = [...orderedRouteMarkets.value].reverse()
-
-  return outputTokenMarket
-})
-
-const inputTokenNotional = computed(() => {
-  const isQuoteToken =
-    inputToken.value?.denom === inputTokenMarket.value.quoteDenom
-
-  return isQuoteToken
-    ? new BigNumberInBase(formValues[SwapFormField.InputAmount])
-    : new BigNumberInBase(formValues[SwapFormField.InputAmount]).times(
-        inputMarketLastTradedPrice.value
-      )
-})
-
-const outpputTokenNotional = computed(() => {
-  const isQuoteToken =
-    outputToken.value?.denom === outputTokenMarket.value.quoteDenom
-
-  return isQuoteToken
-    ? new BigNumberInBase(formValues[SwapFormField.OutputAmount])
-    : new BigNumberInBase(formValues[SwapFormField.OutputAmount]).times(
-        inputMarketLastTradedPrice.value
-      )
-})
-
-const isNotionalLessThanMinNotional = computed(() => {
-  const inputTokenMarketLessThanMinNotional = inputTokenNotional.value.lt(
-    inputTokenMarket.value.minNotionalInToken
-  )
-
-  const outputTokenMarketLessThanMinNotional = outpputTokenNotional.value.lt(
-    outputTokenMarket.value.minNotionalInToken
-  )
-
-  return (
-    inputTokenMarketLessThanMinNotional || outputTokenMarketLessThanMinNotional
-  )
-})
 
 onMounted(() => {
   initRoutes()
@@ -212,14 +167,16 @@ function fetchLastTradedPrices() {
     spotStore.fetchLastTrade({ marketId: outputTokenMarket.value.marketId })
   ])
     .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
-      inputMarketLastTradedPrice.value = formatPriceToSpotMarketPrice({
-        price: inputTokenLastTradedPrice.price,
-        market: inputTokenMarket.value
-      }).toFixed()
-      outputMarketLastTradedPrice.value = formatPriceToSpotMarketPrice({
-        price: outputTokenLastTradedPrice.price,
-        market: outputTokenMarket.value
-      }).toFixed()
+      setFormValues({
+        [SwapFormField.InputLastTradedPrice]: formatPriceToSpotMarketPrice({
+          price: inputTokenLastTradedPrice.price,
+          market: inputTokenMarket.value
+        }).toFixed(),
+        [SwapFormField.OutputLastTradedPrice]: formatPriceToSpotMarketPrice({
+          price: outputTokenLastTradedPrice.price,
+          market: outputTokenMarket.value
+        }).toFixed()
+      })
     })
     .catch($onError)
 }
@@ -387,7 +344,6 @@ function resetQueryError() {
                 queryError,
                 showErrorState,
                 status: submitStatus,
-                isNotionalLessThanMinNotional,
                 isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
               }"
               @submit="submit"
