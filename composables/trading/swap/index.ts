@@ -110,6 +110,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
       ? routeMarkets.value
       : [...routeMarkets.value].reverse()
   })
+
   const inputTokenMarket = computed(() => {
     const [inputTokenMarket] = orderedRouteMarkets.value
 
