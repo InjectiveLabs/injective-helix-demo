@@ -16,6 +16,15 @@ import {
   SpotTradeFormField
 } from '@/types'
 
+const orderbookStore = useOrderbookStore()
+const spotFormValues = useFormValues<SpotTradeForm>()
+const validateLimitField = useValidateField(SpotTradeFormField.Price)
+const { userBalancesWithToken } = useBalance()
+
+const market = inject(MarketKey) as Ref<UiSpotMarket>
+
+const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
+
 const props = defineProps({
   totalWithFee: {
     type: Object as PropType<BigNumberInBase>,
@@ -32,14 +41,6 @@ const props = defineProps({
     required: true
   }
 })
-const { userBalancesWithToken } = useBalance()
-const spotFormValues = useFormValues<SpotTradeForm>()
-const orderbookStore = useOrderbookStore()
-
-const market = inject(MarketKey) as Ref<UiSpotMarket>
-const isShowTensMultiplierNote = ref(false)
-
-const validateLimitField = useValidateField(SpotTradeFormField.Price)
 
 const options = [
   {
@@ -51,6 +52,8 @@ const options = [
     value: TradeAmountOption.Quote
   }
 ]
+
+const isShowTensMultiplierNote = ref(false)
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,
@@ -350,9 +353,18 @@ onMounted(() => {
         </div>
       </template>
     </AppInputField>
-
-    <div v-if="errorMessage" class="error-message capitalize">
-      {{ errorMessage }}
+    <div
+      v-if="errorMessage || isNotionalLessThanMinNotional"
+      class="error-message capitalize"
+    >
+      {{
+        errorMessage
+          ? errorMessage
+          : $t('trade.minNotionalError', {
+              minNotional: market.minNotionalInToken,
+              symbol: market.quoteToken.symbol
+            })
+      }}
     </div>
     <div
       v-else-if="isShowTensMultiplierNote && amountValue"
