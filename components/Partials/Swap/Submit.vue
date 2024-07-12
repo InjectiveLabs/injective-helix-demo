@@ -21,7 +21,6 @@ const { userBalancesWithToken } = useBalance()
 defineProps({
   isLoading: Boolean,
   showErrorState: Boolean,
-  isNotionalLessThanMinNotional: Boolean,
 
   queryError: {
     type: String,
@@ -46,7 +45,12 @@ const swapTimeRemaining = ref(0)
 const rateExpired = ref(false)
 const countdownInterval = ref(undefined as NodeJS.Timeout | undefined)
 
-const { inputToken, invalidInput, maximumInput } = useSwap(formValues)
+const {
+  inputToken,
+  invalidInput,
+  maximumInput,
+  isNotionalLessThanMinNotional
+} = useSwap(formValues)
 
 const hasAmounts = computed(() => {
   return (
@@ -97,7 +101,8 @@ const hasErrors = computed(
   () =>
     Object.keys(formErrors.value).length > 0 ||
     (swapStore.isInputEntered && invalidInput.value) ||
-    insufficientBalance.value
+    !!insufficientBalance.value ||
+    !!isNotionalLessThanMinNotional.value
 )
 
 const formError = computed(() => {

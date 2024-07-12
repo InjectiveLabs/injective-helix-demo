@@ -14,7 +14,11 @@ import {
   MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import {
+  BigNumberInWei,
+  BigNumberInBase,
+  SECONDS_IN_A_DAY
+} from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import {
   newMarketsSlug,
@@ -498,8 +502,6 @@ export const formatPriceToSpotMarketPrice = ({
   price: string
   market: UiSpotMarket | UiMarketWithToken
 }) =>
-  new BigNumberInBase(
-    new BigNumberInBase(price).toWei(
-      market.baseToken.decimals - market.quoteToken.decimals
-    )
+  new BigNumberInWei(price).toBase(
+    market.quoteToken.decimals - market.baseToken.decimals
   )
