@@ -20,6 +20,22 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
+const orderbookStore = useOrderbookStore()
+const positionStore = usePositionStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const validateLimitField = useValidateField(
+  DerivativesTradeFormField.LimitPrice
+)
+const validateTriggerField = useValidateField(
+  DerivativesTradeFormField.TriggerPrice
+)
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
+
+const { userBalancesWithToken } = useBalance()
+
 const props = defineProps({
   marginWithFee: {
     type: Object as PropType<BigNumberInBase>,
@@ -37,17 +53,6 @@ const props = defineProps({
   }
 })
 
-const market = inject(MarketKey) as Ref<UiDerivativeMarket>
-
-const orderbookStore = useOrderbookStore()
-
-const validateLimitField = useValidateField(
-  DerivativesTradeFormField.LimitPrice
-)
-const validateTriggerField = useValidateField(
-  DerivativesTradeFormField.TriggerPrice
-)
-
 const options = [
   {
     display: market.value.baseToken.symbol || '',
@@ -58,10 +63,6 @@ const options = [
     value: TradeAmountOption.Quote
   }
 ]
-
-const positionStore = usePositionStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const { userBalancesWithToken } = useBalance()
 
 const decimals = computed(() =>
   typeValue.value === TradeAmountOption.Base
@@ -391,8 +392,18 @@ onMounted(() => {
       </template>
     </AppInputField>
 
-    <div v-if="amountErrorMessage" class="error-message capitalize">
-      {{ amountErrorMessage }}
+    <div
+      v-if="amountErrorMessage || isNotionalLessThanMinNotional"
+      class="error-message capitalize"
+    >
+      {{
+        amountErrorMessage
+          ? amountErrorMessage
+          : $t('trade.minNotionalError', {
+              minNotional: market.minNotionalInToken,
+              symbol: market.quoteToken.symbol
+            })
+      }}
     </div>
   </div>
 </template>

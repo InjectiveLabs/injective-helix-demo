@@ -78,11 +78,11 @@ export function useOrder(
     }
 
     return isSpot.value && market.value.baseToken
-      ? new BigNumberInBase(
-          new BigNumberInBase(order.value.price).toWei(
+      ? sharedToBalanceInWei({
+          value: order.value.price,
+          decimalPlaces:
             market.value.baseToken.decimals - market.value.quoteToken.decimals
-          )
-        )
+        }).toFixed()
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )

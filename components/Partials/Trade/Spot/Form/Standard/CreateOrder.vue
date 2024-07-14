@@ -24,6 +24,11 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const market = inject(MarketKey) as Ref<UiSpotMarket>
+
+const { isLimitOrder, isNotionalLessThanMinNotional } =
+  useSpotWorstPrice(market)
+
 const props = defineProps({
   quantity: {
     type: Object as PropType<BigNumberInBase>,
@@ -35,8 +40,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
@@ -79,10 +82,6 @@ const currentFormValues = computed(
     }) as SpotTradeForm
 )
 
-const isLimitOrder = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-)
-
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
@@ -114,6 +113,10 @@ const isDisabled = computed(() => {
   }
 
   if (!isAuthorized.value) {
+    return true
+  }
+
+  if (isNotionalLessThanMinNotional.value) {
     return true
   }
 

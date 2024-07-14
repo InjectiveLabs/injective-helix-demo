@@ -71,7 +71,11 @@ const {
       />
 
       <PartialsTradeSpotFormStandardAmountField
-        v-bind="{ totalWithFee, quantity, minimumAmountInQuote }"
+        v-bind="{
+          quantity,
+          totalWithFee,
+          minimumAmountInQuote
+        }"
       />
     </div>
 

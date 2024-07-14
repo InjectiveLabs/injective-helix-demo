@@ -153,12 +153,29 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     return new BigNumberInBase(worstPrice.value).times(quantity.value)
   })
 
-  const feeAmount = computed(() => {
-    return total.value.times(feePercentage.value.minus(1))
-  })
+  const feeAmount = computed(() =>
+    total.value.times(feePercentage.value.minus(1))
+  )
 
-  const totalWithFee = computed(() => {
-    return total.value.plus(feeAmount.value)
+  const totalWithFee = computed(() => total.value.plus(feeAmount.value))
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    const priceForNotional = !isLimitOrder.value
+      ? worstPrice.value
+      : new BigNumberInBase(
+          spotFormValues.value[SpotTradeFormField.Price] || ''
+        )
+
+    if (
+      priceForNotional.isZero() ||
+      new BigNumberInBase(quantity.value).isZero()
+    ) {
+      return
+    }
+
+    return quantity.value
+      .times(priceForNotional)
+      .lt(market.value.minNotionalInToken)
   })
 
   return {
@@ -166,9 +183,11 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     quantity,
     feeAmount,
     worstPrice,
+    isLimitOrder,
     totalWithFee,
     feePercentage,
     slippagePercentage,
-    minimumAmountInQuote
+    minimumAmountInQuote,
+    isNotionalLessThanMinNotional
   }
 }
