@@ -5,7 +5,7 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
+import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   LiquidityProvisionType,

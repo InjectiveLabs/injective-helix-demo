@@ -27,10 +27,8 @@ import {
 import { tendermintApi } from '@/app/Services'
 import { todayInSeconds } from '@/app/utils/time'
 import { streamProvider } from '@/app/providers/StreamProvider'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 import {
   Modal,
-  AppState,
   GeoLocation,
   NoticeBanner,
   TradingLayout,
@@ -67,9 +65,6 @@ type AppStoreState = {
   ethereumChainId: EthereumChainId
   marketsOpen: boolean
 
-  // Loading States
-  state: AppState
-
   // Dev Mode
   devMode: boolean | undefined
 
@@ -86,9 +81,6 @@ const initialStateFactory = (): AppStoreState => ({
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
   marketsOpen: false,
-
-  // Loading States
-  state: AppState.Idle,
 
   // Dev Mode
   devMode: undefined,
@@ -170,21 +162,8 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    queue() {
-      const appStore = useAppStore()
-
-      if (appStore.state === AppState.Busy) {
-        throw new GeneralException(new Error('You have a pending transaction.'))
-      } else {
-        appStore.$patch({
-          state: AppState.Busy
-        })
-      }
-    },
-
     async validateGeoIp() {
       const appStore = useAppStore()
-      const walletStore = useWalletStore()
 
       if (!GEO_IP_RESTRICTIONS_ENABLED) {
         return
@@ -246,12 +225,6 @@ export const useAppStore = defineStore('app', {
           ...geoLocation,
           vpnCheckTimestamp: todayInSeconds()
         }
-      })
-
-      mixpanelAnalytics.trackWalletSelected({
-        wallet: walletStore.wallet,
-        userCountryFromBrowser: appStore.userState.geoLocation.browserCountry,
-        userCountryFromVpnApi: appStore.userState.geoLocation.country
       })
     },
 

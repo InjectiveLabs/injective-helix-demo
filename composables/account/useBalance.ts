@@ -9,10 +9,10 @@ const showUnverifiedAssets = ref(false)
 export function useBalance() {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
-  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const aggregatedPortfolioBalances = computed(() => {
     const tokens = showUnverifiedAssets.value
@@ -35,7 +35,7 @@ export function useBalance() {
           ...balances,
           [subaccountId]: tokens.map((token) => {
             const isDefaultTradingAccount =
-              walletStore.authZOrDefaultSubaccountId === subaccountId
+              sharedWalletStore.authZOrDefaultSubaccountId === subaccountId
             const denom = token.denom
             const usdPrice = tokenStore.tokenUsdPrice(token)
 
@@ -128,7 +128,8 @@ export function useBalance() {
       const denom = token.denom
       const usdPrice = tokenStore.tokenUsdPrice(token)
       const isDefaultTradingAccount =
-        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
+        sharedWalletStore.authZOrDefaultSubaccountId ===
+        accountStore.subaccountId
 
       const bankBalanceWithoutCw20 =
         accountStore.balancesMap[token.denom] || '0'
@@ -249,7 +250,8 @@ export function useBalance() {
 
         const bankBalance = coin.amount
         const isDefaultTradingAccount =
-          walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
+          sharedWalletStore.authZOrDefaultSubaccountId ===
+          accountStore.subaccountId
         const usdPrice = tokenStore.tokenUsdPrice(token)
 
         const subaccountBalances =

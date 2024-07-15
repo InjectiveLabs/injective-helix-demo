@@ -6,7 +6,7 @@ import {
 } from '@/app/data/menu'
 import { MenuItemType } from '@/types'
 
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
@@ -58,7 +58,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
             <div>
               <div class="p-4 font-semibold border-b">
                 <LayoutNavbarPortfolioMenuItem
-                  v-if="walletStore.isUserWalletConnected"
+                  v-if="sharedWalletStore.isUserConnected"
                   v-bind="{
                     item: {
                       label: 'navigation.portfolio',

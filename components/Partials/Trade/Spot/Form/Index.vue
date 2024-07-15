@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { spotGridMarkets } from '@/app/data/grid-strategy'
+import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { MarketKey, UiSpotMarket, TradingInterface } from '@/types'
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>

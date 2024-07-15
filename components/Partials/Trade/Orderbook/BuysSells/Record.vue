@@ -171,11 +171,6 @@ function setQuantityFlashOff() {
 function handlePriceClick() {
   useEventBus(BusEvents.OrderbookPriceClick).emit(props.record.price)
 }
-
-function handleQuantityOrNotionalClick() {
-  useEventBus(BusEvents.OrderbookSizeClick).emit(props.record.totalQuantity)
-  useEventBus(BusEvents.OrderbookNotionalClick).emit(props.record.totalVolume)
-}
 </script>
 
 <template>
@@ -255,7 +250,7 @@ function handleQuantityOrNotionalClick() {
         'font-bold': showQuantityFlash
       }"
       @animationend="setQuantityFlashOff"
-      @click="handleQuantityOrNotionalClick"
+      @click="handlePriceClick"
     >
       {{ quantityToString }}
     </div>
@@ -263,7 +258,7 @@ function handleQuantityOrNotionalClick() {
     <div
       :key="record.price + record.quantity"
       class="flex-1 min-w-0 truncate px-1 relative"
-      @click="handleQuantityOrNotionalClick"
+      @click="handlePriceClick"
     >
       {{ volumeToString }}
     </div>

@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "types": [
       "@vueuse/nuxt",
-      "@pinia/nuxt",
+      "@pinia/nuxt"
     ]
   },
   "exclude": [

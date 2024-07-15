@@ -9,9 +9,9 @@ export default function useActiveGridStrategy(
   strategy: ComputedRef<TradingStrategy>
 ) {
   const spotStore = useSpotStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
   const tokenStore = useTokenStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
 
@@ -45,7 +45,7 @@ export default function useActiveGridStrategy(
     () =>
       accountStore.subaccountBalancesMap[
         addressAndMarketSlugToSubaccountId(
-          walletStore.address,
+          sharedWalletStore.address,
           market.value.slug
         )
       ]

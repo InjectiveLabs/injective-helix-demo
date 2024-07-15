@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { MsgType } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
+
+const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const props = defineProps({
   order: {
@@ -10,12 +17,6 @@ const props = defineProps({
     required: true
   }
 })
-const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
-const spotStore = useSpotStore()
-const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
 
 const {
   isBuy,
@@ -37,7 +38,7 @@ const {
 const status = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

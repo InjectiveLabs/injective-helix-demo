@@ -8,11 +8,12 @@ import {
 import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { StrategyStatus } from '@/types'
 
 const props = defineProps({
@@ -23,11 +24,12 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
-const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
+
 const now = useNow({ interval: 1000 })
 
 const lastTradedPrice = ref(ZERO_IN_BASE)
@@ -69,7 +71,10 @@ const investment = computed(() => {
 const subaccountBalances = computed(
   () =>
     accountStore.subaccountBalancesMap[
-      addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+      addressAndMarketSlugToSubaccountId(
+        sharedWalletStore.address,
+        market.value.slug
+      )
     ]
 )
 
@@ -241,27 +246,38 @@ const duration = computed(() =>
 )
 
 const gridStrategySubaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+  addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.value.slug
+  )
 )
 
 function removeStrategy() {
   removeStatus.setLoading()
+
+  let err: Error
 
   gridStrategyStore
     .removeStrategyForSubaccount(
       props.strategy.contractAddress,
       gridStrategySubaccountId.value
     )
-    .catch($onError)
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
     .finally(() => {
       removeStatus.setIdle()
 
-      mixpanelAnalytics.trackRemoveStrategy({
-        duration: durationFormatter(props.strategy.createdAt, Date.now()),
-        market: gridStrategyStore.spotMarket?.slug || '',
-        totalProfit: pnl.value.toFixed(),
-        isLiquidity: false
-      })
+      EventTracker.trackRemoveStrategy(
+        {
+          duration: durationFormatter(props.strategy.createdAt, Date.now()),
+          market: gridStrategyStore.spotMarket?.slug || '',
+          pnl: pnl.value.toFixed(),
+          isLiquidity: false
+        },
+        err?.message
+      )
     })
 }
 
@@ -275,11 +291,13 @@ useIntervalFn(
       marketId: market.value.marketId
     })
 
-    lastTradedPrice.value = new BigNumberInWei(lastTrade.price).toBase(
-      market.value.quoteToken.decimals - market.value.baseToken.decimals
-    )
+    lastTradedPrice.value = sharedToBalanceInTokenInBase({
+      value: lastTrade.price,
+      decimalPlaces:
+        market.value.quoteToken.decimals - market.value.baseToken.decimals
+    })
   },
-  10000,
+  10 * 1000,
   { immediateCallback: true }
 )
 </script>

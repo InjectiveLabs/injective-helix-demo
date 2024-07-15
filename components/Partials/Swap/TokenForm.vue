@@ -4,9 +4,9 @@ import { TokenSymbols } from '@/app/data/token'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 
 const swapStore = useSwapStore()
-const walletStore = useWalletStore()
-const formValues = useFormValues<SwapForm>()
 const setFormValues = useSetFormValues()
+const formValues = useFormValues<SwapForm>()
+const sharedWalletStore = useSharedWalletStore()
 const { query } = useRoute()
 const { userBalancesWithToken } = useBalance()
 
@@ -212,7 +212,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             amountFieldName: SwapFormField.InputAmount,
             maxDecimals: inputToken?.quantityDecimals || 0,
             tensMultiplier: inputToken?.tensMultiplier,
-            hideBalance: !walletStore.isUserWalletConnected
+            hideBalance: !sharedWalletStore.isUserConnected
           }"
           @on:update="onUpdateAmount"
           @update:max="onMaxSelected"
@@ -252,7 +252,7 @@ function onMaxSelected({ amount }: { amount: string }) {
             amountFieldName: SwapFormField.OutputAmount,
             maxDecimals: outputToken?.quantityDecimals || 0,
             tensMultiplier: outputToken?.tensMultiplier,
-            hideBalance: !walletStore.isUserWalletConnected
+            hideBalance: !sharedWalletStore.isUserConnected
           }"
           @update:amount="getInputQuantity"
           @update:denom="onOutputDenomChange"

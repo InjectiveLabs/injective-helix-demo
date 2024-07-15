@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { UnknownTokenStatusKey } from '@/types'
 
 const route = useRoute()
@@ -8,6 +9,7 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { addTokensToPriceWatchList } = useTokenUsdPrice()
 
@@ -28,6 +30,11 @@ onMounted(() => {
     derivativeStore.initFromTradingPage(queryMarketId)
   ])
     .catch($onError)
+    .then(() => {
+      if (sharedWalletStore.isUserConnected) {
+        WalletTracker.trackWalletAddress(sharedWalletStore.injectiveAddress)
+      }
+    })
     .finally(() => status.setIdle())
 
   // Actions that should't block the app from loading

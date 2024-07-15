@@ -28,8 +28,8 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const campaignWithReward = computed(() =>
   campaignStore.campaignsWithUserRewards.find(
@@ -42,11 +42,11 @@ const market = computed(() =>
 )
 
 const explorerLink = computed(() => {
-  if (!walletStore.address) {
+  if (!sharedWalletStore.address) {
     return
   }
 
-  return `${getExplorerUrl()}/account/${walletStore.address}`
+  return `${getExplorerUrl()}/account/${sharedWalletStore.address}`
 })
 
 const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
@@ -123,7 +123,7 @@ const rewardsFormatted = computed(() =>
           <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
           <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
             <p class="text-blue-500 truncate">
-              {{ walletStore.address }}
+              {{ sharedWalletStore.address }}
             </p>
           </NuxtLink>
         </div>

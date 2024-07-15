@@ -2,7 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.QrCode])
 
@@ -19,11 +19,11 @@ function closeModal() {
 
     <section class="text-center pb-4">
       <p class="text-sm font-semibold mb-4">
-        {{ walletStore.injectiveAddress }}
+        {{ sharedWalletStore.injectiveAddress }}
       </p>
       <SharedQRCode
         class="max-w-[80%] w-full mx-auto rounded-lg"
-        :text="walletStore.injectiveAddress"
+        :text="sharedWalletStore.injectiveAddress"
       />
 
       <!-- <div class="max-sm:pt-10">

@@ -42,17 +42,16 @@ The `injective-helix` uses AWS for deployment. There is a CD pipeline set in the
 
 More details about how to deploy a Nuxt project can be found on their docs.
 
-
-### Migration to Nuxt3 
+### Migration to Nuxt3
 
 We've migrated the `injective-helix` repo to Nuxt3 in January, 2023. To make the migration on your fork, there are couple of simple steps that you have to do:
 
 1. Pull the latest codebase from the `injective-dex` repo, `master` branch,
-2. Resolve merge conflicts on your fork, 
+2. Resolve merge conflicts on your fork,
 3. Install the dependencies `yarn install`
 4. Clean up left overs from the previous deployments `yarn clean-up && rm -rf dist`
 5. Update your `.env` file and add `VITE_` prefix to all of the `.env` variables,
-6. Run the dex `yarn dev` 
+6. Run the dex `yarn dev`
 
 ---
 
@@ -72,11 +71,11 @@ Reach out to us at one of the following places!
 
 ## 🔓 License
 
-Copyright © 2021 - 2022 Injective Labs Inc. (https://injectivelabs.org/)
+Copyright © 2021 - 2024 Injective Foundation (https://injectivelabs.org/)
 
 <a href="https://iili.io/mNneZN.md.png"><img src="https://iili.io/mNneZN.md.png" style="width: 300px; max-width: 100%; height: auto" />
 
-Originally released by Injective Labs Inc. under: <br />
+Originally released by Injective Foundation under: <br />
 Apache License <br />
 Version 2.0, January 2004 <br />
 http://www.apache.org/licenses/

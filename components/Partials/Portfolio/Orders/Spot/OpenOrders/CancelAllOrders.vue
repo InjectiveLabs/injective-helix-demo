@@ -4,18 +4,18 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket, MarketKey } from '@/types'
 
+const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+
 const props = defineProps({
   isTickerOnly: Boolean
 })
 
 const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
-
-const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -28,7 +28,7 @@ const filteredOrders = computed(() =>
 )
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

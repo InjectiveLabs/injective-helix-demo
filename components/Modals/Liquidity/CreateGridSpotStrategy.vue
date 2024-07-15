@@ -2,7 +2,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
@@ -105,6 +105,8 @@ function onCreateStrategy() {
 
   status.setLoading()
 
+  let err: Error
+
   gridStrategyStore
     .createStrategy(formValues.value)
     .then(() =>
@@ -113,16 +115,21 @@ function onCreateStrategy() {
         description: t('sgt.gridStrategyCreatedSuccessfully')
       })
     )
-    .catch($onError)
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
     .finally(() => {
       modalStore.closeModal(Modal.CreateSpotGridStrategy)
       status.setIdle()
 
-      mixpanelAnalytics.trackCreateStrategy({
+      EventTracker.trackCreateStrategy({
+        error: err?.message,
         formValues: formValues.value,
         market: gridStrategyStore.spotMarket?.slug || '',
         marketPrice: lastTradedPrice.value.toFixed(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          gridStrategyStore.spotMarket?.priceDecimals ||
+            UI_DEFAULT_MIN_DISPLAY_DECIMALS
         ),
         isLiquidity: props.isLiquidity
       })

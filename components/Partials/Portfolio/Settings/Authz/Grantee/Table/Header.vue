@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-const walletStore = useWalletStore()
 const modalStore = useModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
 function openGranteeModal() {
   modalStore.openModal(Modal.AddGrantee)
 }
 
 const isDisabled = computed(
-  () => walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+  () =>
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
 )
 </script>
 

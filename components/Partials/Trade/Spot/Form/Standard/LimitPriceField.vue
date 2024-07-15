@@ -22,6 +22,14 @@ const value = computed({
   }
 })
 
+function setMidLimitPrice() {
+  if (!lastTradedPrice.value) {
+    return
+  }
+
+  value.value = lastTradedPrice.value.toFixed()
+}
+
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
     value.value = price
@@ -33,7 +41,22 @@ onMounted(() => {
   <div v-if="market" ref="el" class="space-y-2">
     <p class="field-label">{{ $t('trade.limitPrice') }}</p>
 
-    <AppInputField v-model="value" placeholder="0.00">
+    <AppInputField
+      v-model="value"
+      v-bind="{
+        placeholder: '0.00',
+        decimals: market.priceDecimals
+      }"
+    >
+      <template #left>
+        <div
+          class="text-xs text-gray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          @click="setMidLimitPrice"
+        >
+          {{ $t('trade.mid') }}
+        </div>
+      </template>
+
       <template #right>
         <span class="text-sm">
           {{ market.quoteToken.symbol }}

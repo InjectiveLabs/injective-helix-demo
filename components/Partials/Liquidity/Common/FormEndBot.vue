@@ -5,8 +5,8 @@ import {
   durationFormatter,
   getSgtContractAddressFromSlug
 } from '@/app/utils/helpers'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
 
 const props = defineProps({
   isLiquidity: Boolean,
@@ -18,12 +18,12 @@ const props = defineProps({
 })
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
 const modalStore = useModalStore()
 const gridStrategyStore = useGridStrategyStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -52,6 +52,8 @@ function removeStrategy() {
 
   status.setLoading()
 
+  let err: Error
+
   gridStrategyStore
     .removeStrategyForSubaccount(
       activeStrategy.value.contractAddress,
@@ -65,16 +67,22 @@ function removeStrategy() {
         description: t('sgt.strategyRemoved')
       })
     })
-    .catch($onError)
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
     .finally(() => {
       status.setIdle()
 
-      mixpanelAnalytics.trackRemoveStrategy({
-        duration: durationFormatter(props.strategy.createdAt, Date.now()),
-        market: market.value.slug,
-        totalProfit: pnl.value.toFormat(),
-        isLiquidity: true
-      })
+      EventTracker.trackRemoveStrategy(
+        {
+          duration: durationFormatter(props.strategy.createdAt, Date.now()),
+          market: market.value.slug,
+          pnl: pnl.value.toFixed(),
+          isLiquidity: props.isLiquidity
+        },
+        err?.message
+      )
     })
 }
 </script>
@@ -83,7 +91,8 @@ function removeStrategy() {
   <div class="grid grid-cols-1 gap-4">
     <AppButton
       :disabled="
-        walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+        sharedWalletStore.isAuthzWalletConnected ||
+        sharedWalletStore.isAutoSignEnabled
       "
       v-bind="{ status }"
       is-lg
@@ -91,7 +100,7 @@ function removeStrategy() {
       class="w-full"
       @click="removeStrategy"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
 

@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
+
+const authZStore = useAuthZStore()
+const tokenStore = useTokenStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
+const { validate } = useForm<ClosePositionLimitForm>()
 
 const props = defineProps({
   position: {
@@ -17,15 +25,6 @@ const emit = defineEmits<{
   'margin:add': [position: Position | PositionV2]
   'tpsl:add': [position: Position | PositionV2]
 }>()
-
-const { validate } = useForm<ClosePositionLimitForm>()
-
-const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
-const tokenStore = useTokenStore()
-const derivativeStore = useDerivativeStore()
-const positionStore = usePositionStore()
-const { $onError } = useNuxtApp()
 
 const {
   pnl,
@@ -48,7 +47,7 @@ const marketCloseStatus = reactive(new Status(StatusType.Idle))
 const limitCloseStatus = reactive(new Status(StatusType.Idle))
 
 const isMarketOrderAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -56,7 +55,7 @@ const isMarketOrderAuthorized = computed(() => {
 })
 
 const isLimitOrderAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

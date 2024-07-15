@@ -98,6 +98,6 @@ function handleIsAscending(value: boolean) {
       </SharedSortableHeaderItem>
     </div>
 
-    <div v-if="isMarketsPage" class="flex-2"></div>
+    <div v-if="isMarketsPage" class="flex-1" />
   </div>
 </template>

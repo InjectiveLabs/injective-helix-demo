@@ -47,7 +47,6 @@ const activeTab = ref(GridStrategyType.Auto)
     />
     <PartialsLiquidityBotsSpotCreateManual v-else />
 
-    <ModalsLiquidityCheckSpotGridAuth />
     <ModalsLiquidityCreateGridSpotStrategy v-bind="{ isLiquidity: true }" />
   </div>
 </template>

@@ -82,16 +82,15 @@ const createTpSlMessage = ({
 }
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
-  const appStore = useAppStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const market = derivativeStore.markets.find(
@@ -102,33 +101,32 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     return
   }
 
-  const message = MsgCancelDerivativeOrder.fromJSON({
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+  const messages = MsgCancelDerivativeOrder.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     orderHash: order.orderHash,
     subaccountId: order.subaccountId
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = orders.map((order: UIDerivativeOrder) => {
     return MsgBatchCancelDerivativeOrders.fromJSON({
-      injectiveAddress: walletStore.authZOrInjectiveAddress,
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -139,7 +137,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     })
   })
 
-  await walletStore.broadcastMessages(messages)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -160,25 +158,24 @@ export const submitLimitOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const accountStore = useAccountStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const message = MsgCreateDerivativeLimitOrder.fromJSON({
+  const messages = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price.toFixed(),
@@ -198,7 +195,7 @@ export const submitLimitOrder = async ({
     feeRecipient: FEE_RECIPIENT
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -223,19 +220,18 @@ export const submitStopLimitOrder = async ({
   const appStore = useAppStore()
   const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await walletStore.validate()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validate()
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
     value: triggerPrice.toFixed(),
@@ -256,9 +252,9 @@ export const submitStopLimitOrder = async ({
         quoteDecimals: market.quoteToken.decimals
       })
 
-  const message = MsgCreateDerivativeLimitOrder.fromJSON({
+  const messages = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
     margin: msgMargin,
     quantity: msgQuantity,
@@ -268,7 +264,7 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -293,19 +289,18 @@ export const submitMarketOrder = async ({
   stopLoss?: BigNumberInBase
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
@@ -317,7 +312,7 @@ export const submitMarketOrder = async ({
         triggerPrice: takeProfit ?? new BigNumberInBase(0),
         quantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: isTpslBuy,
         market
@@ -330,7 +325,7 @@ export const submitMarketOrder = async ({
         triggerPrice: stopLoss ?? new BigNumberInBase(0),
         quantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: isTpslBuy,
         market
@@ -339,7 +334,7 @@ export const submitMarketOrder = async ({
 
   const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price.toFixed(),
@@ -365,10 +360,12 @@ export const submitMarketOrder = async ({
     (msg) => msg
   ) as MsgCreateDerivativeMarketOrder[]
 
-  await walletStore.broadcastMessages(messages)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   if (tpSlMessages.length) {
-    await walletStore.broadcastMessages(tpSlMessages)
+    await sharedWalletStore.broadcastWithFeeDelegation({
+      messages: tpSlMessages
+    })
   }
 
   await fetchBalances()
@@ -392,21 +389,20 @@ export const submitStopMarketOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const msgPrice = derivativePriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -427,9 +423,9 @@ export const submitStopMarketOrder = async ({
         quoteDecimals: market.quoteToken.decimals
       })
 
-  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
     margin: msgMargin,
     quantity: msgQuantity,
@@ -439,7 +435,7 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -456,6 +452,13 @@ export const submitTpSlOrder = async ({
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  await walletStore.validate()
 
   const market = derivativeStore.markets.find(
     (market) => market.marketId === position.marketId
@@ -477,7 +480,7 @@ export const submitTpSlOrder = async ({
         triggerPrice: takeProfit ?? new BigNumberInBase(0),
         quantity: new BigNumberInBase(position.quantity),
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: !isTpslBuy,
         market
@@ -490,7 +493,7 @@ export const submitTpSlOrder = async ({
         triggerPrice: stopLoss ?? new BigNumberInBase(0),
         quantity: new BigNumberInBase(position.quantity),
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: !isTpslBuy,
         market
@@ -511,7 +514,7 @@ export const submitTpSlOrder = async ({
     (msg) => msg
   ) as MsgCreateDerivativeMarketOrder[]
 
-  await walletStore.broadcastMessages(tpSlMessages)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: tpSlMessages })
 
   await fetchBalances()
 }

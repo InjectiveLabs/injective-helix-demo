@@ -59,7 +59,7 @@
       <p class="mt-4">
         These terms of use, together with any documents and additional terms
         they expressly incorporate by reference, which includes any other terms
-        and conditions or other agreement that Injective Labs Inc.
+        and conditions or other agreement that Injective Foundation
         (&ldquo;Injective,&rdquo; &ldquo;we,&rdquo; &ldquo;us&rdquo; and
         &ldquo;our&rdquo;) posts publicly or makes available to you or the
         company or other legal entity you represent (&ldquo;you&rdquo; or
@@ -1195,7 +1195,7 @@
       </p>
 
       <p class="mt-8 font-semibold text-xs text-opacity-75">
-        Copyright © {{ new Date().getFullYear() }} Injective Labs Inc. All
+        Copyright © {{ new Date().getFullYear() }} Injective Foundation All
         rights reserved.
       </p>
     </div>

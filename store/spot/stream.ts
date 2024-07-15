@@ -101,10 +101,10 @@ export const streamSubaccountOrders = (
 ) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !sharedWalletStore.isUserConnected ||
     (!accountStore.subaccountId && !subaccountId)
   ) {
     return
@@ -157,9 +157,9 @@ export const streamSubaccountOrders = (
 export const streamSubaccountOrderHistory = (marketId?: string) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -212,9 +212,9 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 export const streamSubaccountTrades = (marketId?: string) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 

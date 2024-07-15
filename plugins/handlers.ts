@@ -72,8 +72,8 @@ const reportToBugSnag = (error: ThrownException) => {
     useBugsnag().notify(error, (event: any) => {
       event.errors[0].errorClass = error.errorClass || error.name
 
-      if (useWalletStore().isUserWalletConnected) {
-        event.setUser(useWalletStore().injectiveAddress)
+      if (useSharedWalletStore().isUserConnected) {
+        event.setUser(useSharedWalletStore().injectiveAddress)
       }
 
       event.addMetadata('error-context', error.toObject())
@@ -99,7 +99,9 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.config.errorHandler = (error, context) => {
-    console.warn(error, context, (error as any).stack)
+    console.log(error, context)
+
+    console.warn(error, context, (error as any)?.stack)
   }
 
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {

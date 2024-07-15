@@ -1,25 +1,12 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  marketIsActive,
-  marketIsQuotePair,
-  marketIsPartOfType,
-  marketIsPartOfSearch,
-  marketIsPartOfCategory
-} from '@/app/utils/market'
-import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
-import {
   MarketQuoteType,
   MarketTypeOption,
   MarketCategoryType,
   UnknownTokenStatusKey
 } from '@/types'
-import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
-
-const marketTypeOptionsToHideCategory = [
-  MarketTypeOption.NewListings,
-  MarketTypeOption.Permissionless
-]
+import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -29,8 +16,8 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const search = ref('')
-const type = ref(MarketTypeOption.All)
-const category = ref(MarketCategoryType.All)
+const activeType = ref(MarketTypeOption.All)
+const activeCategory = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 const isLowVolumeMarketsVisible = ref(false)
 const unverifiedMarketsStatus = reactive(new Status(StatusType.Idle))
@@ -41,53 +28,19 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     ...derivativeStore.marketsWithSummary,
     ...exchangeStore.upcomingMarketsWithSummary,
     ...exchangeStore.deprecatedMarketsWithSummary
-  ].map(({ market, summary }) => {
-    const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPrice(market.quoteToken)
-    )
-
-    return {
-      market,
-      summary,
-      volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
-    }
-  })
-)
-
-const filteredMarkets = computed(() =>
-  marketsWithSummaryAndVolumeInUsd.value
-    .filter(({ market, volumeInUsd }) => {
-      const shouldIgnoreCategory = marketTypeOptionsToHideCategory.includes(
-        type.value
+  ]
+    .map(({ market, summary }) => {
+      const quoteTokenUsdPrice = new BigNumberInBase(
+        tokenStore.tokenUsdPrice(market.quoteToken)
       )
 
-      const isPartOfCategory =
-        shouldIgnoreCategory || marketIsPartOfCategory(category.value, market)
-      const isPartOfSearch = marketIsPartOfSearch(search.value, market)
-      const isPartOfType = marketIsPartOfType({
+      return {
         market,
-        favoriteMarkets: appStore.favoriteMarkets,
-        activeType: type.value
-      })
-      const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-
-      const isLowVolumeMarket =
-        isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||
-        search.value ||
-        isOLPMarket
-
-      return (
-        isLowVolumeMarket &&
-        isPartOfCategory &&
-        isPartOfType &&
-        isPartOfSearch &&
-        isQuotePair
-      )
+        summary,
+        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
+      }
     })
-    .filter((market) => marketIsActive(market.market))
+    .filter(({ summary }) => summary)
 )
 
 onMounted(() => {
@@ -139,7 +92,7 @@ const unknownTokenStatus = inject(
             <AppButtonSelect
               v-for="value in Object.values(MarketTypeOption)"
               :key="value"
-              v-model="type"
+              v-model="activeType"
               v-bind="{ value }"
               class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
@@ -170,13 +123,13 @@ const unknownTokenStatus = inject(
       <div class="overflow-x-auto max-w-full">
         <div class="my-4 flex gap-x-2 justify-between flex-wrap">
           <div
-            v-if="!marketTypeOptionsToHideCategory.includes(type)"
+            v-if="!marketTypeOptionsToHideCategory.includes(activeType)"
             class="flex space-x-2"
           >
             <AppButtonSelect
               v-for="value in Object.values(MarketCategoryType)"
               :key="value"
-              v-model="category"
+              v-model="activeCategory"
               v-bind="{ value }"
               class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
               active-classes="text-white !bg-brand-700"
@@ -184,10 +137,10 @@ const unknownTokenStatus = inject(
               {{ value }}
             </AppButtonSelect>
           </div>
-          <div v-else></div>
+          <div v-else />
 
           <div
-            v-if="type === MarketTypeOption.Permissionless"
+            v-if="activeType === MarketTypeOption.Permissionless"
             class="flex items-center gap-x-2 text-gray-500"
           >
             <SharedIcon name="warning-triangle" is-md />
@@ -224,7 +177,12 @@ const unknownTokenStatus = inject(
       <PartialsMarkets
         is-markets-page
         v-bind="{
-          markets: filteredMarkets,
+          search,
+          activeType,
+          activeQuote,
+          activeCategory,
+          isLowVolumeMarketsVisible,
+          markets: marketsWithSummaryAndVolumeInUsd,
           isLoading: unverifiedMarketsStatus.isLoading()
         }"
       />

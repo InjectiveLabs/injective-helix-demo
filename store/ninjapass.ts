@@ -20,9 +20,9 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
   actions: {
     async fetchCodes() {
       const ninjaPassStore = useNinjaPassStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
@@ -30,7 +30,9 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
         return
       }
 
-      const codes = await fetchNinjaPassCodes(walletStore.injectiveAddress)
+      const codes = await fetchNinjaPassCodes(
+        sharedWalletStore.injectiveAddress
+      )
 
       ninjaPassStore.$patch({
         codes: codes || []

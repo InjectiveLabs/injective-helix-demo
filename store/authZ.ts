@@ -75,12 +75,13 @@ export const useAuthZStore = defineStore('authZ', {
       ),
 
     hasAuthZPermission: (state) => (messageType: MsgType) => {
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
+
       const msg = messageType.startsWith('/') ? messageType : `/${messageType}`
 
       return state.granteeGrants.some(
         (grant) =>
-          grant.granter === walletStore.authZ.injectiveAddress &&
+          grant.granter === sharedWalletStore.authZ.injectiveAddress &&
           grant.authorization?.msg === msg
       )
     }
@@ -88,21 +89,21 @@ export const useAuthZStore = defineStore('authZ', {
   actions: {
     async fetchGrants() {
       const authZStore = useAuthZStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const pagination = { limit: 1000 }
 
       const { grants: granteeGrants } = await authZApi.fetchGranteeGrants(
-        walletStore.injectiveAddress,
+        sharedWalletStore.injectiveAddress,
         pagination
       )
 
       const { grants: granterGrants } = await authZApi.fetchGranterGrants(
-        walletStore.injectiveAddress,
+        sharedWalletStore.injectiveAddress,
         pagination
       )
 
@@ -122,27 +123,26 @@ export const useAuthZStore = defineStore('authZ', {
       messageTypes: string[]
     }) {
       const authZStore = useAuthZStore()
-      const appStore = useAppStore()
       const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
-      await appStore.queue()
       await walletStore.validate()
 
       const msgs = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
           grantee,
           authorization: getGenericAuthorizationFromMessageType(messageType),
-          granter: walletStore.injectiveAddress
+          granter: sharedWalletStore.injectiveAddress
         })
       )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
         msgs,
-        injectiveAddress: walletStore.injectiveAddress
+        injectiveAddress: sharedWalletStore.injectiveAddress
       })
 
       await backupPromiseCall(() => authZStore.fetchGrants())
@@ -157,22 +157,25 @@ export const useAuthZStore = defineStore('authZ', {
     }) {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
+
+      await walletStore.validate()
 
       const msgs = messageTypes.map((messageType) =>
         MsgRevoke.fromJSON({
           grantee,
           messageType,
-          granter: walletStore.injectiveAddress
+          granter: sharedWalletStore.injectiveAddress
         })
       )
 
       await msgBroadcaster.broadcastWithFeeDelegation({
         msgs,
-        injectiveAddress: walletStore.injectiveAddress
+        injectiveAddress: sharedWalletStore.injectiveAddress
       })
 
       await backupPromiseCall(() => authZStore.fetchGrants())
