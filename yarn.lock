@@ -1875,13 +1875,13 @@
     eslint-plugin-prettier "5.0.0"
     eslint-plugin-vue "9.15.1"
 
-"@injectivelabs/exceptions@1.14.14-beta.0":
-  version "1.14.14-beta.0"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.14-beta.0.tgz#51490e1a29d6c4fd321dffd7f9d1fc1bf951af0a"
-  integrity sha512-7rZgilOPOCZBP4QjSGVduE1S40Z34No5MFTFx96GkrMe/PV1lao+MkmZZBZmTaCqqtVowLISVzNUSsNR+Ihnuw==
+"@injectivelabs/exceptions@1.14.14-beta.1":
+  version "1.14.14-beta.1"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.14-beta.1.tgz#abd75be40be9d473392db75ef6031e8a29a0a8c4"
+  integrity sha512-kYdVk8xlIj8aB5aQq6E5VCzmV542wu4LLI3MDvi5mWRvtdoBRYUPtbqr5acTqN2GIfkaoVnAupWOPjeEGw4j3w==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
-    "@injectivelabs/ts-types" "^1.14.14-beta.0"
+    "@injectivelabs/ts-types" "^1.14.14-beta.1"
     http-status-codes "^2.2.0"
     link-module-alias "^1.2.0"
     shx "^0.3.2"
@@ -1934,7 +1934,7 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/networks@1.14.13-beta.0", "@injectivelabs/networks@1.14.14-beta.0", "@injectivelabs/networks@^1.14.12-beta.0", "@injectivelabs/networks@^1.14.13-beta.0":
+"@injectivelabs/networks@1.14.13-beta.0", "@injectivelabs/networks@1.14.14-beta.1", "@injectivelabs/networks@^1.14.12-beta.0", "@injectivelabs/networks@^1.14.13-beta.0":
   version "1.14.13-beta.0"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.13-beta.0.tgz#c4cab543cbb2a702e31e76f395cbf482478f765d"
   integrity sha512-KM+5C45kpbFBUEtHr1SMZCuAbdXggGm9fY/AKp0ktnCKPDbqIJDlKjVK/V/KfKk0XTG9V4bwlCQL/foaz3vcEw==
@@ -1965,7 +1965,7 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.12-dev.8", "@injectivelabs/sdk-ts@1.14.14-beta.1", "@injectivelabs/sdk-ts@^1.14.12-dev.8":
+"@injectivelabs/sdk-ts@1.14.12-dev.8", "@injectivelabs/sdk-ts@1.14.14-beta.3", "@injectivelabs/sdk-ts@^1.14.12-dev.8":
   version "1.14.12-dev.8"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.12-dev.8.tgz#e112e4b9ac0f4dad6d14dcf04bc2d36c010b11ce"
   integrity sha512-I8/3xm5IMLpbI+CspFHOHuFfUy+X0dGFURiEMZeBrW9JWWlaFjuvsz+7OhmXZH4IiH5UUiNsCHiayY7F+cSctg==
@@ -2025,7 +2025,7 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/ts-types@1.14.13-beta.0", "@injectivelabs/ts-types@1.14.14-beta.0", "@injectivelabs/ts-types@^1.14.12-beta.0", "@injectivelabs/ts-types@^1.14.13", "@injectivelabs/ts-types@^1.14.13-beta.0", "@injectivelabs/ts-types@^1.14.14-beta.0":
+"@injectivelabs/ts-types@1.14.13-beta.0", "@injectivelabs/ts-types@1.14.14-beta.1", "@injectivelabs/ts-types@^1.14.12-beta.0", "@injectivelabs/ts-types@^1.14.13", "@injectivelabs/ts-types@^1.14.13-beta.0", "@injectivelabs/ts-types@^1.14.14-beta.1":
   version "1.14.13-beta.0"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.14.13-beta.0.tgz#f98f259616e16358fee664e46fe794c99a8f92c2"
   integrity sha512-0ajPhvzvWzjOgTyABnb2ZVKiD1rNJZIo9NjkTkai15XPdLnXaP3b+lidDMKhF4xN7IEJ+zK9+abctr3yezC7GQ==
@@ -2033,7 +2033,7 @@
     link-module-alias "^1.2.0"
     shx "^0.3.2"
 
-"@injectivelabs/utils@1.14.13-beta.0", "@injectivelabs/utils@1.14.14-beta.0", "@injectivelabs/utils@^1.14.12-beta.0", "@injectivelabs/utils@^1.14.13-beta.0":
+"@injectivelabs/utils@1.14.13-beta.0", "@injectivelabs/utils@1.14.14-beta.1", "@injectivelabs/utils@^1.14.12-beta.0", "@injectivelabs/utils@^1.14.13-beta.0":
   version "1.14.13-beta.0"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.13-beta.0.tgz#4cfdb3aced1d41ef559f4b9d6a490f9f23d549ad"
   integrity sha512-Pqm4jppaQTEPS+pydwLdLTisI8MZjZwQneMaUR/8DPdyODwWG1Ebo/d9uSgKZmNf0huVJcKCSmAXz10BQjGy5g==
@@ -2048,7 +2048,7 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.12-dev.8", "@injectivelabs/wallet-ts@1.14.14-beta.2":
+"@injectivelabs/wallet-ts@1.14.12-dev.8", "@injectivelabs/wallet-ts@1.14.14-beta.4":
   version "1.14.12-dev.8"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.12-dev.8.tgz#fd41b975b2e6f2c82a99dc0486a44ede8270f3a4"
   integrity sha512-PHwUX81qslp0dYcADvY+3JguZsa8lR5eF4bKDd2YEt1kBgG0NezLJQufauYgOpZ50PzEQuWTK4MQd4dT1Bz3Gw==
@@ -15880,16 +15880,16 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#814495d7b416e6811070bee6e67420a4337904ff"
+  resolved "https://github.com/InjectiveLabs/shared-packages#300290af4cc1b589fdb32b22ff28bad77eaab31e"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
-    "@injectivelabs/exceptions" "1.14.14-beta.0"
-    "@injectivelabs/networks" "1.14.14-beta.0"
+    "@injectivelabs/exceptions" "1.14.14-beta.1"
+    "@injectivelabs/networks" "1.14.14-beta.1"
     "@injectivelabs/nuxt-bugsnag" "0.0.3"
-    "@injectivelabs/sdk-ts" "1.14.14-beta.1"
-    "@injectivelabs/ts-types" "1.14.14-beta.0"
-    "@injectivelabs/utils" "1.14.14-beta.0"
-    "@injectivelabs/wallet-ts" "1.14.14-beta.2"
+    "@injectivelabs/sdk-ts" "1.14.14-beta.3"
+    "@injectivelabs/ts-types" "1.14.14-beta.1"
+    "@injectivelabs/utils" "1.14.14-beta.1"
+    "@injectivelabs/wallet-ts" "1.14.14-beta.4"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
     "@vueuse/integrations" "^10.7.1"
