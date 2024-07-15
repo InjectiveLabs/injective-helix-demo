@@ -121,8 +121,10 @@ export function useOrder(
       return new BigNumberInBase('')
     }
 
+    const priceInBigNumber = new BigNumberInBase(price.value)
+
     return new BigNumberInBase(
-      price.value.times(quantity.value).dividedBy(margin.value)
+      priceInBigNumber.times(quantity.value).dividedBy(margin.value)
     )
   })
 
