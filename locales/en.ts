@@ -381,8 +381,10 @@ export default {
   },
 
   devMode: {
-    connectWithAddress: 'Connect with address',
     connect: 'Connect',
+    connectWithAddress: 'Connect with address',
+    connectWithPrivateKey: 'Connect with private key',
+    enterPrivateKey: 'Enter your private key',
     enterInjectiveAddress: 'Enter your injective address'
   },
 
