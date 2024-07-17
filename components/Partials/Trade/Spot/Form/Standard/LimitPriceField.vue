@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { MarketKey, BusEvents, UiSpotMarket, SpotTradeFormField } from '@/types'
+import {
+  MarketKey,
+  BusEvents,
+  UiSpotMarket,
+  SpotTradeForm,
+  SpotTradeFormField
+} from '@/types'
+
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -9,6 +17,10 @@ const { value: limitValue, errorMessage } = useStringField({
   name: SpotTradeFormField.Price,
   initialValue: '',
   dynamicRule: computed(() => {
+    if (spotFormValues.value[SpotTradeFormField.BypassPriceWarning]) {
+      return ''
+    }
+
     return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
