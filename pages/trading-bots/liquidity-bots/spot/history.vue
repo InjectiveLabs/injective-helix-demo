@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, UiSpotMarket } from '@/types'
 
 const router = useRouter()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const active = ref('')
+const selectedMarket = ref<UiSpotMarket>()
 const selectedStrategy = ref<TradingStrategy>()
-const selectedMarket = ref<UiSpotMarketWithToken>()
 const status = reactive(new Status(StatusType.Loading))
 
 onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
+    accountStore.fetchCw20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
     gridStrategyStore.fetchAllStrategies()
   ])
@@ -30,7 +30,7 @@ onWalletConnected(() => {
 })
 
 watch(
-  () => walletStore.isUserWalletConnected,
+  () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected) {
       router.replace({ name: MainPage.TradingBotsLiquidityBotsSpot })
@@ -39,12 +39,9 @@ watch(
   { immediate: true }
 )
 
-function setMarketAndStrategy(
-  strategy: TradingStrategy,
-  market: UiSpotMarketWithToken
-) {
-  selectedStrategy.value = strategy
+function setMarketAndStrategy(strategy: TradingStrategy, market: UiSpotMarket) {
   selectedMarket.value = market
+  selectedStrategy.value = strategy
 
   modalStore.openModal(Modal.GridStrategyDetails)
 }

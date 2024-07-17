@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import {
+  sharedToBalanceInToken,
+  sharedToBalanceInTokenInBase
+} from '@shared/utils/formatter'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 
 const props = defineProps({
@@ -19,56 +22,53 @@ const props = defineProps({
 })
 
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const rewardsWithToken = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
-      value: toBalanceInToken({
+      token,
+      value: sharedToBalanceInToken({
         value: reward.amount,
-        decimalPlaces: token?.decimals || 18
-      }),
-      token: tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+        decimalPlaces: token?.decimals
+      })
     }
   })
 })
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() => {
-    return props.campaign.rewards.reduce((total, reward) => {
-      const token = tokenStore.tokens.find(
-        ({ denom }) => denom === reward.denom
-      )
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      return props.campaign.rewards.reduce((total, reward) => {
+        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
-      if (!token) {
-        return total
-      }
+        if (!token) {
+          return total
+        }
 
-      const rewardInBase = toBalanceInToken({
-        value: reward.amount,
-        decimalPlaces: token.decimals
-      })
+        const rewardInBase = sharedToBalanceInToken({
+          value: reward.amount,
+          decimalPlaces: token.decimals
+        })
 
-      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
-        tokenStore.tokenUsdPrice(token)
-      )
+        const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+          tokenStore.tokenUsdPrice(token)
+        )
 
-      return total.plus(rewardInUsd)
-    }, ZERO_IN_BASE)
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+        return total.plus(rewardInUsd)
+      }, ZERO_IN_BASE)
+    }),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
+const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInBase(
-      toBalanceInToken({
-        value: props.campaign.totalScore,
-        decimalPlaces: props.market.quoteToken.decimals
-      })
-    ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    sharedToBalanceInTokenInBase({
+      value: props.campaign.totalScore,
+      decimalPlaces: props.market.quoteToken.decimals
+    }).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -83,7 +83,7 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <BaseIcon name="arrow" />
+        <SharedIcon name="arrow" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>
@@ -100,7 +100,7 @@ const { valueToString: volumeInUsdToString } = useBigNumberFormatter(
 
       <div class="flex items-center ml-auto">
         <NuxtLink
-          v-if="walletStore.isUserWalletConnected"
+          v-if="sharedWalletStore.isUserConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >

@@ -1,11 +1,11 @@
-import { setActivePinia, createPinia } from 'pinia'
-import { ref } from 'vue'
-import { beforeAll, describe, expect, test } from 'vitest'
 import {
-  FeeDiscountAccountInfo,
-  FeeDiscountTierInfo
+  FeeDiscountTierInfo,
+  FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ref } from 'vue'
+import { setActivePinia, createPinia } from 'pinia'
+import { beforeAll, describe, expect, test } from 'vitest'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { useTradeFee } from '@/composables/trading/useFees'
 import { marketFactory } from '@/test/mocks'
 import { UiMarketWithToken } from '@/types'

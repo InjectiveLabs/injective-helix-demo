@@ -6,7 +6,6 @@ export default {
     vol: 'Vol',
     quote: 'Quote',
     market: 'Market',
-    airdrop: 'Airdrop',
     category: 'Category',
     whatsNew: "What's new",
     topGainer: 'Top Gainer',
@@ -14,8 +13,14 @@ export default {
     poweredBy: 'Powered by',
     settledAt: 'Settled at',
     perpetuals: 'Perpetuals',
-    newMarkets: 'New Markets',
     showLowVol: 'Show low Vol.',
+    change24h: 'Change (24h)',
+    volume24h: 'Volume (24h)',
+    hotMarkets: 'Hot Markets',
+    newMarkets: 'New Markets',
+    topGainers: 'Top Gainers',
+    permisionlessWarning:
+      'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
     emptyHeader: 'No markets found',
     preLaunchFutures: 'Pre Launch Futures',
     expiredOrSettledRecently: 'Recently Expired/Settled',
@@ -23,7 +28,16 @@ export default {
     emptyDescription:
       'No results found. Search for markets available on Injective outside of Helix.',
     emptyDescriptionFavorites: 'Your starred markets will be shown here.',
-    inactive: 'Inactive'
+    inactive: 'Inactive',
+    themes: {
+      memes: 'Memes',
+      l1l2: 'L1/L2',
+      infrastructure: 'Infrastructure',
+      'defi-dex': 'DeFi/DEX',
+      nft: 'NFT/Gaming',
+      'liquid-staking': 'Liquid Staking',
+      stablecoins: 'Stablecoins'
+    }
   },
 
   marketPage: {

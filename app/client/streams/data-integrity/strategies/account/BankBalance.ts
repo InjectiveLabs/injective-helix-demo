@@ -1,7 +1,7 @@
 import { Coin } from '@injectivelabs/ts-types'
+import { indexerAccountPortfolioApi } from '@shared/Service'
 import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerAccountPortfolioApi } from '@/app/Services'
 
 export class BankBalanceIntegrityStrategy
   extends BaseDataIntegrityStrategy<void>
@@ -12,10 +12,10 @@ export class BankBalanceIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const walletStore = useWalletStore()
     const accountStore = useAccountStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected) {
+    if (!sharedWalletStore.isUserConnected) {
       return
     }
 
@@ -55,11 +55,11 @@ export class BankBalanceIntegrityStrategy
   }
 
   async fetchData(): Promise<Coin[]> {
-    const walletStore = useWalletStore()
+    const sharedWalletStore = useSharedWalletStore()
 
     const { bankBalancesList } =
       await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
-        walletStore.authZOrInjectiveAddress
+        sharedWalletStore.authZOrInjectiveAddress
       )
 
     return bankBalancesList || []

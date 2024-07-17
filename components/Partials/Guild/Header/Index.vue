@@ -9,8 +9,8 @@ import {
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const TOTAL_INJ_REWARDS = '1,000'
 const TOTAL_TIA_REWARDS = '10,000'
@@ -136,7 +136,7 @@ function onConnectWallet() {
         </h2>
 
         <NuxtLink :to="GUILD_ZENDESK_LINK" target="_blank">
-          <AppButton class="bg-blue-500 text-blue-900">
+          <AppButton>
             <div class="flex items-center gap-1">
               <span>{{ $t('guild.campaignRules') }}</span>
             </div>
@@ -164,7 +164,7 @@ function onConnectWallet() {
 
           <div>
             <AppButton
-              v-if="!walletStore.isUserWalletConnected"
+              v-if="!sharedWalletStore.isUserConnected"
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10"
               @click="onConnectWallet"
             >

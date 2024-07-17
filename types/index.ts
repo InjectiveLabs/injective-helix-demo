@@ -1,15 +1,13 @@
-import { PointsMultiplier } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotOrderbook,
-  UiDerivativeOrderbook,
-  SubaccountBalanceWithToken
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { OrderSide } from '@injectivelabs/ts-types'
+  SharedDropdownOption,
+  SharedSubaccountBalanceWithToken
+} from '@shared/types'
+import { RouteLocationRaw } from 'vue-router'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { NoticeBanner } from './enums'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { PointsMultiplier } from '@injectivelabs/sdk-ts'
+import { MenuItemType, NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
@@ -33,7 +31,7 @@ export interface GeoLocation {
 }
 
 export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
-  extends Omit<SubaccountBalanceWithToken, 'totalBalance'> {
+  extends Omit<SharedSubaccountBalanceWithToken, 'totalBalance'> {
   inOrderBalance: BigNumberInBase
   margin: BigNumberInBase
   pnlInUsd: BigNumberInBase
@@ -48,8 +46,8 @@ export interface MarketRoute {
     derivative?: string
     futures?: string
     perpetual?: string
-    binaryOption?: string
     spot?: string
+    slug?: string
   }
 }
 
@@ -85,21 +83,8 @@ export interface PointsMultiplierWithMarketTicker extends PointsMultiplier {
   slug: string
 }
 
-export interface DropdownOption extends BaseDropdownOption {
+export interface DropdownOption extends SharedDropdownOption {
   icon?: string
-}
-
-export interface DropdownOptionWithToken extends BaseDropdownOption {
-  token?: Token
-}
-
-export interface UiSpotOrderbookWithSequence extends UiSpotOrderbook {
-  sequence: number
-}
-
-export interface UiDerivativeOrderbookWithSequence
-  extends UiDerivativeOrderbook {
-  sequence: number
 }
 
 export interface Banner {
@@ -120,14 +105,42 @@ export interface AmplitudeTrackerUser {
   address: string
   tierLevel: number
 }
+type MenuItemBase = {
+  label: string
+  description?: string
+  icon?: string
+  isExternal?: boolean
+  isExact?: boolean
+  name?: string
+}
+
+export type MenuItem =
+  | (MenuItemBase & {
+      type: MenuItemType.Link
+      to: RouteLocationRaw
+    })
+  | (MenuItemBase & {
+      type: MenuItemType.Dropdown
+      icon?: string
+      items: MenuItem[]
+    })
+
+export type WalletOption = {
+  beta?: boolean
+  downloadLink?: string
+  wallet: Wallet
+}
 
 export * from './page'
 export * from './swap'
 export * from './enums'
+export * from './forms'
 export * from './trade'
 export * from './states'
 export * from './balance'
+export * from './symbols'
 export * from './account'
+export * from './liquidityProvision'
 export * from './campaign'
 export * from './activity'
 export * from './exchange'

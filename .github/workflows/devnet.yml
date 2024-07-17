@@ -1,6 +1,7 @@
 name: Helix Devnet Deployments
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev

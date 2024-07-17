@@ -46,7 +46,7 @@ function onModalClose() {
     <template #title>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3 cursor-pointer" @click="closeModal">
-          <BaseIcon name="arrow" class="w-6 h-auto" />
+          <SharedIcon name="arrow" class="w-6 h-auto" />
           <span class="font-bold text-lg">
             {{ $t('trade.tradeHistoryDetails') }}
           </span>

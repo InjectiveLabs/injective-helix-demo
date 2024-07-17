@@ -15,7 +15,7 @@ export default {
     },
 
     kado: {
-      title: 'Onboard onto Injective instantly with fiat!',
+      title: 'Introducing Helix 2.0! Discover a whole new trading experience.',
       tryNow: 'Get started'
     },
 

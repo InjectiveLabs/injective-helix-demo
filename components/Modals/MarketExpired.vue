@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { UiDerivativeMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, PortfolioSubPage, UiDerivativeMarket } from '@/types'
 
 const modalStore = useModalStore()
 const router = useRouter()
 
 const props = defineProps({
   market: {
-    type: Object as PropType<UiDerivativeMarketWithToken>,
+    type: Object as PropType<UiDerivativeMarket>,
     default: undefined
   }
 })
@@ -83,11 +81,14 @@ function onModalClose() {
           </AppButton>
         </NuxtLink>
 
-        <NuxtLink :to="{ name: MainPage.Activity }" target="_blank">
+        <NuxtLink
+          :to="{ name: PortfolioSubPage.OrdersFuturesTradeHistory }"
+          target="_blank"
+        >
           <AppButton
             class="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-blue-900"
           >
-            <span>{{ $t('marketExpired.goToActivity') }}</span>
+            <span>{{ $t('marketExpired.goToFutures') }}</span>
           </AppButton>
         </NuxtLink>
       </div>

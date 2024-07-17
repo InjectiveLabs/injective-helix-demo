@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { fetchNinjaPassCodes } from '@/app/services/ninjapass'
 
 type Code = {
@@ -19,13 +20,19 @@ export const useNinjaPassStore = defineStore('ninjaPass', {
   actions: {
     async fetchCodes() {
       const ninjaPassStore = useNinjaPassStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
-      const codes = await fetchNinjaPassCodes(walletStore.injectiveAddress)
+      if (!IS_MAINNET) {
+        return
+      }
+
+      const codes = await fetchNinjaPassCodes(
+        sharedWalletStore.injectiveAddress
+      )
 
       ninjaPassStore.$patch({
         codes: codes || []

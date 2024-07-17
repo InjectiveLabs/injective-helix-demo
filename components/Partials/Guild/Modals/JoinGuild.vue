@@ -5,11 +5,11 @@ import { Modal } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
 
 const props = defineProps({
   isDisabled: Boolean,
@@ -33,7 +33,7 @@ const props = defineProps({
 const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
@@ -67,7 +67,7 @@ function onSubmit() {
       guildId: props.guild.guildId
     })
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('guild.joinGuild.toast')
       })
       onCloseModal()

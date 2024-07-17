@@ -1,15 +1,15 @@
-import { UiSpotLimitOrder } from '@injectivelabs/sdk-ui-ts'
+import { indexerSpotApi } from '@shared/Service'
+import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerSpotApi } from '@/app/Services'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export class SpotSubaccountOrderIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiSpotLimitOrder>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, SpotLimitOrder>
 {
   static make(
     marketIds: string[] | undefined
@@ -20,11 +20,11 @@ export class SpotSubaccountOrderIntegrityStrategy
   async validate(): Promise<void> {
     const { args: marketIds } = this
 
-    const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
     const spotStore = useSpotStore()
+    const accountStore = useAccountStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 
@@ -48,8 +48,8 @@ export class SpotSubaccountOrderIntegrityStrategy
   }
 
   verifyData(
-    existingSpotOrders: UiSpotLimitOrder[],
-    latestOrders: UiSpotLimitOrder[]
+    existingSpotOrders: SpotLimitOrder[],
+    latestOrders: SpotLimitOrder[]
   ): boolean {
     const [lastOrderFromStream] = existingSpotOrders
     const [latestOrderFromFetch] = latestOrders

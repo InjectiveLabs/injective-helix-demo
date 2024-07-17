@@ -1,49 +1,42 @@
 import { head, hooks } from './nuxt-config'
-import vite, { vitePlugins } from './nuxt-config/vite'
 
-const isProduction = process.env.NODE_ENV === 'production'
+const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 
 export default defineNuxtConfig({
-  vite,
   hooks,
   ssr: false,
   builder: 'vite',
-  debug: !isProduction,
   css: ['@/assets/css/tailwind.css'],
+  extends: [
+    isLocalLayer
+      ? '../injective-ui/layer'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/chain-upgrade'
+  ],
 
   app: {
     head
   },
 
-  typescript: {
-    typeCheck: true
+  vite: {
+    server: {
+      hmr: {
+        protocol: 'ws',
+        host: '0.0.0.0',
+        clientPort: 3000,
+        port: 24678
+      }
+    }
   },
 
   imports: {
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
 
-  sourcemap: {
-    server: false,
-    client: true
-  },
-
-  plugins: [...vitePlugins],
-
   pinia: {
     autoImports: ['defineStore']
   },
 
-  modules: [
-    '@injectivelabs/ui-shared',
-    '@nuxtjs/tailwindcss',
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-    '@nuxt/devtools',
-    '@nuxtjs/i18n',
-    '@funken-studio/sitemap-nuxt-3',
-    ...(process.env.VITE_BUGSNAG_KEY ? ['@injectivelabs/nuxt-bugsnag'] : [])
-  ],
+  modules: ['@funken-studio/sitemap-nuxt-3'],
 
   // @ts-ignore
   sitemap: {

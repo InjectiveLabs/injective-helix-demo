@@ -1,6 +1,7 @@
 name: Helix Mainnet Deployments
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -93,3 +94,46 @@ jobs:
 
       - name: Invalidate Cloudfront CDN
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+
+  notify-slack-on-deployment:
+    runs-on: ubuntu-latest
+    needs: [mainnet]
+    if: always() && github.event_name == 'push' && (needs.mainnet.result == 'success')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Notify Slack"
+        run: |
+          # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
+          last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
+          payload='{
+            "text": "'"<!here> Helix - Deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n$(git log $last_merge_commit..HEAD --pretty=format:'%h - %s')"'",
+            "attachments": [
+                {
+                "text": "Helix deployed to Mainnet ✅",
+                "color": "#22bb33"
+                }
+            ]
+            }'
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+
+  notify-slack-on-redeployment:
+    runs-on: ubuntu-latest
+    needs: [mainnet]
+    if: always() && github.event_name == 'workflow_dispatch' && (needs.mainnet.result == 'success')
+    steps:
+      - name: "Notify Slack"
+        run: |  
+          payload='{
+            "text": "'"<!here> 🚀 Helix Redeployed on Mainnet! Good guys, close your eyes! 🛠️😄."'",
+            "attachments": [
+                {
+                "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
+                "color": "#22bb33"
+                }
+            ]
+            }'
+            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}

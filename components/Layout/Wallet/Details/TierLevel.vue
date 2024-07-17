@@ -33,10 +33,10 @@ const takerFeeDiscount = computed(() => {
   ).toBase()
 
   if (takerFeeDiscount.lte(UI_MINIMAL_AMOUNT)) {
-    return '0.0'
+    return '0'
   }
 
-  return takerFeeDiscount.toFormat()
+  return takerFeeDiscount.times(100).toFormat()
 })
 
 const makerFeeDiscount = computed(() => {
@@ -49,10 +49,10 @@ const makerFeeDiscount = computed(() => {
   ).toBase()
 
   if (makerFeeDiscount.lte(UI_MINIMAL_AMOUNT)) {
-    return '0.0'
+    return '0'
   }
 
-  return makerFeeDiscount.toFormat()
+  return makerFeeDiscount.times(100).toFormat()
 })
 </script>
 
@@ -76,7 +76,7 @@ const makerFeeDiscount = computed(() => {
             : $t('navigation.noTierLevel')
         }}
       </span>
-      <BaseIcon name="external-link-arrow" is-xs />
+      <SharedIcon name="external-link-arrow" is-xs />
     </NuxtLink>
   </div>
 </template>

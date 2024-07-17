@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import {
   GUILD_MAX_CAP,
@@ -8,20 +9,19 @@ import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import { getExplorerUrl } from '@/app/utils/network'
 import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 const { baseToken } = useGuild()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
@@ -102,7 +102,7 @@ const guildInvitationHash = computed(() =>
   })
 )
 
-const { valueToString: guildMasterBalance } = useBigNumberFormatter(
+const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
   computed(() =>
     toBalanceInToken({
       value: campaignStore.guild?.masterBalance || 0,
@@ -148,7 +148,7 @@ function fetchGuildDetails({ skip = 0 }: { skip: number }) {
 
 function onCopyInvitationLink() {
   copy(guildInvitationHash.value)
-  success({ title: t('guild.toast.copiedInvitationLink') })
+  notificationStore.success({ title: t('guild.toast.copiedInvitationLink') })
 }
 
 function onRefresh() {
@@ -206,7 +206,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
       <!-- Back -->
       <NuxtLink :to="{ name: MainPage.Guilds }" class="hover:text-blue-500">
         <div class="flex items-center gap-1">
-          <BaseIcon name="arrow" is-md />
+          <SharedIcon name="arrow" is-md />
           <div>{{ $t('common.back') }}</div>
         </div>
       </NuxtLink>
@@ -276,7 +276,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               </div>
             </article>
 
-            <template v-if="walletStore.isUserWalletConnected">
+            <template v-if="sharedWalletStore.isUserConnected">
               <AppButton
                 v-if="campaignStore.userGuildInfo"
                 class="bg-blue-500 text-blue-900"
@@ -284,7 +284,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               >
                 <div class="flex items-center gap-1">
                   <span>{{ $t('guild.leaderboard.invitationCode') }}</span>
-                  <BaseIcon name="link" is-md />
+                  <SharedIcon name="link" is-md />
                 </div>
               </AppButton>
 
@@ -334,7 +334,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   v-if="hasNewData"
                   :content="$t('guild.leaderboard.fetchNewData')"
                 >
-                  <BaseIcon
+                  <SharedIcon
                     name="refresh"
                     class="text-blue-500 hover:opacity-80 cursor-pointer"
                     @click="onRefresh"

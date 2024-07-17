@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import {
-  BalanceWithToken,
-  BalanceWithTokenAndPrice
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+  SharedBalanceWithToken,
+  SharedBalanceWithTokenAndPrice
+} from '@shared/types'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  ONE_IN_BASE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   Modal,
   TradeField,
   SwapFormField,
   SubaccountTransferField
 } from '@/types'
-import {
-  ONE_IN_BASE,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 
 const props = defineProps({
   isMaxHidden: Boolean,
@@ -65,7 +65,9 @@ const props = defineProps({
   },
 
   options: {
-    type: Array as PropType<BalanceWithToken[] | BalanceWithTokenAndPrice[]>,
+    type: Array as PropType<
+      SharedBalanceWithToken[] | SharedBalanceWithTokenAndPrice[]
+    >,
     default: () => []
   }
 })
@@ -73,6 +75,7 @@ const props = defineProps({
 const modalStore = useModalStore()
 
 const emit = defineEmits<{
+  'on:update': []
   'update:modal': []
   'update:max': [{ amount: string }]
   'update:denom': [state: string]
@@ -103,7 +106,7 @@ const {
   valueToBigNumber,
   valueToFixed: maxBalanceToFixed,
   valueToString: maxBalanceToString
-} = useBigNumberFormatter(selectedTokenBalance, {
+} = useSharedBigNumberFormatter(selectedTokenBalance, {
   decimalPlaces: props.maxDecimals
 })
 
@@ -139,7 +142,9 @@ const denomValue = computed({
 })
 
 const estimatedTotalInUsd = computed(() => {
-  const token = selectedToken.value as BalanceWithTokenAndPrice | undefined
+  const token = selectedToken.value as
+    | SharedBalanceWithTokenAndPrice
+    | undefined
 
   if (!amount.value || !selectedToken.value || !token?.usdPrice) {
     return '0.00'
@@ -192,6 +197,11 @@ function changeMax() {
   emit('update:max', { amount: maxBalanceToFixed.value })
 }
 
+function onAmountChange(value: string) {
+  emit('on:update')
+  onAmountChangeDebounced(value)
+}
+
 const onAmountChangeDebounced = useDebounceFn((value) => {
   /**
    * Use debounce since AppNumericInput emits two update events
@@ -218,7 +228,7 @@ export default {
 
 <template>
   <div
-    class="bg-gray-1000 rounded-xl py-4"
+    class="bg-brand-875 border border-brand-700 rounded-xl py-4"
     :class="{
       'border-red-500 border': amountErrors.length > 0 && isRequired
     }"
@@ -266,7 +276,7 @@ export default {
           :tens-multiplier="tensMultiplier"
           :placeholder="inputPlaceholder"
           :is-disabled="isDisabled || !selectedToken"
-          @update:model-value="onAmountChangeDebounced"
+          @update:model-value="onAmountChange"
           @click.stop
         />
 
@@ -297,7 +307,7 @@ export default {
                 {{ $t('trade.swap.tokenSelector.selectToken') }}
               </div>
 
-              <BaseIcon
+              <SharedIcon
                 v-if="options.length > 1 || !selectedToken"
                 name="caret-down-slim"
                 is-sm

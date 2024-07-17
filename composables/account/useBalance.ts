@@ -1,53 +1,30 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
+import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 
-const reduceAccountBalances = (
-  accountBalance1: AccountBalance,
-  accountBalance2: AccountBalance
-) => {
-  return {
-    ...accountBalance1,
-    bankBalance: new BigNumberInBase(accountBalance1.bankBalance)
-      .plus(accountBalance2.bankBalance)
-      .toFixed(),
-    availableMargin: new BigNumberInBase(accountBalance1.availableMargin)
-      .plus(accountBalance2.availableMargin)
-      .toFixed(),
-    availableBalance: new BigNumberInBase(accountBalance1.availableBalance)
-      .plus(accountBalance2.availableBalance)
-      .toFixed(),
-    totalBalance: new BigNumberInBase(accountBalance1.totalBalance)
-      .plus(accountBalance2.totalBalance)
-      .toFixed(),
-    inOrderBalance: new BigNumberInBase(accountBalance1.inOrderBalance)
-      .plus(accountBalance2.inOrderBalance)
-      .toFixed(),
-    unrealizedPnl: new BigNumberInBase(accountBalance1.unrealizedPnl)
-      .plus(accountBalance2.unrealizedPnl)
-      .toFixed(),
-    accountTotalBalance: new BigNumberInBase(
-      accountBalance1.accountTotalBalance
-    )
-      .plus(accountBalance2.accountTotalBalance)
-      .toFixed(),
-    accountTotalBalanceInUsd: new BigNumberInBase(
-      accountBalance1.accountTotalBalanceInUsd
-    )
-      .plus(accountBalance2.accountTotalBalanceInUsd)
-      .toFixed()
-  } as AccountBalance
-}
+const showUnverifiedAssets = ref(false)
 
 export function useBalance() {
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-  const positionStore = usePositionStore()
+  const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
-  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const positionStore = usePositionStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const aggregatedPortfolioBalances = computed(() => {
+    const tokens = showUnverifiedAssets.value
+      ? [
+          ...new Map(
+            [...tokenStore.unverifiedTokens, ...tokenStore.tradeableTokens].map(
+              (token) => [token.denom, token]
+            )
+          ).values()
+        ]
+      : tokenStore.tradeableTokens
+
     return Object.keys(accountStore.subaccountBalancesMap).reduce(
       (balances, subaccountId) => {
         const positionsForSubaccountWithDenom = positionStore.positions.filter(
@@ -56,13 +33,21 @@ export function useBalance() {
 
         return {
           ...balances,
-          [subaccountId]: tokenStore.tradeableTokens.map((token) => {
+          [subaccountId]: tokens.map((token) => {
             const isDefaultTradingAccount =
-              walletStore.authZOrDefaultSubaccountId === subaccountId
+              sharedWalletStore.authZOrDefaultSubaccountId === subaccountId
             const denom = token.denom
             const usdPrice = tokenStore.tokenUsdPrice(token)
 
-            const bankBalance = accountStore.balanceMap[token.denom] || '0'
+            const bankBalanceWithoutCw20 =
+              accountStore.balancesMap[token.denom] || '0'
+
+            const cw20Address = getCw20AddressFromDenom(token.denom)
+            const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
+
+            const bankBalance = new BigNumberInWei(bankBalanceWithoutCw20)
+              .plus(cw20Balance)
+              .toFixed()
 
             const subaccountBalances =
               accountStore.subaccountBalancesMap[subaccountId]
@@ -118,6 +103,7 @@ export function useBalance() {
             return {
               token,
               usdPrice,
+              isVerified: true,
               unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
               denom: token.denom,
               bankBalance: isDefaultTradingAccount ? bankBalance : '0',
@@ -137,14 +123,23 @@ export function useBalance() {
     )
   })
 
-  const accountBalancesWithToken = computed(() => {
+  const verifiedHoldingsWithToken = computed(() => {
     return tokenStore.tradeableTokens.map((token) => {
-      const isDefaultTradingAccount =
-        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
       const denom = token.denom
       const usdPrice = tokenStore.tokenUsdPrice(token)
+      const isDefaultTradingAccount =
+        sharedWalletStore.authZOrDefaultSubaccountId ===
+        accountStore.subaccountId
 
-      const bankBalance = accountStore.balanceMap[token.denom] || '0'
+      const bankBalanceWithoutCw20 =
+        accountStore.balancesMap[token.denom] || '0'
+
+      const cw20Address = getCw20AddressFromDenom(token.denom)
+      const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
+
+      const bankBalance = new BigNumberInWei(bankBalanceWithoutCw20)
+        .plus(cw20Balance)
+        .toFixed()
 
       const subaccountBalances =
         accountStore.subaccountBalancesMap[accountStore.subaccountId]
@@ -203,6 +198,7 @@ export function useBalance() {
       return {
         token,
         usdPrice,
+        isVerified: true,
         denom: token.denom,
         bankBalance: isDefaultTradingAccount ? bankBalance : '0',
         unrealizedPnl: unrealizedPnlAndMargin.toFixed(),
@@ -218,95 +214,93 @@ export function useBalance() {
     })
   })
 
-  const getAccountBalancesWithTokenInBases = (
-    accountBalancesWithToken: Ref<AccountBalance[]>
-  ) => {
-    return accountBalancesWithToken.value.map((accountBalance) => {
-      return {
-        ...accountBalance,
-        availableMargin: new BigNumberInWei(accountBalance.availableMargin)
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        inOrderBalance: new BigNumberInWei(accountBalance.inOrderBalance)
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        bankBalance: new BigNumberInWei(accountBalance.bankBalance)
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        accountTotalBalance: new BigNumberInWei(
-          accountBalance.accountTotalBalance
-        )
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        accountTotalBalanceInUsd: new BigNumberInWei(
-          accountBalance.accountTotalBalanceInUsd
-        )
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        availableBalance: new BigNumberInWei(accountBalance.availableBalance)
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        totalBalance: new BigNumberInWei(accountBalance.totalBalance)
-          .toBase(accountBalance.token.decimals)
-          .toFixed(),
-        unrealizedPnl: new BigNumberInWei(accountBalance.unrealizedPnl)
-          .toBase(accountBalance.token.decimals)
-          .toFixed()
-      } as AccountBalance
-    })
-  }
-
-  /**
-   * A minimal representation of an AccountBalance based on the current
-   * subaccountId
-   *
-   * @deprecated should use accountBalances instead
-   */
-  const balancesWithToken = computed(() => {
-    return accountBalancesWithToken.value.map((accountBalance) => {
-      const isDefaultTradingAccount =
-        walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
-
-      return {
-        token: accountBalance.token,
-        denom: accountBalance.denom,
-        balance: isDefaultTradingAccount
-          ? accountBalance.bankBalance
-          : accountBalance.availableBalance,
-        usdPrice: tokenStore.tokenUsdPrice(accountBalance.token)
-      }
-    })
-  })
-
-  const aggregateBalanceByDenoms = ({
-    balances,
-    denoms
-  }: {
-    balances: AccountBalance[]
-    denoms: string[]
-  }) => {
-    const filteredBalances = balances.filter((balance) =>
-      denoms.includes(balance.token.denom)
-    )
-
-    if (!filteredBalances.length) {
-      return undefined
+  const unverifiedHoldingWithTokens = computed(() => {
+    if (!accountStore.isDefaultSubaccount) {
+      return []
     }
 
-    return filteredBalances.reduce((aggregatedBalance, balance) => {
-      return {
-        ...balance,
-        ...reduceAccountBalances(aggregatedBalance, balance),
-        denom: denoms.join('-')
-      } as AccountBalance
-    })
-  }
+    const tradeableDenoms = [
+      ...new Set([
+        ...spotStore.tradeableDenoms,
+        ...derivativeStore.tradeableDenoms
+      ])
+    ]
+    const unverifiedDenoms = [
+      ...new Set([
+        ...spotStore.unverifiedDenoms,
+        ...derivativeStore.unverifiedDenoms
+      ])
+    ]
+
+    return accountStore.bankBalances
+      .map((coin) => {
+        const shouldIgnoreCoin =
+          tradeableDenoms.includes(coin.denom) ||
+          !unverifiedDenoms.includes(coin.denom)
+
+        if (shouldIgnoreCoin) {
+          return undefined
+        }
+
+        const token = tokenStore.tokenByDenomOrSymbol(coin.denom)
+
+        if (!token) {
+          return undefined
+        }
+
+        const bankBalance = coin.amount
+        const isDefaultTradingAccount =
+          sharedWalletStore.authZOrDefaultSubaccountId ===
+          accountStore.subaccountId
+        const usdPrice = tokenStore.tokenUsdPrice(token)
+
+        const subaccountBalances =
+          accountStore.subaccountBalancesMap[accountStore.subaccountId]
+
+        const subaccountBalance = (subaccountBalances || []).find(
+          (balance) => balance.denom === coin.denom
+        )
+        const subaccountAvailableBalance =
+          subaccountBalance?.availableBalance || '0'
+        const subaccountTotalBalance = subaccountBalance?.totalBalance || '0'
+
+        const inOrderBalance = isDefaultTradingAccount
+          ? new BigNumberInWei(subaccountTotalBalance)
+          : new BigNumberInWei(subaccountTotalBalance).minus(
+              subaccountAvailableBalance
+            )
+        const availableMargin = new BigNumberInWei(
+          isDefaultTradingAccount ? bankBalance : subaccountAvailableBalance
+        )
+
+        return {
+          token,
+          usdPrice,
+          bankBalance,
+          isVerified: false,
+          denom: token.denom,
+          unrealizedPnl: '0', // No perps for unverified assets so no unrealized pnl,
+          inOrderBalance: inOrderBalance.toFixed(),
+          availableMargin: availableMargin.toFixed(),
+          availableBalance: '0', // We only care about the default subaccount,
+          totalBalance: subaccountTotalBalance,
+          accountTotalBalanceInUsd: new BigNumberInBase(coin.amount)
+            .multipliedBy(usdPrice)
+            .toFixed()
+        } as AccountBalance
+      })
+      .filter((balance) => balance) as AccountBalance[]
+  })
+
+  const userBalancesWithToken = computed(() => [
+    ...verifiedHoldingsWithToken.value,
+    ...unverifiedHoldingWithTokens.value
+  ])
 
   return {
-    balancesWithToken,
-    aggregateBalanceByDenoms,
-    accountBalancesWithToken,
-    aggregatedPortfolioBalances,
-    getAccountBalancesWithTokenInBases
+    showUnverifiedAssets,
+    userBalancesWithToken,
+    verifiedHoldingsWithToken,
+    aggregatedPortfolioBalances
   }
 }

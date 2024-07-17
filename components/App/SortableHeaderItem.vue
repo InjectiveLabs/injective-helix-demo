@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <BaseSortableHeaderItem
+  <SharedSortableHeaderItem
     :is-ascending="isAscending"
     :sort-by="sortBy"
     :value="value"
@@ -24,7 +24,7 @@ defineProps({
     <template #default="{ isActive }">
       <div class="flex cursor-pointer items-center gap-1" :class="$attrs.class">
         <div>
-          <BaseIcon
+          <SharedIcon
             name="triangle"
             is-xs
             class="transition-all rotate-180"
@@ -32,7 +32,7 @@ defineProps({
               isActive && isAscending ? 'text-gray-200' : 'text-gray-600'
             ]"
           />
-          <BaseIcon
+          <SharedIcon
             name="triangle"
             :class="[
               isActive && !isAscending ? 'text-gray-200' : 'text-gray-600'
@@ -44,5 +44,5 @@ defineProps({
         <slot />
       </div>
     </template>
-  </BaseSortableHeaderItem>
+  </SharedSortableHeaderItem>
 </template>

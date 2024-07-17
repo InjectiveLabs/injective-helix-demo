@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { INJ_COIN_GECKO_ID } from '@injectivelabs/sdk-ui-ts'
 import { MainPage } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { error } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const page = ref(1)
 const limit = ref(10)
@@ -21,12 +19,11 @@ const campaign = computed(() => route.query.campaign as string)
 
 onWalletConnected(() => {
   if (!campaign.value) {
-    error({ title: t('campaign.campaignNotFound') })
+    notificationStore.error({ title: t('campaign.campaignNotFound') })
     navigateTo({ name: MainPage.Index })
   }
 
   Promise.all([
-    tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
     campaignStore.fetchCampaign({
       skip: 0,
       limit: limit.value,
@@ -35,7 +32,7 @@ onWalletConnected(() => {
   ])
     .then(() => {
       if (!campaignStore.campaign) {
-        error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('campaign.campaignNotFound') })
         navigateTo({ name: MainPage.Index })
       }
     })
@@ -66,7 +63,7 @@ function fetchCampaign({ skip }: { skip: number }) {
     })
     .then(() => {
       if (!campaignStore.campaign) {
-        error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('campaign.campaignNotFound') })
         navigateTo({ name: MainPage.Index })
       }
     })
@@ -86,11 +83,6 @@ function onPageChange(value: number) {
 
   fetchCampaign({ skip: (Number(page.value) - 1) * limit.value })
 }
-
-useIntervalFn(
-  () => tokenStore.fetchTokensUsdPriceMap([INJ_COIN_GECKO_ID]),
-  30 * 1000
-)
 </script>
 
 <template>

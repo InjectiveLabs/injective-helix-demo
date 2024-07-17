@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
+import {
+  indexerRestExplorerApi,
+  indexerAccountPortfolioApi
+} from '@shared/Service'
 import { Coin } from '@injectivelabs/ts-types'
-import { indexerAccountPortfolioApi } from '@/app/Services'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -14,21 +17,23 @@ import {
   withdrawToMain,
   externalTransfer
 } from '@/store/account/message'
-import { SubaccountBalance } from '@/types'
-import { isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
+import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
   subaccountId: string
+  cw20Balances: { address: string; amount: string }[]
   bankBalances: Coin[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
+  cw20Balances: [],
   subaccountId: '',
   subaccountBalancesMap: {}
 })
@@ -36,7 +41,7 @@ const initialStateFactory = (): AccountStoreState => ({
 export const useAccountStore = defineStore('account', {
   state: (): AccountStoreState => initialStateFactory(),
   getters: {
-    balanceMap: (state: AccountStoreState) => {
+    balancesMap: (state: AccountStoreState) => {
       if (state.bankBalances.length === 0) {
         return {}
       }
@@ -49,20 +54,35 @@ export const useAccountStore = defineStore('account', {
       )
     },
 
-    defaultSubaccountBalances: (state: AccountStoreState) => {
-      const walletStore = useWalletStore()
+    cw20BalancesMap: (state: AccountStoreState) => {
+      if (state.cw20Balances.length === 0) {
+        return {}
+      }
 
-      if (!walletStore.authZOrDefaultSubaccountId) {
+      return state.cw20Balances.reduce(
+        (list, balance) => {
+          return { ...list, [balance.address]: balance.amount }
+        },
+        {} as Record<string, string>
+      )
+    },
+
+    defaultSubaccountBalances: (state: AccountStoreState) => {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.authZOrDefaultSubaccountId) {
         return []
       }
 
-      return state.subaccountBalancesMap[walletStore.authZOrDefaultSubaccountId]
+      return state.subaccountBalancesMap[
+        sharedWalletStore.authZOrDefaultSubaccountId
+      ]
     },
 
     isDefaultSubaccount: (state: AccountStoreState) => {
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      return walletStore.authZOrDefaultSubaccountId === state.subaccountId
+      return sharedWalletStore.authZOrDefaultSubaccountId === state.subaccountId
     },
 
     hasMultipleSubaccounts: (state: AccountStoreState) => {
@@ -82,41 +102,72 @@ export const useAccountStore = defineStore('account', {
     cancelBankBalanceStream,
     cancelSubaccountBalanceStream,
 
+    updateSubaccount(subaccountId: string) {
+      const accountStore = useAccountStore()
+
+      accountStore.$patch({ subaccountId })
+      useEventBus(BusEvents.SubaccountChange).emit(subaccountId)
+    },
+
     async fetchAccountPortfolioBalances() {
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const accountPortfolio =
         await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
-          walletStore.authZOrInjectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         )
 
       const defaultAccountBalances = getDefaultAccountBalances(
         accountPortfolio.subaccountsList,
-        walletStore.authZOrDefaultSubaccountId
+        sharedWalletStore.authZOrDefaultSubaccountId
       )
 
       const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
         accountPortfolio.subaccountsList,
-        walletStore.authZOrDefaultSubaccountId
+        sharedWalletStore.authZOrDefaultSubaccountId
       )
 
-      const subaccountId =
-        accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
+      // const subaccountId =
+      //   accountStore.subaccountId || walletStore.authZOrDefaultSubaccountId
 
-      accountStore.$patch({
-        subaccountId: subaccountId.includes(walletStore.authZOrAddress)
-          ? subaccountId
-          : walletStore.authZOrDefaultSubaccountId,
-        bankBalances: accountPortfolio.bankBalancesList || [],
-        subaccountBalancesMap: {
-          [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
+      accountStore.$patch((state) => {
+        // state.subaccountId = subaccountId.includes(walletStore.authZOrAddress)
+        //   ? subaccountId
+        //   : walletStore.authZOrDefaultSubaccountId
+
+        state.bankBalances = accountPortfolio.bankBalancesList || []
+
+        state.subaccountBalancesMap = {
+          [sharedWalletStore.authZOrDefaultSubaccountId]:
+            defaultAccountBalances,
           ...nonDefaultSubaccounts
         }
+      })
+    },
+
+    async fetchCw20Balances() {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isUserConnected) {
+        return
+      }
+
+      const cw20Balances =
+        await indexerRestExplorerApi.fetchCW20BalancesNoThrow(
+          sharedWalletStore.authZOrInjectiveAddress
+        )
+
+      accountStore.$patch({
+        cw20Balances: cw20Balances.map((balance) => ({
+          address: balance.contract_address,
+          amount: balance.balance
+        }))
       })
     },
 

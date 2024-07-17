@@ -51,14 +51,14 @@ function checkForInvalidSlippageValue() {
     :disabled="isOpen"
     :shown="!isOpen && !!slippageError"
   >
-    <BaseDropdown
+    <SharedDropdown
       ref="dropdownRef"
       popper-class="slippage"
       placement="bottom-end"
     >
       <template #default>
         <div>
-          <BaseIcon
+          <SharedIcon
             name="gear"
             class="h-5 w-5"
             :class="[
@@ -85,29 +85,21 @@ function checkForInvalidSlippageValue() {
 
           <div class="flex items-center gap-2 max-xs:flex-wrap">
             <div class="flex items-center gap-2 max-xs:w-full">
-              <AppSelectButton
+              <AppButtonSelect
                 v-for="slippage in slippageList"
                 :key="`slippage-selector-item-${slippage}`"
                 v-model="slippageTolerance"
                 :value="slippage"
               >
-                <template #default="{ isActive }">
-                  <AppButton
-                    is-sm
-                    class="w-full border-blue-500 border"
-                    :class="[
-                      isActive
-                        ? 'bg-blue-500 text-blue-900 rounded'
-                        : 'text-blue-500 rounded'
-                    ]"
-                  >
+                <template #default>
+                  <AppButton is-sm>
                     <div class="mx-auto leading-4">
                       <span class="text-base capitalize">{{ slippage }}</span>
                       <span>%</span>
                     </div>
                   </AppButton>
                 </template>
-              </AppSelectButton>
+              </AppButtonSelect>
             </div>
 
             <AppInputNumeric
@@ -118,7 +110,10 @@ function checkForInvalidSlippageValue() {
               @blur="checkForInvalidSlippageValue"
             >
               <template v-if="slippageError" #prefix>
-                <BaseIcon name="warn" class="min-w-4 text-orange-500 h-4 w-4" />
+                <SharedIcon
+                  name="warn"
+                  class="min-w-4 text-orange-500 h-4 w-4"
+                />
               </template>
 
               <template #addon>
@@ -132,7 +127,7 @@ function checkForInvalidSlippageValue() {
           </p>
         </div>
       </template>
-    </BaseDropdown>
+    </SharedDropdown>
 
     <template #content>
       {{ slippageError }}

@@ -1,17 +1,17 @@
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { StrategyStatus } from '@/types'
+import { UiSpotMarket, StrategyStatus } from '@/types'
 
 export default function useActiveGridStrategy(
-  market: ComputedRef<UiSpotMarketWithToken>,
+  market: ComputedRef<UiSpotMarket>,
   strategy: ComputedRef<TradingStrategy>
 ) {
   const spotStore = useSpotStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
   const tokenStore = useTokenStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
 
@@ -45,7 +45,7 @@ export default function useActiveGridStrategy(
     () =>
       accountStore.subaccountBalancesMap[
         addressAndMarketSlugToSubaccountId(
-          walletStore.address,
+          sharedWalletStore.address,
           market.value.slug
         )
       ]

@@ -10,6 +10,7 @@ import {
   toUtf8
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
+import { wasmApi } from '@shared/Service'
 import {
   pollGuildDetails,
   fetchGuildsByTVL,
@@ -19,7 +20,7 @@ import {
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
-import { wasmApi, indexerGrpcCampaignApi } from '@/app/Services'
+import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { CampaignWithScAndData } from '@/types'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
@@ -101,15 +102,15 @@ export const useCampaignStore = defineStore('campaign', {
       limit?: number
       campaignId: string
     }) {
-      const walletStore = useWalletStore()
       const campaignStore = useCampaignStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       const { campaign, paging, users } =
         await indexerGrpcCampaignApi.fetchCampaign({
           limit,
           skip: `${skip}`,
           campaignId,
-          accountAddress: walletStore.injectiveAddress
+          accountAddress: sharedWalletStore.injectiveAddress
         })
 
       campaignStore.$patch({
@@ -148,10 +149,10 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchCampaignRewardsForUser() {
-      const walletStore = useWalletStore()
       const campaignStore = useCampaignStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
@@ -163,7 +164,7 @@ export const useCampaignStore = defineStore('campaign', {
               limit: 1,
               skip: '0',
               campaignId: campaignWithSc.campaignId,
-              accountAddress: walletStore.injectiveAddress,
+              accountAddress: sharedWalletStore.injectiveAddress,
               contractAddress: ADMIN_UI_SMART_CONTRACT
             })
 
@@ -202,9 +203,9 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchUserClaimedStatus(contractAddress: string) {
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.injectiveAddress || !contractAddress) {
+      if (!sharedWalletStore.injectiveAddress || !contractAddress) {
         return false
       }
 
@@ -212,7 +213,7 @@ export const useCampaignStore = defineStore('campaign', {
         contractAddress,
         toBase64({
           has_claimed: {
-            user: walletStore.injectiveAddress
+            user: sharedWalletStore.injectiveAddress
           }
         })
       )) as unknown as { data: string }
@@ -238,11 +239,11 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchRound(roundId?: number) {
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        accountAddress: walletStore.injectiveAddress,
+        accountAddress: sharedWalletStore.injectiveAddress,
         contractAddress: ADMIN_UI_SMART_CONTRACT,
         toRoundId: roundId
       })

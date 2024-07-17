@@ -25,7 +25,7 @@ defineProps({
 </script>
 
 <template>
-  <BasePaginationWrapper
+  <SharedPaginationWrapper
     class="flex flex-wrap items-center justify-between text-sm w-full"
     v-bind="{
       page,
@@ -63,11 +63,11 @@ defineProps({
           "
           @click="onPrevEvent"
         >
-          <BaseIcon name="caret-thin" class="h-auto w-3" />
+          <SharedIcon name="caret-thin" class="h-auto w-3" />
         </span>
 
         <div class="mx-3 flex items-center gap-0.5 text-sm font-semibold">
-          <BaseSelectorItem
+          <SharedSelectorItem
             v-for="(displayPage, index) in pagesToDisplay"
             :key="`pagination-page-${displayPage}-${index}`"
             :model-value="page"
@@ -85,7 +85,7 @@ defineProps({
                 {{ displayPage }}
               </span>
             </template>
-          </BaseSelectorItem>
+          </SharedSelectorItem>
         </div>
 
         <span
@@ -95,7 +95,7 @@ defineProps({
           "
           @click="onNextEvent"
         >
-          <BaseIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
+          <SharedIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
         </span>
       </div>
     </template>
@@ -113,5 +113,5 @@ defineProps({
         />
       </div>
     </template>
-  </BasePaginationWrapper>
+  </SharedPaginationWrapper>
 </template>

@@ -2,12 +2,29 @@ import {
   ExecArgSwapMinOutput,
   ExecArgSwapExactOutput,
   MsgExecuteContractCompat,
-  spotQuantityToChainQuantityToFixed,
-  msgsOrMsgExecMsgs
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
-import { msgBroadcastClient } from '@/app/Services'
+import { backupPromiseCall } from '@/app/utils/async'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
+import { convertCw20ToBankBalanceForSwap } from '@/app/utils/market'
+import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+
+const fetchBalances = (
+  {
+    shouldFetchCw20Balances
+  }: {
+    shouldFetchCw20Balances: boolean
+  } = { shouldFetchCw20Balances: false }
+) => {
+  const accountStore = useAccountStore()
+
+  return backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
+    ])
+  )
+}
 
 export const submitAtomicOrder = async ({
   formValues,
@@ -20,19 +37,18 @@ export const submitAtomicOrder = async ({
   outputToken: TokenAndPriceAndDecimals
   minimumOutput: string
 }) => {
-  const appStore = useAppStore()
+  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
-    !walletStore.defaultSubaccountId ||
+    !sharedWalletStore.isUserConnected ||
+    !sharedWalletStore.defaultSubaccountId ||
     !minimumOutput
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeInputAmount = formValues[SwapFormField.InputAmount]
@@ -45,9 +61,17 @@ export const submitAtomicOrder = async ({
     })
   })
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const cw20ConvertMessage = convertCw20ToBankBalanceForSwap({
+    token: inputToken.token,
+    quantity: activeInputAmount,
+    injectiveAddress: sharedWalletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap
+  })
+
+  const swapMessage = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
-    sender: walletStore.injectiveAddress,
+    sender: sharedWalletStore.injectiveAddress,
     funds: {
       denom: inputToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
@@ -58,16 +82,19 @@ export const submitAtomicOrder = async ({
     execArgs
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  const messages = cw20ConvertMessage
+    ? [cw20ConvertMessage, swapMessage]
+    : swapMessage
 
-  const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+  const response = await sharedWalletStore.broadcastWithFeeDelegation({
+    messages
   })
 
-  return txHash
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
+
+  if (response) {
+    return response.txHash
+  }
 }
 
 export const submitAtomicOrderExactOutput = async ({
@@ -81,22 +108,29 @@ export const submitAtomicOrderExactOutput = async ({
   outputToken: TokenAndPriceAndDecimals
   maximumInput: string
 }) => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
-    !walletStore.defaultSubaccountId ||
-    !maximumInput
+    !maximumInput ||
+    !sharedWalletStore.isUserConnected ||
+    !sharedWalletStore.defaultSubaccountId
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
   await walletStore.validate()
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
+
+  const cw20ConvertMessage = convertCw20ToBankBalanceForSwap({
+    token: inputToken.token,
+    quantity: maximumInput,
+    injectiveAddress: sharedWalletStore.injectiveAddress,
+    bankBalancesMap: accountStore.balancesMap,
+    cw20BalancesMap: accountStore.cw20BalancesMap
+  })
 
   const execArgs = ExecArgSwapExactOutput.fromJSON({
     targetDenom: outputToken.denom,
@@ -106,9 +140,9 @@ export const submitAtomicOrderExactOutput = async ({
     })
   })
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const swapMessage = MsgExecuteContractCompat.fromJSON({
     contractAddress: SWAP_CONTRACT_ADDRESS,
-    sender: walletStore.injectiveAddress,
+    sender: sharedWalletStore.injectiveAddress,
     funds: {
       denom: inputToken.denom,
       amount: spotQuantityToChainQuantityToFixed({
@@ -119,14 +153,17 @@ export const submitAtomicOrderExactOutput = async ({
     execArgs
   })
 
-  const actualMessage = walletStore.isAuthzWalletConnected
-    ? msgsOrMsgExecMsgs(message, walletStore.injectiveAddress)
-    : message
+  const messages = cw20ConvertMessage
+    ? [cw20ConvertMessage, swapMessage]
+    : swapMessage
 
-  const { txHash } = await msgBroadcastClient.broadcastWithFeeDelegation({
-    msgs: actualMessage,
-    injectiveAddress: walletStore.injectiveAddress
+  const response = await sharedWalletStore.broadcastWithFeeDelegation({
+    messages
   })
 
-  return txHash
+  await fetchBalances({ shouldFetchCw20Balances: !!cw20ConvertMessage })
+
+  if (response) {
+    return response.txHash
+  }
 }

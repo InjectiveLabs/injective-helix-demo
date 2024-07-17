@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
   Status,
-  StatusType
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
+import { usdtToken } from '@shared/data/token'
 import { Campaign } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  USDT_DECIMALS
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 } from '@/app/utils/constants'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import { LiquidityRewardsPage, TradingBotsSubPage } from '@/types'
+import spotGridMarkets from '@/app/data/spotGridMarkets.json'
+import {
+  PortfolioSubPage,
+  TradingInterface,
+  TradingBotsSubPage,
+  LiquidityRewardsPage
+} from '@/types'
 
 const props = defineProps({
   campaign: {
@@ -25,8 +30,8 @@ const props = defineProps({
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const gridStrategyStore = useGridStrategyStore()
 const campaignStore = useCampaignStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const activeBots = ref<number>(0)
@@ -36,15 +41,17 @@ const market = computed(() =>
   spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
 )
 
-const baseToken = computed(() =>
-  tokenStore.tokens.find(
-    ({ symbol }) => market.value?.baseToken.symbol === symbol
-  )
-)
+const baseToken = computed(() => {
+  if (!market.value) {
+    return
+  }
+
+  return tokenStore.tokenBySymbol(market.value.baseToken.symbol)
+})
 
 const rewardsWithToken = computed(() =>
   props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokens.find(({ denom }) => denom === reward.denom)
+    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
       value: toBalanceInToken({
@@ -58,31 +65,33 @@ const rewardsWithToken = computed(() =>
 
 const marketVolume = computed(() =>
   new BigNumberInWei(props.campaign.totalScore || 0).toBase(
-    market.value?.quoteToken.decimals || USDT_DECIMALS
+    market.value?.quoteToken.decimals || usdtToken.decimals
   )
 )
 
-const { valueToString: totalRewardsInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    rewardsWithToken.value.reduce((total, reward) => {
-      return total.plus(
-        new BigNumberInBase(reward.value).times(
-          tokenStore.tokenUsdPrice(reward.token)
+const { valueToString: totalRewardsInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      rewardsWithToken.value.reduce((total, reward) => {
+        return total.plus(
+          new BigNumberInBase(reward.value).times(
+            tokenStore.tokenUsdPrice(reward.token)
+          )
         )
-      )
-    }, ZERO_IN_BASE)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+      }, ZERO_IN_BASE)
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
-const { valueToString: marketVolumeInUsdToString } = useBigNumberFormatter(
-  computed(() =>
-    marketVolume.value.times(
-      market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
-    )
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const { valueToString: marketVolumeInUsdToString } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      marketVolume.value.times(
+        market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+      )
+    ),
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  )
 
 const sgtScAddress = computed(() => {
   const market = spotStore.markets.find(
@@ -100,7 +109,7 @@ const userHasActiveLegacyStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) =>
       strategy.marketId ===
-      CURRENT_MARKET_TO_LEGACY_MARKETID_MAP[props.campaign.marketId]
+      CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.campaign.marketId]
   )
 )
 
@@ -124,8 +133,9 @@ onMounted(() => {
       <div class="flex items-center space-x-2">
         <NuxtLink
           :to="{
-            name: TradingBotsSubPage.GridSpotMarket,
-            params: { market: market.slug }
+            name: PortfolioSubPage.OrdersSpotTradeHistory,
+            params: { market: market.slug },
+            query: { interface: TradingInterface.TradingBots }
           }"
           class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
         >

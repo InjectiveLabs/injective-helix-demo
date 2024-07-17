@@ -134,6 +134,12 @@ if (endpointsNotProvided) {
   )
 }
 
+export const STAKING_CONTRACT_ADDRESS = IS_MAINNET
+  ? 'inj1gtze7qm07nky47n7mwgj4zatf2s77xqvh3k2n8'
+  : IS_TESTNET
+  ? 'inj17yk350dhnct9pc4pvswn02243wg8h6x65pr5xt'
+  : 'inj1qa4hswlcjmttulj0q9qa46jf64f93pecxar5pu'
+
 const CAMPAIGN_ENDPOINT =
   IS_MAINNET && !IS_STAGING
     ? 'https://k8s.mainnet.campaigns.grpc-web.injective.network'
@@ -169,13 +175,12 @@ export const HOTJAR_KEY = env.VITE_HOTJAR_KEY || ''
 export const ALCHEMY_KEY = env.VITE_ALCHEMY_KEY || ''
 export const AMPLITUDE_KEY = env.VITE_AMPLITUDE_KEY || ''
 export const MIXPANEL_KEY = env.VITE_MIXPANEL_KEY || ''
-export const GOOGLE_ANALYTICS_KEY = env.VITE_GOOGLE_ANALYTICS_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
 export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
-  ? 'inj177yh38g3ctu7cemxpa3c2kvwh2yslfxfmfa66h'
+  ? 'inj1qk00h5atutpsv900x202pxx42npjr9thrzhgxn'
   : IS_TESTNET
   ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
   : IS_STAGING
@@ -199,6 +204,6 @@ export const PROXY_DETECTION_ENABLED = !!PROXY_DETECTION_API_KEY
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
 
-const { ROUTES, MARKETS_SLUGS } = getRoutes(NETWORK, env.VITE_ENV as string)
+const { ROUTES, MARKETS_SLUGS } = getRoutes()
 
 export { ROUTES, MARKETS_SLUGS }

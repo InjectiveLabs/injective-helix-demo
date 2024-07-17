@@ -1,37 +1,39 @@
 <script lang="ts" setup>
+import { injToken } from '@shared/data/token'
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
-import { injToken } from '@/app/data/token'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
-const { success } = useNotifications()
 const { $onError } = useNuxtApp()
 
-const { values: formValues, resetForm: resetSubaccountTransferForm } =
-  useForm<SubaccountTransferForm>({
-    initialValues: {
-      [SubaccountTransferField.SrcSubaccountId]:
-        walletStore.defaultSubaccountId,
-      [SubaccountTransferField.DstSubaccountId]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom,
-      [SubaccountTransferField.Amount]: ''
-    },
-    keepValuesOnUnmount: true
-  })
-const formErrors = useFormErrors()
-const setFormValues = useSetFormValues()
+const {
+  values: formValues,
+  errors: formErrors,
+  setValues: setFormValues,
+  resetForm: resetSubaccountTransferForm
+} = useForm<SubaccountTransferForm>({
+  initialValues: {
+    [SubaccountTransferField.SrcSubaccountId]:
+      sharedWalletStore.defaultSubaccountId,
+    [SubaccountTransferField.DstSubaccountId]: '',
+    [SubaccountTransferField.Token]: injToken,
+    [SubaccountTransferField.Denom]: injToken.denom,
+    [SubaccountTransferField.Amount]: ''
+  },
+  keepValuesOnUnmount: true
+})
 
 const { value: denomValue } = useStringField({
   name: SubaccountTransferField.Denom,
   rule: ''
 })
 
-const hasFormErrors = computed(
+const isDisabled = computed(
   () =>
     Object.keys(formErrors.value).length > 0 ||
     formValues[SubaccountTransferField.Amount] === ''
@@ -58,14 +60,14 @@ const maxDecimals = computed(() => {
 function onSubaccountTransfer() {
   if (
     formValues[SubaccountTransferField.SrcSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountTransfer()
   }
 
   if (
     formValues[SubaccountTransferField.DstSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountWithdraw()
   }
@@ -85,7 +87,9 @@ function nonDefaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)
@@ -105,7 +109,9 @@ function defaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)
@@ -125,7 +131,9 @@ function defaultSubaccountWithdraw() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      success({ title: t('account.transferToSubaccountSuccess') })
+      notificationStore.success({
+        title: t('account.transferToSubaccountSuccess')
+      })
       resetForm()
     })
     .catch($onError)
@@ -221,11 +229,12 @@ function closeModal() {
             {{ t('account.noAssetToTransfer') }}
           </div>
         </div>
+
         <AppButton
           is-lg
           class="w-full text-blue-900 bg-blue-500 mt-6"
           :is-loading="status.isLoading()"
-          :is-disabled="hasFormErrors"
+          :disabled="isDisabled"
           @click="onSubaccountTransfer"
         >
           <span class="font-semibold">

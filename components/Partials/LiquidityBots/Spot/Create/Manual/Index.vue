@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import {
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -12,12 +6,18 @@ import {
   UI_DEFAULT_PRICE_MAX_DECIMALS,
   UI_DEFAULT_PRICE_MIN_DECIMALS
 } from '@/app/utils/constants'
+import {
+  UiSpotMarket,
+  InvestmentTypeGst,
+  SpotGridTradingForm,
+  SpotGridTradingField
+} from '@/types'
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
+const setFormValues = useSetFormValues()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
-const setFormValues = useSetFormValues()
 
 const setUpperPriceField = useSetFieldValue(SpotGridTradingField.UpperPrice)
 const setLowerPriceField = useSetFieldValue(SpotGridTradingField.LowerPrice)
@@ -151,7 +151,7 @@ watch(isBaseAndQuoteType, (value) => {
 
     <PartialsLiquidityBotsSpotCreateManualCurrentPrice
       v-bind="{
-        market: gridStrategyStore.spotMarket as UiSpotMarketWithToken,
+        market: gridStrategyStore.spotMarket as UiSpotMarket,
         decimalPlaces
       }"
     />
@@ -172,10 +172,10 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
-        <BaseIcon name="plus" is-xs />
+        <SharedIcon name="plus" is-xs />
       </button>
       <button class="border px-2 rounded-md" @click="zoomOut">
-        <BaseIcon name="minus" is-xs />
+        <SharedIcon name="minus" is-xs />
       </button>
     </div>
 
@@ -188,11 +188,9 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="flex justify-end mb-2 sm:-mb-4">
       <div v-if="!isBaseAndQuoteType" class="flex items-center">
-        <AppCheckbox v-model="isAssetReBalancingChecked" />
-
-        <p class="mr-2 text-xs font-semibold">
+        <LazyAppCheckbox2 v-model="isAssetReBalancingChecked">
           {{ $t('liquidity.allowAssetRebalance') }}
-        </p>
+        </LazyAppCheckbox2>
 
         <AppTooltip
           v-bind="{
@@ -203,11 +201,14 @@ watch(isBaseAndQuoteType, (value) => {
     </div>
 
     <PartialsLiquidityBotsSpotCreateCommonInvestmentAmount
-      v-bind="{ market: gridStrategyStore.spotMarket! }"
+      v-bind="{
+        market: gridStrategyStore.spotMarket!,
+        grids: liquidityFormValues[SpotGridTradingField.Grids] || '0'
+      }"
       class="mb-4"
     />
 
-    <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
+    <CommonUserNotConnectedNote v-if="!sharedWalletStore.isUserConnected" cta />
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else

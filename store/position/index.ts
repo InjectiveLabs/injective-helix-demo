@@ -1,28 +1,26 @@
 import { defineStore } from 'pinia'
-import { UiDerivativeOrderbook, UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { usdtToken } from '@shared/data/token'
 import { BigNumberInWei } from '@injectivelabs/utils'
-import { useDerivativeStore } from '../derivative'
-import { indexerDerivativesApi } from '@/app/Services'
-import { ActivityFetchOptions, MarketMarkPriceMap } from '@/types'
+import { indexerDerivativesApi } from '@shared/Service'
+import { Orderbook, Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
-  addMarginToPosition,
   closePosition,
   closeAllPosition,
+  addMarginToPosition,
   closePositionAndReduceOnlyOrders
 } from '@/store/position/message'
 import {
   streamSubaccountPositions,
   cancelSubaccountPositionsStream
 } from '@/store/position/stream'
-import { usdtToken } from '@/app/data/token'
+import { ActivityFetchOptions, MarketMarkPriceMap } from '@/types'
 
-type OrderBookMap = Record<string, UiDerivativeOrderbook>
+type OrderBookMap = Record<string, Orderbook>
 
 type PositionStoreState = {
   orderbooks: OrderBookMap
   positions: PositionV2[] /** for account portfolio calculation */
-  subaccountPositions: UiPosition[]
+  subaccountPositions: Position[]
   subaccountPositionsCount: number
 }
 
@@ -46,11 +44,13 @@ export const usePositionStore = defineStore('position', {
 
     async fetchPositions() {
       const positionStore = usePositionStore()
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
       const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (
+        !sharedWalletStore.isUserConnected ||
+        !sharedWalletStore.authZOrInjectiveAddress
+      ) {
         return
       }
 
@@ -64,7 +64,7 @@ export const usePositionStore = defineStore('position', {
         {} as Record<string, number>
       )
       const { positions } = await indexerDerivativesApi.fetchPositionsV2({
-        address: walletStore.authZOrInjectiveAddress
+        address: sharedWalletStore.authZOrInjectiveAddress
       })
 
       const markPricesMap = positions.reduce((markPrices, position) => {
@@ -93,12 +93,12 @@ export const usePositionStore = defineStore('position', {
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
-      const derivativeStore = useDerivativeStore()
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -119,11 +119,11 @@ export const usePositionStore = defineStore('position', {
 
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

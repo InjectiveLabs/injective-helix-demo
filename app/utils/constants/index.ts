@@ -1,8 +1,10 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
 
+export const UI_ZERO_DECIMAL = 0
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS = 9
@@ -29,7 +31,7 @@ export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
-export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(5) // 5%
+export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(0.05) // 5%
 export const BIGGER_PRICE_WARNING_DEVIATION = new BigNumber(30) // 30%
 export const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = new BigNumber(10) // 10%
 export const DEFAULT_SLIPPAGE = new BigNumber(0.5) // +0.5% slippage
@@ -56,8 +58,7 @@ export const UST_COIN_GECKO_ID = 'terrausd'
 export const QUOTE_DENOMS_GECKO_IDS = [
   ETH_COIN_GECKO_ID,
   USDT_COIN_GECKO_ID,
-  USDC_COIN_GECKO_ID,
-  UST_COIN_GECKO_ID
+  USDC_COIN_GECKO_ID
 ]
 export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const HIDDEN_BALANCE_DISPLAY = '********'
@@ -66,7 +67,7 @@ export const LOW_VOLUME_MARKET_THRESHOLD = 1000
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6
-export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 20
+export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 10
 export const UI_MINIMAL_ABBREVIATION_FLOOR = 1_000_000
 
 export const MARKETS_HISTORY_CHART_SEVEN_DAYS = 154
@@ -87,7 +88,7 @@ export const SYMBOL_DISPLAY_LENGTH = 3
 export const DUST_AMOUNT_THRESHOLD = 1
 
 export const GST_MINIMUM_GRIDS = 3
-export const GST_MAXIMUM_GRIDS = 100
+export const GST_MAXIMUM_GRIDS = 150
 export const GST_MIN_TRADING_SIZE = 5
 export const GST_MIN_TRADING_SIZE_LOW = 1
 export const GST_GRID_THRESHOLD = 10
@@ -112,13 +113,32 @@ export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
 
-export const LEGACY_MARKETIDS = [
+export const ORDERBOOK_ROW_HEIGHT = 16
+export const ORDERBOOK_ROWS = 15
+export const ORDERBOOK_HEADER_HEIGHT = 56
+
+export const intervalOptions: IntervalOption[] = [
+  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
+  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
+  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
+  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
+  { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
+  { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
+  { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
+  { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
+  { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
+]
+export const LEGACY_MARKET_IDS = [
   '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
   '0xb9a07515a5c239fcbfa3e25eaa829a03d46c4b52b9ab8ee6be471e9eb0e9ea31',
   '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
 ]
 
-export const CURRENT_MARKET_TO_LEGACY_MARKETID_MAP = {
+export const SGT_STABLE_COINS = ['USDTkv', 'STINJ'].map((symbol) =>
+  symbol.toLowerCase()
+)
+
+export const CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP = {
   // SOL - SOLlegacy
   '0xd9089235d2c1b07261cbb2071f4f5a7f92fa1eca940e3cad88bb671c288a972f':
     '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
@@ -130,8 +150,8 @@ export const CURRENT_MARKET_TO_LEGACY_MARKETID_MAP = {
     '0x1bba49ea1eb64958a19b66c450e241f17151bc2e5ea81ed5e2793af45598b906'
 } as Record<string, string>
 
-export const LEGACY_MARKET_TO_CURRENT_MARKETID_MAP = Object.entries(
-  CURRENT_MARKET_TO_LEGACY_MARKETID_MAP
+export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
+  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 ).reduce(
   (acc, [current, legacy]) => {
     acc[legacy] = current

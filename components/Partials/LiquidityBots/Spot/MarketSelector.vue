@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { BaseDropdownOption } from '@injectivelabs/ui-shared'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { SharedDropdownOption } from '@shared/types'
+import spotGridMarkets from '@/app/data/spotGridMarkets.json'
+
 const gridStrategyStore = useGridStrategyStore()
 
 const spotStore = useSpotStore()
@@ -17,13 +18,14 @@ const value = computed({
   get: () => gridStrategyStore.spotMarket?.slug,
   set: (marketSlug) => {
     marketSlugQuery.value = marketSlug as string
+
     gridStrategyStore.$patch({
       spotMarket: spotStore.markets.find((m) => m.slug === marketSlug)
     })
   }
 })
 
-const options = computed<BaseDropdownOption[]>(() =>
+const options = computed<SharedDropdownOption[]>(() =>
   liquidityBotsMarkets.value.map((m) => ({
     display: `${m.baseToken.symbol}/${m.quoteToken.symbol}`,
     value: m.slug
@@ -45,7 +47,10 @@ const options = computed<BaseDropdownOption[]>(() =>
       start-placement
     >
       <template #default="{ selected }">
-        <PartialsLiquidityBotsSpotMarketOption v-bind="{ option: selected! }" />
+        <PartialsLiquidityBotsSpotMarketOption
+          v-if="selected"
+          v-bind="{ option: selected }"
+        />
       </template>
 
       <template #option="{ option }">

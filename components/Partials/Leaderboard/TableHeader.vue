@@ -1,29 +1,23 @@
 <template>
-  <CommonTableHeader
-    class="grid-cols-10 3md:grid-cols-12 border-b border-gray-700"
-  >
-    <span class="col-span-2">
-      <span class="text-gray-200 text-xs">
-        {{ $t('leaderboard.rank') }}
-      </span>
-    </span>
+  <div class="flex [&>*]:flex-1 [&>*]:p-2 text-xs">
+    <div>
+      {{ $t('leaderboard.rank') }}
+    </div>
 
-    <span class="col-span-2">
-      <span class="text-gray-200 text-xs">
-        {{ $t('leaderboard.address') }}
-      </span>
-    </span>
+    <div>
+      {{ $t('leaderboard.address') }}
+    </div>
 
-    <span class="text-right col-span-3 text-gray-200 text-xs">
+    <div>
+      {{ $t('leaderboard.weeklyPnL') }}
+    </div>
+
+    <div>
+      {{ $t('leaderboard.weeklyROI') }}
+    </div>
+
+    <div>
       {{ $t('leaderboard.volume') }}
-    </span>
-
-    <span class="hidden sm:block col-span-1" />
-
-    <span class="text-right col-span-2 text-gray-200 text-xs">
-      {{ $t('leaderboard.volumePercentage') }}
-    </span>
-
-    <span class="hidden 3md:block text-left col-span-2" />
-  </CommonTableHeader>
+    </div>
+  </div>
 </template>

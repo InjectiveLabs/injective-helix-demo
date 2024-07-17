@@ -3,10 +3,10 @@ import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { Modal } from '@/types'
 
-const walletStore = useWalletStore()
-const { copy } = useClipboard()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
-const { success } = useNotifications()
+const { copy } = useClipboard()
 
 defineProps({
   wallet: {
@@ -20,10 +20,10 @@ const modalStore = useModalStore()
 const isDropdownVisible = ref(false)
 
 const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(walletStore.injectiveAddress)
+  formatWalletAddress(sharedWalletStore.injectiveAddress)
 )
 const formattedAddress = computed(() =>
-  formatWalletAddress(walletStore.address)
+  formatWalletAddress(sharedWalletStore.address)
 )
 
 function onToggleDropdown() {
@@ -31,13 +31,13 @@ function onToggleDropdown() {
 }
 
 function onCopyAddress() {
-  copy(walletStore.address)
-  success({ title: t('connect.copiedAddress') })
+  copy(sharedWalletStore.address)
+  notificationStore.success({ title: t('connect.copiedAddress') })
 }
 
 function onCopyInjectiveAddress() {
-  copy(walletStore.injectiveAddress)
-  success({ title: t('connect.copiedAddress') })
+  copy(sharedWalletStore.injectiveAddress)
+  notificationStore.success({ title: t('connect.copiedAddress') })
 }
 
 function openQrCodeModal() {
@@ -49,24 +49,24 @@ function openQrCodeModal() {
   <div class="flex flex-col text-white">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <BaseIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
+        <SharedIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
         <p class="font-mono text-sm font-medium">
           {{ formattedInjectiveAddress }}
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <AssetQrCode
+        <AssetQRCode
           class="hover:text-blue-500 h-4 w-4"
           @click="openQrCodeModal"
         />
 
-        <BaseIcon
+        <SharedIcon
           name="copy-filled"
           class="hover:text-blue-500 h-4 w-4"
           @click.stop="onCopyInjectiveAddress"
         />
 
-        <BaseIcon
+        <SharedIcon
           name="caret-down"
           class="h-6 w-6 transition duration-500 hover:text-blue-500"
           :class="{ '-rotate-180': isDropdownVisible }"
@@ -90,7 +90,7 @@ function openQrCodeModal() {
 
           <div class="flex items-center gap-2">
             <span>{{ formattedAddress }}</span>
-            <BaseIcon
+            <SharedIcon
               name="copy-filled"
               class="hover:text-blue-500 h-4 w-4"
               @click="onCopyAddress"
@@ -98,7 +98,7 @@ function openQrCodeModal() {
           </div>
         </div>
         <LayoutWalletDetailsTierLevel
-          v-if="!walletStore.isAuthzWalletConnected"
+          v-if="!sharedWalletStore.isAuthzWalletConnected"
         />
       </div>
     </transition>

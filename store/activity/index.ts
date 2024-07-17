@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { FundingPayment, TradingReward } from '@injectivelabs/sdk-ts'
 import {
-  UiSpotTrade,
-  UiDerivativeTrade,
-  UiSpotOrderHistory,
-  UiDerivativeOrderHistory
-} from '@injectivelabs/sdk-ui-ts'
-import { indexerAccountApi, indexerDerivativesApi } from '@/app/Services'
+  TradingReward,
+  FundingPayment,
+  SpotOrderHistory,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
+import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
 import {
   streamSpotSubaccountTrades,
   streamSpotSubaccountOrderHistory,
@@ -16,14 +16,15 @@ import {
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
 import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
+// todo: Ivan clean up
 type ActivityStoreState = {
   subaccountFundingPayments: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
   subaccountFundingPaymentsCount: number
-  latestDerivativeOrderHistory?: UiDerivativeOrderHistory
-  latestDerivativeTrade?: UiDerivativeTrade
-  latestSpotOrderHistory?: UiSpotOrderHistory
-  latestSpotTrade?: UiSpotTrade
+  latestDerivativeOrderHistory?: DerivativeOrderHistory
+  latestDerivativeTrade?: SharedUiDerivativeTrade
+  latestSpotOrderHistory?: SpotOrderHistory
+  latestSpotTrade?: SharedUiSpotTrade
   subaccountTransfers: UiSubaccountTransactionWithToken[]
   subaccountTransferTransactionsCount: number
 }
@@ -49,29 +50,29 @@ export const useActivityStore = defineStore('activity', {
     streamSpotSubaccountTrades,
 
     async fetchTradingRewardsHistory() {
-      const activityStore = useActivityStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const activityStore = useActivityStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
       activityStore.$patch({
         tradingRewardsHistory: await indexerAccountApi.fetchRewards({
-          address: walletStore.authZOrInjectiveAddress,
+          address: sharedWalletStore.authZOrInjectiveAddress,
           epoch: -1
         })
       })
     },
 
     async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
+      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
-      const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -91,11 +92,11 @@ export const useActivityStore = defineStore('activity', {
     },
 
     async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
-      const walletStore = useWalletStore()
-      const accountStore = useAccountStore()
       const activityStore = useActivityStore()
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

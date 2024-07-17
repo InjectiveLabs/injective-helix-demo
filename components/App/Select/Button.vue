@@ -13,11 +13,11 @@ defineProps({
 </script>
 
 <template>
-  <BaseSelectorItem :model-value="modelValue" :value="value" v-bind="$attrs">
+  <SharedSelectorItem :model-value="modelValue" :value="value" v-bind="$attrs">
     <template #default="{ isActive }">
       <div class="cursor-pointer">
         <slot :is-active="isActive" />
       </div>
     </template>
-  </BaseSelectorItem>
+  </SharedSelectorItem>
 </template>

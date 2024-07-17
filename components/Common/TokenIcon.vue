@@ -1,21 +1,40 @@
 <script lang="ts" setup>
-import { getTokenLogoWithVendorPathPrefix } from '@injectivelabs/sdk-ui-ts'
-import type { Token, TokenWithPrice } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
+import { INJ_LOGO_URL } from '@shared/utils/constant'
+
+const tokenStore = useTokenStore()
 
 const props = defineProps({
   isSm: Boolean,
   isLg: Boolean,
   isXl: Boolean,
 
+  denom: {
+    type: String,
+    default: ''
+  },
+
   token: {
-    type: Object as PropType<Token | TokenWithPrice>,
-    required: true
+    type: Object as PropType<TokenStatic>,
+    default: undefined
   }
 })
 
-const logoPath = computed(() =>
-  getTokenLogoWithVendorPathPrefix(props.token.logo)
-)
+const formattedToken = computed(() => {
+  if (props.denom) {
+    return tokenStore.tokenByDenomOrSymbol(props.denom)
+  }
+
+  return props.token
+})
+
+const logoPath = computed(() => {
+  if (!formattedToken.value) {
+    return INJ_LOGO_URL
+  }
+
+  return formattedToken.value.logo
+})
 
 const sizeClasses = computed(() => {
   if (props.isSm) {
@@ -39,6 +58,6 @@ const sizeClasses = computed(() => {
     class="rounded-full"
     :class="sizeClasses"
     :src="logoPath"
-    :name="token.name"
+    :name="formattedToken?.name"
   />
 </template>

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { WalletConnectStatus } from '@/types'
+import { SharedDropdownOption } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
@@ -14,7 +16,7 @@ const options = [
     display: Wallet.Trezor,
     value: Wallet.Trezor
   }
-] as BaseDropdownOption[]
+] as SharedDropdownOption[]
 
 const wallet = ref<Wallet>(Wallet.Trezor)
 const status = reactive(new Status(StatusType.Idle))
@@ -26,14 +28,14 @@ const { value: address, errors: addressErrors } = useStringField({
 
 onMounted(() => {
   walletStore.$patch({
-    addresses: []
+    hwAddresses: []
   })
 })
 
 function fetchAddresses() {
   fetchStatus.setLoading()
 
-  walletStore
+  sharedWalletStore
     .getHWAddresses(Wallet.Trezor)
     .catch($onError)
     .finally(() => {
@@ -45,9 +47,19 @@ const connect = handleSubmit(() => {
   status.setLoading()
 
   walletStore
-    .connectTrezor(getEthereumAddress(address.value))
+    .connect({
+      wallet: Wallet.Trezor,
+      address: address.value
+    })
+    .then(() => {
+      notificationStore.success({ title: t('connect.successfullyConnected') })
+
+      WalletTracker.trackLogin({
+        wallet: sharedWalletStore.wallet,
+        address: sharedWalletStore.injectiveAddress
+      })
+    })
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
     })
     .finally(() => {
@@ -84,17 +96,17 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          walletStore.addresses.length === 0
+          sharedWalletStore.hwAddresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <BaseIcon name="arrow" class="rotate-180 w-4 h-4" />
+      <SharedIcon name="arrow" class="rotate-180 w-4 h-4" />
     </div>
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
 
-    <div v-if="walletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.hwAddresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
@@ -103,7 +115,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         is-searchable
         :options="
-          walletStore.addresses.map((address: string) => ({
+          sharedWalletStore.hwAddresses.map((address: string) => ({
             display: address,
             value: address
           }))

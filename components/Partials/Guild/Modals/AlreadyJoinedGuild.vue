@@ -2,7 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 function onCloseModal() {
   modalStore.closeModal(Modal.AlreadyJoinedGuild)
@@ -25,7 +25,7 @@ function onCloseModal() {
       <p class="font-semibold text-center">
         {{
           $t('guild.alreadyPartOfGuild.description', {
-            address: walletStore.injectiveAddress
+            address: sharedWalletStore.injectiveAddress
           })
         }}
       </p>

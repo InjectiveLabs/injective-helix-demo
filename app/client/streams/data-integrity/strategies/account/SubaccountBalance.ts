@@ -1,11 +1,11 @@
-import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
-import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { SubaccountBalance } from '@/types'
-import { indexerAccountPortfolioApi } from '@/app/Services'
+import { indexerAccountPortfolioApi } from '@shared/Service'
 import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
+import { ConcreteDataIntegrityStrategy } from '@/app/client/streams/data-integrity/types'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
+import { SubaccountBalance } from '@/types'
 
 export class SubaccountBalanceIntegrityStrategy
   extends BaseDataIntegrityStrategy<void>
@@ -17,14 +17,16 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const walletStore = useWalletStore()
     const accountStore = useAccountStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected) {
+    if (!sharedWalletStore.isUserConnected) {
       return
     }
 
-    if (walletStore.authZOrDefaultSubaccountId === accountStore.subaccountId) {
+    if (
+      sharedWalletStore.authZOrDefaultSubaccountId === accountStore.subaccountId
+    ) {
       return
     }
 
@@ -84,25 +86,25 @@ export class SubaccountBalanceIntegrityStrategy
   }
 
   async fetchData(): Promise<Record<string, SubaccountBalance[]>> {
-    const walletStore = useWalletStore()
+    const sharedWalletStore = useSharedWalletStore()
 
     const accountPortfolio =
       await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
-        walletStore.authZOrInjectiveAddress
+        sharedWalletStore.authZOrInjectiveAddress
       )
 
     const defaultAccountBalances = getDefaultAccountBalances(
       accountPortfolio.subaccountsList,
-      walletStore.authZOrDefaultSubaccountId
+      sharedWalletStore.authZOrDefaultSubaccountId
     )
 
     const nonDefaultSubaccounts = getNonDefaultSubaccountBalances(
       accountPortfolio.subaccountsList,
-      walletStore.authZOrDefaultSubaccountId
+      sharedWalletStore.authZOrDefaultSubaccountId
     )
 
     return {
-      [walletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
+      [sharedWalletStore.authZOrDefaultSubaccountId]: defaultAccountBalances,
       ...nonDefaultSubaccounts
     }
   }

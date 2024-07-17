@@ -1,15 +1,14 @@
-import type { Ref } from 'vue'
-import { MarketType, UiPosition, ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
+export function useDerivativePosition(position: Ref<Position | PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
@@ -55,56 +54,26 @@ export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
 
   const markPrice = computed(() => {
     if (!market.value) {
-      return markPriceNotScaled.value
+      return ZERO_IN_BASE
     }
 
-    if (!market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    if (!market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    if (market.value.quoteToken.decimals === market.value.oracleScaleFactor) {
-      return markPriceNotScaled.value
-    }
-
-    const oracleScalePriceDiff =
-      market.value.oracleScaleFactor - market.value.quoteToken.decimals
-
-    return new BigNumberInBase(markPriceNotScaled.value).times(
-      new BigNumberInBase(10).pow(oracleScalePriceDiff)
-    )
+    return calculateScaledMarkPrice({
+      market: market.value,
+      markPriceNotScaled: markPriceNotScaled.value
+    })
   })
 
-  const isBinaryOptions = computed(() => {
-    if (!market.value) {
-      return false
-    }
-
-    return market.value.subType === MarketType.BinaryOptions
-  })
-
-  const priceDecimals = computed(() => {
-    if (isBinaryOptions.value) {
-      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
-    }
-
-    return market.value
+  const priceDecimals = computed(() =>
+    market.value
       ? market.value.priceDecimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  })
+  )
 
-  const quantityDecimals = computed(() => {
-    if (isBinaryOptions.value) {
-      return UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS
-    }
-
-    return market.value
+  const quantityDecimals = computed(() =>
+    market.value
       ? market.value.quantityDecimals
       : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
+  )
 
   const price = computed(() => {
     if (!market.value) {
@@ -175,9 +144,7 @@ export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
       return ZERO_IN_BASE
     }
 
-    return isBinaryOptions.value
-      ? price.value.times(quantity.value)
-      : markPrice.value.times(quantity.value)
+    return markPrice.value.times(quantity.value)
   })
 
   return {
@@ -190,7 +157,6 @@ export function useDerivativePosition(position: Ref<UiPosition | PositionV2>) {
     priceDecimals,
     percentagePnl,
     notionalValue,
-    isBinaryOptions,
     quantityDecimals,
     liquidationPrice,
     effectiveLeverage

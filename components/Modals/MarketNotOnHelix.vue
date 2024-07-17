@@ -1,16 +1,37 @@
 <script lang="ts" setup>
-import { Modal } from '@/types'
+import { Modal, MainPage } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useModalStore()
+
+const isDoNoShowConfirmationAgain = ref(false)
 
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketNotOnHelix])
 
 onMounted(() => {
+  if (appStore.userState.preferences.skipExperimentalConfirmationModal) {
+    return
+  }
+
   modalStore.openModal(Modal.MarketNotOnHelix)
 })
 
 function onCloseModal() {
   modalStore.closeModal(Modal.MarketNotOnHelix)
+}
+
+function onSubmit() {
+  onCloseModal()
+
+  if (isDoNoShowConfirmationAgain.value) {
+    appStore.setUserState({
+      ...appStore.userState,
+      preferences: {
+        ...appStore.userState.preferences,
+        skipExperimentalConfirmationModal: true
+      }
+    })
+  }
 }
 </script>
 
@@ -22,16 +43,35 @@ function onCloseModal() {
       </h3>
     </template>
 
-    <div class="relative">
-      <p
-        class="text-center text-sm text-gray-100"
-        v-text="$t('marketNotOnHelix.description')"
-      ></p>
+    <div class="relative space-y-4">
+      <p class="text-center text-sm text-gray-100">
+        {{ $t('marketNotOnHelix.description') }}
+      </p>
+
+      <i18n-t
+        keypath="marketNotOnHelix.description2"
+        class="text-sm text-center text-gray-100"
+        tag="p"
+      >
+        <template #link>
+          <NuxtLink :to="{ name: MainPage.Terms }" class="text-blue-500">
+            <span>{{ $t('marketNotOnHelix.termsAndCondition') }}</span>
+          </NuxtLink>
+        </template>
+      </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onCloseModal">
+        <AppButton class="bg-blue-500 text-blue-900" @click="onSubmit">
           {{ $t('marketNotOnHelix.cta') }}
         </AppButton>
+      </div>
+
+      <div class="flex">
+        <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
+          <slot class="text-xs">
+            {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}
+          </slot>
+        </AppCheckbox>
       </div>
     </div>
   </AppModal>

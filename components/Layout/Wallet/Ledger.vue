@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
-import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { WalletConnectStatus } from '@/types'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -19,7 +20,7 @@ const options = [
     display: t('connect.ledgerLegacy'),
     value: LedgerDerivationPathType.LedgerMew
   }
-] as BaseDropdownOption[]
+] as SharedDropdownOption[]
 
 const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))
@@ -31,7 +32,7 @@ const { value: address, errors: addressErrors } = useStringField({
 
 onMounted(() => {
   walletStore.$patch({
-    addresses: []
+    hwAddresses: []
   })
 })
 
@@ -43,7 +44,7 @@ function fetchAddresses() {
       ? Wallet.Ledger
       : Wallet.LedgerLegacy
 
-  walletStore
+  sharedWalletStore
     .getHWAddresses(wallet)
     .catch($onError)
     .finally(() => {
@@ -54,22 +55,25 @@ function fetchAddresses() {
 const connect = handleSubmit(() => {
   status.setLoading()
 
-  if (path.value === LedgerDerivationPathType.LedgerMew) {
-    return walletStore
-      .connectLedgerLegacy(getEthereumAddress(address.value))
-      .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
-        $onError(e)
-      })
-      .finally(() => {
-        status.setIdle()
-      })
-  }
+  const wallet =
+    path.value === LedgerDerivationPathType.LedgerMew
+      ? Wallet.LedgerLegacy
+      : Wallet.Ledger
 
   walletStore
-    .connectLedger(getEthereumAddress(address.value))
+    .connect({
+      wallet,
+      address: address.value
+    })
+    .then(() => {
+      notificationStore.success({ title: t('connect.successfullyConnected') })
+
+      WalletTracker.trackLogin({
+        wallet: sharedWalletStore.wallet,
+        address: sharedWalletStore.injectiveAddress
+      })
+    })
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
     })
     .finally(() => {
@@ -106,17 +110,17 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          walletStore.addresses.length === 0
+          sharedWalletStore.hwAddresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <BaseIcon name="arrow" class="rotate-180 w-4 h-4" />
+      <SharedIcon name="arrow" class="rotate-180 w-4 h-4" />
     </div>
 
     <div class="border-b border-gray-600 mt-4 mb-4" />
 
-    <div v-if="walletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.hwAddresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
@@ -125,7 +129,7 @@ const connect = handleSubmit(() => {
         v-model="address"
         is-searchable
         :options="
-          walletStore.addresses.map((address: string) => ({
+          sharedWalletStore.hwAddresses.map((address: string) => ({
             display: address,
             value: address
           }))

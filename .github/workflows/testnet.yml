@@ -1,6 +1,7 @@
 name: Helix Testnet Deployments
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - testnet

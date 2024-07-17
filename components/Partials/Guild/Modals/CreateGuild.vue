@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
@@ -9,11 +10,12 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { validate, resetForm } = useForm()
 const { $onError } = useNuxtApp()
-const { success } = useNotifications()
+const notificationStore = useSharedNotificationStore()
 
 const NAME_MAX_CHARACTERS = 15
 const DESCRIPTION_MAX_CHARACTERS = 255
@@ -24,7 +26,7 @@ const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { accountBalancesWithToken } = useBalance()
+const { userBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
@@ -40,14 +42,14 @@ const { value: thumbnail, errors: thumbnailErrors } = useStringField({
   name: THUMBNAIL_FIELD
 })
 
-const { valueToString: minAmountToString } = useBigNumberFormatter(
+const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
   computed(() => GUILD_MIN_AMOUNT)
 )
 
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
-  useBigNumberFormatter(
+  useSharedBigNumberFormatter(
     computed(() => {
-      const balance = accountBalancesWithToken.value.find(
+      const balance = userBalancesWithToken.value.find(
         ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
       )
 
@@ -70,6 +72,7 @@ const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
 function disconnect() {
   walletStore.disconnect()
+  WalletTracker.trackLogout()
 
   onCloseModal()
 }
@@ -94,7 +97,7 @@ async function onSubmit() {
       description: description.value
     })
     .then(() => {
-      success({
+      notificationStore.success({
         title: t('guild.createGuild.toast')
       })
       onCloseModal()
@@ -169,7 +172,7 @@ watch(
         <AppInput
           is-sm
           is-disabled
-          :model-value="walletStore.injectiveAddress"
+          :model-value="sharedWalletStore.injectiveAddress"
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
         />
@@ -205,13 +208,13 @@ watch(
         </span>
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
-          <BaseIcon
+          <SharedIcon
             v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
             name="check-circle"
             class="text-green-500"
             is-sm
           />
-          <BaseIcon
+          <SharedIcon
             v-else
             name="warning-circle"
             class="text-orange-400"

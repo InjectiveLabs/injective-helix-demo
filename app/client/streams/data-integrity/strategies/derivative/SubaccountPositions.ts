@@ -1,14 +1,14 @@
-import { UiPosition } from '@injectivelabs/sdk-ui-ts'
-import { BaseDataIntegrityStrategy } from './../BaseDataIntegrityStrategy'
+import { Position } from '@injectivelabs/sdk-ts'
+import { indexerDerivativesApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
-import { indexerDerivativesApi } from '@/app/Services'
+import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies/BaseDataIntegrityStrategy'
 
 export class DerivativeSubaccountPositionIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, UiPosition[]>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, Position[]>
 {
   static make(
     marketIds: MarketIdsArgs
@@ -20,9 +20,9 @@ export class DerivativeSubaccountPositionIntegrityStrategy
     const marketIds = this.args
 
     const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 
@@ -48,8 +48,8 @@ export class DerivativeSubaccountPositionIntegrityStrategy
   }
 
   verifyData(
-    existingPositions: UiPosition[],
-    latestPositions: UiPosition[]
+    existingPositions: Position[],
+    latestPositions: Position[]
   ): boolean {
     return existingPositions.every((existingPosition) =>
       latestPositions.find(
@@ -60,7 +60,7 @@ export class DerivativeSubaccountPositionIntegrityStrategy
     )
   }
 
-  async fetchData(): Promise<UiPosition[]> {
+  async fetchData(): Promise<Position[]> {
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()

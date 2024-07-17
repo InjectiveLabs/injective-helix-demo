@@ -1,4 +1,4 @@
-import { Token } from '@injectivelabs/token-metadata'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { SubaccountTransferField } from './enums'
 
 export type SubaccountTransferForm = {
@@ -6,7 +6,7 @@ export type SubaccountTransferForm = {
   [SubaccountTransferField.SrcSubaccountId]: string
   [SubaccountTransferField.DstSubaccountId]: string
   [SubaccountTransferField.Denom]: string
-  [SubaccountTransferField.Token]: Token
+  [SubaccountTransferField.Token]: TokenStatic
 }
 
 export interface UiSubaccountTransaction {
@@ -20,5 +20,5 @@ export interface UiSubaccountTransaction {
 
 export interface UiSubaccountTransactionWithToken
   extends UiSubaccountTransaction {
-  token: Token
+  token: TokenStatic
 }

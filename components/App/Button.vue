@@ -1,110 +1,96 @@
-<script lang="ts" setup>
-import { Status } from '@injectivelabs/utils'
+<script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
 
-const attrs = useAttrs()
+type Size = 'xs' | 'sm' | 'md' | 'lg'
+type Variant =
+  | 'primary'
+  | 'primary-outline'
+  | 'primary-ghost'
+  | 'danger'
+  | 'danger-outline'
+  | 'danger-ghost'
+  | 'success'
+  | 'success-outline'
+
+defineOptions({
+  inheritAttrs: false
+})
 
 const props = defineProps({
-  isXs: Boolean,
-  isSm: Boolean,
-  isLg: Boolean,
-  isXl: Boolean,
-  isDisabled: Boolean,
   isLoading: Boolean,
-  isDarkSpinner: Boolean,
+  disabled: Boolean,
+
+  size: {
+    type: String as PropType<Size>,
+    default: ''
+  },
+
+  variant: {
+    type: String as PropType<Variant>,
+    default: 'primary'
+  },
 
   status: {
-    type: Object as PropType<Status | undefined>,
-    default: undefined
+    type: Object as PropType<Status>,
+    default: () => new Status(StatusType.Idle)
+  },
+
+  tooltip: {
+    type: String,
+    default: ''
   }
 })
 
-const emit = defineEmits<{
-  click: []
-}>()
-
-const classes = computed(() => {
-  if (props.isXs) {
-    return 'text-xs leading-4 px-2 h-6'
+const outlineStyle = computed(() => {
+  if (['danger', 'danger-outline', 'danger-ghost'].includes(props.variant)) {
+    return 'focus-within:ring-[3px] ring-red-700'
   }
 
-  if (props.isSm) {
-    return 'text-xs leading-4 px-6 h-8'
+  if (['success', 'success-outline', 'success-ghost'].includes(props.variant)) {
+    return 'focus-within:ring-[3px] ring-green-700'
   }
 
-  if (props.isLg) {
-    return 'text-base leading-5 px-6 h-10'
-  }
-
-  if (props.isXl) {
-    return 'text-base leading-5 px-4 h-12'
-  }
-
-  // md
-  return 'text-sm px-6 leading-4 h-9'
+  return 'focus-within:ring-[3px] ring-blue-700'
 })
-
-const filteredAttrs = computed(() => {
-  const filteredAttrs = { ...attrs }
-
-  /** Remove text|bg color from buttons when they are isDisabled */
-  if (props.isDisabled) {
-    const filteredClass = (filteredAttrs.class as string)
-      .replace(/text-(\w+)-(\d+)/g, '')
-      .replace(/bg-(\w+)-(\d+)/g, '')
-
-    return { ...attrs, class: filteredClass }
-  }
-
-  return filteredAttrs
-})
-
-const hasBackground = computed(() => {
-  if (!attrs.class) {
-    return false
-  }
-
-  const classes = attrs.class as string
-
-  return classes.includes('bg-')
-})
-
-function click() {
-  if (props.isLoading || props.status?.isLoading()) {
-    return
-  }
-
-  emit('click')
-}
-</script>
-
-<script lang="ts">
-export default {
-  inheritAttrs: false
-}
 </script>
 
 <template>
-  <button
-    :disabled="isDisabled"
-    type="button"
-    role="button"
-    :class="[
-      classes,
-      {
-        'border-transparent': hasBackground && !isDisabled,
-        ' border-gray-600 bg-transparent text-gray-600 cursor-not-allowed':
-          isDisabled,
-        'hover:bg-opacity-80 hover:text-opacity-80 hover:border-opacity-80':
-          !isDisabled
-      }
-    ]"
-    v-bind="filteredAttrs"
-    class="font-semibold rounded-md border box-border focus:outline-none"
-    @click="click"
+  <SharedTooltip
+    v-bind="{
+      disabled: !tooltip
+    }"
+    :triggers="['hover', 'click']"
   >
-    <slot v-if="(!status || status.isNotLoading()) && !isLoading" />
-    <span v-else class="flex items-center justify-center">
-      <AppSpinner v-bind="{ isSm: true, isWhite: !isDarkSpinner }" />
-    </span>
-  </button>
+    <button
+      class="flex items-center justify-center transition-all ring-0"
+      :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant, outlineStyle]"
+      :disabled="disabled"
+      v-bind="$attrs"
+    >
+      <span v-if="status.isLoading() || isLoading">&#8202;</span>
+      <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />
+
+      <slot v-else />
+    </button>
+
+    <template #content>
+      <slot name="content">
+        <span>{{ tooltip }}</span>
+      </slot>
+    </template>
+  </SharedTooltip>
 </template>
+
+<style>
+.tooltip,
+.v-popper--theme-tooltip {
+  .v-popper__inner {
+    @apply bg-gray-900 text-gray-200 border-none max-w-xs text-xs px-3 py-1 shadow-sm;
+  }
+
+  .v-popper__arrow-outer,
+  .v-popper__arrow-inner {
+    @apply border-gray-900;
+  }
+}
+</style>

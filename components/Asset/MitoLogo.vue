@@ -5,7 +5,7 @@ const uuid = `${Math.random()}`
 <template>
   <svg
     class="w-8 h-8 object-fill"
-    viewBox="0 0 30 50"
+    viewBox="-10 -10 55 45"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >

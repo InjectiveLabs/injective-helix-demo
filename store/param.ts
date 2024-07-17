@@ -1,34 +1,31 @@
 import { defineStore } from 'pinia'
 import {
-  BigNumberInBase,
-  BigNumberInWei,
-  INJ_DENOM
-} from '@injectivelabs/utils'
-import { Coin } from '@injectivelabs/ts-types'
-import {
-  Pool,
-  MinModuleParams as MintModuleParams,
-  StakingModuleParams,
-  InsuranceModuleParams,
-  ExchangeModuleParams,
-  BankModuleParams,
-  OracleModuleParams,
-  PeggyModuleParams,
-  GovModuleStateParams,
-  DistributionModuleParams
-} from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
-import {
   bankApi,
   mintApi,
-  stakingApi,
-  distributionApi,
-  governanceApi,
-  insuranceApi,
-  exchangeApi,
+  peggyApi,
   oracleApi,
-  peggyApi
-} from '@/app/Services'
+  stakingApi,
+  exchangeApi,
+  governanceApi,
+  distributionApi,
+  insuranceFundsApi
+} from '@shared/Service'
+import {
+  Pool,
+  BankModuleParams,
+  PeggyModuleParams,
+  OracleModuleParams,
+  StakingModuleParams,
+  ExchangeModuleParams,
+  GovModuleStateParams,
+  InsuranceModuleParams,
+  DistributionModuleParams,
+  MinModuleParams as MintModuleParams
+} from '@injectivelabs/sdk-ts'
+import { injToken } from '@shared/data/token'
+import { Coin } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 
 type ParamsStoreState = {
   inflation: string
@@ -124,7 +121,7 @@ export const useParamStore = defineStore('param', {
     async fetchInjSupply() {
       const paramStore = useParamStore()
       const { supply } = await bankApi.fetchTotalSupply({ limit: 200 })
-      const injSupply = supply.find((s) => s.denom === INJ_DENOM)!
+      const injSupply = supply.find((s) => s.denom === injToken.denom)!
 
       paramStore.$patch({
         injSupply
@@ -185,7 +182,7 @@ export const useParamStore = defineStore('param', {
       const paramStore = useParamStore()
 
       paramStore.$patch({
-        insuranceParams: await insuranceApi.fetchModuleParams()
+        insuranceParams: await insuranceFundsApi.fetchModuleParams()
       })
     },
 

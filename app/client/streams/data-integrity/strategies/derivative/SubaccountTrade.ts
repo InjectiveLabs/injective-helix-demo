@@ -1,10 +1,10 @@
 import { DerivativeTrade } from '@injectivelabs/sdk-ts'
+import { indexerDerivativesApi } from '@shared/Service'
 import {
   MarketIdsArgs,
   ConcreteDataIntegrityStrategy
 } from '@/app/client/streams/data-integrity/types'
 import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/strategies'
-import { indexerDerivativesApi } from '@/app/Services'
 
 export class DerivativeSubaccountTradeIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
@@ -20,10 +20,10 @@ export class DerivativeSubaccountTradeIntegrityStrategy
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
     const derivativeStore = useDerivativeStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 

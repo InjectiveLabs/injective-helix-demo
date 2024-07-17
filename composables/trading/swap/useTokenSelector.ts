@@ -1,20 +1,13 @@
-import type { Ref } from 'vue'
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
 import { Route } from '@injectivelabs/sdk-ts'
-import { INJ_DENOM } from '@injectivelabs/utils'
-import type { Token } from '@injectivelabs/token-metadata'
+import { injToken, usdtToken } from '@shared/data/token'
+import { SharedBalanceWithTokenAndPrice } from '@shared/types'
+import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 import { AccountBalance } from '@/types'
-import {
-  SWAP_LOW_LIQUIDITY_SYMBOLS,
-  injToken,
-  tokensDenomToPreloadHomepageSwap,
-  usdtToken
-} from '@/app/data/token'
 
 const getBalanceWithToken = (
   swapDenom: string,
   balances: AccountBalance[]
-): BalanceWithTokenAndPrice | undefined => {
+): SharedBalanceWithTokenAndPrice | undefined => {
   const balanceWithToken = balances.find(({ denom }) => denom === swapDenom)
 
   if (!balanceWithToken) {
@@ -26,18 +19,7 @@ const getBalanceWithToken = (
     denom: balanceWithToken?.denom,
     balance: balanceWithToken?.availableMargin,
     usdPrice: balanceWithToken?.usdPrice
-  } as BalanceWithTokenAndPrice
-}
-
-const getBalanceWithTokenHomepage = (
-  token: Token
-): BalanceWithTokenAndPrice => {
-  return {
-    token,
-    denom: token?.denom,
-    balance: '0',
-    usdPrice: 0
-  } as BalanceWithTokenAndPrice
+  } as SharedBalanceWithTokenAndPrice
 }
 
 export function useSwapTokenSelector({
@@ -101,7 +83,7 @@ export function useSwapTokenSelector({
             [route.sourceDenom]: outputTokens
           }
         },
-        {} as Record<string, BalanceWithTokenAndPrice[]>
+        {} as Record<string, SharedBalanceWithTokenAndPrice[]>
       )
   )
 
@@ -112,7 +94,7 @@ export function useSwapTokenSelector({
         .filter(
           (balanceWithToken) =>
             balanceWithToken && balanceWithToken.denom !== outputDenom.value
-        ) as BalanceWithTokenAndPrice[]
+        ) as SharedBalanceWithTokenAndPrice[]
   )
 
   const outputDenomOptions = computed(
@@ -133,7 +115,8 @@ export function useSwapTokenSelector({
     }
 
     const selectedOutputDenom = tradableTokenMaps.value[inputDenom.value].find(
-      (token: BalanceWithTokenAndPrice) => token.denom === outputDenom.value
+      (token: SharedBalanceWithTokenAndPrice) =>
+        token.denom === outputDenom.value
     )?.denom
 
     const defaultOutputDenom =
@@ -148,17 +131,18 @@ export function useSwapTokenSelector({
    **/
   const selectorInputDenom = computed(() => {
     const selectedInputDenom = tradableTokenMaps.value[outputDenom.value]?.find(
-      (token: BalanceWithTokenAndPrice) => token.denom === inputDenom.value
+      (token: SharedBalanceWithTokenAndPrice) =>
+        token.denom === inputDenom.value
     )?.denom
 
     if (!tradableTokenMaps.value[outputDenom.value]) {
-      return INJ_DENOM
+      return injToken.denom
     }
 
     const defaultInputDenom =
       tradableTokenMaps.value[outputDenom.value][0]?.denom
 
-    return selectedInputDenom || defaultInputDenom || INJ_DENOM
+    return selectedInputDenom || defaultInputDenom || injToken.denom
   })
 
   return {
@@ -166,45 +150,5 @@ export function useSwapTokenSelector({
     selectorInputDenom,
     inputDenomOptions,
     outputDenomOptions
-  }
-}
-
-export function useSwapTokenSelectorHomepage({
-  balances,
-  inputDenom,
-  outputDenom
-}: {
-  balances: Ref<AccountBalance[]>
-  inputDenom: Ref<string>
-  outputDenom: Ref<string>
-}) {
-  const { inputDenomOptions, outputDenomOptions, selectorOutputDenom } =
-    useSwapTokenSelector({
-      inputDenom,
-      outputDenom,
-      balances
-    })
-
-  const inputDenomOptionsHomepage = computed(() => {
-    return inputDenomOptions.value
-      ? inputDenomOptions.value.filter(({ denom }) => denom === usdtToken.denom)
-      : [getBalanceWithTokenHomepage(usdtToken)]
-  })
-
-  const outputDenomOptionsHomepage = computed(() => {
-    return outputDenomOptions.value
-      ? outputDenomOptions.value.filter(
-          ({ denom }) =>
-            denom !== usdtToken.denom &&
-            tokensDenomToPreloadHomepageSwap.includes(denom)
-        )
-      : [getBalanceWithTokenHomepage(injToken)]
-  })
-
-  return {
-    selectorOutputDenom,
-    selectorInputDenom: computed(() => usdtToken.denom),
-    outputDenomOptions: outputDenomOptionsHomepage,
-    inputDenomOptions: inputDenomOptionsHomepage
   }
 }

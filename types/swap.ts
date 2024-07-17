@@ -1,25 +1,29 @@
-import { BalanceWithTokenAndPrice } from '@injectivelabs/sdk-ui-ts'
+import { SharedBalanceWithTokenAndPrice } from '@shared/types'
 
 export interface TokenAndPriceAndDecimals
-  extends Omit<BalanceWithTokenAndPrice, 'balance'> {
+  extends Omit<SharedBalanceWithTokenAndPrice, 'balance'> {
   quantityDecimals: number
   tensMultiplier?: number
 }
 
 export enum SwapFormField {
+  Slippage = 'slippage',
   InputDenom = 'inputDenom',
+  QueryError = 'queryError',
   InputAmount = 'inputAmount',
   OutputDenom = 'outputDenom',
   OutputAmount = 'outputAmount',
-  Slippage = 'slippage',
-  QueryError = 'queryError'
+  InputLastTradedPrice = 'inputLastTradedPrice',
+  OutputLastTradedPrice = 'outputLastTradedPrice'
 }
 
 export type SwapForm = {
+  [SwapFormField.Slippage]: string
   [SwapFormField.InputDenom]: string
+  [SwapFormField.QueryError]: string
   [SwapFormField.InputAmount]: string
   [SwapFormField.OutputDenom]: string
   [SwapFormField.OutputAmount]: string
-  [SwapFormField.Slippage]: string
-  [SwapFormField.QueryError]: string
+  [SwapFormField.InputLastTradedPrice]: string
+  [SwapFormField.OutputLastTradedPrice]: string
 }

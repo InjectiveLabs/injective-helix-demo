@@ -2,10 +2,10 @@
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const walletStore = useWalletStore()
-const ninjaPassStore = useNinjaPassStore()
 const modalStore = useModalStore()
-const confetti = useConfetti()
+const confetti = useSharedConfetti()
+const ninjaPassStore = useNinjaPassStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.NinjaPassWinner])
 
@@ -22,7 +22,7 @@ const ninjaPassUrl = computed(() => {
     return
   }
 
-  return `https://ninjapass.injective.com/?code=${ninjaPassCode.value.code}&address=${walletStore.injectiveAddress}`
+  return `https://ninjapass.injective.com/?code=${ninjaPassCode.value.code}&address=${sharedWalletStore.injectiveAddress}`
 })
 
 watch(
@@ -82,7 +82,7 @@ function closeModal() {
           <span class="font-semibold text-blue-900">
             {{ $t('ninjaPass.verifyNow') }}
           </span>
-          <BaseIcon name="external-link" class="w-4 h-4 text-blue-900" />
+          <SharedIcon name="external-link" class="w-4 h-4 text-blue-900" />
         </a>
 
         <button

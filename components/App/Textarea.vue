@@ -19,7 +19,7 @@ export default {
 
 <template>
   <div class="textarea-wrapper flex items-center gap-2" :class="[wrapperClass]">
-    <BaseTextArea :rows="rows" v-bind="$attrs" />
+    <SharedTextArea :rows="rows" v-bind="$attrs" />
   </div>
 </template>
 

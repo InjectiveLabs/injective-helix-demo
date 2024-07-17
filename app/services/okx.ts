@@ -5,9 +5,9 @@ import {
   UnspecifiedErrorCode,
   OkxWalletException
 } from '@injectivelabs/exceptions'
-import { UtilsWallets } from '@injectivelabs/wallet-ts'
+import { UtilsWallets } from '@injectivelabs/wallet-ts/dist/esm/exports'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
-import { walletStrategy } from '@/app/wallet-strategy'
 
 export const isOkxWalletInstalled = async (): Promise<boolean> => {
   const provider = await UtilsWallets.getOkxWalletProvider()
@@ -19,7 +19,7 @@ export const validateOkxWallet = async (
   address: AccountAddress,
   chainId: EthereumChainId = ETHEREUM_CHAIN_ID
 ) => {
-  const addresses = await walletStrategy.getAddresses()
+  const addresses = await walletStrategy.enableAndGetAddresses()
   const okxWalletIsLocked = addresses.length === 0
 
   if (okxWalletIsLocked) {

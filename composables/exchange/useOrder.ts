@@ -1,20 +1,15 @@
-import type { Ref } from 'vue'
-import {
-  ZERO_IN_BASE,
-  UiSpotLimitOrder,
-  UiSpotMarketWithToken,
-  UiDerivativeLimitOrder
-} from '@injectivelabs/sdk-ui-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { UiMarketWithToken } from '@/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import {
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrder(
-  order: Ref<UiDerivativeLimitOrder | UiSpotLimitOrder>,
+  order: Ref<SpotLimitOrder | DerivativeLimitOrder>,
   isSpot: Ref<boolean>
 ) {
   const derivativeStore = useDerivativeStore()
@@ -46,17 +41,17 @@ export function useOrder(
     }
 
     return (
-      (order.value as UiDerivativeLimitOrder).isReduceOnly ||
+      (order.value as DerivativeLimitOrder).isReduceOnly ||
       margin.value.isZero()
     )
   })
 
   const isBuy = computed(() => {
     if (isSpot.value) {
-      return (order.value as UiSpotLimitOrder).orderSide === OrderSide.Buy
+      return (order.value as SpotLimitOrder).orderSide === OrderSide.Buy
     }
 
-    switch ((order.value as UiDerivativeLimitOrder).orderType) {
+    switch ((order.value as DerivativeLimitOrder).orderType) {
       case OrderSide.TakeBuy:
       case OrderSide.StopBuy:
       case OrderSide.Buy:
@@ -73,7 +68,7 @@ export function useOrder(
     }
 
     return new BigNumberInWei(
-      (order.value as UiDerivativeLimitOrder).margin
+      (order.value as DerivativeLimitOrder).margin
     ).toBase(market.value.quoteToken.decimals)
   })
 
@@ -83,11 +78,11 @@ export function useOrder(
     }
 
     return isSpot.value && market.value.baseToken
-      ? new BigNumberInBase(
-          new BigNumberInBase(order.value.price).toWei(
+      ? sharedToBalanceInWei({
+          value: order.value.price,
+          decimalPlaces:
             market.value.baseToken.decimals - market.value.quoteToken.decimals
-          )
-        )
+        }).toFixed()
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )
@@ -100,7 +95,7 @@ export function useOrder(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.quantity).toBase(
-          (market.value as UiSpotMarketWithToken).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.quantity)
   })
@@ -112,7 +107,7 @@ export function useOrder(
 
     return isSpot.value
       ? new BigNumberInWei(order.value.unfilledQuantity).toBase(
-          (market.value as UiSpotMarketWithToken).baseToken.decimals
+          (market.value as UiSpotMarket).baseToken.decimals
         )
       : new BigNumberInBase(order.value.unfilledQuantity)
   })
@@ -126,8 +121,10 @@ export function useOrder(
       return new BigNumberInBase('')
     }
 
+    const priceInBigNumber = new BigNumberInBase(price.value)
+
     return new BigNumberInBase(
-      price.value.times(quantity.value).dividedBy(margin.value)
+      priceInBigNumber.times(quantity.value).dividedBy(margin.value)
     )
   })
 

@@ -1,14 +1,14 @@
 import {
+  TokenStatic,
   TradingRewardCampaignInfo as BaseTradingRewardCampaignInfo,
   TradeRewardCampaign as BaseTradeRewardCampaign,
   FeeDiscountSchedule as BaseFeeDiscountSchedule
 } from '@injectivelabs/sdk-ts/'
-import { Token } from '@injectivelabs/token-metadata'
 
 export type FeeDiscountSchedule = BaseFeeDiscountSchedule
 
 export interface FeeDiscountScheduleWithToken extends FeeDiscountSchedule {
-  quoteToken: Token[]
+  quoteToken: TokenStatic[]
 }
 
 export interface TradingRewardCampaignInfo

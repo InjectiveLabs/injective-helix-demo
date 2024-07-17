@@ -1,12 +1,12 @@
 <script lang="ts" setup>
+import { SharedBalanceWithToken } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { BalanceWithToken } from '@injectivelabs/sdk-ui-ts'
 
 const props = defineProps({
   isBalanceVisible: Boolean,
 
   balances: {
-    type: Array as PropType<BalanceWithToken[]>,
+    type: Array as PropType<SharedBalanceWithToken[]>,
     default: () => []
   },
 
@@ -33,9 +33,9 @@ const filteredOptions = computed(() => {
 
     const { name } = balance.token
     const shouldIncludeSupply =
-      name.toLowerCase().includes(formattedSearch) ||
-      balance.token.denom.toLowerCase().includes(formattedSearch) ||
-      balance.token.symbol.toLowerCase().includes(formattedSearch)
+      name.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.denom.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.symbol.toLowerCase().startsWith(formattedSearch)
 
     return shouldIncludeSupply
   })
@@ -47,7 +47,7 @@ const sortedBalances = computed(() => {
   }
 
   return filteredOptions.value.sort(
-    (b1: BalanceWithToken, b2: BalanceWithToken) =>
+    (b1: SharedBalanceWithToken, b2: SharedBalanceWithToken) =>
       new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
   )
 })
@@ -67,12 +67,21 @@ function onClick(denom: string) {
   emit('update:modelValue', denom)
   emit('close')
 }
+
+onMounted(() => {
+  document.getElementById('swap-token-search')?.focus()
+})
 </script>
 
 <template>
   <div class="max-h-xs">
     <div class="mb-2 text-white">
-      <AppInput v-model="search" is-sm :placeholder="$t('common.search')" />
+      <AppInput
+        id="swap-token-search"
+        v-model="search"
+        is-sm
+        :placeholder="$t('common.search')"
+      />
     </div>
 
     <AppSelectTokenItem

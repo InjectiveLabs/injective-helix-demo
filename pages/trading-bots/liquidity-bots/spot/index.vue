@@ -1,23 +1,18 @@
 <script lang="ts" setup>
+import { OrderState, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarketWithToken } from '@injectivelabs/sdk-ui-ts'
-import { OrderState } from '@injectivelabs/ts-types'
-
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import {
-  addressAndMarketSlugToSubaccountId,
-  getSgtContractAddressFromSlug
+  getSgtContractAddressFromSlug,
+  addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-
-definePageMeta({
-  middleware: ['grid-strategy-subaccount']
-})
+import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
@@ -35,8 +30,8 @@ const activeStrategy = computed(
 
 const subaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
-    walletStore.address,
-    (gridStrategyStore.spotMarket as UiSpotMarketWithToken).slug
+    sharedWalletStore.address,
+    (gridStrategyStore.spotMarket as UiSpotMarket).slug
   )
 )
 
@@ -58,7 +53,7 @@ function fetchData() {
 
   const marketId = gridStrategyStore.spotMarket.marketId
   const subaccountId = addressAndMarketSlugToSubaccountId(
-    walletStore.address,
+    sharedWalletStore.address,
     gridStrategyStore.spotMarket.slug
   )
 
@@ -70,7 +65,10 @@ function fetchData() {
     authZStore.fetchGrants(),
     spotStore.streamTrades(marketId),
     spotStore.fetchOrderbook(marketId),
-    spotStore.fetchTrades({ marketId }),
+    spotStore.fetchTrades({
+      marketId,
+      executionSide: TradeExecutionSide.Taker
+    }),
     spotStore.streamSubaccountOrders(marketId, subaccountId),
     spotStore.fetchOrdersBySubaccount({
       marketIds: [gridStrategyStore.spotMarket.marketId],
@@ -89,6 +87,7 @@ function fetchData() {
       resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
       countback: 30 * 24
     }),
+    accountStore.fetchCw20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
     accountStore.streamSubaccountBalance(subaccountId)
   ])
@@ -106,6 +105,10 @@ onWalletConnected(() => {
   spotStore.resetOrderbookAndTrades()
 
   fetchData()
+})
+
+onMounted(() => {
+  accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
 })
 
 onUnmounted(() => {
@@ -136,7 +139,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <div>
         <button @click="isBannerOpen = false">
-          <BaseIcon name="close" />
+          <SharedIcon name="close" />
         </button>
       </div>
     </div>
@@ -157,11 +160,11 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
         v-else-if="activeStrategy"
         v-bind="{
           subaccountId,
-          market: gridStrategyStore.spotMarket as UiSpotMarketWithToken
+          market: gridStrategyStore.spotMarket as UiSpotMarket
         }"
       />
 
-      <PartialsGridStrategySpotFormActiveStrategy
+      <PartialsLiquidityCommonActiveStrategy
         v-if="activeStrategy && gridStrategyStore.spotMarket"
         class="mt-4"
         v-bind="{

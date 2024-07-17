@@ -1,21 +1,13 @@
-import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
+import { getBridgeUrl } from '@shared/utils/network'
 
-export const getExplorerUrl = (): string => {
-  if (IS_DEVNET) {
-    return 'https://devnet.explorer.injective.dev'
+export const getBridgeRedirectionUrl = (suffix?: string) => {
+  const sharedWalletStore = useSharedWalletStore()
+
+  const url = suffix ? `${getBridgeUrl()}/${suffix}` : `${getBridgeUrl()}`
+
+  if (!sharedWalletStore.isUserConnected) {
+    return `${url}/?origin=helix`
   }
 
-  if (IS_TESTNET) {
-    return 'https://testnet.explorer.injective.network'
-  }
-
-  return 'https://explorer.injective.network'
-}
-
-export const getBridgeUrl = (): string => {
-  if (IS_DEVNET) {
-    return 'https://devnet.bridge.injective.dev'
-  }
-
-  return 'https://bridge.injective.network'
+  return `${url}/?address=${sharedWalletStore.injectiveAddress}&wallet=${sharedWalletStore.wallet}&origin=helix`
 }

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { BaseDropdownOption } from '@injectivelabs/ui-shared/lib/types'
+import { SharedDropdownOption } from '@shared/types'
 
 const props = defineProps({
   isNoMinWidth: Boolean,
   startPlacement: Boolean,
 
   options: {
-    type: Array as PropType<BaseDropdownOption[]>,
+    type: Array as PropType<SharedDropdownOption[]>,
     required: true
   },
 
@@ -36,29 +36,28 @@ const selectedOption = computed(() =>
   props.options.find((option) => option.value === props.modelValue)
 )
 
-function select(option: BaseDropdownOption) {
+function select(option: SharedDropdownOption) {
   emit('update:modelValue', option.value)
 }
 </script>
 
 <template>
-  <BaseDropdown
+  <SharedDropdown
     :popper-class="`selector ${!isNoMinWidth && 'min-w-40'}`"
     :placement="startPlacement ? 'bottom-start' : 'bottom-end'"
     :flip="false"
   >
     <template #default="{ isOpen }">
-      <div class="flex items-center gap-2" :class="wrapperClass">
+      <div class="flex items-center gap-2 group" :class="wrapperClass">
         <slot name="prefix" />
 
         <slot :selected="selectedOption" />
 
         <slot name="icon" :is-open="isOpen">
-          <BaseIcon
+          <SharedIcon
             name="chevron-down"
-            class="h-3 w-3 min-w-3 fill-current"
+            class="h-3 w-3 min-w-3 fill-current ease-in-out duration-300 group-hover:text-blue-500"
             :class="{
-              'ease-in-out duration-300': isOpen,
               'rotate-180': isOpen,
               'rotate-0': !isOpen
             }"
@@ -69,7 +68,7 @@ function select(option: BaseDropdownOption) {
 
     <template #content="{ close }">
       <div
-        class="bg-gray-800 rounded-lg p-2 flex flex-col"
+        class="bg-brand-900 border border-brand-800 rounded-lg p-2 flex flex-col"
         :class="contentClass"
       >
         <div
@@ -92,5 +91,5 @@ function select(option: BaseDropdownOption) {
         </div>
       </div>
     </template>
-  </BaseDropdown>
+  </SharedDropdown>
 </template>

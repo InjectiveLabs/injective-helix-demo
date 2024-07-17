@@ -1,7 +1,6 @@
 <script lang="ts" setup>
+import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getExplorerUrl } from '@/app/utils/network'
-import { confettiOptions } from '@/app/utils/vendor'
 import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { Modal } from '@/types'
 
@@ -62,11 +61,8 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 <template>
   <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
     <AppHocLoading v-bind="{ status }">
-      <div class="text-center relative">
-        <AppCustomConfetti
-          class="absolute inset-0 h-48 -mt-9 w-full"
-          v-bind="{ confettiOptions }"
-        />
+      <div class="text-center relative p-8">
+        <SharedRainConfetti class="absolute inset-0 h-48 -mt-9 w-full" />
 
         <AppLottie
           v-bind="{ name: 'circle-check-border' }"

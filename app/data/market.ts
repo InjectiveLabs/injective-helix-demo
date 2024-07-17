@@ -1,6 +1,12 @@
-import { INJ_DENOM } from '@injectivelabs/utils'
+import { injToken } from '@shared/data/token'
+import marketCategorySlugs from './category.json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
+import {
+  NotLiquidMarket,
+  MarketPromotion,
+  MarketTypeOption,
+  UiMarketWithToken
+} from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -8,150 +14,28 @@ export interface UnTradableMarket {
 
 export const betaMarketSlugs = [] as string[]
 
-export const newMarketsSlug = [
-  'lvn-inj',
-  'nonja-inj',
-  'pyth-inj',
-  'zig-inj',
-  'hdro-inj',
-  'usdc-usdt',
-  'andr-inj',
-  'usde-usdt',
-  'whale-inj',
-  'qunt-inj',
-  'talis-inj',
-  'bonk-usdt-perp'
-]
+export const newMarketsSlug = marketCategorySlugs.newMarketsCategorySlugs || []
 
-export const experimentalMarketsSlug = [
-  'usdy-usdt',
-  'ape-usdt',
-  'usde-usdt',
-  'app-inj',
-  'gf-usdt',
-  'autism-inj',
-  'tia-usdt-30nov2023',
-  '1000pepe-usdt-perp',
-  'eth-usdt-19sep22',
-  'ethbtctrend-usdt',
-  'steadyeth-usdt',
-  'steadybtc-usdt',
-  'app-inj',
-  'ninja-inj',
-  'kira-inj',
-  'katana-inj',
-  'ginger-inj',
-  'jup-usdt-perp',
-  'gyen-usdt',
-  'wif-usdt-perp',
-  'bonk-usdt-perp',
-  'qunt-inj',
-  'talis-inj'
-]
+export const experimentalMarketsSlug =
+  marketCategorySlugs.experimentalCategorySlugs || []
 
-export const slugsToIncludeInCosmosCategory = [
-  'inj-usdt',
-  'cre-usdt',
-  'tia-usdt',
-  'stinj-inj',
-  'somm-usdt',
-  'canto-usdt',
-  'strd-usdt',
-  'inj-usdt-perp',
-  'atom-usdt-perp',
-  'sei-usdt-perp',
-  'axl-usdt-perp',
-  'tia-usdt-30nov2023',
-  'tia-usdt-perp',
-  'talis-usdt',
-  'osmo-usdt-perp',
-  'andr-usdt',
-  'whale-inj'
-]
+export const slugsToIncludeInCosmosCategory =
+  marketCategorySlugs.cosmosCategorySlugs || []
 
-export const slugsToIncludeInEthereumCategory = [
-  'usdy-usdt',
-  'inj-usdt',
-  'arb-usdt',
-  'app-inj',
-  'chz-usdcet',
-  'usdt-usdcet',
-  'ape-usdt',
-  'link-usdt',
-  'stinj-inj',
-  'weth-usdt',
-  'evmos-usdt',
-  'gf-usdt',
-  'wmatic-usdt',
-  'ethbtctrend-usdt',
-  'steadyeth-usdt',
-  'steadybtc-usdt',
-  'inj-usdt-perp',
-  'bonk-usdt-perp',
-  'eth-usdt-perp',
-  'bnb-usdt-perp',
-  'stx-usdt-perp',
-  'eth-usdtkv-perp',
-  'arb-usdt-perp',
-  'gyen-usdt',
-  'op-usdt-perp',
-  'link-usdt-perp'
-]
+export const slugsToIncludeInEthereumCategory =
+  marketCategorySlugs.ethereumCategorySlugs || []
 
-export const slugsToIncludeInInjectiveCategory = [
-  'inj-usdt',
-  'inj-usdt-perp',
-  'talis-usdt',
-  'stinj-inj',
-  'ninja-inj',
-  'kira-inj',
-  'katana-inj',
-  'ninj-inj',
-  'dojo-inj',
-  'ginger-inj',
-  'autism-inj',
-  'andr-usdt',
-  'hinj-inj',
-  'qunt-inj',
-  'talis-inj',
-  'hdro-inj',
-  'pyth-inj',
-  'nonja-inj',
-  'lvn-inj'
-]
+export const slugsToIncludeInInjectiveCategory =
+  marketCategorySlugs.injectiveCategorySlugs || []
 
-export const slugsToIncludeInSolanaCategory = [
-  'jup-usdt-perp',
-  'pyth-usdt-perp',
-  'sol-usdt',
-  'sol-usdt-perp',
-  'wif-usdt-perp',
-  'bonk-usdt-perp'
-]
+export const slugsToIncludeInSolanaCategory =
+  marketCategorySlugs.solanaCategorySlugs || []
 
-export const olpSlugsToIncludeInLowVolume = [
-  'hdro-inj',
-  'inj-usdt',
-  'tia-usdt',
-  'xrp-usdt-perp',
-  'atom-usdt',
-  'weth-usdt',
-  'usdt-usdcet',
-  'wmatic-usdt',
-  '1000pepe-usdt-perp',
-  'atom-usdt-perp',
-  'btc-usdt-perp',
-  'eth-usdt-perp',
-  'inj-usdt-perp',
-  'bnb-usdt-perp',
-  'pyth-usdt-perp',
-  'sol-usdt',
-  'axl-usdt-perp',
-  'kava-usdt',
-  'sei-usdt-perp',
-  'tia-usdt-30nov2023',
-  'tia-usdt-perp'
-]
+export const olpSlugsToIncludeInLowVolume =
+  marketCategorySlugs.olpLowVolumeCategorySlugs || []
+
+export const slugsToIncludeInRWACategory =
+  marketCategorySlugs.rwaCategorySlugs || []
 
 export const excludedPriceDeviationSlugs = [] as string[]
 
@@ -202,8 +86,33 @@ export const marketPromotions = [
   }
 ] as MarketPromotion[]
 
-export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [INJ_DENOM]
+export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [injToken.denom]
 
 export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
   [key: string]: { price?: string; denom?: string } | undefined
 }
+
+export enum MarketTheme {
+  Memes = 'memes',
+  L1L2 = 'l1l2',
+  Infrastructure = 'infrastructure',
+  DefiDex = 'defi-dex',
+  NFT = 'nft',
+  LiquidStaking = 'liquid-staking',
+  Stablecoins = 'stablecoins'
+}
+
+export const MARKET_THEMES_SLUGS = {
+  [MarketTheme.Memes]: ['ninja-inj', 'nonja-inj'],
+  [MarketTheme.L1L2]: ['weth-usdt', 'btc-usdt-perp', 'inj-usdt'],
+  [MarketTheme.Infrastructure]: ['pyth-usdt-perp'],
+  [MarketTheme.DefiDex]: ['sol-usdt'],
+  [MarketTheme.NFT]: ['talis-inj'],
+  [MarketTheme.LiquidStaking]: ['hdro-inj', 'hinj/inj'],
+  [MarketTheme.Stablecoins]: ['usdc-usdt', 'usde-usdt']
+}
+
+export const marketTypeOptionsToHideCategory = [
+  MarketTypeOption.NewListings,
+  MarketTypeOption.Permissionless
+]

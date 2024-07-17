@@ -1,5 +1,4 @@
-import { Campaign } from '@injectivelabs/sdk-ts'
-import { Token } from '@injectivelabs/token-metadata'
+import { Campaign, TokenStatic } from '@injectivelabs/sdk-ts'
 
 export type Epoch = {
   epoch: number
@@ -36,7 +35,7 @@ export type CampaignRound = {
 }
 
 export type RewardWithToken = {
-  token: Token
+  token: TokenStatic
   amount: string
 }
 

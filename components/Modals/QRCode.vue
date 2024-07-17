@@ -1,33 +1,14 @@
 <script setup lang="ts">
-import { toDataURL } from 'qrcode'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.QrCode])
 
 function closeModal() {
   modalStore.closeModal(Modal.QrCode)
 }
-
-watch(
-  () => isModalOpen.value,
-  (isOpen) => {
-    if (isOpen) {
-      const canvasEl = document.getElementById('qrCodeCanvas') as
-        | HTMLCanvasElement
-        | undefined
-
-      if (canvasEl) {
-        toDataURL(canvasEl, walletStore.injectiveAddress, {
-          width: canvasEl.width
-        })
-      }
-    }
-  },
-  { immediate: true, flush: 'post' }
-)
 </script>
 
 <template>
@@ -36,9 +17,19 @@ watch(
       <h3>{{ $t('common.qrCode') }}</h3>
     </template>
 
-    <div class="max-sm:pt-10">
-      <p class="break-words mb-4">{{ walletStore.injectiveAddress }}</p>
-      <canvas id="qrCodeCanvas" class="mx-auto rounded-md" />
-    </div>
+    <section class="text-center pb-4">
+      <p class="text-sm font-semibold mb-4">
+        {{ sharedWalletStore.injectiveAddress }}
+      </p>
+      <SharedQRCode
+        class="max-w-[80%] w-full mx-auto rounded-lg"
+        :text="sharedWalletStore.injectiveAddress"
+      />
+
+      <!-- <div class="max-sm:pt-10">
+        <p class="break-words mb-4">{{ walletStore.injectiveAddress }}</p>
+        <canvas id="qrCodeCanvas" class="mx-auto rounded-md" />
+      </div> -->
+    </section>
   </AppModal>
 </template>

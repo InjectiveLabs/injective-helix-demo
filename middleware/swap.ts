@@ -1,11 +1,12 @@
-export default defineNuxtRouteMiddleware((to) => {
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
-  const swapRouteName = 'swap'
+import { MainPage } from '@/types'
 
-  if (to.name === swapRouteName && walletStore.isUserWalletConnected) {
+export default defineNuxtRouteMiddleware((to) => {
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (to.name === MainPage.Swap && sharedWalletStore.isUserConnected) {
     accountStore.$patch({
-      subaccountId: walletStore.authZOrDefaultSubaccountId
+      subaccountId: sharedWalletStore.authZOrDefaultSubaccountId
     })
   }
 })

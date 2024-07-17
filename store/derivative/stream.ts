@@ -1,4 +1,9 @@
-import { OrderState, OrderSide, StreamOperation } from '@injectivelabs/ts-types'
+import {
+  OrderSide,
+  OrderState,
+  StreamOperation,
+  TradeExecutionSide
+} from '@injectivelabs/ts-types'
 import {
   streamTrades as grpcStreamsTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -82,15 +87,7 @@ export const streamTrades = (marketId: string) => {
   grpcStreamsTrades({
     marketId,
     callback: ({ trade, operation }) => {
-      if (!trade) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(trade.marketId)
-      ) {
+      if (!trade || trade.executionSide !== TradeExecutionSide.Taker) {
         return
       }
 
@@ -105,11 +102,11 @@ export const streamTrades = (marketId: string) => {
 }
 
 export const streamSubaccountOrderHistory = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -118,14 +115,6 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(order.marketId)
-      ) {
         return
       }
 
@@ -169,11 +158,11 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 }
 
 export const streamSubaccountTrades = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -182,14 +171,6 @@ export const streamSubaccountTrades = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(trade.marketId)
-      ) {
         return
       }
 
@@ -241,11 +222,11 @@ export const streamSubaccountTrades = (marketId?: string) => {
 }
 
 export const streamSubaccountOrders = (marketId?: string) => {
-  const derivativeStore = useDerivativeStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
@@ -254,14 +235,6 @@ export const streamSubaccountOrders = (marketId?: string) => {
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
-        return
-      }
-
-      // filter out non-tradable markets
-      if (
-        !marketId &&
-        !derivativeStore.activeMarketIds.includes(order.marketId)
-      ) {
         return
       }
 

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@injectivelabs/sdk-ui-ts'
 import {
   FeeDiscountTierInfo,
-  getExactDecimalsFromNumber,
-  cosmosSdkDecToBigNumber
+  cosmosSdkDecToBigNumber,
+  getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -20,11 +20,11 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isUserTierLevel = computed(() => {
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return false
   }
 
@@ -80,25 +80,25 @@ const takerFeeDiscount = computed(() => {
   return takerDiscountRate
 })
 
-const { valueToString: makerFeeDiscountToFormat } = useBigNumberFormatter(
+const { valueToString: makerFeeDiscountToFormat } = useSharedBigNumberFormatter(
   makerFeeDiscount,
   {
     decimalPlaces: getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
   }
 )
 
-const { valueToString: stakedAmountToFormat } = useBigNumberFormatter(
+const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
   stakedAmount,
   {
     decimalPlaces: 0
   }
 )
 
-const { valueToString: volumeToFormat } = useBigNumberFormatter(volume, {
+const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
   decimalPlaces: 0
 })
 
-const { valueToString: takerFeeDiscountToFormat } = useBigNumberFormatter(
+const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
   takerFeeDiscount,
   {
     decimalPlaces: getExactDecimalsFromNumber(takerFeeDiscount.value.toNumber())

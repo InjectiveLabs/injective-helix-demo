@@ -1,66 +1,94 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  getMarketSlugFromSubaccountId,
+  isSgtSubaccountId,
   getSubaccountIndex,
-  isSgtSubaccountId
+  getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
 
 const props = defineProps({
-  includeBotsSubaccounts: Boolean,
-  showLowBalance: Boolean
+  showLowBalance: Boolean,
+  includeBotsSubaccounts: Boolean
 })
 
 const accountStore = useAccountStore()
-const walletStore = useWalletStore()
-const { aggregatedPortfolioBalances } = useBalance()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
+const { aggregatedPortfolioBalances } = useBalance()
+
+onMounted(() => {
+  const isSubaccountOptionAvailable = subaccountOptionsFiltered.value.some(
+    (option) => option.value === accountStore.subaccountId
+  )
+
+  if (isSubaccountOptionAvailable) {
+    return
+  }
+
+  const defaultSubaccountId = Object.keys(accountStore.subaccountBalancesMap)[0]
+
+  if (defaultSubaccountId) {
+    accountStore.updateSubaccount(defaultSubaccountId)
+  }
+})
 
 const subaccountOptions = computed(() =>
-  accountStore.hasMultipleSubaccounts
-    ? Object.keys(aggregatedPortfolioBalances.value)
-        .filter((subaccountId) => {
-          const includeBotsSubaccounts =
-            props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
+  Object.keys(aggregatedPortfolioBalances.value)
+    .map((value) => {
+      if (getSubaccountIndex(value) === 0) {
+        return { display: `${t('account.main')}`, value }
+      }
 
-          const hasBalance = aggregatedPortfolioBalances.value[
-            subaccountId
-          ].some((balance) =>
-            new BigNumberInWei(balance.accountTotalBalance).gte(
-              DUST_AMOUNT_THRESHOLD
-            )
-          )
+      if (isSgtSubaccountId(value)) {
+        return {
+          value,
+          display: `SGT ${getMarketSlugFromSubaccountId(value)}`
+        }
+      }
 
-          const includeLowBalance =
-            props.showLowBalance ||
-            hasBalance ||
-            subaccountId === walletStore.defaultSubaccountId
+      return {
+        value,
+        display: getSubaccountIndex(value).toString()
+      }
+    })
+    .sort((a, b) => a.value.localeCompare(b.value))
+)
 
-          return includeBotsSubaccounts && includeLowBalance
-        })
-        .map((value) => {
-          if (getSubaccountIndex(value) === 0) {
-            return { display: `${t('account.main')}`, value }
-          }
+const subaccountOptionsFiltered = computed(() =>
+  subaccountOptions.value.filter(({ value: subaccountId }) => {
+    const includeBotsSubaccounts =
+      props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
 
-          if (isSgtSubaccountId(value)) {
-            return {
-              value,
-              display: `SGT ${getMarketSlugFromSubaccountId(value)}`
-            }
-          }
+    const hasBalance = aggregatedPortfolioBalances.value[subaccountId]?.some(
+      (balance) =>
+        new BigNumberInBase(balance.accountTotalBalance).gte(
+          DUST_AMOUNT_THRESHOLD
+        )
+    )
 
-          return {
-            value,
-            display: getSubaccountIndex(value).toString()
-          }
-        })
-        .sort((a, b) => a.value.localeCompare(b.value))
-    : []
+    const includeLowBalance =
+      props.showLowBalance ||
+      hasBalance ||
+      subaccountId === sharedWalletStore.defaultSubaccountId
+
+    return includeBotsSubaccounts && includeLowBalance
+  })
+)
+
+const activeSubaccountLabel = computed(
+  () =>
+    subaccountOptions.value.find(
+      (option) => option.value === accountStore.subaccountId
+    )?.display
 )
 </script>
 
 <template>
-  <slot v-bind="{ subaccountOptions }" />
+  <slot
+    v-bind="{
+      subaccountOptions: subaccountOptionsFiltered,
+      activeSubaccountLabel
+    }"
+  />
 </template>

@@ -53,7 +53,7 @@ function nextStep() {
                   {{ $t('sgt.setUpABot') }}
                 </p>
 
-                <BaseAccordion v-model="step" v-bind="{ value: 1 }">
+                <SharedAccordion v-model="step" v-bind="{ value: 1 }">
                   <template #content>
                     <div class="space-y-4">
                       <p>
@@ -76,7 +76,7 @@ function nextStep() {
                       </p>
                     </div>
                   </template>
-                </BaseAccordion>
+                </SharedAccordion>
               </div>
             </div>
 
@@ -90,7 +90,7 @@ function nextStep() {
                   {{ $t('sgt.runABot') }}
                 </p>
 
-                <BaseAccordion v-model="step" v-bind="{ value: 2 }">
+                <SharedBaseAccordion v-model="step" v-bind="{ value: 2 }">
                   <template #content>
                     <div class="space-y-4">
                       <p>
@@ -114,7 +114,7 @@ function nextStep() {
                       </p> -->
                     </div>
                   </template>
-                </BaseAccordion>
+                </SharedBaseAccordion>
               </div>
             </div>
 
@@ -128,7 +128,7 @@ function nextStep() {
                   {{ $t('sgt.endABot') }}
                 </p>
 
-                <BaseAccordion v-model="step" v-bind="{ value: 3 }">
+                <SharedAccordion v-model="step" v-bind="{ value: 3 }">
                   <template #content>
                     <div class="space-y-4">
                       <p>{{ $t('sgt.step3.openOrdersCancelled') }}</p>
@@ -142,7 +142,7 @@ function nextStep() {
                       </p>
                     </div>
                   </template>
-                </BaseAccordion>
+                </SharedAccordion>
               </div>
             </div>
           </div>

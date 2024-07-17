@@ -178,13 +178,13 @@ export const detectVPNOrProxyUsageNoThrow = async () => {
 }
 
 export const displayVPNOrProxyUsageToast = () => {
-  const { info } = useNotifications()
+  const notificationStore = useSharedNotificationStore()
 
   const MORE_INFO_URL =
     'https://helixapp.zendesk.com/hc/en-us/articles/5377904870415-Who-can-use-Helix-'
   const TOAST_DURATION = 10 * 1000
 
-  info({
+  notificationStore.info({
     title: 'VPN or proxy detected',
     description:
       'Please make sure that you have allowed location access in your browser and system settings.',

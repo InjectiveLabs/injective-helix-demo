@@ -1,13 +1,14 @@
 import {
-  PiniaPluginContext,
   StateTree,
+  PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { StatusType } from '@injectivelabs/utils'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { AppState, OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -23,10 +24,13 @@ const stateToPersist = {
       },
       preferences: {
         skipTradeConfirmationModal: false,
+        skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
         tradingLayout: TradingLayout.Left,
         subaccountManagement: false,
-        authZManagement: false
+        authZManagement: false,
+        isHideBalances: false,
+        thousandsSeparator: false
       }
     }
   },
@@ -35,19 +39,27 @@ const stateToPersist = {
     subaccountId: ''
   },
 
-  wallet: {
+  sharedWallet: {
+    walletConnectStatus: '',
+    hwAddresses: '',
     wallet: Wallet.Metamask,
     address: '',
     addresses: '',
     injectiveAddress: '',
-    defaultSubaccountId: '',
     addressConfirmation: '',
+    session: '',
 
     authZ: {
       address: '',
       direction: '',
       injectiveAddress: '',
       defaultSubaccountId: ''
+    },
+    autoSign: {
+      privateKey: '',
+      expiration: '',
+      injectiveAddress: '',
+      duration: ''
     }
   }
 } as Record<string, Record<string, any>>
@@ -78,6 +90,7 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
+  'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
@@ -88,7 +101,8 @@ const actionsThatSetAppStateToBusy = [
   'position/closePositionAndReduceOnlyOrders',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
-  'airdrop/claim'
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization'
 ]
 
 const persistState = (
@@ -107,7 +121,7 @@ const persistState = (
 
   const shouldPersistState =
     keysToPersist.length > 0 &&
-    Object.keys(mutation.payload || []).some((key) => {
+    Object.keys(mutation?.payload || []).some((key) => {
       return keysToPersist.includes(key)
     })
 
@@ -115,15 +129,16 @@ const persistState = (
     return
   }
 
+  const source = mutation.payload
+
   const updatedState = keysToPersist.reduce((stateObj, key) => {
     return {
       ...stateObj,
-      [key]: mutation.payload[key] || state[key]
+      [key]: source[key] || state[key]
     }
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
-
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,
@@ -135,7 +150,7 @@ const persistState = (
 
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const appStore = useAppStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -146,10 +161,9 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   store.$onAction(({ name, store: { $id }, after, onError }) => {
     after(() => {
       const type = `${$id}/${name}`
-
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })
@@ -158,8 +172,8 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })

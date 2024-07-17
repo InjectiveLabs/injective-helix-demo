@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Modal, SurveyTitle, TradeSubPage } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { Modal, TradeSubPage } from '@/types'
+
 const route = useRoute()
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -26,8 +26,7 @@ function init() {
       TradeSubPage.Market,
       TradeSubPage.Futures,
       TradeSubPage.Perpetual,
-      TradeSubPage.Derivatives,
-      TradeSubPage.BinaryOption
+      TradeSubPage.Derivatives
     ]
 
     if (!disabledRoutes.includes(route.name as TradeSubPage)) {
@@ -50,14 +49,10 @@ function userFeedbackModalViewed() {
 }
 
 function onTakeSurveyClickEvent() {
-  mixpanelAnalytics.trackSurveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
-
   userFeedbackModalViewed()
 }
 
 function onRejectSurveyClickEvent() {
-  mixpanelAnalytics.trackSurveyRejected(SurveyTitle.HelixUserSurveyFeb23)
-
   userFeedbackModalViewed()
 }
 </script>

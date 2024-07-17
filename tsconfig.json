@@ -4,14 +4,12 @@
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
+    "verbatimModuleSyntax": false,
     "allowSyntheticDefaultImports": true,
     "types": [
       "@vueuse/nuxt",
-      "@pinia/nuxt",
-      "@nuxtjs/i18n",
-      "@injectivelabs/nuxt-bugsnag"
-    ],
-    "verbatimModuleSyntax": false
+      "@pinia/nuxt"
+    ]
   },
   "exclude": [
     "node_modules",

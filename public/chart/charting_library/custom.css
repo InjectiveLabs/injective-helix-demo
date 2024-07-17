@@ -152,14 +152,14 @@ a.properties-tabs-label.active:after {
   top: 50px !important;
 }
 
-.chart-container>.chart-controls-bar {
+.chart-container > .chart-controls-bar {
   background-color: #14151a !important;
   height: 36px !important;
   bottom: -15px !important;
   left: 8px;
 }
 
-.chart-controls-bar>.chart-controls-bar-buttons {
+.chart-controls-bar > .chart-controls-bar-buttons {
   top: 4px !important;
 }
 
@@ -187,7 +187,7 @@ a.properties-tabs-label.active:after {
 .theme-dark .tv-tabbed-dialog,
 .theme-dark .tv-insert-indicator-dialog__search-control,
 .theme-dark .tv-insert-indicator-dialog__search-control .tv-search-row__input {
-  background: #15171e !important;
+  background: #14151a !important;
 }
 
 .button-G7o5fBfa-- .icon-1Y-3MM9F-.hovered--MYZioUu-,
@@ -206,14 +206,18 @@ html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-.hover-3L87f6Kw-:before,
 html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-:active:before,
 html.theme-dark .button-13wlLwhJ-.isOpened-1939ai3F-:before,
 html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-:hover:before,
-html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-.isGrouped-2BBXQnbO-:hover:before {
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isGrouped-2BBXQnbO-:hover:before {
   background: #15171e !important;
   border-color: #121826 !important;
 }
 
-html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-.hover-yHQNmTbI-:before,
-html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:active:before,
-html.theme-dark .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-.hover-yHQNmTbI-:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:active:before,
+html.theme-dark
+  .button-2ioYhFEY-.isInteractive-20uLObIc-.isOpened-p-Ume5l9-:before,
 html.theme-dark .button-13wlLwhJ-:hover:before {
   background: #15171e !important;
   border-color: #121826 !important;
@@ -236,25 +240,27 @@ html.theme-dark .button-13wlLwhJ-:hover:before {
   opacity: 0.75;
 }
 
-html.theme-dark .button-G7o5fBfa--.isTransparent-sRmateFl-.isActive-2mI1-NUL- .icon-1Y-3MM9F- {
+html.theme-dark
+  .button-G7o5fBfa--.isTransparent-sRmateFl-.isActive-2mI1-NUL-
+  .icon-1Y-3MM9F- {
   color: #00f2ff !important;
 }
 
 html.theme-dark .button-G7o5fBfa--:hover .bg-1kRv1Pf2-,
 html.theme-dark .button-88UE6omC-:hover:before {
-  background: #181A21 !important;
+  background: #181a21 !important;
 }
 
 html.theme-dark .scrollBot-2HHpZNuf-,
 html.theme-dark .scrollTop-1eXi8ltS-,
 html.theme-dark .item-stVdeCwG-.interactive-3E0jwVyG-:hover {
-  background: #181A21 !important;
+  background: #181a21 !important;
   color: #d3d7e2 !important;
   opacity: 0.97 !important;
 }
 
 html.theme-dark .button-9pA37sIi {
-  color: #282C39
+  color: #282c39;
 }
 
 html.theme-dark .chart-controls-bar {
@@ -263,25 +269,25 @@ html.theme-dark .chart-controls-bar {
 }
 
 html.theme-dark .chart-page {
-  background: #101219 !important
+  background: #14151a !important;
 }
 
 .paneSeparator-9uSVw3Vg {
-  background: #2A2F41 !important;
+  background: #2a2f41 !important;
 }
 
 .theme-dark:root {
-  --tv-color-platform-background: #101219;
-  --tv-color-pane-background: #101219;
+  --tv-color-platform-background: #14151a;
+  --tv-color-pane-background: #14151a;
   --tv-color-pane-background-secondary: #191c27;
-  --tv-color-toolbar-button-background-hover: #2891E9;
-  --tv-color-toolbar-button-background-secondary-hover: #2891E9;
-  --tv-color-toolbar-button-background-expanded: #2891E9;
-  --tv-color-toolbar-button-text: #282C39;
-  --tv-color-toolbar-button-text-hover: #0F5894;
-  --tv-color-toolbar-button-text-active: #2891E9;
-  --tv-color-toolbar-button-text-active-hover: #0F5894;
-  --tv-color-item-active-text: #0EE29B;
-  --tv-color-toolbar-toggle-button-background-active: #2891E9;
-  --tv-color-toolbar-toggle-button-background-active-hover: #0F5894;
+  --tv-color-toolbar-button-background-hover: #2891e9;
+  --tv-color-toolbar-button-background-secondary-hover: #2891e9;
+  --tv-color-toolbar-button-background-expanded: #2891e9;
+  --tv-color-toolbar-button-text: #282c39;
+  --tv-color-toolbar-button-text-hover: #0f5894;
+  --tv-color-toolbar-button-text-active: #2891e9;
+  --tv-color-toolbar-button-text-active-hover: #0f5894;
+  --tv-color-item-active-text: #0ee29b;
+  --tv-color-toolbar-toggle-button-background-active: #2891e9;
+  --tv-color-toolbar-toggle-button-background-active-hover: #0f5894;
 }

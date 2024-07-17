@@ -1,35 +1,103 @@
-import { defineStore } from 'pinia'
-import { UiLeaderboardEntry } from '@injectivelabs/sdk-ui-ts'
-import { indexerRestLeaderboardChronosApi } from '@/app/Services'
+import { indexerGrpcArchiverApi } from '@/app/Services'
 
 type LeaderboardStoreState = {
-  entries: UiLeaderboardEntry[]
-  lastUpdatedAt: number
+  historicalBalance: {
+    time: number
+    value: number
+  }[]
+
+  historicalPnl: {
+    time: number
+    value: number
+  }[]
+
+  historicalVolume: {
+    time: number
+    value: number
+  }[]
+}
+
+enum LeaderboardResolution {
+  Day = '1D',
+  Week = '1W',
+  Month = '1M'
 }
 
 const initialStateFactory = (): LeaderboardStoreState => ({
-  entries: [],
-  lastUpdatedAt: 0
+  historicalBalance: [],
+  historicalPnl: [],
+  historicalVolume: []
 })
 
 export const useLeaderboardStore = defineStore('leaderboard', {
   state: (): LeaderboardStoreState => initialStateFactory(),
   actions: {
-    async init() {
+    async fetchHistoricalBalance(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
       const leaderboardStore = useLeaderboardStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      await leaderboardStore.fetchLeaderboard('1d')
-    },
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalBalance({
+        account: sharedWalletStore.injectiveAddress,
+        resolution
+      })
 
-    async fetchLeaderboard(resolution: string) {
-      const leaderboardStore = useLeaderboardStore()
-
-      const { updatedAt, entries } =
-        await indexerRestLeaderboardChronosApi.fetchLeaderboard(resolution)
+      const historicalBalance = t.map((time, index) => {
+        return {
+          time: time * 1000,
+          value: v[index]
+        }
+      })
 
       leaderboardStore.$patch({
-        entries: entries || [],
-        lastUpdatedAt: updatedAt
+        historicalBalance: historicalBalance.reverse()
+      })
+    },
+
+    async fetchHistoricalPnl(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
+      const leaderboardStore = useLeaderboardStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalRpnl({
+        account: sharedWalletStore.injectiveAddress,
+        resolution
+      })
+
+      const historicalPnl = t.map((time, index) => {
+        return {
+          time: time * 1000,
+          value: v[index]
+        }
+      })
+
+      leaderboardStore.$patch({
+        historicalPnl: historicalPnl.reverse()
+      })
+    },
+
+    async fetchHistoricalVolume(
+      resolution: LeaderboardResolution = LeaderboardResolution.Week
+    ) {
+      const leaderboardStore = useLeaderboardStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      const { t, v } = await indexerGrpcArchiverApi.fetchHistoricalVolumes({
+        account: sharedWalletStore.injectiveAddress,
+        resolution
+      })
+
+      const historicalVolume = t.map((time, index) => {
+        return {
+          time: time * 1000,
+          value: v[index]
+        }
+      })
+
+      leaderboardStore.$patch({
+        historicalVolume: historicalVolume.reverse()
       })
     }
   }
