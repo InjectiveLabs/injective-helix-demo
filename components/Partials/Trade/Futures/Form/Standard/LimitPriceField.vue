@@ -3,8 +3,11 @@ import {
   BusEvents,
   MarketKey,
   UiDerivativeMarket,
+  DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -14,6 +17,12 @@ const { value: limit, errorMessage } = useStringField({
   name: DerivativesTradeFormField.LimitPrice,
   initialValue: '',
   dynamicRule: computed(() => {
+    if (
+      derivativeFormValues.value[DerivativesTradeFormField.BypassPriceWarning]
+    ) {
+      return ''
+    }
+
     return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
