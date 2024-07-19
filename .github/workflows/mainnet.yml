@@ -25,7 +25,7 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_MAINTENANCE_ENABLED: true
       VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
 
@@ -105,7 +105,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Notify Slack"
+      - name: 'Notify Slack'
         run: |
           # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
           last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
@@ -125,8 +125,8 @@ jobs:
     needs: [mainnet]
     if: always() && github.event_name == 'workflow_dispatch' && (needs.mainnet.result == 'success')
     steps:
-      - name: "Notify Slack"
-        run: |  
+      - name: 'Notify Slack'
+        run: |
           payload='{
             "text": "'"<!here> 🚀 Helix Redeployed on Mainnet! Good guys, close your eyes! 🛠️😄."'",
             "attachments": [

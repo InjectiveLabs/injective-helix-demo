@@ -26,6 +26,26 @@ export const useWalletStore = defineStore('wallet', {
       await sharedWalletStore.init()
     },
 
+    async connectAddressOrPrivatekey({
+      wallet,
+      addressOrPk
+    }: {
+      wallet?: Wallet
+      addressOrPk: string
+    }) {
+      const SharedWalletStore = useSharedWalletStore()
+
+      if (!wallet) {
+        await SharedWalletStore.connectAddress(addressOrPk)
+
+        return
+      }
+
+      if (wallet === Wallet.PrivateKey) {
+        await SharedWalletStore.connectPrivateKey(addressOrPk)
+      }
+    },
+
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
