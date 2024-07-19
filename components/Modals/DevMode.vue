@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { WalletConnectStatus } from '@shared/types'
 import { Modal } from '@/types'
 
 enum ConnectType {
@@ -81,7 +80,7 @@ function connectViaAddress() {
     })
     .then(() => success({ title: t('connect.successfullyConnected') }))
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+      walletStore.disconnect()
       $onError(e)
     })
     .finally(() => {
@@ -105,7 +104,7 @@ function connectViaPrivateKey() {
     })
     .then(() => success({ title: t('connect.successfullyConnected') }))
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
+      walletStore.disconnect()
       $onError(e)
     })
     .finally(() => {
