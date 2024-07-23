@@ -39,10 +39,6 @@ const isModalOpen = computed(() =>
 )
 
 onWalletConnected(() => {
-  if (!props.isSpot) {
-    return
-  }
-
   checkUserIsDisallowed()
 })
 
