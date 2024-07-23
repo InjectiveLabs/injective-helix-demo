@@ -2,16 +2,13 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
-import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import { Modal, IsSpotKey, MarketKey } from '@/types'
+import { IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
 })
 
 const route = useRoute()
-const appStore = useAppStore()
-const modalStore = useModalStore()
 const derivativeStore = useDerivativeStore()
 
 const { $onError } = useNuxtApp()
@@ -46,15 +43,6 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
-
-  if (
-    isCountryRestrictedForPerpetualMarkets(
-      appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country
-    )
-  ) {
-    modalStore.openModal(Modal.MarketRestricted)
-  }
 
   streamDerivativeData()
 })

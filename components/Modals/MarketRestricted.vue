@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { Modal, MainPage, UiMarketWithToken } from '@/types'
-import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
+import {
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -14,36 +17,26 @@ const props = defineProps({
   }
 })
 
-const disallowedTokenSymbol = computed(() => {
-  const disallowedToken = [
-    props.market.baseToken,
-    props.market.quoteToken
-  ].find((token) =>
-    isCountryRestrictedForSpotMarket({
-      country:
-        appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country,
-      denomOrSymbol: token.symbol.toLowerCase()
-    })
-  )
+const isModalOpen = computed(() => modalStore.modals[Modal.MarketRestricted])
 
-  return disallowedToken?.symbol
-})
-
-const isModalOpen = computed(() =>
-  props.isSpot
-    ? !!(
-        modalStore.modals[Modal.MarketRestricted] && disallowedTokenSymbol.value
-      )
-    : modalStore.modals[Modal.MarketRestricted]
-)
-
-onWalletConnected(() => {
+onMounted(() => {
   checkUserIsDisallowed()
 })
 
 function checkUserIsDisallowed() {
-  if (disallowedTokenSymbol.value) {
+  const isRestricted = props.isSpot
+    ? isCountryRestrictedForSpotMarket({
+        country:
+          appStore.userState.geoLocation.browserCountry ||
+          appStore.userState.geoLocation.country,
+        denomOrSymbol: props.market.baseToken.symbol.toLowerCase()
+      })
+    : isCountryRestrictedForPerpetualMarkets(
+        appStore.userState.geoLocation.browserCountry ||
+          appStore.userState.geoLocation.country
+      )
+
+  if (isRestricted) {
     modalStore.openModal(Modal.MarketRestricted)
   }
 }
@@ -65,7 +58,7 @@ function closeModal() {
       <p class="text-center text-sm text-gray-100">
         {{
           $t(`marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
-            symbol: disallowedTokenSymbol
+            symbol: market.baseToken.symbol
           })
         }}
       </p>

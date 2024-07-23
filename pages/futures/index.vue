@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { isCountryRestrictedForPerpetualMarkets } from '@/app/data/geoip'
-import { IsSpotKey, MarketKey, Modal } from '@/types'
+import { IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
 })
 
-const appStore = useAppStore()
-const modalStore = useModalStore()
 const route = useRoute()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -45,15 +42,6 @@ onMounted(() => {
     .finally(() => {
       status.setIdle()
     })
-
-  if (
-    isCountryRestrictedForPerpetualMarkets(
-      appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country
-    )
-  ) {
-    modalStore.openModal(Modal.MarketRestricted)
-  }
 
   streamDerivativeData()
 })

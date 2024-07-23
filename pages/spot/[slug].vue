@@ -61,6 +61,6 @@ provide(IsSpotKey, true)
       </template>
     </PartialsTradeLayout>
 
-    <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
+    <ModalsMarketRestricted v-if="market" v-bind="{ market, isSpot: true }" />
   </div>
 </template>
