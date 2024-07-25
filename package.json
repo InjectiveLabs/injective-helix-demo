@@ -113,10 +113,11 @@
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
     "vee-validate": "4.11.7",
-    "@injectivelabs/utils": "1.14.13-beta.0",
-    "@injectivelabs/ts-types": "1.14.13-beta.0",
-    "@injectivelabs/networks": "1.14.13-beta.0",
-    "@injectivelabs/sdk-ts": "1.14.12-dev.8",
-    "@injectivelabs/wallet-ts": "1.14.12-dev.8"
+    "nuxi": "3.11.1",
+    "@injectivelabs/utils": "1.14.13-dev.3",
+    "@injectivelabs/ts-types": "1.14.13-dev.3",
+    "@injectivelabs/networks": "1.14.13-dev.3",
+    "@injectivelabs/sdk-ts": "1.14.12-dev.18",
+    "@injectivelabs/wallet-ts": "1.14.12-dev.18"
   }
 }
