@@ -9,7 +9,7 @@ import {
   GuildCampaignSummary,
   toUtf8
 } from '@injectivelabs/sdk-ts'
-import { awaitForAll } from '@injectivelabs/utils'
+import { HttpClient, awaitForAll } from '@injectivelabs/utils'
 import { wasmApi } from '@shared/Service'
 import {
   pollGuildDetails,
@@ -44,6 +44,7 @@ type CampaignStoreState = {
   ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
+  leaderboard: undefined
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -64,7 +65,8 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerCampaignInfo: undefined,
   ownerRewards: [],
   guildCampaignSummary: undefined,
-  claimedRewards: []
+  claimedRewards: [],
+  leaderboard: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -249,6 +251,35 @@ export const useCampaignStore = defineStore('campaign', {
       })
 
       campaignStore.$patch({ round: campaigns })
+    },
+
+    async fetchLeaderboard({
+      type,
+      duration,
+      limit
+    }: {
+      type: string
+      duration: string
+      limit?: number
+    }) {
+      const campaignStore = useCampaignStore()
+      const httpClient = new HttpClient('https://162.55.103.170:4454/')
+
+      try {
+        const LEADERBOARD_SUFFIX = `/api/history/v1/leaderboard/${type}/${duration}`
+        console.log('trying')
+        const { data: leaderboard } = (await httpClient.get(
+          LEADERBOARD_SUFFIX
+        )) as {
+          data: any
+        }
+
+        campaignStore.$patch({ leaderboard })
+
+        console.log({ leaderboard })
+      } catch (e: unknown) {
+        console.log({ e })
+      }
     },
 
     reset() {

@@ -1,0 +1,56 @@
+<script setup lang="ts">
+import { LeaderboardType, LeaderboardSubPage } from '@/types'
+
+const route = useRoute()
+
+const leaderboardOptions = {
+  [LeaderboardType.Pnl]: LeaderboardSubPage.Pnl,
+  [LeaderboardType.Volume]: LeaderboardSubPage.Volume
+}
+</script>
+
+<template>
+  <div class="relative">
+    <div
+      class="bg-[url('/images/leaderboard/pnl-bg.png')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"
+    />
+
+    <div class="container lg:px-[120px] mx-auto text-center relative">
+      <section class="flex flex-col space-y-2 py-2 md:py-40">
+        <div class="uppercase font-rubik font-black text-3xl md:text-6xl">
+          {{ $t('leaderboard.title') }}
+        </div>
+        <div class="max-sm:text-xs">
+          {{ $t('leaderboard.description') }}
+        </div>
+      </section>
+
+      <section class="h-flex-full">
+        <div class="text-left mb-4 md:mb-10">
+          <NuxtLink
+            v-for="[type, pageName] in Object.entries(leaderboardOptions)"
+            :key="type"
+            v-bind="{ value: type }"
+            class="capitalize px-4 py-2 text-sm md:text-lg font-semibold border-b whitespace-nowrap leading-6"
+            :class="{
+              'text-gray-200': route.name !== pageName,
+              'border-blue-500 text-blue-500': route.name === pageName
+            }"
+            :to="{
+              name: pageName
+            }"
+          >
+            {{ $t(`leaderboard.tabs.${type}`) }}
+          </NuxtLink>
+        </div>
+
+        <NuxtPage
+          :transition="{
+            name: 'fade',
+            mode: 'out-in'
+          }"
+        />
+      </section>
+    </div>
+  </div>
+</template>

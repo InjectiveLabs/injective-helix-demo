@@ -11,7 +11,6 @@ export enum MainPage {
   TradeAndEarn = 'trade-and-earn',
   LiquidityProvision = 'liquidity-provision',
   Institutional = 'institutional',
-  PnlLeaderboard = 'pnl-leaderboard',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
@@ -33,10 +32,6 @@ export enum ActivitySubPage {
 
 export enum CampaignSubPage {
   GuildDetails = 'guild-guild'
-}
-
-export enum AccountSubPage {
-  Positions = 'account-positions'
 }
 
 export enum TradingBotsSubPage {
@@ -77,4 +72,9 @@ export enum PortfolioSubPage {
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
   OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
+}
+
+export enum LeaderboardSubPage {
+  Pnl = 'leaderboard',
+  Volume = 'leaderboard-volume'
 }
