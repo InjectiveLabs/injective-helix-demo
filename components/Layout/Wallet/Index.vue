@@ -137,7 +137,11 @@ watch(isModalOpen, (newShowModalState) => {
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton v-else @click="onWalletConnect">
+  <AppButton
+    v-else
+    :data-cy="dataCyTag(`button-connect-wallet`)"
+    @click="onWalletConnect"
+  >
     {{ $t('connect.connectWallet') }}
   </AppButton>
 

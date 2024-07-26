@@ -25,7 +25,7 @@ const id = Math.random().toString()
       class="inp-cbx"
       type="checkbox"
     />
-    <label class="cbx" :for="id">
+    <label class="cbx" :for="id" :data-cy="dataCyTag(`show-low-vol-checkbox`)">
       <span>
         <svg width="12px" height="10px">
           <use xlink:href="#check-4"></use>

@@ -77,7 +77,9 @@ const unknownTokenStatus = inject(
 <template>
   <div>
     <div class="container py-10">
-      <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
+      <h3 class="text-2xl font-semibold" :data-cy="dataCyTag(`header`)">
+        {{ $t('trade.markets') }}
+      </h3>
 
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
@@ -96,6 +98,7 @@ const unknownTokenStatus = inject(
               v-bind="{ value }"
               class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
+              :data-cy="dataCyTag(`market-type-${value}`)"
               @update:model-value="onMarketTypeChange"
             >
               {{ value }}
@@ -110,6 +113,7 @@ const unknownTokenStatus = inject(
                 v-model="search"
                 type="text"
                 class="focus:outline-none bg-transparent p-1 px-3 w-full"
+                :data-cy="dataCyTag(`search-field`)"
               />
 
               <div class="flex items-center pr-3">
@@ -133,6 +137,7 @@ const unknownTokenStatus = inject(
               v-bind="{ value }"
               class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
               active-classes="text-white !bg-brand-700"
+              :data-cy="dataCyTag(`chain-${value}`)"
             >
               {{ value }}
             </AppButtonSelect>
@@ -158,6 +163,7 @@ const unknownTokenStatus = inject(
                 v-bind="{ value }"
                 class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
                 active-classes="text-white !bg-brand-800"
+                :data-cy="dataCyTag(`quote-${value}`)"
               >
                 {{ value }}
               </AppButtonSelect>

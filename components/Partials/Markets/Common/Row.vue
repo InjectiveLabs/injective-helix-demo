@@ -117,7 +117,11 @@ function toggleFavorite() {
           <span>{{ market.ticker }}</span>
         </CommonHeaderTooltip>
 
-        <div v-if="isMarketsPage" class="text-xs font-normal text-gray-500">
+        <div
+          v-if="isMarketsPage"
+          class="text-xs font-normal text-gray-500"
+          :data-cy="dataCyTag(`baseToken-${market.baseToken.name}`)"
+        >
           {{ market.baseToken.name }}
         </div>
       </div>
@@ -127,7 +131,12 @@ function toggleFavorite() {
       <div>
         {{ lastPriceToString }}
       </div>
-      <div class="text-2xs text-gray-500">${{ lastPriceInUsdToString }}</div>
+      <div
+        class="text-2xs text-gray-500"
+        :data-cy="dataCyTag(`tokenPrice-${market.baseToken.name}`)"
+      >
+        ${{ lastPriceInUsdToString }}
+      </div>
     </div>
 
     <div
@@ -149,6 +158,7 @@ function toggleFavorite() {
     <div
       v-if="isMarketsPage"
       class="flex-2 flex items-center p-2 space-x-8 justify-end"
+      :data-cy="dataCyTag(`trade-${market.marketId}`)"
     >
       <NuxtLink class="text-blue-500 hover:text-blue-600">
         {{ $t('trade.trade') }}
