@@ -19,6 +19,8 @@ export default {
       [LeaderboardDuration.OneWeek]: '1 Week',
       [LeaderboardDuration.OneMonth]: '1 Month'
     },
+    currentDuration: ({ named }: I18nMessageFunction) =>
+      `Trading PnL (${named('duration')})`,
     timePeriod: ({ named }: I18nMessageFunction) =>
       `Time Period: ${named('startDate')} - ${named('endDate')}`,
     myStats: 'My Stats',
@@ -30,6 +32,8 @@ export default {
       volume: 'All Markets Trading Volume (USD)'
     },
     share: 'Share',
-    viewMore: 'View More'
+    viewMore: 'View More',
+    competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate(['Time Remaining: ', named('duration')])
   }
 }

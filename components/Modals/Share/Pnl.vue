@@ -107,7 +107,13 @@ watchDebounced(
         </div>
 
         <div class="space-y-6 flex-grow mt-10 mb-8">
-          <div class="text-left">{{ $t('leaderboard.header.tradingPnl') }}</div>
+          <div class="text-left">
+            {{
+              $t('leaderboard.currentDuration', {
+                duration: $t(`leaderboard.duration.${selectedDuration}`)
+              })
+            }}
+          </div>
           <div
             class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap"
             :class="{

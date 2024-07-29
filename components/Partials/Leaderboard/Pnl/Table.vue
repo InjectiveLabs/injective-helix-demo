@@ -3,9 +3,13 @@ const campaignStore = useCampaignStore()
 
 const limit = ref(20)
 
-const filteredPnlLeaderboard = computed(() =>
-  campaignStore.leaderboard.leaders.slice(0, limit.value)
-)
+const filteredPnlLeaderboard = computed(() => {
+  if (!campaignStore.leaderboard?.leaders) {
+    return []
+  }
+
+  return campaignStore.leaderboard.leaders.slice(0, limit.value)
+})
 
 function incrementLimit() {
   const LIMIT_INCREMENT_AMOUNT = 20

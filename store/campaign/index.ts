@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia'
 import {
   Guild,
+  toUtf8,
   Campaign,
   toBase64,
+  CampaignV2,
   fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary,
-  toUtf8
+  GuildCampaignSummary
 } from '@injectivelabs/sdk-ts'
-import { HttpClient, awaitForAll } from '@injectivelabs/utils'
+import { awaitForAll } from '@injectivelabs/utils'
 import { wasmApi } from '@shared/Service'
 import {
   pollGuildDetails,
@@ -22,8 +23,9 @@ import {
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
-import { CampaignWithScAndData } from '@/types'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { CampaignWithScAndData, LeaderboardType } from '@/types'
+import leaderboard from '@/app/data/leaderboard.json'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -45,6 +47,7 @@ type CampaignStoreState = {
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
   leaderboard: undefined
+  activeCampaignByType: CampaignV2
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -66,7 +69,8 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerRewards: [],
   guildCampaignSummary: undefined,
   claimedRewards: [],
-  leaderboard: undefined
+  leaderboard: undefined,
+  activeCampaignByType: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -255,31 +259,47 @@ export const useCampaignStore = defineStore('campaign', {
 
     async fetchLeaderboard({
       type,
+      limit,
       duration,
-      limit
+      resolution
     }: {
       type: string
-      duration: string
+      resolution?: string
+      duration?: {
+        startDate: string
+        endDate: string
+      }
       limit?: number
     }) {
       const campaignStore = useCampaignStore()
-      const httpClient = new HttpClient('https://162.55.103.170:4454/')
 
       try {
-        const LEADERBOARD_SUFFIX = `/api/history/v1/leaderboard/${type}/${duration}`
-        console.log('trying')
-        const { data: leaderboard } = (await httpClient.get(
-          LEADERBOARD_SUFFIX
-        )) as {
-          data: any
-        }
-
+        console.log({ leaderboard })
         campaignStore.$patch({ leaderboard })
 
         console.log({ leaderboard })
       } catch (e: unknown) {
         console.log({ e })
       }
+    },
+
+    async fetchActiveCampaigns(type: LeaderboardType) {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        type,
+        active: true
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const activeCampaignByType = campaigns.find(
+        ({ type: activeType }: CampaignV2) => activeType === type
+      )
+
+      campaignStore.$patch({ activeCampaignByType })
     },
 
     reset() {

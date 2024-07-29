@@ -22,7 +22,7 @@ defineProps({
 
     <div
       class="absolute top-4 right-16"
-      :class="[isPnl ? 'text-[#FFFC4D]' : 'text-[#0FE824]']"
+      :class="[isPnl ? 'text-[#FFFC4D]' : 'text-green-450']"
     >
       <div class="relative">
         <SharedIcon name="star-four-point" class="min-w-4 w-4 h-4" />

@@ -26,22 +26,26 @@ const leaderboardOptions = {
       </section>
 
       <section class="h-flex-full">
-        <div class="text-left mb-4 md:mb-10">
-          <NuxtLink
-            v-for="[type, pageName] in Object.entries(leaderboardOptions)"
-            :key="type"
-            v-bind="{ value: type }"
-            class="capitalize px-4 py-2 text-sm md:text-lg font-semibold border-b whitespace-nowrap leading-6"
-            :class="{
-              'text-gray-200': route.name !== pageName,
-              'border-blue-500 text-blue-500': route.name === pageName
-            }"
-            :to="{
-              name: pageName
-            }"
-          >
-            {{ $t(`leaderboard.tabs.${type}`) }}
-          </NuxtLink>
+        <div class="flex justify-between mb-4 md:mb-10">
+          <div>
+            <NuxtLink
+              v-for="[type, pageName] in Object.entries(leaderboardOptions)"
+              :key="type"
+              v-bind="{ value: type }"
+              class="capitalize px-4 py-2 text-sm md:text-lg font-semibold border-b whitespace-nowrap leading-6"
+              :class="{
+                'text-gray-200': route.name !== pageName,
+                'border-blue-500 text-blue-500': route.name === pageName
+              }"
+              :to="{
+                name: pageName
+              }"
+            >
+              {{ $t(`leaderboard.tabs.${type}`) }}
+            </NuxtLink>
+          </div>
+
+          <div id="campaign-time-left" />
         </div>
 
         <NuxtPage

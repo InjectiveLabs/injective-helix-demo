@@ -39,11 +39,15 @@ const endDateFormatted = computed(() => {
   return format(zonedLastDate, "MMMM dd, yyyy H:mm:ss 'UTC'")
 })
 
-const userStats = computed(() =>
-  campaignStore.leaderboard.leaders.find(
+const userStats = computed(() => {
+  if (!campaignStore.leaderboard?.leaders) {
+    return
+  }
+
+  return campaignStore.leaderboard.leaders.find(
     (leader) => leader.account === sharedWalletStore.address
   )
-)
+})
 
 onMounted(() => {
   fetchPnlLeaderboard()
@@ -55,7 +59,7 @@ function fetchPnlLeaderboard() {
   campaignStore
     .fetchLeaderboard({
       type: LeaderboardType.Pnl,
-      duration: selectedDuration.value
+      resolution: selectedDuration.value
     })
     .catch($onError)
     .finally(() => status.setIdle())

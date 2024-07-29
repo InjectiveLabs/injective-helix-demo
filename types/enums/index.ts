@@ -533,8 +533,8 @@ export enum LiquidityProvisionTypeOption {
 }
 
 export enum LeaderboardType {
-  Pnl = 'pnl',
-  Volume = 'trading-ompetition'
+  Pnl = 'pnl_leaderboard',
+  Volume = 'volume_leaderboard'
 }
 
 export enum LeaderboardDuration {
