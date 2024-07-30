@@ -1,6 +1,13 @@
+import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
+import {
+  fetchLeaderboardByDuration,
+  fetchLeaderboardByResolution
+} from '@/store/leaderboard/utils'
 import { indexerGrpcArchiverApi } from '@/app/Services'
+import { LeaderboardType } from '@/types'
 
 type LeaderboardStoreState = {
+  leaderboard?: PnlLeaderboard | VolLeaderboard
   historicalBalance: {
     time: number
     value: number
@@ -24,6 +31,7 @@ enum LeaderboardResolution {
 }
 
 const initialStateFactory = (): LeaderboardStoreState => ({
+  leaderboard: undefined,
   historicalBalance: [],
   historicalPnl: [],
   historicalVolume: []
@@ -98,6 +106,37 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       leaderboardStore.$patch({
         historicalVolume: historicalVolume.reverse()
+      })
+    },
+
+    async fetchLeaderboard({
+      type,
+      duration,
+      resolution
+    }: {
+      type: LeaderboardType
+      resolution?: string
+      duration?: {
+        startDate: number
+        endDate: number
+      }
+    }) {
+      const leaderboardStore = useLeaderboardStore()
+
+      if (resolution) {
+        leaderboardStore.$patch({
+          leaderboard: await fetchLeaderboardByResolution(type, resolution)
+        })
+
+        return
+      }
+
+      if (!duration) {
+        return
+      }
+
+      leaderboardStore.$patch({
+        leaderboard: await fetchLeaderboardByDuration(type, duration)
       })
     }
   }

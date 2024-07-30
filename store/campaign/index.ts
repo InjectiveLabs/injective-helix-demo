@@ -25,7 +25,6 @@ import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
 import { CampaignWithScAndData, LeaderboardType } from '@/types'
-import leaderboard from '@/app/data/leaderboard.json'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -46,7 +45,6 @@ type CampaignStoreState = {
   ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
-  leaderboard: undefined
   activeCampaignByType?: CampaignV2
 }
 
@@ -69,7 +67,6 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerRewards: [],
   guildCampaignSummary: undefined,
   claimedRewards: [],
-  leaderboard: undefined,
   activeCampaignByType: undefined
 })
 
@@ -257,51 +254,23 @@ export const useCampaignStore = defineStore('campaign', {
       campaignStore.$patch({ round: campaigns })
     },
 
-    async fetchLeaderboard({
-      type,
-      limit,
-      duration,
-      resolution
-    }: {
-      type: string
-      resolution?: string
-      duration?: {
-        startDate: string
-        endDate: string
-      }
-      limit?: number
-    }) {
-      const campaignStore = useCampaignStore()
-
-      try {
-        console.log({ leaderboard })
-        campaignStore.$patch({ leaderboard })
-
-        console.log({ leaderboard })
-      } catch (e: unknown) {
-        console.log({ e })
-      }
-    },
-
     async fetchActiveCampaigns(type: LeaderboardType) {
       const campaignStore = useCampaignStore()
 
-      // const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-      //   type,
-      //   active: true
-      // })
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        type,
+        active: true
+      })
 
-      // if (campaigns.length === 0) {
-      //   return
-      // }
+      if (campaigns.length === 0) {
+        return
+      }
 
-      // const activeCampaignByType = campaigns.find(
-      //   ({ type: activeType }: CampaignV2) => activeType === type
-      // )
+      const activeCampaignByType = campaigns.find(
+        ({ type: activeType }: CampaignV2) => activeType === type
+      )
 
-      console.log({ campaigns })
-
-      campaignStore.$patch({ activeCampaignsByType: campaigns })
+      campaignStore.$patch({ activeCampaignByType })
     },
 
     reset() {

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-const campaignStore = useCampaignStore()
+const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
 
 const filteredPnlLeaderboard = computed(() => {
-  if (!campaignStore.leaderboard?.leaders) {
+  if (!leaderboardStore.leaderboard?.leaders) {
     return []
   }
 
-  return campaignStore.leaderboard.leaders.slice(0, limit.value)
+  return leaderboardStore.leaderboard.leaders.slice(0, limit.value)
 })
 
 function incrementLimit() {
@@ -48,7 +48,7 @@ function incrementLimit() {
       <PartialsLeaderboardTableBottomGradient
         v-if="
           filteredPnlLeaderboard.length !==
-          campaignStore.leaderboard.leaders.length
+          leaderboardStore.leaderboard?.leaders.length
         "
       />
     </div>
@@ -56,14 +56,14 @@ function incrementLimit() {
     <CommonEmptyList
       v-else
       v-bind="{
-        message: $t('leaderboard.noPnlData')
+        message: $t('leaderboard.pnl.noPnlData')
       }"
     />
 
     <PartialsLeaderboardViewMore
       v-if="
         filteredPnlLeaderboard.length !==
-        campaignStore.leaderboard.leaders.length
+        leaderboardStore.leaderboard?.leaders.length
       "
       @limit:increment="incrementLimit"
     />

@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import { Status, BigNumberInBase, StatusType } from '@injectivelabs/utils'
-import { sharedGetDuration } from '@shared/utils/formatter'
-import { Modal, BusEvents, LeaderboardType } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedGetDuration } from '@shared/utils/time'
+import { LeaderboardType } from '@/types'
 
-const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
+const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
 const userStats = computed(() => {
-  if (!campaignStore.leaderboard?.leaders) {
+  if (!leaderboardStore.leaderboard?.leaders) {
     return
   }
 
-  return campaignStore.leaderboard.leaders.find(
+  return leaderboardStore.leaderboard.leaders.find(
     (leader) => leader.account === sharedWalletStore.address
   )
 })
@@ -29,7 +29,7 @@ const timeLeftInCampaign = computed(() => {
 
   const duration = sharedGetDuration({
     endDateInMilliseconds: campaignStore.activeCampaignByType.endDate,
-    nowInMilliseconds: new BigNumberInBase(now.value.getTime())
+    nowInMilliseconds: now.value.getTime().toString()
   })
 
   return `${String(duration.days).padStart(2, '0')}:${String(
@@ -49,21 +49,20 @@ function fetchCampaign() {
   campaignStore
     .fetchActiveCampaigns(LeaderboardType.Volume)
     .then(async () => {
-      await campaignStore
-        .fetchLeaderboard({
-          type: LeaderboardType.Pnl
-          // duration: { startDate, endDate } // todo
-        })
-        .catch($onError)
+      if (!campaignStore.activeCampaignByType) {
+        return
+      }
+
+      return await leaderboardStore.fetchLeaderboard({
+        type: LeaderboardType.Volume,
+        duration: {
+          startDate: Number(campaignStore.activeCampaignByType.startDate),
+          endDate: Number(campaignStore.activeCampaignByType.endDate)
+        }
+      })
     })
     .catch($onError)
     .finally(() => status.setIdle())
-}
-
-function onSharePnl() {
-  modalStore.openModal(Modal.SharePnl)
-
-  useEventBus(BusEvents.SharePnlOpened).emit()
 }
 </script>
 
@@ -71,57 +70,65 @@ function onSharePnl() {
   <div>
     <AppHocLoading v-bind="{ status }">
       <div class="overflow-x-auto">
-        <Teleport to="#campaign-time-left">
+        <Teleport
+          v-if="campaignStore.activeCampaignByType"
+          to="#campaign-time-left"
+        >
           <i18n-t
             tag="p"
-            keypath="leaderboard.competitionDuration"
-            class="text-base leading-5 text-gray-350 flex"
+            keypath="leaderboard.volume.competitionDuration"
+            class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
           >
             <template #duration>
-              <div class="text-xl leading-6 font-bold text-white ml-2">
+              <div
+                class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
+              >
                 {{ timeLeftInCampaign }}
               </div>
             </template>
           </i18n-t>
         </Teleport>
 
-        <div class="w-full min-w-[750px] text-sm relative">
+        <div class="w-full text-sm relative">
           <PartialsLeaderboardMyStats v-if="userStats">
             <template #add-on>
               <div
                 class="flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
-                @click="onSharePnl"
               >
-                <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
-
-                <p class="text-[11px] leading-[13px] font-medium">
-                  {{ $t('leaderboard.share') }}
+                <p
+                  class="text-xs md:text-sm font-semibold leading-4 text-gray-925 uppercase"
+                >
+                  {{ $t('leaderboard.volume.keepGoing') }}
                 </p>
               </div>
             </template>
 
             <template #row>
               <div>
-                <PartialsLeaderboardPnlCommonTableWrapper class="text-[11px]">
-                  <PartialsLeaderboardPnlCommonHeader />
-                </PartialsLeaderboardPnlCommonTableWrapper>
-
-                <PartialsLeaderboardPnlCommonTableWrapper
-                  class="text-sm my-1 items-center text-white"
-                >
-                  <PartialsLeaderboardPnlCommonRow
+                <div class="hidden md:block">
+                  <PartialsLeaderboardVolumeMyStatsRow
                     v-bind="{
-                      pnl: userStats.pnl,
                       rank: userStats.rank,
+                      volume: userStats.volume,
                       account: userStats.account
                     }"
                   />
-                </PartialsLeaderboardPnlCommonTableWrapper>
+                </div>
+
+                <div class="md:hidden">
+                  <PartialsLeaderboardVolumeMyStatsMobileRow
+                    v-bind="{
+                      rank: userStats.rank,
+                      volume: userStats.volume,
+                      account: userStats.account
+                    }"
+                  />
+                </div>
               </div>
             </template>
           </PartialsLeaderboardMyStats>
 
-          <PartialsLeaderboardPnlTable />
+          <PartialsLeaderboardVolumeTable />
         </div>
       </div>
     </AppHocLoading>

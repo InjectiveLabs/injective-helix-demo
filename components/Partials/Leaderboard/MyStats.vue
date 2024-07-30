@@ -6,8 +6,8 @@ defineProps({
 
 <template>
   <div
-    class="pt-4 md:pt-6 pb-7 md:pb-10 rounded-[4px] relative h-flex-full mb-10"
-    :class="[isPnl ? 'pnl-gradient' : 'bg-[#1472FF]']"
+    class="pt-4 md:pt-6 pb-7 md:pb-10 rounded-[4px] relative h-flex-full mb-10 bg-texture"
+    :class="[isPnl ? 'pnl-gradient darken' : 'bg-[#1472FF] opacity']"
   >
     <div class="pl-4 md:pl-7 flex items-center space-x-2 md:space-x-4 mb-4">
       <div class="flex space-x-2 items-center relative">
@@ -53,7 +53,7 @@ defineProps({
   background: linear-gradient(90deg, #2f9bff 0%, #9747ff 100%);
 }
 
-.pnl-gradient:before {
+.bg-texture:before {
   content: '';
   position: absolute;
   top: 0;
@@ -61,8 +61,15 @@ defineProps({
   width: 100%;
   height: 100%;
   background-size: cover;
-  opacity: 0.3;
   border-radius: 4px;
   background-image: url('/images/leaderboard/pnl-texture.jpeg');
+}
+
+.darken:before {
+  mix-blend-mode: darken;
+}
+
+.opacity:before {
+  opacity: 0.1;
 }
 </style>

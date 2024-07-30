@@ -6,7 +6,7 @@ import { UTC_TIMEZONE } from '@shared/utils/constant'
 import { Modal, BusEvents, LeaderboardType, LeaderboardDuration } from '@/types'
 
 const modalStore = useModalStore()
-const campaignStore = useCampaignStore()
+const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -14,12 +14,12 @@ const status = reactive(new Status(StatusType.Loading))
 const selectedDuration = ref(LeaderboardDuration.All)
 
 const startDateFormatted = computed(() => {
-  if (!campaignStore.leaderboard?.firstDate) {
+  if (!leaderboardStore.leaderboard?.firstDate) {
     return ''
   }
 
   const zonedFirstDate = utcToZonedTime(
-    campaignStore.leaderboard.firstDate,
+    leaderboardStore.leaderboard.firstDate,
     UTC_TIMEZONE
   )
 
@@ -27,12 +27,12 @@ const startDateFormatted = computed(() => {
 })
 
 const endDateFormatted = computed(() => {
-  if (!campaignStore.leaderboard?.lastDate) {
+  if (!leaderboardStore.leaderboard?.lastDate) {
     return ''
   }
 
   const zonedLastDate = utcToZonedTime(
-    campaignStore.leaderboard.lastDate,
+    leaderboardStore.leaderboard.lastDate,
     UTC_TIMEZONE
   )
 
@@ -40,11 +40,11 @@ const endDateFormatted = computed(() => {
 })
 
 const userStats = computed(() => {
-  if (!campaignStore.leaderboard?.leaders) {
+  if (!leaderboardStore.leaderboard?.leaders) {
     return
   }
 
-  return campaignStore.leaderboard.leaders.find(
+  return leaderboardStore.leaderboard.leaders.find(
     (leader) => leader.account === sharedWalletStore.address
   )
 })
@@ -56,7 +56,7 @@ onMounted(() => {
 function fetchPnlLeaderboard() {
   status.setLoading()
 
-  campaignStore
+  leaderboardStore
     .fetchLeaderboard({
       type: LeaderboardType.Pnl,
       resolution: selectedDuration.value
@@ -75,7 +75,7 @@ function onSharePnl() {
 <template>
   <div>
     <div
-      class="flex flex-col md:flex-row mb-6 md:mb-10 items-start justify-between md:items-center space-y-4"
+      class="flex flex-col md:flex-row mb-6 md:mb-10 items-start justify-between md:items-center max-md:space-y-4"
     >
       <div class="bg-gray-825 rounded-[4px]">
         <AppButtonSelect
@@ -89,13 +89,13 @@ function onSharePnl() {
           }"
           @update:model-value="fetchPnlLeaderboard"
         >
-          {{ $t(`leaderboard.duration.${value}`) }}
+          {{ $t(`leaderboard.pnl.duration.${value}`) }}
         </AppButtonSelect>
       </div>
 
       <div class="text-xs md:text-sm md:leading-4 text-gray-350">
         {{
-          $t('leaderboard.timePeriod', {
+          $t('leaderboard.pnl.timePeriod', {
             startDate: startDateFormatted,
             endDate: endDateFormatted
           })
@@ -115,30 +115,32 @@ function onSharePnl() {
                 <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
 
                 <p class="text-[11px] leading-[13px] font-medium">
-                  {{ $t('leaderboard.share') }}
+                  {{ $t('leaderboard.pnl.share') }}
                 </p>
               </div>
             </template>
 
             <template #row>
               <div>
-                <PartialsLeaderboardPnlMyStatsRow
-                  class="hidden md:block"
-                  v-bind="{
-                    pnl: userStats.pnl,
-                    rank: userStats.rank,
-                    account: userStats.account
-                  }"
-                />
+                <div class="hidden md:block">
+                  <PartialsLeaderboardPnlMyStatsRow
+                    v-bind="{
+                      pnl: userStats.pnl,
+                      rank: userStats.rank,
+                      account: userStats.account
+                    }"
+                  />
+                </div>
 
-                <PartialsLeaderboardPnlMyStatsMobileRow
-                  class="md:hidden"
-                  v-bind="{
-                    pnl: userStats.pnl,
-                    rank: userStats.rank,
-                    account: userStats.account
-                  }"
-                />
+                <div class="md:hidden">
+                  <PartialsLeaderboardPnlMyStatsMobileRow
+                    v-bind="{
+                      pnl: userStats.pnl,
+                      rank: userStats.rank,
+                      account: userStats.account
+                    }"
+                  />
+                </div>
               </div>
             </template>
           </PartialsLeaderboardMyStats>

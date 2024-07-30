@@ -45,18 +45,21 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </template>
 
     <template #column2>
-      <span class="text-xs lowercase font-medium">
-        <span class="md:hidden">
+      <span class="font-medium">
+        <span class="md:hidden text-xs lowercase">
           {{ formattedAddress }}
         </span>
-        <span class="hidden md:block">
+        <span
+          class="hidden md:block"
+          :class="[rank > 3 ? 'text-sm' : 'text-base']"
+        >
           {{ account }}
         </span>
       </span>
     </template>
 
     <template #column3>
-      <span class="text-xs mr-4">
+      <span class="text-[13px] md:text-sm mr-4">
         {{ `${pnlToBigNumber.gte(0) ? '+' : '-'}${pnlToFormat}` }}
       </span>
     </template>

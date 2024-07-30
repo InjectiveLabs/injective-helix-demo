@@ -109,8 +109,8 @@ watchDebounced(
         <div class="space-y-6 flex-grow mt-10 mb-8">
           <div class="text-left">
             {{
-              $t('leaderboard.currentDuration', {
-                duration: $t(`leaderboard.duration.${selectedDuration}`)
+              $t('leaderboard.pnl.currentDuration', {
+                duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
               })
             }}
           </div>
