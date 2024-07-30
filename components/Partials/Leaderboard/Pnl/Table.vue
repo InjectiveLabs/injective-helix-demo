@@ -20,13 +20,13 @@ function incrementLimit() {
 
 <template>
   <div class="mb-20">
-    <PartialsLeaderboardPnlTableWrapper class="text-xs text-gray-500">
-      <PartialsLeaderboardPnlHeader />
-    </PartialsLeaderboardPnlTableWrapper>
+    <PartialsLeaderboardPnlCommonTableWrapper class="text-gray-350 text-[11px]">
+      <PartialsLeaderboardPnlCommonHeader />
+    </PartialsLeaderboardPnlCommonTableWrapper>
 
-    <div class="relative">
+    <div v-if="filteredPnlLeaderboard.length > 0" class="relative">
       <template v-for="leader in filteredPnlLeaderboard" :key="leader.rank">
-        <PartialsLeaderboardPnlTableWrapper
+        <PartialsLeaderboardPnlCommonTableWrapper
           class="text-sm my-1 items-center rounded-lg"
           :class="{
             'bg-gray-825 py-4 text-white': leader.rank > 3,
@@ -35,14 +35,14 @@ function incrementLimit() {
             'bg-[#BD7B31] py-5 text-gray-1100': leader.rank === 3
           }"
         >
-          <PartialsLeaderboardPnlRow
+          <PartialsLeaderboardPnlCommonRow
             v-bind="{
               rank: leader.rank,
               account: leader.account,
               pnl: leader.pnl
             }"
           />
-        </PartialsLeaderboardPnlTableWrapper>
+        </PartialsLeaderboardPnlCommonTableWrapper>
       </template>
 
       <PartialsLeaderboardTableBottomGradient
@@ -52,6 +52,13 @@ function incrementLimit() {
         "
       />
     </div>
+
+    <CommonEmptyList
+      v-else
+      v-bind="{
+        message: $t('leaderboard.noPnlData')
+      }"
+    />
 
     <PartialsLeaderboardViewMore
       v-if="

@@ -47,7 +47,7 @@ type CampaignStoreState = {
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
   leaderboard: undefined
-  activeCampaignByType: CampaignV2
+  activeCampaignByType?: CampaignV2
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -286,20 +286,22 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchActiveCampaigns(type: LeaderboardType) {
       const campaignStore = useCampaignStore()
 
-      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        type,
-        active: true
-      })
+      // const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+      //   type,
+      //   active: true
+      // })
 
-      if (campaigns.length === 0) {
-        return
-      }
+      // if (campaigns.length === 0) {
+      //   return
+      // }
 
-      const activeCampaignByType = campaigns.find(
-        ({ type: activeType }: CampaignV2) => activeType === type
-      )
+      // const activeCampaignByType = campaigns.find(
+      //   ({ type: activeType }: CampaignV2) => activeType === type
+      // )
 
-      campaignStore.$patch({ activeCampaignByType })
+      console.log({ campaigns })
+
+      campaignStore.$patch({ activeCampaignsByType: campaigns })
     },
 
     reset() {

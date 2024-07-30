@@ -26,7 +26,7 @@ const leaderboardOptions = {
       </section>
 
       <section class="h-flex-full">
-        <div class="flex justify-between mb-4 md:mb-10">
+        <div class="flex justify-between mb-6 md:mb-10">
           <div>
             <NuxtLink
               v-for="[type, pageName] in Object.entries(leaderboardOptions)"

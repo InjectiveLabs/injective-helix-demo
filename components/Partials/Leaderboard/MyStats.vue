@@ -6,10 +6,10 @@ defineProps({
 
 <template>
   <div
-    class="pt-6 pb-10 rounded-[4px] relative h-flex-full mb-10"
+    class="pt-4 md:pt-6 pb-7 md:pb-10 rounded-[4px] relative h-flex-full mb-10"
     :class="[isPnl ? 'pnl-gradient' : 'bg-[#1472FF]']"
   >
-    <div class="pl-7 flex items-center space-x-4 mb-4">
+    <div class="pl-4 md:pl-7 flex items-center space-x-2 md:space-x-4 mb-4">
       <div class="flex space-x-2 items-center relative">
         <SharedIcon name="user-filled" class="min-w-4 w-4 h-4" />
         <p class="font-bold text-xl">{{ $t('leaderboard.myStats') }}</p>

@@ -34,6 +34,7 @@ export default {
     share: 'Share',
     viewMore: 'View More',
     competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate(['Time Remaining: ', named('duration')])
+      interpolate(['Time Remaining: ', named('duration')]),
+    noPnlData: 'No PnL results found'
   }
 }

@@ -75,7 +75,7 @@ function onSharePnl() {
 <template>
   <div>
     <div
-      class="flex flex-col md:flex-row mb-4 md:mb-10 items-start justify-between md:items-center space-y-2"
+      class="flex flex-col md:flex-row mb-6 md:mb-10 items-start justify-between md:items-center space-y-4"
     >
       <div class="bg-gray-825 rounded-[4px]">
         <AppButtonSelect
@@ -105,7 +105,7 @@ function onSharePnl() {
 
     <AppHocLoading v-bind="{ status }">
       <div class="overflow-x-auto">
-        <div class="w-full min-w-[750px] text-sm relative">
+        <div class="w-full text-sm relative">
           <PartialsLeaderboardMyStats v-if="userStats" is-pnl>
             <template #add-on>
               <div
@@ -122,21 +122,23 @@ function onSharePnl() {
 
             <template #row>
               <div>
-                <PartialsLeaderboardPnlTableWrapper class="text-[11px]">
-                  <PartialsLeaderboardPnlHeader />
-                </PartialsLeaderboardPnlTableWrapper>
+                <PartialsLeaderboardPnlMyStatsRow
+                  class="hidden md:block"
+                  v-bind="{
+                    pnl: userStats.pnl,
+                    rank: userStats.rank,
+                    account: userStats.account
+                  }"
+                />
 
-                <PartialsLeaderboardPnlTableWrapper
-                  class="text-sm my-1 items-center text-white"
-                >
-                  <PartialsLeaderboardPnlRow
-                    v-bind="{
-                      pnl: userStats.pnl,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </PartialsLeaderboardPnlTableWrapper>
+                <PartialsLeaderboardPnlMyStatsMobileRow
+                  class="md:hidden"
+                  v-bind="{
+                    pnl: userStats.pnl,
+                    rank: userStats.rank,
+                    account: userStats.account
+                  }"
+                />
               </div>
             </template>
           </PartialsLeaderboardMyStats>
@@ -149,9 +151,9 @@ function onSharePnl() {
     <ModalsSharePnl
       v-if="userStats"
       v-bind="{
+        selectedDuration,
         pnl: userStats.pnl,
-        rank: userStats.rank,
-        selectedDuration
+        rank: userStats.rank
       }"
     />
   </div>
