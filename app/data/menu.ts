@@ -110,6 +110,8 @@ export const MENU_ITEMS: MenuItem[] = [
     items: [
       {
         type: MenuItemType.Link,
+        isExact: true,
+        name: LeaderboardSubPage.Pnl,
         label: 'navigation.leaderboard.pnl.title',
         description: 'navigation.leaderboard.pnl.description',
         to: { name: LeaderboardSubPage.Pnl }

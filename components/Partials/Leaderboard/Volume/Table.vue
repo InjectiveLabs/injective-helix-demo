@@ -62,8 +62,9 @@ function incrementLimit() {
 
     <PartialsLeaderboardViewMore
       v-if="
+        filteredVolumeLeaderboard.length > 0 &&
         filteredVolumeLeaderboard.length !==
-        leaderboardStore.leaderboard?.leaders.length
+          leaderboardStore.leaderboard?.leaders.length
       "
       @limit:increment="incrementLimit"
     />

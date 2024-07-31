@@ -1,6 +1,6 @@
 <template>
   <div
-    class="leaderboard-gradient absolute b-0 l-0 r-0 h-56 pointer-events-none"
+    class="leaderboard-gradient absolute b-0 l-0 r-0 h-56 pointer-events-none w-full -mt-[227px]"
   />
 </template>
 
