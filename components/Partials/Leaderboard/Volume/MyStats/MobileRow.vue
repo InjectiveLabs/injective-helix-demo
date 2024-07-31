@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { formatWalletAddress } from '@injectivelabs/utils'
+import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = defineProps({
@@ -28,6 +28,12 @@ const { valueToString: volumeToFormat, valueToBigNumber: volumeToBigNumber } =
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
+
+const entries = computed(() =>
+  new BigNumberInBase(props.volume)
+    .dividedBy(100)
+    .integerValue(BigNumberInBase.ROUND_FLOOR)
+)
 </script>
 
 <template>
@@ -46,13 +52,22 @@ const { valueToString: volumeToFormat, valueToBigNumber: volumeToBigNumber } =
 
       <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
 
-      <div class="flex justify-between mt-3">
+      <div class="flex justify-between mt-3 space-x-10">
         <div class="flex flex-col items-start gap-y-1">
           <div class="text-[11px] leading-3">
             {{ $t('leaderboard.header.volume') }}
           </div>
           <div class="font-medium text-sm">
             {{ `${volumeToBigNumber.gte(0) ? '+' : '-'}${volumeToFormat}` }}
+          </div>
+        </div>
+
+        <div class="flex flex-col items-start gap-y-1">
+          <div class="text-[11px] leading-3">
+            {{ $t('leaderboard.header.numberOfEntries') }}
+          </div>
+          <div class="font-medium text-sm">
+            {{ entries }}
           </div>
         </div>
       </div>

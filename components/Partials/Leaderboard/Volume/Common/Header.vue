@@ -1,7 +1,9 @@
 <template>
   <PartialsLeaderboardVolumeCommonRowWrapper>
     <template #column1>
-      {{ $t('leaderboard.header.rank') }}
+      <div class="max-lg:-ml-3">
+        {{ $t('leaderboard.header.rank') }}
+      </div>
     </template>
 
     <template #column2>
@@ -10,21 +12,19 @@
 
     <template #column3>
       <span>
-        <span class="hidden md:block">
+        <span class="hidden lg:block">
           {{ $t('leaderboard.header.allMarkestVolume') }}
         </span>
-        <span class="md:hidden">
-          {{ $t('leaderboard.header.volume') }}
-        </span>
+        <span class="lg:hidden"> {{ $t('leaderboard.header.volume') }}/ </span>
       </span>
     </template>
 
     <template #column4>
-      <div class="mr-2">
-        <span class="hidden xl:block">
+      <div class="lg:mr-2">
+        <span class="block md:hidden xl:block">
           {{ $t('leaderboard.header.numberOfEntries') }}
         </span>
-        <span class="xl:hidden">
+        <span class="hidden md:block xl:hidden">
           {{ $t('leaderboard.header.entries') }}
         </span>
       </div>

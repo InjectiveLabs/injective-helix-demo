@@ -1,7 +1,9 @@
 <template>
   <PartialsLeaderboardPnlCommonRowWrapper>
     <template #column1>
-      {{ $t('leaderboard.header.rank') }}
+      <div class="-ml-3 md:ml-0">
+        {{ $t('leaderboard.header.rank') }}
+      </div>
     </template>
 
     <template #column2>

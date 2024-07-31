@@ -27,10 +27,16 @@ export default {
 
     volume: {
       keepGoing: 'Keep going 💪',
-      currentLeader: 'Current Leader',
+      currentLeader: 'Current leader 🔥🔥',
+      currentLeaderMobile: '🔥',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
-        interpolate(['Time Remaining: ', named('duration')])
+        interpolate(['Time Remaining: ', named('duration')]),
+      banner: {
+        title: 'Trade & win a Mercedes G Wagon',
+        description:
+          'Placeholder banner for now bitcoin ethereum dogecoin litecoin. WAX stellar nexo cardano BitTorrent audius. Velas dash ethereum kadena horizen.'
+      }
     },
 
     tabs: {

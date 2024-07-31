@@ -28,11 +28,11 @@ const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const entries = computed(() => {
-  return new BigNumberInBase(props.volume)
+const entries = computed(() =>
+  new BigNumberInBase(props.volume)
     .dividedBy(100)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
-})
+)
 </script>
 
 <template>
@@ -45,22 +45,39 @@ const entries = computed(() => {
 
     <template #column2>
       <span class="font-medium">
-        <span class="md:hidden text-xs lowercase">
-          {{ formattedAddress }}
-        </span>
-        <span
-          class="hidden md:block"
+        <div class="md:hidden flex items-center text-xs lowercase space-x-2">
+          <div>
+            {{ formattedAddress }}
+          </div>
+          <div v-if="rank === 1">
+            {{ $t('leaderboard.volume.currentLeaderMobile') }}
+          </div>
+        </div>
+        <div
+          class="hidden md:flex justify-start items-center space-x-4"
           :class="[
             rank > 3 ? 'text-xs lg:text-sm' : 'text-xs lg:text-sm 2xl:text-base'
           ]"
         >
-          {{ account }}
-        </span>
+          <div>
+            {{ account }}
+          </div>
+          <div v-if="rank === 1">
+            <div
+              class="text-sm hidden 2xl:inline-block bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px]"
+            >
+              {{ $t('leaderboard.volume.currentLeader') }}
+            </div>
+            <div class="2xl:hidden">
+              {{ $t('leaderboard.volume.currentLeaderMobile') }}
+            </div>
+          </div>
+        </div>
       </span>
     </template>
 
     <template #column3>
-      <span class="text-[13px] md:text-sm">
+      <span class="text-[13px] md:text-sm mr-2">
         {{ `$${volumeToFormat}` }}
       </span>
     </template>

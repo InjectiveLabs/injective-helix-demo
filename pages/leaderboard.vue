@@ -12,7 +12,7 @@ const leaderboardOptions = {
 <template>
   <div class="relative">
     <div
-      class="bg-[url('/images/leaderboard/pnl-bg.png')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"
+      class="bg-[url('/images/leaderboard/pnl-bg.webp')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"
     />
 
     <div class="container lg:px-[120px] mx-auto text-center relative">

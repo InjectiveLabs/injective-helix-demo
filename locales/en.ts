@@ -282,7 +282,6 @@ export default {
     spotDescription: 'Buy and sell crypto assets using advanced trading tools',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual & pre-launch futures with leverage',
-    leaderboard: 'Leaderboard',
     connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
       `Connected to ${named('address')}. Click to close connection.`,
     tradingBots: 'Trading Bots',
@@ -304,7 +303,18 @@ export default {
     subaccounts: 'Subaccounts',
     settings: 'Settings',
     derivativesGrid: 'Derivatives Grid',
-    history: 'History'
+    history: 'History',
+    leaderboard: {
+      title: 'Leaderboard',
+      pnl: {
+        title: 'PnL Leaderboard',
+        description: 'Top 100 traders with the highest trading PnL'
+      },
+      volume: {
+        title: 'Trading Competition',
+        description: 'Top 100 traders with the highest trading volume'
+      }
+    }
   },
 
   feeDiscounts: {

@@ -90,10 +90,12 @@ function fetchCampaign() {
         </Teleport>
 
         <div class="w-full text-sm relative">
+          <PartialsLeaderboardVolumeBanner class="hidden xl:block" />
+
           <PartialsLeaderboardMyStats v-if="userStats">
             <template #add-on>
               <div
-                class="flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
+                class="hidden md:flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
               >
                 <p
                   class="text-xs md:text-sm font-semibold leading-4 text-gray-925 uppercase"
@@ -105,7 +107,7 @@ function fetchCampaign() {
 
             <template #row>
               <div>
-                <div class="hidden md:block">
+                <div class="hidden lg:block">
                   <PartialsLeaderboardVolumeMyStatsRow
                     v-bind="{
                       rank: userStats.rank,
@@ -115,7 +117,7 @@ function fetchCampaign() {
                   />
                 </div>
 
-                <div class="md:hidden">
+                <div class="lg:hidden">
                   <PartialsLeaderboardVolumeMyStatsMobileRow
                     v-bind="{
                       rank: userStats.rank,

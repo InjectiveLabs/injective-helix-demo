@@ -7,7 +7,8 @@ import {
   MenuItemType,
   PortfolioSubPage,
   TradingInterface,
-  TradingBotsSubPage
+  TradingBotsSubPage,
+  LeaderboardSubPage
 } from '@/types'
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -102,12 +103,25 @@ export const MENU_ITEMS: MenuItem[] = [
         isExternal: true
       }
     ]
+  },
+  {
+    type: MenuItemType.Dropdown,
+    label: 'navigation.leaderboard.title',
+    items: [
+      {
+        type: MenuItemType.Link,
+        label: 'navigation.leaderboard.pnl.title',
+        description: 'navigation.leaderboard.pnl.description',
+        to: { name: LeaderboardSubPage.Pnl }
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'navigation.leaderboard.volume.title',
+        description: 'navigation.leaderboard.volume.description',
+        to: { name: LeaderboardSubPage.Volume }
+      }
+    ]
   }
-  // {
-  //   type: MenuItemType.Link,
-  //   label: 'navigation.leaderboard',
-  //   to: { name: MainPage.PnlLeaderboard }
-  // }
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [
