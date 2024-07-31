@@ -17,8 +17,12 @@ const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
-const { resetForm, validate, values: formValues } = useForm<SwapForm>()
-const setFormValues = useSetFormValues()
+const {
+  resetForm,
+  validate,
+  values: formValues,
+  setValues: setFormValues
+} = useForm<SwapForm>()
 
 const txHash = ref('')
 const summaryRef = ref()
@@ -33,6 +37,8 @@ const {
   outputToken,
   maximumInput,
   minimumOutput,
+  inputTokenMarket,
+  outputTokenMarket,
   orderedRouteTokensAndDecimals
 } = useSwap(computed(() => formValues))
 
@@ -154,6 +160,30 @@ function resetFormValues() {
   )
 }
 
+function fetchLastTradedPrices() {
+  return Promise.all([
+    spotStore.fetchLastTrade({ marketId: inputTokenMarket.value.marketId }),
+    spotStore.fetchLastTrade({ marketId: outputTokenMarket.value.marketId })
+  ])
+    .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
+      setFormValues({
+        [SwapFormField.InputLastTradedPrice]: sharedToBalanceInWei({
+          value: inputTokenLastTradedPrice.price,
+          decimalPlaces:
+            inputTokenMarket.value.baseToken.decimals -
+            inputTokenMarket.value.quoteToken.decimals
+        }).toFixed(),
+        [SwapFormField.OutputLastTradedPrice]: sharedToBalanceInWei({
+          value: outputTokenLastTradedPrice.price,
+          decimalPlaces:
+            outputTokenMarket.value.baseToken.decimals -
+            outputTokenMarket.value.quoteToken.decimals
+        }).toFixed()
+      })
+    })
+    .catch($onError)
+}
+
 function getOutputQuantity() {
   showPriceWarning.value = false
   fetchStatus.setLoading()
@@ -165,12 +195,14 @@ function getOutputQuantity() {
     return
   }
 
-  swapStore
-    .fetchOutputQuantity({
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchOutputQuantity({
       inputAmount: formValues[SwapFormField.InputAmount],
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
+  ])
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)
@@ -194,12 +226,14 @@ function getInputQuantity() {
     return
   }
 
-  swapStore
-    .fetchInputQuantity({
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchInputQuantity({
       outputAmount: formValues[SwapFormField.OutputAmount],
       outputToken: outputToken.value,
       inputToken: inputToken.value
     })
+  ])
     .then(() => updateAmount())
     .catch((e: ThrownException) => {
       queryError.value = mapErrorToMessage(e.message)

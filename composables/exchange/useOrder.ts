@@ -78,11 +78,11 @@ export function useOrder(
     }
 
     return isSpot.value && market.value.baseToken
-      ? new BigNumberInBase(
-          new BigNumberInBase(order.value.price).toWei(
+      ? sharedToBalanceInWei({
+          value: order.value.price,
+          decimalPlaces:
             market.value.baseToken.decimals - market.value.quoteToken.decimals
-          )
-        )
+        }).toFixed()
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )
@@ -121,8 +121,10 @@ export function useOrder(
       return new BigNumberInBase('')
     }
 
+    const priceInBigNumber = new BigNumberInBase(price.value)
+
     return new BigNumberInBase(
-      price.value.times(quantity.value).dividedBy(margin.value)
+      priceInBigNumber.times(quantity.value).dividedBy(margin.value)
     )
   })
 

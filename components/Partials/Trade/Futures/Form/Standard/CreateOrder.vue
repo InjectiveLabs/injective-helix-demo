@@ -30,6 +30,14 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const { markPrice } = useDerivativeLastPrice(
+  computed(() => derivativeMarket?.value)
+)
+const { isLimitOrder, isNotionalLessThanMinNotional } =
+  useDerivativeWorstPrice(derivativeMarket)
+
 const props = defineProps({
   margin: {
     type: BigNumberInBase,
@@ -66,14 +74,8 @@ const isRWAMarket = slugsToIncludeInRWACategory.includes(
   route.params.slug as string
 )
 
-const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
-
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
-
-const { markPrice } = useDerivativeLastPrice(
-  computed(() => derivativeMarket?.value)
-)
 
 const triggerPrice = computed(
   () =>
@@ -91,14 +93,6 @@ const limitPrice = computed(
 
 const isOrderTypeReduceOnly = computed(
   () => !!derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
-)
-
-const isLimitOrder = computed(() =>
-  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
 )
 
 const isAuthorized = computed(() => {
@@ -184,6 +178,10 @@ const isDisabled = computed(() => {
   }
 
   if (!isAuthorized.value) {
+    return true
+  }
+
+  if (isNotionalLessThanMinNotional.value) {
     return true
   }
 
