@@ -16,7 +16,7 @@
     "start": "nuxi start",
     "generate": "nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=15360 nuxt generate",
-    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#master --ignore-scripts && yarn fetch:data",
+    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#feat/chain-upgrade --ignore-scripts && yarn fetch:data",
     "analyze": "nuxi build --analyze",
     "preview": "nuxi preview",
     "test": "vitest --segfault-retry=3",
@@ -55,7 +55,7 @@
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
     "nuxt": "3.11.2",
-    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
+    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#feat/chain-upgrade",
     "vue-jest": "^4.0.0-0"
   },
   "devDependencies": {
@@ -113,11 +113,6 @@
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
     "vee-validate": "4.11.7",
-    "nuxi": "3.11.1",
-    "@injectivelabs/utils": "1.14.13-dev.3",
-    "@injectivelabs/ts-types": "1.14.13-dev.3",
-    "@injectivelabs/networks": "1.14.13-dev.3",
-    "@injectivelabs/sdk-ts": "1.14.12-dev.20",
-    "@injectivelabs/wallet-ts": "1.14.12-dev.21"
+    "nuxi": "3.11.1"
   }
 }
