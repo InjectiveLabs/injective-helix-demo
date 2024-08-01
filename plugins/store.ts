@@ -60,7 +60,8 @@ const stateToPersist = {
       expiration: '',
       injectiveAddress: '',
       duration: ''
-    }
+    },
+    privateKey: ''
   }
 } as Record<string, Record<string, any>>
 

@@ -15,6 +15,8 @@ export default {
     minLimitOrderSize: 'Min. Limit Order Size',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
+    minNotionalError: ({ named }: I18nMessageFunction) =>
+      `Minimum order value > ${named('minNotional')} ${named('symbol')}`,
     timestamp_tooltip: 'Based on your browser time zone',
     mid: 'Mid',
     quantity: 'Quantity',

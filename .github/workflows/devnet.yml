@@ -59,7 +59,7 @@ jobs:
           END
 
       - name: Check out the source
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git fetch && git reset --hard "'$GIT_BRANCH'" && git pull'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git checkout "'$GIT_BRANCH'" && git pull'
 
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines'
