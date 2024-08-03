@@ -26,7 +26,7 @@ const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const { isLimitOrder, isNotionalLessThanMinNotional } =
+const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
   useSpotWorstPrice(market)
 
 const props = defineProps({
@@ -104,6 +104,10 @@ const isDisabled = computed(() => {
   }
 
   if (!isAuthorized.value) {
+    return true
+  }
+
+  if (!hasEnoughLiquidity.value) {
     return true
   }
 
@@ -233,11 +237,17 @@ async function submitOrder() {
       v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >
-      <span v-if="isAuthorized">
-        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      <span v-if="!isAuthorized">
+        {{ $t('common.unauthorized') }}
       </span>
 
-      <span v-else>{{ $t('common.unauthorized') }}</span>
+      <span v-else-if="!hasEnoughLiquidity">
+        {{ $t('trade.swap.insufficient_liquidity') }}
+      </span>
+
+      <span v-else>
+        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      </span>
     </AppButton>
   </div>
 </template>

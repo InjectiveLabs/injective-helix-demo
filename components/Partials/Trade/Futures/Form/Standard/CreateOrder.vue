@@ -35,7 +35,7 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
-const { isLimitOrder, isNotionalLessThanMinNotional } =
+const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
   useDerivativeWorstPrice(derivativeMarket)
 
 const props = defineProps({
@@ -178,6 +178,10 @@ const isDisabled = computed(() => {
   }
 
   if (!isAuthorized.value) {
+    return true
+  }
+
+  if (!hasEnoughLiquidity.value) {
     return true
   }
 
@@ -442,19 +446,28 @@ function fetchRWAMarketIsOpen() {
   <div>
     <div>
       <AppButton
-        v-bind="{ status, disabled: isDisabled }"
+        v-bind="{
+          status,
+          disabled: isDisabled
+        }"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"
         class="w-full"
         @click="onSubmit"
       >
-        <span v-if="isAuthorized">
+        <span v-if="!isAuthorized">
+          {{ $t('common.unauthorized') }}
+        </span>
+
+        <span v-else-if="!hasEnoughLiquidity">
+          {{ $t('trade.swap.insufficient_liquidity') }}
+        </span>
+
+        <span v-else>
           {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
           /
           {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
         </span>
-
-        <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
 

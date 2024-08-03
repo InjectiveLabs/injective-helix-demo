@@ -293,9 +293,11 @@ export function calculateWorstPrice(
 ) {
   let remainingQuantity = Number(quantity || '0')
 
-  let worstPrice = '0'
   let price = 0
+  let worstPrice = '0'
   let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
@@ -312,7 +314,9 @@ export function calculateWorstPrice(
 
   return {
     totalPrice: new BigNumberInBase(price),
-    worstPrice: new BigNumberInBase(worstPrice),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
     hasEnoughLiquidity
   }
 }
