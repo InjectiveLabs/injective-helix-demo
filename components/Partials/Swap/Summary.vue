@@ -57,7 +57,11 @@ defineExpose({
         <span v-if="orderedRouteTokensAndDecimals?.length === 0">
           &mdash;
         </span>
-        <div v-else class="flex items-center gap-1 justify-end">
+        <div
+          v-else
+          class="flex items-center gap-1 justify-end"
+          :data-cy="dataCyTag(`swap-summary`)"
+        >
           <PartialsSwapRoute
             v-bind="{
               routeSymbols
@@ -71,9 +75,11 @@ defineExpose({
         <div
           v-else-if="orderedRouteTokensAndDecimals && inputToken && outputToken"
         >
-          <span> 1 {{ outputToken.token.symbol }} </span>
+          <span :data-cy="dataCyTag(`rate-${outputToken.token.symbol}`)">
+            1 {{ outputToken.token.symbol }}
+          </span>
           =
-          <span>
+          <span :data-cy="dataCyTag(`rate-${inputToken.token.symbol}`)">
             {{ priceForDisplayToFormat }}
             {{ inputToken.token.symbol }}
           </span>
@@ -91,7 +97,7 @@ defineExpose({
         :title="$t('trade.swap.minimumOutput')"
       >
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else>
+        <span v-else :data-cy="dataCyTag(`minimum-output`)">
           {{ minimumOutput }} {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
@@ -103,7 +109,7 @@ defineExpose({
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else>
+        <span v-else :data-cy="dataCyTag(`expected-output`)">
           {{ formValues[SwapFormField.OutputAmount] }}
           {{ outputToken?.token.symbol }}
         </span>

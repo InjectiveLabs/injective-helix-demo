@@ -69,6 +69,7 @@ function checkForInvalidSlippageValue() {
                     'text-gray-500 hover:text-blue-500': !isOpen
                   }
             ]"
+            :data-cy="dataCyTag(`slippage-selector-setting`)"
           />
         </div>
       </template>

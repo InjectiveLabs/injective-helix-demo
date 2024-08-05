@@ -297,7 +297,7 @@ function resetQueryError() {
         >
           <div class="rounded-lg mx-auto p-6 h-fit w-full">
             <div class="mb-4 flex items-center justify-between">
-              <h3 class="font-bold text-lg">
+              <h3 class="font-bold text-lg" :data-cy="dataCyTag(`label`)">
                 {{ $t('trade.swap.swap') }}
               </h3>
 

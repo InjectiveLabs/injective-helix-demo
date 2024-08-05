@@ -114,6 +114,7 @@ export default {
         <div
           class="flex items-center justify-between no-shadow"
           :class="{ 'bg-gray-700': isDisabled && isDisabledGray }"
+          :data-cy="dataCyTag(`input-field`)"
         >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />

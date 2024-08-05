@@ -250,7 +250,7 @@ watch(
       }"
       @click="handlerFunction"
     >
-      <div class="max-auto w-full">
+      <div class="max-auto w-full" :data-cy="dataCyTag(`button`)">
         <Transition name="fade" mode="out-in">
           <span
             v-if="
@@ -258,11 +258,15 @@ watch(
               ((swapStore.isInputEntered && invalidInput) ||
                 isNotionalLessThanMinNotional)
             "
+            :data-cy="dataCyTag(`amount-too-low`)"
           >
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
 
-          <span v-else-if="insufficientBalance">
+          <span
+            v-else-if="insufficientBalance"
+            :data-cy="dataCyTag(`insufficient-balance`)"
+          >
             {{ insufficientBalance }}
           </span>
 
@@ -286,7 +290,7 @@ watch(
             v-else-if="rateExpired && hasAmounts"
             class="flex items-center justify-center gap-1"
           >
-            <span>
+            <span :data-cy="dataCyTag(`rate-expired`)">
               {{ $t('trade.swap.rateExpired') }}
             </span>
 
@@ -297,7 +301,7 @@ watch(
             />
           </span>
 
-          <span v-else>
+          <span v-else :data-cy="dataCyTag(`enter-amount`)">
             {{ $t('trade.swap.enterAmount') }}
           </span>
         </Transition>

@@ -27,7 +27,7 @@ function toggleShowFeeBreakdown() {
   >
     <div>
       <div class="flex items-center gap-1 justify-end mb-1">
-        <span>
+        <span :data-cy="dataCyTag(`fees`)">
           {{ `~$${totalFeeToFormat}` }}
         </span>
       </div>

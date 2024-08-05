@@ -256,7 +256,7 @@ export default {
             {{ $t('trade.max') }}
           </span>
           <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
-            <span>
+            <span :data-cy="dataCyTag(`balance-string`)">
               {{ $t('trade.balance', { balance: maxBalanceToString }) }}
             </span>
           </p>
@@ -344,7 +344,9 @@ export default {
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">
           <span v-if="Number(amount) > 0">${{ estimatedTotalInUsd }} </span>
-          <span v-else>$0.00</span>
+          <span v-else :data-cy="dataCyTag(`token-estimated-usd-price`)">
+            $0.00
+          </span>
         </slot>
       </p>
     </div>
