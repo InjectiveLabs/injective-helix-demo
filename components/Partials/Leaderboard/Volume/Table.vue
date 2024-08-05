@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { LeaderboardType } from '@/types'
+
+const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
@@ -38,7 +41,10 @@ function incrementLimit() {
           <PartialsLeaderboardVolumeCommonRow
             v-bind="{
               rank: leader.rank,
-              volume: leader.volume,
+              amount:
+                campaignStore.activeCampaignType === LeaderboardType.Pnl
+                  ? leader.pnl
+                  : leader.volume,
               account: leader.account
             }"
           />

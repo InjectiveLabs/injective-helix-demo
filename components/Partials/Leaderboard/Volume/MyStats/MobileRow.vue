@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { LeaderboardType } from '@/types'
+
+const campaignStore = useCampaignStore()
 
 const props = defineProps({
   account: {
@@ -8,7 +11,7 @@ const props = defineProps({
     default: ''
   },
 
-  volume: {
+  amount: {
     type: Number,
     default: 0
   },
@@ -21,16 +24,16 @@ const props = defineProps({
 
 const formattedAddress = computed(() => formatWalletAddress(props.account))
 
-const { valueToString: volumeToFormat, valueToBigNumber: volumeToBigNumber } =
+const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
-    computed(() => props.volume),
+    computed(() => props.amount),
     {
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
 
 const entries = computed(() =>
-  new BigNumberInBase(props.volume)
+  new BigNumberInBase(props.amount)
     .dividedBy(100)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
 )
@@ -55,10 +58,26 @@ const entries = computed(() =>
       <div class="flex justify-between mt-3 space-x-10">
         <div class="flex flex-col items-start gap-y-1">
           <div class="text-[11px] leading-3">
-            {{ $t('leaderboard.header.volume') }}
+            {{
+              $t(
+                `leaderboard.header.${
+                  campaignStore.activeCampaignType === LeaderboardType.Volume
+                    ? 'volume'
+                    : 'tradingPnl'
+                }`
+              )
+            }}
           </div>
           <div class="font-medium text-sm">
-            {{ `${volumeToBigNumber.gte(0) ? '+' : '-'}${volumeToFormat}` }}
+            <span
+              v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl"
+            >
+              {{ `${amountToBigNumber.gte(0) ? '+' : '-'}` }}
+            </span>
+            <span v-else>$</span>
+            <span>
+              {{ amountToFormat }}
+            </span>
           </div>
         </div>
 

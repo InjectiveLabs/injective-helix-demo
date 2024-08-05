@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { LeaderboardType } from '@/types'
+
+const campaignStore = useCampaignStore()
+</script>
+
 <template>
   <PartialsLeaderboardVolumeCommonRowWrapper>
     <template #column1>
@@ -13,9 +19,27 @@
     <template #column3>
       <span>
         <span class="hidden lg:block">
-          {{ $t('leaderboard.header.allMarkestVolume') }}
+          {{
+            $t(
+              `leaderboard.header.${
+                campaignStore.activeCampaignType === LeaderboardType.Volume
+                  ? 'allMarkestVolume'
+                  : 'tradingPnl'
+              }`
+            )
+          }}
         </span>
-        <span class="lg:hidden"> {{ $t('leaderboard.header.volume') }}/ </span>
+        <span class="lg:hidden">
+          {{
+            $t(
+              `leaderboard.header.${
+                campaignStore.activeCampaignType === LeaderboardType.Volume
+                  ? 'volume'
+                  : 'tradingPnl'
+              }`
+            )
+          }}/
+        </span>
       </span>
     </template>
 

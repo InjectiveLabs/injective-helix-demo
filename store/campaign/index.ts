@@ -45,7 +45,8 @@ type CampaignStoreState = {
   ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
-  activeCampaignByType?: CampaignV2
+  pnlOrVolumeCampaigns?: CampaignV2[]
+  activeCampaign?: CampaignV2
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -67,7 +68,8 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerRewards: [],
   guildCampaignSummary: undefined,
   claimedRewards: [],
-  activeCampaignByType: undefined
+  pnlOrVolumeCampaigns: [],
+  activeCampaign: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -81,6 +83,21 @@ export const useCampaignStore = defineStore('campaign', {
 
     campaignsWithUserRewards(state) {
       return state.round.filter(({ userScore }) => userScore)
+    },
+
+    activeCampaignType(state) {
+      if (!state.activeCampaign?.type) {
+        return undefined
+      }
+
+      switch (state.activeCampaign.type) {
+        case LeaderboardType.Pnl:
+          return LeaderboardType.Pnl
+        case LeaderboardType.Volume:
+          return LeaderboardType.Volume
+        default:
+          return undefined
+      }
     }
   },
   actions: {
@@ -254,23 +271,32 @@ export const useCampaignStore = defineStore('campaign', {
       campaignStore.$patch({ round: campaigns })
     },
 
-    async fetchActiveCampaigns(type: LeaderboardType) {
+    async fetchCampaigns(active: boolean) {
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        type,
-        active: true
+        ...(active ? { active } : {})
       })
 
       if (campaigns.length === 0) {
         return
       }
 
-      const activeCampaignByType = campaigns.find(
-        ({ type: activeType }: CampaignV2) => activeType === type
+      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
+        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+          type as LeaderboardType
+        )
       )
 
-      campaignStore.$patch({ activeCampaignByType })
+      if (!active) {
+        campaignStore.$patch({ pnlOrVolumeCampaigns })
+
+        return
+      }
+
+      const [activeCampaign] = pnlOrVolumeCampaigns
+
+      campaignStore.$patch({ activeCampaign })
     },
 
     reset() {

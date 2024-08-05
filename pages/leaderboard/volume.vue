@@ -23,12 +23,12 @@ const userStats = computed(() => {
 const now = useNow({ interval: 1000 })
 
 const timeLeftInCampaign = computed(() => {
-  if (!campaignStore.activeCampaignByType) {
+  if (!campaignStore.activeCampaign) {
     return
   }
 
   const duration = sharedGetDuration({
-    endDateInMilliseconds: campaignStore.activeCampaignByType.endDate,
+    endDateInMilliseconds: campaignStore.activeCampaign.endDate,
     nowInMilliseconds: now.value.getTime().toString()
   })
 
@@ -39,6 +39,12 @@ const timeLeftInCampaign = computed(() => {
   ).padStart(2, '0')}`
 })
 
+const amount = computed(() =>
+  campaignStore.activeCampaignType === LeaderboardType.Volume
+    ? userStats.value?.volume
+    : userStats.value?.pnl
+)
+
 onMounted(() => {
   fetchCampaign()
 })
@@ -47,17 +53,17 @@ function fetchCampaign() {
   status.setLoading()
 
   campaignStore
-    .fetchActiveCampaigns(LeaderboardType.Volume)
+    .fetchCampaigns(true)
     .then(async () => {
-      if (!campaignStore.activeCampaignByType) {
+      if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
         return
       }
 
       return await leaderboardStore.fetchLeaderboard({
-        type: LeaderboardType.Volume,
+        type: campaignStore.activeCampaignType,
         duration: {
-          startDate: Number(campaignStore.activeCampaignByType.startDate),
-          endDate: Number(campaignStore.activeCampaignByType.endDate)
+          startDate: Number(campaignStore.activeCampaign.startDate),
+          endDate: Number(campaignStore.activeCampaign.endDate)
         }
       })
     })
@@ -70,10 +76,7 @@ function fetchCampaign() {
   <div>
     <AppHocLoading v-bind="{ status }">
       <div class="overflow-x-auto">
-        <Teleport
-          v-if="campaignStore.activeCampaignByType"
-          to="#campaign-time-left"
-        >
+        <Teleport v-if="campaignStore.activeCampaign" to="#campaign-time-left">
           <i18n-t
             tag="p"
             keypath="leaderboard.volume.competitionDuration"
@@ -110,8 +113,8 @@ function fetchCampaign() {
                 <div class="hidden lg:block">
                   <PartialsLeaderboardVolumeMyStatsRow
                     v-bind="{
+                      amount,
                       rank: userStats.rank,
-                      volume: userStats.volume,
                       account: userStats.account
                     }"
                   />
@@ -120,8 +123,8 @@ function fetchCampaign() {
                 <div class="lg:hidden">
                   <PartialsLeaderboardVolumeMyStatsMobileRow
                     v-bind="{
+                      amount,
                       rank: userStats.rank,
-                      volume: userStats.volume,
                       account: userStats.account
                     }"
                   />
