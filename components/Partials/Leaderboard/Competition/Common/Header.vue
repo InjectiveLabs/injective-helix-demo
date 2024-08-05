@@ -5,7 +5,7 @@ const campaignStore = useCampaignStore()
 </script>
 
 <template>
-  <PartialsLeaderboardVolumeCommonRowWrapper>
+  <PartialsLeaderboardCompetitionCommonRowWrapper>
     <template #column1>
       <div class="max-lg:-ml-3">
         {{ $t('leaderboard.header.rank') }}
@@ -53,5 +53,5 @@ const campaignStore = useCampaignStore()
         </span>
       </div>
     </template>
-  </PartialsLeaderboardVolumeCommonRowWrapper>
+  </PartialsLeaderboardCompetitionCommonRowWrapper>
 </template>

@@ -1,6 +1,6 @@
 import {
+  LeaderboardSubPage,
   I18nMessageFunction,
-  LeaderboardType,
   LeaderboardDuration
 } from '@/types'
 
@@ -25,7 +25,7 @@ export default {
         `Time Period: ${named('startDate')} - ${named('endDate')}`
     },
 
-    volume: {
+    competition: {
       keepGoing: 'Keep going 💪',
       currentLeader: 'Current leader 🔥🔥',
       currentLeaderMobile: '🔥',
@@ -40,8 +40,8 @@ export default {
     },
 
     tabs: {
-      [LeaderboardType.Pnl]: 'PnL Leaderboard',
-      [LeaderboardType.Volume]: 'Trading Competition'
+      [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
+      [LeaderboardSubPage.Competition]: 'Trading Competition'
     },
 
     header: {

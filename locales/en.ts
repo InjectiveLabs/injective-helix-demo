@@ -310,7 +310,7 @@ export default {
         title: 'PnL Leaderboard',
         description: 'Top 100 traders with the highest trading PnL'
       },
-      volume: {
+      competition: {
         title: 'Trading Competition',
         description: 'Top 100 traders with the highest trading volume'
       }

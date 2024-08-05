@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { LeaderboardType, LeaderboardSubPage } from '@/types'
+import { LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
-
-const leaderboardOptions = {
-  [LeaderboardType.Pnl]: LeaderboardSubPage.Pnl,
-  [LeaderboardType.Volume]: LeaderboardSubPage.Volume
-}
 </script>
 
 <template>
@@ -31,9 +26,9 @@ const leaderboardOptions = {
         >
           <div class="max-md:text-left">
             <NuxtLink
-              v-for="[type, pageName] in Object.entries(leaderboardOptions)"
-              :key="type"
-              v-bind="{ value: type }"
+              v-for="pageName in Object.values(LeaderboardSubPage)"
+              :key="pageName"
+              v-bind="{ value: pageName }"
               class="capitalize max-md:mr-4 md:px-4 py-2 text-sm md:text-lg font-semibold border-b whitespace-nowrap leading-6"
               :class="{
                 'text-gray-200': route.name !== pageName,
@@ -43,7 +38,7 @@ const leaderboardOptions = {
                 name: pageName
               }"
             >
-              {{ $t(`leaderboard.tabs.${type}`) }}
+              {{ $t(`leaderboard.tabs.${pageName}`) }}
             </NuxtLink>
           </div>
 

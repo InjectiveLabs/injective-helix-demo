@@ -6,11 +6,11 @@
       <div
         class="text-left text-5xl font-black italic text-gray-1100 leading-14"
       >
-        {{ $t('leaderboard.volume.banner.title') }}
+        {{ $t('leaderboard.competition.banner.title') }}
       </div>
 
       <div class="text-left text-base leading-5 text-gray-1100">
-        {{ $t('leaderboard.volume.banner.description') }}
+        {{ $t('leaderboard.competition.banner.description') }}
       </div>
     </div>
     <img

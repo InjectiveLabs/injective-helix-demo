@@ -79,7 +79,7 @@ function fetchCampaign() {
         <Teleport v-if="campaignStore.activeCampaign" to="#campaign-time-left">
           <i18n-t
             tag="p"
-            keypath="leaderboard.volume.competitionDuration"
+            keypath="leaderboard.competition.competitionDuration"
             class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
           >
             <template #duration>
@@ -93,7 +93,7 @@ function fetchCampaign() {
         </Teleport>
 
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardVolumeBanner class="hidden xl:block" />
+          <PartialsLeaderboardCompetitionBanner class="hidden xl:block" />
 
           <PartialsLeaderboardMyStats v-if="userStats">
             <template #add-on>
@@ -103,7 +103,7 @@ function fetchCampaign() {
                 <p
                   class="text-xs md:text-sm font-semibold leading-4 text-gray-925 uppercase"
                 >
-                  {{ $t('leaderboard.volume.keepGoing') }}
+                  {{ $t('leaderboard.competition.keepGoing') }}
                 </p>
               </div>
             </template>
@@ -111,7 +111,7 @@ function fetchCampaign() {
             <template #row>
               <div>
                 <div class="hidden lg:block">
-                  <PartialsLeaderboardVolumeMyStatsRow
+                  <PartialsLeaderboardCompetitionMyStatsRow
                     v-bind="{
                       amount,
                       rank: userStats.rank,
@@ -121,7 +121,7 @@ function fetchCampaign() {
                 </div>
 
                 <div class="lg:hidden">
-                  <PartialsLeaderboardVolumeMyStatsMobileRow
+                  <PartialsLeaderboardCompetitionMyStatsMobileRow
                     v-bind="{
                       amount,
                       rank: userStats.rank,
@@ -133,7 +133,7 @@ function fetchCampaign() {
             </template>
           </PartialsLeaderboardMyStats>
 
-          <PartialsLeaderboardVolumeTable />
+          <PartialsLeaderboardCompetitionTable />
         </div>
       </div>
     </AppHocLoading>

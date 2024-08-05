@@ -118,9 +118,9 @@ export const MENU_ITEMS: MenuItem[] = [
       },
       {
         type: MenuItemType.Link,
-        label: 'navigation.leaderboard.volume.title',
-        description: 'navigation.leaderboard.volume.description',
-        to: { name: LeaderboardSubPage.Volume }
+        label: 'navigation.leaderboard.competition.title',
+        description: 'navigation.leaderboard.competition.description',
+        to: { name: LeaderboardSubPage.Competition }
       }
     ]
   }

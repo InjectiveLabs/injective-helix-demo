@@ -40,7 +40,7 @@ const entries = computed(() =>
 </script>
 
 <template>
-  <PartialsLeaderboardVolumeCommonRowWrapper>
+  <PartialsLeaderboardCompetitionCommonRowWrapper>
     <template #column1>
       <span class="font-semibold ml-1">
         {{ rank }}
@@ -54,7 +54,7 @@ const entries = computed(() =>
             {{ formattedAddress }}
           </div>
           <div v-if="rank === 1">
-            {{ $t('leaderboard.volume.currentLeaderMobile') }}
+            {{ $t('leaderboard.competition.currentLeaderMobile') }}
           </div>
         </div>
         <div
@@ -70,10 +70,10 @@ const entries = computed(() =>
             <div
               class="text-sm hidden 2xl:inline-block bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px]"
             >
-              {{ $t('leaderboard.volume.currentLeader') }}
+              {{ $t('leaderboard.competition.currentLeader') }}
             </div>
             <div class="2xl:hidden">
-              {{ $t('leaderboard.volume.currentLeaderMobile') }}
+              {{ $t('leaderboard.competition.currentLeaderMobile') }}
             </div>
           </div>
         </div>
@@ -97,5 +97,5 @@ const entries = computed(() =>
         {{ entries }}
       </span>
     </template>
-  </PartialsLeaderboardVolumeCommonRowWrapper>
+  </PartialsLeaderboardCompetitionCommonRowWrapper>
 </template>

@@ -23,22 +23,22 @@ function incrementLimit() {
 
 <template>
   <div class="mb-20">
-    <PartialsLeaderboardVolumeCommonTableWrapper
+    <PartialsLeaderboardCompetitionCommonTableWrapper
       class="text-gray-350 text-[11px]"
     >
-      <PartialsLeaderboardVolumeCommonHeader />
-    </PartialsLeaderboardVolumeCommonTableWrapper>
+      <PartialsLeaderboardCompetitionCommonHeader />
+    </PartialsLeaderboardCompetitionCommonTableWrapper>
 
     <div v-if="filteredVolumeLeaderboard.length > 0" class="relative">
       <template v-for="leader in filteredVolumeLeaderboard" :key="leader.rank">
-        <PartialsLeaderboardVolumeCommonTableWrapper
+        <PartialsLeaderboardCompetitionCommonTableWrapper
           class="text-sm my-1 items-center rounded-lg"
           :class="{
             'bg-gray-825 py-4 text-white': leader.rank > 1,
             'bg-[#F3C211] py-5 text-gray-1100': leader.rank === 1
           }"
         >
-          <PartialsLeaderboardVolumeCommonRow
+          <PartialsLeaderboardCompetitionCommonRow
             v-bind="{
               rank: leader.rank,
               amount:
@@ -48,7 +48,7 @@ function incrementLimit() {
               account: leader.account
             }"
           />
-        </PartialsLeaderboardVolumeCommonTableWrapper>
+        </PartialsLeaderboardCompetitionCommonTableWrapper>
       </template>
 
       <PartialsLeaderboardTableBottomGradient
@@ -62,7 +62,7 @@ function incrementLimit() {
     <CommonEmptyList
       v-else
       v-bind="{
-        message: $t('leaderboard.volume.noVolumeData')
+        message: $t('leaderboard.competition.noVolumeData')
       }"
     />
 
