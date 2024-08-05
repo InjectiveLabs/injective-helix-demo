@@ -271,11 +271,11 @@ export const useCampaignStore = defineStore('campaign', {
       campaignStore.$patch({ round: campaigns })
     },
 
-    async fetchCampaigns(active: boolean) {
+    async fetchActiveCampaign() {
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        ...(active ? { active } : {})
+        active: true
       })
 
       if (campaigns.length === 0) {
@@ -288,15 +288,27 @@ export const useCampaignStore = defineStore('campaign', {
         )
       )
 
-      if (!active) {
-        campaignStore.$patch({ pnlOrVolumeCampaigns })
-
-        return
-      }
-
       const [activeCampaign] = pnlOrVolumeCampaigns
 
       campaignStore.$patch({ activeCampaign })
+    },
+
+    async fetchCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({})
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
+        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+          type as LeaderboardType
+        )
+      )
+
+      campaignStore.$patch({ pnlOrVolumeCampaigns })
     },
 
     reset() {

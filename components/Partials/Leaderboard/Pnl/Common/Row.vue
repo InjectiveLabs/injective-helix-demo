@@ -31,8 +31,8 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
 </script>
 
 <template>
-  <PartialsLeaderboardPnlCommonRowWrapper>
-    <template #column1>
+  <div class="pnl-table">
+    <div>
       <span v-if="rank > 3" class="font-semibold ml-1">
         {{ rank }}
       </span>
@@ -42,9 +42,9 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
       >
         <img :src="`/images/leaderboard/rank-${rank}.svg`" />
       </div>
-    </template>
+    </div>
 
-    <template #column2>
+    <div>
       <span class="font-medium">
         <span class="md:hidden text-xs lowercase">
           {{ formattedAddress }}
@@ -56,12 +56,12 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
           {{ account }}
         </span>
       </span>
-    </template>
+    </div>
 
-    <template #column3>
+    <div>
       <span class="text-[13px] md:text-sm mr-4">
         {{ `${pnlToBigNumber.gte(0) ? '+' : '-'}${pnlToFormat}` }}
       </span>
-    </template>
-  </PartialsLeaderboardPnlCommonRowWrapper>
+    </div>
+  </div>
 </template>

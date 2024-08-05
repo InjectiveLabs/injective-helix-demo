@@ -53,7 +53,7 @@ function fetchCampaign() {
   status.setLoading()
 
   campaignStore
-    .fetchCampaigns(true)
+    .fetchActiveCampaign()
     .then(async () => {
       if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
         return
@@ -109,27 +109,13 @@ function fetchCampaign() {
             </template>
 
             <template #row>
-              <div>
-                <div class="hidden lg:block">
-                  <PartialsLeaderboardCompetitionMyStatsRow
-                    v-bind="{
-                      amount,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </div>
-
-                <div class="lg:hidden">
-                  <PartialsLeaderboardCompetitionMyStatsMobileRow
-                    v-bind="{
-                      amount,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </div>
-              </div>
+              <PartialsLeaderboardCompetitionMyStatsRow
+                v-bind="{
+                  amount,
+                  rank: userStats.rank,
+                  account: userStats.account
+                }"
+              />
             </template>
           </PartialsLeaderboardMyStats>
 
@@ -139,3 +125,34 @@ function fetchCampaign() {
     </AppHocLoading>
   </div>
 </template>
+
+<style>
+.competition-table,
+.competition-table-mobile {
+  @apply grid grid-cols-6 md:grid-cols-9 relative;
+
+  > :nth-child(1) {
+    @apply pl-3 lg:pl-7 text-left col-span-1 flex items-center;
+  }
+
+  > :nth-child(2) {
+    @apply text-left col-span-2 md:col-span-5 flex items-center;
+  }
+}
+
+.competition-table {
+  > :nth-child(3) {
+    @apply text-left col-span-2 mr-0.5;
+  }
+
+  > :nth-child(4) {
+    @apply text-right md:text-left col-span-1 mr-0.5;
+  }
+}
+
+.competition-table-mobile {
+  > :nth-child(3) {
+    @apply flex flex-col col-span-3 items-end;
+  }
+}
+</style>

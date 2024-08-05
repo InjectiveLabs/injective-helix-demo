@@ -20,30 +20,25 @@ function incrementLimit() {
 
 <template>
   <div class="mb-20">
-    <PartialsLeaderboardPnlCommonTableWrapper class="text-gray-350 text-[11px]">
-      <PartialsLeaderboardPnlCommonHeader />
-    </PartialsLeaderboardPnlCommonTableWrapper>
+    <PartialsLeaderboardPnlCommonHeader class="text-gray-350 text-[11px]" />
 
     <div v-if="filteredPnlLeaderboard.length > 0" class="relative">
-      <template v-for="leader in filteredPnlLeaderboard" :key="leader.rank">
-        <PartialsLeaderboardPnlCommonTableWrapper
-          class="text-sm my-1 items-center rounded-lg"
-          :class="{
-            'bg-gray-825 py-4 text-white': leader.rank > 3,
-            'bg-[#F3C211] py-5 text-gray-1100': leader.rank === 1,
-            'bg-[#AAAAAA] py-5 text-gray-1100': leader.rank === 2,
-            'bg-[#BD7B31] py-5 text-gray-1100': leader.rank === 3
-          }"
-        >
-          <PartialsLeaderboardPnlCommonRow
-            v-bind="{
-              rank: leader.rank,
-              account: leader.account,
-              pnl: leader.pnl
-            }"
-          />
-        </PartialsLeaderboardPnlCommonTableWrapper>
-      </template>
+      <PartialsLeaderboardPnlCommonRow
+        v-for="leader in filteredPnlLeaderboard"
+        :key="leader.rank"
+        v-bind="{
+          pnl: leader.pnl,
+          rank: leader.rank,
+          account: leader.account
+        }"
+        class="text-sm my-1 items-center rounded-lg"
+        :class="{
+          'bg-gray-825 py-4 text-white': leader.rank > 3,
+          'bg-[#F3C211] py-5 text-gray-1100': leader.rank === 1,
+          'bg-[#AAAAAA] py-5 text-gray-1100': leader.rank === 2,
+          'bg-[#BD7B31] py-5 text-gray-1100': leader.rank === 3
+        }"
+      />
 
       <PartialsLeaderboardTableBottomGradient
         v-if="

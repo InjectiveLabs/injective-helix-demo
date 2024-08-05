@@ -5,14 +5,19 @@ export default {
 </script>
 <template>
   <div>
-    <PartialsLeaderboardCompetitionCommonTableWrapper class="text-[11px]">
-      <PartialsLeaderboardCompetitionCommonHeader />
-    </PartialsLeaderboardCompetitionCommonTableWrapper>
+    <div class="hidden lg:block">
+      <div>
+        <PartialsLeaderboardCompetitionCommonHeader class="text-[11px]" />
 
-    <PartialsLeaderboardCompetitionCommonTableWrapper
-      class="text-sm my-1 items-center text-white"
-    >
-      <PartialsLeaderboardCompetitionCommonRow v-bind="$attrs" />
-    </PartialsLeaderboardCompetitionCommonTableWrapper>
+        <PartialsLeaderboardCompetitionCommonRow
+          class="text-sm my-1 items-center text-white"
+          v-bind="$attrs"
+        />
+      </div>
+    </div>
+
+    <div class="lg:hidden">
+      <PartialsLeaderboardCompetitionMyStatsMobileRow v-bind="$attrs" />
+    </div>
   </div>
 </template>

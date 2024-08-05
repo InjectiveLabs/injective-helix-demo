@@ -121,27 +121,13 @@ function onSharePnl() {
             </template>
 
             <template #row>
-              <div>
-                <div class="hidden md:block">
-                  <PartialsLeaderboardPnlMyStatsRow
-                    v-bind="{
-                      pnl: userStats.pnl,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </div>
-
-                <div class="md:hidden">
-                  <PartialsLeaderboardPnlMyStatsMobileRow
-                    v-bind="{
-                      pnl: userStats.pnl,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </div>
-              </div>
+              <PartialsLeaderboardPnlMyStatsRow
+                v-bind="{
+                  pnl: userStats.pnl,
+                  rank: userStats.rank,
+                  account: userStats.account
+                }"
+              />
             </template>
           </PartialsLeaderboardMyStats>
 
@@ -160,3 +146,21 @@ function onSharePnl() {
     />
   </div>
 </template>
+
+<style>
+.pnl-table {
+  @apply grid grid-cols-5 md:grid-cols-7 relative;
+
+  > :nth-child(1) {
+    @apply pl-3 md:pl-7 text-left col-span-1;
+  }
+
+  > :nth-child(2) {
+    @apply text-left col-span-2 md:col-span-4;
+  }
+
+  > :nth-child(3) {
+    @apply text-right md:text-left col-span-2 mr-0.5;
+  }
+}
+</style>

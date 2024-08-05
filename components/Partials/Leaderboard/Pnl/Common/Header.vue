@@ -1,17 +1,15 @@
 <template>
-  <PartialsLeaderboardPnlCommonRowWrapper>
-    <template #column1>
-      <div class="-ml-3 md:ml-0">
-        {{ $t('leaderboard.header.rank') }}
-      </div>
-    </template>
+  <div class="pnl-table">
+    <div class="-ml-3 md:ml-0">
+      {{ $t('leaderboard.header.rank') }}
+    </div>
 
-    <template #column2>
+    <div>
       {{ $t('leaderboard.header.address') }}
-    </template>
+    </div>
 
-    <template #column3>
+    <div>
       {{ $t('leaderboard.header.tradingPnl') }}
-    </template>
-  </PartialsLeaderboardPnlCommonRowWrapper>
+    </div>
+  </div>
 </template>

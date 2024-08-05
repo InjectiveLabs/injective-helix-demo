@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { LeaderboardType } from '@/types'
 
-const campaignStore = useCampaignStore()
+const isMobile = useIsMobile()
 
 const props = defineProps({
   account: {
@@ -24,14 +22,6 @@ const props = defineProps({
 
 const formattedAddress = computed(() => formatWalletAddress(props.account))
 
-const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.amount),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
-
 const entries = computed(() =>
   new BigNumberInBase(props.amount)
     .dividedBy(100)
@@ -40,14 +30,14 @@ const entries = computed(() =>
 </script>
 
 <template>
-  <PartialsLeaderboardCompetitionCommonRowWrapper>
-    <template #column1>
+  <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
+    <div>
       <span class="font-semibold ml-1">
         {{ rank }}
       </span>
-    </template>
+    </div>
 
-    <template #column2>
+    <div>
       <span class="font-medium">
         <div class="md:hidden flex items-center text-xs lowercase space-x-2">
           <div>
@@ -78,24 +68,31 @@ const entries = computed(() =>
           </div>
         </div>
       </span>
+    </div>
+
+    <template v-if="!isMobile">
+      <PartialsLeaderboardCompetitionCommonAmount
+        class="text-[13px] md:text-sm mr-2"
+        v-bind="{ amount }"
+      />
+
+      <div>
+        <span class="text-[13px] md:text-sm mr-2">
+          {{ entries }}
+        </span>
+      </div>
     </template>
 
-    <template #column3>
-      <span class="text-[13px] md:text-sm mr-2">
-        <span v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl">
-          {{ `${amountToBigNumber.gte(0) ? '+' : '-'}` }}
-        </span>
-        <span v-else>$</span>
-        <span>
-          {{ amountToFormat }}
-        </span>
-      </span>
+    <template v-else>
+      <div>
+        <PartialsLeaderboardCompetitionCommonAmount
+          class="text-[13px] md:text-sm mr-2"
+          v-bind="{ amount }"
+        />
+        <div class="text-[13px] md:text-sm mr-2">
+          {{ entries }}
+        </div>
+      </div>
     </template>
-
-    <template #column4>
-      <span class="text-[13px] md:text-sm mr-2">
-        {{ entries }}
-      </span>
-    </template>
-  </PartialsLeaderboardCompetitionCommonRowWrapper>
+  </div>
 </template>

@@ -1,13 +1,16 @@
 <template>
   <div>
-    <PartialsLeaderboardPnlCommonTableWrapper class="text-[11px]">
-      <PartialsLeaderboardPnlCommonHeader />
-    </PartialsLeaderboardPnlCommonTableWrapper>
+    <div class="hidden md:block">
+      <PartialsLeaderboardPnlCommonHeader class="text-[11px]" />
 
-    <PartialsLeaderboardPnlCommonTableWrapper
-      class="text-sm my-1 items-center text-white"
-    >
-      <PartialsLeaderboardPnlCommonRow v-bind="$attrs" />
-    </PartialsLeaderboardPnlCommonTableWrapper>
+      <PartialsLeaderboardPnlCommonRow
+        v-bind="$attrs"
+        class="text-sm my-1 items-center text-white"
+      />
+    </div>
+
+    <div class="md:hidden">
+      <PartialsLeaderboardPnlMyStatsMobileRow v-bind="$attrs" />
+    </div>
   </div>
 </template>

@@ -5,7 +5,6 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents, LeaderboardDuration } from '@/types'
 
 const modalStore = useModalStore()
-
 const { width } = useWindowSize()
 
 const props = defineProps({
@@ -41,7 +40,6 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
   )
 
 const isModalOpen = computed(() => modalStore.modals[Modal.SharePnl])
-
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
 onMounted(() => {
