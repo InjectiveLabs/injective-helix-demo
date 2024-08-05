@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
+import { formatWalletAddress } from '@injectivelabs/utils'
 
 const isMobile = useIsMobile()
 
@@ -21,12 +21,6 @@ const props = defineProps({
 })
 
 const formattedAddress = computed(() => formatWalletAddress(props.account))
-
-const entries = computed(() =>
-  new BigNumberInBase(props.amount)
-    .dividedBy(100)
-    .integerValue(BigNumberInBase.ROUND_FLOOR)
-)
 </script>
 
 <template>
@@ -71,27 +65,15 @@ const entries = computed(() =>
     </div>
 
     <template v-if="!isMobile">
-      <PartialsLeaderboardCompetitionCommonAmount
-        class="text-[13px] md:text-sm mr-2"
-        v-bind="{ amount }"
-      />
-
-      <div>
-        <span class="text-[13px] md:text-sm mr-2">
-          {{ entries }}
-        </span>
-      </div>
+      <PartialsLeaderboardCompetitionAmountEntries v-bind="{ amount }" />
     </template>
 
     <template v-else>
       <div>
-        <PartialsLeaderboardCompetitionCommonAmount
+        <PartialsLeaderboardCompetitionAmountEntries
           class="text-[13px] md:text-sm mr-2"
           v-bind="{ amount }"
         />
-        <div class="text-[13px] md:text-sm mr-2">
-          {{ entries }}
-        </div>
       </div>
     </template>
   </div>

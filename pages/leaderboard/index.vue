@@ -121,13 +121,30 @@ function onSharePnl() {
             </template>
 
             <template #row>
-              <PartialsLeaderboardPnlMyStatsRow
-                v-bind="{
-                  pnl: userStats.pnl,
-                  rank: userStats.rank,
-                  account: userStats.account
-                }"
-              />
+              <div>
+                <div class="hidden md:block">
+                  <PartialsLeaderboardPnlCommonHeader class="text-[11px]" />
+
+                  <PartialsLeaderboardPnlCommonRow
+                    v-bind="{
+                      pnl: userStats.pnl,
+                      rank: userStats.rank,
+                      account: userStats.account
+                    }"
+                    class="text-sm my-1 items-center text-white"
+                  />
+                </div>
+
+                <div class="md:hidden">
+                  <PartialsLeaderboardPnlMyStatsMobileRow
+                    v-bind="{
+                      pnl: userStats.pnl,
+                      rank: userStats.rank,
+                      account: userStats.account
+                    }"
+                  />
+                </div>
+              </div>
             </template>
           </PartialsLeaderboardMyStats>
 

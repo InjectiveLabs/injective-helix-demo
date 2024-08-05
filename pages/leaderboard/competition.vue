@@ -109,13 +109,34 @@ function fetchCampaign() {
             </template>
 
             <template #row>
-              <PartialsLeaderboardCompetitionMyStatsRow
-                v-bind="{
-                  amount,
-                  rank: userStats.rank,
-                  account: userStats.account
-                }"
-              />
+              <div>
+                <div class="hidden lg:block">
+                  <div>
+                    <PartialsLeaderboardCompetitionCommonHeader
+                      class="text-[11px]"
+                    />
+
+                    <PartialsLeaderboardCompetitionCommonRow
+                      class="text-sm my-1 items-center text-white"
+                      v-bind="{
+                        amount,
+                        rank: userStats.rank,
+                        account: userStats.account
+                      }"
+                    />
+                  </div>
+                </div>
+
+                <div class="lg:hidden">
+                  <PartialsLeaderboardCompetitionMyStatsMobileRow
+                    v-bind="{
+                      amount,
+                      rank: userStats.rank,
+                      account: userStats.account
+                    }"
+                  />
+                </div>
+              </div>
             </template>
           </PartialsLeaderboardMyStats>
 
