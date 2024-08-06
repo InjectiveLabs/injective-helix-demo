@@ -5,7 +5,7 @@ import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
-import { AccountBalance } from '@/types'
+import { AccountBalance, PortfolioSubPage } from '@/types'
 
 const accountStore = useAccountStore()
 
@@ -185,39 +185,50 @@ function toggleStakingRow() {
       <div
         class="flex col-span-2 items-center font-mono text-xs space-x-2 shrink-0 p-2 pl-4 justify-end"
       >
-        <PartialsCommonBridgeRedirection
-          v-if="isBridgable"
-          v-bind="{
-            isDeposit: true,
-            denom: balance.token.denom
-          }"
+        <template v-if="accountStore.isDefaultSubaccount">
+          <PartialsCommonBridgeRedirection
+            v-if="isBridgable"
+            v-bind="{
+              isDeposit: true,
+              denom: balance.token.denom
+            }"
+          >
+            <AppButton variant="primary" size="sm">
+              {{ $t('account.deposit') }}
+            </AppButton>
+          </PartialsCommonBridgeRedirection>
+
+          <PartialsCommonBridgeRedirection
+            v-if="isBridgable"
+            v-bind="{
+              denom: balance.token.denom
+            }"
+          >
+            <AppButton variant="primary-outline" size="sm">
+              {{ $t('account.withdraw') }}
+            </AppButton>
+          </PartialsCommonBridgeRedirection>
+
+          <PartialsCommonBridgeRedirection
+            v-bind="{
+              denom: balance.token.denom,
+              isTransfer: true
+            }"
+          >
+            <AppButton variant="primary-outline" size="sm">
+              {{ $t('account.transfer') }}
+            </AppButton>
+          </PartialsCommonBridgeRedirection>
+        </template>
+
+        <NuxtLink
+          v-else-if="!accountStore.isSgtSubaccount"
+          :to="{ name: PortfolioSubPage.Subaccounts }"
         >
           <AppButton variant="primary" size="sm">
-            {{ $t('account.deposit') }}
-          </AppButton>
-        </PartialsCommonBridgeRedirection>
-
-        <PartialsCommonBridgeRedirection
-          v-if="isBridgable"
-          v-bind="{
-            denom: balance.token.denom
-          }"
-        >
-          <AppButton variant="primary-outline" size="sm">
-            {{ $t('account.withdraw') }}
-          </AppButton>
-        </PartialsCommonBridgeRedirection>
-
-        <PartialsCommonBridgeRedirection
-          v-bind="{
-            denom: balance.token.denom,
-            isTransfer: true
-          }"
-        >
-          <AppButton variant="primary-outline" size="sm">
             {{ $t('account.transfer') }}
           </AppButton>
-        </PartialsCommonBridgeRedirection>
+        </NuxtLink>
       </div>
     </div>
 
