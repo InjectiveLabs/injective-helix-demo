@@ -17,17 +17,6 @@ export default defineNuxtConfig({
     head
   },
 
-  vite: {
-    server: {
-      hmr: {
-        protocol: 'ws',
-        host: '0.0.0.0',
-        clientPort: 3000,
-        port: 24678
-      }
-    }
-  },
-
   imports: {
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
