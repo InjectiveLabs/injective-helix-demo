@@ -62,8 +62,8 @@ function fetchCampaign() {
       return await leaderboardStore.fetchLeaderboard({
         type: campaignStore.activeCampaignType,
         duration: {
-          startDate: Number(campaignStore.activeCampaign.startDate),
-          endDate: Number(campaignStore.activeCampaign.endDate)
+          startDate: campaignStore.activeCampaign.startDate,
+          endDate: campaignStore.activeCampaign.endDate
         }
       })
     })

@@ -24,20 +24,20 @@ export const fetchLeaderboardByResolution = async (
 
 export const fetchLeaderboardByDuration = async (
   type: LeaderboardType,
-  duration: { startDate: number; endDate: number }
+  duration: { startDate: string; endDate: string }
 ) => {
   if (type === LeaderboardType.Pnl) {
     const pnlLeaderboard = await indexerGrpcArchiverApi.fetchPnlLeaderboard({
-      startDate: duration.startDate,
-      endDate: duration.endDate
+      endDate: duration.endDate,
+      startDate: duration.startDate
     })
 
     return pnlLeaderboard
   }
 
   const volumeLeaderboard = await indexerGrpcArchiverApi.fetchVolLeaderboard({
-    startDate: duration.startDate,
-    endDate: duration.endDate
+    endDate: duration.endDate,
+    startDate: duration.startDate
   })
 
   return volumeLeaderboard

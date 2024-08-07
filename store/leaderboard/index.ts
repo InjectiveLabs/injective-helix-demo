@@ -117,8 +117,8 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       type: LeaderboardType
       resolution?: string
       duration?: {
-        startDate: number
-        endDate: number
+        startDate: string
+        endDate: string
       }
     }) {
       const leaderboardStore = useLeaderboardStore()
