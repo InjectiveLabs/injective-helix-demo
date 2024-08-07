@@ -52,9 +52,14 @@ const formattedAddress = computed(() => formatWalletAddress(props.account))
           </div>
           <div v-if="rank === 1">
             <div
-              class="text-sm hidden 2xl:inline-block bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px]"
+              class="text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px] gap-1 items-center"
             >
-              {{ $t('leaderboard.competition.currentLeader') }}
+              <div>
+                {{ $t('leaderboard.competition.currentLeader') }}
+              </div>
+              <div class="-mt-[2px] text-sm">
+                {{ $t('leaderboard.competition.currentLeaderFlame') }}
+              </div>
             </div>
             <div class="2xl:hidden">
               {{ $t('leaderboard.competition.currentLeaderMobile') }}

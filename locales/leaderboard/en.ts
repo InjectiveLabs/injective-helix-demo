@@ -27,7 +27,8 @@ export default {
 
     competition: {
       keepGoing: 'Keep going 💪',
-      currentLeader: 'Current leader 🔥🔥',
+      currentLeader: 'Current leader',
+      currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
