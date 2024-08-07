@@ -4,11 +4,11 @@ const leaderboardStore = useLeaderboardStore()
 const limit = ref(20)
 
 const filteredPnlLeaderboard = computed(() => {
-  if (!leaderboardStore.leaderboard?.leaders) {
+  if (!leaderboardStore.pnlLeaderboard?.leaders) {
     return []
   }
 
-  return leaderboardStore.leaderboard.leaders.slice(0, limit.value)
+  return leaderboardStore.pnlLeaderboard.leaders.slice(0, limit.value)
 })
 
 function incrementLimit() {
@@ -43,7 +43,7 @@ function incrementLimit() {
       <PartialsLeaderboardTableBottomGradient
         v-if="
           filteredPnlLeaderboard.length !==
-          leaderboardStore.leaderboard?.leaders.length
+          leaderboardStore.pnlLeaderboard?.leaders.length
         "
       />
     </div>
@@ -59,7 +59,7 @@ function incrementLimit() {
       v-if="
         filteredPnlLeaderboard.length > 0 &&
         filteredPnlLeaderboard.length !==
-          leaderboardStore.leaderboard?.leaders.length
+          leaderboardStore.pnlLeaderboard?.leaders.length
       "
       @limit:increment="incrementLimit"
     />

@@ -11,12 +11,12 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 const userStats = computed(() => {
-  if (!leaderboardStore.leaderboard?.leaders) {
+  if (!leaderboardStore.competitionLeaderboard?.leaders) {
     return
   }
 
-  return leaderboardStore.leaderboard.leaders.find(
-    (leader) => leader.account === sharedWalletStore.address
+  return leaderboardStore.competitionLeaderboard.leaders.find(
+    (leader) => leader.account === sharedWalletStore.injectiveAddress
   )
 })
 
@@ -32,7 +32,7 @@ const timeLeftInCampaign = computed(() => {
     nowInMilliseconds: now.value.getTime().toString()
   })
 
-  return `${String(duration.days).padStart(2, '0')}:${String(
+  return `${String(duration.days).padStart(2, '0')}D ${String(
     duration.hours
   ).padStart(2, '0')}:${String(duration.minutes).padStart(2, '0')}:${String(
     duration.seconds
@@ -59,7 +59,7 @@ function fetchCampaign() {
         return
       }
 
-      return await leaderboardStore.fetchLeaderboard({
+      return await leaderboardStore.fetchCompetitionLeaderboard({
         type: campaignStore.activeCampaignType,
         duration: {
           startDate: campaignStore.activeCampaign.startDate,

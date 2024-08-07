@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { UTC_TIMEZONE } from '@shared/utils/constant'
-import { Modal, BusEvents, LeaderboardType, LeaderboardDuration } from '@/types'
+import { Modal, BusEvents, LeaderboardDuration } from '@/types'
 
 const modalStore = useModalStore()
 const leaderboardStore = useLeaderboardStore()
@@ -14,12 +14,12 @@ const status = reactive(new Status(StatusType.Loading))
 const selectedDuration = ref(LeaderboardDuration.All)
 
 const startDateFormatted = computed(() => {
-  if (!leaderboardStore.leaderboard?.firstDate) {
+  if (!leaderboardStore.pnlLeaderboard?.firstDate) {
     return ''
   }
 
   const zonedFirstDate = utcToZonedTime(
-    leaderboardStore.leaderboard.firstDate,
+    leaderboardStore.pnlLeaderboard.firstDate,
     UTC_TIMEZONE
   )
 
@@ -27,12 +27,12 @@ const startDateFormatted = computed(() => {
 })
 
 const endDateFormatted = computed(() => {
-  if (!leaderboardStore.leaderboard?.lastDate) {
+  if (!leaderboardStore.pnlLeaderboard?.lastDate) {
     return ''
   }
 
   const zonedLastDate = utcToZonedTime(
-    leaderboardStore.leaderboard.lastDate,
+    leaderboardStore.pnlLeaderboard.lastDate,
     UTC_TIMEZONE
   )
 
@@ -40,12 +40,12 @@ const endDateFormatted = computed(() => {
 })
 
 const userStats = computed(() => {
-  if (!leaderboardStore.leaderboard?.leaders) {
+  if (!leaderboardStore.pnlLeaderboard?.leaders) {
     return
   }
 
-  return leaderboardStore.leaderboard.leaders.find(
-    (leader) => leader.account === sharedWalletStore.address
+  return leaderboardStore.pnlLeaderboard.leaders.find(
+    (leader) => leader.account === sharedWalletStore.injectiveAddress
   )
 })
 
@@ -57,10 +57,7 @@ function fetchPnlLeaderboard() {
   status.setLoading()
 
   leaderboardStore
-    .fetchLeaderboard({
-      type: LeaderboardType.Pnl,
-      resolution: selectedDuration.value
-    })
+    .fetchPnlLeaderboard(selectedDuration.value)
     .catch($onError)
     .finally(() => status.setIdle())
 }

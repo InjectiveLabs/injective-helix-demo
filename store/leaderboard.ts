@@ -1,13 +1,10 @@
 import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
-import {
-  fetchLeaderboardByDuration,
-  fetchLeaderboardByResolution
-} from '@/store/leaderboard/utils'
 import { indexerGrpcArchiverApi } from '@/app/Services'
 import { LeaderboardType } from '@/types'
 
 type LeaderboardStoreState = {
-  leaderboard?: PnlLeaderboard | VolLeaderboard
+  pnlLeaderboard?: PnlLeaderboard
+  competitionLeaderboard?: PnlLeaderboard | VolLeaderboard
   historicalBalance: {
     time: number
     value: number
@@ -31,7 +28,8 @@ enum LeaderboardResolution {
 }
 
 const initialStateFactory = (): LeaderboardStoreState => ({
-  leaderboard: undefined,
+  pnlLeaderboard: undefined,
+  competitionLeaderboard: undefined,
   historicalBalance: [],
   historicalPnl: [],
   historicalVolume: []
@@ -109,34 +107,46 @@ export const useLeaderboardStore = defineStore('leaderboard', {
       })
     },
 
-    async fetchLeaderboard({
+    async fetchPnlLeaderboard(resolution: string) {
+      const leaderboardStore = useLeaderboardStore()
+
+      leaderboardStore.$patch({
+        pnlLeaderboard:
+          await indexerGrpcArchiverApi.fetchPnlLeaderboardFixedResolution({
+            resolution
+          })
+      })
+    },
+    async fetchCompetitionLeaderboard({
       type,
-      duration,
-      resolution
+      duration
     }: {
       type: LeaderboardType
-      resolution?: string
-      duration?: {
+      duration: {
         startDate: string
         endDate: string
       }
     }) {
       const leaderboardStore = useLeaderboardStore()
 
-      if (resolution) {
+      if (type === LeaderboardType.Pnl) {
         leaderboardStore.$patch({
-          leaderboard: await fetchLeaderboardByResolution(type, resolution)
+          competitionLeaderboard:
+            await indexerGrpcArchiverApi.fetchPnlLeaderboard({
+              endDate: duration.endDate,
+              startDate: duration.startDate
+            })
         })
 
         return
       }
 
-      if (!duration) {
-        return
-      }
-
       leaderboardStore.$patch({
-        leaderboard: await fetchLeaderboardByDuration(type, duration)
+        competitionLeaderboard:
+          await indexerGrpcArchiverApi.fetchVolLeaderboard({
+            endDate: duration.endDate,
+            startDate: duration.startDate
+          })
       })
     }
   }
