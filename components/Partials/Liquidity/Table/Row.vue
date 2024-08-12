@@ -12,8 +12,8 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
 } from '@/app/utils/constants'
+import { spotGridMarkets } from '@/app/json'
 import { toBalanceInToken } from '@/app/utils/formatters'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import {
   PortfolioSubPage,
   TradingInterface,

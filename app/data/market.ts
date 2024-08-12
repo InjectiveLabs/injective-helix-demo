@@ -1,5 +1,5 @@
 import { injToken } from '@shared/data/token'
-import marketCategorySlugs from './category.json'
+import { marketCategories } from '@/app/json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import {
   NotLiquidMarket,
@@ -14,28 +14,28 @@ export interface UnTradableMarket {
 
 export const betaMarketSlugs = [] as string[]
 
-export const newMarketsSlug = marketCategorySlugs.newMarketsCategorySlugs || []
+export const newMarketsSlug = marketCategories.newMarketsCategorySlugs || []
 
 export const experimentalMarketsSlug =
-  marketCategorySlugs.experimentalCategorySlugs || []
+  marketCategories.experimentalCategorySlugs || []
 
 export const slugsToIncludeInCosmosCategory =
-  marketCategorySlugs.cosmosCategorySlugs || []
+  marketCategories.cosmosCategorySlugs || []
 
 export const slugsToIncludeInEthereumCategory =
-  marketCategorySlugs.ethereumCategorySlugs || []
+  marketCategories.ethereumCategorySlugs || []
 
 export const slugsToIncludeInInjectiveCategory =
-  marketCategorySlugs.injectiveCategorySlugs || []
+  marketCategories.injectiveCategorySlugs || []
 
 export const slugsToIncludeInSolanaCategory =
-  marketCategorySlugs.solanaCategorySlugs || []
+  marketCategories.solanaCategorySlugs || []
 
 export const olpSlugsToIncludeInLowVolume =
-  marketCategorySlugs.olpLowVolumeCategorySlugs || []
+  marketCategories.olpLowVolumeCategorySlugs || []
 
 export const slugsToIncludeInRWACategory =
-  marketCategorySlugs.rwaCategorySlugs || []
+  marketCategories.rwaCategorySlugs || []
 
 export const excludedPriceDeviationSlugs = [] as string[]
 

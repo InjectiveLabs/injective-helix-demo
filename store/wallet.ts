@@ -5,8 +5,8 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
-import blacklistedAddresses from '@/app/data/ofac.json'
 
 type WalletStoreState = {}
 
