@@ -16,12 +16,7 @@ const stateToPersist = {
       favoriteMarkets: [],
       bannersViewed: [],
       modalsViewed: [],
-      geoLocation: {
-        continent: '',
-        country: '',
-        browserLocation: '',
-        vpnCheckTimestamp: 0
-      },
+
       preferences: {
         skipTradeConfirmationModal: false,
         skipExperimentalConfirmationModal: false,
@@ -37,6 +32,14 @@ const stateToPersist = {
 
   account: {
     subaccountId: ''
+  },
+
+  sharedGeo: {
+    geoContinent: '',
+    geoCountry: '',
+    ipCountry: '',
+    ipAddress: '',
+    vpnCheckedTimestamp: 0
   },
 
   sharedWallet: {

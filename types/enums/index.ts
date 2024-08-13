@@ -42,6 +42,7 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   PostOnlyMode = 'post-only-mode',
+  GeoRestricted = 'geo-restricted',
   GasFeeRebate = 'gas-fee-rebate',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',

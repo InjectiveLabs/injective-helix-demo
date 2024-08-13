@@ -10,8 +10,8 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
 import { IS_MAINNET, IS_TESTNET } from '@shared/utils/constant'
+import { tokens } from '@/app/json'
 import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
-import tokens from '@/app/data/tokens.json'
 
 export const tokenFactoryStatic = new TokenFactoryStatic(
   tokens as TokenStatic[]

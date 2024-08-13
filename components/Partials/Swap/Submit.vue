@@ -5,15 +5,15 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 
-const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
 const formErrors = useFormErrors()
+const sharedGeoStore = useSharedGeoStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { userBalancesWithToken } = useBalance()
@@ -77,9 +77,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     }
 
     return isCountryRestrictedForSpotMarket({
-      country:
-        appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country,
+      country: sharedGeoStore.country,
       denomOrSymbol: denom
     })
   })

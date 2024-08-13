@@ -9,7 +9,7 @@
     "buffer": true
   },
   "scripts": {
-    "fetch:data": "ts-node -P tsconfig-script.json ./scripts/slugs.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/wallets.ts",
+    "fetch:data": "ts-node -P tsconfig-script.json ./scripts/slugs.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/restriction.ts",
     "dev": "nuxi dev",
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",

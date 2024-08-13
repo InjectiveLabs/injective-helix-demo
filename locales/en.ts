@@ -208,6 +208,10 @@ export default {
       ])
   },
 
+  geoRestricted: {
+    description: 'Helix is currently not available in your region.'
+  },
+
   marketExpired: {
     title: 'Market Expired',
     expiredNote:

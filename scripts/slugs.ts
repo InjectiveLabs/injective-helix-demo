@@ -1,34 +1,6 @@
 /* eslint-disable no-console */
-import { writeFileSync } from 'node:fs'
 import { HttpClient } from '@injectivelabs/utils'
-import {
-  Network,
-  isDevnet,
-  isTestnet,
-  isMainnet
-} from '@injectivelabs/networks'
-
-const NETWORK: Network = process.env.VITE_NETWORK as Network
-const IS_STAGING = process.env.VITE_ENV === 'staging'
-const IS_DEVNET: boolean = isDevnet(NETWORK)
-const IS_TESTNET: boolean = isTestnet(NETWORK)
-const IS_MAINNET: boolean = isMainnet(NETWORK)
-
-const getFilePath = (): string => {
-  if (IS_DEVNET) {
-    return 'devnet.json'
-  }
-
-  if (IS_TESTNET) {
-    return 'testnet.json'
-  }
-
-  if (IS_MAINNET && IS_STAGING) {
-    return 'staging.json'
-  }
-
-  return 'mainnet.json'
-}
+import { storeJsonFile } from './helper'
 
 export const fetchMarketCategorySlugs = async (): Promise<any> => {
   const client = new HttpClient(
@@ -48,129 +20,144 @@ export const fetchMarketCategorySlugs = async (): Promise<any> => {
       }
     }
 
-    writeFileSync('app/data/category.json', JSON.stringify(slugs, null, '\t'))
+    storeJsonFile('app/json/marketCategories.json', slugs)
 
-    console.log('✅✅✅ fetchMarketCategorySlugs')
+    console.log('✅✅✅ Market categories')
   } catch (err) {
-    console.log('fetchMarketCategorySlugs', err)
+    console.log('❌❌❌ Market categories')
     throw err
   }
 }
 
-export const fetchExpiryFuturesMarketSlugs = async (): Promise<any> => {
-  const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/expiry/'
-  )
-
-  const filePath = getFilePath()
-
-  try {
-    const { data: slugs } = (await client.get(filePath)) as {
-      data: string[]
-    }
-
-    writeFileSync('app/data/expiry.json', JSON.stringify(slugs, null, '\t'))
-
-    console.log('✅✅✅ fetchExpiryFuturesMarketSlugs')
-  } catch (err: any) {
-    console.error('fetchExpiryFuturesMarketSlugs')
-    throw err
-  }
-}
-
-export const fetchDerivativeMarketSlugs = async (): Promise<any> => {
-  const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/derivative/'
-  )
-
-  const filePath = getFilePath()
-
-  try {
-    const { data: slugs } = (await client.get(filePath)) as {
-      data: string[]
-    }
-
-    writeFileSync('app/data/derivative.json', JSON.stringify(slugs, null, '\t'))
-
-    console.log('✅✅✅ fetchDerivativeMarketSlugs')
-  } catch (err) {
-    console.error('fetchDerivativeMarketSlugs', err)
-    throw err
-  }
-}
-
-export const fetchSpotMarketSlugs = async (): Promise<any> => {
+export const fetchSpotMarketSlugs = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
     'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/spot/'
   )
 
-  const filePath = getFilePath()
-
   try {
-    const { data: slugs } = (await client.get(filePath)) as {
+    const { data: slugs } = (await client.get(fileName)) as {
       data: string[]
     }
 
-    writeFileSync('app/data/spot.json', JSON.stringify(slugs, null, '\t'))
+    storeJsonFile(`app/json/slugs/spot/${fileName}`, slugs)
 
-    console.log('✅✅✅ fetchSpotMarketSlugs')
+    console.log(`✅✅✅ Spot slugs - ${fileName}`)
   } catch (err) {
-    console.error('fetchSpotMarketSlugs', err)
+    console.error(`❌❌❌ Spot slugs - ${fileName}`)
+
     throw err
   }
 }
 
-export const fetchSpotGridMarkets = async (): Promise<any> => {
+export const fetchDerivativeMarketSlugs = async (
+  fileName: string
+): Promise<any> => {
+  const client = new HttpClient(
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/derivative/'
+  )
+
+  try {
+    const { data: slugs } = (await client.get(fileName)) as {
+      data: string[]
+    }
+
+    storeJsonFile(`app/json/slugs/derivative/${fileName}`, slugs)
+
+    console.log(`✅✅✅ Derivative slugs - ${fileName}`)
+  } catch (err) {
+    console.error(`❌❌❌ Derivative slugs - ${fileName}`)
+
+    throw err
+  }
+}
+
+export const fetchExpiryFuturesMarketSlugs = async (
+  fileName: string
+): Promise<any> => {
+  const client = new HttpClient(
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/expiry/'
+  )
+
+  try {
+    const { data: slugs } = (await client.get(fileName)) as {
+      data: string[]
+    }
+
+    storeJsonFile(`app/json/slugs/expiry/${fileName}`, slugs)
+
+    console.log(`✅✅✅ Expiry future market slugs - ${fileName}`)
+  } catch (err) {
+    console.error(`❌❌❌ Expiry future market slugs - ${fileName}`)
+
+    throw err
+  }
+}
+
+export const fetchSpotGridMarkets = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
     'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/spot/'
   )
 
-  const filePath = getFilePath()
-
   try {
-    const { data: slugs } = (await client.get(filePath)) as {
+    const { data: gridContracts } = (await client.get(fileName)) as {
       data: string[]
     }
 
-    writeFileSync(
-      'app/data/spotGridMarkets.json',
-      JSON.stringify(slugs, null, '\t')
-    )
+    storeJsonFile(`app/json/grid/spot/${fileName}`, gridContracts)
 
-    console.log('✅✅✅ fetchSpotGridMarkets')
+    console.log(`✅✅✅ Spot grid markets - ${fileName}`)
   } catch (err) {
-    console.error('fetchSpotGridMarkets', err)
+    console.error(`❌❌❌ Spot grid markets - ${fileName}`)
+
     throw err
   }
 }
 
-export const fetchDerivativeGridMarkets = async (): Promise<any> => {
+export const fetchDerivativeGridMarkets = async (
+  fileName: string
+): Promise<any> => {
   const client = new HttpClient(
     'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/derivative/'
   )
 
-  const filePath = getFilePath()
-
   try {
-    const { data: slugs } = (await client.get(filePath)) as {
+    const { data: gridContracts } = (await client.get(fileName)) as {
       data: string[]
     }
 
-    writeFileSync(
-      'app/data/derivativeGridMarkets.json',
-      JSON.stringify(slugs, null, '\t')
-    )
+    storeJsonFile(`app/json/grid/derivative/${fileName}`, gridContracts)
 
-    console.log('✅✅✅ fetchDerivativeGridMarkets')
+    console.log(`✅✅✅ Derivative grid markets - ${fileName}`)
   } catch (err) {
-    console.error('fetchDerivativeGridMarkets', err)
+    console.error(`❌❌❌ Derivative grid markets - ${fileName}`)
+
     throw err
   }
 }
 
-fetchSpotMarketSlugs()
 fetchMarketCategorySlugs()
-fetchDerivativeMarketSlugs()
-fetchExpiryFuturesMarketSlugs()
-fetchSpotGridMarkets()
-fetchDerivativeGridMarkets()
+
+fetchSpotMarketSlugs('devnet.json')
+fetchSpotMarketSlugs('testnet.json')
+fetchSpotMarketSlugs('staging.json')
+fetchSpotMarketSlugs('mainnet.json')
+
+fetchDerivativeMarketSlugs('devnet.json')
+fetchDerivativeMarketSlugs('testnet.json')
+fetchDerivativeMarketSlugs('staging.json')
+fetchDerivativeMarketSlugs('mainnet.json')
+
+fetchExpiryFuturesMarketSlugs('devnet.json')
+fetchExpiryFuturesMarketSlugs('testnet.json')
+fetchExpiryFuturesMarketSlugs('staging.json')
+fetchExpiryFuturesMarketSlugs('mainnet.json')
+
+fetchSpotGridMarkets('devnet.json')
+fetchSpotGridMarkets('testnet.json')
+fetchSpotGridMarkets('staging.json')
+fetchSpotGridMarkets('mainnet.json')
+
+fetchDerivativeGridMarkets('devnet.json')
+fetchDerivativeGridMarkets('testnet.json')
+fetchDerivativeGridMarkets('staging.json')
+fetchDerivativeGridMarkets('mainnet.json')

@@ -5,8 +5,8 @@ import {
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
 
-const appStore = useAppStore()
 const modalStore = useModalStore()
+const sharedGeoStore = useSharedGeoStore()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -17,7 +17,27 @@ const props = defineProps({
   }
 })
 
-const isModalOpen = computed(() => modalStore.modals[Modal.MarketRestricted])
+const disallowedTokenSymbol = computed(() => {
+  const disallowedToken = [
+    props.market.baseToken,
+    props.market.quoteToken
+  ].find((token) =>
+    isCountryRestrictedForSpotMarket({
+      country: sharedGeoStore.country,
+      denomOrSymbol: token.symbol.toLowerCase()
+    })
+  )
+
+  return disallowedToken?.symbol
+})
+
+const isModalOpen = computed(() =>
+  props.isSpot
+    ? !!(
+        modalStore.modals[Modal.MarketRestricted] && disallowedTokenSymbol.value
+      )
+    : modalStore.modals[Modal.MarketRestricted]
+)
 
 onMounted(() => {
   checkUserIsDisallowed()
@@ -26,15 +46,10 @@ onMounted(() => {
 function checkUserIsDisallowed() {
   const isRestricted = props.isSpot
     ? isCountryRestrictedForSpotMarket({
-        country:
-          appStore.userState.geoLocation.browserCountry ||
-          appStore.userState.geoLocation.country,
+        country: sharedGeoStore.country,
         denomOrSymbol: props.market.baseToken.symbol.toLowerCase()
       })
-    : isCountryRestrictedForPerpetualMarkets(
-        appStore.userState.geoLocation.browserCountry ||
-          appStore.userState.geoLocation.country
-      )
+    : isCountryRestrictedForPerpetualMarkets(sharedGeoStore.country)
 
   if (isRestricted) {
     modalStore.openModal(Modal.MarketRestricted)

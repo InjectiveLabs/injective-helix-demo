@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { SharedDropdownOption } from '@shared/types'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
+import { spotGridMarkets } from '@/app/json'
 
 const gridStrategyStore = useGridStrategyStore()
 

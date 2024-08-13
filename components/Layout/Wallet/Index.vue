@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { IS_DEVNET } from '@shared/utils/constant'
 import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
+import { IS_DEVNET, GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, WalletOption } from '@/types'
 
 const modalStore = useModalStore()
+const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const status: Status = reactive(new Status(StatusType.Loading))
@@ -108,6 +109,17 @@ function onWalletConnect() {
   }
 }
 
+function onModalOpen() {
+  if (!GEO_IP_RESTRICTIONS_ENABLED) {
+    return
+  }
+
+  if (isCountryRestricted(sharedGeoStore.country)) {
+    modalStore.closeModal(Modal.Connect)
+    modalStore.openModal(Modal.GeoRestricted)
+  }
+}
+
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
@@ -145,6 +157,7 @@ watch(isModalOpen, (newShowModalState) => {
     is-md
     is-transparent
     :is-open="isModalOpen"
+    @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
     <div class="py-4">
