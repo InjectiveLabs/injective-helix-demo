@@ -302,6 +302,7 @@ onMounted(() => {
           .shiftedBy(market.quantityTensMultiplier)
           .toFixed()
       "
+      :data-cy="dataCyTag(`input-field-limit-amount`)"
       @blur="onBlur"
       @click="onClick"
     >
@@ -336,7 +337,7 @@ onMounted(() => {
       <template #bottom>
         <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
           <div v-if="isBuy" class="space-x-2">
-            <span>{{
+            <span :data-cy="dataCyTag(`stable-token-balance`)">{{
               $t('trade.availableAmount', {
                 amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
               })
@@ -344,7 +345,7 @@ onMounted(() => {
           </div>
 
           <div v-else class="space-x-2">
-            <span>{{
+            <span :data-cy="dataCyTag(`base-token-balance`)">{{
               $t('trade.availableAmount', {
                 amount: `${baseBalanceToString} ${market.baseToken.symbol}`
               })

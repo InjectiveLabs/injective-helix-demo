@@ -85,7 +85,7 @@ function toggle() {
           <p class="text-gray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
 
-          <p class="font-mono space-x-2">
+          <p class="font-mono space-x-2" :data-cy="dataCyTag(`details-total`)">
             <span>&asymp;{{ totalToString }} </span>
             <span class="text-gray-400">
               {{ spotMarket.quoteToken.symbol }}
@@ -96,7 +96,10 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-gray-400">{{ $t('trade.amount') }}</p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p
+            class="font-mono space-x-2"
+            :data-cy="dataCyTag(`details-trade-token-amount`)"
+          >
             <span>{{ quantityToString }} </span>
             <span class="text-gray-400">
               {{ spotMarket.baseToken.symbol }}
@@ -109,7 +112,10 @@ function toggle() {
             {{ spotMarket.quoteToken.symbol }} {{ $t('trade.amount') }}
           </p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p
+            class="font-mono space-x-2"
+            :data-cy="dataCyTag(`details-trade-stable-amount`)"
+          >
             <span>{{ total.toFormat(spotMarket.priceDecimals) }} </span>
             <span class="text-gray-400">
               {{ spotMarket.quoteToken.symbol }}
@@ -120,7 +126,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-gray-400">{{ $t('trade.price') }}</p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p class="font-mono space-x-2" :data-cy="dataCyTag(`details-price`)">
             <span>{{ worstPrice.toFormat(spotMarket.priceDecimals) }} </span>
             <span class="text-gray-400">
               {{ spotMarket.quoteToken.symbol }}
@@ -144,7 +150,11 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-gray-400">{{ $t('trade.maker_rate') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p v-if="spotMarket" class="font-mono">
+            <p
+              v-if="spotMarket"
+              class="font-mono"
+              :data-cy="dataCyTag(`details-maker-fee-rate`)"
+            >
               {{ +spotMarket.makerFeeRate * 100 }}%
             </p>
           </div>
@@ -152,7 +162,11 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-gray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p v-if="spotMarket" class="font-mono">
+            <p
+              v-if="spotMarket"
+              class="font-mono"
+              :Data-cy="dataCyTag(`details-est-fee-rebate`)"
+            >
               {{ feeAmount.abs().toFixed(spotMarket.priceDecimals) }} USDT
             </p>
           </div>

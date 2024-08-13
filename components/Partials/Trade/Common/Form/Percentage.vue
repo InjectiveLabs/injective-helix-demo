@@ -15,6 +15,7 @@ function setPercentage(percentage: string) {
       :key="percentage"
       class="text-[11px] leading-none px-1 w-11 py-1.5 font-mono text-gray-400 hover:bg-brand-875 hover:text-white"
       v-bind="{ value: String(percentage), modelValue: '' }"
+      :data-cy="dataCyTag(`percentage-value-${percentage}`)"
       @update:model-value="setPercentage"
     >
       {{ percentage }}%

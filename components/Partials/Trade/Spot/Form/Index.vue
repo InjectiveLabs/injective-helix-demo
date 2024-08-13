@@ -47,7 +47,7 @@ function onTradingModeChange(value: string) {
 
 <template>
   <div>
-    <div class="h-header flex border-b">
+    <div class="h-header flex border-b" :data-cy="dataCyTag(`trading-mode`)">
       <AppButtonSelect
         v-for="{ value, disabled } in options"
         :key="value"

@@ -36,7 +36,7 @@ const {
 
 <template>
   <div class="p-4">
-    <div class="border-b">
+    <div class="border-b" :data-cy="`trade-type`">
       <AppButtonSelect
         v-for="value in Object.values(TradeTypes)"
         :key="value"
@@ -60,6 +60,7 @@ const {
         :active-classes="
           side === OrderSide.Buy ? '!border-green-500' : '!border-red-500'
         "
+        :data-cy="`order-side-${side}`"
       >
         {{ $t(`trade.${side}`) }}
       </AppButtonSelect>
