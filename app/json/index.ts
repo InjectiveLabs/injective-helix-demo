@@ -31,12 +31,11 @@ import marketCategoriesJson from './marketCategories.json'
 import restrictedCountriesJson from './restrictedCountries.json'
 import blacklistedAddressesJson from './blacklistedAddresses.json'
 
-const NETWORK: Network = process.env.VITE_NETWORK as Network
+const NETWORK: Network = import.meta.env.VITE_NETWORK as Network
 const IS_DEVNET: boolean = isDevnet(NETWORK)
 const IS_TESTNET: boolean = isTestnet(NETWORK)
 const IS_MAINNET: boolean = isMainnet(NETWORK)
-
-const IS_STAGING = process.env.VITE_ENV === 'staging'
+const IS_STAGING = import.meta.env.VITE_ENV === 'staging'
 
 export const getTokens = () => {
   if (IS_DEVNET) {
