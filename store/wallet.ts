@@ -2,11 +2,13 @@ import { defineStore } from 'pinia'
 import {
   ErrorType,
   WalletException,
+  GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import { isCountryRestricted } from '@/app/data/geoip'
 
 type WalletStoreState = {}
 
@@ -129,12 +131,19 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const appStore = useAppStore()
+      const sharedGeoStore = useSharedGeoStore()
       const sharedWalletStore = useSharedWalletStore()
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
-      await appStore.validateGeoIp()
+      await sharedGeoStore.fetchVpnLocation()
+
+      if (isCountryRestricted(sharedGeoStore.country)) {
+        throw new GeneralException(
+          new Error('Helix is currently not available in your region')
+        )
+      }
+
       await sharedWalletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {

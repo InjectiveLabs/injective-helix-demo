@@ -109,8 +109,11 @@ export const submitLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const priceToFixed = spotPriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -185,8 +188,11 @@ export const submitMarketOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const priceToFixed = spotPriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -259,8 +265,11 @@ export const submitStopLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const messages = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
@@ -315,8 +324,11 @@ export const submitStopMarketOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const messages = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,

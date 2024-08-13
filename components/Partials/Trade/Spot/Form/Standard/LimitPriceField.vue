@@ -21,7 +21,7 @@ const { value: limitValue, errorMessage } = useStringField({
       return ''
     }
 
-    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+    return '' // `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
 

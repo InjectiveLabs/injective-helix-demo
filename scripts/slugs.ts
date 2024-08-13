@@ -135,12 +135,12 @@ export const fetchDerivativeGridMarkets = async (
   }
 }
 
+fetchMarketCategorySlugs()
+
 fetchSpotMarketSlugs('devnet.json')
 fetchSpotMarketSlugs('testnet.json')
 fetchSpotMarketSlugs('staging.json')
 fetchSpotMarketSlugs('mainnet.json')
-
-fetchMarketCategorySlugs()
 
 fetchDerivativeMarketSlugs('devnet.json')
 fetchDerivativeMarketSlugs('testnet.json')

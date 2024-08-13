@@ -15,8 +15,8 @@ import {
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { hexToString, stringToHex } from '@/app/utils/converters'
+import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (

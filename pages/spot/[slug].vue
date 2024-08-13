@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { IsSpotKey, MarketKey } from '@/types'
+import { MarketKey, IsSpotKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
