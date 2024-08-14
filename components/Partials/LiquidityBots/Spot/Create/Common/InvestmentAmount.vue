@@ -82,16 +82,20 @@ const gridThreshold = computed(() => {
   ).times(tradingSize)
 })
 
-const isLowerBoundGtLastPrice = computed(() =>
-  lastTradedPrice.value.lt(
-    formValues.value[SpotGridTradingField.LowerPrice] || 0
-  )
+const isLowerBoundGtLastPrice = computed(
+  () =>
+    !lastTradedPrice.value.eq(0) &&
+    lastTradedPrice.value.lt(
+      formValues.value[SpotGridTradingField.LowerPrice] || 0
+    )
 )
 
-const isUpperBoundLtLastPrice = computed(() =>
-  lastTradedPrice.value.gt(
-    formValues.value[SpotGridTradingField.UpperPrice] || Infinity
-  )
+const isUpperBoundLtLastPrice = computed(
+  () =>
+    !lastTradedPrice.value.eq(0) &&
+    lastTradedPrice.value.gt(
+      formValues.value[SpotGridTradingField.UpperPrice] || Infinity
+    )
 )
 
 const { valueToString: quoteAmountToString } = useSharedBigNumberFormatter(
