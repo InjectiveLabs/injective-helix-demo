@@ -18,6 +18,7 @@ function toggle() {
   <div class="mb-2">
     <div
       class="flex justify-between items-center cursor-pointer py-2"
+      :data-cy="dataCyTag(`limit-advanced-settings`)"
       @click="toggle"
     >
       <p class="text-sm font-semibold select-none">

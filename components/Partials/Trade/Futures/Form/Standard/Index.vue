@@ -43,6 +43,7 @@ const {
         v-model="orderType"
         class="text-sm font-semibold text-gray-600 px-3 py-2"
         active-classes="border-b border-blue-500 text-white"
+        :data-cy="dataCyTag(`${value}`)"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
@@ -61,6 +62,7 @@ const {
         :active-classes="
           side === TradeDirection.Long ? '!border-green-500' : '!border-red-500'
         "
+        :data-cy="dataCyTag(`${side}`)"
       >
         {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
       </AppButtonSelect>

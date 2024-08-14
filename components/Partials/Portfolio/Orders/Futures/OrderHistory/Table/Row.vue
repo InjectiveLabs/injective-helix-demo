@@ -56,18 +56,28 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 <template>
   <div v-if="market">
     <div class="flex p-2 text-xs font-mono">
-      <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
+      <div
+        class="flex-1 flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(`order-history-timestamp`)"
+      >
+        {{ timestamp }}
+      </div>
 
       <PartialsCommonMarketRedirection
         v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p>{{ market.ticker }}</p>
+        <p :data-cy="dataCyTag(`order-history-market-ticker`)">
+          {{ market.ticker }}
+        </p>
       </PartialsCommonMarketRedirection>
 
       <div class="flex-[0.5] flex items-center p-2">
-        <span class="font-sans">
+        <span
+          class="font-sans"
+          :data-cy="dataCyTag(`order-history-order-type`)"
+        >
           {{ type }}
         </span>
       </div>
@@ -80,6 +90,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
               'text-green-500': isBuy,
               'text-red-500': !isBuy
             }"
+            :data-cy="dataCyTag(`order-history-side`)"
           >
             {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
           </p>
@@ -95,17 +106,20 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           {{ $t('trade.market') }}
         </span>
 
-        <span v-else>
+        <span v-else :data-cy="dataCyTag(`order-history-price`)">
           {{ priceToString }}
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(`order-history-amount`)"
+      >
         {{ quantityToString }}
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-        <span>
+        <span :data-cy="dataCyTag(`order-history-total`)">
           {{ totalToString }}
         </span>
 
@@ -142,7 +156,9 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       </div>
 
       <div class="flex-1 flex font-sans items-center p-2">
-        <span>{{ orderStatus }}</span>
+        <span :data-cy="dataCyTag(`order-history-order-status`)">{{
+          orderStatus
+        }}</span>
       </div>
     </div>
   </div>

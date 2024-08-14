@@ -163,6 +163,7 @@ watch(
           :value="leverage"
           type="text"
           class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
+          :data-cy="dataCyTag(`limit-leverage-input-field`)"
           @keydown.enter="onEnter"
           @blur="onBlur"
         />
@@ -170,7 +171,7 @@ watch(
       </label>
     </div>
 
-    <p class="error-message">
+    <p class="error-message" :data-cy="dataCyTag(`leverage-error`)">
       {{ errorMessage }}
     </p>
   </template>
