@@ -98,14 +98,19 @@ export const getRoundedLiquidationPrice = (
     value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
+
   const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
   const liquidationPriceRoundedToMinTickPrice = new BigNumberInBase(
     liquidationPrice.dividedBy(minTickPrice).toFixed(0)
   ).multipliedBy(minTickPrice)
 
-  return liquidationPriceRoundedToMinTickPrice.lte(0)
-    ? minTickPrice
-    : liquidationPriceRoundedToMinTickPrice
+  if (liquidationPriceRoundedToMinTickPrice.gt(0)) {
+    return liquidationPriceRoundedToMinTickPrice
+  }
+
+  return minTickPrice.lt(market.minNotional)
+    ? new BigNumberInBase(market.minNotional)
+    : minTickPrice
 }
 
 export const calculateScaledMarkPrice = ({
