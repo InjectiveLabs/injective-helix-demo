@@ -48,6 +48,6 @@ export default {
     [NoticeBanner.scheduledUpgradeJanuary2024]:
       'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more',
     [NoticeBanner.scheduledUpgradeAugust2024]:
-      'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective mainnet upgrade. Find out more'
+      'Scheduled maintenance at ~15:00 UTC, 20th August 2024 due to the Injective mainnet upgrade. Find out more'
   }
 }
