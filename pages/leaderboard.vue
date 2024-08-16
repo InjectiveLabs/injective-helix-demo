@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { LeaderboardSubPage } from '@/types'
 
+definePageMeta({
+  middleware: [
+    function () {
+      const appStore = useAppStore()
+
+      if (!appStore.devMode) {
+        return navigateTo('/')
+      }
+    }
+  ]
+})
+
 const route = useRoute()
 </script>
 
