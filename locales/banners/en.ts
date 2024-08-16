@@ -1,3 +1,5 @@
+import { NoticeBanner } from '@/types'
+
 export default {
   banners: {
     welcome: {
@@ -43,7 +45,9 @@ export default {
       cta2: 'Swap TALIS'
     },
 
-    'banner-scheduled-upgrade-january':
-      'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more '
+    [NoticeBanner.scheduledUpgradeJanuary2024]:
+      'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more',
+    [NoticeBanner.scheduledUpgradeAugust2024]:
+      'Scheduled maintenance at ~15:00 UTC, 20th August 2024 due to the Injective mainnet upgrade. Find out more'
   }
 }
