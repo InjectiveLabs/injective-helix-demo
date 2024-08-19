@@ -6,6 +6,7 @@ import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { SwapCyTags } from '@/enums'
 
 definePageMeta({
   middleware: ['swap']
@@ -295,9 +296,15 @@ function resetQueryError() {
         <div
           class="w-full border border-brand-800 rounded-lg px-4 mx-auto h-full overflow-auto flex items-center justify-center"
         >
-          <div class="rounded-lg mx-auto p-6 h-fit w-full">
+          <div
+            class="rounded-lg mx-auto p-6 h-fit w-full"
+            :data-cy="dataCyTag(SwapCyTags.SwapForm)"
+          >
             <div class="mb-4 flex items-center justify-between">
-              <h3 class="font-bold text-lg" :data-cy="dataCyTag(`label`)">
+              <h3
+                class="font-bold text-lg"
+                :data-cy="dataCyTag(SwapCyTags.SwapHeaderLabel)"
+              >
                 {{ $t('trade.swap.swap') }}
               </h3>
 

@@ -59,7 +59,7 @@ onMounted(() => {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
-      :data-cy="dataCyTag(`input-field-limit-price`)"
+      :data-cy="dataCyTag('input-field-limit-price')"
     >
       <template #left>
         <div

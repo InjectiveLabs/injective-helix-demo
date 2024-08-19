@@ -63,7 +63,7 @@ const slippage = computed(() => {
   >
     <p
       class="text-sm text-red-500 leading-4"
-      :data-cy="dataCyTag(`warning-text`)"
+      :data-cy="dataCyTag('warning-text')"
     >
       {{ $t('trade.swap.priceWarning', { symbol: outputToken?.token.symbol }) }}
     </p>

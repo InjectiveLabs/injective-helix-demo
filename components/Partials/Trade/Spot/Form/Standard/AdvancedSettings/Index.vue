@@ -14,7 +14,7 @@ function toggle() {
   <div>
     <div
       class="flex justify-between items-center cursor-pointer py-2"
-      :data-cy="dataCyTag(`advanced-settings`)"
+      :data-cy="dataCyTag('advanced-settings')"
       @click="toggle"
     >
       <p class="text-sm font-semibold select-none">Advanced Settings</p>

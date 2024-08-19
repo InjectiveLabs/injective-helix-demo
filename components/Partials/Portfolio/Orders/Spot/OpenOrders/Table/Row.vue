@@ -102,7 +102,7 @@ function cancelOrder() {
   <div v-if="market">
     <div
       class="flex p-2 text-xs font-mono"
-      :data-cy="dataCyTag(`open-order-history-row`)"
+      :data-cy="dataCyTag('open-order-history-row')"
     >
       <PartialsCommonMarketRedirection
         v-bind="{ market }"
@@ -129,28 +129,28 @@ function cancelOrder() {
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-order-price`)"
+        :data-cy="dataCyTag('open-order-price')"
       >
         {{ priceToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-order-quantity`)"
+        :data-cy="dataCyTag('open-order-quantity')"
       >
         {{ quantityToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-order-unfilled-quantity`)"
+        :data-cy="dataCyTag('open-order-unfilled-quantity')"
       >
         {{ unfilledQuantityToString }}
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="text-right">
-          <p :data-cy="dataCyTag(`open-order-filled-quantity`)">
+          <p :data-cy="dataCyTag('open-order-filled-quantity')">
             {{ filledQuantityToString }}
           </p>
           <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
@@ -159,11 +159,11 @@ function cancelOrder() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p :data-cy="dataCyTag(`open-order-total-amount`)">
+          <p :data-cy="dataCyTag('open-order-total-amount')">
             {{ totalToString }}
             <span
               class="text-gray-500"
-              :data-cy="dataCyTag(`open-order-total-amount-token-symbol`)"
+              :data-cy="dataCyTag('open-order-total-amount-token-symbol')"
             >
               {{ market.quoteToken.symbol }}
             </span>
@@ -179,7 +179,7 @@ function cancelOrder() {
             isDisabled: !isAuthorized,
             tooltip: isAuthorized ? '' : $t('common.unauthorized')
           }"
-          :data-cy="dataCyTag(`cancel-order-button`)"
+          :data-cy="dataCyTag('cancel-order-button')"
           @click="cancelOrder"
         />
       </div>

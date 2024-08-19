@@ -72,7 +72,7 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x" :data-cy="dataCyTag(`XYZZZ`)">
+  <div class="h-header border-b flex divide-x">
     <CommonSubaccountTabSelector />
 
     <AppTabSelect
@@ -84,7 +84,7 @@ watch(
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2" :data-cy="dataCyTag(`trade-history-dropdown`)">
+        <button class="px-2" :data-cy="dataCyTag('trade-history-dropdown')">
           {{ $t(selected?.display || '') }}
           {{
             Number.isInteger(Number(selected?.description))

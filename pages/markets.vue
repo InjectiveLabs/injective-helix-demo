@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { MarketCyTags } from '@/enums'
 import {
   MarketQuoteType,
   MarketTypeOption,
@@ -77,7 +78,10 @@ const unknownTokenStatus = inject(
 <template>
   <div>
     <div class="container py-10">
-      <h3 class="text-2xl font-semibold" :data-cy="dataCyTag(`header`)">
+      <h3
+        class="text-2xl font-semibold"
+        :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
+      >
         {{ $t('trade.markets') }}
       </h3>
 
@@ -98,7 +102,7 @@ const unknownTokenStatus = inject(
               v-bind="{ value }"
               class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
-              :data-cy="dataCyTag(`market-type-${value}`)"
+              :data-cy="`${dataCyTag(MarketCyTags.MarketType)}-${value}`"
               @update:model-value="onMarketTypeChange"
             >
               {{ value }}
@@ -113,7 +117,7 @@ const unknownTokenStatus = inject(
                 v-model="search"
                 type="text"
                 class="focus:outline-none bg-transparent p-1 px-3 w-full"
-                :data-cy="dataCyTag(`search-field`)"
+                :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
               />
 
               <div class="flex items-center pr-3">
@@ -137,7 +141,7 @@ const unknownTokenStatus = inject(
               v-bind="{ value }"
               class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
               active-classes="text-white !bg-brand-700"
-              :data-cy="dataCyTag(`chain-${value}`)"
+              :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
             >
               {{ value }}
             </AppButtonSelect>
@@ -163,7 +167,9 @@ const unknownTokenStatus = inject(
                 v-bind="{ value }"
                 class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
                 active-classes="text-white !bg-brand-800"
-                :data-cy="dataCyTag(`quote-${value}`)"
+                :data-cy="`${dataCyTag(
+                  MarketCyTags.MarketQuoteToken
+                )}-${value}`"
               >
                 {{ value }}
               </AppButtonSelect>

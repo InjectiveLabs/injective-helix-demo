@@ -3,6 +3,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField } from '@/types'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
+import { SwapCyTags } from '@/enums'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
@@ -60,7 +61,7 @@ defineExpose({
         <div
           v-else
           class="flex items-center gap-1 justify-end"
-          :data-cy="dataCyTag(`swap-summary`)"
+          :data-cy="dataCyTag(SwapCyTags.SwapSummaryRoute)"
         >
           <PartialsSwapRoute
             v-bind="{
@@ -75,11 +76,19 @@ defineExpose({
         <div
           v-else-if="orderedRouteTokensAndDecimals && inputToken && outputToken"
         >
-          <span :data-cy="dataCyTag(`rate-${outputToken.token.symbol}`)">
+          <span
+            :data-cy="`${dataCyTag(SwapCyTags.SwapSummaryRate)}-${
+              outputToken.token.symbol
+            }`"
+          >
             1 {{ outputToken.token.symbol }}
           </span>
           =
-          <span :data-cy="dataCyTag(`rate-${inputToken.token.symbol}`)">
+          <span
+            :data-cy="`${dataCyTag(SwapCyTags.SwapSummaryRate)}-${
+              inputToken.token.symbol
+            }`"
+          >
             {{ priceForDisplayToFormat }}
             {{ inputToken.token.symbol }}
           </span>
@@ -97,7 +106,7 @@ defineExpose({
         :title="$t('trade.swap.minimumOutput')"
       >
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else :data-cy="dataCyTag(`minimum-output`)">
+        <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryMinOutput)">
           {{ minimumOutput }} {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
@@ -109,7 +118,7 @@ defineExpose({
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else :data-cy="dataCyTag(`expected-output`)">
+        <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryExpectedOutput)">
           {{ formValues[SwapFormField.OutputAmount] }}
           {{ outputToken?.token.symbol }}
         </span>

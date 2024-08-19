@@ -139,7 +139,7 @@ watch(isModalOpen, (newShowModalState) => {
 
   <AppButton
     v-else
-    :data-cy="dataCyTag(`button-connect-wallet`)"
+    :data-cy="dataCyTag('button-connect-wallet')"
     @click="onWalletConnect"
   >
     {{ $t('connect.connectWallet') }}

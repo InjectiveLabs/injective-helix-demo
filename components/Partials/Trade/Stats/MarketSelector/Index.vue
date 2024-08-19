@@ -50,7 +50,7 @@ watch(
       <div>
         <p
           class="uppercase tracking-wider font-bold text-sm"
-          :data-cy="dataCyTag(`market-pair`)"
+          :data-cy="dataCyTag('market-pair')"
         >
           {{ market.ticker }}
         </p>
@@ -69,7 +69,7 @@ watch(
     </div>
 
     <div class="text-gray-400 ml-auto flex items-center">
-      <div class="ml-10 mr-4 text-sm" :data-cy="dataCyTag(`markets-dropdown`)">
+      <div class="ml-10 mr-4 text-sm" :data-cy="dataCyTag('markets-dropdown')">
         {{ $t('trade.allMarkets') }}
       </div>
 

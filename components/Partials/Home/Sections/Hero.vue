@@ -49,7 +49,7 @@ const totalMarkets = computed(
           >
             <AppButton
               class="lg:py-4 w-full"
-              :data-cy="dataCyTag(`button-start-trading`)"
+              :data-cy="dataCyTag('button-start-trading')"
             >
               {{ $t('home.startTrading') }}
             </AppButton>
@@ -59,7 +59,7 @@ const totalMarkets = computed(
             <AppButton
               class="lg:py-4 w-full"
               variant="primary-outline"
-              :data-cy="dataCyTag(`button-deposit-crypto`)"
+              :data-cy="dataCyTag('button-deposit-crypto')"
             >
               {{ $t('home.depositCrypto') }}
             </AppButton>

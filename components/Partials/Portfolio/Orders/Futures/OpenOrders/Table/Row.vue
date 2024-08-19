@@ -99,7 +99,7 @@ function onCancelOrder() {
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p :data-cy="dataCyTag(`open-orders-market-ticker`)">
+        <p :data-cy="dataCyTag('open-orders-market-ticker')">
           {{ market.ticker }}
         </p>
       </PartialsCommonMarketRedirection>
@@ -110,7 +110,7 @@ function onCancelOrder() {
             'text-green-500': isBuy,
             'text-red-500': !isBuy
           }"
-          :data-cy="dataCyTag(`open-orders-side`)"
+          :data-cy="dataCyTag('open-orders-side')"
         >
           {{ $t(`trade.${order.orderSide}`) }}
         </span>
@@ -118,28 +118,28 @@ function onCancelOrder() {
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-orders-price`)"
+        :data-cy="dataCyTag('open-orders-price')"
       >
         {{ priceToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-orders-amount`)"
+        :data-cy="dataCyTag('open-orders-amount')"
       >
         {{ quantityToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-orders-unfilled`)"
+        :data-cy="dataCyTag('open-orders-unfilled')"
       >
         {{ unfilledQuantityToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(`open-orders-filled`)"
+        :data-cy="dataCyTag('open-orders-filled')"
       >
         {{ filledQuantityToString }}
       </div>
@@ -148,18 +148,18 @@ function onCancelOrder() {
         <span
           v-if="leverage.isNaN()"
           class="text-gray-400"
-          :data-cy="dataCyTag(`open-orders-leverage-na`)"
+          :data-cy="dataCyTag('open-orders-leverage-na')"
         >
           {{ $t('trade.not_available_n_a') }}
         </span>
-        <span v-else :data-cy="dataCyTag(`open-orders-leverage`)">
+        <span v-else :data-cy="dataCyTag('open-orders-leverage')">
           {{ leverage.toFormat(2) }}&times;
         </span>
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="space-y-1">
-          <p :data-cy="dataCyTag(`open-orders-total`)">
+          <p :data-cy="dataCyTag('open-orders-total')">
             {{ totalToString }}
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>
