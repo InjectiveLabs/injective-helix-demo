@@ -32,7 +32,6 @@ export const createStrategy = async (
     [SpotGridTradingField.UpperPrice]: upperPrice,
     [SpotGridTradingField.LowerPrice]: lowerPrice,
     [SpotGridTradingField.TakeProfit]: takeProfit,
-    [SpotGridTradingField.SettleIn]: isSettleInEnabled,
     [SpotGridTradingField.QuoteInvestmentAmount]: quoteAmount,
     [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
     [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
@@ -153,7 +152,7 @@ export const createStrategy = async (
         baseDecimals: actualMarket.baseToken.decimals,
         quoteDecimals: actualMarket.quoteToken.decimals
       }),
-      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default,
+      exitType: exitType || ExitType.Default,
       strategyType
     }),
 

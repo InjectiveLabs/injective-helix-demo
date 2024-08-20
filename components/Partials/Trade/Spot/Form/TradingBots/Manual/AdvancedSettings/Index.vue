@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isOpen = ref(false)
+const isOpen = ref(true)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -22,6 +22,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="space-y-2 py-2">
+        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsExitType />
         <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsStrategyType />
         <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsTpSl />
       </div>
