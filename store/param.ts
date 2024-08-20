@@ -46,7 +46,7 @@ type ParamsStoreState = {
 
 const initialStateFactory = (): ParamsStoreState => ({
   inflation: '0',
-  currentBlockTime: 0.9, // approximate, in seconds
+  currentBlockTime: 0.75, // approximate, in seconds
   annualProvisions: '0',
   injSupply: {} as Coin,
   pool: {
@@ -72,7 +72,9 @@ export const useParamStore = defineStore('param', {
       const annualProvisions = new BigNumberInBase(state.annualProvisions)
       const bondedTokens = new BigNumberInBase(state.pool.bondedTokens)
       const secondsInAYear = new BigNumberInBase(365 * 24 * 60 * 60)
-      const blockPerYear = new BigNumberInBase(state.mintParams.blocksPerYear)
+      const blockPerYear = new BigNumberInBase(
+        state.mintParams?.blocksPerYear || 42_048_000
+      )
       const blockTime = secondsInAYear.div(blockPerYear)
       const annualProvisionRatio = blockTime.div(state.currentBlockTime)
       const communityTax = new BigNumberInBase(
