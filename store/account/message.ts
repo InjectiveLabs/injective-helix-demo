@@ -18,19 +18,18 @@ export const deposit = async ({
   token: TokenStatic
   subaccountId?: string
 }) => {
-  const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !sharedWalletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgDeposit.fromJSON({
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+  const messages = MsgDeposit.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
@@ -41,7 +40,7 @@ export const deposit = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -55,19 +54,18 @@ export const withdraw = async ({
   token: TokenStatic
   subaccountId?: string
 }) => {
-  const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !sharedWalletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgWithdraw.fromJSON({
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+  const messages = MsgWithdraw.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
       denom: token.denom,
@@ -78,7 +76,7 @@ export const withdraw = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -96,19 +94,18 @@ export const transfer = async ({
   destination: string
   token: TokenStatic
 }) => {
-  const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgSend.fromJSON({
-    srcInjectiveAddress: walletStore.authZOrInjectiveAddress,
+  const messages = MsgSend.fromJSON({
+    srcInjectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     dstInjectiveAddress: destination,
     amount: {
       denom,
@@ -116,7 +113,7 @@ export const transfer = async ({
     }
   })
 
-  await walletStore.broadcastMessages(message, memo)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages, memo })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -136,45 +133,43 @@ export const externalTransfer = async ({
   dstSubaccountId: string
   token: TokenStatic
 }) => {
-  const accountStore = useAccountStore()
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
-  const message = MsgExternalTransfer.fromJSON({
+  const messages = MsgExternalTransfer.fromJSON({
     srcSubaccountId,
     dstSubaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     amount: {
       denom,
       amount: amount.toWei(token.decimals).toFixed()
     }
   })
 
-  await walletStore.broadcastMessages(message, memo)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages, memo })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const withdrawToMain = async () => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!accountStore.subaccountId || !walletStore.isUserWalletConnected) {
+  if (!accountStore.subaccountId || !sharedWalletStore.isUserConnected) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
-  const msgs = accountStore.subaccountBalancesMap[accountStore.subaccountId]
+  const messages = accountStore.subaccountBalancesMap[accountStore.subaccountId]
     .filter((balance) =>
       new BigNumberInBase(balance.availableBalance)
         .dp(0, BigNumberInBase.ROUND_DOWN)
@@ -182,7 +177,7 @@ export const withdrawToMain = async () => {
     )
     .map((balance) =>
       MsgWithdraw.fromJSON({
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         subaccountId: accountStore.subaccountId,
         amount: {
           amount: new BigNumberInBase(balance.availableBalance).toFixed(
@@ -194,7 +189,7 @@ export const withdrawToMain = async () => {
       })
     )
 
-  await walletStore.broadcastMessages(msgs)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }

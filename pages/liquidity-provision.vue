@@ -5,14 +5,14 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { spotGridMarkets } from '@/app/data/grid-strategy'
+import { spotGridMarkets } from '@/app/json'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { MITO_VAULTS, SGT_MARKETS } from '@/app/data/liquidityProvision'
 import {
   LiquidityProvisionType,
   LiquidityProvisionMitoCard,
   LiquidityProvisionTypeOption
 } from '@/types'
-import { MITO_VAULTS, SGT_MARKETS } from '@/app/data/liquidityProvision'
 
 const liquidityProvisionStore = useLiquidityProvisionStore()
 const { $onError } = useNuxtApp()

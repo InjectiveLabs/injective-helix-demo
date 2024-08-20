@@ -159,12 +159,12 @@ export const useSwapStore = defineStore('swap', {
       limit?: number
     } = {}) {
       const swapStore = useSwapStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       const { pagination, swapHistory } =
         await indexerSpotApi.fetchAtomicSwapHistory({
           pagination: { skip, limit },
-          address: walletStore.authZOrInjectiveAddress,
+          address: sharedWalletStore.authZOrInjectiveAddress,
           contractAddress: SWAP_CONTRACT_ADDRESS
         })
 

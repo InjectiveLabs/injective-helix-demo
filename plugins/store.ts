@@ -1,13 +1,14 @@
 import {
-  PiniaPluginContext,
   StateTree,
+  PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { StatusType } from '@injectivelabs/utils'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { AppState, OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -15,12 +16,7 @@ const stateToPersist = {
       favoriteMarkets: [],
       bannersViewed: [],
       modalsViewed: [],
-      geoLocation: {
-        continent: '',
-        country: '',
-        browserLocation: '',
-        vpnCheckTimestamp: 0
-      },
+
       preferences: {
         skipTradeConfirmationModal: false,
         skipExperimentalConfirmationModal: false,
@@ -38,13 +34,23 @@ const stateToPersist = {
     subaccountId: ''
   },
 
-  wallet: {
+  sharedGeo: {
+    geoContinent: '',
+    geoCountry: '',
+    ipCountry: '',
+    ipAddress: '',
+    vpnCheckedTimestamp: 0
+  },
+
+  sharedWallet: {
+    walletConnectStatus: '',
+    hwAddresses: '',
     wallet: Wallet.Metamask,
     address: '',
     addresses: '',
     injectiveAddress: '',
-    defaultSubaccountId: '',
     addressConfirmation: '',
+    session: '',
 
     authZ: {
       address: '',
@@ -52,13 +58,13 @@ const stateToPersist = {
       injectiveAddress: '',
       defaultSubaccountId: ''
     },
-
     autoSign: {
       privateKey: '',
       expiration: '',
       injectiveAddress: '',
       duration: ''
-    }
+    },
+    privateKey: ''
   }
 } as Record<string, Record<string, any>>
 
@@ -148,7 +154,7 @@ const persistState = (
 
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const appStore = useAppStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -160,8 +166,8 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
     after(() => {
       const type = `${$id}/${name}`
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })
@@ -170,8 +176,8 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })

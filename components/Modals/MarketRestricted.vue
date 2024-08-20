@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { Modal, MainPage, UiMarketWithToken } from '@/types'
-import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
+import { Modal, MainPage, UiMarketWithToken, MarketTypeOption } from '@/types'
+import {
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
 
-const appStore = useAppStore()
 const modalStore = useModalStore()
+const sharedGeoStore = useSharedGeoStore()
 
 const props = defineProps({
   isSpot: Boolean,
@@ -20,9 +23,7 @@ const disallowedTokenSymbol = computed(() => {
     props.market.quoteToken
   ].find((token) =>
     isCountryRestrictedForSpotMarket({
-      country:
-        appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country,
+      country: sharedGeoStore.country,
       denomOrSymbol: token.symbol.toLowerCase()
     })
   )
@@ -38,16 +39,19 @@ const isModalOpen = computed(() =>
     : modalStore.modals[Modal.MarketRestricted]
 )
 
-onWalletConnected(() => {
-  if (!props.isSpot) {
-    return
-  }
-
+onMounted(() => {
   checkUserIsDisallowed()
 })
 
 function checkUserIsDisallowed() {
-  if (disallowedTokenSymbol.value) {
+  const isRestricted = props.isSpot
+    ? isCountryRestrictedForSpotMarket({
+        country: sharedGeoStore.country,
+        denomOrSymbol: props.market.baseToken.symbol.toLowerCase()
+      })
+    : isCountryRestrictedForPerpetualMarkets(sharedGeoStore.country)
+
+  if (isRestricted) {
     modalStore.openModal(Modal.MarketRestricted)
   }
 }
@@ -69,15 +73,22 @@ function closeModal() {
       <p class="text-center text-sm text-gray-100">
         {{
           $t(`marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
-            symbol: disallowedTokenSymbol
+            symbol: market.baseToken.symbol
           })
         }}
       </p>
 
       <div class="mt-6 flex items-center justify-center">
-        <NuxtLink :to="{ name: MainPage.Index }">
+        <NuxtLink
+          :to="{
+            name: MainPage.Markets,
+            query: {
+              type: MarketTypeOption.Spot
+            }
+          }"
+        >
           <AppButton class="bg-blue-500 text-blue-900" @click="closeModal">
-            {{ $t('marketRestricted.cta') }}
+            {{ $t('marketRestricted.tradeSpot') }}
           </AppButton>
         </NuxtLink>
       </div>

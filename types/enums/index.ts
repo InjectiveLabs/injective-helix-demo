@@ -1,9 +1,4 @@
-export enum WalletConnectStatus {
-  connecting = 'Connecting',
-  disconnected = 'Disconnected',
-  idle = 'Idle',
-  connected = 'Connected'
-}
+export * from './mixpanel'
 
 export enum Icon {
   Arrow = 'arrow',
@@ -47,6 +42,7 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   PostOnlyMode = 'post-only-mode',
+  GeoRestricted = 'geo-restricted',
   GasFeeRebate = 'gas-fee-rebate',
   SharePosition = 'share-position',
   MarketExpired = 'market-expired',
@@ -84,14 +80,6 @@ export enum Breakpoint {
   Sm = 'sm',
   Xs = 'xs',
   Xxs = 'xxs'
-}
-
-export enum AppState {
-  Busy = 'Busy',
-  Loading = 'Loading',
-  Idle = 'Idle',
-  Error = 'Error',
-  Success = 'Success'
 }
 
 export enum TransferSide {
@@ -173,44 +161,6 @@ export enum AveragePriceOptions {
   Percentage = 3
 }
 
-export enum AmplitudeEvent {
-  Swap = 'Swap',
-  Login = 'Login',
-  Transfer = 'Transfer',
-  SwapClicked = 'Swap Clicked',
-  SwapAttempt = 'Swap Attempt',
-  TradeClicked = 'Trade Clicked',
-  ConnectClicked = 'Connect Clicked',
-  WalletSelected = 'Wallet Selected',
-  SurveyAccepted = 'Survey - Accepted',
-  SurveyRejected = 'Survey - Rejected',
-  PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm',
-  CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy',
-  CreateLiquidityBot = 'Create Liquidity Bot',
-  RemoveLiquidityBot = 'Remove Liquidity Bot'
-}
-
-export enum MixPanelEvent {
-  Swap = 'Swap',
-  Login = 'Login',
-  Transfer = 'Transfer',
-  SwapClicked = 'Swap Clicked',
-  SwapAttempt = 'Swap Attempt',
-  TradeClicked = 'Trade Clicked',
-  ConnectClicked = 'Connect Clicked',
-  WalletSelected = 'Wallet Selected',
-  SurveyAccepted = 'Survey - Accepted',
-  SurveyRejected = 'Survey - Rejected',
-  PlaceOrderAttempt = 'Place Order Attempt',
-  PlaceOrderConfirm = 'Place Order Confirm',
-  CreateStrategy = 'Create Strategy',
-  RemoveStrategy = 'Remove Strategy',
-  CreateLiquidityBot = 'Create Liquidity Bot',
-  RemoveLiquidityBot = 'Remove Liquidity Bot'
-}
-
 export enum SurveyTitle {
   HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
@@ -219,17 +169,6 @@ export enum DefaultMarket {
   Perpetual = 'btc-usdt-perp',
   PerpetualTestnet = 'btc-usdt-perp-pyth',
   Spot = 'inj-usdt'
-}
-
-export enum TradeClickOrigin {
-  Lander = 'LanderC2A',
-  MarketsPage = 'Markets Page',
-  TopMenu = 'Top Menu'
-}
-
-export enum OrderAttemptStatus {
-  Success = 'Success',
-  Error = 'Error'
 }
 
 export enum OrderbookLayout {
@@ -257,8 +196,9 @@ export enum BusEvents {
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
-  ShowLedgerConnect = 'show-ledger-connect',
   AutoSignConnected = 'auto-sign-connected',
+  ShowLedgerConnect = 'show-ledger-connect',
+  UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',
@@ -465,7 +405,9 @@ export enum MarketTypeOption {
   Spot = 'Spot',
   Derivative = 'Derivative',
   NewListings = 'New Listings',
-  Permissionless = 'permissionless'
+  Permissionless = 'permissionless',
+  MyMarkets = 'My Markets'
+
   // Themes = 'themes'
 }
 

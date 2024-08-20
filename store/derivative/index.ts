@@ -368,11 +368,11 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
-      const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -397,11 +397,11 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrderHistory(
       options: ActivityFetchOptions | undefined
     ) {
-      const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -425,11 +425,11 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
-      const derivativeStore = useDerivativeStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -532,11 +532,11 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
-      const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

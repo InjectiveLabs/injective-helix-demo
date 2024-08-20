@@ -11,15 +11,15 @@ export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
 
 export const streamBankBalance = () => {
-  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
   grpcStreamBankBalances({
-    accountAddress: walletStore.authZOrInjectiveAddress,
+    accountAddress: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ amount, denom }) => {
       const bankBalancesExcludingDenom = accountStore.bankBalances.filter(
         (balance: Coin) => balance.denom !== denom
@@ -33,18 +33,18 @@ export const streamBankBalance = () => {
 }
 
 export const streamSubaccountBalance = (subaccountId?: string) => {
-  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !sharedWalletStore.isUserConnected ||
     !(accountStore.subaccountId || subaccountId)
   ) {
     return
   }
 
   grpcStreamSubaccountBalance({
-    accountAddress: walletStore.authZOrInjectiveAddress,
+    accountAddress: sharedWalletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     callback: (payload) => {
       const subaccountBalancesMapOrBlank =
@@ -66,7 +66,8 @@ export const streamSubaccountBalance = (subaccountId?: string) => {
                 ? payload.amount
                 : accountBalance?.totalBalance || '0',
             availableBalance:
-              payload.subaccountId !== walletStore.authZOrDefaultSubaccountId &&
+              payload.subaccountId !==
+                sharedWalletStore.authZOrDefaultSubaccountId &&
               payload.type === SubaccountBalanceStreamType.AvailableBalance
                 ? payload.amount
                 : accountBalance?.availableBalance || '0'

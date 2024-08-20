@@ -3,8 +3,11 @@ import {
   BusEvents,
   MarketKey,
   UiDerivativeMarket,
+  DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -14,9 +17,23 @@ const { value: limit, errorMessage } = useStringField({
   name: DerivativesTradeFormField.LimitPrice,
   initialValue: '',
   dynamicRule: computed(() => {
+    if (
+      derivativeFormValues.value[DerivativesTradeFormField.BypassPriceWarning]
+    ) {
+      return ''
+    }
+
     return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
+
+function setMidLimitPrice() {
+  if (!lastTradedPrice.value) {
+    return
+  }
+
+  limit.value = lastTradedPrice.value.toFixed()
+}
 
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
@@ -29,7 +46,22 @@ onMounted(() => {
   <div v-if="market" class="space-y-2">
     <p class="field-label">{{ $t('trade.limitPrice') }}</p>
 
-    <AppInputField v-model="limit" placeholder="0.00">
+    <AppInputField
+      v-model="limit"
+      v-bind="{
+        placeholder: '0.00',
+        decimals: market.priceDecimals
+      }"
+    >
+      <template #left>
+        <div
+          class="text-xs text-gray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          @click="setMidLimitPrice"
+        >
+          {{ $t('trade.mid') }}
+        </div>
+      </template>
+
       <template #right>
         <span class="text-sm">
           {{ market.quoteToken.symbol }}

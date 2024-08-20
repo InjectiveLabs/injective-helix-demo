@@ -25,10 +25,6 @@ const env = {
   VITE_MAINTENANCE_ENABLED: import.meta.env.VITE_MAINTENANCE_ENABLED as
     | string
     | undefined,
-  VITE_GEO_IP_RESTRICTIONS_ENABLED: import.meta.env
-    .VITE_GEO_IP_RESTRICTIONS_ENABLED,
-  VITE_PROXY_DETECTION_API_KEY: import.meta.env.VITE_PROXY_DETECTION_API_KEY,
-  VITE_GOOGLE_MAPS_KEY: import.meta.env.VITE_GOOGLE_MAPS_KEY,
   VITE_BANNER_NOTICE_ENABLED: import.meta.env.VITE_BANNER_NOTICE_ENABLED as
     | string
     | undefined,
@@ -66,9 +62,6 @@ const env = {
   VITE_FEE_PAYER_PUB_KEY: string
   VITE_DEBUG_CALCULATION: string
   VITE_MAINTENANCE_ENABLED: string
-  VITE_GEO_IP_RESTRICTIONS_ENABLED: string
-  VITE_PROXY_DETECTION_API_KEY: string
-  VITE_GOOGLE_MAPS_KEY: string
   VITE_BANNER_NOTICE_ENABLED: string
   VITE_ETHEREUM_CHAIN_ID: string
   VITE_INDEXER_API_ENDPOINT: string
@@ -180,7 +173,7 @@ export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
 
 export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
-  ? 'inj177yh38g3ctu7cemxpa3c2kvwh2yslfxfmfa66h'
+  ? 'inj1qk00h5atutpsv900x202pxx42npjr9thrzhgxn'
   : IS_TESTNET
   ? 'inj14d7h5j6ddq6pqppl65z24w7xrtmpcrqjxj8d43'
   : IS_STAGING
@@ -193,13 +186,6 @@ export const COIN_GECKO_OPTIONS = {
     ? 'https://pro-api.coingecko.com/api/v3'
     : 'https://api.coingecko.com/api/v3'
 }
-
-export const GEO_IP_RESTRICTIONS_ENABLED: boolean =
-  env.VITE_GEO_IP_RESTRICTIONS_ENABLED === 'true'
-export const PROXY_DETECTION_API_KEY = env.VITE_PROXY_DETECTION_API_KEY || ''
-
-export const GOOGLE_MAPS_KEY = env.VITE_GOOGLE_MAPS_KEY || ''
-export const PROXY_DETECTION_ENABLED = !!PROXY_DETECTION_API_KEY
 
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'

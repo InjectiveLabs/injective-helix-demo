@@ -5,17 +5,17 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, SwapForm, SwapFormField } from '@/types'
 
-const appStore = useAppStore()
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
-const formValues = useFormValues<SwapForm>()
 const formErrors = useFormErrors()
+const sharedGeoStore = useSharedGeoStore()
+const formValues = useFormValues<SwapForm>()
+const sharedWalletStore = useSharedWalletStore()
 const { userBalancesWithToken } = useBalance()
 
 defineProps({
@@ -45,7 +45,12 @@ const swapTimeRemaining = ref(0)
 const rateExpired = ref(false)
 const countdownInterval = ref(undefined as NodeJS.Timeout | undefined)
 
-const { inputToken, invalidInput, maximumInput } = useSwap(formValues)
+const {
+  inputToken,
+  invalidInput,
+  maximumInput,
+  isNotionalLessThanMinNotional
+} = useSwap(formValues)
 
 const hasAmounts = computed(() => {
   return (
@@ -72,9 +77,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     }
 
     return isCountryRestrictedForSpotMarket({
-      country:
-        appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country,
+      country: sharedGeoStore.country,
       denomOrSymbol: denom
     })
   })
@@ -96,7 +99,8 @@ const hasErrors = computed(
   () =>
     Object.keys(formErrors.value).length > 0 ||
     (swapStore.isInputEntered && invalidInput.value) ||
-    insufficientBalance.value
+    !!insufficientBalance.value ||
+    !!isNotionalLessThanMinNotional.value
 )
 
 const formError = computed(() => {
@@ -192,7 +196,7 @@ watch(
 <template>
   <div>
     <AppButton
-      v-if="!walletStore.isUserWalletConnected"
+      v-if="!sharedWalletStore.isUserConnected"
       is-lg
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
@@ -215,13 +219,14 @@ watch(
 
     <AppButton
       v-else-if="
-        walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+        sharedWalletStore.isAuthzWalletConnected ||
+        sharedWalletStore.isAutoSignEnabled
       "
       variant="danger-ghost"
       class="mb-2 w-full"
       :disabled="true"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
       <span v-else>
@@ -245,7 +250,13 @@ watch(
     >
       <div class="max-auto w-full">
         <Transition name="fade" mode="out-in">
-          <span v-if="!isLoading && swapStore.isInputEntered && invalidInput">
+          <span
+            v-if="
+              !isLoading &&
+              ((swapStore.isInputEntered && invalidInput) ||
+                isNotionalLessThanMinNotional)
+            "
+          >
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
 

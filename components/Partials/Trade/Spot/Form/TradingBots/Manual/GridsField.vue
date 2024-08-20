@@ -39,7 +39,7 @@ const maximumGrids = computed(() => {
     spotGridFormValues.value[SpotGridTradingField.UpperPrice] || 0
   ).minus(spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0)
 
-  const maximumGrids = range.dividedBy(Number(tickSize.value) * 10).toFixed(0)
+  const maximumGrids = range.dividedBy(Number(tickSize.value)).toFixed(0)
 
   if (Number(maximumGrids) < GST_MINIMUM_GRIDS) {
     return GST_MINIMUM_GRIDS

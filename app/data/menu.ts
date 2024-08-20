@@ -1,4 +1,5 @@
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
+import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   MenuItem,
@@ -36,7 +37,10 @@ export const MENU_ITEMS: MenuItem[] = [
         type: MenuItemType.Link,
         label: 'navigation.perpetual',
         description: 'navigation.perpetualDescription',
-        to: { name: TradeSubPage.Futures, params: { slug: 'btc-usdt-perp' } }
+        to: {
+          name: TradeSubPage.Futures,
+          params: { slug: IS_TESTNET ? 'btc-usdt-perp-pyth' : 'btc-usdt-perp' }
+        }
       },
       {
         type: MenuItemType.Link,

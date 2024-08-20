@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const url = computed(() => {
-  const suffix = walletStore.isUserWalletConnected
-    ? `&onToAddress=${walletStore.injectiveAddress}`
+  const suffix = sharedWalletStore.isUserConnected
+    ? `&onToAddress=${sharedWalletStore.injectiveAddress}`
     : ''
 
   return `https://app.kado.money/ramp?product=BUY&onPayCurrency=USD&onRevCurrency=USDT&offPayCurrency=USDC&offRevCurrency=USD&network=INJECTIVE${suffix}`

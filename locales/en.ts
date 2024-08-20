@@ -175,13 +175,15 @@ export default {
   overview: 'Overview',
 
   marketRestricted: {
-    title: 'Unavailable Market',
+    title: 'Market Unavailable',
     description: {
-      perpetual: 'Perpetual markets are not available in your region.',
+      perpetual:
+        'Some markets such as perpetual futures are not available in your region.',
       spot: ({ named }: I18nMessageFunction) =>
         `${named('symbol')} is not available in your region.`
     },
     cta: 'Return to homepage',
+    tradeSpot: 'Trade Spot',
     swapCta: ({ named }: I18nMessageFunction) =>
       `${named('symbol')} is not available in your region`
   },
@@ -206,6 +208,10 @@ export default {
         named('link'),
         ' as to any use you make of Helix'
       ])
+  },
+
+  geoRestricted: {
+    description: 'Helix is currently not available in your region.'
   },
 
   marketExpired: {
@@ -381,8 +387,10 @@ export default {
   },
 
   devMode: {
-    connectWithAddress: 'Connect with address',
     connect: 'Connect',
+    connectWithAddress: 'Connect with address',
+    connectWithPrivateKey: 'Connect with private key',
+    enterPrivateKey: 'Enter your private key',
     enterInjectiveAddress: 'Enter your injective address'
   },
 

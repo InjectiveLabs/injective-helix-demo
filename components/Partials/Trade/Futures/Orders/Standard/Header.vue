@@ -2,6 +2,11 @@
 import { SharedDropdownOption } from '@shared/types'
 import { MarketKey, UiDerivativeMarket, PerpOrdersStandardView } from '@/types'
 
+const breakpoints = useBreakpointsTw()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
+
 const props = defineProps({
   modelValue: {
     type: String as PropType<PerpOrdersStandardView>,
@@ -20,11 +25,6 @@ const emit = defineEmits<{
 }>()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
-
-const walletStore = useWalletStore()
-const breakpoints = useBreakpointsTw()
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
 
 const xxl = breakpoints['4xl']
 
@@ -61,7 +61,7 @@ const options = computed(() => {
     }
   ]
 
-  if (walletStore.isUserWalletConnected) {
+  if (sharedWalletStore.isUserConnected) {
     items.unshift({
       display: `activity.${PerpOrdersStandardView.Balances}`,
       value: PerpOrdersStandardView.Balances
@@ -72,7 +72,7 @@ const options = computed(() => {
 })
 
 watch(
-  () => walletStore.isUserWalletConnected,
+  () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === PerpOrdersStandardView.Balances) {
       view.value = PerpOrdersStandardView.OpenOrders

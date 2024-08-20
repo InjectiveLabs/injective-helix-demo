@@ -28,7 +28,7 @@ const props = defineProps({
   }
 })
 
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -57,7 +57,10 @@ const {
 const now = ref(Date.now())
 
 const marketSubaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(walletStore.address, market.value.slug)
+  addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.value.slug
+  )
 )
 
 const subaccountBalances = computed(

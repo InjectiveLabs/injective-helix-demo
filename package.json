@@ -9,7 +9,7 @@
     "buffer": true
   },
   "scripts": {
-    "fetch:data": "ts-node -P tsconfig-script.json ./scripts/slugs.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/wallets.ts",
+    "fetch:data": "ts-node -P tsconfig-script.json ./scripts/slugs.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/restriction.ts",
     "dev": "nuxi dev",
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
@@ -67,8 +67,7 @@
     "@injectivelabs/node-globals-polyfill": "0.1.6",
     "@injectivelabs/prettier-config": "^1.0.3",
     "@injectivelabs/stylelint-config": "1.1.3",
-    "@nuxt/devtools": "^0.7.6",
-    "@nuxt/kit": "3.8.1",
+    "@nuxt/devtools": "^1.3.6",
     "@nuxt/typescript-build": "^3.0.1",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/i18n": "8.0.0-beta.13",
@@ -100,7 +99,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "~9.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.0.4",
+    "typescript": "5.4.5",
     "unplugin-auto-import": "^0.16.0",
     "vite-plugin-circular-dependency": "^0.2.1",
     "vite-plugin-notifier": "latest",
@@ -113,6 +112,7 @@
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
     "eslint": "8.37.0",
-    "vee-validate": "4.11.7"
+    "vee-validate": "4.11.7",
+    "nuxi": "3.11.1"
   }
 }

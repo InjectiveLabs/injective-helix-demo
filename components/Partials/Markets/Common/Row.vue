@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'

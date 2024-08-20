@@ -10,9 +10,9 @@ import { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
@@ -30,7 +30,7 @@ const activeStrategy = computed(
 
 const subaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
-    walletStore.address,
+    sharedWalletStore.address,
     (gridStrategyStore.spotMarket as UiSpotMarket).slug
   )
 )
@@ -53,7 +53,7 @@ function fetchData() {
 
   const marketId = gridStrategyStore.spotMarket.marketId
   const subaccountId = addressAndMarketSlugToSubaccountId(
-    walletStore.address,
+    sharedWalletStore.address,
     gridStrategyStore.spotMarket.slug
   )
 
@@ -108,7 +108,7 @@ onWalletConnected(() => {
 })
 
 onMounted(() => {
-  accountStore.$patch({ subaccountId: walletStore.defaultSubaccountId })
+  accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
 })
 
 onUnmounted(() => {

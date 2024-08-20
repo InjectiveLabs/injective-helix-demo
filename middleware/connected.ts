@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware(() => {
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return navigateTo('/')
   }
 })

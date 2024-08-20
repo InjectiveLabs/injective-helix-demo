@@ -14,10 +14,10 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'
-import { hexToString, stringToHex } from '@/app/utils/converters'
-import { spotGridMarkets, perpGridMarkets } from '@/app/data/grid-strategy'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { UiSpotMarket, UiMarketWithToken } from '@/types'
+import { hexToString, stringToHex } from '@/app/utils/converters'
+import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
+import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -124,19 +124,22 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return perpGridMarkets.find((m) => m.slug.replace('-perp', '-p') === slug)
-    ?.slug
+  return (derivativeGridMarkets as GridMarket[]).find(
+    (m) => m.slug.replace('-perp', '-p') === slug
+  )?.slug
 }
 
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
-    return [
+    const gridMarkets = [
       ...spotGridMarkets,
-      ...perpGridMarkets.map((m) => ({
+      ...derivativeGridMarkets.map((m: GridMarket) => ({
         ...m,
         slug: m.slug.replace('-perp', '-p')
       }))
-    ]
+    ] as GridMarket[]
+
+    return gridMarkets
       .find(
         (m) =>
           m.slug.toLowerCase() ===
@@ -289,9 +292,11 @@ export function calculateWorstPrice(
 ) {
   let remainingQuantity = Number(quantity || '0')
 
-  let worstPrice = '0'
   let price = 0
+  let worstPrice = '0'
   let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
@@ -308,7 +313,9 @@ export function calculateWorstPrice(
 
   return {
     totalPrice: new BigNumberInBase(price),
-    worstPrice: new BigNumberInBase(worstPrice),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
     hasEnoughLiquidity
   }
 }

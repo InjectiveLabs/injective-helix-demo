@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { IsSpotKey, MarketKey } from '@/types'
+import { MarketKey, IsSpotKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -50,13 +50,17 @@ provide(IsSpotKey, true)
 </script>
 
 <template>
-  <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
-    <template #form>
-      <PartialsTradeSpotForm />
-    </template>
+  <div>
+    <PartialsTradeLayout v-if="market" v-bind="{ market }" is-spot>
+      <template #form>
+        <PartialsTradeSpotForm />
+      </template>
 
-    <template #orders>
-      <PartialsTradeSpotOrders />
-    </template>
-  </PartialsTradeLayout>
+      <template #orders>
+        <PartialsTradeSpotOrders />
+      </template>
+    </PartialsTradeLayout>
+
+    <ModalsMarketRestricted v-if="market" v-bind="{ market, isSpot: true }" />
+  </div>
 </template>

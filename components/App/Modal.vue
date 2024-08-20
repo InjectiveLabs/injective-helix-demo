@@ -9,6 +9,7 @@ const props = defineProps({
   isOpen: Boolean,
   isDense: Boolean,
   isAlwaysOpen: Boolean,
+  isTransparent: Boolean,
   isHideCloseButton: Boolean,
 
   modalContentClass: {
@@ -62,10 +63,11 @@ watchDebounced(
   <Transition name="modal" appear>
     <SharedModalWrapper
       v-if="isOpen"
-      class="relative mx-auto sm:rounded-lg bg-brand-900 border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
-      :class="classes"
-      wrapper-class="backdrop-filter backdrop-blur bg-black/90 bg-opacity-90 max-sm:z-40"
+      class="relative mx-auto sm:rounded-lg border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
+      :class="[isTransparent ? 'bg-brand-900/95' : 'bg-brand-900', classes]"
+      wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
+      :ignore="['.v-popper__inner']"
       @modal:closed="onModalClose"
     >
       <template #default="{ close, isLoading }">
@@ -75,6 +77,7 @@ watchDebounced(
           }"
         >
           <div
+            v-if="$slots.title"
             class="flex items-center justify-between"
             :class="{ 'mb-6 px-6 pt-6': !isDense }"
           >
@@ -91,6 +94,14 @@ watchDebounced(
                 @click="close"
               />
             </div>
+          </div>
+
+          <div v-else class="relative">
+            <SharedIcon
+              name="close"
+              class="top-4 right-4 absolute h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+              @click="close"
+            />
           </div>
 
           <div

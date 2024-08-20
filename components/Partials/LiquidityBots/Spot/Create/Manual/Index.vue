@@ -14,8 +14,8 @@ import {
 } from '@/types'
 
 const spotStore = useSpotStore()
-const walletStore = useWalletStore()
 const setFormValues = useSetFormValues()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const liquidityFormValues = useFormValues<SpotGridTradingForm>()
 
@@ -208,7 +208,7 @@ watch(isBaseAndQuoteType, (value) => {
       class="mb-4"
     />
 
-    <CommonUserNotConnectedNote v-if="!walletStore.isUserWalletConnected" cta />
+    <CommonUserNotConnectedNote v-if="!sharedWalletStore.isUserConnected" cta />
 
     <PartialsLiquidityBotsSpotCreateCommonCreateStrategy
       v-else

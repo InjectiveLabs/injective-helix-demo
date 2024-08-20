@@ -6,15 +6,14 @@ import {
   getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
 
 const props = defineProps({
   showLowBalance: Boolean,
   includeBotsSubaccounts: Boolean
 })
 
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 const { aggregatedPortfolioBalances } = useBalance()
 
@@ -30,8 +29,7 @@ onMounted(() => {
   const defaultSubaccountId = Object.keys(accountStore.subaccountBalancesMap)[0]
 
   if (defaultSubaccountId) {
-    accountStore.$patch({ subaccountId: defaultSubaccountId })
-    useEventBus(BusEvents.SubaccountChange).emit()
+    accountStore.updateSubaccount(defaultSubaccountId)
   }
 })
 
@@ -72,7 +70,7 @@ const subaccountOptionsFiltered = computed(() =>
     const includeLowBalance =
       props.showLowBalance ||
       hasBalance ||
-      subaccountId === walletStore.defaultSubaccountId
+      subaccountId === sharedWalletStore.defaultSubaccountId
 
     return includeBotsSubaccounts && includeLowBalance
   })

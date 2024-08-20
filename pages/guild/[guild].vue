@@ -15,13 +15,13 @@ import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 const { baseToken } = useGuild()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'
 
@@ -276,7 +276,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               </div>
             </article>
 
-            <template v-if="walletStore.isUserWalletConnected">
+            <template v-if="sharedWalletStore.isUserConnected">
               <AppButton
                 v-if="campaignStore.userGuildInfo"
                 class="bg-blue-500 text-blue-900"

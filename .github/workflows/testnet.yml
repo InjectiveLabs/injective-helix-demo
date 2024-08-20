@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - testnet
       - master
+      - testnet
 
 jobs:
   testnet:
@@ -26,15 +26,9 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
+      VITE_VPN_CHECKS_ENABLED: false
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
-
-      ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
-      VITE_CHRONOS_API_ENDPOINT: ''
-      VITE_EXPLORER_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_REST_ENDPOINT: ''
 
       ## Secret
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}

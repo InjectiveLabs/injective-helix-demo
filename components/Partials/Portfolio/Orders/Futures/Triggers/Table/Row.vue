@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
-
 import { Status, StatusType } from '@injectivelabs/utils'
+import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const props = defineProps({
   trigger: {
@@ -10,14 +16,6 @@ const props = defineProps({
     type: Object as PropType<DerivativeOrderHistory>
   }
 })
-
-const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
-const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
 
 const {
   type,
@@ -37,8 +35,10 @@ const {
   quantityDecimals
 } = useTrigger(computed(() => props.trigger))
 
+const status = reactive(new Status(StatusType.Idle))
+
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 

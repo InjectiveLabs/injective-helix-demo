@@ -1,5 +1,5 @@
+import { ShallowRef } from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { ShallowRef } from 'nuxt/dist/app/compat/capi'
 import { UiMarketWithToken } from './trade'
 import { OrderbookWorkerMessage } from './worker'
 

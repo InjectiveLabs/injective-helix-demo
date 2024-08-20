@@ -26,7 +26,6 @@ jobs:
 
       ## Flags
       VITE_MAINTENANCE_ENABLED: false
-      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
@@ -35,6 +34,12 @@ jobs:
       VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
       VITE_SENTRY_REST_ENDPOINT: ''
+
+      ## Geo location & VPN checks
+      VITE_VPN_CHECKS_ENABLED: true
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+      VITE_GOOGLE_MAPS_KEY: ${{ secrets.VITE_GOOGLE_MAPS_KEY }}
+      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
 
       ## Secret
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
@@ -49,7 +54,6 @@ jobs:
       VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
-      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
 
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -105,7 +109,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Notify Slack"
+      - name: 'Notify Slack'
         run: |
           # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
           last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
@@ -125,8 +129,8 @@ jobs:
     needs: [mainnet]
     if: always() && github.event_name == 'workflow_dispatch' && (needs.mainnet.result == 'success')
     steps:
-      - name: "Notify Slack"
-        run: |  
+      - name: 'Notify Slack'
+        run: |
           payload='{
             "text": "'"<!here> 🚀 Helix Redeployed on Mainnet! Good guys, close your eyes! 🛠️😄."'",
             "attachments": [

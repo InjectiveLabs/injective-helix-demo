@@ -38,8 +38,8 @@ const spotStore = useSpotStore()
 const formErrors = useFormErrors()
 const modalStore = useModalStore()
 const validate = useValidateForm()
-const walletStore = useWalletStore()
 const setFormValues = useSetFormValues()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { $onError } = useNuxtApp()
@@ -170,7 +170,10 @@ const newMarketSlug = computed(
 const isDisabled = computed(() => {
   const investmentType = formValues.value[SpotGridTradingField.InvestmentType]
 
-  if (walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled) {
+  if (
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
+  ) {
     return true
   }
 
@@ -307,10 +310,10 @@ function goToNewMarket() {
       v-bind="{ status, disabled: isDisabled }"
       @click="onCheckBalanceFees"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
-      <span v-else-if="walletStore.isAutoSignEnabled">
+      <span v-else-if="sharedWalletStore.isAutoSignEnabled">
         {{ $t('common.notAvailableinAutoSignMode') }}
       </span>
       <span v-else>{{ $t('sgt.create') }}</span>
@@ -326,14 +329,15 @@ function goToNewMarket() {
       v-bind="{
         status,
         disabled:
-          walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+          sharedWalletStore.isAuthzWalletConnected ||
+          sharedWalletStore.isAutoSignEnabled
       }"
       @click="removeLegacyStrategy"
     >
-      <span v-if="walletStore.isAuthzWalletConnected">
+      <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
-      <span v-else-if="walletStore.isAutoSignEnabled">
+      <span v-else-if="sharedWalletStore.isAutoSignEnabled">
         {{ $t('common.notAvailableinAutoSignMode') }}
       </span>
 

@@ -15,7 +15,10 @@ export default {
     minLimitOrderSize: 'Min. Limit Order Size',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
+    minNotionalError: ({ named }: I18nMessageFunction) =>
+      `Minimum order value > ${named('minNotional')} ${named('symbol')}`,
     timestamp_tooltip: 'Based on your browser time zone',
+    mid: 'Mid',
     quantity: 'Quantity',
     notional: 'Notional',
     chart: 'Chart',
@@ -209,6 +212,8 @@ export default {
     market_volume_24h: 'Volume (24h)',
     market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
     search_market: 'Search Market',
+    total_volume_in_usd: ({ named }: I18nMessageFunction) =>
+      `${named('amount')} USD`,
     search_markets: 'Search Markets',
     marketNotFound: 'Market not found',
     favorites: 'Favorites',

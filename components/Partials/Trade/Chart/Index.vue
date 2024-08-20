@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ChartViewOption, UiMarketWithToken } from '@/types'
 import { intervalOptions } from '@/app/utils/constants'
+import { BusEvents, ChartViewOption, UiMarketWithToken } from '@/types'
 
 defineProps({
   isSpot: Boolean,
@@ -11,10 +11,14 @@ defineProps({
   }
 })
 
-const view = ref(ChartViewOption.Chart)
 const interval = ref(4)
+const view = ref(ChartViewOption.Chart)
 
 const viewOptions = Object.values(ChartViewOption)
+
+function onUpdateChart(chart: string) {
+  useEventBus(BusEvents.UpdateMarketChart).emit(chart)
+}
 
 function setInterval(index: string) {
   interval.value = Number(index)
@@ -32,6 +36,7 @@ function setInterval(index: string) {
           :value="label"
           class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-gray-600 max-lg:flex-1"
           active-classes="bg-brand-875 text-white"
+          @update:modelValue="onUpdateChart"
         >
           {{ $t(`trade.${label}`) }}
         </AppButtonSelect>

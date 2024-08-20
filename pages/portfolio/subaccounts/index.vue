@@ -2,10 +2,12 @@
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isDisabled = computed(
-  () => walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+  () =>
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
 )
 
 function openTransferModal() {
@@ -36,7 +38,7 @@ function openTransferModal() {
         @click="openTransferModal"
       >
         <SharedIcon name="plus" is-xs />
-        <span>{{ $t('portfolio.subaccounts.addSubaccount') }}</span>
+        <span>{{ $t('portfolio.subaccounts.addSubaccountOrTransfer') }}</span>
       </AppButton>
     </div>
 

@@ -23,13 +23,6 @@ export interface Constructable<T> {
   new (...args: any): T
 }
 
-export interface GeoLocation {
-  continent: string
-  country: string
-  browserCountry: string
-  vpnCheckTimestamp: number
-}
-
 export interface SubaccountBalanceWithTokenMarginAndPnlTotalBalanceInUsd
   extends Omit<SharedSubaccountBalanceWithToken, 'totalBalance'> {
   inOrderBalance: BigNumberInBase
@@ -124,6 +117,12 @@ export type MenuItem =
       icon?: string
       items: MenuItem[]
     })
+
+export type WalletOption = {
+  beta?: boolean
+  downloadLink?: string
+  wallet: Wallet
+}
 
 export * from './page'
 export * from './swap'

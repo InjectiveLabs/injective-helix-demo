@@ -21,10 +21,10 @@ export class DerivativeSubaccountOrderIntegrityStrategy
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()
-    const walletStore = useWalletStore()
     const derivativeStore = useDerivativeStore()
+    const sharedWalletStore = useSharedWalletStore()
 
-    if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+    if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
       return
     }
 
@@ -62,8 +62,8 @@ export class DerivativeSubaccountOrderIntegrityStrategy
   async fetchData() {
     const { args: marketIds } = this
 
-    const derivativeStore = useDerivativeStore()
     const accountStore = useAccountStore()
+    const derivativeStore = useDerivativeStore()
 
     const { orders: latestOrders } = await indexerDerivativesApi.fetchOrders({
       isConditional: false,

@@ -4,9 +4,7 @@ import {
   PortfolioSubPage,
   LiquidityRewardsPage
 } from '../../../types'
-import spotSlugs from './../../../app/data/spot.json'
-import expiryFutureSlugs from './../../../app/data/expiry.json'
-import perpetualSlugs from './../../../app/data/derivative.json'
+import { spotSlugs, expirySlugs, derivativeSlugs } from './../../json'
 
 export const getRoutes = () => {
   const gridTradingSpot = [
@@ -45,7 +43,7 @@ export const getRoutes = () => {
     'ena-usdt'
   ]
 
-  const futures = [...perpetualSlugs, ...expiryFutureSlugs]
+  const futures = [...derivativeSlugs, ...expirySlugs]
 
   // Middleware routes
   const walletConnectedRequiredRouteNames = [
@@ -92,7 +90,7 @@ export const getRoutes = () => {
       futures,
       gridTradingSpot,
       spot: spotSlugs,
-      expiryFutures: expiryFutureSlugs
+      expiryFutures: expirySlugs
     },
     ROUTES: {
       spotRoutes,

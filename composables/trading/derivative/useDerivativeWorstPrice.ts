@@ -161,6 +161,16 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     )
   })
 
+  const calculatedWorstPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return { hasEnoughLiquidity: true, worstPrice: ZERO_IN_BASE }
+    }
+
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+
+    return calculateWorstPrice(quantity.value.toString(), records)
+  })
+
   const worstPrice = computed(() => {
     const price = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
@@ -182,12 +192,9 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
         worstPrice = priceWithSlippage
       } else {
-        const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
-
-        worstPrice = calculateWorstPrice(
-          quantity.value.toString(),
-          records
-        ).worstPrice.times(slippagePercentage.value)
+        worstPrice = calculatedWorstPrice.value.worstPrice.times(
+          slippagePercentage.value
+        )
       }
     }
 
@@ -196,6 +203,14 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     }
 
     return quantizeNumber(worstPrice, market.value.priceTensMultiplier)
+  })
+
+  const hasEnoughLiquidity = computed(() => {
+    if (isLimitOrder.value) {
+      return true
+    }
+
+    return calculatedWorstPrice.value.hasEnoughLiquidity
   })
 
   const totalNotional = computed(() => {
@@ -228,6 +243,40 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
+  const priceForNotional = computed(() => {
+    switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
+      case DerivativeTradeTypes.Limit:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+        )
+      case DerivativeTradeTypes.Market:
+        return worstPrice.value
+      case DerivativeTradeTypes.StopLimit:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+        )
+      case DerivativeTradeTypes.StopMarket:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
+            0
+        )
+    }
+  })
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    if (
+      !priceForNotional.value ||
+      priceForNotional.value?.isZero() ||
+      new BigNumberInBase(quantity.value).isZero()
+    ) {
+      return
+    }
+
+    return quantity.value
+      .times(priceForNotional.value)
+      .lt(market.value.minNotionalInToken)
+  })
+
   return {
     isBuy,
     market,
@@ -240,8 +289,10 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     feePercentage,
     totalNotional,
     marginWithFee,
+    hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,
-    feePercentageWithLeverage
+    feePercentageWithLeverage,
+    isNotionalLessThanMinNotional
   }
 }

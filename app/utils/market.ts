@@ -189,11 +189,11 @@ export const marketIsQuotePair = (
 export const marketIsPartOfType = ({
   activeType,
   market,
-  favoriteMarkets
+  userMarkets
 }: {
   activeType: MarketTypeOption
   market: UiMarketWithToken
-  favoriteMarkets: string[]
+  userMarkets: string[]
 }): boolean => {
   if (
     activeType === MarketTypeOption.All
@@ -202,8 +202,12 @@ export const marketIsPartOfType = ({
     return true
   }
 
-  if (activeType === MarketTypeOption.Favorites) {
-    return favoriteMarkets.includes(market.marketId)
+  if (
+    [MarketTypeOption.Favorites, MarketTypeOption.MyMarkets].includes(
+      activeType
+    )
+  ) {
+    return userMarkets.includes(market.marketId)
   }
 
   if (activeType === MarketTypeOption.NewListings) {

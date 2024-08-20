@@ -1,10 +1,10 @@
 import {
-  DerivativeOrdersStreamCallback,
-  DerivativeTradesStreamCallback,
-  IndexerGrpcDerivativesStream,
   IndexerGrpcSpotStream,
+  SpotTradesStreamCallback,
   SpotOrdersStreamCallback,
-  SpotTradesStreamCallback
+  IndexerGrpcDerivativesStream,
+  DerivativeOrdersStreamCallback,
+  DerivativeTradesStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
