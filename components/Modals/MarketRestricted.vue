@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal, MainPage, UiMarketWithToken } from '@/types'
+import { Modal, MainPage, UiMarketWithToken, MarketTypeOption } from '@/types'
 import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
@@ -79,9 +79,16 @@ function closeModal() {
       </p>
 
       <div class="mt-6 flex items-center justify-center">
-        <NuxtLink :to="{ name: MainPage.Index }">
+        <NuxtLink
+          :to="{
+            name: MainPage.Markets,
+            query: {
+              type: MarketTypeOption.Spot
+            }
+          }"
+        >
           <AppButton class="bg-blue-500 text-blue-900" @click="closeModal">
-            {{ $t('marketRestricted.cta') }}
+            {{ $t('marketRestricted.tradeSpot') }}
           </AppButton>
         </NuxtLink>
       </div>

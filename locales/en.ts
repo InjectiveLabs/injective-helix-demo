@@ -175,13 +175,15 @@ export default {
   overview: 'Overview',
 
   marketRestricted: {
-    title: 'Unavailable Market',
+    title: 'Market Unavailable',
     description: {
-      perpetual: 'Perpetual markets are not available in your region.',
+      perpetual:
+        'Some markets such as perpetual futures are not available in your region.',
       spot: ({ named }: I18nMessageFunction) =>
         `${named('symbol')} is not available in your region.`
     },
     cta: 'Return to homepage',
+    tradeSpot: 'Trade Spot',
     swapCta: ({ named }: I18nMessageFunction) =>
       `${named('symbol')} is not available in your region`
   },
