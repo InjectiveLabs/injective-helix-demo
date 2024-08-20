@@ -25,7 +25,7 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_MAINTENANCE_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
