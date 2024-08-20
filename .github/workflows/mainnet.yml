@@ -26,7 +26,7 @@ jobs:
 
       ## Flags
       VITE_MAINTENANCE_ENABLED: false
-      VITE_BANNER_NOTICE_ENABLED: true
+      VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
