@@ -10,12 +10,12 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  trigger: {
-    required: true,
-    type: Object as PropType<DerivativeOrderHistory>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    trigger: DerivativeOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

@@ -2,19 +2,18 @@
 import { SharedBalanceWithToken } from '@shared/types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 
-const props = defineProps({
-  isBalanceVisible: Boolean,
-
-  balances: {
-    type: Array as PropType<SharedBalanceWithToken[]>,
-    default: () => []
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isBalanceVisible?: boolean
+    balances?: SharedBalanceWithToken[]
+    modelValue?: string
+  }>(),
+  {
+    isBalanceVisible: false,
+    balances: () => [],
+    modelValue: ''
   }
-})
+)
 
 const search = ref('')
 

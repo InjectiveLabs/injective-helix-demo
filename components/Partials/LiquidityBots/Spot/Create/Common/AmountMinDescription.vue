@@ -1,22 +1,16 @@
 <script lang="ts" setup>
 import { UiSpotMarket, InvestmentTypeGst } from '@/types'
 
-defineProps({
-  threshold: {
-    type: String,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  },
-
-  investmentType: {
-    type: String as PropType<InvestmentTypeGst>,
-    default: ''
+withDefaults(
+  defineProps<{
+    threshold: string
+    market: UiSpotMarket
+    investmentType?: InvestmentTypeGst
+  }>(),
+  {
+    investmentType: InvestmentTypeGst.Quote
   }
-})
+)
 </script>
 
 <template>

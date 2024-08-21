@@ -7,19 +7,16 @@ import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
 
-const props = defineProps({
-  isCampaignStarted: Boolean,
-
-  rank: {
-    type: Number,
-    required: true
-  },
-
-  member: {
-    type: Object as PropType<GuildMember>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isCampaignStarted?: boolean
+    rank: number
+    member: GuildMember
+  }>(),
+  {
+    isCampaignStarted: false
   }
-})
+)
 
 const explorerLink = computed(
   () => `${getExplorerUrl()}/account/${props.member.address}`

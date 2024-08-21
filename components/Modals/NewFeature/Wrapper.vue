@@ -7,26 +7,21 @@ const slots = useSlots()
 const appStore = useAppStore()
 const modalStore = useModalStore()
 
-const props = defineProps({
-  route1: {
-    type: Object as PropType<RouteLocationNamedRaw>,
-    default: () => ({
+const props = withDefaults(
+  defineProps<{
+    route1?: RouteLocationNamedRaw
+    route2?: RouteLocationNamedRaw
+    modal: Modal
+  }>(),
+  {
+    route1: () => ({
+      name: MainPage.Index
+    }),
+    route2: () => ({
       name: MainPage.Index
     })
-  },
-
-  route2: {
-    type: Object as PropType<RouteLocationNamedRaw>,
-    default: () => ({
-      name: MainPage.Index
-    })
-  },
-
-  modal: {
-    required: true,
-    type: String as PropType<Modal>
   }
-})
+)
 
 const isModalOpen = computed(
   () =>

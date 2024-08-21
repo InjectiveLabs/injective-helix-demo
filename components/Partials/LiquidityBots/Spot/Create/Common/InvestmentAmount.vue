@@ -16,14 +16,12 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const props = defineProps({
-  isAuto: Boolean,
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
+const props = withDefaults(
+  defineProps<{ isAuto: boolean; market: UiSpotMarket }>(),
+  {
+    isAuto: false
   }
-})
+)
 
 const tokenStore = useTokenStore()
 const formValues = useFormValues<SpotGridTradingForm>()

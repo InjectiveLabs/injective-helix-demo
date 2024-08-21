@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-defineProps({
-  isActive: Boolean
-})
+withDefaults(defineProps<{ isActive: boolean }>(), { isActive: false })
 
 const emit = defineEmits<{
   click: []

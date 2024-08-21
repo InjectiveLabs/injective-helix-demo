@@ -8,42 +8,18 @@ import {
   SpotTradeFormField
 } from '@/types'
 
-const props = defineProps({
-  total: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  feeAmount: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  worstPrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  totalWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  feePercentage: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  slippagePercentage: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    total: BigNumberInBase
+    quantity: BigNumberInBase
+    feeAmount: BigNumberInBase
+    worstPrice: BigNumberInBase
+    totalWithFee: BigNumberInBase
+    feePercentage: BigNumberInBase
+    slippagePercentage: BigNumberInBase
+  }>(),
+  {}
+)
 const spotMarket = inject(MarketKey)
 
 const spotFormValues = useFormValues<SpotTradeForm>()

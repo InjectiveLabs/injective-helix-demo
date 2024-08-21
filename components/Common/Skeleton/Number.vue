@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-defineProps({
-  status: {
-    type: Object as PropType<Status>,
-    default: new Status(StatusType.Loading)
-  },
-
-  size: {
-    type: Number,
-    default: 22
-  },
-
-  length: {
-    type: Number,
-    default: 5
+withDefaults(
+  defineProps<{
+    status?: Status
+    size?: number
+    length?: number
+  }>(),
+  {
+    status: () => new Status(StatusType.Loading),
+    size: 22,
+    length: 5
   }
-})
+)
 </script>
 
 <template>

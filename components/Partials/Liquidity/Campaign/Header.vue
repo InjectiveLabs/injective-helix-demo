@@ -9,17 +9,13 @@ import {
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+    campaign: Campaign
+  }>(),
+  {}
+)
 
 const tokenStore = useTokenStore()
 const sharedWalletStore = useSharedWalletStore()

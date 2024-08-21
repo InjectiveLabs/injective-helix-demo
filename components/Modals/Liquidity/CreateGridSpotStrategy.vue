@@ -11,8 +11,8 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const props = defineProps({
-  isLiquidity: Boolean
+const props = withDefaults(defineProps<{ isLiquidity?: boolean }>(), {
+  isLiquidity: false
 })
 
 const modalStore = useModalStore()

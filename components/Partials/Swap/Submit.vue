@@ -18,20 +18,20 @@ const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { userBalancesWithToken } = useBalance()
 
-defineProps({
-  isLoading: Boolean,
-  showErrorState: Boolean,
-
-  queryError: {
-    type: String,
-    default: ''
-  },
-
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
+withDefaults(
+  defineProps<{
+    isLoading: boolean
+    showErrorState: boolean
+    queryError?: string
+    status: Status
+  }>(),
+  {
+    isLoading: false,
+    showErrorState: false,
+    queryError: '',
+    status: () => new Status(StatusType.Idle)
   }
-})
+)
 
 const emit = defineEmits<{
   submit: []

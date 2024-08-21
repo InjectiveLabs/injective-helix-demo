@@ -13,25 +13,20 @@ import {
   UiMarketWithToken
 } from '@/types'
 
-const props = defineProps({
-  isBuy: Boolean,
-  isActive: Boolean,
-
-  record: {
-    type: Object as PropType<OrderbookFormattedRecord>,
-    required: true
-  },
-
-  index: {
-    type: Number,
-    default: -1
-  },
-
-  highestVolume: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isBuy?: boolean
+    isActive?: boolean
+    record: OrderbookFormattedRecord
+    index?: number
+    highestVolume: string
+  }>(),
+  {
+    isBuy: false,
+    isActive: false,
+    index: -1
   }
-})
+)
 
 const aggregation = inject(AggregationKey, ref(1)) as Ref<number>
 

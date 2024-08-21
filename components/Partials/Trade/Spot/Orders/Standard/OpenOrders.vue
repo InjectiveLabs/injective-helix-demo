@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { MarketKey, UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  isTickerOnly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {
+    isTickerOnly: false
+  }
+)
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 

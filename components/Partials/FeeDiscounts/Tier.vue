@@ -8,17 +8,13 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  tier: {
-    required: true,
-    type: Object as PropType<FeeDiscountTierInfo>
-  },
-
-  index: {
-    required: true,
-    type: Number
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    tier: FeeDiscountTierInfo
+    index: number
+  }>(),
+  {}
+)
 
 const exchangeStore = useExchangeStore()
 const sharedWalletStore = useSharedWalletStore()

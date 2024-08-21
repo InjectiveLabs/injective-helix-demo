@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const props = defineProps({
-  isOpen: Boolean
+const props = withDefaults(defineProps<{ isOpen: boolean }>(), {
+  isOpen: false
 })
 
 const emit = defineEmits<{

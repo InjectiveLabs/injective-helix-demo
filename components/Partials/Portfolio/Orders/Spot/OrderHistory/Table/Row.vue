@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  order: {
-    type: Object as PropType<SpotOrderHistory>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: SpotOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

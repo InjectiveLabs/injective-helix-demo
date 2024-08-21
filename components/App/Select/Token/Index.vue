@@ -16,61 +16,48 @@ import {
   SubaccountTransferField
 } from '@/types'
 
-const props = defineProps({
-  isMaxHidden: Boolean,
-  isUsdVisible: Boolean,
-  isDisabled: Boolean,
-  isRequired: Boolean,
-  isBalanceHidden: Boolean,
-  shouldCheckBalance: Boolean,
-  isTokenSelectorDisabled: Boolean,
+const props = withDefaults(
+  defineProps<{
+    isMaxHidden?: boolean
+    isUsdVisible?: boolean
+    isDisabled?: boolean
+    isRequired?: boolean
+    isBalanceHidden?: boolean
+    shouldCheckBalance?: boolean
+    isTokenSelectorDisabled?: boolean
 
-  denom: {
-    type: String,
-    default: ''
-  },
+    denom?: string
 
-  modal: {
-    required: false,
-    default: Modal.TokenSelector,
-    type: String as PropType<Modal>
-  },
+    modal?: Modal
+    debounce?: number
+    maxDecimals?: number
+    tensMultiplier?: number
+    additionalRules?: object
 
-  debounce: {
-    type: Number,
-    default: 0
-  },
+    amountFieldName?: TradeField | SubaccountTransferField | SwapFormField
+    options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
+  }>(),
+  {
+    isMaxHidden: false,
+    isUsdVisible: false,
+    isDisabled: false,
+    isRequired: false,
+    isBalanceHidden: false,
+    shouldCheckBalance: false,
+    isTokenSelectorDisabled: false,
 
-  maxDecimals: {
-    type: Number,
-    default: 6
-  },
+    denom: '',
 
-  tensMultiplier: {
-    type: Number,
-    required: false,
-    default: undefined
-  },
+    modal: Modal.TokenSelector,
+    debounce: 0,
+    maxDecimals: 6,
+    tensMultiplier: undefined,
+    additionalRules: undefined,
 
-  additionalRules: {
-    type: Object,
-    default: undefined
-  },
-
-  amountFieldName: {
-    type: String as PropType<
-      TradeField | SubaccountTransferField | SwapFormField
-    >,
-    default: TradeField.BaseAmount
-  },
-
-  options: {
-    type: Array as PropType<
-      SharedBalanceWithToken[] | SharedBalanceWithTokenAndPrice[]
-    >,
-    default: () => []
+    amountFieldName: TradeField.BaseAmount,
+    options: () => []
   }
-})
+)
 
 const modalStore = useModalStore()
 

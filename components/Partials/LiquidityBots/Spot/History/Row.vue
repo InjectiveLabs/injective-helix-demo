@@ -3,22 +3,14 @@ import { format } from 'date-fns'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    required: true
-  },
-
-  value: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    strategy: TradingStrategy
+    modelValue: string
+    value: string
+  }>(),
+  {}
+)
 
 defineEmits<{
   'update:modelValue': [string]

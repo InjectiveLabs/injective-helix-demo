@@ -5,51 +5,39 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const slots = useSlots()
 
-const props = defineProps({
-  isSm: Boolean,
-  isXs: Boolean,
-  isFlex: Boolean,
-  isDense: Boolean,
-  isNoGrouping: Boolean,
-  useNumberDecimals: Boolean,
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isXs?: boolean
+    isFlex?: boolean
+    isDense?: boolean
+    isNoGrouping?: boolean
+    useNumberDecimals?: boolean
 
-  prefix: {
-    type: String,
-    default: ''
-  },
-
-  suffix: {
-    type: String,
-    default: ''
-  },
-
-  number: {
-    required: false,
-    default: new BigNumberInBase(0),
-    type: Object as PropType<BigNumberInBase>
-  },
-
-  numberString: {
-    required: false,
-    default: '',
-    type: String
-  },
-
-  decimals: {
-    type: Number,
-    default: UI_DEFAULT_DISPLAY_DECIMALS
-  },
-
-  roundingMode: {
-    type: Number as PropType<BigNumber.RoundingMode>,
-    default: BigNumberInBase.ROUND_DOWN
-  },
-
-  abbreviationFloor: {
-    type: Number,
-    default: 0
+    prefix?: string
+    suffix?: string
+    number?: BigNumberInBase
+    numberString?: string
+    decimals?: number
+    roundingMode?: BigNumber.RoundingMode
+    abbreviationFloor?: number
+  }>(),
+  {
+    isSm: false,
+    isXs: false,
+    isFlex: false,
+    isDense: false,
+    isNoGrouping: false,
+    useNumberDecimals: false,
+    prefix: '',
+    suffix: '',
+    number: () => new BigNumberInBase(0),
+    numberString: '',
+    decimals: UI_DEFAULT_DISPLAY_DECIMALS,
+    roundingMode: BigNumberInBase.ROUND_DOWN,
+    abbreviationFloor: 0
   }
-})
+)
 
 const actualNumber = computed(
   () => new BigNumberInBase(props.numberString || props.number)

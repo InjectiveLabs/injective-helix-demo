@@ -1,16 +1,22 @@
 <script lang="ts" setup>
-const props = defineProps({
-  isLg: Boolean,
-  isMd: Boolean,
-  isTight: Boolean,
-  isNoPadding: Boolean,
-  isNoTopBorderRadius: Boolean,
-
-  bgColor: {
-    type: String,
-    default: 'bg-brand-800'
+const props = withDefaults(
+  defineProps<{
+    isLg?: boolean
+    isMd?: boolean
+    isTight?: boolean
+    isNoPadding?: boolean
+    isNoTopBorderRadius?: boolean
+    bgColor?: string
+  }>(),
+  {
+    isLg: false,
+    isMd: false,
+    isTight: false,
+    isNoPadding: false,
+    isNoTopBorderRadius: false,
+    bgColor: 'bg-brand-800'
   }
-})
+)
 
 const borderRadiusClass = computed(() => {
   if (props.isNoTopBorderRadius) {

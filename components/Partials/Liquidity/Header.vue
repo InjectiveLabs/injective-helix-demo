@@ -7,27 +7,15 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
-const props = defineProps({
-  endDate: {
-    type: Number,
-    required: true
-  },
-
-  lastUpdated: {
-    type: Number,
-    required: true
-  },
-
-  round: {
-    type: Number,
-    required: true
-  },
-
-  roundCampaigns: {
-    type: Array as PropType<Campaign[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    endDate: number
+    lastUpdated: number
+    round: number
+    roundCampaigns: Campaign[]
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

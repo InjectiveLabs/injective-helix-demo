@@ -25,22 +25,18 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
 
-const props = defineProps({
-  totalWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  minimumAmountInQuote: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    totalWithFee: BigNumberInBase
+    quantity: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+  }>(),
+  {
+    totalWithFee: undefined,
+    quantity: undefined,
+    minimumAmountInQuote: undefined
   }
-})
+)
 
 const options = [
   {

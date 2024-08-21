@@ -6,14 +6,16 @@ import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import { stableCoinSymbols } from '@/app/data/token'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  isCurrentMarket: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isCurrentMarket?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isCurrentMarket: false,
+    market: undefined
   }
-})
+)
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()

@@ -6,12 +6,11 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
 
-const props = defineProps({
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    campaign: Campaign
+  }>()
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

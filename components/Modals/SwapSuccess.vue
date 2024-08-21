@@ -8,12 +8,7 @@ const modalStore = useModalStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  txHash: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ txHash: String }>(), {})
 
 const status: Status = reactive(new Status(StatusType.Idle))
 const swapInfo = ref(undefined as Record<string, string> | undefined)

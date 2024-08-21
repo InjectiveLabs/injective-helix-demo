@@ -1,17 +1,7 @@
 <script setup lang="ts">
 import { MenuItem, MenuItemType } from '@/types'
 
-defineProps({
-  item: {
-    type: Object as PropType<MenuItem>,
-    required: true
-  },
-
-  level: {
-    type: Number,
-    default: 0
-  }
-})
+withDefaults(defineProps<{ item: MenuItem; level?: number }>(), { level: 0 })
 
 const emit = defineEmits<{
   'menu:close': []

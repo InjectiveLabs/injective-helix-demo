@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  activeRound: {
-    type: Number,
-    required: true
-  },
-
-  campaigns: {
-    type: Array as PropType<Campaign[]>,
-    required: true
-  },
-
-  round: {
-    type: Number,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    activeRound: Number
+    campaigns: Campaign[]
+    round: Number
+  }>(),
+  {}
+)
 
 const isActive = computed(() => props.activeRound === props.round)
 </script>

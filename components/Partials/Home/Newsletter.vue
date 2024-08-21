@@ -50,7 +50,7 @@ const subscribe = handleSubmit((values) => {
       </h1>
 
       <div class="max-w-[340px] xs:max-w-[360px] mt-6 mx-auto">
-        <div class="rounded-lg flex">
+        <div class="rounded-lg flex space-x-2 items-center">
           <AppInput
             v-model="value"
             :placeholder="$t('newsletter.emailAddress')"

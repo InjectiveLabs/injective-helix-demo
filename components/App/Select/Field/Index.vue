@@ -1,36 +1,28 @@
 <script lang="ts" setup>
 import { SharedDropdownOptionWithToken } from '@shared/types'
 
-const props = defineProps({
-  isClearable: Boolean,
-  isSearchable: Boolean,
-  isDisabled: Boolean,
-
-  options: {
-    type: Array as PropType<SharedDropdownOptionWithToken[]>,
-    default: () => []
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  placeholder: {
-    type: String,
-    default: 'Select'
-  },
-
-  selectedClass: {
-    type: String,
-    default: ''
-  },
-
-  popperClass: {
-    type: String,
-    default: 'dropdown'
+const props = withDefaults(
+  defineProps<{
+    isClearable?: boolean
+    isSearchable?: boolean
+    isDisabled?: boolean
+    options?: SharedDropdownOptionWithToken[]
+    modelValue?: string
+    placeholder?: string
+    selectedClass?: string
+    popperClass?: string
+  }>(),
+  {
+    isClearable: false,
+    isSearchable: false,
+    isDisabled: false,
+    options: () => [],
+    modelValue: '',
+    placeholder: 'Select',
+    selectedClass: '',
+    popperClass: 'dropdown'
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [state: string]

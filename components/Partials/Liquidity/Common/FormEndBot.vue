@@ -8,14 +8,16 @@ import {
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 
-const props = defineProps({
-  isLiquidity: Boolean,
-
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isLiquidity?: boolean
+    strategy: TradingStrategy
+  }>(),
+  {
+    isLiquidity: false,
+    strategy: undefined
   }
-})
+)
 
 const spotStore = useSpotStore()
 const modalStore = useModalStore()

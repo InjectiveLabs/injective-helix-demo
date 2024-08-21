@@ -3,9 +3,9 @@ const { width } = useWindowSize()
 
 const zIndex = ref(0)
 
-defineProps<{
-  isOpenSidebar: Boolean
-}>()
+withDefaults(defineProps<{ isOpenSidebar?: boolean }>(), {
+  isOpenSidebar: false
+})
 
 const emit = defineEmits<{
   'sidebar:closed': []

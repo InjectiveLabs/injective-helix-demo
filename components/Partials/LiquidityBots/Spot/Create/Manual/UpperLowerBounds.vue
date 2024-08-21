@@ -6,14 +6,15 @@ import {
 import { KAVA_USDT_SYMBOL, STINJ_USDT_SYMBOL } from '@/app/data/token'
 import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
-const props = defineProps({
-  isRebalanceBeforeCreationChecked: Boolean,
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isRebalanceBeforeCreationChecked: boolean
+    market: UiSpotMarket
+  }>(),
+  {
+    isRebalanceBeforeCreationChecked: false
   }
-})
+)
 
 const formValues = useFormValues()
 const gridStrategyStore = useGridStrategyStore()

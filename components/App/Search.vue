@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-const props = defineProps({
-  isSm: Boolean,
-  isPrefixVisible: Boolean,
-
-  inputClasses: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isPrefixVisible?: boolean
+    inputClasses?: string
+  }>(),
+  {
+    isSm: false,
+    isPrefixVisible: false,
+    inputClasses: ''
   }
-})
+)
 
 const inputClass = computed(() => {
   const result = []

@@ -4,17 +4,13 @@ import { Modal, UiSpotMarket } from '@/types'
 
 const modalStore = useModalStore()
 
-defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    default: undefined
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    default: undefined
+withDefaults(
+  defineProps<{ strategy?: TradingStrategy; market?: UiSpotMarket }>(),
+  {
+    strategy: undefined,
+    market: undefined
   }
-})
+)
 
 function onCloseModal() {
   modalStore.closeModal(Modal.GridStrategyDetails)

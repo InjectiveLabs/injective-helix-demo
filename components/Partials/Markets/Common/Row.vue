@@ -6,24 +6,17 @@ import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  isMarketsPage: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<SharedUiMarketSummary>,
-    required: true
-  },
-
-  volumeInUsd: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isMarketsPage?: boolean
+    market: UiMarketWithToken
+    summary: SharedUiMarketSummary
+    volumeInUsd: BigNumberInBase
+  }>(),
+  {
+    isMarketsPage: false
   }
-})
+)
 
 const appStore = useAppStore()
 const isMobile = useIsMobile()

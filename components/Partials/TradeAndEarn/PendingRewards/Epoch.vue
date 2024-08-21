@@ -20,17 +20,13 @@ const exchangeStore = useExchangeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { rewardsCampaign } = useTradeReward()
 
-const props = defineProps({
-  index: {
-    type: Number,
-    required: true
-  },
-
-  schedule: {
-    type: Object as PropType<CampaignRewardPool>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    index: number
+    schedule: CampaignRewardPool
+  }>(),
+  {}
+)
 
 const hubUrl = `${getHubUrl()}/staking`
 

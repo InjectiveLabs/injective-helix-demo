@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-defineProps({
-  isLeft: Boolean,
-  isRight: Boolean
-})
+withDefaults(
+  defineProps<{
+    isLeft: boolean
+    isRight: boolean
+  }>(),
+  {
+    isLeft: false,
+    isRight: false
+  }
+)
 </script>
 
 <template>

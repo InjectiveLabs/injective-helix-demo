@@ -7,17 +7,15 @@ const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps({
-  modelValue: {
-    type: String as PropType<PerpOrdersStandardView>,
-    required: true
-  },
-
-  isTickerOnly: {
-    type: Boolean as PropType<boolean>,
-    default: false
+const props = withDefaults(
+  defineProps<{
+    modelValue: PerpOrdersStandardView
+    isTickerOnly: boolean
+  }>(),
+  {
+    isTickerOnly: false
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: PerpOrdersStandardView]

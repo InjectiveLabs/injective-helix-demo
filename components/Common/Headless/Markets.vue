@@ -31,34 +31,24 @@ const positionStore = usePositionStore()
 const appStore = useAppStore()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isLowVolumeMarketsVisible: Boolean,
-
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
-    required: true
-  },
-
-  activeType: {
-    type: String as PropType<MarketTypeOption>,
-    required: true
-  },
-
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
-  },
-
-  search: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isLowVolumeMarketsVisible?: boolean
+    activeCategory: MarketCategoryType
+    activeQuote: MarketQuoteType
+    activeType: MarketTypeOption
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+    search?: string
+  }>(),
+  {
+    isLowVolumeMarketsVisible: false,
+    activeCategory: MarketCategoryType.All,
+    activeQuote: MarketQuoteType.All,
+    activeType: MarketTypeOption.All,
+    markets: () => [],
+    search: ''
   }
-})
+)
 
 const isAscending = ref(false)
 const sortBy = ref(MarketHeaderType.Volume)

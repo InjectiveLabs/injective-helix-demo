@@ -2,36 +2,27 @@
 import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
 
-const props = defineProps({
-  noStyle: Boolean,
-  autofix: Boolean,
-
-  wrapperClass: {
-    type: String,
-    default: ''
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  decimals: {
-    type: Number,
-    default: 18
-  },
-
-  max: {
-    type: Number,
+const props = withDefaults(
+  defineProps<{
+    noStyle?: boolean
+    autofix?: boolean
+    wrapperClass?: string
+    modelValue?: string
+    decimals?: number
+    max?: number
+    min?: number
+  }>(),
+  {
+    noStyle: false,
+    autofix: false,
+    wrapperClass: '',
+    modelValue: '',
+    decimals: 18,
     // eslint-disable-next-line
-    default: 9999999999999999999
-  },
-
-  min: {
-    type: Number,
-    default: undefined
+    max: 9999999999999999999,
+    min: undefined
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

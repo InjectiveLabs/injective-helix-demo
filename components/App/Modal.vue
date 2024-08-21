@@ -2,21 +2,30 @@
 const slots = useSlots()
 const { width } = useWindowSize()
 
-const props = defineProps({
-  isLg: Boolean,
-  isMd: Boolean,
-  isSm: Boolean,
-  isOpen: Boolean,
-  isDense: Boolean,
-  isAlwaysOpen: Boolean,
-  isTransparent: Boolean,
-  isHideCloseButton: Boolean,
-
-  modalContentClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isLg?: boolean
+    isMd?: boolean
+    isSm?: boolean
+    isOpen?: boolean
+    isDense?: boolean
+    isAlwaysOpen?: boolean
+    isTransparent?: boolean
+    isHideCloseButton?: boolean
+    modalContentClass?: string
+  }>(),
+  {
+    isLg: false,
+    isMd: false,
+    isSm: false,
+    isOpen: false,
+    isDense: false,
+    isAlwaysOpen: false,
+    isTransparent: false,
+    isHideCloseButton: false,
+    modalContentClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'modal:closed': []

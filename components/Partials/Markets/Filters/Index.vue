@@ -5,29 +5,18 @@ import { MarketCategoryType, MarketQuoteType } from '@/types'
 const route = useRoute()
 const router = useRouter()
 
-const props = defineProps({
-  isLowVolumeMarketsVisible: Boolean,
-
-  search: {
-    type: String,
-    required: true
-  },
-
-  activeType: {
-    type: String,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
-    required: true
-  },
-
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isLowVolumeMarketsVisible?: boolean
+    search: string
+    activeType: string
+    activeQuote: MarketQuoteType
+    activeCategory: MarketCategoryType
+  }>(),
+  {
+    isLowVolumeMarketsVisible: false
   }
-})
+)
 
 const emit = defineEmits<{
   'update:search': [state: string]

@@ -16,30 +16,24 @@ defineOptions({
   inheritAttrs: false
 })
 
-const props = defineProps({
-  isLoading: Boolean,
-  disabled: Boolean,
-
-  size: {
-    type: String as PropType<Size>,
-    default: ''
-  },
-
-  variant: {
-    type: String as PropType<Variant>,
-    default: 'primary'
-  },
-
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
-  },
-
-  tooltip: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    size?: Size
+    status?: Status
+    variant?: Variant
+    tooltip?: string
+    disabled?: boolean
+    isLoading?: boolean
+  }>(),
+  {
+    size: 'md',
+    variant: 'primary',
+    status: () => new Status(StatusType.Idle),
+    tooltip: '',
+    disabled: false,
+    isLoading: false
   }
-})
+)
 
 const outlineStyle = computed(() => {
   if (['danger', 'danger-outline', 'danger-ghost'].includes(props.variant)) {

@@ -4,17 +4,15 @@ import { BigNumber } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { colors } from '@/nuxt-config/tailwind'
 
-const props = defineProps({
-  isProfit: {
-    type: Boolean,
-    default: true
-  },
-
-  series: {
-    type: Array as PropType<number[][]>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isProfit: boolean
+    series: number[][]
+  }>(),
+  {
+    isProfit: false
   }
-})
+)
 
 const { t } = useLang()
 

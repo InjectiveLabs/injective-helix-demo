@@ -1,19 +1,17 @@
 <script setup lang="ts">
 const sharedWalletStore = useSharedWalletStore()
 
-defineProps({
-  includeBotsSubaccounts: Boolean,
-
-  showLowBalance: {
-    type: Boolean,
-    default: true
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    includeBotsSubaccounts?: boolean
+    showLowBalance?: boolean
+    wrapperClass?: string
+  }>(),
+  {
+    showLowBalance: false,
+    wrapperClass: ''
   }
-})
+)
 </script>
 
 <template>

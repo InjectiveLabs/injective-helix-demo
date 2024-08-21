@@ -11,12 +11,12 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  order: {
-    type: Object as PropType<SpotLimitOrder>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: SpotLimitOrder
+  }>(),
+  {}
+)
 
 const {
   isBuy,

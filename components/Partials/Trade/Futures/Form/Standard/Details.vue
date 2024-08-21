@@ -13,37 +13,17 @@ import {
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const props = defineProps({
-  margin: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  totalNotional: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  worstPrice: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  feeAmount: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  marginWithFee: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  quantity: {
-    type: BigNumberInBase,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    margin: BigNumberInBase
+    totalNotional: BigNumberInBase
+    worstPrice: BigNumberInBase
+    feeAmount: BigNumberInBase
+    marginWithFee: BigNumberInBase
+    quantity: BigNumberInBase
+  }>(),
+  {}
+)
 
 const isOpen = ref(true)
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()

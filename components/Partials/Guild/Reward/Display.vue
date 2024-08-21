@@ -3,12 +3,7 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { RewardWithToken } from '@/types'
 
-const props = defineProps({
-  reward: {
-    type: Object as PropType<RewardWithToken>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ reward: RewardWithToken }>(), {})
 
 const { valueToString: rewardToString } = useSharedBigNumberFormatter(
   computed(() =>

@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
 
-const props = defineProps({
-  date: {
-    type: Number,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{ date?: number }>(), {
+  date: undefined
 })
 
 const DATE_FORMAT = 'yyyy-MM-dd hh:mm:ss'

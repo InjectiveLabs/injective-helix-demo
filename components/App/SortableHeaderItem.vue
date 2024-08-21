@@ -1,17 +1,14 @@
 <script lang="ts" setup>
-defineProps({
-  isAscending: Boolean,
-
-  value: {
-    type: String,
-    required: true
-  },
-
-  sortBy: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    isAscending?: boolean
+    value: string
+    sortBy: string
+  }>(),
+  {
+    isAscending: false
   }
-})
+)
 </script>
 
 <template>

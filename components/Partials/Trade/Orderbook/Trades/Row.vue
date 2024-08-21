@@ -5,19 +5,16 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import { UiMarketWithToken, UiTrade } from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  trade: {
-    required: true,
-    type: Object as PropType<UiTrade>
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+    trade: UiTrade
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const price = computed(() =>
   props.isSpot

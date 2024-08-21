@@ -10,12 +10,12 @@ const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  grant: {
-    type: Object as PropType<GrantAuthorizationWithDecodedAuthorization>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grant: GrantAuthorizationWithDecodedAuthorization
+  }>(),
+  {}
+)
 
 const status = reactive(new Status(StatusType.Idle))
 

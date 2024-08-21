@@ -3,27 +3,15 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  baseAmount: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  },
-
-  margin: {
-    type: String,
-    required: true
-  },
-
-  quoteAmount: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    baseAmount: BigNumberInBase
+    market: UiSpotMarket
+    margin: string
+    quoteAmount: BigNumberInBase
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'investment-type:set': []

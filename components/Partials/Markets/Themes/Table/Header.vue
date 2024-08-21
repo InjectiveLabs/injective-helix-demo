@@ -1,14 +1,15 @@
 <script setup lang="ts">
 // import { MarketHeaderType } from '@/types'
 
-defineProps({
-  isAscending: Boolean,
-
-  sortBy: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    isAscending?: boolean
+    sortBy: string
+  }>(),
+  {
+    isAscending: false
   }
-})
+)
 
 // const emit = defineEmits<{
 //   'update:isAscending': [value: boolean]

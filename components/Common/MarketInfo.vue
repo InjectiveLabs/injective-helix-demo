@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-
-  tooltip: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    title: string
+    tooltip?: string
+  }>(),
+  {
+    tooltip: ''
   }
-})
+)
 </script>
 
 <template>

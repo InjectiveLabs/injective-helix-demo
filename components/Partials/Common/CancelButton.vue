@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
 
-const props = defineProps({
-  isSm: Boolean,
-  isDisabled: Boolean,
-
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status()
-  },
-
-  tooltip: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isDisabled?: boolean
+    status?: Status
+    tooltip?: string
+  }>(),
+  {
+    isSm: false,
+    isDisabled: false,
+    status: () => new Status(),
+    tooltip: ''
   }
-})
+)
 
 const emit = defineEmits<{
   click: []

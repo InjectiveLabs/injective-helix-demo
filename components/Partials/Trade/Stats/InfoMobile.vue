@@ -3,12 +3,12 @@ import { SharedMarketChange } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
-defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 </script>
 
 <template>

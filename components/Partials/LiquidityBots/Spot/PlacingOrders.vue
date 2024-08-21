@@ -1,17 +1,13 @@
 <script lang="ts" setup>
 import { UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  subaccountId: {
-    type: String,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    subaccountId: string
+    market: UiSpotMarket
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 

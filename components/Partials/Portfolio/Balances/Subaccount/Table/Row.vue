@@ -9,12 +9,12 @@ import { AccountBalance, PortfolioSubPage } from '@/types'
 
 const accountStore = useAccountStore()
 
-const props = defineProps({
-  balance: {
-    type: Object as PropType<AccountBalance>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    balance: AccountBalance
+  }>(),
+  {}
+)
 
 const isStakingVisible = ref(false)
 

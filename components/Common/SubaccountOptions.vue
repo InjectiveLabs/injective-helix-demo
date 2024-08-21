@@ -7,10 +7,13 @@ import {
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
 
-const props = defineProps({
-  showLowBalance: Boolean,
-  includeBotsSubaccounts: Boolean
-})
+const props = withDefaults(
+  defineProps<{ showLowBalance?: boolean; includeBotsSubaccounts?: boolean }>(),
+  {
+    showLowBalance: false,
+    includeBotsSubaccounts: false
+  }
+)
 
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()

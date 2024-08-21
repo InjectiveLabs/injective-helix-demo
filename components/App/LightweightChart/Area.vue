@@ -36,66 +36,38 @@ const defaultChartOptions = {
   }
 }
 
-const props = defineProps({
-  isPositive: Boolean,
-  shouldFitContentOnResize: Boolean,
-
-  type: {
-    type: String,
-    default: 'area'
-  },
-
-  data: {
-    type: Array as PropType<(LineData<number> | WhitespaceData<number>)[]>,
-    required: true
-  },
-
-  autosize: {
-    default: true,
-    type: Boolean
-  },
-
-  chartOptions: {
-    type: Object as PropType<DeepPartial<TimeChartOptions>>,
-    default: () => ({}) as DeepPartial<TimeChartOptions>
-  },
-
-  seriesOptions: {
-    type: Object as PropType<
-      DeepPartial<AreaStyleOptions & SeriesOptionsCommon>
-    >,
-    required: true
-  },
-
-  timeScaleOptions: {
-    type: Object as PropType<DeepPartial<TimeScaleOptions>>,
-    default: () => ({
+const props = withDefaults(
+  defineProps<{
+    isPositive: boolean
+    shouldFitContentOnResize: boolean
+    type: string
+    data: (LineData<number> | WhitespaceData<number>)[]
+    autosize: boolean
+    chartOptions: DeepPartial<TimeChartOptions>
+    seriesOptions: DeepPartial<AreaStyleOptions & SeriesOptionsCommon>
+    timeScaleOptions: DeepPartial<TimeScaleOptions>
+    priceScaleOptions: DeepPartial<PriceScaleOptions>
+    label: string
+    height?: number
+    width?: number
+  }>(),
+  {
+    isPositive: false,
+    shouldFitContentOnResize: false,
+    type: 'area',
+    autosize: true,
+    chartOptions: () => ({}) as DeepPartial<TimeChartOptions>,
+    timeScaleOptions: () => ({
       borderColor: 'transparent'
-    })
-  },
-
-  priceScaleOptions: {
-    type: Object as PropType<DeepPartial<PriceScaleOptions>>,
-    default: () => ({
+    }),
+    priceScaleOptions: () => ({
       borderColor: 'transparent'
-    })
-  },
-
-  label: {
-    type: String,
-    default: ''
-  },
-
-  height: {
-    type: Number,
-    default: undefined
-  },
-
-  width: {
-    type: Number,
-    default: undefined
+    }),
+    label: '',
+    height: undefined,
+    width: undefined
   }
-})
+)
 
 enum COLOR {
   green = 'rgb(14, 226, 155, 1)',

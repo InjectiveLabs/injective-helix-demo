@@ -4,12 +4,12 @@ import { BigNumber } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { colors } from '@/nuxt-config/tailwind'
 
-const props = defineProps({
-  volumeSeries: {
-    type: Array as PropType<number[][]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    volumeSeries: Array<number[]>
+  }>(),
+  {}
+)
 
 const { t } = useLang()
 

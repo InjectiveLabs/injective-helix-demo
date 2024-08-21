@@ -15,47 +15,22 @@ const SVG_PROPS = {
   height: 400
 }
 
-const props = defineProps({
-  min: {
-    type: String,
-    required: true
-  },
-
-  max: {
-    type: String,
-    required: true
-  },
-
-  lower: {
-    type: String,
-    required: true
-  },
-
-  upper: {
-    type: String,
-    required: true
-  },
-
-  currentPrice: {
-    type: String,
-    required: true
-  },
-
-  orderbook: {
-    type: Object as PropType<SharedUiOrderbookWithSequence>,
-    default: undefined
-  },
-
-  decimalPlaces: {
-    type: Number,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    min: string
+    max: string
+    lower: string
+    upper: string
+    currentPrice: string
+    orderbook?: SharedUiOrderbookWithSequence
+    decimalPlaces: number
+    market?: UiSpotMarket
+  }>(),
+  {
+    orderbook: undefined,
+    market: undefined
   }
-})
+)
 
 const emit = defineEmits<{
   'update:min': [value: string]

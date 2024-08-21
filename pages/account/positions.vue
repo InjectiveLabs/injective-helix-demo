@@ -4,15 +4,17 @@ import { GeneralException } from '@injectivelabs/exceptions'
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { AccountBalance, Modal } from '@/types'
 
-defineProps({
-  isHideBalances: Boolean,
-  isPositionsLoading: Boolean,
-
-  balances: {
-    type: Array as PropType<AccountBalance[]>,
-    required: true
+withDefaults(
+  defineProps<{
+    isHideBalances?: boolean
+    isPositionsLoading?: boolean
+    balances: AccountBalance[]
+  }>(),
+  {
+    isHideBalances: false,
+    isPositionsLoading: false
   }
-})
+)
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()

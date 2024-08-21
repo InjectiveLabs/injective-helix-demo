@@ -2,12 +2,12 @@
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 import { MarketTheme, MARKET_THEMES_SLUGS } from '@/app/data/market'
 
-const props = defineProps({
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+  }>(),
+  {}
+)
 
 const isAscending = ref(false)
 const sortBy = ref('')

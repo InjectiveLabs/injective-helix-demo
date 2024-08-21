@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
-const props = defineProps({
-  isDeposit: Boolean,
-  isTransfer: Boolean,
-
-  denom: {
-    type: String,
-    default: ''
-  },
-
-  symbol: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isDeposit?: boolean
+    isTransfer?: boolean
+    denom?: string
+    symbol?: string
+  }>(),
+  {
+    isDeposit: false,
+    isTransfer: false,
+    denom: '',
+    symbol: ''
   }
-})
+)
 
 const redirectionLink = computed(() => {
   let link = getBridgeRedirectionUrl(props.isTransfer ? 'transfer' : '')

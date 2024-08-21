@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  token: {
-    type: Object as PropType<TokenStatic>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ token: TokenStatic }>(), {})
 
 const emit = defineEmits<{
   'set:token': [token: TokenStatic]

@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-const props = defineProps({
-  isSm: Boolean,
-  isXs: Boolean,
-
-  address: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isXs?: boolean
+    address: string
+  }>(),
+  {
+    isSm: false,
+    isXs: false
   }
-})
+)
 
 const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()

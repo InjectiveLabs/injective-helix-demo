@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-defineProps({
-  isSwapPage: Boolean
-})
+withDefaults(defineProps<{ isSwapPage: boolean }>(), { isSwapPage: false })
 </script>
 
 <template>

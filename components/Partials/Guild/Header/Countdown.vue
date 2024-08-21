@@ -4,17 +4,13 @@ import { GuildCampaignSummary } from '@injectivelabs/sdk-ts'
 import { formatSecondsToDisplay } from '@/app/utils/formatters'
 import { TimeDuration } from '@/types'
 
-const props = defineProps({
-  now: {
-    type: Number,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<GuildCampaignSummary>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    now: number
+    summary: GuildCampaignSummary
+  }>(),
+  {}
+)
 
 const delayAnimationMs = ref(0)
 const blockToAnimate = ref<string[]>([])

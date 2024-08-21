@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-defineProps({
-  isActive: Boolean,
-
-  color: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    isActive: boolean
+    color: string
+  }>(),
+  {
+    isActive: false,
+    color: ''
   }
-})
+)
 </script>
 
 <template>

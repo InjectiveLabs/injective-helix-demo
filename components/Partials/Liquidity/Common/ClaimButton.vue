@@ -3,14 +3,16 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 
-const props = defineProps({
-  forceDisabled: Boolean,
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    forceDisabled: boolean
+    campaign: Campaign
+  }>(),
+  {
+    forceDisabled: false,
+    campaign: undefined
   }
-})
+)
 
 const campaignStore = useCampaignStore()
 const notificationStore = useSharedNotificationStore()

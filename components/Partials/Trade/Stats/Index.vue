@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { UiMarketWithToken } from '@/types'
 
-defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 
 const isMobile = useIsMobile()
 </script>

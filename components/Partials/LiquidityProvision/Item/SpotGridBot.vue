@@ -8,12 +8,12 @@ import {
   TradingInterface
 } from '@/types'
 
-const props = defineProps({
-  gridMarket: {
-    type: Object as PropType<GridMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    gridMarket: GridMarket
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const campaignStore = useCampaignStore()

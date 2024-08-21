@@ -16,17 +16,15 @@ const TOTAL_INJ_REWARDS = '1,000'
 const TOTAL_TIA_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 
-const props = defineProps({
-  now: {
-    type: Number,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<GuildCampaignSummary>,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    now: number
+    summary?: GuildCampaignSummary
+  }>(),
+  {
+    summary: undefined
   }
-})
+)
 
 const campaignDateRange = computed(() => {
   if (!props.summary) {

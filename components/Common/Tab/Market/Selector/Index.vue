@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  markets: {
-    type: Array as PropType<UiMarketWithToken[]>,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    markets: UiMarketWithToken[]
+    modelValue: string
+    wrapperClass?: string
+  }>(),
+  {
+    markets: () => [],
+    modelValue: '',
+    wrapperClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

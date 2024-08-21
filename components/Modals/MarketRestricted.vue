@@ -8,14 +8,12 @@ import {
 const modalStore = useModalStore()
 const sharedGeoStore = useSharedGeoStore()
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+const props = withDefaults(
+  defineProps<{ isSpot?: boolean; market: UiMarketWithToken }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const disallowedTokenSymbol = computed(() => {
   const disallowedToken = [

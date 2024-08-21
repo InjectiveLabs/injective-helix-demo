@@ -36,22 +36,14 @@ const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const { userBalancesWithToken } = useBalance()
 
-const props = defineProps({
-  marginWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  minimumAmountInQuote: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    marginWithFee: BigNumberInBase
+    quantity: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+  }>(),
+  {}
+)
 
 const options = [
   {

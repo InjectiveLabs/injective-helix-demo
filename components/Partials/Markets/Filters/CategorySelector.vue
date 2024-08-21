@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { MarketCategoryType } from '@/types'
 
-const props = defineProps({
-  isActive: Boolean,
-
-  type: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isActive?: boolean
+    type: MarketCategoryType
+  }>(),
+  {
+    isActive: false
   }
-})
+)
 
 const emit = defineEmits<{
   click: [state: string]

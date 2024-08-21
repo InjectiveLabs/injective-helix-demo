@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  order: {
-    required: true,
-    type: Object as PropType<DerivativeOrderHistory>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: DerivativeOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

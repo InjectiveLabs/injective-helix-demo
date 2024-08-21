@@ -9,15 +9,17 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isCompact: Boolean,
-  isBackButton: Boolean,
-
-  walletOption: {
-    type: Object as PropType<WalletOption>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isCompact?: boolean
+    isBackButton?: boolean
+    walletOption: WalletOption
+  }>(),
+  {
+    isCompact: false,
+    isBackButton: false
   }
-})
+)
 
 const emit = defineEmits<{
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]

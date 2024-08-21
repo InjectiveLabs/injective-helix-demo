@@ -4,32 +4,18 @@ import { UiSpotMarket, SpotGridTradingField } from '@/types'
 
 const setFormValues = useSetFormValues()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  },
-
-  upperPrice: {
-    type: String,
-    required: true
-  },
-
-  lowerPrice: {
-    type: String,
-    required: true
-  },
-
-  grids: {
-    type: String,
-    required: true
-  },
-
-  decimalPlaces: {
-    type: Number,
-    default: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+    upperPrice: string
+    lowerPrice: string
+    grids: string
+    decimalPlaces?: number
+  }>(),
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
-})
+)
 
 const isOpen = ref(false)
 

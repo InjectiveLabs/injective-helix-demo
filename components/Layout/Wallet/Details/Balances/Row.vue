@@ -3,12 +3,7 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
-const props = defineProps({
-  balance: {
-    type: Object as PropType<AccountBalance>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
 
 const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   computed(() => {

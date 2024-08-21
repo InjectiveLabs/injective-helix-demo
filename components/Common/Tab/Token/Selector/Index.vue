@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  tokens: {
-    type: Array as PropType<TokenStatic[]>,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    tokens: TokenStatic[]
+    modelValue: string
+  }>(),
+  {
+    tokens: () => [],
+    modelValue: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

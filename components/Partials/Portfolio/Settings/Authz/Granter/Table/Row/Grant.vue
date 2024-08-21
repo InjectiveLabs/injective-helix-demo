@@ -4,12 +4,12 @@ import {
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  grant: {
-    type: Object as PropType<GrantAuthorizationWithDecodedAuthorization>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grant: GrantAuthorizationWithDecodedAuthorization
+  }>(),
+  {}
+)
 
 const authorizationFormatted = computed(() => {
   if (

@@ -1,24 +1,20 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-defineProps({
-  isDense: Boolean,
-
-  title: {
-    default: '',
-    type: String
-  },
-
-  portalName: {
-    default: '',
-    type: String
-  },
-
-  cardWrapperClass: {
-    default: '',
-    type: String
+withDefaults(
+  defineProps<{
+    isDense?: boolean
+    title?: string
+    portalName?: string
+    cardWrapperClass?: string
+  }>(),
+  {
+    isDense: false,
+    title: '',
+    portalName: '',
+    cardWrapperClass: ''
   }
-})
+)
 </script>
 
 <template>

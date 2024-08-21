@@ -8,12 +8,10 @@ import { Modal } from '@/types'
 
 const { width } = useWindowSize()
 
-const props = defineProps({
-  position: {
-    required: true,
-    type: Object as PropType<Position | PositionV2>
-  }
-})
+const props = withDefaults(
+  defineProps<{ position: Position | PositionV2 }>(),
+  {}
+)
 
 const TIMESTAMP_FORMAT = 'yyyy-MM-dd kk:mm'
 
