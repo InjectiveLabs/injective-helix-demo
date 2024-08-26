@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SwapFormField } from '@/types'
+import { SwapFormField, SwapCyTags } from '@/types'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
 
 const dropdownRef = ref<null | { isOpen: boolean }>(null)
@@ -69,6 +69,7 @@ function checkForInvalidSlippageValue() {
                     'text-gray-500 hover:text-blue-500': !isOpen
                   }
             ]"
+            :data-cy="dataCyTag(SwapCyTags.SlippageSelectorSetting)"
           />
         </div>
       </template>

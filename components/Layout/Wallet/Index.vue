@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
 import { IS_DEVNET, GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { Modal, WalletOption } from '@/types'
+import { Modal, WalletOption, NavBarCyTags } from '@/types'
 
 const modalStore = useModalStore()
 const sharedGeoStore = useSharedGeoStore()
@@ -149,7 +149,11 @@ watch(isModalOpen, (newShowModalState) => {
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton v-else @click="onWalletConnect">
+  <AppButton
+    v-else
+    :data-cy="dataCyTag(NavBarCyTags.WalletConnectButton)"
+    @click="onWalletConnect"
+  >
     {{ $t('connect.connectWallet') }}
   </AppButton>
 

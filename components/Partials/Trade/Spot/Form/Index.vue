@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { spotGridMarkets } from '@/app/json'
-import { MarketKey, UiSpotMarket, TradingInterface } from '@/types'
+import {
+  MarketKey,
+  UiSpotMarket,
+  TradingInterface,
+  SpotMarketCyTags
+} from '@/types'
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -47,7 +52,10 @@ function onTradingModeChange(value: string) {
 
 <template>
   <div>
-    <div class="h-header flex border-b">
+    <div
+      class="h-header flex border-b"
+      :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingMode)"
+    >
       <AppButtonSelect
         v-for="{ value, disabled } in options"
         :key="value"

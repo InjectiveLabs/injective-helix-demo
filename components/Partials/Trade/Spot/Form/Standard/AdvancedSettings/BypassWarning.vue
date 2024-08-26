@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SpotTradeFormField } from '@/types'
+import { SpotTradeFormField, SpotMarketCyTags } from '@/types'
 
 const { value: bypassPriceWarningValue } = useBooleanField({
   name: SpotTradeFormField.BypassPriceWarning,
@@ -9,7 +9,11 @@ const { value: bypassPriceWarningValue } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2 v-model="bypassPriceWarningValue" class="w-full">
+    <AppCheckbox2
+      v-model="bypassPriceWarningValue"
+      class="w-full"
+      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsBypassWarning)"
+    >
       {{ $t('trade.bypassPriceWarning') }}
     </AppCheckbox2>
   </div>
