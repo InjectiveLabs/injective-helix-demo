@@ -9,7 +9,8 @@ import { LiquidityRewardsPage } from '@/types'
 const props = withDefaults(
   defineProps<{
     campaign: Campaign
-  }>()
+  }>(),
+  {}
 )
 
 const spotStore = useSpotStore()

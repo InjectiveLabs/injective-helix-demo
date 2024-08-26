@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-defineProps({
-  isLg: Boolean,
-  isWarning: Boolean,
-
-  content: {
-    type: String,
-    default: ''
-  },
-
-  contentClass: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    isLg?: boolean
+    content?: string
+    isWarning?: boolean
+    contentClass?: string
+  }>(),
+  {
+    isLg: false,
+    content: '',
+    isWarning: false,
+    contentClass: ''
   }
-})
+)
 </script>
 
 <template>

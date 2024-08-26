@@ -1,12 +1,13 @@
 <script setup lang="ts">
-defineProps({
-  isBuy: Boolean,
-
-  index: {
-    type: Number,
-    required: true
+withDefaults(
+  defineProps<{
+    isBuy?: boolean
+    index: number
+  }>(),
+  {
+    isBuy: false
   }
-})
+)
 
 const randomWidth = Math.floor(Math.random() * 50) + 50
 const randomWidth2 = Math.floor(Math.random() * 50) + 20

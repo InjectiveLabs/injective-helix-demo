@@ -1,9 +1,11 @@
 <script setup lang="ts">
 withDefaults(
-  defineProps({
-    isActive: Boolean
-  }),
-  {}
+  defineProps<{
+    isActive?: boolean
+  }>(),
+  {
+    isActive: false
+  }
 )
 </script>
 

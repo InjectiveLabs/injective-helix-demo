@@ -2,27 +2,20 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { PortfolioStatusKey } from '@/types'
 
-defineProps({
-  size: {
-    type: Number,
-    default: 22
-  },
-
-  length: {
-    type: Number,
-    default: 5
-  },
-
-  width: {
-    type: Number,
-    default: 10
-  },
-
-  spacing: {
-    type: Number,
-    default: 4
+withDefaults(
+  defineProps<{
+    size?: number
+    length?: number
+    width?: number
+    spacing?: number
+  }>(),
+  {
+    size: 22,
+    length: 5,
+    width: 10,
+    spacing: 4
   }
-})
+)
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()

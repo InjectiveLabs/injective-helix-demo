@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-defineProps({
-  isLg: Boolean,
-  isSm: Boolean,
-
-  title: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    isLg?: boolean
+    isSm?: boolean
+    title: string
+  }>(),
+  {
+    isLg: false,
+    isSm: false,
+    title: ''
   }
-})
+)
 </script>
 
 <template>

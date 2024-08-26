@@ -3,9 +3,7 @@ import { Modal } from '@/types'
 
 const modalStore = useModalStore()
 
-defineProps({
-  cta: Boolean
-})
+withDefaults(defineProps<{ cta?: boolean }>(), { cta: false })
 
 function onConnect() {
   modalStore.openModal(Modal.Connect)
