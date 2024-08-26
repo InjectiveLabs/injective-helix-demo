@@ -260,11 +260,10 @@ function addTpSl() {
       </div>
 
       <div class="flex-1 space-y-1 p-2 text-right">
-        <p :data-cy="dataCyTag('open-pos-entry-price')">{{ priceToString }}</p>
-        <p
-          class="text-gray-500"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosMarkPrice)"
-        >
+        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenEntryPrice)">
+          {{ priceToString }}
+        </p>
+        <p class="text-gray-500">
           {{ markPriceToString }}
         </p>
       </div>

@@ -47,20 +47,13 @@ const totalMarkets = computed(
           <NuxtLink
             :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
           >
-            <AppButton
-              class="lg:py-4 w-full"
-              :data-cy="dataCyTag('button-start-trading')"
-            >
+            <AppButton class="lg:py-4 w-full">
               {{ $t('home.startTrading') }}
             </AppButton>
           </NuxtLink>
 
           <NuxtLink :to="getBridgeRedirectionUrl()" target="_blank">
-            <AppButton
-              class="lg:py-4 w-full"
-              variant="primary-outline"
-              :data-cy="dataCyTag('button-deposit-crypto')"
-            >
+            <AppButton class="lg:py-4 w-full" variant="primary-outline">
               {{ $t('home.depositCrypto') }}
             </AppButton>
           </NuxtLink>

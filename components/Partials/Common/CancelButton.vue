@@ -52,7 +52,6 @@ function click() {
           'min-w-5 w-5 h-5': isSm,
           'min-w-6 h-6 w-6': !isSm
         }"
-        :data-cy="dataCyTag('open-orders-cancel-button')"
       >
         <slot name="icon">
           <SharedIcon name="bin" is-sm />

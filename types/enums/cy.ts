@@ -1,5 +1,6 @@
 export enum NavBarCyTags {
-  NavbarMenuItems = 'menu'
+  NavbarMenuItems = 'menu',
+  WalletConnectButton = 'button-connect-wallet'
 }
 
 export enum CommonCyTags {
@@ -29,7 +30,15 @@ export enum SwapCyTags {
   SwapSummaryRate = 'rate',
   SwapSummaryFees = 'fees',
   SwapSummaryMinOutput = 'min-output',
-  SwapSummaryExpectedOutput = 'exp-output'
+  SwapSummaryExpectedOutput = 'exp-output',
+  BalanceString = 'balance-string',
+  TokenEstUsdPrice = 'token-estimated-usd-price',
+  WarningRateExpired = 'rate-expired',
+  WarningInsufficientbalance = 'insufficient-balance-error',
+  WarningAmountTooLow = 'amount-too-low-warning',
+  EnterAmountButton = 'enter-amount-button',
+  Swapbutton = 'swap-button',
+  SlippageSelectorSetting = 'slippage-selector-setting'
 }
 
 export enum SpotMarketCyTags {
@@ -96,7 +105,7 @@ export enum PerpetualmarketCyTags {
   OpenPosMarketTicker = 'open-pos-market-ticker',
   OpenPosTradeDirection = 'open-pos-trade-direction',
   OpenPosAmount = 'open-pos-amount',
-  OpenPosMarkPrice = 'open-pos-mark-price',
+  OpenEntryPrice = 'open-pos-entry-price',
   OpenPosUnrealizedPnl = 'open-pos-unrealized-pnl',
   OpenPosTotalValue = 'open-pos-total-val',
   OpenPosMargin = 'open-pos-margin',

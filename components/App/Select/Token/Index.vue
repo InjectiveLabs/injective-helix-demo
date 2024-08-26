@@ -13,7 +13,8 @@ import {
   Modal,
   TradeField,
   SwapFormField,
-  SubaccountTransferField
+  SubaccountTransferField,
+  SwapCyTags
 } from '@/types'
 
 const props = defineProps({
@@ -256,7 +257,7 @@ export default {
             {{ $t('trade.max') }}
           </span>
           <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
-            <span :data-cy="dataCyTag('balance-string')">
+            <span :data-cy="dataCyTag(SwapCyTags.BalanceString)">
               {{ $t('trade.balance', { balance: maxBalanceToString }) }}
             </span>
           </p>
@@ -344,7 +345,7 @@ export default {
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">
           <span v-if="Number(amount) > 0">${{ estimatedTotalInUsd }} </span>
-          <span v-else :data-cy="dataCyTag('token-estimated-usd-price')">
+          <span v-else :data-cy="dataCyTag(SwapCyTags.TokenEstUsdPrice)">
             $0.00
           </span>
         </slot>

@@ -51,10 +51,7 @@ function click() {
       <CommonTokenIcon v-bind="{ token: token, isLg: isLgTokenIcon }" />
 
       <div class="flex flex-col max-w-2xs truncate" :class="classes">
-        <span
-          :class="isSm ? 'font-medium text-xs' : 'font-semibold text-xl'"
-          :data-cy="dataCyTag(`token-name-${token.name}`)"
-        >
+        <span :class="isSm ? 'font-medium text-xs' : 'font-semibold text-xl'">
           {{ token.symbol }}
         </span>
 
