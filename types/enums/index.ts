@@ -1,4 +1,5 @@
 export * from './mixpanel'
+export * from './cy'
 
 export enum Icon {
   Arrow = 'arrow',

@@ -4,7 +4,7 @@ import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = defineProps({
   isMarketsPage: Boolean,
@@ -114,13 +114,17 @@ function toggleFavorite() {
           text-color-class="text-white"
           :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
         >
-          <span>{{ market.ticker }}</span>
+          <span :data-cy="dataCyTag(MarketCyTags.MarketTicker)">{{
+            market.ticker
+          }}</span>
         </CommonHeaderTooltip>
 
         <div
           v-if="isMarketsPage"
           class="text-xs font-normal text-gray-500"
-          :data-cy="dataCyTag(`baseToken-${market.baseToken.name}`)"
+          :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
+            market.baseToken.name
+          }`"
         >
           {{ market.baseToken.name }}
         </div>
@@ -128,7 +132,7 @@ function toggleFavorite() {
     </div>
 
     <div class="flex-2 lg:flex-1 truncate min-w-0 font-mono text-xs text-right">
-      <div>
+      <div :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)">
         {{ lastPriceToString }}
       </div>
       <div
@@ -142,6 +146,7 @@ function toggleFavorite() {
     <div
       :class="priceChangeClasses"
       class="flex items-center flex-2 truncate min-w-0 font-mono text-xs justify-end"
+      :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
     >
       {{ summary.change }}%
     </div>
@@ -152,15 +157,19 @@ function toggleFavorite() {
       <span v-if="isMobile || !isMarketsPage">
         ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
       </span>
-      <span v-else>${{ volumeToString }}</span>
+      <span v-else :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
+        ${{ volumeToString }}
+      </span>
     </div>
 
     <div
       v-if="isMarketsPage"
       class="flex-2 flex items-center p-2 space-x-8 justify-end"
-      :data-cy="dataCyTag(`trade-${market.marketId}`)"
     >
-      <NuxtLink class="text-blue-500 hover:text-blue-600">
+      <NuxtLink
+        class="text-blue-500 hover:text-blue-600"
+        :data-cy="`${dataCyTag(MarketCyTags.MarketTrade)}-${market.marketId}`"
+      >
         {{ $t('trade.trade') }}
       </NuxtLink>
 

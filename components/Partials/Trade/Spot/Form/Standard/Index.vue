@@ -5,7 +5,8 @@ import {
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
-  SpotTradeFormField
+  SpotTradeFormField,
+  SpotMarketCyTags
 } from '@/types'
 
 useForm<SpotTradeForm>()
@@ -36,7 +37,10 @@ const {
 
 <template>
   <div class="p-4">
-    <div class="border-b" :data-cy="`trade-type`">
+    <div
+      class="border-b"
+      :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
+    >
       <AppButtonSelect
         v-for="value in Object.values(TradeTypes)"
         :key="value"
@@ -60,7 +64,7 @@ const {
         :active-classes="
           side === OrderSide.Buy ? '!border-green-500' : '!border-red-500'
         "
-        :data-cy="`order-side-${side}`"
+        :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
       >
         {{ $t(`trade.${side}`) }}
       </AppButtonSelect>

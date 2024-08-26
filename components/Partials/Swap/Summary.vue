@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm, SwapFormField } from '@/types'
+import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
-import { SwapCyTags } from '@/enums'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()

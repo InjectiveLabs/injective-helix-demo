@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MenuItem, MenuItemType } from '@/types'
+import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
 defineProps({
   item: {
@@ -59,7 +59,9 @@ function close() {
           <div class="flex items-center justify-start space-x-1.5">
             <p
               :class="{ 'font-medium': level > 0 }"
-              :data-cy="dataCyTag(`tab-${item.label}`)"
+              :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+                item.label
+              }`"
             >
               {{ $t(item.label) }}
             </p>
@@ -92,7 +94,10 @@ function close() {
     @mouseenter="open"
     @mouseleave="close"
   >
-    <div class="py-2 px-6 flex" :data-cy="dataCyTag(`menu-item-${item.label}`)">
+    <div
+      class="py-2 px-6 flex"
+      :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
+    >
       <div>
         <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
           {{ $t(item.label) }}

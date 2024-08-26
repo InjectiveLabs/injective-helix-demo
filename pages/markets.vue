@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCyTags } from '@/enums'
 import {
   MarketQuoteType,
   MarketTypeOption,
   MarketCategoryType,
-  UnknownTokenStatusKey
+  UnknownTokenStatusKey,
+  MarketCyTags
 } from '@/types'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 

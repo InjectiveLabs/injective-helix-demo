@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SpotTradeFormField } from '@/types'
+import { SpotTradeFormField, SpotMarketCyTags } from '@/types'
 
 const { value: postOnlyValue } = useBooleanField({
   name: SpotTradeFormField.PostOnly,
@@ -13,7 +13,7 @@ const { value: postOnlyValue } = useBooleanField({
     <AppCheckbox2
       v-model="postOnlyValue"
       class="w-full"
-      :data-cy="dataCyTag('advanced-settings-post-only')"
+      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsPostOnly)"
     >
       {{ $t('trade.postOnly') }}
     </AppCheckbox2>

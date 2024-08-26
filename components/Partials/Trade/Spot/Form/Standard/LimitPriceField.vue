@@ -4,7 +4,8 @@ import {
   BusEvents,
   UiSpotMarket,
   SpotTradeForm,
-  SpotTradeFormField
+  SpotTradeFormField,
+  SpotMarketCyTags
 } from '@/types'
 
 const spotFormValues = useFormValues<SpotTradeForm>()
@@ -59,7 +60,7 @@ onMounted(() => {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
-      :data-cy="dataCyTag('input-field-limit-price')"
+      :data-cy="dataCyTag(SpotMarketCyTags.LimitPriceInputField)"
     >
       <template #left>
         <div

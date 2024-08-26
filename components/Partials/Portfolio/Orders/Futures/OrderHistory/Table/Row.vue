@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import { PerpetualmarketCyTags } from '@/types'
 
 const props = defineProps({
   order: {
@@ -58,7 +59,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
     <div class="flex p-2 text-xs font-mono">
       <div
         class="flex-1 flex items-center p-2 font-sans"
-        :data-cy="dataCyTag('order-history-timestamp')"
+        :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryTimeStamp)"
       >
         {{ timestamp }}
       </div>
@@ -68,7 +69,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p :data-cy="dataCyTag('order-history-market-ticker')">
+        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryMarketTicker)">
           {{ market.ticker }}
         </p>
       </PartialsCommonMarketRedirection>
@@ -76,7 +77,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       <div class="flex-[0.5] flex items-center p-2">
         <span
           class="font-sans"
-          :data-cy="dataCyTag('order-history-order-type')"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryOrderType)"
         >
           {{ type }}
         </span>
@@ -90,7 +91,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
               'text-green-500': isBuy,
               'text-red-500': !isBuy
             }"
-            :data-cy="dataCyTag('order-history-side')"
+            :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistorySide)"
           >
             {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
           </p>
@@ -106,20 +107,23 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           {{ $t('trade.market') }}
         </span>
 
-        <span v-else :data-cy="dataCyTag('order-history-price')">
+        <span
+          v-else
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryPrice)"
+        >
           {{ priceToString }}
         </span>
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag('order-history-amount')"
+        :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryAmount)"
       >
         {{ quantityToString }}
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-        <span :data-cy="dataCyTag('order-history-total')">
+        <span :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryTotal)">
           {{ totalToString }}
         </span>
 
@@ -156,9 +160,11 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       </div>
 
       <div class="flex-1 flex font-sans items-center p-2">
-        <span :data-cy="dataCyTag('order-history-order-status')">{{
-          orderStatus
-        }}</span>
+        <span
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OrderHistoryOrderStatus)"
+        >
+          {{ orderStatus }}
+        </span>
       </div>
     </div>
   </div>
