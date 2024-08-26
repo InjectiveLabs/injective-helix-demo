@@ -8,6 +8,7 @@ const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const sharedGeoStore = useSharedGeoStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
@@ -26,6 +27,7 @@ onMounted(() => {
 
   Promise.all([
     walletStore.init(),
+    sharedGeoStore.fetchGeoLocation(),
     spotStore.initFromTradingPage(queryMarketId),
     derivativeStore.initFromTradingPage(queryMarketId)
   ])
@@ -38,7 +40,7 @@ onMounted(() => {
     .finally(() => status.setIdle())
 
   // Actions that should't block the app from loading
-  Promise.all([appStore.init(), appStore.fetchBlockHeight()])
+  Promise.all([appStore.fetchBlockHeight()])
 })
 
 provide(UnknownTokenStatusKey, unknownTokenStatus)

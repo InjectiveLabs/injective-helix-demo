@@ -15,9 +15,8 @@ import {
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { hexToString, stringToHex } from '@/app/utils/converters'
-import perpGridMarkets from '@/app/data/derivativeGridMarkets.json'
+import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
@@ -125,7 +124,7 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return (perpGridMarkets as GridMarket[]).find(
+  return (derivativeGridMarkets as GridMarket[]).find(
     (m) => m.slug.replace('-perp', '-p') === slug
   )?.slug
 }
@@ -134,7 +133,7 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
       ...spotGridMarkets,
-      ...perpGridMarkets.map((m: GridMarket) => ({
+      ...derivativeGridMarkets.map((m: GridMarket) => ({
         ...m,
         slug: m.slug.replace('-perp', '-p')
       }))
@@ -293,9 +292,11 @@ export function calculateWorstPrice(
 ) {
   let remainingQuantity = Number(quantity || '0')
 
-  let worstPrice = '0'
   let price = 0
+  let worstPrice = '0'
   let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
@@ -312,7 +313,9 @@ export function calculateWorstPrice(
 
   return {
     totalPrice: new BigNumberInBase(price),
-    worstPrice: new BigNumberInBase(worstPrice),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
     hasEnoughLiquidity
   }
 }

@@ -22,6 +22,8 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
+      VPN_CHECKS_ENABLED: false
+      VITE_VPN_CHECKS_ENABLED: true
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
@@ -59,7 +61,7 @@ jobs:
           END
 
       - name: Check out the source
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git fetch && git reset --hard "'$GIT_BRANCH'"'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git checkout "'$GIT_BRANCH'" && git pull'
 
       - name: Install Dependencies
         run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
+import { spotGridMarkets } from '@/app/json'
 import {
   MarketKey,
   UiSpotMarket,

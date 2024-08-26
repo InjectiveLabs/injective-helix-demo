@@ -42,9 +42,9 @@ function fetchSpotOrders() {
 function streamSpotOrders() {
   cancelStreams()
 
-  spotStore.streamSubaccountOrders()
-  spotStore.streamSubaccountOrderHistory()
-  spotStore.streamSubaccountTrades()
+  spotStore.streamSubaccountOrders(spotMarket.value.marketId)
+  spotStore.streamSubaccountOrderHistory(spotMarket.value.marketId)
+  spotStore.streamSubaccountTrades(spotMarket.value.marketId)
 }
 
 function cancelStreams() {

@@ -21,7 +21,7 @@ import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
-import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
@@ -89,7 +89,9 @@ export const useAccountStore = defineStore('account', {
       return Object.keys(state.subaccountBalancesMap).length > 1
     },
 
-    isSgtSubaccount: (state) => isSgtSubaccountId(state.subaccountId)
+    isSgtSubaccount: (state) =>
+      !!isSgtSubaccountId(state.subaccountId) ||
+      !!isPgtSubaccountId(state.subaccountId)
   },
   actions: {
     deposit,

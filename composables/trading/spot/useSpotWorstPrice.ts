@@ -123,6 +123,16 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     )
   })
 
+  const calculatedWorstPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return { hasEnoughLiquidity: true, worstPrice: ZERO_IN_BASE }
+    }
+
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+
+    return calculateWorstPrice(quantity.value.toString(), records)
+  })
+
   const worstPrice = computed(() => {
     if (isLimitOrder.value) {
       return quantizeNumber(
@@ -133,14 +143,18 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
       )
     }
 
-    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
-
     return quantizeNumber(
-      calculateWorstPrice(quantity.value.toString(), records).worstPrice.times(
-        slippagePercentage.value
-      ),
+      calculatedWorstPrice.value.worstPrice.times(slippagePercentage.value),
       market.value.priceTensMultiplier
     )
+  })
+
+  const hasEnoughLiquidity = computed(() => {
+    if (isLimitOrder.value) {
+      return true
+    }
+
+    return calculatedWorstPrice.value.hasEnoughLiquidity
   })
 
   const total = computed(() => {
@@ -187,6 +201,7 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     totalWithFee,
     feePercentage,
     slippagePercentage,
+    hasEnoughLiquidity,
     minimumAmountInQuote,
     isNotionalLessThanMinNotional
   }

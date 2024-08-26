@@ -5,7 +5,7 @@ import {
   TokenVerification
 } from '@injectivelabs/sdk-ts'
 import { tokenCacheApi, tokenPriceService } from '@shared/Service'
-import tokens from '@/app/data/tokens.json'
+import { tokens } from '@/app/json'
 import { getToken } from '@/app/utils/helpers'
 import { tokenFactoryStatic } from '@/app/Services'
 import { TokenUsdPriceMap } from '@/types'

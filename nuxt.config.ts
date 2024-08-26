@@ -10,22 +10,11 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#feat/chain-upgrade'
+      : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
   app: {
     head
-  },
-
-  vite: {
-    server: {
-      hmr: {
-        protocol: 'ws',
-        host: '0.0.0.0',
-        clientPort: 3000,
-        port: 24678
-      }
-    }
   },
 
   imports: {

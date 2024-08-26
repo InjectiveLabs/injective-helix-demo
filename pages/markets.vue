@@ -9,6 +9,7 @@ import {
 } from '@/types'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 
+const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -17,7 +18,7 @@ const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const search = ref('')
-const activeType = ref(MarketTypeOption.All)
+const activeType = ref(setTypeFromQuery())
 const activeCategory = ref(MarketCategoryType.All)
 const activeQuote = ref(MarketQuoteType.All)
 const isLowVolumeMarketsVisible = ref(false)
@@ -73,6 +74,18 @@ const unknownTokenStatus = inject(
   UnknownTokenStatusKey,
   new Status(StatusType.Loading)
 )
+
+function setTypeFromQuery() {
+  if (
+    Object.values(MarketTypeOption).includes(
+      route.query.type as MarketTypeOption
+    )
+  ) {
+    return route.query.type as MarketTypeOption
+  }
+
+  return MarketTypeOption.All
+}
 </script>
 
 <template>

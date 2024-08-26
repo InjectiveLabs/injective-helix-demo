@@ -12,8 +12,8 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {

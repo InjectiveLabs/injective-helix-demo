@@ -170,8 +170,8 @@ export const submitLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const messages = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
@@ -230,8 +230,8 @@ export const submitStopLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
     value: triggerPrice.toFixed(),
@@ -301,8 +301,8 @@ export const submitMarketOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const isTpslBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
@@ -449,6 +449,7 @@ export const submitTpSlOrder = async ({
   takeProfit?: BigNumberInBase
   stopLoss?: BigNumberInBase
 }) => {
+  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
@@ -459,6 +460,7 @@ export const submitTpSlOrder = async ({
   }
 
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const market = derivativeStore.markets.find(
     (market) => market.marketId === position.marketId
