@@ -1,16 +1,40 @@
 <script setup lang="ts">
+import { cva } from 'class-variance-authority'
+import type { VariantProps } from 'class-variance-authority'
+import { twMerge } from 'tailwind-merge'
 import { Status, StatusType } from '@injectivelabs/utils'
 
-type Size = 'xs' | 'sm' | 'md' | 'lg'
-type Variant =
-  | 'primary'
-  | 'primary-outline'
-  | 'primary-ghost'
-  | 'danger'
-  | 'danger-outline'
-  | 'danger-ghost'
-  | 'success'
-  | 'success-outline'
+const button = cva(
+  'flex items-center justify-center transition-all rounded-md',
+  {
+    variants: {
+      size: {
+        xs: 'btn-xs',
+        sm: 'btn-sm',
+        md: 'btn-md',
+        lg: 'btn-lg'
+      },
+      variant: {
+        primary: 'btn-primary focus-within:ring-[3px] ring-blue-700',
+        'primary-outline':
+          'btn-primary-outline focus-within:ring-[3px] ring-blue-700',
+        'primary-ghost':
+          'btn-primary-ghost focus-within:ring-[3px] ring-blue-700',
+        danger: 'btn-danger focus-within:ring-[3px] ring-red-700',
+        'danger-outline':
+          'btn-danger-outline focus-within:ring-[3px] ring-red-700',
+        'danger-ghost': 'btn-danger-ghost focus-within:ring-[3px] ring-red-700',
+        success: 'btn-success focus-within:ring-[3px] ring-green-700',
+        'success-outline':
+          'btn-success-outline focus-within:ring-[3px] ring-green-700',
+        'success-ghost':
+          'btn-success-ghost focus-within:ring-[3px] ring-green-700'
+      }
+    }
+  }
+)
+
+export type ButtonProps = VariantProps<typeof button>
 
 defineOptions({
   inheritAttrs: false
@@ -18,34 +42,24 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
-    size?: Size
+    size?: ButtonProps['size']
     status?: Status
-    variant?: Variant
+    variant?: ButtonProps['variant']
     tooltip?: string
     disabled?: boolean
     isLoading?: boolean
+    class?: string
   }>(),
   {
     size: 'md',
-    variant: 'primary',
+    class: '',
     status: () => new Status(StatusType.Idle),
+    variant: 'primary',
     tooltip: '',
     disabled: false,
     isLoading: false
   }
 )
-
-const outlineStyle = computed(() => {
-  if (['danger', 'danger-outline', 'danger-ghost'].includes(props.variant)) {
-    return 'focus-within:ring-[3px] ring-red-700'
-  }
-
-  if (['success', 'success-outline', 'success-ghost'].includes(props.variant)) {
-    return 'focus-within:ring-[3px] ring-green-700'
-  }
-
-  return 'focus-within:ring-[3px] ring-blue-700'
-})
 </script>
 
 <template>
@@ -56,8 +70,7 @@ const outlineStyle = computed(() => {
     :triggers="['hover', 'click']"
   >
     <button
-      class="flex items-center justify-center transition-all ring-0"
-      :class="[size ? 'btn-' + size : 'btn', 'btn-' + variant, outlineStyle]"
+      :class="twMerge(button({ size, variant }), props.class)"
       :disabled="disabled"
       v-bind="$attrs"
     >

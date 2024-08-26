@@ -254,7 +254,7 @@ export default {
 
         '.btn-md': {
           padding: `${theme('padding.2')} ${theme('padding.8')}`,
-          fontSize: theme('fontSize.base'),
+          fontSize: theme('fontSize.sm'),
           fontWeight: theme('fontWeight.medium'),
           borderRadius: theme('borderRadius.md'),
           fontFamily: theme('fontFamily.sans')

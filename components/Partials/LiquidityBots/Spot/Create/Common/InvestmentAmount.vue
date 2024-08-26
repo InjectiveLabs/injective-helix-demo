@@ -17,7 +17,7 @@ import {
 } from '@/types'
 
 const props = withDefaults(
-  defineProps<{ isAuto: boolean; market: UiSpotMarket }>(),
+  defineProps<{ isAuto?: boolean; market: UiSpotMarket }>(),
   {
     isAuto: false
   }
