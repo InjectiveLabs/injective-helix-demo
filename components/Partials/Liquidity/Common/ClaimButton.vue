@@ -9,8 +9,7 @@ const props = withDefaults(
     campaign: Campaign
   }>(),
   {
-    forceDisabled: false,
-    campaign: undefined
+    forceDisabled: false
   }
 )
 

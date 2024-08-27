@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    amount: String
-    symbol: String
-    index: Number
+    amount: string
+    symbol: string
+    index: number
   }>(),
   {}
 )

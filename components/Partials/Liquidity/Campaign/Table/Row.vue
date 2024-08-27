@@ -16,12 +16,7 @@ const props = withDefaults(
     totalScore: string
     market: UiSpotMarket
   }>(),
-  {
-    campaignUser: undefined,
-    campaign: undefined,
-    totalScore: undefined,
-    market: undefined
-  }
+  {}
 )
 
 const tokenStore = useTokenStore()
