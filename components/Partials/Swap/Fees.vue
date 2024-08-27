@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SwapForm } from '@/types'
+import { SwapForm, SwapCyTags } from '@/types'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 
 const showFeeBreakdown = ref(false)
@@ -27,7 +27,7 @@ function toggleShowFeeBreakdown() {
   >
     <div>
       <div class="flex items-center gap-1 justify-end mb-1">
-        <span>
+        <span :data-cy="dataCyTag(SwapCyTags.SwapSummaryFees)">
           {{ `~$${totalFeeToFormat}` }}
         </span>
       </div>

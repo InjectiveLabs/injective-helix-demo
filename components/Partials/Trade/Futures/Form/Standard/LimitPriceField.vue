@@ -4,7 +4,8 @@ import {
   MarketKey,
   UiDerivativeMarket,
   DerivativesTradeForm,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  PerpetualmarketCyTags
 } from '@/types'
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -52,6 +53,7 @@ onMounted(() => {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
+      :data-cy="dataCyTag(PerpetualmarketCyTags.LimitpriceInputField)"
     >
       <template #left>
         <div

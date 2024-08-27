@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { SharedDropdownOption } from '@shared/types'
-import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
+import {
+  MarketKey,
+  UiSpotMarket,
+  SpotOrdersStandardView,
+  SpotMarketCyTags
+} from '@/types'
 
 const spotStore = useSpotStore()
 const isMobile = useIsMobile()
@@ -84,7 +89,10 @@ watch(
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">
+        <button
+          class="px-2"
+          :data-cy="dataCyTag(SpotMarketCyTags.OrderDetailsDropDown)"
+        >
           {{ $t(selected?.display || '') }}
           {{
             Number.isInteger(Number(selected?.description))
@@ -95,7 +103,11 @@ watch(
       </template>
 
       <template #option="{ option }">
-        <button>
+        <button
+          :data-cy="`${dataCyTag(
+            SpotMarketCyTags.OrderDetailsDropdownOptions
+          )}-${option.display}`"
+        >
           {{ $t(option.display) }}
           {{
             Number.isInteger(Number(option.description))

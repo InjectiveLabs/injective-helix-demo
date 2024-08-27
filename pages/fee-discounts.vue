@@ -2,17 +2,17 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
-const paramStore = useParamStore()
+const sharedParamStore = useSharedParamStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
   Promise.all([
+    sharedParamStore.init(),
     exchangeStore.fetchParams(),
     exchangeStore.fetchFeeDiscountSchedule(),
-    exchangeStore.fetchFeeDiscountAccountInfo(),
-    paramStore.fetchAprParams()
+    exchangeStore.fetchFeeDiscountAccountInfo()
   ])
     .catch($onError)
     .finally(() => {

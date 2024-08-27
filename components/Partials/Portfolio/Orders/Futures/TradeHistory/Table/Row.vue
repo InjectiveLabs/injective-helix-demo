@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { PerpetualmarketCyTags } from '@/types'
 
 const props = defineProps({
   trade: {
@@ -47,7 +48,12 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 
 <template>
   <div v-if="market" class="flex p-2 text-xs font-mono">
-    <div class="flex-1 flex items-center p-2">{{ time }}</div>
+    <div
+      class="flex-1 flex items-center p-2"
+      :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryTimestamp)"
+    >
+      {{ time }}
+    </div>
 
     <PartialsCommonMarketRedirection
       v-if="market"
@@ -55,11 +61,18 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       class="flex-1 flex items-center space-x-2 p-2 font-sans"
     >
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-      <p>{{ market.ticker }}</p>
+      <p :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryMarketTicker)">
+        {{ market.ticker }}
+      </p>
     </PartialsCommonMarketRedirection>
 
     <div class="flex-[0.5] flex items-center p-2">
-      <span class="font-sans">{{ tradeExecutionType }}</span>
+      <span
+        class="font-sans"
+        :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryTradeType)"
+      >
+        {{ tradeExecutionType }}
+      </span>
     </div>
 
     <div
@@ -68,27 +81,38 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
         'text-green-500': trade.tradeDirection === TradeDirection.Buy,
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
       }"
+      :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryTradeSide)"
     >
       {{ $t(`trade.${trade.tradeDirection}`) }}
     </div>
 
-    <div class="flex-1 flex items-center p-2 justify-end">
+    <div
+      class="flex-1 flex items-center p-2 justify-end"
+      :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryPrice)"
+    >
       {{ priceToString }}
     </div>
 
-    <div class="flex-1 flex items-center p-2 justify-end">
+    <div
+      class="flex-1 flex items-center p-2 justify-end"
+      :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryAmount)"
+    >
       {{ quantityToString }}
     </div>
 
     <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-      <span>{{ feeToString }}</span>
+      <span :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryFee)">{{
+        feeToString
+      }}</span>
       <span v-if="market" class="text-gray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>
 
     <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-      <span>{{ totalToString }}</span>
+      <span :data-cy="dataCyTag(PerpetualmarketCyTags.TradeHistoryTotal)">{{
+        totalToString
+      }}</span>
       <span v-if="market" class="text-gray-500">
         {{ market.quoteToken.symbol }}
       </span>

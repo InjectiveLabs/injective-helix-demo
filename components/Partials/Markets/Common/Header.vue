@@ -39,7 +39,10 @@ function handleIsAscending(value: boolean) {
       >
         <template #default="{ isActive }">
           <div class="flex items-center space-x-2 cursor-pointer">
-            <div class="font-normal">
+            <div
+              class="font-normal"
+              :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Market}`)"
+            >
               {{ $t('trade.markets') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
@@ -68,7 +71,9 @@ function handleIsAscending(value: boolean) {
       >
         <template #default="{ isActive }">
           <div class="flex font-normal items-center space-x-2 cursor-pointer">
-            <div>{{ $t('markets.change24h') }}</div>
+            <div :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Change}`)">
+              {{ $t('markets.change24h') }}
+            </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
               <SharedIcon is-sm name="triangle" />
             </div>
@@ -89,7 +94,9 @@ function handleIsAscending(value: boolean) {
       >
         <template #default="{ isActive }">
           <div class="flex items-center space-x-2 cursor-pointer font-normal">
-            <div>{{ $t('markets.volume24h') }}</div>
+            <div :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Volume}`)">
+              {{ $t('markets.volume24h') }}
+            </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
               <SharedIcon is-sm name="triangle" />
             </div>
