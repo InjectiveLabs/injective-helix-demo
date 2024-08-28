@@ -9,7 +9,6 @@ import {
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
-const tradingMode = ref(TradingInterface.Standard)
 const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const options = computed(() => [
@@ -26,28 +25,14 @@ const options = computed(() => [
 ])
 
 onMounted(() => {
-  if (!Object.values(TradingInterface).includes(queryTradingMode.value)) {
-    return
-  }
-
-  const tradingModeOption = options.value.find(
-    ({ value }) => value === queryTradingMode.value
-  )
-
-  if (tradingModeOption && !tradingModeOption.disabled) {
-    tradingMode.value = tradingModeOption.value
+  if (
+    queryTradingMode.value === TradingInterface.TradingBots &&
+    options.value.find(({ value }) => value === TradingInterface.TradingBots)
+      ?.disabled
+  ) {
+    queryTradingMode.value = TradingInterface.Standard
   }
 })
-
-function onTradingModeChange(value: string) {
-  const tradingModeOption = options.value.find(
-    ({ value: optionValue }) => optionValue === value
-  )
-
-  if (tradingModeOption && !tradingModeOption.disabled) {
-    queryTradingMode.value = value as TradingInterface
-  }
-}
 </script>
 
 <template>
@@ -59,11 +44,10 @@ function onTradingModeChange(value: string) {
       <AppButtonSelect
         v-for="{ value, disabled } in options"
         :key="value"
-        v-model="tradingMode"
+        v-model="queryTradingMode"
         v-bind="{ value, disabled }"
         class="font-bold text-sm flex justify-center items-center px-6 border-r last:border-r-0 text-gray-600 flex-1"
         active-classes="bg-brand-875 text-white"
-        @update:model-value="onTradingModeChange"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
@@ -71,7 +55,7 @@ function onTradingModeChange(value: string) {
 
     <div>
       <PartialsTradeSpotFormStandard
-        v-if="tradingMode === TradingInterface.Standard"
+        v-if="queryTradingMode === TradingInterface.Standard"
       />
 
       <PartialsTradeSpotFormTradingBots v-else />
