@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
 import {
+  SpotMarket,
+  SpotLimitOrder,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
+import {
   SharedUiSpotTrade,
   SharedUiMarketSummary,
   SharedUiOrderbookWithSequence
@@ -16,10 +21,13 @@ import {
 } from '@shared/transformer/market'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
-  SpotMarket,
-  SpotLimitOrder,
-  SpotOrderHistory
-} from '@injectivelabs/sdk-ts'
+  cancelOrder,
+  batchCancelOrder,
+  submitLimitOrder,
+  submitMarketOrder,
+  submitStopLimitOrder,
+  submitStopMarketOrder
+} from '@/store/spot/message'
 import {
   cancelBankBalanceStream,
   cancelSubaccountBalanceStream
@@ -36,18 +44,8 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import {
-  cancelOrder,
-  batchCancelOrder,
-  submitLimitOrder,
-  submitMarketOrder,
-  submitStopLimitOrder,
-  submitStopMarketOrder
-} from '@/store/spot/message'
-import {
-  MARKETS_SLUGS,
-  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-} from '@/app/utils/constants'
+import { spotSlugs } from '@/app/json'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
@@ -89,7 +87,7 @@ export const useSpotStore = defineStore('spot', {
       state.markets
         .filter(
           ({ slug, marketId }) =>
-            MARKETS_SLUGS.spot.includes(slug) ||
+            spotSlugs.includes(slug) ||
             state.marketIdsFromQuery.includes(marketId)
         )
         .map((m) => m.marketId),
@@ -219,15 +217,15 @@ export const useSpotStore = defineStore('spot', {
 
           return {
             ...formattedMarket,
-            isVerified: MARKETS_SLUGS.spot.includes(formattedMarket.slug)
+            isVerified: spotSlugs.includes(formattedMarket.slug)
           }
         })
         .filter((market) => market) as UiSpotMarket[]
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex = MARKETS_SLUGS.spot.indexOf(spotA.slug) || 1
-          const spotBIndex = MARKETS_SLUGS.spot.indexOf(spotB.slug) || 1
+          const spotAIndex = spotSlugs.indexOf(spotA.slug) || 1
+          const spotBIndex = spotSlugs.indexOf(spotB.slug) || 1
 
           return spotAIndex - spotBIndex
         })

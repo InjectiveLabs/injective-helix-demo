@@ -51,11 +51,9 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
+import { derivativeSlugs, expirySlugs } from '@/app/json'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
-import {
-  MARKETS_SLUGS,
-  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-} from '@/app/utils/constants'
 import {
   UiDerivativeMarket,
   UiMarketAndSummary,
@@ -119,7 +117,7 @@ export const useDerivativeStore = defineStore('derivative', {
       state.markets
         .filter(
           ({ slug, marketId }) =>
-            MARKETS_SLUGS.futures.includes(slug) ||
+            [...derivativeSlugs, ...expirySlugs].includes(slug) ||
             state.marketIdsFromQuery.includes(marketId)
         )
         .map((m) => m.marketId),
@@ -226,7 +224,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const markets =
         (await derivativeCacheApi.fetchMarkets()) as PerpetualMarket[]
 
-      const slugs = [...MARKETS_SLUGS.futures, ...MARKETS_SLUGS.expiryFutures]
+      const slugs = [...derivativeSlugs, ...expirySlugs]
 
       const uiMarkets = markets
         .map((market) => {
