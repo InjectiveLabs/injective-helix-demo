@@ -24,6 +24,7 @@ function onCloseModal() {
   >
     <PartialsLiquidityCommonActiveStrategy
       v-if="strategy && market"
+      class="pt-10"
       v-bind="{ activeStrategy: strategy, market }"
     />
   </AppModal>
