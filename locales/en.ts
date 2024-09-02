@@ -39,6 +39,7 @@ export default {
     BTC: 'BTC',
     back: 'Back',
     base: 'Base',
+    copy: 'Copy',
     view: 'View',
     open: 'Open',
     quote: 'Quote',

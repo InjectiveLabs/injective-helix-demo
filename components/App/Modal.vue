@@ -96,10 +96,10 @@ watchDebounced(
             </div>
           </div>
 
-          <div v-else class="relative">
+          <div v-else class="flex justify-end">
             <SharedIcon
               name="close"
-              class="top-4 right-4 absolute h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+              class="h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
               @click="close"
             />
           </div>
