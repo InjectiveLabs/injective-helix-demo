@@ -58,6 +58,8 @@ async function onMarketTypeChange(type: string) {
     return
   }
 
+  isLowVolumeMarketsVisible.value = true
+
   unverifiedMarketsStatus.setLoading()
 
   await until(unknownTokenStatus).toMatch((status) => status.isIdle())
