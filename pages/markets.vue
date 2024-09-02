@@ -4,7 +4,8 @@ import {
   MarketQuoteType,
   MarketTypeOption,
   MarketCategoryType,
-  UnknownTokenStatusKey
+  UnknownTokenStatusKey,
+  MarketCyTags
 } from '@/types'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 
@@ -57,6 +58,8 @@ async function onMarketTypeChange(type: string) {
     return
   }
 
+  isLowVolumeMarketsVisible.value = true
+
   unverifiedMarketsStatus.setLoading()
 
   await until(unknownTokenStatus).toMatch((status) => status.isIdle())
@@ -90,7 +93,12 @@ function setTypeFromQuery() {
 <template>
   <div>
     <div class="container py-10">
-      <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
+      <h3
+        class="text-2xl font-semibold"
+        :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
+      >
+        {{ $t('trade.markets') }}
+      </h3>
 
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
@@ -109,6 +117,7 @@ function setTypeFromQuery() {
               v-bind="{ value }"
               class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
+              :data-cy="`${dataCyTag(MarketCyTags.MarketType)}-${value}`"
               @update:model-value="onMarketTypeChange"
             >
               {{ value }}
@@ -123,6 +132,7 @@ function setTypeFromQuery() {
                 v-model="search"
                 type="text"
                 class="focus:outline-none bg-transparent p-1 px-3 w-full"
+                :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
               />
 
               <div class="flex items-center pr-3">
@@ -146,6 +156,7 @@ function setTypeFromQuery() {
               v-bind="{ value }"
               class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
               active-classes="text-white !bg-brand-700"
+              :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
             >
               {{ value }}
             </AppButtonSelect>
@@ -171,6 +182,9 @@ function setTypeFromQuery() {
                 v-bind="{ value }"
                 class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
                 active-classes="text-white !bg-brand-800"
+                :data-cy="`${dataCyTag(
+                  MarketCyTags.MarketQuoteToken
+                )}-${value}`"
               >
                 {{ value }}
               </AppButtonSelect>

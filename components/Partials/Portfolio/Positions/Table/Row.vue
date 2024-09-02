@@ -4,7 +4,11 @@ import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
+import {
+  ClosePositionLimitForm,
+  ClosePositionLimitFormField,
+  PerpetualmarketCyTags
+} from '@/types'
 
 const authZStore = useAuthZStore()
 const tokenStore = useTokenStore()
@@ -230,7 +234,9 @@ function addTpSl() {
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p>{{ market.ticker }}</p>
+        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosMarketTicker)">
+          {{ market.ticker }}
+        </p>
       </PartialsCommonMarketRedirection>
 
       <div class="flex-[0.5] flex items-center p-2">
@@ -239,18 +245,27 @@ function addTpSl() {
             'text-green-500': position.direction === TradeDirection.Long,
             'text-red-500': position.direction === TradeDirection.Short
           }"
+          :data-cy="`${dataCyTag(
+            PerpetualmarketCyTags.OpenPosTradeDirection
+          )}-${position.direction}`"
         >
           {{ $t(`trade.${position.direction}`) }}
         </span>
       </div>
 
       <div v-if="market" class="flex-1 flex items-center justify-end p-2">
-        <p>{{ quantityToString }} {{ market.baseToken.symbol }}</p>
+        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosAmount)">
+          {{ quantityToString }} {{ market.baseToken.symbol }}
+        </p>
       </div>
 
       <div class="flex-1 space-y-1 p-2 text-right">
-        <p>{{ priceToString }}</p>
-        <p class="text-gray-500">{{ markPriceToString }}</p>
+        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenEntryPrice)">
+          {{ priceToString }}
+        </p>
+        <p class="text-gray-500">
+          {{ markPriceToString }}
+        </p>
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
@@ -261,7 +276,7 @@ function addTpSl() {
             'text-red-500': pnl.lt(0)
           }"
         >
-          <p>
+          <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosUnrealizedPnl)">
             {{ pnlToString }}
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>
@@ -271,22 +286,32 @@ function addTpSl() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p>${{ quantityInUsdToString }}</p>
+          <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosTotalValue)">
+            ${{ quantityInUsdToString }}
+          </p>
         </div>
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
-        <span>{{ marginToString }}</span>
+        <span :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosMargin)">{{
+          marginToString
+        }}</span>
         <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
           <SharedIcon name="plus" is-xs />
         </button>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosLiquidationPrice)"
+      >
         {{ liquidationPrice.toFormat(2) }}
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosLeverage)"
+      >
         {{ effectiveLeverage.toFormat(2) }}x
       </div>
 
@@ -309,6 +334,7 @@ function addTpSl() {
           size="sm"
           variant="danger-ghost"
           class="min-w-20"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosition)"
           @click="closePositionClicked"
         >
           {{ $t('trade.market') }}
@@ -323,6 +349,7 @@ function addTpSl() {
           class="min-w-20"
           size="sm"
           variant="danger-ghost"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosLimit)"
           @click="closePositionLimit"
         >
           {{ $t('trade.limit') }}
@@ -336,11 +363,13 @@ function addTpSl() {
           autofix
           class="p-1 rounded min-w-0 border"
           placeholder="Qty"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePositionQty)"
         />
         <AppInputBase
           v-model="priceValue"
           class="p-1 rounded min-w-0 border"
           placeholder="Price"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosPrice)"
         />
       </div>
     </div>

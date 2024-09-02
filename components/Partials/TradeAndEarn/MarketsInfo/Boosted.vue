@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
+import { spotSlugs, expirySlugs, derivativeSlugs } from '@/app/json'
 import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
@@ -25,7 +25,7 @@ const derivativeBoostedMarkets = computed(() => {
       derivativeMarketIds.includes(derivativeMarket.marketId)
     )
     .filter((derivativeMarket) =>
-      MARKETS_SLUGS.futures.includes(derivativeMarket.slug)
+      [...expirySlugs, ...derivativeSlugs].includes(derivativeMarket.slug)
     )
     .sort(
       (a, b) =>
@@ -79,8 +79,8 @@ const derivativeBoostedMarkets = computed(() => {
 
   return [...derivatives, ...nonBoostedDerivatives].sort(
     (a, b) =>
-      MARKETS_SLUGS.futures.indexOf(a.slug) -
-      MARKETS_SLUGS.futures.indexOf(b.slug)
+      [...expirySlugs, ...derivativeSlugs].indexOf(a.slug) -
+      [...expirySlugs, ...derivativeSlugs].indexOf(b.slug)
   )
 })
 
@@ -91,7 +91,7 @@ const spotBoostedMarkets = computed(() => {
 
   const spotMarketsTickerBasedOnIds = spotStore.markets
     .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
-    .filter((spot) => MARKETS_SLUGS.spot.includes(spot.slug))
+    .filter((spot) => spotSlugs.includes(spot.slug))
     .sort(
       (a, b) =>
         spotMarketIds.indexOf(a.marketId) - spotMarketIds.indexOf(b.marketId)
@@ -139,8 +139,7 @@ const spotBoostedMarkets = computed(() => {
     }, [] as PointsMultiplierWithMarketTicker[])
 
   return [...spot, ...nonBoostedSpot].sort(
-    (a, b) =>
-      MARKETS_SLUGS.spot.indexOf(a.slug) - MARKETS_SLUGS.spot.indexOf(b.slug)
+    (a, b) => spotSlugs.indexOf(a.slug) - spotSlugs.indexOf(b.slug)
   )
 })
 </script>

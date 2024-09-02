@@ -7,7 +7,6 @@ import {
 } from '@injectivelabs/networks'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { getRoutes } from './routes'
 
 export const IS_DEVELOPMENT: boolean = process.env.NODE_ENV === 'development'
 export const IS_PRODUCTION: boolean = process.env.NODE_ENV === 'production'
@@ -189,7 +188,3 @@ export const COIN_GECKO_OPTIONS = {
 
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
-
-const { ROUTES, MARKETS_SLUGS } = getRoutes()
-
-export { ROUTES, MARKETS_SLUGS }

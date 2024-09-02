@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, CommonCyTags } from '@/types'
 
 withDefaults(
   defineProps<{
@@ -48,7 +48,10 @@ watch(
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
     <div class="flex items-center space-x-2 justify-center relative">
       <div>
-        <p class="uppercase tracking-wider font-bold text-sm">
+        <p
+          class="uppercase tracking-wider font-bold text-sm"
+          :data-cy="dataCyTag(CommonCyTags.MarketPair)"
+        >
           {{ market.ticker }}
         </p>
 
@@ -66,7 +69,10 @@ watch(
     </div>
 
     <div class="text-gray-400 ml-auto flex items-center">
-      <div class="ml-10 mr-4 text-sm">
+      <div
+        class="ml-10 mr-4 text-sm"
+        :data-cy="dataCyTag(CommonCyTags.MarketDropdown)"
+      >
         {{ $t('trade.allMarkets') }}
       </div>
 

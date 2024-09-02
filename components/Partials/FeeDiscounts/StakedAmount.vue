@@ -4,13 +4,13 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const paramStore = useParamStore()
 const exchangeStore = useExchangeStore()
+const sharedParamStore = useSharedParamStore()
 
 const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
-  computed(() => paramStore.apr.times(100)),
+  computed(() => sharedParamStore.apr.times(100)),
   {
-    decimalPlaces: 2
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import { SpotMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -52,16 +53,28 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 <template>
   <div v-if="market">
     <div class="flex p-2 text-xs font-mono">
-      <div class="flex-1 flex items-center p-2 font-sans">{{ timestamp }}</div>
+      <div
+        class="flex-1 flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTimestamp)"
+      >
+        {{ timestamp }}
+      </div>
       <PartialsCommonMarketRedirection
         v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p>{{ market.ticker }}</p>
+        <p :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryMarketTicker)">
+          {{ market.ticker }}
+        </p>
       </PartialsCommonMarketRedirection>
 
-      <div class="flex-[0.5] flex items-center p-2 font-sans">{{ type }}</div>
+      <div
+        class="flex-[0.5] flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryType)"
+      >
+        {{ type }}
+      </div>
 
       <div class="flex-[0.5] flex items-center p-2">
         <span
@@ -70,20 +83,32 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
             'text-red-500': !isBuy
           }"
           class="font-sans"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.OrderHistorySide)}-${
+            order.direction
+          }`"
         >
           {{ $t(`trade.${order.direction}`) }}
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)"
+      >
         {{ priceToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)"
+      >
         {{ quantityToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)"
+      >
         <span>
           {{ totalToString }}
         </span>
@@ -94,10 +119,15 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
 
       <div class="flex-1 flex justify-center items-center p-2">
         <span v-if="triggerPrice.eq(0)"> - </span>
-        <span v-else>{{ triggerPriceToString }}</span>
+        <span v-else :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)">
+          {{ triggerPriceToString }}
+        </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2 font-sans">
+      <div
+        class="flex-1 flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryStatus)"
+      >
         {{ orderStatus }}
       </div>
     </div>

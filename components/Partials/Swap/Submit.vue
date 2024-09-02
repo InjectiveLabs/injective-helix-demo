@@ -8,7 +8,7 @@ import {
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { Modal, SwapForm, SwapFormField } from '@/types'
+import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 const swapStore = useSwapStore()
 const modalStore = useModalStore()
@@ -248,7 +248,7 @@ watch(
       }"
       @click="handlerFunction"
     >
-      <div class="max-auto w-full">
+      <div class="max-auto w-full" :data-cy="dataCyTag(SwapCyTags.Swapbutton)">
         <Transition name="fade" mode="out-in">
           <span
             v-if="
@@ -256,11 +256,15 @@ watch(
               ((swapStore.isInputEntered && invalidInput) ||
                 isNotionalLessThanMinNotional)
             "
+            :data-cy="dataCyTag(SwapCyTags.WarningAmountTooLow)"
           >
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
 
-          <span v-else-if="insufficientBalance">
+          <span
+            v-else-if="insufficientBalance"
+            :data-cy="dataCyTag(SwapCyTags.WarningInsufficientbalance)"
+          >
             {{ insufficientBalance }}
           </span>
 
@@ -284,7 +288,7 @@ watch(
             v-else-if="rateExpired && hasAmounts"
             class="flex items-center justify-center gap-1"
           >
-            <span>
+            <span :data-cy="dataCyTag(SwapCyTags.WarningRateExpired)">
               {{ $t('trade.swap.rateExpired') }}
             </span>
 
@@ -295,7 +299,7 @@ watch(
             />
           </span>
 
-          <span v-else>
+          <span v-else :data-cy="dataCyTag(SwapCyTags.EnterAmountButton)">
             {{ $t('trade.swap.enterAmount') }}
           </span>
         </Transition>

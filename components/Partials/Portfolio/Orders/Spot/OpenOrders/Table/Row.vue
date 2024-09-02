@@ -3,6 +3,7 @@ import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
+import { SpotMarketCyTags } from '@/types'
 
 const authZStore = useAuthZStore()
 const spotStore = useSpotStore()
@@ -100,13 +101,22 @@ function cancelOrder() {
 
 <template>
   <div v-if="market">
-    <div class="flex p-2 text-xs font-mono">
+    <div
+      class="flex p-2 text-xs font-mono"
+      :data-cy="dataCyTag(SpotMarketCyTags.OpenOrdersRow)"
+    >
       <PartialsCommonMarketRedirection
         v-bind="{ market }"
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p>{{ market.ticker }}</p>
+        <p
+          :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderMarketTicker)}-${
+            market.ticker
+          }`"
+        >
+          {{ market.ticker }}
+        </p>
       </PartialsCommonMarketRedirection>
 
       <div class="flex-[0.5] flex items-center p-2">
@@ -116,35 +126,56 @@ function cancelOrder() {
             'text-green-500': isBuy,
             'text-red-500': !isBuy
           }"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderSide)}-${
+            order.orderSide
+          }`"
         >
           {{ $t('trade.' + order.orderSide) }}
         </span>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)"
+      >
         {{ priceToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)"
+      >
         {{ quantityToString }}
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div
+        class="flex-1 flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)"
+      >
         {{ unfilledQuantityToString }}
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="text-right">
-          <p>{{ filledQuantityToString }}</p>
+          <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)">
+            {{ filledQuantityToString }}
+          </p>
           <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
         </div>
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p>
+          <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
             {{ totalToString }}
-            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+            <span
+              class="text-gray-500"
+              :data-cy="
+                dataCyTag(SpotMarketCyTags.OpenOrderTotalAmtTokenSymbol)
+              "
+            >
+              {{ market.quoteToken.symbol }}
+            </span>
           </p>
         </div>
       </div>
@@ -157,6 +188,7 @@ function cancelOrder() {
             isDisabled: !isAuthorized,
             tooltip: isAuthorized ? '' : $t('common.unauthorized')
           }"
+          :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
           @click="cancelOrder"
         />
       </div>

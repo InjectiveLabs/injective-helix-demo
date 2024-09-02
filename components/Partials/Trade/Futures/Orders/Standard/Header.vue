@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { SharedDropdownOption } from '@shared/types'
-import { MarketKey, UiDerivativeMarket, PerpOrdersStandardView } from '@/types'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  PerpOrdersStandardView,
+  PerpetualmarketCyTags
+} from '@/types'
 
 const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
@@ -92,7 +97,10 @@ watch(
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">
+        <button
+          class="px-2"
+          :data-cy="dataCyTag(PerpetualmarketCyTags.OrderDetailsDropdown)"
+        >
           {{ $t(`activity.${selected?.value}`) }}
           {{
             Number.isInteger(Number(selected?.description))
@@ -103,7 +111,9 @@ watch(
       </template>
 
       <template #option="{ option }">
-        <button>
+        <button
+          :data-cy="`${PerpetualmarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
+        >
           {{ $t(`activity.${option.value}`) }}
           {{
             Number.isInteger(Number(option.description))

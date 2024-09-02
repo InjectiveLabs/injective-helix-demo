@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { SpotTradeForm, SpotTradeFormField, TradeTypes } from '@/types'
+import {
+  SpotTradeForm,
+  SpotTradeFormField,
+  TradeTypes,
+  SpotMarketCyTags
+} from '@/types'
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
@@ -14,6 +19,7 @@ function toggle() {
   <div>
     <div
       class="flex justify-between items-center cursor-pointer py-2"
+      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettings)"
       @click="toggle"
     >
       <p class="text-sm font-semibold select-none">

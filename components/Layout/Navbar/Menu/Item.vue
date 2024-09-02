@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MenuItem, MenuItemType } from '@/types'
+import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
 withDefaults(defineProps<{ item: MenuItem; level?: number }>(), { level: 0 })
 
@@ -47,7 +47,12 @@ function close() {
 
         <div class="flex flex-col justify-start">
           <div class="flex items-center justify-start space-x-1.5">
-            <p :class="{ 'font-medium': level > 0 }">
+            <p
+              :class="{ 'font-medium': level > 0 }"
+              :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+                item.label
+              }`"
+            >
               {{ $t(item.label) }}
             </p>
             <SharedIcon
@@ -79,7 +84,10 @@ function close() {
     @mouseenter="open"
     @mouseleave="close"
   >
-    <div class="py-2 px-6 flex">
+    <div
+      class="py-2 px-6 flex"
+      :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
+    >
       <div>
         <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
           {{ $t(item.label) }}
