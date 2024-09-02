@@ -7,7 +7,7 @@ const depositMenuItem = getDepositMenuItem()
 </script>
 
 <template>
-  <div class="flex items-center p-2 space-x-2">
+  <div class="flex items-center p-2 lg:space-x-2">
     <LayoutNavbarMenuItem
       class="hidden lg:block"
       v-bind="{ item: depositMenuItem }"

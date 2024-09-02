@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 import {
+  MarketCyTags,
   MarketQuoteType,
   MarketTypeOption,
   MarketCategoryType,
-  UnknownTokenStatusKey,
-  MarketCyTags
+  UnknownTokenStatusKey
 } from '@/types'
-import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -191,6 +191,7 @@ function setTypeFromQuery() {
             </div>
 
             <AppCheckbox2
+              v-if="activeType !== MarketTypeOption.Permissionless"
               v-model="isLowVolumeMarketsVisible"
               class="md:ml-4 flex items-center"
               is-sm
