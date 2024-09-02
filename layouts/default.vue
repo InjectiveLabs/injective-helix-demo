@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import { MainPage, LiquidityRewardsPage, PortfolioStatusKey } from '@/types'
 
@@ -87,7 +88,7 @@ provide(PortfolioStatusKey, portfolioStatus)
     <LayoutNavbar />
     <main class="relative pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-      <LayoutBanner v-else />
+      <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
 
       <NuxtPage v-bind="{ portfolioStatus }" />
     </main>
