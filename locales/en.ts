@@ -37,6 +37,7 @@ export default {
   common: {
     ok: 'OK',
     BTC: 'BTC',
+    docs: 'docs',
     back: 'Back',
     base: 'Base',
     view: 'View',

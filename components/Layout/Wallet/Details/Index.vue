@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { formatWalletAddress } from '@injectivelabs/utils'
-import { ROUTES } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { MainPage, PortfolioSubPage } from '@/types'
 
@@ -18,7 +17,9 @@ function disconnect() {
   WalletTracker.trackLogout()
 
   if (
-    ROUTES.walletConnectedRequiredRouteNames.includes(route.name as MainPage)
+    [MainPage.Portfolio, ...Object.values(PortfolioSubPage)].includes(
+      route.name as MainPage
+    )
   ) {
     router.push({ name: MainPage.Index })
   }

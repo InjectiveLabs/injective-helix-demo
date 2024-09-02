@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ROUTES, BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
+import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
-import { MainPage, PortfolioStatusKey } from '@/types'
+import { MainPage, LiquidityRewardsPage, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
 const authZStore = useAuthZStore()
@@ -15,7 +15,14 @@ const { $onError } = useNuxtApp()
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
-  ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
+  [
+    MainPage.Index,
+    MainPage.Markets,
+    MainPage.LpRewards,
+    MainPage.FeeDiscounts,
+    LiquidityRewardsPage.Dashboard,
+    LiquidityRewardsPage.CampaignDetails
+  ].includes(route.name as MainPage)
 )
 
 /**
