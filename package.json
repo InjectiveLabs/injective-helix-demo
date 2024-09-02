@@ -55,7 +55,6 @@
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
     "nuxt": "3.11.2",
-    "qrcode-vue3": "^1.6.8",
     "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
     "vue-jest": "^4.0.0-0"
   },

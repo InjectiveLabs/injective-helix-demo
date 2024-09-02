@@ -14962,7 +14962,7 @@ qrcode-generator@^1.4.4:
   resolved "https://registry.yarnpkg.com/qrcode-generator/-/qrcode-generator-1.4.4.tgz#63f771224854759329a99048806a53ed278740e7"
   integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
 
-qrcode-vue3@^1.6.8:
+qrcode-vue3@1.6.8:
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/qrcode-vue3/-/qrcode-vue3-1.6.8.tgz#66f86f7a45ab3044043b8447ec1b2ebea630d53b"
   integrity sha512-LtMnwKWi58ZqHbXBcsTF/VxDYhI6RrBIrDQw8fbDVlO8p5tJBZa7TaIaVYLY937vKO2WCEBmOKksGlpm5ccEIg==
@@ -15881,7 +15881,7 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#86b8f61e49f646ecf38baed9423174c7e00b3491"
+  resolved "https://github.com/InjectiveLabs/shared-packages#9cfaff0b46f4b6292b7d44981b8365ccd1b9a437"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.14-beta.3"
@@ -15898,6 +15898,7 @@ shallow-clone@^3.0.0:
     floating-vue "2.0.0-beta.24"
     js-confetti "^0.12.0"
     nuxt-lcp-speedup "^0.5.2"
+    qrcode-vue3 "1.6.8"
     vee-validate "4.11.7"
     vue-gtag "^2.0.1"
     vue-hotjar "^1.4.0"

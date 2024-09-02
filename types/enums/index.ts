@@ -288,7 +288,8 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
+  scheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  scheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024'
 }
 
 export enum SubaccountBalanceStreamType {
