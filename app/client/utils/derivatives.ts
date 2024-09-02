@@ -108,9 +108,12 @@ export const getRoundedLiquidationPrice = (
     return liquidationPriceRoundedToMinTickPrice
   }
 
-  return minTickPrice.lt(market.minNotional)
-    ? new BigNumberInBase(market.minNotional)
-    : minTickPrice
+  return new BigNumberInBase(
+    new BigNumberInBase(market.minNotional)
+      .dividedBy(position.quantity)
+      .dividedBy(minTickPrice)
+      .toFixed(0, BigNumberInBase.ROUND_UP)
+  ).multipliedBy(minTickPrice)
 }
 
 export const calculateScaledMarkPrice = ({
