@@ -145,6 +145,14 @@
   src: url('./../fonts/proxima-nova-thin.woff2') format('woff');
 }
 
+@font-face {
+  font-family: 'Rubik One';
+  font-weight: 400;
+  src: url('./../fonts/rubik-black.ttf') format('truetype');
+  font-style: normal;
+  font-display: swap;
+}
+
 .text-gradient {
   @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-200 to-blue-500;
 }
