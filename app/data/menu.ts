@@ -7,8 +7,11 @@ import {
   MenuItemType,
   PortfolioSubPage,
   TradingInterface,
-  TradingBotsSubPage
+  TradingBotsSubPage,
+  LeaderboardSubPage
 } from '@/types'
+
+const appStore = useAppStore()
 
 export const MENU_ITEMS: MenuItem[] = [
   {
@@ -102,12 +105,31 @@ export const MENU_ITEMS: MenuItem[] = [
         isExternal: true
       }
     ]
-  }
-  // {
-  //   type: MenuItemType.Link,
-  //   label: 'navigation.leaderboard',
-  //   to: { name: MainPage.PnlLeaderboard }
-  // }
+  },
+  ...(appStore.devMode
+    ? ([
+        {
+          type: MenuItemType.Dropdown,
+          label: 'navigation.leaderboard.title',
+          items: [
+            {
+              type: MenuItemType.Link,
+              isExact: true,
+              name: LeaderboardSubPage.Pnl,
+              label: 'navigation.leaderboard.pnl.title',
+              description: 'navigation.leaderboard.pnl.description',
+              to: { name: LeaderboardSubPage.Pnl }
+            },
+            {
+              type: MenuItemType.Link,
+              label: 'navigation.leaderboard.competition.title',
+              description: 'navigation.leaderboard.competition.description',
+              to: { name: LeaderboardSubPage.Competition }
+            }
+          ]
+        }
+      ] as MenuItem[])
+    : [])
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [

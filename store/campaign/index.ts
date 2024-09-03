@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import {
   Guild,
+  toUtf8,
   Campaign,
   toBase64,
+  CampaignV2,
   fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary,
-  toUtf8
+  GuildCampaignSummary
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
 import { wasmApi } from '@shared/Service'
@@ -22,8 +23,8 @@ import {
 import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
-import { CampaignWithScAndData } from '@/types'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { CampaignWithScAndData, LeaderboardType } from '@/types'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -44,6 +45,8 @@ type CampaignStoreState = {
   ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
+  pnlOrVolumeCampaigns?: CampaignV2[]
+  activeCampaign?: CampaignV2
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -64,7 +67,9 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerCampaignInfo: undefined,
   ownerRewards: [],
   guildCampaignSummary: undefined,
-  claimedRewards: []
+  claimedRewards: [],
+  pnlOrVolumeCampaigns: [],
+  activeCampaign: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -78,6 +83,21 @@ export const useCampaignStore = defineStore('campaign', {
 
     campaignsWithUserRewards(state) {
       return state.round.filter(({ userScore }) => userScore)
+    },
+
+    activeCampaignType(state) {
+      if (!state.activeCampaign?.type) {
+        return undefined
+      }
+
+      switch (state.activeCampaign.type) {
+        case LeaderboardType.Pnl:
+          return LeaderboardType.Pnl
+        case LeaderboardType.Volume:
+          return LeaderboardType.Volume
+        default:
+          return undefined
+      }
     }
   },
   actions: {
@@ -249,6 +269,46 @@ export const useCampaignStore = defineStore('campaign', {
       })
 
       campaignStore.$patch({ round: campaigns })
+    },
+
+    async fetchActiveCampaign() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        active: true
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
+        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+          type as LeaderboardType
+        )
+      )
+
+      const [activeCampaign] = pnlOrVolumeCampaigns
+
+      campaignStore.$patch({ activeCampaign })
+    },
+
+    async fetchCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({})
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
+        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+          type as LeaderboardType
+        )
+      )
+
+      campaignStore.$patch({ pnlOrVolumeCampaigns })
     },
 
     reset() {
