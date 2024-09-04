@@ -223,6 +223,7 @@ export const getDepositMenuItem = (): MenuItem => ({
       type: MenuItemType.Dropdown,
       label: 'navigation.leaderboard.title',
       description: 'navigation.leaderboard.title',
+      devOnly: true,
       items: [
         {
           type: MenuItemType.Link,

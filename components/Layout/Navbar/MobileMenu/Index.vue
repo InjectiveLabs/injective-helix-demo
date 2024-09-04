@@ -17,9 +17,7 @@ const depositMenuItem = computed(() => {
   return !appStore.devMode && item.type === MenuItemType.Dropdown
     ? {
         ...item,
-        items: item.items.filter(
-          (item) => item.label !== 'navigation.leaderboard.title'
-        )
+        items: item.items.filter((item) => !item.devOnly)
       }
     : item
 })
