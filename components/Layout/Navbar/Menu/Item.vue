@@ -95,23 +95,25 @@ function close() {
     @mouseleave="close"
   >
     <div
-      class="py-2 px-6 flex"
+      class="py-2 px-6 flex w-full"
       :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
     >
-      <div>
-        <p class="font-medium" :class="{ 'font-medium text-lg': level > 0 }">
-          {{ $t(item.label) }}
-        </p>
-        <p
-          v-if="item.description"
-          class="text-gray-400 text-xs mt-1 font-normal"
-        >
-          {{ $t(item.description) }}
-        </p>
-      </div>
+      <div class="flex-1 w-full flex justify-between">
+        <div class="flex-1">
+          <p :class="{ '': level > 0 }">
+            {{ $t(item.label) }}
+          </p>
+          <p
+            v-if="item.description"
+            class="text-gray-400 text-xs mt-1 font-normal"
+          >
+            {{ $t(item.description) }}
+          </p>
+        </div>
 
-      <div v-if="level > 0" class="flex items-center">
-        <SharedIcon name="chevron" class="rotate-180" is-sm />
+        <div v-if="level > 0" class="flex items-center">
+          <SharedIcon name="chevron" class="rotate-180" is-sm />
+        </div>
       </div>
     </div>
 
@@ -129,7 +131,7 @@ function close() {
         class="absolute"
         :class="{
           'top-full left-0': level === 0,
-          'top-0 left-full': level > 0
+          'top-0 right-full': level > 0
         }"
       >
         <div

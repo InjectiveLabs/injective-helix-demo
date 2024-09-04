@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import { getDepositMenuItem, PORTFOLIO_MENU_ITEM } from '@/app/data/menu'
+import { MenuItemType } from '~/types'
 
+const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const depositMenuItem = getDepositMenuItem()
+const depositMenuItem = computed(() => {
+  const item = getDepositMenuItem()
+
+  return !appStore.devMode && item.type === MenuItemType.Dropdown
+    ? {
+        ...item,
+        items: item.items.filter((item) => !item.devOnly)
+      }
+    : item
+})
 </script>
 
 <template>
