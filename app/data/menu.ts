@@ -7,7 +7,8 @@ import {
   MenuItemType,
   PortfolioSubPage,
   TradingInterface,
-  TradingBotsSubPage
+  TradingBotsSubPage,
+  LeaderboardSubPage
 } from '@/types'
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -103,11 +104,6 @@ export const MENU_ITEMS: MenuItem[] = [
       }
     ]
   }
-  // {
-  //   type: MenuItemType.Link,
-  //   label: 'navigation.leaderboard',
-  //   to: { name: MainPage.PnlLeaderboard }
-  // }
 ]
 
 export const USER_MENU_ITEMS: MenuItem[] = [
@@ -222,6 +218,28 @@ export const getDepositMenuItem = (): MenuItem => ({
       description: 'navigation.getInjDescription',
       to: 'https://injective.com/getinj/#getinj',
       isExternal: true
+    },
+    {
+      type: MenuItemType.Dropdown,
+      label: 'navigation.leaderboard.title',
+      description: 'navigation.leaderboard.title',
+      devOnly: true,
+      items: [
+        {
+          type: MenuItemType.Link,
+          isExact: true,
+          name: LeaderboardSubPage.Pnl,
+          label: 'navigation.leaderboard.pnl.title',
+          description: 'navigation.leaderboard.pnl.description',
+          to: { name: LeaderboardSubPage.Pnl }
+        },
+        {
+          type: MenuItemType.Link,
+          label: 'navigation.leaderboard.competition.title',
+          description: 'navigation.leaderboard.competition.description',
+          to: { name: LeaderboardSubPage.Competition }
+        }
+      ]
     }
   ]
 })

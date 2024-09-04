@@ -93,11 +93,11 @@ const options = computed(
 
 onMounted(() => {
   Promise.all([
+    sharedWalletStore.checkIsBitGetInstalled(),
     sharedWalletStore.checkIsMetamaskInstalled(),
-    sharedWalletStore.checkIsTrustWalletInstalled(),
-    sharedWalletStore.checkIsPhantomWalletInstalled(),
     sharedWalletStore.checkIsOkxWalletInstalled(),
-    sharedWalletStore.checkIsBitGetInstalled()
+    sharedWalletStore.checkIsTrustWalletInstalled(),
+    sharedWalletStore.checkIsPhantomWalletInstalled()
   ]).finally(() => status.setIdle())
 })
 
@@ -164,7 +164,7 @@ watch(isModalOpen, (newShowModalState) => {
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
-    <div class="py-4">
+    <div class="py-4 -mt-6">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
@@ -191,7 +191,7 @@ watch(isModalOpen, (newShowModalState) => {
         <LayoutWalletTrezor />
       </div>
 
-      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg">
+      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
         <p class="text-gray-400 font-semibold text-xs mb-2">
           {{ $t('common.popular') }}
         </p>

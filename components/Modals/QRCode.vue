@@ -32,9 +32,7 @@ function onCopyAddress() {
     @modal:closed="closeModal"
   >
     <section class="text-center">
-      <!-- <h3 class="text-lg font-semibold">{{ $t('common.qrCode') }}</h3> -->
-
-      <SharedQRCodeNew
+      <SharedQRCode
         class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-4"
         :text="sharedWalletStore.injectiveAddress"
       />

@@ -1,6 +1,10 @@
+import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
 import { indexerGrpcArchiverApi } from '@/app/Services'
+import { LeaderboardType } from '@/types'
 
 type LeaderboardStoreState = {
+  pnlLeaderboard?: PnlLeaderboard
+  competitionLeaderboard?: PnlLeaderboard | VolLeaderboard
   historicalBalance: {
     time: number
     value: number
@@ -24,6 +28,8 @@ enum LeaderboardResolution {
 }
 
 const initialStateFactory = (): LeaderboardStoreState => ({
+  pnlLeaderboard: undefined,
+  competitionLeaderboard: undefined,
   historicalBalance: [],
   historicalPnl: [],
   historicalVolume: []
@@ -98,6 +104,49 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       leaderboardStore.$patch({
         historicalVolume: historicalVolume.reverse()
+      })
+    },
+
+    async fetchPnlLeaderboard(resolution: string) {
+      const leaderboardStore = useLeaderboardStore()
+
+      leaderboardStore.$patch({
+        pnlLeaderboard:
+          await indexerGrpcArchiverApi.fetchPnlLeaderboardFixedResolution({
+            resolution
+          })
+      })
+    },
+    async fetchCompetitionLeaderboard({
+      type,
+      duration
+    }: {
+      type: LeaderboardType
+      duration: {
+        startDate: string
+        endDate: string
+      }
+    }) {
+      const leaderboardStore = useLeaderboardStore()
+
+      if (type === LeaderboardType.Pnl) {
+        leaderboardStore.$patch({
+          competitionLeaderboard:
+            await indexerGrpcArchiverApi.fetchPnlLeaderboard({
+              endDate: duration.endDate,
+              startDate: duration.startDate
+            })
+        })
+
+        return
+      }
+
+      leaderboardStore.$patch({
+        competitionLeaderboard:
+          await indexerGrpcArchiverApi.fetchVolLeaderboard({
+            endDate: duration.endDate,
+            startDate: duration.startDate
+          })
       })
     }
   }

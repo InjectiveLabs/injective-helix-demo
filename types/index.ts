@@ -105,6 +105,7 @@ type MenuItemBase = {
   isExternal?: boolean
   isExact?: boolean
   name?: string
+  devOnly?: boolean
 }
 
 export type MenuItem =
