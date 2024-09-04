@@ -40,6 +40,7 @@ export default {
     docs: 'docs',
     back: 'Back',
     base: 'Base',
+    copy: 'Copy',
     view: 'View',
     open: 'Open',
     quote: 'Quote',

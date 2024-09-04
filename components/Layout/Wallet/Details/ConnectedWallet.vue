@@ -55,7 +55,8 @@ function openQrCodeModal() {
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <AssetQRCode
+        <SharedIcon
+          name="qrcode"
           class="hover:text-blue-500 h-4 w-4"
           @click="openQrCodeModal"
         />
