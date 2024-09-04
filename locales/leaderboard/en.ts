@@ -1,33 +1,62 @@
-import { I18nMessageFunction } from '@/types'
+import {
+  LeaderboardSubPage,
+  I18nMessageFunction,
+  LeaderboardDuration
+} from '@/types'
 
 export default {
   leaderboard: {
     title: 'Leaderboard',
-    description: 'Top 100 weekly traders by PnL',
+    description: 'Weekly top 100 traders with the highest trading PnL',
+
+    pnl: {
+      duration: {
+        [LeaderboardDuration.OneDay]: '1 Day',
+        [LeaderboardDuration.All]: 'All Time',
+        [LeaderboardDuration.OneWeek]: '1 Week',
+        [LeaderboardDuration.OneMonth]: '1 Month'
+      },
+      share: 'Share',
+      noPnlData: 'No PnL results found',
+
+      currentDuration: ({ named }: I18nMessageFunction) =>
+        `Trading PnL (${named('duration')})`,
+      timePeriod: ({ named }: I18nMessageFunction) =>
+        `Time Period: ${named('startDate')} - ${named('endDate')}`
+    },
+
+    competition: {
+      keepGoing: 'Keep going 💪',
+      currentLeader: 'Current leader',
+      currentLeaderFlame: '🔥🔥',
+      currentLeaderMobile: '🔥',
+      noVolumeData: 'No trading competition results found',
+      competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
+        interpolate(['Time Remaining: ', named('duration')]),
+      banner: {
+        title: 'Trade & win a Mercedes G Wagon',
+        description:
+          'Placeholder banner for now bitcoin ethereum dogecoin litecoin. WAX stellar nexo cardano BitTorrent audius. Velas dash ethereum kadena horizen.'
+      }
+    },
+
     tabs: {
-      overall: 'Overall',
-      volume: 'Volume',
-      roi: 'ROI',
-      pnl: 'PNL',
-      summerTradingCompetition: 'Summer Trading competition'
+      [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
+      [LeaderboardSubPage.Competition]: 'Trading Competition'
     },
-    lastUpdatedAt: ({ named }: I18nMessageFunction) =>
-      `Last updated at ${named('timestamp')}`,
-    resolution: 'Time interval',
-    resolutionOptions: {
-      daily: 'Daily',
-      weekly: 'Weekly'
+
+    header: {
+      rank: 'Rank',
+      address: 'Address',
+      tradingPnl: 'Trading PnL (USD)',
+      weeklyROI: 'Weekly ROI',
+      allMarkestVolume: 'All Markets Trading Volume (USD)',
+      volume: 'Trading Volume (USD)',
+      numberOfEntries: 'Number of Entries',
+      entries: 'Entries'
     },
-    rank: 'Rank',
-    address: 'Address',
-    weeklyROI: 'Weekly ROI',
-    weeklyPnL: 'Weekly Trading PnL',
-    volume: 'Volume (USD)',
-    volumePercentage: '% Volume',
-    emptyHeader: 'No rankings found',
-    emptyDescription: 'No rankings found',
-    viewOnExplorer: 'View on Explorer',
-    tooltip:
-      'This profit and loss leaderboard reflects the approximate realized profit and loss from positions opened and closed on Helix since May 29, 2024. The leaderboard is purely for illustrative purposes and should not be used for any tax reporting obligations.'
+
+    myStats: 'My Stats',
+    viewMore: 'View More'
   }
 }

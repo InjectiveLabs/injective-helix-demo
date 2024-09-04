@@ -31,6 +31,7 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  SharePnl = 'share-pnl',
   SgtBanner = 'sgt-banner',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
@@ -45,7 +46,6 @@ export enum Modal {
   PostOnlyMode = 'post-only-mode',
   GeoRestricted = 'geo-restricted',
   GasFeeRebate = 'gas-fee-rebate',
-  SharePosition = 'share-position',
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   ScavengerHunt = 'scavenger-hunt',
@@ -69,10 +69,10 @@ export enum Modal {
   MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
+  NewFeatureTalisLaunch = 'new-feature-talis-launch',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
-  TransferToMainSubaccount = 'transfer-to-main-subaccount',
-  NewFeatureTalisLaunch = 'new-feature-talis-launch'
+  TransferToMainSubaccount = 'transfer-to-main-subaccount'
 }
 
 export enum Breakpoint {
@@ -194,6 +194,7 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
+  SharePnlOpened = 'share-pnl-opened',
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
@@ -288,7 +289,8 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  scheduledUpgradeJanuary = 'scheduled-upgrade-january'
+  scheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  scheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024'
 }
 
 export enum SubaccountBalanceStreamType {
@@ -529,4 +531,16 @@ export enum LiquidityProvisionTypeOption {
   All = 'All',
   Helix = 'Helix',
   Mito = 'Mito'
+}
+
+export enum LeaderboardType {
+  Pnl = 'pnl_leaderboard',
+  Volume = 'volume_leaderboard'
+}
+
+export enum LeaderboardDuration {
+  All = 'ALL',
+  OneMonth = '1M',
+  OneWeek = '1W',
+  OneDay = '1D'
 }

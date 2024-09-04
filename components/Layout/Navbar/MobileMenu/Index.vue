@@ -6,11 +6,21 @@ import {
 } from '@/app/data/menu'
 import { MenuItemType } from '@/types'
 
+const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
-const depositMenuItem = getDepositMenuItem()
+const depositMenuItem = computed(() => {
+  const item = getDepositMenuItem()
+
+  return !appStore.devMode && item.type === MenuItemType.Dropdown
+    ? {
+        ...item,
+        items: item.items.filter((item) => !item.devOnly)
+      }
+    : item
+})
 
 function close() {
   isOpen.value = false

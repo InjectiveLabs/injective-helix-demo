@@ -24,11 +24,11 @@ import {
 } from '@/types'
 
 const route = useRoute()
+const appStore = useAppStore()
 const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
-const appStore = useAppStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const props = withDefaults(
@@ -114,13 +114,14 @@ const filteredMarkets = computed(() =>
       const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||
+        props.activeType === MarketTypeOption.Permissionless
 
       return (
-        isPartOfCategory &&
+        isQuotePair &&
         isPartOfType &&
         isPartOfSearch &&
-        isQuotePair &&
+        isPartOfCategory &&
         (isLowVolumeMarket || isOLPMarket || props.search)
       )
     })

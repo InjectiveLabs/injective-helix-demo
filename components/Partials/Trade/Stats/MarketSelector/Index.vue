@@ -15,6 +15,10 @@ const isLocked = useScrollLock(document.documentElement)
 const el = ref<HTMLElement | null>(null)
 const toggleEl = ref<HTMLElement | null>(null)
 
+const isBuidlPerpMarket = computed(
+  () => props.market.slug === 'buidl-usdt-perp'
+)
+
 function toggleOpen() {
   appStore.marketsOpen = !appStore.marketsOpen
 }
@@ -48,12 +52,28 @@ watch(
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
     <div class="flex items-center space-x-2 justify-center relative">
       <div>
-        <p
-          class="uppercase tracking-wider font-bold text-sm"
-          :data-cy="dataCyTag(CommonCyTags.MarketPair)"
-        >
-          {{ market.ticker }}
-        </p>
+        <CommonHeaderTooltip :is-disabled="!isBuidlPerpMarket">
+          <span
+            class="uppercase tracking-wider font-bold text-sm"
+            :data-cy="dataCyTag(CommonCyTags.MarketPair)"
+          >
+            {{ market.ticker }}
+          </span>
+
+          <template #tooltip>
+            <i18n-t keypath="markets.buidlTooltip">
+              <template #docs>
+                <NuxtLink
+                  target="_blank"
+                  class="text-blue-500 hover:text-opacity-90"
+                  to="https://docs.trading.injective.network/learn/index-perps"
+                >
+                  {{ $t('common.docs') }}
+                </NuxtLink>
+              </template>
+            </i18n-t>
+          </template>
+        </CommonHeaderTooltip>
 
         <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
       </div>

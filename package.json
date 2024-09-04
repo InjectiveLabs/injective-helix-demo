@@ -82,7 +82,6 @@
     "@types/lodash": "^4.14.197",
     "@types/mixpanel-browser": "^2.47.5",
     "@types/node": "^20.4.9",
-    "@types/qrcode": "^1.5.5",
     "@types/rimraf": "^4.0.5",
     "@types/vue-select": "^3.16.2",
     "@vitest/coverage-c8": "^0.33.0",

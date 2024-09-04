@@ -37,7 +37,13 @@ export default {
       nft: 'NFT/Gaming',
       'liquid-staking': 'Liquid Staking',
       stablecoins: 'Stablecoins'
-    }
+    },
+    buidlTooltip: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'This product is an Index Perp. For more information, please refer to the ',
+        named('docs'),
+        '.'
+      ])
   },
 
   marketPage: {

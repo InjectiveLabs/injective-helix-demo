@@ -86,11 +86,14 @@ watchDebounced(
           }"
         >
           <div
-            v-if="$slots.title"
-            class="flex items-center justify-between"
-            :class="{ 'mb-6 px-6 pt-6': !isDense }"
+            class="flex items-center"
+            :class="[
+              { 'px-6 pt-6': !isDense },
+              $slots.title ? 'justify-between mb-6 ' : 'justify-end mb-4'
+            ]"
           >
             <div
+              v-if="$slots.title"
               class="text-sm uppercase text-gray-100 font-semibold flex-grow"
             >
               <slot name="title" />
@@ -99,18 +102,10 @@ watchDebounced(
             <div v-if="!isHideCloseButton">
               <SharedIcon
                 name="close"
-                class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+                class="h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
                 @click="close"
               />
             </div>
-          </div>
-
-          <div v-else class="relative">
-            <SharedIcon
-              name="close"
-              class="top-4 right-4 absolute h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
-              @click="close"
-            />
           </div>
 
           <div

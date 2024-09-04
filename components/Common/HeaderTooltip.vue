@@ -27,8 +27,8 @@ withDefaults(
           textColorClass,
           borderColorClass,
           {
-            'text-xs normal-case border-dashed border-b  cursor-pointer':
-              !isNotStyled
+            'text-xs normal-case border-dashed': !isNotStyled,
+            'border-b cursor-pointer': !isNotStyled && !isDisabled
           }
         ]"
       >
@@ -37,7 +37,9 @@ withDefaults(
     </template>
 
     <template #content>
-      {{ tooltip }}
+      <slot name="tooltip">
+        {{ tooltip }}
+      </slot>
     </template>
   </SharedHoverMenu>
 </template>
