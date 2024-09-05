@@ -18,10 +18,10 @@ import {
 } from '@/types'
 
 const props = defineProps({
-  isMaxHidden: Boolean,
-  isUsdVisible: Boolean,
   isDisabled: Boolean,
   isRequired: Boolean,
+  isMaxHidden: Boolean,
+  isUsdVisible: Boolean,
   isBalanceHidden: Boolean,
   shouldCheckBalance: Boolean,
   isTokenSelectorDisabled: Boolean,
@@ -32,9 +32,8 @@ const props = defineProps({
   },
 
   modal: {
-    required: false,
-    default: Modal.TokenSelector,
-    type: String as PropType<Modal>
+    type: String as PropType<Modal>,
+    default: Modal.TokenSelector
   },
 
   debounce: {
@@ -49,7 +48,6 @@ const props = defineProps({
 
   tensMultiplier: {
     type: Number,
-    required: false,
     default: undefined
   },
 

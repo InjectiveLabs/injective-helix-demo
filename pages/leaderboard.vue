@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { LeaderboardSubPage } from '@/types'
+import { LeaderboardSubPage, MainPage } from '@/types'
+
+const route = useRoute()
 
 definePageMeta({
   middleware: [
-    function () {
+    () => {
       const appStore = useAppStore()
 
       if (!appStore.devMode) {
-        return navigateTo('/')
+        return navigateTo({ name: MainPage.Index })
       }
     }
   ]
 })
-
-const route = useRoute()
 </script>
 
 <template>

@@ -3,9 +3,8 @@ import { Modal } from '@/types'
 
 const props = defineProps({
   modal: {
-    required: false,
-    default: Modal.TokenSelector,
-    type: String as PropType<Modal>
+    type: String as PropType<Modal>,
+    default: Modal.TokenSelector
   }
 })
 
