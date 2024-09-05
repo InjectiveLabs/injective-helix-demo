@@ -368,7 +368,7 @@ useIntervalFn(() => {
 
         <div v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
           <AppTooltip
-            :content="`${$t('trade.annualized')} ${
+            :content="`${$t('trade.annualized')}: ${
               fundingRate.gt(0) ? '+' : ''
             }${annualizedFundingRateToString}%`"
           >
