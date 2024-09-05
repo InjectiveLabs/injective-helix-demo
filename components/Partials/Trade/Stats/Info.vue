@@ -3,6 +3,10 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketChange, SharedMarketType } from '@shared/types'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_FUNDING_RATE_DECIMALS
+} from '@/app/utils/constants'
 import { stableCoinSymbols } from '@/app/data/token'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
@@ -186,7 +190,11 @@ const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
   })
 )
 
-const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
+const {
+  valueToBigNumber: fundingRate,
+  valueToFixed: fundingRateToFixed,
+  valueToString: fundingRateToString
+} = useSharedBigNumberFormatter(
   computed(() => {
     const market = props.market as UiDerivativeMarket
 
@@ -220,19 +228,25 @@ const { valueToBigNumber: fundingRate } = useSharedBigNumberFormatter(
     }
 
     return new BigNumberInBase(estFundingRate).multipliedBy(100)
-  })
-)
-
-const { valueToBigNumber: annualizedFundingRate } = useSharedBigNumberFormatter(
-  computed(() => {
-    const hoursInYear = 365 * 24
-
-    return fundingRate.value.times(hoursInYear)
   }),
   {
-    decimalPlaces: 5
+    roundingMode: BigNumberInBase.ROUND_DOWN,
+    decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
   }
 )
+
+const { valueToString: annualizedFundingRateToString } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      const hoursInYear = 365 * 24
+
+      return new BigNumberInBase(fundingRateToFixed.value).times(hoursInYear)
+    }),
+    {
+      roundingMode: BigNumberInBase.ROUND_DOWN,
+      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    }
+  )
 
 useIntervalFn(() => {
   now.value = Date.now()
@@ -356,10 +370,7 @@ useIntervalFn(() => {
           <AppTooltip
             :content="`${$t('trade.annualized')} ${
               fundingRate.gt(0) ? '+' : ''
-            } ${annualizedFundingRate.toFormat(
-              5,
-              BigNumberInBase.ROUND_DOWN
-            )}%`"
+            }${annualizedFundingRateToString}%`"
           >
             <span
               :class="{
@@ -368,10 +379,7 @@ useIntervalFn(() => {
               }"
               class="cursor-pointer"
             >
-              {{
-                (fundingRate.gt(0) ? '+' : '') +
-                fundingRate.toFormat(5, BigNumberInBase.ROUND_DOWN)
-              }}%
+              {{ (fundingRate.gt(0) ? '+' : '') + fundingRateToString }}%
             </span>
           </AppTooltip>
         </div>
