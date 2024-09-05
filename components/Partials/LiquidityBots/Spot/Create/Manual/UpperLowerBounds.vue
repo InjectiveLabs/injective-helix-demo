@@ -8,8 +8,8 @@ import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isRebalanceBeforeCreationChecked: boolean
     market: UiSpotMarket
+    isRebalanceBeforeCreationChecked: boolean
   }>(),
   {
     isRebalanceBeforeCreationChecked: false

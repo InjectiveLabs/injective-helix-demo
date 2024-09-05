@@ -37,8 +37,8 @@ const defaultChartOptions = {
 
 const props = withDefaults(
   defineProps<{
-    shouldFitContentOnResize?: boolean
     type?: string
+    shouldFitContentOnResize?: boolean
     data: (LineData<number> | WhitespaceData<number>)[]
     autosize?: boolean
     chartOptions?: DeepPartial<TimeChartOptions>
@@ -51,9 +51,9 @@ const props = withDefaults(
     width?: number
   }>(),
   {
-    shouldFitContentOnResize: false,
     type: 'line',
     autosize: true,
+    shouldFitContentOnResize: false,
     chartOptions: () => ({}) as DeepPartial<TimeChartOptions>,
     timeScaleOptions: () => ({
       borderColor: 'transparent'

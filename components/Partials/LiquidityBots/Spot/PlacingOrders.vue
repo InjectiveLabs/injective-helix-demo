@@ -3,8 +3,8 @@ import { UiSpotMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    subaccountId: string
     market: UiSpotMarket
+    subaccountId: string
   }>(),
   {}
 )

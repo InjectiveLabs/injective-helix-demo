@@ -38,24 +38,27 @@ const defaultChartOptions = {
 
 const props = withDefaults(
   defineProps<{
-    isPositive: boolean
-    shouldFitContentOnResize: boolean
     type: string
     data: (LineData<number> | WhitespaceData<number>)[]
+    label: string
+    width?: number
+    height?: number
     autosize: boolean
+    isPositive: boolean
     chartOptions: DeepPartial<TimeChartOptions>
     seriesOptions: DeepPartial<AreaStyleOptions & SeriesOptionsCommon>
     timeScaleOptions: DeepPartial<TimeScaleOptions>
     priceScaleOptions: DeepPartial<PriceScaleOptions>
-    label: string
-    height?: number
-    width?: number
+    shouldFitContentOnResize: boolean
   }>(),
   {
-    isPositive: false,
-    shouldFitContentOnResize: false,
     type: 'area',
     autosize: true,
+    label: '',
+    width: undefined,
+    height: undefined,
+    isPositive: false,
+
     chartOptions: () => ({}) as DeepPartial<TimeChartOptions>,
     timeScaleOptions: () => ({
       borderColor: 'transparent'
@@ -63,9 +66,7 @@ const props = withDefaults(
     priceScaleOptions: () => ({
       borderColor: 'transparent'
     }),
-    label: '',
-    height: undefined,
-    width: undefined
+    shouldFitContentOnResize: false
   }
 )
 

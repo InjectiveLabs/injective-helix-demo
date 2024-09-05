@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    isAlignStart?: boolean
     title: string
+    isAlignStart?: boolean
   }>(),
   {
     isAlignStart: false

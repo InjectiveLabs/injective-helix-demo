@@ -4,17 +4,17 @@ const props = withDefaults(
     isLg?: boolean
     isMd?: boolean
     isTight?: boolean
+    bgColor?: string
     isNoPadding?: boolean
     isNoTopBorderRadius?: boolean
-    bgColor?: string
   }>(),
   {
     isLg: false,
     isMd: false,
     isTight: false,
+    bgColor: 'bg-brand-800',
     isNoPadding: false,
-    isNoTopBorderRadius: false,
-    bgColor: 'bg-brand-800'
+    isNoTopBorderRadius: false
   }
 )
 

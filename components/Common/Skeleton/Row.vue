@@ -3,16 +3,16 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
+    rows: number
     status?: Status
     columns: number
-    rows: number
     height?: number
   }>(),
   {
-    status: () => new Status(StatusType.Loading),
-    columns: 5,
     rows: 5,
-    height: undefined
+    status: () => new Status(StatusType.Loading),
+    height: undefined,
+    columns: 5
   }
 )
 </script>

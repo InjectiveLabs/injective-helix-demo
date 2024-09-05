@@ -26,8 +26,8 @@ const props = withDefaults(
     rewards?: Coin[]
     decimals: number
     isVolume?: boolean
-    isReadyToClaim?: boolean
     percentage: number
+    isReadyToClaim?: boolean
   }>(),
   {
     rewards: () => [],

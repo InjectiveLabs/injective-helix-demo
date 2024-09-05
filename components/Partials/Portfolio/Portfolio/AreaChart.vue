@@ -6,8 +6,8 @@ import { colors } from '@/nuxt-config/tailwind'
 
 const props = withDefaults(
   defineProps<{
-    isProfit: boolean
     series: number[][]
+    isProfit: boolean
   }>(),
   {
     isProfit: false

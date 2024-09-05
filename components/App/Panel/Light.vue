@@ -3,14 +3,14 @@ const slots = useSlots()
 
 withDefaults(
   defineProps<{
-    isDense: boolean
     title: string
+    isDense: boolean
     portalName: string
     cardWrapperClass: string
   }>(),
   {
-    isDense: false,
     title: '',
+    isDense: false,
     portalName: '',
     cardWrapperClass: ''
   }

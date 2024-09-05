@@ -16,15 +16,15 @@ import {
 const props = withDefaults(
   defineProps<{
     isBuy?: boolean
-    isActive?: boolean
-    record: OrderbookFormattedRecord
     index?: number
+    record: OrderbookFormattedRecord
+    isActive?: boolean
     highestVolume: string
   }>(),
   {
     isBuy: false,
-    isActive: false,
-    index: -1
+    index: -1,
+    isActive: false
   }
 )
 

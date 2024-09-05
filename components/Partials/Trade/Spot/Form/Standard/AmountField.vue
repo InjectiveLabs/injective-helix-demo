@@ -28,13 +28,13 @@ const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
-    totalWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    totalWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
   }>(),
   {
-    totalWithFee: undefined,
     quantity: undefined,
+    totalWithFee: undefined,
     minimumAmountInQuote: undefined
   }
 )

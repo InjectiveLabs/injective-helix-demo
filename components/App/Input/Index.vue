@@ -4,21 +4,21 @@ const slots = useSlots()
 const props = withDefaults(
   defineProps<{
     isSm?: boolean
+    errors?: string[]
     isValid?: boolean
     isNoPadding?: boolean
-    isTransparentBg?: boolean
-    errors?: string[]
     inputClasses?: string
+    isTransparentBg?: boolean
     wrapperClasses?: string
   }>(),
   {
     isSm: false,
+    errors: () => [],
     isValid: false,
     isNoPadding: false,
-    isTransparentBg: false,
-    errors: () => [],
     inputClasses: '',
-    wrapperClasses: ''
+    wrapperClasses: '',
+    isTransparentBg: false
   }
 )
 

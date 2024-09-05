@@ -1,8 +1,8 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    isAscending?: boolean
     sortBy: string
+    isAscending?: boolean
   }>(),
   {
     isAscending: false

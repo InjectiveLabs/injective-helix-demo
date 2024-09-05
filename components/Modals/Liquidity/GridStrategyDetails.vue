@@ -7,8 +7,8 @@ const modalStore = useModalStore()
 withDefaults(
   defineProps<{ strategy?: TradingStrategy; market?: UiSpotMarket }>(),
   {
-    strategy: undefined,
-    market: undefined
+    market: undefined,
+    strategy: undefined
   }
 )
 

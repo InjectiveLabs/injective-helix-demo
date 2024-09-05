@@ -16,15 +16,15 @@ const props = withDefaults(
   }>(),
   {
     isSm: false,
+    errors: () => [],
     isValid: false,
     isRight: false,
     isDisabled: false,
     isNoPadding: false,
-    isDisabledGray: false,
-    isTransparentBg: false,
-    errors: () => [],
     inputClasses: '',
-    wrapperClasses: ''
+    wrapperClasses: '',
+    isDisabledGray: false,
+    isTransparentBg: false
   }
 )
 

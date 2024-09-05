@@ -4,23 +4,23 @@ import type { FactoryOpts } from 'imask'
 
 const props = withDefaults(
   defineProps<{
-    noStyle?: boolean
-    autofix?: boolean
-    wrapperClass?: string
-    modelValue?: string
-    decimals?: number
     max?: number
     min?: number
+    noStyle?: boolean
+    autofix?: boolean
+    decimals?: number
+    modelValue?: string
+    wrapperClass?: string
   }>(),
   {
-    noStyle: false,
-    autofix: false,
-    wrapperClass: '',
-    modelValue: '',
-    decimals: 18,
     // eslint-disable-next-line
     max: 9999999999999999999,
-    min: undefined
+    min: undefined,
+    noStyle: false,
+    autofix: false,
+    decimals: 18,
+    modelValue: '',
+    wrapperClass: ''
   }
 )
 

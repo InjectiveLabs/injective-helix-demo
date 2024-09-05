@@ -2,8 +2,8 @@
 const props = withDefaults(
   defineProps<{ modelValue: boolean; disabled?: boolean }>(),
   {
-    modelValue: false,
-    disabled: false
+    disabled: false,
+    modelValue: false
   }
 )
 

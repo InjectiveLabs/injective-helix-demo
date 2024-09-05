@@ -3,8 +3,8 @@ import { MarketCategoryType } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isActive?: boolean
     type: MarketCategoryType
+    isActive?: boolean
   }>(),
   {
     isActive: false

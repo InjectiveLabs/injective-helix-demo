@@ -7,8 +7,8 @@ const { $onError } = useNuxtApp()
 const props = withDefaults(
   defineProps<{
     loop: boolean
-    autoplay: boolean
     name: string
+    autoplay: boolean
     animationData?: object
   }>(),
   {

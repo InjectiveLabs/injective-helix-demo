@@ -13,9 +13,9 @@ const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
-    isDisabled?: boolean
     limit: number
     guild: Guild
+    isDisabled?: boolean
     guildInvitationHash: string
   }>(),
   {

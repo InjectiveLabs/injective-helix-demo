@@ -3,8 +3,8 @@ import { getSubaccountLabel } from '@/app/utils/helpers'
 
 const props = withDefaults(
   defineProps<{
-    subaccountIds: string[]
     modelValue: string
+    subaccountIds: string[]
   }>(),
   {
     subaccountIds: () => [],

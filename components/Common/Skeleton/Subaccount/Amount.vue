@@ -5,14 +5,14 @@ import { PortfolioStatusKey } from '@/types'
 withDefaults(
   defineProps<{
     size?: number
-    length?: number
     width?: number
+    length?: number
     spacing?: number
   }>(),
   {
     size: 22,
-    length: 5,
     width: 10,
+    length: 5,
     spacing: 4
   }
 )

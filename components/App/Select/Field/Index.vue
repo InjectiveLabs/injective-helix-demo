@@ -3,24 +3,24 @@ import { SharedDropdownOptionWithToken } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
-    isClearable?: boolean
-    isSearchable?: boolean
-    isDisabled?: boolean
     options?: SharedDropdownOptionWithToken[]
+    isDisabled?: boolean
     modelValue?: string
+    isClearable?: boolean
     placeholder?: string
-    selectedClass?: string
     popperClass?: string
+    isSearchable?: boolean
+    selectedClass?: string
   }>(),
   {
-    isClearable: false,
-    isSearchable: false,
-    isDisabled: false,
     options: () => [],
+    isDisabled: false,
     modelValue: '',
+    isClearable: false,
     placeholder: 'Select',
-    selectedClass: '',
-    popperClass: 'dropdown'
+    popperClass: 'dropdown',
+    isSearchable: false,
+    selectedClass: ''
   }
 )
 

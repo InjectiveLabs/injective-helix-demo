@@ -6,10 +6,10 @@ const setFormValues = useSetFormValues()
 
 const props = withDefaults(
   defineProps<{
+    grids: string
     market: UiSpotMarket
     upperPrice: string
     lowerPrice: string
-    grids: string
     decimalPlaces?: number
   }>(),
   {

@@ -3,20 +3,20 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = withDefaults(
   defineProps<{
-    isEmitting?: boolean
+    status?: Status
+    isHelix?: boolean
     noPadding?: boolean
     isLoading?: boolean
-    isHelix?: boolean
-    status?: Status
+    isEmitting?: boolean
     loaderClass?: string
     wrapperClass?: string
   }>(),
   {
-    isEmitting: false,
+    status: () => new Status(StatusType.Idle),
+    isHelix: false,
     noPadding: false,
     isLoading: false,
-    isHelix: false,
-    status: () => new Status(StatusType.Idle),
+    isEmitting: false,
     loaderClass: 'relative',
     wrapperClass: ''
   }

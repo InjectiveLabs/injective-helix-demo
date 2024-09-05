@@ -43,12 +43,12 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     size?: ButtonProps['size']
+    class?: string
     status?: Status
     variant?: ButtonProps['variant']
     tooltip?: string
     disabled?: boolean
     isLoading?: boolean
-    class?: string
   }>(),
   {
     size: 'md',

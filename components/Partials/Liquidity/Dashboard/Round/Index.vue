@@ -3,9 +3,9 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    activeRound: Number
-    campaigns: Campaign[]
     round: Number
+    campaigns: Campaign[]
+    activeRound: Number
   }>(),
   {}
 )

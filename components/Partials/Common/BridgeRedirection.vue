@@ -3,16 +3,16 @@ import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
 const props = withDefaults(
   defineProps<{
-    isDeposit?: boolean
-    isTransfer?: boolean
     denom?: string
     symbol?: string
+    isDeposit?: boolean
+    isTransfer?: boolean
   }>(),
   {
-    isDeposit: false,
-    isTransfer: false,
     denom: '',
-    symbol: ''
+    symbol: '',
+    isDeposit: false,
+    isTransfer: false
   }
 )
 

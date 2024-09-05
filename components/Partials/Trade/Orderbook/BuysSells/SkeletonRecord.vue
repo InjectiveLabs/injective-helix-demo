@@ -1,8 +1,8 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    isBuy?: boolean
     index: number
+    isBuy?: boolean
   }>(),
   {
     isBuy: false

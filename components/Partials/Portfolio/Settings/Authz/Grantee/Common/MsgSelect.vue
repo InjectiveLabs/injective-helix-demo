@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    modelValue: string[]
     value: string
     label: string
+    modelValue: string[]
   }>(),
   {}
 )

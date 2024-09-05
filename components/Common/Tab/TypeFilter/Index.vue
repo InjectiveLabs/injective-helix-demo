@@ -3,14 +3,14 @@ import { OrderTypeFilter } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isDerivative?: boolean
     isTrigger?: boolean
     modelValue: string
+    isDerivative?: boolean
   }>(),
   {
-    isDerivative: false,
     isTrigger: false,
-    modelValue: ''
+    modelValue: '',
+    isDerivative: false
   }
 )
 

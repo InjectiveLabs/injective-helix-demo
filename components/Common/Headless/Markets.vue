@@ -33,20 +33,20 @@ const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
-    isLowVolumeMarketsVisible?: boolean
-    activeCategory: MarketCategoryType
-    activeQuote: MarketQuoteType
-    activeType: MarketTypeOption
-    markets: UiMarketAndSummaryWithVolumeInUsd[]
     search?: string
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+    activeType: MarketTypeOption
+    activeQuote: MarketQuoteType
+    activeCategory: MarketCategoryType
+    isLowVolumeMarketsVisible?: boolean
   }>(),
   {
-    isLowVolumeMarketsVisible: false,
-    activeCategory: MarketCategoryType.All,
-    activeQuote: MarketQuoteType.All,
-    activeType: MarketTypeOption.All,
+    search: '',
     markets: () => [],
-    search: ''
+    activeType: MarketTypeOption.All,
+    activeQuote: MarketQuoteType.All,
+    activeCategory: MarketCategoryType.All,
+    isLowVolumeMarketsVisible: false
   }
 )
 

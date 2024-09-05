@@ -19,9 +19,9 @@ defineExpose({ fitContent, getChart, updateCandlesticksData })
 
 const props = withDefaults(
   defineProps<{
-    candlesticksData: (CandlestickData<Time> | WhitespaceData<Time>)[]
-    volumeData?: (HistogramData<Time> | WhitespaceData<Time>)[]
     tickSize: number
+    volumeData?: (HistogramData<Time> | WhitespaceData<Time>)[]
+    candlesticksData: (CandlestickData<Time> | WhitespaceData<Time>)[]
   }>(),
   {
     volumeData: undefined

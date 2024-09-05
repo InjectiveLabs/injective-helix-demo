@@ -7,11 +7,11 @@ const router = useRouter()
 
 const props = withDefaults(
   defineProps<{
-    isLowVolumeMarketsVisible?: boolean
     search: string
     activeType: string
     activeQuote: MarketQuoteType
     activeCategory: MarketCategoryType
+    isLowVolumeMarketsVisible?: boolean
   }>(),
   {
     isLowVolumeMarketsVisible: false

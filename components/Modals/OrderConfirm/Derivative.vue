@@ -6,19 +6,19 @@ import { Modal, TradeExecutionType, UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isReduceOnly?: boolean
     amount: BigNumberInBase
     market: UiDerivativeMarket
-    orderType?: OrderSide
     price?: BigNumberInBase
+    orderType?: OrderSide
+    isReduceOnly?: boolean
     tradingType?: TradeExecutionType
     triggerPrice?: BigNumberInBase
   }>(),
   {
-    isReduceOnly: false,
-    orderType: '' as OrderSide,
     price: () => ZERO_IN_BASE,
+    orderType: '' as OrderSide,
     tradingType: '' as TradeExecutionType,
+    isReduceOnly: false,
     triggerPrice: () => ZERO_IN_BASE
   }
 )

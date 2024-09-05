@@ -3,8 +3,8 @@ import { UiSpotMarket, InvestmentTypeGst } from '@/types'
 
 withDefaults(
   defineProps<{
-    threshold: string
     market: UiSpotMarket
+    threshold: string
     investmentType?: InvestmentTypeGst
   }>(),
   {

@@ -8,12 +8,12 @@ import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isCurrentMarket?: boolean
     market: UiMarketWithToken
+    isCurrentMarket?: boolean
   }>(),
   {
-    isCurrentMarket: false,
-    market: undefined
+    market: undefined,
+    isCurrentMarket: false
   }
 )
 

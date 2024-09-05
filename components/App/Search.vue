@@ -2,13 +2,13 @@
 const props = withDefaults(
   defineProps<{
     isSm?: boolean
-    isPrefixVisible?: boolean
     inputClasses?: string
+    isPrefixVisible?: boolean
   }>(),
   {
     isSm: false,
-    isPrefixVisible: false,
-    inputClasses: ''
+    inputClasses: '',
+    isPrefixVisible: false
   }
 )
 

@@ -3,13 +3,13 @@ const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
   defineProps<{
-    includeBotsSubaccounts?: boolean
-    showLowBalance?: boolean
     wrapperClass?: string
+    showLowBalance?: boolean
+    includeBotsSubaccounts?: boolean
   }>(),
   {
-    showLowBalance: false,
-    wrapperClass: ''
+    wrapperClass: '',
+    showLowBalance: false
   }
 )
 </script>

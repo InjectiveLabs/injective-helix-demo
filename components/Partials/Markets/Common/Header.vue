@@ -3,9 +3,9 @@ import { MarketHeaderType } from '@/types'
 
 withDefaults(
   defineProps<{
+    sortBy: string
     isAscending?: boolean
     isMarketsPage?: boolean
-    sortBy: string
   }>(),
   {
     isAscending: false,

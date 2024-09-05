@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    isDisabled?: boolean
     page: number
     limit: number
     rowClass?: string
     totalCount: number
+    isDisabled?: boolean
   }>(),
   {
-    isDisabled: false,
-    rowClass: ''
+    rowClass: '',
+    isDisabled: false
   }
 )
 </script>

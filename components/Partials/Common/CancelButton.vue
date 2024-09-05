@@ -4,15 +4,15 @@ import { Status } from '@injectivelabs/utils'
 const props = withDefaults(
   defineProps<{
     isSm?: boolean
-    isDisabled?: boolean
     status?: Status
     tooltip?: string
+    isDisabled?: boolean
   }>(),
   {
     isSm: false,
-    isDisabled: false,
     status: () => new Status(),
-    tooltip: ''
+    tooltip: '',
+    isDisabled: false
   }
 )
 

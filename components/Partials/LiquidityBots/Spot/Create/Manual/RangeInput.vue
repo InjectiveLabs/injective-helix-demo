@@ -21,10 +21,10 @@ const props = withDefaults(
     max: string
     lower: string
     upper: string
-    currentPrice: string
-    orderbook?: SharedUiOrderbookWithSequence
-    decimalPlaces: number
     market?: UiSpotMarket
+    orderbook?: SharedUiOrderbookWithSequence
+    currentPrice: string
+    decimalPlaces: number
   }>(),
   {
     orderbook: undefined,

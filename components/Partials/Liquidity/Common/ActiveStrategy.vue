@@ -16,9 +16,9 @@ import { StopReason, StrategyStatus, UiSpotMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
+    market: UiSpotMarket
     isLiquidity?: boolean
     activeStrategy: TradingStrategy
-    market: UiSpotMarket
   }>(),
   {
     isLiquidity: false

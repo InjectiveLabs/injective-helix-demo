@@ -5,25 +5,25 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 
 const props = withDefaults(
   defineProps<{
+    max?: number
+    min?: number
     noStyle?: boolean
     autofix?: boolean
     disabled?: boolean
-    wrapperClass?: string
-    modelValue?: string
     decimals?: number
-    max?: number
-    min?: number
+    modelValue?: string
+    wrapperClass?: string
   }>(),
   {
+    // eslint-disable-next-line
+    max: 9999999999999999999,
+    min: undefined,
     noStyle: false,
     autofix: false,
     disabled: false,
-    wrapperClass: '',
-    modelValue: '',
     decimals: 18,
-    // eslint-disable-next-line
-    max: 9999999999999999999,
-    min: undefined
+    modelValue: '',
+    wrapperClass: ''
   }
 )
 

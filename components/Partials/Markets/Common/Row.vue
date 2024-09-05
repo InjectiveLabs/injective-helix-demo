@@ -8,10 +8,10 @@ import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isMarketsPage?: boolean
     market: UiMarketWithToken
     summary: SharedUiMarketSummary
     volumeInUsd: BigNumberInBase
+    isMarketsPage?: boolean
   }>(),
   {
     isMarketsPage: false

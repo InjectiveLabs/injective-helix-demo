@@ -5,8 +5,8 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    granter: string
     grants: GrantAuthorizationWithDecodedAuthorization[]
+    granter: string
   }>(),
   {}
 )

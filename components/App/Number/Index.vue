@@ -26,15 +26,15 @@ const props = withDefaults(
     isSm: false,
     isXs: false,
     isFlex: false,
-    isDense: false,
-    isNoGrouping: false,
-    useNumberDecimals: false,
     prefix: '',
     suffix: '',
     number: () => new BigNumberInBase(0),
-    numberString: '',
+    isDense: false,
     decimals: UI_DEFAULT_DISPLAY_DECIMALS,
+    numberString: '',
+    isNoGrouping: false,
     roundingMode: BigNumberInBase.ROUND_DOWN,
+    useNumberDecimals: false,
     abbreviationFloor: 0
   }
 )

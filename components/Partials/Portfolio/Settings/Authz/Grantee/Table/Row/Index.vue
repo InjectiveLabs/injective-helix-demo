@@ -8,8 +8,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 const props = withDefaults(
   defineProps<{
-    grantee: string
     grants: GrantAuthorizationWithDecodedAuthorization[]
+    grantee: string
   }>(),
   {}
 )

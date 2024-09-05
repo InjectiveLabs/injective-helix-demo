@@ -11,10 +11,10 @@ import { UiSpotMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    campaignUser: CampaignUser
+    market: UiSpotMarket
     campaign: Campaign
     totalScore: string
-    market: UiSpotMarket
+    campaignUser: CampaignUser
   }>(),
   {}
 )

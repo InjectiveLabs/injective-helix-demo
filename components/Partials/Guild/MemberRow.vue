@@ -9,9 +9,9 @@ const { baseToken, quoteToken } = useGuild()
 
 const props = withDefaults(
   defineProps<{
-    isCampaignStarted?: boolean
     rank: number
     member: GuildMember
+    isCampaignStarted?: boolean
   }>(),
   {
     isCampaignStarted: false

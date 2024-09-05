@@ -7,9 +7,9 @@ import { UiMarketWithToken, UiTrade } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isSpot?: boolean
-    market: UiMarketWithToken
     trade: UiTrade
+    market: UiMarketWithToken
+    isSpot?: boolean
   }>(),
   {
     isSpot: false

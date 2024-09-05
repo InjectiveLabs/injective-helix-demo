@@ -20,10 +20,10 @@ const { userBalancesWithToken } = useBalance()
 
 withDefaults(
   defineProps<{
-    isLoading: boolean
-    showErrorState: boolean
-    queryError?: string
     status: Status
+    isLoading: boolean
+    queryError?: string
+    showErrorState: boolean
   }>(),
   {
     isLoading: false,

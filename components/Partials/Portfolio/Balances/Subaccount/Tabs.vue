@@ -10,8 +10,8 @@ const props = withDefaults(
     showUnverifiedAssets?: boolean
   }>(),
   {
-    showUnverifiedAssets: false,
-    search: ''
+    search: '',
+    showUnverifiedAssets: false
   }
 )
 
@@ -63,7 +63,8 @@ const { valueToString: accountTotalBalanceInUsdToString } =
     <CommonSubaccountTabSelector
       v-bind="{
         includeBotsSubaccounts:
-          appStore.userState.preferences.showGridTradingSubaccounts
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
       }"
       wrapper-class="py-4 w-full "
     />

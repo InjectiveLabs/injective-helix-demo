@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UiMarketWithToken, CommonCyTags } from '@/types'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
   }>(),

@@ -3,8 +3,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
-    status?: Status
     size?: number
+    status?: Status
     length?: number
   }>(),
   {

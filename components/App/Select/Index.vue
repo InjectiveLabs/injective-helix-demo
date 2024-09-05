@@ -3,19 +3,19 @@ import { SharedDropdownOption } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
-    isNoMinWidth?: boolean
-    startPlacement?: boolean
     options: SharedDropdownOption[]
     modelValue?: string
+    isNoMinWidth?: boolean
     wrapperClass?: string
     contentClass?: string
+    startPlacement?: boolean
   }>(),
   {
-    isNoMinWidth: false,
-    startPlacement: false,
     modelValue: '',
     wrapperClass: '',
-    contentClass: ''
+    contentClass: '',
+    isNoMinWidth: false,
+    startPlacement: false
   }
 )
 

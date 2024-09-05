@@ -5,9 +5,9 @@ import { Modal, UiSpotMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    baseAmount: BigNumberInBase
     market: UiSpotMarket
     margin: string
+    baseAmount: BigNumberInBase
     quoteAmount: BigNumberInBase
   }>(),
   {}

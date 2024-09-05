@@ -9,9 +9,9 @@ import { LiquidityRewardsPage } from '@/types'
 
 const props = withDefaults(
   defineProps<{
+    round: number
     endDate: number
     lastUpdated: number
-    round: number
     roundCampaigns: Campaign[]
   }>(),
   {}

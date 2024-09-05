@@ -5,9 +5,9 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
+    value: string
     strategy: TradingStrategy
     modelValue: string
-    value: string
   }>(),
   {}
 )
