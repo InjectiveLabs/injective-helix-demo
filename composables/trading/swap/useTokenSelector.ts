@@ -87,18 +87,49 @@ export function useSwapTokenSelector({
       )
   )
 
-  const inputDenomOptions = computed(
-    () =>
+  const inputDenomOptions = computed(() =>
+    (
       Object.keys(tradableTokenMaps.value)
         .map((denom) => getBalanceWithToken(denom, balances.value))
         .filter(
           (balanceWithToken) =>
             balanceWithToken && balanceWithToken.denom !== outputDenom.value
         ) as SharedBalanceWithTokenAndPrice[]
+    ).sort(
+      (
+        b1: SharedBalanceWithTokenAndPrice,
+        b2: SharedBalanceWithTokenAndPrice
+      ) => {
+        if (b1.token.symbol === usdtToken.symbol) {
+          return -1
+        }
+
+        if (b2.token.symbol === usdtToken.symbol) {
+          return 1
+        }
+
+        return b1.token.symbol.localeCompare(b2.token.symbol)
+      }
+    )
   )
 
-  const outputDenomOptions = computed(
-    () => tradableTokenMaps.value[inputDenom.value]
+  const outputDenomOptions = computed(() =>
+    tradableTokenMaps.value[inputDenom.value].sort(
+      (
+        b1: SharedBalanceWithTokenAndPrice,
+        b2: SharedBalanceWithTokenAndPrice
+      ) => {
+        if (b1.token.symbol === injToken.symbol) {
+          return -1
+        }
+
+        if (b2.token.symbol === injToken.symbol) {
+          return 1
+        }
+
+        return b1.token.symbol.localeCompare(b2.token.symbol)
+      }
+    )
   )
 
   /**
@@ -146,9 +177,9 @@ export function useSwapTokenSelector({
   })
 
   return {
-    selectorOutputDenom,
-    selectorInputDenom,
     inputDenomOptions,
-    outputDenomOptions
+    outputDenomOptions,
+    selectorInputDenom,
+    selectorOutputDenom
   }
 }

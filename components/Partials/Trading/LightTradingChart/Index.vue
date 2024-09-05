@@ -25,7 +25,6 @@ const props = defineProps({
 
   volumeData: {
     type: Object as PropType<(HistogramData<Time> | WhitespaceData<Time>)[]>,
-    required: false,
     default: undefined
   },
 

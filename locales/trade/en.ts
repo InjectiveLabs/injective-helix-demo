@@ -179,6 +179,7 @@ export default {
     estFeeRebate: 'Est. Fee Rebate',
     estFeeRebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
+    annualized: 'Annualized',
     funding_fee: 'Funding fee',
     funding_rate: 'Funding Rate',
     est_funding_rate: 'Est. Funding Rate',
