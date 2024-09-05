@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -24,15 +25,13 @@ const props = defineProps({
   },
 
   number: {
-    required: false,
-    default: new BigNumberInBase(0),
-    type: Object as PropType<BigNumberInBase>
+    type: Object as PropType<BigNumberInBase>,
+    default: ZERO_IN_BASE
   },
 
   numberString: {
-    required: false,
-    default: '',
-    type: String
+    type: String,
+    default: ''
   },
 
   decimals: {

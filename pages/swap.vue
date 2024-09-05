@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
-import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
-import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { toBalanceInToken } from '@/app/utils/formatters'
+import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
+import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 definePageMeta({
   middleware: ['swap']
@@ -98,10 +98,10 @@ async function submit() {
 
   submit({
     formValues,
-    outputToken: outputToken.value,
     inputToken: inputToken.value,
-    minimumOutput: minimumOutput.value,
-    maximumInput: maximumInput.value
+    outputToken: outputToken.value,
+    maximumInput: maximumInput.value,
+    minimumOutput: minimumOutput.value
   })
     .then(async (swapTxHash) => {
       if (!swapTxHash) {
@@ -198,9 +198,9 @@ function getOutputQuantity() {
   Promise.all([
     fetchLastTradedPrices(),
     swapStore.fetchOutputQuantity({
-      inputAmount: formValues[SwapFormField.InputAmount],
+      inputToken: inputToken.value,
       outputToken: outputToken.value,
-      inputToken: inputToken.value
+      inputAmount: formValues[SwapFormField.InputAmount]
     })
   ])
     .then(() => updateAmount())
@@ -229,9 +229,9 @@ function getInputQuantity() {
   Promise.all([
     fetchLastTradedPrices(),
     swapStore.fetchInputQuantity({
-      outputAmount: formValues[SwapFormField.OutputAmount],
+      inputToken: inputToken.value,
       outputToken: outputToken.value,
-      inputToken: inputToken.value
+      outputAmount: formValues[SwapFormField.OutputAmount]
     })
   ])
     .then(() => updateAmount())
@@ -253,11 +253,11 @@ function updateAmount() {
     setFormValues(
       {
         [SwapFormField.OutputAmount]: toBalanceInToken({
+          roundingMode: BigNumberInBase.ROUND_DOWN,
           value: swapStore.outputQuantity.resultQuantity,
           decimalPlaces: outputToken.value?.token.decimals || 0,
           fixedDecimals:
-            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-          roundingMode: BigNumberInBase.ROUND_DOWN
+            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
         })
       },
       false
@@ -269,10 +269,10 @@ function updateAmount() {
   setFormValues(
     {
       [SwapFormField.InputAmount]: toBalanceInToken({
+        roundingMode: BigNumberInBase.ROUND_UP,
         value: swapStore.inputQuantity.resultQuantity,
         decimalPlaces: inputToken.value?.token.decimals || 0,
-        fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS,
-        roundingMode: BigNumberInBase.ROUND_UP
+        fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
       })
     },
     false
