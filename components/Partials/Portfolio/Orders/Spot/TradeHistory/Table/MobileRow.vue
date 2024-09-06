@@ -3,12 +3,12 @@ import { SharedUiSpotTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  trade: {
-    required: true,
-    type: Object as PropType<SharedUiSpotTrade>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    trade: SharedUiSpotTrade
+  }>(),
+  {}
+)
 
 const {
   fee,

@@ -2,12 +2,12 @@
 import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags } from '@/types'
 
-const props = defineProps({
-  order: {
-    type: Object as PropType<SpotOrderHistory>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: SpotOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

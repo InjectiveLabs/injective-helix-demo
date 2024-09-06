@@ -4,17 +4,13 @@ import { Modal, UiSpotMarket } from '@/types'
 
 const modalStore = useModalStore()
 
-defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    default: undefined
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    default: undefined
+withDefaults(
+  defineProps<{ strategy?: TradingStrategy; market?: UiSpotMarket }>(),
+  {
+    market: undefined,
+    strategy: undefined
   }
-})
+)
 
 function onCloseModal() {
   modalStore.closeModal(Modal.GridStrategyDetails)
@@ -28,6 +24,7 @@ function onCloseModal() {
   >
     <PartialsLiquidityCommonActiveStrategy
       v-if="strategy && market"
+      class="pt-10"
       v-bind="{ activeStrategy: strategy, market }"
     />
   </AppModal>

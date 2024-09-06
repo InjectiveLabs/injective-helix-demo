@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import { thumbnailMap } from '@/app/data/campaign'
 
-const props = defineProps({
-  isLg: Boolean,
-  isXl: Boolean,
-
-  thumbnailId: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isLg: boolean
+    isXl: boolean
+    thumbnailId: string
+  }>(),
+  {
+    isLg: false,
+    isXl: false,
+    thumbnailId: ''
   }
-})
+)
 
 const imgPath = computed(() => thumbnailMap[props.thumbnailId])
 

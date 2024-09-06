@@ -2,12 +2,12 @@
 import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  order: {
-    type: Object as PropType<SpotOrderHistory>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: SpotOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

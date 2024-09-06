@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-defineProps({
-  isRound: Boolean,
-  isEmpty: Boolean
+withDefaults(defineProps<{ isRound?: boolean; isEmpty?: boolean }>(), {
+  isRound: false,
+  isEmpty: false
 })
 </script>
 

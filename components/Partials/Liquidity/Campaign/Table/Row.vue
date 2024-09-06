@@ -9,27 +9,15 @@ import {
 } from '@/app/utils/constants'
 import { UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  campaignUser: {
-    type: Object as PropType<CampaignUser>,
-    required: true
-  },
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  },
-
-  totalScore: {
-    type: String,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+    campaign: Campaign
+    totalScore: string
+    campaignUser: CampaignUser
+  }>(),
+  {}
+)
 
 const tokenStore = useTokenStore()
 

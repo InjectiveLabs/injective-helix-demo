@@ -1,20 +1,12 @@
 <script setup lang="ts">
-const props = defineProps({
-  amount: {
-    type: String,
-    required: true
-  },
-
-  symbol: {
-    type: String,
-    required: true
-  },
-
-  index: {
-    type: Number,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    amount: string
+    symbol: string
+    index: number
+  }>(),
+  {}
+)
 
 const tokenStore = useTokenStore()
 

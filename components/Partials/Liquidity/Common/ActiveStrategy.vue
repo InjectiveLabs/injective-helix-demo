@@ -14,19 +14,16 @@ import {
 } from '@/app/utils/helpers'
 import { StopReason, StrategyStatus, UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  isLiquidity: Boolean,
-
-  activeStrategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+    isLiquidity?: boolean
+    activeStrategy: TradingStrategy
+  }>(),
+  {
+    isLiquidity: false
   }
-})
+)
 
 const sharedWalletStore = useSharedWalletStore()
 

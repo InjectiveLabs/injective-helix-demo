@@ -4,12 +4,12 @@ import { SharedMarketType } from '@shared/types'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
 import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 
 const isSpot = props.market.type === SharedMarketType.Spot
 const interval = '1D'

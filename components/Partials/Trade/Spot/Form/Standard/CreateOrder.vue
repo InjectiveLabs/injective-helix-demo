@@ -29,17 +29,13 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
   useSpotWorstPrice(market)
 
-const props = defineProps({
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  worstPrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))

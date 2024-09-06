@@ -7,12 +7,14 @@ const exchangeStore = useExchangeStore()
 
 const HOT_MARKETS_SLUGS = ['inj-usdt', 'btc-usdt-perp', 'weth-usdt', 'sol-usdt']
 
-const props = defineProps({
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+  }>(),
+  {
+    markets: () => []
   }
-})
+)
 
 const hotMarkets = computed(() =>
   props.markets.filter(({ market }) => HOT_MARKETS_SLUGS.includes(market.slug))

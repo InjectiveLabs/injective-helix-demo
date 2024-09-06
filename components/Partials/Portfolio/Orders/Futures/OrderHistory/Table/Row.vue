@@ -2,12 +2,12 @@
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PerpetualmarketCyTags } from '@/types'
 
-const props = defineProps({
-  order: {
-    required: true,
-    type: Object as PropType<DerivativeOrderHistory>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    order: DerivativeOrderHistory
+  }>(),
+  {}
+)
 
 const {
   type,

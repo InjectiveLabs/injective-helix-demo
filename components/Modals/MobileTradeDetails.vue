@@ -8,14 +8,10 @@ import { Modal, UiTrade } from '@/types'
 
 const modalStore = useModalStore()
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  trade: {
-    type: Object as PropType<UiTrade>,
-    default: undefined
-  }
-})
+const props = withDefaults(
+  defineProps<{ isSpot?: boolean; trade?: UiTrade }>(),
+  { isSpot: false, trade: undefined }
+)
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.MobileTradeDetails] && !!props.trade

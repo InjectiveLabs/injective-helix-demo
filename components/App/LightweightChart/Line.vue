@@ -35,58 +35,36 @@ const defaultChartOptions = {
   }
 }
 
-const props = defineProps({
-  shouldFitContentOnResize: Boolean,
-
-  type: {
-    type: String,
-    default: 'line'
-  },
-
-  data: {
-    type: Array as PropType<(LineData<number> | WhitespaceData<number>)[]>,
-    required: true
-  },
-
-  autosize: {
-    default: true,
-    type: Boolean
-  },
-
-  chartOptions: {
-    type: Object as PropType<DeepPartial<TimeChartOptions>>,
-    default: () => ({}) as DeepPartial<TimeChartOptions>
-  },
-  seriesOptions: {
-    type: Object as PropType<
-      DeepPartial<LineStyleOptions & SeriesOptionsCommon> | undefined
-    >,
-    required: true
-  },
-
-  timeScaleOptions: {
-    type: Object as PropType<DeepPartial<TimeScaleOptions>>,
-    default: () => ({
+const props = withDefaults(
+  defineProps<{
+    type?: string
+    shouldFitContentOnResize?: boolean
+    data: (LineData<number> | WhitespaceData<number>)[]
+    autosize?: boolean
+    chartOptions?: DeepPartial<TimeChartOptions>
+    seriesOptions:
+      | DeepPartial<LineStyleOptions & SeriesOptionsCommon>
+      | undefined
+    timeScaleOptions?: DeepPartial<TimeScaleOptions>
+    priceScaleOptions?: DeepPartial<PriceScaleOptions>
+    height?: number
+    width?: number
+  }>(),
+  {
+    type: 'line',
+    autosize: true,
+    shouldFitContentOnResize: false,
+    chartOptions: () => ({}) as DeepPartial<TimeChartOptions>,
+    timeScaleOptions: () => ({
       borderColor: 'transparent'
-    })
-  },
-
-  priceScaleOptions: {
-    type: Object as PropType<DeepPartial<PriceScaleOptions>>,
-    default: () => ({
+    }),
+    priceScaleOptions: () => ({
       borderColor: 'transparent'
-    })
-  },
-  height: {
-    type: Number,
-    default: undefined
-  },
-
-  width: {
-    type: Number,
-    default: undefined
+    }),
+    height: undefined,
+    width: undefined
   }
-})
+)
 
 // Function to get the correct series constructor name for current series type.
 

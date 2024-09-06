@@ -4,12 +4,7 @@ import { Modal, MainPage, PortfolioSubPage, UiDerivativeMarket } from '@/types'
 const modalStore = useModalStore()
 const router = useRouter()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiDerivativeMarket>,
-    default: undefined
-  }
-})
+const props = withDefaults(defineProps<{ market: UiDerivativeMarket }>(), {})
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.MarketExpired] && !!props.market

@@ -77,7 +77,7 @@ const initialStateFactory = (): AppStoreState => ({
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
-      showGridTradingSubaccounts: false
+      showGridTradingSubaccounts: true
     }
   }
 })

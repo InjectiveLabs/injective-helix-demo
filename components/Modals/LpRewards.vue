@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-defineProps({
-  round: {
-    type: Number,
-    required: true
-  }
-})
+withDefaults(defineProps<{ round: number }>(), {})
 
 const modalStore = useModalStore()
 

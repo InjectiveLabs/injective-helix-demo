@@ -8,9 +8,14 @@ import {
 } from '@/app/utils/constants'
 import { MarketKey, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 
-defineProps({
-  isDisabled: Boolean
-})
+withDefaults(
+  defineProps<{
+    isDisabled?: boolean
+  }>(),
+  {
+    isDisabled: false
+  }
+)
 
 const spotMarket = inject(MarketKey)
 

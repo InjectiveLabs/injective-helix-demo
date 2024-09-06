@@ -6,36 +6,24 @@ import {
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
-defineProps({
-  isLoading: Boolean,
-  isMarketsPage: Boolean,
-  isLowVolumeMarketsVisible: Boolean,
-
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
-    required: true
-  },
-
-  activeType: {
-    type: String as PropType<MarketTypeOption>,
-    required: true
-  },
-
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
-  },
-
-  search: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    search?: string
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+    isLoading?: boolean
+    activeType: MarketTypeOption
+    activeQuote: MarketQuoteType
+    activeCategory: MarketCategoryType
+    isMarketsPage?: boolean
+    isLowVolumeMarketsVisible?: boolean
+  }>(),
+  {
+    search: '',
+    isLoading: false,
+    isMarketsPage: false,
+    isLowVolumeMarketsVisible: false
   }
-})
+)
 </script>
 
 <template>

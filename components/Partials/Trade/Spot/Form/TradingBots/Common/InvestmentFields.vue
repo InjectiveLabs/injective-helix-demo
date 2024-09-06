@@ -19,10 +19,15 @@ const tokenStore = useTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 
-const props = defineProps({
-  isAuto: Boolean,
-  isDisabled: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isAuto: boolean
+    isDisabled: boolean
+  }>(),
+  {
+    isAuto: false
+  }
+)
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 

@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  value: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string
+    value: string
+  }>(),
+  {
+    modelValue: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [state: string]

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-defineProps({
-  isOpen: Boolean,
-
-  wrapperClasses: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    isOpen?: boolean
+    wrapperClasses?: string
+  }>(),
+  {
+    isOpen: false,
+    wrapperClasses: ''
   }
-})
+)
 </script>
 
 <template>

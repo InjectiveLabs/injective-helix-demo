@@ -5,8 +5,8 @@ import { GUILD_MAX_CAP, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
 
-defineProps({
-  isCampaignStarted: Boolean
+withDefaults(defineProps<{ isCampaignStarted?: boolean }>(), {
+  isCampaignStarted: false
 })
 
 const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(

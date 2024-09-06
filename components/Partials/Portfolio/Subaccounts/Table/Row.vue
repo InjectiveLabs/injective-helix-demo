@@ -3,15 +3,15 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  subaccount: {
-    type: Object as PropType<{
+const props = withDefaults(
+  defineProps<{
+    subaccount: {
       display: string
       value: string
-    }>,
-    required: true
-  }
-})
+    }
+  }>(),
+  {}
+)
 
 const { aggregatedPortfolioBalances } = useBalance()
 

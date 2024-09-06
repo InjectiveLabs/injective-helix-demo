@@ -1,7 +1,12 @@
 <script setup lang="ts">
-defineProps({
-  hasActiveStrategy: Boolean
-})
+withDefaults(
+  defineProps<{
+    hasActiveStrategy: boolean
+  }>(),
+  {
+    hasActiveStrategy: false
+  }
+)
 
 const emit = defineEmits<{
   'view:details': []

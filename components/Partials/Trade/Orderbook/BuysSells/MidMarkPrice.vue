@@ -3,14 +3,15 @@ import { SharedMarketChange } from '@shared/types'
 import { stableCoinSymbols } from '@/app/data/token'
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const tokenStore = useTokenStore()
 

@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-defineProps({
-  message: {
-    type: String,
-    default: ''
-  }
+withDefaults(defineProps<{ message?: string }>(), {
+  message: ''
 })
 </script>
 

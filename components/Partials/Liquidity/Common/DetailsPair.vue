@@ -3,22 +3,18 @@ import { UiSpotMarket } from '@/types'
 
 const { quote, base } = useSlots()
 
-defineProps({
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    default: undefined
-  },
-
-  baseSymbol: {
-    type: String,
-    default: ''
-  },
-
-  quoteSymbol: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    market?: UiSpotMarket
+    baseSymbol?: string
+    quoteSymbol?: string
+  }>(),
+  {
+    market: undefined,
+    baseSymbol: '',
+    quoteSymbol: ''
   }
-})
+)
 </script>
 <template>
   <p>

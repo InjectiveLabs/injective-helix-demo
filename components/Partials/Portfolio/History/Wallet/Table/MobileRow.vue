@@ -8,12 +8,12 @@ import {
 } from '@/app/utils/constants'
 import { UiSubaccountTransactionWithToken } from '@/types'
 
-const props = defineProps({
-  transaction: {
-    required: true,
-    type: Object as PropType<UiSubaccountTransactionWithToken>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    transaction: UiSubaccountTransactionWithToken
+  }>(),
+  {}
+)
 
 const { t } = useLang()
 

@@ -1,27 +1,26 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const props = defineProps({
-  isEmitting: Boolean,
-  noPadding: Boolean,
-  isLoading: Boolean,
-  isHelix: Boolean,
-
-  status: {
-    type: Object as PropType<Status>,
-    default: new Status(StatusType.Idle)
-  },
-
-  loaderClass: {
-    type: String,
-    default: 'relative'
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    status?: Status
+    isHelix?: boolean
+    noPadding?: boolean
+    isLoading?: boolean
+    isEmitting?: boolean
+    loaderClass?: string
+    wrapperClass?: string
+  }>(),
+  {
+    status: () => new Status(StatusType.Idle),
+    isHelix: false,
+    noPadding: false,
+    isLoading: false,
+    isEmitting: false,
+    loaderClass: 'relative',
+    wrapperClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   loading: []

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-defineProps({
-  rows: {
-    type: Number,
-    default: 6
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    rows: number
+    wrapperClass?: string
+  }>(),
+  {
+    rows: 6,
+    wrapperClass: ''
   }
-})
+)
 </script>
 <script lang="ts">
 export default {

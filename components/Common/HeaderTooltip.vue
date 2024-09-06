@@ -1,28 +1,22 @@
 <script lang="ts" setup>
-defineProps({
-  isDisabled: Boolean,
-  isNotStyled: Boolean,
-
-  classes: {
-    type: String,
-    default: ''
-  },
-
-  textColorClass: {
-    type: String,
-    default: 'text-gray-350'
-  },
-
-  borderColorClass: {
-    type: String,
-    default: 'border-gray-400'
-  },
-
-  tooltip: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    tooltip?: string
+    classes?: string
+    isDisabled?: boolean
+    isNotStyled?: boolean
+    textColorClass?: string
+    borderColorClass?: string
+  }>(),
+  {
+    tooltip: '',
+    classes: '',
+    isDisabled: false,
+    isNotStyled: false,
+    textColorClass: 'text-gray-350',
+    borderColorClass: 'border-gray-400'
   }
-})
+)
 </script>
 
 <template>

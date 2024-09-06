@@ -11,9 +11,14 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isTickerOnly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {
+    isTickerOnly: false
+  }
+)
 
 const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 

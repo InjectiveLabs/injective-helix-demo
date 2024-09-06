@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { GridStrategyTabs } from '@/types'
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue: string
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'update:modelValue': [string]

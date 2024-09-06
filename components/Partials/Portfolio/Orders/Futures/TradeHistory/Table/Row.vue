@@ -3,12 +3,12 @@ import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { PerpetualmarketCyTags } from '@/types'
 
-const props = defineProps({
-  trade: {
-    required: true,
-    type: Object as PropType<SharedUiDerivativeTrade>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    trade: SharedUiDerivativeTrade
+  }>(),
+  {}
+)
 
 const {
   fee,

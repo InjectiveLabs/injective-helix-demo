@@ -14,12 +14,7 @@ const derivativeFormValues = useFormValues()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const props = defineProps({
-  worstPrice: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ worstPrice: String }>(), {})
 
 const emit = defineEmits<{
   'terms:agreed': []

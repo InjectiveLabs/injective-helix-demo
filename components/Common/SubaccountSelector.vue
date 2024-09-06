@@ -1,8 +1,8 @@
 <script setup lang="ts">
-defineProps({
-  showLowBalance: Boolean,
-  includeBotsSubaccounts: Boolean
-})
+withDefaults(
+  defineProps<{ showLowBalance?: boolean; includeBotsSubaccounts?: boolean }>(),
+  { showLowBalance: false, includeBotsSubaccounts: false }
+)
 
 const accountStore = useAccountStore()
 

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  swap: {
-    required: true,
-    type: Object as PropType<AtomicSwap>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    swap: AtomicSwap
+  }>(),
+  {}
+)
 
 const {
   time,

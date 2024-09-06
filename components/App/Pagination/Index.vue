@@ -1,27 +1,17 @@
 <script lang="ts" setup>
-defineProps({
-  isDisabled: Boolean,
-
-  page: {
-    type: Number,
-    required: true
-  },
-
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  rowClass: {
-    type: String,
-    default: ''
-  },
-
-  totalCount: {
-    type: Number,
-    required: true
+withDefaults(
+  defineProps<{
+    page: number
+    limit: number
+    rowClass?: string
+    totalCount: number
+    isDisabled?: boolean
+  }>(),
+  {
+    rowClass: '',
+    isDisabled: false
   }
-})
+)
 </script>
 
 <template>

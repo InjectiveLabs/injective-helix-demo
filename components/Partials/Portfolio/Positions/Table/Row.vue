@@ -18,12 +18,12 @@ const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { validate } = useForm<ClosePositionLimitForm>()
 
-const props = defineProps({
-  position: {
-    type: Object as PropType<PositionV2 | Position>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    position: PositionV2 | Position
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'margin:add': [position: Position | PositionV2]

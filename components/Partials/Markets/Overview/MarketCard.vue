@@ -12,12 +12,12 @@ import { getFormattedMarketsHistoryChartData } from '@/app/utils/market'
 
 const exchangeStore = useExchangeStore()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketAndSummaryWithVolumeInUsd>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketAndSummaryWithVolumeInUsd
+  }>(),
+  {}
+)
 
 const lastTradedPrice = computed(() => {
   if (!props.market.summary || !props.market.summary.price) {

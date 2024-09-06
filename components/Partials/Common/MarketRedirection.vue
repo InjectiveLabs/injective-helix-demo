@@ -2,14 +2,15 @@
 import { SharedMarketType } from '@shared/types'
 import { UiMarketWithToken, TradingInterface } from '@/types'
 
-defineProps({
-  isTradingBotTab: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+withDefaults(
+  defineProps<{
+    isTradingBotTab?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isTradingBotTab: false
   }
-})
+)
 </script>
 
 <template>

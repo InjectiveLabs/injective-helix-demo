@@ -1,20 +1,12 @@
 <script setup lang="ts">
-const props = defineProps({
-  value: {
-    type: Number,
-    default: 0
-  },
-
-  size: {
-    type: Number,
-    default: 16
-  },
-
-  decimals: {
-    type: Number,
-    default: 2
+const props = withDefaults(
+  defineProps<{ value?: number; size?: number; decimals?: number }>(),
+  {
+    value: 0,
+    size: 16,
+    decimals: 2
   }
-})
+)
 
 function getStringFromNumber(number: number) {
   const numberFormatted = number.toFixed(props.decimals)

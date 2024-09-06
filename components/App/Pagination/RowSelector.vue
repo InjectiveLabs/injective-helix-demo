@@ -1,20 +1,15 @@
 <script lang="ts" setup>
-const props = defineProps({
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  options: {
-    type: Array as PropType<number[]>,
-    default: () => []
-  },
-
-  selectedClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    limit: number
+    options: number[]
+    selectedClass: string
+  }>(),
+  {
+    options: () => [],
+    selectedClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [state: number]

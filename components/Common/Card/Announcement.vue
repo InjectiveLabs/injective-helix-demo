@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-defineProps({
-  url: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    url: string
+  }>(),
+  {
+    url: ''
   }
-})
+)
 </script>
 
 <template>

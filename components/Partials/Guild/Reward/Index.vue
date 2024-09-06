@@ -8,14 +8,10 @@ const confetti = useSharedConfetti()
 const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
 
-const props = defineProps({
-  isCampaignOver: Boolean,
-
-  now: {
-    type: Number,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{ isCampaignOver?: boolean; now: number }>(),
+  { isCampaignOver: false }
+)
 
 const status = reactive(new Status(StatusType.Idle))
 

@@ -7,12 +7,12 @@ import { UiDerivativeMarket } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiDerivativeMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiDerivativeMarket
+  }>(),
+  {}
+)
 
 const now = ref(0)
 

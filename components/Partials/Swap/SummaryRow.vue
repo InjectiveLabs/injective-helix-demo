@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-defineProps({
-  isAlignStart: Boolean,
-
-  title: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    title: string
+    isAlignStart?: boolean
+  }>(),
+  {
+    isAlignStart: false
   }
-})
+)
 </script>
 
 <template>

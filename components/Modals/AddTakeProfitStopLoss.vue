@@ -13,12 +13,10 @@ import {
   TakeProfitStopLossFormField
 } from '@/types'
 
-const props = defineProps({
-  position: {
-    type: Object as PropType<Position | PositionV2 | undefined>,
-    default: undefined
-  }
-})
+const props = withDefaults(
+  defineProps<{ position: Position | PositionV2 | undefined }>(),
+  { position: undefined }
+)
 
 const modalStore = useModalStore()
 const derivativeStore = useDerivativeStore()

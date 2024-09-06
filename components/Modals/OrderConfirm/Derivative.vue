@@ -4,39 +4,24 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Modal, TradeExecutionType, UiDerivativeMarket } from '@/types'
 
-const props = defineProps({
-  isReduceOnly: Boolean,
-
-  amount: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiDerivativeMarket>,
-    required: true
-  },
-
-  orderType: {
-    type: String as PropType<OrderSide>,
-    default: ''
-  },
-
-  price: {
-    type: Object as PropType<BigNumberInBase>,
-    default: ZERO_IN_BASE
-  },
-
-  tradingType: {
-    type: String as PropType<TradeExecutionType>,
-    default: ''
-  },
-
-  triggerPrice: {
-    type: Object as PropType<BigNumberInBase>,
-    default: ZERO_IN_BASE
+const props = withDefaults(
+  defineProps<{
+    amount: BigNumberInBase
+    market: UiDerivativeMarket
+    price?: BigNumberInBase
+    orderType?: OrderSide
+    isReduceOnly?: boolean
+    tradingType?: TradeExecutionType
+    triggerPrice?: BigNumberInBase
+  }>(),
+  {
+    price: () => ZERO_IN_BASE,
+    orderType: '' as OrderSide,
+    tradingType: '' as TradeExecutionType,
+    isReduceOnly: false,
+    triggerPrice: () => ZERO_IN_BASE
   }
-})
+)
 
 const emit = defineEmits<{
   'order:confirmed': []

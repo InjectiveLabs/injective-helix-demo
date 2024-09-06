@@ -14,11 +14,8 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
+const props = withDefaults(defineProps<{ market: UiMarketWithToken }>(), {
+  market: undefined
 })
 
 const labelToDisplay = ['hours', 'minutes', 'seconds']

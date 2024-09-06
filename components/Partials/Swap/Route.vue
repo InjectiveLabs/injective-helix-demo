@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-defineProps({
-  isSm: Boolean,
-
-  routeSymbols: {
-    type: Array as PropType<string[]>,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    isSm?: boolean
+    routeSymbols: string[]
+  }>(),
+  { isSm: false }
+)
 </script>
 
 <template>

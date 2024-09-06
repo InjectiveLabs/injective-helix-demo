@@ -9,22 +9,14 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-const props = defineProps({
-  totalScore: {
-    type: String,
-    required: true
-  },
-
-  quoteDecimals: {
-    type: Number,
-    required: true
-  },
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    totalScore: string
+    quoteDecimals: number
+    campaign: Campaign
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

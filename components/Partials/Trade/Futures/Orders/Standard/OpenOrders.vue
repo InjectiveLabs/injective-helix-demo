@@ -4,9 +4,14 @@ import { MarketKey, UiDerivativeMarket } from '@/types'
 const derivativeStore = useDerivativeStore()
 const isMobile = useIsMobile()
 
-const props = defineProps({
-  isTickerOnly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly: boolean
+  }>(),
+  {
+    isTickerOnly: false
+  }
+)
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
