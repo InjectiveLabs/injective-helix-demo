@@ -37,8 +37,8 @@ const { value: outputDenom } = useStringField({
 const {
   inputDenomOptions,
   outputDenomOptions,
-  selectorOutputDenom,
-  selectorInputDenom
+  selectorInputDenom,
+  selectorOutputDenom
 } = useSwapTokenSelector({
   inputDenom,
   outputDenom,
@@ -203,16 +203,16 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
-            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
             isUsdVisible: true,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
-            maxDecimals: inputToken?.quantityDecimals || 0,
             tensMultiplier: inputToken?.tensMultiplier,
-            hideBalance: !sharedWalletStore.isUserConnected
+            maxDecimals: inputToken?.quantityDecimals || 0,
+            hideBalance: !sharedWalletStore.isUserConnected,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom
           }"
           @on:update="onUpdateAmount"
           @update:max="onMaxSelected"
@@ -245,14 +245,14 @@ function onMaxSelected({ amount }: { amount: string }) {
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
-            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
             isUsdVisible: true,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
-            maxDecimals: outputToken?.quantityDecimals || 0,
             tensMultiplier: outputToken?.tensMultiplier,
-            hideBalance: !sharedWalletStore.isUserConnected
+            hideBalance: !sharedWalletStore.isUserConnected,
+            maxDecimals: outputToken?.quantityDecimals || 0,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom
           }"
           @update:amount="getInputQuantity"
           @update:denom="onOutputDenomChange"
