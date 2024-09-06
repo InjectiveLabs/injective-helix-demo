@@ -2,12 +2,12 @@
 import { getMitoUrl } from '@shared/utils/network'
 import { LiquidityProvisionMitoCard } from '@/types'
 
-const props = defineProps({
-  vault: {
-    type: Object as PropType<LiquidityProvisionMitoCard>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    vault: LiquidityProvisionMitoCard
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()

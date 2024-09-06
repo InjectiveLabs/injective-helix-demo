@@ -8,12 +8,12 @@ import { AccountBalance } from '@/types'
 
 const accountStore = useAccountStore()
 
-const props = defineProps({
-  balance: {
-    type: Object as PropType<AccountBalance>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    balance: AccountBalance
+  }>(),
+  {}
+)
 
 const hasCw20Balance = computed(() => {
   const cw20Address = getCw20AddressFromDenom(props.balance.denom)

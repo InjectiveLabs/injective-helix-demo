@@ -1,15 +1,8 @@
 <script lang="ts" setup>
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    default: undefined
-  }
-})
+const props = withDefaults(
+  defineProps<{ value: string; modelValue?: string }>(),
+  { modelValue: undefined }
+)
 
 const isActive = computed(() => props.value === props.modelValue)
 

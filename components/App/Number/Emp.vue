@@ -3,24 +3,19 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getDecimalsBasedOnNumber } from '@/app/utils/helpers'
 
-const props = defineProps({
-  isSm: Boolean,
-
-  number: {
-    required: true,
-    type: Object as PropType<BigNumberInBase>
-  },
-
-  prefix: {
-    type: String,
-    default: ''
-  },
-
-  decimals: {
-    type: Number,
-    default: UI_DEFAULT_DISPLAY_DECIMALS
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    number: BigNumberInBase
+    prefix?: string
+    decimals?: number
+  }>(),
+  {
+    isSm: false,
+    prefix: '',
+    decimals: UI_DEFAULT_DISPLAY_DECIMALS
   }
-})
+)
 
 const formattedNumberWithDecimals = computed(() =>
   getDecimalsBasedOnNumber(props.number, props.decimals)

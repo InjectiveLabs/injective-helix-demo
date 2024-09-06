@@ -21,12 +21,12 @@ import {
   LiquidityRewardsPage
 } from '@/types'
 
-const props = defineProps({
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    campaign: Campaign
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

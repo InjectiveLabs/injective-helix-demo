@@ -12,17 +12,15 @@ const isMobile = useIsMobile()
 const breakpoints = useBreakpointsTw()
 const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps({
-  modelValue: {
-    type: String as PropType<SpotOrdersStandardView>,
-    required: true
-  },
-
-  isTickerOnly: {
-    type: Boolean as PropType<boolean>,
-    default: false
+const props = withDefaults(
+  defineProps<{
+    modelValue: SpotOrdersStandardView
+    isTickerOnly?: boolean
+  }>(),
+  {
+    isTickerOnly: false
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: SpotOrdersStandardView]

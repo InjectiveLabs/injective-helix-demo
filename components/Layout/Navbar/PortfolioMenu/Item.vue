@@ -4,12 +4,7 @@ import { MenuItem, MenuItemType } from '@/types'
 
 const route = useRoute()
 
-const props = defineProps({
-  item: {
-    type: Object as PropType<MenuItem>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ item: MenuItem }>(), {})
 
 const emit = defineEmits<{
   'menu:close': []

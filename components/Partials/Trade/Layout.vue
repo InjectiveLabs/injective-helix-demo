@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { UiMarketWithToken } from '@/types'
 
-defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 </script>
 
 <template>

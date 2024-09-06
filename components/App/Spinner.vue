@@ -1,12 +1,22 @@
 <script lang="ts" setup>
-const props = defineProps({
-  isXs: Boolean,
-  isSm: Boolean,
-  isMd: Boolean,
-  isLg: Boolean,
-  isXl: Boolean,
-  isWhite: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isXs?: boolean
+    isSm?: boolean
+    isMd?: boolean
+    isLg?: boolean
+    isXl?: boolean
+    isWhite?: boolean
+  }>(),
+  {
+    isXs: false,
+    isSm: false,
+    isMd: false,
+    isLg: false,
+    isXl: false,
+    isWhite: false
+  }
+)
 
 const sizeClasses = computed(() => {
   if (props.isXs) {

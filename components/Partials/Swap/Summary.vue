@@ -7,9 +7,14 @@ import { tokenToDecimalsOverrideMap } from '@/app/data/token'
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
 
-const props = defineProps({
-  isLoading: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isLoading?: boolean
+  }>(),
+  {
+    isLoading: false
+  }
+)
 
 const {
   maximumInput,

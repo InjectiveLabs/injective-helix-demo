@@ -5,12 +5,14 @@ definePageMeta({
   middleware: ['connected']
 })
 
-defineProps({
-  portfolioStatus: {
-    type: Object as PropType<Status>,
-    default: new Status(StatusType.Loading)
+withDefaults(
+  defineProps<{
+    portfolioStatus?: Status
+  }>(),
+  {
+    portfolioStatus: () => new Status(StatusType.Loading)
   }
-})
+)
 </script>
 
 <template>

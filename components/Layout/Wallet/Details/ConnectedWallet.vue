@@ -8,12 +8,7 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 
-defineProps({
-  wallet: {
-    required: true,
-    type: String as PropType<Wallet>
-  }
-})
+withDefaults(defineProps<{ wallet: Wallet }>(), {})
 
 const modalStore = useModalStore()
 

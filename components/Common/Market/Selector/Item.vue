@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ market: UiMarketWithToken }>(), {})
 
 const emit = defineEmits<{
   'set:market': [market: UiMarketWithToken]

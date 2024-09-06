@@ -3,12 +3,12 @@ import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketAndSummaryWithVolumeInUsd>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketAndSummaryWithVolumeInUsd
+  }>(),
+  {}
+)
 
 const { valueToString: priceToString } = useSharedBigNumberFormatter(
   computed(() => props.market.summary.lastPrice || 0),

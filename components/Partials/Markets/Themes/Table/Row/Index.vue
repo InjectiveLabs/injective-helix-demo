@@ -4,17 +4,13 @@ import { SharedMarketChange, SharedMarketType } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
-const props = defineProps({
-  theme: {
-    type: String,
-    required: true
-  },
-
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    theme: string
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+  }>(),
+  {}
+)
 
 const isOpen = ref(false)
 

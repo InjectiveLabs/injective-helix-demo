@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 
-const props = defineProps({
-  accountTotalBalanceInUsd: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    accountTotalBalanceInUsd: BigNumberInBase
+  }>(),
+  {}
+)
 
 const isMobile = useIsMobile()
 const appStore = useAppStore()

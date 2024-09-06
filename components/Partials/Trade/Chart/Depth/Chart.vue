@@ -9,27 +9,18 @@ const TOOLTIP_OFFSET = 10
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-const props = defineProps({
-  buys: {
-    type: Array as PropType<OrderbookFormattedRecord[]>,
-    required: true
-  },
-
-  sells: {
-    type: Array as PropType<OrderbookFormattedRecord[]>,
-    required: true
-  },
-
-  priceDecimals: {
-    type: Number as PropType<number>,
-    default: 2
-  },
-
-  symbol: {
-    type: String as PropType<string>,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    buys: OrderbookFormattedRecord[]
+    sells: OrderbookFormattedRecord[]
+    priceDecimals?: number
+    symbol?: string
+  }>(),
+  {
+    priceDecimals: 2,
+    symbol: ''
   }
-})
+)
 
 const canvasEl = ref<HTMLCanvasElement | null>(null)
 const containerEl = ref<HTMLDivElement | null>(null)

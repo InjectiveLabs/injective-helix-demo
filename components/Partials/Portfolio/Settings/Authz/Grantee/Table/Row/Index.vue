@@ -6,17 +6,13 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const props = defineProps({
-  grantee: {
-    type: String,
-    required: true
-  },
-
-  grants: {
-    type: Array as PropType<GrantAuthorizationWithDecodedAuthorization[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grants: GrantAuthorizationWithDecodedAuthorization[]
+    grantee: string
+  }>(),
+  {}
+)
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()

@@ -2,12 +2,12 @@
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  fundingPayment: {
-    required: true,
-    type: Object as PropType<FundingPayment>
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    fundingPayment: FundingPayment
+  }>(),
+  {}
+)
 
 const { market, time, total } = useFundingPayment(
   computed(() => props.fundingPayment)

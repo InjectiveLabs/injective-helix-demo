@@ -3,12 +3,7 @@ import { Banner } from '@/types'
 
 const appStore = useAppStore()
 
-const props = defineProps({
-  noticeBanner: {
-    type: Object as PropType<Banner>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ noticeBanner: Banner }>(), {})
 
 function closeNoticeBanner() {
   appStore.setUserState({

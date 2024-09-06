@@ -1,17 +1,10 @@
 <script lang="ts" setup>
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  decimalPlaces: {
-    type: Number,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{ market: UiMarketWithToken; decimalPlaces: number }>(),
+  {}
+)
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => props.market))
 

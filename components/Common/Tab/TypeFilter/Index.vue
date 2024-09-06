@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { OrderTypeFilter } from '@/types'
 
-const props = defineProps({
-  isDerivative: Boolean,
-  isTrigger: Boolean,
-
-  modelValue: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isTrigger?: boolean
+    modelValue: string
+    isDerivative?: boolean
+  }>(),
+  {
+    isTrigger: false,
+    modelValue: '',
+    isDerivative: false
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

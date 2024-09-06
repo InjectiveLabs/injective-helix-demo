@@ -3,12 +3,10 @@ import { Modal, TradeSubPage, NotLiquidMarket } from '@/types'
 
 const modalStore = useModalStore()
 
-const props = defineProps({
-  notLiquidMarket: {
-    type: Object as PropType<NotLiquidMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{ notLiquidMarket: NotLiquidMarket }>(),
+  {}
+)
 
 const slug = props.notLiquidMarket.slug.replaceAll('-', '/').toUpperCase()
 const redirectionSlug = props.notLiquidMarket.redirectionSlug

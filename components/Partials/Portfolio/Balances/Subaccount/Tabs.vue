@@ -4,17 +4,16 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
 
-const props = defineProps({
-  search: {
-    type: String,
-    default: ''
-  },
-
-  showUnverifiedAssets: {
-    type: Boolean,
-    default: false
+const props = withDefaults(
+  defineProps<{
+    search?: string
+    showUnverifiedAssets?: boolean
+  }>(),
+  {
+    search: '',
+    showUnverifiedAssets: false
   }
-})
+)
 
 const emit = defineEmits<{
   'update:search': [value: string]
@@ -64,7 +63,8 @@ const { valueToString: accountTotalBalanceInUsdToString } =
     <CommonSubaccountTabSelector
       v-bind="{
         includeBotsSubaccounts:
-          appStore.userState.preferences.showGridTradingSubaccounts
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
       }"
       wrapper-class="py-4 w-full "
     />

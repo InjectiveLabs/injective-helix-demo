@@ -231,6 +231,10 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
+    if (!min) {
+      return true
+    }
+
     const valueInBigNumber = new BigNumberInBase(value)
     const minInBigNumber = new BigNumberInBase(min)
 
@@ -242,6 +246,10 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('lessThanSgt', (value: string, [max]: string[]) => {
+    if (!max) {
+      return true
+    }
+
     const valueInBigNumber = new BigNumberInBase(value)
     const maxInBigNumber = new BigNumberInBase(max)
 

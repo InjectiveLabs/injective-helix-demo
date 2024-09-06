@@ -13,14 +13,15 @@ const NUMBER_OF_ROWS =
   ORDERBOOK_ROWS * 2 +
   Math.floor(ORDERBOOK_HEADER_HEIGHT / ORDERBOOK_ROW_HEIGHT)
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()

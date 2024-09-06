@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { SharedDropdownOption } from '@shared/types'
 
-const props = defineProps({
-  options: {
-    type: Array as PropType<SharedDropdownOption[]>,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    required: true
-  },
-
-  placement: {
-    type: String,
-    default: 'bottom-start'
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    options: SharedDropdownOption[]
+    modelValue: string
+    placement?: string
+    wrapperClass?: string
+  }>(),
+  {
+    placement: 'bottom-start',
+    wrapperClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

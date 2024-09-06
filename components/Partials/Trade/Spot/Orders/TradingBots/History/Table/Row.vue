@@ -2,12 +2,12 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BusEvents } from '@/types'
 
-const props = defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    strategy: TradingStrategy
+  }>(),
+  {}
+)
 
 function onOpenTradingBotDetails() {
   useEventBus(BusEvents.OpenTradingBotDetails).emit(props.strategy)

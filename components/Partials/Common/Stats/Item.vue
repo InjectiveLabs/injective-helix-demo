@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-defineProps({
-  isSm: Boolean,
-  isHorizontal: Boolean
+withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
+  isSm: false,
+  isHorizontal: false
 })
 </script>
 

@@ -3,37 +3,29 @@ import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
 
-const props = defineProps({
-  noStyle: Boolean,
-  autofix: Boolean,
-  disabled: Boolean,
-
-  wrapperClass: {
-    type: String,
-    default: ''
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  decimals: {
-    type: Number,
-    default: 18
-  },
-
-  max: {
-    type: Number,
+const props = withDefaults(
+  defineProps<{
+    max?: number
+    min?: number
+    noStyle?: boolean
+    autofix?: boolean
+    disabled?: boolean
+    decimals?: number
+    modelValue?: string
+    wrapperClass?: string
+  }>(),
+  {
     // eslint-disable-next-line
-    default: 9999999999999999999
-  },
-
-  min: {
-    type: Number,
-    default: undefined
+    max: 9999999999999999999,
+    min: undefined,
+    noStyle: false,
+    autofix: false,
+    disabled: false,
+    decimals: 18,
+    modelValue: '',
+    wrapperClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

@@ -7,26 +7,22 @@ import { CampaignSubPage } from '@/types'
 
 const { baseToken, quoteToken } = useGuild()
 
-const props = defineProps({
-  isVolume: Boolean,
-  isMyGuild: Boolean,
-  isCampaignStarted: Boolean,
-
-  rank: {
-    type: Number,
-    required: true
-  },
-
-  guild: {
-    type: Object as PropType<Guild>,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<GuildCampaignSummary>,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    rank: number
+    guild: Guild
+    summary?: GuildCampaignSummary
+    isVolume?: boolean
+    isMyGuild?: boolean
+    isCampaignStarted?: boolean
+  }>(),
+  {
+    summary: undefined,
+    isVolume: false,
+    isMyGuild: false,
+    isCampaignStarted: false
   }
-})
+)
 
 const startDate = computed(() => {
   if (!props.summary) {

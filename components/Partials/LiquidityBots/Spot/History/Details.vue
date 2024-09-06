@@ -10,12 +10,12 @@ import { StopReason, UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 
-const props = defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    strategy: TradingStrategy
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'details:open': [strategy: TradingStrategy, market: UiSpotMarket]

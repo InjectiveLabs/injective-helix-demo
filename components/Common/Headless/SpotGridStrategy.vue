@@ -16,12 +16,14 @@ import {
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { StrategyStatus } from '@/types'
 
-const props = defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    strategy: TradingStrategy
+  }>(),
+  {
+    strategy: undefined
   }
-})
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

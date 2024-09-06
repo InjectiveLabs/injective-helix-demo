@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-const props = defineProps({
-  isCarousel: Boolean
+const props = withDefaults(defineProps<{ isCarousel: boolean }>(), {
+  isCarousel: false
 })
 
 const views = ref<HTMLElement | null>(null)

@@ -1,27 +1,26 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-const props = defineProps({
-  isSm: Boolean,
-  isValid: Boolean,
-  isNoPadding: Boolean,
-  isTransparentBg: Boolean,
-
-  errors: {
-    type: Array as PropType<string[]>,
-    default: () => []
-  },
-
-  inputClasses: {
-    type: String,
-    default: ''
-  },
-
-  wrapperClasses: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    errors?: string[]
+    isValid?: boolean
+    isNoPadding?: boolean
+    inputClasses?: string
+    isTransparentBg?: boolean
+    wrapperClasses?: string
+  }>(),
+  {
+    isSm: false,
+    errors: () => [],
+    isValid: false,
+    isNoPadding: false,
+    inputClasses: '',
+    wrapperClasses: '',
+    isTransparentBg: false
   }
-})
+)
 
 const wrapperClass = computed(() => {
   const result = ['shadow-none']

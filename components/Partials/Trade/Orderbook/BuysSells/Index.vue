@@ -3,19 +3,16 @@ import { Status } from '@injectivelabs/utils'
 import { ORDERBOOK_ROWS, ORDERBOOK_ROW_HEIGHT } from '@/app/utils/constants'
 import { OrderbookLayout, UiMarketWithToken, OrderbookStatusKey } from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  orderbookLayout: {
-    type: String as PropType<OrderbookLayout>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+    orderbookLayout: OrderbookLayout
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const orderbookStatus = inject(OrderbookStatusKey) as Status
 

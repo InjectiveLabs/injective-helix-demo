@@ -22,7 +22,9 @@ function toggle() {
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettings)"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">Advanced Settings</p>
+      <p class="text-sm font-semibold select-none">
+        {{ $t('trade.advancedSettings') }}
+      </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
         <SharedIcon name="chevron-down" is-sm />
       </div>

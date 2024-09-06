@@ -14,8 +14,8 @@ import {
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-defineProps({
-  isDisabled: Boolean
+withDefaults(defineProps<{ isDisabled?: boolean }>(), {
+  isDisabled: false
 })
 
 const spotGridFormValues = useFormValues<SpotGridTradingForm>()

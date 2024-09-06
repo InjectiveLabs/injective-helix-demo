@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { SharedDropdownOption } from '@shared/types'
 
-const props = defineProps({
-  option: {
-    type: Object as PropType<SharedDropdownOption>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    option: SharedDropdownOption
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const gridStrategyStore = useGridStrategyStore()

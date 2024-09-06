@@ -3,17 +3,13 @@ import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-t
 
 const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps({
-  granter: {
-    type: String,
-    required: true
-  },
-
-  grants: {
-    type: Array as PropType<GrantAuthorizationWithDecodedAuthorization[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grants: GrantAuthorizationWithDecodedAuthorization[]
+    granter: string
+  }>(),
+  {}
+)
 
 const isOpen = ref(false)
 

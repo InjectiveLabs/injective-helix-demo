@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { getSubaccountLabel } from '@/app/utils/helpers'
 
-const props = defineProps({
-  subaccountIds: {
-    type: Array as PropType<string[]>,
-    required: true
-  },
-
-  modelValue: {
-    type: String as PropType<string>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    modelValue: string
+    subaccountIds: string[]
+  }>(),
+  {
+    subaccountIds: () => [],
+    modelValue: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

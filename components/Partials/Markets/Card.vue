@@ -5,23 +5,14 @@ import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<SharedUiMarketSummary>,
-    required: true
-  },
-
-  volumeInUsd: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+    summary: SharedUiMarketSummary
+    volumeInUsd: BigNumberInBase
+  }>(),
+  {}
+)
 
 const marketRoute = getMarketRoute(props.market)
 

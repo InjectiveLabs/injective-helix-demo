@@ -1,9 +1,16 @@
 <script lang="ts" setup>
-defineProps({
-  isLegacy: Boolean,
-  isTooltip: Boolean,
-  isActionRequired: Boolean
-})
+withDefaults(
+  defineProps<{
+    isLegacy: boolean
+    isTooltip: boolean
+    isActionRequired: boolean
+  }>(),
+  {
+    isLegacy: false,
+    isTooltip: false,
+    isActionRequired: false
+  }
+)
 </script>
 
 <template>

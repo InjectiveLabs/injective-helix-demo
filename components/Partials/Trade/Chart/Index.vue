@@ -2,14 +2,15 @@
 import { intervalOptions } from '@/app/utils/constants'
 import { BusEvents, ChartViewOption, UiMarketWithToken } from '@/types'
 
-defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
+withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const interval = ref(4)
 const view = ref(ChartViewOption.Chart)

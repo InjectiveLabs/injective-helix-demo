@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { UiMarketWithToken, CommonCyTags } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 
 const appStore = useAppStore()
 

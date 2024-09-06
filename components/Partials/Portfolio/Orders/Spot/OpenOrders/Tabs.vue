@@ -18,9 +18,10 @@ const { value: sideValue } = useStringField({
 <template>
   <div class="lg:h-header lg:divide-x lg:flex">
     <CommonSubaccountTabSelector
-      :include-bots-subaccounts="
-        appStore.userState.preferences.showGridTradingSubaccounts
-      "
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts
+      }"
       wrapper-class="w-full py-4"
     />
 

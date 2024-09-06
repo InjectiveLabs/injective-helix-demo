@@ -22,12 +22,7 @@ type OrderAnnotation = {
   }
 }
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ market: UiSpotMarket }>(), {})
 
 const spotStore = useSpotStore()
 const exchangeStore = useExchangeStore()

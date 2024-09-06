@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { UiSpotMarket, InvestmentTypeGst, SpotGridTradingField } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+  }>(),
+  {}
+)
 
 const setFormValues = useSetFormValues()
 

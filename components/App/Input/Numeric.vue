@@ -1,30 +1,32 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-const props = defineProps({
-  isSm: Boolean,
-  isValid: Boolean,
-  isRight: Boolean,
-  isDisabled: Boolean,
-  isNoPadding: Boolean,
-  isDisabledGray: Boolean,
-  isTransparentBg: Boolean,
-
-  errors: {
-    type: Array as PropType<string[]>,
-    default: () => []
-  },
-
-  inputClasses: {
-    type: String,
-    default: ''
-  },
-
-  wrapperClasses: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isValid?: boolean
+    isRight?: boolean
+    isDisabled?: boolean
+    isNoPadding?: boolean
+    isDisabledGray?: boolean
+    isTransparentBg?: boolean
+    errors?: string[]
+    inputClasses?: string
+    wrapperClasses?: string
+  }>(),
+  {
+    isSm: false,
+    errors: () => [],
+    isValid: false,
+    isRight: false,
+    isDisabled: false,
+    isNoPadding: false,
+    inputClasses: '',
+    wrapperClasses: '',
+    isDisabledGray: false,
+    isTransparentBg: false
   }
-})
+)
 
 const emit = defineEmits<{
   blur: [value: string]

@@ -16,12 +16,12 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
-const props = defineProps({
-  worstPrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    worstPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const { markPrice } = useDerivativeLastPrice(market)
 

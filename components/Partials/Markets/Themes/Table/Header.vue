@@ -1,14 +1,15 @@
 <script setup lang="ts">
-// import { MarketHeaderType } from '@/types'
-
-defineProps({
-  isAscending: Boolean,
-
-  sortBy: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    sortBy: string
+    isAscending?: boolean
+  }>(),
+  {
+    isAscending: false
   }
-})
+)
+
+const { t } = useLang()
 
 // const emit = defineEmits<{
 //   'update:isAscending': [value: boolean]
@@ -26,9 +27,9 @@ defineProps({
 
 <template>
   <div class="flex p-2 text-xs text-gray-400 border-b border-brand-700">
-    <div class="flex-1 p-2">Theme</div>
-    <div class="flex-1 p-2">Number Of Markets</div>
-    <div class="flex-1 p-2">Total Volume</div>
-    <div class="flex-1 p-2">Top Gainers</div>
+    <div class="flex-1 p-2">{{ t('markets.theme') }}</div>
+    <div class="flex-1 p-2">{{ t('markets.numberOfMarkets') }}</div>
+    <div class="flex-1 p-2">{{ t('markets.totalVolume') }}</div>
+    <div class="flex-1 p-2">{{ t('markets.topGainers') }}</div>
   </div>
 </template>

@@ -2,22 +2,16 @@
 import config from '@/app/trading-view/config'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
 
-const props = defineProps({
-  symbol: {
-    required: true,
-    type: String
-  },
-
-  interval: {
-    required: true,
-    type: String
-  },
-
-  datafeedEndpoint: {
-    required: true,
-    type: String
+const props = withDefaults(
+  defineProps<{
+    symbol: string
+    interval: string
+    datafeedEndpoint: string
+  }>(),
+  {
+    // No default values needed for required props
   }
-})
+)
 
 const emit = defineEmits<{ ready: [] }>()
 

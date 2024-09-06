@@ -10,12 +10,10 @@ import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
-const props = defineProps({
-  position: {
-    type: Object as PropType<Position | PositionV2 | undefined>,
-    default: undefined
-  }
-})
+const props = withDefaults(
+  defineProps<{ position: Position | PositionV2 | undefined }>(),
+  { position: undefined }
+)
 
 const modalStore = useModalStore()
 const positionStore = usePositionStore()

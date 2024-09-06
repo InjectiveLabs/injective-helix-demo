@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { GUILD_MIN_AMOUNT } from '@/app/utils/constants'
 
-defineProps({
-  isActive: Boolean,
-  isCampaignStarted: Boolean
-})
+withDefaults(
+  defineProps<{ isActive?: boolean; isCampaignStarted?: boolean }>(),
+  {
+    isActive: false,
+    isCampaignStarted: false
+  }
+)
 </script>
 
 <template>

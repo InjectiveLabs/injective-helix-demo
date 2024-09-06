@@ -11,24 +11,17 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isDisabled: Boolean,
-
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  guild: {
-    type: Object as PropType<Guild>,
-    required: true
-  },
-
-  guildInvitationHash: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    limit: number
+    guild: Guild
+    isDisabled?: boolean
+    guildInvitationHash: string
+  }>(),
+  {
+    isDisabled: false
   }
-})
+)
 
 const status = reactive(new Status(StatusType.Idle))
 

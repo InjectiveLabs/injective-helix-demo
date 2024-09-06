@@ -41,32 +41,39 @@ function onOpenTradingBotDetails() {
 
 <template>
   <div class="p-4">
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="type in Object.values(GridStrategyType)"
-        :key="type"
-        v-bind="{ value: type }"
-        v-model="strategyType"
-        class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm font-medium"
-        active-classes="text-white !border-blue-400"
-      >
-        {{ $t(`sgt.${type}`) }}
-      </AppButtonSelect>
-    </div>
+    <PartialsLiquidityCommonActiveStrategy
+      v-if="activeStrategy"
+      v-bind="{ activeStrategy, market: spotMarket }"
+    />
 
-    <div>
-      <PartialsTradeSpotFormTradingBotsAuto
-        v-if="strategyType === GridStrategyType.Auto"
-        :has-active-strategy="!!activeStrategy"
-        @update:tab="updateType"
-        @view:details="onOpenTradingBotDetails"
-      />
+    <div v-else>
+      <div class="flex mt-4 bg-brand-875 rounded-md">
+        <AppButtonSelect
+          v-for="type in Object.values(GridStrategyType)"
+          :key="type"
+          v-bind="{ value: type }"
+          v-model="strategyType"
+          class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm font-medium"
+          active-classes="text-white !border-blue-400"
+        >
+          {{ $t(`sgt.${type}`) }}
+        </AppButtonSelect>
+      </div>
 
-      <PartialsTradeSpotFormTradingBotsManual
-        v-else
-        :has-active-strategy="!!activeStrategy"
-        @view:details="onOpenTradingBotDetails"
-      />
+      <div>
+        <PartialsTradeSpotFormTradingBotsAuto
+          v-if="strategyType === GridStrategyType.Auto"
+          :has-active-strategy="!!activeStrategy"
+          @update:tab="updateType"
+          @view:details="onOpenTradingBotDetails"
+        />
+
+        <PartialsTradeSpotFormTradingBotsManual
+          v-else
+          :has-active-strategy="!!activeStrategy"
+          @view:details="onOpenTradingBotDetails"
+        />
+      </div>
     </div>
   </div>
 </template>

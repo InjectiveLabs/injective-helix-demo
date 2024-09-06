@@ -4,12 +4,7 @@ import { Modal } from '@/types'
 const modalStore = useModalStore()
 const { validate, resetForm } = useForm()
 
-const props = defineProps({
-  invitationHash: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ invitationHash: string }>(), {})
 
 const HASH_FIELD = 'hash'
 

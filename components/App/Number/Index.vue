@@ -1,54 +1,43 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { getExactDecimalsFromNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const slots = useSlots()
 
-const props = defineProps({
-  isSm: Boolean,
-  isXs: Boolean,
-  isFlex: Boolean,
-  isDense: Boolean,
-  isNoGrouping: Boolean,
-  useNumberDecimals: Boolean,
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isXs?: boolean
+    isFlex?: boolean
+    isDense?: boolean
+    isNoGrouping?: boolean
+    useNumberDecimals?: boolean
 
-  prefix: {
-    type: String,
-    default: ''
-  },
-
-  suffix: {
-    type: String,
-    default: ''
-  },
-
-  number: {
-    type: Object as PropType<BigNumberInBase>,
-    default: ZERO_IN_BASE
-  },
-
-  numberString: {
-    type: String,
-    default: ''
-  },
-
-  decimals: {
-    type: Number,
-    default: UI_DEFAULT_DISPLAY_DECIMALS
-  },
-
-  roundingMode: {
-    type: Number as PropType<BigNumber.RoundingMode>,
-    default: BigNumberInBase.ROUND_DOWN
-  },
-
-  abbreviationFloor: {
-    type: Number,
-    default: 0
+    prefix?: string
+    suffix?: string
+    number?: BigNumberInBase
+    numberString?: string
+    decimals?: number
+    roundingMode?: BigNumber.RoundingMode
+    abbreviationFloor?: number
+  }>(),
+  {
+    isSm: false,
+    isXs: false,
+    isFlex: false,
+    prefix: '',
+    suffix: '',
+    number: () => new BigNumberInBase(0),
+    isDense: false,
+    decimals: UI_DEFAULT_DISPLAY_DECIMALS,
+    numberString: '',
+    isNoGrouping: false,
+    roundingMode: BigNumberInBase.ROUND_DOWN,
+    useNumberDecimals: false,
+    abbreviationFloor: 0
   }
-})
+)
 
 const actualNumber = computed(
   () => new BigNumberInBase(props.numberString || props.number)

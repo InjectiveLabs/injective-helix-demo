@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const props = defineProps({
-  modal: {
-    type: String as PropType<Modal>,
-    default: Modal.TokenSelector
-  }
+const props = withDefaults(defineProps<{ modal?: Modal }>(), {
+  modal: Modal.TokenSelector
 })
 
 const modalStore = useModalStore()

@@ -74,6 +74,9 @@ export default {
       )}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the ${named(
         'assets'
       )} assets.`,
+    sellSymbolUponTermination: 'Sell {symbol} upon termination',
+    buySymbolOnStop: 'Buy {symbol} on stop',
+    sellAllSymbolOnStop: 'Sell all {symbol} on stop',
     minInvestment: 'Min investment: $ {amount}',
     minInvestmentAmount: 'Min. investment Amount',
     totalInvestment: 'Total Investment',

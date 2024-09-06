@@ -1,13 +1,8 @@
 <script lang="ts" setup>
 const campaignStore = useCampaignStore()
 
-const props = defineProps({
-  isVolume: Boolean,
-
-  now: {
-    type: Number,
-    required: true
-  }
+const props = withDefaults(defineProps<{ isVolume?: boolean; now: number }>(), {
+  isVolume: false
 })
 
 const showInactive = ref(false)
