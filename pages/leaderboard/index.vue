@@ -92,10 +92,14 @@ function onSharePnl() {
 
       <div class="text-xs md:text-sm md:leading-4 text-gray-350">
         {{
-          $t('leaderboard.pnl.timePeriod', {
-            startDate: startDateFormatted,
-            endDate: endDateFormatted
-          })
+          selectedDuration !== LeaderboardDuration.All
+            ? $t('leaderboard.pnl.timePeriod', {
+                startDate: startDateFormatted,
+                endDate: endDateFormatted
+              })
+            : $t('leaderboard.pnl.lastUpdated', {
+                lastUpdatedDate: endDateFormatted
+              })
         }}
       </div>
     </div>

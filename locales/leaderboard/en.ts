@@ -22,7 +22,9 @@ export default {
       currentDuration: ({ named }: I18nMessageFunction) =>
         `Trading PnL (${named('duration')})`,
       timePeriod: ({ named }: I18nMessageFunction) =>
-        `Time Period: ${named('startDate')} - ${named('endDate')}`
+        `Time Period: ${named('startDate')} - ${named('endDate')}`,
+      lastUpdated: ({ named }: I18nMessageFunction) =>
+        `Last Updated: ${named('lastUpdatedDate')}`
     },
 
     competition: {
