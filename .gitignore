@@ -113,3 +113,6 @@ app/data/*.json
 app/json/*
 !app/json/index.ts
 pages/whiteboard.vue
+
+# Cursor IDE
+.cursorrules
