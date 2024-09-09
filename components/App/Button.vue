@@ -87,8 +87,8 @@ const props = withDefaults(
       :disabled="disabled"
       v-bind="$attrs"
     >
-      <span v-if="props.status.isLoading() || isLoading">&#8202;</span>
-      <AppSpinner v-if="props.status.isLoading() || isLoading" is-sm is-white />
+      <span v-if="status.isLoading() || isLoading">&#8202;</span>
+      <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />
 
       <slot v-else />
     </button>

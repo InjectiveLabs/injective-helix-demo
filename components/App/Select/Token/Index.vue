@@ -278,29 +278,26 @@ export default {
               class="flex items-center gap-2 p-1.5"
               :class="{
                 'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
-                  props.options.length > 1
+                  options.length > 1
               }"
               @click="openTokenSelectorModal"
             >
               <AppSelectTokenItem
                 v-if="selectedToken"
                 :class="{
-                  'cursor-default': isDisabled || props.options.length === 1
+                  'cursor-default': isDisabled || options.length === 1
                 }"
                 v-bind="{
                   token: selectedToken.token
                 }"
               />
 
-              <div
-                v-else-if="props.options.length > 0"
-                class="whitespace-nowrap"
-              >
+              <div v-else-if="options.length > 0" class="whitespace-nowrap">
                 {{ $t('trade.swap.tokenSelector.selectToken') }}
               </div>
 
               <SharedIcon
-                v-if="props.options.length > 1 || !selectedToken"
+                v-if="options.length > 1 || !selectedToken"
                 name="caret-down-slim"
                 is-sm
               />

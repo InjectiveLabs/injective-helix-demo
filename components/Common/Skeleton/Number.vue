@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     size?: number
     status?: Status
     length?: number
   }>(),
   {
-    status: () => new Status(StatusType.Loading),
     size: 22,
-    length: 5
+    length: 5,
+    status: () => new Status(StatusType.Loading)
   }
 )
 </script>
 
 <template>
   <div
-    v-if="props.status.isLoading()"
+    v-if="status.isLoading()"
     :style="{ height: size + 'px' }"
     class="flex p-1 bg-brand-850 space-x-1 rounded-md"
   >

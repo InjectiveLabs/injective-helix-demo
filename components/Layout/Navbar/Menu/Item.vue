@@ -2,9 +2,13 @@
 import { dataCyTag } from '@shared/utils'
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
+<<<<<<< HEAD
 const appStore = useAppStore()
 
 const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
+=======
+withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
+>>>>>>> 500966c4 (chore: clean up)
   level: 0
 })
 
@@ -55,8 +59,8 @@ function close() {
     v-if="item.type === MenuItemType.Link && showItem"
     class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
-      'rounded-lg': props.level === 0,
-      'w-[325px]': props.level > 0
+      'rounded-lg': level === 0,
+      'w-[325px]': level > 0
     }"
     :to="item.to"
     :target="item?.isExternal ? '_blank' : ''"
@@ -69,7 +73,7 @@ function close() {
         <div class="flex flex-col justify-start">
           <div class="flex items-center justify-start space-x-1.5">
             <p
-              :class="{ 'font-medium': props.level > 0 }"
+              :class="{ 'font-medium': level > 0 }"
               :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
                 item.label
               }`"
@@ -100,7 +104,7 @@ function close() {
     tabindex="0"
     class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
     :class="{
-      'rounded-lg': props.level === 0
+      'rounded-lg': level === 0
     }"
     @mouseenter="open"
     @mouseleave="close"
@@ -111,7 +115,7 @@ function close() {
     >
       <div class="flex-1 w-full flex justify-between">
         <div class="flex-1">
-          <p :class="{ '': props.level > 0 }">
+          <p :class="{ '': level > 0 }">
             {{ $t(item.label) }}
           </p>
           <p
@@ -122,7 +126,7 @@ function close() {
           </p>
         </div>
 
-        <div v-if="props.level > 0" class="flex items-center">
+        <div v-if="level > 0" class="flex items-center">
           <SharedIcon name="chevron" class="rotate-180" is-sm />
         </div>
       </div>
@@ -141,14 +145,14 @@ function close() {
         v-if="isOpen"
         class="absolute"
         :class="{
-          'top-full left-0': props.level === 0,
-          'top-0 right-full': props.level > 0
+          'top-full left-0': level === 0,
+          'top-0 right-full': level > 0
         }"
       >
         <div
           :class="{
-            'pt-2': props.level === 0,
-            'pl-1': props.level > 0
+            'pt-2': level === 0,
+            'pl-1': level > 0
           }"
         >
           <div
@@ -157,7 +161,7 @@ function close() {
             <LayoutNavbarMenuItem
               v-for="subItem in filteredSubItems"
               :key="subItem.label"
-              v-bind="{ item: subItem, level: props.level + 1 }"
+              v-bind="{ item: subItem, level: level + 1 }"
               @menu:close="closeAllMenus"
             />
           </div>
