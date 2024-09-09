@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { SwapForm, SwapFormField, SwapCyTags } from '@/types'

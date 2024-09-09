@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import {
   DerivativesTradeFormField,
   DerivativeTradeTypes,

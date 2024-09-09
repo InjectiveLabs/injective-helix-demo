@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { toBalanceInToken } from '@/app/utils/formatters'

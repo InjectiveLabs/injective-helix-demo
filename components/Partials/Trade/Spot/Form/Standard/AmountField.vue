@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   calculateWorstPrice,
   calculateTotalQuantity

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{ dataCy: string }>(), {
+withDefaults(defineProps<{ dataCy?: string }>(), {
   dataCy: 'unknown-id'
 })
 </script>

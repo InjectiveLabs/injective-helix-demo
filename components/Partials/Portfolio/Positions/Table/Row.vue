@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
