@@ -19,7 +19,7 @@ export default {
 
 <template>
   <AppModal
-    :is-open="modalStore.modals[props.modal]"
+    :is-open="modalStore.modals[modal]"
     is-sm
     modal-content-class="overflow-y-hidden"
     @modal:closed="onCloseModal"
