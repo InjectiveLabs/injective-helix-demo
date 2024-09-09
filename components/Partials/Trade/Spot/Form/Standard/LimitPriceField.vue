@@ -4,10 +4,11 @@ import {
   BusEvents,
   UiSpotMarket,
   SpotTradeForm,
-  SpotTradeFormField,
-  SpotMarketCyTags
+  SpotMarketCyTags,
+  SpotTradeFormField
 } from '@/types'
 
+const appStore = useAppStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -18,11 +19,14 @@ const { value: limitValue, errorMessage } = useStringField({
   name: SpotTradeFormField.Price,
   initialValue: '',
   dynamicRule: computed(() => {
-    if (spotFormValues.value[SpotTradeFormField.BypassPriceWarning]) {
+    if (
+      appStore.devMode ||
+      spotFormValues.value[SpotTradeFormField.BypassPriceWarning]
+    ) {
       return ''
     }
 
-    return '' // `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
 

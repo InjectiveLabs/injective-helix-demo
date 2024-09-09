@@ -112,3 +112,4 @@ auto-imports.d.ts
 app/data/*.json
 app/json/*
 !app/json/index.ts
+pages/whiteboard.vue
