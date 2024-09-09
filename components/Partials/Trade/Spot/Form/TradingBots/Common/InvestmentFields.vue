@@ -21,11 +21,12 @@ const spotFormValues = useFormValues<SpotGridTradingForm>()
 
 const props = withDefaults(
   defineProps<{
-    isAuto: boolean
-    isDisabled: boolean
+    isAuto?: boolean
+    isDisabled?: boolean
   }>(),
   {
-    isAuto: false
+    isAuto: false,
+    isDisabled: false
   }
 )
 

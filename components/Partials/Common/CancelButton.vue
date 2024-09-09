@@ -39,7 +39,7 @@ function click() {
       }"
       @click="click"
     >
-      <AppSpinner v-if="status.isLoading()" is-sm is-white />
+      <AppSpinner v-if="props.status.isLoading()" is-sm is-white />
 
       <div
         v-else

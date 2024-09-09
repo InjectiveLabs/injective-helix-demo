@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    color: string
-    isActive: boolean
+    color?: string
+    isActive?: boolean
   }>(),
   {
     color: '',

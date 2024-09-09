@@ -5,6 +5,7 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
@@ -243,9 +244,7 @@ watch(
         isLoading,
         disabled: (!hasAmounts && !isLoading) || hasErrors
       }"
-      :class="{
-        'pointer-events-none': isLoading
-      }"
+      :class="isLoading ? 'pointer-events-none' : ''"
       @click="handlerFunction"
     >
       <div class="max-auto w-full" :data-cy="dataCyTag(SwapCyTags.Swapbutton)">

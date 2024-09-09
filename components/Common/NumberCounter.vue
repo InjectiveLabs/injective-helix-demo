@@ -85,7 +85,7 @@ watch(
         :key="index"
         class="text-2xl font-bold overflow-hidden"
         :style="{
-          height: `${size + paddingH}px`
+          height: `${props.size + paddingH}px`
         }"
       >
         <div
@@ -93,12 +93,15 @@ watch(
           :key="`${i}`"
           :style="{
             transform: `translateY(${
-              -(size + paddingH) * characters.findIndex((el) => char === el)
+              -(props.size + paddingH) *
+              characters.findIndex((el) => char === el)
             }px)`,
-            lineHeight: `${size + paddingH}px`,
-            height: `${size + paddingH}px`,
-            width: `${[',', '.'].includes(char) ? size / 3 : size / 1.45}px`,
-            fontSize: `${size}px`
+            lineHeight: `${props.size + paddingH}px`,
+            height: `${props.size + paddingH}px`,
+            width: `${
+              [',', '.'].includes(char) ? props.size / 3 : props.size / 1.45
+            }px`,
+            fontSize: `${props.size}px`
           }"
           class="transition-all duration-[1s] font-sans text-center ease-in-out"
         >

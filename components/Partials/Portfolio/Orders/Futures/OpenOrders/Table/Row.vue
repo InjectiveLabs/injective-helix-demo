@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { dataCyTag } from '@shared/utils'
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { PerpetualmarketCyTags } from '@/types'
 
 const authZStore = useAuthZStore()
