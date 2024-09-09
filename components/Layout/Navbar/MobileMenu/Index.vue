@@ -11,16 +11,11 @@ const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
-const depositMenuItem = computed(() => {
-  const item = getDepositMenuItem()
+const depositMenuItem = getDepositMenuItem()
 
-  return !appStore.devMode && item.type === MenuItemType.Dropdown
-    ? {
-        ...item,
-        items: item.items.filter((item) => !item.devOnly)
-      }
-    : item
-})
+const filteredMenuItems = computed(() =>
+  MENU_ITEMS.filter((item) => (!appStore.devMode ? !item.devOnly : item))
+)
 
 function close() {
   isOpen.value = false
@@ -80,7 +75,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
                 />
 
                 <LayoutNavbarPortfolioMenuItem
-                  v-for="item in MENU_ITEMS"
+                  v-for="item in filteredMenuItems"
                   :key="item.label"
                   v-bind="{ item }"
                   @menu:close="close"

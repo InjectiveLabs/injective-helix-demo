@@ -4,10 +4,11 @@ import {
   MarketKey,
   UiDerivativeMarket,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  PerpetualmarketCyTags
+  PerpetualmarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
+const appStore = useAppStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -19,6 +20,7 @@ const { value: limit, errorMessage } = useStringField({
   initialValue: '',
   dynamicRule: computed(() => {
     if (
+      appStore.devMode ||
       derivativeFormValues.value[DerivativesTradeFormField.BypassPriceWarning]
     ) {
       return ''

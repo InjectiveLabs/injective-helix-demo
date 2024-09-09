@@ -103,6 +103,27 @@ export const MENU_ITEMS: MenuItem[] = [
         isExternal: true
       }
     ]
+  },
+  {
+    type: MenuItemType.Dropdown,
+    label: 'navigation.leaderboard.title',
+    devOnly: true,
+    items: [
+      {
+        type: MenuItemType.Link,
+        isExact: true,
+        name: LeaderboardSubPage.Pnl,
+        label: 'navigation.leaderboard.pnl.title',
+        description: 'navigation.leaderboard.pnl.description',
+        to: { name: LeaderboardSubPage.Pnl }
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'navigation.leaderboard.competition.title',
+        description: 'navigation.leaderboard.competition.description',
+        to: { name: LeaderboardSubPage.Competition }
+      }
+    ]
   }
 ]
 
@@ -218,28 +239,6 @@ export const getDepositMenuItem = (): MenuItem => ({
       description: 'navigation.getInjDescription',
       to: 'https://injective.com/getinj/#getinj',
       isExternal: true
-    },
-    {
-      type: MenuItemType.Dropdown,
-      label: 'navigation.leaderboard.title',
-      description: 'navigation.leaderboard.title',
-      devOnly: true,
-      items: [
-        {
-          type: MenuItemType.Link,
-          isExact: true,
-          name: LeaderboardSubPage.Pnl,
-          label: 'navigation.leaderboard.pnl.title',
-          description: 'navigation.leaderboard.pnl.description',
-          to: { name: LeaderboardSubPage.Pnl }
-        },
-        {
-          type: MenuItemType.Link,
-          label: 'navigation.leaderboard.competition.title',
-          description: 'navigation.leaderboard.competition.description',
-          to: { name: LeaderboardSubPage.Competition }
-        }
-      ]
     }
   ]
 })
