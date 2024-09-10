@@ -350,7 +350,7 @@ export const defineGlobalRules = () => {
 
   defineRule('fixedCharacters', (value: string, [length]: string[]) => {
     if (value.length !== Number(length)) {
-      return errorMessages.fixedLength(length) // Use the new custom error message
+      return errorMessages.fixedLength(length)
     }
     return true
   })
