@@ -23,6 +23,8 @@ export const errorMessages = {
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
   integer: (fieldName: string) => `${fieldName} must be > 0`,
+  fixedLength: (length: string) =>
+    `This field must be exactly ${length} characters long.`,
 
   [Network.Axelar]: () => 'This field is not a valid Cosmos address',
   [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
@@ -345,6 +347,13 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('fixedCharacters', (value: string, [length]: string[]) => {
+    if (value.length !== Number(length)) {
+      return errorMessages.fixedLength(length) // Use the new custom error message
+    }
+    return true
+  })
 
   defineRule(
     'singleSided',

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
-withDefaults(defineProps<{ item: MenuItem; level?: number }>(), { level: 0 })
+const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
+  level: 0
+})
 
 const emit = defineEmits<{
   'menu:close': []
@@ -11,6 +13,10 @@ const isOpen = ref(false)
 const isAnimating = ref(false)
 
 function closeAllMenus() {
+  if (props.item.click) {
+    props.item.click()
+  }
+
   isOpen.value = false
 
   emit('menu:close')

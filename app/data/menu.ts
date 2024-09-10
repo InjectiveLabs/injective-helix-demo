@@ -54,6 +54,11 @@ export const MENU_ITEMS: MenuItem[] = [
           },
           query: { interface: TradingInterface.TradingBots }
         }
+      },
+      {
+        type: MenuItemType.Link,
+        label: 'voucher.redeemVoucher',
+        description: 'voucher.redeemVoucherSublabel'
       }
     ]
   },
