@@ -6,6 +6,10 @@ export default {
     close: 'Close',
     connect: 'Connect',
     beta: 'Beta',
+    getStarted: 'Get Started',
+    getStartedDescription:
+      'Connect your wallet or sign up with SSO to get started.',
+    showMoreWallets: 'Show More Wallets',
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
