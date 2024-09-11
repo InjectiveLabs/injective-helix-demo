@@ -12,6 +12,7 @@ const sharedWalletStore = useSharedWalletStore()
 
 const status: Status = reactive(new Status(StatusType.Loading))
 const selectedWallet = ref<Wallet | undefined>(undefined)
+const isShowMoreWallets = ref(false)
 
 const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.Connect] && !sharedWalletStore.isUserConnected
@@ -144,6 +145,10 @@ watch(isModalOpen, (newShowModalState) => {
     selectedWallet.value = undefined
   }
 })
+
+function toggleShowMoreWallets() {
+  isShowMoreWallets.value = !isShowMoreWallets.value
+}
 </script>
 
 <template>
@@ -164,7 +169,7 @@ watch(isModalOpen, (newShowModalState) => {
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
-    <div class="py-4 -mt-6">
+    <div class="py-4 -mt-6 -mb-4">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
@@ -175,6 +180,7 @@ watch(isModalOpen, (newShowModalState) => {
           }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"
         />
+
         <LayoutWalletLedger />
       </div>
 
@@ -192,33 +198,54 @@ watch(isModalOpen, (newShowModalState) => {
       </div>
 
       <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
-        <p class="text-gray-400 font-semibold text-xs mb-2">
-          {{ $t('common.popular') }}
-        </p>
+        <div class="flex items-center max-w-md">
+          <img src="/svg/avatar-onboarding.svg" alt="" />
 
-        <LayoutWalletConnectItem
-          v-for="walletOption in popularOptions"
-          :key="walletOption.wallet"
-          v-bind="{ walletOption }"
-          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-        />
+          <div>
+            <p class="text-xl font-semibold">
+              {{ $t('connect.getStarted') }}
+            </p>
+            <p class="text-sm">
+              {{ $t('connect.getStartedDescription') }}
+            </p>
+          </div>
+        </div>
 
-        <div class="border-t pt-4 mt-4"></div>
+        <div class="border border-dashed rounded-md p-4 my-4 text-center">
+          SSO
+        </div>
 
-        <p class="text-gray-400 font-semibold text-xs mb-2">
-          {{ $t('common.otherWallets') }}
-        </p>
+        <div class="flex items-center justify-center">
+          <div class="border-t flex-1" />
+          <p class="px-4 text-gray-400">or</p>
+          <div class="border-t flex-1" />
+        </div>
 
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))]">
+        <div
+          class="space-y-2"
+          :class="{
+            'grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))]':
+              isShowMoreWallets
+          }"
+        >
           <LayoutWalletConnectItem
-            v-for="walletOption in options"
+            v-for="walletOption in isShowMoreWallets ? options : popularOptions"
             :key="walletOption.wallet"
-            v-bind="{ walletOption }"
-            is-compact
+            v-bind="{ walletOption, isCompact: isShowMoreWallets }"
             @selected-hardware-wallet:toggle="onWalletModalTypeChange"
           />
         </div>
       </ul>
+
+      <AppButton
+        class="w-full text-gray-400 hover:text-white mt-4"
+        variant="primary-ghost"
+        @click="toggleShowMoreWallets"
+      >
+        {{
+          isShowMoreWallets ? $t('common.back') : $t('connect.showMoreWallets')
+        }}
+      </AppButton>
     </div>
   </AppModal>
 
