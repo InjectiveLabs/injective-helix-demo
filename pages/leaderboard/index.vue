@@ -23,7 +23,7 @@ const startDateFormatted = computed(() => {
     UTC_TIMEZONE
   )
 
-  return format(zonedFirstDate, 'MMMM dd, yyyy')
+  return format(zonedFirstDate, "MMMM dd, H:mm 'UTC'")
 })
 
 const endDateFormatted = computed(() => {
@@ -36,7 +36,11 @@ const endDateFormatted = computed(() => {
     UTC_TIMEZONE
   )
 
-  return format(zonedLastDate, "MMMM dd, yyyy H:mm:ss 'UTC'")
+  if (selectedDuration.value === LeaderboardDuration.OneDay) {
+    return format(zonedLastDate, "H:mm 'UTC'")
+  }
+
+  return format(zonedLastDate, "MMMM dd, H:mm 'UTC'")
 })
 
 const userStats = computed(() => {
