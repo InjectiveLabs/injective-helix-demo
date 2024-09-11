@@ -249,9 +249,9 @@ watch(
       <div class="mt-8">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
+          size="lg"
           v-bind="{
             status,
-            isLg: true,
             isDisabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"

@@ -96,7 +96,7 @@ function onChangeInvestmentType() {
 
       <div class="grid grid-cols-1 gap-2 mt-6">
         <AppButton
-          is-lg
+          size="lg"
           class="w-full font-semibold shadow-none select-none bg-blue-500"
           @click="onChangeInvestmentType"
         >
@@ -109,7 +109,7 @@ function onChangeInvestmentType() {
         </AppButton>
 
         <AppButton
-          is-lg
+          size="lg"
           class="w-full font-semibold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >

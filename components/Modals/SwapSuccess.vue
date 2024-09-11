@@ -92,7 +92,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 
         <AppButton
           class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
-          is-md
+          size="md"
           @click="onModalClose"
         >
           {{ $t('trade.swap.backToSwap') }}

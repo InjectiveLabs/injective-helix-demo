@@ -156,7 +156,7 @@ function onDetailsPage() {
     </div>
 
     <div class="flex items-center justify-center">
-      <AppButton variant="primary" is-sm @click="onDetailsPage">
+      <AppButton variant="primary" size="sm" @click="onDetailsPage">
         <span class="text-sm font-medium">
           {{ $t('sgt.details') }}
         </span>

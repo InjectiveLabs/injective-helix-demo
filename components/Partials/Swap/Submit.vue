@@ -197,7 +197,7 @@ watch(
   <div>
     <AppButton
       v-if="!sharedWalletStore.isUserConnected"
-      is-lg
+      size="lg"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
     >
@@ -206,7 +206,7 @@ watch(
 
     <AppButton
       v-else-if="restrictedTokenBasedOnUserGeoIP"
-      is-lg
+      size="lg"
       is-disabled
       class="w-full"
     >
@@ -237,8 +237,8 @@ watch(
     <AppButton
       v-else
       class="mb-2 w-full text-gray-525 text-opacity-100"
+      size="lg"
       v-bind="{
-        isXl: true,
         status: status,
         isLoading,
         disabled: (!hasAmounts && !isLoading) || hasErrors

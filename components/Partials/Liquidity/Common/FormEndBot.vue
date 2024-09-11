@@ -97,7 +97,7 @@ function removeStrategy() {
         sharedWalletStore.isAutoSignEnabled
       "
       v-bind="{ status }"
-      is-lg
+      size="lg"
       variant="danger"
       class="w-full"
       @click="removeStrategy"

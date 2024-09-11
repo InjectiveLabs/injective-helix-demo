@@ -60,9 +60,9 @@ const subscribe = handleSubmit((values) => {
           </AppInput>
 
           <AppButton
-            is-xl
+            size="lg"
             class="bg-blue-500 text-blue-900"
-            :is-disabled="errors.length > 0"
+            :disabled="errors.length > 0"
             :is-loading="status.isLoading()"
             @click="subscribe"
           >

@@ -2,6 +2,7 @@
 import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
+import { ClassValue, clsx } from 'clsx'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const button = cva(
@@ -55,7 +56,7 @@ defineOptions({
 const props = withDefaults(
   defineProps<{
     size?: ButtonProps['size']
-    class?: string
+    class?: ClassValue | ClassValue[]
     status?: Status
     variant?: ButtonProps['variant']
     tooltip?: string
@@ -64,7 +65,7 @@ const props = withDefaults(
   }>(),
   {
     size: 'md',
-    class: '',
+    class: () => [],
     status: () => new Status(StatusType.Idle),
     variant: 'primary',
     tooltip: '',
@@ -82,7 +83,7 @@ const props = withDefaults(
     :triggers="['hover', 'click']"
   >
     <button
-      :class="twMerge(button({ size, variant }), props.class)"
+      :class="twMerge(button({ size, variant }), clsx(props.class))"
       :disabled="disabled"
       v-bind="$attrs"
     >

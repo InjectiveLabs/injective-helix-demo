@@ -152,7 +152,7 @@ const onSubmit = handleSubmit(() => {
                 >
                   <template #max>
                     <AppButton
-                      is-xs
+                      size="xs"
                       class="bg-blue-500 text-blue-900"
                       @click="onMaxClicked"
                     >
@@ -174,7 +174,7 @@ const onSubmit = handleSubmit(() => {
               </div>
               <div class="w-full mt-6 text-center">
                 <AppButton
-                  is-lg
+                  size="lg"
                   class="w-full bg-blue-500 text-blue-900"
                   v-bind="{ status }"
                   :disabled="amountErrors.length > 0"
