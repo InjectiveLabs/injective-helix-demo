@@ -106,12 +106,13 @@ type MenuItemBase = {
   isExact?: boolean
   name?: string
   devOnly?: boolean
+  click?: (...args: any) => any
 }
 
 export type MenuItem =
   | (MenuItemBase & {
       type: MenuItemType.Link
-      to: RouteLocationRaw
+      to?: RouteLocationRaw
     })
   | (MenuItemBase & {
       type: MenuItemType.Dropdown

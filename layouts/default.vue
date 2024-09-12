@@ -100,6 +100,7 @@ provide(PortfolioStatusKey, portfolioStatus)
     <ModalsDevMode />
     <ModalsPostOnlyMode />
     <ModalsGeoRestricted />
+    <ModalsRedeemVoucher />
     <SharedPageConfetti />
 
     <LayoutFooter v-if="showFooter" />
