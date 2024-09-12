@@ -32,6 +32,7 @@ export default {
       src: '/chart/charting_library/charting_library.js',
       body: 'true'
     },
-    { innerHTML: 'var exports = {}' }
+    { innerHTML: 'var exports = {}' },
+    { src: 'https://widget.mercuryo.io/embed.2.0.js' }
   ] as any
 }

@@ -1,10 +1,18 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { usdtToken } from '@shared/data/token'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
-import { MainPage, LiquidityRewardsPage, PortfolioStatusKey } from '@/types'
+import {
+  MainPage,
+  LiquidityRewardsPage,
+  PortfolioStatusKey,
+  Modal
+} from '@/types'
 
 const route = useRoute()
+const modalStore = useModalStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
@@ -47,6 +55,7 @@ onWalletConnected(() => {
   mixpanelAnalytics.init()
 
   fetchUserPortfolio()
+    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
@@ -64,6 +73,7 @@ function fetchUserPortfolio() {
     authZStore.fetchGrants(),
 
     accountStore.fetchCw20Balances(),
+    accountStore.fetchErc20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
     positionStore.fetchPositions()
@@ -78,6 +88,24 @@ function fetchSubaccountStream() {
   accountStore.streamSubaccountBalance()
   accountStore.streamBankBalance()
   positionStore.streamSubaccountPositions()
+}
+
+function checkOnboarding() {
+  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
+
+  if (
+    sharedWalletStore.isUserConnected &&
+    !accountStore.hasBalance &&
+    sharedWalletStore.wallet === Wallet.Metamask &&
+    Number(erc20UsdtBalance?.balance || 0) > 0
+  ) {
+    modalStore.openModal(Modal.LiteBridge)
+    return
+  }
+
+  if (!accountStore.hasBalance) {
+    modalStore.openModal(Modal.FiatOnboard)
+  }
 }
 
 provide(PortfolioStatusKey, portfolioStatus)
@@ -100,6 +128,8 @@ provide(PortfolioStatusKey, portfolioStatus)
     <ModalsDevMode />
     <ModalsPostOnlyMode />
     <ModalsGeoRestricted />
+    <ModalsLiteBridge />
+    <ModalsFiatOnboard />
     <SharedPageConfetti />
 
     <LayoutFooter v-if="showFooter" />

@@ -420,5 +420,17 @@ export default {
     title: 'Post Only Mode!',
     description:
       'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
+  },
+
+  onboarding: {
+    copy: 'Copy',
+    imDone: 'Im Done',
+    fundsNeeded: 'Funds Needed',
+    iNeedToPurchaseFunds: 'I Need To Purchase Funds',
+    processing: 'Processing your transfer',
+    success: 'Your transaction has been confirmed',
+    fundsNeededDescription:
+      'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+    scanQrCodeOrCopy: 'Scan the QR code or copy your new address below to begin'
   }
 }
