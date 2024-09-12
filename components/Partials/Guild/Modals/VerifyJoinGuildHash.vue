@@ -81,8 +81,8 @@ watch(
     <div class="w-full mt-8 flex flex-col gap-1 items-center">
       <AppButton
         class="w-full bg-blue-500 text-blue-900 font-semibold"
+        size="lg"
         v-bind="{
-          isLg: true,
           disabled: !hash || !hashMatches
         }"
         @click="onSubmit"

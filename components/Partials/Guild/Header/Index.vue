@@ -172,7 +172,7 @@ function onConnectWallet() {
             <AppButton
               v-else
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
-              :is-disabled="isCampaignOver"
+              :disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
               <span v-if="isCampaignOver" class="text-gray-600">
@@ -200,7 +200,7 @@ function onConnectWallet() {
           <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
             <AppButton
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
-              :is-disabled="isCampaignOver"
+              :disabled="isCampaignOver"
             >
               <span v-if="isCampaignOver" class="text-gray-600">
                 {{ $t('guild.seasonEnded') }}

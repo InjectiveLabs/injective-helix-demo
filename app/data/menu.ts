@@ -1,5 +1,5 @@
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { IS_TESTNET } from '@/app/utils/constants'
+import { IS_TESTNET, SHOW_REDEEM_VOUCHER } from '@/app/utils/constants'
 import {
   MainPage,
   MenuItem,
@@ -11,6 +11,54 @@ import {
   LeaderboardSubPage
 } from '@/types'
 
+const tradeMenu: MenuItem = {
+  type: MenuItemType.Dropdown,
+  label: 'navigation.trade',
+  items: [
+    {
+      type: MenuItemType.Link,
+      label: 'navigation.swap',
+      description: 'navigation.swapDescription',
+      to: { name: MainPage.Swap }
+    },
+    {
+      type: MenuItemType.Link,
+      label: 'navigation.spot',
+      description: 'navigation.spotDescription',
+      to: { name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }
+    },
+    {
+      type: MenuItemType.Link,
+      label: 'navigation.perpetual',
+      description: 'navigation.perpetualDescription',
+      to: {
+        name: TradeSubPage.Futures,
+        params: { slug: IS_TESTNET ? 'btc-usdt-perp-pyth' : 'btc-usdt-perp' }
+      }
+    },
+    {
+      type: MenuItemType.Link,
+      label: 'navigation.tradingBots',
+      description: 'navigation.tradingBotsDescription',
+      to: {
+        name: TradeSubPage.Spot,
+        params: {
+          slug: 'inj-usdt'
+        },
+        query: { interface: TradingInterface.TradingBots }
+      }
+    }
+  ]
+}
+
+if (SHOW_REDEEM_VOUCHER) {
+  tradeMenu.items.push({
+    type: MenuItemType.Link,
+    label: 'voucher.redeemVoucher',
+    description: 'voucher.redeemVoucherSublabel'
+  })
+}
+
 export const MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
@@ -18,45 +66,7 @@ export const MENU_ITEMS: MenuItem[] = [
     to: { name: MainPage.Markets }
   },
 
-  {
-    type: MenuItemType.Dropdown,
-    label: 'navigation.trade',
-    items: [
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.swap',
-        description: 'navigation.swapDescription',
-        to: { name: MainPage.Swap }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.spot',
-        description: 'navigation.spotDescription',
-        to: { name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.perpetual',
-        description: 'navigation.perpetualDescription',
-        to: {
-          name: TradeSubPage.Futures,
-          params: { slug: IS_TESTNET ? 'btc-usdt-perp-pyth' : 'btc-usdt-perp' }
-        }
-      },
-      {
-        type: MenuItemType.Link,
-        label: 'navigation.tradingBots',
-        description: 'navigation.tradingBotsDescription',
-        to: {
-          name: TradeSubPage.Spot,
-          params: {
-            slug: 'inj-usdt'
-          },
-          query: { interface: TradingInterface.TradingBots }
-        }
-      }
-    ]
-  },
+  tradeMenu,
 
   {
     type: MenuItemType.Dropdown,

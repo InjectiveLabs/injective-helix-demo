@@ -185,7 +185,7 @@ function nextStep() {
           class="max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
         >
           <AppButton
-            is-lg
+            size="lg"
             class="w-full font-semibold shadow-none select-none text-blue-500 border-blue-500"
             @click="onCloseModal"
           >
@@ -193,7 +193,7 @@ function nextStep() {
           </AppButton>
 
           <AppButton
-            is-lg
+            size="lg"
             class="w-full font-semibold shadow-none select-none bg-blue-500 text-blue-900"
             @click="nextStep"
           >

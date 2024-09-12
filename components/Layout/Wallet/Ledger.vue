@@ -146,9 +146,9 @@ const connect = handleSubmit(() => {
 
       <AppButton
         class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
-        :is-disabled="addressErrors.length > 0"
+        :disabled="addressErrors.length > 0"
         :is-loading="status.isLoading()"
-        is-lg
+        size="lg"
         @click="connect"
       >
         {{ $t('connect.connect') }}

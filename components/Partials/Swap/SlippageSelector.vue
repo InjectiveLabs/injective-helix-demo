@@ -93,7 +93,7 @@ function checkForInvalidSlippageValue() {
                 :value="slippage"
               >
                 <template #default>
-                  <AppButton is-sm>
+                  <AppButton size="sm">
                     <div class="mx-auto leading-4">
                       <span class="text-base capitalize">{{ slippage }}</span>
                       <span>%</span>

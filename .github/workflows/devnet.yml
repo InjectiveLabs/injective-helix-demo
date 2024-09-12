@@ -24,6 +24,7 @@ jobs:
       ## Flags
       VPN_CHECKS_ENABLED: false
       VITE_VPN_CHECKS_ENABLED: true
+      VITE_SHOW_REDEEM_VOUCHER: false
       VITE_MAINTENANCE_ENABLED: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 

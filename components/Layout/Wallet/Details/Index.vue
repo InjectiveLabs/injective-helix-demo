@@ -27,7 +27,7 @@ function disconnect() {
 </script>
 
 <template>
-  <div class="flex items-center min-h-[40.2px]">
+  <div class="flex items-center min-h-[40px]">
     <SharedHoverMenu
       popper-class="min-w-[310px] sm:min-w-[356px]  shadow-dropdown rounded-md"
     >

@@ -132,7 +132,10 @@ function connectViaPrivateKey() {
         @update:model-value="resetForm()"
       >
         <template #default="{ isActive }">
-          <AppButton is-sm :variant="isActive ? 'primary' : 'primary-outline'">
+          <AppButton
+            size="sm"
+            :variant="isActive ? 'primary' : 'primary-outline'"
+          >
             <div class="mx-auto leading-4">
               <span class="text-base capitalize">{{ item }}</span>
             </div>

@@ -102,9 +102,7 @@ function onSubmit() {
       <div class="mt-8 flex items-center gap-4">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onSubmit"
         >
           <span>
@@ -114,9 +112,7 @@ function onSubmit() {
 
         <AppButton
           class="w-full font-semibold border border-white"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onSubmit"
         >
           <span>

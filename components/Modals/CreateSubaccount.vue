@@ -43,7 +43,7 @@ function closeModal() {
 
       <div class="mt-6">
         <AppButton
-          is-lg
+          size="lg"
           class="w-full text-blue-900 bg-blue-500"
           @click="onOpenSubaccountTransferModal"
         >

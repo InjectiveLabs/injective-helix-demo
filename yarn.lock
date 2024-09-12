@@ -592,6 +592,13 @@
     glob "^7.1.6"
     read-pkg-up "^7.0.1"
 
+"@chenfengyuan/vue-qrcode@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@chenfengyuan/vue-qrcode/-/vue-qrcode-1.0.2.tgz#37d71902e166e1ae58176bd6cb9c40905c1b0949"
+  integrity sha512-hwy1d4YMJAyEh+V7dLPG8eAKACRvugzSB4ylwb6QNqo84KHTF50/5EJcBYdUhTRPfAqrxG0i6jDAXONWOGyQbQ==
+  dependencies:
+    qrcode "^1.4.4"
+
 "@cloudflare/kv-asset-handler@^0.3.1":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@cloudflare/kv-asset-handler/-/kv-asset-handler-0.3.2.tgz#06437b75664729823ac9033b89f06a3b078e4f55"
@@ -1903,10 +1910,10 @@
   dependencies:
     browser-headers "^0.4.1"
 
-"@injectivelabs/indexer-proto-ts@1.11.49":
-  version "1.11.49"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.11.49.tgz#cefe5bdc2ffe75754c14a43cb586469eef3f391b"
-  integrity sha512-CLSYpkYJ12QWgzqA3a1AHO9HoMdz1zMOunf3cee1OtA4EdZGp+0KsenS46gCulzqBB6N6l3si6GbwHzlT2nFZQ==
+"@injectivelabs/indexer-proto-ts@1.11.53":
+  version "1.11.53"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.11.53.tgz#9dba45c5af0c719505090b47cc4cdcd17da0cb8c"
+  integrity sha512-hc67sPi5Pr0iZO2SLgsk43f+n7f1ZGkx82ux4kXtE61lTuHPRWfweel1zHQfo+bmnD8wO3MKD2TZWTeoWbsyhQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     google-protobuf "^3.14.0"
@@ -1954,10 +1961,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.14", "@injectivelabs/sdk-ts@^1.14.14":
-  version "1.14.14"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.14.tgz#d514c4c108552005f14444cff4f4458dc9a08c6d"
-  integrity sha512-hjFHCa6YPkwXz/Ekx3dO3G9pmGLgUcS91hikPRSugvWJlprTvn0+wdEoT7u3iJpPx0eD/rJISu1tvSKQZrhliQ==
+"@injectivelabs/sdk-ts@1.14.15-beta.1", "@injectivelabs/sdk-ts@^1.14.15-beta.1":
+  version "1.14.15-beta.1"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.15-beta.1.tgz#0d93c8a972c266de3f76a29321fe894b697fb48b"
+  integrity sha512-2Hprrk4ld++Zp0rGnhB0sUN6Kd3MHDIxJycoBpq2eDJAWspItbZXm+KrGGORBvTetHa/0kgrQamKDh7LRV5Z0w==
   dependencies:
     "@apollo/client" "^3.5.8"
     "@cosmjs/amino" "^0.32.3"
@@ -1970,7 +1977,7 @@
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
-    "@injectivelabs/indexer-proto-ts" "1.11.49"
+    "@injectivelabs/indexer-proto-ts" "1.11.53"
     "@injectivelabs/mito-proto-ts" "1.0.65"
     "@injectivelabs/networks" "^1.14.14"
     "@injectivelabs/test-utils" "^1.14.14"
@@ -2037,10 +2044,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.14":
-  version "1.14.14"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.14.tgz#1a856615139a025cd249d77e6adada307c044f3b"
-  integrity sha512-j+y8vey8Dlwn0NpEzKZsN5h+HCtqMoQLrDXyxqAznVAAv51dcMqgwL7GjSAw25NIsEDzWjXv7CmJlMEIxonnlg==
+"@injectivelabs/wallet-ts@1.14.15-beta.1":
+  version "1.14.15-beta.1"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.15-beta.1.tgz#c255421ddda9dbef31d335f5c1454c710ad6ddd7"
+  integrity sha512-pyT1DVdPe1jMBh3n8x2tqaVogSbMfv9gFp1NQgTkjPDx+S1kzjd7onrtQX9dJAq1qFke1/MmTnkwh13q2TpevQ==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2050,7 +2057,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.14.14"
     "@injectivelabs/networks" "^1.14.14"
-    "@injectivelabs/sdk-ts" "^1.14.14"
+    "@injectivelabs/sdk-ts" "^1.14.15-beta.1"
     "@injectivelabs/ts-types" "^1.14.14"
     "@injectivelabs/utils" "^1.14.14"
     "@keplr-wallet/cosmos" "^0.12.71"
@@ -8086,6 +8093,11 @@ clsx@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.0.0.tgz#12658f3fd98fafe62075595a5c30e43d18f3d00b"
   integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
+
+clsx@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
+  integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
 cluster-key-slot@^1.1.0:
   version "1.1.2"
@@ -14962,22 +14974,23 @@ pushdata-bitcoin@^1.0.1:
   dependencies:
     bitcoin-ops "^1.3.0"
 
+qr-code-generator-vue3@^1.4.21:
+  version "1.4.21"
+  resolved "https://registry.yarnpkg.com/qr-code-generator-vue3/-/qr-code-generator-vue3-1.4.21.tgz#8b9c0d7bdf8f0394a87227d74d108cba0e64c674"
+  integrity sha512-UOnhze8vm3ej9A5w7Fl7cO2nOEJ7Nao4qgW60vlmlmaDIg0+CiDMRs3Yy6PK7Ba3Xz77bqQA7l7kJqnM1ti17g==
+  dependencies:
+    "@chenfengyuan/vue-qrcode" "^1.0.2"
+    qrcode-generator "^1.4.3"
+
 qr.js@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
   integrity sha512-c4iYnWb+k2E+vYpRimHqSu575b1/wKl4XFeJGpFmrJQz5I88v9aY2czh7s0w36srfCM1sXgC/xpoJz5dJfq+OQ==
 
-qrcode-generator@^1.4.4:
+qrcode-generator@^1.4.3:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/qrcode-generator/-/qrcode-generator-1.4.4.tgz#63f771224854759329a99048806a53ed278740e7"
   integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
-
-qrcode-vue3@1.6.8:
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/qrcode-vue3/-/qrcode-vue3-1.6.8.tgz#66f86f7a45ab3044043b8447ec1b2ebea630d53b"
-  integrity sha512-LtMnwKWi58ZqHbXBcsTF/VxDYhI6RrBIrDQw8fbDVlO8p5tJBZa7TaIaVYLY937vKO2WCEBmOKksGlpm5ccEIg==
-  dependencies:
-    qrcode-generator "^1.4.4"
 
 qrcode.react@^1.0.1:
   version "1.0.1"
@@ -15008,6 +15021,15 @@ qrcode@1.5.3:
   dependencies:
     dijkstrajs "^1.0.1"
     encode-utf8 "^1.0.3"
+    pngjs "^5.0.0"
+    yargs "^15.3.1"
+
+qrcode@^1.4.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.5.4.tgz#5cb81d86eb57c675febb08cf007fff963405da88"
+  integrity sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==
+  dependencies:
+    dijkstrajs "^1.0.1"
     pngjs "^5.0.0"
     yargs "^15.3.1"
 
@@ -15891,16 +15913,16 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#89254cef4bb3c508fbd314db0ce662b4977ca1ee"
+  resolved "https://github.com/InjectiveLabs/shared-packages#a3b1cb3140adeaad99e94eb88ada849325da3a24"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.14"
     "@injectivelabs/networks" "1.14.14"
     "@injectivelabs/nuxt-bugsnag" "0.0.3"
-    "@injectivelabs/sdk-ts" "1.14.14"
+    "@injectivelabs/sdk-ts" "1.14.15-beta.1"
     "@injectivelabs/ts-types" "1.14.14"
     "@injectivelabs/utils" "1.14.14"
-    "@injectivelabs/wallet-ts" "1.14.14"
+    "@injectivelabs/wallet-ts" "1.14.15-beta.1"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
     "@vueuse/integrations" "^10.7.1"
@@ -15908,7 +15930,7 @@ shallow-clone@^3.0.0:
     floating-vue "2.0.0-beta.24"
     js-confetti "^0.12.0"
     nuxt-lcp-speedup "^0.5.2"
-    qrcode-vue3 "1.6.8"
+    qr-code-generator-vue3 "^1.4.21"
     vee-validate "4.11.7"
     vue-gtag "^2.0.1"
     vue-hotjar "^1.4.0"

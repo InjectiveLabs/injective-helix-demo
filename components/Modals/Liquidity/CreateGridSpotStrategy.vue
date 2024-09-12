@@ -316,7 +316,7 @@ function onCreateStrategy() {
         <div>
           <AppButton
             v-bind="{ status }"
-            :is-disabled="!hasAgreedToTerms"
+            :disabled="!hasAgreedToTerms"
             class="bg-blue-500 disabled:bg-gray-500 w-full"
             @click="onCreateStrategy"
           >

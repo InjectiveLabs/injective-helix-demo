@@ -180,10 +180,10 @@ function onClaimRewards() {
     >
       <AppButton
         class="border border-blue-500"
+        size="sm"
         v-bind="{
-          isSm: true,
           isLoading: status.isLoading() || fetchClaimStatus.isLoading(),
-          isDisabled: hasUserClaimed || !isReadyToClaim || !hasReward
+          disabled: hasUserClaimed || !isReadyToClaim || !hasReward
         }"
         @click="onClaimRewards"
       >
