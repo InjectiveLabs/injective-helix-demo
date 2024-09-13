@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
+const appStore = useAppStore()
+
 const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
   level: 0
 })
@@ -9,8 +11,20 @@ const emit = defineEmits<{
   'menu:close': []
 }>()
 
+const sharedWalletStore = useSharedWalletStore()
+
 const isOpen = ref(false)
 const isAnimating = ref(false)
+
+const filteredSubItems = computed(() =>
+  (props.item.items || []).filter(
+    (subItem) => !subItem.devOnly || appStore.devMode
+  )
+)
+
+const showItem = computed(() =>
+  props.item.connectedOnly ? sharedWalletStore.isUserConnected : true
+)
 
 function closeAllMenus() {
   if (props.item.click) {
@@ -37,7 +51,7 @@ function close() {
 
 <template>
   <NuxtLink
-    v-if="item.type === MenuItemType.Link"
+    v-if="item.type === MenuItemType.Link && showItem"
     class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
       'rounded-lg': level === 0,
@@ -81,7 +95,7 @@ function close() {
   </NuxtLink>
 
   <div
-    v-else
+    v-else-if="item.type === MenuItemType.Dropdown && showItem"
     tabindex="0"
     class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
     :class="{
@@ -140,7 +154,7 @@ function close() {
             class="bg-brand-900 border-brand-800 border text-white rounded-lg"
           >
             <LayoutNavbarMenuItem
-              v-for="subItem in item.items"
+              v-for="subItem in filteredSubItems"
               :key="subItem.label"
               v-bind="{ item: subItem, level: level + 1 }"
               @menu:close="closeAllMenus"

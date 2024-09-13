@@ -1,5 +1,5 @@
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { IS_TESTNET, SHOW_REDEEM_VOUCHER } from '@/app/utils/constants'
+import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   MenuItem,
@@ -47,16 +47,15 @@ const tradeMenu: MenuItem = {
         },
         query: { interface: TradingInterface.TradingBots }
       }
+    },
+    {
+      connectedOnly: true,
+      type: MenuItemType.Link,
+      label: 'voucher.redeemVoucher',
+      devOnly: true,
+      description: 'voucher.redeemVoucherSublabel'
     }
   ]
-}
-
-if (SHOW_REDEEM_VOUCHER) {
-  tradeMenu.items.push({
-    type: MenuItemType.Link,
-    label: 'voucher.redeemVoucher',
-    description: 'voucher.redeemVoucherSublabel'
-  })
 }
 
 export const MENU_ITEMS: MenuItem[] = [
