@@ -5,9 +5,9 @@ import { usdtToken } from '@shared/data/token'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
-  MainPage,
   LiquidityRewardsPage,
   PortfolioStatusKey,
+  MainPage,
   Modal
 } from '@/types'
 
