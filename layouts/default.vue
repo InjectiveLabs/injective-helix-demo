@@ -91,6 +91,10 @@ function fetchSubaccountStream() {
 }
 
 function checkOnboarding() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
   const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
 
   if (
