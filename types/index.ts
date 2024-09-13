@@ -100,13 +100,14 @@ export interface AmplitudeTrackerUser {
 }
 type MenuItemBase = {
   label: string
-  description?: string
   icon?: string
-  isExternal?: boolean
-  isExact?: boolean
   name?: string
-  devOnly?: boolean
   click?: (...args: any) => any
+  isExact?: boolean
+  devOnly?: boolean
+  isExternal?: boolean
+  description?: string
+  connectedOnly?: boolean
 }
 
 export type MenuItem =

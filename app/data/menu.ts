@@ -55,7 +55,8 @@ if (SHOW_REDEEM_VOUCHER) {
   tradeMenu.items.push({
     type: MenuItemType.Link,
     label: 'voucher.redeemVoucher',
-    description: 'voucher.redeemVoucherSublabel'
+    description: 'voucher.redeemVoucherSublabel',
+    connectedOnly: true
   })
 }
 

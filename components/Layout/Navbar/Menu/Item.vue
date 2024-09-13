@@ -9,8 +9,14 @@ const emit = defineEmits<{
   'menu:close': []
 }>()
 
+const sharedWalletStore = useSharedWalletStore()
+
 const isOpen = ref(false)
 const isAnimating = ref(false)
+
+const showItem = computed(() =>
+  props.item.connectedOnly ? sharedWalletStore.isUserConnected : true
+)
 
 function closeAllMenus() {
   if (props.item.click) {
@@ -37,7 +43,7 @@ function close() {
 
 <template>
   <NuxtLink
-    v-if="item.type === MenuItemType.Link"
+    v-if="item.type === MenuItemType.Link && showItem"
     class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
       'rounded-lg': level === 0,
@@ -81,7 +87,7 @@ function close() {
   </NuxtLink>
 
   <div
-    v-else
+    v-else-if="item.type === MenuItemType.Dropdown && showItem"
     tabindex="0"
     class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
     :class="{
