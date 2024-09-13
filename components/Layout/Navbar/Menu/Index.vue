@@ -2,6 +2,9 @@
 import { MENU_ITEMS } from '@/app/data/menu'
 import { MenuItemType, Modal } from '@/types'
 
+const appStore = useAppStore()
+const modalStore = useModalStore()
+
 const menuItems = MENU_ITEMS.map((item) => {
   if (
     item.label === 'navigation.trade' &&
@@ -27,12 +30,13 @@ const menuItems = MENU_ITEMS.map((item) => {
   return item
 })
 
-const appStore = useAppStore()
-const modalStore = useModalStore()
-
 const filteredMenuItems = computed(() =>
   menuItems.filter((item) => (!appStore.devMode ? !item.devOnly : item))
 )
+
+function openLiteBridge() {
+  modalStore.openModal(Modal.LiteBridge)
+}
 </script>
 
 <template>
@@ -42,5 +46,13 @@ const filteredMenuItems = computed(() =>
       :key="item.label"
       v-bind="{ item }"
     />
+
+    <button
+      v-if="appStore.devMode"
+      class="text-sm font-semibold"
+      @click="openLiteBridge"
+    >
+      Open Bridge
+    </button>
   </div>
 </template>

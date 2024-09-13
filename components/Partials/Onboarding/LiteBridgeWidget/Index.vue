@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const emit = defineEmits<{
+  success: []
+}>()
+
 useHead({
   link: [
     {
@@ -30,6 +34,8 @@ declare global {
           wallet: string
           address: string
         }
+        onSuccess: (args: any) => any
+        mock?: boolean
       }
     ) => () => void
   }
@@ -59,8 +65,13 @@ function mountWidget() {
       injectiveAddress: wallet.value.injectiveAddress,
       wallet: wallet.value.wallet,
       address: wallet.value.address
-    }
+    },
+    onSuccess: () => {
+      emit('success')
+    },
+    mock: false
   })
+
   status.setIdle()
 }
 
