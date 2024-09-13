@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usdtToken } from '@shared/data/token'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const accountStore = useAccountStore()
 
@@ -13,6 +14,7 @@ const showMessage = ref(false)
 const formattedCountdown = computed(() => {
   const minutes = Math.floor(countdown.value / 60)
   const seconds = countdown.value % 60
+
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 })
 
@@ -39,7 +41,7 @@ watch(
       (balance) => balance.denom === usdtToken.denom
     )
 
-    if (usdtBalance && Number(usdtBalance.amount) > 0) {
+    if (usdtBalance && new BigNumberInBase(usdtBalance.amount).gt(0)) {
       emit('transfer:success')
     }
   }

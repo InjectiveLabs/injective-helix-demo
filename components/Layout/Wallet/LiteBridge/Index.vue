@@ -1,7 +1,11 @@
 <script setup lang="ts">
-type View = 'widget' | 'processing' | 'success'
+enum View {
+  Widget = 'widget',
+  Processing = 'processing',
+  Success = 'success'
+}
 
-const view = ref<View>('widget')
+const view = ref<View>(View.Widget)
 
 const emit = defineEmits<{
   'modal:lock': []
@@ -9,26 +13,26 @@ const emit = defineEmits<{
 }>()
 
 function onSuccess() {
-  view.value = 'processing'
+  view.value = View.Processing
   emit('modal:lock')
 }
 
 function onTransferSuccess() {
-  view.value = 'success'
+  view.value = View.Success
   emit('modal:unlock')
 }
 </script>
 
 <template>
   <PartialsOnboardingLiteBridgeWidget
-    v-if="view === 'widget'"
+    v-if="view === View.Widget"
     @success="onSuccess"
   />
 
   <PartialsOnboardingLiteBridgeWidgetProcessing
-    v-if="view === 'processing'"
+    v-if="view === View.Processing"
     @transfer:success="onTransferSuccess"
   />
 
-  <PartialsOnboardingLiteBridgeWidgetSuccess v-if="view === 'success'" />
+  <PartialsOnboardingLiteBridgeWidgetSuccess v-if="view === View.Success" />
 </template>
