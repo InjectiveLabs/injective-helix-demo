@@ -10,7 +10,7 @@ useHead({
   ],
   script: [
     {
-      src: '/widget/inj-bridge-widget.es.js',
+      src: '/widget/index.es.js',
       type: 'module',
       tagPosition: 'bodyClose',
       onload: () => {
@@ -22,14 +22,14 @@ useHead({
 
 declare global {
   interface Window {
-    InjBridgeWidget: {
-      mountWidget: (
-        container: string,
-        props: any
-      ) => {
-        unmount: () => void
+    createWidget: (
+      container: string,
+      props?: {
+        injectiveAddress: string
+        wallet: string
+        address: string
       }
-    }
+    ) => () => void
   }
 }
 
@@ -37,37 +37,43 @@ const sharedWalletStore = useSharedWalletStore()
 
 const wallet = computed(() => ({
   injectiveAddress: sharedWalletStore.injectiveAddress,
-  wallet: sharedWalletStore.wallet
+  wallet: sharedWalletStore.wallet,
+  address: sharedWalletStore.address
 }))
 
 withDefaults(defineProps<{ widgetClass?: string }>(), { widgetClass: '' })
 
 const status = reactive(new Status(StatusType.Loading))
 
-let widget: {
-  unmount: () => void
-} | null = null
+let unmount: (() => void) | null = null
 
 function mountWidget() {
-  widget = window.InjBridgeWidget.mountWidget('#widget-container', {
-    user: wallet.value
+  if (unmount) {
+    unmount()
+  }
+
+  unmount = window.createWidget('widget-container', {
+    injectiveAddress: wallet.value.injectiveAddress,
+    wallet: wallet.value.wallet,
+    address: wallet.value.address
   })
   status.setIdle()
 }
 
 onUnmounted(() => {
-  if (widget) {
-    widget.unmount()
+  if (unmount) {
+    unmount()
   }
 })
 </script>
 
 <template>
-  <div key="inj-bridge-widget" data-mode="dark">
-    <div
-      id="widget-container"
-      key="inj-bridge-widget-container"
-      :class="widgetClass"
-    ></div>
+  <div class="min-h-[300px]" data-mode="dark">
+    <AppHocLoading
+      wrapper-class="min-h-[500px]  flex items-center justify-center"
+      v-bind="{ status }"
+    />
+
+    <div id="widget-container" :class="widgetClass"></div>
   </div>
 </template>
