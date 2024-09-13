@@ -441,6 +441,9 @@ export default {
     success: 'Your transaction has been confirmed',
     fundsNeededDescription:
       'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
-    scanQrCodeOrCopy: 'Scan the QR code or copy your new address below to begin'
+    scanQrCodeOrCopy:
+      'Scan the QR code or copy your new address below to begin',
+    processingMessage:
+      'Processing is taking more than usual. Please wait for a while.'
   }
 }

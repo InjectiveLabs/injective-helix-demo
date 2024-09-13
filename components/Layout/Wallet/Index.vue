@@ -1,106 +1,29 @@
 <script lang="ts" setup>
-import { WalletConnectStatus } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
-import { IS_DEVNET, GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { Status } from '@injectivelabs/utils'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { usdtToken } from '@shared/data/token'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { Modal, WalletOption, NavBarCyTags } from '@/types'
+import { Modal, NavBarCyTags, PortfolioStatusKey } from '@/types'
 
+enum View {
+  Connect = 'connect',
+  LiteBridge = 'liteBridge',
+  FiatOnboard = 'fiatOnboard'
+}
+
+const route = useRoute()
 const modalStore = useModalStore()
+const accountStore = useAccountStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const status: Status = reactive(new Status(StatusType.Loading))
-const selectedWallet = ref<Wallet | undefined>(undefined)
-const isShowMoreWallets = ref(false)
+const portfolioStatus = inject(PortfolioStatusKey) as Status
 
-const isModalOpen = computed<boolean>(
-  () => modalStore.modals[Modal.Connect] && !sharedWalletStore.isUserConnected
-)
+const view = ref<View>(View.Connect)
+const isLocked = ref(false)
 
-const popularOptions = computed(() => [
-  {
-    wallet: Wallet.Metamask,
-    downloadLink: !sharedWalletStore.metamaskInstalled
-      ? 'https://metamask.io/download'
-      : undefined
-  },
-  {
-    wallet: Wallet.OkxWallet,
-    downloadLink: !sharedWalletStore.okxWalletInstalled
-      ? 'https://www.okx.com/web3'
-      : undefined
-  },
-  {
-    wallet: Wallet.Keplr,
-    downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
-      ? 'https://www.keplr.app/download'
-      : undefined
-  }
-])
-
-const options = computed(
-  () =>
-    [
-      IS_DEVNET
-        ? undefined
-        : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
-              : undefined
-          },
-      IS_DEVNET
-        ? undefined
-        : {
-            wallet: Wallet.BitGet,
-            downloadLink: !sharedWalletStore.bitGetInstalled
-              ? 'https://web3.bitget.com/en/wallet-download'
-              : undefined
-          },
-      { wallet: Wallet.Ledger },
-      { wallet: Wallet.Trezor },
-      {
-        wallet: Wallet.TrustWallet,
-        downloadLink: !sharedWalletStore.trustWalletInstalled
-          ? 'https://trustwallet.com/browser-extension/'
-          : undefined
-      },
-      {
-        wallet: Wallet.Cosmostation,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
-          ? 'https://www.cosmostation.io/wallet'
-          : undefined
-      },
-      {
-        wallet: Wallet.Torus
-      },
-      IS_DEVNET
-        ? undefined
-        : {
-            beta: true,
-            wallet: Wallet.Ninji,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Ninji)
-              ? 'https://ninji.xyz/#download'
-              : undefined
-          },
-      {
-        beta: true,
-        wallet: Wallet.Phantom
-      }
-      // { wallet: Wallet.WalletConnect }
-    ].filter((option) => option) as WalletOption[]
-)
-
-onMounted(() => {
-  Promise.all([
-    sharedWalletStore.checkIsBitGetInstalled(),
-    sharedWalletStore.checkIsMetamaskInstalled(),
-    sharedWalletStore.checkIsOkxWalletInstalled(),
-    sharedWalletStore.checkIsTrustWalletInstalled(),
-    sharedWalletStore.checkIsPhantomWalletInstalled()
-  ]).finally(() => status.setIdle())
-})
+const isModalOpen = computed<boolean>(() => modalStore.modals[Modal.Connect])
 
 function onWalletConnect() {
   if (GEO_IP_RESTRICTIONS_ENABLED) {
@@ -123,32 +46,55 @@ function onModalOpen() {
 
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
+  view.value = View.Connect
 }
 
-function onWalletModalTypeChange(wallet: Wallet | undefined) {
-  selectedWallet.value = wallet
+function checkOnboarding() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  if (route.query.liteBridge === 'true') {
+    view.value = View.LiteBridge
+    return
+  }
+
+  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
+
+  if (
+    sharedWalletStore.isUserConnected &&
+    !accountStore.hasBalance &&
+    sharedWalletStore.wallet === Wallet.Metamask &&
+    Number(erc20UsdtBalance?.balance || 0) > 0
+  ) {
+    view.value = View.LiteBridge
+    return
+  }
+
+  if (!accountStore.hasBalance) {
+    view.value = View.FiatOnboard
+    return
+  }
+
+  onCloseModal()
+}
+
+function onLock() {
+  isLocked.value = true
+}
+
+function onUnlock() {
+  isLocked.value = false
 }
 
 watch(
-  () => sharedWalletStore.walletConnectStatus,
-  (newWalletConnectStatus) => {
-    if (newWalletConnectStatus === WalletConnectStatus.connected) {
-      modalStore.closeModal(Modal.Connect)
-      modalStore.openPersistedModalIfExist()
+  () => [sharedWalletStore.isUserConnected, portfolioStatus.isLoading()],
+  ([isConnected, isLoading]) => {
+    if (isConnected && !isLoading) {
+      checkOnboarding()
     }
   }
 )
-
-watch(isModalOpen, (newShowModalState) => {
-  if (!newShowModalState) {
-    onCloseModal()
-    selectedWallet.value = undefined
-  }
-})
-
-function toggleShowMoreWallets() {
-  isShowMoreWallets.value = !isShowMoreWallets.value
-}
 </script>
 
 <template>
@@ -163,90 +109,28 @@ function toggleShowMoreWallets() {
   </AppButton>
 
   <AppModal
-    is-md
+    :is-md="view === View.Connect"
+    :is-sm="view === View.FiatOnboard || view === View.LiteBridge"
     is-transparent
     :is-open="isModalOpen"
+    :is-always-open="isLocked"
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
-    <div class="py-4 -mt-6 -mb-4">
-      <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
-        <LayoutWalletConnectItem
-          is-back-button
-          v-bind="{
-            walletOption: {
-              wallet: Wallet.Ledger
-            }
-          }"
-          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-        />
+    <AppHocLoading v-bind="{ status: portfolioStatus }">
+      <LayoutWalletConnect v-if="view === View.Connect" />
 
-        <LayoutWalletLedger />
-      </div>
+      <LayoutWalletFiatOnboard
+        v-if="view === View.FiatOnboard"
+        @modal:close="onCloseModal"
+      />
 
-      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
-        <LayoutWalletConnectItem
-          is-back-button
-          v-bind="{
-            walletOption: {
-              wallet: Wallet.Trezor
-            }
-          }"
-          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-        />
-        <LayoutWalletTrezor />
-      </div>
-
-      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
-        <div class="flex items-center max-w-md">
-          <img src="/svg/avatar-onboarding.svg" alt="" />
-
-          <div>
-            <p class="text-xl font-semibold">
-              {{ $t('connect.getStarted') }}
-            </p>
-            <p class="text-sm">
-              {{ $t('connect.getStartedDescription') }}
-            </p>
-          </div>
-        </div>
-
-        <div class="border border-dashed rounded-md p-4 my-4 text-center">
-          SSO
-        </div>
-
-        <div class="flex items-center justify-center">
-          <div class="border-t flex-1" />
-          <p class="px-4 text-gray-400">or</p>
-          <div class="border-t flex-1" />
-        </div>
-
-        <div
-          class="space-y-2"
-          :class="{
-            'grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))]':
-              isShowMoreWallets
-          }"
-        >
-          <LayoutWalletConnectItem
-            v-for="walletOption in isShowMoreWallets ? options : popularOptions"
-            :key="walletOption.wallet"
-            v-bind="{ walletOption, isCompact: isShowMoreWallets }"
-            @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-          />
-        </div>
-      </ul>
-
-      <AppButton
-        class="w-full text-gray-400 hover:text-white mt-4"
-        variant="primary-ghost"
-        @click="toggleShowMoreWallets"
-      >
-        {{
-          isShowMoreWallets ? $t('common.back') : $t('connect.showMoreWallets')
-        }}
-      </AppButton>
-    </div>
+      <LayoutWalletLiteBridge
+        v-if="view === View.LiteBridge"
+        @modal:lock="onLock"
+        @modal:unlock="onUnlock"
+      />
+    </AppHocLoading>
   </AppModal>
 
   <ModalsTerms />

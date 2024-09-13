@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { MENU_ITEMS } from '@/app/data/menu'
+<<<<<<< HEAD
 import { MenuItemType, Modal } from '@/types'
+=======
+>>>>>>> 43058351 (chore: lite widget finalize)
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -33,10 +36,13 @@ const menuItems = MENU_ITEMS.map((item) => {
 const filteredMenuItems = computed(() =>
   menuItems.filter((item) => (!appStore.devMode ? !item.devOnly : item))
 )
+<<<<<<< HEAD
 
 function openLiteBridge() {
   modalStore.openModal(Modal.LiteBridge)
 }
+=======
+>>>>>>> 43058351 (chore: lite widget finalize)
 </script>
 
 <template>
@@ -46,13 +52,5 @@ function openLiteBridge() {
       :key="item.label"
       v-bind="{ item }"
     />
-
-    <button
-      v-if="appStore.devMode"
-      class="text-sm font-semibold"
-      @click="openLiteBridge"
-    >
-      Open Bridge
-    </button>
   </div>
 </template>

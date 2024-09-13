@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { usdtToken } from '@shared/data/token'
+
+const accountStore = useAccountStore()
+
 const emit = defineEmits<{
   'transfer:success': []
 }>()
 
-const countdown = ref(10) // 10 seconds
+const countdown = ref(60)
+const showMessage = ref(false)
+
 const formattedCountdown = computed(() => {
   const minutes = Math.floor(countdown.value / 60)
   const seconds = countdown.value % 60
@@ -17,7 +23,7 @@ onMounted(() => {
     countdown.value -= 1
     if (countdown.value <= 0) {
       clearInterval(interval)
-      emit('transfer:success')
+      showMessage.value = true
     }
   }, 1000)
 })
@@ -25,6 +31,19 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(interval)
 })
+
+watch(
+  () => accountStore.bankBalances,
+  (bankBalances) => {
+    const usdtBalance = bankBalances.find(
+      (balance) => balance.denom === usdtToken.denom
+    )
+
+    if (usdtBalance && Number(usdtBalance.amount) > 0) {
+      emit('transfer:success')
+    }
+  }
+)
 </script>
 
 <template>
@@ -34,5 +53,9 @@ onUnmounted(() => {
       {{ $t('onboarding.processing') }}
     </p>
     <p class="text-2xl">{{ formattedCountdown }}s</p>
+
+    <p v-if="showMessage" class="text-sm mt-2 text-center text-gray-500">
+      {{ $t('onboarding.processingMessage') }}
+    </p>
   </div>
 </template>

@@ -68,8 +68,7 @@ function mountWidget() {
     },
     onSuccess: () => {
       emit('success')
-    },
-    mock: false
+    }
   })
 
   status.setIdle()
