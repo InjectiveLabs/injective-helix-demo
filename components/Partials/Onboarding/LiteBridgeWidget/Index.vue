@@ -5,12 +5,12 @@ useHead({
   link: [
     {
       rel: 'stylesheet',
-      href: '/widget/style.css'
+      href: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.1/dist/style.css'
     }
   ],
   script: [
     {
-      src: '/widget/index.es.js',
+      src: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.1/dist/index.es.js',
       type: 'module',
       tagPosition: 'bodyClose',
       onload: () => {
@@ -25,9 +25,11 @@ declare global {
     createWidget: (
       container: string,
       props?: {
-        injectiveAddress: string
-        wallet: string
-        address: string
+        wallet: {
+          injectiveAddress: string
+          wallet: string
+          address: string
+        }
       }
     ) => () => void
   }
@@ -53,9 +55,11 @@ function mountWidget() {
   }
 
   unmount = window.createWidget('widget-container', {
-    injectiveAddress: wallet.value.injectiveAddress,
-    wallet: wallet.value.wallet,
-    address: wallet.value.address
+    wallet: {
+      injectiveAddress: wallet.value.injectiveAddress,
+      wallet: wallet.value.wallet,
+      address: wallet.value.address
+    }
   })
   status.setIdle()
 }
