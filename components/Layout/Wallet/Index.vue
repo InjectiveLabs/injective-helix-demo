@@ -54,8 +54,9 @@ function checkOnboarding() {
     return
   }
 
-  if (route.query.liteBridge === 'true') {
+  if (route.query.bridge === 'true') {
     view.value = View.LiteBridge
+
     return
   }
 
@@ -68,11 +69,13 @@ function checkOnboarding() {
     Number(erc20UsdtBalance?.balance || 0) > 0
   ) {
     view.value = View.LiteBridge
+
     return
   }
 
   if (!accountStore.hasBalance) {
     view.value = View.FiatOnboard
+
     return
   }
 
