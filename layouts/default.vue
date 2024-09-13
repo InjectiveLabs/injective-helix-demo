@@ -1,18 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { usdtToken } from '@shared/data/token'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
-import {
-  LiquidityRewardsPage,
-  PortfolioStatusKey,
-  MainPage,
-  Modal
-} from '@/types'
+import { LiquidityRewardsPage, PortfolioStatusKey, MainPage } from '@/types'
 
 const route = useRoute()
-const modalStore = useModalStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
@@ -55,7 +47,6 @@ onWalletConnected(() => {
   mixpanelAnalytics.init()
 
   fetchUserPortfolio()
-    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
@@ -90,28 +81,6 @@ function fetchSubaccountStream() {
   positionStore.streamSubaccountPositions()
 }
 
-function checkOnboarding() {
-  if (!sharedWalletStore.isUserConnected) {
-    return
-  }
-
-  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
-
-  if (
-    sharedWalletStore.isUserConnected &&
-    !accountStore.hasBalance &&
-    sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(erc20UsdtBalance?.balance || 0) > 0
-  ) {
-    modalStore.openModal(Modal.LiteBridge)
-    return
-  }
-
-  if (!accountStore.hasBalance) {
-    modalStore.openModal(Modal.FiatOnboard)
-  }
-}
-
 provide(PortfolioStatusKey, portfolioStatus)
 </script>
 
@@ -132,8 +101,6 @@ provide(PortfolioStatusKey, portfolioStatus)
     <ModalsDevMode />
     <ModalsPostOnlyMode />
     <ModalsGeoRestricted />
-    <ModalsLiteBridge />
-    <ModalsFiatOnboard />
     <SharedPageConfetti />
 
     <LayoutFooter v-if="showFooter" />

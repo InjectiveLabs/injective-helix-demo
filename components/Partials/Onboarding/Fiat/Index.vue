@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { Modal } from '@/types'
-
-const modalStore = useModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()
@@ -9,10 +6,11 @@ const { t } = useI18n()
 
 const emit = defineEmits<{
   'funds:purchase': []
+  'modal:close': []
 }>()
 
 function onCloseModal() {
-  modalStore.closeModal(Modal.FiatOnboard)
+  emit('modal:close')
 }
 
 function onPurchaseFunds() {
