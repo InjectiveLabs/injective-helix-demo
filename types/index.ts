@@ -114,6 +114,7 @@ export type MenuItem =
   | (MenuItemBase & {
       type: MenuItemType.Link
       to?: RouteLocationRaw
+      items?: MenuItem[]
     })
   | (MenuItemBase & {
       type: MenuItemType.Dropdown

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
+const appStore = useAppStore()
+
 const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
   level: 0
 })
@@ -13,6 +15,12 @@ const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 const isAnimating = ref(false)
+
+const filteredSubItems = computed(() =>
+  (props.item.items || []).filter(
+    (subItem) => !subItem.devOnly || appStore.devMode
+  )
+)
 
 const showItem = computed(() =>
   props.item.connectedOnly ? sharedWalletStore.isUserConnected : true
@@ -146,7 +154,7 @@ function close() {
             class="bg-brand-900 border-brand-800 border text-white rounded-lg"
           >
             <LayoutNavbarMenuItem
-              v-for="subItem in item.items"
+              v-for="subItem in filteredSubItems"
               :key="subItem.label"
               v-bind="{ item: subItem, level: level + 1 }"
               @menu:close="closeAllMenus"
