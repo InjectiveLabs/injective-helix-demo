@@ -146,13 +146,11 @@ function toggleShowMoreWallets() {
         </div>
       </div>
 
-      <div class="border border-dashed rounded-md p-4 my-4 text-center">
-        SSO
-      </div>
+      <LayoutWalletSso class="my-6" />
 
       <div class="flex items-center justify-center">
         <div class="border-t flex-1" />
-        <p class="px-4 text-gray-400">or</p>
+        <p class="px-4 text-gray-400">{{ $t('common.or') }}</p>
         <div class="border-t flex-1" />
       </div>
 

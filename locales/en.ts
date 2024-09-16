@@ -35,6 +35,7 @@ export default {
   ...institutional,
   ...liquidityBots,
   common: {
+    or: 'or',
     ok: 'OK',
     BTC: 'BTC',
     docs: 'docs',
