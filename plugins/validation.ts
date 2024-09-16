@@ -49,7 +49,7 @@ export const defineGlobalRules = () => {
     const validEmailPattern =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-    if (!validEmailPattern.test(String(value))) {
+    if (!validEmailPattern.test(value)) {
       return errorMessages.email()
     }
 

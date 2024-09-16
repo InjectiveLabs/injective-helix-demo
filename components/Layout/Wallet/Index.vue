@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { Status } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { WalletConnectStatus } from '@shared/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { usdtToken } from '@shared/data/token'
 import { isCountryRestricted } from '@/app/data/geoip'
@@ -109,10 +110,15 @@ watch(
 
   <AppButton
     v-else
+    class="min-w-[110px] md:min-w-[160px]"
     :data-cy="dataCyTag(NavBarCyTags.WalletConnectButton)"
+    :is-loading="
+      sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+    "
     @click="onWalletConnect"
   >
-    {{ $t('connect.connectWallet') }}
+    <span class="md:hidden">{{ $t('connect.connect') }}</span>
+    <span class="max-md:hidden">{{ $t('connect.connectWallet') }}</span>
   </AppButton>
 
   <AppModal
