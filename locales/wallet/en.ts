@@ -57,6 +57,11 @@ export default {
     connectUsingTrezorNote:
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
 
+    email: {
+      placeholder: 'Your email address',
+      cta: 'Continue'
+    },
+
     leap: 'Leap',
     cosmostation: 'Cosmostation',
     trustWallet: 'Trust Wallet',
