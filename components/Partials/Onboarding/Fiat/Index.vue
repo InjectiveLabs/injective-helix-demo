@@ -35,7 +35,7 @@ function onCopyInjectiveAddress() {
 
     <SharedQRCode
       class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-8"
-      text="Ivan"
+      :text="sharedWalletStore.injectiveAddress"
     />
 
     <p class="mt-8">

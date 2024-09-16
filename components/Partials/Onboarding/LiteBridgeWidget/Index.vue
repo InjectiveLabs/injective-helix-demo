@@ -84,7 +84,7 @@ onUnmounted(() => {
 <template>
   <div class="min-h-[300px]" data-mode="dark">
     <AppHocLoading
-      wrapper-class="min-h-[500px]  flex items-center justify-center"
+      wrapper-class="min-h-[300px]  flex items-center justify-center"
       v-bind="{ status }"
     />
 
