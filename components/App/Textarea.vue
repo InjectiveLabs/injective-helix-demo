@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    rows: number
+    rows?: number
     wrapperClass?: string
   }>(),
   {

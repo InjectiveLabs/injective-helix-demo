@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'

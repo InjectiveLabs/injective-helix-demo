@@ -4,6 +4,7 @@ import {
   BigNumberInBase,
   BigNumberInWei
 } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   calculateWorstPrice,

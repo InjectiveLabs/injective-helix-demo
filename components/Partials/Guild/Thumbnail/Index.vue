@@ -3,8 +3,8 @@ import { thumbnailMap } from '@/app/data/campaign'
 
 const props = withDefaults(
   defineProps<{
-    isLg: boolean
-    isXl: boolean
+    isLg?: boolean
+    isXl?: boolean
     thumbnailId: string
   }>(),
   {

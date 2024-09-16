@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
-withDefaults(defineProps<{ item: MenuItem; level?: number }>(), { level: 0 })
+withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
+  level: 0
+})
 
 const emit = defineEmits<{
   'menu:close': []

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { UiMarketWithToken, CommonCyTags } from '@/types'
 
 const props = withDefaults(

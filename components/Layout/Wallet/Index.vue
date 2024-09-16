@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { Status } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { WalletConnectStatus } from '@shared/types'
