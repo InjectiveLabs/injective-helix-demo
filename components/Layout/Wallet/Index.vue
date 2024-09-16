@@ -91,9 +91,13 @@ function onUnlock() {
 }
 
 watch(
-  () => [sharedWalletStore.isUserConnected, portfolioStatus.isLoading()],
-  ([isConnected, isLoading]) => {
-    if (isConnected && !isLoading) {
+  () => [
+    sharedWalletStore.isUserConnected,
+    portfolioStatus.isLoading(),
+    isModalOpen.value
+  ],
+  ([isConnected, isLoading, isModalOpen]) => {
+    if (isConnected && !isLoading && isModalOpen) {
       checkOnboarding()
     }
   }

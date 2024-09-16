@@ -9,12 +9,12 @@ useHead({
   link: [
     {
       rel: 'stylesheet',
-      href: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.1/dist/style.css'
+      href: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.3/dist/style.css'
     }
   ],
   script: [
     {
-      src: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.1/dist/index.es.js',
+      src: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.3/dist/index.es.js',
       type: 'module',
       tagPosition: 'bodyClose',
       onload: () => {
