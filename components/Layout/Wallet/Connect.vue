@@ -133,18 +133,9 @@ function toggleShowMoreWallets() {
     </div>
 
     <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
-      <div class="flex items-center max-w-md">
-        <img src="/svg/avatar-onboarding.svg" alt="" />
-
-        <div>
-          <p class="text-xl font-semibold">
-            {{ $t('connect.getStarted') }}
-          </p>
-          <p class="text-sm">
-            {{ $t('connect.getStartedDescription') }}
-          </p>
-        </div>
-      </div>
+      <h1 class="text-xl text-center font-semibold">
+        {{ $t('connect.signUp') }}
+      </h1>
 
       <LayoutWalletSso class="my-6" />
 
@@ -154,17 +145,11 @@ function toggleShowMoreWallets() {
         <div class="border-t flex-1" />
       </div>
 
-      <div
-        class="space-y-2"
-        :class="{
-          'grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))]':
-            isShowMoreWallets
-        }"
-      >
+      <div class="space-y-2">
         <LayoutWalletConnectItem
           v-for="walletOption in isShowMoreWallets ? options : popularOptions"
           :key="walletOption.wallet"
-          v-bind="{ walletOption, isCompact: isShowMoreWallets }"
+          v-bind="{ walletOption }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"
         />
       </div>
@@ -176,7 +161,9 @@ function toggleShowMoreWallets() {
       @click="toggleShowMoreWallets"
     >
       {{
-        isShowMoreWallets ? $t('common.back') : $t('connect.showMoreWallets')
+        isShowMoreWallets
+          ? $t('connect.showLessWallets')
+          : $t('connect.showMoreWallets')
       }}
     </AppButton>
   </div>
