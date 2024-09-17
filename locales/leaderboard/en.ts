@@ -7,7 +7,7 @@ import {
 export default {
   leaderboard: {
     title: 'Leaderboard',
-    description: 'Weekly top 100 traders with the highest trading PnL',
+    description: 'Top Traders on Helix',
 
     pnl: {
       duration: {

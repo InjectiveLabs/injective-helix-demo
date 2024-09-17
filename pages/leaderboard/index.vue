@@ -3,11 +3,9 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { UTC_TIMEZONE } from '@shared/utils/constant'
-import { Modal, BusEvents, LeaderboardDuration } from '@/types'
+import { LeaderboardDuration } from '@/types'
 
-const modalStore = useModalStore()
 const leaderboardStore = useLeaderboardStore()
-const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -39,16 +37,6 @@ const endDateFormatted = computed(() => {
   return format(zonedLastDate, "MMMM dd, yyyy H:mm:ss 'UTC'")
 })
 
-const userStats = computed(() => {
-  if (!leaderboardStore.pnlLeaderboard?.leaders) {
-    return
-  }
-
-  return leaderboardStore.pnlLeaderboard.leaders.find(
-    (leader) => leader.account === sharedWalletStore.injectiveAddress
-  )
-})
-
 onMounted(() => {
   fetchPnlLeaderboard()
 })
@@ -60,12 +48,6 @@ function fetchPnlLeaderboard() {
     .fetchPnlLeaderboard(selectedDuration.value)
     .catch($onError)
     .finally(() => status.setIdle())
-}
-
-function onSharePnl() {
-  modalStore.openModal(Modal.SharePnl)
-
-  useEventBus(BusEvents.SharePnlOpened).emit()
 }
 </script>
 
@@ -103,61 +85,12 @@ function onSharePnl() {
     <AppHocLoading v-bind="{ status }">
       <div class="overflow-x-auto">
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardMyStats v-if="userStats" is-pnl>
-            <template #add-on>
-              <div
-                class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
-                @click="onSharePnl"
-              >
-                <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
-
-                <p class="text-[11px] leading-[13px] font-medium">
-                  {{ $t('leaderboard.pnl.share') }}
-                </p>
-              </div>
-            </template>
-
-            <template #row>
-              <div>
-                <div class="hidden md:block">
-                  <PartialsLeaderboardPnlCommonHeader class="text-[11px]" />
-
-                  <PartialsLeaderboardPnlCommonRow
-                    v-bind="{
-                      pnl: userStats.pnl,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                    class="text-sm my-1 items-center text-white"
-                  />
-                </div>
-
-                <div class="md:hidden">
-                  <PartialsLeaderboardPnlMyStatsMobileRow
-                    v-bind="{
-                      pnl: userStats.pnl,
-                      rank: userStats.rank,
-                      account: userStats.account
-                    }"
-                  />
-                </div>
-              </div>
-            </template>
-          </PartialsLeaderboardMyStats>
+          <PartialsLeaderboardPnlMyStats v-bind="{ selectedDuration }" />
 
           <PartialsLeaderboardPnlTable />
         </div>
       </div>
     </AppHocLoading>
-
-    <ModalsSharePnl
-      v-if="userStats"
-      v-bind="{
-        selectedDuration,
-        pnl: userStats.pnl,
-        rank: userStats.rank
-      }"
-    />
   </div>
 </template>
 
