@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LeaderboardType } from '@/types'
 
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
@@ -8,16 +7,6 @@ const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-
-const amount = computed(() => {
-  if (!leaderboardStore.competitionLeaderboardAccount) {
-    return
-  }
-
-  return campaignStore.activeCampaignType === LeaderboardType.Volume
-    ? leaderboardStore.competitionLeaderboardAccount.volume
-    : leaderboardStore.competitionLeaderboardAccount.pnl
-})
 
 onWalletConnected(() => {
   fetchCompetitionLeaderboardAccount()
@@ -49,7 +38,13 @@ function fetchCompetitionLeaderboardAccount() {
 </script>
 
 <template>
-  <AppHocLoading v-bind="{ status }">
+  <AppHocLoading
+    v-if="
+      sharedWalletStore.isUserConnected &&
+      leaderboardStore.competitionLeaderboardAccount
+    "
+    v-bind="{ status }"
+  >
     <PartialsLeaderboardMyStats>
       <template #add-on>
         <div
@@ -72,10 +67,7 @@ function fetchCompetitionLeaderboardAccount() {
               <PartialsLeaderboardCompetitionCommonRow
                 class="text-sm my-1 items-center text-white"
                 v-bind="{
-                  amount,
-                  rank: leaderboardStore.competitionLeaderboardAccount.rank,
-                  account:
-                    leaderboardStore.competitionLeaderboardAccount.account
+                  leader: leaderboardStore.competitionLeaderboardAccount
                 }"
               />
             </div>
@@ -84,9 +76,7 @@ function fetchCompetitionLeaderboardAccount() {
           <div class="lg:hidden">
             <PartialsLeaderboardCompetitionMyStatsMobileRow
               v-bind="{
-                amount,
-                rank: leaderboardStore.competitionLeaderboardAccount.rank,
-                account: leaderboardStore.competitionLeaderboardAccount.account
+                leader: leaderboardStore.competitionLeaderboardAccount
               }"
             />
           </div>

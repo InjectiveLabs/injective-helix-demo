@@ -1,13 +1,16 @@
 import { indexerGrpcArchiverApi } from '@/app/Services'
 import { LeaderboardType } from '@/types'
 
+const PNL_LEADERBOARD_LIMIT = 500
+
 export const fetchPnlLeaderboard = async (resolution: string) => {
   const leaderboardStore = useLeaderboardStore()
 
   leaderboardStore.$patch({
     pnlLeaderboard:
       await indexerGrpcArchiverApi.fetchPnlLeaderboardFixedResolution({
-        resolution
+        resolution,
+        limit: PNL_LEADERBOARD_LIMIT
       })
   })
 }
@@ -28,7 +31,8 @@ export const fetchCompetitionLeaderboard = async ({
     leaderboardStore.$patch({
       competitionLeaderboard: await indexerGrpcArchiverApi.fetchPnlLeaderboard({
         endDate: duration.endDate,
-        startDate: duration.startDate
+        startDate: duration.startDate,
+        limit: PNL_LEADERBOARD_LIMIT
       })
     })
 
@@ -38,7 +42,8 @@ export const fetchCompetitionLeaderboard = async ({
   leaderboardStore.$patch({
     competitionLeaderboard: await indexerGrpcArchiverApi.fetchVolLeaderboard({
       endDate: duration.endDate,
-      startDate: duration.startDate
+      startDate: duration.startDate,
+      limit: PNL_LEADERBOARD_LIMIT
     })
   })
 }

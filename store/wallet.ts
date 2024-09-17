@@ -161,6 +161,7 @@ export const useWalletStore = defineStore('wallet', {
       const positionStore = usePositionStore()
       const campaignStore = useCampaignStore()
       const derivativeStore = useDerivativeStore()
+      const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -178,6 +179,10 @@ export const useWalletStore = defineStore('wallet', {
       authZStore.$reset()
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
+      leaderboardStore.$patch({
+        pnlLeaderboardAccount: undefined,
+        competitionLeaderboardAccount: undefined
+      })
     }
   }
 })

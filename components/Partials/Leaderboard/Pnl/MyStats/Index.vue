@@ -36,7 +36,7 @@ function fetchPnlLeaderboardAccount() {
   leaderboardStore
     .fetchPnlLeaderboardAccount({
       resolution: props.selectedDuration,
-      account: 'inj14au322k9munkmx5wrchz9q30juf5wjgz2cfqku'
+      account: sharedWalletStore.injectiveAddress
     })
     .catch($onError)
     .finally(() => status.setIdle())
@@ -44,7 +44,12 @@ function fetchPnlLeaderboardAccount() {
 </script>
 
 <template>
-  <div>
+  <div
+    v-if="
+      sharedWalletStore.isUserConnected &&
+      leaderboardStore.pnlLeaderboardAccount
+    "
+  >
     <AppHocLoading v-bind="{ status }">
       <PartialsLeaderboardMyStats is-pnl>
         <template #add-on>
@@ -64,12 +69,9 @@ function fetchPnlLeaderboardAccount() {
           <div>
             <div class="hidden md:block">
               <PartialsLeaderboardPnlCommonHeader class="text-[11px]" />
-
               <PartialsLeaderboardPnlCommonRow
                 v-bind="{
-                  pnl: leaderboardStore.pnlLeaderboardAccount.pnl,
-                  rank: leaderboardStore.pnlLeaderboardAccount.rank,
-                  account: leaderboardStore.pnlLeaderboardAccount.account
+                  leader: leaderboardStore.pnlLeaderboardAccount
                 }"
                 class="text-sm my-1 items-center text-white"
               />
@@ -78,9 +80,7 @@ function fetchPnlLeaderboardAccount() {
             <div class="md:hidden">
               <PartialsLeaderboardPnlMyStatsMobileRow
                 v-bind="{
-                  pnl: leaderboardStore.pnlLeaderboardAccount.pnl,
-                  rank: leaderboardStore.pnlLeaderboardAccount.rank,
-                  account: leaderboardStore.pnlLeaderboardAccount.account
+                  leader: leaderboardStore.pnlLeaderboardAccount
                 }"
               />
             </div>

@@ -8,6 +8,7 @@ export default {
   leaderboard: {
     title: 'Leaderboard',
     description: 'Top Traders on Helix',
+    unranked: 'Unranked',
 
     pnl: {
       duration: {
