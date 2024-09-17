@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
+
 const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
@@ -8,7 +11,12 @@ const filteredVolumeLeaderboard = computed(() => {
     return []
   }
 
-  return leaderboardStore.competitionLeaderboard.leaders.slice(0, limit.value)
+  const highRankedTraders =
+    leaderboardStore.competitionLeaderboard.leaders.filter(({ volume }) =>
+      new BigNumberInBase(volume).gt(MIN_LEADERBOARD_TRADING_AMOUNT)
+    )
+
+  return highRankedTraders.slice(0, limit.value)
 })
 
 function incrementLimit() {

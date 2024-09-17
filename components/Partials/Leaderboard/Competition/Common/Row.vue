@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  MAXIMUM_RANKED_TRADERS,
+  MIN_LEADERBOARD_TRADING_AMOUNT
+} from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
 const campaignStore = useCampaignStore()
@@ -30,8 +34,11 @@ const isUnranked = computed(() => {
       ? props.leader.pnl
       : props.leader.volume
 
-  const isLowEarningsTrader = new BigNumberInBase(amount).lt(50)
-  const isBottomRanked = !props.leader.rank || props.leader.rank > 500
+  const isLowEarningsTrader = new BigNumberInBase(amount).lt(
+    MIN_LEADERBOARD_TRADING_AMOUNT
+  )
+  const isBottomRanked =
+    !props.leader.rank || props.leader.rank > MAXIMUM_RANKED_TRADERS
 
   return isLowEarningsTrader || isBottomRanked
 })
