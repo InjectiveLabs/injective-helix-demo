@@ -58,6 +58,7 @@ export enum Modal {
   MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
   MarketRestricted = 'market-restricted',
+  LeaderboardTerms = 'leaderboard-terms',
   SharePositionPnl = 'share-position-pnl',
   InstitutionalForm = 'institutionalForm',
   MarketNotOnHelix = 'market-not-on-helix',

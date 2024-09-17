@@ -1,6 +1,19 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
+import { Modal, LeaderboardSubPage } from '@/types'
+
+definePageMeta({
+  middleware: [
+    () => {
+      const appStore = useAppStore()
+
+      if (!appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
+        return navigateTo({ name: LeaderboardSubPage.Pnl })
+      }
+    }
+  ]
+})
 
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
