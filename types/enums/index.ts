@@ -44,9 +44,9 @@ export enum Modal {
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   PostOnlyMode = 'post-only-mode',
+  GasFeeRebate = 'gas-fee-rebate',
   RedeemVoucher = 'redeem-voucher',
   GeoRestricted = 'geo-restricted',
-  GasFeeRebate = 'gas-fee-rebate',
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   ScavengerHunt = 'scavenger-hunt',
@@ -58,6 +58,7 @@ export enum Modal {
   MarketNotLiquid = 'market-not-liquid',
   CreateSubaccount = 'create-subaccount',
   MarketRestricted = 'market-restricted',
+  SharePositionPnl = 'share-position-pnl',
   InstitutionalForm = 'institutionalForm',
   MarketNotOnHelix = 'market-not-on-helix',
   TokenSelectorFrom = 'token-selector-from',
@@ -65,6 +66,7 @@ export enum Modal {
   CheckSpotGridAuth = 'check-spot-grid-auth',
   AlreadyJoinedGuild = 'already-joined-guild',
   MobileTradeDetails = 'mobile-trade-details',
+  ShareLeaderboardPnl = 'share-leaderboard-pnl',
   GridStrategyDetails = 'grid-strategy-details',
   DelegateToValidator = 'delegate-to-validator',
   MarketRewardFactors = 'market-reward-factors',
@@ -73,7 +75,8 @@ export enum Modal {
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
-  TransferToMainSubaccount = 'transfer-to-main-subaccount'
+  TransferToMainSubaccount = 'transfer-to-main-subaccount',
+  ShareLeaderboardCompetition = 'share-leaderboard-competition'
 }
 
 export enum Breakpoint {
@@ -195,7 +198,8 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
-  SharePnlOpened = 'share-pnl-opened',
+  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
+  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',

@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal, BusEvents, LeaderboardDuration } from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  MAXIMUM_RANKED_TRADERS,
+  MIN_LEADERBOARD_TRADING_AMOUNT
+} from '@/app/utils/constants'
+import { Modal, MainPage, BusEvents, LeaderboardDuration } from '@/types'
 
 const modalStore = useModalStore()
 const leaderboardStore = useLeaderboardStore()
@@ -16,14 +20,28 @@ const props = withDefaults(
 
 const status = reactive(new Status(StatusType.Loading))
 
+const isUnranked = computed(() => {
+  if (!leaderboardStore.pnlLeaderboardAccount) {
+    return true
+  }
+
+  const isLowEarningsTrader = new BigNumberInBase(
+    leaderboardStore.pnlLeaderboardAccount.pnl
+  ).lt(MIN_LEADERBOARD_TRADING_AMOUNT)
+  const isBottomRanked =
+    leaderboardStore.pnlLeaderboardAccount.rank > MAXIMUM_RANKED_TRADERS
+
+  return isLowEarningsTrader || isBottomRanked
+})
+
 onWalletConnected(() => {
   fetchPnlLeaderboardAccount()
 })
 
 function onSharePnl() {
-  modalStore.openModal(Modal.SharePnl)
+  modalStore.openModal(Modal.ShareLeaderboardPnl)
 
-  useEventBus(BusEvents.SharePnlOpened).emit()
+  useEventBus(BusEvents.ShareLeaderboardPnlOpened).emit()
 }
 
 function fetchPnlLeaderboardAccount() {
@@ -44,15 +62,10 @@ function fetchPnlLeaderboardAccount() {
 </script>
 
 <template>
-  <div
-    v-if="
-      sharedWalletStore.isUserConnected &&
-      leaderboardStore.pnlLeaderboardAccount
-    "
-  >
+  <div v-if="sharedWalletStore.isUserConnected">
     <AppHocLoading v-bind="{ status }">
-      <PartialsLeaderboardMyStats is-pnl>
-        <template #add-on>
+      <PartialsLeaderboardMyStats is-pnl v-bind="{ isUnranked }">
+        <template v-if="!isUnranked" #add-on>
           <div
             class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
             @click="onSharePnl"
@@ -66,7 +79,24 @@ function fetchPnlLeaderboardAccount() {
         </template>
 
         <template #row>
-          <div>
+          <div
+            v-if="isUnranked"
+            class="relative flex flex-col items-center justify-center gap-6"
+          >
+            <div class="tracking-[0.4px] leading-5">
+              {{ $t('leaderboard.getTradingDescription') }}
+            </div>
+            <NuxtLink :to="{ name: MainPage.Markets }">
+              <AppButton
+                class="border-white px-4 py-2.5 font-medium leading-4"
+                v-bind="{ variant: 'primary-outline' }"
+              >
+                {{ $t('leaderboard.getTrading') }}
+              </AppButton>
+            </NuxtLink>
+          </div>
+
+          <div v-else>
             <div class="hidden md:block">
               <PartialsLeaderboardPnlCommonHeader class="text-[11px]" />
               <PartialsLeaderboardPnlCommonRow
@@ -89,7 +119,7 @@ function fetchPnlLeaderboardAccount() {
       </PartialsLeaderboardMyStats>
     </AppHocLoading>
 
-    <ModalsSharePnl
+    <ModalsShareLeaderboardPnl
       v-if="leaderboardStore.pnlLeaderboardAccount"
       v-bind="{
         selectedDuration,
