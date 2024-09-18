@@ -98,13 +98,15 @@ provide(PortfolioStatusKey, portfolioStatus)
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
     <!-- <ModalsNewFeature /> -->
-    <ModalsDevMode />
+
+    <ModalsRedeemVoucher />
+
     <ModalsLiteBridge />
     <ModalsFiatOnboard />
+
     <ModalsPostOnlyMode />
-    <ModalsGeoRestricted />
-    <ModalsRedeemVoucher />
-    <ModalsPostOnlyMode />
+
+    <ModalsDevMode />
     <ModalsGeoRestricted />
     <SharedPageConfetti />
 

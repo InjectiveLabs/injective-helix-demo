@@ -24,7 +24,7 @@
     "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.cache/vite && rm -rf ./node_modules/.vite && rm -rf ./node_modules/.cache/vite",
     "lint": "eslint --max-warnings 0 '**/*.{js,ts,vue,html}' --fix && stylelint '**/*.{css,.vue}'",
     "coverage": "yarn jest --coverage",
-    "prepare": "husky install",
+    "prepare": "husky",
     "typecheck": "nuxi typecheck",
     "ui-sync-clean": "cd ../injective-ui/layer && rm -rf node_modules && cd ../../injective-helix && rm -rf node_modules && yarn ui-sync",
     "ui-sync": "cd ../injective-ui && git pull && cd layer && yarn install --force && cd ../../injective-helix && git pull && yarn install --force"

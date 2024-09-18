@@ -2,13 +2,9 @@
 import { dataCyTag } from '@shared/utils'
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
-<<<<<<< HEAD
 const appStore = useAppStore()
 
 const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
-=======
-withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
->>>>>>> 500966c4 (chore: clean up)
   level: 0
 })
 
