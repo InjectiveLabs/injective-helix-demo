@@ -2149,10 +2149,14 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 17c16e91 (chore: add google oauth)
 "@injectivelabs/wallet-ts@1.14.15-beta.6":
   version "1.14.15-beta.6"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.15-beta.6.tgz#c6fecc77108ba9685eb090060c3b040f46469cc8"
   integrity sha512-A+lKbgGPoSpGnWu8UHTFPE+lnCtUvxJPSYFuhlXcu1LyGDUn6FHC65wGUfKS6vPuMgMj7rynIAsqQlNGrMc0JA==
+<<<<<<< HEAD
 =======
 "@injectivelabs/wallet-ts@1.14.15-beta.2":
   version "1.14.15-beta.2"
@@ -2165,6 +2169,8 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.15-beta.3.tgz#3a9f8eca7be8fbe7cabdfe9ab0e7ae33d5ea3ce6"
   integrity sha512-F8MaUuXMBWb0x/FaDh2TGlGtxD+PQUN8qQ2P28Fwd6BWC0Apyxc2uOqd4Hy6oIydRfQpvolxiYGDy0TPrZKzRw==
 >>>>>>> 6c91e666 (feat: nuxt 3.13.1)
+=======
+>>>>>>> 17c16e91 (chore: add google oauth)
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -15533,6 +15539,7 @@ shallow-clone@^3.0.0:
   version "1.0.0"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   resolved "https://github.com/InjectiveLabs/shared-packages#e33edf98fd21428607ffedcc74fca95c0573c8bc"
 =======
   resolved "https://github.com/InjectiveLabs/shared-packages#42684e4e5b8000e918d2bd62443d7957f8f1a70f"
@@ -15540,6 +15547,9 @@ shallow-clone@^3.0.0:
 =======
   resolved "https://github.com/InjectiveLabs/shared-packages#ede0365d1b13532566dea4243c72fca156d75226"
 >>>>>>> 6c91e666 (feat: nuxt 3.13.1)
+=======
+  resolved "https://github.com/InjectiveLabs/shared-packages#e33edf98fd21428607ffedcc74fca95c0573c8bc"
+>>>>>>> 17c16e91 (chore: add google oauth)
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.14"
@@ -15550,6 +15560,7 @@ shallow-clone@^3.0.0:
     "@injectivelabs/utils" "1.14.14"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@injectivelabs/wallet-ts" "1.14.15-beta.6"
 =======
     "@injectivelabs/wallet-ts" "1.14.15-beta.2"
@@ -15557,6 +15568,9 @@ shallow-clone@^3.0.0:
 =======
     "@injectivelabs/wallet-ts" "1.14.15-beta.3"
 >>>>>>> 6c91e666 (feat: nuxt 3.13.1)
+=======
+    "@injectivelabs/wallet-ts" "1.14.15-beta.6"
+>>>>>>> 17c16e91 (chore: add google oauth)
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
     "@vueuse/integrations" "^10.7.1"

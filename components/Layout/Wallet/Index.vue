@@ -22,8 +22,8 @@ const sharedWalletStore = useSharedWalletStore()
 
 const portfolioStatus = inject(PortfolioStatusKey) as Status
 
-const view = ref<View>(View.Connect)
 const isLocked = ref(false)
+const view = ref<View>(View.Connect)
 
 const isModalOpen = computed<boolean>(() => modalStore.modals[Modal.Connect])
 
@@ -123,11 +123,13 @@ watch(
   </AppButton>
 
   <AppModal
-    :is-md="view === View.Connect"
-    :is-sm="view === View.FiatOnboard || view === View.LiteBridge"
-    is-transparent
-    :is-open="isModalOpen"
-    :is-always-open="isLocked"
+    v-bind="{
+      isTransparent: true,
+      isOpen: isModalOpen,
+      isAlwaysOpen: isLocked,
+      isMd: view === View.Connect,
+      isSm: view === View.FiatOnboard || view === View.LiteBridge
+    }"
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
