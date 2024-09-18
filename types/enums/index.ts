@@ -31,7 +31,6 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
-  SharePnl = 'share-pnl',
   SgtBanner = 'sgt-banner',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
@@ -199,8 +198,6 @@ export enum BalanceHeaderType {
 export enum BusEvents {
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
-  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
-  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
@@ -208,13 +205,16 @@ export enum BusEvents {
   ShowLedgerConnect = 'show-ledger-connect',
   UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
+  SharePositionOpened = 'share-position-opened',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',
   ActivityFilterUpdate = 'activity-filter-update',
   OpenTradingBotDetails = 'open-trading-bot-details',
+  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   OrderbookNotionalClick = 'orderbook-notional-click',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload'
+  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
+  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'
 }
 
 export enum ActivityField {

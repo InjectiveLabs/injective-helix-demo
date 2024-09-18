@@ -9,6 +9,8 @@ const positionStore = usePositionStore()
 const { values } = useForm<PositionsFilterForm>()
 const isMobile = useIsMobile()
 
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
+
 const filteredPosition = computed(() =>
   positionStore.positions.filter((position) => {
     const isPartOfMarket = values[PositionsFilterField.Market]
@@ -39,6 +41,11 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 
   positionToAddMargin.value = position
 }
+
+function onSharePosition(position: Position | PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.SharePositionPnl)
+}
 </script>
 
 <template>
@@ -55,6 +62,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
           v-bind="{ position }"
           @margin:add="addMargin"
           @tpsl:add="addTakeProfitStopLoss"
+          @position:share="onSharePosition"
         />
       </template>
 
@@ -65,6 +73,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
           v-bind="{ position }"
           @margin:add="addMargin"
           @tpsl:add="addTakeProfitStopLoss"
+          @position:share="onSharePosition"
         />
       </template>
     </div>
@@ -85,5 +94,10 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
     v-bind="{
       position: positionToAddMargin
     }"
+  />
+
+  <ModalsSharePositionPnl
+    v-if="selectedPosition"
+    v-bind="{ position: selectedPosition }"
   />
 </template>

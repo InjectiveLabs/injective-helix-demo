@@ -24,6 +24,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   'margin:add': [position: Position | PositionV2]
   'tpsl:add': [position: Position | PositionV2]
+  'position:share': [state: Position | PositionV2]
 }>()
 
 const {
@@ -221,6 +222,10 @@ function addMargin() {
 function addTpSl() {
   emit('tpsl:add', props.position)
 }
+
+function sharePosition() {
+  emit('position:share', props.position)
+}
 </script>
 
 <template>
@@ -269,7 +274,7 @@ function addTpSl() {
           <p>{{ $t('portfolio.balances.unrealizedPnl') }}</p>
         </div>
 
-        <div class="flex items-center p-2">
+        <div class="flex items-center p-2 space-x-2">
           <div
             class="space-y-1 text-right"
             :class="{
@@ -280,6 +285,12 @@ function addTpSl() {
             <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
             <p>{{ percentagePnlToString }}%</p>
           </div>
+
+          <SharedIcon
+            name="share"
+            class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+            @click="sharePosition"
+          />
         </div>
       </div>
 
