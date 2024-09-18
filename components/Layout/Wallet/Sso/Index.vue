@@ -36,7 +36,7 @@ function onEmailConnect() {
   <div>
     <AppButton
       class="text-white w-full mb-4 h-14"
-      v-bind="{ size: 'lg', status: googleStatus }"
+      size="lg"
       @click="onGoogleConnect"
     >
       <div class="flex items-center gap-2 w-full">
