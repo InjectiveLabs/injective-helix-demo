@@ -22,7 +22,7 @@ withDefaults(defineProps<{ isUnranked: boolean; isPnl?: boolean }>(), {
     <slot name="row" />
 
     <div
-      class="absolute top-4 right-16"
+      class="absolute top-3 right-14 sm:top-4 sm:right-16"
       :class="[isPnl ? 'text-[#FFFC4D]' : 'text-green-450']"
     >
       <div class="relative">

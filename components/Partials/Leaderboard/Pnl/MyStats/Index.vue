@@ -81,14 +81,16 @@ function fetchPnlLeaderboardAccount() {
         <template #row>
           <div
             v-if="isUnranked"
-            class="relative flex flex-col items-center justify-center gap-6"
+            class="relative flex flex-col items-center justify-center gap-4 sm:gap-6"
           >
-            <div class="tracking-[0.4px] leading-5">
+            <div
+              class="text-xs sm:text-base max-sm:max-w-[240px] tracking-[0.4px] leading-5 max-sm:mt-2"
+            >
               {{ $t('leaderboard.getTradingDescription') }}
             </div>
             <NuxtLink :to="{ name: MainPage.Markets }">
               <AppButton
-                class="border-white px-4 py-2.5 font-medium leading-4"
+                class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
                 v-bind="{ variant: 'primary-outline' }"
               >
                 {{ $t('leaderboard.getTrading') }}

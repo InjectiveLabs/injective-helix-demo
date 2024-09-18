@@ -73,7 +73,7 @@ function onShareCompetition() {
       <PartialsLeaderboardMyStats v-bind="{ isUnranked }">
         <template v-if="!isUnranked" #add-on>
           <div
-            class="flex flex-col lg:flex-row items-center justify-center gap-2"
+            class="flex flex-col md:flex-row items-center justify-center gap-2"
           >
             <div
               class="hidden md:flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
@@ -101,14 +101,16 @@ function onShareCompetition() {
         <template #row>
           <div v-if="isUnranked">
             <div
-              class="flex flex-col items-center justify-center gap-6 relative"
+              class="flex flex-col items-center justify-center gap-4 sm:gap-6 relative"
             >
-              <div class="tracking-[0.4px] leading-5">
+              <div
+                class="text-xs sm:text-base max-sm:max-w-[240px] tracking-[0.4px] leading-5 max-sm:mt-2"
+              >
                 {{ $t('leaderboard.getTradingDescription') }}
               </div>
               <NuxtLink :to="{ name: MainPage.Markets }">
                 <AppButton
-                  class="border-white px-4 py-2.5 font-medium leading-4"
+                  class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
                   v-bind="{ variant: 'primary-outline' }"
                 >
                   {{ $t('leaderboard.getTrading') }}
