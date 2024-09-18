@@ -6,9 +6,10 @@ import { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
-const status: Status = reactive(new Status(StatusType.Loading))
-const selectedWallet = ref<Wallet | undefined>(undefined)
 const isShowMoreWallets = ref(false)
+const selectedWallet = ref<Wallet | undefined>(undefined)
+const status = reactive(new Status(StatusType.Loading))
+const magicStatus = reactive(new Status(StatusType.Idle))
 
 const popularOptions = computed(() => [
   {
@@ -94,7 +95,11 @@ onMounted(() => {
   ]).finally(() => status.setIdle())
 })
 
-function onWalletModalTypeChange(wallet: Wallet | undefined) {
+function onSetMagicStatusLoading() {
+  magicStatus.setLoading()
+}
+
+function onWalletModalTypeChange(wallet?: Wallet) {
   selectedWallet.value = wallet
 }
 
@@ -104,67 +109,72 @@ function toggleShowMoreWallets() {
 </script>
 
 <template>
-  <div class="py-4 -mt-6 -mb-4">
-    <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
-      <LayoutWalletConnectItem
-        is-back-button
-        v-bind="{
-          walletOption: {
-            wallet: Wallet.Ledger
-          }
-        }"
-        @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-      />
-
-      <LayoutWalletLedger />
-    </div>
-
-    <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
-      <LayoutWalletConnectItem
-        is-back-button
-        v-bind="{
-          walletOption: {
-            wallet: Wallet.Trezor
-          }
-        }"
-        @selected-hardware-wallet:toggle="onWalletModalTypeChange"
-      />
-      <LayoutWalletTrezor />
-    </div>
-
-    <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
-      <h1 class="text-xl text-center font-semibold">
-        {{ $t('connect.signUp') }}
-      </h1>
-
-      <LayoutWalletSso class="my-6" />
-
-      <div class="flex items-center justify-center">
-        <div class="border-t flex-1" />
-        <p class="px-4 text-gray-400">{{ $t('common.or') }}</p>
-        <div class="border-t flex-1" />
-      </div>
-
-      <div class="space-y-2">
+  <AppHocLoading v-bind="{ status: magicStatus }">
+    <div class="py-4 -mt-6 -mb-4">
+      <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem
-          v-for="walletOption in isShowMoreWallets ? options : popularOptions"
-          :key="walletOption.wallet"
-          v-bind="{ walletOption }"
+          is-back-button
+          v-bind="{
+            walletOption: {
+              wallet: Wallet.Ledger
+            }
+          }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"
         />
-      </div>
-    </ul>
 
-    <AppButton
-      class="w-full text-gray-400 hover:text-white mt-4"
-      variant="primary-ghost"
-      @click="toggleShowMoreWallets"
-    >
-      {{
-        isShowMoreWallets
-          ? $t('connect.showLessWallets')
-          : $t('connect.showMoreWallets')
-      }}
-    </AppButton>
-  </div>
+        <LayoutWalletLedger />
+      </div>
+
+      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
+        <LayoutWalletConnectItem
+          is-back-button
+          v-bind="{
+            walletOption: {
+              wallet: Wallet.Trezor
+            }
+          }"
+          @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+        />
+        <LayoutWalletTrezor />
+      </div>
+
+      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
+        <h1 class="text-xl text-center font-semibold">
+          {{ $t('connect.signUp') }}
+        </h1>
+
+        <LayoutWalletSso
+          class="my-6"
+          @set:magicStatusLoading="onSetMagicStatusLoading"
+        />
+
+        <div class="flex items-center justify-center">
+          <div class="border-t flex-1" />
+          <p class="px-4 text-gray-400">{{ $t('common.or') }}</p>
+          <div class="border-t flex-1" />
+        </div>
+
+        <div class="space-y-2">
+          <LayoutWalletConnectItem
+            v-for="walletOption in isShowMoreWallets ? options : popularOptions"
+            :key="walletOption.wallet"
+            v-bind="{ walletOption }"
+            @selected-hardware-wallet:toggle="onWalletModalTypeChange"
+          />
+        </div>
+      </ul>
+
+      <AppButton
+        class="w-full text-gray-400 hover:text-white mt-4"
+        variant="primary-ghost"
+        @click="toggleShowMoreWallets"
+      >
+        {{
+          isShowMoreWallets
+            ? $t('connect.showLessWallets')
+            : $t('connect.showMoreWallets')
+        }}
+      </AppButton>
+    </div>
+  </AppHocLoading>
 </template>

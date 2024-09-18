@@ -4,6 +4,10 @@ import { MagicProvider } from '@injectivelabs/wallet-ts'
 
 const sharedWalletStore = useSharedWalletStore()
 
+const emit = defineEmits<{
+  'set:magicStatusLoading': []
+}>()
+
 const { value: email, errors: emailErrors } = useStringField({
   name: 'email',
   rule: 'required|email'
@@ -15,27 +19,51 @@ const isLoading = computed(
   () => sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
 )
 
-function onConnect() {
+function onGoogleConnect() {
+  emit('set:magicStatusLoading')
+
+  sharedWalletStore.connectMagic(MagicProvider.Google)
+}
+
+function onEmailConnect() {
+  emit('set:magicStatusLoading')
+
   sharedWalletStore.connectMagic(MagicProvider.Email, email.value)
 }
 </script>
 
 <template>
   <div>
+    <AppButton
+      class="text-white w-full mb-4 h-14"
+      v-bind="{ size: 'lg', status: googleStatus }"
+      @click="onGoogleConnect"
+    >
+      <div class="flex items-center gap-2 w-full">
+        <SharedIcon name="google" />
+        <span>{{ $t('connect.magic.google.cta') }}</span>
+      </div>
+    </AppButton>
+
     <div class="flex items-center py-2.5 px-2 border rounded-md">
       <AppInput
         v-model="email"
-        :disabled="isLoading"
-        is-transparent-bg
-        :placeholder="$t('connect.email.placeholder')"
+        v-bind="{
+          isTransparentBg: true,
+          placeholder: $t('connect.magic.email.placeholder'),
+          disabled: isLoading
+        }"
       />
       <AppButton
-        :disabled="!email || hasError"
-        :variant="hasError ? 'primary-outline' : 'primary'"
-        :is-loading="isLoading"
-        @click="onConnect"
+        v-bind="{
+          class: 'disabled:border-gray-400 text-white',
+          status: emailStatus,
+          disabled: !email || hasError || isLoading,
+          variant: hasError ? 'primary-outline' : 'primary'
+        }"
+        @click="onEmailConnect"
       >
-        {{ $t('connect.email.cta') }}
+        {{ $t('connect.magic.email.cta') }}
       </AppButton>
     </div>
 
