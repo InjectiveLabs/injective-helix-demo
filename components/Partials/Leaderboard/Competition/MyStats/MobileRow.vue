@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
-import {
-  MAXIMUM_RANKED_TRADERS,
-  MIN_LEADERBOARD_TRADING_AMOUNT,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
 const campaignStore = useCampaignStore()
@@ -45,21 +41,6 @@ const entries = computed(() =>
     .dividedBy(10)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
 )
-
-const isUnranked = computed(() => {
-  const amount =
-    campaignStore.activeCampaignType === LeaderboardType.Pnl
-      ? props.leader.pnl
-      : props.leader.volume
-
-  const isLowEarningsTrader = new BigNumberInBase(amount).lt(
-    MIN_LEADERBOARD_TRADING_AMOUNT
-  )
-  const isBottomRanked =
-    !props.leader.rank || props.leader.rank > MAXIMUM_RANKED_TRADERS
-
-  return isLowEarningsTrader || isBottomRanked
-})
 </script>
 
 <template>
@@ -69,7 +50,7 @@ const isUnranked = computed(() => {
         {{ $t('leaderboard.header.rank') }}
       </div>
       <div class="text-sm font-semibold leading-4">
-        {{ isUnranked ? $t('leaderboard.unranked') : leader.rank }}
+        {{ leader.rank }}
       </div>
     </div>
 

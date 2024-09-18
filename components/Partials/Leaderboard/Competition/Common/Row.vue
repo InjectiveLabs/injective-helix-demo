@@ -1,13 +1,7 @@
 <script lang="ts" setup>
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
-import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  MAXIMUM_RANKED_TRADERS,
-  MIN_LEADERBOARD_TRADING_AMOUNT
-} from '@/app/utils/constants'
-import { LeaderboardType } from '@/types'
+import { formatWalletAddress } from '@injectivelabs/utils'
 
-const campaignStore = useCampaignStore()
 const isMobile = useIsMobile()
 
 const props = withDefaults(
@@ -27,32 +21,12 @@ const props = withDefaults(
 const formattedAddress = computed(() =>
   formatWalletAddress(props.leader.account)
 )
-
-const isUnranked = computed(() => {
-  const amount =
-    campaignStore.activeCampaignType === LeaderboardType.Pnl
-      ? props.leader.pnl
-      : props.leader.volume
-
-  const isLowEarningsTrader = new BigNumberInBase(amount).lt(
-    MIN_LEADERBOARD_TRADING_AMOUNT
-  )
-  const isBottomRanked =
-    !props.leader.rank || props.leader.rank > MAXIMUM_RANKED_TRADERS
-
-  return isLowEarningsTrader || isBottomRanked
-})
 </script>
 
 <template>
   <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
     <div class="font-semibold ml-1">
-      <span v-if="isUnranked">
-        {{ $t('leaderboard.unranked') }}
-      </span>
-      <span v-else>
-        {{ leader.rank }}
-      </span>
+      {{ leader.rank }}
     </div>
 
     <div>
@@ -68,7 +42,7 @@ const isUnranked = computed(() => {
         <div
           class="hidden md:flex justify-start items-center space-x-4"
           :class="[
-            leader.rank > 3 || isUnranked
+            leader.rank > 3
               ? 'text-xs lg:text-sm'
               : 'text-xs lg:text-sm 2xl:text-base'
           ]"

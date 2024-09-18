@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
-import {
-  MAXIMUM_RANKED_TRADERS,
-  MIN_LEADERBOARD_TRADING_AMOUNT,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { formatWalletAddress } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -32,28 +28,12 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
-
-const isUnranked = computed(() => {
-  const isLowEarningsTrader = new BigNumberInBase(props.leader.pnl).lt(
-    MIN_LEADERBOARD_TRADING_AMOUNT
-  )
-  const isBottomRanked =
-    !props.leader.rank || props.leader.rank > MAXIMUM_RANKED_TRADERS
-
-  return isLowEarningsTrader || isBottomRanked
-})
 </script>
 
 <template>
   <div class="pnl-table">
     <div>
-      <div v-if="isUnranked">
-        {{ $t('leaderboard.unranked') }}
-      </div>
-      <span
-        v-else-if="leader.rank > 3 && leader.rank <= MAXIMUM_RANKED_TRADERS"
-        class="font-semibold ml-1"
-      >
+      <span v-if="leader.rank > 3" class="font-semibold ml-1">
         {{ leader.rank }}
       </span>
       <div
@@ -71,7 +51,7 @@ const isUnranked = computed(() => {
         </span>
         <span
           class="hidden md:block"
-          :class="[leader.rank > 3 || isUnranked ? 'text-sm' : 'text-base']"
+          :class="[leader.rank > 3 ? 'text-sm' : 'text-base']"
         >
           {{ leader.account }}
         </span>
