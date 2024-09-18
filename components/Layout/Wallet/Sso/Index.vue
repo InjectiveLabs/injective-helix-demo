@@ -55,9 +55,8 @@ function onEmailConnect() {
         }"
       />
       <AppButton
+        class="disabled:border-gray-400 text-white"
         v-bind="{
-          class: 'disabled:border-gray-400 text-white',
-          status: emailStatus,
           disabled: !email || hasError || isLoading,
           variant: hasError ? 'primary-outline' : 'primary'
         }"
