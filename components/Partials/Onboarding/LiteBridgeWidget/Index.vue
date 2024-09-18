@@ -1,20 +1,39 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { IS_TESTNET } from '@shared/utils/constant'
 
 const emit = defineEmits<{
   success: []
 }>()
 
+const isUmd = true
+const network = IS_TESTNET ? 'testnet' : 'mainnet'
+
+const networkLinks = {
+  testnet: {
+    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/testnet/style.css',
+    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/testnet/index.${
+      isUmd ? 'umd' : 'es'
+    }.js`
+  },
+  mainnet: {
+    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/mainnet/style.css',
+    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/mainnet/index.${
+      isUmd ? 'umd' : 'es'
+    }.js`
+  }
+}
+
 useHead({
   link: [
     {
       rel: 'stylesheet',
-      href: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.3/dist/style.css'
+      href: networkLinks[network].link
     }
   ],
   script: [
     {
-      src: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.3/dist/index.es.js',
+      src: networkLinks[network].script,
       type: 'module',
       tagPosition: 'bodyClose',
       onload: () => {
