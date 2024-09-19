@@ -104,7 +104,7 @@ function onShareCompetition() {
               class="flex flex-col items-center justify-center gap-4 sm:gap-6 relative"
             >
               <div
-                class="text-xs sm:text-base max-sm:max-w-[240px] tracking-[0.4px] leading-5 max-sm:mt-2"
+                class="text-xs sm:text-base tracking-[0.4px] leading-5 max-sm:mt-2 px-20"
               >
                 {{ $t('leaderboard.tradeAndWin') }}
               </div>
