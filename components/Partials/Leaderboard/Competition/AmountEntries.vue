@@ -6,7 +6,12 @@ import { LeaderboardType } from '@/types'
 const campaignStore = useCampaignStore()
 
 const props = defineProps({
-  amount: {
+  pnl: {
+    type: Number,
+    default: 0
+  },
+
+  volume: {
     type: Number,
     default: 0
   }
@@ -14,15 +19,19 @@ const props = defineProps({
 
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
-    computed(() => props.amount),
+    computed(() =>
+      campaignStore.activeCampaignType === LeaderboardType.Pnl
+        ? props.pnl
+        : props.volume
+    ),
     {
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
   )
 
 const entries = computed(() =>
-  new BigNumberInBase(props.amount)
-    .dividedBy(100)
+  new BigNumberInBase(props.volume)
+    .dividedBy(10)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
 )
 </script>
