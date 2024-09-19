@@ -1,21 +1,32 @@
 <template>
   <div
-    class="custom-gradient-bg rounded-lg h-80 mb-10 relative overflow-hidden pt-12 pl-10"
+    class="rounded-lg md:h-64 lg:h-80 mb-10 relative overflow-hidden flex justify-between"
   >
-    <div class="max-w-lg 2xl:max-w-xl flex flex-col space-y-6 items-start">
+    <div
+      class="px-6 xl:px-10 custom-gradient-bg flex flex-col space-y-4 xl:space-y-6 items-start py-6 xl:pt-12 flex-1"
+    >
       <div
-        class="text-left text-5xl font-black italic text-gray-1100 leading-14"
+        class="text-left text-4xl xl:text-5xl font-black italic text-gray-1100 lg:leading-14"
       >
         {{ $t('leaderboard.competition.banner.title') }}
       </div>
 
-      <div class="text-left text-base leading-5 text-gray-1100">
-        {{ $t('leaderboard.competition.banner.description') }}
+      <div
+        class="text-left text-sm xl:text-base text-gray-1100 max-w-lg 2xl:max-w-xl"
+      >
+        <span class="leading-4 xl:leading-5">
+          {{ $t('leaderboard.competition.banner.description') }}
+        </span>
+      </div>
+
+      <div class="text-left text-xs text-gray-1100">
+        {{ $t('leaderboard.competition.banner.smallText') }}
       </div>
     </div>
+
     <img
-      src="/images/leaderboard/banner.webp"
-      class="h-80 rounded-r-[4px] absolute right-0 object-contain top-0"
+      src="/images/leaderboard/gwagon.webp"
+      class="hidden md:block object-contain max-md:flex-1"
     />
   </div>
 </template>

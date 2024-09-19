@@ -1,28 +1,26 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, BusEvents, LeaderboardDuration } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
 const { width } = useWindowSize()
 
-const props = defineProps({
-  pnl: {
-    type: Number,
-    default: 0
-  },
-
-  rank: {
-    type: Number,
-    default: 0
-  },
-
-  selectedDuration: {
-    type: String as PropType<LeaderboardDuration>,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    leader: LeaderboardRow
+  }>(),
+  {
+    leader: () => ({
+      account: '',
+      rank: 0,
+      pnl: 0,
+      volume: 0
+    })
   }
-})
+)
 
 const TIMESTAMP_FORMAT = 'yyyy-MM-dd kk:mm'
 
@@ -31,23 +29,27 @@ const showSelectors = ref(true)
 
 const now = useNow({ interval: 1000 })
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const entries = computed(() =>
+  new BigNumberInBase(props.leader.volume)
+    .dividedBy(10)
+    .integerValue(BigNumberInBase.ROUND_FLOOR)
+)
 
-const isModalOpen = computed(() => modalStore.modals[Modal.SharePnl])
+const isModalOpen = computed(
+  () => modalStore.modals[Modal.ShareLeaderboardCompetition]
+)
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
 onMounted(() => {
-  useEventBus(BusEvents.SharePnlOpened).on(() => (showSelectors.value = true))
+  useEventBus(BusEvents.ShareLeaderboardCompetitionOpened).on(
+    () => (showSelectors.value = true)
+  )
 })
 
+onBeforeUnmount(onCloseModal)
+
 function onCloseModal() {
-  modalStore.closeModal(Modal.SharePnl)
+  modalStore.closeModal(Modal.ShareLeaderboardCompetition)
 }
 
 async function download() {
@@ -57,7 +59,7 @@ async function download() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `PNL-${now.value}.jpeg`
+    link.download = `Leaderboard-Competition-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
@@ -80,7 +82,7 @@ watchDebounced(
   <SharedModalWrapper
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
+    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
     @close="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
@@ -105,21 +107,13 @@ watchDebounced(
         </div>
 
         <div class="space-y-6 flex-grow mt-10 mb-8">
-          <div class="text-left">
-            {{
-              $t('leaderboard.pnl.currentDuration', {
-                duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
-              })
-            }}
-          </div>
           <div
-            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap"
-            :class="{
-              'text-green-500': pnlToBigNumber.gte(0),
-              'text-red-500': pnlToBigNumber.lt(0)
-            }"
+            class="flex flex-col items-start gap-2 xs:gap-8 font-semibold truncate"
           >
-            <span class="text-6xl leading-[3rem]"> ${{ pnlToFormat }} </span>
+            <span class="text-lg">
+              {{ $t('leaderboard.header.numberOfEntries') }}
+            </span>
+            <span class="text-3xl">{{ entries }}</span>
           </div>
         </div>
 

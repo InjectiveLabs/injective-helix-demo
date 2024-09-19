@@ -1,34 +1,32 @@
 <script lang="ts" setup>
+import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { formatWalletAddress } from '@injectivelabs/utils'
 
 const isMobile = useIsMobile()
 
-const props = defineProps({
-  account: {
-    type: String,
-    default: ''
-  },
-
-  amount: {
-    type: Number,
-    default: 0
-  },
-
-  rank: {
-    type: Number,
-    default: 0
+const props = withDefaults(
+  defineProps<{
+    leader: LeaderboardRow
+  }>(),
+  {
+    leader: () => ({
+      account: '',
+      rank: 0,
+      pnl: 0,
+      volume: 0
+    })
   }
-})
+)
 
-const formattedAddress = computed(() => formatWalletAddress(props.account))
+const formattedAddress = computed(() =>
+  formatWalletAddress(props.leader.account)
+)
 </script>
 
 <template>
   <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
-    <div>
-      <span class="font-semibold ml-1">
-        {{ rank }}
-      </span>
+    <div class="font-semibold ml-1">
+      {{ leader.rank }}
     </div>
 
     <div>
@@ -37,20 +35,22 @@ const formattedAddress = computed(() => formatWalletAddress(props.account))
           <div>
             {{ formattedAddress }}
           </div>
-          <div v-if="rank === 1">
+          <div v-if="leader.rank === 1">
             {{ $t('leaderboard.competition.currentLeaderMobile') }}
           </div>
         </div>
         <div
           class="hidden md:flex justify-start items-center space-x-4"
           :class="[
-            rank > 3 ? 'text-xs lg:text-sm' : 'text-xs lg:text-sm 2xl:text-base'
+            leader.rank > 3
+              ? 'text-xs lg:text-sm'
+              : 'text-xs lg:text-sm 2xl:text-base'
           ]"
         >
           <div>
-            {{ account }}
+            {{ leader.account }}
           </div>
-          <div v-if="rank === 1">
+          <div v-if="leader.rank === 1">
             <div
               class="text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px] gap-1 items-center"
             >
@@ -70,14 +70,16 @@ const formattedAddress = computed(() => formatWalletAddress(props.account))
     </div>
 
     <template v-if="!isMobile">
-      <PartialsLeaderboardCompetitionAmountEntries v-bind="{ amount }" />
+      <PartialsLeaderboardCompetitionAmountEntries
+        v-bind="{ volume: leader.volume, pnl: leader.pnl }"
+      />
     </template>
 
     <template v-else>
       <div>
         <PartialsLeaderboardCompetitionAmountEntries
           class="text-[13px] md:text-sm mr-2"
-          v-bind="{ amount }"
+          v-bind="{ volume: leader.volume, pnl: leader.pnl }"
         />
       </div>
     </template>

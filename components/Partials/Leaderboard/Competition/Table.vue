@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { LeaderboardType } from '@/types'
-
-const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
@@ -32,12 +29,7 @@ function incrementLimit() {
         v-for="leader in filteredVolumeLeaderboard"
         :key="leader.rank"
         v-bind="{
-          rank: leader.rank,
-          amount:
-            campaignStore.activeCampaignType === LeaderboardType.Pnl
-              ? leader.pnl
-              : leader.volume,
-          account: leader.account
+          leader
         }"
         class="text-sm my-1 items-center rounded-lg"
         :class="{

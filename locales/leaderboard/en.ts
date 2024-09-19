@@ -7,7 +7,10 @@ import {
 export default {
   leaderboard: {
     title: 'Leaderboard',
-    description: 'Weekly top 100 traders with the highest trading PnL',
+    description: 'Top Traders on Helix',
+    unranked: 'Unranked',
+    getTrading: 'Get Trading',
+    getTradingDescription: 'Do you want to see yourself here? Get Trading!',
 
     pnl: {
       duration: {
@@ -22,7 +25,9 @@ export default {
       currentDuration: ({ named }: I18nMessageFunction) =>
         `Trading PnL (${named('duration')})`,
       timePeriod: ({ named }: I18nMessageFunction) =>
-        `Time Period: ${named('startDate')} - ${named('endDate')}`
+        `Time Period: ${named('startDate')} - ${named('endDate')}`,
+      lastUpdated: ({ named }: I18nMessageFunction) =>
+        `Last Updated: ${named('lastUpdatedDate')}`
     },
 
     competition: {
@@ -34,9 +39,10 @@ export default {
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       banner: {
-        title: 'Trade & win a Mercedes G Wagon',
+        title: 'Trade Like a G',
         description:
-          'Placeholder banner for now bitcoin ethereum dogecoin litecoin. WAX stellar nexo cardano BitTorrent audius. Velas dash ethereum kadena horizen.'
+          'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry. For more details, visit the <blog>.',
+        smallText: 'Terms and conditions apply.'
       }
     },
 
