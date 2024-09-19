@@ -10,6 +10,7 @@ import {
   ClosePositionLimitFormField
 } from '@/types'
 
+const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
@@ -273,7 +274,7 @@ function sharePosition() {
         </p>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end space-x-2">
+      <div class="flex-1 flex items-center p-2 justify-end space-x-1">
         <div
           class="space-y-1 text-right"
           :class="{
@@ -289,6 +290,7 @@ function sharePosition() {
         </div>
 
         <SharedIcon
+          v-if="appStore.devMode"
           name="share"
           class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
           @click="sharePosition"

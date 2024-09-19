@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -35,6 +35,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 function onSharePosition(position: Position | PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
+  useEventBus(BusEvents.SharePositionOpened).emit()
 }
 </script>
 

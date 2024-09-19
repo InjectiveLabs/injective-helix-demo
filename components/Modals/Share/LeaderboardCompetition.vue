@@ -3,11 +3,9 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, BusEvents, LeaderboardType } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
-const campaignStore = useCampaignStore()
 const { width } = useWindowSize()
 
 const props = withDefaults(
@@ -31,18 +29,6 @@ const showSelectors = ref(true)
 
 const now = useNow({ interval: 1000 })
 
-const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      campaignStore.activeCampaignType === LeaderboardType.Pnl
-        ? props.leader.pnl
-        : props.leader.volume
-    ),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
-
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
     .dividedBy(10)
@@ -59,6 +45,8 @@ onMounted(() => {
     () => (showSelectors.value = true)
   )
 })
+
+onBeforeUnmount(onCloseModal)
 
 function onCloseModal() {
   modalStore.closeModal(Modal.ShareLeaderboardCompetition)
@@ -94,7 +82,7 @@ watchDebounced(
   <SharedModalWrapper
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
+    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
     @close="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
@@ -119,41 +107,13 @@ watchDebounced(
         </div>
 
         <div class="space-y-6 flex-grow mt-10 mb-8">
-          <!-- todo: determine if there will be some duration -->
-          <!-- <div class="text-left">
-            {{
-              $t('leaderboard.pnl.currentDuration', {
-                duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
-              })
-            }}
-          </div> -->
           <div
-            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap"
-            :class="{
-              'text-green-500': amountToBigNumber.gte(0),
-              'text-red-500': amountToBigNumber.lt(0)
-            }"
+            class="flex flex-col items-start gap-2 xs:gap-8 font-semibold truncate"
           >
-            <span class="text-6xl leading-[3rem]">
-              <span
-                v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl"
-              >
-                {{ `${amountToBigNumber.gte(0) ? '+' : '-'}` }}
-              </span>
-              <span v-else>$</span>
-
-              <span>
-                {{ amountToFormat }}
-              </span>
+            <span class="text-lg">
+              {{ $t('leaderboard.header.numberOfEntries') }}
             </span>
-          </div>
-          <!--todo: style rank-->
-          <div>
-            {{ leader.rank }}
-          </div>
-          <!--todo: style entries-->
-          <div>
-            {{ entries }}
+            <span class="text-3xl">{{ entries }}</span>
           </div>
         </div>
 

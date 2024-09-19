@@ -48,6 +48,8 @@ onMounted(() => {
   )
 })
 
+onBeforeUnmount(onCloseModal)
+
 function onCloseModal() {
   modalStore.closeModal(Modal.ShareLeaderboardPnl)
 }
@@ -82,7 +84,7 @@ watchDebounced(
   <SharedModalWrapper
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
+    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
     @close="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
@@ -115,13 +117,19 @@ watchDebounced(
             }}
           </div>
           <div
-            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap"
+            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-5xl leading-[3rem] truncate"
             :class="{
               'text-green-500': pnlToBigNumber.gte(0),
               'text-red-500': pnlToBigNumber.lt(0)
             }"
           >
-            <span class="text-6xl leading-[3rem]"> ${{ pnlToFormat }} </span>
+            ${{ pnlToFormat }}
+          </div>
+          <div
+            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl truncate text-blue-500"
+          >
+            <span> {{ $t('leaderboard.header.rank') }}: </span>
+            <span>{{ rank }}</span>
           </div>
         </div>
 
