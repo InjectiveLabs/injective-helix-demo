@@ -9,7 +9,7 @@ export default {
     title: 'Leaderboard',
     description: 'Top Traders on Helix',
     unranked: 'Unranked',
-    getTrading: 'Get Trading',
+    startTrading: 'Start Trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
 

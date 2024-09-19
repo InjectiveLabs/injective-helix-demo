@@ -93,7 +93,7 @@ function fetchPnlLeaderboardAccount() {
                 class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
                 v-bind="{ variant: 'primary-outline' }"
               >
-                {{ $t('leaderboard.getTrading') }}
+                {{ $t('leaderboard.startTrading') }}
               </AppButton>
             </NuxtLink>
           </div>

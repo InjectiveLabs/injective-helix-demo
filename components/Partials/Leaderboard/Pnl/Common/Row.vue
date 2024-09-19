@@ -45,7 +45,7 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <span class="font-medium">
+      <span class="font-light font-mono">
         <span class="md:hidden text-xs lowercase">
           {{ formattedAddress }}
         </span>
