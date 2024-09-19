@@ -12,6 +12,8 @@ const isModalOpen = computed(
 
 function onCancel() {
   modalStore.closeModal(Modal.LeaderboardTerms)
+
+  return navigateTo({ name: LeaderboardSubPage.Pnl })
 }
 
 function onConfirm() {

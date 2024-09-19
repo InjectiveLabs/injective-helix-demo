@@ -1,20 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
-import { Modal, LeaderboardSubPage } from '@/types'
+import { Modal } from '@/types'
 
-definePageMeta({
-  middleware: [
-    () => {
-      const appStore = useAppStore()
-
-      if (!appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
-        return navigateTo({ name: LeaderboardSubPage.Pnl })
-      }
-    }
-  ]
-})
-
+const appStore = useAppStore()
+const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
@@ -40,7 +30,15 @@ const timeLeftInCampaign = computed(() => {
   ).padStart(2, '0')}`
 })
 
-onMounted(fetchCampaign)
+onMounted(() => {
+  fetchCampaign()
+
+  if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
+    return
+  }
+
+  modalStore.openModal(Modal.LeaderboardTerms)
+})
 
 function fetchCampaign() {
   status.setLoading()
@@ -98,6 +96,8 @@ function fetchCampaign() {
         </div>
       </div>
     </AppHocLoading>
+
+    <ModalsLeaderboardTerms />
   </div>
 </template>
 
