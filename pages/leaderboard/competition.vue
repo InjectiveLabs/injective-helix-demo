@@ -86,7 +86,7 @@ function fetchCampaign() {
         </Teleport>
 
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardCompetitionBanner class="hidden xl:block" />
+          <PartialsLeaderboardCompetitionBanner />
 
           <PartialsLeaderboardCompetitionMyStats
             v-if="
