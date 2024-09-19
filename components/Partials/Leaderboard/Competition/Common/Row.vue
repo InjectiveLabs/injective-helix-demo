@@ -30,7 +30,7 @@ const formattedAddress = computed(() =>
     </div>
 
     <div>
-      <span class="font-medium">
+      <span class="font-light font-mono">
         <div class="md:hidden flex items-center text-xs lowercase space-x-2">
           <div>
             {{ formattedAddress }}
@@ -40,9 +40,9 @@ const formattedAddress = computed(() =>
           </div>
         </div>
         <div
-          class="hidden md:flex justify-start items-center space-x-4"
+          class="hidden md:flex justify-start items-center space-x-1 xl:space-x-4"
           :class="[
-            leader.rank > 3
+            leader.rank > 1
               ? 'text-xs lg:text-sm'
               : 'text-xs lg:text-sm 2xl:text-base'
           ]"
@@ -52,7 +52,7 @@ const formattedAddress = computed(() =>
           </div>
           <div v-if="leader.rank === 1">
             <div
-              class="text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-2 leading-4 rounded-[4px] gap-1 items-center"
+              class="text-xs 3xl:text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-1.5 leading-4 rounded-[4px] gap-0.5 items-center"
             >
               <div>
                 {{ $t('leaderboard.competition.currentLeader') }}

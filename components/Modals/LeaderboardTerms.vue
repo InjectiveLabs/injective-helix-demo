@@ -29,7 +29,11 @@ function onConfirm() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" @modal:closed="onCancel">
+  <AppModal
+    is-stay-open-on-resize
+    :is-open="isModalOpen"
+    @modal:closed="onCancel"
+  >
     <template #title>
       <h1 class="text-3xl font-bold mb-4 text-center uppercase">
         HELIX TRADING COMPETITION AND GIVEAWAY

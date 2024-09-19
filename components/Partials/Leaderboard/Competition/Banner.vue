@@ -20,7 +20,7 @@ const isEndedCampaign = computed(() => {
     class="relative rounded-lg md:h-64 lg:h-80 mb-10 border-gray-375 border-[3px] flex justify-between"
   >
     <div
-      class="absolute inset-0 bg-[url('/images/leaderboard/gwagon.webp')] bg-cover bg-no-repeat md:bg-none opacity-10 top-3 right-3"
+      class="absolute inset-0 bg-[url('/images/leaderboard/gwagon.webp')] bg-cover bg-no-repeat md:bg-none opacity-10 bg-center"
     />
 
     <div
