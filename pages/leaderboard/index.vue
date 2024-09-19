@@ -21,7 +21,7 @@ const startDateFormatted = computed(() => {
     UTC_TIMEZONE
   )
 
-  return format(zonedFirstDate, 'MMMM dd, yyyy')
+  return format(zonedFirstDate, "MMMM dd, H:mm 'UTC'")
 })
 
 const endDateFormatted = computed(() => {
@@ -34,7 +34,11 @@ const endDateFormatted = computed(() => {
     UTC_TIMEZONE
   )
 
-  return format(zonedLastDate, "MMMM dd, yyyy H:mm:ss 'UTC'")
+  if (selectedDuration.value === LeaderboardDuration.OneDay) {
+    return format(zonedLastDate, "H:mm 'UTC'")
+  }
+
+  return format(zonedLastDate, "MMMM dd, H:mm 'UTC'")
 })
 
 onMounted(() => {
@@ -74,10 +78,14 @@ function fetchPnlLeaderboard() {
 
       <div class="text-xs md:text-sm md:leading-4 text-gray-350">
         {{
-          $t('leaderboard.pnl.timePeriod', {
-            startDate: startDateFormatted,
-            endDate: endDateFormatted
-          })
+          selectedDuration !== LeaderboardDuration.All
+            ? $t('leaderboard.pnl.timePeriod', {
+                startDate: startDateFormatted,
+                endDate: endDateFormatted
+              })
+            : $t('leaderboard.pnl.lastUpdated', {
+                lastUpdatedDate: endDateFormatted
+              })
         }}
       </div>
     </div>
