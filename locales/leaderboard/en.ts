@@ -31,6 +31,7 @@ export default {
     },
 
     competition: {
+      ended: 'Ended',
       keepGoing: 'Keep going 💪',
       currentLeader: 'Current leader',
       currentLeaderFlame: '🔥🔥',
