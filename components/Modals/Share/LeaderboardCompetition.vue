@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
