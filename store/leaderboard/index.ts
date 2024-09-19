@@ -1,8 +1,19 @@
-import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
+import {
+  PnlLeaderboard,
+  VolLeaderboard,
+  LeaderboardRow
+} from '@injectivelabs/sdk-ts'
+import {
+  fetchPnlLeaderboard,
+  fetchPnlLeaderboardAccount,
+  fetchCompetitionLeaderboard,
+  fetchCompetitionLeaderboardAccount
+} from '@/store/leaderboard/pnlLeaderboard'
 import { indexerGrpcArchiverApi } from '@/app/Services'
-import { LeaderboardType } from '@/types'
 
 type LeaderboardStoreState = {
+  pnlLeaderboardAccount?: LeaderboardRow
+  competitionLeaderboardAccount?: LeaderboardRow
   pnlLeaderboard?: PnlLeaderboard
   competitionLeaderboard?: PnlLeaderboard | VolLeaderboard
   historicalBalance: {
@@ -30,6 +41,8 @@ enum LeaderboardResolution {
 const initialStateFactory = (): LeaderboardStoreState => ({
   pnlLeaderboard: undefined,
   competitionLeaderboard: undefined,
+  pnlLeaderboardAccount: undefined,
+  competitionLeaderboardAccount: undefined,
   historicalBalance: [],
   historicalPnl: [],
   historicalVolume: []
@@ -38,6 +51,11 @@ const initialStateFactory = (): LeaderboardStoreState => ({
 export const useLeaderboardStore = defineStore('leaderboard', {
   state: (): LeaderboardStoreState => initialStateFactory(),
   actions: {
+    fetchPnlLeaderboard,
+    fetchPnlLeaderboardAccount,
+    fetchCompetitionLeaderboard,
+    fetchCompetitionLeaderboardAccount,
+
     async fetchHistoricalBalance(
       resolution: LeaderboardResolution = LeaderboardResolution.Week
     ) {
@@ -104,49 +122,6 @@ export const useLeaderboardStore = defineStore('leaderboard', {
 
       leaderboardStore.$patch({
         historicalVolume: historicalVolume.reverse()
-      })
-    },
-
-    async fetchPnlLeaderboard(resolution: string) {
-      const leaderboardStore = useLeaderboardStore()
-
-      leaderboardStore.$patch({
-        pnlLeaderboard:
-          await indexerGrpcArchiverApi.fetchPnlLeaderboardFixedResolution({
-            resolution
-          })
-      })
-    },
-    async fetchCompetitionLeaderboard({
-      type,
-      duration
-    }: {
-      type: LeaderboardType
-      duration: {
-        startDate: string
-        endDate: string
-      }
-    }) {
-      const leaderboardStore = useLeaderboardStore()
-
-      if (type === LeaderboardType.Pnl) {
-        leaderboardStore.$patch({
-          competitionLeaderboard:
-            await indexerGrpcArchiverApi.fetchPnlLeaderboard({
-              endDate: duration.endDate,
-              startDate: duration.startDate
-            })
-        })
-
-        return
-      }
-
-      leaderboardStore.$patch({
-        competitionLeaderboard:
-          await indexerGrpcArchiverApi.fetchVolLeaderboard({
-            endDate: duration.endDate,
-            startDate: duration.startDate
-          })
       })
     }
   }

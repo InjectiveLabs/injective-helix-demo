@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const isMobile = useIsMobile()
+
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const filteredPosition = computed(() =>
   positionStore.subaccountPositions.filter((position) => {
@@ -29,6 +31,12 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 
   positionToAddMargin.value = position
 }
+
+function onSharePosition(position: Position | PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.SharePositionPnl)
+  useEventBus(BusEvents.SharePositionOpened).emit()
+}
 </script>
 
 <template>
@@ -42,6 +50,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
         v-bind="{ position }"
         @margin:add="addMargin"
         @tpsl:add="addTakeProfitStopLoss"
+        @position:share="onSharePosition"
       />
     </div>
 
@@ -52,6 +61,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
         v-bind="{ position }"
         @margin:add="addMargin"
         @tpsl:add="addTakeProfitStopLoss"
+        @position:share="onSharePosition"
       />
     </template>
 
@@ -70,6 +80,11 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
       v-bind="{
         position: positionToAddMargin
       }"
+    />
+
+    <ModalsSharePositionPnl
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
     />
   </div>
 </template>

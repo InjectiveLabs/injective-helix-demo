@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-defineProps({
-  isPnl: Boolean
+withDefaults(defineProps<{ isUnranked: boolean; isPnl?: boolean }>(), {
+  isPnl: false,
+  isUnranked: false
 })
 </script>
 
@@ -10,7 +11,7 @@ defineProps({
     :class="[isPnl ? 'pnl-gradient darken' : 'bg-[#1472FF] opacity']"
   >
     <div class="pl-4 md:pl-7 flex items-center space-x-2 md:space-x-4 mb-4">
-      <div class="flex space-x-2 items-center relative">
+      <div v-if="!isUnranked" class="flex space-x-2 items-center relative">
         <SharedIcon name="user-filled" class="min-w-4 w-4 h-4" />
         <p class="font-bold text-xl">{{ $t('leaderboard.myStats') }}</p>
       </div>
@@ -21,7 +22,7 @@ defineProps({
     <slot name="row" />
 
     <div
-      class="absolute top-4 right-16"
+      class="absolute top-3 right-14 sm:top-4 sm:right-16"
       :class="[isPnl ? 'text-[#FFFC4D]' : 'text-green-450']"
     >
       <div class="relative">

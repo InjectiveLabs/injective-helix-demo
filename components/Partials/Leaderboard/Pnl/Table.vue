@@ -8,7 +8,7 @@ const filteredPnlLeaderboard = computed(() => {
     return []
   }
 
-  return leaderboardStore.pnlLeaderboard.leaders.slice(0, limit.value)
+  return leaderboardStore.pnlLeaderboard?.leaders.slice(0, limit.value)
 })
 
 function incrementLimit() {
@@ -27,13 +27,11 @@ function incrementLimit() {
         v-for="leader in filteredPnlLeaderboard"
         :key="leader.rank"
         v-bind="{
-          pnl: leader.pnl,
-          rank: leader.rank,
-          account: leader.account
+          leader
         }"
         class="text-sm my-1 items-center rounded-lg"
         :class="{
-          'bg-gray-825 py-4 text-white': leader.rank > 3,
+          'bg-gray-825 py-4 text-white': leader.rank > 3 || !leader.rank,
           'bg-[#F3C211] py-5 text-gray-1100': leader.rank === 1,
           'bg-[#AAAAAA] py-5 text-gray-1100': leader.rank === 2,
           'bg-[#BD7B31] py-5 text-gray-1100': leader.rank === 3

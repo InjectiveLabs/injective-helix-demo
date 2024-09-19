@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal, PositionsFilterField, PositionsFilterForm } from '@/types'
+import {
+  Modal,
+  BusEvents,
+  PositionsFilterField,
+  PositionsFilterForm
+} from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -8,6 +13,8 @@ const positionStore = usePositionStore()
 
 const { values } = useForm<PositionsFilterForm>()
 const isMobile = useIsMobile()
+
+const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
 const filteredPosition = computed(() =>
   positionStore.positions.filter((position) => {
@@ -39,6 +46,12 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
 
   positionToAddMargin.value = position
 }
+
+function onSharePosition(position: Position | PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.SharePositionPnl)
+  useEventBus(BusEvents.SharePositionOpened).emit()
+}
 </script>
 
 <template>
@@ -55,6 +68,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
           v-bind="{ position }"
           @margin:add="addMargin"
           @tpsl:add="addTakeProfitStopLoss"
+          @position:share="onSharePosition"
         />
       </template>
 
@@ -65,6 +79,7 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
           v-bind="{ position }"
           @margin:add="addMargin"
           @tpsl:add="addTakeProfitStopLoss"
+          @position:share="onSharePosition"
         />
       </template>
     </div>
@@ -85,5 +100,10 @@ function addTakeProfitStopLoss(position: Position | PositionV2) {
     v-bind="{
       position: positionToAddMargin
     }"
+  />
+
+  <ModalsSharePositionPnl
+    v-if="selectedPosition"
+    v-bind="{ position: selectedPosition }"
   />
 </template>

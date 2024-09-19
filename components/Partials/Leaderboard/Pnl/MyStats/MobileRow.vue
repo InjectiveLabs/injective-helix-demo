@@ -1,29 +1,29 @@
 <script lang="ts" setup>
+import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  account: {
-    type: String,
-    default: ''
-  },
-
-  pnl: {
-    type: Number,
-    default: 0
-  },
-
-  rank: {
-    type: Number,
-    default: 0
+const props = withDefaults(
+  defineProps<{
+    leader: LeaderboardRow
+  }>(),
+  {
+    leader: () => ({
+      account: '',
+      rank: 0,
+      pnl: 0,
+      volume: 0
+    })
   }
-})
+)
 
-const formattedAddress = computed(() => formatWalletAddress(props.account))
+const formattedAddress = computed(() =>
+  formatWalletAddress(props.leader.account)
+)
 
 const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
   useSharedBigNumberFormatter(
-    computed(() => props.pnl),
+    computed(() => props.leader.pnl),
     {
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }
@@ -36,7 +36,9 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
       <div class="text-[11px] leading-3 mb-1">
         {{ $t('leaderboard.header.rank') }}
       </div>
-      <div class="text-sm font-semibold leading-4">{{ rank }}</div>
+      <div class="text-sm font-semibold leading-4">
+        {{ leader.rank }}
+      </div>
     </div>
 
     <div class="h-full-flex items-start gap-y-1">

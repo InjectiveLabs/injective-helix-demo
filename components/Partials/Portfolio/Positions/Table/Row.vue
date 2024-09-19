@@ -6,11 +6,12 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  PerpetualmarketCyTags,
   ClosePositionLimitForm,
-  ClosePositionLimitFormField,
-  PerpetualmarketCyTags
+  ClosePositionLimitFormField
 } from '@/types'
 
+const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
@@ -29,6 +30,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   'margin:add': [position: Position | PositionV2]
   'tpsl:add': [position: Position | PositionV2]
+  'position:share': [state: Position | PositionV2]
 }>()
 
 const {
@@ -225,6 +227,10 @@ function addMargin() {
 function addTpSl() {
   emit('tpsl:add', props.position)
 }
+
+function sharePosition() {
+  emit('position:share', props.position)
+}
 </script>
 
 <template>
@@ -269,7 +275,7 @@ function addTpSl() {
         </p>
       </div>
 
-      <div class="flex-1 flex items-center p-2 justify-end">
+      <div class="flex-1 flex items-center p-2 justify-end space-x-1">
         <div
           class="space-y-1 text-right"
           :class="{
@@ -283,6 +289,13 @@ function addTpSl() {
           </p>
           <p>{{ percentagePnlToString }}%</p>
         </div>
+
+        <SharedIcon
+          v-if="appStore.devMode"
+          name="share"
+          class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+          @click="sharePosition"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
