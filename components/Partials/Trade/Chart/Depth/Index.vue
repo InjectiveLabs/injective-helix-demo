@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MarketKey, OrderbookStatusKey } from '~/types'
+import { MarketKey, OrderbookStatusKey } from '@/types'
 
 const orderbookStore = useOrderbookStore()
 const orderbookStatus = inject(OrderbookStatusKey)

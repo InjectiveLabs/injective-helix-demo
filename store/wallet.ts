@@ -9,7 +9,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { Modal } from '~/types'
+import { Modal } from '@/types'
 
 type WalletStoreState = {}
 
