@@ -10,7 +10,7 @@ export default {
     description: 'Top Traders on Helix',
     unranked: 'Unranked',
     getTrading: 'Get Trading',
-    getTradingDescription: 'Do you want to see yourself here? Get Trading!',
+    tradeAndWin: 'Trade and win to get ranked!',
 
     pnl: {
       duration: {
