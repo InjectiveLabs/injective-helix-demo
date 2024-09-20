@@ -255,7 +255,10 @@ function sharePosition() {
       <div class="flex-1 flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.amount') }}</p>
         <div v-if="market" class="space-y-1 font-mono">
-          <p>{{ quantityToString }} {{ market.baseToken.overrideSymbol }}</p>
+          <p>
+            {{ quantityToString }}
+            {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
+          </p>
         </div>
       </div>
 

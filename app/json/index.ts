@@ -133,10 +133,7 @@ export const marketCategories = marketCategoriesJson
 export const restrictedCountries = restrictedCountriesJson
 export const blacklistedAddresses = blacklistedAddressesJson
 
-export const tokens = getTokens().map((token) => ({
-  ...token,
-  overrideSymbol: token.overrideSymbol || token.symbol
-}))
+export const tokens = getTokens()
 export const spotSlugs = getSpotSlugs()
 export const expirySlugs = getExpirySlugs()
 export const derivativeSlugs = getDerivativeSlugs()
