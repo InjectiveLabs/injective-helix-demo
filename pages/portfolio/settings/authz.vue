@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { PortfolioSubPage } from '@/types'
+import { PortfolioSubPage, Modal } from '@/types'
+
+const modalStore = useModalStore()
 
 const linkOptions = [
   {
@@ -11,6 +13,10 @@ const linkOptions = [
     to: { name: PortfolioSubPage.SettingsAuthzGranter }
   }
 ]
+
+function openGranteeModal() {
+  modalStore.openModal(Modal.ConnectMobile)
+}
 </script>
 
 <template>
@@ -26,16 +32,31 @@ const linkOptions = [
         </h3>
       </div>
 
-      <div class="mt-8">
-        <NuxtLink
-          v-for="option in linkOptions"
-          :key="option.label"
-          :to="option.to"
-          class="p-4 text-gray-400 font-medium"
-          exact-active-class="text-white"
-        >
-          {{ $t(option.label) }}
-        </NuxtLink>
+      <div class="mt-8 flex justify-between">
+        <div>
+          <NuxtLink
+            v-for="option in linkOptions"
+            :key="option.label"
+            :to="option.to"
+            class="p-4 text-gray-400 font-medium"
+            exact-active-class="text-white"
+          >
+            {{ $t(option.label) }}
+          </NuxtLink>
+        </div>
+        <div>
+          <button
+            :disabled="isDisabled"
+            class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
+            :class="{
+              'text-gray-500': isDisabled,
+              'text-blue-500 hover:text-blue-600': !isDisabled
+            }"
+            @click="openGranteeModal"
+          >
+            + {{ $t('portfolio.settings.authz.connectMobile') }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -43,4 +64,5 @@ const linkOptions = [
       <NuxtPage />
     </div>
   </div>
+  <ModalsConnectMobile />
 </template>

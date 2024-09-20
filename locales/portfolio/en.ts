@@ -60,6 +60,7 @@ export default {
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address',
         addGranteeAddress: 'Add grantee address',
+        connectMobile: 'Connect Mobile Device',
         noGrants: 'No grants found',
         viewGrantedFunctions: 'View granted functions',
         connected: 'Connected',

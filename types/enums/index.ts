@@ -50,6 +50,7 @@ export enum Modal {
   MarketExpired = 'market-expired',
   TokenSelector = 'token-selector',
   ScavengerHunt = 'scavenger-hunt',
+  ConnectMobile = 'connect-mobile',
   PriceDeviation = 'price-deviation',
   SgtBalancedFees = 'sgtBalancedFees',
   ClosedRWAMarket = 'closed-rwa-market',
