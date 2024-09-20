@@ -1,6 +1,8 @@
 export enum NavBarCyTags {
   NavbarMenuItems = 'menu',
-  WalletConnectButton = 'button-connect-wallet'
+  WalletConnectButton = 'button-connect-wallet',
+  WalletLoginButton = 'button-login',
+  WalletSignUpButton = 'button-signup'
 }
 
 export enum CommonCyTags {

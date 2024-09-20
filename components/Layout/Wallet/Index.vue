@@ -8,6 +8,8 @@ import { usdtToken } from '@shared/data/token'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags, PortfolioStatusKey } from '@/types'
 
+const { t } = useLang()
+
 enum View {
   Connect = 'connect',
   LiteBridge = 'liteBridge',
@@ -109,18 +111,30 @@ watch(
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton
-    v-else
-    class="min-w-[110px] md:min-w-[160px]"
-    :data-cy="dataCyTag(NavBarCyTags.WalletConnectButton)"
-    :is-loading="
-      sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-    "
-    @click="onWalletConnect"
-  >
-    <span class="md:hidden">{{ $t('connect.connect') }}</span>
-    <span class="max-md:hidden">{{ $t('connect.connectWallet') }}</span>
-  </AppButton>
+  <div v-else class="flex items-center space-x-2">
+    <AppButton
+      class="max-sm:px-2 max-sm:py-1"
+      :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      variant="primary-outline"
+      @click="onWalletConnect"
+    >
+      <span>{{ t('connect.logIn') }}</span>
+    </AppButton>
+
+    <AppButton
+      class="max-sm:px-2 max-sm:py-1"
+      :data-cy="dataCyTag(NavBarCyTags.WalletSignUpButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      @click="onWalletConnect"
+    >
+      <span>{{ t('connect.signUp') }}</span>
+    </AppButton>
+  </div>
 
   <AppModal
     v-bind="{

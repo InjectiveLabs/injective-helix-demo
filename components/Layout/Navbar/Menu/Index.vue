@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { MENU_ITEMS } from '@/app/data/menu'
+import { MENU_ITEMS, getDepositMenuItem } from '@/app/data/menu'
 import { MenuItemType, Modal } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
+
+const depositMenuItem = getDepositMenuItem()
 
 const menuItems = MENU_ITEMS.map((item) => {
   if (
@@ -30,9 +32,10 @@ const menuItems = MENU_ITEMS.map((item) => {
   return item
 })
 
-const filteredMenuItems = computed(() =>
-  menuItems.filter((item) => (!appStore.devMode ? !item.devOnly : item))
-)
+const filteredMenuItems = computed(() => [
+  ...menuItems.filter((item) => (!appStore.devMode ? !item.devOnly : item)),
+  depositMenuItem
+])
 </script>
 
 <template>
