@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Modal, LeaderboardSubPage, MainPage } from '@/types'
+import { LeaderboardSubPage, MainPage } from '@/types'
 
 definePageMeta({
   middleware: [
@@ -14,22 +14,6 @@ definePageMeta({
 })
 
 const route = useRoute()
-const appStore = useAppStore()
-const modalStore = useModalStore()
-
-function onNavigate() {
-  if (route.name !== LeaderboardSubPage.Pnl) {
-    return
-  }
-
-  if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
-    return
-  }
-
-  modalStore.openModal(Modal.LeaderboardTerms)
-
-  return navigateTo({ name: LeaderboardSubPage.Pnl })
-}
 </script>
 
 <template>
@@ -65,7 +49,6 @@ function onNavigate() {
               :to="{
                 name: pageName
               }"
-              @click.prevent="onNavigate"
             >
               {{ $t(`leaderboard.tabs.${pageName}`) }}
             </NuxtLink>
@@ -82,7 +65,5 @@ function onNavigate() {
         />
       </section>
     </div>
-
-    <ModalsLeaderboardTerms />
   </div>
 </template>

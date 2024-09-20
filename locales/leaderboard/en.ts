@@ -9,8 +9,9 @@ export default {
     title: 'Leaderboard',
     description: 'Top Traders on Helix',
     unranked: 'Unranked',
-    getTrading: 'Get Trading',
-    getTradingDescription: 'Do you want to see yourself here? Get Trading!',
+    startTrading: 'Start Trading',
+    tradeAndWin:
+      'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
 
     pnl: {
       duration: {
@@ -31,18 +32,26 @@ export default {
     },
 
     competition: {
+      ended: 'Ended',
       keepGoing: 'Keep going 💪',
       currentLeader: 'Current leader',
       currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
+      competitionBeginning: 'A competition is about to begin.',
+      competitionHasBegun: 'The competition has begun, good luck!',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       banner: {
         title: 'Trade Like a G',
-        description:
-          'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry. For more details, visit the <blog>.',
-        smallText: 'Terms and conditions apply.'
+        blog: 'blog',
+        description: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry. For more details, visit the ',
+            named('blog'),
+            '.'
+          ]),
+        termsAndConditionsApply: 'Terms and conditions apply'
       }
     },
 
