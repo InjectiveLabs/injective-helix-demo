@@ -39,7 +39,7 @@ export default {
       currentLeader: 'Current leader',
       currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
-      competitionBeginning: 'A competition is about to begin.',
+      competitionBeginning: 'The competition is about to begin...',
       competitionHasBegun: 'The competition has begun, good luck!',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
