@@ -27,11 +27,12 @@ const timeLeftInCampaign = computed(() => {
     nowInMilliseconds: now.value.getTime().toString()
   })
 
-  return `${String(duration.days).padStart(2, '0')}D ${String(
-    duration.hours
-  ).padStart(2, '0')}:${String(duration.minutes).padStart(2, '0')}:${String(
-    duration.seconds
-  ).padStart(2, '0')}`
+  const days = `${String(duration.days).padStart(2, '0')}`
+  const hours = `${String(duration.hours).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+
+  return `${days}D ${hours}:${minutes}:${seconds}`
 })
 
 const countdownFormatted = computed(() => {
@@ -42,11 +43,12 @@ const countdownFormatted = computed(() => {
     nowInMilliseconds
   })
 
-  return `${String(duration.days).padStart(2, '0')}:${String(
-    duration.hours
-  ).padStart(2, '0')}:${String(duration.minutes).padStart(2, '0')}:${String(
-    duration.seconds
-  ).padStart(2, '0')}`
+  const days = `${String(duration.days).padStart(2, '0')}`
+  const hours = `${String(duration.hours).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+
+  return `${days}:${hours}:${minutes}:${seconds}`
 })
 
 const isActiveCampaign = computed(() =>
