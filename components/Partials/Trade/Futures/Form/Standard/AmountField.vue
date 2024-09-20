@@ -362,7 +362,7 @@ onMounted(() => {
                 {{ market?.baseToken.overrideSymbol }}
               </span>
               <span v-else class="text-sm">
-                {{ market?.quoteToken.overrideSymbol }}
+                {{ market?.quoteToken.symbol }}
               </span>
             </div>
           </template>
@@ -381,7 +381,7 @@ onMounted(() => {
           >
             <span>{{
               $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.overrideSymbol}`
+                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
               })
             }}</span>
           </div>
@@ -398,7 +398,7 @@ onMounted(() => {
           ? amountErrorMessage
           : $t('trade.minNotionalError', {
               minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.overrideSymbol
+              symbol: market.quoteToken.symbol
             })
       }}
     </div>
