@@ -169,7 +169,7 @@ function toggle() {
               {{ quantityToString }}
             </span>
             <span class="text-gray-400">
-              {{ derivativeMarket.baseToken.symbol }}
+              {{ derivativeMarket.baseToken.overrideSymbol }}
             </span>
           </p>
         </div>

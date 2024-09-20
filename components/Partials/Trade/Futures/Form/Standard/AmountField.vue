@@ -48,7 +48,7 @@ const props = withDefaults(
 
 const options = [
   {
-    display: market.value.baseToken.symbol || '',
+    display: market.value.baseToken.overrideSymbol || '',
     value: TradeAmountOption.Base
   },
   {
@@ -359,10 +359,10 @@ onMounted(() => {
                 v-if="typeValue === TradeAmountOption.Base"
                 class="text-sm select-none"
               >
-                {{ market?.baseToken.symbol }}
+                {{ market?.baseToken.overrideSymbol }}
               </span>
               <span v-else class="text-sm">
-                {{ market?.quoteToken.symbol }}
+                {{ market?.quoteToken.overrideSymbol }}
               </span>
             </div>
           </template>
@@ -381,7 +381,7 @@ onMounted(() => {
           >
             <span>{{
               $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
+                amount: `${quoteBalanceToString} ${market.quoteToken.overrideSymbol}`
               })
             }}</span>
           </div>
@@ -398,7 +398,7 @@ onMounted(() => {
           ? amountErrorMessage
           : $t('trade.minNotionalError', {
               minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.symbol
+              symbol: market.quoteToken.overrideSymbol
             })
       }}
     </div>
