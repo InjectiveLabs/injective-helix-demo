@@ -38,19 +38,33 @@ const isEndedCampaign = computed(() => {
         {{ $t('leaderboard.competition.banner.title') }}
       </div>
 
-      <div class="text-left text-sm xl:text-base max-w-lg 2xl:max-w-xl">
-        <span class="xl:leading-5">
-          {{ $t('leaderboard.competition.banner.description') }}
-        </span>
+      <div>
+        <div class="text-left text-sm xl:text-base max-w-lg 2xl:max-w-xl">
+          <i18n-t
+            tag="span"
+            keypath="leaderboard.competition.banner.description"
+            class="xl:leading-5"
+          >
+            <template #blog>
+              <NuxtLink
+                to="https://blog.helixapp.com/like-a-g/"
+                target="_blank"
+                class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
+              >
+                {{ $t('leaderboard.competition.banner.blog') }}
+              </NuxtLink>
+            </template>
+          </i18n-t>
+        </div>
       </div>
 
-      <!--todo: replace with blog link when get it from marketin-->
+      <!-- todo: replace with link to t&c once they're finalized-->
       <NuxtLink
-        to="https://example.com"
+        to="https://blog.helixapp.com/like-a-g/"
         target="_blank"
-        class="text-left text-xs border border-dashed border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
+        class="text-left text-xs border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
       >
-        {{ $t('leaderboard.competition.banner.learnMore') }}
+        {{ $t('leaderboard.competition.banner.termsAndConditionsApply') }}
       </NuxtLink>
     </div>
 

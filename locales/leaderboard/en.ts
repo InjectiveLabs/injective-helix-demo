@@ -44,9 +44,14 @@ export default {
         interpolate(['Time Remaining: ', named('duration')]),
       banner: {
         title: 'Trade Like a G',
-        description:
-          'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry.',
-        learnMore: 'Learn More'
+        blog: 'blog',
+        description: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry. For more details, visit the ',
+            named('blog'),
+            '.'
+          ]),
+        termsAndConditionsApply: 'Terms and conditions apply'
       }
     },
 
