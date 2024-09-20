@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { MainPage } from '@/types'
+
 const campaignStore = useCampaignStore()
 
 const now = useNow({ interval: 1000 })
@@ -58,9 +60,8 @@ const isEndedCampaign = computed(() => {
         </div>
       </div>
 
-      <!-- todo: replace with link to t&c once they're finalized-->
       <NuxtLink
-        to="https://blog.helixapp.com/like-a-g/"
+        :to="{ name: MainPage.LeaderboardTerms }"
         target="_blank"
         class="text-left text-xs border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
       >
