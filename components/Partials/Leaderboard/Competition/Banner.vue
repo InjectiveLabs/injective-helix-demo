@@ -44,9 +44,14 @@ const isEndedCampaign = computed(() => {
         </span>
       </div>
 
-      <div class="text-left text-xs">
-        {{ $t('leaderboard.competition.banner.smallText') }}
-      </div>
+      <!--todo: replace with blog link when get it from marketin-->
+      <NuxtLink
+        to="https://example.com"
+        target="_blank"
+        class="text-left text-xs border border-dashed border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
+      >
+        {{ $t('leaderboard.competition.banner.learnMore') }}
+      </NuxtLink>
     </div>
 
     <img
