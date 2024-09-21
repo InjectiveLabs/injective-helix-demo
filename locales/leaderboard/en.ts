@@ -12,6 +12,8 @@ export default {
     startTrading: 'Start Trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
+    blocked:
+      'Residents of the United States, the United Kingdom, and certain other countries listed in the official Rules, Terms, and Conditions of the Competition are ineligible to participate in or win the Competition.',
 
     pnl: {
       duration: {
@@ -37,7 +39,7 @@ export default {
       currentLeader: 'Current leader',
       currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
-      competitionBeginning: 'A competition is about to begin.',
+      competitionBeginning: 'The competition is about to begin...',
       competitionHasBegun: 'The competition has begun, good luck!',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>

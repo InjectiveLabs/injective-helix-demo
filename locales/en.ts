@@ -320,11 +320,11 @@ export default {
       title: 'Leaderboard',
       pnl: {
         title: 'PnL Leaderboard',
-        description: 'Top 100 traders with the highest trading PnL'
+        description: 'Top Traders on Helix by PnL'
       },
       competition: {
-        title: 'Trading Competition',
-        description: 'Top 100 traders with the highest trading volume'
+        title: 'Trading Competitions',
+        description: 'Top Traders Competing for Top Rewards'
       }
     }
   },
