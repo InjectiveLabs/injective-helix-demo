@@ -55,7 +55,8 @@ function onCloseModal() {
   <AppModal
     v-bind="{
       isOpen: isModalOpen,
-      isTransparent: true
+      isTransparent: true,
+      parentClass: 'md:min-w-[450px]'
     }"
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
