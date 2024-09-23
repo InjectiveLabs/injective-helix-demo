@@ -2,6 +2,7 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
+  MAXIMUM_LEADERBOARD_STATS_RANK,
   MIN_LEADERBOARD_TRADING_AMOUNT
 } from '@/app/utils/constants'
 import { Modal, MainPage, BusEvents } from '@/types'
@@ -17,6 +18,14 @@ const status = reactive(new Status(StatusType.Loading))
 const isUnranked = computed(() => {
   if (!leaderboardStore.competitionLeaderboardAccount) {
     return true
+  }
+
+  if (
+    new BigNumberInBase(
+      leaderboardStore.competitionLeaderboardAccount.rank
+    ).lte(MAXIMUM_LEADERBOARD_STATS_RANK)
+  ) {
+    return
   }
 
   const isLowEarningsTrader =

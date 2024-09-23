@@ -117,7 +117,7 @@ export const ADMIN_UI_SMART_CONTRACT =
 export const ORDERBOOK_ROW_HEIGHT = 16
 export const ORDERBOOK_ROWS = 15
 export const ORDERBOOK_HEADER_HEIGHT = 56
-
+export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
 export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_TRADING_AMOUNT = 50
 export const intervalOptions: IntervalOption[] = [
