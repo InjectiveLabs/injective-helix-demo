@@ -6,7 +6,7 @@ import {
   MarketKey,
   UiMarketWithToken
 } from '@/types'
-import { countZerosAfterDecimal } from '~/app/utils/helpers'
+import { countZerosAfterDecimal } from '@/app/utils/helpers'
 
 const market = inject(MarketKey)
 const aggregation = inject(AggregationKey, ref(1))
