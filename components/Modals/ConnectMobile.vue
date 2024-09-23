@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Modal } from '@/types'
-import {
-  addDesktopAddress,
-  getMobileAddress,
-  CONNECT_SERVER_URL
-} from '@/app/client/connectMobile'
+import { addDesktopAddress, getMobileAddress } from '@/app/client/connectMobile'
+import { CONNECT_SERVER_URL } from '~/app/utils/constants'
 
 const tradingMessages = [
   MsgType.MsgCreateSpotLimitOrder,
@@ -33,6 +30,35 @@ const isModalOpen = computed(() => modalStore.modals[Modal.ConnectMobile])
 const isInitialized = ref(false)
 const mobileAddress = ref<string | null>(null)
 
+const { pause, resume } = useIntervalFn(
+  async () => {
+    const result = await getMobileAddress({
+      desktopAddress: sharedWalletStore.injectiveAddress
+    })
+    if (result?.data?.mobileAddress) {
+      mobileAddress.value = result.data.mobileAddress
+      pause()
+    }
+  },
+  2000,
+  {
+    immediate: false,
+    immediateCallback: true
+  }
+)
+
+watch(isInitialized, (val: boolean) => {
+  if (val) {
+    resume()
+  }
+})
+
+watch(isModalOpen, (val: boolean) => {
+  if (val) {
+    initServerConnection()
+  }
+})
+
 function closeModal() {
   modalStore.closeModal(Modal.ConnectMobile)
 }
@@ -46,26 +72,6 @@ async function initServerConnection() {
     isInitialized.value = true
   }
 }
-
-watch(isInitialized, (val: boolean) => {
-  if (val) {
-    const _interval = setInterval(async () => {
-      const result = await getMobileAddress({
-        desktopAddress: sharedWalletStore.injectiveAddress
-      })
-      if (result?.data?.mobileAddress) {
-        mobileAddress.value = result.data.mobileAddress
-        clearInterval(_interval)
-      }
-    }, 2000)
-  }
-})
-
-watch(isModalOpen, (val: boolean) => {
-  if (val) {
-    initServerConnection()
-  }
-})
 
 function grantAuthorization() {
   authZStore
