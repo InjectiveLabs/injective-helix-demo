@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { IS_TESTNET } from '@shared/utils/constant'
+import {
+  trackLiteBridgeBridged,
+  trackLiteBridgePageView
+} from '~/app/providers/mixpanel/EventTracker'
 
 const emit = defineEmits<{
   success: []
@@ -11,14 +15,14 @@ const network = IS_TESTNET ? 'testnet' : 'mainnet'
 
 const networkLinks = {
   testnet: {
-    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/testnet/style.css',
-    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/testnet/index.${
+    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/style.css',
+    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/index.${
       isUmd ? 'umd' : 'es'
     }.js`
   },
   mainnet: {
-    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/mainnet/style.css',
-    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.4/dist/mainnet/index.${
+    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/style.css',
+    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/index.${
       isUmd ? 'umd' : 'es'
     }.js`
   }
@@ -85,13 +89,22 @@ function mountWidget() {
       wallet: wallet.value.wallet,
       address: wallet.value.address
     },
-    onSuccess: () => {
+    onSuccess: ({ wallet, amount }: { wallet: string; amount: string }) => {
+      trackLiteBridgeBridged({
+        wallet,
+        amount
+      })
+
       emit('success')
     }
   })
 
   status.setIdle()
 }
+
+onMounted(() => {
+  trackLiteBridgePageView(wallet.value.wallet)
+})
 
 onUnmounted(() => {
   if (unmount) {

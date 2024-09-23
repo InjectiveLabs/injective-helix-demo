@@ -139,9 +139,6 @@ provide(PortfolioStatusKey, portfolioStatus)
 
     <ModalsRedeemVoucher />
 
-    <ModalsLiteBridge />
-    <ModalsFiatOnboard />
-
     <ModalsPostOnlyMode />
 
     <ModalsDevMode />

@@ -161,3 +161,26 @@ export const trackRemoveStrategy = (
     ...formatStatus(error)
   })
 }
+
+export const trackLiteBridgePageView = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgePageView, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackLiteBridgeBridged = ({
+  wallet,
+  amount,
+  error
+}: {
+  wallet: string
+  amount: string
+  error?: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgeBridged, {
+    Wallet: wallet,
+    Amount: new BigNumberInBase(amount).toNumber(),
+    ...formatStatus(error)
+  })
+}
