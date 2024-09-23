@@ -64,6 +64,7 @@ export default {
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
+    tradingDocs: 'Trading Docs',
     unauthorized: 'Unauthorized',
     notAvailableinAutoSignMode: 'Not available in Auto-Sign Mode',
     notAvailableinAuthZMode: 'Not available in Access Control Mode',
