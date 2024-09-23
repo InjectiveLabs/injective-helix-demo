@@ -67,7 +67,13 @@ const {
         "
         :data-cy="`${dataCyTag(PerpetualmarketCyTags.TradeDirection)}-${side}`"
       >
-        {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+        <span v-if="market.slug === '2024election-perp'">
+          {{ $t(`trade.${side === TradeDirection.Long ? 'yes' : 'no'}`) }}
+          {{ market.baseToken.name }}
+        </span>
+        <span v-else>
+          {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+        </span>
       </AppButtonSelect>
     </div>
 
