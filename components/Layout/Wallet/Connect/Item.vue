@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-ts'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { WalletOption } from '@/types'
 
 const walletStore = useWalletStore()
