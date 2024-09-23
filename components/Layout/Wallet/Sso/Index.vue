@@ -34,16 +34,16 @@ function onEmailConnect() {
 
 <template>
   <div>
-    <AppButton
-      class="text-white w-full mb-4 h-14"
+    <button
+      class="bg-black text-gray-200 hover:bg-gray-950 border-gray-600 border w-full rounded-lg p-4 mb-4"
       size="lg"
       @click="onGoogleConnect"
     >
       <div class="flex items-center gap-2 w-full">
-        <SharedIcon name="google" />
-        <span>{{ $t('connect.magic.google.cta') }}</span>
+        <SharedIcon name="google-color" />
+        <span class="font-semibold">{{ $t('connect.magic.google.cta') }}</span>
       </div>
-    </AppButton>
+    </button>
 
     <div class="flex items-center py-2.5 px-2 border rounded-md">
       <AppInput
