@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { AccountBalance } from '@/types'
 
 const isMobile = useIsMobile()
@@ -21,7 +21,10 @@ function checkIsPartOfSearch(search: string, balance: AccountBalance) {
 
 const balancesSorted = computed(() => {
   const filteredBalances = userBalancesWithToken.value.filter((balance) => {
-    const hasBalance = new BigNumberInWei(balance.accountTotalBalance).gte(1)
+    const hasBalance =
+      new BigNumberInBase(balance.accountTotalBalance).gte(1) ||
+      new BigNumberInBase(balance.availableMargin).gte(1) ||
+      new BigNumberInBase(balance.bankBalance).gte(1)
 
     const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
     return hasBalance && isPartOfSearch
