@@ -165,3 +165,5 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
   },
   {} as Record<string, string>
 )
+
+export const CONNECT_SERVER_URL = 'https://api.express.injective.dev/'
