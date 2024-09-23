@@ -38,6 +38,12 @@ export default {
       'liquid-staking': 'Liquid Staking',
       stablecoins: 'Stablecoins'
     },
+    '2024ElectionTooltip': ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'This market follows the Polymarket 2024 Presidential Election market price feed, with TRUMPWIN as the underlying asset. For more details, visit the',
+        named('docs'),
+        '.'
+      ]),
     buidlTooltip: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
         'This product is an Index Perp. For more information, please refer to the ',
