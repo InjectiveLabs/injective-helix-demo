@@ -15,6 +15,7 @@ const props = withDefaults(
     isAlwaysOpen?: boolean
     isTransparent?: boolean
     isHideCloseButton?: boolean
+    isStayOpenOnResize?: boolean
     modalContentClass?: string
   }>(),
   {
@@ -64,7 +65,7 @@ function onModalClose() {
 watchDebounced(
   width,
   (newWidth, oldWidth) => {
-    if (oldWidth && newWidth >= 640) {
+    if (oldWidth && newWidth >= 640 && !props.isStayOpenOnResize) {
       closeModal()
     }
   },

@@ -45,13 +45,13 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <span class="font-medium">
-        <span class="md:hidden text-xs lowercase">
+      <span class="font-light font-mono">
+        <span class="lg:hidden text-xs lowercase">
           {{ formattedAddress }}
         </span>
         <span
-          class="hidden md:block"
-          :class="[leader.rank > 3 ? 'text-sm' : 'text-base']"
+          class="hidden lg:block"
+          :class="[leader.rank > 3 ? 'text-sm' : 'text-sm xl:text-base']"
         >
           {{ leader.account }}
         </span>

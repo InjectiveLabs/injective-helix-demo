@@ -16,8 +16,12 @@ const isLocked = useScrollLock(document.documentElement)
 const el = ref<HTMLElement | null>(null)
 const toggleEl = ref<HTMLElement | null>(null)
 
-const isBuidlPerpMarket = computed(
+const isBiudlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
+)
+
+const is2024ElectionPerpMarket = computed(
+  () => props.market.slug === '2024election-perp'
 )
 
 function toggleOpen() {
@@ -53,7 +57,9 @@ watch(
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
     <div class="flex items-center space-x-2 justify-center relative">
       <div>
-        <CommonHeaderTooltip :is-disabled="!isBuidlPerpMarket">
+        <CommonHeaderTooltip
+          :is-disabled="!isBiudlPerpMarket && !is2024ElectionPerpMarket"
+        >
           <span
             class="uppercase tracking-wider font-bold text-sm"
             :data-cy="dataCyTag(CommonCyTags.MarketPair)"
@@ -62,7 +68,7 @@ watch(
           </span>
 
           <template #tooltip>
-            <i18n-t keypath="markets.buidlTooltip">
+            <i18n-t v-if="isBiudlPerpMarket" keypath="markets.buidlTooltip">
               <template #docs>
                 <NuxtLink
                   target="_blank"
@@ -70,6 +76,18 @@ watch(
                   to="https://docs.trading.injective.network/learn/index-perps"
                 >
                   {{ $t('common.docs') }}
+                </NuxtLink>
+              </template>
+            </i18n-t>
+
+            <i18n-t v-else keypath="markets.2024ElectionTooltip">
+              <template #docs>
+                <NuxtLink
+                  target="_blank"
+                  class="text-blue-500 hover:text-opacity-90"
+                  to="https://docs.trading.injective.network/learn/election-perpetual-futures"
+                >
+                  {{ $t('common.tradingDocs') }}
                 </NuxtLink>
               </template>
             </i18n-t>

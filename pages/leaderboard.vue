@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Modal, LeaderboardSubPage, MainPage } from '@/types'
+import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
+import { LeaderboardSubPage, MainPage } from '@/types'
 
 definePageMeta({
   middleware: [
@@ -14,26 +15,24 @@ definePageMeta({
 })
 
 const route = useRoute()
-const appStore = useAppStore()
-const modalStore = useModalStore()
+const sharedGeoStore = useSharedGeoStore()
 
-function onNavigate() {
-  if (route.name !== LeaderboardSubPage.Pnl) {
-    return
-  }
-
-  if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
-    return
-  }
-
-  modalStore.openModal(Modal.LeaderboardTerms)
-
-  return navigateTo({ name: LeaderboardSubPage.Pnl })
-}
+const isCountryRestrictedUser = computed(() =>
+  isCountryRestrictedForLeaderboard(sharedGeoStore.country)
+)
 </script>
 
 <template>
   <div class="relative">
+    <div
+      v-if="
+        route.name === LeaderboardSubPage.Competition && isCountryRestrictedUser
+      "
+      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925"
+    >
+      {{ $t('leaderboard.blocked') }}
+    </div>
+
     <div
       class="bg-[url('/images/leaderboard/pnl-bg.webp')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"
     />
@@ -65,7 +64,6 @@ function onNavigate() {
               :to="{
                 name: pageName
               }"
-              @click.prevent="onNavigate"
             >
               {{ $t(`leaderboard.tabs.${pageName}`) }}
             </NuxtLink>
@@ -82,7 +80,5 @@ function onNavigate() {
         />
       </section>
     </div>
-
-    <ModalsLeaderboardTerms />
   </div>
 </template>

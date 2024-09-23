@@ -1,25 +1,19 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
-import { Modal, LeaderboardSubPage } from '@/types'
+import { Modal } from '@/types'
 
-definePageMeta({
-  middleware: [
-    () => {
-      const appStore = useAppStore()
-
-      if (!appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
-        return navigateTo({ name: LeaderboardSubPage.Pnl })
-      }
-    }
-  ]
-})
-
+const appStore = useAppStore()
+const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
 
+const isExactStartOfCampaign = ref(false)
+const isCountdownTimerVisible = ref(false)
 const status = reactive(new Status(StatusType.Loading))
+
+const firstCampaignStartTimeInMs = '1727740800000'
 
 const now = useNow({ interval: 1000 })
 
@@ -33,14 +27,43 @@ const timeLeftInCampaign = computed(() => {
     nowInMilliseconds: now.value.getTime().toString()
   })
 
-  return `${String(duration.days).padStart(2, '0')}D ${String(
-    duration.hours
-  ).padStart(2, '0')}:${String(duration.minutes).padStart(2, '0')}:${String(
-    duration.seconds
-  ).padStart(2, '0')}`
+  const days = `${String(duration.days).padStart(2, '0')}`
+  const hours = `${String(duration.hours).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+
+  return `${days}D ${hours}:${minutes}:${seconds}`
 })
 
-onMounted(fetchCampaign)
+const countdownFormatted = computed(() => {
+  const nowInMilliseconds = now.value.getTime().toString()
+
+  const duration = sharedGetDuration({
+    endDateInMilliseconds: firstCampaignStartTimeInMs,
+    nowInMilliseconds
+  })
+
+  const days = `${String(duration.days).padStart(2, '0')}`
+  const hours = `${String(duration.hours).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+
+  return `${days}:${hours}:${minutes}:${seconds}`
+})
+
+const isActiveCampaign = computed(() =>
+  new BigNumberInBase(now.value.getTime()).gte(firstCampaignStartTimeInMs)
+)
+
+onMounted(() => {
+  fetchCampaign()
+
+  if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
+    return
+  }
+
+  modalStore.openModal(Modal.LeaderboardTerms)
+})
 
 function fetchCampaign() {
   status.setLoading()
@@ -49,6 +72,8 @@ function fetchCampaign() {
     .fetchActiveCampaign()
     .then(async () => {
       if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
+        isCountdownTimerVisible.value = true
+
         return
       }
 
@@ -63,6 +88,12 @@ function fetchCampaign() {
     .catch($onError)
     .finally(() => status.setIdle())
 }
+
+watch(isActiveCampaign, (isActive: boolean) => {
+  if (isActive) {
+    isExactStartOfCampaign.value = true
+  }
+})
 </script>
 
 <template>
@@ -85,6 +116,30 @@ function fetchCampaign() {
           </i18n-t>
         </Teleport>
 
+        <div v-if="isCountdownTimerVisible" class="relative">
+          <div class="text-3xl font-bold tracking-[0.4px] mb-2">
+            {{
+              $t(
+                `leaderboard.competition.${
+                  isExactStartOfCampaign
+                    ? 'competitionHasBegun'
+                    : 'competitionBeginning'
+                }`
+              )
+            }}
+          </div>
+          <div
+            class="font-rubik text-[54px] tracking-[0.4px] mb-10 competition-gradient-text"
+          >
+            {{ countdownFormatted }}
+          </div>
+
+          <SharedRainConfetti
+            v-if="isExactStartOfCampaign"
+            class="absolute inset-0 h-48 -mt-9 w-full"
+          />
+        </div>
+
         <div class="w-full text-sm relative">
           <PartialsLeaderboardCompetitionBanner />
 
@@ -98,6 +153,8 @@ function fetchCampaign() {
         </div>
       </div>
     </AppHocLoading>
+
+    <ModalsLeaderboardTerms />
   </div>
 </template>
 
@@ -129,5 +186,12 @@ function fetchCampaign() {
   > :nth-child(3) {
     @apply flex flex-col col-span-3 items-end;
   }
+}
+
+.competition-gradient-text {
+  background: linear-gradient(124deg, #fff 35.59%, #76838e 99.6%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>

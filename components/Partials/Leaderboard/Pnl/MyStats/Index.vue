@@ -84,16 +84,16 @@ function fetchPnlLeaderboardAccount() {
             class="relative flex flex-col items-center justify-center gap-4 sm:gap-6"
           >
             <div
-              class="text-xs sm:text-base max-sm:max-w-[240px] tracking-[0.4px] leading-5 max-sm:mt-2"
+              class="text-xs sm:text-base tracking-[0.4px] leading-5 max-sm:mt-2 px-20"
             >
-              {{ $t('leaderboard.getTradingDescription') }}
+              {{ $t('leaderboard.tradeAndWin') }}
             </div>
             <NuxtLink :to="{ name: MainPage.Markets }">
               <AppButton
                 class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
                 v-bind="{ variant: 'primary-outline' }"
               >
-                {{ $t('leaderboard.getTrading') }}
+                {{ $t('leaderboard.startTrading') }}
               </AppButton>
             </NuxtLink>
           </div>

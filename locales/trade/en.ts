@@ -477,6 +477,9 @@ export default {
       description:
         'Opening a new position in these conditions could result in immediate liquidation. Are you sure you wish to proceed?',
       cta: 'Proceed anyway'
-    }
+    },
+
+    yes: 'Yes',
+    no: 'No'
   }
 }

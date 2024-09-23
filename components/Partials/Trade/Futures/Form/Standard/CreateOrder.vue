@@ -444,9 +444,16 @@ function fetchRWAMarketIsOpen() {
         </span>
 
         <span v-else>
-          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-          /
-          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+          <span v-if="derivativeMarket.slug === '2024election-perp'">
+            {{ $t(`trade.${isBuy ? 'yes' : 'no'}`) }}
+            /
+            {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+          </span>
+          <span v-else>
+            {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+            /
+            {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+          </span>
         </span>
       </AppButton>
     </div>
