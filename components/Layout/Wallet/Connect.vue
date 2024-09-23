@@ -6,6 +6,15 @@ import { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
+withDefaults(
+  defineProps<{
+    isSignUp?: boolean
+  }>(),
+  {
+    isSignUp: false
+  }
+)
+
 const isShowMoreWallets = ref(false)
 const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
@@ -140,7 +149,7 @@ function toggleShowMoreWallets() {
 
       <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
         <h1 class="text-xl text-center font-semibold">
-          {{ $t('connect.signUp') }}
+          {{ isSignUp ? $t('connect.signUp') : $t('connect.logIn') }}
         </h1>
 
         <LayoutWalletSso

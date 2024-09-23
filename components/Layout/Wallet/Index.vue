@@ -6,9 +6,10 @@ import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
 const modalStore = useModalStore()
-
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
+
+const isSignUp = ref(false)
 
 const isModalOpen = computed<boolean>(() => modalStore.modals[Modal.Connect])
 
@@ -34,23 +35,44 @@ function onModalOpen() {
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
+
+function onSignUp() {
+  isSignUp.value = true
+  onWalletConnect()
+}
+
+function onSignIn() {
+  isSignUp.value = false
+  onWalletConnect()
+}
 </script>
 
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton
-    v-else
-    class="min-w-[110px] md:min-w-[160px]"
-    :data-cy="dataCyTag(NavBarCyTags.WalletConnectButton)"
-    :is-loading="
-      sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-    "
-    @click="onWalletConnect"
-  >
-    <span class="md:hidden">{{ $t('connect.connect') }}</span>
-    <span class="max-md:hidden">{{ $t('connect.connectWallet') }}</span>
-  </AppButton>
+  <div v-else class="flex items-center space-x-2">
+    <AppButton
+      class="max-sm:px-2 max-sm:py-1"
+      variant="primary-outline"
+      :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      @click="onSignIn"
+    >
+      <span>{{ $t('connect.logIn') }}</span>
+    </AppButton>
+    <AppButton
+      class="max-sm:px-2 max-sm:py-1"
+      :data-cy="dataCyTag(NavBarCyTags.WalletSignUpButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      @click="onSignUp"
+    >
+      <span>{{ $t('connect.signUp') }}</span>
+    </AppButton>
+  </div>
 
   <AppModal
     v-bind="{
@@ -61,7 +83,7 @@ function onCloseModal() {
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
-    <LayoutWalletConnect />
+    <LayoutWalletConnect v-bind="{ isSignUp }" />
   </AppModal>
 
   <ModalsTerms />
