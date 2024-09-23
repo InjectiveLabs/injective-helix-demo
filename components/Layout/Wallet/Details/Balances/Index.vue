@@ -31,7 +31,10 @@ const balancesSorted = computed(() => {
       .includes(search.value.toLowerCase())
 
     const isPartOfSearch = isIncludedInSymbol || isIncludedInName
-    const hasBalance = new BigNumberInBase(balance.accountTotalBalance).gte(1)
+    const hasBalance =
+      new BigNumberInBase(balance.accountTotalBalance).gte(1) ||
+      new BigNumberInBase(balance.availableMargin).gte(1) ||
+      new BigNumberInBase(balance.bankBalance).gte(1)
 
     return hasBalance && isPartOfSearch
   })
