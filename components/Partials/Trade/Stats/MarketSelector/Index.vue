@@ -15,8 +15,8 @@ const isLocked = useScrollLock(document.documentElement)
 const el = ref<HTMLElement | null>(null)
 const toggleEl = ref<HTMLElement | null>(null)
 
-const isBuidlPerpMarket = computed(
-  () => props.market.slug === 'buidl-usdt-perp'
+const isIndexPerpMarket = computed(() =>
+  ['buidl-usdt-perp', '2024election-perp'].includes(props.market.slug)
 )
 
 function toggleOpen() {
@@ -52,7 +52,7 @@ watch(
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
     <div class="flex items-center space-x-2 justify-center relative">
       <div>
-        <CommonHeaderTooltip :is-disabled="!isBuidlPerpMarket">
+        <CommonHeaderTooltip :is-disabled="!isIndexPerpMarket">
           <span
             class="uppercase tracking-wider font-bold text-sm"
             :data-cy="dataCyTag(CommonCyTags.MarketPair)"
