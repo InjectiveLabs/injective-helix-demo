@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-ts'
-import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { WalletOption } from '@/types'
 
 const walletStore = useWalletStore()
-const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -48,14 +46,9 @@ function handleConnect() {
 
   walletStore
     .connect({ wallet: props.walletOption.wallet })
-    .then(() => {
+    .then(() =>
       notificationStore.success({ title: t('connect.successfullyConnected') })
-
-      WalletTracker.trackLogin({
-        wallet: sharedWalletStore.wallet,
-        address: sharedWalletStore.injectiveAddress
-      })
-    })
+    )
     .catch((e) => {
       walletStore.disconnect()
       WalletTracker.trackLogout()

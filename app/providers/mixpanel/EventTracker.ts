@@ -172,14 +172,17 @@ export const trackLiteBridgePageView = (wallet: string, error?: string) => {
 export const trackLiteBridgeBridged = ({
   wallet,
   amount,
+  symbol,
   error
 }: {
   wallet: string
   amount: string
+  symbol: string
   error?: string
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.LiteBridgeBridged, {
     Wallet: wallet,
+    Symbol: symbol,
     Amount: new BigNumberInBase(amount).toNumber(),
     ...formatStatus(error)
   })

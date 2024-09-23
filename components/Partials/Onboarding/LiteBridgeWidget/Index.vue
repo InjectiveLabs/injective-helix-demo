@@ -4,48 +4,7 @@ import { IS_TESTNET } from '@shared/utils/constant'
 import {
   trackLiteBridgeBridged,
   trackLiteBridgePageView
-} from '~/app/providers/mixpanel/EventTracker'
-
-const emit = defineEmits<{
-  success: []
-}>()
-
-const isUmd = true
-const network = IS_TESTNET ? 'testnet' : 'mainnet'
-
-const networkLinks = {
-  testnet: {
-    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/style.css',
-    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/index.${
-      isUmd ? 'umd' : 'es'
-    }.js`
-  },
-  mainnet: {
-    link: 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/style.css',
-    script: `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/index.${
-      isUmd ? 'umd' : 'es'
-    }.js`
-  }
-}
-
-useHead({
-  link: [
-    {
-      rel: 'stylesheet',
-      href: networkLinks[network].link
-    }
-  ],
-  script: [
-    {
-      src: networkLinks[network].script,
-      type: 'module',
-      tagPosition: 'bodyClose',
-      onload: () => {
-        mountWidget()
-      }
-    }
-  ]
-})
+} from '@/app/providers/mixpanel/EventTracker'
 
 declare global {
   interface Window {
@@ -66,33 +25,66 @@ declare global {
 
 const sharedWalletStore = useSharedWalletStore()
 
-const wallet = computed(() => ({
-  injectiveAddress: sharedWalletStore.injectiveAddress,
-  wallet: sharedWalletStore.wallet,
-  address: sharedWalletStore.address
-}))
-
 withDefaults(defineProps<{ widgetClass?: string }>(), { widgetClass: '' })
+
+const emit = defineEmits<{
+  success: []
+}>()
+
+const isUmd = true
 
 const status = reactive(new Status(StatusType.Loading))
 
 let unmount: (() => void) | null = null
 
-function mountWidget() {
+useHead({
+  link: [
+    {
+      rel: 'stylesheet',
+      href: IS_TESTNET
+        ? 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/style.css'
+        : 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/style.css'
+    }
+  ],
+  script: [
+    {
+      src: IS_TESTNET
+        ? `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/index.${
+            isUmd ? 'umd' : 'es'
+          }.js`
+        : `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/index.${
+            isUmd ? 'umd' : 'es'
+          }.js`,
+      type: 'module',
+      tagPosition: 'bodyClose',
+      onload: () => mountWidget()
+    }
+  ]
+})
+
+onMounted(() => trackLiteBridgePageView(sharedWalletStore.wallet))
+onUnmounted(unMountWidget)
+
+function unMountWidget() {
   if (unmount) {
     unmount()
   }
+}
+
+function mountWidget() {
+  unMountWidget()
 
   unmount = window.createWidget('widget-container', {
     wallet: {
-      injectiveAddress: wallet.value.injectiveAddress,
-      wallet: wallet.value.wallet,
-      address: wallet.value.address
+      wallet: sharedWalletStore.wallet,
+      address: sharedWalletStore.address,
+      injectiveAddress: sharedWalletStore.injectiveAddress
     },
     onSuccess: ({ wallet, amount }: { wallet: string; amount: string }) => {
       trackLiteBridgeBridged({
         wallet,
-        amount
+        amount,
+        symbol: 'USDT'
       })
 
       emit('success')
@@ -101,16 +93,6 @@ function mountWidget() {
 
   status.setIdle()
 }
-
-onMounted(() => {
-  trackLiteBridgePageView(wallet.value.wallet)
-})
-
-onUnmounted(() => {
-  if (unmount) {
-    unmount()
-  }
-})
 </script>
 
 <template>

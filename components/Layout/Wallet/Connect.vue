@@ -109,7 +109,7 @@ function toggleShowMoreWallets() {
 </script>
 
 <template>
-  <AppHocLoading wrapper-class="px-32 py-32" v-bind="{ status: magicStatus }">
+  <AppHocLoading wrapper-class="p-32" v-bind="{ status: magicStatus }">
     <div class="py-4 -mt-6 -mb-4">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem

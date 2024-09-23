@@ -51,6 +51,7 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
+import { marketIdsToHide } from '@/app/data/market'
 import { derivativeSlugs, expirySlugs } from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
@@ -253,7 +254,9 @@ export const useDerivativeStore = defineStore('derivative', {
             isVerified: slugs.includes(formattedMarket.slug)
           }
         })
-        .filter((market) => market) as UiDerivativeMarket[]
+        .filter(
+          (market) => market && !marketIdsToHide.includes(market.marketId)
+        ) as UiDerivativeMarket[]
 
       derivativeStore.$patch({
         markets: uiMarkets.sort((derivativeA, derivativeB) => {

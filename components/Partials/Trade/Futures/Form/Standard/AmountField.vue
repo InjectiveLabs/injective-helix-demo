@@ -49,7 +49,10 @@ const props = withDefaults(
 
 const options = [
   {
-    display: market.value.baseToken.symbol || '',
+    display:
+      market.value.baseToken.overrideSymbol ||
+      market.value.baseToken.symbol ||
+      '',
     value: TradeAmountOption.Base
   },
   {
@@ -360,7 +363,9 @@ onMounted(() => {
                 v-if="typeValue === TradeAmountOption.Base"
                 class="text-sm select-none"
               >
-                {{ market?.baseToken.symbol }}
+                {{
+                  market?.baseToken.overrideSymbol || market?.baseToken.symbol
+                }}
               </span>
               <span v-else class="text-sm">
                 {{ market?.quoteToken.symbol }}

@@ -41,6 +41,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sitemap": "^2.4.0",
     "@popperjs/core": "^2.11.6",
+    "@vue/devtools-api": "7.4.5",
     "@vueuse/components": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
     "apexcharts": "^3.41.1",
@@ -56,7 +57,7 @@
     "lightweight-charts": "^4.1.1",
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
-    "nuxt": "3.13.1",
+    "nuxt": "3.13.2",
     "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
     "tailwind-merge": "^2.5.2",
     "vue-jest": "^4.0.0-0"

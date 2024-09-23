@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { usdtToken } from '@shared/data/token'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
-  LiquidityRewardsPage,
-  PortfolioStatusKey,
+  Modal,
   MainPage,
-  Modal
+  PortfolioStatusKey,
+  LiquidityRewardsPage
 } from '@/types'
 
 const route = useRoute()
@@ -61,6 +62,13 @@ onWalletConnected(() => {
       portfolioStatus.setIdle()
       fetchSubaccountStream()
     })
+})
+
+onWalletInitialConnected(() => {
+  WalletTracker.trackLogin({
+    wallet: sharedWalletStore.wallet,
+    address: sharedWalletStore.injectiveAddress
+  })
 })
 
 onSubaccountChange(() => {

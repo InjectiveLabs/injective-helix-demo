@@ -262,7 +262,8 @@ function sharePosition() {
 
       <div v-if="market" class="flex-1 flex items-center justify-end p-2">
         <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosAmount)">
-          {{ quantityToString }} {{ market.baseToken.symbol }}
+          {{ quantityToString }}
+          {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
         </p>
       </div>
 

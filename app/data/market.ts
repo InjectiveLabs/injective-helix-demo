@@ -39,6 +39,8 @@ export const slugsToIncludeInRWACategory =
 
 export const excludedPriceDeviationSlugs = [] as string[]
 
+export const marketIdsToHide = [] as string[]
+
 export const upcomingMarkets = [
   //
 ] as Array<UiMarketWithToken>
