@@ -78,7 +78,6 @@ const formattedAddress = computed(() =>
     <template v-else>
       <div>
         <PartialsLeaderboardCompetitionAmountEntries
-          class="text-[13px] md:text-sm mr-2"
           v-bind="{ volume: leader.volume, pnl: leader.pnl }"
         />
       </div>

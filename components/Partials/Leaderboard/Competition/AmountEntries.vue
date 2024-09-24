@@ -39,7 +39,7 @@ const entries = computed(() =>
 <template>
   <div class="text-[13px] md:text-sm mr-2">
     <span v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl">
-      {{ `${amountToBigNumber.gte(0) ? '+' : '-'}` }}
+      {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
     </span>
     <span v-else>$</span>
     <span>
