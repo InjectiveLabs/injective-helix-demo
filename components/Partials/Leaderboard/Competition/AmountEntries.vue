@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  LEADERBOARD_VOLUME_PER_ENTRY,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
 const campaignStore = useCampaignStore()
@@ -31,13 +34,13 @@ const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
 
 const entries = computed(() =>
   new BigNumberInBase(props.volume)
-    .dividedBy(10)
+    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
 )
 </script>
 
 <template>
-  <div class="text-[13px] md:text-sm mr-2">
+  <div v-if="amountToBigNumber.gt(0)" class="text-[13px] md:text-sm mr-2">
     <span v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl">
       {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
     </span>
@@ -46,6 +49,7 @@ const entries = computed(() =>
       {{ amountToFormat }}
     </span>
   </div>
+  <div v-else />
 
   <div>
     <span class="text-[13px] md:text-sm mr-2">

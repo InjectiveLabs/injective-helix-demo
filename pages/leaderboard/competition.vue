@@ -150,7 +150,7 @@ function fetchCampaign() {
   @apply grid grid-cols-6 md:grid-cols-9 relative;
 
   > :nth-child(1) {
-    @apply pl-3 lg:pl-7 text-left col-span-1 flex items-center;
+    @apply pl-3 xl:pl-7 text-left col-span-1 flex items-center;
   }
 
   > :nth-child(2) {

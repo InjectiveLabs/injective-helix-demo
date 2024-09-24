@@ -3,6 +3,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
+import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
@@ -31,7 +32,7 @@ const now = useNow({ interval: 1000 })
 
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
-    .dividedBy(10)
+    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
     .integerValue(BigNumberInBase.ROUND_FLOOR)
 )
 

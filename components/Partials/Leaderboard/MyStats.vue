@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{ isUnranked: boolean; isPnl?: boolean }>(), {
+withDefaults(defineProps<{ isPnl?: boolean; isUnranked?: boolean }>(), {
   isPnl: false,
   isUnranked: false
 })
