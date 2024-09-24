@@ -288,6 +288,10 @@ export const useCampaignStore = defineStore('campaign', {
         )
       )
 
+      if (pnlOrVolumeCampaigns.length === 0) {
+        return
+      }
+
       // todo: remove after first campaign
       // first campaign MUST be pnl type, so we're forcing any campaign to pnl type for testing purposes
       let [activeCampaign] = pnlOrVolumeCampaigns

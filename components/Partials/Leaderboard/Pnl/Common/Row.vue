@@ -60,7 +60,7 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
 
     <div>
       <span class="text-[13px] md:text-sm mr-4">
-        {{ `${pnlToBigNumber.gte(0) ? '+' : '-'}${pnlToFormat}` }}
+        {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
       </span>
     </div>
   </div>

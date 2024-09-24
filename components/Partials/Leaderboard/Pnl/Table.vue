@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
+
 const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
@@ -8,7 +10,17 @@ const filteredPnlLeaderboard = computed(() => {
     return []
   }
 
-  return leaderboardStore.pnlLeaderboard?.leaders.slice(0, limit.value)
+  return leaderboardStore.pnlLeaderboard.leaders.filter((leader) =>
+    new BigNumberInBase(leader.pnl).gte(0)
+  )
+})
+
+const formattedPnlLeaderboard = computed(() => {
+  if (!filteredPnlLeaderboard.value) {
+    return []
+  }
+
+  return filteredPnlLeaderboard.value.slice(0, limit.value)
 })
 
 function incrementLimit() {
@@ -21,10 +33,9 @@ function incrementLimit() {
 <template>
   <div class="mb-20">
     <PartialsLeaderboardPnlCommonHeader class="text-gray-350 text-[11px]" />
-
     <div v-if="filteredPnlLeaderboard.length > 0" class="relative">
       <PartialsLeaderboardPnlCommonRow
-        v-for="leader in filteredPnlLeaderboard"
+        v-for="leader in formattedPnlLeaderboard"
         :key="leader.rank"
         v-bind="{
           leader
@@ -39,10 +50,7 @@ function incrementLimit() {
       />
 
       <PartialsLeaderboardTableBottomGradient
-        v-if="
-          filteredPnlLeaderboard.length !==
-          leaderboardStore.pnlLeaderboard?.leaders.length
-        "
+        v-if="formattedPnlLeaderboard.length !== filteredPnlLeaderboard.length"
       />
     </div>
 
@@ -55,9 +63,8 @@ function incrementLimit() {
 
     <PartialsLeaderboardViewMore
       v-if="
-        filteredPnlLeaderboard.length > 0 &&
-        filteredPnlLeaderboard.length !==
-          leaderboardStore.pnlLeaderboard?.leaders.length
+        formattedPnlLeaderboard.length > 0 &&
+        formattedPnlLeaderboard.length !== filteredPnlLeaderboard.length
       "
       @limit:increment="incrementLimit"
     />

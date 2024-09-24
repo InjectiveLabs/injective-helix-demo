@@ -54,7 +54,7 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
             {{ $t('leaderboard.header.tradingPnl') }}
           </div>
           <div class="font-medium text-sm">
-            {{ `${pnlToBigNumber.gte(0) ? '+' : '-'}${pnlToFormat}` }}
+            {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
           </div>
         </div>
       </div>

@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  MAXIMUM_RANKED_TRADERS,
-  MIN_LEADERBOARD_TRADING_AMOUNT
-} from '@/app/utils/constants'
+import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
 import { Modal, MainPage, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
@@ -14,22 +11,24 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const isUnranked = computed(() => {
+const isStartTradingCTAVisible = computed(() => {
   if (!leaderboardStore.competitionLeaderboardAccount) {
     return true
   }
 
-  const isLowEarningsTrader =
-    new BigNumberInBase(leaderboardStore.competitionLeaderboardAccount.pnl).lt(
-      MIN_LEADERBOARD_TRADING_AMOUNT
-    ) &&
-    new BigNumberInBase(
-      leaderboardStore.competitionLeaderboardAccount.volume
-    ).lt(MIN_LEADERBOARD_TRADING_AMOUNT)
-  const isBottomRanked =
-    leaderboardStore.competitionLeaderboardAccount.rank > MAXIMUM_RANKED_TRADERS
+  return new BigNumberInBase(
+    leaderboardStore.competitionLeaderboardAccount.volume
+  ).lt(LEADERBOARD_VOLUME_PER_ENTRY)
+})
 
-  return isLowEarningsTrader || isBottomRanked
+const isNegativePnL = computed(() => {
+  if (!leaderboardStore.competitionLeaderboardAccount) {
+    return false
+  }
+
+  return new BigNumberInBase(
+    leaderboardStore.competitionLeaderboardAccount.pnl
+  ).lte(0)
 })
 
 onWalletConnected(() => {
@@ -70,8 +69,10 @@ function onShareCompetition() {
 <template>
   <div v-if="sharedWalletStore.isUserConnected">
     <AppHocLoading v-bind="{ status }">
-      <PartialsLeaderboardMyStats v-bind="{ isUnranked }">
-        <template v-if="!isUnranked" #add-on>
+      <PartialsLeaderboardMyStats
+        v-bind="{ isUnranked: isStartTradingCTAVisible }"
+      >
+        <template v-if="!isStartTradingCTAVisible" #add-on>
           <div
             class="flex flex-col md:flex-row items-center justify-center gap-2"
           >
@@ -99,7 +100,7 @@ function onShareCompetition() {
         </template>
 
         <template #row>
-          <div v-if="isUnranked">
+          <div v-if="isStartTradingCTAVisible">
             <div
               class="flex flex-col items-center justify-center gap-4 sm:gap-6 relative"
             >
@@ -122,6 +123,7 @@ function onShareCompetition() {
             <div class="hidden lg:block">
               <div>
                 <PartialsLeaderboardCompetitionCommonHeader
+                  v-bind="{ isHideAmount: isNegativePnL }"
                   class="text-[11px]"
                 />
 
