@@ -33,7 +33,7 @@ const now = useNow({ interval: 1000 })
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
     .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
-    .integerValue(BigNumberInBase.ROUND_FLOOR)
+    .integerValue(BigNumberInBase.ROUND_DOWN)
 )
 
 const isModalOpen = computed(

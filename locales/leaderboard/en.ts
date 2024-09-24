@@ -12,9 +12,13 @@ export default {
     startTrading: 'Start Trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
-    blocked:
-      'Residents of the United States, the United Kingdom, and certain other countries listed in the official Rules, Terms, and Conditions of the Competition are ineligible to participate in or win the Competition.',
-
+    rulesTermsAndConditions: 'Rules, Terms, and Conditions',
+    blocked: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate([
+        'Residents of the United States, the United Kingdom, and certain other countries listed in the official ',
+        named('terms'),
+        ' of the Competition are ineligible to participate in or win the Competition.'
+      ]),
     pnl: {
       duration: {
         [LeaderboardDuration.OneDay]: '1 Day',
@@ -50,7 +54,7 @@ export default {
         ended: 'Ended',
         description: ({ named, interpolate }: I18nMessageFunction) =>
           interpolate([
-            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky raffle winner. Every $10 in trading volume earns a raffle entry. For more details, visit the ',
+            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the ',
             named('blog'),
             '.'
           ]),
@@ -72,6 +76,12 @@ export default {
       volume: 'Trading Volume (USD)',
       numberOfEntries: 'Number of Entries',
       entries: 'Entries'
+    },
+
+    footer: {
+      onlyTop100:
+        'The leaderboard only displays up to the top 100 participants.',
+      onlyTop100Connect: 'To view your stats, connect your wallet.'
     },
 
     myStats: 'My Stats',

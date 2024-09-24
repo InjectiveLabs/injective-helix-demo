@@ -16,9 +16,13 @@ const isStartTradingCTAVisible = computed(() => {
     return true
   }
 
-  return new BigNumberInBase(
+  const raffleTickets = new BigNumberInBase(
     leaderboardStore.competitionLeaderboardAccount.volume
-  ).lt(LEADERBOARD_VOLUME_PER_ENTRY)
+  )
+    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+    .integerValue(BigNumberInBase.ROUND_DOWN)
+
+  return raffleTickets.isZero()
 })
 
 const isNegativePnL = computed(() => {

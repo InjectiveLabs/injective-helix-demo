@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import { MainPage, LeaderboardSubPage } from '@/types'
+</script>
+
 <template>
   <div>
     <h1 class="text-3xl font-bold mb-4 text-center uppercase">
@@ -45,12 +49,12 @@
       participate. For a current list of countries currently subject to United
       States embargo or on the United States list of state sponsors of
       terrorism, go to
-      <a
+      <NuxtLink
         href="https://www.state.gov/economic-sanctions-programs/"
-        class="text-blue-500 underline"
+        class="text-blue-500 hover:text-blue-600"
       >
         https://www.state.gov/economic-sanctions-programs/
-      </a>
+      </NuxtLink>
       <span>.</span>
     </p>
     <p class="mb-4">
@@ -83,28 +87,34 @@
       <li class="mb-2">
         Entrants must connect a wallet to or create an account on the Helix
         application at
-        <a href="https://www.helixapp.com" class="text-blue-500 underline">
+        <NuxtLink
+          href="https://www.helixapp.com"
+          class="text-blue-500 hover:text-blue-600"
+        >
           www.helixapp.com
-        </a>
+        </NuxtLink>
         <span>
           (the “Application”) and engage in trading on the Application.
           Instructions for creating an account on the Application are available
           at
         </span>
-        <a href="https://www.helixapp.com" class="text-blue-500 underline">
+        <NuxtLink
+          href="https://www.helixapp.com"
+          class="text-blue-500 hover:text-blue-600"
+        >
           www.helixapp.com
-        </a>
+        </NuxtLink>
         <span>.</span>
         <span>
           Use of the Application is subject to the terms and conditions located
           at
         </span>
-        <a
-          href="https://www.helixapp.com/terms"
-          class="text-blue-500 underline"
+        <NuxtLink
+          :to="{ name: MainPage.Terms }"
+          class="text-blue-500 hover:text-blue-600"
         >
-          https://www.helixapp.com/terms
-        </a>
+          https://www.helixapp.com/trems
+        </NuxtLink>
         <span>
           (the “Terms”). All trades conducted through the front end of the
           Application during the Competition Period will be included for
@@ -113,19 +123,21 @@
           Competition Period, as calculated as described in the Helix trading
           documentation available at
         </span>
-        <a
+        <NuxtLink
           href="https://docs.trading.injective.network"
-          class="text-blue-500 underline"
-          >https://docs.trading.injective.network
-        </a>
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://docs.trading.injective.network
+        </NuxtLink>
         <span>
           , and as displayed on the Helix Competition Leaderboard, available at
         </span>
-        <a
-          href="https://helixapp.com/leaderboard/competition"
-          class="text-blue-500 underline"
-          >https://helixapp.com/leaderboard/competition
-        </a>
+        <NuxtLink
+          :to="{ name: LeaderboardSubPage.Competition }"
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://helixapp.com/leaderboard/competition
+        </NuxtLink>
         <span>
           (“Helix Leaderboard”) on the Application, will determine the PNL
           Winner.
@@ -140,28 +152,34 @@
       <li class="mb-2">
         Entrants must connect a wallet to or create an account on the Helix
         application at
-        <a href="https://www.helixapp.com" class="text-blue-500 underline">
-          www.helixapp.com
-        </a>
+        <NuxtLink
+          href="https://www.helixapp.com"
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://www.helixapp.com
+        </NuxtLink>
         <span>
           (the “Application”) and engage in trading on the Application.
           Instructions for creating an account on the Application are available
           at
         </span>
 
-        <a href="https://www.helixapp.com" class="text-blue-500 underline">
-          www.helixapp.com
-        </a>
+        <NuxtLink
+          href="https://www.helixapp.com"
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://www.helixapp.com
+        </NuxtLink>
         <span>
           . Use of the Application is subject to the terms and conditions
           located at
         </span>
-        <a
-          href="https://www.helixapp.com/terms"
-          class="text-blue-500 underline"
+        <NuxtLink
+          :to="{ name: MainPage.Terms }"
+          class="text-blue-500 hover:text-blue-600"
         >
           https://www.helixapp.com/terms
-        </a>
+        </NuxtLink>
         <span>
           (the “Terms”). All trades conducted through the front end of the
           Application during the Competition Period will be included for
@@ -179,11 +197,12 @@
     <ol start="2" class="list-decimal list-inside mb-4">
       <li class="mb-2">
         Submit a form or forms at
-        <a
+        <NuxtLink
           href="https://docs.google.com/forms/d/1xspfjE0Gj9X1fS1vzWlyvsyZETN3yiF1yAMmCX_K5mA/"
-          class="text-blue-500 underline"
-          >https://docs.google.com/forms/d/1xspfjE0Gj9X1fS1vzWlyvsyZETN3yiF1yAMmCX_K5mA/
-        </a>
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://docs.google.com/forms/d/1xspfjE0Gj9X1fS1vzWlyvsyZETN3yiF1yAMmCX_K5mA/
+        </NuxtLink>
         . Entrants submitting forms must identify a social media post (“Post”)
         mentioning the Competition and sharing a promotional video posted on X
         at the onset of the Competition, and will receive one Entry for every
@@ -199,11 +218,12 @@
       All personally identifiable information collected in connection with the
       Competition will be used by Sponsor in accordance with its online privacy
       policy, located at
-      <a
-        href="https://injectivelabs.org/privacy/"
-        class="text-blue-500 underline"
-        >https://injectivelabs.org/privacy/
-      </a>
+      <NuxtLink
+        :to="{ name: MainPage.CompetitionPrivacyPolicy }"
+        class="text-blue-500 hover:text-blue-600"
+      >
+        https://helixapp.com/competition-privacy-policy/
+      </NuxtLink>
       <span>.</span>
     </p>
 
