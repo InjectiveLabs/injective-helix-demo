@@ -66,12 +66,21 @@ function incrementLimit() {
       }"
     />
 
-    <PartialsLeaderboardViewMore
-      v-if="
-        formattedVolumeLeaderboard.length > 0 &&
-        formattedVolumeLeaderboard.length !== filteredVolumeLeaderboard.length
-      "
-      @limit:increment="incrementLimit"
-    />
+    <template v-if="formattedVolumeLeaderboard.length > 0">
+      <PartialsLeaderboardViewMore
+        v-if="
+          formattedVolumeLeaderboard.length > 0 &&
+          formattedVolumeLeaderboard.length !== filteredVolumeLeaderboard.length
+        "
+        @limit:increment="incrementLimit"
+      />
+
+      <div class="mx-auto mt-6 leading-5">
+        <span>{{ $t('leaderboard.footer.onlyTop100') }}</span>
+        <span v-if="!sharedWalletStore.isUserConnected">
+          {{ $t('leaderboard.footer.onlyTop100Connect') }}
+        </span>
+      </div>
+    </template>
   </div>
 </template>

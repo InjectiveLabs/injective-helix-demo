@@ -78,6 +78,12 @@ export default {
       entries: 'Entries'
     },
 
+    footer: {
+      onlyTop100:
+        'The leaderboard only displays up to the top 100 participants.',
+      onlyTop100Connect: 'To view your stats, connect your wallet.'
+    },
+
     myStats: 'My Stats',
     viewMore: 'View More'
   }
