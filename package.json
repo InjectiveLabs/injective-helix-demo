@@ -41,7 +41,6 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/sitemap": "^2.4.0",
     "@popperjs/core": "^2.11.6",
-    "@vue/devtools-api": "7.4.5",
     "@vueuse/components": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
     "apexcharts": "^3.41.1",
