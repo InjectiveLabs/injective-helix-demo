@@ -6,6 +6,7 @@ export default {
     close: 'Close',
     connect: 'Connect',
     beta: 'Beta',
+    deposit: 'Deposit',
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
