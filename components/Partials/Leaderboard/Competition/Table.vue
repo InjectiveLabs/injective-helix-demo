@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
+
+import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
+
 const leaderboardStore = useLeaderboardStore()
 
 const limit = ref(20)
@@ -8,7 +12,17 @@ const filteredVolumeLeaderboard = computed(() => {
     return []
   }
 
-  return leaderboardStore.competitionLeaderboard.leaders.slice(0, limit.value)
+  return leaderboardStore.competitionLeaderboard.leaders.filter((leader) =>
+    new BigNumberInBase(leader.pnl).gte(MIN_LEADERBOARD_TRADING_AMOUNT)
+  )
+})
+
+const formattedVolumeLeaderboard = computed(() => {
+  if (!filteredVolumeLeaderboard.value) {
+    return []
+  }
+
+  return filteredVolumeLeaderboard.value.slice(0, limit.value)
 })
 
 function incrementLimit() {
@@ -24,9 +38,9 @@ function incrementLimit() {
       class="text-gray-350 text-[11px]"
     />
 
-    <div v-if="filteredVolumeLeaderboard.length > 0" class="relative">
+    <div v-if="formattedVolumeLeaderboard.length > 0" class="relative">
       <PartialsLeaderboardCompetitionCommonRow
-        v-for="leader in filteredVolumeLeaderboard"
+        v-for="leader in formattedVolumeLeaderboard"
         :key="leader.rank"
         v-bind="{
           leader
@@ -40,8 +54,7 @@ function incrementLimit() {
 
       <PartialsLeaderboardTableBottomGradient
         v-if="
-          filteredVolumeLeaderboard.length !==
-          leaderboardStore.competitionLeaderboard?.leaders.length
+          formattedVolumeLeaderboard.length !== filteredVolumeLeaderboard.length
         "
       />
     </div>
@@ -55,9 +68,8 @@ function incrementLimit() {
 
     <PartialsLeaderboardViewMore
       v-if="
-        filteredVolumeLeaderboard.length > 0 &&
-        filteredVolumeLeaderboard.length !==
-          leaderboardStore.competitionLeaderboard?.leaders.length
+        formattedVolumeLeaderboard.length > 0 &&
+        formattedVolumeLeaderboard.length !== filteredVolumeLeaderboard.length
       "
       @limit:increment="incrementLimit"
     />
