@@ -16,9 +16,9 @@ export const isCountryRestricted = (country: string) =>
   GEO_IP_RESTRICTIONS_ENABLED && restrictedCountries.includes(country)
 
 export const isCountryRestrictedForLeaderboard = (country: string) => {
-  // if (!GEO_IP_RESTRICTIONS_ENABLED) {
-  //   return false
-  // }
+  if (!GEO_IP_RESTRICTIONS_ENABLED) {
+    return false
+  }
 
   return (
     isCountryRestricted(country) ||
