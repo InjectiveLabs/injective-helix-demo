@@ -5,8 +5,7 @@ export const restrictedPerpetualMarketsCountries = ['US']
 export const restrictedSpotMarketsCountries = ['US', 'CA', 'UK']
 export const restrictedLeaderboardCountries = [
   ...restrictedPerpetualMarketsCountries,
-  'UK',
-  'SG'
+  'UK'
 ]
 export const disallowedSpotMarketDenomOrSymbol = [
   'usdy',
