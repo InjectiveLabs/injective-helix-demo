@@ -22,21 +22,29 @@ const magicStatus = reactive(new Status(StatusType.Idle))
 
 const popularOptions = computed(() => [
   {
+    wallet: Wallet.Keplr,
+    downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
+      ? 'https://www.keplr.app/download'
+      : undefined
+  },
+  {
     wallet: Wallet.Metamask,
     downloadLink: !sharedWalletStore.metamaskInstalled
       ? 'https://metamask.io/download'
       : undefined
   },
+  IS_DEVNET
+    ? undefined
+    : {
+        wallet: Wallet.Leap,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+          ? 'https://www.leapwallet.io/downloads'
+          : undefined
+      },
   {
     wallet: Wallet.OkxWallet,
     downloadLink: !sharedWalletStore.okxWalletInstalled
       ? 'https://www.okx.com/web3'
-      : undefined
-  },
-  {
-    wallet: Wallet.Keplr,
-    downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
-      ? 'https://www.keplr.app/download'
       : undefined
   }
 ])
@@ -47,14 +55,6 @@ const options = computed(
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
-              : undefined
-          },
-      IS_DEVNET
-        ? undefined
-        : {
             wallet: Wallet.BitGet,
             downloadLink: !sharedWalletStore.bitGetInstalled
               ? 'https://web3.bitget.com/en/wallet-download'
@@ -62,21 +62,23 @@ const options = computed(
           },
       { wallet: Wallet.Ledger },
       { wallet: Wallet.Trezor },
-      {
-        wallet: Wallet.TrustWallet,
-        downloadLink: !sharedWalletStore.trustWalletInstalled
-          ? 'https://trustwallet.com/browser-extension/'
-          : undefined
-      },
+      // Disabled for now
+      // {
+      //   wallet: Wallet.TrustWallet,
+      //   downloadLink: !sharedWalletStore.trustWalletInstalled
+      //     ? 'https://trustwallet.com/browser-extension/'
+      //     : undefined
+      // },
       {
         wallet: Wallet.Cosmostation,
         downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      {
-        wallet: Wallet.Torus
-      },
+      // Disabled for now
+      // {
+      //   wallet: Wallet.Torus
+      // },
       IS_DEVNET
         ? undefined
         : {
