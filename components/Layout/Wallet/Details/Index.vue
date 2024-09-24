@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { WalletConnectStatus } from '@shared/types'
 import { formatWalletAddress } from '@injectivelabs/utils'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { MainPage, PortfolioSubPage } from '@/types'
 
@@ -102,9 +103,15 @@ function disconnect() {
               </CommonHeadlessTotalBalance>
 
               <div class="mt-6">
-                <AppButton class="w-full" size="sm">
-                  {{ $t('common.deposit') }}
-                </AppButton>
+                <NuxtLink
+                  target="_blank"
+                  :external="true"
+                  :to="getBridgeRedirectionUrl()"
+                >
+                  <AppButton class="w-full" size="sm">
+                    {{ $t('connect.deposit') }}
+                  </AppButton>
+                </NuxtLink>
               </div>
 
               <div>

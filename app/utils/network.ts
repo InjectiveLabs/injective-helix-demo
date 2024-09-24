@@ -1,3 +1,4 @@
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { getBridgeUrl } from '@shared/utils/network'
 
 export const getBridgeRedirectionUrl = (suffix?: string) => {
@@ -5,7 +6,10 @@ export const getBridgeRedirectionUrl = (suffix?: string) => {
 
   const url = suffix ? `${getBridgeUrl()}/${suffix}` : `${getBridgeUrl()}`
 
-  if (!sharedWalletStore.isUserConnected) {
+  if (
+    !sharedWalletStore.isUserConnected ||
+    sharedWalletStore.wallet === Wallet.Magic
+  ) {
     return `${url}/?origin=helix`
   }
 

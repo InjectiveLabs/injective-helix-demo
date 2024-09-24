@@ -13,6 +13,7 @@ export default {
       'Connect your wallet or sign up with SSO to get started.',
     showMoreWallets: 'Show more wallets',
     showLessWallets: 'Show fewer wallets',
+    deposit: 'Deposit',
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
