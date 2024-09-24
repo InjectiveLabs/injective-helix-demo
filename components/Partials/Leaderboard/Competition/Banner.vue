@@ -61,7 +61,7 @@ const isEndedCampaign = computed(() => {
       </div>
 
       <NuxtLink
-        :to="{ name: MainPage.LeaderboardTerms }"
+        :to="{ name: MainPage.LikeAGCompetitionTerms }"
         target="_blank"
         class="text-left text-xs border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
       >

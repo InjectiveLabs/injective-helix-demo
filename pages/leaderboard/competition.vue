@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
+import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -15,9 +16,19 @@ const { $onError } = useNuxtApp()
 const isCountdownTimerVisible = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
-const firstCampaignStartTimeInMs = '1727740800000'
-
 const now = useNow({ interval: 1000 })
+
+const upcomingCampaign = computed(() => {
+  if (!campaignStore.pnlOrVolumeCampaigns) {
+    return
+  }
+
+  return campaignStore.pnlOrVolumeCampaigns.find(
+    ({ name, startDate }) =>
+      name === UPCOMING_LEADERBOARD_CAMPAIGN_NAME &&
+      new BigNumberInBase(startDate).gt(now.value.getTime())
+  )
+})
 
 const timeLeftInCampaign = computed(() => {
   if (!campaignStore.activeCampaign) {
@@ -38,11 +49,15 @@ const timeLeftInCampaign = computed(() => {
 })
 
 const countdownFormatted = computed(() => {
+  if (!campaignStore.pnlOrVolumeCampaigns || !upcomingCampaign.value) {
+    return
+  }
+
   const nowInMilliseconds = now.value.getTime().toString()
 
   const duration = sharedGetDuration({
-    endDateInMilliseconds: firstCampaignStartTimeInMs,
-    nowInMilliseconds
+    nowInMilliseconds,
+    endDateInMilliseconds: upcomingCampaign.value.startDate
   })
 
   const days = `${String(duration.days).padStart(2, '0')}`
@@ -53,12 +68,8 @@ const countdownFormatted = computed(() => {
   return `${days}:${hours}:${minutes}:${seconds}`
 })
 
-const isActiveCampaign = computed(() =>
-  new BigNumberInBase(now.value.getTime()).gte(firstCampaignStartTimeInMs)
-)
-
 onMounted(() => {
-  fetchCampaign()
+  fetchCampaigns()
 
   if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
     return
@@ -67,11 +78,13 @@ onMounted(() => {
   modalStore.openModal(Modal.LeaderboardTerms)
 })
 
-function fetchCampaign() {
+function fetchCampaigns() {
   status.setLoading()
 
-  campaignStore
-    .fetchActiveCampaign()
+  Promise.all([
+    campaignStore.fetchCampaigns(),
+    campaignStore.fetchActiveCampaign()
+  ])
     .then(async () => {
       if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
         isCountdownTimerVisible.value = true
@@ -122,7 +135,7 @@ function fetchCampaign() {
           />
 
           <div
-            v-if="!isActiveCampaign && isCountdownTimerVisible"
+            v-if="upcomingCampaign && isCountdownTimerVisible"
             class="relative mb-20"
           >
             <div class="text-3xl font-bold tracking-[0.4px] mb-2">

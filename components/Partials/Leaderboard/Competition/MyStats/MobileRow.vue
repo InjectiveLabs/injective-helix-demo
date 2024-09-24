@@ -36,22 +36,24 @@ const isShowRank = computed(() => {
       ? props.leader.pnl
       : props.leader.volume
 
-  if (
-    props.leader.rank <= MAXIMUM_LEADERBOARD_STATS_RANK &&
-    new BigNumberInBase(amount).gte(0)
-  ) {
+  const isTop100AndPositivePnL =
+    new BigNumberInBase(props.leader.rank).lte(
+      MAXIMUM_LEADERBOARD_STATS_RANK
+    ) && new BigNumberInBase(amount).gte(0)
+
+  if (isTop100AndPositivePnL) {
     return true
   }
 
-  const hasEnoughPNLToDisplayRank = new BigNumberInBase(amount).gte(
+  const isMoreThanMinimumPnL = new BigNumberInBase(amount).gte(
     MIN_LEADERBOARD_TRADING_AMOUNT
   )
 
-  const isHighRanked = new BigNumberInBase(props.leader.rank).lte(
+  const isTop500 = new BigNumberInBase(props.leader.rank).lte(
     MAXIMUM_RANKED_TRADERS
   )
 
-  return hasEnoughPNLToDisplayRank && isHighRanked
+  return isMoreThanMinimumPnL && isTop500
 })
 
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
@@ -69,7 +71,7 @@ const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
     .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
-    .integerValue(BigNumberInBase.ROUND_FLOOR)
+    .integerValue(BigNumberInBase.ROUND_DOWN)
 )
 </script>
 

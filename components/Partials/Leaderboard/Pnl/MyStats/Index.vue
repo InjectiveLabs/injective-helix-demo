@@ -21,26 +21,28 @@ const props = withDefaults(
 
 const status = reactive(new Status(StatusType.Loading))
 
-const isUnranked = computed(() => {
+const isShowMyStats = computed(() => {
   if (!leaderboardStore.pnlLeaderboardAccount) {
+    return false
+  }
+
+  const isTop100AndPositivePnL =
+    new BigNumberInBase(leaderboardStore.pnlLeaderboardAccount.rank).lte(
+      MAXIMUM_LEADERBOARD_STATS_RANK
+    ) && new BigNumberInBase(leaderboardStore.pnlLeaderboardAccount.pnl).gte(0)
+
+  if (isTop100AndPositivePnL) {
     return true
   }
 
-  if (
-    new BigNumberInBase(leaderboardStore.pnlLeaderboardAccount.rank).lte(
-      MAXIMUM_LEADERBOARD_STATS_RANK
-    )
-  ) {
-    return
-  }
-
-  const isLowEarningsTrader = new BigNumberInBase(
+  const isMoreThanMinimumPnL = new BigNumberInBase(
     leaderboardStore.pnlLeaderboardAccount.pnl
-  ).lt(MIN_LEADERBOARD_TRADING_AMOUNT)
-  const isBottomRanked =
-    leaderboardStore.pnlLeaderboardAccount.rank > MAXIMUM_RANKED_TRADERS
+  ).gte(MIN_LEADERBOARD_TRADING_AMOUNT)
+  const isTop500 = new BigNumberInBase(
+    leaderboardStore.pnlLeaderboardAccount.pnl
+  ).lte(MAXIMUM_RANKED_TRADERS)
 
-  return isLowEarningsTrader || isBottomRanked
+  return isMoreThanMinimumPnL && isTop500
 })
 
 onWalletConnected(() => {
@@ -73,8 +75,11 @@ function fetchPnlLeaderboardAccount() {
 <template>
   <div v-if="sharedWalletStore.isUserConnected">
     <AppHocLoading v-bind="{ status }">
-      <PartialsLeaderboardMyStats is-pnl v-bind="{ isUnranked }">
-        <template v-if="!isUnranked" #add-on>
+      <PartialsLeaderboardMyStats
+        is-pnl
+        v-bind="{ isUnranked: !isShowMyStats }"
+      >
+        <template v-if="isShowMyStats" #add-on>
           <div
             class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
             @click="onSharePnl"
@@ -89,7 +94,7 @@ function fetchPnlLeaderboardAccount() {
 
         <template #row>
           <div
-            v-if="isUnranked"
+            v-if="isShowMyStats"
             class="relative flex flex-col items-center justify-center gap-4 sm:gap-6"
           >
             <div

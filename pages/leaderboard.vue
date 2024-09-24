@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
-import { LeaderboardSubPage, MainPage } from '@/types'
+import { MainPage, LeaderboardSubPage } from '@/types'
 
 definePageMeta({
   middleware: [
@@ -24,14 +24,23 @@ const isCountryRestrictedUser = computed(() =>
 
 <template>
   <div class="relative">
-    <div
+    <i18n-t
       v-if="
         route.name === LeaderboardSubPage.Competition && isCountryRestrictedUser
       "
-      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925"
+      keypath="leaderboard.blocked"
+      tag="p"
+      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925 relative z-50"
     >
-      {{ $t('leaderboard.blocked') }}
-    </div>
+      <template #terms>
+        <NuxtLink
+          :to="{ name: MainPage.LikeAGCompetitionTerms }"
+          class="text-[#FFFDD0] hover:opacity-80"
+        >
+          {{ $t('leaderboard.rulesTermsAndConditions') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
 
     <div
       class="bg-[url('/images/leaderboard/pnl-bg.webp')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"

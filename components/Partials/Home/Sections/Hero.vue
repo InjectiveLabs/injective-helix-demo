@@ -4,6 +4,7 @@ import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { TradeSubPage } from '@/types'
 
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
@@ -30,11 +31,18 @@ const totalMarkets = computed(
         <h1 class="font-light text-4xl">{{ $t('common.helix') }}</h1>
       </div>
 
-      <div class="max-w-3xl space-y-4 my-4`">
+      <div class="max-w-3xl space-y-4 my-4">
         <h1
-          class="text-2xl lg:text-6xl font-semibold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent py-2"
+          class="text-2xl lg:text-6xl font-semibold py-2 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent flex flex-wrap justify-center space-x-2"
         >
-          {{ $t('home.title') }}
+          <span class="">
+            {{ $t('home.openFinance') + ' ' }}
+          </span>
+          <span class="relative text-gray-400">
+            <AssetLikeAG v-if="appStore.devMode" />
+
+            {{ $t('home.reimagined') }}
+          </span>
         </h1>
 
         <p class="text-sm lg:text-xl text-gray-200 font-light">
