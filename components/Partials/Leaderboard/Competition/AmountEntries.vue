@@ -35,7 +35,7 @@ const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
 const entries = computed(() =>
   new BigNumberInBase(props.volume)
     .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
-    .integerValue(BigNumberInBase.ROUND_FLOOR)
+    .integerValue(BigNumberInBase.ROUND_DOWN)
 )
 </script>
 

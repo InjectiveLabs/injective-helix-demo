@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-
 import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
 
 const leaderboardStore = useLeaderboardStore()
