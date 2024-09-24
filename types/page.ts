@@ -10,8 +10,9 @@ export enum MainPage {
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
-  LeaderboardTerms = 'leaderboard-terms',
   LiquidityProvision = 'liquidity-provision',
+  LikeAGCompetitionTerms = 'like-a-g-competition-terms',
+  CompetitionPrivacyPolicy = 'competition-privacy-policy',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'

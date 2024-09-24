@@ -12,9 +12,13 @@ export default {
     startTrading: 'Start Trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
-    blocked:
-      'Residents of the United States, the United Kingdom, and certain other countries listed in the official Rules, Terms, and Conditions of the Competition are ineligible to participate in or win the Competition.',
-
+    rulesTermsAndConditions: 'Rules, Terms, and Conditions',
+    blocked: ({ named, interpolate }: I18nMessageFunction) =>
+      interpolate([
+        'Residents of the United States, the United Kingdom, and certain other countries listed in the official ',
+        named('terms'),
+        ' of the Competition are ineligible to participate in or win the Competition.'
+      ]),
     pnl: {
       duration: {
         [LeaderboardDuration.OneDay]: '1 Day',

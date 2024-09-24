@@ -5,7 +5,8 @@ export const restrictedPerpetualMarketsCountries = ['US']
 export const restrictedSpotMarketsCountries = ['US', 'CA', 'UK']
 export const restrictedLeaderboardCountries = [
   ...restrictedPerpetualMarketsCountries,
-  'UK'
+  'UK',
+  'SG'
 ]
 export const disallowedSpotMarketDenomOrSymbol = [
   'usdy',
@@ -16,9 +17,9 @@ export const isCountryRestricted = (country: string) =>
   GEO_IP_RESTRICTIONS_ENABLED && restrictedCountries.includes(country)
 
 export const isCountryRestrictedForLeaderboard = (country: string) => {
-  if (!GEO_IP_RESTRICTIONS_ENABLED) {
-    return false
-  }
+  // if (!GEO_IP_RESTRICTIONS_ENABLED) {
+  //   return false
+  // }
 
   return (
     isCountryRestricted(country) ||
