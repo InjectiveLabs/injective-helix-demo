@@ -4,6 +4,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
 
 const leaderboardStore = useLeaderboardStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const limit = ref(20)
 
