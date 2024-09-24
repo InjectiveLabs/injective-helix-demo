@@ -34,7 +34,7 @@ html {
 }
 
 body {
-  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-brand-900;
+  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-brand-900 overflow-hidden;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
 }
@@ -136,5 +136,5 @@ input[type='number'] {
 }
 
 button:focus-visible {
-  @apply outline-none
+  @apply outline-none;
 }

@@ -3,6 +3,8 @@ import { I18nMessageFunction } from '@/types'
 export default {
   home: {
     title: 'Open Finance Reimagined',
+    openFinance: 'Open Finance',
+    reimagined: 'Reimagined',
     subtitle:
       'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
     tradeNow: 'Trade Now',
