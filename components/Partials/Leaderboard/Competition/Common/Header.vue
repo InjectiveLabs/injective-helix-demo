@@ -3,6 +3,15 @@ import { LeaderboardType } from '@/types'
 
 const isMobile = useIsMobile()
 const campaignStore = useCampaignStore()
+
+withDefaults(
+  defineProps<{
+    isHideAmount?: boolean
+  }>(),
+  {
+    isHideAmount: false
+  }
+)
 </script>
 
 <template>
@@ -18,7 +27,7 @@ const campaignStore = useCampaignStore()
     </div>
 
     <template v-if="!isMobile">
-      <div>
+      <div v-if="!isHideAmount">
         <span>
           <span class="hidden lg:block">
             {{
@@ -44,6 +53,7 @@ const campaignStore = useCampaignStore()
           </span>
         </span>
       </div>
+      <div v-else />
 
       <div>
         <div class="lg:mr-2">

@@ -9,7 +9,9 @@ const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
 
-const isExactStartOfCampaign = ref(false)
+/**
+ * Todo: kill isCountdownTimerVisible after testing is complete since it's only used to make sure we still show the competition table while we make test campaigns. this can be done after first campaign goes live w/o issue
+ */
 const isCountdownTimerVisible = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
@@ -88,12 +90,6 @@ function fetchCampaign() {
     .catch($onError)
     .finally(() => status.setIdle())
 }
-
-watch(isActiveCampaign, (isActive: boolean) => {
-  if (isActive) {
-    isExactStartOfCampaign.value = true
-  }
-})
 </script>
 
 <template>
@@ -116,30 +112,6 @@ watch(isActiveCampaign, (isActive: boolean) => {
           </i18n-t>
         </Teleport>
 
-        <div v-if="isCountdownTimerVisible" class="relative">
-          <div class="text-3xl font-bold tracking-[0.4px] mb-2">
-            {{
-              $t(
-                `leaderboard.competition.${
-                  isExactStartOfCampaign
-                    ? 'competitionHasBegun'
-                    : 'competitionBeginning'
-                }`
-              )
-            }}
-          </div>
-          <div
-            class="font-rubik text-[54px] tracking-[0.4px] mb-10 competition-gradient-text"
-          >
-            {{ countdownFormatted }}
-          </div>
-
-          <SharedRainConfetti
-            v-if="isExactStartOfCampaign"
-            class="absolute inset-0 h-48 -mt-9 w-full"
-          />
-        </div>
-
         <div class="w-full text-sm relative">
           <PartialsLeaderboardCompetitionBanner />
 
@@ -149,7 +121,21 @@ watch(isActiveCampaign, (isActive: boolean) => {
             "
           />
 
-          <PartialsLeaderboardCompetitionTable />
+          <div
+            v-if="!isActiveCampaign && isCountdownTimerVisible"
+            class="relative mb-20"
+          >
+            <div class="text-3xl font-bold tracking-[0.4px] mb-2">
+              {{ $t('leaderboard.competition.competitionBeginning') }}
+            </div>
+            <div
+              class="font-rubik text-[54px] leading-[54px] tracking-[0.4px]competition-gradient-text"
+            >
+              {{ countdownFormatted }}
+            </div>
+          </div>
+
+          <PartialsLeaderboardCompetitionTable v-else />
         </div>
       </div>
     </AppHocLoading>
@@ -164,7 +150,7 @@ watch(isActiveCampaign, (isActive: boolean) => {
   @apply grid grid-cols-6 md:grid-cols-9 relative;
 
   > :nth-child(1) {
-    @apply pl-3 lg:pl-7 text-left col-span-1 flex items-center;
+    @apply pl-3 xl:pl-7 text-left col-span-1 flex items-center;
   }
 
   > :nth-child(2) {

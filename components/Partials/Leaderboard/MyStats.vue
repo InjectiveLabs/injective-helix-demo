@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{ isUnranked: boolean; isPnl?: boolean }>(), {
+withDefaults(defineProps<{ isPnl?: boolean; isUnranked?: boolean }>(), {
   isPnl: false,
   isUnranked: false
 })
@@ -7,7 +7,7 @@ withDefaults(defineProps<{ isUnranked: boolean; isPnl?: boolean }>(), {
 
 <template>
   <div
-    class="pt-4 md:pt-6 pb-7 md:pb-10 rounded-[4px] relative h-flex-full mb-10 bg-texture"
+    class="pt-4 md:pt-6 pb-7 md:pb-10 rounded-[4px] relative h-full-flex mb-10 bg-texture"
     :class="[isPnl ? 'pnl-gradient darken' : 'bg-[#1472FF] opacity']"
   >
     <div class="pl-4 md:pl-7 flex items-center space-x-2 md:space-x-4 mb-4">

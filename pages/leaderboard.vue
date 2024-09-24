@@ -47,7 +47,7 @@ const isCountryRestrictedUser = computed(() =>
         </div>
       </section>
 
-      <section class="h-flex-full">
+      <section class="h-full-flex">
         <div
           class="flex flex-col md:flex-row max-md:space-y-4 justify-between mb-6 md:mb-10"
         >
