@@ -4,7 +4,7 @@ import {
   MarketKey,
   UiDerivativeMarket,
   PerpOrdersStandardView,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 const breakpoints = useBreakpointsTw()
@@ -99,7 +99,7 @@ watch(
       <template #default="{ selected }">
         <button
           class="px-2"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OrderDetailsDropdown)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdown)"
         >
           {{ $t(`activity.${selected?.value}`) }}
           {{
@@ -112,7 +112,7 @@ watch(
 
       <template #option="{ option }">
         <button
-          :data-cy="`${PerpetualmarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
+          :data-cy="`${PerpetualMarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
         >
           {{ $t(`activity.${option.value}`) }}
           {{
