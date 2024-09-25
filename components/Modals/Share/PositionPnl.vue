@@ -181,16 +181,16 @@ watchDebounced(
 
             <div
               v-if="showSelectors"
-              class="flex justify-between items-center mt-4"
+              class="flex justify-between items-center mt-4 text-black bg-white rounded"
             >
               <div class="flex items-center justify-start w-full gap-4">
-                <AppCheckbox v-model="showLeverage">
+                <AppCheckbox2 v-model="showLeverage">
                   {{ $t('trade.leverage') }}
-                </AppCheckbox>
+                </AppCheckbox2>
 
-                <AppCheckbox v-model="showPrice">
+                <AppCheckbox2 v-model="showPrice">
                   {{ $t('trade.price') }}
-                </AppCheckbox>
+                </AppCheckbox2>
               </div>
             </div>
           </div>
