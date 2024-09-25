@@ -18,7 +18,7 @@ import {
   DerivativesTradeForm,
   DerivativeTradeTypes,
   DerivativesTradeFormField,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 const orderbookStore = useOrderbookStore()
@@ -346,7 +346,7 @@ onMounted(() => {
           .shiftedBy(market.quantityTensMultiplier)
           .toFixed()
       "
-      :data-cy="dataCyTag(PerpetualmarketCyTags.LimitAmountInputField)"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.LimitAmountInputField)"
     >
       <template #right>
         <AppSelect
@@ -382,7 +382,7 @@ onMounted(() => {
         <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
           <div
             class="space-x-2"
-            :data-cy="dataCyTag(PerpetualmarketCyTags.AvailableBalance)"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
           >
             <span>{{
               $t('trade.availableAmount', {

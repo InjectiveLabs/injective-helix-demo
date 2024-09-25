@@ -6,7 +6,7 @@ import {
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 useForm<DerivativesTradeForm>()
@@ -45,7 +45,7 @@ const {
         class="text-sm font-semibold text-gray-600 px-3 py-2"
         active-classes="border-b border-blue-500 text-white"
         :data-cy="`${dataCyTag(
-          PerpetualmarketCyTags.DerivativeTradeType
+          PerpetualMarketCyTags.DerivativeTradeType
         )}-${value}`"
       >
         {{ $t(`trade.${value}`) }}
@@ -65,7 +65,7 @@ const {
         :active-classes="
           side === TradeDirection.Long ? '!border-green-500' : '!border-red-500'
         "
-        :data-cy="`${dataCyTag(PerpetualmarketCyTags.TradeDirection)}-${side}`"
+        :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
       >
         <span v-if="market.slug === '2024election-perp'">
           {{ $t(`trade.${side === TradeDirection.Long ? 'yes' : 'no'}`) }}

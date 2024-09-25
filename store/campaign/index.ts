@@ -24,7 +24,11 @@ import { LP_CAMPAIGNS } from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
-import { CampaignWithScAndData, LeaderboardType } from '@/types'
+import {
+  LeaderboardType,
+  CampaignWithScAndData,
+  LeaderboardCampaignStatus
+} from '@/types'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -259,9 +263,9 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchRound(roundId?: number) {
+      const campaignStore = useCampaignStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
         accountAddress: sharedWalletStore.injectiveAddress,
         contractAddress: ADMIN_UI_SMART_CONTRACT,
@@ -275,7 +279,7 @@ export const useCampaignStore = defineStore('campaign', {
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        active: true
+        status: LeaderboardCampaignStatus.Active
       })
 
       if (campaigns.length === 0) {
@@ -304,7 +308,9 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchCampaigns() {
       const campaignStore = useCampaignStore()
 
-      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({})
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Upcoming
+      })
 
       if (campaigns.length === 0) {
         return
