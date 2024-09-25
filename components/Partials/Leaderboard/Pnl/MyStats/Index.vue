@@ -94,7 +94,7 @@ function fetchPnlLeaderboardAccount() {
 
         <template #row>
           <div
-            v-if="isShowMyStats"
+            v-if="!isShowMyStats"
             class="relative flex flex-col items-center justify-center gap-4 sm:gap-6"
           >
             <div
