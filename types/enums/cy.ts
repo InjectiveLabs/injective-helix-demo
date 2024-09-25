@@ -85,7 +85,7 @@ export enum SpotMarketCyTags {
   CancelOrderButton = 'cancel-order-button'
 }
 
-export enum PerpetualmarketCyTags {
+export enum PerpetualMarketCyTags {
   DerivativeTradeType = 'derivative-trade-type',
   TradeDirection = 'trade-direction',
   LimitpriceInputField = 'limit-price-input-field',
@@ -134,7 +134,6 @@ export enum PerpetualmarketCyTags {
   OpenOrdersLeverageNa = 'open-orders-leverage-na',
   OpenOrdersLeverage = 'open-orders-leverage',
   OpenOrdersTotal = 'open-orders-total',
-
   TradeHistoryTimestamp = 'trade-history-timestamp',
   TradeHistoryMarketTicker = 'trade-history-market-ticker',
   TradeHistoryTradeType = 'trade-history-trade-type',

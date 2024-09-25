@@ -30,7 +30,7 @@ const isCountryRestrictedUser = computed(() =>
       "
       keypath="leaderboard.blocked"
       tag="p"
-      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925 relative z-50"
+      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925 relative z-40"
     >
       <template #terms>
         <NuxtLink

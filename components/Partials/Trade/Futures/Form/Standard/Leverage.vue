@@ -10,7 +10,7 @@ import {
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -165,7 +165,7 @@ watch(
           :value="leverage"
           type="text"
           class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.LeverageInputField)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageInputField)"
           @keydown.enter="onEnter"
           @blur="onBlur"
         />
@@ -175,7 +175,7 @@ watch(
 
     <p
       class="error-message"
-      :data-cy="dataCyTag(PerpetualmarketCyTags.LeverageError)"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageError)"
     >
       {{ errorMessage }}
     </p>

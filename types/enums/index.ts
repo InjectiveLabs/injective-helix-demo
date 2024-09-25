@@ -552,3 +552,9 @@ export enum LeaderboardDuration {
   OneWeek = '1W',
   OneDay = '1D'
 }
+
+export enum LeaderboardCampaignStatus {
+  Active = 'active',
+  Inactive = 'inactive',
+  Upcoming = 'upcoming'
+}

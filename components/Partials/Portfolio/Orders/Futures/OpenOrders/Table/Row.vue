@@ -3,7 +3,7 @@ import { dataCyTag } from '@shared/utils'
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-import { PerpetualmarketCyTags } from '@/types'
+import { PerpetualMarketCyTags } from '@/types'
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -101,7 +101,7 @@ function onCancelOrder() {
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersMarketTicker)">
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersMarketTicker)">
           {{ market.ticker }}
         </p>
       </PartialsCommonMarketRedirection>
@@ -112,7 +112,7 @@ function onCancelOrder() {
             'text-green-500': isBuy,
             'text-red-500': !isBuy
           }"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersSide)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersSide)"
         >
           {{ $t(`trade.${order.orderSide}`) }}
         </span>
@@ -120,28 +120,28 @@ function onCancelOrder() {
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersPrice)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersPrice)"
       >
         {{ priceToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersAmount)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersAmount)"
       >
         {{ quantityToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersUnfilled)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersUnfilled)"
       >
         {{ unfilledQuantityToString }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersFilled)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersFilled)"
       >
         {{ filledQuantityToString }}
       </div>
@@ -150,13 +150,13 @@ function onCancelOrder() {
         <span
           v-if="leverage.isNaN()"
           class="text-gray-400"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersLeverageNa)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
         >
           {{ $t('trade.not_available_n_a') }}
         </span>
         <span
           v-else
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersLeverage)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverage)"
         >
           {{ leverage.toFormat(2) }}&times;
         </span>
@@ -164,7 +164,7 @@ function onCancelOrder() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="space-y-1">
-          <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenOrdersTotal)">
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
             {{ totalToString }}
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>

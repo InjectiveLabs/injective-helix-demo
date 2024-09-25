@@ -51,6 +51,10 @@ export default {
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
+      firstHourOfCampaign: ({ named }: I18nMessageFunction) =>
+        `The competition has just started, check back in ${named(
+          'timeLeft'
+        )} to see where you stack up`,
       termsAndConditionsApply: 'Terms and conditions apply',
       banner: {
         title: 'Trade Like a G',
@@ -58,7 +62,7 @@ export default {
         ended: 'Ended',
         description: ({ named, interpolate }: I18nMessageFunction) =>
           interpolate([
-            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the ',
+            'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 22nd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the ',
             named('blog'),
             '.'
           ])

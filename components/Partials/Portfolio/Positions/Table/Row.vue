@@ -6,7 +6,7 @@ import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  PerpetualmarketCyTags,
+  PerpetualMarketCyTags,
   ClosePositionLimitForm,
   ClosePositionLimitFormField
 } from '@/types'
@@ -241,7 +241,7 @@ function sharePosition() {
         class="flex-1 flex items-center space-x-2 p-2 font-sans"
       >
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
-        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosMarketTicker)">
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
           {{ market.ticker }}
         </p>
       </PartialsCommonMarketRedirection>
@@ -253,7 +253,7 @@ function sharePosition() {
             'text-red-500': position.direction === TradeDirection.Short
           }"
           :data-cy="`${dataCyTag(
-            PerpetualmarketCyTags.OpenPosTradeDirection
+            PerpetualMarketCyTags.OpenPosTradeDirection
           )}-${position.direction}`"
         >
           {{ $t(`trade.${position.direction}`) }}
@@ -261,14 +261,14 @@ function sharePosition() {
       </div>
 
       <div v-if="market" class="flex-1 flex items-center justify-end p-2">
-        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosAmount)">
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)">
           {{ quantityToString }}
           {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
         </p>
       </div>
 
       <div class="flex-1 space-y-1 p-2 text-right">
-        <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenEntryPrice)">
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           {{ priceToString }}
         </p>
         <p class="text-gray-500">
@@ -284,7 +284,7 @@ function sharePosition() {
             'text-red-500': pnl.lt(0)
           }"
         >
-          <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosUnrealizedPnl)">
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)">
             {{ pnlToString }}
             <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
           </p>
@@ -301,14 +301,14 @@ function sharePosition() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosTotalValue)">
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)">
             ${{ quantityInUsdToString }}
           </p>
         </div>
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
-        <span :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosMargin)">{{
+        <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">{{
           marginToString
         }}</span>
         <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
@@ -318,14 +318,14 @@ function sharePosition() {
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosLiquidationPrice)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
       >
         {{ liquidationPrice.toFormat(2) }}
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
-        :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosLeverage)"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
       >
         {{ effectiveLeverage.toFormat(2) }}x
       </div>
@@ -349,7 +349,7 @@ function sharePosition() {
           size="sm"
           variant="danger-ghost"
           class="min-w-20"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosition)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
           @click="closePositionClicked"
         >
           {{ $t('trade.market') }}
@@ -364,7 +364,7 @@ function sharePosition() {
           class="min-w-20"
           size="sm"
           variant="danger-ghost"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosLimit)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosLimit)"
           @click="closePositionLimit"
         >
           {{ $t('trade.limit') }}
@@ -378,13 +378,13 @@ function sharePosition() {
           autofix
           class="p-1 rounded min-w-0 border"
           placeholder="Qty"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePositionQty)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePositionQty)"
         />
         <AppInputBase
           v-model="priceValue"
           class="p-1 rounded min-w-0 border"
           placeholder="Price"
-          :data-cy="dataCyTag(PerpetualmarketCyTags.OpenPosClosePosPrice)"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosPrice)"
         />
       </div>
     </div>
