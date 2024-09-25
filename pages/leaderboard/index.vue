@@ -76,7 +76,10 @@ function fetchPnlLeaderboard() {
         </AppButtonSelect>
       </div>
 
-      <div class="text-xs md:text-sm md:leading-4 text-gray-350">
+      <div
+        v-if="status.isIdle()"
+        class="text-xs md:text-sm md:leading-4 text-gray-350"
+      >
         {{
           selectedDuration !== LeaderboardDuration.All
             ? $t('leaderboard.pnl.timePeriod', {
