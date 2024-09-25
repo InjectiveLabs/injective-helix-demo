@@ -88,16 +88,13 @@ watchDebounced(
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
-        class="p-6 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
+        class="p-10 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col items-start"
         :style="{
-          backgroundImage: `url('/images/leaderboard/pnl-share-bg.webp')`
+          backgroundImage: `url('/images/leaderboard/share/bg-competition.webp')`
         }"
       >
-        <div class="flex justify-between items-start">
-          <div class="flex items-center justify-start">
-            <AssetLogo class="w-auto h-6" alt="Helix" />
-            <AssetLogoText class="block ml-2 h-6 text-white" />
-          </div>
+        <div class="flex justify-between items-start w-full mb-10">
+          <AssetLogoWhite class="w-auto h-6" alt="Helix" />
 
           <SharedIcon
             v-if="showSelectors"
@@ -107,33 +104,62 @@ watchDebounced(
           />
         </div>
 
-        <div class="space-y-6 flex-grow mt-10 mb-8">
-          <div
-            class="flex flex-col items-start gap-2 xs:gap-8 font-semibold truncate"
+        <div class="text-3xl text-left mb-4">
+          <i18n-t
+            keypath="leaderboard.competition.share.raffleTickets"
+            tag="div"
+            class="font-light max-w-[280px]"
           >
-            <span class="text-lg">
-              {{ $t('leaderboard.header.numberOfEntries') }}
-            </span>
-            <span class="text-3xl">{{ entries }}</span>
+            <template #tickets>
+              <span class="font-semibold">{{ entries }}</span>
+            </template>
+          </i18n-t>
+          <div class="font-semibold flex items-center">
+            <span class="inline-block w-12 h-[2px] bg-white mr-2"></span>
+            <div>
+              {{ $t('leaderboard.competition.share.likeAG') }}
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-between flex-wrap-reverse gap-2">
-          <AssetBuiltOnInjective />
-
-          <div class="flex items-center text-base gap-1">
-            <span>{{ $t('trade.generated') }}:</span>
-            <span>{{ timestamp }}</span>
-          </div>
+        <div class="max-w-[350px] text-left mb-6 font-semibold">
+          {{ $t('leaderboard.competition.share.joinCompetition') }}
         </div>
 
-        <div v-if="showSelectors" class="mx-auto">
-          <div
-            class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
-            @click="download"
-          >
-            <SharedIcon name="download" class="w-4 h-4 min-w-4" />
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div>
+              <div class="bg-white rounded-lg p-2">
+                <img
+                  class="w-8 h-8 min-w-8"
+                  src="/images/leaderboard/share/qr/competition.png"
+                />
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col text-left text-base font-semibold leading-5 text-sm"
+            >
+              <div>
+                {{ $t('leaderboard.competition.termsAndConditionsApply') }}
+              </div>
+              <div class="flex items-center gap-1">
+                <span>{{ $t('leaderboard.screenshot') }}</span>
+                <span>{{ timestamp }}</span>
+              </div>
+            </div>
           </div>
+
+          <div v-if="showSelectors" class="mx-auto pl-4">
+            <div
+              class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
+              @click="download"
+            >
+              <SharedIcon name="download" class="w-4 h-4 min-w-4" />
+            </div>
+          </div>
+
+          <div />
         </div>
       </div>
     </section>

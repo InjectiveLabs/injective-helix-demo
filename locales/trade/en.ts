@@ -10,6 +10,7 @@ export default {
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
     tickSize: 'Tick Size',
+    pnlPercent: 'PnL% (Open Position)',
     marketName: 'Market Name',
     maxLeverage: 'Max. Leverage',
     minLimitOrderSize: 'Min. Limit Order Size',
