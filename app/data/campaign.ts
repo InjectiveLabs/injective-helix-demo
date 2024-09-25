@@ -681,4 +681,4 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
 )
 
 export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
-  'Helix Like a G Trading Competition'
+  'Helix Like a G Trading Competition Test'
