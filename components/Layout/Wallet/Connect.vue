@@ -20,34 +20,37 @@ const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
 const magicStatus = reactive(new Status(StatusType.Idle))
 
-const popularOptions = computed(() => [
-  {
-    wallet: Wallet.Keplr,
-    downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
-      ? 'https://www.keplr.app/download'
-      : undefined
-  },
-  {
-    wallet: Wallet.Metamask,
-    downloadLink: !sharedWalletStore.metamaskInstalled
-      ? 'https://metamask.io/download'
-      : undefined
-  },
-  IS_DEVNET
-    ? undefined
-    : {
-        wallet: Wallet.Leap,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-          ? 'https://www.leapwallet.io/downloads'
+const popularOptions = computed(
+  () =>
+    [
+      {
+        wallet: Wallet.Keplr,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
+          ? 'https://www.keplr.app/download'
           : undefined
       },
-  {
-    wallet: Wallet.OkxWallet,
-    downloadLink: !sharedWalletStore.okxWalletInstalled
-      ? 'https://www.okx.com/web3'
-      : undefined
-  }
-])
+      {
+        wallet: Wallet.Metamask,
+        downloadLink: !sharedWalletStore.metamaskInstalled
+          ? 'https://metamask.io/download'
+          : undefined
+      },
+      IS_DEVNET
+        ? undefined
+        : {
+            wallet: Wallet.Leap,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+              ? 'https://www.leapwallet.io/downloads'
+              : undefined
+          },
+      {
+        wallet: Wallet.OkxWallet,
+        downloadLink: !sharedWalletStore.okxWalletInstalled
+          ? 'https://www.okx.com/web3'
+          : undefined
+      }
+    ].filter((option) => option) as WalletOption[]
+)
 
 const options = computed(
   () =>
