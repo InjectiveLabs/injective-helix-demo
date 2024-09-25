@@ -187,7 +187,8 @@ export default {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         mono: ['Azeret Mono', ...defaultTheme.fontFamily.mono],
-        rubik: ['Rubik One']
+        rubik: ['Rubik One'],
+        pingFang: ['PingFang SC']
       },
 
       borderRadius: {

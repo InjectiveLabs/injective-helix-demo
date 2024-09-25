@@ -83,15 +83,15 @@ watchDebounced(
 <template>
   <SharedModalWrapper
     v-if="isModalOpen"
-    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
+    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px] font-pingFang"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
     @close="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
-        class="p-6 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
+        class="pt-8 px-8 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
         :style="{
-          backgroundImage: `url('/images/leaderboard/pnl-share-bg.webp')`
+          backgroundImage: `url('/images/leaderboard/share/bg-positive.webp')`
         }"
       >
         <div class="flex justify-between items-start">
@@ -108,7 +108,9 @@ watchDebounced(
           />
         </div>
 
-        <div class="space-y-6 flex-grow mt-10 mb-8">
+        <div
+          class="space-y-3 md:space-y-6 flex-grow mt-6 md:mt-14 mb-28 sm:mb-16 md:mb-[56px]"
+        >
           <div class="text-left">
             {{
               $t('leaderboard.pnl.currentDuration', {
@@ -117,7 +119,7 @@ watchDebounced(
             }}
           </div>
           <div
-            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-5xl leading-[3rem] truncate"
+            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl md:text-5xl leading-[3rem] truncate"
             :class="{
               'text-green-500': pnlToBigNumber.gte(0),
               'text-red-500': pnlToBigNumber.lt(0)
@@ -126,28 +128,42 @@ watchDebounced(
             ${{ pnlToFormat }}
           </div>
           <div
-            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl truncate text-blue-500"
+            class="flex items-end gap-2 font-semibold flex-wrap text-3xl truncate text-blue-450"
           >
             <span> {{ $t('leaderboard.header.rank') }}: </span>
             <span>{{ rank }}</span>
           </div>
         </div>
 
-        <div class="flex justify-between flex-wrap-reverse gap-2">
-          <AssetBuiltOnInjective />
+        <div
+          class="flex justify-between items-center text-xs md:text-sm text-gray-925 mb-3 sm:mb-1.5 md:mb-2.5"
+        >
+          <div class="flex items-center justify-start gap-2 flex-1">
+            <div class="bg-white p-1">
+              <img
+                class="w-8 h-8 min-w-8"
+                src="/images/leaderboard/share/qr/markets.png"
+              />
+            </div>
 
-          <div class="flex items-center text-base gap-1">
-            <span>{{ $t('trade.generated') }}:</span>
-            <span>{{ timestamp }}</span>
+            <span>{{ $t('leaderboard.helix') }}</span>
           </div>
-        </div>
 
-        <div v-if="showSelectors" class="mx-auto">
+          <div class="flex-grow-0 mx-auto">
+            <div
+              v-if="showSelectors"
+              class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
+              @click="download"
+            >
+              <SharedIcon name="download" class="w-4 h-4 min-w-4" />
+            </div>
+          </div>
+
           <div
-            class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
-            @click="download"
+            class="flex flex-col sm:flex-row items-start justify-end gap-1 flex-1 ml-2 sm:ml-0"
           >
-            <SharedIcon name="download" class="w-4 h-4 min-w-4" />
+            <span>{{ $t('leaderboard.timeStamp') }}:</span>
+            <span>{{ timestamp }}</span>
           </div>
         </div>
       </div>
