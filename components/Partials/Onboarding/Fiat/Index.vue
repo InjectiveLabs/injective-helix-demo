@@ -51,7 +51,7 @@ function onCopyInjectiveAddress() {
 
     <div class="grid grid-cols-1 gap-2 mt-4">
       <AppButton class="w-full" @click="onPurchaseFunds">
-        {{ $t('onboarding.iNeedToPurchaseFunds') }}
+        {{ $t('onboarding.qr.cta') }}
       </AppButton>
 
       <AppButton
@@ -59,7 +59,7 @@ function onCopyInjectiveAddress() {
         class="w-full text-gray-400 hover:text-white"
         @click="onCloseModal"
       >
-        {{ $t('onboarding.imDone') }}
+        {{ $t('onboarding.qr.skip') }}
       </AppButton>
     </div>
   </div>

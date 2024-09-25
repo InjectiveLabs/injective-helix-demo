@@ -435,10 +435,12 @@ export default {
   },
 
   onboarding: {
+    qr: {
+      skip: 'Skip',
+      cta: 'Buy INJ with Card'
+    },
     copy: 'Copy',
-    imDone: 'Im Done',
     fundsNeeded: 'Funds Needed',
-    iNeedToPurchaseFunds: 'I Need To Purchase Funds',
     processing: 'Processing your transfer',
     success: 'Your transaction has been confirmed',
     fundsNeededDescription:
