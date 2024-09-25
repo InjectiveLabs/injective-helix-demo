@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
+import { isWithinInterval, addHours } from 'date-fns'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
 import { Modal } from '@/types'
 
@@ -18,6 +19,7 @@ const status = reactive(new Status(StatusType.Loading))
 
 const now = useNow({ interval: 1000 })
 
+/** upcoming campaign countdown */
 const upcomingCampaign = computed(() => {
   if (!campaignStore.pnlOrVolumeCampaigns) {
     return
@@ -30,25 +32,7 @@ const upcomingCampaign = computed(() => {
   )
 })
 
-const timeLeftInCampaign = computed(() => {
-  if (!campaignStore.activeCampaign) {
-    return
-  }
-
-  const duration = sharedGetDuration({
-    endDateInMilliseconds: campaignStore.activeCampaign.endDate,
-    nowInMilliseconds: now.value.getTime().toString()
-  })
-
-  const days = `${String(duration.days).padStart(2, '0')}`
-  const hours = `${String(duration.hours).padStart(2, '0')}`
-  const minutes = `${String(duration.minutes).padStart(2, '0')}`
-  const seconds = `${String(duration.seconds).padStart(2, '0')}`
-
-  return `${days}D ${hours}:${minutes}:${seconds}`
-})
-
-const countdownFormatted = computed(() => {
+const countdownUntilCampaignStart = computed(() => {
   if (!campaignStore.pnlOrVolumeCampaigns || !upcomingCampaign.value) {
     return
   }
@@ -66,6 +50,67 @@ const countdownFormatted = computed(() => {
   const seconds = `${String(duration.seconds).padStart(2, '0')}`
 
   return `${days}:${hours}:${minutes}:${seconds}`
+})
+
+/** first hour of campaign countdown **/
+const endOfCampaignFirstHour = computed(() => {
+  if (!campaignStore.activeCampaign) {
+    return
+  }
+
+  const startDate = new Date(Number(campaignStore.activeCampaign.startDate))
+
+  return addHours(startDate, 1).getTime()
+})
+
+const isFirstHourOfCampaign = computed(() => {
+  if (!campaignStore.activeCampaign || !endOfCampaignFirstHour.value) {
+    return
+  }
+
+  const startDate = new Date(
+    Number(campaignStore.activeCampaign.startDate)
+  ).getTime()
+
+  return isWithinInterval(now.value, {
+    start: startDate,
+    end: endOfCampaignFirstHour.value
+  })
+})
+
+const timeUntilEndOfFirstHour = computed(() => {
+  if (!endOfCampaignFirstHour.value) {
+    return
+  }
+
+  const duration = sharedGetDuration({
+    endDateInMilliseconds: endOfCampaignFirstHour.value.toString(),
+    nowInMilliseconds: now.value.getTime().toString()
+  })
+
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+
+  return `${minutes}:${seconds}`
+})
+
+/** end of campaign countdown **/
+const timeLeftInActiveCampaign = computed(() => {
+  if (!campaignStore.activeCampaign) {
+    return
+  }
+
+  const duration = sharedGetDuration({
+    endDateInMilliseconds: campaignStore.activeCampaign.endDate,
+    nowInMilliseconds: now.value.getTime().toString()
+  })
+
+  const days = `${String(duration.days).padStart(2, '0')}`
+  const hours = `${String(duration.hours).padStart(2, '0')}`
+  const minutes = `${String(duration.minutes).padStart(2, '0')}`
+  const seconds = `${String(duration.seconds).padStart(2, '0')}`
+
+  return `${days}D ${hours}:${minutes}:${seconds}`
 })
 
 onMounted(() => {
@@ -119,7 +164,7 @@ function fetchCampaigns() {
               <div
                 class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
               >
-                {{ timeLeftInCampaign }}
+                {{ timeLeftInActiveCampaign }}
               </div>
             </template>
           </i18n-t>
@@ -144,8 +189,16 @@ function fetchCampaigns() {
             <div
               class="font-rubik text-[54px] leading-[54px] tracking-[0.4px]competition-gradient-text"
             >
-              {{ countdownFormatted }}
+              {{ countdownUntilCampaignStart }}
             </div>
+          </div>
+
+          <div v-else-if="isFirstHourOfCampaign" class="mb-20">
+            {{
+              $t('leaderboard.competition.firstHourOfCampaign', {
+                timeLeft: timeUntilEndOfFirstHour
+              })
+            }}
           </div>
 
           <PartialsLeaderboardCompetitionTable v-else />
