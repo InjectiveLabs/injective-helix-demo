@@ -9,9 +9,12 @@ export default {
     title: 'Leaderboard',
     description: 'Top Traders on Helix',
     unranked: 'Unranked',
+    screenshot: 'Screenshot',
     startTrading: 'Start Trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
+    timeStamp: 'Time Stamp',
+    helix: 'helixapp.com',
     rulesTermsAndConditions: 'Rules, Terms, and Conditions',
     blocked: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([
@@ -48,6 +51,7 @@ export default {
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
+      termsAndConditionsApply: 'Terms and conditions apply',
       banner: {
         title: 'Trade Like a G',
         blog: 'blog',
@@ -57,8 +61,14 @@ export default {
             'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 23rd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the ',
             named('blog'),
             '.'
-          ]),
-        termsAndConditionsApply: 'Terms and conditions apply'
+          ])
+      },
+      share: {
+        raffleTickets: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate(["I've already got ", named('tickets'), ' entries']),
+        likeAG: 'like a G',
+        joinCompetition:
+          'Join Helix\'s "like a G" trading competition for a chance to win a Mercedes G-Wagon!'
       }
     },
 
