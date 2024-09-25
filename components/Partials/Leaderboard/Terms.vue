@@ -113,7 +113,7 @@ import { MainPage, LeaderboardSubPage } from '@/types'
           :to="{ name: MainPage.Terms }"
           class="text-blue-500 hover:text-blue-600"
         >
-          https://www.helixapp.com/trems
+          https://www.helixapp.com/terms
         </NuxtLink>
         <span>
           (the “Terms”). All trades conducted through the front end of the
@@ -206,8 +206,8 @@ import { MainPage, LeaderboardSubPage } from '@/types'
         . Entrants submitting forms must identify a social media post (“Post”)
         mentioning the Competition and sharing a promotional video posted on X
         at the onset of the Competition, and will receive one Entry for every
-        10,000 viewsimpressions each such post receives. Sponsor shall have sole
-        discretion to determine the number of viewsimpressions a post receives.
+        10,000 views each such post receives. Sponsor shall have sole
+        discretion to determine the number of views a post receives.
         Entrants may submit multiple Posts and forms, by submitting a separate
         form for each Post.
       </li>
