@@ -2052,10 +2052,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.15-beta.11":
-  version "1.14.15-beta.11"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.15-beta.11.tgz#ceab8f602a7cb174b3eb8d3c695c1c5d0ca86e1c"
-  integrity sha512-pPPlhhIBEiITNmK/Qrm06OXcB6/uOYjtxL/cP5uWOXdp+n1Se4hm0VmjiiZdTuEEEGShtukzbvKG4Tn5YKA+ZQ==
+"@injectivelabs/wallet-ts@1.14.15-beta.12":
+  version "1.14.15-beta.12"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.15-beta.12.tgz#07bd6e3ee809a07ea3c87f1a57ae947b12f1938c"
+  integrity sha512-yHHrgbpWyytRImElWPmsdloJ3VZW7v6jE2eVv/t4q6Vxf0y704SVxrd1DT4Y7AYI+NpAwmhVx7f4ckZMDRHm+A==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -16104,7 +16104,7 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#09c0c894bc7eaf661b8f6762e928bce9e0406510"
+  resolved "https://github.com/InjectiveLabs/shared-packages#02030427b2ae24fee117e76bd68f9c47c44442ba"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.14"
@@ -16113,7 +16113,7 @@ shallow-clone@^3.0.0:
     "@injectivelabs/sdk-ts" "1.14.15-beta.8"
     "@injectivelabs/ts-types" "1.14.14"
     "@injectivelabs/utils" "1.14.14"
-    "@injectivelabs/wallet-ts" "1.14.15-beta.11"
+    "@injectivelabs/wallet-ts" "1.14.15-beta.12"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
     "@vueuse/integrations" "^10.7.1"
