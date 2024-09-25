@@ -3,7 +3,7 @@ import {
   DerivativesTradeFormField,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -19,7 +19,7 @@ function toggle() {
   <div class="mb-2">
     <div
       class="flex justify-between items-center cursor-pointer py-2"
-      :data-cy="dataCyTag(PerpetualmarketCyTags.AdvancedSettings)"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettings)"
       @click="toggle"
     >
       <p class="text-sm font-semibold select-none">

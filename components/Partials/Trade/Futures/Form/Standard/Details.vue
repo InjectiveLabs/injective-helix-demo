@@ -9,7 +9,7 @@ import {
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField,
-  PerpetualmarketCyTags
+  PerpetualMarketCyTags
 } from '@/types'
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -124,7 +124,7 @@ function toggle() {
           <div class="border-t flex-1 mx-2" />
 
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsTotal)">
+            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)">
               &asymp;{{ totalToString }}
             </span>
             <span class="text-gray-400">
@@ -137,7 +137,7 @@ function toggle() {
           <p class="text-gray-400">{{ $t('trade.margin') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsMargin)">
+            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)">
               {{ marginToString }}
             </span>
             <span class="text-gray-400">
@@ -151,7 +151,7 @@ function toggle() {
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span
-              :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsTotalNotional)"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
             >
               {{ totalNotionalToString }}
             </span>
@@ -165,7 +165,7 @@ function toggle() {
           <p class="text-gray-400">{{ $t('trade.quantity') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsQty)">
+            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)">
               {{ quantityToString }}
             </span>
             <span class="text-gray-400">
@@ -183,7 +183,7 @@ function toggle() {
           </p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsAvgPrice)">
+            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)">
               {{ worstPriceToString }}
             </span>
             <span class="text-gray-400">
@@ -198,7 +198,7 @@ function toggle() {
           <p class="font-mono space-x-2">
             <span
               :data-cy="
-                dataCyTag(PerpetualmarketCyTags.DetailsEstLiquidationPrice)
+                dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
               "
             >
               {{ estLiquidationPriceToString }}
@@ -216,7 +216,7 @@ function toggle() {
             <p
               v-if="derivativeMarket"
               class="font-mono"
-              :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsMakerTakerRate)"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)"
             >
               {{ +derivativeMarket.makerFeeRate * 100 }}% /
               {{ +derivativeMarket.takerFeeRate * 100 }}%
@@ -227,7 +227,7 @@ function toggle() {
             <p class="text-gray-400">{{ $t('trade.fee') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p class="font-mono space-x-2">
-              <span :data-cy="dataCyTag(PerpetualmarketCyTags.DetailsFee)">
+              <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)">
                 {{ feeAmountToString }}
               </span>
               <span class="text-gray-400">
