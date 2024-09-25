@@ -15,7 +15,8 @@ const tradingMessages = [
   MsgType.MsgBatchCancelSpotOrders,
   MsgType.MsgBatchCreateDerivativeLimitOrders,
   MsgType.MsgBatchCreateSpotLimitOrders,
-  MsgType.MsgBatchUpdateOrders
+  MsgType.MsgBatchUpdateOrders,
+  MsgType.MsgExecuteContractCompat
 ]
 
 const modalStore = useModalStore()
