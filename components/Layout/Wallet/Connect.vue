@@ -55,6 +55,11 @@ const popularOptions = computed(
 const options = computed(
   () =>
     [
+      { wallet: Wallet.Ledger },
+      {
+        beta: true,
+        wallet: Wallet.Phantom
+      },
       IS_DEVNET
         ? undefined
         : {
@@ -63,25 +68,6 @@ const options = computed(
               ? 'https://web3.bitget.com/en/wallet-download'
               : undefined
           },
-      { wallet: Wallet.Ledger },
-      { wallet: Wallet.Trezor },
-      // Disabled for now
-      // {
-      //   wallet: Wallet.TrustWallet,
-      //   downloadLink: !sharedWalletStore.trustWalletInstalled
-      //     ? 'https://trustwallet.com/browser-extension/'
-      //     : undefined
-      // },
-      {
-        wallet: Wallet.Cosmostation,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
-          ? 'https://www.cosmostation.io/wallet'
-          : undefined
-      },
-      // Disabled for now
-      // {
-      //   wallet: Wallet.Torus
-      // },
       IS_DEVNET
         ? undefined
         : {
@@ -92,9 +78,26 @@ const options = computed(
               : undefined
           },
       {
-        beta: true,
-        wallet: Wallet.Phantom
-      }
+        wallet: Wallet.Cosmostation,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
+          ? 'https://www.cosmostation.io/wallet'
+          : undefined
+      },
+      { wallet: Wallet.Trezor }
+
+      // Disabled for now
+      // {
+      //   wallet: Wallet.TrustWallet,
+      //   downloadLink: !sharedWalletStore.trustWalletInstalled
+      //     ? 'https://trustwallet.com/browser-extension/'
+      //     : undefined
+      // },
+
+      // Disabled for now
+      // {
+      //   wallet: Wallet.Torus
+      // },
+
       // { wallet: Wallet.WalletConnect }
     ].filter((option) => option) as WalletOption[]
 )
