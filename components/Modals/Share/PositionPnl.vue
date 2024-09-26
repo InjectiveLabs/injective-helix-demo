@@ -137,8 +137,8 @@ watchDebounced(
 
             <span class="border-r w-1 h-4 border-white" />
 
-            <div class="ml-2">
-              <span class="text-white text-xs">
+            <div class="ml-1">
+              <span class="text-white">
                 {{ position.ticker }}
               </span>
             </div>
