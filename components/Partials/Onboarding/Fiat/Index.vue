@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import {
+  trackQrCodeBuyFunds,
+  trackQrCodePageView
+} from '~/app/providers/mixpanel/EventTracker'
+
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()
@@ -14,6 +19,7 @@ function onCloseModal() {
 }
 
 function onPurchaseFunds() {
+  trackQrCodeBuyFunds(sharedWalletStore.wallet)
   emit('funds:purchase')
 }
 
@@ -21,6 +27,10 @@ function onCopyInjectiveAddress() {
   copy(sharedWalletStore.injectiveAddress)
   notificationStore.success({ title: t('connect.copiedAddress') })
 }
+
+onMounted(() => {
+  trackQrCodePageView(sharedWalletStore.wallet)
+})
 </script>
 
 <template>
