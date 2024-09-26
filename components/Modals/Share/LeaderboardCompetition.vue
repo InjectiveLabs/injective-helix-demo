@@ -99,7 +99,7 @@ watchDebounced(
           <SharedIcon
             v-if="showSelectors"
             name="close"
-            class="w-6 h-6 min-w-6 text-white hover:text-gray-500"
+            class="w-6 h-6 min-w-6 text-black hover:text-gray-500"
             @click="onCloseModal"
           />
         </div>
