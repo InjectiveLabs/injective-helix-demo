@@ -89,7 +89,7 @@ watchDebounced(
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px] font-pingFang"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-40"
-    @close="onCloseModal"
+    @modal:closed="onCloseModal"
   >
     <section v-if="market" ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
@@ -137,8 +137,8 @@ watchDebounced(
 
             <span class="border-r w-1 h-4 border-white" />
 
-            <div class="ml-2">
-              <span class="text-white text-xs">
+            <div class="ml-1">
+              <span class="text-white">
                 {{ position.ticker }}
               </span>
             </div>

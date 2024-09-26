@@ -24,10 +24,10 @@ export default {
       ]),
     pnl: {
       duration: {
-        [LeaderboardDuration.OneDay]: '1 Day',
+        [LeaderboardDuration.OneDay]: 'Today',
         [LeaderboardDuration.All]: 'All Time',
-        [LeaderboardDuration.OneWeek]: '1 Week',
-        [LeaderboardDuration.OneMonth]: '1 Month'
+        [LeaderboardDuration.OneWeek]: 'This Week',
+        [LeaderboardDuration.OneMonth]: 'This Month'
       },
       share: 'Share',
       noPnlData: 'No PnL results found',

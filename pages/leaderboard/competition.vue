@@ -8,14 +8,10 @@ import { Modal } from '@/types'
 const appStore = useAppStore()
 const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
-const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
 
-/**
- * Todo: kill isCountdownTimerVisible after testing is complete since it's only used to make sure we still show the competition table while we make test campaigns. this can be done after first campaign goes live w/o issue
- */
-const isCountdownTimerVisible = ref(false)
-const status = reactive(new Status(StatusType.Loading))
+const upcomingCampaignStatus = reactive(new Status(StatusType.Idle))
+const activeCampaignStatus = reactive(new Status(StatusType.Idle))
 
 const now = useNow({ interval: 1000 })
 
@@ -26,9 +22,7 @@ const upcomingCampaign = computed(() => {
   }
 
   return campaignStore.pnlOrVolumeCampaigns.find(
-    ({ name, startDate }) =>
-      name === UPCOMING_LEADERBOARD_CAMPAIGN_NAME &&
-      new BigNumberInBase(startDate).gt(now.value.getTime())
+    ({ name }) => name === UPCOMING_LEADERBOARD_CAMPAIGN_NAME
   )
 })
 
@@ -52,6 +46,16 @@ const countdownUntilCampaignStart = computed(() => {
   return `${days}:${hours}:${minutes}:${seconds}`
 })
 
+const isCampaignStarted = computed(() => {
+  if (!upcomingCampaign.value) {
+    return
+  }
+
+  return new BigNumberInBase(now.value.getTime()).gt(
+    upcomingCampaign.value.startDate
+  )
+})
+
 /** first hour of campaign countdown **/
 const endOfCampaignFirstHour = computed(() => {
   if (!campaignStore.activeCampaign) {
@@ -63,7 +67,7 @@ const endOfCampaignFirstHour = computed(() => {
   return addHours(startDate, 1).getTime()
 })
 
-const isFirstHourOfCampaign = computed(() => {
+const isDuringFirstHourOfCampaign = computed(() => {
   if (!campaignStore.activeCampaign || !endOfCampaignFirstHour.value) {
     return
   }
@@ -114,7 +118,8 @@ const timeLeftInActiveCampaign = computed(() => {
 })
 
 onMounted(() => {
-  fetchCampaigns()
+  fetchUpcomingCampaigns()
+  fetchActiveCampaigns()
 
   if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
     return
@@ -123,36 +128,39 @@ onMounted(() => {
   modalStore.openModal(Modal.LeaderboardTerms)
 })
 
-function fetchCampaigns() {
-  status.setLoading()
+function fetchUpcomingCampaigns() {
+  upcomingCampaignStatus.setLoading()
 
-  Promise.all([
-    campaignStore.fetchCampaigns(),
-    campaignStore.fetchActiveCampaign()
-  ])
-    .then(async () => {
-      if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
-        isCountdownTimerVisible.value = true
-
-        return
-      }
-
-      await leaderboardStore.fetchCompetitionLeaderboard({
-        type: campaignStore.activeCampaignType,
-        duration: {
-          startDate: campaignStore.activeCampaign.startDate,
-          endDate: campaignStore.activeCampaign.endDate
-        }
-      })
-    })
+  campaignStore
+    .fetchUpcomingCampaigns()
     .catch($onError)
-    .finally(() => status.setIdle())
+    .finally(() => upcomingCampaignStatus.setIdle())
 }
+
+function fetchActiveCampaigns() {
+  activeCampaignStatus.setLoading()
+
+  campaignStore
+    .fetchActiveCampaign()
+    .catch($onError)
+    .finally(() => activeCampaignStatus.setIdle())
+}
+
+watch(isCampaignStarted, (isStarted) => {
+  if (isStarted) {
+    fetchActiveCampaigns()
+  }
+})
 </script>
 
 <template>
   <div>
-    <AppHocLoading v-bind="{ status }">
+    <AppHocLoading
+      v-bind="{
+        isLoading:
+          upcomingCampaignStatus.isLoading() || activeCampaignStatus.isLoading()
+      }"
+    >
       <div class="overflow-x-auto">
         <Teleport v-if="campaignStore.activeCampaign" to="#campaign-time-left">
           <i18n-t
@@ -179,21 +187,14 @@ function fetchCampaigns() {
             "
           />
 
-          <div
-            v-if="upcomingCampaign && isCountdownTimerVisible"
-            class="relative mb-20"
-          >
-            <div class="text-3xl font-bold tracking-[0.4px] mb-2">
-              {{ $t('leaderboard.competition.competitionBeginning') }}
-            </div>
-            <div
-              class="font-rubik text-[54px] leading-[54px] tracking-[0.4px]competition-gradient-text"
-            >
-              {{ countdownUntilCampaignStart }}
-            </div>
-          </div>
+          <PartialsLeaderboardCompetitionTable
+            v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
+          />
 
-          <div v-else-if="isFirstHourOfCampaign" class="mb-20">
+          <div
+            v-else-if="isDuringFirstHourOfCampaign"
+            class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
+          >
             {{
               $t('leaderboard.competition.firstHourOfCampaign', {
                 timeLeft: timeUntilEndOfFirstHour
@@ -201,7 +202,16 @@ function fetchCampaigns() {
             }}
           </div>
 
-          <PartialsLeaderboardCompetitionTable v-else />
+          <div v-else class="relative mb-20">
+            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
+              {{ $t('leaderboard.competition.competitionBeginning') }}
+            </div>
+            <div
+              class="font-rubik text-3xl sm:text-[54px] sm:leading-[54px] tracking-[0.4px] competition-gradient-text"
+            >
+              {{ countdownUntilCampaignStart }}
+            </div>
+          </div>
         </div>
       </div>
     </AppHocLoading>
