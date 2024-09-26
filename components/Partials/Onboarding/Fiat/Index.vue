@@ -2,7 +2,7 @@
 import {
   trackQrCodeBuyFunds,
   trackQrCodePageView
-} from '~/app/providers/mixpanel/EventTracker'
+} from '@/app/providers/mixpanel/EventTracker'
 
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
