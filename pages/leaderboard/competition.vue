@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
-import { isWithinInterval, addHours } from 'date-fns'
+import { format, isWithinInterval, addHours } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+import { UTC_TIMEZONE } from '@shared/utils/constant'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
 import { Modal } from '@/types'
 
@@ -67,6 +69,19 @@ const endOfCampaignFirstHour = computed(() => {
   return addHours(startDate, 1).getTime()
 })
 
+const endOfCampaignFirstHourInUTC = computed(() => {
+  if (!endOfCampaignFirstHour.value) {
+    return
+  }
+
+  const zonedFirstDate = utcToZonedTime(
+    endOfCampaignFirstHour.value,
+    UTC_TIMEZONE
+  )
+
+  return format(zonedFirstDate, "H:mm 'UTC'")
+})
+
 const isDuringFirstHourOfCampaign = computed(() => {
   if (!campaignStore.activeCampaign || !endOfCampaignFirstHour.value) {
     return
@@ -80,22 +95,6 @@ const isDuringFirstHourOfCampaign = computed(() => {
     start: startDate,
     end: endOfCampaignFirstHour.value
   })
-})
-
-const timeUntilEndOfFirstHour = computed(() => {
-  if (!endOfCampaignFirstHour.value) {
-    return
-  }
-
-  const duration = sharedGetDuration({
-    endDateInMilliseconds: endOfCampaignFirstHour.value.toString(),
-    nowInMilliseconds: now.value.getTime().toString()
-  })
-
-  const seconds = `${String(duration.seconds).padStart(2, '0')}`
-  const minutes = `${String(duration.minutes).padStart(2, '0')}`
-
-  return `${minutes}:${seconds}`
 })
 
 /** end of campaign countdown **/
@@ -191,20 +190,23 @@ watch(isCampaignStarted, (isStarted) => {
             v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
           />
 
-          <div v-else-if="isDuringFirstHourOfCampaign" class="mb-20">
+          <div
+            v-else-if="isDuringFirstHourOfCampaign"
+            class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
+          >
             {{
               $t('leaderboard.competition.firstHourOfCampaign', {
-                timeLeft: timeUntilEndOfFirstHour
+                afterFirstHour: endOfCampaignFirstHourInUTC
               })
             }}
           </div>
 
           <div v-else class="relative mb-20">
-            <div class="text-3xl font-bold tracking-[0.4px] mb-2">
+            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
               {{ $t('leaderboard.competition.competitionBeginning') }}
             </div>
             <div
-              class="font-rubik text-[54px] leading-[54px] tracking-[0.4px]competition-gradient-text"
+              class="font-rubik text-3xl sm:text-[54px] sm:leading-[54px] tracking-[0.4px] competition-gradient-text"
             >
               {{ countdownUntilCampaignStart }}
             </div>

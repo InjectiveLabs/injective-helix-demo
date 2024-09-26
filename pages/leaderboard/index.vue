@@ -9,7 +9,7 @@ const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-const selectedDuration = ref(LeaderboardDuration.All)
+const selectedDuration = ref(LeaderboardDuration.OneDay)
 
 const startDateFormatted = computed(() => {
   if (!leaderboardStore.pnlLeaderboard?.firstDate) {
