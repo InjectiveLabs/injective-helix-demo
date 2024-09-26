@@ -191,7 +191,10 @@ watch(isCampaignStarted, (isStarted) => {
             v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
           />
 
-          <div v-else-if="isDuringFirstHourOfCampaign" class="mb-20">
+          <div
+            v-else-if="isDuringFirstHourOfCampaign"
+            class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
+          >
             {{
               $t('leaderboard.competition.firstHourOfCampaign', {
                 timeLeft: timeUntilEndOfFirstHour
@@ -200,11 +203,11 @@ watch(isCampaignStarted, (isStarted) => {
           </div>
 
           <div v-else class="relative mb-20">
-            <div class="text-3xl font-bold tracking-[0.4px] mb-2">
+            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
               {{ $t('leaderboard.competition.competitionBeginning') }}
             </div>
             <div
-              class="font-rubik text-[54px] leading-[54px] tracking-[0.4px]competition-gradient-text"
+              class="font-rubik text-3xl sm:text-[54px] sm:leading-[54px] tracking-[0.4px] competition-gradient-text"
             >
               {{ countdownUntilCampaignStart }}
             </div>
