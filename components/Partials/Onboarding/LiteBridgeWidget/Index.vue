@@ -42,17 +42,17 @@ useHead({
     {
       rel: 'stylesheet',
       href: IS_TESTNET
-        ? 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/style.css'
-        : 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/style.css'
+        ? 'https://unpkg.com/lite-bridge-widget-injective-test/dist/testnet/style.css'
+        : 'https://unpkg.com/lite-bridge-widget-injective-test/dist/mainnet/style.css'
     }
   ],
   script: [
     {
       src: IS_TESTNET
-        ? `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/testnet/index.${
+        ? `https://unpkg.com/lite-bridge-widget-injective-test/dist/testnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`
-        : `https://unpkg.com/lite-bridge-widget-injective-test@0.0.5/dist/mainnet/index.${
+        : `https://unpkg.com/lite-bridge-widget-injective-test/dist/mainnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`,
       type: 'module',
