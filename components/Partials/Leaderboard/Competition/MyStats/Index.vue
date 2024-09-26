@@ -72,7 +72,12 @@ function onShareCompetition() {
 
 <template>
   <div v-if="sharedWalletStore.isUserConnected">
-    <AppHocLoading v-bind="{ status }">
+    <AppHocLoading
+      v-bind="{
+        status,
+        isHideLoader: !leaderboardStore.competitionLeaderboard
+      }"
+    >
       <PartialsLeaderboardMyStats
         v-bind="{ isUnranked: isStartTradingCTAVisible }"
       >

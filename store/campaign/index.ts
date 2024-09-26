@@ -300,12 +300,15 @@ export const useCampaignStore = defineStore('campaign', {
       // first campaign MUST be pnl type, so we're forcing any campaign to pnl type for testing purposes
       let [activeCampaign] = pnlOrVolumeCampaigns
 
-      activeCampaign = { ...activeCampaign, type: 'pnl_leaderboard' }
+      activeCampaign = {
+        ...activeCampaign,
+        type: 'pnl_leaderboard'
+      }
 
       campaignStore.$patch({ activeCampaign })
     },
 
-    async fetchCampaigns() {
+    async fetchUpcomingCampaigns() {
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
