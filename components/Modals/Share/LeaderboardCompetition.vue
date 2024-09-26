@@ -84,7 +84,7 @@ watchDebounced(
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px]"
     wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
-    @close="onCloseModal"
+    @modal:closed="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
