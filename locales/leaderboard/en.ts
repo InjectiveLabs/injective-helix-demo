@@ -52,9 +52,9 @@ export default {
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       firstHourOfCampaign: ({ named }: I18nMessageFunction) =>
-        `The competition has just started, check back in ${named(
-          'timeLeft'
-        )} to see where you stack up`,
+        `The competition is now live. The leaderboard will begin displaying campaign stats at ${named(
+          'afterFirstHour'
+        )}.`,
       termsAndConditionsApply: 'Terms and conditions apply',
       banner: {
         title: 'Trade Like a G',
