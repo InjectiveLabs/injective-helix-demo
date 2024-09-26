@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
-import { isWithinInterval, addHours } from 'date-fns'
+import { format, isWithinInterval, addHours } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+import { UTC_TIMEZONE } from '@shared/utils/constant'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
 import { Modal } from '@/types'
 
@@ -67,6 +69,19 @@ const endOfCampaignFirstHour = computed(() => {
   return addHours(startDate, 1).getTime()
 })
 
+const endOfCampaignFirstHourInUTC = computed(() => {
+  if (!endOfCampaignFirstHour.value) {
+    return
+  }
+
+  const zonedFirstDate = utcToZonedTime(
+    endOfCampaignFirstHour.value,
+    UTC_TIMEZONE
+  )
+
+  return format(zonedFirstDate, "H:mm 'UTC'")
+})
+
 const isDuringFirstHourOfCampaign = computed(() => {
   if (!campaignStore.activeCampaign || !endOfCampaignFirstHour.value) {
     return
@@ -80,22 +95,6 @@ const isDuringFirstHourOfCampaign = computed(() => {
     start: startDate,
     end: endOfCampaignFirstHour.value
   })
-})
-
-const timeUntilEndOfFirstHour = computed(() => {
-  if (!endOfCampaignFirstHour.value) {
-    return
-  }
-
-  const duration = sharedGetDuration({
-    endDateInMilliseconds: endOfCampaignFirstHour.value.toString(),
-    nowInMilliseconds: now.value.getTime().toString()
-  })
-
-  const seconds = `${String(duration.seconds).padStart(2, '0')}`
-  const minutes = `${String(duration.minutes).padStart(2, '0')}`
-
-  return `${minutes}:${seconds}`
 })
 
 /** end of campaign countdown **/
@@ -197,7 +196,7 @@ watch(isCampaignStarted, (isStarted) => {
           >
             {{
               $t('leaderboard.competition.firstHourOfCampaign', {
-                timeLeft: timeUntilEndOfFirstHour
+                afterFirstHour: endOfCampaignFirstHourInUTC
               })
             }}
           </div>
