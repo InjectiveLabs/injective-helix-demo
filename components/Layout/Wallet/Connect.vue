@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
 import { IS_DEVNET } from '@shared/utils/constant'
@@ -111,6 +112,15 @@ onMounted(() => {
     sharedWalletStore.checkIsPhantomWalletInstalled()
   ]).finally(() => status.setIdle())
 })
+
+watch(
+  () => sharedWalletStore.walletConnectStatus,
+  (status: WalletConnectStatus) => {
+    if (status === WalletConnectStatus.idle) {
+      magicStatus.setIdle()
+    }
+  }
+)
 
 function onSetMagicStatusLoading() {
   magicStatus.setLoading()
