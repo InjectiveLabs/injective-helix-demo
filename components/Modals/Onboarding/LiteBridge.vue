@@ -26,6 +26,12 @@ function onTransferSuccess() {
   view.value = View.Success
   isAlwaysOpen.value = false
 }
+
+function onCloseAlwaysOpen() {
+  view.value = View.Widget
+  isAlwaysOpen.value = false
+  closeModal()
+}
 </script>
 
 <template>
@@ -45,6 +51,7 @@ function onTransferSuccess() {
     <PartialsOnboardingLiteBridgeWidgetProcessing
       v-if="view === View.Processing"
       @transfer:success="onTransferSuccess"
+      @close="onCloseAlwaysOpen"
     />
 
     <PartialsOnboardingLiteBridgeWidgetSuccess v-if="view === View.Success" />

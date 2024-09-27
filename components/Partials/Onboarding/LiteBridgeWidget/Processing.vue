@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { usdtToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
 const accountStore = useAccountStore()
+const { t } = useLang()
 
 const emit = defineEmits<{
   'transfer:success': []
+  close: []
 }>()
 
 const countdown = ref(60)
@@ -46,6 +49,10 @@ watch(
     }
   }
 )
+
+const handleClose = () => {
+  emit('close')
+}
 </script>
 
 <template>
@@ -59,5 +66,24 @@ watch(
     <p v-if="showMessage" class="text-sm mt-2 text-center text-gray-500">
       {{ $t('onboarding.processingMessage') }}
     </p>
+
+    <p class="text-sm text-gray-300">
+      <span>{{ $t('onboarding.processingMessageInfo') }}</span>
+      {{ ' ' }}
+      <NuxtLink
+        class="text-blue-500 hover:underline"
+        :external="true"
+        target="_blank"
+        :to="getBridgeRedirectionUrl()"
+      >
+        {{ $t('onboarding.injectiveBridge') }}.
+      </NuxtLink>
+    </p>
+
+    <div class="w-full">
+      <AppButton class="mt-4 -mb-8 w-full" @click="handleClose">
+        {{ t('onboarding.closeAndContinue') }}
+      </AppButton>
+    </div>
   </div>
 </template>

@@ -448,6 +448,10 @@ export default {
     scanQrCodeOrCopy:
       'Scan the QR code or copy your new address below to begin',
     processingMessage:
-      'Processing is taking more than usual. Please wait for a while.'
+      'Processing is taking more than usual. Please wait for a while.',
+    closeAndContinue: 'Close and continue',
+    injectiveBridge: 'Injective Bridge',
+    processingMessageInfo:
+      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
   }
 }
