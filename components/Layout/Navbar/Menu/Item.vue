@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
 const appStore = useAppStore()
@@ -108,7 +109,7 @@ function close() {
       class="py-2 px-6 flex w-full"
       :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
     >
-      <div class="flex-1 w-full flex justify-between">
+      <div class="flex-1 w-full flex justify-between items-center">
         <div class="flex-1">
           <p :class="{ '': level > 0 }">
             {{ $t(item.label) }}
@@ -121,8 +122,11 @@ function close() {
           </p>
         </div>
 
-        <div v-if="level > 0" class="flex items-center">
-          <SharedIcon name="chevron" class="rotate-180" is-sm />
+        <div
+          class="ml-2 -mr-2"
+          :class="{ 'rotate-90': isOpen, '-rotate-90': !isOpen }"
+        >
+          <SharedIcon name="chevron" is-sm />
         </div>
       </div>
     </div>

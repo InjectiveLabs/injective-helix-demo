@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { WalletConnectStatus } from '@shared/types'
 import { formatWalletAddress } from '@injectivelabs/utils'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { MainPage, PortfolioSubPage } from '@/types'
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,11 +38,20 @@ function disconnect() {
           class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
           @click="toggle"
         >
-          <SharedIcon
-            name="user"
-            class="lg:mr-2 w-8 h-8 p-1 rounded-md hover:bg-brand-800"
+          <AppSpinner
+            v-if="
+              sharedWalletStore.walletConnectStatus ===
+              WalletConnectStatus.disconnecting
+            "
+            is-sm
+            is-white
           />
-          <span class="hidden lg:block font-mono">
+          <SharedIcon
+            v-else
+            name="user"
+            class="w-8 h-8 p-1 rounded-md hover:bg-brand-800"
+          />
+          <span class="hidden lg:block font-mono lg:ml-2">
             {{ formattedInjectiveAddress }}
           </span>
         </div>

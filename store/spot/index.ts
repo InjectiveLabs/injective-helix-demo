@@ -45,8 +45,9 @@ import {
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import { spotSlugs } from '@/app/json'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { marketIdsToHide } from '@/app/data/market'
 import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
 type SpotStoreState = {
@@ -220,7 +221,9 @@ export const useSpotStore = defineStore('spot', {
             isVerified: spotSlugs.includes(formattedMarket.slug)
           }
         })
-        .filter((market) => market) as UiSpotMarket[]
+        .filter(
+          (market) => market && !marketIdsToHide.includes(market.marketId)
+        ) as UiSpotMarket[]
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {

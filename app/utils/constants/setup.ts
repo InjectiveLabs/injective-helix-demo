@@ -191,3 +191,6 @@ export const COIN_GECKO_OPTIONS = {
 
 export const DEBUG_CALCULATION: boolean = env.VITE_DEBUG_CALCULATION === 'true'
 export const MAINTENANCE_ENABLED = env.VITE_MAINTENANCE_ENABLED === 'true'
+
+export const MERCURYO_KEY = import.meta.env.VITE_MERCURYO_KEY || ''
+export const MERCURYO_WIDGET_ID = import.meta.env.VITE_MERCURYO_WIDGET_ID || ''

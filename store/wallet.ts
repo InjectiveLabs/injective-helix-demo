@@ -9,6 +9,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
+import { Modal } from '@/types'
 
 type WalletStoreState = {}
 
@@ -49,6 +50,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
+      const modalStore = useModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -105,6 +107,7 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
+      modalStore.closeModal(Modal.Connect)
 
       if (sharedWalletStore.isUserConnected) {
         const someAddressInWalletIsBlackListed =

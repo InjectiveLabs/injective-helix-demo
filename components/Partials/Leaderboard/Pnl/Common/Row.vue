@@ -5,14 +5,14 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
-    leader: LeaderboardRow
+    leader?: LeaderboardRow
   }>(),
   {
     leader: () => ({
-      account: '',
-      rank: 0,
       pnl: 0,
-      volume: 0
+      rank: 0,
+      volume: 0,
+      account: ''
     })
   }
 )

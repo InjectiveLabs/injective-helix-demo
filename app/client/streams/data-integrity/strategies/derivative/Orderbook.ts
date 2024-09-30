@@ -8,7 +8,7 @@ export class DerivativeOrderbookIntegrityStrategy
   implements
     ConcreteDataIntegrityStrategy<string, SharedUiOrderbookWithSequence>
 {
-  constructor(public args: string) {
+  constructor(public override args: string) {
     super(args)
   }
 

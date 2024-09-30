@@ -8,9 +8,9 @@ withDefaults(
     length?: number
   }>(),
   {
-    status: () => new Status(StatusType.Loading),
     size: 22,
-    length: 5
+    length: 5,
+    status: () => new Status(StatusType.Loading)
   }
 )
 </script>

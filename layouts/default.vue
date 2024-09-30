@@ -1,11 +1,20 @@
 <script lang="ts" setup>
+import { usdtToken } from '@shared/data/token'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
-import { MainPage, LiquidityRewardsPage, PortfolioStatusKey } from '@/types'
+import {
+  Modal,
+  MainPage,
+  PortfolioStatusKey,
+  LiquidityRewardsPage
+} from '@/types'
 
 const route = useRoute()
 const authZStore = useAuthZStore()
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -47,11 +56,19 @@ onWalletConnected(() => {
   mixpanelAnalytics.init()
 
   fetchUserPortfolio()
+    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
       fetchSubaccountStream()
     })
+})
+
+onWalletInitialConnected(() => {
+  WalletTracker.trackLogin({
+    wallet: sharedWalletStore.wallet,
+    address: sharedWalletStore.injectiveAddress
+  })
 })
 
 onSubaccountChange(() => {
@@ -64,6 +81,7 @@ function fetchUserPortfolio() {
     authZStore.fetchGrants(),
 
     accountStore.fetchCw20Balances(),
+    accountStore.fetchErc20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
     positionStore.fetchPositions()
@@ -78,6 +96,35 @@ function fetchSubaccountStream() {
   accountStore.streamSubaccountBalance()
   accountStore.streamBankBalance()
   positionStore.streamSubaccountPositions()
+}
+
+function checkOnboarding() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  if (route.query.bridge === 'true') {
+    modalStore.openModal(Modal.LiteBridge)
+
+    return
+  }
+
+  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
+
+  if (
+    sharedWalletStore.isUserConnected &&
+    !accountStore.hasBalance &&
+    sharedWalletStore.wallet === Wallet.Metamask &&
+    Number(erc20UsdtBalance?.balance || 0) > 0
+  ) {
+    modalStore.openModal(Modal.LiteBridge)
+
+    return
+  }
+
+  if (!accountStore.hasBalance) {
+    modalStore.openModal(Modal.FiatOnboard)
+  }
 }
 
 provide(PortfolioStatusKey, portfolioStatus)
@@ -97,11 +144,16 @@ provide(PortfolioStatusKey, portfolioStatus)
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
     <!-- <ModalsNewFeature /> -->
-    <ModalsDevMode />
-    <ModalsPostOnlyMode />
-    <ModalsGeoRestricted />
+
     <ModalsRedeemVoucher />
+
+    <ModalsPostOnlyMode />
+
+    <ModalsDevMode />
+    <ModalsGeoRestricted />
     <SharedPageConfetti />
+    <ModalsOnboardingLiteBridge />
+    <ModalsOnboardingFiat />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

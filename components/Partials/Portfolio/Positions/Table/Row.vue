@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
@@ -10,7 +11,6 @@ import {
   ClosePositionLimitFormField
 } from '@/types'
 
-const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const tokenStore = useTokenStore()
 const positionStore = usePositionStore()
@@ -291,7 +291,6 @@ function sharePosition() {
         </div>
 
         <SharedIcon
-          v-if="appStore.devMode"
           name="share"
           class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
           @click="sharePosition"

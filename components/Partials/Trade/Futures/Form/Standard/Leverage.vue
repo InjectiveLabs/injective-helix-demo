@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
 import { FactoryOpts } from 'imask'
+import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {

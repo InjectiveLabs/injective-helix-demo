@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PerpetualMarketCyTags } from '@/types'
 

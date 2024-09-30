@@ -3,7 +3,7 @@ const props = withDefaults(
   defineProps<{
     limit: number
     options: number[]
-    selectedClass: string
+    selectedClass?: string
   }>(),
   {
     options: () => [],

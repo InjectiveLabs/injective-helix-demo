@@ -6,6 +6,13 @@ export default {
     close: 'Close',
     connect: 'Connect',
     beta: 'Beta',
+    signUp: 'Sign Up',
+    logIn: 'Log In',
+    getStarted: 'Get Started',
+    getStartedDescription:
+      'Connect your wallet or sign up with SSO to get started.',
+    showMoreWallets: 'Show more wallets',
+    showLessWallets: 'Show fewer wallets',
     deposit: 'Deposit',
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
@@ -53,6 +60,16 @@ export default {
     connectUsingTrezor: 'Connect using Trezor',
     connectUsingTrezorNote:
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
+
+    magic: {
+      google: {
+        cta: 'Sign up with Google'
+      },
+      email: {
+        placeholder: 'Your email address',
+        cta: 'Continue'
+      }
+    },
 
     leap: 'Leap',
     cosmostation: 'Cosmostation',

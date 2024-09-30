@@ -4,7 +4,6 @@ import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { TradeSubPage } from '@/types'
 
-const appStore = useAppStore()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
@@ -39,7 +38,7 @@ const totalMarkets = computed(
             {{ $t('home.openFinance') + ' ' }}
           </span>
           <span class="relative text-gray-400">
-            <AssetLikeAG v-if="appStore.devMode" />
+            <AssetLikeAG />
 
             {{ $t('home.reimagined') }}
           </span>

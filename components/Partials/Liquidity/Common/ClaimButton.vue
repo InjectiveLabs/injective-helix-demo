@@ -6,7 +6,7 @@ import { backupPromiseCall } from '@/app/utils/async'
 const props = withDefaults(
   defineProps<{
     campaign: Campaign
-    forceDisabled: boolean
+    forceDisabled?: boolean
   }>(),
   {
     forceDisabled: false

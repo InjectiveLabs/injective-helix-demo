@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const props = withDefaults(defineProps<{ isCarousel: boolean }>(), {
+const props = withDefaults(defineProps<{ isCarousel?: boolean }>(), {
   isCarousel: false
 })
 

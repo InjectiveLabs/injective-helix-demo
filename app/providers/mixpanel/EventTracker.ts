@@ -161,3 +161,43 @@ export const trackRemoveStrategy = (
     ...formatStatus(error)
   })
 }
+
+export const trackLiteBridgePageView = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgePageView, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackLiteBridgeBridged = ({
+  wallet,
+  amount,
+  symbol,
+  error
+}: {
+  wallet: string
+  amount: string
+  symbol: string
+  error?: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgeBridged, {
+    Wallet: wallet,
+    Symbol: symbol,
+    Amount: new BigNumberInBase(amount).toNumber(),
+    ...formatStatus(error)
+  })
+}
+
+export const trackQrCodePageView = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.QrCodePageView, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.QrCodeBuyFunds, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
