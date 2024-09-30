@@ -334,15 +334,16 @@ import { MainPage, LeaderboardSubPage } from '@/types'
     <p class="mb-4">
       (a) the PNL Winner will be invited to receive a prize (the “PNL Prize”) of
       a Mercedes Benz G-Wagon (“Vehicle”) or a cash prize of $148,250, which is
-      approximately equivalent to the Vehicle’s starting MSRP (the “Cash
-      Award”). The Sponsor shall decide, in its sole to discretion, whether to
-      award the PNL Winner the Vehicle or the Cash Award and such decision shall
-      be final;
+      approximately equivalent to the Vehicle’s starting MSRP<sup>1</sup> (the
+      “Cash Award”). The Sponsor shall decide, in its sole to discretion,
+      whether to award the PNL Winner the Vehicle or the Cash Award and such
+      decision shall be final;
     </p>
     <p class="mb-4">
       (b) the Giveaway Winner will be invited to receive a prize (the “Giveaway
       Prize”) of a Mercedes Benz G-Wagon (“Vehicle”) or a cash prize of
-      $148,250, which is approximately equivalent to the Vehicle’s starting MSRP
+      $148,250, which is approximately equivalent to the Vehicle’s starting
+      MSRP<sup>2</sup>
       (the “Cash Award”). The Sponsor shall decide, in its sole to discretion,
       whether to award the Giveaway Winner the Vehicle or the Cash Award and
       such decision shall be final;
@@ -350,17 +351,18 @@ import { MainPage, LeaderboardSubPage } from '@/types'
     <p class="mb-4">
       (c) Macbook Winners will each receive a 16-inch Macbook Pro (18 GB Unified
       Memory) with M3 Pro, or a cash prize of $2,499, which is approximately
-      equivalent to the device’s retail price (the “Macbook Cash Award”). The
-      Sponsor shall decide, in its sole to discretion, whether to award the
-      Macbook Winners the Macbook or the Macbook Cash Award and such decision
-      shall be final;
+      equivalent to the device’s retail price<sup>3</sup> (the “Macbook Cash
+      Award”). The Sponsor shall decide, in its sole to discretion, whether to
+      award the Macbook Winners the Macbook or the Macbook Cash Award and such
+      decision shall be final;
     </p>
     <p class="mb-4">
       (d) iPhone Winners will each receive an iPhone 16 Pro or a cash prize of
-      $999, which is approximately equivalent to the device’s retail price (the
-      “iPhone Cash Award”). The Sponsor shall decide, in its sole discretion,
-      whether to award the iPhone Winners the iPhone or the iphone Cash Award
-      and such decision shall be final.
+      $999, which is approximately equivalent to the device’s retail price
+      <sup class="-ml-1">4</sup>
+      (the “iPhone Cash Award”). The Sponsor shall decide, in its sole
+      discretion, whether to award the iPhone Winners the iPhone or the iphone
+      Cash Award and such decision shall be final.
     </p>
 
     <h3 class="text-lg font-bold mb-2 uppercase">DISCLAIMER OF SPONSORSHIP:</h3>
@@ -400,6 +402,21 @@ import { MainPage, LeaderboardSubPage } from '@/types'
     <p class="mb-2">
       <sup>2</sup>
       <span class="ml-1">
+        The Cash Award amount is based on publicly available information
+        regarding the Vehicle’s MSRP at
+        <NuxtLink
+          href="https://www.mbusa.com/en/vehicles/build/g-class/suv"
+          class="text-blue-500 hover:text-blue-600"
+        >
+          https://www.mbusa.com/en/vehicles/build/g-class/suv
+        </NuxtLink>
+        , last visited on September 19, 2024.
+      </span>
+    </p>
+
+    <p class="mb-2">
+      <sup>3</sup>
+      <span class="ml-1">
         The Macbook Cash Award amount is based on publicly available information
         regarding the Macbook’s retail price at
         <NuxtLink
@@ -413,7 +430,7 @@ import { MainPage, LeaderboardSubPage } from '@/types'
     </p>
 
     <p class="mb-2">
-      <sup>3</sup>
+      <sup>4</sup>
       <span class="ml-1">
         The iPhone’s Cash Award amount is based on publicly available
         information regarding the iPhone’s retail price at
