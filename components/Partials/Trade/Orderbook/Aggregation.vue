@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { countZerosAfterDecimal } from '@/app/utils/helpers'
 import {
-  AggregationKey,
   IsSpotKey,
   MarketKey,
+  AggregationKey,
   UiMarketWithToken
 } from '@/types'
-import { countZerosAfterDecimal } from '~/app/utils/helpers'
 
 const market = inject(MarketKey)
 const aggregation = inject(AggregationKey, ref(1))

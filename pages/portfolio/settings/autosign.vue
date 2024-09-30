@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, PortfolioSubPage } from '@/types'
-import { TRADING_MESSAGES } from '~/app/data/trade'
 
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()

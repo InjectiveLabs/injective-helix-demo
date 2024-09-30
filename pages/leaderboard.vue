@@ -2,18 +2,6 @@
 import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
 import { MainPage, LeaderboardSubPage } from '@/types'
 
-definePageMeta({
-  middleware: [
-    () => {
-      const appStore = useAppStore()
-
-      if (!appStore.devMode) {
-        return navigateTo({ name: MainPage.Index })
-      }
-    }
-  ]
-})
-
 const route = useRoute()
 const sharedGeoStore = useSharedGeoStore()
 

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SwapFormField, SwapCyTags } from '@/types'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
+import { SwapFormField, SwapCyTags } from '@/types'
 
 const dropdownRef = ref<null | { isOpen: boolean }>(null)
 const slippageList = ['0.1', '0.5', '1.0']

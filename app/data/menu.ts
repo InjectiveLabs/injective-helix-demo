@@ -116,7 +116,6 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Dropdown,
     label: 'navigation.leaderboard.title',
-    devOnly: true,
     items: [
       {
         type: MenuItemType.Link,

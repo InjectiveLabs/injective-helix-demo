@@ -20,7 +20,7 @@ const button = cva(
           'bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-500/70 hover:border-blue-500/70 disabled:bg-transparent disabled:text-gray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',
 
         'primary-outline':
-          'bg-transparent text-gray-200 border-blue-500 hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-gray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',
+          'bg-transparent text-gray-200 border-blue-500 hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-gray-400 disabled:border-gray-500 focus-within:ring-[3px] ring-blue-700',
 
         'primary-ghost':
           'bg-transparent text-gray-200 border-transparent hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-gray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',

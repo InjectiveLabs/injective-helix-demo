@@ -2,7 +2,6 @@
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { SharedDropdownOption } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -51,14 +50,9 @@ const connect = handleSubmit(() => {
       wallet: Wallet.Trezor,
       address: address.value
     })
-    .then(() => {
+    .then(() =>
       notificationStore.success({ title: t('connect.successfullyConnected') })
-
-      WalletTracker.trackLogin({
-        wallet: sharedWalletStore.wallet,
-        address: sharedWalletStore.injectiveAddress
-      })
-    })
+    )
     .catch((e) => {
       $onError(e)
     })

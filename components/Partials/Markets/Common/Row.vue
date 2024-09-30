@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
+import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken, MarketCyTags } from '@/types'
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { PerpetualMarketCyTags } from '@/types'

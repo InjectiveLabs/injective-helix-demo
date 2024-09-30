@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { SwapForm, SwapCyTags } from '@/types'
+import { dataCyTag } from '@shared/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import { SwapForm, SwapCyTags } from '@/types'
 
 const showFeeBreakdown = ref(false)
 const formValues = useFormValues<SwapForm>()

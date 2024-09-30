@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { twMerge } from 'tailwind-merge'
+
 const slots = useSlots()
 const { width } = useWindowSize()
 
@@ -9,6 +11,7 @@ const props = withDefaults(
     isSm?: boolean
     isOpen?: boolean
     isDense?: boolean
+    parentClass?: string
     isAlwaysOpen?: boolean
     isTransparent?: boolean
     isHideCloseButton?: boolean
@@ -21,6 +24,7 @@ const props = withDefaults(
     isSm: false,
     isOpen: false,
     isDense: false,
+    parentClass: '',
     isAlwaysOpen: false,
     isTransparent: false,
     isHideCloseButton: false,
@@ -74,7 +78,13 @@ watchDebounced(
     <SharedModalWrapper
       v-if="isOpen"
       class="relative mx-auto sm:rounded-lg border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
-      :class="[isTransparent ? 'bg-brand-900/95' : 'bg-brand-900', classes]"
+      :class="
+        twMerge(
+          parentClass,
+          isTransparent ? 'bg-brand-900/95' : 'bg-brand-900',
+          classes
+        )
+      "
       wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
       :ignore="['.v-popper__inner']"

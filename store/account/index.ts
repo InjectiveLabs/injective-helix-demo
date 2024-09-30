@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import {
   indexerRestExplorerApi,
-  indexerAccountPortfolioApi
+  indexerAccountPortfolioApi,
+  web3Client
 } from '@shared/Service'
 import { Coin } from '@injectivelabs/ts-types'
+import { usdtToken } from '@shared/data/token'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -29,13 +31,21 @@ type AccountStoreState = {
   cw20Balances: { address: string; amount: string }[]
   bankBalances: Coin[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
+  erc20BalancesMap: Record<
+    string,
+    {
+      balance: string
+      allowance: string
+    }
+  >
 }
 
 const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   cw20Balances: [],
   subaccountId: '',
-  subaccountBalancesMap: {}
+  subaccountBalancesMap: {},
+  erc20BalancesMap: {}
 })
 
 export const useAccountStore = defineStore('account', {
@@ -91,7 +101,14 @@ export const useAccountStore = defineStore('account', {
 
     isSgtSubaccount: (state) =>
       !!isSgtSubaccountId(state.subaccountId) ||
-      !!isPgtSubaccountId(state.subaccountId)
+      !!isPgtSubaccountId(state.subaccountId),
+
+    hasBalance: (state) => {
+      return (
+        state.bankBalances.length > 0 ||
+        Object.keys(state.subaccountBalancesMap).length > 1
+      )
+    }
   },
   actions: {
     deposit,
@@ -170,6 +187,26 @@ export const useAccountStore = defineStore('account', {
           address: balance.contract_address,
           amount: balance.balance
         }))
+      })
+    },
+
+    async fetchErc20Balances() {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      const { balance, allowance } =
+        await web3Client.fetchTokenBalanceAndAllowance({
+          address: sharedWalletStore.address,
+          contractAddress: usdtToken.denom.replace('peggy', '')
+        })
+
+      accountStore.$patch({
+        erc20BalancesMap: {
+          [usdtToken.denom]: {
+            balance,
+            allowance
+          }
+        }
       })
     },
 

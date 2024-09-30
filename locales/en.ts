@@ -35,6 +35,7 @@ export default {
   ...institutional,
   ...liquidityBots,
   common: {
+    or: 'or',
     ok: 'OK',
     BTC: 'BTC',
     docs: 'docs',
@@ -431,5 +432,26 @@ export default {
     title: 'Post Only Mode!',
     description:
       'Please note that for the 2000 blocks (~30 minutes) immediately after the Injective Volan mainnet upgrade, only limit orders can be placed during this period.'
+  },
+
+  onboarding: {
+    qr: {
+      skip: 'Skip',
+      cta: 'Buy INJ with Card'
+    },
+    copy: 'Copy',
+    fundsNeeded: 'Funds Needed',
+    processing: 'Processing your transfer',
+    success: 'Your transaction has been confirmed',
+    fundsNeededDescription:
+      'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+    scanQrCodeOrCopy:
+      'Scan the QR code or copy your new address below to begin',
+    processingMessage:
+      'Processing is taking more than usual. Please wait for a while.',
+    closeAndContinue: 'Close and continue',
+    injectiveBridge: 'Injective Bridge',
+    processingMessageInfo:
+      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
   }
 }

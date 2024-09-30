@@ -7,14 +7,20 @@ export default defineNuxtConfig({
   ssr: false,
   builder: 'vite',
   css: ['@/assets/css/tailwind.css'],
+
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/nuxt-3.13.1'
   ],
 
   app: {
     head
+  },
+
+  sourcemap: {
+    server: false,
+    client: true
   },
 
   imports: {
@@ -50,5 +56,7 @@ export default defineNuxtConfig({
           apiKey: process.env.VITE_BUGSNAG_KEY
         }
       }
-    : undefined
+    : undefined,
+
+  compatibilityDate: '2024-09-09'
 })

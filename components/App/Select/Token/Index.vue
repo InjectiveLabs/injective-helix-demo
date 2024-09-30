@@ -3,6 +3,7 @@ import {
   SharedBalanceWithToken,
   SharedBalanceWithTokenAndPrice
 } from '@shared/types'
+import { dataCyTag } from '@shared/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {

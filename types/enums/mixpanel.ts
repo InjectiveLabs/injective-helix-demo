@@ -8,7 +8,11 @@ export enum MixPanelEvent {
   PlaceOrderClicked = 'Place Order Clicked',
   SwapClicked = 'Swap Clicked',
   CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',
-  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked'
+  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
+  LiteBridgePageView = 'Lite Bridge Page View',
+  LiteBridgeBridged = 'Lite Bridge Bridged',
+  QrCodePageView = 'QR Code Page View',
+  QrCodeBuyFunds = 'QR Code Buy Funds'
 }
 
 export enum MixPanelCounter {

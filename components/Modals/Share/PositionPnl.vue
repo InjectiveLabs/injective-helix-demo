@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { TradeDirection } from '@injectivelabs/ts-types'
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 

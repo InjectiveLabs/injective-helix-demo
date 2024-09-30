@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 import {
