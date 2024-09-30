@@ -117,12 +117,14 @@ function checkOnboarding() {
     sharedWalletStore.wallet === Wallet.Metamask &&
     Number(erc20UsdtBalance?.balance || 0) > 0
   ) {
+    modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.LiteBridge)
 
     return
   }
 
   if (!accountStore.hasBalance) {
+    modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.FiatOnboard)
   }
 }

@@ -34,7 +34,7 @@ const portfolioStatus = inject(
 <template>
   <div
     v-if="isBannerVisible && !hasBalance"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-2 text-sm justify-between"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40"
   >
     <div />
 
