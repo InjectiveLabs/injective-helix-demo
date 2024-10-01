@@ -65,6 +65,12 @@ onWalletConnected(() => {
 })
 
 onWalletInitialConnected(() => {
+  // eslint-disable-next-line
+  console.log({
+    wallet: sharedWalletStore.wallet,
+    address: sharedWalletStore.injectiveAddress
+  })
+
   WalletTracker.trackLogin({
     wallet: sharedWalletStore.wallet,
     address: sharedWalletStore.injectiveAddress
