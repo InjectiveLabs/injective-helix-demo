@@ -43,6 +43,13 @@ onMounted(() => {
   Promise.all([appStore.fetchBlockHeight()])
 })
 
+onWalletInitialConnected(() => {
+  WalletTracker.trackLogin({
+    wallet: sharedWalletStore.wallet,
+    address: sharedWalletStore.injectiveAddress
+  })
+})
+
 provide(UnknownTokenStatusKey, unknownTokenStatus)
 </script>
 
