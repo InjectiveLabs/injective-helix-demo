@@ -17,12 +17,6 @@ export const trackLogin = ({
 
   client.identify(address)
 
-  // eslint-disable-next-line no-console
-  console.log('trackLogin', MixPanelEvent.WalletConnected, {
-    Wallet: wallet,
-    Address: address
-  })
-
   mixpanelAnalytics.track(MixPanelEvent.WalletConnected, {
     Wallet: wallet,
     Address: address
