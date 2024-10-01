@@ -22,12 +22,6 @@ export const trackLogin = ({
     Address: address
   })
 
-  // eslint-disable-next-line
-  console.log(MixPanelEvent.WalletConnected, {
-    Wallet: wallet,
-    Address: address
-  })
-
   client.people.increment({ Login: 1, [wallet]: 1 })
   client.people.set({ wallet })
 }
