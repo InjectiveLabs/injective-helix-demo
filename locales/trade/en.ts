@@ -480,6 +480,21 @@ export default {
       cta: 'Proceed anyway'
     },
 
+    marketMultiplierBanner: {
+      description: ({ named, interpolate }: I18nMessageFunction) =>
+        interpolate([
+          'This market offers ',
+          named('multiplier'),
+          "x multipliers for 'Like a G' competition entries starting ",
+          named('startDate'),
+          ' for ',
+          named('duration'),
+          ' hours. Multipliers will be reflected on the leaderboard at a later time. ',
+          named('terms'),
+          ' apply.'
+        ])
+    },
+
     yes: 'Yes',
     no: 'No'
   }

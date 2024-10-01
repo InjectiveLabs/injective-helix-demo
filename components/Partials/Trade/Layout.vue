@@ -14,6 +14,8 @@ withDefaults(
 
 <template>
   <div class="[grid-area:stats] border-b bg-brand-900 z-30 relative">
+    <PartialsTradeCommonMarketMultiplierBanner v-bind="{ market }" />
+
     <slot name="stats">
       <PartialsTradeStats v-bind="{ market }" />
     </slot>
