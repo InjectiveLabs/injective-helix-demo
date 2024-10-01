@@ -318,7 +318,7 @@ function sharePosition() {
 
       <div class="flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.liquidation_price') }}</p>
-        <p>{{ liquidationPrice.toFormat(2) }}</p>
+        <p>{{ liquidationPrice.toFormat(market.priceDecimals) }}</p>
       </div>
 
       <div class="justify-between flex items-center px-2 py-4">
