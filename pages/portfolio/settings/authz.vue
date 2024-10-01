@@ -2,6 +2,7 @@
 import { PortfolioSubPage, Modal } from '@/types'
 
 const modalStore = useModalStore()
+const appStore = useAppStore()
 
 const linkOptions = [
   {
@@ -44,7 +45,7 @@ function openGranteeModal() {
             {{ $t(option.label) }}
           </NuxtLink>
         </div>
-        <div>
+        <div v-if="appStore.devMode">
           <button
             :disabled="isDisabled"
             class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"

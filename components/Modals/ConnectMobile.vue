@@ -19,14 +19,18 @@ const tradingMessages = [
   MsgType.MsgExecuteContractCompat
 ]
 
+const appStore = useAppStore()
 const modalStore = useModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const authZStore = useAuthZStore()
-const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.ConnectMobile])
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+
+const isModalOpen = computed(
+  () => modalStore.modals[Modal.ConnectMobile] && appStore.devMode
+)
 
 const isInitialized = ref(false)
 const mobileAddress = ref<string | null>(null)
