@@ -318,7 +318,7 @@ function sharePosition() {
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
       >
-        {{ liquidationPrice.toFormat(2) }}
+        {{ liquidationPrice.toFormat(market.priceDecimals) }}
       </div>
 
       <div
