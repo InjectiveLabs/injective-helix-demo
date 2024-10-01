@@ -1,5 +1,5 @@
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { IS_TESTNET, SHOW_REDEEM_VOUCHER } from '@/app/utils/constants'
+import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   MenuItem,
@@ -47,13 +47,6 @@ const tradeMenu: MenuItem = {
         },
         query: { interface: TradingInterface.TradingBots }
       }
-    },
-    {
-      connectedOnly: true,
-      type: MenuItemType.Link,
-      label: 'voucher.redeemVoucher',
-      devOnly: !SHOW_REDEEM_VOUCHER,
-      description: 'voucher.redeemVoucherSublabel'
     }
   ]
 }

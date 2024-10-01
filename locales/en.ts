@@ -109,16 +109,7 @@ export default {
         `Go to new ${named('market')} spot grid`
     }
   },
-  voucher: {
-    redeemVoucher: 'Redeem Voucher',
-    redeemVoucherSublabel:
-      'Token20249 voucher redemption is available from September 17 to October 1.',
-    redeemVoucherDescription:
-      'Enter your voucher code below to redeem your prize. Prizes will be distributed by October 8, 2024.',
-    enterVoucherCode: 'Enter Voucher Code',
-    redeem: 'Redeem',
-    voucherRedeemed: 'Voucher Redeemed Successfully'
-  },
+
   globalBanner: {
     title: 'Deposit assets on Injective to get started on Helix'
   },

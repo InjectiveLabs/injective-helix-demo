@@ -140,8 +140,6 @@ provide(PortfolioStatusKey, portfolioStatus)
     <!-- <ModalsUserFeedback /> -->
     <!-- <ModalsNewFeature /> -->
 
-    <ModalsRedeemVoucher />
-
     <ModalsPostOnlyMode />
 
     <ModalsDevMode />
