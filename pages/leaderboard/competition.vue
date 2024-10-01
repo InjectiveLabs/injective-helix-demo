@@ -161,7 +161,11 @@ watch(isCampaignStarted, (isStarted) => {
       }"
     >
       <div class="overflow-x-auto">
-        <Teleport v-if="campaignStore.activeCampaign" to="#campaign-time-left">
+        <Teleport
+          v-if="campaignStore.activeCampaign"
+          to="#campaign-time-left"
+          defer
+        >
           <i18n-t
             tag="p"
             keypath="leaderboard.competition.competitionDuration"
