@@ -52,8 +52,7 @@ const env = {
     | undefined,
 
   VITE_NEWSLETTER_API: import.meta.env.VITE_NEWSLETTER_API,
-  VITE_FEE_RECIPIENT: import.meta.env.VITE_FEE_RECIPIENT as string,
-  VITE_SHOW_REDEEM_VOUCHER: import.meta.env.VITE_SHOW_REDEEM_VOUCHER as string
+  VITE_FEE_RECIPIENT: import.meta.env.VITE_FEE_RECIPIENT as string
 } as {
   VITE_ENV: string
   VITE_BASE_URL: string
@@ -82,7 +81,6 @@ const env = {
   VITE_SHEETDB_BEARER_TOKEN: string
   VITE_NEWSLETTER_API: string
   VITE_FEE_RECIPIENT: string
-  VITE_SHOW_REDEEM_VOUCHER: string
 }
 
 export const NETWORK: Network = (env.VITE_NETWORK as Network) || Network.Testnet
@@ -172,7 +170,6 @@ export const MIXPANEL_KEY = env.VITE_MIXPANEL_KEY || ''
 export const FEE_RECIPIENT = env.VITE_FEE_RECIPIENT || ''
 export const BUGSNAG_KEY = env.VITE_BUGSNAG_KEY || ''
 export const SHEETDB_BEARER_TOKEN = env.VITE_SHEETDB_BEARER_TOKEN || ''
-export const SHOW_REDEEM_VOUCHER = env.VITE_SHOW_REDEEM_VOUCHER === 'true'
 
 export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
   ? 'inj1qk00h5atutpsv900x202pxx42npjr9thrzhgxn'
