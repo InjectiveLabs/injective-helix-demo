@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
+import { MIN_LEADERBOARD_PNL_AMOUNT } from '@/app/utils/constants'
 
 const leaderboardStore = useLeaderboardStore()
 
@@ -12,7 +12,7 @@ const filteredPnlLeaderboard = computed(() => {
   }
 
   return leaderboardStore.pnlLeaderboard.leaders.filter((leader) =>
-    new BigNumberInBase(leader.pnl).gte(MIN_LEADERBOARD_TRADING_AMOUNT)
+    new BigNumberInBase(leader.pnl).gte(MIN_LEADERBOARD_PNL_AMOUNT)
   )
 })
 

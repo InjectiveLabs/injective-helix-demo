@@ -4,7 +4,7 @@ import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
   MAXIMUM_LEADERBOARD_STATS_RANK,
-  MIN_LEADERBOARD_TRADING_AMOUNT
+  MIN_COMPETITION_PNL_AMOUNT
 } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
@@ -45,7 +45,7 @@ const isShowRank = computed(() => {
   }
 
   const isMoreThanMinimumPnL = new BigNumberInBase(amount).gte(
-    MIN_LEADERBOARD_TRADING_AMOUNT
+    MIN_COMPETITION_PNL_AMOUNT
   )
 
   const isTop500 = new BigNumberInBase(props.leader.rank).lte(
