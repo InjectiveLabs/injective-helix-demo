@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { PortfolioSubPage, Modal } from '@/types'
+import { PortfolioSubPage, Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
 const appStore = useAppStore()
-
 const linkOptions = [
   {
     label: 'portfolio.settings.authz.grantee',
@@ -16,6 +15,7 @@ const linkOptions = [
 ]
 
 function openGranteeModal() {
+  useEventBus(BusEvents.ConnectMobileModalOpened).emit()
   modalStore.openModal(Modal.ConnectMobile)
 }
 </script>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
-import { Modal } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { BusEvents, Modal } from '@/types'
 import { addDesktopAddress, getMobileAddress } from '@/app/client/connectMobile'
-import { CONNECT_SERVER_URL } from '~/app/utils/constants'
+import { CONNECT_SERVER_URL } from '@/app/utils/constants'
 
 const tradingMessages = [
   MsgType.MsgCreateSpotLimitOrder,
@@ -21,8 +22,8 @@ const tradingMessages = [
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
-const sharedWalletStore = useSharedWalletStore()
 const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 
 const { t } = useLang()
@@ -32,6 +33,14 @@ const isModalOpen = computed(
   () => modalStore.modals[Modal.ConnectMobile] && appStore.devMode
 )
 
+const qrCodeText = JSON.stringify({
+  granter: sharedWalletStore.injectiveAddress,
+  endpoint: CONNECT_SERVER_URL,
+  postUrl: `${CONNECT_SERVER_URL}/helix-connect/mobile`
+})
+
+const status = reactive(new Status(StatusType.Idle))
+
 const isInitialized = ref(false)
 const mobileAddress = ref<string | null>(null)
 
@@ -40,6 +49,7 @@ const { pause, resume } = useIntervalFn(
     const result = await getMobileAddress({
       desktopAddress: sharedWalletStore.injectiveAddress
     })
+
     if (result?.data?.mobileAddress) {
       mobileAddress.value = result.data.mobileAddress
       pause()
@@ -52,33 +62,38 @@ const { pause, resume } = useIntervalFn(
   }
 )
 
-watch(isInitialized, (val: boolean) => {
-  if (val) {
-    resume()
-  }
-})
-
-watch(isModalOpen, (val: boolean) => {
-  if (val) {
+onMounted(() => {
+  useEventBus(BusEvents.ConnectMobileModalOpened).on(() => {
     initServerConnection()
-  }
+  })
 })
 
 function closeModal() {
   modalStore.closeModal(Modal.ConnectMobile)
 }
 
-async function initServerConnection() {
-  const result = await addDesktopAddress({
+function initServerConnection() {
+  status.setLoading()
+  addDesktopAddress({
     desktopAddress: sharedWalletStore.injectiveAddress
   })
-
-  if (result?.status === 200) {
-    isInitialized.value = true
-  }
+    .then((res) => {
+      if (res.status === 200) {
+        resume()
+        isInitialized.value = true
+      } else {
+        throw new Error('Failed to initialize server connection')
+      }
+    })
+    .finally(() => status.setIdle())
 }
 
 function grantAuthorization() {
+  status.setLoading()
+
+  if (!mobileAddress.value) {
+    throw new Error('Mobile address is not initialized')
+  }
   authZStore
     .grantAuthorization({
       grantee: mobileAddress.value,
@@ -86,16 +101,12 @@ function grantAuthorization() {
     })
     .then(() => {
       closeModal()
+
       return notificationStore.success({ title: t('common.success') })
     })
     .catch($onError)
+    .finally(() => status.setCompleted())
 }
-
-const qrCodeText = JSON.stringify({
-  granter: sharedWalletStore.injectiveAddress,
-  endpoint: CONNECT_SERVER_URL,
-  postUrl: `${CONNECT_SERVER_URL}/helix-connect/mobile`
-})
 </script>
 
 <template>
@@ -113,7 +124,7 @@ const qrCodeText = JSON.stringify({
 
       <div class="flex items-center gap-2 max-w-[384px] mt-6 pb-3">
         <p class="text-ellipsis overflow-hidden">
-          Scan this QR code in Helix Mobile to connect your wallet!
+          {{ $t('portfolio.connectMobile.scanQRCode') }}
         </p>
       </div>
       <AppButton
@@ -123,7 +134,11 @@ const qrCodeText = JSON.stringify({
         variant="primary"
         @click="grantAuthorization"
       >
-        {{ mobileAddress ? 'Grant Access' : 'Scan Code to Continue' }}
+        {{
+          mobileAddress
+            ? $t('portfolio.connectMobile.grantAccess')
+            : $t('portfolio.connectMobile.scanCode')
+        }}
       </AppButton>
     </section>
   </AppModal>

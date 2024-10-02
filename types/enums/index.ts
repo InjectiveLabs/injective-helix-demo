@@ -212,6 +212,7 @@ export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
   ActivityFilterUpdate = 'activity-filter-update',
   OpenTradingBotDetails = 'open-trading-bot-details',
+  ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   OrderbookNotionalClick = 'orderbook-notional-click',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
