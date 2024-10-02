@@ -2,7 +2,10 @@
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BusEvents, Modal } from '@/types'
-import { addDesktopAddress, getMobileAddress } from '@/app/client/connectMobile'
+import {
+  addDesktopAddress,
+  getMobileAddress
+} from '@/app/services/connectMobile'
 import { CONNECT_SERVER_URL } from '@/app/utils/constants'
 
 const tradingMessages = [
@@ -40,8 +43,6 @@ const qrCodeText = JSON.stringify({
 })
 
 const status = reactive(new Status(StatusType.Idle))
-
-const isInitialized = ref(false)
 const mobileAddress = ref<string | null>(null)
 
 const { pause, resume } = useIntervalFn(
@@ -50,10 +51,11 @@ const { pause, resume } = useIntervalFn(
       desktopAddress: sharedWalletStore.injectiveAddress
     })
 
-    if (result?.data?.mobileAddress) {
-      mobileAddress.value = result.data.mobileAddress
-      pause()
+    if (!result?.data?.mobileAddress) {
+      return
     }
+    mobileAddress.value = result.data.mobileAddress
+    pause()
   },
   2000,
   {
@@ -74,17 +76,14 @@ function closeModal() {
 
 function initServerConnection() {
   status.setLoading()
+
   addDesktopAddress({
     desktopAddress: sharedWalletStore.injectiveAddress
   })
-    .then((res) => {
-      if (res.status === 200) {
-        resume()
-        isInitialized.value = true
-      } else {
-        throw new Error('Failed to initialize server connection')
-      }
+    .then(() => {
+      resume()
     })
+    .catch($onError)
     .finally(() => status.setIdle())
 }
 
@@ -92,8 +91,9 @@ function grantAuthorization() {
   status.setLoading()
 
   if (!mobileAddress.value) {
-    throw new Error('Mobile address is not initialized')
+    return
   }
+
   authZStore
     .grantAuthorization({
       grantee: mobileAddress.value,
@@ -105,7 +105,7 @@ function grantAuthorization() {
       return notificationStore.success({ title: t('common.success') })
     })
     .catch($onError)
-    .finally(() => status.setCompleted())
+    .finally(() => status.setIdle())
 }
 </script>
 

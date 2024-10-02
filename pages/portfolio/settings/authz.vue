@@ -3,6 +3,7 @@ import { PortfolioSubPage, Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
 const appStore = useAppStore()
+
 const linkOptions = [
   {
     label: 'portfolio.settings.authz.grantee',
@@ -45,19 +46,15 @@ function openGranteeModal() {
             {{ $t(option.label) }}
           </NuxtLink>
         </div>
-        <div v-if="appStore.devMode">
-          <button
-            :disabled="isDisabled"
-            class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
-            :class="{
-              'text-gray-500': isDisabled,
-              'text-blue-500 hover:text-blue-600': !isDisabled
-            }"
-            @click="openGranteeModal"
-          >
-            + {{ $t('portfolio.settings.authz.connectMobile') }}
-          </button>
-        </div>
+        <AppButton
+          v-if="appStore.devMode"
+          variant="primary-outline"
+          :disabled="!appStore.devMode"
+          class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
+          @click="openGranteeModal"
+        >
+          + {{ $t('portfolio.settings.authz.connectMobile') }}
+        </AppButton>
       </div>
     </div>
 
