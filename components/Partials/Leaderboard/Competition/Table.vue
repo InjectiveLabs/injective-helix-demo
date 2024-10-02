@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { MIN_LEADERBOARD_TRADING_AMOUNT } from '@/app/utils/constants'
+import { MIN_COMPETITION_PNL_AMOUNT } from '@/app/utils/constants'
 
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
@@ -16,7 +16,7 @@ const filteredVolumeLeaderboard = computed(() => {
   }
 
   return leaderboardStore.competitionLeaderboard.leaders.filter((leader) =>
-    new BigNumberInBase(leader.pnl).gte(MIN_LEADERBOARD_TRADING_AMOUNT)
+    new BigNumberInBase(leader.pnl).gte(MIN_COMPETITION_PNL_AMOUNT)
   )
 })
 
