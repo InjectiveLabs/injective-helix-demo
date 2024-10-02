@@ -60,6 +60,7 @@ export default {
         granter: 'Granter',
         addNewGrantee: 'Add new grantee address',
         addGranteeAddress: 'Add grantee address',
+        connectMobile: 'Connect Mobile Device',
         noGrants: 'No grants found',
         viewGrantedFunctions: 'View granted functions',
         connected: 'Connected',
@@ -105,6 +106,11 @@ export default {
     filters: {
       cleanFilters: 'Clean Filters',
       filterBySide: 'Filter by Side'
+    },
+    connectMobile: {
+      scanQRCode: 'Scan this QR code in Helix Mobile to connect your wallet!',
+      grantAccess: 'Grant Access',
+      scanCode: 'Scan Code to Continue'
     }
   }
 }
