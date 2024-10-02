@@ -2,20 +2,7 @@
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
-
-const tradingMessages = [
-  MsgType.MsgCreateSpotLimitOrder,
-  MsgType.MsgCreateSpotMarketOrder,
-  MsgType.MsgCreateDerivativeLimitOrder,
-  MsgType.MsgCreateDerivativeMarketOrder,
-  MsgType.MsgCancelSpotOrder,
-  MsgType.MsgCancelDerivativeOrder,
-  MsgType.MsgBatchCancelDerivativeOrders,
-  MsgType.MsgBatchCancelSpotOrders,
-  MsgType.MsgBatchCreateDerivativeLimitOrders,
-  MsgType.MsgBatchCreateSpotLimitOrders,
-  MsgType.MsgBatchUpdateOrders
-]
+import { TRADING_MESSAGES } from '@/app/data/trade'
 
 const modalStore = useModalStore()
 const authZStore = useAuthZStore()
@@ -27,7 +14,7 @@ const { validate } = useForm<{
   address: string
 }>()
 
-const msgs = ref(tradingMessages)
+const msgs = ref(TRADING_MESSAGES)
 const status = reactive(new Status(StatusType.Idle))
 
 const isOpen = computed(() => modalStore.modals[Modal.AddGrantee])
@@ -91,7 +78,7 @@ function closeModal() {
       >
         <PartialsPortfolioSettingsAuthzGranteeCommonMsgSelect
           v-for="[label, value] in Object.entries(MsgType).filter((entry) =>
-            tradingMessages.includes(entry[1])
+            TRADING_MESSAGES.includes(entry[1])
           )"
           :key="label"
           v-bind="{ value, label }"
