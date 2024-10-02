@@ -1,6 +1,6 @@
 import { HttpRequestException } from '@injectivelabs/exceptions'
 import { HttpClient } from '@injectivelabs/utils'
-import { CONNECT_SERVER_URL } from '../utils/constants'
+import { CONNECT_SERVER_URL } from '@/app/utils/constants'
 
 export const client = new HttpClient(CONNECT_SERVER_URL)
 
@@ -40,9 +40,11 @@ export const getMobileAddress = async ({
   try {
     return await client.get<
       {
-        desktopAddress: string
+        data: { mobileAddress: string }
       },
-      { mobileAddress: string }
+      {
+        data: { mobileAddress: string }
+      }
     >(`helix-connect/desktop/${desktopAddress}`)
   } catch (e: unknown) {
     const response = (e as any).response
