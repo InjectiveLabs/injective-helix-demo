@@ -2,7 +2,7 @@
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
-import { TRADING_MESSAGES } from '~/app/data/trade'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 
 const modalStore = useModalStore()
 const authZStore = useAuthZStore()

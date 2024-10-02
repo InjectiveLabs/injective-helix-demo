@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BusEvents, Modal } from '@/types'
 import {
   addDesktopAddress,
   getMobileAddress
 } from '@/app/services/connectMobile'
 import { CONNECT_SERVER_URL } from '@/app/utils/constants'
-import { TRADING_MESSAGES } from '~/app/data/trade'
+import { TRADING_MESSAGES } from '@/app/data/trade'
+import { BusEvents, Modal } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -27,7 +27,7 @@ const qrCodeText = JSON.stringify({
 const tradingMessages = [...TRADING_MESSAGES, MsgType.MsgExecuteContractCompat]
 
 const status = reactive(new Status(StatusType.Idle))
-const mobileAddress = ref<string | null>(null)
+const mobileAddress = ref()
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.ConnectMobile] && appStore.devMode
@@ -89,7 +89,7 @@ const { pause, resume } = useIntervalFn(
     mobileAddress.value = result.data.mobileAddress
     pause()
   },
-  2000,
+  1000 * 2,
   {
     immediate: false,
     immediateCallback: true
