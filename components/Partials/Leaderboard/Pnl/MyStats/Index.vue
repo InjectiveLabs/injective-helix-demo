@@ -3,7 +3,7 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
   MAXIMUM_LEADERBOARD_STATS_RANK,
-  MIN_LEADERBOARD_TRADING_AMOUNT
+  MIN_LEADERBOARD_PNL_AMOUNT
 } from '@/app/utils/constants'
 import { Modal, MainPage, BusEvents, LeaderboardDuration } from '@/types'
 
@@ -37,7 +37,7 @@ const isShowMyStats = computed(() => {
 
   const isMoreThanMinimumPnL = new BigNumberInBase(
     leaderboardStore.pnlLeaderboardAccount.pnl
-  ).gte(MIN_LEADERBOARD_TRADING_AMOUNT)
+  ).gte(MIN_LEADERBOARD_PNL_AMOUNT)
   const isTop500 = new BigNumberInBase(
     leaderboardStore.pnlLeaderboardAccount.pnl
   ).lte(MAXIMUM_RANKED_TRADERS)
