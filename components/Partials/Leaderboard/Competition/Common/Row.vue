@@ -104,14 +104,22 @@ const isShowRank = computed(() => {
 
     <template v-if="!isMobile">
       <PartialsLeaderboardCompetitionAmountEntries
-        v-bind="{ volume: leader.volume, pnl: leader.pnl }"
+        v-bind="{
+          pnl: leader.pnl,
+          volume: leader.volume,
+          address: leader.account
+        }"
       />
     </template>
 
     <template v-else>
       <div>
         <PartialsLeaderboardCompetitionAmountEntries
-          v-bind="{ volume: leader.volume, pnl: leader.pnl }"
+          v-bind="{
+            pnl: leader.pnl,
+            volume: leader.volume,
+            address: leader.account
+          }"
         />
       </div>
     </template>

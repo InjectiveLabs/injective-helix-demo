@@ -682,3 +682,26 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
 
 export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
+
+export const additionalEntriesMap: Record<string, number> = {
+  inj1rt3n0tql8a59yfhvz6rweggszqcekcdtwmd9mt: 576,
+  inj1vwjk9cz8uyzsrk0f3uvul27qyhdv9rujay4e8x: 200,
+  inj10uen9k593sll79n9egwh80t09enk7gsaqqehuh: 196,
+  inj1tx8mv62yfnz5x3z46jf70n3c3jmpnypvwtetkg: 116,
+  inj16dlgtcw899g99cgz88laxd6fjyrccreuxu2zk3: 104,
+  inj1qg6k8s2yf8c0fc58wcwck08juju4hlrlss9tkm: 100,
+  inj1lhzemj4qqaluz79u7yhe6emuhe64z822cn8zjp: 96,
+  inj1wdfzn2wdaqyu00zqnyruqqr3tdv29mnxq753xc: 88,
+  inj1myt4ld2gqtpguc680dz7d49f3pxxdxdemfclaf: 88,
+  inj1uxpnt440y2n75cn8fzp785cj4z7w3jqgjm8a05: 76,
+  inj1j6v7f84072u9juckqltezvufpf6svlra9z6ruv: 72,
+  inj1pkgpfmkergk4spadj4t49utypdfswyuhd8daps: 56,
+  inj1wp26ke3mkzvsk7nnpdecfneg6ef9ewucpjtvnx: 56,
+  inj1n7c5pu85yahgkgu6gyasl4gya9dl3emr62f5d8: 40,
+  inj163072g64wsn8a9n2mydwlx7c0aqt4l7pjseeuu: 32,
+  inj1tmkgxm7wmqzlqm5rnx02zccqhx8u98qqltgsf3: 28,
+  inj1rchqm749hzx7s4y5ajc0hra4v26gca6lcgv4hh: 24,
+  inj1mk8vd3rv4fy66sndm5dq36ywlaruev5aedpstc: 16,
+  inj137teqqm9l7fevja9v5d7n6ljz7y2llc0d0t3aw: 8,
+  inj1mr43v4tscmrfzxz7hj8vl2gq002pnwm9dj66lu: 0
+}

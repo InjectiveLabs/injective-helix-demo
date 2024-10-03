@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { additionalEntriesMap } from '@/app/data/campaign'
 import {
+  UI_ZERO_DECIMAL,
   LEADERBOARD_VOLUME_PER_ENTRY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -8,17 +10,13 @@ import { LeaderboardType } from '@/types'
 
 const campaignStore = useCampaignStore()
 
-const props = defineProps({
-  pnl: {
-    type: Number,
-    default: 0
-  },
-
-  volume: {
-    type: Number,
-    default: 0
+const props = withDefaults(
+  defineProps<{ pnl?: number; address: string; volume?: number }>(),
+  {
+    pnl: 0,
+    volume: 0
   }
-})
+)
 
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
@@ -32,10 +30,25 @@ const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
     }
   )
 
-const entries = computed(() =>
-  new BigNumberInBase(props.volume)
-    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
-    .integerValue(BigNumberInBase.ROUND_DOWN)
+const {
+  valueToString: additionalEntriesToString,
+  valueToBigNumber: additionalEntriesToBigNumber
+} = useSharedBigNumberFormatter(
+  computed(() => additionalEntriesMap[props.address] || 0),
+  {
+    shouldTruncate: true
+  }
+)
+
+const { valueToString: entriesToString } = useSharedBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(props.volume).dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+  ),
+  {
+    shouldTruncate: true,
+    decimalPlaces: UI_ZERO_DECIMAL,
+    roundingMode: BigNumberInBase.ROUND_DOWN
+  }
 )
 </script>
 
@@ -53,7 +66,10 @@ const entries = computed(() =>
 
   <div>
     <span class="text-[13px] md:text-sm mr-2">
-      {{ entries }}
+      {{ entriesToString }}
+    </span>
+    <span v-if="additionalEntriesToBigNumber.gt(0)" class="font-bold">
+      +{{ additionalEntriesToString }}
     </span>
   </div>
 </template>
