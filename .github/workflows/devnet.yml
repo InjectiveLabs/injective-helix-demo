@@ -63,7 +63,7 @@ jobs:
 
       - name: Build app
         run: |
-          ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'"
+          ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'"'
           yarn install --force
           yarn clean-up
           yarn generate
