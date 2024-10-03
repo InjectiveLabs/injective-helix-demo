@@ -182,7 +182,10 @@ watch(isCampaignStarted, (isStarted) => {
         </Teleport>
 
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardCompetitionBanner />
+          <PartialsLeaderboardCompetitionBanner
+            v-if="campaignStore.activeCampaign"
+            v-bind="{ campaign: campaignStore.activeCampaign }"
+          />
 
           <PartialsLeaderboardCompetition
             v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
@@ -202,14 +205,8 @@ watch(isCampaignStarted, (isStarted) => {
             }}
           </div>
 
-          <div v-else-if="!campaignStore.activeCampaign" class="relative mb-20">
-            <div class="text-lg sm:text-xl font-bold tracking-[0.4px] mb-2">
-              {{ $t('leaderboard.competition.competitionMaintenance') }}
-            </div>
-          </div>
-
-          <div v-else class="relative mb-20">
-            <div class="text-lg sm:text-xl font-bold tracking-[0.4px] mb-2">
+          <div v-else-if="countdownUntilCampaignStart" class="relative mb-20">
+            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
               {{ $t('leaderboard.competition.competitionBeginning') }}
             </div>
             <div
@@ -217,6 +214,13 @@ watch(isCampaignStarted, (isStarted) => {
             >
               {{ countdownUntilCampaignStart }}
             </div>
+          </div>
+
+          <div
+            v-else
+            class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2"
+          >
+            {{ $t('leaderboard.competition.noCompetition') }}
           </div>
         </div>
       </div>

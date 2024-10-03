@@ -94,6 +94,7 @@ function fetchPastCampaigns() {
               selectedCampaign &&
               selectedCampaign.name === PAST_LEADERBOARD_CAMPAIGN_NAMES[0]
             "
+            v-bind="{ campaign: selectedCampaign }"
           />
 
           <PartialsLeaderboardCompetition

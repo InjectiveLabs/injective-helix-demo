@@ -47,10 +47,11 @@ export default {
       currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
       competitionBeginning: 'The competition is about to begin...',
-      competitionHasBegun: 'The competition has begun, good luck!',
       competitionMaintenance:
         'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
       noVolumeData: 'No trading competition results found',
+      noCompetition:
+        'There are no active competitions at this time, please check back later!',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       firstHourOfCampaign: ({ named }: I18nMessageFunction) =>
