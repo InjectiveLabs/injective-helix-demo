@@ -184,13 +184,7 @@ watch(isCampaignStarted, (isStarted) => {
         <div class="w-full text-sm relative">
           <PartialsLeaderboardCompetitionBanner />
 
-          <PartialsLeaderboardCompetitionMyStats
-            v-if="
-              campaignStore.activeCampaign && campaignStore.activeCampaignType
-            "
-          />
-
-          <PartialsLeaderboardCompetitionTable
+          <PartialsLeaderboardCompetition
             v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
           />
 

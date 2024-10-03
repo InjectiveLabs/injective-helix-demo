@@ -183,8 +183,14 @@ export const useWalletStore = defineStore('wallet', {
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
       leaderboardStore.$patch({
-        pnlLeaderboardAccount: undefined,
-        competitionLeaderboardAccount: undefined
+        pnlLeaderboard: {
+          ...leaderboardStore.pnlLeaderboard,
+          accountRow: undefined
+        },
+        competitionLeaderboard: {
+          ...leaderboardStore.competitionLeaderboard,
+          accountRow: undefined
+        }
       })
     }
   }
