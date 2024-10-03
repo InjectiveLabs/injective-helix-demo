@@ -33,7 +33,9 @@ const {
   valueToString: additionalEntriesToString,
   valueToBigNumber: additionalEntriesToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => additionalEntriesMap[props.address] || 0),
+  computed(
+    () => additionalEntriesMap[props.campaign.name]?.[props.address] || 0
+  ),
   {
     shouldTruncate: true
   }
