@@ -683,7 +683,7 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
 export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
 
-export const additionalEntriesMap = {
+export const additionalEntriesMap: Record<string, number> = {
   inj1rt3n0tql8a59yfhvz6rweggszqcekcdtwmd9mt: 576,
   inj1vwjk9cz8uyzsrk0f3uvul27qyhdv9rujay4e8x: 200,
   inj10uen9k593sll79n9egwh80t09enk7gsaqqehuh: 196,

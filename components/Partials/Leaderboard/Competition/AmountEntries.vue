@@ -2,6 +2,7 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { additionalEntriesMap } from '@/app/data/campaign'
 import {
+  UI_ZERO_DECIMAL,
   LEADERBOARD_VOLUME_PER_ENTRY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -41,12 +42,12 @@ const {
 
 const { valueToString: entriesToString } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInBase(props.volume)
-      .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
-      .integerValue(BigNumberInBase.ROUND_DOWN)
+    new BigNumberInBase(props.volume).dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
   ),
   {
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: UI_ZERO_DECIMAL,
+    roundingMode: BigNumberInBase.ROUND_DOWN
   }
 )
 </script>
