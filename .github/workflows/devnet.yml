@@ -1,14 +1,12 @@
 name: Helix Devnet Deployments
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - dev
 
 jobs:
   devnet:
-    if: true
     name: 'Deploy to devnet'
     runs-on: ubuntu-latest
     env:
@@ -63,11 +61,9 @@ jobs:
       - name: Check out the source
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git checkout "'$GIT_BRANCH'" && git pull'
 
-      - name: Install Dependencies
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines'
-
-      - name: Remove prev build
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && yarn clean-up'
-
-      - name: Generating the static pages
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn generateNoSourceMap'
+      - name: Build app
+        run: |
+          ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'"
+          yarn install --force
+          yarn clean-up
+          yarn generate
