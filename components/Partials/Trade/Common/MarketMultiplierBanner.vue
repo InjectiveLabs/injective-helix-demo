@@ -16,7 +16,12 @@ const marketIdToMultiplierMap = {
     multiplier: '5',
     startDate: '2024-10-02T00:00:00Z',
     endDate: '2024-10-03T00:00:00Z'
-  } // 2024ELECTIOIN PERP market
+  }, // 2024ELECTIOIN PERP market
+  '0xa9ff3263c6a23bd1effb92f663bd8a1c9f9fa25f83f02c45364f92d77473827b': {
+    multiplier: '5',
+    startDate: '2024-10-03T16:00:00Z',
+    endDate: '2024-10-04T16:00:00Z'
+  } // MOTHER/USDT PERP market
 } as Record<string, Record<string, string>>
 
 const now = useNow({ interval: 1000 })
