@@ -8,8 +8,8 @@ on:
 
 jobs:
   mainnet:
-    if: true
     name: 'Deploy to mainnet'
+    runs-on: ubuntu-latest
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
@@ -66,13 +66,12 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
 
       NODE_OPTIONS: '--max_old_space_size=15360'
-    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
 
       - name: Using Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
 
@@ -81,14 +80,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install libudev-dev
 
-      - name: Remove prev build
-        run: yarn clean-up
-
-      - name: Install Dependencies
-        run: yarn install --force --ignore-engines
-
-      - name: Generating the static pages
-        run: yarn generateNoSourceMap
+      - name: Build app
+        run: |
+          yarn install --force
+          yarn clean-up
+          yarn generate
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
