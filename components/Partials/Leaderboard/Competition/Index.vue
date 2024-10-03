@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { LeaderboardType } from '@/types'
 
-const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
+
+const props = withDefaults(
+  defineProps<{
+    campaign: CampaignV2
+  }>(),
+  {}
+)
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -13,17 +21,17 @@ onWalletConnected(() => {
 })
 
 function fetchLeaderboard() {
-  if (!campaignStore.activeCampaign || !campaignStore.activeCampaignType) {
+  if (!props.campaign) {
     return
   }
 
   leaderboardStore
     .fetchCompetitionLeaderboard({
-      type: campaignStore.activeCampaignType,
+      type: props.campaign.type as LeaderboardType,
       account: sharedWalletStore.injectiveAddress,
       duration: {
-        startDate: campaignStore.activeCampaign.startDate,
-        endDate: campaignStore.activeCampaign.endDate
+        startDate: props.campaign.startDate,
+        endDate: props.campaign.endDate
       }
     })
     .catch($onError)
@@ -37,9 +45,9 @@ function fetchLeaderboard() {
   <div>
     <AppHocLoading v-bind="{ status }">
       <div>
-        <PartialsLeaderboardCompetitionMyStats />
+        <PartialsLeaderboardCompetitionMyStats v-bind="{ campaign }" />
 
-        <PartialsLeaderboardCompetitionTable />
+        <PartialsLeaderboardCompetitionTable v-bind="{ campaign }" />
       </div>
     </AppHocLoading>
   </div>

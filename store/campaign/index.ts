@@ -20,7 +20,10 @@ import {
   fetchGuildsByVolume,
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import {
+  LP_CAMPAIGNS,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
 import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
@@ -50,6 +53,7 @@ type CampaignStoreState = {
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
   pnlOrVolumeCampaigns?: CampaignV2[]
+  pastPnlOrVolumeCampaigns?: CampaignV2[]
   activeCampaign?: CampaignV2
 }
 
@@ -73,6 +77,7 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildCampaignSummary: undefined,
   claimedRewards: [],
   pnlOrVolumeCampaigns: [],
+  pastPnlOrVolumeCampaigns: [],
   activeCampaign: undefined
 })
 
@@ -87,21 +92,6 @@ export const useCampaignStore = defineStore('campaign', {
 
     campaignsWithUserRewards(state) {
       return state.round.filter(({ userScore }) => userScore)
-    },
-
-    activeCampaignType(state) {
-      if (!state.activeCampaign?.type) {
-        return undefined
-      }
-
-      switch (state.activeCampaign.type) {
-        case LeaderboardType.Pnl:
-          return LeaderboardType.Pnl
-        case LeaderboardType.Volume:
-          return LeaderboardType.Volume
-        default:
-          return undefined
-      }
     }
   },
   actions: {
@@ -326,6 +316,24 @@ export const useCampaignStore = defineStore('campaign', {
       )
 
       campaignStore.$patch({ pnlOrVolumeCampaigns })
+    },
+
+    async fetchPastCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Inactive
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pastPnlOrVolumeCampaigns = campaigns.filter(
+        ({ name }: CampaignV2) => PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(name)
+      )
+
+      campaignStore.$patch({ pastPnlOrVolumeCampaigns })
     },
 
     reset() {

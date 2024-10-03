@@ -8,7 +8,7 @@ const now = useNow({ interval: 1000 })
 
 const isEndedCampaign = computed(() => {
   if (!campaignStore.activeCampaign) {
-    return
+    return true
   }
 
   return new BigNumberInBase(now.value.getTime()).gte(

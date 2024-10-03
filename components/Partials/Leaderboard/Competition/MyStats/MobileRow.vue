@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, formatWalletAddress } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
@@ -10,13 +10,13 @@ import {
 } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
-const campaignStore = useCampaignStore()
-
 const props = withDefaults(
   defineProps<{
     leader?: LeaderboardRow
+    campaign?: CampaignV2 | undefined
   }>(),
   {
+    campaign: undefined,
     leader: () => ({
       pnl: 0,
       rank: 0,
@@ -31,8 +31,12 @@ const formattedAddress = computed(() =>
 )
 
 const isShowRank = computed(() => {
+  if (!props.campaign) {
+    return false
+  }
+
   const amount =
-    campaignStore.activeCampaignType === LeaderboardType.Pnl
+    props.campaign.type === LeaderboardType.Pnl
       ? props.leader.pnl
       : props.leader.volume
 
@@ -59,7 +63,7 @@ const isShowRank = computed(() => {
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() =>
-      campaignStore.activeCampaignType === LeaderboardType.Pnl
+      props.campaign?.type === LeaderboardType.Pnl
         ? props.leader.pnl
         : props.leader.volume
     ),
@@ -99,7 +103,7 @@ const entries = computed(() =>
             {{
               $t(
                 `leaderboard.header.${
-                  campaignStore.activeCampaignType === LeaderboardType.Volume
+                  campaign.type === LeaderboardType.Volume
                     ? 'volume'
                     : 'tradingPnl'
                 }`
@@ -107,9 +111,7 @@ const entries = computed(() =>
             }}
           </div>
           <div class="font-medium text-sm">
-            <span
-              v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl"
-            >
+            <span v-if="campaign.type === LeaderboardType.Pnl">
               {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
             </span>
             <span v-else>$</span>

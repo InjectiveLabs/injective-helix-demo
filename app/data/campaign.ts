@@ -745,3 +745,7 @@ export const additionalEntriesMap: Record<string, number> = {
   inj137teqqm9l7fevja9v5d7n6ljz7y2llc0d0t3aw: 8,
   inj1d50jcfga0e8kaxrhgc7mgfdm5cwraxv6c8rycn: 8
 }
+export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [
+  'Helix Like a G Trading Competition Test2',
+  'Helix Like a G Trading Competition Test'
+]

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
@@ -9,10 +9,10 @@ import {
 import { LeaderboardType } from '@/types'
 
 const isMobile = useIsMobile()
-const campaignStore = useCampaignStore()
 
 const props = withDefaults(
   defineProps<{
+    campaign?: CampaignV2 | undefined
     leader?: LeaderboardRow
   }>(),
   {
@@ -21,7 +21,8 @@ const props = withDefaults(
       rank: 0,
       volume: 0,
       account: ''
-    })
+    }),
+    campaign: undefined
   }
 )
 
@@ -30,8 +31,12 @@ const formattedAddress = computed(() =>
 )
 
 const isShowRank = computed(() => {
+  if (!props.campaign) {
+    return
+  }
+
   const amount =
-    campaignStore.activeCampaignType === LeaderboardType.Pnl
+    props.campaign.type === LeaderboardType.Pnl
       ? props.leader.pnl
       : props.leader.volume
 
@@ -57,7 +62,10 @@ const isShowRank = computed(() => {
 </script>
 
 <template>
-  <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
+  <div
+    v-if="campaign"
+    :class="[isMobile ? 'competition-table-mobile' : 'competition-table']"
+  >
     <div class="font-semibold ml-1">
       {{ isShowRank ? leader.rank : $t('leaderboard.competition.unranked') }}
     </div>
@@ -105,6 +113,7 @@ const isShowRank = computed(() => {
     <template v-if="!isMobile">
       <PartialsLeaderboardCompetitionAmountEntries
         v-bind="{
+          campaign,
           pnl: leader.pnl,
           volume: leader.volume,
           address: leader.account
@@ -116,6 +125,7 @@ const isShowRank = computed(() => {
       <div>
         <PartialsLeaderboardCompetitionAmountEntries
           v-bind="{
+            campaign,
             pnl: leader.pnl,
             volume: leader.volume,
             address: leader.account

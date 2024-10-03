@@ -82,7 +82,8 @@ export default {
 
     tabs: {
       [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
-      [LeaderboardSubPage.Competition]: 'Trading Competition'
+      [LeaderboardSubPage.Competition]: 'Trading Competition',
+      [LeaderboardSubPage.PastCompetitions]: 'Past Competitions'
     },
 
     header: {

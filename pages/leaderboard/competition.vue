@@ -163,7 +163,7 @@ watch(isCampaignStarted, (isStarted) => {
       <div class="overflow-x-auto">
         <Teleport
           v-if="campaignStore.activeCampaign"
-          to="#campaign-time-left"
+          to="#leaderboard-target"
           defer
         >
           <i18n-t
@@ -186,6 +186,7 @@ watch(isCampaignStarted, (isStarted) => {
 
           <PartialsLeaderboardCompetition
             v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
+            v-bind="{ campaign: campaignStore.activeCampaign }"
           />
 
           <div

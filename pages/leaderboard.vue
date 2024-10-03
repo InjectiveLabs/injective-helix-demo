@@ -46,27 +46,34 @@ const isCountryRestrictedUser = computed(() =>
 
       <section class="h-full-flex">
         <div
-          class="flex flex-col md:flex-row max-md:space-y-4 justify-between mb-6 md:mb-10"
+          class="flex flex-col md:flex-row flex-wrap gap-3 max-md:space-y-4 justify-between mb-6 md:mb-10"
         >
-          <div class="max-md:text-left">
+          <div class="max-md:text-left overflow-x-auto max-sm:max-w-full">
             <NuxtLink
               v-for="pageName in Object.values(LeaderboardSubPage)"
               :key="pageName"
               v-bind="{ value: pageName }"
-              class="capitalize max-md:mr-4 md:px-4 py-2 text-sm md:text-lg font-semibold border-b whitespace-nowrap leading-6"
+              class="capitalize max-md:mr-4 md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
               :class="{
-                'text-gray-200': route.name !== pageName,
-                'border-blue-500 text-blue-500': route.name === pageName
+                'text-gray-200': route.name !== pageName
               }"
               :to="{
                 name: pageName
               }"
             >
-              {{ $t(`leaderboard.tabs.${pageName}`) }}
+              <span
+                class="py-2"
+                :class="{
+                  'border-b-4 border-blue-500 text-blue-500 inline-block mx-2':
+                    route.name === pageName
+                }"
+              >
+                {{ $t(`leaderboard.tabs.${pageName}`) }}
+              </span>
             </NuxtLink>
           </div>
 
-          <div id="campaign-time-left" />
+          <div id="leaderboard-target" />
         </div>
 
         <NuxtPage
