@@ -55,6 +55,8 @@ export default {
         `The competition is now live. The leaderboard will begin displaying campaign stats at ${named(
           'afterFirstHour'
         )}.`,
+      additionalEntriesTooltip:
+        'These entries are bonus entries earned by participating in one or more bonus periods during the competition.',
       termsAndConditionsApply: 'Terms and conditions apply',
       banner: {
         title: 'Trade Like a G',
