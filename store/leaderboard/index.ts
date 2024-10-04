@@ -1,19 +1,12 @@
-import {
-  PnlLeaderboard,
-  VolLeaderboard,
-  LeaderboardRow
-} from '@injectivelabs/sdk-ts'
+import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
 import {
   fetchPnlLeaderboard,
-  fetchPnlLeaderboardAccount,
-  fetchCompetitionLeaderboard,
-  fetchCompetitionLeaderboardAccount
+  fetchCompetitionLeaderboard
 } from '@/store/leaderboard/pnlLeaderboard'
 import { indexerGrpcArchiverApi } from '@/app/Services'
+import { LeaderboardDuration } from '@/types'
 
 type LeaderboardStoreState = {
-  pnlLeaderboardAccount?: LeaderboardRow
-  competitionLeaderboardAccount?: LeaderboardRow
   pnlLeaderboard?: PnlLeaderboard
   competitionLeaderboard?: PnlLeaderboard | VolLeaderboard
   historicalBalance: {
@@ -32,17 +25,9 @@ type LeaderboardStoreState = {
   }[]
 }
 
-enum LeaderboardResolution {
-  Day = '1D',
-  Week = '1W',
-  Month = '1M'
-}
-
 const initialStateFactory = (): LeaderboardStoreState => ({
   pnlLeaderboard: undefined,
   competitionLeaderboard: undefined,
-  pnlLeaderboardAccount: undefined,
-  competitionLeaderboardAccount: undefined,
   historicalBalance: [],
   historicalPnl: [],
   historicalVolume: []
@@ -52,12 +37,10 @@ export const useLeaderboardStore = defineStore('leaderboard', {
   state: (): LeaderboardStoreState => initialStateFactory(),
   actions: {
     fetchPnlLeaderboard,
-    fetchPnlLeaderboardAccount,
     fetchCompetitionLeaderboard,
-    fetchCompetitionLeaderboardAccount,
 
     async fetchHistoricalBalance(
-      resolution: LeaderboardResolution = LeaderboardResolution.Week
+      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -80,7 +63,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     },
 
     async fetchHistoricalPnl(
-      resolution: LeaderboardResolution = LeaderboardResolution.Week
+      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -103,7 +86,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     },
 
     async fetchHistoricalVolume(
-      resolution: LeaderboardResolution = LeaderboardResolution.Week
+      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()

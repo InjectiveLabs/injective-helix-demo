@@ -6,6 +6,7 @@ import { UTC_TIMEZONE } from '@shared/utils/constant'
 import { LeaderboardDuration } from '@/types'
 
 const leaderboardStore = useLeaderboardStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -41,7 +42,7 @@ const endDateFormatted = computed(() => {
   return format(zonedLastDate, "MMMM dd, H:mm 'UTC'")
 })
 
-onMounted(() => {
+onWalletConnected(() => {
   fetchPnlLeaderboard()
 })
 
@@ -49,7 +50,10 @@ function fetchPnlLeaderboard() {
   status.setLoading()
 
   leaderboardStore
-    .fetchPnlLeaderboard(selectedDuration.value)
+    .fetchPnlLeaderboard(
+      selectedDuration.value,
+      sharedWalletStore.injectiveAddress
+    )
     .catch($onError)
     .finally(() => status.setIdle())
 }

@@ -64,12 +64,19 @@ const { valueToString: entriesToString } = useSharedBigNumberFormatter(
   </div>
   <div v-else />
 
-  <div>
-    <span class="text-[13px] md:text-sm mr-2">
+  <div class="flex items-center mr-2 gap-1">
+    <span class="text-[13px] md:text-sm">
       {{ entriesToString }}
     </span>
-    <span v-if="additionalEntriesToBigNumber.gt(0)" class="font-bold">
-      +{{ additionalEntriesToString }}
-    </span>
+    <CommonHeaderTooltip
+      is-not-styled
+      classes="cursor-pointer"
+      :is-disabled="additionalEntriesToBigNumber.isZero()"
+      :tooltip="$t('leaderboard.competition.additionalEntriesTooltip')"
+    >
+      <span v-if="additionalEntriesToBigNumber.gt(0)" class="font-bold">
+        +{{ additionalEntriesToString }}
+      </span>
+    </CommonHeaderTooltip>
   </div>
 </template>
