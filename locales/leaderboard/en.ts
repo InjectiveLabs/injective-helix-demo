@@ -48,6 +48,8 @@ export default {
       currentLeaderMobile: '🔥',
       competitionBeginning: 'The competition is about to begin...',
       competitionHasBegun: 'The competition has begun, good luck!',
+      competitionMaintenance:
+        'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
       noVolumeData: 'No trading competition results found',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
