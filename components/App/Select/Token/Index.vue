@@ -12,10 +12,11 @@ import {
 } from '@/app/utils/constants'
 import {
   Modal,
+  SwapCyTags,
   TradeField,
   SwapFormField,
-  SubaccountTransferField,
-  SwapCyTags
+  BankTransferField,
+  SubaccountTransferField
 } from '@/types'
 
 const props = withDefaults(
@@ -36,7 +37,11 @@ const props = withDefaults(
     tensMultiplier?: number
     additionalRules?: object
 
-    amountFieldName?: TradeField | SubaccountTransferField | SwapFormField
+    amountFieldName?:
+      | TradeField
+      | SubaccountTransferField
+      | SwapFormField
+      | BankTransferField
     options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
   }>(),
   {

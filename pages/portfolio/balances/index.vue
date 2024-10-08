@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { Modal } from '@/types'
+
 const appStore = useAppStore()
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
+
+function onOpenBankTransferModal() {
+  modalStore.openModal(Modal.BankTransfer)
+}
 </script>
 
 <template>
@@ -86,20 +93,20 @@ const accountStore = useAccountStore()
             </AppButton>
           </PartialsCommonBridgeRedirection>
 
-          <PartialsCommonBridgeRedirection
+          <AppButton
             v-if="accountStore.isDefaultSubaccount"
-            v-bind="{
-              isTransfer: true
-            }"
+            class="max-md:w-full"
+            variant="primary-outline"
+            @click="onOpenBankTransferModal"
           >
-            <AppButton class="max-md:w-full" variant="primary-outline">
-              {{ $t('common.transfer') }}
-            </AppButton>
-          </PartialsCommonBridgeRedirection>
+            {{ $t('common.transfer') }}
+          </AppButton>
         </div>
       </div>
 
       <PartialsPortfolioBalancesSubaccount class="lg:mt-12" />
     </div>
+
+    <ModalsBankTransfer />
   </div>
 </template>

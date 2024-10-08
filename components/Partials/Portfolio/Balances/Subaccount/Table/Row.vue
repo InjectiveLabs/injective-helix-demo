@@ -5,8 +5,9 @@ import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
-import { AccountBalance, PortfolioSubPage } from '@/types'
+import { Modal, BusEvents, AccountBalance, PortfolioSubPage } from '@/types'
 
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 
 const props = withDefaults(
@@ -100,6 +101,11 @@ const isBridgable = computed(() => {
 
 function toggleStakingRow() {
   isStakingVisible.value = !isStakingVisible.value
+}
+
+function onTransfer() {
+  modalStore.openModal(Modal.BankTransfer)
+  useEventBus(BusEvents.BankTranksferModalWithDenom).emit(props.balance.denom)
 }
 </script>
 
@@ -209,16 +215,9 @@ function toggleStakingRow() {
             </AppButton>
           </PartialsCommonBridgeRedirection>
 
-          <PartialsCommonBridgeRedirection
-            v-bind="{
-              denom: balance.token.denom,
-              isTransfer: true
-            }"
-          >
-            <AppButton variant="primary-outline" size="sm">
-              {{ $t('account.transfer') }}
-            </AppButton>
-          </PartialsCommonBridgeRedirection>
+          <AppButton variant="primary-outline" size="sm" @click="onTransfer">
+            {{ $t('account.transfer') }}
+          </AppButton>
         </template>
 
         <NuxtLink

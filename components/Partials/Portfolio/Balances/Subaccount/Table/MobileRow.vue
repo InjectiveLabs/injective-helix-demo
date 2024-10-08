@@ -4,8 +4,9 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { AccountBalance } from '@/types'
+import { Modal, BusEvents, AccountBalance } from '@/types'
 
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
 
 const props = withDefaults(
@@ -94,6 +95,11 @@ const isBridgable = computed(() => {
     props.balance.token.denom === injToken.denom
   )
 })
+
+function onTransfer() {
+  modalStore.openModal(Modal.BankTransfer)
+  useEventBus(BusEvents.BankTranksferModalWithDenom).emit(props.balance.denom)
+}
 </script>
 
 <template>
@@ -225,16 +231,9 @@ const isBridgable = computed(() => {
         </AppButton>
       </PartialsCommonBridgeRedirection>
 
-      <PartialsCommonBridgeRedirection
-        v-bind="{
-          denom: balance.token.denom,
-          isTransfer: true
-        }"
-      >
-        <AppButton variant="primary-outline" size="sm">
-          {{ $t('account.transfer') }}
-        </AppButton>
-      </PartialsCommonBridgeRedirection>
+      <AppButton variant="primary-outline" size="sm" @click="onTransfer">
+        {{ $t('account.transfer') }}
+      </AppButton>
     </div>
   </div>
 </template>
