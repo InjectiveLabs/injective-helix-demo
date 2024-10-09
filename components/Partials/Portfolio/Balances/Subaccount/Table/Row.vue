@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
@@ -9,6 +10,7 @@ import { Modal, BusEvents, AccountBalance, PortfolioSubPage } from '@/types'
 
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
@@ -103,6 +105,10 @@ function toggleStakingRow() {
   isStakingVisible.value = !isStakingVisible.value
 }
 
+function onFiatOnRamp() {
+  modalStore.openModal(Modal.FiatOnboard)
+}
+
 function onTransfer() {
   modalStore.openModal(Modal.BankTransfer)
   useEventBus(BusEvents.BankTranksferModalWithDenom).emit(props.balance.denom)
@@ -189,36 +195,47 @@ function onTransfer() {
       </div>
 
       <div
-        class="flex col-span-2 items-center font-mono text-xs space-x-2 shrink-0 p-2 pl-4 justify-end"
+        class="flex col-span-2 items-center justify-end font-mono text-xs p-2 pl-4"
       >
-        <template v-if="accountStore.isDefaultSubaccount">
-          <PartialsCommonBridgeRedirection
-            v-if="isBridgable"
-            v-bind="{
-              isDeposit: true,
-              denom: balance.token.denom
-            }"
-          >
-            <AppButton variant="primary" size="sm">
+        <div
+          v-if="accountStore.isDefaultSubaccount"
+          class="space-x-2 shrink-0 flex"
+        >
+          <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
+            <PartialsCommonBridgeRedirection
+              v-if="isBridgable"
+              v-bind="{
+                isDeposit: true,
+                denom: balance.token.denom
+              }"
+            >
+              <AppButton variant="primary" size="sm">
+                {{ $t('account.deposit') }}
+              </AppButton>
+            </PartialsCommonBridgeRedirection>
+
+            <PartialsCommonBridgeRedirection
+              v-if="isBridgable"
+              v-bind="{
+                denom: balance.token.denom
+              }"
+            >
+              <AppButton variant="primary-outline" size="sm">
+                {{ $t('account.withdraw') }}
+              </AppButton>
+            </PartialsCommonBridgeRedirection>
+          </template>
+
+          <template v-else>
+            <AppButton size="sm" @click="onFiatOnRamp">
               {{ $t('account.deposit') }}
             </AppButton>
-          </PartialsCommonBridgeRedirection>
 
-          <PartialsCommonBridgeRedirection
-            v-if="isBridgable"
-            v-bind="{
-              denom: balance.token.denom
-            }"
-          >
-            <AppButton variant="primary-outline" size="sm">
-              {{ $t('account.withdraw') }}
+            <AppButton variant="primary-outline" size="sm" @click="onTransfer">
+              {{ $t('account.transfer') }}
             </AppButton>
-          </PartialsCommonBridgeRedirection>
-
-          <AppButton variant="primary-outline" size="sm" @click="onTransfer">
-            {{ $t('account.transfer') }}
-          </AppButton>
-        </template>
+          </template>
+        </div>
 
         <NuxtLink
           v-else-if="!accountStore.isSgtSubaccount"

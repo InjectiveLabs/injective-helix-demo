@@ -49,7 +49,7 @@ watch(
 
       <AppCheckbox2
         v-model="memoRequired"
-        :is-disabled="
+        :disabled="
           bankTransferFormValues[BankTransferField.Address] ===
           BINANCE_DEPOSIT_ADDRESS
         "
@@ -61,14 +61,18 @@ watch(
       </AppCheckbox2>
     </div>
 
-    <AppInput
+    <div
       v-if="memoRequired"
-      v-model="memo"
-      v-bind="{
-        placeholder: $t('portfolio.bankTransfer.memo.placeholder'),
-        wrapperClass: 'mt-2'
-      }"
-    />
+      class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md"
+    >
+      <AppInput
+        v-model="memo"
+        v-bind="{
+          placeholder: $t('portfolio.bankTransfer.memo.placeholder'),
+          wrapperClass: 'mt-2'
+        }"
+      />
+    </div>
 
     <p
       v-if="memoErrors.length > 0"

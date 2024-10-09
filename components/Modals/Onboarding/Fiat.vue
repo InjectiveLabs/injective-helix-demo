@@ -12,6 +12,7 @@ function onPurchaseFunds() {
 const isModalOpen = computed(() => modalStore.modals[Modal.FiatOnboard])
 
 function closeModal() {
+  isPurchaseFunds.value = false
   modalStore.closeModal(Modal.FiatOnboard)
 }
 </script>

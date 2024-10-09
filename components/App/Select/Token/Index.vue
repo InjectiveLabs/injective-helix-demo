@@ -39,9 +39,9 @@ const props = withDefaults(
 
     amountFieldName?:
       | TradeField
-      | SubaccountTransferField
       | SwapFormField
       | BankTransferField
+      | SubaccountTransferField
     options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
   }>(),
   {

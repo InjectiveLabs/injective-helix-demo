@@ -1,19 +1,37 @@
 <script lang="ts" setup>
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BankTransferField } from '@/types'
+import { WalletOption, BankTransferField } from '@/types'
 
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
-const { userBalancesWithToken } = useBalance()
+const sharedWalletStore = useSharedWalletStore()
 const setBankTransferFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
+const { userBalancesWithToken } = useBalance()
 
-// todo: see if design wants search functionality
 const search = ref('')
 const fetchAddressStatus = reactive(new Status(StatusType.Idle))
+
+const walletOptions = computed(
+  () =>
+    [
+      {
+        wallet: Wallet.Keplr,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
+          ? 'https://www.keplr.app/download'
+          : undefined
+      },
+      {
+        wallet: Wallet.Metamask,
+        downloadLink: !sharedWalletStore.metamaskInstalled
+          ? 'https://metamask.io/download'
+          : undefined
+      }
+    ].filter((option) => option) as WalletOption[]
+)
 
 const { value: denomValue } = useStringField({
   name: BankTransferField.Denom,
@@ -100,6 +118,14 @@ const maxDecimals = computed(() => {
   return token.decimals
 })
 
+onMounted(() => {
+  fetchAddressStatus.setLoading()
+
+  Promise.all([sharedWalletStore.checkIsMetamaskInstalled()]).then(() =>
+    fetchAddressStatus.setIdle()
+  )
+})
+
 function onAmountChange({ amount }: { amount: string }) {
   setBankTransferFormValues(
     {
@@ -127,40 +153,34 @@ function onWalletSelected(wallet: Wallet) {
       injAddressValue.value = address || ''
     })
     .catch($onError)
-    .finally(() => {
-      fetchAddressStatus.setIdle()
-    })
+    .finally(() => fetchAddressStatus.setIdle())
 }
 </script>
 
 <template>
   <div>
     <div class="mb-4">
-      <AppInput
-        v-model="injAddressValue"
-        v-bind="{
-          placeholder: $t('portfolio.bankTransfer.enterAddress')
-        }"
-        class="text-xs"
-      >
-        <template v-if="injAddressValue" #addon>
-          <SharedIcon name="close" is-md @click="resetInjAddressValue" />
-        </template>
-      </AppInput>
+      <div class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md">
+        <AppInput
+          v-model="injAddressValue"
+          v-bind="{
+            isTransparentBg: true,
+            placeholder: $t('portfolio.bankTransfer.enterAddress')
+          }"
+          class="text-xs"
+        >
+          <template v-if="injAddressValue" #addon>
+            <SharedIcon name="close" is-md @click="resetInjAddressValue" />
+          </template>
+        </AppInput>
+      </div>
 
-      <!--todo: refactor buttons according to eventual design-->
-      <div class="flex gap-2">
-        <SharedIcon
-          is-md
-          :name="`wallet/metamask`"
-          class="w-6 h-6 min-w-6"
-          @click="onWalletSelected(Wallet.Metamask)"
-        />
-        <SharedIcon
-          is-md
-          :name="`wallet/keplr`"
-          class="w-6 h-6 min-w-6"
-          @click="onWalletSelected(Wallet.Keplr)"
+      <div class="flex items-center gap-2 mt-4">
+        <ModalsBankTransferWalletSelectorItem
+          v-for="item in walletOptions"
+          v-bind="{ walletOption: item }"
+          :key="`magic-transfer-wallet-${item.wallet}`"
+          @wallet:selected="onWalletSelected"
         />
       </div>
 
