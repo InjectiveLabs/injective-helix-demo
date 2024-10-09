@@ -21,7 +21,17 @@ const marketIdToMultiplierMap = {
     multiplier: '5',
     startDate: '2024-10-03T16:00:00Z',
     endDate: '2024-10-04T16:00:00Z'
-  } // MOTHER/USDT PERP market
+  }, // MOTHER/USDT PERP market,
+  '0x4ca0f92fc28be0c9761326016b5a1a2177dd6375558365116b5bdda9abc229ce': {
+    multiplier: '5',
+    startDate: '2024-10-09T14:00:00Z',
+    endDate: '2024-10-10T14:00:00Z'
+  }, // BTC/USDT PERP market
+  '0x54d4505adef6a5cef26bc403a33d595620ded4e15b9e2bc3dd489b714813366a': {
+    multiplier: '5',
+    startDate: '2024-10-11T14:00:00Z',
+    endDate: '2024-10-12T14:00:00Z'
+  } // ETH/USDT PERP market
 } as Record<string, Record<string, string>>
 
 const now = useNow({ interval: 1000 })
