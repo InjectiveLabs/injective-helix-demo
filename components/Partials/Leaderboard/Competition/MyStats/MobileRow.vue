@@ -12,8 +12,8 @@ import { LeaderboardType } from '@/types'
 
 const props = withDefaults(
   defineProps<{
+    campaign?: CampaignV2
     leader?: LeaderboardRow
-    campaign?: CampaignV2 | undefined
   }>(),
   {
     campaign: undefined,

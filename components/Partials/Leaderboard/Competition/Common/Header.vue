@@ -6,8 +6,8 @@ const isMobile = useIsMobile()
 
 withDefaults(
   defineProps<{
+    campaign?: CampaignV2
     isHideAmount?: boolean
-    campaign?: CampaignV2 | undefined
   }>(),
   {
     campaign: undefined,

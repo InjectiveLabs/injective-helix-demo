@@ -12,7 +12,7 @@ const isMobile = useIsMobile()
 
 const props = withDefaults(
   defineProps<{
-    campaign?: CampaignV2 | undefined
+    campaign?: CampaignV2
     leader?: LeaderboardRow
   }>(),
   {
