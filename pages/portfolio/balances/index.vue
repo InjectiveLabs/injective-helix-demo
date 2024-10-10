@@ -1,6 +1,19 @@
 <script setup lang="ts">
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { Modal } from '@/types'
+
 const appStore = useAppStore()
+const modalStore = useModalStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
+
+function onOpenBankTransferModal() {
+  modalStore.openModal(Modal.BankTransfer)
+}
+
+function onFiatOnRamp() {
+  modalStore.openModal(Modal.FiatOnboard)
+}
 </script>
 
 <template>
@@ -70,36 +83,55 @@ const accountStore = useAccountStore()
         <div
           class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0"
         >
-          <PartialsCommonBridgeRedirection
-            v-bind="{
-              isDeposit: true
-            }"
-          >
-            <AppButton class="max-md:w-full">
+          <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
+            <PartialsCommonBridgeRedirection
+              v-bind="{
+                isDeposit: true
+              }"
+            >
+              <AppButton class="max-md:w-full">
+                {{ $t('common.deposit') }}
+              </AppButton>
+            </PartialsCommonBridgeRedirection>
+
+            <PartialsCommonBridgeRedirection>
+              <AppButton variant="primary-outline" class="max-md:w-full">
+                {{ $t('common.withdraw') }}
+              </AppButton>
+            </PartialsCommonBridgeRedirection>
+
+            <PartialsCommonBridgeRedirection
+              v-if="accountStore.isDefaultSubaccount"
+              v-bind="{
+                isTransfer: true
+              }"
+            >
+              <AppButton class="max-md:w-full" variant="primary-outline">
+                {{ $t('common.transfer') }}
+              </AppButton>
+            </PartialsCommonBridgeRedirection>
+          </template>
+
+          <template v-else>
+            <AppButton class="max-md:w-full" @click="onFiatOnRamp">
               {{ $t('common.deposit') }}
             </AppButton>
-          </PartialsCommonBridgeRedirection>
 
-          <PartialsCommonBridgeRedirection>
-            <AppButton variant="primary-outline" class="max-md:w-full">
-              {{ $t('common.withdraw') }}
-            </AppButton>
-          </PartialsCommonBridgeRedirection>
-
-          <PartialsCommonBridgeRedirection
-            v-if="accountStore.isDefaultSubaccount"
-            v-bind="{
-              isTransfer: true
-            }"
-          >
-            <AppButton class="max-md:w-full" variant="primary-outline">
+            <AppButton
+              v-if="accountStore.isDefaultSubaccount"
+              class="max-md:w-full"
+              variant="primary-outline"
+              @click="onOpenBankTransferModal"
+            >
               {{ $t('common.transfer') }}
             </AppButton>
-          </PartialsCommonBridgeRedirection>
+          </template>
         </div>
       </div>
 
       <PartialsPortfolioBalancesSubaccount class="lg:mt-12" />
     </div>
+
+    <ModalsBankTransfer />
   </div>
 </template>

@@ -6,6 +6,14 @@ import {
 } from '@shared/Service'
 import { Coin } from '@injectivelabs/ts-types'
 import { usdtToken } from '@shared/data/token'
+import { getInjectiveAddress } from '@injectivelabs/sdk-ts'
+import {
+  Wallet,
+  isCosmosWallet,
+  WalletStrategy
+} from '@injectivelabs/wallet-ts'
+import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
+import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -208,6 +216,32 @@ export const useAccountStore = defineStore('account', {
           }
         }
       })
+    },
+
+    async fetchAddressFromWalletStrategy(wallet: Wallet) {
+      try {
+        const walletStrategy = new WalletStrategy({
+          wallet,
+          chainId: CHAIN_ID,
+          ethereumOptions: {
+            ethereumChainId: ETHEREUM_CHAIN_ID,
+            rpcUrl: alchemyRpcEndpoint
+          }
+        })
+
+        const addresses = await walletStrategy.enableAndGetAddresses()
+        const [address] = addresses
+
+        // cosmos returns inj address
+        if (isCosmosWallet(wallet)) {
+          return address
+        }
+
+        // eth returns eth address so convert to inj address
+        return getInjectiveAddress(address)
+      } catch (e: any) {
+        // silently fail
+      }
     },
 
     reset() {

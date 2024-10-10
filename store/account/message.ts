@@ -85,15 +85,14 @@ export const transfer = async ({
   amount,
   denom,
   memo,
-  destination,
-  token
+  destination
 }: {
-  amount: BigNumberInBase
+  amount: string
   denom: string
   memo?: string
   destination: string
-  token: TokenStatic
 }) => {
+  const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -102,6 +101,8 @@ export const transfer = async ({
     return
   }
 
+  const token = tokenStore.tokenByDenomOrSymbol(denom) as TokenStatic
+
   await walletStore.validate()
 
   const messages = MsgSend.fromJSON({
@@ -109,7 +110,7 @@ export const transfer = async ({
     dstInjectiveAddress: destination,
     amount: {
       denom,
-      amount: amount.toWei(token.decimals).toFixed()
+      amount: new BigNumberInBase(amount).toWei(token.decimals).toFixed()
     }
   })
 

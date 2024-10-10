@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '@/types'
 import {
   trackQrCodeBuyFunds,
   trackQrCodePageView
 } from '@/app/providers/mixpanel/EventTracker'
 
+const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()
@@ -13,6 +15,10 @@ const emit = defineEmits<{
   'funds:purchase': []
   'modal:close': []
 }>()
+
+const isPortfolioBalancePage = computed(
+  () => route.name === PortfolioSubPage.Balances
+)
 
 function onCloseModal() {
   emit('modal:close')
@@ -36,11 +42,23 @@ onMounted(() => {
 <template>
   <div class="text-center">
     <h2 class="font-semibold text-xl">
-      {{ $t('onboarding.fundsNeeded') }}
+      {{
+        $t(
+          `onboarding.${isPortfolioBalancePage ? 'depositNow' : 'fundsNeeded'}`
+        )
+      }}
     </h2>
 
     <p class="text-sm mt-4">
-      {{ $t('onboarding.fundsNeededDescription') }}
+      {{
+        $t(
+          `onboarding.${
+            isPortfolioBalancePage
+              ? 'depositNowDescription'
+              : 'fundsNeededDescription'
+          }`
+        )
+      }}
     </p>
 
     <SharedQRCode
@@ -49,10 +67,18 @@ onMounted(() => {
     />
 
     <p class="mt-8">
-      {{ $t('onboarding.scanQrCodeOrCopy') }}
+      {{
+        $t(
+          `onboarding.${
+            isPortfolioBalancePage
+              ? 'addFundsScanQrCodeOrCopy'
+              : 'scanQrCodeOrCopy'
+          }`
+        )
+      }}
     </p>
 
-    <div class="flex items-center gap-2 rounded-lg border p-2">
+    <div class="flex items-center gap-2 rounded-lg border p-2 mt-2">
       <p class="truncate">{{ sharedWalletStore.injectiveAddress }}</p>
       <AppButton variant="primary-outline" @click="onCopyInjectiveAddress">
         {{ $t('onboarding.copy') }}
@@ -65,6 +91,7 @@ onMounted(() => {
       </AppButton>
 
       <AppButton
+        v-if="!isPortfolioBalancePage"
         variant="primary-ghost"
         class="w-full text-gray-400 hover:text-white"
         @click="onCloseModal"

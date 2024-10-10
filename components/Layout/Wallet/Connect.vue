@@ -16,6 +16,10 @@ withDefaults(
   }
 )
 
+const emits = defineEmits<{
+  'modal:closed': []
+}>()
+
 const isShowMoreWallets = ref(false)
 const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
@@ -118,6 +122,11 @@ watch(
   (status: WalletConnectStatus) => {
     if (status === WalletConnectStatus.idle) {
       magicStatus.setIdle()
+    }
+
+    if (status === WalletConnectStatus.connected) {
+      magicStatus.setIdle()
+      emits('modal:closed')
     }
   }
 )
