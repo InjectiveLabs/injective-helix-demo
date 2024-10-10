@@ -1,5 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { SHEETDB_BEARER_TOKEN } from '../utils/constants'
+import { SHEETDB_BEARER_TOKEN } from '@/app/utils/constants'
 
 const SHEETDB_ID = 'fwfkb2v469gav'
 

@@ -1,4 +1,4 @@
-import { MAINTENANCE_ENABLED } from '@/app/utils/constants'
+import { MAINTENANCE_ENABLED } from '@shared/utils/constant'
 import { MainPage } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {

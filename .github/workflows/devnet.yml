@@ -9,39 +9,15 @@ on:
 jobs:
   devnet:
     name: 'Deploy to devnet'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SSH_USER: ${{ secrets.DEVNET_SSH_USER }}
       SSH_KEY: ${{ secrets.DEVNET_SSH_KEY }}
       SSH_HOST: ${{ secrets.DEVNET_SSH_HOST }}
       SOURCE_DIR: ${{ secrets.DEVNET_SOURCE_PATH}}
-      GIT_BRANCH: ${{secrets.DEVNET_GIT_BRANCH}}
 
       ## Github Actions
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-      ## Flags
-      VPN_CHECKS_ENABLED: false
-      VITE_VPN_CHECKS_ENABLED: true
-      VITE_MAINTENANCE_ENABLED: false
-      VITE_GEO_IP_RESTRICTIONS_ENABLED: false
-
-      ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
-      VITE_CHRONOS_API_ENDPOINT: ''
-      VITE_EXPLORER_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_REST_ENDPOINT: ''
-
-      ## Secret
-      VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
-      VITE_AMPLITUDE_KEY: ${{secrets.VITE_DEVNET_AMPLITUDE_KEY}}
-      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
-      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_DEVNET_GOOGLE_ANALYTICS_KEY }}
-      VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
-      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
-      VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
 
       NODE_OPTIONS: '--max_old_space_size=15360'
     steps:
@@ -60,7 +36,7 @@ jobs:
           END
 
       - name: Check out the source
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git checkout "'$GIT_BRANCH'" && git pull'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git pull'
 
-      - name: Install Dependencies
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force && yarn clean-up && yarn generate'
+      - name: Build app
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines && yarn clean-up && yarn generate'

@@ -7,14 +7,15 @@ on:
       - master
 
 jobs:
-  staging:
+  staging-release:
     name: 'Deploy to staging'
+    runs-on: ubuntu-latest
     env:
       ## Public
       VITE_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
       VITE_BASE_URL: https://staging.injective.exchange
-      VITE_NETWORK: staging
       VITE_ENV: staging
+      VITE_NETWORK: staging
       VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
       SOURCE_DIR: .output/public
@@ -36,32 +37,38 @@ jobs:
       VITE_SENTRY_GRPC_ENDPOINT: ''
       VITE_SENTRY_REST_ENDPOINT: ''
 
+      ## Geo location & VPN checks
+      VITE_VPN_CHECKS_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+      VITE_GOOGLE_MAPS_KEY: ${{ secrets.VITE_GOOGLE_MAPS_KEY }}
+      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
+
       ## Secret
-      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_STAGING_FEE_PAYER_PUB_KEY }}
-      VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
-      VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
-      VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
-      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
+
+      VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
+      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+      VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
+      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
+      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
+      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
+      VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
+
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
       VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
+
       VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
-      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
-      VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
-      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
-      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
-      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
 
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_STAGING_BUCKET }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_STAGING_DISTRIBUTION_ID }}
 
       NODE_OPTIONS: '--max_old_space_size=15360'
-    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v1
