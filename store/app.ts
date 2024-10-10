@@ -8,7 +8,6 @@ import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
-import { Locale, english } from '@/locales'
 import { tendermintApi } from '@/app/Services'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { NETWORK, CHAIN_ID, ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
@@ -36,7 +35,6 @@ type AppStoreState = {
   blockHeight: number
 
   // App Settings
-  locale: Locale
   chainId: ChainId
   gasPrice: string
   ethereumChainId: EthereumChainId
@@ -53,7 +51,6 @@ const initialStateFactory = (): AppStoreState => ({
   blockHeight: 0,
 
   // App Settings
-  locale: english,
   chainId: CHAIN_ID,
   ethereumChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),

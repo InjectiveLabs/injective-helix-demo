@@ -8,15 +8,15 @@ on:
       - testnet
 
 jobs:
-  testnet:
+  testnet-release:
     name: 'Deploy to testnet'
     runs-on: ubuntu-latest
     env:
       ## Public
       VITE_NAME: 'TESTNET - Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnetSentry
       VITE_ENV: testnet
+      VITE_NETWORK: testnetSentry
       VITE_CHAIN_ID: injective-888
       VITE_ETHEREUM_CHAIN_ID: 11155111
       SOURCE_DIR: .output/public
@@ -31,22 +31,21 @@ jobs:
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
       ## Secret
-      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
-      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
+      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
+      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
       VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
-      VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
-      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
-      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
-      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
+      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
 
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
 
       NODE_OPTIONS: '--max_old_space_size=15360'
 

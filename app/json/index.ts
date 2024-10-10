@@ -4,6 +4,7 @@ import {
   isTestnet,
   isMainnet
 } from '@injectivelabs/networks'
+import gitVersion from './gitVersion.json'
 import devnetTokens from './tokens/devnet.json'
 import testnetTokens from './tokens/testnet.json'
 import mainnetTokens from './tokens/mainnet.json'
@@ -127,6 +128,17 @@ export const getDerivativeGridMarkets = () => {
   }
 
   return mainnetDerivativeGridMarkets
+}
+
+export const gitBuild = () => {
+  return (
+    gitVersion || {
+      branch: 'master',
+      tag: 'v0.0.0',
+      gitTagLink: '',
+      logs: []
+    }
+  )
 }
 
 export const marketCategories = marketCategoriesJson

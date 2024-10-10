@@ -1,19 +1,19 @@
-import home from './home/en'
-import trade from './trade/en'
-import guild from './guild/en'
-import market from './market/en'
-import wallet from './wallet/en'
-import sgt from './spot-grid/en'
-import banners from './banners/en'
-import account from './account/en'
-import campaign from './campaign/en'
-import liquidityProvision from './liquidityProvision/en'
-import portfolio from './portfolio/en'
-import activities from './activity/en'
-import leaderboard from './leaderboard/en'
-import tradeAndEarn from './tradeAndEarn/en'
-import institutional from './institutional/en'
-import liquidityBots from './liquidity-bots/en'
+import home from './en/home'
+import trade from './en/trade'
+import guild from './en/guild'
+import sgt from './en/spotGrid'
+import market from './en/market'
+import wallet from './en/wallet'
+import banners from './en/banners'
+import account from './en/account'
+import campaign from './en/campaign'
+import portfolio from './en/portfolio'
+import activities from './en/activity'
+import leaderboard from './en/leaderboard'
+import tradeAndEarn from './en/tradeAndEarn'
+import institutional from './en/institutional'
+import liquidityBots from './en/liquidityBots'
+import liquidityProvision from './en/liquidityProvision'
 import { I18nMessageFunction, TimeDuration } from '@/types'
 
 export default {
@@ -25,7 +25,6 @@ export default {
   ...wallet,
   ...account,
   ...banners,
-  ...liquidityProvision,
   ...campaign,
   ...portfolio,
   ...activities,
@@ -34,6 +33,7 @@ export default {
   ...tradeAndEarn,
   ...institutional,
   ...liquidityBots,
+  ...liquidityProvision,
   common: {
     or: 'or',
     ok: 'OK',
