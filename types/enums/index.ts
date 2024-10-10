@@ -41,6 +41,7 @@ export enum Modal {
   FiatOnboard = 'fiat-onboard',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  BankTransfer = 'bank-transfer',
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
@@ -212,10 +213,12 @@ export enum BusEvents {
   AddMarginToPosition = 'add-margin-to-position',
   ActivityFilterUpdate = 'activity-filter-update',
   OpenTradingBotDetails = 'open-trading-bot-details',
-  ConnectMobileModalOpened = 'connect-mobile-modal-opened',
-  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   OrderbookNotionalClick = 'orderbook-notional-click',
   AssetDetailsModalPayload = 'asset-details-modal-payload',
+  ConnectMobileModalOpened = 'connect-mobile-modal-opened',
+  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
+  BankTranksferModalWithDenom = 'bank-transfer-modal-with-denom',
+
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'
 }

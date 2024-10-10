@@ -111,6 +111,19 @@ export default {
       scanQRCode: 'Scan this QR code in Helix Mobile to connect your wallet!',
       grantAccess: 'Grant Access',
       scanCode: 'Scan Code to Continue'
+    },
+
+    bankTransfer: {
+      title: 'Transfer',
+      successful: 'Transfer Successful',
+      enterAddress: 'Enter Injective Address',
+      memo: {
+        title: 'Memo',
+        required: 'Required',
+        placeholder: 'Enter memo (required for most centralized exchanges)'
+      },
+      doubleCheck:
+        'Please check the address. Tokens sent to a wrong address cannot be recovered.'
     }
   }
 }

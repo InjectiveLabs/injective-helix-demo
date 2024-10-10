@@ -431,13 +431,17 @@ export default {
       cta: 'Buy INJ with Card'
     },
     copy: 'Copy',
+    depositNow: 'Deposit Now',
     fundsNeeded: 'Funds Needed',
     processing: 'Processing your transfer',
     success: 'Your transaction has been confirmed',
+    depositNowDescription:
+      'Add funds to your wallet. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
     fundsNeededDescription:
       'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
     scanQrCodeOrCopy:
       'Scan the QR code or copy your new address below to begin',
+    addFundsScanQrCodeOrCopy: 'Scan the QR code or copy your new address below',
     processingMessage:
       'Processing is taking more than usual. Please wait for a while.',
     closeAndContinue: 'Close and continue',

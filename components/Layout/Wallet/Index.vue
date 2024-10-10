@@ -83,7 +83,7 @@ function onSignIn() {
     @modal:open="onModalOpen"
     @modal:closed="onCloseModal"
   >
-    <LayoutWalletConnect v-bind="{ isSignUp }" />
+    <LayoutWalletConnect v-bind="{ isSignUp }" @modal:closed="onCloseModal" />
   </AppModal>
 
   <ModalsTerms />

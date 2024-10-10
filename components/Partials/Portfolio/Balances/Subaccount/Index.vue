@@ -65,7 +65,7 @@ const balancesSorted = computed(() => {
   <div class="border-y divide-y">
     <PartialsPortfolioBalancesSubaccountTabs
       v-model:search="search"
-      v-model:showUnverifiedAssets="showUnverifiedAssets"
+      v-model:show-unverified-assets="showUnverifiedAssets"
     />
 
     <div class="overflow-x-auto">
