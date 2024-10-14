@@ -108,7 +108,7 @@ jobs:
         with:
           token: '${{ env.GH_TOKEN }}'
           tag: ${{ steps.release_notes.outputs.new_version }}
-          name: Release ${{ steps.release_notes.outputs.new_version }}
+          name: Helix Release ${{ steps.release_notes.outputs.new_version }}
           body: |
             ## Changes
             ${{ steps.release_notes.outputs.release_notes }}
