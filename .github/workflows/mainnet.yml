@@ -133,9 +133,7 @@ jobs:
           overwrite: true
 
       - name: Use AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ env.AWS_REGION }}
+        uses: chrislennon/action-aws-cli@v1.1
 
       - name: Sync to S3 bucket
         run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
