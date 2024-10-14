@@ -88,7 +88,9 @@ jobs:
           yarn generate
 
       - name: Use AWS CLI
-        uses: imehedi/actions-awscli-v2@latest
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Sync to S3 bucket
         run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
