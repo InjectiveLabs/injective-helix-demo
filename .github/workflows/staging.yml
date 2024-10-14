@@ -90,7 +90,7 @@ jobs:
       - name: Use AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Sync to S3 bucket
         run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
