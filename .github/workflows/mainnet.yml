@@ -91,8 +91,9 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          version=$(git describe --tags --abbrev=0)
-          echo "current_version=$version" >> $GITHUB_ENV
+          git fetch --tags
+          latest_tag=$(git tag | sort -V | tail -n 1)
+          echo "current_version=$latest_tag" >> $GITHUB_ENV
 
       - name: Generate GitHub Release Notes
         id: release_notes
