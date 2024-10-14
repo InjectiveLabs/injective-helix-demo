@@ -69,7 +69,7 @@ jobs:
           yarn generate
 
       - name: Use AWS CLI
-        uses: chrislennon/action-aws-cli@v1.1
+        uses: imehedi/actions-awscli-v2@latest
 
       - name: Sync to S3 bucket
         run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
