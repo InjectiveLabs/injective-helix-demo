@@ -10,6 +10,7 @@ jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
@@ -91,8 +92,9 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          version=$(git describe --tags --abbrev=0)
-          echo "current_version=$version" >> $GITHUB_ENV
+          git fetch --tags
+          latest_tag=$(git tag | sort -V | tail -n 1)
+          echo "current_version=$latest_tag" >> $GITHUB_ENV
 
       - name: Generate GitHub Release Notes
         id: release_notes
