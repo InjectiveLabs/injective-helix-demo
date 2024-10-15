@@ -10,6 +10,7 @@ jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
     runs-on: ubuntu-22.04
+    timeout-minutes: 30
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'

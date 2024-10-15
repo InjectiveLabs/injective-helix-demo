@@ -9,7 +9,8 @@ on:
 jobs:
   staging-release:
     name: 'Deploy to staging'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
     env:
       ## Public
       VITE_NAME: 'BETA - Helix: Decentralized Cryptocurrency Derivatives, Ethereum and Altcoin Exchange'
