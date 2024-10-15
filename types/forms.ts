@@ -41,3 +41,13 @@ export type BankTransferForm = {
   [BankTransferField.MemoRequired]: string
   [BankTransferField.DoubleCheck]: boolean
 }
+
+export enum CompetitionWinnerField {
+  Name = 'name',
+  Email = 'email'
+}
+
+export type CompetitionWinnerForm = {
+  [CompetitionWinnerField.Name]: string
+  [CompetitionWinnerField.Email]: string
+}

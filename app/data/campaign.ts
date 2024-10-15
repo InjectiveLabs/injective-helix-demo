@@ -680,7 +680,10 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
   []
 )
 
-const FIRST_CAMPAIGN_NAME = 'Helix Like a G Trading Competition Leaderboard'
+// TODO: update this be "Helix Like a G Trading Competition Leaderboard" after QA'd
+export const FIRST_CAMPAIGN_NAME = 'Helix Like a G Trading Competition Test2'
+
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = ''
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
@@ -747,8 +750,12 @@ export const additionalEntriesMap: Record<string, Record<string, number>> = {
   }
 }
 
-// TODO: update this be one entry: FIRST_CAMPAIGN_NAME, after QA'd
+// todo: remove second entry after QA complete
+// Rule: always put the latest campaign name first so Modals/CompetitionWinner/Index.vue works properly
 export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [
-  'Helix Like a G Trading Competition Test2',
+  FIRST_CAMPAIGN_NAME,
   'Helix Like a G Trading Competition Test'
 ]
+
+export const CAMPAIGN_WINNER_MESSAGE =
+  'Signing this transaction verifies ownership of this wallet and will not incur any gas fees.'

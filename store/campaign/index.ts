@@ -25,10 +25,17 @@ import {
   PAST_LEADERBOARD_CAMPAIGN_NAMES
 } from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
-import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
+import {
+  joinGuild,
+  createGuild,
+  claimReward,
+  submitLeaderboardCompetitionClaim
+} from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
 import {
   LeaderboardType,
+  CompetitionResult,
   CampaignWithScAndData,
   LeaderboardCampaignStatus
 } from '@/types'
@@ -55,6 +62,7 @@ type CampaignStoreState = {
   pnlOrVolumeCampaigns?: CampaignV2[]
   pastPnlOrVolumeCampaigns?: CampaignV2[]
   activeCampaign?: CampaignV2
+  leaderboardCompetitionResult?: CompetitionResult
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -78,7 +86,8 @@ const initialStateFactory = (): CampaignStoreState => ({
   claimedRewards: [],
   pnlOrVolumeCampaigns: [],
   pastPnlOrVolumeCampaigns: [],
-  activeCampaign: undefined
+  activeCampaign: undefined,
+  leaderboardCompetitionResult: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -98,6 +107,7 @@ export const useCampaignStore = defineStore('campaign', {
     joinGuild,
     createGuild,
     claimReward,
+    submitLeaderboardCompetitionClaim,
 
     // guild queries
     pollGuildDetails,
@@ -334,6 +344,20 @@ export const useCampaignStore = defineStore('campaign', {
       )
 
       campaignStore.$patch({ pastPnlOrVolumeCampaigns })
+    },
+
+    async fetchLeaderboardCompetitionResults(
+      campaignName: string,
+      injectiveAddress: string
+    ) {
+      const campaignStore = useCampaignStore()
+
+      campaignStore.$patch({
+        leaderboardCompetitionResult: await fetchLeaderboardCompetitionResults(
+          campaignName,
+          injectiveAddress
+        )
+      })
     },
 
     reset() {

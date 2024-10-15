@@ -6,6 +6,7 @@ import {
 } from '@/app/utils/constants'
 import { delayPromiseCall } from '@/app/utils/async'
 import { generateUniqueHash } from '@/app/utils/formatters'
+import { submitClaim } from '@/app/services/leaderboard'
 
 export const claimReward = async (
   contractAddress: string,
@@ -120,5 +121,44 @@ export const joinGuild = async ({
   await delayPromiseCall(
     () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),
     3 * 1000
+  )
+}
+
+export const submitLeaderboardCompetitionClaim = async ({
+  name,
+  email,
+  message,
+  signature,
+  cosmosPubKey,
+  competitionName,
+  injectiveAddress
+}: {
+  name: string
+  email: string
+  message: string
+  signature: string
+  competitionName: string
+  cosmosPubKey?: string
+  injectiveAddress: string
+}) => {
+  const campaignStore = useCampaignStore()
+
+  await submitClaim({
+    name,
+    email,
+    message,
+    signature,
+    cosmosPubKey,
+    competitionName,
+    injectiveAddress
+  })
+
+  await delayPromiseCall(
+    () =>
+      campaignStore.fetchLeaderboardCompetitionResults(
+        competitionName,
+        injectiveAddress
+      ),
+    2 * 1000
   )
 }

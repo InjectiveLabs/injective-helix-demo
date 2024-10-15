@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SharedDropdownOption } from '@shared/types'
-import { PAST_LEADERBOARD_CAMPAIGN_NAMES } from '@/app/data/campaign'
+import {
+  FIRST_CAMPAIGN_NAME,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
 
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
@@ -91,8 +94,7 @@ function fetchPastCampaigns() {
         <div class="w-full text-sm relative">
           <PartialsLeaderboardCompetitionBanner
             v-if="
-              selectedCampaign &&
-              selectedCampaign.name === PAST_LEADERBOARD_CAMPAIGN_NAMES[0]
+              selectedCampaign && selectedCampaign.name === FIRST_CAMPAIGN_NAME
             "
             v-bind="{ campaign: selectedCampaign }"
           />

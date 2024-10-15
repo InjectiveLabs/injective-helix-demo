@@ -63,6 +63,7 @@ export enum Modal {
   LeaderboardTerms = 'leaderboard-terms',
   SharePositionPnl = 'share-position-pnl',
   InstitutionalForm = 'institutionalForm',
+  CompetitionWinner = 'competition-winner',
   MarketNotOnHelix = 'market-not-on-helix',
   TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',

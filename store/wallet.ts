@@ -6,6 +6,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
@@ -192,6 +193,10 @@ export const useWalletStore = defineStore('wallet', {
           accountRow: undefined
         }
       })
+    },
+
+    async signArbitraryData(address: string, message: string) {
+      return await walletStrategy.signArbitrary(address, message)
     }
   }
 })

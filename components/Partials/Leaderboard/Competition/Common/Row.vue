@@ -6,8 +6,9 @@ import {
   MAXIMUM_LEADERBOARD_STATS_RANK,
   MIN_COMPETITION_PNL_AMOUNT
 } from '@/app/utils/constants'
-import { LeaderboardType } from '@/types'
+import { LeaderboardType, LeaderboardSubPage } from '@/types'
 
+const route = useRoute()
 const isMobile = useIsMobile()
 
 const props = withDefaults(
@@ -91,7 +92,12 @@ const isShowRank = computed(() => {
           <div>
             {{ leader.account }}
           </div>
-          <div v-if="leader.rank === 1">
+          <div
+            v-if="
+              leader.rank === 1 &&
+              route.name !== LeaderboardSubPage.PastCompetitions
+            "
+          >
             <div
               class="text-xs 3xl:text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-1.5 leading-4 rounded-[4px] gap-0.5 items-center"
             >

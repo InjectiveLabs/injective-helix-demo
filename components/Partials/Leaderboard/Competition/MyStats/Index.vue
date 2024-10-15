@@ -5,6 +5,7 @@ import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
 const modalStore = useModalStore()
+const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -32,7 +33,7 @@ const isNegativePnL = computed(() => {
   ).lte(0)
 })
 
-const isShowBanner = computed(() => {
+const isShowMyStats = computed(() => {
   if (!sharedWalletStore.isUserConnected) {
     return false
   }
@@ -52,22 +53,37 @@ function onShareCompetition() {
 </script>
 
 <template>
-  <div v-if="isShowBanner && leaderboardStore.competitionLeaderboard">
+  <div v-if="isShowMyStats && leaderboardStore.competitionLeaderboard">
     <PartialsLeaderboardMyStats
       v-bind="{ isUnranked: isUserWithoutRaffleTickets }"
     >
       <template v-if="!isUserWithoutRaffleTickets" #add-on>
         <div
-          class="hidden md:flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
+          class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
+          :class="[
+            route.name !== LeaderboardSubPage.PastCompetitions ||
+            campaignStore.leaderboardCompetitionResult
+              ? 'bg-green-450 uppercase'
+              : 'bg-white'
+          ]"
         >
           <p
-            class="text-xs md:text-sm font-semibold leading-4 text-gray-925 uppercase"
+            class="text-xs md:text-sm font-semibold leading-4 text-gray-925 max-w-[300px] lg:max-w-[480px]"
           >
-            {{ $t('leaderboard.competition.keepGoing') }}
+            <span v-if="route.name !== LeaderboardSubPage.PastCompetitions">
+              {{ $t('leaderboard.competition.keepGoing') }}
+            </span>
+            <span v-else-if="campaignStore.leaderboardCompetitionResult">
+              {{ $t('leaderboard.competition.winner') }}
+            </span>
+            <span v-else>
+              {{ $t('leaderboard.competition.thanksForParticipating') }}
+            </span>
           </p>
         </div>
 
         <div
+          v-if="route.name !== LeaderboardSubPage.PastCompetitions"
           class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
           @click="onShareCompetition"
         >

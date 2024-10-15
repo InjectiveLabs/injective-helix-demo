@@ -41,6 +41,7 @@ export default {
     },
 
     competition: {
+      winner: 'Winner',
       unranked: 'Unranked',
       keepGoing: 'Keep going 💪',
       currentLeader: 'Current leader',
@@ -50,6 +51,8 @@ export default {
       competitionMaintenance:
         'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
       noVolumeData: 'No trading competition results found',
+      thanksForParticipating:
+        'Thank you for participating! Unfortunately you didn’t win this time.',
       noCompetition:
         'There are no active competitions at this time, please check back later!',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
@@ -78,6 +81,23 @@ export default {
         likeAG: 'like a G',
         joinCompetition:
           'Join Helix\'s "like a G" trading competition for a chance to win a Mercedes G-Wagon!'
+      },
+
+      winnerModal: {
+        title: 'You are one of the winners!',
+        description: ({ named }: I18nMessageFunction) =>
+          `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
+            'prize'
+          )}. Click claim prize to get started!`,
+        bannerDescription: ({ named }: I18nMessageFunction) =>
+          `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
+            'prize'
+          )}. Click to start claiming your prize!`,
+        claimPrize: 'Claim my prize',
+        confirm: 'Confirm',
+        namePlaceholder: 'Your first and last name',
+        emailPlaceholder: 'Your email address',
+        claimSuccessful: 'Claim successful!'
       }
     },
 
