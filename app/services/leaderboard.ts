@@ -6,26 +6,26 @@ const httpClient = new HttpClient('https://api.express.injective.dev/')
 export const submitClaim = async ({
   name,
   email,
+  pubKey,
   message,
   signature,
-  cosmosPubKey,
   competitionName,
   injectiveAddress
 }: {
   name: string
   email: string
   message: string
+  pubKey?: string
   signature: string
-  cosmosPubKey?: string
   competitionName: string
   injectiveAddress: string
 }) => {
   return await httpClient.post(`competition/claim`, {
     name,
     email,
+    pubKey,
     message,
     signature,
-    cosmosPubKey,
     competitionName,
     injectiveAddress
   })

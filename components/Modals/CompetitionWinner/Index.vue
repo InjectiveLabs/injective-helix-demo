@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { isCosmosWallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
 import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
@@ -97,8 +97,9 @@ async function onSubmit(signature: string) {
       signature,
       competitionName: latestCampaign,
       injectiveAddress: sharedWalletStore.injectiveAddress,
-      ...(isCosmosWallet(sharedWalletStore.wallet)
-        ? { cosmosPubKey: accountStore.cosmosPubKey }
+      ...(isCosmosWallet(sharedWalletStore.wallet) ||
+      sharedWalletStore.wallet === Wallet.Magic
+        ? { pubKey: accountStore.pubKey }
         : {})
     })
     .then(() => {

@@ -127,18 +127,18 @@ export const joinGuild = async ({
 export const submitLeaderboardCompetitionClaim = async ({
   name,
   email,
+  pubKey,
   message,
   signature,
-  cosmosPubKey,
   competitionName,
   injectiveAddress
 }: {
   name: string
   email: string
   message: string
+  pubKey?: string
   signature: string
   competitionName: string
-  cosmosPubKey?: string
   injectiveAddress: string
 }) => {
   const campaignStore = useCampaignStore()
@@ -146,9 +146,9 @@ export const submitLeaderboardCompetitionClaim = async ({
   await submitClaim({
     name,
     email,
+    pubKey,
     message,
     signature,
-    cosmosPubKey,
     competitionName,
     injectiveAddress
   })

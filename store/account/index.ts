@@ -33,6 +33,7 @@ import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
+import { getAccountDetails } from '@/app/services/account'
 import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
@@ -47,7 +48,7 @@ type AccountStoreState = {
       allowance: string
     }
   >
-  cosmosPubKey?: string
+  pubKey?: string
 }
 
 const initialStateFactory = (): AccountStoreState => ({
@@ -56,7 +57,7 @@ const initialStateFactory = (): AccountStoreState => ({
   subaccountId: '',
   subaccountBalancesMap: {},
   erc20BalancesMap: {},
-  cosmosPubKey: ''
+  pubKey: ''
 })
 
 export const useAccountStore = defineStore('account', {
@@ -249,10 +250,22 @@ export const useAccountStore = defineStore('account', {
 
     async fetchPubKey(address: string) {
       const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       try {
+        if (sharedWalletStore.wallet === Wallet.Magic) {
+          const accountDetails = await getAccountDetails(address)
+          const publicKeyBase64 = accountDetails.pubKey.key
+
+          accountStore.$patch({
+            pubKey: publicKeyBase64
+          })
+
+          return
+        }
+
         accountStore.$patch({
-          cosmosPubKey: await walletStrategy.getPubKey(address)
+          pubKey: await walletStrategy.getPubKey(address)
         })
       } catch (e: any) {
         // silently fail
