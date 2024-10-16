@@ -10,7 +10,6 @@ import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { getEip712TypedData } from '@/app/utils/wallet'
 import { Modal } from '@/types'
 
 type WalletStoreState = {}
@@ -200,13 +199,8 @@ export const useWalletStore = defineStore('wallet', {
       const sharedWalletStore = useSharedWalletStore()
 
       if (sharedWalletStore.wallet === Wallet.Magic) {
-        const eip712TypedData = getEip712TypedData(
-          message,
-          sharedWalletStore.address
-        )
-
         return await walletStrategy.signEip712TypedData(
-          JSON.stringify(eip712TypedData),
+          message,
           sharedWalletStore.address
         )
       }

@@ -5,6 +5,7 @@ import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
 } from '@/app/data/campaign'
+import { getEip712TypedData } from '@/app/utils/wallet'
 import { Modal, CompetitionWinnerField, CompetitionWinnerForm } from '@/types'
 
 const appStore = useAppStore()
@@ -36,6 +37,14 @@ const isShowBannerOrModal = computed(
   () =>
     campaignStore.leaderboardCompetitionResult &&
     !campaignStore.leaderboardCompetitionResult.hasClaimed
+)
+
+const claimMessage = computed(() =>
+  sharedWalletStore.wallet !== Wallet.Magic
+    ? CAMPAIGN_WINNER_MESSAGE
+    : JSON.stringify(
+        getEip712TypedData(sharedWalletStore.address, CAMPAIGN_WINNER_MESSAGE)
+      )
 )
 
 onWalletConnected(() => {
@@ -91,11 +100,12 @@ async function onSubmit(signature: string) {
 
   campaignStore
     .submitLeaderboardCompetitionClaim({
-      message: CAMPAIGN_WINNER_MESSAGE,
+      signature,
       name: name.value,
       email: email.value,
-      signature,
       competitionName: latestCampaign,
+      message: claimMessage.value,
+      wallet: sharedWalletStore.wallet,
       injectiveAddress: sharedWalletStore.injectiveAddress,
       ...(isCosmosWallet(sharedWalletStore.wallet) ||
       sharedWalletStore.wallet === Wallet.Magic
@@ -215,7 +225,7 @@ async function onSubmit(signature: string) {
                 </div>
 
                 <ModalsCompetitionWinnerSubmitButton
-                  v-bind="{ submitStatus }"
+                  v-bind="{ submitStatus, claimMessage }"
                   @submit="onSubmit"
                 />
               </div>

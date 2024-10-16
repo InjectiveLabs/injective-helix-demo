@@ -127,6 +127,7 @@ export const joinGuild = async ({
 export const submitLeaderboardCompetitionClaim = async ({
   name,
   email,
+  wallet,
   pubKey,
   message,
   signature,
@@ -135,6 +136,7 @@ export const submitLeaderboardCompetitionClaim = async ({
 }: {
   name: string
   email: string
+  wallet: string
   message: string
   pubKey?: string
   signature: string
@@ -146,6 +148,7 @@ export const submitLeaderboardCompetitionClaim = async ({
   await submitClaim({
     name,
     email,
+    wallet,
     pubKey,
     message,
     signature,

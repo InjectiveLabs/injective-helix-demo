@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCosmosWallet } from '@injectivelabs/wallet-ts'
-import { CAMPAIGN_WINNER_MESSAGE } from '@/app/data/campaign'
 import { CompetitionWinnerField } from '@/types'
 
 const formErrors = useFormErrors()
@@ -10,8 +9,9 @@ const competitionFormValues = useFormValues()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    claimMessage: string
     submitStatus: Status
   }>(),
   {}
@@ -38,7 +38,7 @@ function onSignMessage() {
     : sharedWalletStore.address
 
   walletStore
-    .signArbitraryData(address, CAMPAIGN_WINNER_MESSAGE)
+    .signArbitraryData(address, props.claimMessage)
     .then((signature) => {
       if (!signature) {
         return
