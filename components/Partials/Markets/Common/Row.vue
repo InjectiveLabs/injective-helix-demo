@@ -130,7 +130,7 @@ function toggleFavorite() {
         {{ lastPriceToString }}
       </div>
       <div
-        class="text-2xs text-gray-500"
+        class="text-xs text-gray-500"
         :data-cy="dataCyTag(`tokenPrice-${market.baseToken.name}`)"
       >
         ${{ lastPriceInUsdToString }}

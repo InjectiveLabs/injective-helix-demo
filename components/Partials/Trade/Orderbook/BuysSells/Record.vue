@@ -178,7 +178,7 @@ function handlePriceClick() {
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div
-        class="text-2xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
+        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
       >
         <div class="text-gray-300 font-2xs">{{ $t('trade.volume') }}:</div>
         <div class="font-mono text-right">{{ volumeToString }}</div>

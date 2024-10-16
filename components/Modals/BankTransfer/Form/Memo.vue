@@ -63,7 +63,7 @@ watch(
 
     <div
       v-if="memoRequired"
-      class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md"
+      class="p-2 py-3 max-h-xs space-y-3 bg-gray-950 rounded-md"
     >
       <AppInput
         v-model="memo"

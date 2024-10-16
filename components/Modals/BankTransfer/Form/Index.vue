@@ -160,7 +160,7 @@ function onWalletSelected(wallet: Wallet) {
 <template>
   <div>
     <div class="mb-4">
-      <div class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md">
+      <div class="p-2 py-3 max-h-xs space-y-3 bg-gray-950 rounded-md">
         <AppInput
           v-model="injAddressValue"
           v-bind="{

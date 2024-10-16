@@ -24,7 +24,7 @@
 }
 
 .table tbody tr {
-  @apply bg-gray-1000;
+  @apply bg-gray-950;
 }
 
 .table tbody tr:first-of-type {
@@ -44,7 +44,7 @@
 }
 
 .table thead[xs] tr th {
-  @apply text-2xs;
+  @apply text-xs;
 }
 
 .v-table-row {
@@ -68,5 +68,5 @@
 }
 
 .table.market-data th {
-  @apply space-x-1 bg-gray-1000;
+  @apply space-x-1 bg-gray-950;
 }

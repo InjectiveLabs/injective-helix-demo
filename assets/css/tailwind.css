@@ -12,14 +12,22 @@
 @import './_charts.css';
 @import './_fonts.css';
 
-@import './_inputs.css';
-@import './_table.css';
-@import './_tabs.css';
-@import './_slider.css';
+/* @import './_inputs.css'; */
+/* @import './_table.css'; */
+/* @import './_tabs.css'; */
+/* @import './_slider.css'; */
 @import './_scrollbar.css';
-@import './_dropdown.css';
+/* @import './_dropdown.css'; */
 
-@import './_lists.css';
+/* @import './_lists.css'; */
 @import './_transitions.css';
-@import './_custom.css';
 @import './_animate.css';
+@import './_custom.css';
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply dark:border-gray-800;
+  }
+}

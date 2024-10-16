@@ -93,7 +93,7 @@ function setTypeFromQuery() {
 
 <template>
   <div>
-    <div class="container py-10">
+    <div class="mx-auto max-w-7xl py-10">
       <h3
         class="text-2xl font-semibold"
         :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"

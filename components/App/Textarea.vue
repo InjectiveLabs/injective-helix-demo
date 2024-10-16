@@ -27,7 +27,7 @@ export default {
   @apply px-2 py-3 text-sm text-gray-200 w-full;
 
   &-wrapper {
-    @apply shadow-sm bg-gray-1000 rounded;
+    @apply shadow-sm bg-gray-950 rounded;
   }
 
   &::placeholder {

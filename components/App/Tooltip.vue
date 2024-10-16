@@ -38,17 +38,3 @@ withDefaults(
     </template>
   </SharedTooltip>
 </template>
-
-<style>
-.tooltip,
-.v-popper--theme-tooltip {
-  .v-popper__inner {
-    @apply bg-gray-750 text-gray-200 border-none max-w-xs text-xs px-3 py-1 shadow-sm;
-  }
-
-  .v-popper__arrow-outer,
-  .v-popper__arrow-inner {
-    @apply border-gray-750;
-  }
-}
-</style>

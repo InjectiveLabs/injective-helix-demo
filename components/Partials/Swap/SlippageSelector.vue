@@ -136,19 +136,3 @@ function checkForInvalidSlippageValue() {
     </template>
   </AppTooltip>
 </template>
-
-<style>
-/*
-Todo: add scoped tag once nuxt resolve webpack style loader issue
-  https://github.com/nuxt/framework/issues/7194
-*/
-
-.slippage.v-popper--theme-dropdown {
-  width: calc(90% - 48px);
-  max-width: 400px;
-}
-
-.slippage.v-popper--theme-dropdown .v-popper__inner {
-  @apply border-none bg-transparent shadow-sm;
-}
-</style>

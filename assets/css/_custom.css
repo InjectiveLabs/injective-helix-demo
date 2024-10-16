@@ -161,7 +161,7 @@
     @apply block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
   }
 }
-
+/* 
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
@@ -237,7 +237,7 @@ input[type='range']::-webkit-slider-runnable-track {
   border-radius: 2px;
 
   @apply bg-transparent;
-}
+} */
 
 html {
   scroll-behavior: smooth;

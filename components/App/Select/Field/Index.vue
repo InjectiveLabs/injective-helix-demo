@@ -72,7 +72,7 @@ function handleClear() {
   >
     <template #default="{ isOpen }">
       <div
-        class="flex items-center justify-between px-4 h-10 box-border bg-gray-1000 border rounded-lg cursor-pointer text-sm"
+        class="flex items-center justify-between px-4 h-10 box-border bg-gray-950 border rounded-lg cursor-pointer text-sm"
         :class="[
           selectedClass,
           isOpen ? 'border-blue-500' : 'border-transparent'
@@ -149,9 +149,3 @@ function handleClear() {
     </template>
   </SharedDropdown>
 </template>
-
-<style>
-.dropdown.v-popper--theme-dropdown .v-popper__inner {
-  @apply bg-gray-850 border-blue-300 border shadow-sm;
-}
-</style>

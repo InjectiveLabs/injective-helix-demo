@@ -260,7 +260,7 @@ useIntervalFn(() => {
             {{ market?.quoteToken.symbol }}
           </span>
         </span>
-        <span class="text-2xs opacity-75 ml-1">({{ percentagePnl }} %)</span>
+        <span class="text-xs opacity-75 ml-1">({{ percentagePnl }} %)</span>
       </div>
     </div>
 

@@ -117,7 +117,7 @@ function onDestinationSubaccountIdUpdate() {
     <div class="flex-1">
       <AppSelectField
         v-model="srcSubaccountId"
-        selected-class="h-12 bg-gray-1000"
+        selected-class="h-12 bg-gray-950"
         :options="sourceOptions"
         @update:model-value="onSourceSubaccountIdUpdate"
       >
@@ -151,7 +151,7 @@ function onDestinationSubaccountIdUpdate() {
     <div class="flex-1">
       <AppSelectField
         v-model="dstSubaccountId"
-        selected-class="h-12 bg-gray-1000"
+        selected-class="h-12 bg-gray-950"
         :options="destinationOptions"
         @update:model-value="onDestinationSubaccountIdUpdate"
       >

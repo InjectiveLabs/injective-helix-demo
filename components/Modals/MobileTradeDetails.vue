@@ -52,7 +52,7 @@ function onModalClose() {
 
     <div class="bg-gray-900 px-3 py-4 grid grid-cols-2 gap-4 text-sm">
       <div class="flex items-center">
-        <span class="text-gray-500 uppercase tracking-widest text-2xs">
+        <span class="text-gray-500 uppercase tracking-widest text-xs">
           {{ $t('trade.time') }}
         </span>
         <AppTooltip class="ml-2" :content="$t('trade.timestamp_tooltip')" />
@@ -112,7 +112,7 @@ function onModalClose() {
       </span>
 
       <div class="flex items-center">
-        <span class="text-gray-500 uppercase tracking-widest text-2xs">
+        <span class="text-gray-500 uppercase tracking-widest text-xs">
           {{ $t('trade.amount') }}
         </span>
         <AppTooltip class="ml-2" :content="$t('trade.amount_tooltip')" />
@@ -129,7 +129,7 @@ function onModalClose() {
       </span>
 
       <div class="flex items-center">
-        <span class="text-gray-500 uppercase tracking-widest text-2xs">
+        <span class="text-gray-500 uppercase tracking-widest text-xs">
           {{ $t('trade.fee') }}
         </span>
         <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
@@ -137,7 +137,7 @@ function onModalClose() {
       <span v-if="fee" class="text-right">
         <AppNumber use-number-decimals :number="fee">
           <template #addon>
-            <span class="text-2xs text-gray-500">
+            <span class="text-xs text-gray-500">
               {{ market.quoteToken.symbol }}
             </span>
           </template>
@@ -145,7 +145,7 @@ function onModalClose() {
       </span>
 
       <div class="flex items-center">
-        <span class="text-gray-500 uppercase tracking-widest text-2xs">
+        <span class="text-gray-500 uppercase tracking-widest text-xs">
           {{ $t('trade.total') }}
         </span>
         <AppTooltip class="ml-2" :content="$t('trade.fees_tooltip')" />
@@ -159,7 +159,7 @@ function onModalClose() {
           :number="total"
         >
           <template #addon>
-            <span class="text-2xs text-gray-500">
+            <span class="text-xs text-gray-500">
               {{ market.quoteToken.symbol }}
             </span>
           </template>

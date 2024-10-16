@@ -44,7 +44,7 @@ withDefaults(
       }"
     >
       <div
-        class="text-2xs tracking-1.5 flex items-center justify-center text-center"
+        class="text-xs tracking-1.5 flex items-center justify-center text-center"
       >
         <span
           v-if="hasPrevPage"

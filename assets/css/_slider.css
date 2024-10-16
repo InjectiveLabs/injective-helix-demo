@@ -3,11 +3,11 @@
 }
 
 .range-wrap .range::-webkit-slider-runnable-track {
-  @apply bg-gray-1000 h-1 rounded-sm border-transparent;
+  @apply bg-gray-950 h-1 rounded-sm border-transparent;
 }
 
 .range-wrap .range::-moz-range-track {
-  @apply bg-gray-1000 h-1 rounded-sm;
+  @apply bg-gray-950 h-1 rounded-sm;
 }
 
 .range-wrap .range::-ms-track {
@@ -15,11 +15,11 @@
 }
 
 .range-wrap .range::-ms-fill-lower {
-  @apply bg-gray-1000 rounded-sm;
+  @apply bg-gray-950 rounded-sm;
 }
 
 .range-wrap .range::-ms-fill-upper {
-  @apply bg-gray-1000 rounded-sm;
+  @apply bg-gray-950 rounded-sm;
 }
 
 .range-wrap .range::-ms-tooltip {
@@ -51,5 +51,5 @@
 }
 
 .range-wrap output {
-  @apply bg-gray-1000 text-gray-300 font-semibold text-sm px-2 py-1 rounded-lg;
+  @apply bg-gray-950 text-gray-300 font-semibold text-sm px-2 py-1 rounded-lg;
 }

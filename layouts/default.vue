@@ -132,7 +132,7 @@ provide(PortfolioStatusKey, portfolioStatus)
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
 
-      <NuxtPage v-bind="{ portfolioStatus }" />
+      <slot v-bind="{ portfolioStatus }" />
     </main>
 
     <ModalsNinjaPassWinner />
