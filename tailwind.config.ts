@@ -31,6 +31,19 @@ export default <Partial<Config>>{
         orders: '10rem',
         trades: '26rem',
         header: '56px'
+      },
+
+      screens: {
+        xs: '480px',
+        sm: '640px',
+        md: '768px',
+        '2md': '800px',
+        '3md': '840px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1366px',
+        '3xl': '1440px',
+        '4xl': '1681px'
       }
     }
   },

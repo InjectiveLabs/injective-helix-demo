@@ -51,15 +51,7 @@ const investment = computed(() => {
 
   const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
-    .times(
-      new BigNumberInWei(props.strategy.executionPrice)
-        .dividedBy(
-          new BigNumberInBase(10).pow(
-            market.value.quoteToken.decimals - market.value.baseToken.decimals
-          )
-        )
-        .toBase()
-    )
+    .times(new BigNumberInBase(props.strategy.executionPrice))
 
   const quoteAmountInUsd = new BigNumberInWei(
     props.strategy.quoteQuantity || 0
@@ -93,13 +85,7 @@ const pnl = computed(() => {
     props.strategy.subscriptionBaseQuantity
   ).toBase(market.value?.baseToken.decimals)
 
-  const creationMidPrice = new BigNumberInWei(props.strategy.executionPrice)
-    .dividedBy(
-      new BigNumberInBase(10).pow(
-        market.value.quoteToken.decimals - market.value.baseToken.decimals
-      )
-    )
-    .toBase()
+  const creationMidPrice = new BigNumberInBase(props.strategy.executionPrice)
 
   const currentQuoteQuantity =
     props.strategy.state === StrategyStatus.Active
@@ -168,14 +154,8 @@ const lowerBound = computed(() => {
   )
 })
 
-const creationExecutionPrice = computed(() =>
-  new BigNumberInWei(props.strategy.executionPrice)
-    .dividedBy(
-      new BigNumberInBase(10).pow(
-        market.value.quoteToken.decimals - market.value.baseToken.decimals
-      )
-    )
-    .toBase()
+const creationExecutionPrice = computed(
+  () => new BigNumberInBase(props.strategy.executionPrice)
 )
 
 const stopBaseQuantity = computed(() =>

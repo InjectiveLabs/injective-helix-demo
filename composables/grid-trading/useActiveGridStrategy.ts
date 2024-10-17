@@ -22,15 +22,7 @@ export default function useActiveGridStrategy(
 
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
       .toBase(market.value?.baseToken.decimals)
-      .times(
-        new BigNumberInWei(strategy.value.executionPrice)
-          .dividedBy(
-            new BigNumberInBase(10).pow(
-              market.value.quoteToken.decimals - market.value.baseToken.decimals
-            )
-          )
-          .toBase()
-      )
+      .times(new BigNumberInBase(strategy.value.executionPrice))
 
     const quoteAmountInUsd = new BigNumberInWei(
       strategy.value.quoteQuantity || 0
@@ -64,13 +56,15 @@ export default function useActiveGridStrategy(
       strategy.value.subscriptionBaseQuantity
     ).toBase(market.value?.baseToken.decimals)
 
-    const creationMidPrice = new BigNumberInWei(strategy.value.executionPrice)
-      .dividedBy(
-        new BigNumberInBase(10).pow(
-          market.value.quoteToken.decimals - market.value.baseToken.decimals
-        )
-      )
-      .toBase()
+    // const creationMidPrice = new BigNumberInWei(strategy.value.executionPrice)
+    //   .dividedBy(
+    //     new BigNumberInBase(10).pow(
+    //       market.value.quoteToken.decimals - market.value.baseToken.decimals
+    //     )
+    //   )
+    //   .toBase()
+
+    const creationMidPrice = new BigNumberInBase(strategy.value.executionPrice)
 
     const currentQuoteQuantity =
       strategy.value.state === StrategyStatus.Active

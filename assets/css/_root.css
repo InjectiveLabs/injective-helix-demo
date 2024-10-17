@@ -135,6 +135,6 @@ input[type='number'] {
   }
 }
 
-button:focus-visible {
+/* button:focus-visible {
   @apply outline-none;
-}
+} */

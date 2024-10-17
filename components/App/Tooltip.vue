@@ -16,25 +16,16 @@ withDefaults(
 </script>
 
 <template>
-  <SharedTooltip :triggers="['hover', 'click']">
+  <UTooltip
+    :text="content"
+    :ui="{
+      popper: {
+        placement: 'top'
+      }
+    }"
+  >
     <slot>
-      <SharedIcon
-        name="circle-info"
-        :class="{
-          'w-4 h-4 min-w-4': isLg,
-          'w-3 h-3 min-w-3': !isLg,
-          'text-gray-500': !isWarning,
-          'text-orange-200': isWarning
-        }"
-      />
+      <UIcon name="entypo:info-with-circle" />
     </slot>
-
-    <template #content>
-      <div class="leading-4" :class="contentClass">
-        <slot name="content">
-          {{ content }}
-        </slot>
-      </div>
-    </template>
-  </SharedTooltip>
+  </UTooltip>
 </template>

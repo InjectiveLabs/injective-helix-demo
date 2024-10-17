@@ -20,27 +20,19 @@ withDefaults(
 </script>
 
 <template>
-  <SharedHoverMenu popper-class="tooltip" :disabled="isDisabled">
-    <template #default>
-      <span
-        :class="[
-          classes,
-          textColorClass,
-          borderColorClass,
-          {
-            'text-xs normal-case border-dashed': !isNotStyled,
-            'border-b cursor-pointer': !isNotStyled && !isDisabled
-          }
-        ]"
-      >
-        <slot />
-      </span>
-    </template>
-
-    <template #content>
-      <slot name="tooltip">
-        {{ tooltip }}
-      </slot>
-    </template>
-  </SharedHoverMenu>
+  <UTooltip :text="tooltip" :disabled="isDisabled">
+    <span
+      :class="[
+        classes,
+        textColorClass,
+        borderColorClass,
+        {
+          'text-xs normal-case border-dashed': !isNotStyled,
+          'border-b cursor-pointer': !isNotStyled && !isDisabled
+        }
+      ]"
+    >
+      <slot />
+    </span>
+  </UTooltip>
 </template>
