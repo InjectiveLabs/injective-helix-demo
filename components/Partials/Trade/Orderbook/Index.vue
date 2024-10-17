@@ -47,7 +47,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
         v-model="activeTab"
         :value="value"
         class="text-sm font-semibold text-gray-500 capitalize px-2"
-        active-classes="text-white"
+        active-classes="!text-white"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>

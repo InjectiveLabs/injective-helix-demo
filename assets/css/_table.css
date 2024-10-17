@@ -40,7 +40,7 @@
 }
 
 .table tbody tr:hover {
-  background-color: theme('colors.gray.850') !important;
+  @apply bg-gray-800;
 }
 
 .table thead[xs] tr th {
@@ -48,7 +48,7 @@
 }
 
 .v-table-row {
-  background-color: theme('colors.gray.900');
+  @apply bg-gray-900;
 }
 
 .v-table-row:first-of-type {
@@ -60,11 +60,11 @@
 }
 
 .v-table-row:nth-child(even) {
-  background-color: theme('colors.gray.1000');
+  @apply bg-gray-950;
 }
 
 .v-table-row:hover {
-  background-color: theme('colors.gray.850') !important;
+  @apply bg-gray-800;
 }
 
 .table.market-data th {

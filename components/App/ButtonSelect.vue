@@ -1,12 +1,17 @@
 <script lang="ts" setup>
+import { cx } from 'class-variance-authority'
+import { twMerge } from 'tailwind-merge'
+
 const props = withDefaults(
   defineProps<{
     value: string
     modelValue: string
+    class?: string
     activeClasses?: string
   }>(),
   {
-    activeClasses: ''
+    activeClasses: '',
+    class: ''
   }
 )
 
@@ -25,11 +30,15 @@ const onClick = () => {
 
 <template>
   <button
-    v-bind="$attrs"
-    :class="[
-      isActive && activeClasses,
-      { 'cursor-not-allowed': $attrs.disabled }
-    ]"
+    :class="
+      twMerge(
+        cx([
+          props.class,
+          isActive && activeClasses,
+          { 'cursor-not-allowed': $attrs.disabled }
+        ])
+      )
+    "
     @click="onClick"
   >
     <slot v-bind="{ isActive }" />
