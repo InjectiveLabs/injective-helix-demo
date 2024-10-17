@@ -22,6 +22,7 @@ export default {
         named('terms'),
         ' of the Competition are ineligible to participate in or win the Competition.'
       ]),
+    refresh: 'The leaderboard refreshes at the top of each hour',
     pnl: {
       duration: {
         [LeaderboardDuration.OneDay]: 'Today',

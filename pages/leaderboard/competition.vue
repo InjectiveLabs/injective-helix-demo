@@ -166,19 +166,25 @@ watch(isCampaignStarted, (isStarted) => {
           to="#leaderboard-target"
           defer
         >
-          <i18n-t
-            tag="p"
-            keypath="leaderboard.competition.competitionDuration"
-            class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
+          <CommonHeaderTooltip
+            :tooltip="$t('leaderboard.refresh')"
+            class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
+            is-not-styled
           >
-            <template #duration>
-              <div
-                class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
-              >
-                {{ timeLeftInActiveCampaign }}
-              </div>
-            </template>
-          </i18n-t>
+            <i18n-t
+              tag="p"
+              keypath="leaderboard.competition.competitionDuration"
+              class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
+            >
+              <template #duration>
+                <div
+                  class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
+                >
+                  {{ timeLeftInActiveCampaign }}
+                </div>
+              </template>
+            </i18n-t>
+          </CommonHeaderTooltip>
         </Teleport>
 
         <div class="w-full text-sm relative">

@@ -80,9 +80,11 @@ function fetchPnlLeaderboard() {
         </AppButtonSelect>
       </div>
 
-      <div
+      <CommonHeaderTooltip
         v-if="status.isIdle()"
-        class="text-xs md:text-sm md:leading-4 text-gray-350"
+        :tooltip="$t('leaderboard.refresh')"
+        class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
+        is-not-styled
       >
         {{
           selectedDuration !== LeaderboardDuration.All
@@ -94,7 +96,7 @@ function fetchPnlLeaderboard() {
                 lastUpdatedDate: endDateFormatted
               })
         }}
-      </div>
+      </CommonHeaderTooltip>
     </div>
 
     <AppHocLoading v-bind="{ status }">
