@@ -82,7 +82,15 @@ function fetchPnlLeaderboard() {
 
       <CommonHeaderTooltip
         v-if="status.isIdle()"
-        :tooltip="$t('leaderboard.refresh')"
+        :tooltip="
+          $t(
+            `leaderboard.${
+              selectedDuration === LeaderboardDuration.All
+                ? 'pnl.allTime'
+                : 'refresh'
+            }`
+          )
+        "
         class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
         is-not-styled
       >

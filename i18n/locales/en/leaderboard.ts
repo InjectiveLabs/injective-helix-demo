@@ -24,6 +24,7 @@ export default {
       ]),
     refresh: 'The leaderboard refreshes at the top of each hour',
     pnl: {
+      allTime: 'Since August 1, 2024 00:00 UTC',
       duration: {
         [LeaderboardDuration.OneDay]: 'Today',
         [LeaderboardDuration.All]: 'All Time',
