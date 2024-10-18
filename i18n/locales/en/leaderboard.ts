@@ -57,6 +57,7 @@ export default {
         'Thank you for participating! Unfortunately you didn’t win this time.',
       noCompetition:
         'There are no active competitions at this time, please check back later!',
+      noPastCompetition: 'There are no past competitions at this time.',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       firstHourOfCampaign: ({ named }: I18nMessageFunction) =>

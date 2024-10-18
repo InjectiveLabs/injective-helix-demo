@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
-import { format, isWithinInterval, addHours } from 'date-fns'
+import { format, isWithinInterval, addHours, isAfter } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { UTC_TIMEZONE } from '@shared/utils/constant'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
@@ -116,6 +116,16 @@ const timeLeftInActiveCampaign = computed(() => {
   return `${days}D ${hours}:${minutes}:${seconds}`
 })
 
+const isCampaignOver = computed(() => {
+  if (!campaignStore.activeCampaign) {
+    return
+  }
+
+  const campaignEndDate = new Date(Number(campaignStore.activeCampaign.endDate))
+
+  return isAfter(now.value, campaignEndDate)
+})
+
 onMounted(() => {
   fetchUpcomingCampaigns()
   fetchActiveCampaigns()
@@ -161,57 +171,59 @@ watch(isCampaignStarted, (isStarted) => {
       }"
     >
       <div class="overflow-x-auto">
-        <Teleport
-          v-if="campaignStore.activeCampaign"
-          to="#leaderboard-target"
-          defer
-        >
-          <CommonHeaderTooltip
-            :tooltip="$t('leaderboard.refresh')"
-            class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
-            is-not-styled
-          >
-            <i18n-t
-              tag="p"
-              keypath="leaderboard.competition.competitionDuration"
-              class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
+        <!-- Active Campaign -->
+        <template v-if="campaignStore.activeCampaign && !isCampaignOver">
+          <Teleport to="#leaderboard-target" defer>
+            <CommonHeaderTooltip
+              :tooltip="$t('leaderboard.refresh')"
+              class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
+              is-not-styled
             >
-              <template #duration>
-                <div
-                  class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
-                >
-                  {{ timeLeftInActiveCampaign }}
-                </div>
-              </template>
-            </i18n-t>
-          </CommonHeaderTooltip>
-        </Teleport>
+              <i18n-t
+                tag="p"
+                keypath="leaderboard.competition.competitionDuration"
+                class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
+              >
+                <template #duration>
+                  <div
+                    class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
+                  >
+                    {{ timeLeftInActiveCampaign }}
+                  </div>
+                </template>
+              </i18n-t>
+            </CommonHeaderTooltip>
+          </Teleport>
 
-        <div class="w-full text-sm relative">
-          <PartialsLeaderboardCompetitionBanner
-            v-if="campaignStore.activeCampaign"
-            v-bind="{ campaign: campaignStore.activeCampaign }"
-          />
+          <div class="w-full text-sm relative">
+            <PartialsLeaderboardCompetitionBanner
+              v-bind="{ campaign: campaignStore.activeCampaign }"
+            />
 
-          <PartialsLeaderboardCompetition
-            v-if="campaignStore.activeCampaign && !isDuringFirstHourOfCampaign"
-            v-bind="{ campaign: campaignStore.activeCampaign }"
-          />
+            <PartialsLeaderboardCompetition
+              v-if="!isDuringFirstHourOfCampaign"
+              v-bind="{ campaign: campaignStore.activeCampaign }"
+            />
 
-          <div
-            v-else-if="
-              campaignStore.activeCampaign && isDuringFirstHourOfCampaign
-            "
-            class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
-          >
-            {{
-              $t('leaderboard.competition.firstHourOfCampaign', {
-                afterFirstHour: endOfCampaignFirstHourInUTC
-              })
-            }}
+            <div
+              v-else
+              class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
+            >
+              {{
+                $t('leaderboard.competition.firstHourOfCampaign', {
+                  afterFirstHour: endOfCampaignFirstHourInUTC
+                })
+              }}
+            </div>
           </div>
+        </template>
 
-          <div v-else-if="countdownUntilCampaignStart" class="relative mb-20">
+        <!-- Upcoming Campaign -->
+        <div
+          v-else-if="countdownUntilCampaignStart"
+          class="w-full text-sm relative"
+        >
+          <div class="relative mb-20">
             <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
               {{ $t('leaderboard.competition.competitionBeginning') }}
             </div>
@@ -221,11 +233,11 @@ watch(isCampaignStarted, (isStarted) => {
               {{ countdownUntilCampaignStart }}
             </div>
           </div>
+        </div>
 
-          <div
-            v-else
-            class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2"
-          >
+        <!-- No Campaign -->
+        <div v-else class="w-full text-sm relative mb-20">
+          <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
             {{ $t('leaderboard.competition.noCompetition') }}
           </div>
         </div>

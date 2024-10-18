@@ -103,6 +103,12 @@ function fetchPastCampaigns() {
             v-if="selectedCampaign"
             v-bind="{ campaign: selectedCampaign }"
           />
+
+          <div v-else class="w-full text-sm relative mb-20">
+            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
+              {{ $t('leaderboard.competition.noPastCompetition') }}
+            </div>
+          </div>
         </div>
       </div>
     </AppHocLoading>

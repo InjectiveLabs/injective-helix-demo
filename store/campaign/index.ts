@@ -296,14 +296,7 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      // todo: remove after first campaign
-      // first campaign MUST be pnl type, so we're forcing any campaign to pnl type for testing purposes
-      let [activeCampaign] = pnlOrVolumeCampaigns
-
-      activeCampaign = {
-        ...activeCampaign,
-        type: 'pnl_leaderboard'
-      }
+      const [activeCampaign] = pnlOrVolumeCampaigns
 
       campaignStore.$patch({ activeCampaign })
     },

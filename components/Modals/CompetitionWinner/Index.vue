@@ -129,7 +129,6 @@ async function onSubmit(signature: string) {
   <div v-if="isShowBannerOrModal">
     <AppHocLoading v-bind="{ status: fetchWinnerStatus }">
       <div>
-        <!-- todo: update this copy when get from product -->
         <div
           v-if="!modalStore.modals[Modal.CompetitionWinner]"
           class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#66B1EF] text-gray-925 relative z-40 cursor-pointer"
