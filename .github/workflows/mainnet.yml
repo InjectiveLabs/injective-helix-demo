@@ -17,8 +17,8 @@ jobs:
       VITE_BASE_URL: https://helixapp.com
       VITE_ENV: mainnet
       VITE_NETWORK: internal
-      VITE_CHAIN_ID: injective-1
       VITE_ETHEREUM_CHAIN_ID: 1
+      VITE_CHAIN_ID: injective-1
       SOURCE_DIR: .output/public
       DEST_DIR: www
 

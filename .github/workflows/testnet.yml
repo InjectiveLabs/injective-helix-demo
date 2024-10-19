@@ -51,7 +51,10 @@ jobs:
       NODE_OPTIONS: '--max_old_space_size=15360'
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Using Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
