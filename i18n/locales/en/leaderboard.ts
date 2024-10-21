@@ -22,7 +22,9 @@ export default {
         named('terms'),
         ' of the Competition are ineligible to participate in or win the Competition.'
       ]),
+    refresh: 'The leaderboard refreshes at the top of each hour',
     pnl: {
+      allTime: 'Since August 1, 2024 00:00 UTC',
       duration: {
         [LeaderboardDuration.OneDay]: 'Today',
         [LeaderboardDuration.All]: 'All Time',
@@ -41,16 +43,21 @@ export default {
     },
 
     competition: {
+      winner: 'Winner',
       unranked: 'Unranked',
       keepGoing: 'Keep going 💪',
       currentLeader: 'Current leader',
       currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
       competitionBeginning: 'The competition is about to begin...',
-      competitionHasBegun: 'The competition has begun, good luck!',
       competitionMaintenance:
         'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
       noVolumeData: 'No trading competition results found',
+      thanksForParticipating:
+        'Thank you for participating! Unfortunately you didn’t win this time.',
+      noCompetition:
+        'There are no active competitions at this time, please check back later!',
+      noPastCompetition: 'There are no past competitions at this time.',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       firstHourOfCampaign: ({ named }: I18nMessageFunction) =>
@@ -77,12 +84,30 @@ export default {
         likeAG: 'like a G',
         joinCompetition:
           'Join Helix\'s "like a G" trading competition for a chance to win a Mercedes G-Wagon!'
+      },
+
+      winnerModal: {
+        title: 'You are one of the winners!',
+        description: ({ named }: I18nMessageFunction) =>
+          `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
+            'prize'
+          )}. Click claim prize to get started!`,
+        bannerDescription: ({ named }: I18nMessageFunction) =>
+          `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
+            'prize'
+          )}. Click to start claiming your prize!`,
+        claimPrize: 'Claim my prize',
+        confirm: 'Confirm',
+        namePlaceholder: 'Your first and last name',
+        emailPlaceholder: 'Your email address',
+        claimSuccessful: 'Claim successful!'
       }
     },
 
     tabs: {
       [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
-      [LeaderboardSubPage.Competition]: 'Trading Competition'
+      [LeaderboardSubPage.Competition]: 'Trading Competition',
+      [LeaderboardSubPage.PastCompetitions]: 'Past Competitions'
     },
 
     header: {

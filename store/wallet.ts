@@ -6,6 +6,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
@@ -192,6 +193,19 @@ export const useWalletStore = defineStore('wallet', {
           accountRow: undefined
         }
       })
+    },
+
+    async signArbitraryData(address: string, message: string) {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (sharedWalletStore.wallet === Wallet.Magic) {
+        return await walletStrategy.signEip712TypedData(
+          message,
+          sharedWalletStore.address
+        )
+      }
+
+      return await walletStrategy.signArbitrary(address, message)
     }
   }
 })

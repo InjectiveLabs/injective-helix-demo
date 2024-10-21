@@ -3,7 +3,7 @@ import { SharedDropdownOption } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
-    options: SharedDropdownOption[]
+    options: SharedDropdownOption[] | undefined
     modelValue?: string
     isNoMinWidth?: boolean
     wrapperClass?: string
@@ -25,8 +25,8 @@ const emit = defineEmits<{
 
 const uuid = Math.random()
 
-const selectedOption = computed(() =>
-  props.options.find((option) => option.value === props.modelValue)
+const selectedOption = computed(
+  () => props.options?.find((option) => option.value === props.modelValue)
 )
 
 function select(option: SharedDropdownOption) {

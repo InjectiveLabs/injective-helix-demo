@@ -28,6 +28,7 @@ function onViewDetails() {
     <div class="py-4">
       <PartialsTradeSpotFormTradingBotsCommonCreateStrategy
         v-if="!hasActiveStrategy"
+        is-auto
       />
 
       <AppButton v-else class="w-full" @click="onViewDetails">

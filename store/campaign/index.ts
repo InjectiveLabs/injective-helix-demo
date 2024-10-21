@@ -20,12 +20,22 @@ import {
   fetchGuildsByVolume,
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import {
+  LP_CAMPAIGNS,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
-import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
+import {
+  joinGuild,
+  createGuild,
+  claimReward,
+  submitLeaderboardCompetitionClaim
+} from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
 import {
   LeaderboardType,
+  CompetitionResult,
   CampaignWithScAndData,
   LeaderboardCampaignStatus
 } from '@/types'
@@ -50,7 +60,9 @@ type CampaignStoreState = {
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
   pnlOrVolumeCampaigns?: CampaignV2[]
+  pastPnlOrVolumeCampaigns?: CampaignV2[]
   activeCampaign?: CampaignV2
+  leaderboardCompetitionResult?: CompetitionResult
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -73,7 +85,9 @@ const initialStateFactory = (): CampaignStoreState => ({
   guildCampaignSummary: undefined,
   claimedRewards: [],
   pnlOrVolumeCampaigns: [],
-  activeCampaign: undefined
+  pastPnlOrVolumeCampaigns: [],
+  activeCampaign: undefined,
+  leaderboardCompetitionResult: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -87,27 +101,13 @@ export const useCampaignStore = defineStore('campaign', {
 
     campaignsWithUserRewards(state) {
       return state.round.filter(({ userScore }) => userScore)
-    },
-
-    activeCampaignType(state) {
-      if (!state.activeCampaign?.type) {
-        return undefined
-      }
-
-      switch (state.activeCampaign.type) {
-        case LeaderboardType.Pnl:
-          return LeaderboardType.Pnl
-        case LeaderboardType.Volume:
-          return LeaderboardType.Volume
-        default:
-          return undefined
-      }
     }
   },
   actions: {
     joinGuild,
     createGuild,
     claimReward,
+    submitLeaderboardCompetitionClaim,
 
     // guild queries
     pollGuildDetails,
@@ -296,14 +296,7 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      // todo: remove after first campaign
-      // first campaign MUST be pnl type, so we're forcing any campaign to pnl type for testing purposes
-      let [activeCampaign] = pnlOrVolumeCampaigns
-
-      activeCampaign = {
-        ...activeCampaign,
-        type: 'pnl_leaderboard'
-      }
+      const [activeCampaign] = pnlOrVolumeCampaigns
 
       campaignStore.$patch({ activeCampaign })
     },
@@ -326,6 +319,38 @@ export const useCampaignStore = defineStore('campaign', {
       )
 
       campaignStore.$patch({ pnlOrVolumeCampaigns })
+    },
+
+    async fetchPastCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Inactive
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pastPnlOrVolumeCampaigns = campaigns.filter(
+        ({ name }: CampaignV2) => PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(name)
+      )
+
+      campaignStore.$patch({ pastPnlOrVolumeCampaigns })
+    },
+
+    async fetchLeaderboardCompetitionResults(
+      campaignName: string,
+      injectiveAddress: string
+    ) {
+      const campaignStore = useCampaignStore()
+
+      campaignStore.$patch({
+        leaderboardCompetitionResult: await fetchLeaderboardCompetitionResults(
+          campaignName,
+          injectiveAddress
+        )
+      })
     },
 
     reset() {

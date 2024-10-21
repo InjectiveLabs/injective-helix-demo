@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
-import { Modal, MainPage, BusEvents } from '@/types'
+import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
 
+const route = useRoute()
 const modalStore = useModalStore()
+const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const isStartTradingCTAVisible = computed(() => {
+const isUserWithoutRaffleTickets = computed(() => {
   if (!leaderboardStore.competitionLeaderboard?.accountRow) {
     return true
   }
@@ -31,6 +33,18 @@ const isNegativePnL = computed(() => {
   ).lte(0)
 })
 
+const isShowMyStats = computed(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return false
+  }
+
+  if (route.name !== LeaderboardSubPage.PastCompetitions) {
+    return true
+  }
+
+  return !isUserWithoutRaffleTickets.value
+})
+
 function onShareCompetition() {
   modalStore.openModal(Modal.ShareLeaderboardCompetition)
 
@@ -39,44 +53,50 @@ function onShareCompetition() {
 </script>
 
 <template>
-  <div
-    v-if="
-      sharedWalletStore.isUserConnected &&
-      leaderboardStore.competitionLeaderboard
-    "
-  >
+  <div v-if="isShowMyStats && leaderboardStore.competitionLeaderboard">
     <PartialsLeaderboardMyStats
-      v-bind="{ isUnranked: isStartTradingCTAVisible }"
+      v-bind="{ isUnranked: isUserWithoutRaffleTickets }"
     >
-      <template v-if="!isStartTradingCTAVisible" #add-on>
+      <template v-if="!isUserWithoutRaffleTickets" #add-on>
         <div
-          class="flex flex-col md:flex-row items-center justify-center gap-2"
+          class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
+          :class="[
+            route.name !== LeaderboardSubPage.PastCompetitions ||
+            campaignStore.leaderboardCompetitionResult
+              ? 'bg-green-450 uppercase'
+              : 'bg-white'
+          ]"
         >
-          <div
-            class="hidden md:flex bg-green-450 items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
+          <p
+            class="text-xs md:text-sm font-semibold leading-4 text-gray-925 max-w-[300px] lg:max-w-[480px]"
           >
-            <p
-              class="text-xs md:text-sm font-semibold leading-4 text-gray-925 uppercase"
-            >
+            <span v-if="route.name !== LeaderboardSubPage.PastCompetitions">
               {{ $t('leaderboard.competition.keepGoing') }}
-            </p>
-          </div>
+            </span>
+            <span v-else-if="campaignStore.leaderboardCompetitionResult">
+              {{ $t('leaderboard.competition.winner') }}
+            </span>
+            <span v-else>
+              {{ $t('leaderboard.competition.thanksForParticipating') }}
+            </span>
+          </p>
+        </div>
 
-          <div
-            class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
-            @click="onShareCompetition"
-          >
-            <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
+        <div
+          v-if="route.name !== LeaderboardSubPage.PastCompetitions"
+          class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
+          @click="onShareCompetition"
+        >
+          <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
 
-            <p class="text-[11px] leading-[13px] font-medium">
-              {{ $t('leaderboard.pnl.share') }}
-            </p>
-          </div>
+          <p class="text-[11px] leading-[13px] font-medium">
+            {{ $t('leaderboard.pnl.share') }}
+          </p>
         </div>
       </template>
 
       <template #row>
-        <div v-if="isStartTradingCTAVisible">
+        <div v-if="isUserWithoutRaffleTickets">
           <div
             class="flex flex-col items-center justify-center gap-4 sm:gap-6 relative"
           >
@@ -95,26 +115,27 @@ function onShareCompetition() {
             </NuxtLink>
           </div>
         </div>
+
         <div v-else>
           <div class="hidden lg:block">
-            <div>
-              <PartialsLeaderboardCompetitionCommonHeader
-                v-bind="{ isHideAmount: isNegativePnL }"
-                class="text-[11px]"
-              />
+            <PartialsLeaderboardCompetitionCommonHeader
+              v-bind="{ ...$attrs, isHideAmount: isNegativePnL }"
+              class="text-[11px]"
+            />
 
-              <PartialsLeaderboardCompetitionCommonRow
-                class="text-sm my-1 items-center text-white"
-                v-bind="{
-                  leader: leaderboardStore.competitionLeaderboard.accountRow
-                }"
-              />
-            </div>
+            <PartialsLeaderboardCompetitionCommonRow
+              class="text-sm my-1 items-center text-white"
+              v-bind="{
+                ...$attrs,
+                leader: leaderboardStore.competitionLeaderboard.accountRow
+              }"
+            />
           </div>
 
           <div class="lg:hidden">
             <PartialsLeaderboardCompetitionMyStatsMobileRow
               v-bind="{
+                ...$attrs,
                 leader: leaderboardStore.competitionLeaderboard.accountRow
               }"
             />
@@ -125,9 +146,7 @@ function onShareCompetition() {
 
     <ModalsShareLeaderboardCompetition
       v-if="leaderboardStore.competitionLeaderboard.accountRow"
-      v-bind="{
-        leader: leaderboardStore.competitionLeaderboard.accountRow
-      }"
+      v-bind="{ leader: leaderboardStore.competitionLeaderboard.accountRow }"
     />
   </div>
 </template>
