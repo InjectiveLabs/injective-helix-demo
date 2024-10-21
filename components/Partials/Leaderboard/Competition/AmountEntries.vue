@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { additionalEntriesMap } from '@/app/data/campaign'
 import {
@@ -8,22 +9,20 @@ import {
 } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 
-const campaignStore = useCampaignStore()
-
 const props = withDefaults(
-  defineProps<{ pnl?: number; address: string; volume?: number }>(),
-  {
-    pnl: 0,
-    volume: 0
-  }
+  defineProps<{
+    pnl: number
+    volume: number
+    address: string
+    campaign: CampaignV2
+  }>(),
+  {}
 )
 
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() =>
-      campaignStore.activeCampaignType === LeaderboardType.Pnl
-        ? props.pnl
-        : props.volume
+      props.campaign.type === LeaderboardType.Pnl ? props.pnl : props.volume
     ),
     {
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -34,7 +33,9 @@ const {
   valueToString: additionalEntriesToString,
   valueToBigNumber: additionalEntriesToBigNumber
 } = useSharedBigNumberFormatter(
-  computed(() => additionalEntriesMap[props.address] || 0),
+  computed(
+    () => additionalEntriesMap[props.campaign.name]?.[props.address] || 0
+  ),
   {
     shouldTruncate: true
   }
@@ -54,7 +55,7 @@ const { valueToString: entriesToString } = useSharedBigNumberFormatter(
 
 <template>
   <div v-if="amountToBigNumber.gt(0)" class="text-[13px] md:text-sm mr-2">
-    <span v-if="campaignStore.activeCampaignType === LeaderboardType.Pnl">
+    <span v-if="campaign.type === LeaderboardType.Pnl">
       {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
     </span>
     <span v-else>$</span>

@@ -1,19 +1,23 @@
 <script lang="ts" setup>
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MainPage } from '@/types'
 
-const campaignStore = useCampaignStore()
+const props = withDefaults(
+  defineProps<{
+    campaign: CampaignV2
+  }>(),
+  {}
+)
 
 const now = useNow({ interval: 1000 })
 
 const isEndedCampaign = computed(() => {
-  if (!campaignStore.activeCampaign) {
-    return
+  if (!props.campaign) {
+    return true
   }
 
-  return new BigNumberInBase(now.value.getTime()).gte(
-    campaignStore.activeCampaign.endDate
-  )
+  return new BigNumberInBase(now.value.getTime()).gte(props.campaign.endDate)
 })
 </script>
 

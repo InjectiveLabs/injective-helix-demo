@@ -1,18 +1,19 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MAXIMUM_RANKED_TRADERS,
   MAXIMUM_LEADERBOARD_STATS_RANK,
   MIN_COMPETITION_PNL_AMOUNT
 } from '@/app/utils/constants'
-import { LeaderboardType } from '@/types'
+import { LeaderboardType, LeaderboardSubPage } from '@/types'
 
+const route = useRoute()
 const isMobile = useIsMobile()
-const campaignStore = useCampaignStore()
 
 const props = withDefaults(
   defineProps<{
+    campaign?: CampaignV2
     leader?: LeaderboardRow
   }>(),
   {
@@ -21,7 +22,8 @@ const props = withDefaults(
       rank: 0,
       volume: 0,
       account: ''
-    })
+    }),
+    campaign: undefined
   }
 )
 
@@ -30,8 +32,12 @@ const formattedAddress = computed(() =>
 )
 
 const isShowRank = computed(() => {
+  if (!props.campaign) {
+    return
+  }
+
   const amount =
-    campaignStore.activeCampaignType === LeaderboardType.Pnl
+    props.campaign.type === LeaderboardType.Pnl
       ? props.leader.pnl
       : props.leader.volume
 
@@ -57,7 +63,10 @@ const isShowRank = computed(() => {
 </script>
 
 <template>
-  <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
+  <div
+    v-if="campaign"
+    :class="[isMobile ? 'competition-table-mobile' : 'competition-table']"
+  >
     <div class="font-semibold ml-1">
       {{ isShowRank ? leader.rank : $t('leaderboard.competition.unranked') }}
     </div>
@@ -83,7 +92,12 @@ const isShowRank = computed(() => {
           <div>
             {{ leader.account }}
           </div>
-          <div v-if="leader.rank === 1">
+          <div
+            v-if="
+              leader.rank === 1 &&
+              route.name !== LeaderboardSubPage.PastCompetitions
+            "
+          >
             <div
               class="text-xs 3xl:text-sm hidden 2xl:inline-flex bg-[#F06703] text-white uppercase font-semibold py-1 px-1.5 leading-4 rounded-[4px] gap-0.5 items-center"
             >
@@ -105,6 +119,7 @@ const isShowRank = computed(() => {
     <template v-if="!isMobile">
       <PartialsLeaderboardCompetitionAmountEntries
         v-bind="{
+          campaign,
           pnl: leader.pnl,
           volume: leader.volume,
           address: leader.account
@@ -116,6 +131,7 @@ const isShowRank = computed(() => {
       <div>
         <PartialsLeaderboardCompetitionAmountEntries
           v-bind="{
+            campaign,
             pnl: leader.pnl,
             volume: leader.volume,
             address: leader.account

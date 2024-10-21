@@ -1,19 +1,21 @@
 import { defineStore } from 'pinia'
-import {
-  indexerRestExplorerApi,
-  indexerAccountPortfolioApi,
-  web3Client
-} from '@shared/Service'
 import { Coin } from '@injectivelabs/ts-types'
 import { usdtToken } from '@shared/data/token'
 import { getInjectiveAddress } from '@injectivelabs/sdk-ts'
+import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
 import {
   Wallet,
   isCosmosWallet,
   WalletStrategy
 } from '@injectivelabs/wallet-ts'
-import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
-import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
+import {
+  web3Client,
+  indexerRestExplorerApi,
+  indexerAccountPortfolioApi
+} from '@shared/Service'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -31,7 +33,7 @@ import {
   getDefaultAccountBalances,
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
-import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
+import { getAccountDetails } from '@/app/services/account'
 import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {
@@ -46,6 +48,7 @@ type AccountStoreState = {
       allowance: string
     }
   >
+  pubKey?: string
 }
 
 const initialStateFactory = (): AccountStoreState => ({
@@ -53,7 +56,8 @@ const initialStateFactory = (): AccountStoreState => ({
   cw20Balances: [],
   subaccountId: '',
   subaccountBalancesMap: {},
-  erc20BalancesMap: {}
+  erc20BalancesMap: {},
+  pubKey: ''
 })
 
 export const useAccountStore = defineStore('account', {
@@ -239,6 +243,30 @@ export const useAccountStore = defineStore('account', {
 
         // eth returns eth address so convert to inj address
         return getInjectiveAddress(address)
+      } catch (e: any) {
+        // silently fail
+      }
+    },
+
+    async fetchPubKey(address: string) {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      try {
+        if (sharedWalletStore.wallet === Wallet.Magic) {
+          const accountDetails = await getAccountDetails(address)
+          const publicKeyBase64 = accountDetails.pubKey.key
+
+          accountStore.$patch({
+            pubKey: publicKeyBase64
+          })
+
+          return
+        }
+
+        accountStore.$patch({
+          pubKey: await walletStrategy.getPubKey(address)
+        })
       } catch (e: any) {
         // silently fail
       }

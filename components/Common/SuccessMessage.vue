@@ -40,7 +40,7 @@ const explorerUrl = computed(() => {
           class="mx-auto mt-2 h-12 w-12"
         />
 
-        <h2 class="my-4 text-2xl font-semibold leading-7">
+        <h2 class="mt-2 mb-8 text-2xl font-semibold leading-7">
           {{ title }}
         </h2>
 
