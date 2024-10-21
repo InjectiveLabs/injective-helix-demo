@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
+  Modal,
   MarketKey,
   UiSpotMarket,
+  InvestmentTypeGst,
   SpotGridTradingForm,
-  SpotGridTradingField,
-  Modal,
-  InvestmentTypeGst
+  SpotGridTradingField
 } from '@/types'
 import {
-  GST_DEFAULT_AUTO_GRIDS,
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
+  GST_DEFAULT_AUTO_GRIDS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
