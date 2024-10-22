@@ -12,11 +12,10 @@ import { LeaderboardType } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    campaign?: CampaignV2
+    campaign: CampaignV2
     leader?: LeaderboardRow
   }>(),
   {
-    campaign: undefined,
     leader: () => ({
       pnl: 0,
       rank: 0,
@@ -31,10 +30,6 @@ const formattedAddress = computed(() =>
 )
 
 const isShowRank = computed(() => {
-  if (!props.campaign) {
-    return false
-  }
-
   const amount =
     props.campaign.type === LeaderboardType.Pnl
       ? props.leader.pnl
@@ -63,7 +58,7 @@ const isShowRank = computed(() => {
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() =>
-      props.campaign?.type === LeaderboardType.Pnl
+      props.campaign.type === LeaderboardType.Pnl
         ? props.leader.pnl
         : props.leader.volume
     ),

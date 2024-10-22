@@ -67,6 +67,6 @@ function onSignMessage() {
     }"
     @click="onSignMessage"
   >
-    {{ $t('leaderboard.competition.winnerModal.confirm') }}
+    {{ $t('leaderboard.competition.winnerModal.contactInfo.cta') }}
   </AppButton>
 </template>
