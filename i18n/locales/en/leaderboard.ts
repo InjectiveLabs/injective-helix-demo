@@ -103,7 +103,7 @@ export default {
             interpolate([
               "To comply with the Competition's Official ",
               named('terms'),
-              ', we need to collect your contact information for verification and prize delivery.'
+              ', please provide your contact information for verification and prize delivery.'
             ]),
           cta: 'Confirm'
         },
