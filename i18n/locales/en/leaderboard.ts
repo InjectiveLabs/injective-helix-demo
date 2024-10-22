@@ -55,6 +55,7 @@ export default {
       noVolumeData: 'No trading competition results found',
       thanksForParticipating:
         'Thank you for participating! Unfortunately you didn’t win this time.',
+      checkBackLater: "Check back soon to see if you've won!",
       noCompetition:
         'There are no active competitions at this time, please check back later!',
       noPastCompetition: 'There are no past competitions at this time.',

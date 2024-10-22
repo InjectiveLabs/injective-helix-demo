@@ -77,7 +77,7 @@ function onShareCompetition() {
               {{ $t('leaderboard.competition.winner') }}
             </span>
             <span v-else>
-              {{ $t('leaderboard.competition.thanksForParticipating') }}
+              {{ $t('leaderboard.competition.checkBackLater') }}
             </span>
           </p>
         </div>

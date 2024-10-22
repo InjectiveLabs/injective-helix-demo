@@ -7,7 +7,7 @@
     <SharedNotifications
       class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
-      <template #notification="{ notification }">
+      <template #default="{ notification }">
         <SharedNotification
           :notification="notification"
           class="pointer-events-auto bg-gray-800"
