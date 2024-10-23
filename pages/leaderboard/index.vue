@@ -10,7 +10,7 @@ const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
-const selectedDuration = ref(LeaderboardDuration.OneDay)
+const selectedDuration = ref(LeaderboardDuration.All)
 
 const startDateFormatted = computed(() => {
   if (!leaderboardStore.pnlLeaderboard?.firstDate) {
