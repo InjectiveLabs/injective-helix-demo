@@ -6,7 +6,12 @@ import {
   PAST_LEADERBOARD_CAMPAIGN_NAMES
 } from '@/app/data/campaign'
 import { getEip712TypedData } from '@/app/utils/wallet'
-import { Modal, CompetitionWinnerField, CompetitionWinnerForm } from '@/types'
+import {
+  Modal,
+  MainPage,
+  CompetitionWinnerField,
+  CompetitionWinnerForm
+} from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -114,7 +119,7 @@ async function onSubmit(signature: string) {
     })
     .then(() => {
       notificationStore.success({
-        title: t('leaderboard.competition.winnerModal.claimSuccessful')
+        title: t('leaderboard.competition.winnerModal.receivedInformation')
       })
     })
     .catch($onError)
@@ -150,16 +155,44 @@ async function onSubmit(signature: string) {
         >
           <div class="relative max-w-[400px] mx-auto">
             <CommonSuccessMessage
-              :title="$t('leaderboard.competition.winnerModal.title')"
+              :title="
+                $t(
+                  `leaderboard.competition.winnerModal.${
+                    isShowClaimForm ? 'contactInfo' : 'getStarted'
+                  }.title`
+                )
+              "
             >
               <template #default>
-                <div class="font-bold text-sm text-white leading-[18px]">
+                <div
+                  v-if="!isShowClaimForm"
+                  class="font-bold text-sm text-white leading-[18px]"
+                >
                   {{
-                    $t('leaderboard.competition.winnerModal.description', {
-                      prize: campaignStore.leaderboardCompetitionResult?.prize
-                    })
+                    $t(
+                      'leaderboard.competition.winnerModal.getStarted.description',
+                      {
+                        prize: campaignStore.leaderboardCompetitionResult?.prize
+                      }
+                    )
                   }}
                 </div>
+                <i18n-t
+                  v-else
+                  keypath="leaderboard.competition.winnerModal.contactInfo.description"
+                  tag="p"
+                  class="font-bold text-sm text-white leading-[18px]"
+                >
+                  <template #terms>
+                    <NuxtLink
+                      :to="{ name: MainPage.LikeAGCompetitionTerms }"
+                      class="text-blue-500 hover:opacity-50"
+                      @click="onClose"
+                    >
+                      {{ $t('leaderboard.rulesTermsAndConditions') }}
+                    </NuxtLink>
+                  </template>
+                </i18n-t>
               </template>
             </CommonSuccessMessage>
 
@@ -169,7 +202,7 @@ async function onSubmit(signature: string) {
                 class="bg-blue-500 text-blue-900 font-semibold"
                 @click="onShowClaimForm"
               >
-                {{ $t('leaderboard.competition.winnerModal.claimPrize') }}
+                {{ $t('leaderboard.competition.winnerModal.getStarted.cta') }}
               </AppButton>
 
               <div v-else class="flex flex-col items-center">

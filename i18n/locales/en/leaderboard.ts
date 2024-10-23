@@ -88,20 +88,34 @@ export default {
       },
 
       winnerModal: {
-        title: 'You are one of the winners!',
-        description: ({ named }: I18nMessageFunction) =>
-          `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
-            'prize'
-          )}. Click claim prize to get started!`,
+        getStarted: {
+          title: 'Congratulations!',
+          description: ({ named }: I18nMessageFunction) =>
+            `You are one of the winners of 'Trade Like a G'! To claim your ${named(
+              'prize'
+            )}, please provide additional details.`,
+          cta: 'Get Started'
+        },
+
+        contactInfo: {
+          title: 'Contact Information Needed',
+          description: ({ named, interpolate }: I18nMessageFunction) =>
+            interpolate([
+              "To comply with the Competition's Official ",
+              named('terms'),
+              ', please provide your contact information for verification and prize delivery.'
+            ]),
+          cta: 'Confirm'
+        },
+
         bannerDescription: ({ named }: I18nMessageFunction) =>
           `Congrats! You are one of the winners of our leaderboard competition. This time you won a ${named(
             'prize'
           )}. Click to start claiming your prize!`,
-        claimPrize: 'Claim my prize',
-        confirm: 'Confirm',
         namePlaceholder: 'Your first and last name',
         emailPlaceholder: 'Your email address',
-        claimSuccessful: 'Claim successful!'
+        receivedInformation:
+          "We've received your information. Our team will reach out to you shortly."
       }
     },
 

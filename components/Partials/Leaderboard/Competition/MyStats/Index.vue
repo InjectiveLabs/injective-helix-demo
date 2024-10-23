@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
+import { CAMPAIGNS_WITH_ANNOUNCED_WINNERS } from '@/app/data/campaign'
 import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
@@ -8,6 +10,13 @@ const modalStore = useModalStore()
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
+
+withDefaults(
+  defineProps<{
+    campaign: CampaignV2
+  }>(),
+  {}
+)
 
 const isUserWithoutRaffleTickets = computed(() => {
   if (!leaderboardStore.competitionLeaderboard?.accountRow) {
@@ -76,6 +85,13 @@ function onShareCompetition() {
             <span v-else-if="campaignStore.leaderboardCompetitionResult">
               {{ $t('leaderboard.competition.winner') }}
             </span>
+            <span
+              v-else-if="
+                CAMPAIGNS_WITH_ANNOUNCED_WINNERS.includes(campaign.name)
+              "
+            >
+              {{ $t('leaderboard.competition.thanksForParticipating') }}
+            </span>
             <span v-else>
               {{ $t('leaderboard.competition.checkBackLater') }}
             </span>
@@ -119,14 +135,14 @@ function onShareCompetition() {
         <div v-else>
           <div class="hidden lg:block">
             <PartialsLeaderboardCompetitionCommonHeader
-              v-bind="{ ...$attrs, isHideAmount: isNegativePnL }"
+              v-bind="{ campaign, isHideAmount: isNegativePnL }"
               class="text-[11px]"
             />
 
             <PartialsLeaderboardCompetitionCommonRow
               class="text-sm my-1 items-center text-white"
               v-bind="{
-                ...$attrs,
+                campaign,
                 leader: leaderboardStore.competitionLeaderboard.accountRow
               }"
             />
@@ -135,7 +151,7 @@ function onShareCompetition() {
           <div class="lg:hidden">
             <PartialsLeaderboardCompetitionMyStatsMobileRow
               v-bind="{
-                ...$attrs,
+                campaign,
                 leader: leaderboardStore.competitionLeaderboard.accountRow
               }"
             />
