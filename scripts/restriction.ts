@@ -5,7 +5,7 @@ import { HttpClient } from '@injectivelabs/utils'
 
 export const fetchOFACWalletAddresses = async (): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/wallets'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/wallets'
   )
 
   const fileName = 'ofac.json'
@@ -27,7 +27,7 @@ export const fetchOFACWalletAddresses = async (): Promise<any> => {
 
 export const fetchRestrictedCountries = async (): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/geo'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/geo'
   )
 
   const fileName = 'countries.json'

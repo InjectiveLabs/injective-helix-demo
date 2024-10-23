@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#feat/nuxt-3.13.2'
+      : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
   app: {

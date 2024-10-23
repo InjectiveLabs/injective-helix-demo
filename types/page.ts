@@ -78,5 +78,6 @@ export enum PortfolioSubPage {
 
 export enum LeaderboardSubPage {
   Pnl = 'leaderboard',
-  Competition = 'leaderboard-competition'
+  Competition = 'leaderboard-competition',
+  PastCompetitions = 'leaderboard-past-competitions'
 }

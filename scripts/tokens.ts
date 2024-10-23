@@ -5,7 +5,7 @@ import { storeJsonFile } from './helper'
 
 export const fetchTokens = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/tokens/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/tokens/'
   )
 
   try {

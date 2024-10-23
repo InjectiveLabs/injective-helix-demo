@@ -1,21 +1,26 @@
 <script lang="ts" setup>
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { LeaderboardType } from '@/types'
 
 const isMobile = useIsMobile()
-const campaignStore = useCampaignStore()
 
 withDefaults(
   defineProps<{
+    campaign?: CampaignV2
     isHideAmount?: boolean
   }>(),
   {
+    campaign: undefined,
     isHideAmount: false
   }
 )
 </script>
 
 <template>
-  <div :class="[isMobile ? 'competition-table-mobile' : 'competition-table']">
+  <div
+    v-if="campaign"
+    :class="[isMobile ? 'competition-table-mobile' : 'competition-table']"
+  >
     <div>
       <div class="max-lg:-ml-3">
         {{ $t('leaderboard.header.rank') }}
@@ -33,7 +38,7 @@ withDefaults(
             {{
               $t(
                 `leaderboard.header.${
-                  campaignStore.activeCampaignType === LeaderboardType.Volume
+                  campaign.type === LeaderboardType.Volume
                     ? 'allMarkestVolume'
                     : 'tradingPnl'
                 }`
@@ -44,7 +49,7 @@ withDefaults(
             {{
               $t(
                 `leaderboard.header.${
-                  campaignStore.activeCampaignType === LeaderboardType.Volume
+                  campaign.type === LeaderboardType.Volume
                     ? 'volume'
                     : 'tradingPnl'
                 }`
@@ -75,7 +80,7 @@ withDefaults(
               {{
                 $t(
                   `leaderboard.header.${
-                    campaignStore.activeCampaignType === LeaderboardType.Volume
+                    campaign.type === LeaderboardType.Volume
                       ? 'allMarkestVolume'
                       : 'tradingPnl'
                   }`
@@ -86,7 +91,7 @@ withDefaults(
               {{
                 $t(
                   `leaderboard.header.${
-                    campaignStore.activeCampaignType === LeaderboardType.Volume
+                    campaign.type === LeaderboardType.Volume
                       ? 'volume'
                       : 'tradingPnl'
                   }`

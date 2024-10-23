@@ -47,6 +47,7 @@ const status = reactive(new Status(StatusType.Idle))
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
+
 const { userBalancesWithToken } = useBalance()
 
 const quoteDenomBalance = computed(() =>

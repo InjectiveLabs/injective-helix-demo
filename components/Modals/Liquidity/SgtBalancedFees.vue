@@ -95,11 +95,7 @@ function onChangeInvestmentType() {
       </div>
 
       <div class="grid grid-cols-1 gap-2 mt-6">
-        <AppButton
-          size="lg"
-          class="w-full font-semibold shadow-none select-none bg-blue-500"
-          @click="onChangeInvestmentType"
-        >
+        <AppButton class="w-full" size="lg" @click="onChangeInvestmentType">
           {{
             $t('sgt.useFeeOptimizedAmounts', {
               quote: market.quoteToken.symbol,
@@ -109,8 +105,9 @@ function onChangeInvestmentType() {
         </AppButton>
 
         <AppButton
+          variant="primary-outline"
+          class="w-full"
           size="lg"
-          class="w-full font-semibold shadow-none select-none bg-transparent border-white focus:border-white hover:bg-white/10"
           @click="onCreateStrategy"
         >
           {{ $t('sgt.keepOriginalAmounts') }}

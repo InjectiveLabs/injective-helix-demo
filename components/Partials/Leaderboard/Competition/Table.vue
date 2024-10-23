@@ -35,6 +35,7 @@ function incrementLimit() {
 <template>
   <div class="mb-20">
     <PartialsLeaderboardCompetitionCommonHeader
+      v-bind="$attrs"
       class="text-gray-350 text-[11px]"
     />
 
@@ -43,6 +44,7 @@ function incrementLimit() {
         v-for="leader in formattedVolumeLeaderboard"
         :key="leader.rank"
         v-bind="{
+          ...$attrs,
           leader
         }"
         class="text-sm my-1 items-center rounded-lg"

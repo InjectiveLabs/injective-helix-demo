@@ -131,6 +131,13 @@ provide(PortfolioStatusKey, portfolioStatus)
     <main class="relative pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+      <ModalsCompetitionWinner
+        v-if="
+          sharedWalletStore.isUserConnected &&
+          sharedWalletStore.walletConnectStatus !==
+            WalletConnectStatus.disconnecting
+        "
+      />
 
       <slot v-bind="{ portfolioStatus }" />
     </main>
@@ -165,7 +172,7 @@ provide(PortfolioStatusKey, portfolioStatus)
     <SharedNotifications
       class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
-      <template #notification="{ notification }">
+      <template #default="{ notification }">
         <SharedNotification
           :notification="notification"
           class="pointer-events-auto bg-brand-900"

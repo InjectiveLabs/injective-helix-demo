@@ -207,9 +207,7 @@ const stopLoss = computed(() =>
 
 const totalInvestment = computed(() => {
   const baseAmountInUsd = subscriptionBaseQuantity.value.times(
-    new BigNumberInWei(props.strategy.executionPrice).toBase(
-      market.value?.quoteToken.decimals
-    )
+    new BigNumberInBase(props.strategy.executionPrice)
   )
 
   const quoteAmountInUsd = new BigNumberInWei(

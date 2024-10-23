@@ -4,7 +4,7 @@ import { storeJsonFile } from './helper'
 
 export const fetchMarketCategorySlugs = async (): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/market/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/market/'
   )
 
   try {
@@ -31,7 +31,7 @@ export const fetchMarketCategorySlugs = async (): Promise<any> => {
 
 export const fetchSpotMarketSlugs = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/spot/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/spot/'
   )
 
   try {
@@ -53,7 +53,7 @@ export const fetchDerivativeMarketSlugs = async (
   fileName: string
 ): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/derivative/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/derivative/'
   )
 
   try {
@@ -75,7 +75,7 @@ export const fetchExpiryFuturesMarketSlugs = async (
   fileName: string
 ): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/expiry/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/expiry/'
   )
 
   try {
@@ -95,7 +95,7 @@ export const fetchExpiryFuturesMarketSlugs = async (
 
 export const fetchSpotGridMarkets = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/spot/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/gridMarkets/spot/'
   )
 
   try {
@@ -117,7 +117,7 @@ export const fetchDerivativeGridMarkets = async (
   fileName: string
 ): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/helix/trading/gridMarkets/derivative/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/helix/trading/gridMarkets/derivative/'
   )
 
   try {

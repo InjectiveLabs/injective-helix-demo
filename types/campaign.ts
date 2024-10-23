@@ -40,3 +40,8 @@ export type RewardWithToken = {
 }
 
 export type CampaignWithScAndData = CampaignWithScAndRound & Campaign
+
+export type CompetitionResult = {
+  prize: string
+  hasClaimed: boolean
+}

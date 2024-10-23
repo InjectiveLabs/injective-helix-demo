@@ -27,14 +27,8 @@ export default function useActiveGridStrategyFormatter(
     )
   })
 
-  const creationExecutionPrice = computed(() =>
-    new BigNumberInWei(strategy.value.executionPrice)
-      .dividedBy(
-        new BigNumberInBase(10).pow(
-          market.value.quoteToken.decimals - market.value.baseToken.decimals
-        )
-      )
-      .toBase()
+  const creationExecutionPrice = computed(
+    () => new BigNumberInBase(strategy.value.executionPrice)
   )
 
   const stopBaseQuantity = computed(() =>
@@ -86,9 +80,7 @@ export default function useActiveGridStrategyFormatter(
 
   const totalInvestment = computed(() => {
     const baseAmountInUsd = subscriptionBaseQuantity.value.times(
-      new BigNumberInWei(strategy.value.executionPrice).toBase(
-        market.value?.quoteToken.decimals
-      )
+      new BigNumberInBase(strategy.value.executionPrice)
     )
 
     const quoteAmountInUsd = new BigNumberInWei(
