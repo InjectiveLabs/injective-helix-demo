@@ -3,36 +3,51 @@ withDefaults(
   defineProps<{
     tooltip?: string
     classes?: string
+    tooltipClass?: string
     isDisabled?: boolean
     isNotStyled?: boolean
     textColorClass?: string
     borderColorClass?: string
+    ui?: object
   }>(),
   {
     tooltip: '',
     classes: '',
+    tooltipClass: '',
     isDisabled: false,
     isNotStyled: false,
     textColorClass: 'text-gray-350',
-    borderColorClass: 'border-gray-400'
+    borderColorClass: 'border-gray-400',
+    ui: () => ({})
   }
 )
 </script>
 
 <template>
-  <UTooltip :text="tooltip" :disabled="isDisabled">
+  <UPopover
+    mode="hover"
+    :popper="{ placement: 'top', strategy: 'fixed', offsetDistance: 0 }"
+    :disabled="isDisabled"
+    :ui="ui"
+  >
     <span
       :class="[
         classes,
         textColorClass,
         borderColorClass,
         {
-          'text-xs normal-case border-dashed': !isNotStyled,
+          'normal-case border-dashed': !isNotStyled,
           'border-b cursor-pointer': !isNotStyled && !isDisabled
         }
       ]"
     >
       <slot />
     </span>
-  </UTooltip>
+
+    <template v-if="tooltip" #panel>
+      <div :class="tooltipClass">
+        {{ tooltip }}
+      </div>
+    </template>
+  </UPopover>
 </template>

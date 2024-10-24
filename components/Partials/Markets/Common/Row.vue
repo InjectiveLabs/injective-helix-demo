@@ -104,13 +104,15 @@ function toggleFavorite() {
         <CommonHeaderTooltip
           :tooltip="$t('trade.rwa.marketClosedMarketRow')"
           :is-disabled="!isRWAMarket"
-          is-not-styled
           text-color-class="text-white"
-          :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
+          tooltip-class="text-xs"
+          :ui="{
+            base: 'translate-y-4'
+          }"
         >
-          <span :data-cy="dataCyTag(MarketCyTags.MarketTicker)">{{
-            market.ticker
-          }}</span>
+          <span :data-cy="dataCyTag(MarketCyTags.MarketTicker)">
+            {{ market.ticker }}
+          </span>
         </CommonHeaderTooltip>
 
         <div

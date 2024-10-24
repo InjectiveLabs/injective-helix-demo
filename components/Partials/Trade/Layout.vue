@@ -13,7 +13,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="[grid-area:stats] border-b bg-brand-900 z-30 relative">
+  <div class="[grid-area:stats] border-b bg-brand-900 z-30">
     <PartialsTradeCommonMarketMultiplierBanner v-bind="{ market }" />
 
     <slot name="stats">
