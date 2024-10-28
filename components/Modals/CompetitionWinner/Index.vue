@@ -192,14 +192,8 @@ async function onSubmit(signature: string) {
                         {{ $t('leaderboard.rulesTermsAndConditions') }}
                       </NuxtLink>
                     </template>
-                  </i18n-t>
 
-                  <i18n-t
-                    keypath="leaderboard.competition.winnerModal.contactInfo.review"
-                    tag="p"
-                    class="font-bold text-sm text-white leading-[18px]"
-                  >
-                    <template #terms>
+                    <template #privacyPolicy>
                       <NuxtLink
                         :to="{ name: MainPage.CompetitionPrivacyPolicy }"
                         class="text-blue-500 hover:opacity-50"

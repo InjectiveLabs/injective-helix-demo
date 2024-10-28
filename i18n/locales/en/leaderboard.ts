@@ -104,12 +104,10 @@ export default {
             interpolate([
               "To comply with the Competition's Official ",
               named('terms'),
-              ', please provide your contact information for verification and prize delivery.'
-            ]),
-          review: ({ named, interpolate }: I18nMessageFunction) =>
-            interpolate([
-              'Please also review and confirm your agreement to the privacy policy by clicking below',
-              named('privacyPolicy')
+              ', please provide your contact information for verification and prize delivery. Please also review and confirm your agreement to the ',
+              named('privacyPolicy'),
+              ' by clicking below',
+              '.'
             ]),
           cta: 'Confirm'
         },
