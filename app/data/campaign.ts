@@ -759,5 +759,6 @@ export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [FIRST_CAMPAIGN_NAME]
 export const CAMPAIGN_WINNER_MESSAGE =
   'Signing this transaction verifies ownership of this wallet and will not incur any gas fees.'
 
-// todo: put FIRST_CAMPAIGN_NAME in array once winners are announced
-export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [] as string[]
+export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
+  FIRST_CAMPAIGN_NAME
+] as string[]
