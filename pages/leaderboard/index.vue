@@ -70,10 +70,8 @@ function fetchPnlLeaderboard() {
           :key="value"
           v-model="selectedDuration"
           v-bind="{ value }"
-          class="text-xs md:text-sm p-1 md:p-2 text-white hover:opacity-100"
-          :class="{
-            'opacity-50': selectedDuration !== value
-          }"
+          class="text-xs md:text-sm p-1 md:p-2 text-white opacity-50 hover:opacity-100"
+          active-classes="!opacity-100"
           @update:model-value="fetchPnlLeaderboard"
         >
           {{ $t(`leaderboard.pnl.duration.${value}`) }}
