@@ -15,6 +15,7 @@ export default {
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
     timeStamp: 'Time Stamp',
     helix: 'helixapp.com',
+    privacyPolicy: 'Privacy Policy',
     rulesTermsAndConditions: 'Rules, Terms, and Conditions',
     blocked: ({ named, interpolate }: I18nMessageFunction) =>
       interpolate([
@@ -104,6 +105,11 @@ export default {
               "To comply with the Competition's Official ",
               named('terms'),
               ', please provide your contact information for verification and prize delivery.'
+            ]),
+          review: ({ named, interpolate }: I18nMessageFunction) =>
+            interpolate([
+              'Please also review and confirm your agreement to the privacy policy by clicking below',
+              named('privacyPolicy')
             ]),
           cta: 'Confirm'
         },
