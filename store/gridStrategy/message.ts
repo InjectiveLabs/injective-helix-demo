@@ -7,19 +7,24 @@ import {
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
+  ExecArgCreatePerpGridStrategy,
+  derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed,
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { spotGridMarkets } from '@/app/json'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
   UiSpotMarket,
   SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  DerivativeGridTradingField,
+  DerivativeGridTradingForm,
+  UiDerivativeMarket
 } from '@/types'
 
 export const createStrategy = async (
@@ -280,6 +285,136 @@ export const removeStrategyForSubaccount = async (
 
   backupPromiseCall(() =>
     Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export const createPerpStrategy = async (
+  {
+    [DerivativeGridTradingField.Grids]: grids,
+    [DerivativeGridTradingField.Margin]: margin,
+    [DerivativeGridTradingField.LowerPrice]: lowerPrice,
+    [DerivativeGridTradingField.UpperPrice]: upperPrice,
+    [DerivativeGridTradingField.Leverage]: leverage,
+    [DerivativeGridTradingField.StopLoss]: stopLoss,
+    [DerivativeGridTradingField.TakeProfit]: takeProfit
+  }: Partial<DerivativeGridTradingForm>,
+  market: UiDerivativeMarket
+) => {
+  if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
+    return
+  }
+
+  const gridMarket = derivativeGridMarkets.find((m) => m.slug === market.slug)
+
+  if (!gridMarket) {
+    return
+  }
+
+  const authZStore = useAuthZStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const levels = Number(grids)
+
+  if (!sharedWalletStore.injectiveAddress) {
+    return
+  }
+
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    throw new GeneralException(new Error('AuthZ not supported for this action'))
+  }
+
+  const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.slug
+  )
+
+  const funds = [
+    {
+      denom: market.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: margin,
+        baseDecimals: market.quoteToken.decimals
+      })
+    }
+  ]
+
+  const stopLossToChain = stopLoss
+    ? derivativePriceToChainPriceToFixed({
+        value: stopLoss,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    : undefined
+
+  const takeProfitToChain = takeProfit
+    ? derivativePriceToChainPriceToFixed({
+        value: takeProfit,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    : undefined
+
+  const args = ExecArgCreatePerpGridStrategy.fromJSON({
+    levels,
+    stopLoss: stopLossToChain,
+    takeProfit: takeProfitToChain,
+    subaccountId: gridStrategySubaccountId,
+
+    lowerBound: derivativePriceToChainPriceToFixed({
+      value: lowerPrice,
+      quoteDecimals: market.quoteToken.decimals
+    }),
+
+    upperBound: derivativePriceToChainPriceToFixed({
+      value: upperPrice,
+      quoteDecimals: market.quoteToken.decimals
+    }),
+
+    marginRatio: leverage
+  })
+
+  const message = MsgExecuteContractCompat.fromJSON({
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: args,
+    funds
+  })
+
+  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
+    (messageType) =>
+      MsgGrant.fromJSON({
+        grantee: gridMarket.contractAddress,
+        granter: sharedWalletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
+      })
+  )
+
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants.some(
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
+    )
+  )
+
+  const messages: Msgs[] = []
+
+  if (!isAuthorized) {
+    messages.push(...grantAuthZMessages)
+  }
+
+  // we need to add it after the authz messages
+  messages.push(message)
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      authZStore.fetchGrants(),
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()

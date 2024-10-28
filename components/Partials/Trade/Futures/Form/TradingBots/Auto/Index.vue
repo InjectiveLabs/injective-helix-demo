@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Hello, Injective</div>
+  <div>Perp Bots Auto</div>
 </template>

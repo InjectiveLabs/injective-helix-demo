@@ -2,6 +2,7 @@ import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
   createStrategy,
   removeStrategy,
+  createPerpStrategy,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
@@ -44,11 +45,37 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
             ({ marketId }) => strategy.marketId === marketId
           )
       )
+    },
+
+    activeDerivativeStrategies: (state) => {
+      const derivativeStore = useDerivativeStore()
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.marketType === 'derivative' &&
+          derivativeStore.markets.some(
+            ({ marketId }) => strategy.marketId === marketId
+          )
+      )
+    },
+
+    removedDerivativeStrategies: (state) => {
+      const derivativeStore = useDerivativeStore()
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.marketType === 'derivative' &&
+          strategy.state === StrategyStatus.Removed &&
+          derivativeStore.markets.some(
+            ({ marketId }) => strategy.marketId === marketId
+          )
+      )
     }
   },
   actions: {
     createStrategy,
     removeStrategy,
+    createPerpStrategy,
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {
