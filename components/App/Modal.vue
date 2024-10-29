@@ -101,11 +101,11 @@ watchDebounced(
             class="flex items-center"
             :class="[
               { 'px-6 pt-6': !isDense },
-              $slots.title ? 'justify-between mb-6 ' : 'justify-end mb-4'
+              slots.title ? 'justify-between mb-6 ' : 'justify-end mb-4'
             ]"
           >
             <div
-              v-if="$slots.title"
+              v-if="slots.title"
               class="text-sm uppercase text-coolGray-100 font-semibold flex-grow"
             >
               <slot name="title" />

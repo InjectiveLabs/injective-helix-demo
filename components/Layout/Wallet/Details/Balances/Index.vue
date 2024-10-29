@@ -10,8 +10,6 @@ const {
   userBalancesWithToken
 } = useBalance()
 
-const search = ref('')
-
 const balances = computed(() => {
   if (!showUnverifiedAssets.value) {
     return verifiedHoldingsWithToken.value
@@ -22,21 +20,12 @@ const balances = computed(() => {
 
 const balancesSorted = computed(() => {
   const filteredBalances = balances.value.filter((balance) => {
-    const isIncludedInSymbol = balance.token.symbol
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isIncludedInName = balance.token.name
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isPartOfSearch = isIncludedInSymbol || isIncludedInName
     const hasBalance =
       new BigNumberInBase(balance.accountTotalBalance).gte(1) ||
       new BigNumberInBase(balance.availableMargin).gte(1) ||
       new BigNumberInBase(balance.bankBalance).gte(1)
 
-    return hasBalance && isPartOfSearch
+    return hasBalance
   })
 
   return filteredBalances.sort((a, b) => {

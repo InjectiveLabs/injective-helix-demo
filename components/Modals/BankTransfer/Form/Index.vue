@@ -13,7 +13,6 @@ const setBankTransferFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
 const { userBalancesWithToken } = useBalance()
 
-const search = ref('')
 const fetchAddressStatus = reactive(new Status(StatusType.Idle))
 
 const walletOptions = computed(
@@ -68,19 +67,9 @@ const balances = computed(() => {
 
 const balancesSorted = computed(() => {
   const filteredBalances = balances.value.filter((balance) => {
-    const isIncludedInSymbol = balance.token.symbol
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isIncludedInName = balance.token.name
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isPartOfSearch =
-      !search.value || isIncludedInSymbol || isIncludedInName
     const hasBalance = new BigNumberInBase(balance.balance).gte(1)
 
-    return hasBalance && isPartOfSearch
+    return hasBalance
   })
 
   return filteredBalances.sort((a, b) => {
