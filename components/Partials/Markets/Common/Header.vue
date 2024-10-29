@@ -42,19 +42,21 @@ function handleIsAscending(value: boolean) {
         @update:sort-by="handleSortBy"
       >
         <template #default="{ isActive }">
-          <div class="flex items-center space-x-2 cursor-pointer">
+          <div class="flex items-center space-x-1 cursor-pointer">
             <div
               class="font-normal"
               :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Market}`)"
             >
               {{ $t('trade.markets') }}
             </div>
-            <div :class="{ 'rotate-180': isActive && isAscending }">
-              <UIcon
-                :name="NuxtUiIcons.Triangle"
-                class="w-3.5 h-3.5 min-w-3.5"
-              />
-            </div>
+
+            <UIcon
+              :name="NuxtUiIcons.Triangle"
+              :class="{
+                'rotate-180': isActive && isAscending,
+                'text-white': isActive
+              }"
+            />
           </div>
         </template>
       </SharedSortableHeaderItem>
@@ -77,16 +79,17 @@ function handleIsAscending(value: boolean) {
         @update:sort-by="handleSortBy"
       >
         <template #default="{ isActive }">
-          <div class="flex font-normal items-center space-x-2 cursor-pointer">
+          <div class="flex font-normal items-center space-x-1 cursor-pointer">
             <div :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Change}`)">
               {{ $t('markets.change24h') }}
             </div>
-            <div :class="{ 'rotate-180': isActive && isAscending }">
-              <UIcon
-                :name="NuxtUiIcons.Triangle"
-                class="w-3.5 h-3.5 min-w-3.5"
-              />
-            </div>
+            <UIcon
+              :name="NuxtUiIcons.Triangle"
+              :class="{
+                'rotate-180': isActive && isAscending,
+                'text-white': isActive
+              }"
+            />
           </div>
         </template>
       </SharedSortableHeaderItem>
@@ -103,16 +106,17 @@ function handleIsAscending(value: boolean) {
         @update:sort-by="handleSortBy"
       >
         <template #default="{ isActive }">
-          <div class="flex items-center space-x-2 cursor-pointer font-normal">
+          <div class="flex items-center space-x-1 cursor-pointer font-normal">
             <div :data-cy="dataCyTag(`sortBy-${MarketHeaderType.Volume}`)">
               {{ $t('markets.volume24h') }}
             </div>
-            <div :class="{ 'rotate-180': isActive && isAscending }">
-              <UIcon
-                :name="NuxtUiIcons.Triangle"
-                class="w-3.5 h-3.5 min-w-3.5"
-              />
-            </div>
+            <UIcon
+              :name="NuxtUiIcons.Triangle"
+              :class="{
+                'rotate-180': isActive && isAscending,
+                'text-white': isActive
+              }"
+            />
           </div>
         </template>
       </SharedSortableHeaderItem>
