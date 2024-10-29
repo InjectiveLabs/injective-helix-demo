@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { USDT_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +14,7 @@ const { market, time, total } = useFundingPayment(
 )
 
 const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  decimalPlaces: USDT_DECIMALS
 })
 </script>
 
@@ -29,7 +29,7 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
         <p class="font-semibold">{{ market.ticker }}</p>
       </div>
     </div>
-    <div class="p-2 flex-1 text-right space-x-2">
+    <div class="p-2 flex-1 text-right space-x-2 flex justify-end">
       <span
         :class="{
           'text-green-500': total.gte(0),

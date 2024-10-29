@@ -42,7 +42,7 @@ withDefaults(
         {
           'normal-case border-dashed': !isNotStyled,
           'border-b cursor-pointer': !isNotStyled && !isDisabled,
-          'cursor-text': isDisabled
+          'cursor-text': !isNotStyled && isDisabled
         }
       ]"
     >

@@ -40,13 +40,12 @@ const { valueToFixed: lastPriceToFixed } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: volumeToString, valueToFixed: volumeToFixed } =
-  useSharedBigNumberFormatter(
-    computed(() => props.volumeInUsd),
-    {
-      decimalPlaces: 0
-    }
-  )
+const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
+  computed(() => props.volumeInUsd),
+  {
+    decimalPlaces: 0
+  }
+)
 
 const priceChangeClasses = computed(() => {
   if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
@@ -100,7 +99,9 @@ function toggleFavorite() {
         <CommonHeaderTooltip
           :tooltip="$t('trade.rwa.marketClosedMarketRow')"
           :is-disabled="!isRWAMarket"
+          is-not-styled
           text-color-class="text-white"
+          :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
           tooltip-class="text-xs"
           :ui="{
             base: 'translate-y-4'
@@ -146,10 +147,21 @@ function toggleFavorite() {
       class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-xs"
     >
       <span v-if="isMobile || !isMarketsPage">
-        ${{ abbreviateNumber(volumeToFixed) || volumeToString }}
+        <span>$</span>
+        <span v-if="abbreviateNumber(volumeToFixed)">
+          {{ abbreviateNumber(volumeToFixed) }}
+        </span>
+        <span v-else>
+          <AppUsdAmount
+            v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+          />
+        </span>
       </span>
       <span v-else :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
-        ${{ volumeToString }}
+        <span>$</span>
+        <AppUsdAmount
+          v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+        />
       </span>
     </div>
 
