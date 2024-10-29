@@ -34,7 +34,7 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
+const { valueToFixed: availableAmountToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.availableMargin,
@@ -44,17 +44,17 @@ const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.accountTotalBalanceInUsd,
       decimalPlaces: props.balance.token.decimals
     })
   ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+  { decimalPlaces: 18 }
 )
 
-const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalAmountToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.accountTotalBalance,
@@ -64,21 +64,19 @@ const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const {
-  valueToString: reservedToString,
-  valueToBigNumber: reservedToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.inOrderBalance,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
-)
+const { valueToFixed: reservedToFixed, valueToBigNumber: reservedToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      sharedToBalanceInTokenInBase({
+        value: props.balance.inOrderBalance,
+        decimalPlaces: props.balance.token.decimals
+      })
+    ),
+    { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+  )
 
 const {
-  valueToString: unrealizedPnlToString,
+  valueToFixed: unrealizedPnlToFixed,
   valueToBigNumber: unrealizedToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() =>
@@ -147,7 +145,11 @@ function onTransfer() {
       <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
         <CommonSkeletonSubaccountAmount>
           <p class="flex items-center gap-1">
-            {{ availableAmountToString }}
+            <AppAmount
+              v-bind="{
+                amount: availableAmountToFixed
+              }"
+            />
 
             <span
               v-if="hasCw20Balance"
@@ -166,30 +168,49 @@ function onTransfer() {
         <CommonSkeletonSubaccountAmount>
           <span v-if="reservedToBigNumber.eq(0)">&mdash;</span>
           <span v-else>
-            {{ reservedToString }}
+            <AppAmount
+              v-bind="{
+                showZeroAsEmDash: true,
+                amount: reservedToFixed
+              }"
+            />
           </span>
         </CommonSkeletonSubaccountAmount>
       </div>
 
       <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
         <CommonSkeletonSubaccountAmount>
-          <span v-if="unrealizedToBigNumber.eq(0)"> - </span>
+          <span v-if="unrealizedToBigNumber.eq(0)"> &mdash; </span>
           <span v-else>
-            {{ unrealizedPnlToString }}
+            <AppAmount
+              v-bind="{
+                showZeroAsEmDash: true,
+                amount: unrealizedPnlToFixed
+              }"
+            />
           </span>
         </CommonSkeletonSubaccountAmount>
       </div>
 
       <div class="shrink-0 flex items-center font-mono text-xs p-2 justify-end">
         <CommonSkeletonSubaccountAmount>
-          {{ totalAmountToString }}
+          <AppAmount
+            v-bind="{
+              amount: totalAmountToFixed
+            }"
+          />
         </CommonSkeletonSubaccountAmount>
       </div>
 
       <div class="flex items-center font-mono text-xs shrink-0 p-2 justify-end">
-        <div class="space-y-1">
+        <div class="flex items-center">
           <CommonSkeletonSubaccountAmount>
-            ${{ totalAmountInUsdToString }}
+            <span class="mr-1">$</span>
+            <AppUsdAmount
+              v-bind="{
+                amount: totalAmountInUsdToFixed
+              }"
+            />
           </CommonSkeletonSubaccountAmount>
         </div>
       </div>

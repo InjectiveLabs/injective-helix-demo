@@ -83,30 +83,29 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const { valueToString: totalRewardsInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      Object.entries(totalRewards.value)
-        .reduce((sum, [denom, amount]) => {
-          const token = tokenStore.tokenByDenomOrSymbol(denom)
+const { valueToFixed: totalRewardsInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    Object.entries(totalRewards.value)
+      .reduce((sum, [denom, amount]) => {
+        const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-          const amountInUsd = amount
-            .toBase(token?.decimals || 18)
-            .times(tokenStore.tokenUsdPrice(token))
+        const amountInUsd = amount
+          .toBase(token?.decimals || 18)
+          .times(tokenStore.tokenUsdPrice(token))
 
-          return sum.plus(amountInUsd)
-        }, ZERO_IN_BASE)
-        .minus(rewardsThisRoundInUsd.value)
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
+        return sum.plus(amountInUsd)
+      }, ZERO_IN_BASE)
+      .minus(rewardsThisRoundInUsd.value)
+  ),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
 
-const { valueToString: rewardsThisRoundInUsdToString } =
+const { valueToFixed: rewardsThisRoundInUsdToFixed } =
   useSharedBigNumberFormatter(rewardsThisRoundInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   })
 
-const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
+const { valueToFixed: volumeThisRoundToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
       const market = spotStore.markets.find(
@@ -155,7 +154,12 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
           {{ $t('campaign.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
-          {{ rewardsThisRoundInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: rewardsThisRoundInUsdToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
         </h3>
       </div>
       <div class="border rounded-md p-4">
@@ -168,14 +172,26 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
         <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.volumeThisRound') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ volumeThisRoundToString }} USD</h3>
+        <h3 class="text-xl font-semibold">
+          <AppUsdAmount
+            v-bind="{
+              amount: volumeThisRoundToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </h3>
       </div>
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.totalRewardsAllTime') }}
         </p>
         <h3 class="text-xl font-semibold">
-          {{ totalRewardsInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: totalRewardsInUsdToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
         </h3>
       </div>
     </div>

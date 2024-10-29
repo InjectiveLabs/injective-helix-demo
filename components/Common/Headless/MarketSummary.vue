@@ -122,7 +122,10 @@ const percentageChangeStatus = computed(() => {
     : SharedMarketChange.Decrease
 })
 
-const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
+const {
+  valueToString: lastTradedPriceToFormat,
+  valueToFixed: lastTradedPriceToFixed
+} = useSharedBigNumberFormatter(
   computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -130,14 +133,16 @@ const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: lastTradedPriceInUsdToFormat } =
-  useSharedBigNumberFormatter(
-    computed(() => lastTradedPriceInUsd.value),
-    {
-      decimalPlaces: props.market.priceDecimals,
-      displayAbsoluteDecimalPlace: true
-    }
-  )
+const {
+  valueToFixed: lastTradedPriceInUsdToFixed,
+  valueToString: lastTradedPriceInUsdToFormat
+} = useSharedBigNumberFormatter(
+  computed(() => lastTradedPriceInUsd.value),
+  {
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
+  }
+)
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
   useSharedBigNumberFormatter(
@@ -266,8 +271,10 @@ useIntervalFn(() => {
       isStableQuoteAsset,
       volumeInUsdToFormat,
       lastTradedPriceInUsd,
+      lastTradedPriceToFixed,
       percentageChangeStatus,
       lastTradedPriceToFormat,
+      lastTradedPriceInUsdToFixed,
       lastTradedPriceInUsdToFormat
     }"
   />

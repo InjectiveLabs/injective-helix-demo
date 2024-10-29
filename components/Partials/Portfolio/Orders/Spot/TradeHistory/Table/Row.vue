@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { SharedUiSpotTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  LOW_FEE_AMOUNT_THRESHOLD,
+  UI_DEFAULT_FEE_MIN_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -25,23 +29,29 @@ const {
   computed(() => true)
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+const { valueToFixed: feeToFixed } = useSharedBigNumberFormatter(fee, {
+  decimalPlaces: computed(() => {
+    if (fee.value.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)) {
+      return UI_DEFAULT_FEE_MIN_DECIMALS
+    }
+
+    return UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  })
 })
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 })
 </script>
@@ -76,18 +86,28 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       </div>
 
       <div class="flex-1 flex items-center justify-end p-2">
-        {{ priceToString }}
+        <AppAmount
+          v-bind="{
+            amount: priceToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center justify-end p-2">
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center justify-end p-2">
         <p class="flex">
-          <span>
-            {{ feeToString }}
-          </span>
+          <AppAmount
+            v-bind="{
+              amount: feeToFixed
+            }"
+          />
           <span class="ml-1 text-coolGray-500">
             {{ market?.quoteToken.symbol }}
           </span>
@@ -97,9 +117,11 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <div class="flex-1 flex items-center p-2">
         <div class="space-y-1 flex-1 flex justify-end">
           <p v-if="market">
-            <span>
-              {{ totalToString }}
-            </span>
+            <AppAmount
+              v-bind="{
+                amount: totalToFixed
+              }"
+            />
             <span class="ml-1 text-coolGray-500">
               {{ market?.quoteToken.symbol }}
             </span>

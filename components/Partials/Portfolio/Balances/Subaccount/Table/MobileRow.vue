@@ -30,7 +30,7 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
+const { valueToFixed: availableAmountToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.availableMargin,
@@ -40,7 +40,7 @@ const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.accountTotalBalanceInUsd,
@@ -50,7 +50,7 @@ const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalAmountToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
       value: props.balance.accountTotalBalance,
@@ -60,21 +60,19 @@ const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
 )
 
-const {
-  valueToString: reservedToString,
-  valueToBigNumber: reservedToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.inOrderBalance,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
-)
+const { valueToFixed: reservedToFixed, valueToBigNumber: reservedToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      sharedToBalanceInTokenInBase({
+        value: props.balance.inOrderBalance,
+        decimalPlaces: props.balance.token.decimals
+      })
+    ),
+    { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+  )
 
 const {
-  valueToString: unrealizedPnlToString,
+  valueToFixed: unrealizedPnlToFixed,
   valueToBigNumber: unrealizedToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() =>
@@ -128,7 +126,11 @@ function onTransfer() {
 
       <CommonSkeletonSubaccountAmount>
         <p class="flex items-center gap-1 font-mono">
-          {{ availableAmountToString }}
+          <AppAmount
+            v-bind="{
+              amount: availableAmountToFixed
+            }"
+          />
 
           <span
             v-if="hasCw20Balance"
@@ -147,9 +149,14 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.inUseReserved') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span v-if="reservedToBigNumber.eq(0)"> - </span>
+        <span v-if="reservedToBigNumber.eq(0)"> &mdash; </span>
         <span v-else class="font-mono">
-          {{ reservedToString }}
+          <AppAmount
+            v-bind="{
+              showZeroAsEmDash: true,
+              amount: reservedToFixed
+            }"
+          />
         </span>
       </CommonSkeletonSubaccountAmount>
     </div>
@@ -158,9 +165,14 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.unrealizedPnl') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span v-if="unrealizedToBigNumber.eq(0)"> - </span>
+        <span v-if="unrealizedToBigNumber.eq(0)"> &mdash; </span>
         <span v-else class="font-mono">
-          {{ unrealizedPnlToString }}
+          <AppAmount
+            v-bind="{
+              showZeroAsEmDash: true,
+              amount: unrealizedPnlToFixed
+            }"
+          />
         </span>
       </CommonSkeletonSubaccountAmount>
     </div>
@@ -169,7 +181,13 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.total') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span class="font-mono">{{ totalAmountToString }}</span>
+        <span class="font-mono">
+          <AppAmount
+            v-bind="{
+              amount: totalAmountToFixed
+            }"
+          />
+        </span>
       </CommonSkeletonSubaccountAmount>
     </div>
 
@@ -179,21 +197,31 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.totalValueUsd') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span class="font-mono">${{ totalAmountInUsdToString }}</span>
+        <span class="font-mono">
+          <span class="mr-1">$</span>
+          <AppUsdAmount
+            v-bind="{
+              amount: totalAmountInUsdToFixed
+            }"
+          />
+        </span>
       </CommonSkeletonSubaccountAmount>
     </div>
 
     <CommonHeadlessTotalBalance v-if="balance.denom === injToken.denom">
-      <template #default="{ stakedAmount, stakedAmountInUsd }">
+      <template #default="{ stakedAmountToFixed, stakedAmountInUsdToFixed }">
         <div
           class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
         >
           <p>{{ $t('trade.staked') }}:</p>
 
           <CommonSkeletonSubaccountAmount>
-            <span class="font-mono">{{
-              stakedAmount.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
-            }}</span>
+            <span class="font-mono">
+              <AppAmount
+                v-bind="{
+                  amount: stakedAmountToFixed
+                }"
+            /></span>
           </CommonSkeletonSubaccountAmount>
         </div>
 
@@ -203,9 +231,13 @@ function onTransfer() {
           <p>{{ $t('trade.stakedUsd') }}:</p>
 
           <CommonSkeletonSubaccountAmount>
-            <span class="font-mono">{{
-              stakedAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
-            }}</span>
+            <span class="font-mono">
+              <AppUsdAmount
+                v-bind="{
+                  amount: stakedAmountInUsdToFixed
+                }"
+              />
+            </span>
           </CommonSkeletonSubaccountAmount>
         </div>
       </template>

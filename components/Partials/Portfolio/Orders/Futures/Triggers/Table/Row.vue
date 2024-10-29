@@ -45,23 +45,23 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
     decimalPlaces: quantityDecimals.value
@@ -121,11 +121,21 @@ function cancelOrder() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <span v-if="isMarketOrder">{{ $t('trade.market') }}</span>
-        <span v-else>{{ priceToString }}</span>
+        <span v-else>
+          <AppAmount
+            v-bind="{
+              amount: priceToFixed
+            }"
+          />
+        </span>
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
@@ -136,7 +146,12 @@ function cancelOrder() {
       </div>
 
       <div v-if="market" class="flex-1 flex items-center p-2 justify-end">
-        {{ totalToString }} {{ market.quoteToken.symbol }}
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+        />
+        <span class="ml-1">{{ market.quoteToken.symbol }}</span>
       </div>
 
       <div class="flex-[2] flex items-center p-2 space-x-2 justify-end">
@@ -152,7 +167,12 @@ function cancelOrder() {
         </span>
         <span v-else class="text-white text-xs font-semibold"> &ge;</span>
 
-        <span>{{ triggerPriceToString }}</span>
+        <span>
+          <AppAmount
+            v-bind="{
+              amount: triggerPriceToFixed
+            }"
+        /></span>
       </div>
 
       <div class="p-2 flex items-center flex-1 justify-center">

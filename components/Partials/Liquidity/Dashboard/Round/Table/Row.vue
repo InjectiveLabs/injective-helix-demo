@@ -77,17 +77,15 @@ const totalAmountInUsd = computed(() =>
   )
 )
 
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
   totalAmountInUsd,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const { valueToString: marketVolumeInUsdToString } =
-  useSharedBigNumberFormatter(marketVolumeInUsd, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
+const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
+  marketVolumeInUsd,
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
 </script>
 
 <template>
@@ -113,12 +111,26 @@ const { valueToString: marketVolumeInUsdToString } =
     </td>
 
     <td class="w-1/4">
-      <div class="tracking-wider">{{ marketVolumeInUsdToString }} USD</div>
+      <div class="tracking-wider">
+        <AppUsdAmount
+          v-bind="{
+            amount: marketVolumeInUsdToFixed
+          }"
+        />
+        <span class="ml-1">USD</span>
+      </div>
     </td>
 
     <td class="text-left w-72">
       <div>
-        <p class="font-semibold">{{ totalAmountInUsdToString }} USD</p>
+        <p class="font-semibold">
+          <AppUsdAmount
+            v-bind="{
+              amount: totalAmountInUsdToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </p>
         <div class="flex items-center space-x-2">
           <PartialsLiquidityCommonTokenAmount
             v-for="({ amount, symbol }, i) in rewards"

@@ -54,40 +54,40 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(
   computed(() => props.marginWithFee),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: marginToString } = useSharedBigNumberFormatter(
+const { valueToFixed: marginToFixed } = useSharedBigNumberFormatter(
   computed(() => props.margin),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   computed(() => props.quantity),
   { decimalPlaces: 4 }
 )
 
-const { valueToString: worstPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
   computed(() => props.worstPrice),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: feeAmountToString } = useSharedBigNumberFormatter(
+const { valueToFixed: feeAmountToFixed } = useSharedBigNumberFormatter(
   computed(() => props.feeAmount.abs().toFixed()),
   {
     decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
   }
 )
 
-const { valueToString: estLiquidationPriceToString } =
+const { valueToFixed: estLiquidationPriceToFixed } =
   useSharedBigNumberFormatter(
     computed(() => estLiquidationPrice.value),
     {
@@ -95,7 +95,7 @@ const { valueToString: estLiquidationPriceToString } =
     }
   )
 
-const { valueToString: totalNotionalToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalNotionalToFixed } = useSharedBigNumberFormatter(
   computed(() => props.totalNotional),
   {
     decimalPlaces: derivativeMarket.value.priceDecimals
@@ -125,10 +125,19 @@ function toggle() {
           <p class="text-coolGray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
 
-          <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)">
-              &asymp;{{ totalToString }}
+          <p
+            class="font-mono space-x-2 flex"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)"
+          >
+            <span class="flex">
+              <span>&asymp;</span>
+              <AppAmount
+                v-bind="{
+                  amount: totalToFixed
+                }"
+              />
             </span>
+
             <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -139,9 +148,12 @@ function toggle() {
           <p class="text-coolGray-400">{{ $t('trade.margin') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)">
-              {{ marginToString }}
-            </span>
+            <AppAmount
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
+              v-bind="{
+                amount: marginToFixed
+              }"
+            />
             <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -151,12 +163,13 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-400">{{ $t('trade.totalNotional') }}</p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
-            <span
+          <p class="font-mono space-x-2 flex">
+            <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
-            >
-              {{ totalNotionalToString }}
-            </span>
+              v-bind="{
+                amount: totalNotionalToFixed
+              }"
+            />
             <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -167,9 +180,12 @@ function toggle() {
           <p class="text-coolGray-400">{{ $t('trade.quantity') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)">
-              {{ quantityToString }}
-            </span>
+            <AppAmount
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
+              v-bind="{
+                amount: quantityToFixed
+              }"
+            />
             <span class="text-coolGray-400">
               {{
                 derivativeMarket.baseToken.overrideSymbol ||
@@ -185,9 +201,13 @@ function toggle() {
           </p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)">
-              {{ worstPriceToString }}
-            </span>
+            <AppAmount
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
+              v-bind="{
+                amount: worstPriceToFixed
+              }"
+            />
+
             <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -198,13 +218,15 @@ function toggle() {
           <p class="text-coolGray-400">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
-            <span
+            <AppAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
               "
-            >
-              {{ estLiquidationPriceToString }}
-            </span>
+              v-bind="{
+                amount: estLiquidationPriceToFixed
+              }"
+            />
+
             <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -229,9 +251,12 @@ function toggle() {
             <p class="text-coolGray-400">{{ $t('trade.fee') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p class="font-mono space-x-2">
-              <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)">
-                {{ feeAmountToString }}
-              </span>
+              <AppAmount
+                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
+                v-bind="{
+                  amount: feeAmountToFixed
+                }"
+              />
               <span class="text-coolGray-400">
                 {{ derivativeMarket.quoteToken.symbol }}
               </span>
@@ -252,7 +277,11 @@ function toggle() {
             <p class="text-coolGray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p v-if="derivativeMarket" class="font-mono">
-              {{ feeAmount.abs() }}
+              <AppAmount
+                v-bind="{
+                  amount: feeAmountToFixed
+                }"
+              />
               {{ derivativeMarket.quoteToken.symbol }}
             </p>
           </div>

@@ -10,7 +10,7 @@ const props = withDefaults(
   {}
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(
   computed(() => props.market.summary.lastPrice || 0),
   {
     decimalPlaces: props.market.market.priceDecimals,
@@ -18,7 +18,7 @@ const { valueToString: priceToString } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: priceChangeToString } = useSharedBigNumberFormatter(
+const { valueToFixed: priceChangeToFixed } = useSharedBigNumberFormatter(
   computed(() => props.market.summary.change),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -53,10 +53,24 @@ const priceChangeClasses = computed(() => {
         {{ market.market.ticker }}
       </p>
     </div>
-    <p class="flex-1 text-right font-mono text-xs">${{ priceToString }}</p>
+    <p class="flex flex-1 text-right font-mono text-xs">
+      <span class="mr-1">$</span>
+      <AppAmount
+        v-bind="{
+          amount: priceToFixed
+        }"
+      />
+    </p>
     <p class="flex-1 text-right font-mono text-xs" :class="priceChangeClasses">
       <span v-if="Number(market.summary.change) > 0">+</span>
-      <span>{{ priceChangeToString }}%</span>
+      <span>
+        <AppAmount
+          v-bind="{
+            amount: priceChangeToFixed
+          }"
+        />
+        %
+      </span>
     </p>
   </NuxtLink>
 </template>

@@ -25,18 +25,17 @@ const {
   quantity,
   leverage,
   priceDecimals,
-  // orderFillable,
   filledQuantity,
   quantityDecimals,
   unfilledQuantity
-  // filledQuantityPercentageToFormat
 } = useOrder(
   computed(() => props.order),
   computed(() => false)
 )
 
 const status = reactive(new Status(StatusType.Idle))
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
@@ -49,28 +48,28 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
   filledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
   unfilledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 
@@ -111,22 +110,46 @@ function onCancelOrder() {
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.price') }}</p>
-      <p class="font-mono">{{ priceToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: priceToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p class="font-mono">{{ quantityToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.unfilled') }}</p>
-      <p class="font-mono">{{ unfilledQuantityToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: unfilledQuantityToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.filled') }}</p>
-      <p class="font-mono">{{ filledQuantityToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: filledQuantityToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
@@ -142,8 +165,14 @@ function onCancelOrder() {
     <div class="flex justify-between items-center px-2 py-4">
       <p>{{ $t('trade.total') }}</p>
       <p>
-        {{ totalToString }}
-        <span class="text-coolGray-500">{{ market?.quoteToken.symbol }}</span>
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+        />
+        <span class="text-coolGray-500 ml-1">
+          {{ market?.quoteToken.symbol }}
+        </span>
       </p>
     </div>
 

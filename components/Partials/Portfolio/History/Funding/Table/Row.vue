@@ -13,7 +13,7 @@ const { market, time, total } = useFundingPayment(
   computed(() => props.fundingPayment)
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
 })
 </script>
@@ -36,7 +36,11 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
           'text-red-500': total.lt(0)
         }"
       >
-        {{ totalToString }}
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+        />
       </span>
 
       <span class="text-coolGray-500">

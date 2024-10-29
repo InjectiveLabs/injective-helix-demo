@@ -63,7 +63,7 @@ const endDate = computed(() => {
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
 
-const { valueToString: totalRewardsThisRoundToString } =
+const { valueToFixed: totalRewardsThisRoundToFixed } =
   useSharedBigNumberFormatter(totalRewardsThisRound, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   })
@@ -106,7 +106,12 @@ const { valueToString: totalRewardsThisRoundToString } =
             {{ $t('campaign.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
-            {{ totalRewardsThisRoundToString }} USD
+            <AppUsdAmount
+              v-bind="{
+                amount: totalRewardsThisRoundToFixed
+              }"
+            />
+            <span class="ml-1">USD</span>
           </p>
         </div>
         <div>

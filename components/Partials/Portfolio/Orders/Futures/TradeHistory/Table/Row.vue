@@ -2,6 +2,11 @@
 import { dataCyTag } from '@shared/utils'
 import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  LOW_FEE_AMOUNT_THRESHOLD,
+  UI_DEFAULT_FEE_MIN_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { PerpetualMarketCyTags } from '@/types'
 
 const props = withDefaults(
@@ -26,23 +31,29 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: quantityDecimals.value
+const { valueToFixed: feeToFixed } = useSharedBigNumberFormatter(fee, {
+  decimalPlaces: computed(() => {
+    if (fee.value.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)) {
+      return UI_DEFAULT_FEE_MIN_DECIMALS
+    }
+
+    return UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  })
 })
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 </script>
@@ -91,29 +102,43 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       class="flex-1 flex items-center p-2 justify-end"
       :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryPrice)"
     >
-      {{ priceToString }}
+      <AppAmount
+        v-bind="{
+          amount: priceToFixed
+        }"
+      />
     </div>
 
     <div
       class="flex-1 flex items-center p-2 justify-end"
       :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryAmount)"
     >
-      {{ quantityToString }}
+      <AppAmount
+        v-bind="{
+          amount: quantityToFixed
+        }"
+      />
     </div>
 
     <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-      <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">{{
-        feeToString
-      }}</span>
+      <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
+        <AppAmount
+          v-bind="{
+            amount: feeToFixed
+          }"
+      /></span>
       <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>
 
     <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
-      <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">{{
-        totalToString
-      }}</span>
+      <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+      /></span>
       <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>

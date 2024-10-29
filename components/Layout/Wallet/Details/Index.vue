@@ -91,9 +91,12 @@ function disconnect() {
               </p>
 
               <CommonHeadlessTotalBalance>
-                <template #default="{ accountTotalBalanceInUsdToString }">
+                <template #default="{ accountTotalBalanceInUsdToFixed }">
                   <p class="text-2xl font-semibold my-2">
-                    ${{ accountTotalBalanceInUsdToString }}
+                    <span>$</span>
+                    <AppUsdAmount
+                      v-bind="{ amount: accountTotalBalanceInUsdToFixed }"
+                    />
                   </p>
                 </template>
               </CommonHeadlessTotalBalance>

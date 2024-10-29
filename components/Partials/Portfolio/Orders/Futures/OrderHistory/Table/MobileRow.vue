@@ -29,23 +29,23 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
     decimalPlaces: quantityDecimals.value
@@ -100,23 +100,35 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
 
         <span v-else>
-          {{ priceToString }}
+          <AppAmount
+            v-bind="{
+              amount: priceToFixed
+            }"
+          />
         </span>
       </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p>{{ quantityToString }}</p>
+      <p>
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4 space-x-1">
       <p>{{ $t('trade.total') }}</p>
 
       <p>
-        <span>
-          {{ totalToString }}
-        </span>
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+        />
 
         <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
@@ -139,8 +151,11 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
             &le;
           </span>
           <span v-else class="text-white text-xs font-semibold"> &ge; </span>
-
-          {{ triggerPriceToString }}
+          <AppAmount
+            v-bind="{
+              amount: triggerPriceToFixed
+            }"
+          />
         </template>
 
         <template v-else>

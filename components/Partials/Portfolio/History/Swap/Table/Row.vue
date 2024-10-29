@@ -15,9 +15,9 @@ const {
   routeSymbols,
   formattedFees,
   sourceTokenWithBalance,
-  sourceBalanceFormatted,
+  sourceBalanceFormattedToFixed,
   destinationTokenWithBalance,
-  destinationBalanceFormatted
+  destinationBalanceFormattedToFixed
 } = useSwapHistory(computed(() => props.swap))
 </script>
 
@@ -37,7 +37,11 @@ const {
       />
 
       <div>
-        {{ sourceBalanceFormatted }}
+        <AppAmount
+          v-bind="{
+            amount: sourceBalanceFormattedToFixed
+          }"
+        />
         {{ sourceTokenWithBalance.token.symbol }}
       </div>
     </div>
@@ -52,7 +56,11 @@ const {
       />
 
       <div>
-        {{ destinationBalanceFormatted }}
+        <AppAmount
+          v-bind="{
+            amount: destinationBalanceFormattedToFixed
+          }"
+        />
         {{ destinationTokenWithBalance.token.symbol }}
       </div>
     </div>
@@ -62,8 +70,12 @@ const {
     </div>
 
     <div class="p-2 flex items-center flex-1 gap-1">
-      <div v-for="(fee, index) in formattedFees" :key="`${fee}-${index}`">
-        {{ fee }}
+      <div
+        v-for="({ amount, symbol }, index) in formattedFees"
+        :key="`${amount}-${symbol}-${index}`"
+      >
+        <AppAmount v-bind="{ amount }" />
+        <span class="ml-1">{{ symbol }}</span>
       </div>
     </div>
 

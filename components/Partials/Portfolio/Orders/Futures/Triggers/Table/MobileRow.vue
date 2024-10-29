@@ -45,23 +45,23 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: quantityDecimals.value
 })
 
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
     decimalPlaces: quantityDecimals.value
@@ -128,13 +128,24 @@ function cancelOrder() {
 
       <p class="font-mono">
         <span v-if="isMarketOrder">{{ $t('trade.market') }}</span>
-        <span v-else>{{ priceToString }}</span>
+        <span v-else>
+          <AppAmount
+            v-bind="{
+              amount: priceToFixed
+            }"
+        /></span>
       </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p class="font-mono">{{ quantityToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
@@ -150,7 +161,12 @@ function cancelOrder() {
     <div v-if="market" class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.total') }}</p>
       <p class="font-mono">
-        {{ totalToString }} {{ market.quoteToken.symbol }}
+        <AppAmount
+          v-bind="{
+            amount: totalToFixed
+          }"
+        />
+        <span class="ml-1">{{ market.quoteToken.symbol }}</span>
       </p>
     </div>
 
@@ -170,7 +186,12 @@ function cancelOrder() {
         </span>
         <span v-else class="text-white text-xs font-semibold"> &ge;</span>
 
-        <span>{{ triggerPriceToString }}</span>
+        <span>
+          <AppAmount
+            v-bind="{
+              amount: triggerPriceToFixed
+            }"
+        /></span>
       </p>
     </div>
 

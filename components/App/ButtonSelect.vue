@@ -6,7 +6,7 @@ const props = withDefaults(
   defineProps<{
     value: string
     modelValue: string
-    class?: string
+    class?: string | Record<string, boolean>
     activeClasses?: string
   }>(),
   {

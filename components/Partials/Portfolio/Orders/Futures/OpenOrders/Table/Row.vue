@@ -36,7 +36,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToString: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
@@ -49,28 +49,28 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
   filledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
   unfilledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 
@@ -122,28 +122,44 @@ function onCancelOrder() {
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersPrice)"
       >
-        {{ priceToString }}
+        <AppAmount
+          v-bind="{
+            amount: priceToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersAmount)"
       >
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersUnfilled)"
       >
-        {{ unfilledQuantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: unfilledQuantityToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersFilled)"
       >
-        {{ filledQuantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: filledQuantityToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
@@ -165,10 +181,14 @@ function onCancelOrder() {
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="space-y-1">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
-            {{ totalToString }}
-            <span class="text-coolGray-500">{{
-              market.quoteToken.symbol
-            }}</span>
+            <AppAmount
+              v-bind="{
+                amount: totalToFixed
+              }"
+            />
+            <span class="text-coolGray-500 ml-2">
+              {{ market.quoteToken.symbol }}
+            </span>
           </p>
         </div>
       </div>

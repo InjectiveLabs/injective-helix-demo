@@ -8,7 +8,6 @@ import {
 } from '@shared/types'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
@@ -25,7 +24,6 @@ const props = withDefaults(
 
 const appStore = useAppStore()
 const isMobile = useIsMobile()
-const tokenStore = useTokenStore()
 
 const isRWAMarket = computed(() =>
   slugsToIncludeInRWACategory.includes(props.market.slug)
@@ -35,17 +33,11 @@ const lastTradedPrice = computed(
   () => new BigNumberInBase(props.summary.lastPrice || 0)
 )
 
-const { valueToString: lastPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: lastPriceToFixed } = useSharedBigNumberFormatter(
   lastTradedPrice,
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
-)
-
-const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    lastTradedPrice.value.times(
-      tokenStore.tokenUsdPrice(props.market.quoteToken)
-    )
-  )
+  {
+    decimalPlaces: props.market.priceDecimals
+  }
 )
 
 const { valueToString: volumeToString, valueToFixed: volumeToFixed } =
@@ -132,17 +124,14 @@ function toggleFavorite() {
     </div>
 
     <div
-      class="flex-[2] lg:flex-[1] truncate min-w-0 font-mono text-xs text-right"
+      class="flex justify-end flex-[2] lg:flex-[1] truncate min-w-0 font-mono text-xs text-right"
     >
-      <div :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)">
-        {{ lastPriceToString }}
-      </div>
-      <div
-        class="text-xs text-coolGray-500"
-        :data-cy="dataCyTag(`tokenPrice-${market.baseToken.name}`)"
-      >
-        ${{ lastPriceInUsdToString }}
-      </div>
+      <AppAmount
+        :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
+        v-bind="{
+          amount: lastPriceToFixed
+        }"
+      />
     </div>
 
     <div

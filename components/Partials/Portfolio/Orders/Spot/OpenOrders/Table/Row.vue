@@ -47,30 +47,30 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
 })
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
   filledQuantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
   unfilledQuantity,
   {
     decimalPlaces: quantityDecimals.value
@@ -139,27 +139,43 @@ function cancelOrder() {
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)"
       >
-        {{ priceToString }}
+        <AppAmount
+          v-bind="{
+            amount: priceToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)"
       >
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)"
       >
-        {{ unfilledQuantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: unfilledQuantityToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="text-right">
           <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)">
-            {{ filledQuantityToString }}
+            <AppAmount
+              v-bind="{
+                amount: filledQuantityToFixed
+              }"
+            />
           </p>
           <p class="text-coolGray-500">
             {{ filledQuantityPercentageToFormat }}%
@@ -170,9 +186,13 @@ function cancelOrder() {
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
           <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
-            {{ totalToString }}
+            <AppAmount
+              v-bind="{
+                amount: totalToFixed
+              }"
+            />
             <span
-              class="text-coolGray-500"
+              class="text-coolGray-500 ml-1"
               :data-cy="
                 dataCyTag(SpotMarketCyTags.OpenOrderTotalAmtTokenSymbol)
               "

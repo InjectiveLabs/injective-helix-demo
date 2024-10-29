@@ -9,6 +9,7 @@ import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
@@ -19,9 +20,11 @@ import { StrategyStatus } from '@/types'
 const props = withDefaults(
   defineProps<{
     strategy: TradingStrategy
+    decimalPlaces?: number
   }>(),
   {
-    strategy: undefined
+    strategy: undefined,
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
@@ -61,6 +64,11 @@ const investment = computed(() => {
     .plus(quoteAmountInUsd)
     .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
 })
+
+const { valueToFixed: investmentToFixed } = useSharedBigNumberFormatter(
+  investment,
+  { decimalPlaces: props.decimalPlaces }
+)
 
 const subaccountBalances = computed(
   () =>
@@ -130,6 +138,10 @@ const pnl = computed(() => {
     )
 })
 
+const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(pnl, {
+  decimalPlaces: props.decimalPlaces
+})
+
 const percentagePnl = computed(() =>
   pnl.value.dividedBy(investment.value).times(100).toFixed(2)
 )
@@ -144,6 +156,9 @@ const upperBound = computed(() => {
   )
 })
 
+const { valueToFixed: upperBoundToFixed } =
+  useSharedBigNumberFormatter(upperBound)
+
 const lowerBound = computed(() => {
   if (!market.value) {
     return ZERO_IN_BASE
@@ -153,6 +168,9 @@ const lowerBound = computed(() => {
     market.value.quoteToken.decimals - market.value.baseToken.decimals
   )
 })
+
+const { valueToFixed: lowerBoundToFixed } =
+  useSharedBigNumberFormatter(lowerBound)
 
 const creationExecutionPrice = computed(
   () => new BigNumberInBase(props.strategy.executionPrice)
@@ -286,13 +304,17 @@ useIntervalFn(
   <slot
     v-bind="{
       pnl,
+      pnlToFixed,
       market,
       duration,
       stopLoss,
       createdAt,
       investment,
+      investmentToFixed,
       upperBound,
+      upperBoundToFixed,
       lowerBound,
+      lowerBoundToFixed,
       takeProfit,
       percentagePnl,
       removeStrategy,

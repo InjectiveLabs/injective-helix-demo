@@ -69,29 +69,27 @@ const marketVolume = computed(() =>
   )
 )
 
-const { valueToString: totalRewardsInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      rewardsWithToken.value.reduce((total, reward) => {
-        return total.plus(
-          new BigNumberInBase(reward.value).times(
-            tokenStore.tokenUsdPrice(reward.token)
-          )
+const { valueToFixed: totalRewardsInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    rewardsWithToken.value.reduce((total, reward) => {
+      return total.plus(
+        new BigNumberInBase(reward.value).times(
+          tokenStore.tokenUsdPrice(reward.token)
         )
-      }, ZERO_IN_BASE)
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
-
-const { valueToString: marketVolumeInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      marketVolume.value.times(
-        market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
       )
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
+    }, ZERO_IN_BASE)
+  ),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    marketVolume.value.times(
+      market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+    )
+  ),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
 
 const sgtScAddress = computed(() => {
   const market = spotStore.markets.find(
@@ -162,7 +160,12 @@ onMounted(() => {
     <td class="text-left">
       <div>
         <p class="font-semibold text-base mb-2">
-          {{ totalRewardsInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: totalRewardsInUsdToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
         </p>
         <div class="flex items-center space-x-2">
           <template v-for="(reward, index) in rewardsWithToken" :key="index">
@@ -188,7 +191,14 @@ onMounted(() => {
 
     <td>
       <div>
-        <p>{{ marketVolumeInUsdToString }} USD</p>
+        <p>
+          <AppUsdAmount
+            v-bind="{
+              amount: marketVolumeInUsdToFixed
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </p>
       </div>
     </td>
 

@@ -89,7 +89,7 @@ const percentageChangeStatus = computed(() => {
     : SharedMarketChange.Decrease
 })
 
-const { valueToString: volumeToFormat, valueToBigNumber: volume } =
+const { valueToBigNumber: volume, valueToFixed: volumeToFixed } =
   useSharedBigNumberFormatter(
     computed(() => {
       if (!summary.value) {
@@ -105,7 +105,7 @@ const { valueToString: volumeToFormat, valueToBigNumber: volume } =
     }
   )
 
-const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: volumeInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
@@ -115,7 +115,7 @@ const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
   computed(() => lastTradedPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -123,7 +123,7 @@ const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: lastTradedPriceInUsdToFormat } =
+const { valueToFixed: lastTradedPriceInUsdToFixed } =
   useSharedBigNumberFormatter(
     computed(() => lastTradedPriceInUsd.value),
     {
@@ -143,7 +143,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
     })
   )
 
-const { valueToString: highToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: highToFixed } = useSharedBigNumberFormatter(
   computed(() => {
     if (!summary.value) {
       return ZERO_IN_BASE
@@ -156,7 +156,7 @@ const { valueToString: highToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: lowToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: lowToFixed } = useSharedBigNumberFormatter(
   computed(() => {
     if (!summary.value) {
       return ZERO_IN_BASE
@@ -297,9 +297,12 @@ useIntervalFn(() => {
               }"
             />
 
-            <div class="leading-none">
-              {{ lastTradedPriceToFormat }}
-            </div>
+            <AppAmount
+              v-bind="{
+                amount: lastTradedPriceToFixed
+              }"
+              class="leading-none"
+            />
           </div>
         </div>
 
@@ -326,34 +329,63 @@ useIntervalFn(() => {
       :title="$t('trade.usd_value')"
     >
       <p class="font-mono font-semibold">
-        {{ lastTradedPriceInUsdToFormat }}
+        <AppUsdAmount
+          v-bind="{
+            amount: lastTradedPriceInUsdToFixed
+          }"
+        />
       </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem>
       <template #title>
-        <CommonHeaderTooltip
-          :tooltip="
-            isStableQuoteAsset
-              ? $t('trade.market_volume_24h_tooltip')
-              : $t('trade.total_volume_in_usd', {
-                  amount: volumeInUsdToFormat
-                })
-          "
-          text-color-class="text-coolGray-400"
-        >
-          {{ $t('trade.total_market_volume_24h') }}
+        <CommonHeaderTooltip text-color-class="text-coolGray-400">
+          <template #default>
+            {{ $t('trade.total_market_volume_24h') }}
+          </template>
+          <template #customTooltip>
+            <span v-if="isStableQuoteAsset">
+              {{ $t('trade.market_volume_24h_tooltip') }}
+            </span>
+            <span v-else>
+              <AppUsdAmount
+                v-bind="{
+                  amount: volumeInUsdToFixed,
+                  isShowNoDecimals: true
+                }"
+              />
+              <span class="ml-1">USD</span>
+            </span>
+          </template>
         </CommonHeaderTooltip>
       </template>
-      <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: volumeToFixed
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem :title="$t('trade.high')">
-      <p class="font-mono font-semibold">{{ highToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: highToFixed
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem :title="$t('trade.low')">
-      <p class="font-mono font-semibold">{{ lowToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: lowToFixed
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <template v-if="(market as UiDerivativeMarket)?.isPerpetual">

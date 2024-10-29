@@ -32,12 +32,9 @@ const balance = computed(() =>
   )
 )
 
-const { valueToString: balanceToString } = useSharedBigNumberFormatter(
-  balance,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+const { valueToFixed: balanceToFixed } = useSharedBigNumberFormatter(balance, {
+  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+})
 </script>
 
 <template>
@@ -50,6 +47,13 @@ const { valueToString: balanceToString } = useSharedBigNumberFormatter(
         {{ formattedAddress }}
       </PartialsWalletHistoryCommonAddress>
     </div>
-    <div class="flex-1 items-center p-2 text-right">${{ balanceToString }}</div>
+    <div class="flex-1 items-center p-2 text-right">
+      <span class="mr-1">$</span>
+      <AppUsdAmount
+        v-bind="{
+          amount: balanceToFixed
+        }"
+      />
+    </div>
   </div>
 </template>

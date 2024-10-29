@@ -7,13 +7,13 @@ withDefaults(
     isDisabled?: boolean
     isNotStyled?: boolean
     textColorClass?: string
-    borderColorClass?: string
+    borderColorClass?: string | Record<string, boolean>
     ui?: object
   }>(),
   {
     tooltip: '',
     classes: '',
-    tooltipClass: '',
+    tooltipClass: 'p-1',
     isDisabled: false,
     isNotStyled: false,
     textColorClass: 'text-coolGray-350',
@@ -26,7 +26,11 @@ withDefaults(
 <template>
   <UPopover
     mode="hover"
-    :popper="{ placement: 'top', strategy: 'fixed', offsetDistance: 0 }"
+    :popper="{
+      placement: 'top-start',
+      strategy: 'fixed',
+      offsetDistance: -40
+    }"
     :disabled="isDisabled"
     :ui="ui"
   >
@@ -37,16 +41,18 @@ withDefaults(
         borderColorClass,
         {
           'normal-case border-dashed': !isNotStyled,
-          'border-b cursor-pointer': !isNotStyled && !isDisabled
+          'border-b cursor-pointer': !isNotStyled && !isDisabled,
+          'cursor-text': isDisabled
         }
       ]"
     >
       <slot />
     </span>
 
-    <template v-if="tooltip" #panel>
-      <div :class="tooltipClass">
-        {{ tooltip }}
+    <template #panel>
+      <div :class="tooltipClass" class="text-xs text-coolGray-200">
+        <span v-if="tooltip">{{ tooltip }}</span>
+        <slot v-else name="customTooltip" />
       </div>
     </template>
   </UPopover>

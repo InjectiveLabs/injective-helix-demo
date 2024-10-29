@@ -31,23 +31,23 @@ const {
   computed(() => false)
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
     decimalPlaces: priceDecimals.value
@@ -112,7 +112,11 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           v-else
           :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryPrice)"
         >
-          {{ priceToString }}
+          <AppAmount
+            v-bind="{
+              amount: priceToFixed
+            }"
+          />
         </span>
       </div>
 
@@ -120,12 +124,20 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryAmount)"
       >
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantityToFixed
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-1 justify-end">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryTotal)">
-          {{ totalToString }}
+          <AppAmount
+            v-bind="{
+              amount: totalToFixed
+            }"
+          />
         </span>
 
         <span v-if="market" class="text-coolGray-500">
@@ -151,7 +163,12 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
               <span class="text-white text-xs font-semibold">&le;</span>
             </span>
             <span v-else class="text-white text-xs font-semibold">&ge;</span>
-            <span>{{ triggerPriceToString }}</span>
+
+            <AppAmount
+              v-bind="{
+                amount: triggerPriceToFixed
+              }"
+            />
           </div>
         </template>
 

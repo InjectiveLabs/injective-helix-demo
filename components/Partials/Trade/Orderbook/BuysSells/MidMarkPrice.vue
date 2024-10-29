@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
-import { stableCoinSymbols } from '@/app/data/token'
 import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
@@ -12,8 +11,6 @@ const props = withDefaults(
     isSpot: false
   }
 )
-
-const tokenStore = useTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -36,42 +33,12 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
-const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    lastTradedPrice.value.times(
-      tokenStore.tokenUsdPrice(props.market.quoteToken)
-    )
-  ),
-  {
-    decimalPlaces: computed(() => {
-      return sharedGetExactDecimalsFromNumber(
-        lastTradedPrice.value
-          .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
-          .toFixed(props.market.priceDecimals)
-      )
-    }),
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
 const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
     displayAbsoluteDecimalPlace: true
   }
-)
-
-const isStableQuoteAsset = computed(() =>
-  stableCoinSymbols.includes(props.market.quoteToken.symbol)
 )
 </script>
 
@@ -105,15 +72,19 @@ const isStableQuoteAsset = computed(() =>
             lastTradedPriceChange === SharedMarketChange.Increase
         }"
       >
-        {{ lastTradedPriceToString }}
-      </span>
-
-      <span v-if="!isStableQuoteAsset" class="mx-2 text-xs text-coolGray-400">
-        ${{ lastPriceInUsdToString }}
+        <AppAmount
+          v-bind="{
+            amount: lastTradedPrice.toFixed()
+          }"
+        />
       </span>
 
       <span v-if="!isSpot" class="text-xs ml-2">
-        <CommonHeaderTooltip v-bind="{ tooltip: 'Mark Price' }">
+        <CommonHeaderTooltip
+          v-bind="{
+            tooltip: $t('trade.markPrice')
+          }"
+        >
           {{ markPriceToString }}
         </CommonHeaderTooltip>
       </span>

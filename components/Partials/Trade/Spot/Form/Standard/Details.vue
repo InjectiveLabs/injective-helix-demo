@@ -29,15 +29,36 @@ const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(true)
 
-const { valueToString: totalToString } = useSharedBigNumberFormatter(
+const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(
   computed(() => props.totalWithFee),
   { decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS }
 )
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   computed(() => props.quantity),
   {
     decimalPlaces: spotMarket?.value?.quantityDecimals
+  }
+)
+
+const { valueToFixed: quantityInQuoteToFixed } = useSharedBigNumberFormatter(
+  computed(() => props.total),
+  {
+    decimalPlaces: spotMarket?.value?.priceDecimals
+  }
+)
+
+const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
+  computed(() => props.total),
+  {
+    decimalPlaces: spotMarket?.value?.priceDecimals
+  }
+)
+
+const { valueToFixed: feeAmountToFixed } = useSharedBigNumberFormatter(
+  computed(() => props.feeAmount.abs().toFixed()),
+  {
+    decimalPlaces: computed(() => spotMarket?.value?.priceDecimals)
   }
 )
 
@@ -65,10 +86,18 @@ function toggle() {
           <div class="border-t flex-1 mx-2" />
 
           <p
-            class="font-mono space-x-2"
+            class="flex font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsTotal)"
           >
-            <span>&asymp;{{ totalToString }} </span>
+            <span class="flex">
+              <span>&asymp;</span>
+              <AppAmount
+                v-bind="{
+                  amount: totalToFixed
+                }"
+              />
+            </span>
+
             <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
@@ -82,7 +111,11 @@ function toggle() {
             class="font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
           >
-            <span>{{ quantityToString }} </span>
+            <AppAmount
+              v-bind="{
+                amount: quantityToFixed
+              }"
+            />
             <span class="text-coolGray-400">
               {{ spotMarket.baseToken.symbol }}
             </span>
@@ -98,7 +131,12 @@ function toggle() {
             class="font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
           >
-            <span>{{ total.toFormat(spotMarket.priceDecimals) }} </span>
+            <AppAmount
+              v-bind="{
+                amount: quantityInQuoteToFixed
+              }"
+            />
+
             <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
@@ -112,7 +150,11 @@ function toggle() {
             class="font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
-            <span>{{ worstPrice.toFormat(spotMarket.priceDecimals) }} </span>
+            <AppAmount
+              v-bind="{
+                amount: worstPriceToFixed
+              }"
+            />
             <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
@@ -153,10 +195,15 @@ function toggle() {
             <div class="border-t flex-1 mx-2" />
             <p
               v-if="spotMarket"
-              class="font-mono"
+              class="font-mono space-x-2"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsEstFeeRebate)"
             >
-              {{ feeAmount.abs().toFixed(spotMarket.priceDecimals) }} USDT
+              <AppAmount
+                v-bind="{
+                  amount: feeAmountToFixed
+                }"
+              />
+              <span>USDT</span>
             </p>
           </div>
         </template>

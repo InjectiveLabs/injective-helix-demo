@@ -18,13 +18,14 @@ function onOpenTradingBotDetails() {
   <CommonHeadlessSpotGridStrategy v-bind="{ strategy }">
     <template
       #default="{
-        investment,
-        lowerBound,
+        investmentToFixed,
+        lowerBoundToFixed,
         percentagePnl,
         pnl,
+        pnlToFixed,
         removeStrategy,
         removeStatus,
-        upperBound,
+        upperBoundToFixed,
         market,
         duration,
         createdAt
@@ -52,7 +53,12 @@ function onOpenTradingBotDetails() {
           <p>{{ $t('sgt.lowerBound') }}</p>
 
           <p class="space-x-1 font-mono">
-            <span>{{ lowerBound.toFormat() }}</span>
+            <span>
+              <AppAmount
+                v-bind="{
+                  amount: lowerBoundToFixed
+                }"
+            /></span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
@@ -63,7 +69,12 @@ function onOpenTradingBotDetails() {
           <p>{{ $t('sgt.upperBound') }}</p>
 
           <p class="space-x-1 font-mono">
-            <span>{{ upperBound.toFormat() }}</span>
+            <span>
+              <AppAmount
+                v-bind="{
+                  amount: upperBoundToFixed
+                }"
+            /></span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
@@ -74,7 +85,12 @@ function onOpenTradingBotDetails() {
           <p>{{ $t('sgt.totalAmount') }}</p>
 
           <p class="space-x-1 font-mono">
-            <span>{{ investment.toFormat(2) }}</span>
+            <span>
+              <AppAmount
+                v-bind="{
+                  amount: investmentToFixed
+                }"
+            /></span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
@@ -88,7 +104,14 @@ function onOpenTradingBotDetails() {
             :class="[pnl.gte(0) ? 'text-green-500' : 'text-red-500']"
           >
             <p class="text-sm">
-              {{ pnl.toFormat(2) }} {{ market.quoteToken.symbol }}
+              <AppAmount
+                v-bind="{
+                  amount: pnlToFixed
+                }"
+              />
+              <span class="ml-1">
+                {{ market.quoteToken.symbol }}
+              </span>
             </p>
             <p>{{ percentagePnl }} %</p>
           </div>

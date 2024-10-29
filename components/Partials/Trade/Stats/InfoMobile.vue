@@ -24,9 +24,9 @@ withDefaults(
         volumeToFormat,
         isStableQuoteAsset,
         volumeInUsdToFormat,
+        lastTradedPriceToFixed,
         percentageChangeStatus,
-        lastTradedPriceToFormat,
-        lastTradedPriceInUsdToFormat
+        lastTradedPriceInUsdToFixed
       }"
     >
       <div class="text-xs p-1 divide-y [&>*]:p-1">
@@ -59,7 +59,11 @@ withDefaults(
             />
 
             <div class="leading-none">
-              <span>{{ lastTradedPriceToFormat }}</span>
+              <AppAmount
+                v-bind="{
+                  amount: lastTradedPriceToFixed
+                }"
+              />
 
               <span
                 v-if="!change.isNaN()"
@@ -81,8 +85,13 @@ withDefaults(
 
         <div v-if="!isStableQuoteAsset" class="flex justify-between">
           <p>{{ $t('trade.usd_value') }}</p>
+          lastTradedPriceInUsdToFixed
           <p class="font-mono font-semibold">
-            {{ lastTradedPriceInUsdToFormat }}
+            <AppAmount
+              v-bind="{
+                amount: lastTradedPriceInUsdToFixed
+              }"
+            />
           </p>
         </div>
 
