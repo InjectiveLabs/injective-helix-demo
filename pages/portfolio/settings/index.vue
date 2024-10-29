@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { PortfolioSubPage } from '@/types'
 
 const settingsOptions = [
@@ -35,11 +36,16 @@ const settingsOptions = [
       >
         <div class="pr-8">
           <h3 class="font-semibold text-sm">{{ $t(link.label) }}</h3>
-          <p class="text-xs text-gray-500 mt-2">{{ $t(link.description) }}</p>
+          <p class="text-xs text-coolGray-500 mt-2">
+            {{ $t(link.description) }}
+          </p>
         </div>
 
         <div class="flex items-center p-4">
-          <SharedIcon name="chevron" is-sm class="rotate-180" />
+          <UIcon
+            :name="NuxtUiIcons.ChevronDown"
+            class="h-6 w-6 min-w-6 rotate-180"
+          />
         </div>
       </NuxtLink>
     </div>

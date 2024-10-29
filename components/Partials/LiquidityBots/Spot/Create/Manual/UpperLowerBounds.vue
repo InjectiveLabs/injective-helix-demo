@@ -126,7 +126,7 @@ watch(
           v-bind="{ decimals: market.priceDecimals }"
         >
           <template #context>
-            <p class="text-xs font-light text-gray-200 mb-2">
+            <p class="text-xs font-light text-coolGray-200 mb-2">
               {{ $t('sgt.lowerPrice') }}
             </p>
           </template>
@@ -144,7 +144,7 @@ watch(
       </div>
 
       <div>
-        <p class="text-xs font-light text-gray-200 mb-2">
+        <p class="text-xs font-light text-coolGray-200 mb-2">
           {{ $t('sgt.upperPrice') }}
         </p>
 

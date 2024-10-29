@@ -62,27 +62,21 @@ const balancesSorted = computed(() => {
 <template>
   <div>
     <div class="flex justify-between items-center pt-8">
-      <p class="text-gray-400 text-xs">{{ $t('portfolio.assetsFrom') }}:</p>
+      <p class="text-coolGray-400 text-xs">{{ $t('portfolio.assetsFrom') }}:</p>
 
       <CommonSubaccountOptions>
         <template #default="{ subaccountOptions }">
-          <AppSelect
+          <USelectMenu
             v-model="subaccount"
-            v-bind="{ options: subaccountOptions }"
-            wrapper-class="border border-brand-700 py-1 px-3 rounded hover:bg-brand-800"
-          >
-            <template #default="{ selected }">
-              <span class="select-none text-blue-500 text-sm">
-                {{ $t('account.subaccount') }} {{ selected?.display }}
-              </span>
-            </template>
-
-            <template #option="{ option }">
-              <span class="select-none text-sm">
-                {{ $t('account.subaccount') }} {{ option.display }}
-              </span>
-            </template>
-          </AppSelect>
+            class="w-44"
+            value-attribute="value"
+            :options="
+              subaccountOptions.map((option) => ({
+                value: option.value,
+                label: `${$t('account.subaccount')} ${option.display}`
+              }))
+            "
+          />
         </template>
       </CommonSubaccountOptions>
     </div>

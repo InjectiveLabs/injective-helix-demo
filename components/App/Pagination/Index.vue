@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 withDefaults(
   defineProps<{
     page: number
@@ -48,12 +50,13 @@ withDefaults(
       >
         <span
           v-if="hasPrevPage"
+          class="flex items-center"
           :class="
-            hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+            hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-coolGray-600'
           "
           @click="onPrevEvent"
         >
-          <SharedIcon name="caret-thin" class="h-auto w-3" />
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-3 w-3" />
         </span>
 
         <div class="mx-3 flex items-center gap-0.5 text-sm font-semibold">
@@ -80,12 +83,13 @@ withDefaults(
 
         <span
           v-if="hasNextPage"
+          class="flex items-center"
           :class="
-            hasNextPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+            hasNextPage ? 'cursor-pointer text-blue-500' : 'text-coolGray-600'
           "
           @click="onNextEvent"
         >
-          <SharedIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-3 w-3 -rotate-180" />
         </span>
       </div>
     </template>

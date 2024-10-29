@@ -71,7 +71,7 @@ function fetchPastCampaigns() {
             v-bind="{
               options,
               wrapperClass:
-                'py-2 px-3 rounded max-md:text-xs border border-gray-450 font-medium w-[350px] md:w-[400px]',
+                'py-2 px-3 rounded max-md:text-xs border border-coolGray-450 font-medium w-[350px] md:w-[400px]',
               contentClass:
                 'max-h-[320px] overflow-y-auto  max-md:text-xs font-medium w-[350px] md:w-[400px]'
             }"

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SharedMarketChange, SharedMarketType } from '@shared/types'
+import {
+  NuxtUiIcons,
+  SharedMarketChange,
+  SharedMarketType
+} from '@shared/types'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -261,7 +265,7 @@ useIntervalFn(() => {
     class="lg:flex max-lg:text-xs max-lg:p-1 max-lg:divide-y max-lg:[&>*]:p-1"
   >
     <section class="flex p-2 justify-between">
-      <p class="text-gray-400 lg:hidden">{{ $t('trade.price') }}</p>
+      <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
         class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 font-mono lg:py-0.5"
@@ -276,14 +280,14 @@ useIntervalFn(() => {
                 percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <SharedIcon
+            <UIcon
               v-if="
                 [
                   SharedMarketChange.Increase,
                   SharedMarketChange.Decrease
                 ].includes(percentageChangeStatus)
               "
-              name="arrow"
+              :name="NuxtUiIcons.ArrowLeft"
               class="w-3 h-3 mr-1"
               :class="{
                 ' rotate-90':
@@ -336,7 +340,7 @@ useIntervalFn(() => {
                   amount: volumeInUsdToFormat
                 })
           "
-          text-color-class="text-gray-400"
+          text-color-class="text-coolGray-400"
         >
           {{ $t('trade.total_market_volume_24h') }}
         </CommonHeaderTooltip>
@@ -357,7 +361,7 @@ useIntervalFn(() => {
         <template #title>
           <CommonHeaderTooltip
             :tooltip="$t('trade.funding_rate_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.est_funding_rate') }}
           </CommonHeaderTooltip>
@@ -387,7 +391,7 @@ useIntervalFn(() => {
         <template #title>
           <CommonHeaderTooltip
             :tooltip="$t('trade.next_funding_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.next_funding') }}
           </CommonHeaderTooltip>

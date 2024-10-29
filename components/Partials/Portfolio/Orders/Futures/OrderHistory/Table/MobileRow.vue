@@ -85,7 +85,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
         </p>
 
-        <p v-if="isReduceOnly" class="text-gray-400">
+        <p v-if="isReduceOnly" class="text-coolGray-400">
           {{ $t('trade.reduce_only') }}
         </p>
       </div>
@@ -118,7 +118,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           {{ totalToString }}
         </span>
 
-        <span v-if="market" class="text-gray-500">
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>
@@ -128,7 +128,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       <p>{{ $t('trade.triggerCondition') }}</p>
       <p>
         <template v-if="order.isConditional">
-          <span class="text-gray-500 text-xs font-semibold">
+          <span class="text-coolGray-500 text-xs font-semibold">
             {{ $t('trade.mark_price') }}
           </span>
 

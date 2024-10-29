@@ -92,7 +92,7 @@ const formattedDuration = computed(() => {
     v-if="isMarketMultiplierActive"
     keypath="trade.marketMultiplierBanner.description"
     tag="p"
-    class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925 relative z-40"
+    class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-coolGray-925 relative z-40"
   >
     <template #multiplier>{{ marketStats.multiplier }} </template>
     <template #startDate>{{ formattedStartDate }} </template>

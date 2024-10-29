@@ -44,7 +44,7 @@ const explorerUrl = computed(() => {
           {{ title }}
         </h2>
 
-        <p v-if="slots.default" class="text-gray-600">
+        <p v-if="slots.default" class="text-coolGray-600">
           <slot />
         </p>
 

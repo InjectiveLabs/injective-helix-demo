@@ -26,7 +26,7 @@ function click() {
     :class="[
       isActive
         ? 'bg-blue-500 bg-opacity-20 text-blue-500  hover:text-blue-600'
-        : 'text-gray-300  hover:text-blue-500'
+        : 'text-coolGray-300  hover:text-blue-500'
     ]"
     @click="click"
   >

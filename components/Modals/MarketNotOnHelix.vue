@@ -44,13 +44,13 @@ function onSubmit() {
     </template>
 
     <div class="relative space-y-4">
-      <p class="text-center text-sm text-gray-100">
+      <p class="text-center text-sm text-coolGray-100">
         {{ $t('marketNotOnHelix.description') }}
       </p>
 
       <i18n-t
         keypath="marketNotOnHelix.description2"
-        class="text-sm text-center text-gray-100"
+        class="text-sm text-center text-coolGray-100"
         tag="p"
       >
         <template #link>

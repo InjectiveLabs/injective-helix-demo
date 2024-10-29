@@ -11,7 +11,7 @@ withDefaults(
 
 <template>
   <thead>
-    <tr class="text-left text-xs text-gray-400 uppercase">
+    <tr class="text-left text-xs text-coolGray-400 uppercase">
       <th>
         {{ $t('campaign.market') }}
       </th>

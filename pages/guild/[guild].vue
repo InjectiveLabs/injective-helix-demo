@@ -2,6 +2,7 @@
 import { format } from 'date-fns'
 import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import {
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
@@ -206,7 +207,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
       <!-- Back -->
       <NuxtLink :to="{ name: MainPage.Guilds }" class="hover:text-blue-500">
         <div class="flex items-center gap-1">
-          <SharedIcon name="arrow" is-md />
+          <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-4 w-4 min-w-4" />
           <div>{{ $t('common.back') }}</div>
         </div>
       </NuxtLink>
@@ -265,7 +266,10 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                       {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
                     </p>
                   </div>
-                  <p v-if="!campaignStore.guild.isActive" class="text-gray-500">
+                  <p
+                    v-if="!campaignStore.guild.isActive"
+                    class="text-coolGray-500"
+                  >
                     *{{
                       $t('guild.inactiveDescription', {
                         amount: GUILD_MIN_AMOUNT
@@ -284,13 +288,16 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               >
                 <div class="flex items-center gap-1">
                   <span>{{ $t('guild.leaderboard.invitationCode') }}</span>
-                  <SharedIcon name="link" is-md />
+                  <UIcon
+                    :name="NuxtUiIcons.Chain"
+                    class="h-3.5 w-3.5 min-w-3.5"
+                  />
                 </div>
               </AppButton>
 
               <AppButton
                 v-else-if="isMaxCap"
-                class="text-gray-600"
+                class="text-coolGray-600"
                 :is-disabled="isMaxCap"
               >
                 <div class="flex items-center gap-1">
@@ -325,7 +332,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               </h3>
 
               <div v-if="lastUpdated" class="flex items-center gap-2">
-                <p class="text-gray-300 text-xs">
+                <p class="text-coolGray-300 text-xs">
                   {{
                     $t('guild.leaderboard.lastUpdated', { date: lastUpdated })
                   }}
@@ -334,9 +341,9 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   v-if="hasNewData"
                   :content="$t('guild.leaderboard.fetchNewData')"
                 >
-                  <SharedIcon
-                    name="refresh"
-                    class="text-blue-500 hover:opacity-80 cursor-pointer"
+                  <UIcon
+                    :name="NuxtUiIcons.Refresh"
+                    class="h-4 w-4 min-w-4 text-blue-500 hover:opacity-80 cursor-pointer"
                     @click="onRefresh"
                   />
                 </AppTooltip>
@@ -356,7 +363,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
               <section class="relative">
                 <div
                   v-if="startDate && !isCampaignStarted"
-                  class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-filter backdrop-blur bg-gray-900 bg-opacity-40"
+                  class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-40"
                 >
                   <p class="font-semibold">
                     {{ $t('guild.startOn', { date: startDate }) }}
@@ -365,7 +372,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 
                 <table class="w-full">
                   <thead>
-                    <tr class="border-b uppercase text-xs text-gray-500">
+                    <tr class="border-b uppercase text-xs text-coolGray-500">
                       <th class="p-4 text-left">
                         {{ $t('guild.leaderboard.table.rank') }}
                       </th>

@@ -33,7 +33,7 @@ const to = computed(() =>
 
 const priceChangeClasses = computed(() => {
   if (props.market.summary.lastPriceChange === SharedMarketChange.NoChange) {
-    return 'text-gray-350'
+    return 'text-coolGray-350'
   }
 
   return props.market.summary.lastPriceChange === SharedMarketChange.Increase

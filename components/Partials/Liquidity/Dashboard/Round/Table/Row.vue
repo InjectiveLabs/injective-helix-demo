@@ -98,14 +98,14 @@ const { valueToString: marketVolumeInUsdToString } =
           name: LiquidityRewardsPage.CampaignDetails,
           query: { campaign: campaign?.campaignId }
         }"
-        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+        class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300 p-2"
       >
         <div v-if="token">
           <CommonTokenIcon v-bind="{ token }" />
         </div>
         <div>
           <p class="text-sm font-bold">{{ market.ticker }}</p>
-          <p class="text-xs text-gray-500">
+          <p class="text-xs text-coolGray-500">
             {{ market.baseToken.name }}
           </p>
         </div>

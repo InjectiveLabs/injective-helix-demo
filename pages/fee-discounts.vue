@@ -27,7 +27,7 @@ onMounted(() => {
       <div class="container">
         <div class="w-full mx-auto xl:w-4/5">
           <div class="mt-6">
-            <h3 class="text-xl font-bold text-gray-200">
+            <h3 class="text-xl font-bold text-coolGray-200">
               {{ $t(`feeDiscounts.page_title`) }}
             </h3>
             <div class="mt-6">

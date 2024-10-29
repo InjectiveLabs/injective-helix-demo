@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { PortfolioSubPage, Modal, BusEvents } from '@/types'
 
 const modalStore = useModalStore()
@@ -26,7 +27,7 @@ function openGranteeModal() {
     <div class="p-4">
       <div class="flex items-center">
         <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-          <SharedIcon name="chevron" />
+          <UIcon :name="NuxtUiIcons.ChevronDown" class="h-6 w-6 min-w-6" />
         </NuxtLink>
 
         <h3 class="portfolio-title">
@@ -40,7 +41,7 @@ function openGranteeModal() {
             v-for="option in linkOptions"
             :key="option.label"
             :to="option.to"
-            class="p-4 text-gray-400 font-medium"
+            class="p-4 text-coolGray-400 font-medium"
             exact-active-class="text-white"
           >
             {{ $t(option.label) }}

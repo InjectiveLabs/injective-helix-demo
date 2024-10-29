@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
@@ -79,7 +80,7 @@ const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
           </div>
 
           <div :class="{ 'rotate-180': isActive }">
-            <SharedIcon name="chevron-down" is-md />
+            <UIcon :name="NuxtUiIcons.ChevronDown" class="h-4 w-4 min-w-4" />
           </div>
         </div>
       </template>

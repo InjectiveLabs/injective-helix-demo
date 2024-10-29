@@ -69,7 +69,7 @@ onMounted(() => {
     >
       <template #left>
         <div
-          class="text-xs text-gray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          class="text-xs text-coolGray-400 select-none hover:text-white flex font-mono cursor-pointer"
           @click="setMidLimitPrice"
         >
           {{ $t('trade.mid') }}

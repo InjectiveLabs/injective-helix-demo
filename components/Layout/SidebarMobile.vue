@@ -47,7 +47,7 @@ watchDebounced(
       >
         <div
           v-if="isOpenSidebar"
-          class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-gray-900 max-w-xs"
+          class="relative flex-1 flex flex-col w-full pt-5 pb-4 bg-coolGray-900 max-w-xs"
         >
           <div class="flex flex-col h-0 flex-1" @click.stop="closeSidebar">
             <div class="flex-1 flex flex-col overflow-y-auto">

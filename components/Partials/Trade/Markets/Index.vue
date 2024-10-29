@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 import { MarketQuoteType, MarketTypeOption, MarketCategoryType } from '@/types'
 
@@ -52,8 +53,8 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
       <div class="p-2 space-y-2">
         <div class="border-b py-2">
           <label class="flex rounded p-1">
-            <div class="flex items-center text-gray-500">
-              <SharedIcon name="search" />
+            <div class="flex items-center text-coolGray-500">
+              <UIcon :name="NuxtUiIcons.Search" class="h-6 w-6 min-w-6" />
             </div>
             <input
               id="search-market"
@@ -61,7 +62,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               v-focus
               placeholder="Search Market..."
               type="text"
-              class="p-1 focus:outline-none placeholder:text-gray-600 flex-1 !bg-transparent"
+              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               autocomplete="off"
             />
           </label>
@@ -76,7 +77,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               :key="category.value"
               v-model="activeType"
               v-bind="{ value: category.value }"
-              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-gray-500"
+              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
               active-classes="text-white !bg-brand-700"
             >
               {{ category.value }}
@@ -89,7 +90,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               :key="value"
               v-model="activeQuote"
               v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+              class="py-1 px-3 text-coolGray-400 text-xs uppercase hover:bg-brand-875"
               active-classes="text-white !bg-brand-800"
             >
               {{ value }}
@@ -107,7 +108,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               :key="category.value"
               v-model="activeCategory"
               v-bind="{ value: category.value }"
-              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-gray-500"
+              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
               active-classes="text-white !bg-brand-700"
             >
               {{ category.value }}

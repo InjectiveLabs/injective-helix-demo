@@ -39,7 +39,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
         {{ totalToString }}
       </span>
 
-      <span class="text-gray-500">
+      <span class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>

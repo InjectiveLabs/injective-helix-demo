@@ -2,6 +2,7 @@
 import { dataCyTag } from '@shared/utils'
 import { ThrownException } from '@injectivelabs/exceptions'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
@@ -336,8 +337,11 @@ function resetQueryError() {
                 isLoading: status.isLoading() || fetchStatus.isLoading()
               }"
             />
-            <div v-else class="flex flex-col items-center text-gray-700 my-8">
-              <SharedIcon name="cloud-slash" class="h-10 w-10" />
+            <div
+              v-else
+              class="flex flex-col items-center text-coolGray-700 my-8"
+            >
+              <UIcon :name="NuxtUiIcons.CloudSlash" class="h-10 w-10" />
 
               <div>
                 {{ $t('trade.swap.somethingWentWrong') }}

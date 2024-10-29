@@ -91,7 +91,7 @@
   border-top-color: theme('colors.gray.200');
 }
 
-[class*='bg-gray-200'] .spinner {
+[class*='bg-coolGray-200'] .spinner {
   border-top-color: theme('colors.blue.500');
 }
 

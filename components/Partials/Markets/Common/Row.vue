@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
+import {
+  NuxtUiIcons,
+  SharedMarketChange,
+  SharedUiMarketSummary
+} from '@shared/types'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -54,7 +58,7 @@ const { valueToString: volumeToString, valueToFixed: volumeToFixed } =
 
 const priceChangeClasses = computed(() => {
   if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
-    return 'text-gray-350'
+    return 'text-coolGray-350'
   }
 
   return props.summary.lastPriceChange === SharedMarketChange.Increase
@@ -84,7 +88,7 @@ function toggleFavorite() {
       'py-1 px-2': !isMarketsPage,
       'hover:bg-brand-800': !isMarketsPage
     }"
-    class="flex items-center text-gray-350 hover:text-white"
+    class="flex items-center text-coolGray-350 hover:text-white"
   >
     <div class="flex items-center flex-[4] md:flex-[3] truncate min-w-0">
       <div
@@ -92,10 +96,10 @@ function toggleFavorite() {
         :class="{
           '!text-blue-500': appStore.favoriteMarkets.includes(market.marketId)
         }"
-        class="pr-2 w-8 text-gray-700 hover:text-blue-700"
+        class="pr-2 w-8 text-coolGray-700 hover:text-blue-700"
         @click.stop.prevent="toggleFavorite"
       >
-        <SharedIcon name="star" />
+        <UIcon :name="NuxtUiIcons.Star" class="h-6 w-6 min-w-6" />
       </div>
 
       <CommonTokenIcon v-bind="{ token: market.baseToken }" />
@@ -117,7 +121,7 @@ function toggleFavorite() {
 
         <div
           v-if="isMarketsPage"
-          class="text-xs font-normal text-gray-500"
+          class="text-xs font-normal text-coolGray-500"
           :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
             market.baseToken.name
           }`"
@@ -134,7 +138,7 @@ function toggleFavorite() {
         {{ lastPriceToString }}
       </div>
       <div
-        class="text-xs text-gray-500"
+        class="text-xs text-coolGray-500"
         :data-cy="dataCyTag(`tokenPrice-${market.baseToken.name}`)"
       >
         ${{ lastPriceInUsdToString }}
@@ -175,10 +179,10 @@ function toggleFavorite() {
         :class="{
           '!text-blue-500': appStore.favoriteMarkets.includes(market.marketId)
         }"
-        class="pr-2 w-8 text-gray-700 hover:text-blue-700"
+        class="pr-2 w-8 text-coolGray-700 hover:text-blue-700"
         @click.stop.prevent="toggleFavorite"
       >
-        <SharedIcon name="star" />
+        <UIcon :name="NuxtUiIcons.Star" class="h-6 w-6 min-w-6" />
       </div>
     </div>
   </PartialsCommonMarketRedirection>

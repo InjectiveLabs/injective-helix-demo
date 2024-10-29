@@ -205,7 +205,7 @@ onMounted(() => {
 <template>
   <div class="border-b pb-4 mb-6">
     <div class="text-xs space-y-2 pt-4 pb-2">
-      <p class="text-gray-300">{{ $t('sgt.autoModeHeader') }}</p>
+      <p class="text-coolGray-300">{{ $t('sgt.autoModeHeader') }}</p>
       <div>
         <a
           class="text-blue-500"
@@ -217,7 +217,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="text-xs text-gray-500 space-y-4 py-4">
+    <div class="text-xs text-coolGray-500 space-y-4 py-4">
       <div class="flex justify-between">
         <p>{{ $t('sgt.lowerPrice') }}</p>
         <p class="text-white">{{ lowerPrice }} USDT</p>

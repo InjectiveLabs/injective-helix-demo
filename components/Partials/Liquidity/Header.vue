@@ -81,7 +81,7 @@ const { valueToString: totalRewardsThisRoundToString } =
       </div>
 
       <div>
-        <p class="text-gray-300">{{ $t('campaign.description') }}</p>
+        <p class="text-coolGray-300">{{ $t('campaign.description') }}</p>
       </div>
 
       <div class="space-x-2 flex pb-6">
@@ -102,7 +102,7 @@ const { valueToString: totalRewardsThisRoundToString } =
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
@@ -110,13 +110,13 @@ const { valueToString: totalRewardsThisRoundToString } =
           </p>
         </div>
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.totalVolume') }}
           </h3>
           <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
         </div>
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.endTimeForRound', { round: props.round }) }}
           </h3>
           <p class="text-xl font-semibold">{{ endDate }} UTC</p>

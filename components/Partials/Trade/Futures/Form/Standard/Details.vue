@@ -2,6 +2,7 @@
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
@@ -114,41 +115,41 @@ function toggle() {
     >
       <p class="text-sm font-semibold select-none">Details</p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
         <div class="flex items-center text-lg">
-          <p class="text-gray-100">{{ $t('trade.total') }}</p>
+          <p class="text-coolGray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
 
           <p class="font-mono space-x-2">
             <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)">
               &asymp;{{ totalToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.margin') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.margin') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)">
               {{ marginToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.totalNotional') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.totalNotional') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span
@@ -156,20 +157,20 @@ function toggle() {
             >
               {{ totalNotionalToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.quantity') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.quantity') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)">
               {{ quantityToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{
                 derivativeMarket.baseToken.overrideSymbol ||
                 derivativeMarket.baseToken.symbol
@@ -179,7 +180,7 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">
+          <p class="text-coolGray-400">
             {{ $t('trade.averagePrice') }}
           </p>
           <div class="border-t flex-1 mx-2" />
@@ -187,14 +188,14 @@ function toggle() {
             <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)">
               {{ worstPriceToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.estLiquidationPrice') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p class="font-mono space-x-2">
             <span
@@ -204,7 +205,7 @@ function toggle() {
             >
               {{ estLiquidationPriceToString }}
             </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
@@ -212,7 +213,7 @@ function toggle() {
 
         <template v-if="!isLimitAndPostOnly">
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.maker_taker_rate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p
               v-if="derivativeMarket"
@@ -225,13 +226,13 @@ function toggle() {
           </div>
 
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.fee') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.fee') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p class="font-mono space-x-2">
               <span :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)">
                 {{ feeAmountToString }}
               </span>
-              <span class="text-gray-400">
+              <span class="text-coolGray-400">
                 {{ derivativeMarket.quoteToken.symbol }}
               </span>
             </p>
@@ -240,7 +241,7 @@ function toggle() {
 
         <template v-else>
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.maker_rate') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.maker_rate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p v-if="derivativeMarket" class="font-mono">
               {{ +derivativeMarket.makerFeeRate * 100 }}%
@@ -248,7 +249,7 @@ function toggle() {
           </div>
 
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.estFeeRebate') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p v-if="derivativeMarket" class="font-mono">
               {{ feeAmount.abs() }}

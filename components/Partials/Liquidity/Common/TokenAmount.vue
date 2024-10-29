@@ -21,6 +21,6 @@ const { valueToString } = useSharedBigNumberFormatter(
   <div v-if="token" class="flex items-center space-x-2">
     <p v-if="index > 0">+</p>
     <CommonTokenIcon is-sm v-bind="{ token }" />
-    <p class="text-gray-400 text-xs">{{ valueToString }} {{ symbol }}</p>
+    <p class="text-coolGray-400 text-xs">{{ valueToString }} {{ symbol }}</p>
   </div>
 </template>

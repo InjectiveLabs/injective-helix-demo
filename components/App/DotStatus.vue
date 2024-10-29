@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 withDefaults(
   defineProps<{
     color?: string
@@ -13,10 +15,13 @@ withDefaults(
 
 <template>
   <div class="flex items-center gap-1 capitalize">
-    <SharedIcon
-      name="circle"
-      :class="[isActive && !color ? 'text-green-500' : 'text-gray-500', color]"
-      is-xs
+    <UIcon
+      :name="NuxtUiIcons.Circle"
+      :class="[
+        isActive && !color ? 'text-green-500' : 'text-coolGray-500',
+        color
+      ]"
+      class="h-2 w-2 min-w-2"
     />
     <span class="text-sm">
       <slot>

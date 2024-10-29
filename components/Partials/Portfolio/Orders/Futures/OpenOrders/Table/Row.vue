@@ -149,7 +149,7 @@ function onCancelOrder() {
       <div class="flex-1 flex items-center p-2 justify-end">
         <span
           v-if="leverage.isNaN()"
-          class="text-gray-400"
+          class="text-coolGray-400"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
         >
           {{ $t('trade.not_available_n_a') }}
@@ -166,7 +166,9 @@ function onCancelOrder() {
         <div class="space-y-1">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
             {{ totalToString }}
-            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+            <span class="text-coolGray-500">{{
+              market.quoteToken.symbol
+            }}</span>
           </p>
         </div>
       </div>

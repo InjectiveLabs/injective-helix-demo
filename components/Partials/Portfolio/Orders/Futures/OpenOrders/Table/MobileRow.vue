@@ -132,7 +132,7 @@ function onCancelOrder() {
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.leverage') }}</p>
       <p class="font-mono">
-        <span v-if="leverage.isNaN()" class="text-gray-400">
+        <span v-if="leverage.isNaN()" class="text-coolGray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
         <span v-else>{{ leverage.toFormat(2) }}&times;</span>
@@ -143,7 +143,7 @@ function onCancelOrder() {
       <p>{{ $t('trade.total') }}</p>
       <p>
         {{ totalToString }}
-        <span class="text-gray-500">{{ market?.quoteToken.symbol }}</span>
+        <span class="text-coolGray-500">{{ market?.quoteToken.symbol }}</span>
       </p>
     </div>
 

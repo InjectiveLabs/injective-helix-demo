@@ -105,7 +105,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">{{
         feeToString
       }}</span>
-      <span v-if="market" class="text-gray-500">
+      <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>
@@ -114,7 +114,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">{{
         totalToString
       }}</span>
-      <span v-if="market" class="text-gray-500">
+      <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>
     </div>

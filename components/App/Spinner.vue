@@ -45,7 +45,7 @@ const sizeClasses = computed(() => {
     :class="[
       sizeClasses,
       isWhite
-        ? 'border-t-gray-200 border-r-gray-200'
+        ? 'border-t-coolGray-200 border-r-coolGray-200'
         : 'border-t-blue-500 border-r-blue-500'
     ]"
   />

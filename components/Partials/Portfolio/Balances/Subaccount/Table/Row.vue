@@ -4,6 +4,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import { Modal, BusEvents, AccountBalance, PortfolioSubPage } from '@/types'
@@ -125,20 +126,19 @@ function onTransfer() {
         <CommonTokenIcon v-bind="{ token: balance.token }" />
         <div>
           <p class="font-medium">{{ balance.token.symbol }}</p>
-          <p class="text-xs text-gray-500">{{ balance.token.name }}</p>
+          <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
         </div>
 
         <button
           v-if="balance.denom === injToken.denom"
           @click="toggleStakingRow"
         >
-          <SharedIcon
-            name="chevron"
-            is-lg
-            class="p-3 text-gray-400 hover:text-white"
+          <UIcon
+            :name="NuxtUiIcons.ChevronDown"
+            size="xs"
+            class="text-coolGray-400 hover:text-white"
             :class="{
-              'rotate-90': isStakingVisible,
-              '-rotate-90': !isStakingVisible
+              '-rotate-180': !isStakingVisible
             }"
           />
         </button>
@@ -151,10 +151,10 @@ function onTransfer() {
 
             <span
               v-if="hasCw20Balance"
-              class="text-xs text-gray-400 font-semibold"
+              class="text-xs text-coolGray-400 font-semibold"
             >
               <AppTooltip
-                class="ml-2 text-gray-200"
+                class="ml-2 text-coolGray-200"
                 :content="$t('account.balanceIncludesCw20Balance')"
               />
             </span>

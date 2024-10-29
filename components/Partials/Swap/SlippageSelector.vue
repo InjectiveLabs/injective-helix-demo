@@ -1,19 +1,11 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_SLIPPAGE } from '@/app/utils/constants'
 import { SwapFormField, SwapCyTags } from '@/types'
 
-const dropdownRef = ref<null | { isOpen: boolean }>(null)
 const slippageList = ['0.1', '0.5', '1.0']
-
-const isOpen = computed(() => {
-  if (!dropdownRef.value) {
-    return false
-  }
-
-  return dropdownRef.value?.isOpen
-})
 
 const {
   value: slippageTolerance,
@@ -47,92 +39,78 @@ function checkForInvalidSlippageValue() {
 </script>
 
 <template>
-  <AppTooltip
-    :triggers="[]"
-    :disabled="isOpen"
-    :shown="!isOpen && !!slippageError"
-  >
-    <SharedDropdown
-      ref="dropdownRef"
-      popper-class="slippage"
-      placement="bottom-end"
-    >
-      <template #default>
-        <div>
-          <SharedIcon
-            name="gear"
-            class="h-5 w-5"
-            :class="[
-              slippageError
-                ? 'text-orange-500 hover:opacity-80'
-                : {
-                    'text-blue-500 hover:opacity-80': isOpen,
-                    'text-gray-500 hover:text-blue-500': !isOpen
-                  }
-            ]"
-            :data-cy="dataCyTag(SwapCyTags.SlippageSelectorSetting)"
-          />
-        </div>
-      </template>
+  <UPopover class="slippage" :popper="{ placement: 'bottom-end' }">
+    <template #default="{ open }">
+      <div>
+        <UIcon
+          :name="NuxtUiIcons.Settings"
+          class="h-5 w-5 min-w-5"
+          :class="{
+            'text-blue-500': open,
+            'text-coolGray-500': !open
+          }"
+          :data-cy="dataCyTag(SwapCyTags.SlippageSelectorSetting)"
+        />
+      </div>
+    </template>
 
-      <template #content>
-        <div class="p-4 bg-gray-800 text-white">
-          <h3 class="text-xs font-bold uppercase tracking-widest">
-            {{ $t('trade.swap.advancedSettings') }}
-          </h3>
-          <div class="my-4 flex items-center gap-2">
-            <span class="text-xs">{{ $t('trade.swap.tolerance') }}</span>
-            <AppTooltip :content="$t('trade.swap.tooltip')" />
+    <template #panel>
+      <div class="p-4 max-w-sm">
+        <h3 class="text-xs font-bold uppercase tracking-widest">
+          {{ $t('trade.swap.advancedSettings') }}
+        </h3>
+        <div class="my-4 flex items-center gap-2">
+          <span class="text-xs">{{ $t('trade.swap.tolerance') }}</span>
+          <AppTooltip :content="$t('trade.swap.tooltip')" />
+        </div>
+
+        <div class="flex items-center gap-2 max-xs:flex-wrap">
+          <div class="flex items-center gap-2 max-xs:w-full">
+            <AppButtonSelect
+              v-for="slippage in slippageList"
+              :key="`slippage-selector-item-${slippage}`"
+              v-model="slippageTolerance"
+              :value="slippage"
+            >
+              <template #default>
+                <AppButton size="sm">
+                  <div class="mx-auto leading-4">
+                    <span class="text-base capitalize">{{ slippage }}</span>
+                    <span>%</span>
+                  </div>
+                </AppButton>
+              </template>
+            </AppButtonSelect>
           </div>
 
-          <div class="flex items-center gap-2 max-xs:flex-wrap">
-            <div class="flex items-center gap-2 max-xs:w-full">
-              <AppButtonSelect
-                v-for="slippage in slippageList"
-                :key="`slippage-selector-item-${slippage}`"
-                v-model="slippageTolerance"
-                :value="slippage"
-              >
-                <template #default>
-                  <AppButton size="sm">
-                    <div class="mx-auto leading-4">
-                      <span class="text-base capitalize">{{ slippage }}</span>
-                      <span>%</span>
-                    </div>
-                  </AppButton>
-                </template>
-              </AppButtonSelect>
-            </div>
-
+          <div class="bg-black rounded-md p-1">
             <AppInputNumeric
               v-model="slippageTolerance"
-              class="ml-auto"
-              input-classes="text-right"
-              is-sm
               @blur="checkForInvalidSlippageValue"
             >
-              <template v-if="slippageError" #prefix>
-                <SharedIcon
-                  name="warn"
-                  class="min-w-4 text-orange-500 h-4 w-4"
-                />
+              <template v-if="slippageError" #postfix>
+                <div class="flex items-center">
+                  <UIcon
+                    :name="NuxtUiIcons.WarningOutline"
+                    class="w-[18px] h-[18px] min-w-[18px] text-orange-500"
+                  />
+                </div>
               </template>
 
               <template #addon>
-                <span class="text-gray-500">%</span>
+                <span class="text-coolGray-500">%sdasdasdas</span>
               </template>
             </AppInputNumeric>
           </div>
-
-          <p v-if="slippageError" class="text-orange-500 mt-4 text-sm">
-            {{ slippageError }}
-          </p>
         </div>
-      </template>
-    </SharedDropdown>
 
-    <template #content>
-      {{ slippageError }}
+        <p
+          v-if="slippageError"
+          class="text-orange-500 mt-4 text-sm whitespace-normal"
+        >
+          {{ slippageError }}
+        </p>
+      </div>
     </template>
-  </AppTooltip>
+  </UPopover>
 </template>

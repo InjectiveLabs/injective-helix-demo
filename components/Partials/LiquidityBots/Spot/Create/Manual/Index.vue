@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -172,10 +173,10 @@ watch(isBaseAndQuoteType, (value) => {
 
     <div class="space-x-2 py-2 flex justify-end">
       <button class="border p-2 rounded-md" @click="zoomIn">
-        <SharedIcon name="plus" is-xs />
+        <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
       </button>
       <button class="border px-2 rounded-md" @click="zoomOut">
-        <SharedIcon name="minus" is-xs />
+        <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
       </button>
     </div>
 

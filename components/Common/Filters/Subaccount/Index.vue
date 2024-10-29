@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { getSubaccountLabel } from '@/app/utils/helpers'
 
 const props = withDefaults(
@@ -53,7 +54,7 @@ function changeSubaccount(subaccountId: string) {
           </div>
 
           <span class="transition-all" :class="{ 'rotate-180': isOpen }">
-            <SharedIcon name="chevron-down" is-sm />
+            <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
           </span>
         </button>
       </template>

@@ -16,8 +16,8 @@ withDefaults(
     tooltipClass: '',
     isDisabled: false,
     isNotStyled: false,
-    textColorClass: 'text-gray-350',
-    borderColorClass: 'border-gray-400',
+    textColorClass: 'text-coolGray-350',
+    borderColorClass: 'border-coolGray-400',
     ui: () => ({})
   }
 )

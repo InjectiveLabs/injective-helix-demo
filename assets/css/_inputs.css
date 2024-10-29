@@ -3,11 +3,11 @@ input[type='number'] {
 }
 
 .input-wrapper {
-  @apply shadow-sm bg-gray-950 rounded;
+  @apply shadow-sm bg-coolGray-950 rounded;
 }
 
 .input {
-  @apply border border-transparent bg-gray-950 shadow-sm text-gray-200 rounded w-full h-10 outline-none appearance-none max-w-full;
+  @apply border border-transparent bg-coolGray-950 shadow-sm text-coolGray-200 rounded w-full h-10 outline-none appearance-none max-w-full;
 }
 
 .input-small {
@@ -19,7 +19,7 @@ input[type='number'] {
 }
 
 .input[disabled] {
-  @apply pointer-events-none cursor-not-allowed bg-gray-700;
+  @apply pointer-events-none cursor-not-allowed bg-coolGray-700;
 }
 
 .is-valid .input {

@@ -249,7 +249,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-gray-400">{{ $t('sgt.totalProfit') }}</p>
+      <p class="text-coolGray-400">{{ $t('sgt.totalProfit') }}</p>
       <div
         class="text-right"
         :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
@@ -265,7 +265,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
+      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
@@ -283,7 +283,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-start justify-between mb-2 text-sm">
-      <p class="text-gray-400 flex items-center space-x-2">
+      <p class="text-coolGray-400 flex items-center space-x-2">
         <template v-if="activeStrategy.state === StrategyStatus.Active">
           <span>{{ $t('sgt.currentBalance') }}</span>
           <AppTooltip
@@ -324,22 +324,22 @@ useIntervalFn(() => {
       </div>
     </div>
 
-    <div class="border-t border-gray-700 my-4" />
+    <div class="border-t border-coolGray-700 my-4" />
 
     <div class="flex items-center justify-between mb-2">
-      <p class="text-gray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
+      <p class="text-coolGray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
       <p class="text-sm">{{ createdAtFormatted }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-gray-400">{{ $t('sgt.duration') }}</span>
+      <span class="text-coolGray-400">{{ $t('sgt.duration') }}</span>
       <span>{{ durationFormatted }}</span>
     </div>
 
-    <div class="border-t border-gray-800 my-4" />
+    <div class="border-t border-coolGray-800 my-4" />
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-gray-400">{{ $t('sgt.priceRange') }}</p>
+      <p class="text-coolGray-400">{{ $t('sgt.priceRange') }}</p>
       <div class="text-right">
         <PartialsLiquidityCommonDetailsPair
           v-bind="{
@@ -354,7 +354,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-gray-400 flex items-center self-start space-x-2">
+      <p class="text-coolGray-400 flex items-center self-start space-x-2">
         <span>{{ $t('sgt.initialAmount') }}</span>
         <AppTooltip
           :content="
@@ -374,7 +374,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
+      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.initialEntryPrice') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </span>
@@ -387,7 +387,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
+      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </span>
@@ -397,7 +397,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-gray-400 flex items-center space-x-2">
+      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.gridMode') }}</span>
         <AppTooltip :content="$t('sgt.gridModeTooltip')" />
       </span>
@@ -410,11 +410,11 @@ useIntervalFn(() => {
       </span>
     </div>
 
-    <div class="border-t border-gray-800 my-4" />
+    <div class="border-t border-coolGray-800 my-4" />
 
     <div class="pb-4">
       <div class="flex justify-between mb-4 text-sm">
-        <span class="text-gray-400 flex items-center space-x-2">
+        <span class="text-coolGray-400 flex items-center space-x-2">
           <span>{{ $t('sgt.advanced.settleIn') }}</span>
         </span>
 
@@ -432,7 +432,7 @@ useIntervalFn(() => {
       </div>
 
       <div class="flex justify-between mb-2 text-sm">
-        <span class="text-gray-400 flex items-center space-x-2">
+        <span class="text-coolGray-400 flex items-center space-x-2">
           <span>{{ $t('sgt.stopLoss') }}</span>
           <AppTooltip :content="$t('sgt.stopLossTooltip')" />
         </span>
@@ -448,7 +448,7 @@ useIntervalFn(() => {
 
       <div v-if="activeStrategy.stopLossConfig">
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-gray-400 flex items-center space-x-2">
+          <span class="text-coolGray-400 flex items-center space-x-2">
             <span> &mdash; {{ $t('sgt.advanced.stopLossPrice') }}</span>
           </span>
 
@@ -462,7 +462,7 @@ useIntervalFn(() => {
         </div>
 
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-gray-400 flex items-center space-x-2">
+          <span class="text-coolGray-400 flex items-center space-x-2">
             <span>
               &mdash;
               {{
@@ -487,7 +487,7 @@ useIntervalFn(() => {
       </div>
 
       <div class="flex justify-between mb-2 text-sm">
-        <span class="text-gray-400 flex items-center space-x-2">
+        <span class="text-coolGray-400 flex items-center space-x-2">
           <span>{{ $t('sgt.takeProfit') }}</span>
           <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
         </span>
@@ -503,7 +503,7 @@ useIntervalFn(() => {
 
       <div v-if="activeStrategy.takeProfitConfig">
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-gray-400 flex items-center space-x-2">
+          <span class="text-coolGray-400 flex items-center space-x-2">
             <span> &mdash; {{ $t('sgt.advanced.takeProfitPrice') }}</span>
           </span>
 
@@ -517,7 +517,7 @@ useIntervalFn(() => {
         </div>
 
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-gray-400 flex items-center space-x-2">
+          <span class="text-coolGray-400 flex items-center space-x-2">
             <span>
               &mdash;
               {{

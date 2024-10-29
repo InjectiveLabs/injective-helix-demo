@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { MarketHeaderType } from '@/types'
 
 withDefaults(
@@ -29,7 +30,7 @@ function handleIsAscending(value: boolean) {
 </script>
 
 <template>
-  <div class="flex border-b p-4 text-gray-500 text-xs select-none">
+  <div class="flex border-b p-4 text-coolGray-500 text-xs select-none">
     <div class="flex-2 lg:flex-1 flex min-w-0 truncate">
       <SharedSortableHeaderItem
         v-bind="{
@@ -49,7 +50,10 @@ function handleIsAscending(value: boolean) {
               {{ $t('trade.markets') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <SharedIcon is-sm name="triangle" />
+              <UIcon
+                :name="NuxtUiIcons.Triangle"
+                class="w-3.5 h-3.5 min-w-3.5"
+              />
             </div>
           </div>
         </template>
@@ -78,7 +82,10 @@ function handleIsAscending(value: boolean) {
               {{ $t('markets.change24h') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <SharedIcon is-sm name="triangle" />
+              <UIcon
+                :name="NuxtUiIcons.Triangle"
+                class="w-3.5 h-3.5 min-w-3.5"
+              />
             </div>
           </div>
         </template>
@@ -101,7 +108,10 @@ function handleIsAscending(value: boolean) {
               {{ $t('markets.volume24h') }}
             </div>
             <div :class="{ 'rotate-180': isActive && isAscending }">
-              <SharedIcon is-sm name="triangle" />
+              <UIcon
+                :name="NuxtUiIcons.Triangle"
+                class="w-3.5 h-3.5 min-w-3.5"
+              />
             </div>
           </div>
         </template>

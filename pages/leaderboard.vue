@@ -35,7 +35,7 @@ const filteredSubPages = computed(() =>
       "
       keypath="leaderboard.blocked"
       tag="p"
-      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-gray-925 relative z-40"
+      class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-coolGray-925 relative z-40"
     >
       <template #terms>
         <NuxtLink
@@ -72,7 +72,7 @@ const filteredSubPages = computed(() =>
               v-bind="{ value: pageName }"
               class="capitalize max-md:mr-4 md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
               :class="{
-                'text-gray-200': route.name !== pageName
+                'text-coolGray-200': route.name !== pageName
               }"
               :to="{
                 name: pageName

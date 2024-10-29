@@ -3,6 +3,25 @@ import type { Config } from 'tailwindcss'
 import plugin from 'tailwindcss/plugin'
 import { colors } from './nuxt-config/tailwind'
 
+const extraSizings = {
+  btn: '6rem',
+  12: '3rem',
+  14: '3.5rem',
+  '4xs': '10rem',
+  '3xs': '12rem',
+  '2xs': '16rem',
+  xs: '20rem',
+  sm: '24rem',
+  md: '28rem',
+  lg: '32rem',
+  xl: '36rem',
+  '2xl': '42rem',
+  '3xl': '48rem',
+  '4xl': '56rem',
+  '5xl': '64rem',
+  '6xl': '72rem'
+}
+
 export default <Partial<Config>>{
   content: [
     './components/**/*.{vue,js,ts,jsx,tsx}',
@@ -30,7 +49,8 @@ export default <Partial<Config>>{
         footer: '2.5rem',
         orders: '10rem',
         trades: '26rem',
-        header: '56px'
+        header: '56px',
+        ...extraSizings
       },
 
       screens: {
@@ -44,6 +64,43 @@ export default <Partial<Config>>{
         '2xl': '1366px',
         '3xl': '1440px',
         '4xl': '1681px'
+      },
+
+      fontSize: {
+        '2xs': '0.775rem',
+        '3xs': ['0.675rem', { lineHeight: '0.7rem' }],
+        xs: ['0.8rem', { lineHeight: '1rem' }],
+        sm: ['0.925rem', { lineHeight: '1.25rem' }],
+        base: ['1.025rem', { lineHeight: '1rem' }],
+        xl: ['1.25rem', { lineHeight: '1.75rem' }],
+        '3xl': ['2rem', { lineHeight: '2.25rem' }],
+        footer: '0.85rem'
+      },
+
+      lineHeight: {
+        3.5: '0.875rem',
+        5.5: '1.375rem',
+        14: '3.5rem'
+      },
+
+      maxHeight: {
+        ...extraSizings
+      },
+
+      maxWidth: {
+        ...extraSizings
+      },
+
+      minWidth: {
+        ...extraSizings
+      },
+
+      minHeight: {
+        ...extraSizings
+      },
+
+      width: {
+        ...extraSizings
       }
     }
   },
@@ -62,12 +119,12 @@ export default <Partial<Config>>{
         '.tab-field': {
           fontSize: theme('fontSize.sm'),
           fontWeight: theme('fontWeight.bold'),
-          color: colors.gray[400]
+          color: colors.coolGray[400]
         },
         '.tab-label': {
           fontSize: theme('fontSize.xs'),
           fontWeight: theme('fontWeight.medium'),
-          color: colors.gray[300],
+          color: colors.coolGray[300],
           userSelect: 'none',
           cursor: 'pointer'
         },
@@ -80,7 +137,7 @@ export default <Partial<Config>>{
         },
         '.table-label': {
           fontSize: theme('fontSize.xs'),
-          color: colors.gray[400]
+          color: colors.coolGray[400]
         }
       })
 

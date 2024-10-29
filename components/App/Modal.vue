@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { twMerge } from 'tailwind-merge'
+import { NuxtUiIcons } from '@shared/types'
 
 const slots = useSlots()
 const { width } = useWindowSize()
@@ -105,15 +106,15 @@ watchDebounced(
           >
             <div
               v-if="$slots.title"
-              class="text-sm uppercase text-gray-100 font-semibold flex-grow"
+              class="text-sm uppercase text-coolGray-100 font-semibold flex-grow"
             >
               <slot name="title" />
             </div>
 
             <div v-if="!isHideCloseButton">
-              <SharedIcon
-                name="close"
-                class="h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+              <UIcon
+                :name="NuxtUiIcons.Close"
+                class="h-5 w-5 min-w-5 text-coolGray-200 hover:text-blue-500"
                 @click="close"
               />
             </div>

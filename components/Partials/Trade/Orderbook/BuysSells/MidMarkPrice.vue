@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SharedMarketChange } from '@shared/types'
+import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { stableCoinSymbols } from '@/app/data/token'
 import { UiMarketWithToken } from '@/types'
 
@@ -80,13 +80,13 @@ const isStableQuoteAsset = computed(() =>
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">
-      <SharedIcon
+      <UIcon
         v-if="
           [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
             lastTradedPriceChange
           )
         "
-        name="arrow"
+        :name="NuxtUiIcons.ArrowLeft"
         class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
         :class="{
           'text-red-500 -rotate-90':
@@ -108,7 +108,7 @@ const isStableQuoteAsset = computed(() =>
         {{ lastTradedPriceToString }}
       </span>
 
-      <span v-if="!isStableQuoteAsset" class="mx-2 text-xs text-gray-400">
+      <span v-if="!isStableQuoteAsset" class="mx-2 text-xs text-coolGray-400">
         ${{ lastPriceInUsdToString }}
       </span>
 

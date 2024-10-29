@@ -72,7 +72,7 @@ function handleClear() {
   >
     <template #default="{ isOpen }">
       <div
-        class="flex items-center justify-between px-4 h-10 box-border bg-gray-950 border rounded-lg cursor-pointer text-sm"
+        class="flex items-center justify-between px-4 h-10 box-border bg-coolGray-950 border rounded-lg cursor-pointer text-sm"
         :class="[
           selectedClass,
           isOpen ? 'border-blue-500' : 'border-transparent'
@@ -84,7 +84,9 @@ function handleClear() {
               {{ selectedItem.display }}
             </span>
 
-            <span v-else class="text-gray-500 text-sm">{{ placeholder }}</span>
+            <span v-else class="text-coolGray-500 text-sm">{{
+              placeholder
+            }}</span>
           </div>
         </slot>
 
@@ -92,7 +94,7 @@ function handleClear() {
           <SharedIcon
             v-if="isClearable && selectedItem"
             name="close"
-            class="min-w-4 w-4 h-4 text-gray-500 hover:text-white"
+            class="min-w-4 w-4 h-4 text-coolGray-500 hover:text-white"
             @click.stop="handleClear"
           />
 
@@ -100,7 +102,7 @@ function handleClear() {
             name="caret-down-thick"
             class="ease-in-out duration-300 min-w-3 w-3 h-3"
             :class="{
-              'text-gray-500': !isOpen,
+              'text-coolGray-500': !isOpen,
               'text-blue-500 rotate-180': isOpen
             }"
           />

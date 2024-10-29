@@ -88,7 +88,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
           <span>
             {{ feeToString }}
           </span>
-          <span class="ml-1 text-gray-500">
+          <span class="ml-1 text-coolGray-500">
             {{ market?.quoteToken.symbol }}
           </span>
         </p>
@@ -100,7 +100,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
             <span>
               {{ totalToString }}
             </span>
-            <span class="ml-1 text-gray-500">
+            <span class="ml-1 text-coolGray-500">
               {{ market?.quoteToken.symbol }}
             </span>
           </p>

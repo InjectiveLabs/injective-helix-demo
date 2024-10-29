@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
@@ -52,7 +53,7 @@ const activeMarket = computed(() =>
 
     <div class="flex items-center pl-2">
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
   </div>

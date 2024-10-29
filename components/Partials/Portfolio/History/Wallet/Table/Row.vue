@@ -84,7 +84,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
     <div class="flex-1 p-2 flex items-center space-x-2 justify-end">
       <span class="font-mono">{{ totalToString }}</span>
 
-      <span class="font-semibold text-gray-500">
+      <span class="font-semibold text-coolGray-500">
         {{ transaction.token.symbol }}
       </span>
     </div>

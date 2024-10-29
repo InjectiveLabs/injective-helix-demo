@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { OrderState, TradeExecutionSide } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import {
   getSgtContractAddressFromSlug,
   addressAndMarketSlugToSubaccountId
@@ -139,7 +140,7 @@ watch(() => gridStrategyStore.spotMarket, fetchData)
 
       <div>
         <button @click="isBannerOpen = false">
-          <SharedIcon name="close" />
+          <UIcon :name="NuxtUiIcons.Close" class="h-6 w-6 min-w-6" />
         </button>
       </div>
     </div>

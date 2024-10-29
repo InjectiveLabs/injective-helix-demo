@@ -28,6 +28,6 @@
   *,
   ::before,
   ::after {
-    @apply dark:border-gray-800;
+    @apply dark:border-coolGray-800;
   }
 }

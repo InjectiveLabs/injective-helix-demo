@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
+
 const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
@@ -35,10 +37,10 @@ withDefaults(
         </span>
 
         <div
-          class="transition-all duration-300 text-gray-500"
+          class="transition-all duration-300 text-coolGray-500"
           :class="{ 'rotate-180': isOpen }"
         >
-          <SharedIcon name="chevron-down" is-sm />
+          <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
         </div>
       </button>
     </template>

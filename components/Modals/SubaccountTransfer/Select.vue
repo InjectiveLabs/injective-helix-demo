@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { getSubaccountId } from '@injectivelabs/sdk-ts'
-import { SubaccountTransferField } from '@/types'
+import { NuxtUiIcons } from '@shared/types'
 import {
-  addBaseSubaccountIndexToAddress,
+  isSgtSubaccountId,
   getSubaccountIndex,
-  isSgtSubaccountId
+  addBaseSubaccountIndexToAddress
 } from '@/app/utils/helpers'
+import { SubaccountTransferField } from '@/types'
 
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -34,13 +34,6 @@ const subaccountsWithoutSgt = computed(() =>
 
 const newSubaccountIdIndex = computed(() => subaccountsWithoutSgt.value.length)
 
-const newSubaccountId = computed(() =>
-  getSubaccountId(
-    sharedWalletStore.injectiveAddress,
-    newSubaccountIdIndex.value
-  )
-)
-
 const sourceOptions = computed(() =>
   subaccountsWithoutSgt.value
     .sort((a, b) => a.localeCompare(b))
@@ -48,11 +41,11 @@ const sourceOptions = computed(() =>
       const subaccountIdIndex = getSubaccountIndex(subaccountId)
 
       return {
-        display:
+        label:
           subaccountIdIndex === 0
             ? t('account.mainSubaccount')
             : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
-        value: subaccountId
+        id: subaccountId
       }
     })
 )
@@ -65,21 +58,21 @@ const destinationOptions = computed(() => {
       const subaccountIdIndex = getSubaccountIndex(subaccountId)
 
       return {
-        display:
+        label:
           subaccountIdIndex === 0
             ? t('account.mainSubaccount')
             : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
-        value: subaccountId
+        id: subaccountId
       }
     })
 
   return [
     ...existingSubaccountIds,
     {
-      display: t('account.subaccountId', {
+      label: t('account.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
-      value: addBaseSubaccountIndexToAddress(
+      id: addBaseSubaccountIndexToAddress(
         sharedWalletStore.address,
         newSubaccountIdIndex.value
       )
@@ -90,7 +83,7 @@ const destinationOptions = computed(() => {
 onMounted(() => {
   const [destinationOption] = destinationOptions.value
 
-  setDstSubaccountIdValue(destinationOption.value)
+  setDstSubaccountIdValue(destinationOption.id)
 })
 
 function onSourceSubaccountIdUpdate(subaccountId: string) {
@@ -115,77 +108,33 @@ function onDestinationSubaccountIdUpdate() {
 <template>
   <div class="relative flex items-center w-full flex-wrap gap-2">
     <div class="flex-1">
-      <AppSelectField
+      <USelectMenu
         v-model="srcSubaccountId"
-        selected-class="h-12 bg-gray-950"
+        color="cool-gray"
         :options="sourceOptions"
+        value-attribute="id"
         @update:model-value="onSourceSubaccountIdUpdate"
-      >
-        <template #selected-option="{ option }">
-          <span>{{ option?.display }}</span>
-        </template>
-
-        <template #option="{ option, isActive }">
-          <span
-            :class="{
-              'font-bold text-gray-100': isActive,
-              'text-gray-300': !isActive
-            }"
-          >
-            {{ option.display }}
-          </span>
-        </template>
-      </AppSelectField>
+      />
     </div>
     <div class="px-4">
       <div
         class="bg-blue-500 min-w-6 h-6 mx-6 flex items-center justify-center rounded-full"
         data-cy="transfer-modal-direction-toggle-button"
       >
-        <SharedIcon
-          name="arrow"
-          class="text-gray-1000 w-6 h-6 rotate-180 select-none"
+        <UIcon
+          :name="NuxtUiIcons.ArrowLeft"
+          class="text-coolGray-950 w-6 h-6 rotate-180 select-none"
         />
       </div>
     </div>
     <div class="flex-1">
-      <AppSelectField
+      <USelectMenu
         v-model="dstSubaccountId"
-        selected-class="h-12 bg-gray-950"
+        color="cool-gray"
         :options="destinationOptions"
+        value-attribute="id"
         @update:model-value="onDestinationSubaccountIdUpdate"
-      >
-        <template #selected-option="{ option }">
-          <span>{{ option?.display }}</span>
-        </template>
-
-        <template #option="{ option, isActive }">
-          <span class="whitespace-nowrap">
-            <span
-              v-if="option.value === newSubaccountId"
-              :class="{ 'font-bold': isActive }"
-              class="text-gray-100"
-            >
-              <span>{{ option.display }}</span>
-              <span
-                class="bg-blue-500 ml-2 font-semibold tracking-wide text-xs px-1 py-px rounded-sm"
-              >
-                {{ t('common.new') }}
-              </span>
-            </span>
-
-            <span
-              v-else
-              class="text-gray-100"
-              :class="{
-                'font-bold text-gray-100': isActive
-              }"
-            >
-              {{ option.display }}
-            </span>
-          </span>
-        </template>
-      </AppSelectField>
+      />
     </div>
   </div>
 </template>

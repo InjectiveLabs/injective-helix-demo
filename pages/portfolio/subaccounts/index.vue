@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
 const modalStore = useModalStore()
@@ -22,7 +23,7 @@ function openTransferModal() {
         {{ $t('navigation.subaccounts') }}
       </h2>
 
-      <p class="text-xs font-xs text-gray-400 max-w-xl mt-2">
+      <p class="text-xs font-xs text-coolGray-400 max-w-xl mt-2">
         {{ $t('portfolio.subaccounts.description') }}
       </p>
     </div>
@@ -37,7 +38,7 @@ function openTransferModal() {
         class="space-x-2"
         @click="openTransferModal"
       >
-        <SharedIcon name="plus" is-xs />
+        <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
         <span>{{ $t('portfolio.subaccounts.addSubaccountOrTransfer') }}</span>
       </AppButton>
     </div>

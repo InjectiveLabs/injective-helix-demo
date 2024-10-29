@@ -69,7 +69,7 @@ onMounted(() => {
         :key="category.title"
         class="border border-brand-800 p-4 rounded-lg space-y-1"
       >
-        <h3 class="mb-4 text-gray-200 text-sm px-2 font-semibold">
+        <h3 class="mb-4 text-coolGray-200 text-sm px-2 font-semibold">
           {{ $t(category.title) }}
         </h3>
 

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import {
   SharedBalanceWithToken,
-  SharedBalanceWithTokenAndPrice
+  SharedBalanceWithTokenAndPrice,
+  NuxtUiIcons
 } from '@shared/types'
 import { dataCyTag } from '@shared/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
@@ -228,7 +229,7 @@ export default {
     }"
   >
     <div
-      class="text-sm font-semibold text-gray-500 flex items-center justify-between px-4 mb-2"
+      class="text-sm font-semibold text-coolGray-500 flex items-center justify-between px-4 mb-2"
     >
       <slot />
 
@@ -282,7 +283,7 @@ export default {
             <div
               class="flex items-center gap-2 p-1.5"
               :class="{
-                'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
+                'hover:bg-coolGray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
                   options.length > 1
               }"
               @click="openTokenSelectorModal"
@@ -301,10 +302,10 @@ export default {
                 {{ $t('trade.swap.tokenSelector.selectToken') }}
               </div>
 
-              <SharedIcon
+              <UIcon
                 v-if="options.length > 1 || !selectedToken"
-                name="caret-down-slim"
-                is-sm
+                class="h-3 w-3 min-w-3"
+                :name="NuxtUiIcons.ChevronDown"
               />
             </div>
           </slot>
@@ -334,7 +335,7 @@ export default {
 
       <p
         v-if="isUsdVisible && selectedToken"
-        class="text-right text-sm text-gray-500 truncate"
+        class="text-right text-sm text-coolGray-500 truncate"
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">
           <span v-if="Number(amount) > 0">${{ estimatedTotalInUsd }} </span>

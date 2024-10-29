@@ -3,6 +3,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
 
@@ -268,7 +269,7 @@ function sharePosition() {
 
         <div class="space-y-1 p-2">
           <p>{{ priceToString }}</p>
-          <p class="text-gray-500">{{ markPriceToString }}</p>
+          <p class="text-coolGray-500">{{ markPriceToString }}</p>
         </div>
       </div>
 
@@ -289,9 +290,9 @@ function sharePosition() {
             <p>{{ percentagePnlToString }}%</p>
           </div>
 
-          <SharedIcon
-            name="share"
-            class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+          <UIcon
+            :name="NuxtUiIcons.Share"
+            class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
             @click="sharePosition"
           />
         </div>
@@ -310,8 +311,8 @@ function sharePosition() {
 
         <div class="space-x-2">
           <span>{{ marginToString }}</span>
-          <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-            <SharedIcon name="plus" is-xs />
+          <button class="p-2 rounded-full bg-coolGray-800" @click="addMargin">
+            <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
           </button>
         </div>
       </div>

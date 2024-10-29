@@ -113,7 +113,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         <span>
           {{ totalToString }}
         </span>
-        <span class="text-gray-500 ml-1">
+        <span class="text-coolGray-500 ml-1">
           {{ market?.quoteToken.symbol }}
         </span>
       </div>

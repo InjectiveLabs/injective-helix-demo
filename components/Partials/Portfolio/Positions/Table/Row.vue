@@ -4,6 +4,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   PerpetualMarketCyTags,
@@ -270,7 +271,7 @@ function sharePosition() {
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           {{ priceToString }}
         </p>
-        <p class="text-gray-500">
+        <p class="text-coolGray-500">
           {{ markPriceToString }}
         </p>
       </div>
@@ -285,14 +286,16 @@ function sharePosition() {
         >
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)">
             {{ pnlToString }}
-            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+            <span class="text-coolGray-500">{{
+              market.quoteToken.symbol
+            }}</span>
           </p>
           <p>{{ percentagePnlToString }}%</p>
         </div>
 
-        <SharedIcon
-          name="share"
-          class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+        <UIcon
+          :name="NuxtUiIcons.Share"
+          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
           @click="sharePosition"
         />
       </div>
@@ -309,8 +312,11 @@ function sharePosition() {
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">{{
           marginToString
         }}</span>
-        <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-          <SharedIcon name="plus" is-xs />
+        <button
+          class="flex p-2 rounded-full bg-coolGray-800"
+          @click="addMargin"
+        >
+          <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
         </button>
       </div>
 
@@ -330,10 +336,10 @@ function sharePosition() {
 
       <div class="flex-1 flex items-center p-2 justify-center">
         <button
-          class="p-2 rounded-full bg-blue-500 hover:bg-blue-600"
+          class="flex p-2 rounded-full bg-blue-500 hover:bg-blue-600"
           @click="addTpSl"
         >
-          <SharedIcon name="plus" is-xs />
+          <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
         </button>
       </div>
 

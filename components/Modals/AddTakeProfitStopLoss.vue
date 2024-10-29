@@ -240,7 +240,7 @@ async function submitTpSl() {
           {{ takeProfitErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
+        <p class="text-xs text-coolGray-400">
           {{
             $t('trade.takeProfitDetails', {
               price: takeProfitValue ? takeProfitValue : '—'
@@ -276,7 +276,7 @@ async function submitTpSl() {
           {{ stopLossErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
+        <p class="text-xs text-coolGray-400">
           {{
             $t('trade.stopLossDetails', {
               price: stopLossValue ? stopLossValue : '—'

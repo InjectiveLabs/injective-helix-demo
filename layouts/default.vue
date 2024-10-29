@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { WalletConnectStatus } from '@shared/types'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
@@ -179,8 +179,8 @@ provide(PortfolioStatusKey, portfolioStatus)
           wrapper-class="bg-brand-900 border-brand-700 border"
         >
           <template #close="{ closeNotification }">
-            <SharedIcon
-              name="close-bold"
+            <UIcon
+              :name="NuxtUiIcons.CloseBold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
               @click="closeNotification"
             />

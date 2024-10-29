@@ -55,7 +55,7 @@ const description = computed(() => {
         <div class="flex items-center">
           <div>
             <p class="font-semibold">{{ market.ticker }}</p>
-            <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
+            <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
           </div>
         </div>
       </div>
@@ -63,14 +63,14 @@ const description = computed(() => {
       <div class="mt-4">
         <p
           v-if="description"
-          class="text-gray-400 text-sm leading-6 text-justify"
+          class="text-coolGray-400 text-sm leading-6 text-justify"
         >
           {{ description }}
         </p>
       </div>
     </div>
 
-    <div class="flex-1 p-8 text-gray-400 text-xs tracking-wider space-y-2">
+    <div class="flex-1 p-8 text-coolGray-400 text-xs tracking-wider space-y-2">
       <div class="flex justify-between border-b pb-1">
         <p>{{ $t('trade.marketName') }}:</p>
         <p>{{ market.ticker }}</p>

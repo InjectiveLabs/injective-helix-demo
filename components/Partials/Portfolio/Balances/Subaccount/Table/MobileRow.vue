@@ -117,7 +117,7 @@ function onTransfer() {
       <CommonTokenIcon v-bind="{ token: balance.token }" />
       <div>
         <p class="font-medium">{{ balance.token.symbol }}</p>
-        <p class="text-xs text-gray-500">{{ balance.token.name }}</p>
+        <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
       </div>
     </div>
 
@@ -132,10 +132,10 @@ function onTransfer() {
 
           <span
             v-if="hasCw20Balance"
-            class="text-xs text-gray-400 font-semibold"
+            class="text-xs text-coolGray-400 font-semibold"
           >
             <AppTooltip
-              class="ml-2 text-gray-200"
+              class="ml-2 text-coolGray-200"
               :content="$t('account.balanceIncludesCw20Balance')"
             />
           </span>

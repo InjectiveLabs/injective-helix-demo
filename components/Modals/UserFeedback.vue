@@ -95,7 +95,7 @@ function onRejectSurveyClickEvent() {
       </NuxtLink>
 
       <AppButton
-        class="bg-transparent w-full hover:bg-gray-700 font-semibold text-sm"
+        class="bg-transparent w-full hover:bg-coolGray-700 font-semibold text-sm"
         @click="onRejectSurveyClickEvent"
       >
         {{ $t('banners.userFeedback.notRightNow') }}

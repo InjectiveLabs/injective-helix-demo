@@ -140,7 +140,7 @@ function cancelOrder() {
 
       <div class="font-mono">
         <p>{{ filledQuantityToString }}</p>
-        <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
+        <p class="text-coolGray-500">{{ filledQuantityPercentageToFormat }}%</p>
       </div>
     </div>
 

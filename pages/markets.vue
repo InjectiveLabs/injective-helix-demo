@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 import {
   MarketCyTags,
@@ -116,7 +117,7 @@ function setTypeFromQuery() {
               :key="value"
               v-model="activeType"
               v-bind="{ value }"
-              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
+              class="capitalize text-coolGray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
               :data-cy="`${dataCyTag(MarketCyTags.MarketType)}-${value}`"
               @update:model-value="onMarketTypeChange"
@@ -137,7 +138,10 @@ function setTypeFromQuery() {
               />
 
               <div class="flex items-center pr-3">
-                <SharedIcon name="search" class="text-gray-500" />
+                <UIcon
+                  :name="NuxtUiIcons.Search"
+                  class="h-6 w-6 min-w-6 text-coolGray-500"
+                />
               </div>
             </label>
           </div>
@@ -155,7 +159,7 @@ function setTypeFromQuery() {
               :key="value"
               v-model="activeCategory"
               v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
+              class="py-1 px-3 text-coolGray-400 text-xs capitalize bg-brand-800 rounded"
               active-classes="text-white !bg-brand-700"
               :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
             >
@@ -166,9 +170,9 @@ function setTypeFromQuery() {
 
           <div
             v-if="activeType === MarketTypeOption.Permissionless"
-            class="flex items-center gap-x-2 text-gray-500"
+            class="flex items-center gap-x-2 text-coolGray-500"
           >
-            <SharedIcon name="warning-triangle" is-md />
+            <UIcon :name="NuxtUiIcons.WarningOutline" class="w-5 h-5 min-w-5" />
             <span class="text-sm">{{
               $t('markets.permisionlessWarning')
             }}</span>
@@ -181,7 +185,7 @@ function setTypeFromQuery() {
                 :key="value"
                 v-model="activeQuote"
                 v-bind="{ value }"
-                class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
+                class="py-1 px-3 text-coolGray-400 text-xs uppercase hover:bg-brand-875"
                 active-classes="text-white !bg-brand-800"
                 :data-cy="`${dataCyTag(
                   MarketCyTags.MarketQuoteToken

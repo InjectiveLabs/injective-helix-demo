@@ -2,6 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
@@ -139,7 +140,7 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <SharedIcon name="arrow" />
+        <UIcon :name="NuxtUiIcons.ArrowLeft" class="w-6 h-6 min-w-6" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>
@@ -150,7 +151,7 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
@@ -158,19 +159,19 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
         </h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.rewardsToClaim') }}
         </p>
         <h3 class="text-xl font-semibold">{{ rewardsToClaim }}</h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.volumeThisRound') }}
         </p>
         <h3 class="text-xl font-semibold">{{ volumeThisRoundToString }} USD</h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.totalRewardsAllTime') }}
         </p>
         <h3 class="text-xl font-semibold">

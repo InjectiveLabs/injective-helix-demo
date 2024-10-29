@@ -58,7 +58,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             {{ $t('guild.leaderboard.title') }}
           </h2>
 
-          <p v-if="lastUpdated" class="text-gray-300 p-2 text-xs">
+          <p v-if="lastUpdated" class="text-coolGray-300 p-2 text-xs">
             {{ $t('guild.leaderboard.lastUpdated', { date: lastUpdated }) }}
           </p>
         </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SharedMarketChange } from '@shared/types'
+import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
@@ -31,7 +31,7 @@ withDefaults(
     >
       <div class="text-xs p-1 divide-y [&>*]:p-1">
         <div class="flex justify-between">
-          <p class="text-gray-400">{{ $t('trade.price') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.price') }}</p>
           <div
             class="flex items-center"
             :class="{
@@ -41,14 +41,14 @@ withDefaults(
                 percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <SharedIcon
+            <UIcon
               v-if="
                 [
                   SharedMarketChange.Increase,
                   SharedMarketChange.Decrease
                 ].includes(percentageChangeStatus)
               "
-              name="arrow"
+              :name="NuxtUiIcons.ArrowLeft"
               class="w-3 h-3 mr-1"
               :class="{
                 ' rotate-90':
@@ -95,7 +95,7 @@ withDefaults(
                     amount: volumeInUsdToFormat
                   })
             "
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.total_market_volume_24h') }}
           </CommonHeaderTooltip>
@@ -104,12 +104,12 @@ withDefaults(
         </div>
 
         <div class="flex justify-between">
-          <p class="text-gray-400">{{ $t('trade.high') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.high') }}</p>
           <p class="font-mono font-semibold mt-auto">{{ highToFormat }}</p>
         </div>
 
         <div class="flex justify-between">
-          <p class="text-gray-400">{{ $t('trade.low') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.low') }}</p>
           <p class="font-mono font-semibold mt-auto">{{ lowToFormat }}</p>
         </div>
 
@@ -119,7 +119,7 @@ withDefaults(
         >
           <CommonHeaderTooltip
             :tooltip="$t('trade.funding_rate_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.est_funding_rate') }}
           </CommonHeaderTooltip>
@@ -151,7 +151,7 @@ withDefaults(
         >
           <CommonHeaderTooltip
             :tooltip="$t('trade.next_funding_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.next_funding') }}
           </CommonHeaderTooltip>

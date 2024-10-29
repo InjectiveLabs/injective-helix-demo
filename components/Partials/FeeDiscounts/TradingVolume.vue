@@ -60,16 +60,16 @@ const daysPassed = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col bg-gray-850 rounded-lg p-6 h-full">
+  <div class="flex flex-col bg-coolGray-850 rounded-lg p-6 h-full">
     <div class="flex justify-start gap-6 lg:gap-8">
       <div class="flex flex-col">
         <span
-          class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
+          class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
           {{ $t('feeDiscounts.my_trading_volume') }}
         </span>
         <span
-          class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
+          class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
           <b
             class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
@@ -81,7 +81,7 @@ const daysPassed = computed(() => {
       </div>
     </div>
     <div class="mt-4">
-      <span class="text-xs text-gray-400">
+      <span class="text-xs text-coolGray-400">
         {{ $t('feeDiscounts.in_past_days', { days: daysPassed }) }}
       </span>
     </div>

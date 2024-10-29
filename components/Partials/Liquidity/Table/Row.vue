@@ -137,14 +137,14 @@ onMounted(() => {
             params: { market: market.slug },
             query: { interface: TradingInterface.TradingBots }
           }"
-          class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+          class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300 p-2"
         >
           <div v-if="baseToken">
             <CommonTokenIcon v-bind="{ token: baseToken }" />
           </div>
           <div>
             <p class="text-sm font-bold">{{ market.ticker }}</p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-coolGray-500">
               {{ market.baseToken.name }}
             </p>
           </div>
@@ -181,7 +181,7 @@ onMounted(() => {
 
     <td>
       <div>
-        <span v-if="status.isLoading()" class="text-gray-500">&mdash;</span>
+        <span v-if="status.isLoading()" class="text-coolGray-500">&mdash;</span>
         <span v-else>{{ activeBots }}</span>
       </div>
     </td>

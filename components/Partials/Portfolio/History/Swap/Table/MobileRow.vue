@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -90,7 +91,7 @@ const {
         target="_blank"
       >
         <p>{{ $t('trade.swap.viewTransaction') }}</p>
-        <SharedIcon is-md name="external-link" />
+        <UIcon :name="NuxtUiIcons.ExternalLink" class="h-4 w-4 min-w-4" />
       </NuxtLink>
     </div>
   </div>

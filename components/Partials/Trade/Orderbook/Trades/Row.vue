@@ -72,7 +72,7 @@ const time = computed(() =>
       {{ quantityToFormat }}
     </div>
 
-    <div class="flex-1 min-w-0 truncate px-1 text-gray-500">
+    <div class="flex-1 min-w-0 truncate px-1 text-coolGray-500">
       {{ time }}
     </div>
   </div>

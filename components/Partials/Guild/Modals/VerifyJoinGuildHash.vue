@@ -87,11 +87,11 @@ watch(
         }"
         @click="onSubmit"
       >
-        <span v-if="hash && !hashMatches" class="text-gray-600">
+        <span v-if="hash && !hashMatches" class="text-coolGray-600">
           {{ $t('guild.verifyJoinGuild.incorrectCode') }}
         </span>
 
-        <span v-else :class="{ 'text-gray-600': !hash }">
+        <span v-else :class="{ 'text-coolGray-600': !hash }">
           {{ $t('guild.verifyJoinGuild.cta') }}
         </span>
       </AppButton>

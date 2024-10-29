@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { PortfolioSubPage } from '@/types'
 </script>
 
@@ -6,7 +7,7 @@ import { PortfolioSubPage } from '@/types'
   <div>
     <div class="flex items-center p-4">
       <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-        <SharedIcon name="chevron" />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-6 w-6 min-w-6" />
       </NuxtLink>
 
       <h3 class="portfolio-title">

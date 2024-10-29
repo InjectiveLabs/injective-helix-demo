@@ -27,7 +27,7 @@ withDefaults(
       <slot name="context" />
     </span>
     <span class="flex-grow border-b border-dashed mx-4"></span>
-    <span class="text-gray-100 flex justify-end">
+    <span class="text-coolGray-100 flex justify-end">
       <slot />
     </span>
   </p>

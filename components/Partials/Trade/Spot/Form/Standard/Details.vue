@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   MarketKey,
@@ -53,14 +54,14 @@ function toggle() {
     >
       <p class="text-sm font-semibold select-none">{{ $t('trade.details') }}</p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
         <div class="flex items-center text-lg">
-          <p class="text-gray-100">{{ $t('trade.total') }}</p>
+          <p class="text-coolGray-100">{{ $t('trade.total') }}</p>
           <div class="border-t flex-1 mx-2" />
 
           <p
@@ -68,28 +69,28 @@ function toggle() {
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsTotal)"
           >
             <span>&asymp;{{ totalToString }} </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.amount') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.amount') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p
             class="font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
           >
             <span>{{ quantityToString }} </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ spotMarket.baseToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">
+          <p class="text-coolGray-400">
             {{ spotMarket.quoteToken.symbol }} {{ $t('trade.amount') }}
           </p>
           <div class="border-t flex-1 mx-2" />
@@ -98,21 +99,21 @@ function toggle() {
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
           >
             <span>{{ total.toFormat(spotMarket.priceDecimals) }} </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
           </p>
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-gray-400">{{ $t('trade.price') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.price') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p
             class="font-mono space-x-2"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
             <span>{{ worstPrice.toFormat(spotMarket.priceDecimals) }} </span>
-            <span class="text-gray-400">
+            <span class="text-coolGray-400">
               {{ spotMarket.quoteToken.symbol }}
             </span>
           </p>
@@ -122,7 +123,7 @@ function toggle() {
           v-if="spotFormValues[SpotTradeFormField.Type] !== TradeTypes.Limit"
           class="flex items-center text-xs font-medium"
         >
-          <p class="text-gray-400">{{ $t('trade.maker_taker_rate') }}</p>
+          <p class="text-coolGray-400">{{ $t('trade.maker_taker_rate') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p
             v-if="spotMarket"
@@ -136,7 +137,7 @@ function toggle() {
 
         <template v-else>
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.maker_rate') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.maker_rate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p
               v-if="spotMarket"
@@ -148,7 +149,7 @@ function toggle() {
           </div>
 
           <div class="flex items-center text-xs font-medium">
-            <p class="text-gray-400">{{ $t('trade.estFeeRebate') }}</p>
+            <p class="text-coolGray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
             <p
               v-if="spotMarket"

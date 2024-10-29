@@ -161,7 +161,9 @@ function cancelOrder() {
           <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)">
             {{ filledQuantityToString }}
           </p>
-          <p class="text-gray-500">{{ filledQuantityPercentageToFormat }}%</p>
+          <p class="text-coolGray-500">
+            {{ filledQuantityPercentageToFormat }}%
+          </p>
         </div>
       </div>
 
@@ -170,7 +172,7 @@ function cancelOrder() {
           <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
             {{ totalToString }}
             <span
-              class="text-gray-500"
+              class="text-coolGray-500"
               :data-cy="
                 dataCyTag(SpotMarketCyTags.OpenOrderTotalAmtTokenSymbol)
               "

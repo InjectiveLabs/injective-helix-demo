@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
 import { CAMPAIGNS_WITH_ANNOUNCED_WINNERS } from '@/app/data/campaign'
 import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
@@ -77,7 +78,7 @@ function onShareCompetition() {
           ]"
         >
           <p
-            class="text-xs md:text-sm font-semibold leading-4 text-gray-925 max-w-[300px] lg:max-w-[480px]"
+            class="text-xs md:text-sm font-semibold leading-4 text-coolGray-925 max-w-[300px] lg:max-w-[480px]"
           >
             <span v-if="route.name !== LeaderboardSubPage.PastCompetitions">
               {{ $t('leaderboard.competition.keepGoing') }}
@@ -103,7 +104,7 @@ function onShareCompetition() {
           class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
           @click="onShareCompetition"
         >
-          <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
+          <UIcon :name="NuxtUiIcons.Share2" class="min-w-4 w-4 h-4 -mt-1" />
 
           <p class="text-[11px] leading-[13px] font-medium">
             {{ $t('leaderboard.pnl.share') }}

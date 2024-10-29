@@ -99,7 +99,7 @@ const spotGridTradingBots = computed(() => {
       <h2 class="text-2xl font-semibold">
         {{ $t('liquidityProvision.title') }}
       </h2>
-      <p class="text-gray-300 mt-2">
+      <p class="text-coolGray-300 mt-2">
         {{ $t('liquidityProvision.description') }}
       </p>
 
@@ -113,7 +113,7 @@ const spotGridTradingBots = computed(() => {
               :key="value"
               v-model="type"
               v-bind="{ value }"
-              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
+              class="capitalize text-coolGray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
               active-classes="border-blue-500 !text-blue-500"
             >
               {{ value }}

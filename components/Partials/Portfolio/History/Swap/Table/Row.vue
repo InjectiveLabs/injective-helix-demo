@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -69,7 +70,7 @@ const {
     <div class="p-2 flex items-center w-10">
       <NuxtLink class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-center">
-          <SharedIcon is-md name="external-link" />
+          <UIcon :name="NuxtUiIcons.ExternalLink" class="h-4 w-4 min-w-4" />
         </div>
       </NuxtLink>
     </div>

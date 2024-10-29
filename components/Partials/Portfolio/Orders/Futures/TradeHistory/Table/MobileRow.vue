@@ -93,7 +93,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <p>{{ $t('trade.fee') }}</p>
       <p>
         <span>{{ feeToString }}</span>
-        <span v-if="market" class="text-gray-500">
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>
@@ -104,7 +104,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 
       <p>
         <span>{{ totalToString }}</span>
-        <span v-if="market" class="text-gray-500">
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>

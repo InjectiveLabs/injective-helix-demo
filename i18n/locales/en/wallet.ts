@@ -7,7 +7,7 @@ export default {
     connect: 'Connect',
     beta: 'Beta',
     signUp: 'Sign Up',
-    logIn: 'Log In',
+    login: 'Log In',
     getStarted: 'Get Started',
     getStartedDescription:
       'Connect your wallet or sign up with SSO to get started.',

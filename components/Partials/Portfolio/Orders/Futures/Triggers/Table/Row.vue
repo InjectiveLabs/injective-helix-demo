@@ -113,7 +113,7 @@ function cancelOrder() {
             {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
           </p>
 
-          <p v-if="isReduceOnly" class="text-gray-500">
+          <p v-if="isReduceOnly" class="text-coolGray-500">
             {{ $t('trade.reduce_only') }}
           </p>
         </div>
@@ -129,7 +129,7 @@ function cancelOrder() {
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
-        <span v-if="leverage.isNaN()" class="text-gray-400">
+        <span v-if="leverage.isNaN()" class="text-coolGray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
         <span v-else>{{ leverage.toFormat(2) }} &times;</span>
@@ -140,7 +140,7 @@ function cancelOrder() {
       </div>
 
       <div class="flex-[2] flex items-center p-2 space-x-2 justify-end">
-        <span class="text-gray-500 text-xs font-sans">
+        <span class="text-coolGray-500 text-xs font-sans">
           {{ $t('trade.mark_price') }}
         </span>
 

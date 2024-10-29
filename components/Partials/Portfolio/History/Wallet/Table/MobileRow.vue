@@ -92,7 +92,7 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(amount, {
       <p class="space-x-2">
         <span class="font-mono">{{ totalToString }}</span>
 
-        <span class="font-semibold text-gray-500">
+        <span class="font-semibold text-coolGray-500">
           {{ transaction.token.symbol }}
         </span>
       </p>

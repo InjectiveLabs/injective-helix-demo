@@ -28,7 +28,7 @@ const activeTab = ref(GridStrategyType.Auto)
           <div
             class="rounded py-1.5 uppercase text-center"
             :class="{
-              'bg-gray-800': isActive
+              'bg-coolGray-800': isActive
             }"
           >
             <span v-if="strategy === GridStrategyType.Auto">

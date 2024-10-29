@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SharedDropdownOption } from '@shared/types'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +34,7 @@ const selected = computed(() =>
         <slot v-bind="{ isOpen: open, selected }" />
         <div class="flex items-center pl-2">
           <div class="transition-all" :class="{ 'rotate-180': open }">
-            <SharedIcon is-sm name="chevron-down" />
+            <UIcon class="h-3 w-3 min-w-3" :name="NuxtUiIcons.ChevronDown" />
           </div>
         </div>
       </div>

@@ -94,7 +94,7 @@ function handleConnect() {
         </span>
       </p>
 
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-coolGray-500">
         <span v-if="hardwareWallets.includes(walletOption.wallet)">
           {{ $t(`connect.${'connectUsingHardware'}`) }}
         </span>

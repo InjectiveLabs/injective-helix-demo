@@ -151,7 +151,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
     </div>
 
     <span
-      class="text-gray-500 w-full text-xs"
+      class="text-coolGray-500 w-full text-xs"
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}

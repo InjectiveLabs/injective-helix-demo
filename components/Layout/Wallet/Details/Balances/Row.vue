@@ -33,7 +33,7 @@ const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
       <div class="text-xs flex items-center">
         <div>
           <p class="text-sm font-semibold">{{ balance.token.symbol }}</p>
-          <p class="text-gray-400">{{ totalAmountToString }}</p>
+          <p class="text-coolGray-400">{{ totalAmountToString }}</p>
         </div>
       </div>
     </div>
