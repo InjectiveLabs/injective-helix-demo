@@ -31,6 +31,7 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
     </div>
     <div class="p-2 flex-1 text-right space-x-2 flex justify-end">
       <span
+        class="inline-block"
         :class="{
           'text-green-500': total.gte(0),
           'text-red-500': total.lt(0)

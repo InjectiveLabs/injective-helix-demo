@@ -115,7 +115,10 @@ watch(
         {{ $t('trade.allMarkets') }}
       </div>
 
-      <UIcon :name="NuxtUiIcons.ChevronDown" />
+      <UIcon
+        :name="NuxtUiIcons.ChevronLeft2"
+        class="h-3 w-3 min-w-3 -rotate-90"
+      />
     </div>
   </div>
 

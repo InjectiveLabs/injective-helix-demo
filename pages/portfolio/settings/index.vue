@@ -43,8 +43,8 @@ const settingsOptions = [
 
         <div class="flex items-center p-4">
           <UIcon
-            :name="NuxtUiIcons.ChevronDown"
-            class="h-6 w-6 min-w-6 rotate-180"
+            :name="NuxtUiIcons.ChevronLeft"
+            class="h-3 w-3 min-w-3 rotate-180"
           />
         </div>
       </NuxtLink>

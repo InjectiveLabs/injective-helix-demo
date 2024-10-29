@@ -82,7 +82,7 @@ const {
     <div class="p-2 flex items-center w-10">
       <NuxtLink class="w-full text-white" :to="explorerLink" target="_blank">
         <div class="flex items-center justify-center">
-          <UIcon :name="NuxtUiIcons.ExternalLink" class="h-4 w-4 min-w-4" />
+          <UIcon :name="NuxtUiIcons.ExternalLink" class="h-3 w-3 min-w-3" />
         </div>
       </NuxtLink>
     </div>

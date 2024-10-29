@@ -132,7 +132,7 @@ function onTransfer() {
           @click="toggleStakingRow"
         >
           <UIcon
-            :name="NuxtUiIcons.ChevronDown"
+            :name="NuxtUiIcons.ChevronUp"
             size="xs"
             class="text-coolGray-400 hover:text-white"
             :class="{

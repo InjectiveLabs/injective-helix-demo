@@ -26,8 +26,11 @@ function openGranteeModal() {
   <div class="">
     <div class="p-4">
       <div class="flex items-center">
-        <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-          <UIcon :name="NuxtUiIcons.ChevronDown" class="h-6 w-6 min-w-6" />
+        <NuxtLink
+          :to="{ name: PortfolioSubPage.Settings }"
+          class="pr-4 flex items-center"
+        >
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-6 w-6 min-w-6" />
         </NuxtLink>
 
         <h3 class="portfolio-title">

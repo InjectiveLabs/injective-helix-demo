@@ -127,7 +127,7 @@ function close() {
         </div>
 
         <div class="ml-2 -mr-2" :class="{ '-rotate-180': !isOpen }">
-          <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
+          <UIcon :name="NuxtUiIcons.ChevronUp2" class="h-3 w-3 min-w-3" />
         </div>
       </div>
     </div>

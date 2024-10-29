@@ -231,10 +231,12 @@ function onMaxSelected({ amount }: { amount: string }) {
       </div>
     </Transition>
 
-    <div>
+    <div
+      class="flex justify-center mx-auto -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-20 relative hover:scale-110 transition-transform"
+    >
       <UIcon
         :name="NuxtUiIcons.ArrowLeft"
-        class="mx-auto min-w-6 w-10 h-10 -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-20 relative hover:scale-110 transition-transform"
+        class="min-w-6 w-6 h-6"
         @click="swap"
       />
     </div>

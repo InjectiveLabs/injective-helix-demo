@@ -94,7 +94,7 @@ const spotGridTradingBots = computed(() => {
 </script>
 
 <template>
-  <div class="container py-10">
+  <div class="container py-10 mx-auto">
     <AppHocLoading v-bind="{ status }">
       <h2 class="text-2xl font-semibold">
         {{ $t('liquidityProvision.title') }}
