@@ -31,6 +31,7 @@ import mainnetDerivativeGridMarkets from './grid/derivative/mainnet.json'
 import marketCategoriesJson from './marketCategories.json'
 import restrictedCountriesJson from './restrictedCountries.json'
 import blacklistedAddressesJson from './blacklistedAddresses.json'
+import swapRoutesJson from './swap-routes.json'
 
 const NETWORK: Network = import.meta.env.VITE_NETWORK as Network
 const IS_DEVNET: boolean = isDevnet(NETWORK)
@@ -144,6 +145,7 @@ export const gitBuild = () => {
 export const marketCategories = marketCategoriesJson
 export const restrictedCountries = restrictedCountriesJson
 export const blacklistedAddresses = blacklistedAddressesJson
+export const swapRoutes = swapRoutesJson
 
 export const tokens = getTokens()
 export const spotSlugs = getSpotSlugs()
