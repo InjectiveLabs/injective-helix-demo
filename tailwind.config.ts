@@ -41,6 +41,10 @@ export default <Partial<Config>>{
         DEFAULT: '#202431'
       },
 
+      borderColor: {
+        DEFAULT: '#202431'
+      },
+
       border: {
         DEFAULT: '#202431'
       },
