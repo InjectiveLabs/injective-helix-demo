@@ -538,3 +538,7 @@ export enum LeaderboardCampaignStatus {
   Inactive = 'inactive',
   Upcoming = 'upcoming'
 }
+
+export enum DontShowAgain {
+  AutoSign = 'auto-sign'
+}

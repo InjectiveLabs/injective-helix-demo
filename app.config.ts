@@ -7,6 +7,10 @@ export default defineAppConfig({
       background: 'bg-brand-900 dark:bg-brand-900'
     },
 
+    notification: {
+      background: 'bg-brand-900 dark:bg-brand-900'
+    },
+
     tooltip: {
       base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap'
     },

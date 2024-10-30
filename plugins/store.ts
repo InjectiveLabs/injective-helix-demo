@@ -16,6 +16,7 @@ const stateToPersist = {
       favoriteMarkets: [],
       bannersViewed: [],
       modalsViewed: [],
+      dontShowAgain: [],
 
       preferences: {
         skipTradeConfirmationModal: false,

@@ -90,6 +90,8 @@ export default {
         disabledToast: {
           title: 'Auto sign is disabled'
         },
+        allowsYouToTrade:
+          'Allows you to trade for 60 minutes without needing to sign each transaction',
         expiredToast: {
           title: 'Auto sign session has expired',
           settings: 'Settings',
