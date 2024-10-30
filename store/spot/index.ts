@@ -26,7 +26,8 @@ import {
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
-  submitStopMarketOrder
+  submitStopMarketOrder,
+  submitChase
 } from '@/store/spot/message'
 import {
   cancelBankBalanceStream,
@@ -45,10 +46,10 @@ import {
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import { spotSlugs } from '@/app/json'
-import { marketIdsToHide } from '@/app/data/market'
-import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import { marketIdsToHide } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarket[]
@@ -130,6 +131,7 @@ export const useSpotStore = defineStore('spot', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
+    submitChase,
     streamTrades,
     cancelTradesStream,
     streamOrderbookUpdate,

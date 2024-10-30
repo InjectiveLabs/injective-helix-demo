@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType } from '@injectivelabs/ts-types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { UiDerivativeMarket } from '@/types'
+import { toBalanceInToken } from '@/app/utils/formatters'
 
 const authZStore = useAuthZStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
+const orderbookStore = useOrderbookStore()
+const { userBalancesWithToken } = useBalance()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
@@ -24,6 +28,7 @@ const {
   market,
   quantity,
   leverage,
+  isReduceOnly,
   priceDecimals,
   filledQuantity,
   quantityDecimals,
@@ -39,6 +44,7 @@ const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -48,7 +54,48 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
+const accountQuoteBalance = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const balance = userBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
+
+  return toBalanceInToken({
+    value: balance?.availableMargin || 0,
+    decimalPlaces: market.value.quoteToken.decimals
+  })
+})
+
+const newChasePrice = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const price = isBuy.value
+    ? orderbookStore.buys[0]?.price
+    : orderbookStore.sells[0]?.price
+
+  return new BigNumberInBase(price || 0)
+})
+
+const newChaseMargin = computed(() => {
+  return newChasePrice.value.times(total.value).dividedBy(price.value)
+})
+
+const chaseBalanceNeeded = computed(() =>
+  newChaseMargin.value.minus(total.value)
+)
+
+const insufficientBalance = computed(() =>
+  isReduceOnly.value
+    ? false
+    : chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+)
+
+const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
@@ -84,6 +131,32 @@ function onCancelOrder() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+    })
+}
+
+function chase() {
+  const price = isBuy.value
+    ? orderbookStore.buys[0].price
+    : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
+
+  chaseStatus.setLoading()
+
+  derivativeStore
+    .submitChase({
+      market: market.value as UiDerivativeMarket,
+      order: props.order,
+      price: new BigNumberInBase(price)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('trade.orderUpdated') })
+    })
+    .catch($onError)
+    .finally(() => {
+      chaseStatus.setLoading()
     })
 }
 </script>
@@ -124,7 +197,7 @@ function onCancelOrder() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantityToString
           }"
         />
       </p>
@@ -174,6 +247,18 @@ function onCancelOrder() {
           {{ market?.quoteToken.symbol }}
         </span>
       </p>
+    </div>
+
+    <div class="pt-2 items-center">
+      <AppButton
+        variant="success-outline"
+        class="w-full"
+        :disabled="!sharedWalletStore.isAutoSignEnabled || insufficientBalance"
+        v-bind="{ status: chaseStatus }"
+        @click="chase"
+      >
+        <span>{{ $t('trade.chase') }}</span>
+      </AppButton>
     </div>
 
     <div class="flex-1 pt-2">

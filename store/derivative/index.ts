@@ -30,12 +30,13 @@ import {
 } from '@shared/transformer/market'
 import {
   cancelOrder,
+  submitChase,
+  submitTpSlOrder,
   batchCancelOrder,
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
-  submitStopMarketOrder,
-  submitTpSlOrder
+  submitStopMarketOrder
 } from '@/store/derivative/message'
 import {
   streamTrades,
@@ -158,6 +159,7 @@ export const useDerivativeStore = defineStore('derivative', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
+    submitChase,
     cancelOrder,
     batchCancelOrder,
     submitLimitOrder,

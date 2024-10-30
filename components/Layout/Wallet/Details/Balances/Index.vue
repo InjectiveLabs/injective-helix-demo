@@ -70,7 +70,7 @@ const balancesSorted = computed(() => {
       </CommonSubaccountOptions>
     </div>
 
-    <div class="border-t py-2 mt-2 divide-y">
+    <div class="border-t py-2 mt-2 divide-y max-h-96 overflow-y-auto">
       <LayoutWalletDetailsBalancesRow
         v-for="balance in balancesSorted"
         :key="balance.denom"

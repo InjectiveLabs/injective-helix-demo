@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
-
-const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
-const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
+import { UiSpotMarket } from '@/types'
+import { toBalanceInToken } from '@/app/utils/formatters'
 
 const props = withDefaults(
   defineProps<{
@@ -17,6 +12,15 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const spotStore = useSpotStore()
+const authZStore = useAuthZStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const orderbookStore = useOrderbookStore()
+const { userBalancesWithToken } = useBalance()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const {
   isBuy,
@@ -36,6 +40,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -45,7 +50,40 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelSpotOrder)
 })
 
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
+const accountQuoteBalance = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const balance = userBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
+
+  return toBalanceInToken({
+    value: balance?.availableMargin || 0,
+    decimalPlaces: market.value.quoteToken.decimals
+  })
+})
+
+const highestBid = computed(
+  () => new BigNumberInBase(orderbookStore.buys[0]?.price)
+)
+
+const orderTotalQuote = computed(() =>
+  new BigNumberInBase(price.value).times(quantity.value)
+)
+
+const chaseTotalQuote = computed(() => highestBid.value.times(quantity.value))
+
+const chaseBalanceNeeded = computed(() =>
+  chaseTotalQuote.value.minus(orderTotalQuote.value)
+)
+
+const insufficientBalance = computed(() =>
+  chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+)
+
+const { valueToString: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
@@ -90,6 +128,32 @@ function cancelOrder() {
       backupPromiseCall(async () => {
         await spotStore.fetchSubaccountOrders()
       })
+    })
+}
+
+function chase() {
+  const price = isBuy.value
+    ? orderbookStore.buys[0].price
+    : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
+
+  chaseStatus.setLoading()
+
+  spotStore
+    .submitChase({
+      market: market.value as UiSpotMarket,
+      order: props.order,
+      price: new BigNumberInBase(price)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('trade.orderUpdated') })
+    })
+    .catch($onError)
+    .finally(() => {
+      chaseStatus.setIdle()
     })
 }
 </script>
@@ -179,6 +243,18 @@ function cancelOrder() {
           />
         </p>
       </div>
+    </div>
+
+    <div class="px-2 pt-2 items-center">
+      <AppButton
+        variant="success-outline"
+        class="w-full"
+        v-bind="{ status: chaseStatus }"
+        :disabled="!sharedWalletStore.isAutoSignEnabled || insufficientBalance"
+        @click="chase"
+      >
+        <span>{{ $t('trade.chase') }}</span>
+      </AppButton>
     </div>
 
     <div class="px-2 pt-2 items-center">
