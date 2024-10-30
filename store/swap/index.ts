@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import {
   Route,
   AtomicSwap,
+  QueryAllRoutes,
   QuantityAndFees,
   QueryInputQuantity,
   QueryOutputQuantity,
@@ -52,16 +53,38 @@ export const useSwapStore = defineStore('swap', {
     submitAtomicOrder,
     submitAtomicOrderExactOutput,
 
-    fetchRoutes() {
+    async fetchRoutes() {
       const swapStore = useSwapStore()
 
-      const routes = swapRoutes.map((route) => {
-        return {
-          steps: route.steps,
-          sourceDenom: route.source_denom,
-          targetDenom: route.source_denom
-        }
-      })
+      if (swapRoutes.length) {
+        const routes = swapRoutes.map((route) => {
+          return {
+            steps: route.steps,
+            sourceDenom: route.source_denom,
+            targetDenom: route.target_denom
+          }
+        })
+
+        swapStore.$patch((state) => {
+          state.routes = routes.filter(
+            ({ sourceDenom, targetDenom }) =>
+              !excludedSwapDenoms.includes(sourceDenom) &&
+              !excludedSwapDenoms.includes(targetDenom)
+          )
+        })
+
+        return
+      }
+
+      const queryAllRoutesResponse = await wasmApi.fetchSmartContractState(
+        SWAP_CONTRACT_ADDRESS,
+        new QueryAllRoutes({}).toPayload()
+      )
+
+      const routes =
+        SwapQueryTransformer.contractAllRoutesResponseToContractAllRoutes(
+          queryAllRoutesResponse
+        )
 
       swapStore.$patch((state) => {
         state.routes = routes.filter(
