@@ -31,7 +31,9 @@ import mainnetDerivativeGridMarkets from './grid/derivative/mainnet.json'
 import marketCategoriesJson from './marketCategories.json'
 import restrictedCountriesJson from './restrictedCountries.json'
 import blacklistedAddressesJson from './blacklistedAddresses.json'
-import swapRoutesJson from './swap-routes.json'
+import devnetSwapRoutes from './swap/devnet.json'
+import testnetSwapRoutes from './swap/testnet.json'
+import mainnetSwapRoutes from './swap/mainnet.json'
 
 const NETWORK: Network = import.meta.env.VITE_NETWORK as Network
 const IS_DEVNET: boolean = isDevnet(NETWORK)
@@ -131,6 +133,18 @@ export const getDerivativeGridMarkets = () => {
   return mainnetDerivativeGridMarkets
 }
 
+export const getSwapRoutes = () => {
+  if (IS_DEVNET) {
+    return devnetSwapRoutes
+  }
+
+  if (IS_TESTNET) {
+    return testnetSwapRoutes
+  }
+
+  return mainnetSwapRoutes
+}
+
 export const gitBuild = () => {
   return (
     gitVersion || {
@@ -145,10 +159,10 @@ export const gitBuild = () => {
 export const marketCategories = marketCategoriesJson
 export const restrictedCountries = restrictedCountriesJson
 export const blacklistedAddresses = blacklistedAddressesJson
-export const swapRoutes = swapRoutesJson
 
 export const tokens = getTokens()
 export const spotSlugs = getSpotSlugs()
+export const swapRoutes = getSwapRoutes()
 export const expirySlugs = getExpirySlugs()
 export const derivativeSlugs = getDerivativeSlugs()
 export const spotGridMarkets = getSpotGridMarkets()
