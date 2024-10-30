@@ -317,6 +317,16 @@ export enum SpotGridTradingField {
   IsAssetRebalanceOn = 'isAssetRebalanceOn'
 }
 
+export enum DerivativeGridTradingField {
+  Grids = 'grids',
+  Margin = 'margin',
+  Leverage = 'leverage',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
+  StopLoss = 'stopLoss',
+  TakeProfit = 'takeProfit'
+}
+
 export enum SpotGridMessages {
   MsgCreateSpotLimitOrder = 'injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
   MsgCreateSpotMarketOrder = 'injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
