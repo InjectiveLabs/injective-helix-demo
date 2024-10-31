@@ -9,15 +9,10 @@ import {
   Modal,
   MainPage,
   PortfolioStatusKey,
-  LiquidityRewardsPage,
-  BusEvents,
-  DontShowAgain
+  LiquidityRewardsPage
 } from '@/types'
-import { TRADING_MESSAGES } from '~/app/data/trade'
 
 const route = useRoute()
-const toast = useToast()
-const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
@@ -25,7 +20,6 @@ const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
-const { t } = useLang()
 
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
@@ -108,35 +102,6 @@ function checkOnboarding() {
     return
   }
 
-  if (
-    accountStore.hasBalance &&
-    !sharedWalletStore.isAutoSignEnabled &&
-    !sharedWalletStore.isAuthzWalletConnected &&
-    sharedWalletStore.isUserConnected &&
-    !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign)
-  ) {
-    setTimeout(() => {
-      toast.add({
-        title: t('portfolio.settings.autoSign.enable'),
-        description: t('portfolio.settings.autoSign.allowsYouToTrade'),
-        actions: [
-          {
-            label: t('common.enable'),
-            variant: 'soft',
-            color: 'primary',
-            click: connectAutoSign
-          },
-          {
-            label: t('common.dontShowAgain'),
-            variant: 'soft',
-            color: 'red',
-            click: dontShowAutoSignAgain
-          }
-        ]
-      })
-    }, 5000)
-  }
-
   const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
 
   if (
@@ -155,32 +120,6 @@ function checkOnboarding() {
     modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.FiatOnboard)
   }
-}
-
-function connectAutoSign() {
-  sharedWalletStore
-    .connectAutoSign(TRADING_MESSAGES)
-    .then(() => {
-      useEventBus(BusEvents.AutoSignConnected).emit()
-
-      toast.add({
-        title: t('portfolio.settings.autoSign.enabledToast.title'),
-        description: t('portfolio.settings.autoSign.enabledToast.description')
-      })
-    })
-    .catch($onError)
-}
-
-function dontShowAutoSignAgain() {
-  appStore.$patch({
-    userState: {
-      ...appStore.userState,
-      dontShowAgain: [
-        ...appStore.userState.dontShowAgain,
-        DontShowAgain.AutoSign
-      ]
-    }
-  })
 }
 
 provide(PortfolioStatusKey, portfolioStatus)

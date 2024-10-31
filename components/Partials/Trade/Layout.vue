@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
+import { TRADING_MESSAGES } from '@/app/data/trade'
+
+const toast = useToast()
+const appStore = useAppStore()
+const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 withDefaults(
   defineProps<{
@@ -10,6 +19,64 @@ withDefaults(
     isSpot: false
   }
 )
+
+function connectAutoSign() {
+  sharedWalletStore
+    .connectAutoSign(TRADING_MESSAGES)
+    .then(() => {
+      useEventBus(BusEvents.AutoSignConnected).emit()
+
+      toast.add({
+        title: t('portfolio.settings.autoSign.enabledToast.title'),
+        description: t('portfolio.settings.autoSign.enabledToast.description')
+      })
+    })
+    .catch($onError)
+}
+
+function dontShowAutoSignAgain() {
+  appStore.$patch({
+    userState: {
+      ...appStore.userState,
+      dontShowAgain: [
+        ...appStore.userState.dontShowAgain,
+        DontShowAgain.AutoSign
+      ]
+    }
+  })
+}
+
+onWalletConnected(() => {
+  if (
+    accountStore.hasBalance &&
+    !sharedWalletStore.isAutoSignEnabled &&
+    !sharedWalletStore.isAuthzWalletConnected &&
+    sharedWalletStore.isUserConnected &&
+    !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign) &&
+    sharedWalletStore.wallet !== Wallet.Magic
+  ) {
+    setTimeout(() => {
+      toast.add({
+        title: t('portfolio.settings.autoSign.enable'),
+        description: t('portfolio.settings.autoSign.allowsYouToTrade'),
+        actions: [
+          {
+            label: t('common.enable'),
+            variant: 'soft',
+            color: 'primary',
+            click: connectAutoSign
+          },
+          {
+            label: t('common.dontShowAgain'),
+            variant: 'soft',
+            color: 'red',
+            click: dontShowAutoSignAgain
+          }
+        ]
+      })
+    }, 8000)
+  }
+})
 </script>
 
 <template>
