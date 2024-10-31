@@ -49,7 +49,7 @@ const { valueToFixed: quantityInQuoteToFixed } = useSharedBigNumberFormatter(
 )
 
 const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.total),
+  computed(() => props.worstPrice),
   {
     decimalPlaces: spotMarket?.value?.priceDecimals
   }
@@ -58,7 +58,7 @@ const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
 const { valueToFixed: feeAmountToFixed } = useSharedBigNumberFormatter(
   computed(() => props.feeAmount.abs().toFixed()),
   {
-    decimalPlaces: computed(() => spotMarket?.value?.priceDecimals)
+    decimalPlaces: 18
   }
 )
 
@@ -108,7 +108,7 @@ function toggle() {
           <p class="text-coolGray-400">{{ $t('trade.amount') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p
-            class="font-mono space-x-2"
+            class="font-mono space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
           >
             <AppAmount
@@ -128,7 +128,7 @@ function toggle() {
           </p>
           <div class="border-t flex-1 mx-2" />
           <p
-            class="font-mono space-x-2"
+            class="font-mono space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
           >
             <AppAmount
@@ -147,7 +147,7 @@ function toggle() {
           <p class="text-coolGray-400">{{ $t('trade.price') }}</p>
           <div class="border-t flex-1 mx-2" />
           <p
-            class="font-mono space-x-2"
+            class="font-mono space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
             <AppAmount
@@ -195,7 +195,7 @@ function toggle() {
             <div class="border-t flex-1 mx-2" />
             <p
               v-if="spotMarket"
-              class="font-mono space-x-2"
+              class="font-mono gap-x-2 flex"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsEstFeeRebate)"
             >
               <AppAmount

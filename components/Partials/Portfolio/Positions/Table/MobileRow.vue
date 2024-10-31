@@ -74,14 +74,14 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     quantity.value
       .times(markPrice.value)
@@ -92,27 +92,41 @@ const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value
 })
 
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
   markPrice,
   {
     decimalPlaces: priceDecimals.value
   }
 )
 
-const { valueToString: marginToString } = useSharedBigNumberFormatter(margin, {
+const { valueToFixed: marginToFixed } = useSharedBigNumberFormatter(margin, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
+const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
+const { valueToFixed: percentagePnlToFixed } = useSharedBigNumberFormatter(
   percentagePnl,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToFixed: liquidationPriceToFixed } = useSharedBigNumberFormatter(
+  liquidationPrice,
+  {
+    decimalPlaces: priceDecimals.value
+  }
+)
+
+const { valueToFixed: effectiveLeverageToFixed } = useSharedBigNumberFormatter(
+  effectiveLeverage,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -255,8 +269,12 @@ function sharePosition() {
       <div class="flex-1 flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.amount') }}</p>
         <div v-if="market" class="space-y-1 font-mono">
-          <p>
-            {{ quantityToString }}
+          <p class="flex gap-1">
+            <AppAmount
+              v-bind="{
+                amount: quantityToFixed
+              }"
+            />
             {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
           </p>
         </div>
@@ -267,9 +285,21 @@ function sharePosition() {
           <p>{{ $t('trade.entryMark') }}</p>
         </div>
 
-        <div class="space-y-1 p-2">
-          <p>{{ priceToString }}</p>
-          <p class="text-coolGray-500">{{ markPriceToString }}</p>
+        <div class="space-y-1 p-2 flex flex-col items-end">
+          <p>
+            <AppAmount
+              v-bind="{
+                amount: priceToFixed
+              }"
+            />
+          </p>
+          <p class="text-coolGray-500">
+            <AppAmount
+              v-bind="{
+                amount: markPriceToFixed
+              }"
+            />
+          </p>
         </div>
       </div>
 
@@ -286,8 +316,17 @@ function sharePosition() {
               'text-red-500': pnl.lt(0)
             }"
           >
-            <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
-            <p>{{ percentagePnlToString }}%</p>
+            <p class="flex gap-1">
+              <AppAmount
+                v-bind="{
+                  amount: pnlToFixed
+                }"
+              />
+              <span class="text-coolGray-500">
+                {{ market?.quoteToken.symbol }}
+              </span>
+            </p>
+            <p>{{ percentagePnlToFixed }}%</p>
           </div>
 
           <UIcon
@@ -302,7 +341,14 @@ function sharePosition() {
         <p>{{ $t('portfolio.balances.totalValueUsd') }}</p>
 
         <div v-if="market" class="space-y-1">
-          <p>${{ quantityInUsdToString }}</p>
+          <p class="flex">
+            <span>$</span>
+            <AppUsdAmount
+              v-bind="{
+                amount: quantityInUsdToFixed
+              }"
+            />
+          </p>
         </div>
       </div>
 
@@ -310,7 +356,11 @@ function sharePosition() {
         <p>{{ $t('trade.margin') }}</p>
 
         <div class="space-x-2">
-          <span>{{ marginToString }}</span>
+          <AppAmount
+            v-bind="{
+              amount: marginToFixed
+            }"
+          />
           <button class="p-2 rounded-full bg-coolGray-800" @click="addMargin">
             <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
           </button>
@@ -319,12 +369,24 @@ function sharePosition() {
 
       <div class="flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.liquidation_price') }}</p>
-        <p>{{ liquidationPrice.toFormat(market.priceDecimals) }}</p>
+        <p>
+          <AppAmount
+            v-bind="{
+              amount: liquidationPriceToFixed
+            }"
+          />
+        </p>
       </div>
 
       <div class="justify-between flex items-center px-2 py-4">
         <p>{{ $t('trade.leverage') }}</p>
-        <p>{{ effectiveLeverage.toFormat(2) }}x</p>
+        <span class="flex">
+          <AppAmount
+            v-bind="{
+              amount: effectiveLeverageToFixed
+            }"
+          />x
+        </span>
       </div>
 
       <div class="flex-1 flex items-center px-2 py-4">

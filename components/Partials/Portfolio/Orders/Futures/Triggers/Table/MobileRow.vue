@@ -58,13 +58,13 @@ const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
 )
 
 const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
+  decimalPlaces: priceDecimals.value
 })
 
 const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
-    decimalPlaces: quantityDecimals.value
+    decimalPlaces: priceDecimals.value
   }
 )
 
@@ -173,7 +173,7 @@ function cancelOrder() {
     <div class="flex justify-between items-center px-2 py-4 space-x-2">
       <p>{{ $t('trade.triggerCondition') }}</p>
 
-      <p>
+      <p class="flex gap-1">
         <span class="text-coolGray-500 text-xs font-sans">
           {{ $t('trade.mark_price') }}
         </span>

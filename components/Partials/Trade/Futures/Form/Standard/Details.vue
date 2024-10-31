@@ -76,7 +76,7 @@ const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
 const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
   computed(() => props.worstPrice),
   {
-    decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+    decimalPlaces: derivativeMarket.value.priceDecimals
   }
 )
 
@@ -200,7 +200,7 @@ function toggle() {
             {{ $t('trade.averagePrice') }}
           </p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p class="font-mono space-x-2 flex">
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
               v-bind="{
@@ -217,7 +217,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-400">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="border-t flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p class="font-mono space-x-2 flex">
             <AppAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
@@ -250,7 +250,7 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-400">{{ $t('trade.fee') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p class="font-mono space-x-2">
+            <p class="font-mono space-x-2 flex">
               <AppAmount
                 :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
                 v-bind="{
@@ -276,7 +276,7 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-400">{{ $t('trade.estFeeRebate') }}</p>
             <div class="border-t flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="font-mono">
+            <p v-if="derivativeMarket" class="font-mono flex gap-x-2">
               <AppAmount
                 v-bind="{
                   amount: feeAmountToFixed

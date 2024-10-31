@@ -33,7 +33,7 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
   computed(() => markPrice.value),
   {
     decimalPlaces: props.market.priceDecimals,
@@ -85,7 +85,11 @@ const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
             tooltip: $t('trade.markPrice')
           }"
         >
-          {{ markPriceToString }}
+          <AppAmount
+            v-bind="{
+              amount: markPriceToFixed
+            }"
+          />
         </CommonHeaderTooltip>
       </span>
     </div>

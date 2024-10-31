@@ -451,10 +451,19 @@ export default {
     estLiquidationPrice: 'Est. Liquidation Price',
     lastUpdated: 'Last Updated',
     profitLoss: 'Profit/Loss',
-    takeProfitDetails:
-      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
-    stopLossDetails:
-      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
+    takeProfitDetails: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'When Mark Price reaches ',
+        named('price'),
+        ' it will trigger a Take Profit Market order.'
+      ]),
+
+    stopLossDetails: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'When Mark Price reaches ',
+        named('price'),
+        ' it will trigger a Stop Loss Market order.'
+      ]),
 
     rwa: {
       warning: 'Warning',

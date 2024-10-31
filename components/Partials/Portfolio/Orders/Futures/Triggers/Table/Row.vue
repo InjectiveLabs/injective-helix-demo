@@ -58,13 +58,13 @@ const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
 )
 
 const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
+  decimalPlaces: priceDecimals.value
 })
 
 const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
   triggerPrice,
   {
-    decimalPlaces: quantityDecimals.value
+    decimalPlaces: priceDecimals.value
   }
 )
 

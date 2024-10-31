@@ -79,14 +79,14 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
   quantity,
   {
     decimalPlaces: quantityDecimals.value
   }
 )
 
-const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
+const { valueToFixed: quantityInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     quantity.value
       .times(markPrice.value)
@@ -97,28 +97,42 @@ const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
   decimalPlaces: priceDecimals.value,
   displayAbsoluteDecimalPlace: true
 })
 
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
+const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
   markPrice,
   {
     decimalPlaces: priceDecimals.value
   }
 )
 
-const { valueToString: marginToString } = useSharedBigNumberFormatter(margin, {
+const { valueToFixed: marginToFixed } = useSharedBigNumberFormatter(margin, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
+const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(pnl, {
   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
 })
 
-const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
+const { valueToFixed: percentagePnlToFixed } = useSharedBigNumberFormatter(
   percentagePnl,
+  {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  }
+)
+
+const { valueToFixed: liquidationPriceToFixed } = useSharedBigNumberFormatter(
+  liquidationPrice,
+  {
+    decimalPlaces: priceDecimals.value
+  }
+)
+
+const { valueToFixed: effectiveLeverageToFixed } = useSharedBigNumberFormatter(
+  effectiveLeverage,
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -261,18 +275,33 @@ function sharePosition() {
       </div>
 
       <div v-if="market" class="flex-1 flex items-center justify-end p-2">
-        <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)">
-          {{ quantityToString }}
+        <p
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
+          class="flex gap-1"
+        >
+          <AppAmount
+            v-bind="{
+              amount: quantityToFixed
+            }"
+          />
           {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
         </p>
       </div>
 
-      <div class="flex-1 space-y-1 p-2 text-right">
+      <div class="flex-1 space-y-1 p-2 flex flex-col items-end">
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
-          {{ priceToString }}
+          <AppAmount
+            v-bind="{
+              amount: priceToFixed
+            }"
+          />
         </p>
         <p class="text-coolGray-500">
-          {{ markPriceToString }}
+          <AppAmount
+            v-bind="{
+              amount: markPriceToFixed
+            }"
+          />
         </p>
       </div>
 
@@ -284,13 +313,21 @@ function sharePosition() {
             'text-red-500': pnl.lt(0)
           }"
         >
-          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)">
-            {{ pnlToString }}
+          <p
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
+            class="flex gap-1"
+          >
+            <AppAmount
+              v-bind="{
+                amount: pnlToFixed
+              }"
+            />
+
             <span class="text-coolGray-500">{{
               market.quoteToken.symbol
             }}</span>
           </p>
-          <p>{{ percentagePnlToString }}%</p>
+          <p>{{ percentagePnlToFixed }}%</p>
         </div>
 
         <UIcon
@@ -302,16 +339,28 @@ function sharePosition() {
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <div v-if="market" class="space-y-1">
-          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)">
-            ${{ quantityInUsdToString }}
+          <p
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
+            class="flex"
+          >
+            <span>$</span>
+            <AppUsdAmount
+              v-bind="{
+                amount: quantityInUsdToFixed
+              }"
+            />
           </p>
         </div>
       </div>
 
       <div class="flex-1 flex items-center p-2 space-x-2 justify-end">
-        <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">{{
-          marginToString
-        }}</span>
+        <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
+          <AppAmount
+            v-bind="{
+              amount: marginToFixed
+            }"
+          />
+        </span>
         <button
           class="flex p-2 rounded-full bg-coolGray-800"
           @click="addMargin"
@@ -324,14 +373,22 @@ function sharePosition() {
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
       >
-        {{ liquidationPrice.toFormat(market.priceDecimals) }}
+        <AppAmount
+          v-bind="{
+            amount: liquidationPriceToFixed
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
       >
-        {{ effectiveLeverage.toFormat(2) }}x
+        <AppAmount
+          v-bind="{
+            amount: effectiveLeverageToFixed
+          }"
+        />x
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-center">
