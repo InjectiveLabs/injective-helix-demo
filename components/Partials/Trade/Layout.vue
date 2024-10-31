@@ -47,15 +47,19 @@ function dontShowAutoSignAgain() {
 }
 
 onWalletConnected(() => {
-  if (
-    accountStore.hasBalance &&
-    !sharedWalletStore.isAutoSignEnabled &&
-    !sharedWalletStore.isAuthzWalletConnected &&
-    sharedWalletStore.isUserConnected &&
-    !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign) &&
-    sharedWalletStore.wallet !== Wallet.Magic
-  ) {
-    setTimeout(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  setTimeout(() => {
+    if (
+      accountStore.hasBalance &&
+      !sharedWalletStore.isAutoSignEnabled &&
+      !sharedWalletStore.isAuthzWalletConnected &&
+      sharedWalletStore.isUserConnected &&
+      !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign) &&
+      sharedWalletStore.wallet !== Wallet.Magic
+    ) {
       toast.add({
         title: t('portfolio.settings.autoSign.enable'),
         description: t('portfolio.settings.autoSign.allowsYouToTrade'),
@@ -74,8 +78,8 @@ onWalletConnected(() => {
           }
         ]
       })
-    }, 8000)
-  }
+    }
+  }, 8000)
 })
 </script>
 
