@@ -5,7 +5,7 @@ import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
+const toast = useToast()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -65,7 +65,9 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      notificationStore.success({ title: t('connect.successfullyConnected') })
+      toast.add({
+        title: t('connect.successfullyConnected')
+      })
     )
     .catch((e) => {
       $onError(e)

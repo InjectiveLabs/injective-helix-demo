@@ -3,9 +3,9 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const toast = useToast()
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
@@ -51,7 +51,9 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      notificationStore.success({ title: t('connect.successfullyConnected') })
+      toast.add({
+        title: t('connect.successfullyConnected')
+      })
     )
     .catch((e) => {
       $onError(e)
