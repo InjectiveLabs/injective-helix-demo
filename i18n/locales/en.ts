@@ -34,6 +34,7 @@ export default {
   ...institutional,
   ...liquidityBots,
   ...liquidityProvision,
+
   common: {
     or: 'or',
     ok: 'OK',
@@ -66,6 +67,7 @@ export default {
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
+    learnMore: 'Learn more',
     tradingDocs: 'Trading Docs',
     unauthorized: 'Unauthorized',
     dontShowAgain: "Don't Show Again",
@@ -450,5 +452,7 @@ export default {
     injectiveBridge: 'Injective Bridge',
     processingMessageInfo:
       'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
-  }
+  },
+
+  helix: 'Helix'
 }

@@ -186,6 +186,7 @@ export default {
     endABot: 'End a bot',
     accountEndBot:
       'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
+    helixTradingBots: 'Helix Trading Bots',
 
     step1: {
       priceRange:
@@ -225,5 +226,14 @@ export default {
       stopLossPrice: 'Stop Loss Price',
       takeProfitPrice: 'Take Profit Price'
     }
+  },
+
+  tradingBots: {
+    title: 'Trading Bots',
+    description:
+      'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks',
+    activeBots: 'Active Bots',
+    totalBotsCreated: 'Total Bots Created',
+    setUpNewBot: 'Set up a new Bot'
   }
 }

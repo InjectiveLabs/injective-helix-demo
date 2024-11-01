@@ -1,6 +1,6 @@
 export default defineAppConfig({
   ui: {
-    primary: 'blue',
+    primary: 'azure-blue',
     gray: 'slate',
 
     popover: {
