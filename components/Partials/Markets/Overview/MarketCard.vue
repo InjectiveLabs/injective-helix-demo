@@ -78,14 +78,14 @@ const to = computed(() =>
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
 
-const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: volumeInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() => props.market.volumeInUsd),
   {
     decimalPlaces: 2
   }
 )
 
-const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
+const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
   lastTradedPrice,
   {
     decimalPlaces:
@@ -134,7 +134,11 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
             market.summary.lastPriceChange === SharedMarketChange.Decrease
         }"
       >
-        {{ lastTradedPriceToFormat }}
+        <AppAmount
+          v-bind="{
+            amount: lastTradedPriceToFixed
+          }"
+        />
       </p>
 
       <span
@@ -155,7 +159,14 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
+      <span class="font-mono">
+        <AppUsdAmount
+          v-bind="{
+            amount: volumeInUsdToFixed
+          }"
+        />
+      </span>
+      USD
     </span>
   </NuxtLink>
 </template>

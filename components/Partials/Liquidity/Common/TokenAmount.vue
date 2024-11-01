@@ -12,7 +12,7 @@ const tokenStore = useTokenStore()
 
 const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
 
-const { valueToString } = useSharedBigNumberFormatter(
+const { valueToFixed } = useSharedBigNumberFormatter(
   computed(() => props.amount)
 )
 </script>
@@ -21,6 +21,13 @@ const { valueToString } = useSharedBigNumberFormatter(
   <div v-if="token" class="flex items-center space-x-2">
     <p v-if="index > 0">+</p>
     <CommonTokenIcon is-sm v-bind="{ token }" />
-    <p class="text-coolGray-400 text-xs">{{ valueToString }} {{ symbol }}</p>
+    <p class="text-coolGray-400 text-xs">
+      <AppAmount
+        v-bind="{
+          amount: valueToFixed
+        }"
+      />
+      <span class="ml-1">{{ symbol }}</span>
+    </p>
   </div>
 </template>
