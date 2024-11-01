@@ -3,7 +3,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   isSgtSubaccountId,
   getSubaccountIndex,
-  getMarketSlugFromSubaccountId
+  getMarketSlugFromSubaccountId,
+  isPgtSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
 
@@ -50,6 +51,13 @@ const subaccountOptions = computed(() =>
         }
       }
 
+      if (isPgtSubaccountId(value)) {
+        return {
+          value,
+          display: `PGT ${getMarketSlugFromSubaccountId(value)}`
+        }
+      }
+
       return {
         value,
         display: getSubaccountIndex(value).toString()
@@ -60,8 +68,11 @@ const subaccountOptions = computed(() =>
 
 const subaccountOptionsFiltered = computed(() =>
   subaccountOptions.value.filter(({ value: subaccountId }) => {
+    const isBotsSubaccount =
+      isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
+
     const includeBotsSubaccounts =
-      props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
+      props.includeBotsSubaccounts || !isBotsSubaccount
 
     const hasBalance = aggregatedPortfolioBalances.value[subaccountId]?.some(
       (balance) =>

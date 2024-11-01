@@ -1,11 +1,13 @@
 <script setup lang="ts">
+const { t } = useLang()
+
 const options = [
   {
-    label: 'Live Spot Grid',
+    label: t('sgt.tabs.liveSpotGrid'),
     to: '/portfolio/orders/spot-grid'
   },
   {
-    label: 'Spot Grid History',
+    label: t('sgt.tabs.spotGridHistory'),
     to: '/portfolio/orders/spot-grid/history'
   }
 ]
@@ -14,7 +16,7 @@ const options = [
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.spotGrid') }}</h3>
+      <h3 class="portfolio-title">{{ $t('tradingBots.spotGrid') }}</h3>
     </div>
 
     <div class="flex">

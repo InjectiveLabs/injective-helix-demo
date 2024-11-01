@@ -34,7 +34,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div v-if="appStore.devMode" class="h-header flex border-b">
+    <div v-if="!appStore.devMode" class="h-header flex border-b">
       <AppButtonSelect
         v-for="{ value, disabled } in options"
         :key="value"

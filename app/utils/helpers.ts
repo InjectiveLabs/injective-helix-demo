@@ -148,6 +148,7 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
           hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
       )
       ?.slug.toUpperCase()
+      .replace('-P', '-PERP')
   }
 
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))

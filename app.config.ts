@@ -16,7 +16,8 @@ export default defineAppConfig({
     },
 
     tooltip: {
-      base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap'
+      base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap',
+      width: 'w-full max-w-[200px]'
     },
 
     checkbox: {

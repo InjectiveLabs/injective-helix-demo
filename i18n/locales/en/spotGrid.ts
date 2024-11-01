@@ -225,6 +225,11 @@ export default {
       buyBaseOnStop: 'Buy {symbol} on stop',
       stopLossPrice: 'Stop Loss Price',
       takeProfitPrice: 'Take Profit Price'
+    },
+
+    tabs: {
+      liveSpotGrid: 'Live Spot Grid',
+      spotGridHistory: 'Spot Grid History'
     }
   },
 

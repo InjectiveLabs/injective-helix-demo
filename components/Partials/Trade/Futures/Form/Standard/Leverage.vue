@@ -155,15 +155,6 @@ const leverageNumber = computed({
           class="absolute top-2 bottom-3 right-4 inset-x-0 bg-brand-800 rounded-md"
         />
 
-        <!-- <input
-          v-model="leverageModel"
-          min="0.01"
-          :max="Number(maxLeverageAvailable)"
-          step="0.01"
-          type="range"
-          class="range w-full"
-          @mouseup="onMouseUp"
-        /> -->
         <URange
           v-model="leverageNumber"
           :min="0.01"
