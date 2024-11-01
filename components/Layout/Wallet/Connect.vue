@@ -201,6 +201,7 @@ function toggleShowMoreWallets() {
       </ul>
 
       <AppButton
+        v-if="!selectedWallet"
         class="w-full text-gray-400 hover:text-white mt-4"
         variant="primary-ghost"
         @click="toggleShowMoreWallets"
