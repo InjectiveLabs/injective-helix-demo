@@ -43,7 +43,8 @@ export default defineAppConfig({
         padding: 'pb-0',
         rounded: 'rounded-none',
         marker: {
-          background: 'dark:bg-transparent translate-y-px border-blue-500',
+          background:
+            'dark:bg-transparent translate-y-px border-b border-blue-500',
           rounded: 'rounded-none'
         },
         tab: {
