@@ -40,6 +40,14 @@ const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
     displayAbsoluteDecimalPlace: true
   }
 )
+
+const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
+  lastTradedPrice,
+  {
+    decimalPlaces: props.market.priceDecimals,
+    displayAbsoluteDecimalPlace: true
+  }
+)
 </script>
 
 <template>
@@ -74,7 +82,7 @@ const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
       >
         <AppAmount
           v-bind="{
-            amount: lastTradedPrice.toFixed()
+            amount: lastTradedPriceToFixed
           }"
         />
       </span>
