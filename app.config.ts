@@ -1,6 +1,6 @@
 export default defineAppConfig({
   ui: {
-    primary: 'azure-blue',
+    primary: 'blue',
     gray: 'slate',
 
     card: {
@@ -39,7 +39,7 @@ export default defineAppConfig({
 
     tabs: {
       list: {
-        background: 'dark:bg-transparent border-b border-gray-700',
+        background: 'dark:bg-transparent',
         padding: 'pb-0',
         rounded: 'rounded-none',
         marker: {

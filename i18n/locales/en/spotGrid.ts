@@ -229,11 +229,22 @@ export default {
   },
 
   tradingBots: {
+    all: 'All',
     title: 'Trading Bots',
-    description:
-      'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks',
+    overview: 'Overview',
+    spotGrid: 'Spot Grid',
+    showcase: 'Showcase',
+    totalPnl: 'Total PnL',
+    totalRoi: 'Total ROI',
+    priceRange: 'Price Range',
     activeBots: 'Active Bots',
+    setUpNewBot: 'Set up a new Bot',
+    futuresGrid: 'Futures Grid',
+    totalAssets: 'Total Assets',
+    assetsInBot: 'Assets In Bot',
+    liquidityGrid: 'Liquidity Grid',
     totalBotsCreated: 'Total Bots Created',
-    setUpNewBot: 'Set up a new Bot'
+    description:
+      'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks'
   }
 }

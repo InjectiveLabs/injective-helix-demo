@@ -23,18 +23,20 @@
         </p>
       </div>
       <div class="text-sm">
-        <p class="text-gray-300">2 days</p>
+        <p class="text-gray-300">2 {{ $t('common.days') }}</p>
       </div>
     </div>
 
     <div class="flex justify-between mt-8">
       <div class="text-left">
-        <p class="text-gray-500 mb-1 text-xs">Assets In Bot</p>
+        <p class="text-gray-500 mb-1 text-xs">
+          {{ $t('tradingBots.assetsInBot') }}
+        </p>
         <p class="text-xl font-bold">$300,232.32</p>
       </div>
 
       <div class="text-right">
-        <p class="text-gray-500 mb-1 text-xs">ROI</p>
+        <p class="text-gray-500 mb-1 text-xs">{{ $t('common.roi') }}</p>
         <p class="text-xl font-bold">
           <span class="text-green-500">+123.43%</span>
         </p>
