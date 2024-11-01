@@ -20,13 +20,13 @@
           <h2 class="text-sm font-semibold text-zinc-600">
             {{ $t('tradingBots.activeBots') }}
           </h2>
-          <p class="text-2xl font-bold">123 TODO</p>
+          <p class="text-2xl font-bold">123</p>
         </div>
         <div class="text-center p-4">
           <h2 class="text-sm font-semibold text-zinc-600">
             {{ $t('tradingBots.totalBotsCreated') }}
           </h2>
-          <p class="text-2xl font-bold">456 TODO</p>
+          <p class="text-2xl font-bold">456</p>
         </div>
       </div>
     </div>

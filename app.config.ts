@@ -3,6 +3,10 @@ export default defineAppConfig({
     primary: 'azure-blue',
     gray: 'slate',
 
+    card: {
+      background: 'dark:bg-brand-875'
+    },
+
     popover: {
       background: 'bg-brand-900 dark:bg-brand-900'
     },
@@ -29,6 +33,21 @@ export default defineAppConfig({
         white: {
           outline:
             'shadow-sm bg-white dark:bg-brand-900 text-coolGray-900 dark:text-white ring-1 ring-inset ring-coolGray-300 dark:ring-coolGray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400'
+        }
+      }
+    },
+
+    tabs: {
+      list: {
+        background: 'dark:bg-transparent border-b border-gray-700',
+        padding: 'pb-0',
+        rounded: 'rounded-none',
+        marker: {
+          background: 'dark:bg-transparent translate-y-px border-blue-500',
+          rounded: 'rounded-none'
+        },
+        tab: {
+          active: 'dark:text-primary-500'
         }
       }
     },
