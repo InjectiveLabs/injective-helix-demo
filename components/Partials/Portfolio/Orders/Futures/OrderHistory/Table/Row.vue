@@ -30,29 +30,6 @@ const {
   computed(() => props.order),
   computed(() => false)
 )
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
-
-const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
 </script>
 
 <template>
@@ -114,7 +91,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
         >
           <AppAmount
             v-bind="{
-              amount: priceToFixed
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </span>
@@ -126,7 +104,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       >
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </div>
@@ -135,7 +114,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryTotal)">
           <AppAmount
             v-bind="{
-              amount: totalToFixed
+              amount: total.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </span>
@@ -166,7 +146,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
 
             <AppAmount
               v-bind="{
-                amount: triggerPriceToFixed
+                decimalPlaces: priceDecimals,
+                amount: triggerPrice.toFixed()
               }"
             />
           </div>

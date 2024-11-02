@@ -30,32 +30,6 @@ const {
   computed(() => props.trade),
   computed(() => false)
 )
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: feeToFixed } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: computed(() => {
-    if (fee.value.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)) {
-      return UI_DEFAULT_FEE_MIN_DECIMALS
-    }
-
-    return UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
-})
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
 </script>
 
 <template>
@@ -104,7 +78,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
     >
       <AppAmount
         v-bind="{
-          amount: priceToFixed
+          amount: price.toFixed(),
+          decimalPlaces: priceDecimals
         }"
       />
     </div>
@@ -115,7 +90,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
     >
       <AppAmount
         v-bind="{
-          amount: quantityToFixed
+          amount: quantity.toFixed(),
+          decimalPlaces: quantityDecimals
         }"
       />
     </div>
@@ -124,9 +100,13 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
         <AppAmount
           v-bind="{
-            amount: feeToFixed
+            amount: fee.toFixed(),
+            decimalPlaces: fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+              ? UI_DEFAULT_FEE_MIN_DECIMALS
+              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
-      /></span>
+        />
+      </span>
       <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>
@@ -136,9 +116,11 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
           }"
-      /></span>
+        />
+      </span>
       <span v-if="market" class="text-coolGray-500">
         {{ market.quoteToken.symbol }}
       </span>

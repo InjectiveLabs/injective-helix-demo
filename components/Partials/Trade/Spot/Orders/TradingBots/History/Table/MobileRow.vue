@@ -18,15 +18,15 @@ function onOpenTradingBotDetails() {
   <CommonHeadlessSpotGridStrategy v-bind="{ strategy }">
     <template
       #default="{
-        investmentToFixed,
-        lowerBoundToFixed,
-        percentagePnl,
         pnl,
-        pnlToFixed,
-        upperBoundToFixed,
         market,
         duration,
-        createdAt
+        createdAt,
+        pnlToFixed,
+        percentagePnl,
+        investmentToFixed,
+        lowerBoundToFixed,
+        upperBoundToFixed
       }"
     >
       <div class="p-2 text-xs divide-y border-b border-brand-700">

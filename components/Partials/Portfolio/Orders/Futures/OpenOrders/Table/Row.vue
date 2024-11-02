@@ -42,11 +42,6 @@ const {
 const status = reactive(new Status(StatusType.Idle))
 const chaseStatus = reactive(new Status(StatusType.Idle))
 
-const { valueToString: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
@@ -95,31 +90,6 @@ const insufficientBalance = computed(() =>
     ? false
     : chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
 )
-
-const { valueToString: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
-  filledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
-  unfilledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
 
 function onCancelOrder() {
   if (!isAuthorized.value) {
@@ -197,7 +167,8 @@ function chase() {
       >
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </div>
@@ -208,7 +179,8 @@ function chase() {
       >
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </div>
@@ -219,7 +191,8 @@ function chase() {
       >
         <AppAmount
           v-bind="{
-            amount: unfilledQuantityToFixed
+            decimalPlaces: quantityDecimals,
+            amount: unfilledQuantity.toFixed()
           }"
         />
       </div>
@@ -230,7 +203,8 @@ function chase() {
       >
         <AppAmount
           v-bind="{
-            amount: filledQuantityToFixed
+            decimalPlaces: quantityDecimals,
+            amount: filledQuantity.toFixed()
           }"
         />
       </div>
@@ -256,7 +230,8 @@ function chase() {
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
             <AppAmount
               v-bind="{
-                amount: totalToFixed
+                amount: total.toFixed(),
+                decimalPlaces: priceDecimals
               }"
             />
             <span class="text-coolGray-500 ml-2">

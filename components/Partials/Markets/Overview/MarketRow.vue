@@ -10,21 +10,6 @@ const props = withDefaults(
   {}
 )
 
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.market.summary.lastPrice || 0),
-  {
-    decimalPlaces: props.market.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToFixed: priceChangeToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.market.summary.change),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
 const to = computed(() =>
   props.market.market.type === SharedMarketType.Spot
     ? { name: 'spot-slug', params: { slug: props.market.market.slug } }
@@ -57,7 +42,8 @@ const priceChangeClasses = computed(() => {
       <span class="mr-1">$</span>
       <AppAmount
         v-bind="{
-          amount: priceToFixed
+          amount: market?.summary?.lastPrice || 0,
+          decimalPlaces: market.market.priceDecimals
         }"
       />
     </p>
@@ -66,7 +52,8 @@ const priceChangeClasses = computed(() => {
       <span>
         <AppAmount
           v-bind="{
-            amount: priceChangeToFixed
+            amount: market.summary.change,
+            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
         />
         %

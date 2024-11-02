@@ -32,22 +32,6 @@ const lastTradedPriceChange = computed(() =>
 const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
-
-const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
-  computed(() => markPrice.value),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
 </script>
 
 <template>
@@ -82,7 +66,8 @@ const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
       >
         <AppAmount
           v-bind="{
-            amount: lastTradedPriceToFixed
+            amount: lastTradedPrice.toFixed(),
+            decimalPlaces: market.priceDecimals
           }"
         />
       </span>
@@ -95,7 +80,8 @@ const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
         >
           <AppAmount
             v-bind="{
-              amount: markPriceToFixed
+              amount: markPrice,
+              decimalPlaces: market.priceDecimals
             }"
           />
         </CommonHeaderTooltip>

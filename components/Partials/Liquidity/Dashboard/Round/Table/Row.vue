@@ -2,7 +2,6 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
 
@@ -76,16 +75,6 @@ const totalAmountInUsd = computed(() =>
     ZERO_IN_BASE
   )
 )
-
-const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
-  totalAmountInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
-
-const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
-  marketVolumeInUsd,
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
 </script>
 
 <template>
@@ -114,7 +103,7 @@ const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
       <div class="tracking-wider">
         <AppUsdAmount
           v-bind="{
-            amount: marketVolumeInUsdToFixed
+            amount: marketVolumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -126,7 +115,7 @@ const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
         <p class="font-semibold">
           <AppUsdAmount
             v-bind="{
-              amount: totalAmountInUsdToFixed
+              amount: totalAmountInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>

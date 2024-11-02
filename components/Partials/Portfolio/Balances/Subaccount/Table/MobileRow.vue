@@ -30,58 +30,53 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToFixed: availableAmountToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.availableMargin,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const availableAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.availableMargin,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.accountTotalBalanceInUsd,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const totalAmountInUsd = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.accountTotalBalanceInUsd,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const { valueToFixed: totalAmountToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.accountTotalBalance,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const totalAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.accountTotalBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const { valueToFixed: reservedToFixed, valueToBigNumber: reservedToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      sharedToBalanceInTokenInBase({
-        value: props.balance.inOrderBalance,
-        decimalPlaces: props.balance.token.decimals
-      })
-    ),
-    { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
-  )
+const reserved = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.inOrderBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
+)
 
-const {
-  valueToFixed: unrealizedPnlToFixed,
-  valueToBigNumber: unrealizedToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.unrealizedPnl,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const { valueToBigNumber: reservedToBigNumber } = useSharedBigNumberFormatter(
+  reserved,
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const unrealizedPnl = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.unrealizedPnl,
+    decimalPlaces: props.balance.token.decimals
+  })
+)
+
+const { valueToBigNumber: unrealizedToBigNumber } = useSharedBigNumberFormatter(
+  unrealizedPnl,
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
 )
 
 const isBridgable = computed(() => {
@@ -128,7 +123,8 @@ function onTransfer() {
         <p class="flex items-center gap-1 font-mono">
           <AppAmount
             v-bind="{
-              amount: availableAmountToFixed
+              amount: availableAmount.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
             }"
           />
 
@@ -154,7 +150,8 @@ function onTransfer() {
           <AppAmount
             v-bind="{
               showZeroAsEmDash: true,
-              amount: reservedToFixed
+              amount: reserved.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -170,7 +167,8 @@ function onTransfer() {
           <AppAmount
             v-bind="{
               showZeroAsEmDash: true,
-              amount: unrealizedPnlToFixed
+              amount: unrealizedPnl.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -184,7 +182,8 @@ function onTransfer() {
         <span class="font-mono">
           <AppAmount
             v-bind="{
-              amount: totalAmountToFixed
+              amount: totalAmount.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -201,7 +200,7 @@ function onTransfer() {
           <span class="mr-1">$</span>
           <AppUsdAmount
             v-bind="{
-              amount: totalAmountInUsdToFixed
+              amount: totalAmountInUsd.toFixed()
             }"
           />
         </span>
@@ -219,7 +218,8 @@ function onTransfer() {
             <span class="font-mono">
               <AppAmount
                 v-bind="{
-                  amount: stakedAmountToFixed
+                  amount: stakedAmountToFixed,
+                  decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
                 }"
             /></span>
           </CommonSkeletonSubaccountAmount>

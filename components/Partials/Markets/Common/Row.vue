@@ -29,17 +29,6 @@ const isRWAMarket = computed(() =>
   slugsToIncludeInRWACategory.includes(props.market.slug)
 )
 
-const lastTradedPrice = computed(
-  () => new BigNumberInBase(props.summary.lastPrice || 0)
-)
-
-const { valueToFixed: lastPriceToFixed } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces: props.market.priceDecimals
-  }
-)
-
 const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
   computed(() => props.volumeInUsd),
   {
@@ -130,7 +119,8 @@ function toggleFavorite() {
       <AppAmount
         :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
         v-bind="{
-          amount: lastPriceToFixed
+          amount: summary.lastPrice || 0,
+          decimalPlaces: market.priceDecimals
         }"
       />
     </div>
@@ -153,14 +143,22 @@ function toggleFavorite() {
         </span>
         <span v-else>
           <AppUsdAmount
-            v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+            v-bind="{
+              decimalPlaces: 0,
+              isShowNoDecimals: true,
+              amount: volumeInUsd.toFixed()
+            }"
           />
         </span>
       </span>
       <span v-else :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
         <span>$</span>
         <AppUsdAmount
-          v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+          v-bind="{
+            decimalPlaces: 0,
+            isShowNoDecimals: true,
+            amount: volumeInUsd.toFixed()
+          }"
         />
       </span>
     </div>

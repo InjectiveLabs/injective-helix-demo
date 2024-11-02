@@ -45,29 +45,6 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
-
-const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
-
 function cancelOrder() {
   if (!isCancelable.value) {
     return
@@ -131,7 +108,8 @@ function cancelOrder() {
         <span v-else>
           <AppAmount
             v-bind="{
-              amount: priceToFixed
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
             }"
         /></span>
       </p>
@@ -142,7 +120,8 @@ function cancelOrder() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -163,7 +142,8 @@ function cancelOrder() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
         <span class="ml-1">{{ market.quoteToken.symbol }}</span>
@@ -189,7 +169,8 @@ function cancelOrder() {
         <span>
           <AppAmount
             v-bind="{
-              amount: triggerPriceToFixed
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: priceDecimals
             }"
         /></span>
       </p>

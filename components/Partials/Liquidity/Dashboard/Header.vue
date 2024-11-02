@@ -3,7 +3,6 @@ import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -83,52 +82,41 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const { valueToFixed: totalRewardsInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    Object.entries(totalRewards.value)
-      .reduce((sum, [denom, amount]) => {
-        const token = tokenStore.tokenByDenomOrSymbol(denom)
+const totalRewardsInUsd = computed(() =>
+  Object.entries(totalRewards.value)
+    .reduce((sum, [denom, amount]) => {
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-        const amountInUsd = amount
-          .toBase(token?.decimals || 18)
-          .times(tokenStore.tokenUsdPrice(token))
+      const amountInUsd = amount
+        .toBase(token?.decimals || 18)
+        .times(tokenStore.tokenUsdPrice(token))
 
-        return sum.plus(amountInUsd)
-      }, ZERO_IN_BASE)
-      .minus(rewardsThisRoundInUsd.value)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+      return sum.plus(amountInUsd)
+    }, ZERO_IN_BASE)
+    .minus(rewardsThisRoundInUsd.value)
 )
 
-const { valueToFixed: rewardsThisRoundInUsdToFixed } =
-  useSharedBigNumberFormatter(rewardsThisRoundInUsd, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
+const volumeThisRound = computed(() =>
+  campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
+    const market = spotStore.markets.find(
+      (market) => market.marketId === campaign.marketId
+    )
 
-const { valueToFixed: volumeThisRoundToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === campaign.marketId
-      )
+    if (!market) {
+      return sum
+    }
 
-      if (!market) {
-        return sum
-      }
+    const userVolume = sharedToBalanceInTokenInBase({
+      value: campaign.userScore || 0,
+      decimalPlaces: market.quoteToken.decimals
+    })
 
-      const userVolume = sharedToBalanceInTokenInBase({
-        value: campaign.userScore || 0,
-        decimalPlaces: market.quoteToken.decimals
-      })
+    const userVolumeInUsd = userVolume.times(
+      tokenStore.tokenUsdPrice(market.quoteToken)
+    )
 
-      const userVolumeInUsd = userVolume.times(
-        tokenStore.tokenUsdPrice(market.quoteToken)
-      )
-
-      return sum.plus(userVolumeInUsd)
-    }, ZERO_IN_BASE)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+    return sum.plus(userVolumeInUsd)
+  }, ZERO_IN_BASE)
 )
 </script>
 
@@ -156,7 +144,7 @@ const { valueToFixed: volumeThisRoundToFixed } = useSharedBigNumberFormatter(
         <h3 class="text-xl font-semibold">
           <AppUsdAmount
             v-bind="{
-              amount: rewardsThisRoundInUsdToFixed
+              amount: rewardsThisRoundInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>
@@ -175,7 +163,7 @@ const { valueToFixed: volumeThisRoundToFixed } = useSharedBigNumberFormatter(
         <h3 class="text-xl font-semibold">
           <AppUsdAmount
             v-bind="{
-              amount: volumeThisRoundToFixed
+              amount: volumeThisRound.toFixed()
             }"
           />
           <span class="ml-1">USD</span>
@@ -188,7 +176,7 @@ const { valueToFixed: volumeThisRoundToFixed } = useSharedBigNumberFormatter(
         <h3 class="text-xl font-semibold">
           <AppUsdAmount
             v-bind="{
-              amount: totalRewardsInUsdToFixed
+              amount: totalRewardsInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>

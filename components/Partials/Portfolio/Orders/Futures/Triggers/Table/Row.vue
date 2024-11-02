@@ -45,29 +45,6 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
-
-const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
-
 function cancelOrder() {
   if (!isCancelable.value) {
     return
@@ -124,7 +101,8 @@ function cancelOrder() {
         <span v-else>
           <AppAmount
             v-bind="{
-              amount: priceToFixed
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </span>
@@ -133,7 +111,8 @@ function cancelOrder() {
       <div class="flex-1 flex items-center p-2 justify-end">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </div>
@@ -148,7 +127,8 @@ function cancelOrder() {
       <div v-if="market" class="flex-1 flex items-center p-2 justify-end">
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
         <span class="ml-1">{{ market.quoteToken.symbol }}</span>
@@ -170,9 +150,11 @@ function cancelOrder() {
         <span>
           <AppAmount
             v-bind="{
-              amount: triggerPriceToFixed
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: priceDecimals
             }"
-        /></span>
+          />
+        </span>
       </div>
 
       <div class="p-2 flex items-center flex-1 justify-center">

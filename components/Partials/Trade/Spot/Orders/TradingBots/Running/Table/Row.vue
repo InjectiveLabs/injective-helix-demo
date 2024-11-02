@@ -18,17 +18,17 @@ function onOpenTradingBotDetails() {
   <CommonHeadlessSpotGridStrategy v-bind="{ strategy }">
     <template
       #default="{
-        investmentToFixed,
-        lowerBoundToFixed,
-        percentagePnl,
         pnl,
-        pnlToFixed,
-        removeStrategy,
-        removeStatus,
-        upperBoundToFixed,
         market,
         duration,
-        createdAt
+        createdAt,
+        pnlToFixed,
+        removeStatus,
+        percentagePnl,
+        removeStrategy,
+        investmentToFixed,
+        lowerBoundToFixed,
+        upperBoundToFixed
       }"
     >
       <div class="flex p-2 text-xs">
@@ -74,7 +74,8 @@ function onOpenTradingBotDetails() {
                 v-bind="{
                   amount: investmentToFixed
                 }"
-            /></span>
+              />
+            </span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>

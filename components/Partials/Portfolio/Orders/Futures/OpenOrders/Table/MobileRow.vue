@@ -39,11 +39,6 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
 const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
@@ -94,31 +89,6 @@ const insufficientBalance = computed(() =>
     ? false
     : chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
 )
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
-  filledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
-  unfilledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
 
 function onCancelOrder() {
   status.setLoading()
@@ -186,7 +156,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </p>
@@ -197,7 +168,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: quantityToString
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -208,7 +180,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: unfilledQuantityToFixed
+            decimalPlaces: quantityDecimals,
+            amount: unfilledQuantity.toFixed()
           }"
         />
       </p>
@@ -219,7 +192,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: filledQuantityToFixed
+            decimalPlaces: quantityDecimals,
+            amount: filledQuantity.toFixed()
           }"
         />
       </p>
@@ -240,7 +214,8 @@ function chase() {
       <p>
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
         <span class="text-coolGray-500 ml-1">

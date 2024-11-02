@@ -85,9 +85,8 @@ withDefaults(
 
         <div v-if="!isStableQuoteAsset" class="flex justify-between">
           <p>{{ $t('trade.usd_value') }}</p>
-          lastTradedPriceInUsdToFixed
           <p class="font-mono font-semibold">
-            <AppAmount
+            <AppUsdAmount
               v-bind="{
                 amount: lastTradedPriceInUsdToFixed
               }"

@@ -8,10 +8,7 @@ import {
 import { usdtToken } from '@shared/data/token'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
-} from '@/app/utils/constants'
+import { CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP } from '@/app/utils/constants'
 import { spotGridMarkets } from '@/app/json'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
@@ -69,26 +66,22 @@ const marketVolume = computed(() =>
   )
 )
 
-const { valueToFixed: totalRewardsInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    rewardsWithToken.value.reduce((total, reward) => {
-      return total.plus(
+const totalRewardsInUsd = computed(() =>
+  rewardsWithToken.value.reduce(
+    (total, reward) =>
+      total.plus(
         new BigNumberInBase(reward.value).times(
           tokenStore.tokenUsdPrice(reward.token)
         )
-      )
-    }, ZERO_IN_BASE)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+      ),
+    ZERO_IN_BASE
+  )
 )
 
-const { valueToFixed: marketVolumeInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    marketVolume.value.times(
-      market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
-    )
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+const marketVolumeInUsd = computed(() =>
+  marketVolume.value.times(
+    market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
+  )
 )
 
 const sgtScAddress = computed(() => {
@@ -162,7 +155,7 @@ onMounted(() => {
         <p class="font-semibold text-base mb-2">
           <AppUsdAmount
             v-bind="{
-              amount: totalRewardsInUsdToFixed
+              amount: totalRewardsInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>
@@ -194,7 +187,7 @@ onMounted(() => {
         <p>
           <AppUsdAmount
             v-bind="{
-              amount: marketVolumeInUsdToFixed
+              amount: marketVolumeInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>

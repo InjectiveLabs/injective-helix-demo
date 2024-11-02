@@ -28,32 +28,6 @@ const {
   computed(() => props.trade),
   computed(() => true)
 )
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: feeToFixed } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: computed(() => {
-    if (fee.value.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)) {
-      return UI_DEFAULT_FEE_MIN_DECIMALS
-    }
-
-    return UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
-})
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-})
 </script>
 
 <template>
@@ -93,7 +67,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </p>
@@ -104,7 +79,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <p>
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -117,7 +93,10 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
         <span>
           <AppAmount
             v-bind="{
-              amount: feeToFixed
+              amount: fee.toFixed(),
+              decimalPlaces: fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+                ? UI_DEFAULT_FEE_MIN_DECIMALS
+                : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -134,7 +113,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
         <span>
           <AppAmount
             v-bind="{
-              amount: totalToFixed
+              amount: total.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </span>

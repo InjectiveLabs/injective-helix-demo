@@ -28,32 +28,6 @@ const {
   computed(() => props.trade),
   computed(() => true)
 )
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: feeToFixed } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: computed(() => {
-    if (fee.value.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)) {
-      return UI_DEFAULT_FEE_MIN_DECIMALS
-    }
-
-    return UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  })
-})
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-})
 </script>
 
 <template>
@@ -88,7 +62,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <div class="flex-1 flex items-center justify-end p-2">
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </div>
@@ -96,7 +71,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       <div class="flex-1 flex items-center justify-end p-2">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </div>
@@ -105,7 +81,10 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
         <p class="flex">
           <AppAmount
             v-bind="{
-              amount: feeToFixed
+              amount: fee.toFixed(),
+              decimalPlaces: fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+                ? UI_DEFAULT_FEE_MIN_DECIMALS
+                : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
             }"
           />
           <span class="ml-1 text-coolGray-500">
@@ -119,7 +98,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
           <p v-if="market">
             <AppAmount
               v-bind="{
-                amount: totalToFixed
+                amount: total.toFixed(),
+                decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
               }"
             />
             <span class="ml-1 text-coolGray-500">

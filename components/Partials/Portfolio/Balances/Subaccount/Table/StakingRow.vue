@@ -11,7 +11,8 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
           <span class="text-white font-mono ml-1">
             <AppAmount
               v-bind="{
-                amount: stakedAmountToFixed
+                amount: stakedAmountToFixed,
+                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
             />
           </span>
@@ -21,7 +22,8 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
           <span class="mr-1">$</span>
           <AppUsdAmount
             v-bind="{
-              amount: stakedAmountInUsdToFixed
+              amount: stakedAmountInUsdToFixed,
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
         </div>

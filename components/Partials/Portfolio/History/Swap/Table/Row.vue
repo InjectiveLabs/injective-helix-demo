@@ -15,8 +15,8 @@ const {
   routeSymbols,
   formattedFees,
   sourceTokenWithBalance,
-  sourceBalanceFormattedToFixed,
   destinationTokenWithBalance,
+  sourceBalanceFormattedToFixed,
   destinationBalanceFormattedToFixed
 } = useSwapHistory(computed(() => props.swap))
 </script>
