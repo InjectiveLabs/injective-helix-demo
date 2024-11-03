@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+
 const props = withDefaults(
   defineProps<{
     amount: string
@@ -11,10 +13,6 @@ const props = withDefaults(
 const tokenStore = useTokenStore()
 
 const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
-
-const { valueToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.amount)
-)
 </script>
 
 <template>
@@ -24,7 +22,8 @@ const { valueToFixed } = useSharedBigNumberFormatter(
     <p class="text-coolGray-400 text-xs">
       <AppAmount
         v-bind="{
-          amount: valueToFixed
+          amount: amount,
+          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
         }"
       />
       <span class="ml-1">{{ symbol }}</span>

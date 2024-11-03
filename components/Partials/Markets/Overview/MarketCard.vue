@@ -78,22 +78,6 @@ const to = computed(() =>
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
 
-const { valueToFixed: volumeInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.market.volumeInUsd),
-  {
-    decimalPlaces: 2
-  }
-)
-
-const { valueToFixed: lastTradedPriceToFixed } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces:
-      props.market?.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
 const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2
 })
@@ -136,7 +120,9 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       >
         <AppAmount
           v-bind="{
-            amount: lastTradedPriceToFixed
+            amount: lastTradedPrice.toFixed(),
+            decimalPlaces:
+              market?.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
           }"
         />
       </p>
@@ -162,7 +148,8 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       <span class="font-mono">
         <AppUsdAmount
           v-bind="{
-            amount: volumeInUsdToFixed
+            amount: market.volumeInUsd.toFixed(),
+            decimalPlaces: 2
           }"
         />
       </span>
