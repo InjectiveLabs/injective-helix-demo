@@ -65,11 +65,6 @@ const investment = computed(() => {
     .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
 })
 
-const { valueToFixed: investmentToFixed } = useSharedBigNumberFormatter(
-  investment,
-  { decimalPlaces: props.decimalPlaces }
-)
-
 const subaccountBalances = computed(
   () =>
     accountStore.subaccountBalancesMap[
@@ -138,10 +133,6 @@ const pnl = computed(() => {
     )
 })
 
-const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(pnl, {
-  decimalPlaces: props.decimalPlaces
-})
-
 const percentagePnl = computed(() =>
   pnl.value.dividedBy(investment.value).times(100).toFixed(2)
 )
@@ -156,9 +147,6 @@ const upperBound = computed(() => {
   )
 })
 
-const { valueToFixed: upperBoundToFixed } =
-  useSharedBigNumberFormatter(upperBound)
-
 const lowerBound = computed(() => {
   if (!market.value) {
     return ZERO_IN_BASE
@@ -168,9 +156,6 @@ const lowerBound = computed(() => {
     market.value.quoteToken.decimals - market.value.baseToken.decimals
   )
 })
-
-const { valueToFixed: lowerBoundToFixed } =
-  useSharedBigNumberFormatter(lowerBound)
 
 const creationExecutionPrice = computed(
   () => new BigNumberInBase(props.strategy.executionPrice)
@@ -304,17 +289,13 @@ useIntervalFn(
   <slot
     v-bind="{
       pnl,
-      pnlToFixed,
       market,
       duration,
       stopLoss,
       createdAt,
       investment,
-      investmentToFixed,
       upperBound,
-      upperBoundToFixed,
       lowerBound,
-      lowerBoundToFixed,
       takeProfit,
       percentagePnl,
       removeStrategy,

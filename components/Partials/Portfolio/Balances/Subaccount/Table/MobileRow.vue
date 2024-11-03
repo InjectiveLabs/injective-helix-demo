@@ -208,7 +208,7 @@ function onTransfer() {
     </div>
 
     <CommonHeadlessTotalBalance v-if="balance.denom === injToken.denom">
-      <template #default="{ stakedAmountToFixed, stakedAmountInUsdToFixed }">
+      <template #default="{ stakedAmount, stakedAmountInUsd }">
         <div
           class="items-center text-xs shrink-0 p-2 flex justify-between border-b"
         >
@@ -216,12 +216,8 @@ function onTransfer() {
 
           <CommonSkeletonSubaccountAmount>
             <span class="font-mono">
-              <AppAmount
-                v-bind="{
-                  amount: stakedAmountToFixed,
-                  decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-                }"
-            /></span>
+              <AppAmount v-bind="{ amount: stakedAmount.toFixed() }" />
+            </span>
           </CommonSkeletonSubaccountAmount>
         </div>
 
@@ -232,11 +228,7 @@ function onTransfer() {
 
           <CommonSkeletonSubaccountAmount>
             <span class="font-mono">
-              <AppUsdAmount
-                v-bind="{
-                  amount: stakedAmountInUsdToFixed
-                }"
-              />
+              <AppUsdAmount v-bind="{ amount: stakedAmountInUsd.toFixed() }" />
             </span>
           </CommonSkeletonSubaccountAmount>
         </div>

@@ -91,11 +91,11 @@ function disconnect() {
               </p>
 
               <CommonHeadlessTotalBalance>
-                <template #default="{ accountTotalBalanceInUsdToFixed }">
+                <template #default="{ accountTotalBalanceInUsd }">
                   <p class="text-2xl font-semibold my-2">
                     <span>$</span>
                     <AppUsdAmount
-                      v-bind="{ amount: accountTotalBalanceInUsdToFixed }"
+                      v-bind="{ amount: accountTotalBalanceInUsd.toFixed() }"
                     />
                   </p>
                 </template>

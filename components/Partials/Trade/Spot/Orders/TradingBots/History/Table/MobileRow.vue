@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BusEvents } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -22,11 +23,10 @@ function onOpenTradingBotDetails() {
         market,
         duration,
         createdAt,
-        pnlToFixed,
         percentagePnl,
-        investmentToFixed,
-        lowerBoundToFixed,
-        upperBoundToFixed
+        investment,
+        lowerBound,
+        upperBound
       }"
     >
       <div class="p-2 text-xs divide-y border-b border-brand-700">
@@ -52,13 +52,10 @@ function onOpenTradingBotDetails() {
         >
           <p>{{ $t('sgt.lowerBound') }}</p>
 
-          <p class="space-x-1 font-mono">
+          <p class="space-x-1 flex font-mono">
             <span>
-              <AppAmount
-                v-bind="{
-                  amount: lowerBoundToFixed
-                }"
-            /></span>
+              <AppAmount v-bind="{ amount: lowerBound.toFixed() }" />
+            </span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
@@ -68,13 +65,10 @@ function onOpenTradingBotDetails() {
         >
           <p>{{ $t('sgt.upperBound') }}</p>
 
-          <p class="space-x-1 font-mono">
+          <p class="space-x-1 flex font-mono">
             <span>
-              <AppAmount
-                v-bind="{
-                  amount: upperBoundToFixed
-                }"
-            /></span>
+              <AppAmount v-bind="{ amount: upperBound.toFixed() }" />
+            </span>
             <span>{{ market.quoteToken.symbol }}</span>
           </p>
         </div>
@@ -84,11 +78,12 @@ function onOpenTradingBotDetails() {
         >
           <p>{{ $t('sgt.totalAmount') }}</p>
 
-          <p class="space-x-1 font-mono">
+          <p class="space-x-1 flex font-mono">
             <span>
               <AppAmount
                 v-bind="{
-                  amount: investmentToFixed
+                  amount: investment.toFixed(),
+                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
             /></span>
             <span>{{ market.quoteToken.symbol }}</span>
@@ -105,7 +100,8 @@ function onOpenTradingBotDetails() {
             <p class="text-sm">
               <AppAmount
                 v-bind="{
-                  amount: pnlToFixed
+                  amount: pnl.toFixed(),
+                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
               />
               <span class="ml-1">
