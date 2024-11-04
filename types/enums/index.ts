@@ -417,6 +417,11 @@ export enum TradingInterface {
   TradingBots = 'trading-bots'
 }
 
+export enum SgtMarketType {
+  Spot = 'spot',
+  Derivative = 'derivative'
+}
+
 export enum SpotOrdersStandardView {
   Balances = 'balances',
   OpenOrders = 'openOrders',
