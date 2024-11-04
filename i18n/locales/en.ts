@@ -39,7 +39,6 @@ export default {
     or: 'or',
     ok: 'OK',
     BTC: 'BTC',
-    day: 'Day',
     roi: 'ROI',
     docs: 'docs',
     back: 'Back',
