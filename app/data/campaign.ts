@@ -687,8 +687,11 @@ export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = ''
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
+    inj1zq9sah9c69ef3qq0qxh28j3fak8zjlg7x4zs0s: 425160,
     inj15dsfeau89748sppgr379akut95esqyyf4ejs92: 375960,
+    inj1rmv2f2cf02et6mtph7w5sgfr3yt84tkgdz8358: 182160,
     inj152nhgl25zrdtl5x7772mqztuulcyderc4ekned: 141196,
+    inj1d07m5lngl5hs2wv0k52sqjp7qah8030gr2awf7: 75984,
     inj14wz8l5lxzscuxvmgj9tpn2fc934xey988rz0wk: 70504,
     inj1pwyzkut2dlaw75hldfz4rg86g2jrhhrphdkj40: 23868,
     inj1n7d89dzf0qlx5l56lj3wlfy6ddmhjd24q5e8q9: 20080,
@@ -756,5 +759,6 @@ export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [FIRST_CAMPAIGN_NAME]
 export const CAMPAIGN_WINNER_MESSAGE =
   'Signing this transaction verifies ownership of this wallet and will not incur any gas fees.'
 
-// todo: put FIRST_CAMPAIGN_NAME in array once winners are announced
-export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [] as string[]
+export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
+  FIRST_CAMPAIGN_NAME
+] as string[]

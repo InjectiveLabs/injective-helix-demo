@@ -10,10 +10,9 @@
       </h2>
 
       <p class="font-semibold text-center mb-8 uppercase">
-        As of September 23, 2024
+        As of October 25, 2024
       </p>
 
-      <!-- <h3 class="text-lg font-bold mb-2 uppercase">COMPETITION DESCRIPTION:</h3> -->
       <p class="mb-4">
         The Sponsor and Injective Helix Trading Competition and Giveaway respect
         and protect the privacy of its users and participants. This Privacy
@@ -30,6 +29,18 @@
         questions or concerns. The terms “Injective,” “we,” and “us” include the
         Sponsor as defined in the Rules, Terms, and Conditions of the Helix
         Trading Competition and Giveaway.
+      </p>
+
+      <p class="mb-4">
+        Regardless of where our servers are located, your personal data may be
+        processed by us in the United States, where data protection and privacy
+        regulations may or may not be to the same level of protection as in
+        other parts of the world. BY USING THE SERVICE, OR PARTICIPATING IN THE
+        COMPETITION, YOU UNEQUIVOCALLY AND UNAMBIGUOUSLY CONSENT TO THE
+        COLLECTION AND PROCESSING IN THE UNITED STATES OF ANY INFORMATION
+        COLLECTED OR OBTAINED BY US THROUGH VOLUNTARY SUBMISSIONS, AND, TO THE
+        EXTENT POSSIBLE, THAT U.S. LAW GOVERNS ANY SUCH COLLECTION AND
+        PROCESSING.
       </p>
 
       <section class="space-y-6">
@@ -77,7 +88,7 @@
               organization of the event.
             </li>
           </ul>
-          <p>
+          <p class="mt-4">
             Where required by applicable law, we indicate whether and why you
             must provide us with your Personal Information, as well as the
             consequences of failing to do so.
@@ -220,10 +231,11 @@
               example to send you marketing communications.
             </li>
 
-            We need to use your Personal Information to provide you with the
-            Services, for example to give you access to the Services, to respond
-            to your inquiries, or to register
-            <li>you for an event.</li>
+            <li>
+              We need to use your Personal Information to provide you with the
+              Services, for example to give you access to the Services, to
+              respond to your inquiries, or to register you for an event.
+            </li>
 
             <li>
               We need to use your Personal Information to comply with a legal
@@ -266,6 +278,44 @@
               process certain analytics data on our behalf. These providers may
               also collect information about your use of other websites, apps,
               and online resources.
+
+              <ul class="list-disc ml-4 space-y-2 mt-2">
+                <li>
+                  Our Service may use Google Analytics, provided by Google LLC,
+                  1600 Amphitheatre Parkway, Mountain View, CA 94043 (“Google”).
+                  Google Analytics uses cookies and similar technologies to
+                  collect and analyze information about use of the Services and
+                  report on activities and trends. This service may collect
+                  information regarding the use of other websites, apps and
+                  online resources. For more information on how Google uses data
+                  when you use our Site or Service, please follow this link:
+                  <NuxtLink
+                    href="https://policies.google.com/technologies/partner-sites"
+                    class="text-blue-500 hover:text-blue-600"
+                  >
+                    https://policies.google.com/technologies/partner-sites
+                  </NuxtLink>
+                  . You may be able to opt-out of some or all of Google
+                  Analytics features by downloading the Google Analytics opt-out
+                  browser add-on, available at,
+                  <NuxtLink
+                    href="https://tools.google.com/dlpage/gaoptout"
+                    class="text-blue-500 hover:text-blue-600"
+                  >
+                    https://tools.google.com/dlpage/gaoptout
+                  </NuxtLink>
+                  . For more information about interest-based ads, or to opt out
+                  of having your web browsing information used for behavioral
+                  advertising purposes, please visit
+                  <NuxtLink
+                    href="http://optout.aboutads.info"
+                    class="text-blue-500 hover:text-blue-600"
+                  >
+                    http://optout.aboutads.info
+                  </NuxtLink>
+                  .
+                </li>
+              </ul>
             </li>
             <li>
               <span class="font-semibold">Third-party content.</span> The
@@ -280,7 +330,7 @@
               policies and related privacy settings before using these features.
             </li>
           </ul>
-          <p>
+          <p class="mt-4">
             You can find more information about your rights and choices, and how
             to opt out of the use of certain cookies in the section
             <span class="italic">Your Rights and Choices</span> below.
@@ -428,7 +478,7 @@
             </li>
           </ul>
 
-          <p>
+          <p class="mt-4">
             You may exercise these rights by contacting us using the contact
             details at the end of this Policy. Please note that there are
             exceptions and limitations to each of these rights, and that while
@@ -468,6 +518,23 @@
 
         <article>
           <p class="font-bold">
+            <span class="min-w-8">C.</span> Our Local Representative
+          </p>
+          <p>Below is the contact information of our EEA Representative.</p>
+          <div class="text-center mt-4">
+            <p>Injective Foundation</p>
+            <p>Tel:1.345.233.0742</p>
+            <NuxtLink
+              class="text-blue-500 hover:text-blue-600"
+              href="mailto:campaign@injective.foundation"
+            >
+              campaign@injective.foundation
+            </NuxtLink>
+          </div>
+        </article>
+
+        <article>
+          <p class="font-bold">
             <span class="min-w-8">7.</span> Use of Services by Minors
           </p>
           <p>
@@ -487,8 +554,17 @@
         </article>
 
         <article>
-          <p class="font-bold"><span class="min-w-8">8.</span> Retention</p>
+          <p class="font-bold">
+            <span class="min-w-8">8.</span> Storage and Retention
+          </p>
           <p>
+            If you are the Services, or participating in the Competition, from
+            outside of the USA, you understand that your connection will be
+            through and to servers located in the USA, and the information you
+            provide will be securely stored in our servers and internal systems
+            located within the USA.
+          </p>
+          <p class="mt-4">
             We take measures to delete your Personal Information or keep it in a
             form that does not permit identifying you when this information is
             no longer necessary for the purposes for which we process it, unless
@@ -503,8 +579,48 @@
 
         <article>
           <p class="font-bold">
-            <span class="min-w-8">9.</span> Updates to this Privacy Policy
+            <span class="min-w-8">9.</span> California Privacy Rights.
           </p>
+          <p>
+            California law allows California residents to request information
+            regarding our disclosures in the prior calendar year, if any, of
+            their personally identifiable information to third parties. To make
+            such a request, please contact us at campaign@injective.foundation
+            with "Request for Privacy Information" in the subject line. Please
+            include enough detail for us to locate your file; at a minimum, your
+            name, email, and username, if any. We will attempt to provide you
+            with the requested information within thirty (30) days of receipt.
+            We reserve our right not to respond to requests sent more than once
+            in a calendar year, or requests submitted to an address other than
+            the one posted in this notice. Please note that this law does not
+            cover all information sharing. Our disclosure only includes
+            information covered by the law.
+          </p>
+        </article>
+
+        <article>
+          <p class="font-bold">
+            <span class="min-w-8">10.</span> Nevada Privacy Rights.
+          </p>
+          <p>
+            If you are a Nevada resident, we do not “sell” your “covered
+            information” as such terms are defined in the Nevada Privacy of
+            Information Collected on the Internet from Consumers Act as amended
+            by Nevada Revised Statutes Chapter 603A (“Nevada Privacy Law” or
+            “NPL”). Though we do not sell your covered information, as someone
+            that is subject to the NPL, you have a right of access in relation
+            to the covered information of yours that we have or process,
+            including why we process it, and other parties with whom we may
+            share such information. If you would like to tell us not to sell
+            your information in the future, please email us at
+            campaign@injective.foundation with your name, postal address,
+            telephone number, and email address with “Nevada Do Not sell” in the
+            subject line.
+          </p>
+        </article>
+
+        <article>
+          <p class="font-bold">Updates to this Privacy Policy</p>
           <p>
             We may make changes to this Privacy Policy. The “Effective Date” at
             the top of this page indicates when this Privacy Policy became
@@ -518,21 +634,24 @@
         </article>
 
         <article>
-          <p class="font-bold"><span class="min-w-8">10.</span> Contact Us</p>
+          <p class="font-bold"><span class="min-w-8">11.</span> Contact Us</p>
           <p>
             Unless otherwise indicated in this Privacy Policy, the Sponsor is
             responsible or is the “data controller” for the processing of
             Personal Information described in this Privacy Policy. If you have
             any questions about this Privacy Policy or our privacy practices in
-            general, please contact us via email at
+            general, please contact us:
+          </p>
+          <div class="text-center mt-4">
+            <p>Injective Foundation</p>
+            <p>Tel:1.345.233.0742</p>
             <NuxtLink
               class="text-blue-500 hover:text-blue-600"
               href="mailto:campaign@injective.foundation"
             >
               campaign@injective.foundation
             </NuxtLink>
-            <span class="-ml-1">.</span>
-          </p>
+          </div>
         </article>
       </section>
     </div>
