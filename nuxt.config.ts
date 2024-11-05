@@ -31,7 +31,7 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: ['@funken-studio/sitemap-nuxt-3'],
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxtjs/tailwindcss'],
 
   // @ts-ignore
   i18n: {
