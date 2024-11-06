@@ -56,12 +56,14 @@ export default defineAppConfig({
 
     selectMenu: {
       background: 'dark:bg-brand-900',
+
       option: {
         active: 'dark:bg-brand-800',
         selectedIcon: {
           base: 'w-4 h-4'
         }
-      }
+      },
+      input: 'dark:bg-brand-900'
     }
   }
 })

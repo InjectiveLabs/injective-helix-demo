@@ -126,7 +126,7 @@ provide(PortfolioStatusKey, portfolioStatus)
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative min-h-screen">
     <LayoutNavbar />
     <main class="relative pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />

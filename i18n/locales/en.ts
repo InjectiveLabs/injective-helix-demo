@@ -40,6 +40,7 @@ export default {
     ok: 'OK',
     BTC: 'BTC',
     roi: 'ROI',
+    max: 'Max',
     docs: 'docs',
     back: 'Back',
     base: 'Base',

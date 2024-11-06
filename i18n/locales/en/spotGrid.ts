@@ -251,5 +251,21 @@ export default {
     totalBotsCreated: 'Total Bots Created',
     description:
       'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks'
+  },
+
+  liquidityBots: {
+    title: 'Liquidity Bots',
+    description: 'You can provide liquidity within the range you specify.',
+    selectPair: 'Select Pair',
+    setLiquidityBot: 'Set Up a Liquidity Bot',
+    volatilityStrategy: 'Volatility Strategy',
+    deposit: 'Deposit',
+    depositDescription: 'You can add liquidity with a single asset',
+    depositAmount: 'Deposit Amount',
+    trailingBoundaries: 'Trailing Boundaries',
+    currentPrice: 'Current Price',
+    stopLoss: 'Stop Loss',
+    takeProfit: 'Take Profit',
+    currentPriceQuotePerBase: 'Current price {quote} per {base}'
   }
 }

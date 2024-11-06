@@ -422,6 +422,12 @@ export enum SgtMarketType {
   Derivative = 'derivative'
 }
 
+export enum VolatilityStrategyType {
+  Passive = 'passive',
+  Moderate = 'moderate',
+  Aggressive = 'aggressive'
+}
+
 export enum SpotOrdersStandardView {
   Balances = 'balances',
   OpenOrders = 'openOrders',
