@@ -10,7 +10,7 @@ const derivativeStore = useDerivativeStore()
 
 withDefaults(
   defineProps<{
-    marketPriceMap: Record<string, string>
+    marketPriceMap: Record<string, BigNumberInBase>
   }>(),
   {}
 )

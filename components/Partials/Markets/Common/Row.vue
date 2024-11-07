@@ -16,7 +16,7 @@ const props = withDefaults(
     market: UiMarketWithToken
     volumeInUsd: BigNumberInBase
     summary: SharedUiMarketSummary
-    marketPriceMap?: Record<string, string>
+    marketPriceMap?: Record<string, BigNumberInBase>
   }>(),
   {
     isMarketsPage: false,
@@ -33,11 +33,9 @@ const isRWAMarket = computed(() =>
 
 const lastTradedPrice = computed(
   () =>
-    new BigNumberInBase(
-      props.marketPriceMap[props.market.marketId] ||
-        props.summary.lastPrice ||
-        0
-    )
+    props.marketPriceMap[props.market.marketId]?.toFixed() ||
+    props.summary.lastPrice ||
+    0
 )
 
 const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
