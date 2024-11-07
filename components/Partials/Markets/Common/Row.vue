@@ -12,13 +12,15 @@ import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
-    summary: SharedUiMarketSummary
-    volumeInUsd: BigNumberInBase
     isMarketsPage?: boolean
+    market: UiMarketWithToken
+    volumeInUsd: BigNumberInBase
+    summary: SharedUiMarketSummary
+    marketPriceMap?: Record<string, string>
   }>(),
   {
-    isMarketsPage: false
+    isMarketsPage: false,
+    marketPriceMap: () => ({})
   }
 )
 
@@ -27,6 +29,15 @@ const isMobile = useIsMobile()
 
 const isRWAMarket = computed(() =>
   slugsToIncludeInRWACategory.includes(props.market.slug)
+)
+
+const lastTradedPrice = computed(
+  () =>
+    new BigNumberInBase(
+      props.marketPriceMap[props.market.marketId] ||
+        props.summary.lastPrice ||
+        0
+    )
 )
 
 const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
@@ -119,7 +130,7 @@ function toggleFavorite() {
       <AppAmount
         :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
         v-bind="{
-          amount: summary.lastPrice || 0,
+          amount: lastTradedPrice,
           decimalPlaces: market.priceDecimals
         }"
       />

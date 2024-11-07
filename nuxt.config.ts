@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
   },
 
+  // @ts-ignore
   colorMode: {
     preference: 'dark',
     fallback: 'dark',
