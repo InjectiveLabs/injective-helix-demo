@@ -3,6 +3,17 @@ export default defineAppConfig({
     primary: 'blue',
     gray: 'slate',
 
+    modal: {
+      background: 'bg-brand-900 dark:bg-brand-900',
+      overlay: {
+        background: 'dark:bg-black/50'
+      }
+    },
+
+    card: {
+      background: 'bg-brand-900 dark:bg-brand-900'
+    },
+
     popover: {
       background: 'bg-brand-900 dark:bg-brand-900'
     },
