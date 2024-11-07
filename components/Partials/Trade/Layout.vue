@@ -46,12 +46,14 @@ function dontShowAutoSignAgain() {
   })
 }
 
+let timeout: NodeJS.Timeout | undefined
+
 onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  setTimeout(() => {
+  timeout = setTimeout(() => {
     if (
       accountStore.hasBalance &&
       !sharedWalletStore.isAutoSignEnabled &&
@@ -80,6 +82,12 @@ onWalletConnected(() => {
       })
     }
   }, 8000)
+})
+
+onUnmounted(() => {
+  if (timeout) {
+    clearTimeout(timeout)
+  }
 })
 </script>
 
