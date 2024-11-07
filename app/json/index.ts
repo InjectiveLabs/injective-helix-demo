@@ -123,6 +123,13 @@ export const getDerivativeGridMarkets = () => {
   }
 
   if (IS_TESTNET) {
+    return [
+      {
+        slug: 'inj-usdt-perp',
+        contractAddress: 'inj1vlcry9phmky442w44f3kkkn5sqyhn987yjer6n'
+      }
+    ]
+
     return testnetDerivativeGridMarkets
   }
 

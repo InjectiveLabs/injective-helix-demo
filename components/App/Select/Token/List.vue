@@ -85,7 +85,7 @@ onMounted(() => {
         balance: balance.balance
       }"
       :key="balance.denom"
-      class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
+      class="px-2 py-3 hover:bg-coolGray-700 cursor-pointer rounded text-white"
       @click="onClick"
     />
   </div>

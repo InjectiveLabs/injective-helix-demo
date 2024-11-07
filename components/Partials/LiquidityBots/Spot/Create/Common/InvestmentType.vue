@@ -48,12 +48,12 @@ function changeType(type: InvestmentTypeGst) {
       <p class="font-bold text-sm">{{ $t('liquidity.deposit') }}</p>
     </div>
     <div class="flex">
-      <div class="border border-gray-700 rounded bg-gray-950 p-1">
+      <div class="border border-coolGray-700 rounded bg-coolGray-950 p-1">
         <button
           v-for="option in options"
           :key="option.value"
           class="rounded py-1 px-3 text-xs"
-          :class="{ 'bg-gray-800': option.value === investmentTypeValue }"
+          :class="{ 'bg-coolGray-800': option.value === investmentTypeValue }"
           @click="changeType(option.value)"
         >
           {{ option.display }}

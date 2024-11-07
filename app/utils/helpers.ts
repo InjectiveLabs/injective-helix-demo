@@ -106,7 +106,9 @@ export const addressAndMarketSlugToSubaccountId = (
   ethAddress: string,
   slug: string
 ) => {
-  const marketHex = stringToHex(getProperSlug(slug))
+  const marketSlug = slug.replace('-perp', '-p')
+
+  const marketHex = stringToHex(getProperSlug(marketSlug))
 
   return `${ethAddress}${'0'.repeat(66 - 42 - marketHex.length)}${marketHex}`
 }

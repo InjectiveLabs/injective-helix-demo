@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -49,7 +50,7 @@ const isProfit = computed(() => {
 
 <template>
   <div class="border p-4">
-    <p class="text-gray-400">
+    <p class="text-coolGray-400">
       {{ $t(`portfolio.home.balance.title`) }}
     </p>
 
@@ -69,16 +70,19 @@ const isProfit = computed(() => {
               </CommonSkeletonSubaccountAmount>
 
               <button
-                class="text-gray-500 flex justify-center cursor-pointer"
+                class="text-coolGray-500 flex justify-center cursor-pointer"
                 @click="appStore.toggleHideBalances"
               >
-                <SharedIcon
+                <UIcon
                   v-if="appStore.userState.preferences.isHideBalances"
-                  name="hide"
-                  class="w-5 h-3 lg:w-8 lg:h-5 -translate-x-[2px]"
+                  :name="NuxtUiIcons.EyeSlash"
+                  class="w-5 h-5 lg:w-7 lg:h-7 -translate-x-[2px]"
                 />
-
-                <SharedIcon v-else name="show" class="w-5 lg:w-7" />
+                <UIcon
+                  v-else
+                  :name="NuxtUiIcons.Eye"
+                  class="w-5 h-5 lg:w-7 lg:h-7"
+                />
               </button>
             </div>
 

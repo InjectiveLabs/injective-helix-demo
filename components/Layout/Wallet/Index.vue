@@ -60,7 +60,7 @@ function onSignIn() {
       "
       @click="onSignIn"
     >
-      <span>{{ $t('connect.logIn') }}</span>
+      <span>{{ $t('connect.login') }}</span>
     </AppButton>
     <AppButton
       class="max-sm:px-2 max-sm:py-1"
@@ -76,6 +76,7 @@ function onSignIn() {
 
   <AppModal
     v-bind="{
+      isMd: true,
       isOpen: isModalOpen,
       isTransparent: true,
       parentClass: 'md:min-w-[450px]'

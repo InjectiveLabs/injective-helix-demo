@@ -220,7 +220,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       "
       class="mb-2"
     >
-      <p class="text-xs font-semibold text-gray-500 mb-2">
+      <p class="text-xs font-semibold text-coolGray-500 mb-2">
         {{ $t('sgt.available') }}
         {{ quoteAmountToString }}
         {{ market.quoteToken.symbol }}
@@ -252,7 +252,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
           InvestmentTypeGst.BaseAndQuote
       "
     >
-      <p class="text-xs font-semibold text-gray-500 mb-2">
+      <p class="text-xs font-semibold text-coolGray-500 mb-2">
         {{ $t('sgt.available') }}
         {{ baseAmountToString }}
         {{ market.baseToken.symbol }}

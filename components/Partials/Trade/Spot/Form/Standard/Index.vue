@@ -47,7 +47,7 @@ const {
         :key="value"
         v-bind="{ value }"
         v-model="orderTypeValue"
-        class="text-sm font-semibold text-gray-600 px-4 py-2"
+        class="text-sm font-semibold text-coolGray-600 px-4 py-2"
         active-classes="border-b border-blue-500 text-white"
       >
         {{ $t(`trade.${value}`) }}

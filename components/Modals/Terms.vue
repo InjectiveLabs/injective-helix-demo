@@ -51,8 +51,8 @@ function closeModal() {
         </template>
       </i18n-t>
 
-      <ul class="p-4 bg-gray-900 mt-6 text-xs text-gray-300 rounded-lg">
-        <li class="font-bold text-gray-200">
+      <ul class="p-4 bg-coolGray-900 mt-6 text-xs text-coolGray-300 rounded-lg">
+        <li class="font-bold text-coolGray-200">
           {{ $t('terms.title') }}
         </li>
         <li class="mt-2">

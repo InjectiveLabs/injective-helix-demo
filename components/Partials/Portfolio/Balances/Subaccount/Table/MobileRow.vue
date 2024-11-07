@@ -30,60 +30,53 @@ const hasCw20Balance = computed(() => {
   )
 })
 
-const { valueToString: availableAmountToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.availableMargin,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const availableAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.availableMargin,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.accountTotalBalanceInUsd,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const totalAmountInUsd = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.accountTotalBalanceInUsd,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.accountTotalBalance,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const totalAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.accountTotalBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const {
-  valueToString: reservedToString,
-  valueToBigNumber: reservedToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.inOrderBalance,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const reserved = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.inOrderBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 
-const {
-  valueToString: unrealizedPnlToString,
-  valueToBigNumber: unrealizedToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.balance.unrealizedPnl,
-      decimalPlaces: props.balance.token.decimals
-    })
-  ),
-  { decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS }
+const { valueToBigNumber: reservedToBigNumber } = useSharedBigNumberFormatter(
+  reserved,
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
+)
+
+const unrealizedPnl = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.balance.unrealizedPnl,
+    decimalPlaces: props.balance.token.decimals
+  })
+)
+
+const { valueToBigNumber: unrealizedToBigNumber } = useSharedBigNumberFormatter(
+  unrealizedPnl,
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+  }
 )
 
 const isBridgable = computed(() => {
@@ -117,7 +110,7 @@ function onTransfer() {
       <CommonTokenIcon v-bind="{ token: balance.token }" />
       <div>
         <p class="font-medium">{{ balance.token.symbol }}</p>
-        <p class="text-xs text-gray-500">{{ balance.token.name }}</p>
+        <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
       </div>
     </div>
 
@@ -128,14 +121,19 @@ function onTransfer() {
 
       <CommonSkeletonSubaccountAmount>
         <p class="flex items-center gap-1 font-mono">
-          {{ availableAmountToString }}
+          <AppAmount
+            v-bind="{
+              amount: availableAmount.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+            }"
+          />
 
           <span
             v-if="hasCw20Balance"
-            class="text-xs text-gray-400 font-semibold"
+            class="text-xs text-coolGray-400 font-semibold"
           >
             <AppTooltip
-              class="ml-2 text-gray-200"
+              class="ml-2 text-coolGray-200"
               :content="$t('account.balanceIncludesCw20Balance')"
             />
           </span>
@@ -147,9 +145,15 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.inUseReserved') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span v-if="reservedToBigNumber.eq(0)"> - </span>
+        <span v-if="reservedToBigNumber.eq(0)"> &mdash; </span>
         <span v-else class="font-mono">
-          {{ reservedToString }}
+          <AppAmount
+            v-bind="{
+              showZeroAsEmDash: true,
+              amount: reserved.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+            }"
+          />
         </span>
       </CommonSkeletonSubaccountAmount>
     </div>
@@ -158,9 +162,15 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.unrealizedPnl') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span v-if="unrealizedToBigNumber.eq(0)"> - </span>
+        <span v-if="unrealizedToBigNumber.eq(0)"> &mdash; </span>
         <span v-else class="font-mono">
-          {{ unrealizedPnlToString }}
+          <AppAmount
+            v-bind="{
+              showZeroAsEmDash: true,
+              amount: unrealizedPnl.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+            }"
+          />
         </span>
       </CommonSkeletonSubaccountAmount>
     </div>
@@ -169,7 +179,14 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.total') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span class="font-mono">{{ totalAmountToString }}</span>
+        <span class="font-mono">
+          <AppAmount
+            v-bind="{
+              amount: totalAmount.toFixed(),
+              decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
       </CommonSkeletonSubaccountAmount>
     </div>
 
@@ -179,7 +196,14 @@ function onTransfer() {
       <p>{{ $t('portfolio.balances.totalValueUsd') }}:</p>
 
       <CommonSkeletonSubaccountAmount>
-        <span class="font-mono">${{ totalAmountInUsdToString }}</span>
+        <span class="font-mono">
+          <span class="mr-1">$</span>
+          <AppUsdAmount
+            v-bind="{
+              amount: totalAmountInUsd.toFixed()
+            }"
+          />
+        </span>
       </CommonSkeletonSubaccountAmount>
     </div>
 
@@ -191,9 +215,9 @@ function onTransfer() {
           <p>{{ $t('trade.staked') }}:</p>
 
           <CommonSkeletonSubaccountAmount>
-            <span class="font-mono">{{
-              stakedAmount.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
-            }}</span>
+            <span class="font-mono">
+              <AppAmount v-bind="{ amount: stakedAmount.toFixed() }" />
+            </span>
           </CommonSkeletonSubaccountAmount>
         </div>
 
@@ -203,9 +227,9 @@ function onTransfer() {
           <p>{{ $t('trade.stakedUsd') }}:</p>
 
           <CommonSkeletonSubaccountAmount>
-            <span class="font-mono">{{
-              stakedAmountInUsd.toFormat(UI_DEFAULT_DISPLAY_DECIMALS)
-            }}</span>
+            <span class="font-mono">
+              <AppUsdAmount v-bind="{ amount: stakedAmountInUsd.toFixed() }" />
+            </span>
           </CommonSkeletonSubaccountAmount>
         </div>
       </template>

@@ -1,3 +1,4 @@
+import { NuxtUiIcons } from '@shared/types'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
@@ -133,26 +134,26 @@ export const USER_MENU_ITEMS: MenuItem[] = [
     type: MenuItemType.Link,
     label: 'navigation.portfolio',
     to: { name: MainPage.Portfolio },
-    icon: 'pie-chart',
+    icon: NuxtUiIcons.PieChart,
     isExact: true,
     name: MainPage.Portfolio
   },
   {
     type: MenuItemType.Link,
     label: 'navigation.balances',
-    icon: 'bar-chart',
+    icon: NuxtUiIcons.BarChart,
     to: { name: PortfolioSubPage.Balances }
   },
   {
     type: MenuItemType.Link,
     label: 'navigation.positions',
-    icon: 'graph-up',
+    icon: NuxtUiIcons.Position,
     to: { name: PortfolioSubPage.Positions }
   },
   {
     type: MenuItemType.Dropdown,
     label: 'navigation.orders',
-    icon: 'nested-list',
+    icon: NuxtUiIcons.Order,
     name: 'portfolio-orders',
     items: [
       {
@@ -181,7 +182,7 @@ export const USER_MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Dropdown,
     label: 'navigation.history',
-    icon: 'clock-outline',
+    icon: NuxtUiIcons.PortfolioHistory,
     name: 'portfolio-history',
     items: [
       {
@@ -204,13 +205,13 @@ export const USER_MENU_ITEMS: MenuItem[] = [
   {
     type: MenuItemType.Link,
     label: 'navigation.subaccounts',
-    icon: 'box-list',
+    icon: NuxtUiIcons.SubAccount,
     to: { name: PortfolioSubPage.Subaccounts }
   },
   {
     type: MenuItemType.Link,
     label: 'navigation.settings',
-    icon: 'gear-outline',
+    icon: NuxtUiIcons.SettingsOutline,
     to: { name: PortfolioSubPage.Settings },
     name: PortfolioSubPage.Settings
   }

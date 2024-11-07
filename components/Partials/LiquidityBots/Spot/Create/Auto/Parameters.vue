@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiSpotMarket, SpotGridTradingField } from '@/types'
 
@@ -65,7 +66,7 @@ function toggleAdvancedSettings() {
         class="transition-all duration-300"
         :class="{ 'rotate-180': isOpen }"
       >
-        <SharedIcon name="chevron-down" is-md />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-4 w-4 min-w-4" />
       </div>
     </div>
 

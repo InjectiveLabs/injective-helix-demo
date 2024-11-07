@@ -1,12 +1,16 @@
 import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { getExplorerUrl } from '@shared/utils/network'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   toBalanceInToken,
   convertCoinToBalancesWithToken
 } from '@/app/utils/formatters'
-import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import {
+  DATE_TIME_DISPLAY,
+  MAX_QUOTE_DECIMALS,
+  UI_DEFAULT_AGGREGATION_DECIMALS
+} from '@/app/utils/constants'
 
 export function useSwapHistory(swap: Ref<AtomicSwap>) {
   const tokenStore = useTokenStore()
@@ -32,7 +36,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
 
   const destinationBalanceFormatted = computed(() => {
     if (!destinationTokenWithBalance.value) {
-      return
+      return ZERO_IN_BASE
     }
 
     return toBalanceInToken({
@@ -42,17 +46,27 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
     }).toString()
   })
 
+  const { valueToFixed: destinationBalanceFormattedToFixed } =
+    useSharedBigNumberFormatter(destinationBalanceFormatted, {
+      decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+    })
+
   const sourceBalanceFormatted = computed(() => {
     if (!sourceTokenWithBalance.value) {
-      return
+      return ZERO_IN_BASE
     }
 
     return toBalanceInToken({
       value: sourceTokenWithBalance.value.balance,
       decimalPlaces: sourceTokenWithBalance.value.token.decimals,
       fixedDecimals: 3
-    }).toString()
+    })
   })
+
+  const { valueToFixed: sourceBalanceFormattedToFixed } =
+    useSharedBigNumberFormatter(sourceBalanceFormatted, {
+      decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+    })
 
   const formattedFees = computed(() =>
     swap.value.fees.map(({ denom, amount }) => {
@@ -64,11 +78,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
         fixedDecimals: MAX_QUOTE_DECIMALS
       })
 
-      if (new BigNumberInBase(amountInToken).lt(0.001)) {
-        return `<0.001 ${token?.symbol}`
-      }
-
-      return `${amountInToken} ${token?.symbol}`
+      return { amount: amountInToken, symbol: token?.symbol }
     })
   )
 
@@ -92,8 +102,10 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
     routeSymbols,
     formattedFees,
     sourceBalanceFormatted,
+    sourceBalanceFormattedToFixed,
     sourceTokenWithBalance,
     destinationTokenWithBalance,
-    destinationBalanceFormatted
+    destinationBalanceFormatted,
+    destinationBalanceFormattedToFixed
   }
 }

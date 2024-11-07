@@ -5,6 +5,7 @@ import {
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -60,7 +61,7 @@ function revokeAll() {
       @click="toggle"
     >
       <span class="transition-transform" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
       <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>

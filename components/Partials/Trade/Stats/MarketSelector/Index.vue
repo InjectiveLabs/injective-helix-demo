@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { IsSpotKey, CommonCyTags, UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
@@ -107,20 +108,19 @@ watch(
           </template>
         </CommonHeaderTooltip>
 
-        <p class="text-gray-400 text-xs">{{ market.baseToken.name }}</p>
+        <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
       </div>
 
       <div class="absolute left-full">
-        <SharedIcon
+        <UIcon
           v-if="market.isVerified"
-          name="check-shield"
-          is-sm
-          class="text-green-500 w-4 h-4 min-w-4"
+          :name="NuxtUiIcons.CheckShieldOutline"
+          class="text-green-500 w-5 h-5 min-w-5"
         />
       </div>
     </div>
 
-    <div class="text-gray-400 ml-auto flex items-center">
+    <div class="text-coolGray-400 ml-auto flex items-center">
       <div
         class="ml-10 mr-4 text-sm"
         :data-cy="dataCyTag(CommonCyTags.MarketDropdown)"
@@ -128,7 +128,10 @@ watch(
         {{ $t('trade.allMarkets') }}
       </div>
 
-      <SharedIcon name="chevron" is-sm class="-rotate-90" />
+      <UIcon
+        :name="NuxtUiIcons.ChevronLeft2"
+        class="h-3 w-3 min-w-3 -rotate-90"
+      />
     </div>
   </div>
 

@@ -23,7 +23,7 @@ const { valueToString: lastTradePriceToString } = useSharedBigNumberFormatter(
     <p class="text-xl font-semibold">
       {{ lastTradePriceToString }}
     </p>
-    <p class="text-gray-500 text-xs">
+    <p class="text-coolGray-500 text-xs">
       {{ market.quoteToken.symbol }} per {{ market.baseToken.symbol }}
     </p>
   </div>

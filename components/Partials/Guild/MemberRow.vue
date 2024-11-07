@@ -58,7 +58,7 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <tr class="border-b hover:bg-gray-800 text-sm">
+  <tr class="border-b hover:bg-coolGray-800 text-sm">
     <td class="p-3">{{ rank }}</td>
     <td>
       <NuxtLink

@@ -11,12 +11,19 @@ import {
 import { tendermintApi } from '@/app/Services'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { NETWORK, CHAIN_ID, ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
-import { Modal, NoticeBanner, TradingLayout, OrderbookLayout } from '@/types'
+import {
+  Modal,
+  NoticeBanner,
+  TradingLayout,
+  OrderbookLayout,
+  DontShowAgain
+} from '@/types'
 
 export interface UserBasedState {
-  favoriteMarkets: string[]
-  bannersViewed: NoticeBanner[]
   modalsViewed: Modal[]
+  bannersViewed: NoticeBanner[]
+  dontShowAgain: DontShowAgain[]
+  favoriteMarkets: string[]
 
   preferences: {
     isHideBalances: boolean
@@ -63,6 +70,7 @@ const initialStateFactory = (): AppStoreState => ({
   userState: {
     modalsViewed: [],
     bannersViewed: [],
+    dontShowAgain: [],
     favoriteMarkets: [],
 
     preferences: {

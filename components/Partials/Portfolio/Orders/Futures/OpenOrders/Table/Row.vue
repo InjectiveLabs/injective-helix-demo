@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { MsgType } from '@injectivelabs/ts-types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-import { PerpetualMarketCyTags } from '@/types'
+import { PerpetualMarketCyTags, UiDerivativeMarket } from '@/types'
+import { toBalanceInToken } from '@/app/utils/formatters'
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
+const orderbookStore = useOrderbookStore()
+const { userBalancesWithToken } = useBalance()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
@@ -26,6 +29,7 @@ const {
   market,
   quantity,
   leverage,
+  isReduceOnly,
   priceDecimals,
   filledQuantity,
   quantityDecimals,
@@ -36,10 +40,7 @@ const {
 )
 
 const status = reactive(new Status(StatusType.Idle))
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
+const chaseStatus = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
   if (!sharedWalletStore.isAuthzWalletConnected) {
@@ -49,30 +50,46 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
+const accountQuoteBalance = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
   }
-)
 
-const { valueToString: filledQuantityToString } = useSharedBigNumberFormatter(
-  filledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
+  const balance = userBalancesWithToken.value.find(
+    (balance) => balance.denom === market.value?.quoteDenom
+  )
 
-const { valueToString: unfilledQuantityToString } = useSharedBigNumberFormatter(
-  unfilledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
+  return toBalanceInToken({
+    value: balance?.availableMargin || 0,
+    decimalPlaces: market.value.quoteToken.decimals
+  })
 })
+
+const newChasePrice = computed(() => {
+  if (!market.value) {
+    return new BigNumberInBase(0)
+  }
+
+  const price = isBuy.value
+    ? orderbookStore.buys[0]?.price
+    : orderbookStore.sells[0]?.price
+
+  return new BigNumberInBase(price || 0)
+})
+
+const newChaseMargin = computed(() => {
+  return newChasePrice.value.times(total.value).dividedBy(price.value)
+})
+
+const chaseBalanceNeeded = computed(() =>
+  newChaseMargin.value.minus(total.value)
+)
+
+const insufficientBalance = computed(() =>
+  isReduceOnly.value
+    ? false
+    : chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
+)
 
 function onCancelOrder() {
   if (!isAuthorized.value) {
@@ -89,6 +106,32 @@ function onCancelOrder() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
+    })
+}
+
+function chase() {
+  const price = isBuy.value
+    ? orderbookStore.buys[0].price
+    : orderbookStore.sells[0].price
+
+  if (!market.value || !price) {
+    return
+  }
+
+  chaseStatus.setLoading()
+
+  derivativeStore
+    .submitChase({
+      market: market.value as UiDerivativeMarket,
+      order: props.order,
+      price: new BigNumberInBase(price)
+    })
+    .then(() => {
+      notificationStore.success({ title: t('trade.orderUpdated') })
+    })
+    .catch($onError)
+    .then(() => {
+      chaseStatus.setIdle()
     })
 }
 </script>
@@ -122,34 +165,54 @@ function onCancelOrder() {
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersPrice)"
       >
-        {{ priceToString }}
+        <AppAmount
+          v-bind="{
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersAmount)"
       >
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersUnfilled)"
       >
-        {{ unfilledQuantityToString }}
+        <AppAmount
+          v-bind="{
+            decimalPlaces: quantityDecimals,
+            amount: unfilledQuantity.toFixed()
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersFilled)"
       >
-        {{ filledQuantityToString }}
+        <AppAmount
+          v-bind="{
+            decimalPlaces: quantityDecimals,
+            amount: filledQuantity.toFixed()
+          }"
+        />
       </div>
 
       <div class="flex-1 flex items-center p-2 justify-end">
         <span
           v-if="leverage.isNaN()"
-          class="text-gray-400"
+          class="text-coolGray-400"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
         >
           {{ $t('trade.not_available_n_a') }}
@@ -165,10 +228,30 @@ function onCancelOrder() {
       <div class="flex-1 flex items-center p-2 justify-end">
         <div class="space-y-1">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
-            {{ totalToString }}
-            <span class="text-gray-500">{{ market.quoteToken.symbol }}</span>
+            <AppAmount
+              v-bind="{
+                amount: total.toFixed(),
+                decimalPlaces: priceDecimals
+              }"
+            />
+            <span class="text-coolGray-500 ml-2">
+              {{ market.quoteToken.symbol }}
+            </span>
           </p>
         </div>
+      </div>
+
+      <div class="flex-1 p-2 flex justify-center">
+        <button
+          class="hover:underline text-green-500 font-semibold disabled:text-gray-600 disabled:cursor-not-allowed flex items-center space-x-1"
+          :disabled="
+            !sharedWalletStore.isAutoSignEnabled || insufficientBalance
+          "
+          @click="chase"
+        >
+          <span>{{ $t('trade.chase') }}</span>
+          <AssetLogoSpinner v-if="chaseStatus.isLoading()" class="!w-4 !h-4" />
+        </button>
       </div>
 
       <div class="flex-1 p-2 flex justify-center">

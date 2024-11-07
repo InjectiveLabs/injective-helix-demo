@@ -93,7 +93,7 @@ onMounted(() => {
       <AppButton
         v-if="!isPortfolioBalancePage"
         variant="primary-ghost"
-        class="w-full text-gray-400 hover:text-white"
+        class="w-full text-coolGray-400 hover:text-white"
         @click="onCloseModal"
       >
         {{ $t('onboarding.qr.skip') }}

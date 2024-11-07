@@ -67,7 +67,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
         <h2 class="mb-1 text-2xl font-semibold leading-7">
           {{ t('trade.swap.swappedSuccessfully') }}
         </h2>
-        <p class="text-gray-400">
+        <p class="text-coolGray-400">
           <span v-if="swapInfo">
             {{
               $t('trade.swap.youHaveSwapped', {

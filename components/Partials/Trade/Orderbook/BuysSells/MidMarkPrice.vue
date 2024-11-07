@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { SharedMarketChange } from '@shared/types'
-import { stableCoinSymbols } from '@/app/data/token'
+import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
@@ -12,8 +11,6 @@ const props = withDefaults(
     isSpot: false
   }
 )
-
-const tokenStore = useTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -35,44 +32,6 @@ const lastTradedPriceChange = computed(() =>
 const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
-
-const { valueToString: lastPriceInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    lastTradedPrice.value.times(
-      tokenStore.tokenUsdPrice(props.market.quoteToken)
-    )
-  ),
-  {
-    decimalPlaces: computed(() => {
-      return sharedGetExactDecimalsFromNumber(
-        lastTradedPrice.value
-          .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
-          .toFixed(props.market.priceDecimals)
-      )
-    }),
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: lastTradedPriceToString } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
-  computed(() => markPrice.value),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const isStableQuoteAsset = computed(() =>
-  stableCoinSymbols.includes(props.market.quoteToken.symbol)
-)
 </script>
 
 <template>
@@ -80,13 +39,13 @@ const isStableQuoteAsset = computed(() =>
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">
-      <SharedIcon
+      <UIcon
         v-if="
           [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
             lastTradedPriceChange
           )
         "
-        name="arrow"
+        :name="NuxtUiIcons.ArrowLeft"
         class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
         :class="{
           'text-red-500 -rotate-90':
@@ -105,16 +64,26 @@ const isStableQuoteAsset = computed(() =>
             lastTradedPriceChange === SharedMarketChange.Increase
         }"
       >
-        {{ lastTradedPriceToString }}
-      </span>
-
-      <span v-if="!isStableQuoteAsset" class="mx-2 text-xs text-gray-400">
-        ${{ lastPriceInUsdToString }}
+        <AppAmount
+          v-bind="{
+            amount: lastTradedPrice.toFixed(),
+            decimalPlaces: market.priceDecimals
+          }"
+        />
       </span>
 
       <span v-if="!isSpot" class="text-xs ml-2">
-        <CommonHeaderTooltip v-bind="{ tooltip: 'Mark Price' }">
-          {{ markPriceToString }}
+        <CommonHeaderTooltip
+          v-bind="{
+            tooltip: $t('trade.markPrice')
+          }"
+        >
+          <AppAmount
+            v-bind="{
+              amount: markPrice,
+              decimalPlaces: market.priceDecimals
+            }"
+          />
         </CommonHeaderTooltip>
       </span>
     </div>

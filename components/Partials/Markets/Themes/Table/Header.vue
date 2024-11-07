@@ -26,7 +26,7 @@ const { t } = useLang()
 </script>
 
 <template>
-  <div class="flex p-2 text-xs text-gray-400 border-b border-brand-700">
+  <div class="flex p-2 text-xs text-coolGray-400 border-b border-brand-700">
     <div class="flex-1 p-2">{{ t('markets.theme') }}</div>
     <div class="flex-1 p-2">{{ t('markets.numberOfMarkets') }}</div>
     <div class="flex-1 p-2">{{ t('markets.totalVolume') }}</div>

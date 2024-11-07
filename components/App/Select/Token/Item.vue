@@ -60,7 +60,7 @@ function click() {
           {{ token.symbol }}
         </span>
 
-        <span v-if="isShowTokenName" class="text-gray-450">
+        <span v-if="isShowTokenName" class="text-coolGray-450">
           {{ token.name }}
         </span>
       </div>

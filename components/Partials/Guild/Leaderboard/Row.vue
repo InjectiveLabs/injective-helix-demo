@@ -52,7 +52,7 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <tr class="border-b hover:bg-gray-800 text-sm">
+  <tr class="border-b hover:bg-coolGray-800 text-sm">
     <td>
       <div class="whitespace-nowrap p-3 block">
         <div v-if="isCampaignStarted" class="flex items-center gap-2">

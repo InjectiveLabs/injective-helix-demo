@@ -7,7 +7,7 @@ withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
 
 <template>
   <div
-    class="w-full bg-gray-1000 rounded-lg shadow-sm flex flex-col flex-wrap"
+    class="w-full bg-coolGray-950 rounded-lg shadow-sm flex flex-col flex-wrap"
     :class="{
       'p-3 2xl:p-6': !isSm,
       'p-2 2xl:p-4': isSm
@@ -15,7 +15,7 @@ withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
   >
     <h4
       v-if="$slots['title-horizontal']"
-      class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500 mt-auto"
+      class="text-xs md:text-xs font-semibold uppercase tracking-wider text-coolGray-500 mt-auto"
       :class="{
         'text-left': isHorizontal,
         'text-center': !isHorizontal
@@ -24,7 +24,7 @@ withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
       <slot name="title-horizontal" />
     </h4>
     <p
-      class="text-gray-200 text-xs xs:text-sm xl:text-xl"
+      class="text-coolGray-200 text-xs xs:text-sm xl:text-xl"
       :class="{
         'text-left': isHorizontal,
         'text-center': !isHorizontal,
@@ -38,7 +38,7 @@ withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
 
     <div
       v-if="!$slots['title-horizontal']"
-      class="text-2xs xs:text-xs text-center h-2 sm:h-3"
+      class="text-xs xs:text-xs text-center h-2 sm:h-3"
       :class="{
         'mt-1 mb-2 xl:mb-3': !isSm,
         'mb-1 mt-px xl:mb-2': isSm,
@@ -61,7 +61,7 @@ withDefaults(defineProps<{ isSm?: boolean; isHorizontal?: boolean }>(), {
     </div>
     <h4
       v-if="$slots['title']"
-      class="text-2xs md:text-xs font-semibold uppercase tracking-wider text-gray-500 mt-auto"
+      class="text-xs md:text-xs font-semibold uppercase tracking-wider text-coolGray-500 mt-auto"
       :class="{
         'text-left': isHorizontal,
         'text-center': !isHorizontal

@@ -225,7 +225,7 @@ function closeModal() {
               <span> {{ $t('account.amount') }} </span>
             </AppSelectToken>
           </div>
-          <div v-else class="mt-6 text-center text-gray-300 text-sm">
+          <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
             {{ t('account.noAssetToTransfer') }}
           </div>
         </div>

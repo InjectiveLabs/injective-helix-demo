@@ -59,7 +59,7 @@ const {
 
     <template v-if="logs.length > 0">
       <p class="font-semibold mt-4 mb-2">Commits:</p>
-      <article class="rounded p-4 border border-gray-400">
+      <article class="rounded p-4 border border-coolGray-400">
         <div v-for="log in logs" :key="log.hash">
           <div class="flex items-center gap-2">
             <NuxtLink

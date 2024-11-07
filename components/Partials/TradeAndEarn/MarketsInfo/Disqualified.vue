@@ -22,10 +22,10 @@ const disqualifiedMarkets = computed(() =>
       </span>
     </template>
     <template #title>
-      <div class="flex items-center justify-center text-gray-450">
+      <div class="flex items-center justify-center text-coolGray-450">
         {{ $t('trade.disqualified_markets') }}
         <AppTooltip
-          class="ml-2 text-gray-450"
+          class="ml-2 text-coolGray-450"
           :content="$t('trade.disqualified_markets_tooltip')"
         />
       </div>

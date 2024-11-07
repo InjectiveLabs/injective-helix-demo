@@ -77,6 +77,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
   useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   })
+
 const { valueToString: accountTotalBalanceInBtcToString } =
   useSharedBigNumberFormatter(accountTotalBalanceInBtc, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

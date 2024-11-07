@@ -28,7 +28,7 @@ onWalletConnected(() => {
 <template>
   <div>
     <AppHocLoading :status="status">
-      <div class="container">
+      <div class="container mx-auto">
         <div class="w-full mx-auto xl:w-4/5 relative mt-10">
           <div class="space-y-2">
             <h1 class="text-3xl font-bold">{{ $t('tradeAndEarn.title') }}</h1>

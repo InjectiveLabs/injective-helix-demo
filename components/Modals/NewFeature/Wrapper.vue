@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { RouteLocationNamedRaw } from 'vue-router'
+import { NuxtUiIcons } from '@shared/types'
 import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
@@ -67,9 +68,9 @@ function onCloseModal() {
       <div class="w-full h-auto">
         <slot name="image" />
         <div class="absolute right-0 top-0 mt-2 mr-2">
-          <SharedIcon
-            name="close"
-            class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+          <UIcon
+            :name="NuxtUiIcons.Close"
+            class="ml-auto h-5 w-5 min-w-5 text-coolGray-200 hover:text-blue-500"
             @click="onCloseModal"
           />
         </div>
@@ -88,9 +89,12 @@ function onCloseModal() {
           v-if="slots.countdown"
           class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
         >
-          <SharedIcon name="arrow" class="h-4 w-4 rotate-180 text-blue-500" />
+          <UIcon
+            :name="NuxtUiIcons.ArrowLeft"
+            class="h-4 w-4 rotate-180 text-blue-500"
+          />
           <slot name="countdown" />
-          <SharedIcon name="arrow" class="h-4 w-4 text-blue-500" />
+          <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-4 w-4 text-blue-500" />
         </div>
 
         <NuxtLink

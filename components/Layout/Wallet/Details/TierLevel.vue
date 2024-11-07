@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
 import { MainPage } from '@/types'
 
@@ -76,7 +77,7 @@ const makerFeeDiscount = computed(() => {
             : $t('navigation.noTierLevel')
         }}
       </span>
-      <SharedIcon name="external-link-arrow" is-xs />
+      <UIcon :name="NuxtUiIcons.ArrowDiagonalRight" class="h-4 w-4 min-w-4" />
     </NuxtLink>
   </div>
 </template>

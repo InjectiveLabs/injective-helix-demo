@@ -38,7 +38,7 @@ const apr = computed(() =>
 
     <template #content>
       <div class="min-w-0 truncate">
-        <p class="text-gray-300 text-sm">
+        <p class="text-coolGray-300 text-sm">
           {{ $t('campaign.apy') }}
         </p>
         <p class="text-xl font-semibold text-green-500">

@@ -78,22 +78,6 @@ const to = computed(() =>
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
 
-const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
-  computed(() => props.market.volumeInUsd),
-  {
-    decimalPlaces: 2
-  }
-)
-
-const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces:
-      props.market?.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
 const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
   decimalPlaces: 2
 })
@@ -134,7 +118,13 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
             market.summary.lastPriceChange === SharedMarketChange.Decrease
         }"
       >
-        {{ lastTradedPriceToFormat }}
+        <AppAmount
+          v-bind="{
+            amount: lastTradedPrice.toFixed(),
+            decimalPlaces:
+              market?.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+          }"
+        />
       </p>
 
       <span
@@ -151,11 +141,19 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
     </div>
 
     <span
-      class="text-gray-500 w-full text-xs"
+      class="text-coolGray-500 w-full text-xs"
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
+      <span class="font-mono">
+        <AppUsdAmount
+          v-bind="{
+            amount: market.volumeInUsd.toFixed(),
+            decimalPlaces: 2
+          }"
+        />
+      </span>
+      USD
     </span>
   </NuxtLink>
 </template>

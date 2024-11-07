@@ -104,7 +104,7 @@ const rewardsFormatted = computed(() =>
 </script>
 
 <template>
-  <div v-if="campaignWithReward" class="bg-gray-850 rounded-md p-8">
+  <div v-if="campaignWithReward" class="bg-coolGray-850 rounded-md p-8">
     <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
     <div class="flex">

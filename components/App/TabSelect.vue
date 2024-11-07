@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SharedDropdownOption } from '@shared/types'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -24,26 +24,24 @@ const selected = computed(() =>
 </script>
 
 <template>
-  <SharedDropdown
-    position="bottom-left"
-    :placement="placement"
-    :distance="0"
+  <UPopover
+    :popper="{ placement: 'bottom-start', offsetDistance: 0 }"
     class="flex"
     :class="wrapperClass"
   >
-    <template #default="{ isOpen }">
+    <template #default="{ open }">
       <div class="tab-label px-2 lg:px-4 flex w-full">
-        <slot v-bind="{ isOpen, selected }" />
+        <slot v-bind="{ isOpen: open, selected }" />
         <div class="flex items-center pl-2">
-          <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-            <SharedIcon is-sm name="chevron-down" />
+          <div class="transition-all" :class="{ 'rotate-180': open }">
+            <UIcon class="h-3 w-3 min-w-3" :name="NuxtUiIcons.ChevronDown" />
           </div>
         </div>
       </div>
     </template>
 
-    <template #content="{ close }">
-      <div class="border bg-brand-900 divide-y">
+    <template #panel="{ close }">
+      <div class="divide-y">
         <div
           v-for="option in options"
           :key="option.value"
@@ -59,5 +57,5 @@ const selected = computed(() =>
         </div>
       </div>
     </template>
-  </SharedDropdown>
+  </UPopover>
 </template>

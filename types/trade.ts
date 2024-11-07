@@ -23,7 +23,8 @@ import {
   SpotGridTradingField,
   DerivativesTradeFormField,
   ClosePositionLimitFormField,
-  TakeProfitStopLossFormField
+  TakeProfitStopLossFormField,
+  DerivativeGridTradingField
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -117,6 +118,16 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.TakeProfit]: string
   [SpotGridTradingField.StrategyType]: StrategyType
   [SpotGridTradingField.IsAssetRebalanceOn]: boolean
+}
+
+export type DerivativeGridTradingForm = {
+  [DerivativeGridTradingField.Grids]: string
+  [DerivativeGridTradingField.Margin]: string
+  [DerivativeGridTradingField.Leverage]: string
+  [DerivativeGridTradingField.LowerPrice]: string
+  [DerivativeGridTradingField.UpperPrice]: string
+  [DerivativeGridTradingField.StopLoss]: string
+  [DerivativeGridTradingField.TakeProfit]: string
 }
 
 export type GridMarket = {

@@ -44,7 +44,7 @@ const subscribe = handleSubmit((values) => {
 
     <div class="relative z-20">
       <h1
-        class="text-3xl font-semibold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
+        class="text-3xl font-semibold bg-gradient-to-r from-white to-coolGray-500 bg-clip-text text-transparent"
       >
         {{ $t('newsletter.title') }}
       </h1>
@@ -82,7 +82,7 @@ const subscribe = handleSubmit((values) => {
           <i18n-t
             keypath="newsletter.disclaimerMessage"
             tag="p"
-            class="text-xs text-gray-450"
+            class="text-xs text-coolGray-450"
           >
             <template #termsAndCondition>
               <NuxtLink

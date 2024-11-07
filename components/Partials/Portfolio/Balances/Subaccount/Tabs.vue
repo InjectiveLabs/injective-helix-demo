@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
 
@@ -71,7 +72,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 
     <div class="flex items-center">
       <p
-        class="text-xs text-gray-300 px-4 max-lg:py-3 flex items-center space-x-2 font-mono"
+        class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2 font-mono"
       >
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
@@ -82,7 +83,10 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 
     <label class="flex px-4 flex-1 min-w-0">
       <div class="flex items-center">
-        <SharedIcon is-md name="search" class="text-gray-500" />
+        <UIcon
+          :name="NuxtUiIcons.Search"
+          class="h-4 w-4 min-w-4 text-coolGray-500"
+        />
       </div>
       <input
         v-model="search"

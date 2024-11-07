@@ -2,6 +2,7 @@
 import { injToken } from '@shared/data/token'
 import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { WalletOption, BankTransferField } from '@/types'
 
@@ -12,7 +13,6 @@ const setBankTransferFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
 const { userBalancesWithToken } = useBalance()
 
-const search = ref('')
 const fetchAddressStatus = reactive(new Status(StatusType.Idle))
 
 const walletOptions = computed(
@@ -67,19 +67,9 @@ const balances = computed(() => {
 
 const balancesSorted = computed(() => {
   const filteredBalances = balances.value.filter((balance) => {
-    const isIncludedInSymbol = balance.token.symbol
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isIncludedInName = balance.token.name
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-
-    const isPartOfSearch =
-      !search.value || isIncludedInSymbol || isIncludedInName
     const hasBalance = new BigNumberInBase(balance.balance).gte(1)
 
-    return hasBalance && isPartOfSearch
+    return hasBalance
   })
 
   return filteredBalances.sort((a, b) => {
@@ -160,7 +150,7 @@ function onWalletSelected(wallet: Wallet) {
 <template>
   <div>
     <div class="mb-4">
-      <div class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md">
+      <div class="p-2 py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md">
         <AppInput
           v-model="injAddressValue"
           v-bind="{
@@ -170,7 +160,11 @@ function onWalletSelected(wallet: Wallet) {
           class="text-xs"
         >
           <template v-if="injAddressValue" #addon>
-            <SharedIcon name="close" is-md @click="resetInjAddressValue" />
+            <UIcon
+              :name="NuxtUiIcons.Close"
+              class="h-6 w-6 min-w-6"
+              @click="resetInjAddressValue"
+            />
           </template>
         </AppInput>
       </div>
@@ -209,7 +203,7 @@ function onWalletSelected(wallet: Wallet) {
     <ModalsBankTransferFormMemo />
 
     <AppCheckbox v-model="doubleCheck">
-      <div class="text-xs leading-4 tracking-wide text-gray-200">
+      <div class="text-xs leading-4 tracking-wide text-coolGray-200">
         {{ $t('portfolio.bankTransfer.doubleCheck') }}
       </div>
     </AppCheckbox>

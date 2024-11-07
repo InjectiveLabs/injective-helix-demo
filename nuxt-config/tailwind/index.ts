@@ -6,13 +6,7 @@
  * which can't be compiled using Vite
  */
 export const colors = {
-  white: '#fff',
-  black: '#04070a',
-  transparent: 'transparent',
-  current: 'current-color',
-  primaryLight: 'rgba(0, 242, 254, 0.2)',
-
-  gray: {
+  coolGray: {
     100: '#F8F8F8',
     200: '#F2F2F2',
     300: '#D9DADC',
@@ -32,9 +26,7 @@ export const colors = {
     850: '#191c27',
     900: '#14161F',
     925: '#14151A',
-    950: '#101219',
-    1000: '#0C0D13',
-    1100: '#000000'
+    950: '#14151A'
   },
 
   blue: {

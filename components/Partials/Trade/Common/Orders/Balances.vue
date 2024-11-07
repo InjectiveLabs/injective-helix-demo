@@ -1,23 +1,8 @@
 <script setup lang="ts">
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance } from '@/types'
 
 const isMobile = useIsMobile()
 const { userBalancesWithToken } = useBalance()
-
-const search = ref('')
-
-function checkIsPartOfSearch(search: string, balance: AccountBalance) {
-  const isIncludedInSymbol = balance.token.symbol
-    .toLowerCase()
-    .includes(search.toLowerCase())
-
-  const isIncludedInName = balance.token.name
-    .toLowerCase()
-    .includes(search.toLowerCase())
-
-  return isIncludedInSymbol || isIncludedInName
-}
 
 const balancesSorted = computed(() => {
   const filteredBalances = userBalancesWithToken.value.filter((balance) => {
@@ -26,8 +11,7 @@ const balancesSorted = computed(() => {
       new BigNumberInBase(balance.availableMargin).gte(1) ||
       new BigNumberInBase(balance.bankBalance).gte(1)
 
-    const isPartOfSearch = checkIsPartOfSearch(search.value, balance)
-    return hasBalance && isPartOfSearch
+    return hasBalance
   })
 
   return [...filteredBalances].sort((a, b) => {

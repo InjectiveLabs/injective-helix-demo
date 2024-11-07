@@ -8,15 +8,15 @@
 }
 
 .table thead {
-  @apply bg-gray-900;
+  @apply bg-coolGray-900;
 }
 
 .table th {
-  @apply text-gray-300 text-xs font-normal align-middle leading-tight bg-transparent border-none select-none whitespace-nowrap px-3 py-2;
+  @apply text-coolGray-300 text-xs font-normal align-middle leading-tight bg-transparent border-none select-none whitespace-nowrap px-3 py-2;
 }
 
 .table td {
-  @apply text-gray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle whitespace-nowrap p-4;
+  @apply text-coolGray-200 text-sm font-normal leading-tight bg-transparent border-none select-none align-middle whitespace-nowrap p-4;
 }
 
 .table td.no-padding {
@@ -24,7 +24,7 @@
 }
 
 .table tbody tr {
-  @apply bg-gray-1000;
+  @apply bg-coolGray-950;
 }
 
 .table tbody tr:first-of-type {
@@ -36,19 +36,19 @@
 }
 
 .table tbody tr:nth-child(even) {
-  @apply bg-gray-900;
+  @apply bg-coolGray-900;
 }
 
 .table tbody tr:hover {
-  background-color: theme('colors.gray.850') !important;
+  @apply bg-coolGray-800;
 }
 
 .table thead[xs] tr th {
-  @apply text-2xs;
+  @apply text-xs;
 }
 
 .v-table-row {
-  background-color: theme('colors.gray.900');
+  @apply bg-coolGray-900;
 }
 
 .v-table-row:first-of-type {
@@ -60,13 +60,13 @@
 }
 
 .v-table-row:nth-child(even) {
-  background-color: theme('colors.gray.1000');
+  @apply bg-coolGray-950;
 }
 
 .v-table-row:hover {
-  background-color: theme('colors.gray.850') !important;
+  @apply bg-coolGray-800;
 }
 
 .table.market-data th {
-  @apply space-x-1 bg-gray-1000;
+  @apply space-x-1 bg-coolGray-950;
 }
