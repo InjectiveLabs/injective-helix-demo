@@ -7,6 +7,13 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
+withDefaults(
+  defineProps<{
+    marketPriceMap: Record<string, string>
+  }>(),
+  {}
+)
+
 const activeTypeOptions = Object.values(MarketTypeOption)
   .filter(
     (marketType) =>
@@ -151,7 +158,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
             <PartialsMarketsCommonRow
               v-for="{ market, summary, volumeInUsd } in sortedMarkets"
               :key="market.marketId"
-              v-bind="{ market, summary, volumeInUsd }"
+              v-bind="{ market, summary, volumeInUsd, marketPriceMap }"
             />
           </template>
         </CommonHeadlessMarkets>

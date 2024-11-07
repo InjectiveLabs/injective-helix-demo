@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { UiMarketWithToken, CommonCyTags } from '@/types'
+import { IsSpotKey, CommonCyTags, UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -10,11 +10,18 @@ const props = withDefaults(
 )
 
 const appStore = useAppStore()
-
+const isSpot = inject(IsSpotKey)
 const isLocked = useScrollLock(document.documentElement)
 
 const el = ref<HTMLElement | null>(null)
 const toggleEl = ref<HTMLElement | null>(null)
+
+const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
+  computed(() => props.market)
+)
+const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
+  computed(() => props.market)
+)
 
 const isBiudlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
@@ -23,6 +30,12 @@ const isBiudlPerpMarket = computed(
 const is2024ElectionPerpMarket = computed(
   () => props.market.slug === '2024election-perp'
 )
+
+const marketPriceMap = computed(() => ({
+  [props.market.marketId]: isSpot
+    ? spotLastTradedPrice.value
+    : derivativeLastTradedPrice.value
+}))
 
 function toggleOpen() {
   appStore.marketsOpen = !appStore.marketsOpen
@@ -129,7 +142,7 @@ watch(
       class="basis-[800px] min-w-0 overflow-y-auto bg-brand-900 border h-[calc(100vh-132px)]"
       @click.stop
     >
-      <PartialsTradeMarkets />
+      <PartialsTradeMarkets v-bind="{ marketPriceMap }" />
     </div>
   </div>
 </template>

@@ -9,13 +9,15 @@ import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
-    summary: SharedUiMarketSummary
-    volumeInUsd: BigNumberInBase
     isMarketsPage?: boolean
+    market: UiMarketWithToken
+    volumeInUsd: BigNumberInBase
+    summary: SharedUiMarketSummary
+    marketPriceMap?: Record<string, string>
   }>(),
   {
-    isMarketsPage: false
+    isMarketsPage: false,
+    marketPriceMap: () => ({})
   }
 )
 
@@ -28,7 +30,12 @@ const isRWAMarket = computed(() =>
 )
 
 const lastTradedPrice = computed(
-  () => new BigNumberInBase(props.summary.lastPrice || 0)
+  () =>
+    new BigNumberInBase(
+      props.marketPriceMap[props.market.marketId] ||
+        props.summary.lastPrice ||
+        0
+    )
 )
 
 const { valueToString: lastPriceToString } = useSharedBigNumberFormatter(
