@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
+import { LiquidityBotField, UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -7,6 +7,16 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const { value: baseAmount } = useStringField({
+  name: LiquidityBotField.BaseAmount,
+  initialValue: ''
+})
+
+const { value: quoteAmount } = useStringField({
+  name: LiquidityBotField.QuoteAmount,
+  initialValue: ''
+})
 </script>
 
 <template>
@@ -20,8 +30,8 @@ const props = withDefaults(
       </p>
     </div>
 
-    <div class="mt-4 grid grid-cols-2 gap-4">
-      <AppInputField>
+    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <AppInputField v-model="baseAmount">
         <template #top>
           <div class="flex items-center justify-between pb-2">
             <p class="text-xs text-gray-400">
@@ -48,7 +58,7 @@ const props = withDefaults(
         </template>
       </AppInputField>
 
-      <AppInputField>
+      <AppInputField v-model="quoteAmount">
         <template #top>
           <div class="flex items-center justify-between pb-2">
             <p class="text-xs text-gray-400">

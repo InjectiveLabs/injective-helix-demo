@@ -428,6 +428,12 @@ export enum VolatilityStrategyType {
   Aggressive = 'aggressive'
 }
 
+export enum LiquidityBotField {
+  Volatility = 'volatility',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
+}
+
 export enum SpotOrdersStandardView {
   Balances = 'balances',
   OpenOrders = 'openOrders',

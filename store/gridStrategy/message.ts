@@ -421,3 +421,25 @@ export const createPerpStrategy = async (
     ])
   )
 }
+
+export async function createSpotLiquidityBot() {
+  const sharedWalletStore = useSharedWalletStore()
+  const msg = MsgExecuteContractCompat.fromJSON({
+    contractAddress: '',
+    sender: '',
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      subaccountId: '',
+      levels: 10,
+      lowerBound: '',
+      upperBound: '',
+      trailingArithmetic: {
+        trailing_arithmetic: {
+          lower_trailing_bound: '',
+          upper_trailing_bound: ''
+        }
+      }
+    })
+  })
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+}

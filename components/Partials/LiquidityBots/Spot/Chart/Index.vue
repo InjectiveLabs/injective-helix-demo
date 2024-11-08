@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '~/types'
+import { Status } from '@injectivelabs/utils'
+import { LiquidityValues, UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
     market: UiMarketWithToken
+    liquidityValues: LiquidityValues
+    status: Status
   }>(),
   {}
 )
@@ -21,7 +24,12 @@ withDefaults(
       }}
     </p>
 
-    <PartialsLiquidityBotsSpotChartGridChart v-bind="{ market }" />
+    <USkeleton v-if="status.isLoading()" class="h-[500px] mt-4" />
+
+    <PartialsLiquidityBotsSpotChartGridChart
+      v-else
+      v-bind="{ market, liquidityValues, status }"
+    />
 
     <PartialsLiquidityBotsSpotFormCreateBot class="mt-4" />
   </div>

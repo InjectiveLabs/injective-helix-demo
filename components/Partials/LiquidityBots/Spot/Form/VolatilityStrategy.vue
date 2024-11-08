@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { VolatilityStrategyType } from '@/types/enums'
+import { LiquidityBotField, VolatilityStrategyType } from '@/types/enums'
 
-const selectedStrategy = ref<VolatilityStrategyType>(
-  VolatilityStrategyType.Passive
-)
+const { t } = useLang()
+
+const { value: selectedStrategy } = useStringField({
+  name: LiquidityBotField.Volatility,
+  initialValue: VolatilityStrategyType.Passive
+})
 
 const options = [
   {
-    label: 'Passive',
+    label: t('liquidityBots.passive'),
     value: VolatilityStrategyType.Passive,
     icon: 'ant-design:bar-chart-outlined'
   },
   {
-    label: 'Moderate',
+    label: t('liquidityBots.moderate'),
     value: VolatilityStrategyType.Moderate,
     icon: 'mingcute:chart-bar-line'
   },
   {
-    label: 'Aggressive',
+    label: t('liquidityBots.aggressive'),
     value: VolatilityStrategyType.Aggressive,
     icon: 'vaadin:line-bar-chart'
   }

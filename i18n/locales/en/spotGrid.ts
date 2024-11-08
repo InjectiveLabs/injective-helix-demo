@@ -266,6 +266,9 @@ export default {
     currentPrice: 'Current Price',
     stopLoss: 'Stop Loss',
     takeProfit: 'Take Profit',
-    currentPriceQuotePerBase: 'Current price {quote} per {base}'
+    currentPriceQuotePerBase: 'Current price {quote} per {base}',
+    passive: 'Passive',
+    moderate: 'Moderate',
+    aggressive: 'Aggressive'
   }
 }

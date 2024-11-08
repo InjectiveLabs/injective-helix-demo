@@ -179,3 +179,12 @@ export type TakeProfitStopLossForm = {
   [TakeProfitStopLossFormField.StopLoss]: string
   [TakeProfitStopLossFormField.TakeProfit]: string
 }
+
+export type LiquidityValues = {
+  upperBound: BigNumberInBase
+  lowerBound: BigNumberInBase
+  trailingUpperBound: BigNumberInBase
+  trailingLowerBound: BigNumberInBase
+  currentPrice: BigNumberInBase
+  grids: number
+}
