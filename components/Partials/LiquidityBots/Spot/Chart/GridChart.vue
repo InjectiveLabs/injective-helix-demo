@@ -67,11 +67,10 @@ const gridLevelsAnnotations = computed(() => {
           ? colors.red[500]
           : colors.green[500],
       text:
-        // index === 0 || index === array.length - 1 ? level.toFixed() : undefined,
         index === 0
-          ? `Lower Price: ${level.toFixed()}`
+          ? `Lower Price: ${level}`
           : index === array.length - 1
-          ? `Upper Price: ${level.toFixed()}`
+          ? `Upper Price: ${level}`
           : undefined,
       style: {
         color: '#000',
