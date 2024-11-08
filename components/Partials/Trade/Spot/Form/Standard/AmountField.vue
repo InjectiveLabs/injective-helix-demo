@@ -13,9 +13,9 @@ import {
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
+  SpotMarketCyTags,
   TradeAmountOption,
-  SpotTradeFormField,
-  SpotMarketCyTags
+  SpotTradeFormField
 } from '@/types'
 
 const orderbookStore = useOrderbookStore()
@@ -316,9 +316,15 @@ onMounted(() => {
           <div v-if="isBuy" class="space-x-2">
             <span :data-cy="dataCyTag(SpotMarketCyTags.TokenBuyBalance)">{{
               $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
+                amount: quoteBalanceToString
               })
             }}</span>
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
 
           <div v-else class="space-x-2">

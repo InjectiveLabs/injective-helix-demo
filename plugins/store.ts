@@ -109,6 +109,8 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
+  'account/convertNeptuneToPeggyUsdt',
+  'account/convertPeggyToNeptuneUsdt',
   'swap/submitAtomicOrderExactOutput',
   'gridStrategy/createSpotLiquidityBot',
   'activity/batchCancelDerivativeOrders',

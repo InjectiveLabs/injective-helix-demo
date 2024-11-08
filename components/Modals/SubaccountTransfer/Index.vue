@@ -4,8 +4,8 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
@@ -28,6 +28,8 @@ const {
   keepValuesOnUnmount: true
 })
 
+const subaccountFormValues = computed(() => formValues)
+
 const { value: denomValue } = useStringField({
   name: SubaccountTransferField.Denom,
   rule: ''
@@ -41,9 +43,31 @@ const isDisabled = computed(
 
 const status = reactive(new Status())
 
-const { supplyWithBalance } = useSubaccountTransferBalance(
-  computed(() => formValues)
-)
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const userBalance = computed(() => {
+  const balances =
+    subaccountPortfolioBalanceMap.value[
+      subaccountFormValues.value[SubaccountTransferField.SrcSubaccountId]
+    ]
+
+  if (!balances) {
+    return []
+  }
+
+  return balances
+    .map(({ denom, token, availableBalance }) => ({
+      denom,
+      token,
+      balance: availableBalance
+    }))
+    .filter((balance) => {
+      const hasBalance = new BigNumberInBase(balance.balance).gt(0)
+      const isInjToken = balance.denom === injToken.denom
+
+      return hasBalance || isInjToken
+    })
+})
 
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
@@ -145,7 +169,7 @@ function defaultSubaccountWithdraw() {
 
 function onTokenChange() {
   nextTick(() => {
-    const token = supplyWithBalance.value.find(
+    const token = userBalance.value?.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
     )
 
@@ -166,7 +190,7 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
-    const token = supplyWithBalance.value.find(
+    const token = userBalance.value?.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
     )
 
@@ -209,14 +233,14 @@ function closeModal() {
         <ModalsSubaccountTransferSelect
           @update:subaccount-id="onSubaccountIdChange"
         />
-        <div v-if="supplyWithBalance.length > 0" class="mt-6">
+        <div v-if="userBalance.length > 0" class="mt-6">
           <AppSelectToken
             v-model:denom="denomValue"
             v-bind="{
               maxDecimals,
               isRequired: true,
               amountFieldName: SubaccountTransferField.Amount,
-              options: supplyWithBalance
+              options: userBalance
             }"
             @update:max="onAmountChange"
             @update:denom="onTokenChange"

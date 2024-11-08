@@ -151,9 +151,13 @@ const onSubmit = handleSubmit(() => {
                 data-cy="add-margin-modal-available-text-content"
               >
                 {{ availableMarginToString }}
-                <span class="text-coolGray-500 ml-2">{{
-                  market.quoteToken.symbol
-                }}</span>
+                <PartialsCommonBalanceDisplay
+                  v-bind="{
+                    token: market.quoteToken,
+                    value: market.quoteToken.symbol,
+                    textColorClass: 'text-cool-gray-500 ml-2'
+                  }"
+                />
               </span>
             </div>
           </div>

@@ -14,6 +14,7 @@ export enum Modal {
   FiatOnboard = 'fiat-onboard',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  NeptuneUsdt = 'neptune-usdt',
   BankTransfer = 'bank-transfer',
   UserFeedback = 'user-feedback',
   MitoRedirect = 'mito-redirect',
@@ -134,6 +135,11 @@ export enum BalanceHeaderType {
 }
 
 export enum BusEvents {
+  NeptuneUsdt = 'neptune-usdt',
+  FundingRefresh = 'funding-refresh',
+  NavLinkClicked = 'nav-link-clicked',
+  WalletConnected = 'wallet-connected',
+  PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
   OrderSideToggled = 'order-side-toggled',
   OrderbookReplaced = 'orderbook-replaced',
@@ -231,9 +237,11 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  neptuneUsdt = 'neptune-usdt',
+  TeslaCampaign = 'tesla-campaign',
+  OwnYourAssetCampaign = 'own-your-asset-campaign',
   ScheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024',
-  OwnYourAssetCampaign = 'own-your-asset-campaign'
+  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024'
 }
 
 export enum SubaccountBalanceStreamType {

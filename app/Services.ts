@@ -1,6 +1,7 @@
 import {
   TokenStatic,
   AbacusGrpcApi,
+  NeptuneService,
   ChainGrpcAuthZApi,
   TokenFactoryStatic,
   IndexerGrpcTradingApi,
@@ -39,6 +40,8 @@ export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
+
+export const neptuneService = new NeptuneService()
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET
