@@ -8,14 +8,12 @@
     "allowSyntheticDefaultImports": true,
     "types": [
       "@pinia/nuxt",
-      "@vueuse/nuxt",
-      "@injectivelabs/utils",
-      "@injectivelabs/sdk-ts",
-      "@injectivelabs/ts-types",
-      "@injectivelabs/networks",
-      "@injectivelabs/wallet-ts",
+      "@vueuse/nuxt"
     ]
   },
+  "include": [
+    "./node_modules/@injectivelabs/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
