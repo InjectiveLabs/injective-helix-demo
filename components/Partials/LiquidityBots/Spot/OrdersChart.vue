@@ -216,7 +216,7 @@ watch(
           v-for="{ display, value } in timerangeOptions"
           :key="`option-${display}`"
           class="text-[11px] rounded-sm px-1 py-0.5 min-w-10 font-bold"
-          :class="{ 'bg-gray-700': range === value }"
+          :class="{ 'bg-coolGray-700': range === value }"
           @click="setRange(value)"
         >
           {{ display }}

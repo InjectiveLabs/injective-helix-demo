@@ -65,6 +65,8 @@ export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const HIDDEN_BALANCE_DISPLAY = '********'
 export const SMALL_BALANCE_THRESHOLD = '10'
 export const LOW_VOLUME_MARKET_THRESHOLD = 1000
+export const LOW_FEE_AMOUNT_THRESHOLD = 0.0001
+export const UI_DEFAULT_FEE_MIN_DECIMALS = 8
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6

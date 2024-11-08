@@ -68,7 +68,7 @@ const countdown = computed(() => {
 
         <p
           v-if="!isReadyToClaim && countdown"
-          class="text-gray-500 text-xs space-x-1"
+          class="text-coolGray-500 text-xs space-x-1"
         >
           <span>{{ $t('guild.readyIn') }}:</span>
           <span>{{ countdown }}</span>

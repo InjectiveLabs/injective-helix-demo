@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -25,7 +26,7 @@ function onFiatOnRamp() {
     <div class="lg:mt-8">
       <div class="lg:flex justify-between p-4">
         <div>
-          <p class="text-gray-400 text-sm">
+          <p class="text-coolGray-400 text-sm">
             {{ $t('portfolio.balances.netWorth') }}
           </p>
           <div class="flex items-center space-x-4">
@@ -48,20 +49,19 @@ function onFiatOnRamp() {
             </p>
 
             <button
-              class="text-gray-500 flex justify-center cursor-pointer"
+              class="text-coolGray-500 flex justify-center cursor-pointer"
               @click="appStore.toggleHideBalances"
             >
-              <SharedIcon
+              <UIcon
                 v-if="appStore.userState.preferences.isHideBalances"
-                name="hide"
-                class="w-8 h-5 -translate-x-[2px]"
+                :name="NuxtUiIcons.EyeSlash"
+                class="w-7 h-7 -translate-x-[2px]"
               />
-
-              <SharedIcon v-else name="show" class="w-7" />
+              <UIcon v-else :name="NuxtUiIcons.Eye" class="w-7 h-7" />
             </button>
           </div>
 
-          <p class="text-gray-400 text-sm flex items-center space-x-2 h-6">
+          <p class="text-coolGray-400 text-sm flex items-center space-x-2 h-6">
             <span>≈</span>
             <CommonSkeletonSubaccountAmount>
               <CommonHeadlessTotalBalance>

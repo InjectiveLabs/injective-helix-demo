@@ -23,7 +23,7 @@ const isEndedCampaign = computed(() => {
 
 <template>
   <div
-    class="relative rounded-lg md:h-64 lg:h-80 mb-10 border-gray-375 border-[3px] flex justify-between"
+    class="relative rounded-lg md:h-64 lg:h-80 mb-10 border-coolGray-375 border-[3px] flex justify-between"
   >
     <div
       class="absolute inset-0 bg-[url('/images/leaderboard/gwagon.webp')] bg-cover bg-no-repeat md:bg-none opacity-10 bg-center"
@@ -31,7 +31,7 @@ const isEndedCampaign = computed(() => {
 
     <div
       v-if="isEndedCampaign"
-      class="absolute top-2 right-2 sm:top-3 sm:right-3 py-0.5 sm:py-1 px-1 sm:px-2 bg-gray-650 rounded uppercase text-xs sm:text-sm font-semibold"
+      class="absolute top-2 right-2 sm:top-3 sm:right-3 py-0.5 sm:py-1 px-1 sm:px-2 bg-coolGray-650 rounded uppercase text-xs sm:text-sm font-semibold"
     >
       {{ $t('leaderboard.competition.banner.ended') }}
     </div>

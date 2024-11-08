@@ -76,7 +76,7 @@ const rewardsFormatted = computed(() =>
 </script>
 
 <template>
-  <tr class="border-b last:border-none hover:bg-gray-800 text-sm">
+  <tr class="border-b last:border-none hover:bg-coolGray-800 text-sm">
     <td>
       <div class="p-3">
         <NuxtLink :to="explorerLink" target="_blank">

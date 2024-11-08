@@ -2,7 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { NuxtUiIcons } from '@shared/types'
 import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
@@ -82,53 +82,41 @@ const rewardsToClaim = computed(
     ).length
 )
 
-const { valueToString: totalRewardsInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      Object.entries(totalRewards.value)
-        .reduce((sum, [denom, amount]) => {
-          const token = tokenStore.tokenByDenomOrSymbol(denom)
+const totalRewardsInUsd = computed(() =>
+  Object.entries(totalRewards.value)
+    .reduce((sum, [denom, amount]) => {
+      const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-          const amountInUsd = amount
-            .toBase(token?.decimals || 18)
-            .times(tokenStore.tokenUsdPrice(token))
+      const amountInUsd = amount
+        .toBase(token?.decimals || 18)
+        .times(tokenStore.tokenUsdPrice(token))
 
-          return sum.plus(amountInUsd)
-        }, ZERO_IN_BASE)
-        .minus(rewardsThisRoundInUsd.value)
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
-
-const { valueToString: rewardsThisRoundInUsdToString } =
-  useSharedBigNumberFormatter(rewardsThisRoundInUsd, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
-
-const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === campaign.marketId
-      )
-
-      if (!market) {
-        return sum
-      }
-
-      const userVolume = sharedToBalanceInTokenInBase({
-        value: campaign.userScore || 0,
-        decimalPlaces: market.quoteToken.decimals
-      })
-
-      const userVolumeInUsd = userVolume.times(
-        tokenStore.tokenUsdPrice(market.quoteToken)
-      )
-
-      return sum.plus(userVolumeInUsd)
+      return sum.plus(amountInUsd)
     }, ZERO_IN_BASE)
-  ),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+    .minus(rewardsThisRoundInUsd.value)
+)
+
+const volumeThisRound = computed(() =>
+  campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
+    const market = spotStore.markets.find(
+      (market) => market.marketId === campaign.marketId
+    )
+
+    if (!market) {
+      return sum
+    }
+
+    const userVolume = sharedToBalanceInTokenInBase({
+      value: campaign.userScore || 0,
+      decimalPlaces: market.quoteToken.decimals
+    })
+
+    const userVolumeInUsd = userVolume.times(
+      tokenStore.tokenUsdPrice(market.quoteToken)
+    )
+
+    return sum.plus(userVolumeInUsd)
+  }, ZERO_IN_BASE)
 )
 </script>
 
@@ -139,7 +127,7 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
         :to="{ name: LiquidityRewardsPage.Home }"
         class="flex items-center space-x-2"
       >
-        <SharedIcon name="arrow" />
+        <UIcon :name="NuxtUiIcons.ArrowLeft" class="w-6 h-6 min-w-6" />
         <p>{{ $t('campaign.title') }}</p>
       </NuxtLink>
     </div>
@@ -150,31 +138,48 @@ const { valueToString: volumeThisRoundToString } = useSharedBigNumberFormatter(
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
-          {{ rewardsThisRoundInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: rewardsThisRoundInUsd.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
         </h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.rewardsToClaim') }}
         </p>
         <h3 class="text-xl font-semibold">{{ rewardsToClaim }}</h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.volumeThisRound') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ volumeThisRoundToString }} USD</h3>
+        <h3 class="text-xl font-semibold">
+          <AppUsdAmount
+            v-bind="{
+              amount: volumeThisRound.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </h3>
       </div>
       <div class="border rounded-md p-4">
-        <p class="text-xs uppercase text-gray-500 mb-2">
+        <p class="text-xs uppercase text-coolGray-500 mb-2">
           {{ $t('campaign.totalRewardsAllTime') }}
         </p>
         <h3 class="text-xl font-semibold">
-          {{ totalRewardsInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: totalRewardsInUsd.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
         </h3>
       </div>
     </div>

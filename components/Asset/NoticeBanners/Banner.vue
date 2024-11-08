@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Banner } from '@/types'
 
 const appStore = useAppStore()
@@ -30,10 +31,9 @@ function closeNoticeBanner() {
       </NuxtLink>
     </p>
 
-    <SharedIcon
-      name="close"
-      class="hover:text-white"
-      is-md
+    <UIcon
+      :name="NuxtUiIcons.Close"
+      class="hover:text-white h-4 w-4 min-w-4 cursor-pointer"
       @click="closeNoticeBanner"
     />
   </div>

@@ -34,7 +34,7 @@ html {
 }
 
 body {
-  @apply font-sans text-base leading-normal text-gray-100 antialiased bg-brand-900 overflow-hidden;
+  @apply font-sans text-base leading-normal text-coolGray-100 antialiased bg-brand-900 overflow-hidden;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
 }
@@ -94,16 +94,6 @@ body .vue-grid-item {
   }
 }
 
-/* dropdown */
-.v-popper--theme-dropdown:not(.v-popper--theme-menu) {
-  .v-popper__arrow-container {
-    .v-popper__arrow-outer,
-    .v-popper__arrow-inner {
-      @apply hidden;
-    }
-  }
-}
-
 /* input */
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button,
@@ -135,6 +125,10 @@ input[type='number'] {
   }
 }
 
-button:focus-visible {
-  @apply outline-none;
+.iconify {
+  @apply cursor-pointer;
 }
+
+/* button:focus-visible {
+  @apply outline-none;
+} */

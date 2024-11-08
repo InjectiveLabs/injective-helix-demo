@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { SharedDropdownOption } from '@shared/types'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
 
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
+const toast = useToast()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -65,7 +65,9 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      notificationStore.success({ title: t('connect.successfullyConnected') })
+      toast.add({
+        title: t('connect.successfullyConnected')
+      })
     )
     .catch((e) => {
       $onError(e)
@@ -81,15 +83,18 @@ const connect = handleSubmit(() => {
     <p class="text-sm font-semibold mb-2">
       {{ $t('connect.derivationPath') }}
     </p>
-    <AppSelectField
+    <USelectMenu
       v-model="path"
       :options="options"
+      size="md"
+      value-attribute="value"
+      option-attribute="display"
       :placeholder="$t('connect.selectDerivationPath')"
     />
 
     <p
       v-if="fetchStatus.isLoading()"
-      class="text-gray-400 text-xs my-2 flex items-center gap-2"
+      class="text-coolGray-400 text-xs my-2 flex items-center gap-2"
     >
       <AppSpinner is-sm />
       <span>
@@ -109,26 +114,28 @@ const connect = handleSubmit(() => {
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <SharedIcon name="arrow" class="rotate-180 w-4 h-4" />
+      <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-4 w-4 rotate-180" />
     </div>
 
-    <div class="border-b border-gray-600 mt-4 mb-4" />
+    <div class="border-b border-coolGray-600 mt-4 mb-4" />
 
     <div v-if="sharedWalletStore.hwAddresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
 
-      <AppSelectField
+      <USelectMenu
         v-model="address"
-        is-searchable
+        size="md"
+        value-attribute="value"
+        option-attribute="display"
+        :placeholder="$t('connect.selectAddressToConnect')"
         :options="
           sharedWalletStore.hwAddresses.map((address: string) => ({
             display: address,
             value: address
           }))
         "
-        :placeholder="$t('connect.selectAddressToConnect')"
       />
 
       <p
@@ -149,7 +156,7 @@ const connect = handleSubmit(() => {
       </AppButton>
     </div>
 
-    <p class="text-xs text-gray-400 mt-4">
+    <p class="text-xs text-coolGray-400 mt-4">
       {{ $t('connect.connectUsingLedgerNote') }}
     </p>
   </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
 
 const appStore = useAppStore()
@@ -53,7 +54,7 @@ function close() {
 <template>
   <NuxtLink
     v-if="item.type === MenuItemType.Link && showItem"
-    class="hover:bg-gray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
+    class="hover:bg-coolGray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
     :class="{
       'rounded-lg': level === 0,
       'w-[325px]': level > 0
@@ -64,7 +65,11 @@ function close() {
   >
     <div>
       <div class="flex items-center justify-center">
-        <SharedIcon v-if="item.icon" class="mr-3" :name="item.icon" />
+        <UIcon
+          v-if="item.icon"
+          class="mr-3 h-6 w-6 min-w-6"
+          :name="item.icon"
+        />
 
         <div class="flex flex-col justify-start">
           <div class="flex items-center justify-start space-x-1.5">
@@ -76,17 +81,16 @@ function close() {
             >
               {{ $t(item.label) }}
             </p>
-            <SharedIcon
+            <UIcon
               v-if="item.isExternal"
-              name="external-link"
-              is-sm
-              class="opacity-75"
+              :name="NuxtUiIcons.ExternalLink"
+              class="opacity-75 h-3 w-3 min-w-3"
             />
           </div>
 
           <p
             v-if="item.description"
-            class="text-gray-500 text-xs mt-1 font-normal"
+            class="text-coolGray-500 text-xs mt-1 font-normal"
           >
             {{ $t(item.description) }}
           </p>
@@ -98,7 +102,7 @@ function close() {
   <div
     v-else-if="item.type === MenuItemType.Dropdown && showItem"
     tabindex="0"
-    class="hover:bg-gray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
+    class="hover:bg-coolGray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
     :class="{
       'rounded-lg': level === 0
     }"
@@ -116,17 +120,14 @@ function close() {
           </p>
           <p
             v-if="item.description"
-            class="text-gray-400 text-xs mt-1 font-normal"
+            class="text-coolGray-400 text-xs mt-1 font-normal"
           >
             {{ $t(item.description) }}
           </p>
         </div>
 
-        <div
-          class="ml-2 -mr-2"
-          :class="{ 'rotate-90': isOpen, '-rotate-90': !isOpen }"
-        >
-          <SharedIcon name="chevron" is-sm />
+        <div class="ml-2 -mr-2" :class="{ '-rotate-180': !isOpen }">
+          <UIcon :name="NuxtUiIcons.ChevronUp2" class="h-3 w-3 min-w-3" />
         </div>
       </div>
     </div>

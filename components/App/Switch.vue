@@ -13,7 +13,7 @@ const value = computed({
 
 <template>
   <div
-    class="w-8 h-4 rounded-full bg-gray-600 relative checkbox-base transition-all"
+    class="w-8 h-4 rounded-full bg-coolGray-600 relative checkbox-base transition-all"
   >
     <input
       v-model="value"

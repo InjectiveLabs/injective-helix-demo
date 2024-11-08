@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { Status } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
-    isSm?: boolean
     status?: Status
     tooltip?: string
     isDisabled?: boolean
   }>(),
   {
-    isSm: false,
     status: () => new Status(),
     tooltip: '',
     isDisabled: false
@@ -30,33 +29,18 @@ function click() {
 </script>
 
 <template>
-  <SharedTooltip :disabled="!tooltip" :triggers="['hover', 'click']">
-    <div
-      class="flex justify-end items-center"
-      :class="{
-        'h-5 w-5 min-h-5 min-w-6': isSm,
-        'h-6 w-6 min-h-6 min-w-6': !isSm
+  <AppTooltip :is-disabled="!tooltip" :content="tooltip">
+    <UButton
+      :disabled="isDisabled"
+      :icon="status.isLoading() ? NuxtUiIcons.Loading : NuxtUiIcons.Trash"
+      variant="ghost"
+      :color="isDisabled || status.isLoading() ? 'gray' : 'red'"
+      :ui="{
+        rounded: 'rounded-full',
+        icon: { size: { sm: 'h-4 w-4' } },
+        color: { red: { ghost: 'dark:text-red-500' } }
       }"
       @click="click"
-    >
-      <AppSpinner v-if="status.isLoading()" is-sm is-white />
-
-      <div
-        v-else
-        class="cursor-pointer flex items-center justify-center rounded-full bg-opacity-10 hover:bg-opacity-30 h"
-        :class="{
-          'pointer-events-none cursor-not-allowed over:text-red-600 bg-gray-500 text-gray-500':
-            isDisabled,
-          'cursor-pointer over:text-red-600 bg-red-500 text-red-500':
-            !isDisabled,
-          'min-w-5 w-5 h-5': isSm,
-          'min-w-6 h-6 w-6': !isSm
-        }"
-      >
-        <slot name="icon">
-          <SharedIcon name="bin" is-sm />
-        </slot>
-      </div>
-    </div>
-  </SharedTooltip>
+    />
+  </AppTooltip>
 </template>

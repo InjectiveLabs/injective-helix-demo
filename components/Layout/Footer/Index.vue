@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const { t } = useLang()
@@ -39,7 +40,7 @@ const learnList = [
 </script>
 
 <template>
-  <footer class="w-full py-16 bg-brand-900 border-t border-t-gray-900">
+  <footer class="w-full py-16 bg-brand-900 border-t border-t-coolGray-900">
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
@@ -51,7 +52,7 @@ const learnList = [
           </div>
         </NuxtLink>
 
-        <span class="text-gray-500 text-xs">
+        <span class="text-coolGray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Foundation
         </span>
       </div>
@@ -115,27 +116,31 @@ const learnList = [
 
         <div class="flex items-center">
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
+            class="w-6 h-6 mr-4"
             href="https://discord.com/invite/injective"
             target="_blank"
           >
-            <SharedIcon name="discord-circle" />
+            <div
+              class="h-6 w-6 min-w-6 flex items-center justify-center bg-coolGray-500 hover:bg-blue-500 text-brand-900 rounded-full"
+            >
+              <UIcon :name="NuxtUiIcons.Discord" class="h-4 w-4 min-w-4" />
+            </div>
           </a>
 
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
+            class="w-6 h-6 text-coolGray-500 hover:text-blue-500 mr-4"
             href="https://twitter.com/helixapp_"
             target="_blank"
           >
-            <SharedIcon name="twitter-circle" />
+            <UIcon :name="NuxtUiIcons.TwitterCircle" class="h-6 w-6 min-w-6" />
           </a>
 
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
+            class="w-6 h-6 text-coolGray-500 hover:text-blue-500 mr-4"
             href="https://t.me/helixapp"
             target="_blank"
           >
-            <SharedIcon name="telegram-circle" />
+            <UIcon :name="NuxtUiIcons.TelegramCircle" class="h-6 w-6 min-w-6" />
           </a>
         </div>
       </div>

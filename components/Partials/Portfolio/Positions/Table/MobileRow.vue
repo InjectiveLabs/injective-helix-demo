@@ -3,6 +3,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { ClosePositionLimitForm, ClosePositionLimitFormField } from '@/types'
 
@@ -73,48 +74,10 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: quantityInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    quantity.value
-      .times(markPrice.value)
-      .times(tokenStore.tokenUsdPrice(market.value?.quoteToken) || 0)
-  ),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value
-})
-
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
-  markPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
-
-const { valueToString: marginToString } = useSharedBigNumberFormatter(margin, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
-
-const { valueToString: pnlToString } = useSharedBigNumberFormatter(pnl, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
-
-const { valueToString: percentagePnlToString } = useSharedBigNumberFormatter(
-  percentagePnl,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+const quantityInUsd = computed(() =>
+  quantity.value
+    .times(markPrice.value)
+    .times(tokenStore.tokenUsdPrice(market.value?.quoteToken) || 0)
 )
 
 const { value: priceValue } = useStringField({
@@ -254,8 +217,13 @@ function sharePosition() {
       <div class="flex-1 flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.amount') }}</p>
         <div v-if="market" class="space-y-1 font-mono">
-          <p>
-            {{ quantityToString }}
+          <p class="flex gap-1">
+            <AppAmount
+              v-bind="{
+                amount: quantity.toFixed(),
+                decimalPlaces: quantityDecimals
+              }"
+            />
             {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
           </p>
         </div>
@@ -266,9 +234,23 @@ function sharePosition() {
           <p>{{ $t('trade.entryMark') }}</p>
         </div>
 
-        <div class="space-y-1 p-2">
-          <p>{{ priceToString }}</p>
-          <p class="text-gray-500">{{ markPriceToString }}</p>
+        <div class="space-y-1 p-2 flex flex-col items-end">
+          <p>
+            <AppAmount
+              v-bind="{
+                amount: price.toFixed(),
+                decimalPlaces: priceDecimals
+              }"
+            />
+          </p>
+          <p class="text-coolGray-500">
+            <AppAmount
+              v-bind="{
+                amount: markPrice.toFixed(),
+                decimalPlaces: priceDecimals
+              }"
+            />
+          </p>
         </div>
       </div>
 
@@ -285,13 +267,32 @@ function sharePosition() {
               'text-red-500': pnl.lt(0)
             }"
           >
-            <p>{{ pnlToString }} {{ market?.quoteToken.symbol }}</p>
-            <p>{{ percentagePnlToString }}%</p>
+            <p class="flex gap-1">
+              <AppAmount
+                v-bind="{
+                  amount: pnl.toFixed(),
+                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                }"
+              />
+              <span class="text-coolGray-500">
+                {{ market?.quoteToken.symbol }}
+              </span>
+            </p>
+            <p class="flex">
+              <AppAmount
+                v-bind="{
+                  amount: percentagePnl.toFixed(),
+                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                }"
+              >
+                %
+              </AppAmount>
+            </p>
           </div>
 
-          <SharedIcon
-            name="share"
-            class="text-gray-500 hover:text-gray-400 w-4 h-4 min-w-4"
+          <UIcon
+            :name="NuxtUiIcons.Share"
+            class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
             @click="sharePosition"
           />
         </div>
@@ -301,7 +302,14 @@ function sharePosition() {
         <p>{{ $t('portfolio.balances.totalValueUsd') }}</p>
 
         <div v-if="market" class="space-y-1">
-          <p>${{ quantityInUsdToString }}</p>
+          <p class="flex">
+            <span>$</span>
+            <AppUsdAmount
+              v-bind="{
+                amount: quantityInUsd.toFixed()
+              }"
+            />
+          </p>
         </div>
       </div>
 
@@ -309,21 +317,40 @@ function sharePosition() {
         <p>{{ $t('trade.margin') }}</p>
 
         <div class="space-x-2">
-          <span>{{ marginToString }}</span>
-          <button class="p-2 rounded-full bg-gray-800" @click="addMargin">
-            <SharedIcon name="plus" is-xs />
+          <AppAmount
+            v-bind="{
+              amount: margin.toFixed(),
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+          <button class="p-2 rounded-full bg-coolGray-800" @click="addMargin">
+            <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
           </button>
         </div>
       </div>
 
       <div class="flex items-center px-2 py-4 justify-between">
         <p>{{ $t('trade.liquidation_price') }}</p>
-        <p>{{ liquidationPrice.toFormat(market.priceDecimals) }}</p>
+        <p>
+          <AppAmount
+            v-bind="{
+              decimalPlaces: priceDecimals,
+              amount: liquidationPrice.toFixed()
+            }"
+          />
+        </p>
       </div>
 
       <div class="justify-between flex items-center px-2 py-4">
         <p>{{ $t('trade.leverage') }}</p>
-        <p>{{ effectiveLeverage.toFormat(2) }}x</p>
+        <span class="flex">
+          <AppAmount
+            v-bind="{
+              amount: effectiveLeverage.toFixed(),
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />x
+        </span>
       </div>
 
       <div class="flex-1 flex items-center px-2 py-4">

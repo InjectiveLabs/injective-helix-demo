@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WalletConnectStatus } from '@shared/types'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { MagicProvider } from '@injectivelabs/wallet-ts'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -35,12 +35,12 @@ function onEmailConnect() {
 <template>
   <div>
     <button
-      class="bg-black text-gray-200 hover:bg-gray-950 border-gray-600 border w-full rounded-lg p-4 mb-4"
+      class="bg-black text-coolGray-200 hover:bg-coolGray-950 border-coolGray-600 border w-full rounded-lg p-4 mb-4"
       size="lg"
       @click="onGoogleConnect"
     >
       <div class="flex items-center gap-2 w-full">
-        <SharedIcon name="google-color" />
+        <Icon :name="NuxtUiIcons.GoogleColor" class="w-6 h-6 min-w-6" />
         <span class="font-semibold">{{ $t('connect.magic.google.cta') }}</span>
       </div>
     </button>
@@ -55,7 +55,7 @@ function onEmailConnect() {
         }"
       />
       <AppButton
-        class="disabled:border-gray-400 text-white"
+        class="disabled:border-coolGray-400 text-white"
         v-bind="{
           disabled: !email || hasError || isLoading,
           variant: hasError ? 'primary-outline' : 'primary'

@@ -191,7 +191,7 @@ function update() {
   }
 
   // price labels at bottom
-  ctx.fillStyle = colors.gray[300]
+  ctx.fillStyle = colors.coolGray[300]
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
@@ -208,7 +208,7 @@ function update() {
     )
   }
 
-  ctx.strokeStyle = colors.gray[500]
+  ctx.strokeStyle = colors.coolGray[500]
   ctx.lineWidth = 1
   ctx.beginPath()
   ctx.moveTo(0, height * 0.9)
@@ -216,7 +216,7 @@ function update() {
   ctx.stroke()
 
   // draw y axis labels
-  ctx.fillStyle = colors.gray[500]
+  ctx.fillStyle = colors.coolGray[500]
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'right'
   ctx.textBaseline = 'middle'
@@ -346,7 +346,7 @@ useResizeObserver(containerEl, update)
 
     <div
       ref="tooltipEl"
-      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-900/60 backdrop-blur-sm p-2 rounded-lg border-gray-700 border text-[11px] text-gray-500 gap-2 z-50"
+      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-900/60 backdrop-blur-sm p-2 rounded-lg border-coolGray-700 border text-[11px] text-coolGray-500 gap-2 z-50"
     ></div>
   </div>
 </template>

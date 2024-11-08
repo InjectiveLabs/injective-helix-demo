@@ -148,25 +148,25 @@ const spotBoostedMarkets = computed(() => {
   <PartialsCommonStatsItem>
     <div class="flex justify-between text-xs w-full mx-auto">
       <div class="flex-1 px-4 lg:px-6">
-        <p class="text-gray-200 text-center font-semibold">
+        <p class="text-coolGray-200 text-center font-semibold">
           {{ $t('trade.derivatives') }}
         </p>
         <CommonTextInfo
           v-for="derivative in derivativeBoostedMarkets"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
-          class="mt-1 text-gray-550"
+          class="mt-1 text-coolGray-550"
           is-sm
         >
           <p class="text-white font-mono">
             <span>
               {{ derivative.makerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ derivative.takerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
@@ -175,25 +175,25 @@ const spotBoostedMarkets = computed(() => {
       </div>
 
       <div class="flex-1 px-4 lg:px-12">
-        <p class="text-gray-200 text-center font-semibold">
+        <p class="text-coolGray-200 text-center font-semibold">
           {{ $t('trade.spot') }}
         </p>
         <CommonTextInfo
           v-for="spot in spotBoostedMarkets"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
-          class="mt-1 text-gray-550"
+          class="mt-1 text-coolGray-550"
           is-sm
         >
           <p class="text-white font-mono">
             <span>
               {{ spot.makerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ spot.takerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
@@ -203,10 +203,10 @@ const spotBoostedMarkets = computed(() => {
     </div>
 
     <template #title>
-      <div class="flex items-center justify-center text-gray-450 text-xs">
+      <div class="flex items-center justify-center text-coolGray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
         <AppTooltip
-          class="ml-2 text-gray-450"
+          class="ml-2 text-coolGray-450"
           :content="$t('trade.boosted_markets_tooltip')"
         />
       </div>

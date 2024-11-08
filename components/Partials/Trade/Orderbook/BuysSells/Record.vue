@@ -170,7 +170,7 @@ function handlePriceClick() {
 
 <template>
   <div
-    class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
+    class="group flex text-[11px] leading-4 text-right relative text-coolGray-300 hover:text-white cursor-pointer select-none font-mono"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
@@ -178,22 +178,24 @@ function handlePriceClick() {
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div
-        class="text-2xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
+        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
       >
-        <div class="text-gray-300 font-2xs">{{ $t('trade.volume') }}:</div>
+        <div class="text-coolGray-300 font-2xs">{{ $t('trade.volume') }}:</div>
         <div class="font-mono text-right">{{ volumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalVolume', { symbol: market.quoteToken.symbol }) }}:
         </div>
         <div class="font-mono text-right">{{ totalVolumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalQuantity', { symbol: market.baseToken.symbol }) }}:
         </div>
         <div class="font-mono text-right">{{ totalQuantityToString }}</div>
 
-        <div class="text-gray-300 font-2xs">{{ $t('trade.avgPrice') }}:</div>
+        <div class="text-coolGray-300 font-2xs">
+          {{ $t('trade.avgPrice') }}:
+        </div>
         <div class="font-mono text-right">{{ avgPriceToString }}</div>
       </div>
     </div>

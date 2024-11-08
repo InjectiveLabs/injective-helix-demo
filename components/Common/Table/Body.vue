@@ -17,7 +17,7 @@ withDefaults(defineProps<{ isRound?: boolean; isEmpty?: boolean }>(), {
 
     <div
       v-if="isEmpty"
-      class="col-span-1 px-6 text-sm py-4 text-gray-200 items-center rounded"
+      class="col-span-1 px-6 text-sm py-4 text-coolGray-200 items-center rounded"
     >
       <slot name="empty" />
     </div>

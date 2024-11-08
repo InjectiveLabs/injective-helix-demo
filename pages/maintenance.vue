@@ -6,7 +6,7 @@ definePageMeta({
 
 <template>
   <main class="flex flex-col h-screen w-full">
-    <div class="container flex flex-col h-full p-4 sm:p-20">
+    <div class="container flex flex-col h-full p-4 sm:p-20 mx-auto">
       <div
         class="h-[calc(100%-20px)] flex flex-col justify-center items-center"
       >

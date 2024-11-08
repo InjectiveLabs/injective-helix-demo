@@ -26,29 +26,6 @@ const {
   computed(() => props.order),
   computed(() => true)
 )
-
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
-
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
 </script>
 
 <template>
@@ -96,32 +73,50 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)"
       >
-        {{ priceToString }}
+        <AppAmount
+          v-bind="{
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)"
       >
-        {{ quantityToString }}
+        <AppAmount
+          v-bind="{
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
       </div>
 
       <div
         class="flex-1 flex items-center p-2 justify-end"
         :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)"
       >
-        <span>
-          {{ totalToString }}
-        </span>
-        <span class="text-gray-500 ml-1">
+        <AppAmount
+          v-bind="{
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
+          }"
+        />
+        <span class="text-coolGray-500 ml-1">
           {{ market?.quoteToken.symbol }}
         </span>
       </div>
 
       <div class="flex-1 flex justify-center items-center p-2">
-        <span v-if="triggerPrice.eq(0)"> - </span>
+        <span v-if="triggerPrice.eq(0)"> &mdash; </span>
         <span v-else :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)">
-          {{ triggerPriceToString }}
+          <AppAmount
+            v-bind="{
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: priceDecimals
+            }"
+          />
         </span>
       </div>
 

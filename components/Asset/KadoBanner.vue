@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 const sharedWalletStore = useSharedWalletStore()
 
 const url = computed(() => {
@@ -26,7 +28,10 @@ const url = computed(() => {
           {{ $t('banners.kado.tryNow') }}
         </span>
 
-        <SharedIcon name="arrow" class="rotate-135 w-3 h-3 text-blue-500" />
+        <UIcon
+          :name="NuxtUiIcons.ArrowLeft"
+          class="rotate-135 w-3 h-3 text-blue-500"
+        />
       </div>
     </NuxtLink>
   </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { LocationAsRelativeRaw } from 'vue-router'
+import { NuxtUiIcons } from '@shared/types'
 import { MenuItem, MenuItemType } from '@/types'
 
 const route = useRoute()
@@ -35,20 +36,20 @@ function toggle() {
     v-if="item.type === MenuItemType.Link"
     :to="item.to"
     :target="item?.isExternal ? '_blank' : ''"
-    class="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-800 cursor-pointer border border-transparent text-sm"
+    class="flex items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 cursor-pointer border border-transparent text-sm"
     :class="{
       'text-blue-500 ': isActiveLink
     }"
     @click="emit('menu:close')"
   >
-    <SharedIcon v-if="item.icon" :name="item.icon" is-md />
+    <UIcon v-if="item.icon" :name="item.icon" class="h-4 w-4 min-w-4" />
 
     <div>{{ $t(item.label) }}</div>
   </NuxtLink>
 
   <template v-else>
     <div
-      class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-gray-800 select-none cursor-pointer border border-transparent text-sm"
+      class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 select-none cursor-pointer border border-transparent text-sm"
       :class="{
         'text-blue-500 bg-brand-875': (route.name as string).startsWith(
           item.name as string
@@ -56,20 +57,19 @@ function toggle() {
       }"
       @click="toggle"
     >
-      <SharedIcon v-if="item.icon" :name="item.icon" is-md />
+      <UIcon v-if="item.icon" :name="item.icon" class="h-4 w-4 min-w-4" />
 
       <div class="flex-1">
         {{ $t(item.label) }}
       </div>
 
-      <SharedIcon
-        name="chevron"
-        class="transition-all"
+      <UIcon
+        :name="NuxtUiIcons.ChevronLeft"
+        class="transition-all h-3 w-3 min-w-3"
         :class="{
           'rotate-180': !isOpen,
           'rotate-90': isOpen
         }"
-        is-sm
       />
     </div>
 

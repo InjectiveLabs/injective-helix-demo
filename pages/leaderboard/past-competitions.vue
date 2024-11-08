@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SharedDropdownOption } from '@shared/types'
 import {
   FIRST_CAMPAIGN_NAME,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
@@ -12,14 +11,14 @@ const { $onError } = useNuxtApp()
 const selectedCampaignName = ref('')
 const status = reactive(new Status(StatusType.Loading))
 
-const options = computed<SharedDropdownOption[] | undefined>(() => {
+const options = computed(() => {
   if (!campaignStore.pastPnlOrVolumeCampaigns) {
     return
   }
 
   return campaignStore.pastPnlOrVolumeCampaigns.map(({ name }) => ({
-    display: name,
-    value: name
+    label: name,
+    id: name
   }))
 })
 
@@ -66,29 +65,11 @@ function fetchPastCampaigns() {
           to="#leaderboard-target"
           defer
         >
-          <AppSelect
+          <USelectMenu
             v-model="selectedCampaignName"
-            v-bind="{
-              options,
-              wrapperClass:
-                'py-2 px-3 rounded max-md:text-xs border border-gray-450 font-medium w-[350px] md:w-[400px]',
-              contentClass:
-                'max-h-[320px] overflow-y-auto  max-md:text-xs font-medium w-[350px] md:w-[400px]'
-            }"
-            start-placement
-          >
-            <template #default="{ selected }">
-              <div
-                class="flex items-center space-x-2 font-semibold tracking-wide w-full"
-              >
-                {{ selected?.display }}
-              </div>
-            </template>
-
-            <template #option="{ option }">
-              <div>{{ option?.display }}</div>
-            </template>
-          </AppSelect>
+            :options="options"
+            value-attribute="id"
+          />
         </Teleport>
 
         <div class="w-full text-sm relative">

@@ -82,7 +82,7 @@ export function useOrder(
           value: order.value.price,
           decimalPlaces:
             market.value.baseToken.decimals - market.value.quoteToken.decimals
-        }).toFixed()
+        })
       : new BigNumberInWei(order.value.price).toBase(
           market.value.quoteToken.decimals
         )

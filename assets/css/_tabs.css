@@ -26,6 +26,6 @@
   @apply border-blue-600 opacity-100;
 }
 
-.tabs .tablist .tab[aria-selected='true'] span.light  {
-  @apply border-gray-200;
+.tabs .tablist .tab[aria-selected='true'] span.light {
+  @apply border-coolGray-200;
 }

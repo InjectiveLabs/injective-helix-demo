@@ -115,7 +115,7 @@ export default {
       <div :class="wrapperClass" class="overflow-hidden">
         <div
           class="flex items-center justify-between no-shadow"
-          :class="{ 'bg-gray-700': isDisabled && isDisabledGray }"
+          :class="{ 'bg-coolGray-700': isDisabled && isDisabledGray }"
         >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />
@@ -134,7 +134,7 @@ export default {
               <slot name="max" />
             </div>
 
-            <div v-if="slots.addon" class="mr-3 text-gray-300">
+            <div v-if="slots.addon" class="mr-3 text-coolGray-300">
               <slot name="addon" />
             </div>
           </SharedNumericInput>

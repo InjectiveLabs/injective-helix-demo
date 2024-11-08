@@ -48,6 +48,7 @@ export default {
     helix: 'Helix',
     trade: 'Trade',
     value: 'Value',
+    enable: 'Enable',
     close: 'Close',
     active: 'active',
     submit: 'Submit',
@@ -67,6 +68,7 @@ export default {
     required: 'Required',
     tradingDocs: 'Trading Docs',
     unauthorized: 'Unauthorized',
+    dontShowAgain: "Don't Show Again",
     notAvailableinAutoSignMode: 'Not available in Auto-Sign Mode',
     notAvailableinAuthZMode: 'Not available in Access Control Mode',
     notAvailableinAuthZOrAutoSignMode:

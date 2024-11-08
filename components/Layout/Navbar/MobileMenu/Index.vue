@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import {
   MENU_ITEMS,
   USER_MENU_ITEMS,
@@ -39,7 +40,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
       class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
       @click="open"
     >
-      <SharedIcon name="menu" />
+      <UIcon :name="NuxtUiIcons.Menu" class="h-6 w-6 min-w-6" />
     </button>
   </div>
 
@@ -57,7 +58,11 @@ const isLockedDoc = useScrollLock(document.documentElement)
           <div class="h-[100dvh] max-w-sm overflow-y-auto">
             <div class="p-4 border-b flex justify-between items-center">
               <AssetLogo class="mx-3" />
-              <SharedIcon name="close" @click="close" />
+              <UIcon
+                :name="NuxtUiIcons.Close"
+                class="h-4 w-4 min-w-4"
+                @click="close"
+              />
             </div>
 
             <div>

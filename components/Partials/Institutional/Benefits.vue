@@ -45,13 +45,13 @@ const benefits = [
       <div
         v-for="item in benefits"
         :key="item.title"
-        class="bg-gray-950 p-5 group hover:bg-gray-700 cursor-pointer rounded-xl transition-all duration-300"
+        class="bg-coolGray-950 p-5 group hover:bg-coolGray-700 cursor-pointer rounded-xl transition-all duration-300"
       >
         <div>
           <img
             :src="`/images/benefits/${item.icon}`"
             alt=""
-            class="bg-gray-800 p-3 rounded-full group-hover:invert transition-all duration-300"
+            class="bg-coolGray-800 p-3 rounded-full group-hover:invert transition-all duration-300"
           />
         </div>
 

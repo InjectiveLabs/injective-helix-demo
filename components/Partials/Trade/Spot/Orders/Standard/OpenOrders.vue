@@ -29,8 +29,6 @@ const filteredOrders = computed(() =>
 
 <template>
   <div class="divide-y">
-    <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
-
     <div v-if="isMobile">
       <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
         v-for="order in filteredOrders"
@@ -40,6 +38,7 @@ const filteredOrders = computed(() =>
     </div>
 
     <template v-else>
+      <PartialsPortfolioOrdersSpotOpenOrdersTableHeader />
       <PartialsPortfolioOrdersSpotOpenOrdersTableRow
         v-for="order in filteredOrders"
         :key="order.orderHash"

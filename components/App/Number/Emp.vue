@@ -49,7 +49,7 @@ const classes = computed(() => {
     :class="classes"
   >
     <template #addon>
-      <span class="text-sm text-gray-450 ml-1">
+      <span class="text-sm text-coolGray-450 ml-1">
         <slot />
       </span>
     </template>

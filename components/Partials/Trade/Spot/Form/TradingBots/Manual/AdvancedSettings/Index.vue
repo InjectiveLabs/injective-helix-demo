@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
+
 const isOpen = ref(false)
 
 function toggle() {
@@ -16,7 +18,7 @@ function toggle() {
         {{ $t('trade.advancedSettings') }}
       </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 

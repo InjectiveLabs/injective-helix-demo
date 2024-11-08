@@ -33,7 +33,7 @@ const isDisabled = computed(
       :disabled="isDisabled"
       class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
       :class="{
-        'text-gray-500': isDisabled,
+        'text-coolGray-500': isDisabled,
         'text-blue-500 hover:text-blue-600': !isDisabled
       }"
       @click="openGranteeModal"

@@ -58,7 +58,7 @@ function onSignMessage() {
 
 <template>
   <AppButton
-    class="disabled:border-gray-400 bg-blue-500 text-blue-900 font-semibold"
+    class="disabled:border-coolGray-400 bg-blue-500 text-blue-900 font-semibold"
     v-bind="{
       disabled:
         hasErrors || signingStatus.isLoading() || submitStatus.isLoading(),

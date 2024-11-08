@@ -68,7 +68,7 @@ function closeModal() {
     </template>
 
     <div class="relative">
-      <p class="text-center text-sm text-gray-100">
+      <p class="text-center text-sm text-coolGray-100">
         {{
           $t(`marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
             symbol: market.baseToken.symbol

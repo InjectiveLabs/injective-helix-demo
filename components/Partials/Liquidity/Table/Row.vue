@@ -8,10 +8,7 @@ import {
 import { usdtToken } from '@shared/data/token'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP
-} from '@/app/utils/constants'
+import { CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP } from '@/app/utils/constants'
 import { spotGridMarkets } from '@/app/json'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import {
@@ -69,29 +66,23 @@ const marketVolume = computed(() =>
   )
 )
 
-const { valueToString: totalRewardsInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      rewardsWithToken.value.reduce((total, reward) => {
-        return total.plus(
-          new BigNumberInBase(reward.value).times(
-            tokenStore.tokenUsdPrice(reward.token)
-          )
+const totalRewardsInUsd = computed(() =>
+  rewardsWithToken.value.reduce(
+    (total, reward) =>
+      total.plus(
+        new BigNumberInBase(reward.value).times(
+          tokenStore.tokenUsdPrice(reward.token)
         )
-      }, ZERO_IN_BASE)
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+      ),
+    ZERO_IN_BASE
   )
+)
 
-const { valueToString: marketVolumeInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      marketVolume.value.times(
-        market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
-      )
-    ),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+const marketVolumeInUsd = computed(() =>
+  marketVolume.value.times(
+    market.value ? tokenStore.tokenUsdPrice(market.value.quoteToken) : 0
   )
+)
 
 const sgtScAddress = computed(() => {
   const market = spotStore.markets.find(
@@ -137,14 +128,14 @@ onMounted(() => {
             params: { market: market.slug },
             query: { interface: TradingInterface.TradingBots }
           }"
-          class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+          class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300 p-2"
         >
           <div v-if="baseToken">
             <CommonTokenIcon v-bind="{ token: baseToken }" />
           </div>
           <div>
             <p class="text-sm font-bold">{{ market.ticker }}</p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-coolGray-500">
               {{ market.baseToken.name }}
             </p>
           </div>
@@ -162,7 +153,12 @@ onMounted(() => {
     <td class="text-left">
       <div>
         <p class="font-semibold text-base mb-2">
-          {{ totalRewardsInUsdToString }} USD
+          <AppUsdAmount
+            v-bind="{
+              amount: totalRewardsInUsd.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
         </p>
         <div class="flex items-center space-x-2">
           <template v-for="(reward, index) in rewardsWithToken" :key="index">
@@ -181,14 +177,21 @@ onMounted(() => {
 
     <td>
       <div>
-        <span v-if="status.isLoading()" class="text-gray-500">&mdash;</span>
+        <span v-if="status.isLoading()" class="text-coolGray-500">&mdash;</span>
         <span v-else>{{ activeBots }}</span>
       </div>
     </td>
 
     <td>
       <div>
-        <p>{{ marketVolumeInUsdToString }} USD</p>
+        <p>
+          <AppUsdAmount
+            v-bind="{
+              amount: marketVolumeInUsd.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </p>
       </div>
     </td>
 

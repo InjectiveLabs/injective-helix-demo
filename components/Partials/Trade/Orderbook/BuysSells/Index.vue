@@ -84,17 +84,17 @@ function setSellsIndex(index: number) {
   <div>
     <div class="flex justify-between pt-2 px-2">
       <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.price') }}</span>
+        <span class="text-coolGray-500">{{ $t('trade.price') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
 
       <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.amount') }}</span>
+        <span class="text-coolGray-500">{{ $t('trade.amount') }}</span>
         <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
       </p>
 
       <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.total') }}</span>
+        <span class="text-coolGray-500">{{ $t('trade.total') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
     </div>

@@ -63,11 +63,11 @@ const handleClose = () => {
     </p>
     <p class="text-2xl">{{ formattedCountdown }}s</p>
 
-    <p v-if="showMessage" class="text-sm mt-2 text-center text-gray-500">
+    <p v-if="showMessage" class="text-sm mt-2 text-center text-coolGray-500">
       {{ $t('onboarding.processingMessage') }}
     </p>
 
-    <p class="text-sm text-gray-300">
+    <p class="text-sm text-coolGray-300">
       <span>{{ $t('onboarding.processingMessageInfo') }}</span>
       {{ ' ' }}
       <NuxtLink

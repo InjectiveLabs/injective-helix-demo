@@ -91,21 +91,26 @@ export const useAuthZStore = defineStore('authZ', {
       const authZStore = useAuthZStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (!sharedWalletStore.isUserConnected) {
+      if (
+        !sharedWalletStore.isUserConnected ||
+        !sharedWalletStore.injectiveAddress
+      ) {
         return
       }
 
       const pagination = { limit: 1000 }
 
-      const { grants: granteeGrants } = await authZApi.fetchGranteeGrants(
-        sharedWalletStore.injectiveAddress,
-        pagination
-      )
-
-      const { grants: granterGrants } = await authZApi.fetchGranterGrants(
-        sharedWalletStore.injectiveAddress,
-        pagination
-      )
+      const [{ grants: granteeGrants }, { grants: granterGrants }] =
+        await Promise.all([
+          authZApi.fetchGranteeGrants(
+            sharedWalletStore.injectiveAddress,
+            pagination
+          ),
+          authZApi.fetchGranterGrants(
+            sharedWalletStore.injectiveAddress,
+            pagination
+          )
+        ])
 
       authZStore.$patch({
         granterGrants:

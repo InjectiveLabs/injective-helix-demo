@@ -61,7 +61,7 @@ function onChangeInvestmentType() {
     </template>
 
     <div>
-      <p class="text-sm text-gray-300">
+      <p class="text-sm text-coolGray-300">
         {{
           $t('sgt.balancedFeesMessage', {
             quote: market.quoteToken.symbol,
@@ -81,14 +81,14 @@ function onChangeInvestmentType() {
       </p>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-gray-500">{{ $t('sgt.totalAmount') }}</p>
+        <p class="text-coolGray-500">{{ $t('sgt.totalAmount') }}</p>
         <p>{{ marginToString }} USD</p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-gray-500">{{ $t('sgt.optimizedAmounts') }}</p>
+        <p class="text-coolGray-500">{{ $t('sgt.optimizedAmounts') }}</p>
 
-        <div class="text-gray-500 text-right">
+        <div class="text-coolGray-500 text-right">
           <p>{{ quoteAmountToString }} {{ market.quoteToken.symbol }}</p>
           <p>{{ baseAmountToString }} {{ market.baseToken.symbol }}</p>
         </div>

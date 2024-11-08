@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center justify-between flex-wrap border-b border-b-gray-600"
+    class="flex items-center justify-between flex-wrap border-b border-b-coolGray-600"
   >
     <div
       class="flex items-center gap-2 3md:gap-4 overflow-x-auto justify-between xs:justify-start w-full xs:w-auto hide-scrollbar mb-[-2px]"

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
@@ -87,14 +88,10 @@ function confirm() {
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.ClosedRWAMarket]"
-    is-sm
-    @modal:closed="closeModal"
-  >
+  <AppModal :is-open="true" is-sm @modal:closed="closeModal">
     <template #title>
       <div class="text-orange-300 flex space-x-1 items-center justif-center">
-        <SharedIcon name="warning-triangle" is-md />
+        <UIcon :name="NuxtUiIcons.WarningOutline" class="w-5 h-5 min-w-5" />
         <h3 class="normal-case text-lg">
           {{ $t('trade.rwa.warning') }}
         </h3>

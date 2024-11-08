@@ -7,6 +7,7 @@ import {
 } from '@injectivelabs/utils'
 import { dataCyTag } from '@shared/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { NuxtUiIcons } from '@shared/types'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
@@ -237,7 +238,7 @@ watch(
 
     <AppButton
       v-else
-      class="mb-2 w-full text-gray-525 text-opacity-100"
+      class="mb-2 w-full text-coolGray-525 text-opacity-100"
       size="lg"
       v-bind="{
         status: status,
@@ -291,9 +292,9 @@ watch(
               {{ $t('trade.swap.rateExpired') }}
             </span>
 
-            <SharedIcon
-              name="rotate"
-              class="h-3 w-3 cursor-pointer scale-x-[-1] rotate-45"
+            <UIcon
+              :name="NuxtUiIcons.Rotate"
+              class="h-3 w-3 ml-1"
               @click="getResultQuantity"
             />
           </span>

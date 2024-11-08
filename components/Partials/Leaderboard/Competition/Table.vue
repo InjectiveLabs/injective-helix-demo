@@ -36,7 +36,7 @@ function incrementLimit() {
   <div class="mb-20">
     <PartialsLeaderboardCompetitionCommonHeader
       v-bind="$attrs"
-      class="text-gray-350 text-[11px]"
+      class="text-coolGray-350 text-[11px]"
     />
 
     <div v-if="formattedVolumeLeaderboard.length > 0" class="relative">
@@ -49,8 +49,8 @@ function incrementLimit() {
         }"
         class="text-sm my-1 items-center rounded-lg"
         :class="{
-          'bg-gray-825 py-4 text-white': leader.rank > 1,
-          'bg-[#F3C211] py-5 text-gray-1100': leader.rank === 1
+          'bg-coolGray-825 py-4 text-white': leader.rank > 1,
+          'bg-[#F3C211] py-5 text-coolGray-1100': leader.rank === 1
         }"
       />
 

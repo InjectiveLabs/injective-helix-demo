@@ -111,7 +111,7 @@ useIntervalFn(() => {
     >
       <CommonHeaderTooltip
         :tooltip="$t('trade.funding_rate_tooltip')"
-        text-color-class="text-gray-400"
+        text-color-class="text-coolGray-400"
       >
         {{ $t('trade.est_funding_rate') }}
       </CommonHeaderTooltip>
@@ -138,7 +138,7 @@ useIntervalFn(() => {
     <div class="p-2 text-xs flex flex-col max-lg:text-center">
       <CommonHeaderTooltip
         :tooltip="$t('trade.next_funding_tooltip')"
-        text-color-class="text-gray-400"
+        text-color-class="text-coolGray-400"
       >
         {{ $t('trade.next_funding') }}
       </CommonHeaderTooltip>

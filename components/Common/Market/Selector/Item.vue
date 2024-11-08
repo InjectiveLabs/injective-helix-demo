@@ -20,7 +20,7 @@ function setMarket() {
 
     <div class="px-2">
       <p class="font-semibold text-sm">{{ market.ticker }}</p>
-      <p class="text-gray-500 text-xs">{{ market.baseToken.name }}</p>
+      <p class="text-coolGray-500 text-xs">{{ market.baseToken.name }}</p>
     </div>
   </div>
 </template>
