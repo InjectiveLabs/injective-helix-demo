@@ -8,11 +8,11 @@ import {
   getInjectiveAddress,
   NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
-import { walletStrategy } from '@shared/wallet/wallet-strategy'
-import { usdtToken } from '@shared/data/token'
 import { Coin } from '@injectivelabs/ts-types'
+import { usdtToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { WalletStrategy } from '@injectivelabs/wallet-strategy'
 import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
 import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'

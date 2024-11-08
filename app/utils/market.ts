@@ -8,11 +8,11 @@ import {
   MsgExecuteContractCompat,
   NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
+import { usdtToken } from '@shared/data/token'
 import { NETWORK } from '@shared/utils/constant'
 import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import { usdtToken } from '@shared/data/token'
 import { neptuneService } from '@/app/Services'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
