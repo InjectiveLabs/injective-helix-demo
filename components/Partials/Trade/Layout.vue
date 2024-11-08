@@ -53,6 +53,8 @@ onWalletConnected(() => {
     return
   }
 
+  clearTimeout(timeout)
+
   timeout = setTimeout(() => {
     if (
       accountStore.hasBalance &&
