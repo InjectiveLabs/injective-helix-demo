@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 withDefaults(defineProps<{ isSwapPage: boolean }>(), { isSwapPage: false })
 </script>
 
@@ -45,7 +47,9 @@ withDefaults(defineProps<{ isSwapPage: boolean }>(), { isSwapPage: false })
           class="flex items-center hover:text-blue-200"
         >
           <span>{{ $t('liquidity.seeRewards') }}</span>
-          <div class="rotate-180 ml-1"><SharedIcon name="arrow" is-sm /></div>
+          <div class="rotate-180 ml-1">
+            <UIcon :name="NuxtUiIcons.ArrowLeft" class="w-3 h-3 min-w-3" />
+          </div>
         </NuxtLink>
       </div>
 

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { INJ_LOGO_URL } from '@shared/utils/constant'
+import { NuxtUiIcons } from '@shared/types'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
 enum BridgeStep {
@@ -23,25 +24,25 @@ const options = [
     type: BridgeStep.One,
     title: 'home.gettingStarted.step1.title',
     description: 'home.gettingStarted.step1.description',
-    icon: 'bridge'
+    icon: NuxtUiIcons.Bridge
   },
   {
     type: BridgeStep.Two,
     title: 'home.gettingStarted.step2.title',
     description: 'home.gettingStarted.step2.description',
-    icon: 'chain-link'
+    icon: NuxtUiIcons.Chain
   },
   {
     type: BridgeStep.Three,
     title: 'home.gettingStarted.step3.title',
     description: 'home.gettingStarted.step3.description',
-    icon: 'bitcoin'
+    icon: NuxtUiIcons.Bitcoin
   },
   {
     type: BridgeStep.Four,
     title: 'home.gettingStarted.step4.title',
     description: 'home.gettingStarted.step4.description',
-    icon: 'circle-check-border'
+    icon: NuxtUiIcons.CheckmarkOutline
   }
 ]
 </script>
@@ -49,7 +50,7 @@ const options = [
 <template>
   <div>
     <h1
-      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
     >
       {{ $t('home.gettingStarted.title') }}
     </h1>
@@ -93,7 +94,7 @@ const options = [
           :value="item.type"
         >
           <div class="flex-1 space-y-2 flex items-center space-x-6">
-            <SharedIcon
+            <UIcon
               :name="item.icon"
               class="min-w-8 w-8 h-8"
               :class="{ 'text-blue-500': activeStep === item.type }"
@@ -108,14 +109,17 @@ const options = [
                   {{ $t(item.title) }}
                 </h2>
 
-                <div class="rotate-180 text-gray-400">
-                  <SharedIcon name="arrow" />
+                <div class="rotate-180 text-coolGray-400">
+                  <UIcon
+                    :name="NuxtUiIcons.ArrowLeft"
+                    class="h-6 w-6 min-w-6"
+                  />
                 </div>
               </div>
 
               <p
                 :class="{ 'text-white': activeStep === item.type }"
-                class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
+                class="text-base text-coolGray-400 xs:leading-6 xs:min-h-12"
               >
                 {{ $t(item.description) }}
               </p>

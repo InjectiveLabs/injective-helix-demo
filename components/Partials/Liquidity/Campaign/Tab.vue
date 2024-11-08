@@ -19,7 +19,7 @@ const lastUpdated = computed(() =>
     </button>
 
     <div class="flex space-x-4 items-end mb-2">
-      <p v-if="lastUpdated" class="text-gray-300 text-xs">
+      <p v-if="lastUpdated" class="text-coolGray-300 text-xs">
         {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>

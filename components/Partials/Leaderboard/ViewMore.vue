@@ -14,7 +14,7 @@ function incrementLimit() {
       size: 'xs',
       variant: 'primary-outline'
     }"
-    class="cursor-pointer text-center border-gray-450 rounded-[4px] mx-auto -mt-4 relative"
+    class="cursor-pointer text-center border-coolGray-450 rounded-[4px] mx-auto -mt-4 relative"
     @click="incrementLimit"
   >
     <div class="font-normal text-sm leading-4 px-4">

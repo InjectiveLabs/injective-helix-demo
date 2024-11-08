@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedMarketChange, SharedMarketType } from '@shared/types'
+import {
+  NuxtUiIcons,
+  SharedMarketChange,
+  SharedMarketType
+} from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
@@ -31,7 +35,7 @@ const priceChangeClasses = computed(() => {
     topGainerMarket.value.summary.lastPriceChange ===
       SharedMarketChange.NoChange
   ) {
-    return 'text-gray-350'
+    return 'text-coolGray-350'
   }
 
   return topGainerMarket.value.summary.lastPriceChange ===
@@ -67,7 +71,7 @@ const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
     <div class="flex-1 flex select-none cursor-pointer p-2" @click="toggleOpen">
       <div class="flex items-center space-x-2 py-2">
         <div :class="{ '-rotate-90': !isOpen }">
-          <SharedIcon name="triangle" is-sm />
+          <UIcon :name="NuxtUiIcons.Triangle" class="w-3.5 h-3.5 min-w-3.5" />
         </div>
         <div class="font-semibold">{{ $t(`markets.themes.${theme}`) }}</div>
       </div>

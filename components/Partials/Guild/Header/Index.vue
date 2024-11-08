@@ -82,7 +82,7 @@ function onConnectWallet() {
         class="flex items-center justify-center gap-10 font-semibold text-2xl mt-10 flex-wrap"
       >
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.guilds') }}
           </p>
           <p v-if="summary">{{ summary.totalGuildsCount }}</p>
@@ -90,7 +90,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.participants') }}
           </p>
           <p v-if="summary">{{ summary.totalMembersCount }}</p>
@@ -98,7 +98,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.totalRewards') }}
           </p>
           <p v-if="campaignDateRange">
@@ -108,7 +108,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.currentSeason') }}
           </p>
           <p v-if="campaignDateRange">{{ campaignDateRange }}</p>
@@ -144,7 +144,7 @@ function onConnectWallet() {
 
       <section class="grid lg:grid-cols-2 gap-10 pt-6">
         <article
-          class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg flex flex-col"
+          class="bg-coolGray-900 p-8 text-center basis-1/2 rounded-lg flex flex-col"
         >
           <div class="grow">
             <img src="/guild/howToParticipate.svg" class="mx-auto" />
@@ -175,7 +175,7 @@ function onConnectWallet() {
               :disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
-              <span v-if="isCampaignOver" class="text-gray-600">
+              <span v-if="isCampaignOver" class="text-coolGray-600">
                 {{ $t('guild.seasonEnded') }}
               </span>
               <span v-else>
@@ -185,7 +185,7 @@ function onConnectWallet() {
           </div>
         </article>
 
-        <article class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg">
+        <article class="bg-coolGray-900 p-8 text-center basis-1/2 rounded-lg">
           <img src="/guild/joinGuild.svg" class="mx-auto" />
           <h2 class="text-2xl font-semibold max-w-[364px] mx-auto mt-3">
             {{ $t('guild.howToParticipate.joinGuild.title') }}
@@ -202,7 +202,7 @@ function onConnectWallet() {
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
               :disabled="isCampaignOver"
             >
-              <span v-if="isCampaignOver" class="text-gray-600">
+              <span v-if="isCampaignOver" class="text-coolGray-600">
                 {{ $t('guild.seasonEnded') }}
               </span>
               <span v-else>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { SharedMarketChange, SharedMarketType } from '@shared/types'
+import {
+  NuxtUiIcons,
+  SharedMarketChange,
+  SharedMarketType
+} from '@shared/types'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -75,6 +79,10 @@ const lastTradedPriceInUsd = computed(() =>
   lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
 )
 
+const volumeInUsd = computed(() =>
+  volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+)
+
 const percentageChangeStatus = computed(() => {
   if (change.value.eq(0)) {
     return SharedMarketChange.NoChange
@@ -85,48 +93,20 @@ const percentageChangeStatus = computed(() => {
     : SharedMarketChange.Decrease
 })
 
-const { valueToString: volumeToFormat, valueToBigNumber: volume } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      if (!summary.value) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(summary.value.volume)
-    }),
-    {
-      decimalPlaces: stableCoinSymbols.includes(props.market.quoteToken.symbol)
-        ? 0
-        : props.market.priceDecimals
+const { valueToBigNumber: volume } = useSharedBigNumberFormatter(
+  computed(() => {
+    if (!summary.value) {
+      return ZERO_IN_BASE
     }
-  )
 
-const { valueToString: volumeInUsdToFormat } = useSharedBigNumberFormatter(
-  computed(() =>
-    volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
-  ),
+    return new BigNumberInBase(summary.value.volume)
+  }),
   {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
+    decimalPlaces: stableCoinSymbols.includes(props.market.quoteToken.symbol)
+      ? 0
+      : props.market.priceDecimals
   }
 )
-
-const { valueToString: lastTradedPriceToFormat } = useSharedBigNumberFormatter(
-  computed(() => lastTradedPrice.value),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: lastTradedPriceInUsdToFormat } =
-  useSharedBigNumberFormatter(
-    computed(() => lastTradedPriceInUsd.value),
-    {
-      decimalPlaces: props.market.priceDecimals,
-      displayAbsoluteDecimalPlace: true
-    }
-  )
 
 const { valueToString: changeToFormat, valueToBigNumber: change } =
   useSharedBigNumberFormatter(
@@ -139,32 +119,21 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
     })
   )
 
-const { valueToString: highToFormat } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!summary.value) {
-      return ZERO_IN_BASE
-    }
-
-    return new BigNumberInBase(summary.value.high)
-  }),
-  {
-    decimalPlaces: props.market.priceDecimals
+const high = computed(() => {
+  if (!summary.value) {
+    return ZERO_IN_BASE
   }
-)
 
-const { valueToString: lowToFormat } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!summary.value) {
-      return ZERO_IN_BASE
-    }
+  return new BigNumberInBase(summary.value.high)
+})
 
-    return new BigNumberInBase(summary.value.low)
-  }),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    minimalDecimalPlaces: props.market.priceDecimals
+const low = computed(() => {
+  if (!summary.value) {
+    return ZERO_IN_BASE
   }
-)
+
+  return new BigNumberInBase(summary.value.low)
+})
 
 const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
   computed(() => {
@@ -187,50 +156,46 @@ const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
   })
 )
 
-const {
-  valueToBigNumber: fundingRate,
-  valueToFixed: fundingRateToFixed,
-  valueToString: fundingRateToString
-} = useSharedBigNumberFormatter(
-  computed(() => {
-    const market = props.market as UiDerivativeMarket
+const fundingRate = computed(() => {
+  const market = props.market as UiDerivativeMarket
 
-    if (market.subType !== SharedMarketType.Perpetual) {
-      return ZERO_IN_BASE
-    }
-
-    if (
-      !market.perpetualMarketFunding ||
-      !market.isPerpetual ||
-      !market.perpetualMarketInfo
-    ) {
-      return ZERO_IN_BASE
-    }
-
-    const hourlyFundingRateCap = new BigNumberInBase(
-      market.perpetualMarketInfo.hourlyFundingRateCap
-    )
-    const estFundingRate = new BigNumberInBase(
-      market.perpetualMarketInfo.hourlyInterestRate
-    ).plus(tWapEst.value)
-
-    if (estFundingRate.gt(hourlyFundingRateCap)) {
-      return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
-    }
-
-    if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
-      return new BigNumberInBase(hourlyFundingRateCap)
-        .times(-1)
-        .multipliedBy(100)
-    }
-
-    return new BigNumberInBase(estFundingRate).multipliedBy(100)
-  }),
-  {
-    roundingMode: BigNumberInBase.ROUND_DOWN,
-    decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+  if (market.subType !== SharedMarketType.Perpetual) {
+    return ZERO_IN_BASE
   }
-)
+
+  if (
+    !market.perpetualMarketFunding ||
+    !market.isPerpetual ||
+    !market.perpetualMarketInfo
+  ) {
+    return ZERO_IN_BASE
+  }
+
+  const hourlyFundingRateCap = new BigNumberInBase(
+    market.perpetualMarketInfo.hourlyFundingRateCap
+  )
+  const estFundingRate = new BigNumberInBase(
+    market.perpetualMarketInfo.hourlyInterestRate
+  ).plus(tWapEst.value)
+
+  if (estFundingRate.gt(hourlyFundingRateCap)) {
+    return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
+  }
+
+  if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
+    return new BigNumberInBase(hourlyFundingRateCap).times(-1).multipliedBy(100)
+  }
+
+  return new BigNumberInBase(estFundingRate).multipliedBy(100)
+})
+
+const {
+  valueToFixed: fundingRateToFixed,
+  valueToBigNumber: fundingRateToBigNumber
+} = useSharedBigNumberFormatter(fundingRate, {
+  roundingMode: BigNumberInBase.ROUND_DOWN,
+  decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+})
 
 const { valueToString: annualizedFundingRateToString } =
   useSharedBigNumberFormatter(
@@ -261,7 +226,7 @@ useIntervalFn(() => {
     class="lg:flex max-lg:text-xs max-lg:p-1 max-lg:divide-y max-lg:[&>*]:p-1"
   >
     <section class="flex p-2 justify-between">
-      <p class="text-gray-400 lg:hidden">{{ $t('trade.price') }}</p>
+      <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
         class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 font-mono lg:py-0.5"
@@ -276,14 +241,14 @@ useIntervalFn(() => {
                 percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <SharedIcon
+            <UIcon
               v-if="
                 [
                   SharedMarketChange.Increase,
                   SharedMarketChange.Decrease
                 ].includes(percentageChangeStatus)
               "
-              name="arrow"
+              :name="NuxtUiIcons.ArrowLeft"
               class="w-3 h-3 mr-1"
               :class="{
                 ' rotate-90':
@@ -293,9 +258,13 @@ useIntervalFn(() => {
               }"
             />
 
-            <div class="leading-none">
-              {{ lastTradedPriceToFormat }}
-            </div>
+            <AppAmount
+              v-bind="{
+                amount: lastTradedPrice.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+              class="leading-none"
+            />
           </div>
         </div>
 
@@ -322,34 +291,68 @@ useIntervalFn(() => {
       :title="$t('trade.usd_value')"
     >
       <p class="font-mono font-semibold">
-        {{ lastTradedPriceInUsdToFormat }}
+        <AppUsdAmount
+          v-bind="{
+            decimalPlaces: market.priceDecimals,
+            amount: lastTradedPriceInUsd.toFixed()
+          }"
+        />
       </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem>
       <template #title>
-        <CommonHeaderTooltip
-          :tooltip="
-            isStableQuoteAsset
-              ? $t('trade.market_volume_24h_tooltip')
-              : $t('trade.total_volume_in_usd', {
-                  amount: volumeInUsdToFormat
-                })
-          "
-          text-color-class="text-gray-400"
-        >
-          {{ $t('trade.total_market_volume_24h') }}
+        <CommonHeaderTooltip text-color-class="text-coolGray-400">
+          <template #default>
+            {{ $t('trade.total_market_volume_24h') }}
+          </template>
+          <template #customTooltip>
+            <span v-if="isStableQuoteAsset">
+              {{ $t('trade.market_volume_24h_tooltip') }}
+            </span>
+            <span v-else>
+              <AppUsdAmount
+                v-bind="{
+                  isShowNoDecimals: true,
+                  amount: volumeInUsd.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+              <span class="ml-1">USD</span>
+            </span>
+          </template>
         </CommonHeaderTooltip>
       </template>
-      <p class="font-mono font-semibold">{{ volumeToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: volume.toFixed(),
+            decimalPlaces: market.priceDecimals
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem :title="$t('trade.high')">
-      <p class="font-mono font-semibold">{{ highToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: high.toFixed(),
+            decimalPlaces: market.priceDecimals
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <PartialsTradeStatsHeaderItem :title="$t('trade.low')">
-      <p class="font-mono font-semibold">{{ lowToFormat }}</p>
+      <p class="font-mono font-semibold">
+        <AppAmount
+          v-bind="{
+            amount: low.toFixed(),
+            decimalPlaces: market.priceDecimals
+          }"
+        />
+      </p>
     </PartialsTradeStatsHeaderItem>
 
     <template v-if="(market as UiDerivativeMarket)?.isPerpetual">
@@ -357,16 +360,19 @@ useIntervalFn(() => {
         <template #title>
           <CommonHeaderTooltip
             :tooltip="$t('trade.funding_rate_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.est_funding_rate') }}
           </CommonHeaderTooltip>
         </template>
 
-        <div v-if="!fundingRate.isNaN()" class="lg:text-right font-mono block">
+        <div
+          v-if="!fundingRateToBigNumber.isNaN()"
+          class="lg:text-right font-mono block"
+        >
           <AppTooltip
             :content="`${$t('trade.annualized')}: ${
-              fundingRate.gt(0) ? '+' : ''
+              fundingRateToBigNumber.gt(0) ? '+' : ''
             }${annualizedFundingRateToString}%`"
           >
             <span
@@ -374,10 +380,17 @@ useIntervalFn(() => {
                 'text-green-500': fundingRate.gte(0),
                 'text-red-500': fundingRate.lt(0)
               }"
-              class="cursor-pointer"
+              class="cursor-pointer flex"
             >
-              {{ (fundingRate.gt(0) ? '+' : '') + fundingRateToString }}%
+              <span> {{ fundingRate.gt(0) ? '+' : '' }}</span>
+              <AppAmount
+                v-bind="{
+                  amount: fundingRate.toFixed(),
+                  decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+                }"
+              />
             </span>
+            <span>%</span>
           </AppTooltip>
         </div>
         <span v-else class="lg:text-right font-mono block"> &mdash; </span>
@@ -387,7 +400,7 @@ useIntervalFn(() => {
         <template #title>
           <CommonHeaderTooltip
             :tooltip="$t('trade.next_funding_tooltip')"
-            text-color-class="text-gray-400"
+            text-color-class="text-coolGray-400"
           >
             {{ $t('trade.next_funding') }}
           </CommonHeaderTooltip>

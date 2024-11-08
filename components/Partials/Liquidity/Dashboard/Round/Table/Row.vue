@@ -2,7 +2,6 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import { LiquidityRewardsPage } from '@/types'
 
@@ -76,18 +75,6 @@ const totalAmountInUsd = computed(() =>
     ZERO_IN_BASE
   )
 )
-
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  totalAmountInUsd,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToString: marketVolumeInUsdToString } =
-  useSharedBigNumberFormatter(marketVolumeInUsd, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
 </script>
 
 <template>
@@ -98,14 +85,14 @@ const { valueToString: marketVolumeInUsdToString } =
           name: LiquidityRewardsPage.CampaignDetails,
           query: { campaign: campaign?.campaignId }
         }"
-        class="flex items-center space-x-2 hover:bg-gray-800 rounded-md transition-colors duration-300 p-2"
+        class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300 p-2"
       >
         <div v-if="token">
           <CommonTokenIcon v-bind="{ token }" />
         </div>
         <div>
           <p class="text-sm font-bold">{{ market.ticker }}</p>
-          <p class="text-xs text-gray-500">
+          <p class="text-xs text-coolGray-500">
             {{ market.baseToken.name }}
           </p>
         </div>
@@ -113,12 +100,26 @@ const { valueToString: marketVolumeInUsdToString } =
     </td>
 
     <td class="w-1/4">
-      <div class="tracking-wider">{{ marketVolumeInUsdToString }} USD</div>
+      <div class="tracking-wider">
+        <AppUsdAmount
+          v-bind="{
+            amount: marketVolumeInUsd.toFixed()
+          }"
+        />
+        <span class="ml-1">USD</span>
+      </div>
     </td>
 
     <td class="text-left w-72">
       <div>
-        <p class="font-semibold">{{ totalAmountInUsdToString }} USD</p>
+        <p class="font-semibold">
+          <AppUsdAmount
+            v-bind="{
+              amount: totalAmountInUsd.toFixed()
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </p>
         <div class="flex items-center space-x-2">
           <PartialsLiquidityCommonTokenAmount
             v-for="({ amount, symbol }, i) in rewards"

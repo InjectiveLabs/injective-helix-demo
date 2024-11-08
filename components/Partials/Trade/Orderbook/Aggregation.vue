@@ -58,19 +58,14 @@ const filteredOptions = computed(() =>
 </script>
 
 <template>
-  <AppSelect
-    v-model.number="value"
+  <USelectMenu
+    v-model="value"
+    class="min-w-24"
+    select-class="dark:bg-brand-900"
     v-bind="{
       options: filteredOptions
     }"
-    wrapper-class="hover:bg-brand-850 border  border-transparent hover:border-brand-700 transition-all p-1 rounded mr-2 pl-2 select-none text-gray-400 hover:text-white"
-  >
-    <template #default="{ selected }">
-      <p class="text-xs font-mono select-none">{{ selected?.display }}</p>
-    </template>
-
-    <template #option="{ option }">
-      <p class="text-xs font-mono select-none">{{ option.display }}</p>
-    </template>
-  </AppSelect>
+    value-attribute="value"
+    option-attribute="display"
+  />
 </template>

@@ -176,13 +176,13 @@ watch(isCampaignStarted, (isStarted) => {
           <Teleport to="#leaderboard-target" defer>
             <CommonHeaderTooltip
               :tooltip="$t('leaderboard.refresh')"
-              class="text-xs md:text-sm md:leading-4 text-gray-350 border-b cursor-pointer border-dashed border-gray-350"
+              class="text-xs md:text-sm md:leading-4 text-coolGray-350 border-b cursor-pointer border-dashed border-coolGray-350"
               is-not-styled
             >
               <i18n-t
                 tag="p"
                 keypath="leaderboard.competition.competitionDuration"
-                class="text-xs md:text-base leading-5 text-gray-350 flex items-center"
+                class="text-xs md:text-base leading-5 text-coolGray-350 flex items-center"
               >
                 <template #duration>
                   <div

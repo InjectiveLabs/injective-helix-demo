@@ -70,7 +70,7 @@ onMounted(() => {
 
     <template #content>
       <div>
-        <p class="text-gray-300 text-sm">
+        <p class="text-coolGray-300 text-sm">
           {{ $t('campaign.activeBots') }}
         </p>
         <p class="text-lg font-semibold">

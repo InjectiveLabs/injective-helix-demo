@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
+
 enum OverviewSection {
   TradingBots = 'tradingBots',
   NewAccounts = 'newAccounts',
@@ -20,25 +22,25 @@ const options = [
     type: OverviewSection.TradingBots,
     title: 'home.overview.tradingBotsTitle',
     description: 'home.overview.tradingBotsDescription',
-    icon: 'robot'
+    icon: NuxtUiIcons.Robot
   },
   {
     type: OverviewSection.NewAccounts,
     title: 'home.overview.newAccountsTitle',
     description: 'home.overview.newAccountsDescription',
-    icon: 'notebook'
+    icon: NuxtUiIcons.Notebook
   },
   {
     type: OverviewSection.Pnl,
     title: 'home.overview.pnlTitle',
     description: 'home.overview.pnlDescription',
-    icon: 'bar-chart'
+    icon: NuxtUiIcons.BarChart
   },
   {
     type: OverviewSection.GasFree,
     title: 'home.overview.gasFreeTitle',
     description: 'home.overview.gasFreeDescription',
-    icon: 'gas-pump'
+    icon: NuxtUiIcons.Gas
   }
 ]
 </script>
@@ -46,7 +48,7 @@ const options = [
 <template>
   <div>
     <h2
-      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent"
+      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap text-center font-semibold lg:my-20 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
     >
       <i18n-t keypath="home.overview.title">
         <template #faster>
@@ -65,10 +67,14 @@ const options = [
           :value="item.type"
         >
           <div class="flex-1 space-y-2 flex items-center space-x-6">
-            <SharedIcon
+            <UIcon
               :name="item.icon"
-              class="min-w-8 w-8 h-8"
-              :class="{ 'text-blue-500': activeType === item.type }"
+              :class="[
+                item.icon === NuxtUiIcons.BarChart
+                  ? 'min-w-8 w-8 h-8'
+                  : 'min-w-9 w-9 h-9',
+                { 'text-blue-500': activeType === item.type }
+              ]"
             />
 
             <div class="flex-1 space-y-2">
@@ -88,14 +94,17 @@ const options = [
                   </div>
                 </div>
 
-                <div class="rotate-180 text-gray-400">
-                  <SharedIcon name="arrow" />
+                <div class="rotate-180 text-coolGray-400">
+                  <UIcon
+                    :name="NuxtUiIcons.ArrowLeft"
+                    class="h-6 w-6 min-w-6"
+                  />
                 </div>
               </div>
 
               <p
                 :class="{ 'text-white': activeType === item.type }"
-                class="text-base text-gray-400 xs:leading-6 xs:min-h-12"
+                class="text-base text-coolGray-400 xs:leading-6 xs:min-h-12"
               >
                 {{ $t(item.description) }}
               </p>

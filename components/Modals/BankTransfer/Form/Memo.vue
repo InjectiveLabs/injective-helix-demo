@@ -55,7 +55,7 @@ watch(
         "
         @update:modelValue="onUpdateMemoRequired"
       >
-        <div class="text-xs leading-4 tracking-wide text-gray-200">
+        <div class="text-xs leading-4 tracking-wide text-coolGray-200">
           {{ $t('portfolio.bankTransfer.memo.required') }}
         </div>
       </AppCheckbox2>
@@ -63,7 +63,7 @@ watch(
 
     <div
       v-if="memoRequired"
-      class="p-2 py-3 max-h-xs space-y-3 bg-gray-1000 rounded-md"
+      class="p-2 py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md"
     >
       <AppInput
         v-model="memo"

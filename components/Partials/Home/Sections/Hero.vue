@@ -32,7 +32,7 @@ const totalMarkets = computed(
 
       <div class="max-w-3xl space-y-4 my-4">
         <h1
-          class="text-2xl lg:text-6xl font-semibold py-2 bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent flex flex-wrap justify-center space-x-2"
+          class="text-2xl lg:text-6xl font-semibold py-2 bg-gradient-to-r from-white to-coolGray-500 bg-clip-text text-transparent flex flex-wrap justify-center space-x-2"
         >
           <span class="">
             {{ $t('home.openFinance') + ' ' }}
@@ -42,7 +42,7 @@ const totalMarkets = computed(
           </span>
         </h1>
 
-        <p class="text-sm lg:text-xl text-gray-200 font-light">
+        <p class="text-sm lg:text-xl text-coolGray-200 font-light">
           {{ $t('home.subtitle') }}
         </p>
 

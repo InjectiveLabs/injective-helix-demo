@@ -176,7 +176,7 @@ function nextStep() {
             v-for="index in STEPS"
             :key="index"
             class="w-2 h-2 rounded-full cursor-pointer"
-            :class="[step >= index ? 'bg-blue-500' : 'bg-gray-400']"
+            :class="[step >= index ? 'bg-blue-500' : 'bg-coolGray-400']"
             @click="step = index"
           />
         </div>

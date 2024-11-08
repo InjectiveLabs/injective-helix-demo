@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <div>Active Strategy</div>
+  <div>Perp Bots Auto</div>
 </template>

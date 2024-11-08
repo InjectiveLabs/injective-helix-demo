@@ -11,7 +11,7 @@ withDefaults(
 </script>
 
 <template>
-  <AppDotStatus v-if="!isActive" class="text-gray-500">
+  <AppDotStatus v-if="!isActive" class="text-coolGray-500">
     <CommonHeaderTooltip
       :tooltip="
         $t('guild.inactiveTooltip', {

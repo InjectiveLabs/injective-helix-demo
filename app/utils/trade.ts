@@ -1,4 +1,5 @@
-import { TradeExecutionType } from '@injectivelabs/ts-types'
+import { GrpcOrderType, GrpcOrderTypeMap } from '@injectivelabs/sdk-ts'
+import { TradeExecutionType, OrderSide } from '@injectivelabs/ts-types'
 import { ConditionalOrderSide, OrderTypeFilter } from '@/types'
 
 export function derivativeTypeToExecutionTypes(type: OrderTypeFilter) {
@@ -48,5 +49,32 @@ export function derivativeTypeToTradeType(type: OrderTypeFilter) {
 
     default:
       return undefined
+  }
+}
+
+export const orderSideToChaseOrderType = (
+  orderType: OrderSide
+): GrpcOrderType => {
+  switch (orderType) {
+    case OrderSide.Unspecified:
+      return GrpcOrderTypeMap.UNSPECIFIED
+    case OrderSide.Buy:
+      return GrpcOrderTypeMap.BUY_PO
+    case OrderSide.Sell:
+      return GrpcOrderTypeMap.SELL_PO
+    case OrderSide.StopBuy:
+      return GrpcOrderTypeMap.STOP_BUY
+    case OrderSide.StopSell:
+      return GrpcOrderTypeMap.STOP_SELL
+    case OrderSide.TakeBuy:
+      return GrpcOrderTypeMap.TAKE_BUY
+    case OrderSide.TakeSell:
+      return GrpcOrderTypeMap.TAKE_SELL
+    case OrderSide.BuyPO:
+      return GrpcOrderTypeMap.BUY_PO
+    case OrderSide.SellPO:
+      return GrpcOrderTypeMap.SELL_PO
+    default:
+      return GrpcOrderTypeMap.BUY
   }
 }

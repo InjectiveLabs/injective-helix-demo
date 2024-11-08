@@ -14,7 +14,7 @@ withDefaults(
     class="flex max-lg:justify-between text-xs lg:flex-col lg:justify-center lg:gap-y-2 lg:p-2"
   >
     <slot name="title">
-      <span v-if="title" class="text-gray-400">{{ title }}</span>
+      <span v-if="title" class="text-coolGray-400">{{ title }}</span>
     </slot>
 
     <slot />

@@ -3,6 +3,12 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { UnknownTokenStatusKey } from '@/types'
 
+useHead({
+  bodyAttrs: {
+    class: 'bg-brand-900 dark:bg-brand-900'
+  }
+})
+
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()

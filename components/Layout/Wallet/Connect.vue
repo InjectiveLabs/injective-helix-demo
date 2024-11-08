@@ -174,9 +174,9 @@ function toggleShowMoreWallets() {
         <LayoutWalletTrezor />
       </div>
 
-      <ul v-else class="divide-gray-800 border-gray-700 rounded-lg -mt-6">
+      <ul v-else class="divide-coolGray-800 border-coolGray-700 rounded-lg">
         <h1 class="text-xl text-center font-semibold">
-          {{ isSignUp ? $t('connect.signUp') : $t('connect.logIn') }}
+          {{ isSignUp ? $t('connect.signUp') : $t('connect.login') }}
         </h1>
 
         <LayoutWalletSso
@@ -186,7 +186,7 @@ function toggleShowMoreWallets() {
 
         <div class="flex items-center justify-center">
           <div class="border-t flex-1" />
-          <p class="px-4 text-gray-400">{{ $t('common.or') }}</p>
+          <p class="px-4 text-coolGray-400">{{ $t('common.or') }}</p>
           <div class="border-t flex-1" />
         </div>
 
@@ -202,7 +202,7 @@ function toggleShowMoreWallets() {
 
       <AppButton
         v-if="!selectedWallet"
-        class="w-full text-gray-400 hover:text-white mt-4"
+        class="w-full text-coolGray-400 hover:text-white mt-4"
         variant="primary-ghost"
         @click="toggleShowMoreWallets"
       >

@@ -9,6 +9,7 @@ import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
@@ -19,9 +20,11 @@ import { StrategyStatus } from '@/types'
 const props = withDefaults(
   defineProps<{
     strategy: TradingStrategy
+    decimalPlaces?: number
   }>(),
   {
-    strategy: undefined
+    strategy: undefined,
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 

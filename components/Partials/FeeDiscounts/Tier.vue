@@ -116,16 +116,16 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
     </td>
     <td class="h-8 text-right font-mono">
       &#8805; {{ stakedAmountToFormat }}
-      <span class="text-2xs text-gray-500"> INJ </span>
+      <span class="text-xs text-coolGray-500"> INJ </span>
     </td>
     <td class="h-8 text-right font-mono">
-      <span class="text-gray-500 uppercase text-2xs tracking-wider">
+      <span class="text-coolGray-500 uppercase text-xs tracking-wider">
         {{ $t('and') }}
       </span>
     </td>
     <td class="h-8 text-right font-mono">
       &#8805; {{ volumeToFormat }}
-      <span class="text-2xs text-gray-500"> USD </span>
+      <span class="text-xs text-coolGray-500"> USD </span>
     </td>
     <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
     <td class="h-8 text-right font-mono">{{ takerFeeDiscountToFormat }}%</td>

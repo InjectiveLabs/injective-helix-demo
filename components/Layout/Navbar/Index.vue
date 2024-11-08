@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const route = useRoute()
@@ -29,7 +30,7 @@ const sharedWalletStore = useSharedWalletStore()
       <div>
         {{ $t('portfolio.settings.autoSign.titleWithoutHyphen') }}
       </div>
-      <SharedIcon name="circle-check-border" class="w-3 h-3" />
+      <UIcon :name="NuxtUiIcons.CheckmarkOutline" class="w-4 h-4" />
     </div>
   </header>
 </template>

@@ -53,16 +53,16 @@ function onModalClose() {
           >
             {{ market.ticker }}
           </p>
-          <span class="text-xs text-gray-500 capitalize">
+          <span class="text-xs text-coolGray-500 capitalize">
             {{ market.baseToken.name }}
           </span>
         </div>
       </div>
 
-      <p class="text-sm text-gray-100 mt-4">
+      <p class="text-sm text-coolGray-100 mt-4">
         {{ $t('marketExpired.expiredNote') }}
       </p>
-      <p class="text-sm text-gray-100 mt-2">
+      <p class="text-sm text-coolGray-100 mt-2">
         {{ $t('marketExpired.activityPageNote') }}
       </p>
 

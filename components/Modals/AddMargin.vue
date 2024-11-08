@@ -116,21 +116,21 @@ const onSubmit = handleSubmit(() => {
         <div class="px-4 w-full">
           <div class="text-center">
             <div class="flex items-center justify-center">
-              <p class="uppercase text-xs font-semibold text-gray-200">
+              <p class="uppercase text-xs font-semibold text-coolGray-200">
                 {{ $t('trade.availableMargin') }}
               </p>
               <AppTooltip
-                class="ml-2 text-gray-200"
+                class="ml-2 text-coolGray-200"
                 :content="$t('trade.availableMarginTooltip')"
               />
             </div>
             <div class="mt-4 text-center">
               <span
-                class="font-mono flex items-center justify-center text-gray-200 text-base lg:text-xl"
+                class="font-mono flex items-center justify-center text-coolGray-200 text-base lg:text-xl"
                 data-cy="add-margin-modal-available-text-content"
               >
                 {{ availableMarginToString }}
-                <span class="text-gray-500 ml-2">{{
+                <span class="text-coolGray-500 ml-2">{{
                   market.quoteToken.symbol
                 }}</span>
               </span>

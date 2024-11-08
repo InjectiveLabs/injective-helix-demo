@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -82,7 +83,10 @@ function closeModal() {
           <span class="font-semibold text-blue-900">
             {{ $t('ninjaPass.verifyNow') }}
           </span>
-          <SharedIcon name="external-link" class="w-4 h-4 text-blue-900" />
+          <UIcon
+            :name="NuxtUiIcons.ExternalLink"
+            class="w-4 h-4 text-blue-900"
+          />
         </a>
 
         <button

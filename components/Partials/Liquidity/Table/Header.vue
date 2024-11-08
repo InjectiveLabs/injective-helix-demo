@@ -1,6 +1,6 @@
 <template>
   <thead class="text-right">
-    <tr class="text-xs text-gray-400 uppercase">
+    <tr class="text-xs text-coolGray-400 uppercase">
       <th class="text-left">{{ $t('campaign.market') }}</th>
       <th class="text-left">{{ $t('campaign.rewards') }}</th>
       <th>{{ $t('campaign.activeBots') }}</th>

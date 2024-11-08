@@ -28,29 +28,6 @@ const {
   computed(() => props.order),
   computed(() => false)
 )
-
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
 </script>
 
 <template>
@@ -85,7 +62,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
           {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
         </p>
 
-        <p v-if="isReduceOnly" class="text-gray-400">
+        <p v-if="isReduceOnly" class="text-coolGray-400">
           {{ $t('trade.reduce_only') }}
         </p>
       </div>
@@ -100,25 +77,40 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
         </span>
 
         <span v-else>
-          {{ priceToString }}
+          <AppAmount
+            v-bind="{
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
+            }"
+          />
         </span>
       </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p>{{ quantityToString }}</p>
+      <p>
+        <AppAmount
+          v-bind="{
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4 space-x-1">
       <p>{{ $t('trade.total') }}</p>
 
       <p>
-        <span>
-          {{ totalToString }}
-        </span>
+        <AppAmount
+          v-bind="{
+            amount: total.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
 
-        <span v-if="market" class="text-gray-500">
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>
@@ -128,7 +120,7 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
       <p>{{ $t('trade.triggerCondition') }}</p>
       <p>
         <template v-if="order.isConditional">
-          <span class="text-gray-500 text-xs font-semibold">
+          <span class="text-coolGray-500 text-xs font-semibold">
             {{ $t('trade.mark_price') }}
           </span>
 
@@ -139,8 +131,12 @@ const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
             &le;
           </span>
           <span v-else class="text-white text-xs font-semibold"> &ge; </span>
-
-          {{ triggerPriceToString }}
+          <AppAmount
+            v-bind="{
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: quantityDecimals
+            }"
+          />
         </template>
 
         <template v-else>

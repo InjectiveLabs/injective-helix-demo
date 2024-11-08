@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { TradeSubPage } from '@/types'
+import { DerivativeGridTradingForm, GridStrategyType } from '@/types'
 
-const router = useRouter()
-const route = useRoute()
+const strategyType = ref(GridStrategyType.Manual)
 
-onMounted(() => {
-  router.replace({
-    name: TradeSubPage.Futures,
-    params: {
-      slug: route.params.slug
-    }
-  })
+useForm<DerivativeGridTradingForm>({
+  keepValuesOnUnmount: true
 })
 </script>
 
 <template>
-  <div>Perp Trading Bots WIP</div>
+  <div class="p-4">
+    <div class="flex mt-4 bg-brand-875 rounded-md">
+      <AppButtonSelect
+        v-for="type in Object.values(GridStrategyType)"
+        :key="type"
+        v-bind="{ value: type }"
+        v-model="strategyType"
+        class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm font-medium"
+        active-classes="text-white !border-blue-400"
+      >
+        {{ $t(`sgt.${type}`) }}
+      </AppButtonSelect>
+    </div>
+
+    <div>
+      <PartialsTradeFuturesFormTradingBotsManual
+        v-if="strategyType === GridStrategyType.Manual"
+      />
+
+      <PartialsTradeFuturesFormTradingBotsAuto v-else />
+    </div>
+  </div>
 </template>

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { SharedUiDerivativeTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  LOW_FEE_AMOUNT_THRESHOLD,
+  UI_DEFAULT_FEE_MIN_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -23,26 +28,6 @@ const {
   computed(() => props.trade),
   computed(() => false)
 )
-
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: feeToString } = useSharedBigNumberFormatter(fee, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: priceDecimals.value
-})
 </script>
 
 <template>
@@ -81,19 +66,42 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.price') }}</p>
-      <p class="font-mono">{{ priceToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p>{{ quantityToString }}</p>
+      <p>
+        <AppAmount
+          v-bind="{
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.fee') }}</p>
       <p>
-        <span>{{ feeToString }}</span>
-        <span v-if="market" class="text-gray-500">
+        <span>
+          <AppAmount
+            v-bind="{
+              amount: fee.toFixed(),
+              decimalPlaces: fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+                ? UI_DEFAULT_FEE_MIN_DECIMALS
+                : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>
@@ -103,8 +111,15 @@ const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
       <p>{{ $t('trade.total') }}</p>
 
       <p>
-        <span>{{ totalToString }}</span>
-        <span v-if="market" class="text-gray-500">
+        <span>
+          <AppAmount
+            v-bind="{
+              amount: total.toFixed(),
+              decimalPlaces: priceDecimals
+            }"
+          />
+        </span>
+        <span v-if="market" class="text-coolGray-500">
           {{ market.quoteToken.symbol }}
         </span>
       </p>

@@ -26,7 +26,7 @@ const options = [
         v-for="option in options"
         :key="option.label"
         :to="option.to"
-        class="px-1 py-2 max-lg:text-sm text-center lg:p-4 text-gray-400 font-medium"
+        class="px-1 py-2 max-lg:text-sm text-center lg:p-4 text-coolGray-400 font-medium"
         exact-active-class="text-white"
       >
         {{ option.label }}

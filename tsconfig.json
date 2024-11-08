@@ -6,9 +6,17 @@
     "esModuleInterop": true,
     "verbatimModuleSyntax": false,
     "allowSyntheticDefaultImports": true,
-    "types": ["@vueuse/nuxt", "@pinia/nuxt"]
+    "types": [
+      "@pinia/nuxt",
+      "@vueuse/nuxt"
+    ]
   },
-  "exclude": ["node_modules", "dist", ".output", "public/widget"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".output",
+    "public/widget"
+  ],
   "ts-node": {
     // these options are overrides used only by ts-node
     "compilerOptions": {

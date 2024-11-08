@@ -35,7 +35,7 @@ function setInterval(index: string) {
           :key="label"
           v-model="view"
           :value="label"
-          class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-gray-600 max-lg:flex-1"
+          class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-coolGray-600 max-lg:flex-1"
           active-classes="bg-brand-875 text-white"
           @update:modelValue="onUpdateChart"
         >
@@ -52,7 +52,7 @@ function setInterval(index: string) {
           value: index.toString(),
           modelValue: interval.toString()
         }"
-        class="text-xs py-2 max-lg:flex-1 hover:bg-brand-800 text-gray-500 text-center w-10"
+        class="text-xs py-2 max-lg:flex-1 hover:bg-brand-800 text-coolGray-500 text-center w-10"
         active-classes="bg-brand-875 text-white"
         @update:model-value="setInterval"
       >

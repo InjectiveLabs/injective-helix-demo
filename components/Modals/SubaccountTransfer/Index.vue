@@ -189,15 +189,19 @@ function resetForm() {
 function closeModal() {
   modalStore.closeModal(Modal.SubaccountTransfer)
 }
+
+const isOpen = computed({
+  get: () => modalStore.modals[Modal.SubaccountTransfer],
+  set: (value) => {
+    if (!value) {
+      closeModal()
+    }
+  }
+})
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
-  >
+  <SharedModal v-model="isOpen">
     <template #title>
       <h3>
         {{ $t('account.subaccountTransfer') }}
@@ -225,7 +229,7 @@ function closeModal() {
               <span> {{ $t('account.amount') }} </span>
             </AppSelectToken>
           </div>
-          <div v-else class="mt-6 text-center text-gray-300 text-sm">
+          <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
             {{ t('account.noAssetToTransfer') }}
           </div>
         </div>
@@ -243,5 +247,5 @@ function closeModal() {
         </AppButton>
       </div>
     </div>
-  </AppModal>
+  </SharedModal>
 </template>

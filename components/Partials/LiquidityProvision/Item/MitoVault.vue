@@ -45,12 +45,16 @@ const { valueToString: tvlToString } = useSharedBigNumberFormatter(
 
     <template #content>
       <div class="min-w-0 truncate">
-        <p class="text-gray-300 text-sm">{{ $t('liquidityProvision.TVL') }}</p>
+        <p class="text-coolGray-300 text-sm">
+          {{ $t('liquidityProvision.TVL') }}
+        </p>
         <p class="text-xl font-semibold truncate">${{ tvlToString }}</p>
       </div>
 
       <div class="min-w-0 truncate">
-        <p class="text-gray-300 text-sm">{{ $t('liquidityProvision.APY') }}</p>
+        <p class="text-coolGray-300 text-sm">
+          {{ $t('liquidityProvision.APY') }}
+        </p>
         <p class="text-green-500 text-xl font-semibold truncate">
           {{ vault.apyToShow }}%
         </p>

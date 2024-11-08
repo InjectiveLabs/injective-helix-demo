@@ -24,10 +24,10 @@ onMounted(() => {
 <template>
   <AppHocLoading :status="status">
     <div class="fee-discounts min-h-screen-excluding-header-and-footer">
-      <div class="container">
+      <div class="container mx-auto">
         <div class="w-full mx-auto xl:w-4/5">
           <div class="mt-6">
-            <h3 class="text-xl font-bold text-gray-200">
+            <h3 class="text-xl font-bold text-coolGray-200">
               {{ $t(`feeDiscounts.page_title`) }}
             </h3>
             <div class="mt-6">

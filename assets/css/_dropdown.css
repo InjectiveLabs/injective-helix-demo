@@ -56,15 +56,15 @@
 
 .v-popper__arrow-outer,
 .v-popper__arrow-inner {
-  @apply border-gray-900;
+  @apply border-coolGray-900;
 }
 
 .v-popper--theme-dropdown .v-popper__arrow-inner {
-  @apply border-gray-900;
+  @apply border-coolGray-900;
 }
 
 .v-popper--theme-dropdown .v-popper__arrow-outer {
-  @apply border-gray-900;
+  @apply border-coolGray-900;
 }
 /* .v-popper__inner > div {
   @apply overflow-y-auto;

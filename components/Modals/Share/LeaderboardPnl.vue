@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
+import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents, LeaderboardDuration } from '@/types'
 
@@ -84,7 +85,7 @@ watchDebounced(
   <SharedModalWrapper
     v-if="isModalOpen"
     class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px] font-pingFang"
-    wrapper-class="backdrop-filter backdrop-blur bg-gray-900 bg-opacity-90 max-sm:z-60"
+    wrapper-class="backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-90 max-sm:z-60"
     @modal:closed="onCloseModal"
   >
     <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
@@ -100,10 +101,10 @@ watchDebounced(
             <AssetLogoText class="block ml-2 h-6 text-white" />
           </div>
 
-          <SharedIcon
+          <UIcon
             v-if="showSelectors"
-            name="close"
-            class="w-6 h-6 min-w-6 text-white hover:text-gray-500"
+            :name="NuxtUiIcons.Close"
+            class="w-6 h-6 min-w-6 text-white hover:text-coolGray-500"
             @click="onCloseModal"
           />
         </div>
@@ -136,7 +137,7 @@ watchDebounced(
         </div>
 
         <div
-          class="flex justify-between items-center text-xs md:text-sm text-gray-925 mb-3 sm:mb-1.5 md:mb-2.5"
+          class="flex justify-between items-center text-xs md:text-sm text-coolGray-925 mb-3 sm:mb-1.5 md:mb-2.5"
         >
           <div class="flex items-center justify-start gap-2 flex-1">
             <div class="bg-white p-1">
@@ -155,7 +156,7 @@ watchDebounced(
               class="bg-blue-500 text-blue-900 font-semibold rounded-full flex items-center justify-center p-2 hover:bg-blue-100 hover:text-blue-500 cursor-pointer"
               @click="download"
             >
-              <SharedIcon name="download" class="w-4 h-4 min-w-4" />
+              <UIcon :name="NuxtUiIcons.Download" class="w-4 h-4 min-w-4" />
             </div>
           </div>
 

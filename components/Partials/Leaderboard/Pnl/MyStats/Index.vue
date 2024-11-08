@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import {
   MAXIMUM_RANKED_TRADERS,
   MAXIMUM_LEADERBOARD_STATS_RANK,
@@ -60,7 +61,7 @@ function onSharePnl() {
           class="flex bg-white bg-opacity-20 items-center gap-1 p-2 rounded-[4px] cursor-pointer relative"
           @click="onSharePnl"
         >
-          <SharedIcon name="share2" class="min-w-4 w-4 h-4 -mt-1" />
+          <UIcon :name="NuxtUiIcons.Share2" class="min-w-4 w-4 h-4 -mt-1" />
 
           <p class="text-[11px] leading-[13px] font-medium">
             {{ $t('leaderboard.pnl.share') }}

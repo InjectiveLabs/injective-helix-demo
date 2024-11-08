@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -31,13 +30,6 @@ const balance = computed(() =>
     ZERO_IN_BASE
   )
 )
-
-const { valueToString: balanceToString } = useSharedBigNumberFormatter(
-  balance,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
 </script>
 
 <template>
@@ -50,6 +42,13 @@ const { valueToString: balanceToString } = useSharedBigNumberFormatter(
         {{ formattedAddress }}
       </PartialsWalletHistoryCommonAddress>
     </div>
-    <div class="flex-1 items-center p-2 text-right">${{ balanceToString }}</div>
+    <div class="flex-1 items-center p-2 text-right">
+      <span class="mr-1">$</span>
+      <AppUsdAmount
+        v-bind="{
+          amount: balance.toFixed()
+        }"
+      />
+    </div>
   </div>
 </template>

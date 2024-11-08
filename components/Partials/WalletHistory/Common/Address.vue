@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 const props = withDefaults(
   defineProps<{
     isSm?: boolean
@@ -31,10 +33,10 @@ function copyAddress() {
     </span>
 
     <div
-      class="cursor-pointer flex items-center text-gray-500 pl-2 hover:text-blue-500"
+      class="cursor-pointer flex items-center text-coolGray-500 pl-2 hover:text-blue-500"
       @click="copyAddress"
     >
-      <SharedIcon name="copy-plain" class="w-4 h-4" />
+      <UIcon :name="NuxtUiIcons.Copy2" class="w-4 h-4" />
     </div>
   </div>
 </template>

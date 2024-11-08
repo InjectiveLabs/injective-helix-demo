@@ -202,17 +202,38 @@ async function submitTpSl() {
         <div class="font-semibold text-xs">
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.entryPrice') }}:</p>
-            <p>{{ entryPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: entryPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.markPrice') }}:</p>
-            <p>{{ markPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: markPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.estLiquidationPrice') }}:</p>
-            <p>{{ liquidationPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: liquidationPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
@@ -240,25 +261,41 @@ async function submitTpSl() {
           {{ takeProfitErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
-          {{
-            $t('trade.takeProfitDetails', {
-              price: takeProfitValue ? takeProfitValue : '—'
-            })
-          }}
-        </p>
+        <i18n-t
+          keypath="trade.takeProfitDetails"
+          tag="p"
+          class="text-xs text-coolGray-400"
+        >
+          <template #price>
+            <span class="inline-flex">
+              <span v-if="!takeProfitValue"> &mdash;</span>
+              <AppAmount
+                v-else
+                v-bind="{
+                  amount: takeProfitValue,
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </span>
+          </template>
+        </i18n-t>
 
         <p class="text-xs">
           <span>{{ $t('trade.profitLoss') }}: </span>
 
-          <span v-if="!takeProfitValue">&dash;</span>
+          <span v-if="!takeProfitValue">&mdash;</span>
           <span
             v-else
             :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold"
+            class="font-bold inline-flex gap-1"
           >
-            {{ takeProfitPnl.toFormat(2) }}
-            {{ market.quoteToken.symbol }}
+            <AppAmount
+              v-bind="{
+                amount: takeProfitPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
+            <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>
 
@@ -276,13 +313,24 @@ async function submitTpSl() {
           {{ stopLossErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
-          {{
-            $t('trade.stopLossDetails', {
-              price: stopLossValue ? stopLossValue : '—'
-            })
-          }}
-        </p>
+        <i18n-t
+          keypath="trade.stopLossDetails"
+          tag="p"
+          class="text-xs text-coolGray-400"
+        >
+          <template #price>
+            <span class="inline-flex">
+              <span v-if="!stopLossValue"> &mdash;</span>
+              <AppAmount
+                v-else
+                v-bind="{
+                  amount: stopLossValue,
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </span>
+          </template>
+        </i18n-t>
 
         <p class="text-xs">
           <span>{{ $t('trade.profitLoss') }}: </span>
@@ -291,10 +339,15 @@ async function submitTpSl() {
           <span
             v-else
             :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold"
+            class="font-bold inline-flex gap-1"
           >
-            {{ stopLossPnl.toFormat(2) }}
-            {{ market.quoteToken.symbol }}
+            <AppAmount
+              v-bind="{
+                amount: stopLossPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
+            <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>
       </div>

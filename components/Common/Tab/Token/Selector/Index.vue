@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { TokenStatic } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +47,7 @@ const activeToken = computed(() =>
 
     <div class="flex items-center pl-2">
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
   </div>

@@ -81,7 +81,7 @@ export default {
       <div class="flex items-center justify-between">
         <label
           v-if="$attrs.label"
-          class="block text-xs font-semibold text-gray-300 mb-2"
+          class="block text-xs font-semibold text-coolGray-300 mb-2"
         >
           {{ $attrs.label || '' }}
         </label>

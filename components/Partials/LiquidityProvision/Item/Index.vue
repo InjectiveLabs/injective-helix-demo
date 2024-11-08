@@ -20,7 +20,7 @@ withDefaults(
 
       <div class="ml-4">
         <p class="text-lg font-semibold">{{ title }}</p>
-        <p v-if="description" class="text-gray-400 text-xs">
+        <p v-if="description" class="text-coolGray-400 text-xs">
           {{ description }}
         </p>
       </div>

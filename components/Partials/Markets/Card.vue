@@ -56,9 +56,9 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 <template>
   <NuxtLink
     :to="marketRoute"
-    class="rounded-lg shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
+    class="rounded-lg shadow-card p-4 bg-coolGray-750 bg-opacity-30 block cursor-pointer"
   >
-    <div class="flex items-center justify-between text-gray-500">
+    <div class="flex items-center justify-between text-coolGray-500">
       <p class="tracking-widest uppercase text-xs">
         <slot />
       </p>
@@ -79,7 +79,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           >
             {{ market.ticker }}
           </p>
-          <span class="text-xs text-gray-500 capitalize">
+          <span class="text-xs text-coolGray-500 capitalize">
             {{ market.baseToken.name }}
           </span>
         </div>
@@ -115,7 +115,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
     </div>
 
     <span
-      class="text-gray-500 w-full text-sm"
+      class="text-coolGray-500 w-full text-sm"
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}

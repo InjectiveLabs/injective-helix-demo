@@ -24,13 +24,13 @@ onMounted(() => {
   <div class="relative">
     <div>
       <div class="flex justify-between items-center mb-6">
-        <h3 class="text-xl font-bold text-gray-200">
+        <h3 class="text-xl font-bold text-coolGray-200">
           {{ $t(`tradeAndEarn.pendingRewards`) }}
         </h3>
       </div>
 
       <div v-if="schedules.length === 0">
-        <span className="text-gray-500">
+        <span className="text-coolGray-500">
           {{ t('tradeAndEarn.emptyPendingRewards') }}
         </span>
       </div>

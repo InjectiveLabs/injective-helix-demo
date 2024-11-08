@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+
 withDefaults(defineProps<{ isPnl?: boolean; isUnranked?: boolean }>(), {
   isPnl: false,
   isUnranked: false
@@ -12,7 +14,7 @@ withDefaults(defineProps<{ isPnl?: boolean; isUnranked?: boolean }>(), {
   >
     <div class="pl-4 md:pl-7 flex items-center space-x-2 md:space-x-4 mb-4">
       <div v-if="!isUnranked" class="flex space-x-2 items-center relative">
-        <SharedIcon name="user-filled" class="min-w-4 w-4 h-4" />
+        <UIcon :name="NuxtUiIcons.User" class="h-7 w-7 min-w-7" />
         <p class="font-bold text-xl">{{ $t('leaderboard.myStats') }}</p>
       </div>
 
@@ -26,13 +28,13 @@ withDefaults(defineProps<{ isPnl?: boolean; isUnranked?: boolean }>(), {
       :class="[isPnl ? 'text-[#FFFC4D]' : 'text-green-450']"
     >
       <div class="relative">
-        <SharedIcon name="star-four-point" class="min-w-4 w-4 h-4" />
-        <SharedIcon
-          name="star-four-point"
+        <UIcon :name="NuxtUiIcons.FourPointStar" class="min-w-4 w-4 h-4" />
+        <UIcon
+          :name="NuxtUiIcons.FourPointStar"
           class="min-w-4 w-4 h-4 absolute top-7 left-6"
         />
-        <SharedIcon
-          name="star-four-point"
+        <UIcon
+          :name="NuxtUiIcons.FourPointStar"
           class="min-w-6 w-6 h-6 absolute left-9 -top-1"
         />
       </div>

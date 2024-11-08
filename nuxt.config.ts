@@ -31,13 +31,24 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxtjs/tailwindcss'],
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
 
   // @ts-ignore
   i18n: {
     defaultLocale: 'en',
     strategy: 'no_prefix',
     locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
+  },
+
+  // @ts-ignore
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark',
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    componentName: 'ColorScheme',
+    storage: 'localStorage',
+    storageKey: 'nuxt-color-mode'
   },
 
   // @ts-ignore

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SharedDropdownOption } from '@shared/types'
 import { spotGridMarkets } from '@/app/json'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -25,10 +24,10 @@ const value = computed({
   }
 })
 
-const options = computed<SharedDropdownOption[]>(() =>
+const options = computed(() =>
   liquidityBotsMarkets.value.map((m) => ({
-    display: `${m.baseToken.symbol}/${m.quoteToken.symbol}`,
-    value: m.slug
+    label: `${m.baseToken.symbol}/${m.quoteToken.symbol}`,
+    id: m.slug
   }))
 )
 </script>
@@ -37,25 +36,6 @@ const options = computed<SharedDropdownOption[]>(() =>
   <div>
     <p class="mb-2 text-sm">{{ $t('liquidity.selectMarket') }}</p>
 
-    <AppSelect
-      v-model="value"
-      v-bind="{
-        options,
-        wrapperClass: 'bg-black py-2 px-4 rounded-md',
-        contentClass: 'h-[320px] overflow-y-auto w-[300px]'
-      }"
-      start-placement
-    >
-      <template #default="{ selected }">
-        <PartialsLiquidityBotsSpotMarketOption
-          v-if="selected"
-          v-bind="{ option: selected }"
-        />
-      </template>
-
-      <template #option="{ option }">
-        <PartialsLiquidityBotsSpotMarketOption v-bind="{ option }" />
-      </template>
-    </AppSelect>
+    <USelectMenu v-model="value" :options="options" value-attribute="id" />
   </div>
 </template>

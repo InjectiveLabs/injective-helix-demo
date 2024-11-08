@@ -45,29 +45,6 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(MsgType.MsgCancelDerivativeOrder)
 })
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToString: totalToString } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToString: triggerPriceToString } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
 function cancelOrder() {
   if (!isCancelable.value) {
     return
@@ -117,7 +94,7 @@ function cancelOrder() {
           {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
         </p>
 
-        <p v-if="isReduceOnly" class="text-gray-500">
+        <p v-if="isReduceOnly" class="text-coolGray-500">
           {{ $t('trade.reduce_only') }}
         </p>
       </div>
@@ -128,19 +105,32 @@ function cancelOrder() {
 
       <p class="font-mono">
         <span v-if="isMarketOrder">{{ $t('trade.market') }}</span>
-        <span v-else>{{ priceToString }}</span>
+        <span v-else>
+          <AppAmount
+            v-bind="{
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
+            }"
+        /></span>
       </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.amount') }}</p>
-      <p class="font-mono">{{ quantityToString }}</p>
+      <p class="font-mono">
+        <AppAmount
+          v-bind="{
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
+          }"
+        />
+      </p>
     </div>
 
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.leverage') }}</p>
       <p>
-        <span v-if="leverage.isNaN()" class="text-gray-400">
+        <span v-if="leverage.isNaN()" class="text-coolGray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
         <span v-else>{{ leverage.toFormat(2) }} &times;</span>
@@ -150,15 +140,21 @@ function cancelOrder() {
     <div v-if="market" class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.total') }}</p>
       <p class="font-mono">
-        {{ totalToString }} {{ market.quoteToken.symbol }}
+        <AppAmount
+          v-bind="{
+            amount: total.toFixed(),
+            decimalPlaces: priceDecimals
+          }"
+        />
+        <span class="ml-1">{{ market.quoteToken.symbol }}</span>
       </p>
     </div>
 
     <div class="flex justify-between items-center px-2 py-4 space-x-2">
       <p>{{ $t('trade.triggerCondition') }}</p>
 
-      <p>
-        <span class="text-gray-500 text-xs font-sans">
+      <p class="flex gap-1">
+        <span class="text-coolGray-500 text-xs font-sans">
           {{ $t('trade.mark_price') }}
         </span>
 
@@ -170,7 +166,13 @@ function cancelOrder() {
         </span>
         <span v-else class="text-white text-xs font-semibold"> &ge;</span>
 
-        <span>{{ triggerPriceToString }}</span>
+        <span>
+          <AppAmount
+            v-bind="{
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: priceDecimals
+            }"
+        /></span>
       </p>
     </div>
 

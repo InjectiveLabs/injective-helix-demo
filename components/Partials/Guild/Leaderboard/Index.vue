@@ -58,7 +58,7 @@ const isCampaignStarted = computed(() => {
     <div class="overflow-x-auto">
       <table class="w-full">
         <thead>
-          <tr class="border-b uppercase text-xs text-gray-500">
+          <tr class="border-b uppercase text-xs text-coolGray-500">
             <th class="p-4 text-left">
               {{ $t('guild.leaderboard.table.rank') }}
             </th>
