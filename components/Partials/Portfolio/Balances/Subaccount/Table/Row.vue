@@ -200,7 +200,7 @@ function onTransfer() {
       <div class="flex items-center font-mono text-xs shrink-0 p-2 justify-end">
         <div class="flex items-center">
           <CommonSkeletonSubaccountAmount>
-            <span class="mr-1">$</span>
+            <span>$</span>
             <AppUsdAmount
               v-bind="{
                 decimalPlaces: 18,
