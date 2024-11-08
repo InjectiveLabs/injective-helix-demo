@@ -9,7 +9,10 @@
     "types": [
       "@pinia/nuxt",
       "@vueuse/nuxt",
+      "@injectivelabs/utils",
       "@injectivelabs/sdk-ts",
+      "@injectivelabs/ts-types",
+      "@injectivelabs/networks",
       "@injectivelabs/wallet-ts",
     ]
   },
