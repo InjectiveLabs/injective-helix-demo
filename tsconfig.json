@@ -11,9 +11,6 @@
       "@vueuse/nuxt"
     ]
   },
-  "include": [
-    "./node_modules/@injectivelabs/*"
-  ],
   "exclude": [
     "node_modules",
     "dist",
