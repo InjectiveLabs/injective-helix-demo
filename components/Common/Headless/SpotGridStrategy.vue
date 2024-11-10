@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInWei } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
@@ -47,16 +42,31 @@ const market = computed(
     )!
 )
 
+const {
+  stopLoss,
+  upperBound,
+  lowerBound,
+  takeProfit,
+  stopBaseQuantity,
+  stopQuoteQuantity,
+  creationBaseQuantity,
+  creationQuoteQuantity,
+  creationExecutionPrice,
+  subscriptionBaseQuantity,
+  subscriptionQuoteQuantity
+} = useActiveGridStrategyTransformer(
+  market,
+  computed(() => props.strategy)
+)
+
 const investment = computed(() => {
   if (!market.value) {
     return ZERO_IN_BASE
   }
 
-  const executionPriceInUsd = new BigNumberInWei(
-    props.strategy.executionPrice || 0
+  const executionPriceInUsd = creationExecutionPrice.value.times(
+    tokenStore.tokenUsdPrice(market.value.quoteToken)
   )
-    .toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
-    .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
 
   const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
@@ -91,10 +101,6 @@ const pnl = computed(() => {
   const creationBaseQuantity = new BigNumberInWei(
     props.strategy.subscriptionBaseQuantity
   ).toBase(market.value?.baseToken.decimals)
-
-  const creationMidPrice = new BigNumberInWei(
-    props.strategy.executionPrice || 0
-  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
 
   const currentQuoteQuantity =
     props.strategy.state === StrategyStatus.Active
@@ -135,83 +141,14 @@ const pnl = computed(() => {
   return currentQuoteQuantity
     .plus(currentBaseQuantity.times(currentMidPrice))
     .minus(
-      creationQuoteQuantity.plus(creationBaseQuantity.times(creationMidPrice))
+      creationQuoteQuantity.plus(
+        creationBaseQuantity.times(creationExecutionPrice.value)
+      )
     )
 })
 
 const percentagePnl = computed(() =>
   pnl.value.dividedBy(investment.value).times(100).toFixed(2)
-)
-
-const upperBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.upperBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const lowerBound = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInWei(props.strategy.lowerBound).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-})
-
-const creationExecutionPrice = computed(
-  () => new BigNumberInBase(props.strategy.executionPrice)
-)
-
-const stopBaseQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.baseDeposit || 0).toBase(
-    market.value?.baseToken.decimals
-  )
-)
-
-const stopQuoteQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.quoteDeposit || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
-const creationQuoteQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.quoteQuantity || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
-const creationBaseQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.baseQuantity).toBase(
-    market.value?.baseToken.decimals
-  )
-)
-
-const subscriptionQuoteQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.subscriptionQuoteQuantity || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-const subscriptionBaseQuantity = computed(() =>
-  new BigNumberInWei(props.strategy.subscriptionBaseQuantity).toBase(
-    market.value?.baseToken.decimals
-  )
-)
-
-const takeProfit = computed(() =>
-  new BigNumberInWei(props.strategy.takeProfitConfig?.exitPrice ?? 0).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
-)
-
-const stopLoss = computed(() =>
-  new BigNumberInWei(props.strategy.stopLossConfig?.exitPrice || 0).toBase(
-    market.value.quoteToken.decimals - market.value.baseToken.decimals
-  )
 )
 
 const createdAt = computed(() =>
