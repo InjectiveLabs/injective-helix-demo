@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Status, StatusType, BigNumberInWei } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
@@ -24,8 +24,6 @@ const props = withDefaults(
 )
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
-const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
@@ -59,96 +57,9 @@ const {
   computed(() => props.strategy)
 )
 
-const investment = computed(() => {
-  if (!market.value) {
-    return ZERO_IN_BASE
-  }
-
-  const executionPriceInUsd = creationExecutionPrice.value.times(
-    tokenStore.tokenUsdPrice(market.value.quoteToken)
-  )
-
-  const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
-    .toBase(market.value?.baseToken.decimals)
-    .times(executionPriceInUsd)
-
-  const quoteAmountInUsd = new BigNumberInWei(props.strategy.quoteQuantity || 0)
-    .toBase(market.value?.quoteToken.decimals)
-    .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
-
-  return baseAmountInUsd.plus(quoteAmountInUsd)
-})
-
-const subaccountBalances = computed(
-  () =>
-    accountStore.subaccountBalancesMap[
-      addressAndMarketSlugToSubaccountId(
-        sharedWalletStore.address,
-        market.value.slug
-      )
-    ]
-)
-
-const pnl = computed(() => {
-  if (!market.value || !subaccountBalances.value) {
-    return ZERO_IN_BASE
-  }
-
-  const creationQuoteQuantity = new BigNumberInWei(
-    props.strategy.subscriptionQuoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  const creationBaseQuantity = new BigNumberInWei(
-    props.strategy.subscriptionBaseQuantity
-  ).toBase(market.value?.baseToken.decimals)
-
-  const currentQuoteQuantity =
-    props.strategy.state === StrategyStatus.Active
-      ? new BigNumberInWei(
-          subaccountBalances.value.find(
-            (balance) => balance.denom === market.value?.quoteDenom
-          )?.totalBalance || 0
-        ).toBase(market.value?.quoteToken.decimals)
-      : new BigNumberInWei(props.strategy.quoteDeposit).toBase(
-          market.value?.quoteToken.decimals
-        )
-
-  const currentBaseQuantity =
-    props.strategy.state === StrategyStatus.Active
-      ? new BigNumberInWei(
-          subaccountBalances.value.find(
-            (balance) => balance.denom === market.value?.baseDenom
-          )?.totalBalance || 0
-        ).toBase(market.value?.baseToken.decimals)
-      : new BigNumberInWei(props.strategy.baseDeposit).toBase(
-          market.value?.baseToken.decimals
-        )
-
-  const currentMidPrice =
-    props.strategy.state === StrategyStatus.Active
-      ? lastTradedPrice.value
-      : new BigNumberInWei(props.strategy.marketMidPrice).toBase(
-          market.value.quoteToken.decimals - market.value.baseToken.decimals
-        )
-
-  if (
-    lastTradedPrice.value.isEqualTo(ZERO_IN_BASE) &&
-    props.strategy.state === StrategyStatus.Active
-  ) {
-    return ZERO_IN_BASE
-  }
-
-  return currentQuoteQuantity
-    .plus(currentBaseQuantity.times(currentMidPrice))
-    .minus(
-      creationQuoteQuantity.plus(
-        creationBaseQuantity.times(creationExecutionPrice.value)
-      )
-    )
-})
-
-const percentagePnl = computed(() =>
-  pnl.value.dividedBy(investment.value).times(100).toFixed(2)
+const { investment, pnl, percentagePnl } = useActiveGridStrategy(
+  market,
+  computed(() => props.strategy)
 )
 
 const createdAt = computed(() =>
