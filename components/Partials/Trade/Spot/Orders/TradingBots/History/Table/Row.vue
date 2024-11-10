@@ -69,7 +69,7 @@ function onOpenTradingBotDetails() {
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
             /></span>
-            <span>{{ market.quoteToken.symbol }}</span>
+            <span>USD</span>
           </p>
         </div>
 

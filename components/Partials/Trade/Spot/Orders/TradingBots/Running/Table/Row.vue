@@ -70,7 +70,7 @@ function onOpenTradingBotDetails() {
                 }"
               />
             </span>
-            <span>{{ market.quoteToken.symbol }}</span>
+            <span>USD</span>
           </p>
         </div>
 

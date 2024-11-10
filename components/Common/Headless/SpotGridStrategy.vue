@@ -52,17 +52,21 @@ const investment = computed(() => {
     return ZERO_IN_BASE
   }
 
+  const executionPriceInUsd = new BigNumberInWei(
+    props.strategy.executionPrice || 0
+  )
+    .toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
+    .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+
   const baseAmountInUsd = new BigNumberInWei(props.strategy.baseQuantity || 0)
     .toBase(market.value?.baseToken.decimals)
-    .times(new BigNumberInBase(props.strategy.executionPrice))
+    .times(executionPriceInUsd)
 
-  const quoteAmountInUsd = new BigNumberInWei(
-    props.strategy.quoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  return baseAmountInUsd
-    .plus(quoteAmountInUsd)
+  const quoteAmountInUsd = new BigNumberInWei(props.strategy.quoteQuantity || 0)
+    .toBase(market.value?.quoteToken.decimals)
     .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+
+  return baseAmountInUsd.plus(quoteAmountInUsd)
 })
 
 const subaccountBalances = computed(
@@ -88,7 +92,9 @@ const pnl = computed(() => {
     props.strategy.subscriptionBaseQuantity
   ).toBase(market.value?.baseToken.decimals)
 
-  const creationMidPrice = new BigNumberInBase(props.strategy.executionPrice)
+  const creationMidPrice = new BigNumberInWei(
+    props.strategy.executionPrice || 0
+  ).toBase(market.value.quoteToken.decimals - market.value.baseToken.decimals)
 
   const currentQuoteQuantity =
     props.strategy.state === StrategyStatus.Active
@@ -208,18 +214,6 @@ const stopLoss = computed(() =>
   )
 )
 
-const totalInvestment = computed(() => {
-  const baseAmountInUsd = subscriptionBaseQuantity.value.times(
-    new BigNumberInBase(props.strategy.executionPrice)
-  )
-
-  const quoteAmountInUsd = new BigNumberInWei(
-    props.strategy.subscriptionQuoteQuantity || 0
-  ).toBase(market.value?.quoteToken.decimals)
-
-  return baseAmountInUsd.plus(quoteAmountInUsd)
-})
-
 const createdAt = computed(() =>
   format(new Date(Number(props.strategy.createdAt)), 'dd MMM HH:mm:ss')
 )
@@ -300,7 +294,6 @@ useIntervalFn(
       percentagePnl,
       removeStrategy,
       removeStatus,
-      totalInvestment,
       stopBaseQuantity,
       stopQuoteQuantity,
       creationBaseQuantity,
