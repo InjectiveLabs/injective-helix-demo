@@ -27,11 +27,15 @@ export default function useActiveGridStrategyFormatter(
     )
   })
 
-  const creationExecutionPrice = computed(() =>
-    new BigNumberInWei(strategy.value.executionPrice).toBase(
+  const creationExecutionPrice = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(strategy.value.executionPrice).toBase(
       market.value.quoteToken.decimals - market.value.baseToken.decimals
     )
-  )
+  })
 
   const stopBaseQuantity = computed(() =>
     new BigNumberInWei(strategy.value.baseDeposit || 0).toBase(
