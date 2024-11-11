@@ -5,7 +5,7 @@
 @import 'tailwindcss/utilities';
 
 @import '@vuepic/vue-datepicker/dist/main.css';
-/* @import 'floating-vue/dist/style.css'; */
+@import 'floating-vue/dist/style.css';
 
 @import './_root.css';
 @import './_charts.css';

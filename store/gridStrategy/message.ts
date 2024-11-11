@@ -183,6 +183,7 @@ export const createStrategy = async (
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
   }
+
   // we need to add it after the authz messages
   messages.push(message)
 
