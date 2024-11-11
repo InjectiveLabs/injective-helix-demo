@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import {
+  NuxtUiIcons,
   SharedBalanceWithToken,
   SharedBalanceWithTokenAndPrice
 } from '@shared/types'
@@ -281,11 +282,24 @@ export default {
                 :search-attributes="['label', 'name', 'symbol']"
                 value-attribute="value"
               >
-                <UAvatar :src="selectedToken?.token.logo" size="xs" />
+                <template #default="{ open }">
+                  <div class="flex items-center gap-2">
+                    <UAvatar :src="selectedToken?.token.logo" size="xs" />
+                    <span class="font-semibold">
+                      {{ selectedToken?.token.symbol }}
+                    </span>
+                    <UIcon
+                      :name="NuxtUiIcons.ChevronDown"
+                      :class="{ 'rotate-180': open }"
+                      class="transition-all"
+                    />
+                  </div>
+                </template>
 
                 <template #option="{ option }">
-                  <div class="flex items-center gap-2 truncate">
+                  <div class="flex items-center gap-2">
                     <UAvatar :src="option.avatar.src" size="xs" />
+
                     <div class="truncate">
                       <span>{{ option.label }} </span>
                       <span class="text-xs text-coolGray-500">
