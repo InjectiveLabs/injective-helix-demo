@@ -98,11 +98,19 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const router = useRouter()
+
   nuxtApp.vueApp.config.errorHandler = (error, context) => {
     console.log(error, context)
 
     console.warn(error, context, (error as any)?.stack)
   }
+
+  router.onError((error, to) => {
+    if (error.message.includes('Failed to fetch dynamically imported module')) {
+      window.location.href = to.fullPath
+    }
+  })
 
   window.onunhandledrejection = function (event: PromiseRejectionEvent) {
     const error = event.reason
