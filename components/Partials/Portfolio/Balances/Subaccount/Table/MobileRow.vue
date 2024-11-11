@@ -197,7 +197,7 @@ function onTransfer() {
 
       <CommonSkeletonSubaccountAmount>
         <span class="font-mono">
-          <span class="mr-1">$</span>
+          <span>$</span>
           <AppUsdAmount
             v-bind="{
               amount: totalAmountInUsd.toFixed()

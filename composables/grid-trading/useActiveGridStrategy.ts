@@ -10,14 +10,42 @@ export default function useActiveGridStrategy(
 ) {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
-  const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
+  const { aggregatedPortfolioBalances } = useBalance()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
+
+  const marketSubaccountId = computed(() =>
+    addressAndMarketSlugToSubaccountId(
+      sharedWalletStore.address,
+      market.value.slug
+    )
+  )
+
+  const subaccountBalances = computed(
+    () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+  )
+
+  const accountTotalBalanceInUsd = computed(() =>
+    subaccountBalances.value.reduce(
+      (total, balance) =>
+        total.plus(
+          sharedToBalanceInTokenInBase({
+            value: balance.accountTotalBalanceInUsd,
+            decimalPlaces: balance.token.decimals
+          })
+        ),
+      ZERO_IN_BASE
+    )
+  )
 
   const investment = computed(() => {
     if (!market.value) {
       return ZERO_IN_BASE
+    }
+
+    if (strategy.value.state === StrategyStatus.Active) {
+      return accountTotalBalanceInUsd.value
     }
 
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
@@ -32,16 +60,6 @@ export default function useActiveGridStrategy(
       .plus(quoteAmountInUsd)
       .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
   })
-
-  const subaccountBalances = computed(
-    () =>
-      accountStore.subaccountBalancesMap[
-        addressAndMarketSlugToSubaccountId(
-          sharedWalletStore.address,
-          market.value.slug
-        )
-      ]
-  )
 
   const pnl = computed(() => {
     if (!market.value || !subaccountBalances.value) {

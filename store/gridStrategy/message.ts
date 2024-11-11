@@ -186,7 +186,15 @@ export const createStrategy = async (
   // we need to add it after the authz messages
   messages.push(message)
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  try {
+    await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new GeneralException(e)
+    }
+
+    throw new GeneralException(new Error('Unknown error'))
+  }
 
   backupPromiseCall(() =>
     Promise.all([
