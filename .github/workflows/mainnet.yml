@@ -10,7 +10,7 @@ jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
     runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
@@ -71,7 +71,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
 
-      NODE_OPTIONS: '--max_old_space_size=15360'
+      NODE_OPTIONS: '--max_old_space_size=30720'
 
     steps:
       - name: Checkout code
