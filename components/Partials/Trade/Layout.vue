@@ -61,7 +61,7 @@ onWalletConnected(() => {
       !sharedWalletStore.isAutoSignEnabled &&
       !sharedWalletStore.isAuthzWalletConnected &&
       sharedWalletStore.isUserConnected &&
-      !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign) &&
+      !appStore.userState.dontShowAgain?.includes(DontShowAgain.AutoSign) &&
       sharedWalletStore.wallet !== Wallet.Magic
     ) {
       toast.add({
