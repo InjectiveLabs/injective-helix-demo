@@ -70,7 +70,9 @@ const reportToBugSnag = (error: ThrownException) => {
 
   if (BUGSNAG_KEY) {
     useBugsnag().notify(error, (event: any) => {
-      event.errors[0].errorClass = error.errorClass || error.name
+      event.errors.forEach((e: any) => {
+        e.errorClass = error.errorClass || error.name || error.constructor.name
+      })
 
       if (useSharedWalletStore().isUserConnected) {
         event.setUser(useSharedWalletStore().injectiveAddress)
