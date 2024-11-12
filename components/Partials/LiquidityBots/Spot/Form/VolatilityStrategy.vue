@@ -12,17 +12,17 @@ const options = [
   {
     label: t('liquidityBots.passive'),
     value: VolatilityStrategyType.Passive,
-    icon: 'ant-design:bar-chart-outlined'
+    img: '/svg/liquidity_passive.svg'
   },
   {
     label: t('liquidityBots.moderate'),
     value: VolatilityStrategyType.Moderate,
-    icon: 'mingcute:chart-bar-line'
+    img: '/svg/liquidity_moderate.svg'
   },
   {
     label: t('liquidityBots.aggressive'),
     value: VolatilityStrategyType.Aggressive,
-    icon: 'vaadin:line-bar-chart'
+    img: '/svg/liquidity_aggressive.svg'
   }
 ]
 </script>
@@ -42,7 +42,7 @@ const options = [
         class="border p-4 rounded-2xl"
         active-classes="border-primary"
       >
-        <UIcon :name="option.icon" class="size-10" />
+        <img :src="option.img" alt="" class="size-10 mx-auto" />
         <p class="text-sm font-semibold">{{ option.label }}</p>
       </AppButtonSelect>
     </div>
