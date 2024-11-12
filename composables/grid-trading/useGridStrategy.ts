@@ -200,7 +200,13 @@ export const useSpotGridStrategies = (
             .plus(
               new BigNumberInBase(currentBaseQuantity).times(currentMidPrice)
             )
-            .minus(initialInvestmentInQuote)
+            .minus(
+              new BigNumberInBase(initialQuoteBalanceAmount).plus(
+                new BigNumberInBase(initialBaseBalanceAmount).times(
+                  executionPrice
+                )
+              )
+            )
 
       const percentagePnl = pnl
         .div(initialInvestmentInQuote)
