@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+
 const props = withDefaults(
   defineProps<{
     activeStrategy: TradingStrategy
   }>(),
   {}
 )
+
+const gridStrategyStore = useGridStrategyStore()
+
+const status = reactive(new Status(StatusType.Idle))
+const { $onError } = useNuxtApp()
 
 const strategies = useSpotGridStrategies(computed(() => [props.activeStrategy]))
 
@@ -20,6 +26,24 @@ const isPositivePnl = computed(() =>
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.pnl).toFormat(2)
 )
+
+function removeStrategy() {
+  status.setLoading()
+
+  gridStrategyStore
+    .removeStrategyForSubaccount(
+      strategy.value.contractAddress,
+      strategy.value.subaccountId
+    )
+
+    .then(() => {
+      //
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -235,7 +259,12 @@ const percentagePnl = computed(() =>
     </div>
 
     <div v-if="strategy.isActive" class="pt-4">
-      <UButton block color="red">
+      <UButton
+        block
+        color="red"
+        :loading="status.isLoading()"
+        @click="removeStrategy"
+      >
         {{ $t('sgt.removeStrategy') }}
       </UButton>
     </div>

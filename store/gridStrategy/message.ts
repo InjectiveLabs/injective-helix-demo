@@ -499,18 +499,17 @@ export async function createSpotLiquidityBot(params: {
         quoteDecimals: market.quoteToken.decimals
       }),
       trailingArithmetic: {
-        trailing_arithmetic: {
-          lower_trailing_bound: spotPriceToChainPriceToFixed({
-            value: lowerTrailingBound,
-            baseDecimals: market.baseToken.decimals,
-            quoteDecimals: market.quoteToken.decimals
-          }),
-          upper_trailing_bound: spotPriceToChainPriceToFixed({
-            value: upperTrailingBound,
-            baseDecimals: market.baseToken.decimals,
-            quoteDecimals: market.quoteToken.decimals
-          })
-        }
+        lowerTrailing: spotPriceToChainPriceToFixed({
+          value: lowerTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        upperTrailing: spotPriceToChainPriceToFixed({
+          value: upperTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        lpMode: true
       }
     })
   })
