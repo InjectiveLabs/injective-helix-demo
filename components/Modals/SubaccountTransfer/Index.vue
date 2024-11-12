@@ -171,15 +171,14 @@ function onSubaccountIdChange() {
     )
 
     setFormValues({
-      [SubaccountTransferField.Amount]: ''
+      [SubaccountTransferField.Amount]: '',
+      ...(token
+        ? {}
+        : {
+            [SubaccountTransferField.Token]: injToken,
+            [SubaccountTransferField.Denom]: injToken.denom
+          })
     })
-
-    if (!token) {
-      setFormValues({
-        [SubaccountTransferField.Token]: injToken,
-        [SubaccountTransferField.Denom]: injToken.denom
-      })
-    }
   })
 }
 
