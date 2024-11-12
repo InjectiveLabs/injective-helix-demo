@@ -102,7 +102,7 @@ function setQuoteMax() {
 
 <template>
   <div>
-    <div class="flex items-center justify-between">
+    <div class="sm:flex items-center justify-between">
       <p class="text-sm font-semibold">
         {{ $t('liquidityBots.deposit') }}
       </p>

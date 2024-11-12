@@ -11,6 +11,7 @@ import {
 defineProps<{
   liquidityValues: LiquidityValues
   status: Status
+  lastTradedPrice: BigNumberInBase
 }>()
 
 const formValues = useFormValues<LiquidityBotForm>()
@@ -83,7 +84,7 @@ const trailingBounds = computed(() => {
             </div>
           </div>
 
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center max-sm:hidden">
             <p class="text-xs text-coolGray-500">
               {{ $t('liquidityBots.trailingBoundaries') }}
             </p>
@@ -104,6 +105,45 @@ const trailingBounds = computed(() => {
             </div>
           </div>
 
+          <div class="flex justify-between items-center sm:hidden">
+            <p class="text-xs text-coolGray-500">
+              {{ $t('liquidityBots.trailingBoundaries') }}
+            </p>
+            <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
+
+            <div v-else class="font-semibold flex items-center gap-1">
+              ± {{ trailingBounds }}%
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center sm:hidden">
+            <p class="text-xs text-coolGray-500">
+              {{ $t('liquidityBots.trailingUpper') }}
+            </p>
+            <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
+
+            <div v-else class="font-semibold flex items-center gap-1">
+              <SharedAmountCollapsed
+                should-truncate
+                :amount="liquidityValues.trailingUpperBound.toFixed()"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center sm:hidden">
+            <p class="text-xs text-coolGray-500">
+              {{ $t('liquidityBots.trailingLower') }}
+            </p>
+            <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
+
+            <div v-else class="font-semibold flex items-center gap-1">
+              <SharedAmountCollapsed
+                should-truncate
+                :amount="liquidityValues.trailingLowerBound.toFixed()"
+              />
+            </div>
+          </div>
+
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
               {{ $t('liquidityBots.currentPrice') }}
@@ -114,7 +154,7 @@ const trailingBounds = computed(() => {
               <SharedAmountCollapsed
                 v-else
                 should-truncate
-                :amount="liquidityValues.trailingLowerBound.toFixed()"
+                :amount="lastTradedPrice.toFixed()"
               />
             </div>
           </div>

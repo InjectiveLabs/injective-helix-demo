@@ -221,7 +221,8 @@ const activeStrategy = computed(() =>
           v-bind="{
             market: selectedMarket,
             liquidityValues,
-            status
+            status,
+            lastTradedPrice
           }"
           class="mt-4"
         />

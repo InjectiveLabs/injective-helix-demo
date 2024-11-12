@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Status } from '@injectivelabs/utils'
+import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { LiquidityValues, UiMarketWithToken } from '@/types'
 
 withDefaults(
@@ -7,6 +7,7 @@ withDefaults(
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
     status: Status
+    lastTradedPrice: BigNumberInBase
   }>(),
   {}
 )
@@ -17,7 +18,7 @@ withDefaults(
     <PartialsLiquidityBotsSpotFormVolatilityStrategy />
     <PartialsLiquidityBotsSpotFormDeposit v-bind="{ market }" class="mt-4" />
     <PartialsLiquidityBotsSpotFormDetails
-      v-bind="{ market, liquidityValues, status }"
+      v-bind="{ market, liquidityValues, status, lastTradedPrice }"
       class="mt-4"
     />
     <PartialsLiquidityBotsSpotFormCreateBot
