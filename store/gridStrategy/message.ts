@@ -39,7 +39,10 @@ export const createStrategy = async (
     [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
     [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
     [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
-    [SpotGridTradingField.StrategyType]: strategyType
+    [SpotGridTradingField.StrategyType]: strategyType,
+    [SpotGridTradingField.IsTrailingEnabled]: isTrailingEnabled,
+    [SpotGridTradingField.TrailingLower]: trailingLower,
+    [SpotGridTradingField.TrailingUpper]: trailingUpper
   }: Partial<SpotGridTradingForm>,
   market?: UiSpotMarket
 ) => {
@@ -82,6 +85,22 @@ export const createStrategy = async (
   if (!gridMarket) {
     return
   }
+
+  const trailingArgs =
+    isTrailingEnabled && trailingLower && trailingUpper
+      ? {
+          lowerTrailing: spotPriceToChainPriceToFixed({
+            value: trailingLower,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          }),
+          upperTrailing: spotPriceToChainPriceToFixed({
+            value: trailingUpper,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          })
+        }
+      : undefined
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
@@ -155,7 +174,8 @@ export const createStrategy = async (
         quoteDecimals: actualMarket.quoteToken.decimals
       }),
       exitType: exitType || ExitType.Default,
-      strategyType
+      strategyType,
+      trailingArithmetic: trailingArgs
     }),
 
     funds
@@ -435,7 +455,9 @@ export async function createSpotLiquidityBot(params: {
 
   market: UiSpotMarket
 }) {
+  const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
 
   const {
     grids,
@@ -515,4 +537,12 @@ export async function createSpotLiquidityBot(params: {
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }

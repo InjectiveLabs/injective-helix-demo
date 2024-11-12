@@ -51,6 +51,7 @@ export default {
     saveOnFees: 'Adjust Deposit Amounts',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
+    enableTrailing: 'Enable Trailing',
     keepQuote: 'Keep {quote} Only',
     totalAmount: 'Total Amount',
     optimizedAmounts: 'Optimized Amounts',
@@ -230,6 +231,14 @@ export default {
     tabs: {
       liveSpotGrid: 'Live Spot Grid',
       spotGridHistory: 'Spot Grid History'
+    },
+
+    modes: {
+      arithmetic: 'Arithmetic',
+      geometric: 'Geometric',
+      arithmetic_lp: 'Arithmetic LP',
+      trailing_arithmetic_lp: 'Trailing Arithmetic LP',
+      trailing_arithmetic: 'Trailing Arithmetic'
     }
   },
 

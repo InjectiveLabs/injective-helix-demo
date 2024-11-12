@@ -231,6 +231,7 @@ export const useSpotGridStrategies = (
         currentQuoteBalanceAmount,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
+        strategyType: strategy.strategyType,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
         subaccountId: strategy.subaccountId,

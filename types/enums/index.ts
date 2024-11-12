@@ -314,7 +314,10 @@ export enum SpotGridTradingField {
   SellBaseOnStopLoss = 'sellBaseOnStopLoss',
   BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
   BaseInvestmentAmount = 'baseInvestmentAmount',
-  IsAssetRebalanceOn = 'isAssetRebalanceOn'
+  IsAssetRebalanceOn = 'isAssetRebalanceOn',
+  IsTrailingEnabled = 'isTrailingEnabled',
+  TrailingUpper = 'trailingUpper',
+  TrailingLower = 'trailingLower'
 }
 
 export enum DerivativeGridTradingField {

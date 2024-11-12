@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -49,13 +52,15 @@ function removeStrategy() {
 <template>
   <div class="text-sm space-y-2">
     <div class="flex items-center justify-between">
-      <p class="text-lg font-bold">Grid Details</p>
+      <p class="text-lg font-bold">
+        {{ $t('sgt.gridDetails') }}
+      </p>
       <div class="flex items-center gap-2">
         <div
           class="w-2 h-2 rounded-full"
           :class="strategy.isActive ? 'bg-green-500' : 'bg-red-500'"
         />
-        <p>{{ strategy.isActive ? 'Running' : 'Removed' }}</p>
+        <p>{{ strategy.isActive ? $t('sgt.running') : $t('sgt.removed') }}</p>
       </div>
     </div>
 
@@ -91,11 +96,13 @@ function removeStrategy() {
       </p>
 
       <div>
+        $
         <SharedAmountFormatter
           :max-decimal-places="3"
           :amount="strategy.currentUsdValue.toFixed()"
-          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         />
+        USD
       </div>
     </div>
 
@@ -255,6 +262,15 @@ function removeStrategy() {
       </p>
       <div class="text-right">
         {{ strategy.trailingLower }}
+      </div>
+    </div>
+
+    <div class="flex justify-between mb-2 text-sm">
+      <p class="text-coolGray-400">
+        {{ $t('sgt.gridMode') }}
+      </p>
+      <div class="text-right">
+        {{ $t(`sgt.modes.${strategy.strategyType}`) }}
       </div>
     </div>
 
