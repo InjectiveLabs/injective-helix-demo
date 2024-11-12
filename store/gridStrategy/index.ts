@@ -1,8 +1,9 @@
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import {
   createStrategy,
   removeStrategy,
   createPerpStrategy,
+  createSpotLiquidityBot,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
@@ -76,6 +77,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     createStrategy,
     removeStrategy,
     createPerpStrategy,
+    createSpotLiquidityBot,
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {
@@ -95,7 +97,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       gridStrategyStore.$patch({ strategies })
     },
 
-    async fetchAllStrategies() {
+    async fetchAllStrategies(params: { active?: boolean } = { active: false }) {
+      const { active } = params
+
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -105,7 +109,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         accountAddress: sharedWalletStore.injectiveAddress,
-        limit: 1000
+        limit: 1000,
+        state: active ? StrategyStatus.Active : undefined,
+        marketType: MarketType.Spot
       })
 
       gridStrategyStore.$patch({ strategies })

@@ -2,7 +2,11 @@ import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { indexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { format } from 'date-fns'
+import {
+  addressAndMarketSlugToSubaccountId,
+  durationFormatter
+} from '@/app/utils/helpers'
 import { SgtMarketType, StrategyStatus } from '@/types'
 
 export const useSpotGridStrategies = (
@@ -12,6 +16,7 @@ export const useSpotGridStrategies = (
   const tokenStore = useTokenStore()
   const sharedWalletStore = useSharedWalletStore()
   const { aggregatedPortfolioBalances } = useBalance()
+  const now = useNow({ interval: 10000 })
 
   const lastTradedSpotPrice = ref<Record<string, string>>({})
 
@@ -36,8 +41,20 @@ export const useSpotGridStrategies = (
         market.slug
       )
 
+      const createdAtFormatted = format(
+        new Date(Number(strategy.createdAt)),
+        'dd MMM HH:mm:ss'
+      )
+
+      const durationFormatted = durationFormatter(
+        strategy.createdAt,
+        strategy.state === StrategyStatus.Active
+          ? now.value.getTime()
+          : +strategy.updatedAt
+      )
+
       const sgtSubaccountBalances =
-        aggregatedPortfolioBalances.value[subaccountId]
+        aggregatedPortfolioBalances.value[subaccountId] || []
 
       const executionPrice = new BigNumberInBase(strategy.executionPrice)
 
@@ -125,6 +142,22 @@ export const useSpotGridStrategies = (
           ? market.quoteToken.symbol
           : undefined
 
+      const trailingUpper = strategy.trailUpPrice
+        ? sharedToBalanceInToken({
+            value: strategy.trailUpPrice,
+            decimalPlaces:
+              market.quoteToken.decimals - market.baseToken.decimals
+          })
+        : undefined
+
+      const trailingLower = strategy.trailDownPrice
+        ? sharedToBalanceInToken({
+            value: strategy.trailDownPrice,
+            decimalPlaces:
+              market.quoteToken.decimals - market.baseToken.decimals
+          })
+        : undefined
+
       // PNL
 
       const baseAmountInQuote = new BigNumberInWei(
@@ -176,16 +209,21 @@ export const useSpotGridStrategies = (
 
       return {
         pnl: pnl.toFixed(),
+        market,
         isActive,
         settleIn,
         stopLoss,
         takeProfit,
         upperBound,
         lowerBound,
+        trailingUpper,
+        trailingLower,
         percentagePnl,
         currentMidPrice,
         currentUsdValue,
         initialUsdValue,
+        durationFormatted,
+        createdAtFormatted,
         initialInvestmentInQuote,
         initialBaseBalanceAmount,
         initialQuoteBalanceAmount,
@@ -241,5 +279,3 @@ export const useSpotGridStrategies = (
 
   return formattedStrategies
 }
-
-// Total Profit / Pnl / Percentage Pnl

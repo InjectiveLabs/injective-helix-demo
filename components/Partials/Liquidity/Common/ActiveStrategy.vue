@@ -65,7 +65,7 @@ const subaccountBalances = computed(
 )
 
 const accountTotalBalanceInUsd = computed(() =>
-  subaccountBalances.value.reduce(
+  (subaccountBalances.value || []).reduce(
     (total, balance) =>
       total.plus(
         sharedToBalanceInTokenInBase({

@@ -20,5 +20,9 @@ withDefaults(
       v-bind="{ market, liquidityValues, status }"
       class="mt-4"
     />
+    <PartialsLiquidityBotsSpotFormCreateBot
+      v-bind="{ market, liquidityValues }"
+      class="mt-4"
+    />
   </div>
 </template>

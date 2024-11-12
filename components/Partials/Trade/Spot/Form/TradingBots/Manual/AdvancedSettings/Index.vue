@@ -27,6 +27,7 @@ function toggle() {
         <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsExitType />
         <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsStrategyType />
         <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsTpSl />
+        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsTrailing />
       </div>
     </AppCollapse>
   </div>

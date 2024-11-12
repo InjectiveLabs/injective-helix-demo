@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Status } from '@injectivelabs/utils'
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { Status, BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityValues, UiMarketWithToken } from '@/types'
 
 withDefaults(
@@ -7,14 +8,20 @@ withDefaults(
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
     status: Status
+    activeStrategy?: TradingStrategy
+    lastTradedPrice: BigNumberInBase
   }>(),
-  {}
+  {
+    activeStrategy: undefined
+  }
 )
 </script>
 
 <template>
   <div>
-    <p class="text-2xl font-semibold">20.4</p>
+    <p class="text-2xl font-semibold">
+      <SharedUsdAmount :amount="lastTradedPrice.toString()" />
+    </p>
     <p class="text-sm text-coolGray-500">
       {{
         $t('liquidityBots.currentPriceQuotePerBase', {
@@ -28,9 +35,13 @@ withDefaults(
 
     <PartialsLiquidityBotsSpotChartGridChart
       v-else
-      v-bind="{ market, liquidityValues, status }"
+      v-bind="{
+        market,
+        liquidityValues,
+        status,
+        activeStrategy,
+        lastTradedPrice
+      }"
     />
-
-    <PartialsLiquidityBotsSpotFormCreateBot class="mt-4" />
   </div>
 </template>

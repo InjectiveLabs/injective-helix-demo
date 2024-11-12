@@ -1,181 +1,244 @@
-<script lang="ts" setup>
-import { OrderState, TradeExecutionSide } from '@injectivelabs/ts-types'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { NuxtUiIcons } from '@shared/types'
+<script setup lang="ts">
 import {
-  getSgtContractAddressFromSlug,
-  addressAndMarketSlugToSubaccountId
-} from '@/app/utils/helpers'
+  BigNumberInBase,
+  BigNumberInWei,
+  Status,
+  StatusType
+} from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { spotGridMarkets } from '@/app/json'
+import {
+  calculateOrderLevels,
+  volatilityStrategyBounds
+} from '@/app/data/grid-strategy'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { UiSpotMarket } from '@/types'
+import { LiquidityBotField, LiquidityBotForm } from '@/types'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const spotStore = useSpotStore()
-const authZStore = useAuthZStore()
-const accountStore = useAccountStore()
+const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 
-const status = reactive(new Status(StatusType.Idle))
-const isBannerOpen = ref(false)
+const { values } = useForm<LiquidityBotForm>()
 
-const activeStrategy = computed(
-  () =>
-    gridStrategyStore.activeStrategies.find(
-      (strategy) =>
-        strategy.contractAddress ===
-        getSgtContractAddressFromSlug(gridStrategyStore.spotMarket?.slug)
-    )!
-)
+const status = reactive(new Status(StatusType.Loading))
+const gridStrategyStatus = reactive(new Status(StatusType.Loading))
 
-const subaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(
-    sharedWalletStore.address,
-    (gridStrategyStore.spotMarket as UiSpotMarket).slug
-  )
-)
+const market = useQueryRef('market', 'inj-usdt')
 
-const marketOrders = computed(() =>
-  spotStore.subaccountOrders.filter(
-    ({ marketId, subaccountId: orderSubaccountId, state }) =>
-      marketId === gridStrategyStore.spotMarket?.marketId &&
-      orderSubaccountId === subaccountId.value &&
-      state === OrderState.Booked
-  )
-)
+const lastTradedPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
 
-function fetchData() {
-  status.setLoading()
-
-  if (!gridStrategyStore.spotMarket) {
-    return
-  }
-
-  const marketId = gridStrategyStore.spotMarket.marketId
-  const subaccountId = addressAndMarketSlugToSubaccountId(
-    sharedWalletStore.address,
-    gridStrategyStore.spotMarket.slug
-  )
-
-  spotStore.cancelOrderbookUpdateStream()
-  spotStore.cancelSubaccountOrdersHistoryStream()
-  spotStore.cancelTradesStream()
-
-  Promise.all([
-    authZStore.fetchGrants(),
-    spotStore.streamTrades(marketId),
-    spotStore.fetchOrderbook(marketId),
-    spotStore.fetchTrades({
-      marketId,
-      executionSide: TradeExecutionSide.Taker
-    }),
-    spotStore.streamSubaccountOrders(marketId, subaccountId),
-    spotStore.fetchOrdersBySubaccount({
-      marketIds: [gridStrategyStore.spotMarket.marketId],
-      subaccountId
-    }),
-    spotStore.fetchSubaccountOrderHistory({
-      subaccountId,
-      filters: {
-        marketIds: [gridStrategyStore.spotMarket.marketId]
+const marketOptions = computed(() =>
+  spotStore.markets
+    .filter(({ slug }) =>
+      spotGridMarkets.some((market) => market.slug === slug)
+    )
+    .map((market) => ({
+      label: market.ticker,
+      value: market.slug,
+      avatar: {
+        src: market.baseToken.logo
       }
-    }),
-    accountStore.streamBankBalance(),
-    gridStrategyStore.fetchAllStrategies(),
-    exchangeStore.fetchMarketHistory({
-      marketIds: [gridStrategyStore.spotMarket.marketId],
-      resolution: MARKETS_HISTORY_CHART_ONE_HOUR,
-      countback: 30 * 24
-    }),
-    accountStore.fetchCw20Balances(),
-    accountStore.fetchAccountPortfolioBalances(),
-    accountStore.streamSubaccountBalance(subaccountId)
-  ])
-    .catch($onError)
-    .finally(() => {
-      if (gridStrategyStore.strategies.length === 0) {
-        isBannerOpen.value = true
-      }
-
-      status.setIdle()
+    }))
+    .toSorted((a, b) => {
+      if (a.value === 'inj-usdt') return -1
+      if (b.value === 'inj-usdt') return 1
+      return a.label.localeCompare(b.label)
     })
-}
+)
+
+const selectedMarket = computed(() =>
+  spotStore.markets.find((m) => m.slug === market.value)
+)
+
+const liquidityValues = computed(() => {
+  const currentPrice = new BigNumberInBase(lastTradedPrice.value)
+
+  const upperBound = currentPrice.plus(
+    currentPrice.times(
+      volatilityStrategyBounds[values[LiquidityBotField.Volatility]]
+        ?.priceBounds || 0
+    )
+  )
+
+  const lowerBound = currentPrice.minus(
+    currentPrice.times(
+      volatilityStrategyBounds[values[LiquidityBotField.Volatility]]
+        ?.priceBounds || 0
+    )
+  )
+
+  const trailingUpperBound = currentPrice.plus(
+    currentPrice.times(
+      volatilityStrategyBounds[values[LiquidityBotField.Volatility]]
+        ?.trailingBounds || 0
+    )
+  )
+
+  const trailingLowerBound = currentPrice.minus(
+    currentPrice.times(
+      volatilityStrategyBounds[values[LiquidityBotField.Volatility]]
+        ?.trailingBounds || 0
+    )
+  )
+
+  const baseAmountInUsd = selectedMarket.value
+    ? new BigNumberInBase(values[LiquidityBotField.BaseAmount] || 0).times(
+        tokenStore.tokenUsdPrice(selectedMarket.value.baseToken) || 0
+      )
+    : ZERO_IN_BASE
+
+  const quoteAmountInUsd = selectedMarket.value
+    ? new BigNumberInBase(values[LiquidityBotField.QuoteAmount] || 0).times(
+        tokenStore.tokenUsdPrice(selectedMarket.value.quoteToken) || 0
+      )
+    : ZERO_IN_BASE
+
+  const grids = calculateOrderLevels(
+    baseAmountInUsd.plus(quoteAmountInUsd).toNumber(),
+    150
+  )
+
+  return {
+    grids,
+    upperBound,
+    lowerBound,
+    currentPrice,
+    trailingUpperBound,
+    trailingLowerBound
+  }
+})
+
+watch(
+  selectedMarket,
+  (market) => {
+    status.setLoading()
+
+    if (!market) {
+      return
+    }
+
+    const subaccountId = addressAndMarketSlugToSubaccountId(
+      sharedWalletStore.address,
+      market.slug
+    )
+
+    Promise.all([
+      spotStore.fetchLastTrade({ marketId: market.marketId }),
+      spotStore.fetchOrdersBySubaccount({
+        subaccountId,
+        marketIds: [market.marketId]
+      }),
+      exchangeStore.fetchMarketHistory({
+        marketIds: [market.marketId],
+        countback: 7 * 24,
+        resolution: MARKETS_HISTORY_CHART_ONE_HOUR
+      })
+    ])
+      .then(([lastTrade]) => {
+        lastTradedPrice.value = new BigNumberInWei(lastTrade.price).toBase(
+          market.quoteToken.decimals - market.baseToken.decimals
+        )
+      })
+      .finally(() => {
+        status.setIdle()
+      })
+  },
+  { immediate: true }
+)
 
 onWalletConnected(() => {
-  spotStore.resetOrderbookAndTrades()
+  gridStrategyStatus.setLoading()
 
-  fetchData()
+  gridStrategyStore.fetchAllStrategies({ active: true }).finally(() => {
+    gridStrategyStatus.setIdle()
+  })
 })
 
-onMounted(() => {
-  accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
-})
-
-onUnmounted(() => {
-  spotStore.cancelOrderbookUpdateStream()
-  spotStore.cancelSubaccountOrdersStream()
-  spotStore.cancelTradesStream()
-})
-
-watch(() => gridStrategyStore.spotMarket, fetchData)
+const activeStrategy = computed(() =>
+  gridStrategyStore.activeStrategies.find(
+    (strategy) => strategy.marketId === selectedMarket.value?.marketId
+  )
+)
 </script>
 
 <template>
-  <div>
-    <p class="text-xl font-semibold text-center mb-4">
-      {{ $t('liquidity.liquidityBots') }}
-    </p>
+  <UContainer>
+    <div class="flex flex-col gap-4 text-center items-center my-10">
+      <h3 class="text-4xl lg:text-6xl font-bold">
+        {{ $t('liquidityBots.title') }}
+      </h3>
+      <p class="text-sm lg:text-xl">
+        {{ $t('liquidityBots.description') }}
+      </p>
+    </div>
 
     <div
-      v-if="isBannerOpen"
-      class="bg-[#A5EBEE] text-black rounded-md px-4 py-2 flex my-4"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4 *:border *:p-4 *:rounded-lg my-10"
     >
-      <div class="flex-1 pr-4">
-        <p class="font-bold text-sm">{{ $t('liquidity.bannerMessage') }}</p>
-        <p class="text-sm">
-          {{ $t('liquidity.setUpLiquidityInAFewClicks') }}
+      <div>
+        <p class="text-xl font-bold">
+          {{ $t('liquidityBots.setLiquidityBot') }}
         </p>
+        <p class="text-sm font-semibold my-4">
+          {{ $t('liquidityBots.selectPair') }}
+        </p>
+
+        <USelectMenu
+          v-model="market"
+          value-attribute="value"
+          :options="marketOptions"
+          searchable
+          clear-search-on-close
+          :search-attributes="['label', 'value']"
+          size="xl"
+        >
+          <template #leading>
+            <UAvatar
+              v-if="selectedMarket"
+              :src="selectedMarket.baseToken.logo"
+              size="2xs"
+              :alt="market"
+            />
+          </template>
+        </USelectMenu>
+
+        <USkeleton
+          v-if="gridStrategyStatus.isLoading()"
+          class="w-full h-96 mt-4"
+        />
+
+        <PartialsLiquidityCommonActiveStrategyDetails
+          v-else-if="activeStrategy && selectedMarket"
+          class="mt-4"
+          :active-strategy="activeStrategy"
+        />
+
+        <PartialsLiquidityBotsSpotForm
+          v-else-if="selectedMarket"
+          v-bind="{
+            market: selectedMarket,
+            liquidityValues,
+            status
+          }"
+          class="mt-4"
+        />
       </div>
 
       <div>
-        <button @click="isBannerOpen = false">
-          <UIcon :name="NuxtUiIcons.Close" class="h-6 w-6 min-w-6" />
-        </button>
+        <PartialsLiquidityBotsSpotChart
+          v-if="selectedMarket"
+          v-bind="{
+            status,
+            market: selectedMarket,
+            activeStrategy,
+            liquidityValues,
+            lastTradedPrice: new BigNumberInBase(lastTradedPrice)
+          }"
+        />
       </div>
     </div>
-
-    <PartialsLiquidityBotsSpotMarketSelector />
-
-    <AppHocLoading v-bind="{ status }">
-      <PartialsLiquidityBotsSpotOrdersChart
-        v-if="
-          gridStrategyStore.spotMarket &&
-          marketOrders.length > 0 &&
-          activeStrategy
-        "
-        v-bind="{ market: gridStrategyStore.spotMarket }"
-      />
-
-      <PartialsLiquidityBotsSpotPlacingOrders
-        v-else-if="activeStrategy"
-        v-bind="{
-          subaccountId,
-          market: gridStrategyStore.spotMarket as UiSpotMarket
-        }"
-      />
-
-      <PartialsLiquidityCommonActiveStrategy
-        v-if="activeStrategy && gridStrategyStore.spotMarket"
-        class="mt-4"
-        v-bind="{
-          activeStrategy,
-          market: gridStrategyStore.spotMarket,
-          isLiquidity: true
-        }"
-      />
-
-      <PartialsLiquidityBotsSpotCreate v-else />
-    </AppHocLoading>
-  </div>
+  </UContainer>
 </template>

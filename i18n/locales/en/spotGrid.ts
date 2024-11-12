@@ -266,9 +266,17 @@ export default {
     currentPrice: 'Current Price',
     stopLoss: 'Stop Loss',
     takeProfit: 'Take Profit',
+    trailingUpper: 'Trailing Upper',
+    trailingLower: 'Trailing Lower',
     currentPriceQuotePerBase: 'Current price {quote} per {base}',
     passive: 'Passive',
     moderate: 'Moderate',
-    aggressive: 'Aggressive'
+    aggressive: 'Aggressive',
+    createBot: 'Create Bot',
+    duration: 'Duration',
+    timeCreated: 'Time Created',
+    totalAmount: 'Total Amount',
+    totalProfit: 'Total Profit',
+    currentBalance: 'Current Balance'
   }
 }

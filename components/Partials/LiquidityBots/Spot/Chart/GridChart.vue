@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import ApexChart, { ApexOptions } from 'apexcharts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityValues, UiMarketWithToken } from '@/types'
 import { calculateGridLevels } from '@/app/data/grid-strategy'
 import { colors } from '@/nuxt-config/tailwind'
@@ -24,13 +26,24 @@ const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
+    activeStrategy?: TradingStrategy
+    lastTradedPrice: BigNumberInBase
   }>(),
-  {}
+  {
+    activeStrategy: undefined
+  }
 )
 
+const spotStore = useSpotStore()
 const exchangeStore = useExchangeStore()
 
 const apexChart = ref(undefined as ApexChart | undefined)
+
+const strategies = useSpotGridStrategies(
+  computed(() => (props.activeStrategy ? [props.activeStrategy] : []))
+)
+
+const strategy = computed(() => strategies.value[0])
 
 const priceSeries = computed(() => {
   const market = exchangeStore.marketsHistory.find(
@@ -43,8 +56,13 @@ const priceSeries = computed(() => {
 })
 
 const gridLevelsAnnotations = computed(() => {
-  if (!props.liquidityValues.lowerBound || !props.liquidityValues.upperBound)
+  if (
+    strategy.value ||
+    !props.liquidityValues.lowerBound ||
+    !props.liquidityValues.upperBound
+  ) {
     return []
+  }
 
   return calculateGridLevels(
     props.liquidityValues.lowerBound.toNumber(),
@@ -83,17 +101,35 @@ const gridLevelsAnnotations = computed(() => {
   }))
 })
 
+const upperTrailingBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.trailingUpper ?? '')
+    : props.liquidityValues.trailingUpperBound
+})
+
+const lowerTrailingBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.trailingLower ?? '')
+    : props.liquidityValues.trailingLowerBound
+})
+
 const trailingBoundAnnotation = computed(() => {
+  const hasTrailingBounds = strategy.value
+    ? strategy.value.upperBound && strategy.value.trailingLower
+    : true
+
   if (
     !props.liquidityValues.trailingUpperBound ||
-    !props.liquidityValues.trailingLowerBound
-  )
+    !props.liquidityValues.trailingLowerBound ||
+    !hasTrailingBounds
+  ) {
     return []
+  }
 
   return [
     {
-      y: props.liquidityValues.trailingUpperBound.toNumber(),
-      y2: props.liquidityValues.trailingLowerBound.toNumber(),
+      y: upperTrailingBound.value.toNumber(),
+      y2: lowerTrailingBound.value.toNumber(),
       borderColor: colors.blue[500],
       fillColor: colors.green[500],
       opacity: 0.1,
@@ -108,6 +144,70 @@ const trailingBoundAnnotation = computed(() => {
       }
     }
   ]
+})
+
+const ordersAnnotations = computed(() => {
+  if (!props.activeStrategy) {
+    return []
+  }
+
+  return spotStore.subaccountOrders.map((order) => {
+    const price = sharedToBalanceInToken({
+      value: order.price,
+      decimalPlaces:
+        props.market.quoteToken.decimals - props.market.baseToken.decimals
+    })
+
+    const isBuy = order.orderSide === 'buy'
+
+    return {
+      y: price,
+      borderColor: isBuy ? colors.green[500] : colors.red[500],
+      fillColor: isBuy ? colors.green[500] : colors.red[500],
+      opacity: 0.1
+    }
+  })
+})
+
+const boundsAnnotations = computed(() => {
+  if (!strategy.value) {
+    return []
+  }
+
+  return [
+    {
+      y: strategy.value.upperBound,
+      y2: strategy.value.lowerBound,
+      strokeDashArray: 0,
+      fillColor: colors.red[500],
+      opacity: 0.2,
+      label: {
+        position: 'left',
+        textAnchor: 'start',
+        borderColor: colors.red[500],
+        text: 'Grid Bound',
+        style: {
+          background: colors.red[500],
+          color: '#000'
+        }
+      }
+    }
+  ]
+})
+
+const currentPriceAnnotation = computed(() => {
+  return {
+    y: props.liquidityValues.currentPrice.toNumber(),
+    borderColor: colors.blue[500],
+    label: {
+      borderColor: colors.blue[500],
+      text: 'Current Price',
+      style: {
+        background: colors.blue[500],
+        color: '#000'
+      }
+    }
+  }
 })
 
 const options = computed<ApexOptions>(() => ({
@@ -125,10 +225,12 @@ const options = computed<ApexOptions>(() => ({
   dataLabels: { enabled: false },
 
   yaxis: {
-    max: props.liquidityValues.currentPrice.times(1.3).toNumber(),
-    min: props.liquidityValues.currentPrice.times(0.7).toNumber()
-    // max: props.liquidityValues.trailingUpperBound.toNumber(),
-    // min: props.liquidityValues.trailingLowerBound.toNumber()
+    max: upperTrailingBound.value.times(1.05).toNumber(),
+    min: lowerTrailingBound.value.times(0.95).toNumber(),
+    stepSize: 10,
+    tooltip: {
+      enabled: true
+    }
   },
 
   xaxis: {
@@ -143,25 +245,10 @@ const options = computed<ApexOptions>(() => ({
   annotations: {
     yaxis: [
       ...gridLevelsAnnotations.value,
-      ...trailingBoundAnnotation.value
-      // {
-      //   y: 17,
-      //   y2: 18,
-
-      //   fillColor: '#3B7CFF',
-      //   borderColor: '#3B7CFF',
-
-      //   label: {
-      //     borderColor: '#3B7CFF',
-
-      //     text: 'Upper Lower',
-
-      //     style: {
-      //       background: '#3B7CFF',
-      //       color: '#fff'
-      //     }
-      //   }
-      // }
+      ...trailingBoundAnnotation.value,
+      ...ordersAnnotations.value,
+      ...boundsAnnotations.value,
+      currentPriceAnnotation.value
     ]
   },
 
@@ -181,6 +268,13 @@ const options = computed<ApexOptions>(() => ({
         { offset: 100, color: '#3B7CFF', opacity: 0.1 }
       ]
     }
+  },
+  tooltip: {
+    y: {
+      formatter: (value) => {
+        return `${value}`
+      }
+    }
   }
 }))
 
@@ -198,11 +292,15 @@ onUnmounted(() => {
 })
 
 watch(
-  () => [props.market, exchangeStore.marketsHistory, props.liquidityValues],
+  () => [
+    props.market,
+    exchangeStore.marketsHistory,
+    props.liquidityValues,
+    spotStore.subaccountOrders,
+    props.activeStrategy
+  ],
   () => {
     apexChart.value?.updateOptions({
-      // series: [{ data: priceSeries.value, name: 'Price' }],
-      // annotations: { yaxis: gridLevelsAnnotations.value }
       ...options.value
     })
   }

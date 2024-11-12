@@ -422,20 +422,94 @@ export const createPerpStrategy = async (
   )
 }
 
-export async function createSpotLiquidityBot() {
+export async function createSpotLiquidityBot(params: {
+  grids: number
+  lowerBound: string
+  upperBound: string
+
+  baseAmount?: string
+  quoteAmount?: string
+
+  lowerTrailingBound: string
+  upperTrailingBound: string
+
+  market: UiSpotMarket
+}) {
   const sharedWalletStore = useSharedWalletStore()
+
+  const {
+    grids,
+    market,
+    lowerBound,
+    upperBound,
+    baseAmount,
+    quoteAmount,
+    lowerTrailingBound,
+    upperTrailingBound
+  } = params
+
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.slug
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+
+  if (!gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: market.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: market.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: market.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: market.quoteToken.decimals
+      })
+    })
+  }
+
   const msg = MsgExecuteContractCompat.fromJSON({
-    contractAddress: '',
-    sender: '',
+    funds,
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
     execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
-      subaccountId: '',
-      levels: 10,
-      lowerBound: '',
-      upperBound: '',
+      subaccountId,
+      levels: grids,
+      lowerBound: spotPriceToChainPriceToFixed({
+        value: lowerBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
+      upperBound: spotPriceToChainPriceToFixed({
+        value: upperBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
       trailingArithmetic: {
         trailing_arithmetic: {
-          lower_trailing_bound: '',
-          upper_trailing_bound: ''
+          lower_trailing_bound: spotPriceToChainPriceToFixed({
+            value: lowerTrailingBound,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals
+          }),
+          upper_trailing_bound: spotPriceToChainPriceToFixed({
+            value: upperTrailingBound,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals
+          })
         }
       }
     })
