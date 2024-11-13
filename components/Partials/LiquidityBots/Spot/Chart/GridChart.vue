@@ -55,18 +55,38 @@ const priceSeries = computed(() => {
   return market.time.map((time, i) => [time * 1000, market.highPrice[i]])
 })
 
+const upperTrailingBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.trailingUpper ?? '')
+    : props.liquidityValues.trailingUpperBound
+})
+
+const lowerTrailingBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.trailingLower ?? '')
+    : props.liquidityValues.trailingLowerBound
+})
+
+const upperBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.upperBound)
+    : props.liquidityValues.upperBound
+})
+
+const lowerBound = computed(() => {
+  return strategy.value
+    ? new BigNumberInBase(strategy.value.lowerBound)
+    : props.liquidityValues.lowerBound
+})
+
 const gridLevelsAnnotations = computed(() => {
-  if (
-    strategy.value ||
-    !props.liquidityValues.lowerBound ||
-    !props.liquidityValues.upperBound
-  ) {
+  if (!lowerBound.value || !upperBound.value) {
     return []
   }
 
   return calculateGridLevels(
-    props.liquidityValues.lowerBound.toNumber(),
-    props.liquidityValues.upperBound.toNumber(),
+    lowerBound.value.toNumber(),
+    upperBound.value.toNumber(),
     props.liquidityValues.grids
   ).map<OrderAnnotation>((level, index, array) => ({
     y: level,
@@ -101,26 +121,14 @@ const gridLevelsAnnotations = computed(() => {
   }))
 })
 
-const upperTrailingBound = computed(() => {
-  return strategy.value
-    ? new BigNumberInBase(strategy.value.trailingUpper ?? '')
-    : props.liquidityValues.trailingUpperBound
-})
-
-const lowerTrailingBound = computed(() => {
-  return strategy.value
-    ? new BigNumberInBase(strategy.value.trailingLower ?? '')
-    : props.liquidityValues.trailingLowerBound
-})
-
 const trailingBoundAnnotation = computed(() => {
   const hasTrailingBounds = strategy.value
-    ? strategy.value.upperBound && strategy.value.trailingLower
+    ? strategy.value.trailingUpper && strategy.value.trailingLower
     : true
 
   if (
-    !props.liquidityValues.trailingUpperBound ||
-    !props.liquidityValues.trailingLowerBound ||
+    !upperTrailingBound.value ||
+    !lowerTrailingBound.value ||
     !hasTrailingBounds
   ) {
     return []
@@ -182,8 +190,9 @@ const boundsAnnotations = computed(() => {
       fillColor: colors.red[500],
       opacity: 0.2,
       label: {
-        position: 'left',
-        textAnchor: 'start',
+        position: 'right',
+        textAnchor: 'end',
+        offsetX: -10,
         borderColor: colors.red[500],
         text: 'Grid Bound',
         style: {
@@ -225,8 +234,12 @@ const options = computed<ApexOptions>(() => ({
   dataLabels: { enabled: false },
 
   yaxis: {
-    max: upperTrailingBound.value.times(1.05).toNumber(),
-    min: lowerTrailingBound.value.times(0.95).toNumber(),
+    max:
+      upperTrailingBound.value.times(1.05).toNumber() ||
+      upperBound.value.times(1.05).toNumber(),
+    min:
+      lowerTrailingBound.value.times(0.95).toNumber() ||
+      lowerBound.value.times(0.95).toNumber(),
     stepSize: 10,
     tooltip: {
       enabled: true
@@ -308,5 +321,7 @@ watch(
 </script>
 
 <template>
-  <div id="lp-grid-chart"></div>
+  <div>
+    <div id="lp-grid-chart"></div>
+  </div>
 </template>

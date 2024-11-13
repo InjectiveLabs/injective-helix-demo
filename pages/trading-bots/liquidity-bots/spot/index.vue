@@ -222,7 +222,7 @@ const activeStrategy = computed(() =>
             market: selectedMarket,
             liquidityValues,
             status,
-            lastTradedPrice
+            lastTradedPrice: new BigNumberInBase(lastTradedPrice)
           }"
           class="mt-4"
         />

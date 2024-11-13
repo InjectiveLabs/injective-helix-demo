@@ -67,6 +67,7 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    trailingPriceRange: 'Trailing Price Range',
     minInvestmentDescription: ({ named }: I18nMessageFunction) =>
       `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
     minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
@@ -239,7 +240,14 @@ export default {
       arithmetic_lp: 'Arithmetic LP',
       trailing_arithmetic_lp: 'Trailing Arithmetic LP',
       trailing_arithmetic: 'Trailing Arithmetic'
-    }
+    },
+
+    confirmationTitle: 'Grid Order Confirmation',
+    confirmationDescription:
+      'Please read the below information carefully before you confirm to proceed.',
+    profitPerGrid: 'Profit/grid (fees deducted)',
+    disclaimer:
+      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.'
   },
 
   tradingBots: {

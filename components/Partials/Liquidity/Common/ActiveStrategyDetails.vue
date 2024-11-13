@@ -188,7 +188,7 @@ function removeStrategy() {
         <SharedAmountFormatter
           :amount="strategy.executionPrice"
           :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          :max-decimal-places="3"
+          :max-decimal-places="8"
         />
         <span class="text-coolGray-400 text-xs">
           {{ ' ' + strategy.market.quoteToken.symbol }}
