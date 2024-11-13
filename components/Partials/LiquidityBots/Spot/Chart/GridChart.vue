@@ -227,6 +227,9 @@ const options = computed<ApexOptions>(() => ({
     background: 'transparent',
     toolbar: {
       show: false
+    },
+    zoom: {
+      enabled: false
     }
   },
   theme: { mode: 'dark' },
@@ -287,7 +290,8 @@ const options = computed<ApexOptions>(() => ({
       formatter: (value) => {
         return `${value}`
       }
-    }
+    },
+    followCursor: true
   }
 }))
 
