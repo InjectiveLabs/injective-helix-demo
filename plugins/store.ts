@@ -6,6 +6,7 @@ import {
 } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { StatusType } from '@injectivelabs/utils'
+import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
 import { OrderbookLayout, TradingLayout } from '@/types'
@@ -110,6 +111,8 @@ const actionsThatSetAppStateToBusy = [
   'authZ/revokeAuthorization'
 ]
 
+const actionsThatThrowErrors = ['token/fetchTokensUsdPriceMap']
+
 const persistState = (
   mutation: SubscriptionCallbackMutationPatchObject<StateTree>,
   state: StateTree
@@ -156,6 +159,7 @@ const persistState = (
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
   const sharedWalletStore = useSharedWalletStore()
+  const { $onError } = useNuxtApp()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -173,13 +177,20 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       }
     })
 
-    onError(() => {
+    onError((error) => {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
         sharedWalletStore.$patch({
           queueStatus: StatusType.Idle
         })
+      }
+
+      if (
+        actionsThatThrowErrors.includes(type) &&
+        isThrownException(error as Error)
+      ) {
+        $onError(error as unknown as ThrownException)
       }
     })
   }, true)
