@@ -9,6 +9,7 @@
     "types": [
       "@pinia/nuxt",
       "@vueuse/nuxt",
+      "@injectivelabs/nuxt-bugsnag",
       "@injectivelabs/networks",
       "@injectivelabs/utils",
       "@injectivelabs/sdk-ts",
