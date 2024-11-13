@@ -11,12 +11,6 @@ import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
 import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 
-/**
- * As we conditionally include the nuxt-bugsnag module
- * the type of it can be undefined
- **/
-declare let useBugsnag: () => any
-
 const reportToUser = (error: ThrownException) => {
   const notificationStore = useSharedNotificationStore()
 
@@ -68,19 +62,14 @@ const reportToBugSnag = (error: ThrownException) => {
     return
   }
 
-  if (BUGSNAG_KEY) {
-    useBugsnag().notify(error, (event: any) => {
-      event.errors.forEach((e: any) => {
-        e.errorClass = error.errorClass || error.name || error.constructor.name
-      })
-
-      if (useSharedWalletStore().isUserConnected) {
-        event.setUser(useSharedWalletStore().injectiveAddress)
-      }
-
-      event.addMetadata('error-context', error.toObject())
-    })
+  if (!BUGSNAG_KEY) {
+    return
   }
+
+  useBugsnagNotifyThrownException(
+    error,
+    useSharedWalletStore().injectiveAddress
+  )
 }
 
 const reportUnknownErrorToBugsnag = (error: Error) => {
@@ -94,9 +83,14 @@ const reportUnknownErrorToBugsnag = (error: Error) => {
 
   console.warn(newError.message, newError.stack)
 
-  if (BUGSNAG_KEY) {
-    useBugsnag().notify(newError)
+  if (!BUGSNAG_KEY) {
+    return
   }
+
+  useBugsnagNotifyThrownException(
+    newError,
+    useSharedWalletStore().injectiveAddress
+  )
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
