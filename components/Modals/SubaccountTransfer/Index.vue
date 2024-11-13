@@ -166,10 +166,18 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
+    const token = supplyWithBalance.value.find(
+      (token) => token.denom === formValues[SubaccountTransferField.Denom]
+    )
+
     setFormValues({
       [SubaccountTransferField.Amount]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom
+      ...(token
+        ? {}
+        : {
+            [SubaccountTransferField.Token]: injToken,
+            [SubaccountTransferField.Denom]: injToken.denom
+          })
     })
   })
 }
