@@ -81,7 +81,7 @@ watch(
             {{ market.ticker }}
           </span>
 
-          <template #tooltip>
+          <template #customTooltip>
             <i18n-t v-if="isBiudlPerpMarket" keypath="markets.buidlTooltip">
               <template #docs>
                 <NuxtLink
