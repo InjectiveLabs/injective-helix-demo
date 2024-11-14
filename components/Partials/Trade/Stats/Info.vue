@@ -215,8 +215,14 @@ useIntervalFn(() => {
   const end = endOfHour(now.value)
   const shouldFetchNewFunding = differenceInSeconds(end, now.value) === 1
 
-  if (shouldFetchNewFunding) {
+  if (!shouldFetchNewFunding) {
+    return
+  }
+
+  try {
     derivativeStore.fetchMarket(props.market.marketId)
+  } catch (e) {
+    //
   }
 }, 1000)
 </script>
