@@ -2258,10 +2258,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/node-globals-polyfill/-/node-globals-polyfill-0.1.6.tgz#1b9f558afdca25d3a18be626a8e5770cba984e49"
   integrity sha512-fkqqExfjd8P8+8NxSbsczVl3B5zREXc37FroZgFtGoUXrX3d7bOcn6++Y4HrnfzFfJvNHqyHKkVaQsGa4MD9gg==
 
-"@injectivelabs/nuxt-bugsnag@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/nuxt-bugsnag/-/nuxt-bugsnag-0.0.11.tgz#d66ac77a802fcb87680e5420e2126eba4a57d94b"
-  integrity sha512-Gj4hJv/fUMQtgKRLQYaCt155hotRzv+DIFaoMoo1JnjyiIR9SmvSYU/azwMLhkHRQxIW+bb7CDY4enffwRwwrg==
+"@injectivelabs/nuxt-bugsnag@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/nuxt-bugsnag/-/nuxt-bugsnag-0.0.12.tgz#3fa5ce9cd3dc0efa3e58a4904f2dcd039ba2f76d"
+  integrity sha512-mI1Jp/dMcAlnptKI8/ERTjN7H+gYMnXNqws2Z+6ur+Za/hjJqehPmWU67PuiHryECDmVkTM7UZ08noMBAmb++g==
   dependencies:
     "@bugsnag/browser-performance" "^2.8.0"
     "@bugsnag/js" "^8.0.0"
@@ -15939,12 +15939,12 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#cffcbcdb95beff7955d8cc5b877679db0662dee1"
+  resolved "https://github.com/InjectiveLabs/shared-packages#04cdd1d08c1d4277f2ba234b19dd40a2eeca43ca"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" " 1.14.19"
     "@injectivelabs/networks" " 1.14.19"
-    "@injectivelabs/nuxt-bugsnag" "0.0.11"
+    "@injectivelabs/nuxt-bugsnag" "0.0.12"
     "@injectivelabs/sdk-ts" "1.14.20-beta.2"
     "@injectivelabs/ts-types" " 1.14.19"
     "@injectivelabs/utils" " 1.14.19"
