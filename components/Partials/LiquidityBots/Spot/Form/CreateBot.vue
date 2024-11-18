@@ -17,6 +17,7 @@ const props = withDefaults(
 )
 
 const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
@@ -34,6 +35,12 @@ const totalUsd = computed(() =>
     .times(tokenStore.tokenUsdPrice(props.market.baseToken))
     .plus(liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0)
     .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+)
+
+const isAutoSignOrAuthzEnabled = computed(
+  () =>
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
 )
 
 async function openConfirmationModal() {
@@ -91,12 +98,15 @@ async function createLiquidityBot() {
 <template>
   <div>
     <UButton
-      :disabled="Object.keys(formErrors).length > 0"
+      :disabled="Object.keys(formErrors).length > 0 || isAutoSignOrAuthzEnabled"
       :variant="Object.keys(formErrors).length > 0 ? 'outline' : 'solid'"
       block
       @click="openConfirmationModal"
     >
-      {{ $t('liquidityBots.createBot') }}
+      <span v-if="isAutoSignOrAuthzEnabled">
+        {{ $t('common.unauthorized') }}
+      </span>
+      <span v-else>{{ $t('liquidityBots.createBot') }}</span>
     </UButton>
 
     <SharedModal v-model="confirmationModal">

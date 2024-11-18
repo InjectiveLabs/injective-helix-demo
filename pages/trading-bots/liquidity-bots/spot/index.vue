@@ -11,7 +11,10 @@ import {
   calculateOrderLevels,
   volatilityStrategyBounds
 } from '@/app/data/grid-strategy'
-import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
+import {
+  MARKETS_HISTORY_CHART_ONE_HOUR,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { LiquidityBotField, LiquidityBotForm } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
@@ -148,11 +151,31 @@ const liquidityValues = computed(() => {
 
   return {
     grids,
-    upperBound,
-    lowerBound,
-    currentPrice,
-    trailingUpperBound,
-    trailingLowerBound
+    upperBound: new BigNumberInBase(
+      upperBound.toFixed(
+        selectedMarket.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
+    ),
+    lowerBound: new BigNumberInBase(
+      lowerBound.toFixed(
+        selectedMarket.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
+    ),
+    currentPrice: new BigNumberInBase(
+      currentPrice.toFixed(
+        selectedMarket.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
+    ),
+    trailingUpperBound: new BigNumberInBase(
+      trailingUpperBound.toFixed(
+        selectedMarket.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
+    ),
+    trailingLowerBound: new BigNumberInBase(
+      trailingLowerBound.toFixed(
+        selectedMarket.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      )
+    )
   }
 })
 
