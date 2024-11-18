@@ -18,10 +18,11 @@ import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
+const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
-const { values } = useForm<LiquidityBotForm>()
+const { values, resetForm } = useForm<LiquidityBotForm>()
 
 const status = reactive(new Status(StatusType.Loading))
 const gridStrategyStatus = reactive(new Status(StatusType.Loading))
@@ -38,9 +39,13 @@ const marketOptions = computed(() =>
     .map((market) => ({
       label: market.ticker,
       value: market.slug,
+      marketReward: marketRewards.value[market.marketId],
       avatar: {
         src: market.baseToken.logo
-      }
+      },
+      active: gridStrategyStore.activeStrategies.some(
+        (strategy) => strategy.marketId === market.marketId
+      )
     }))
     .toSorted((a, b) => {
       if (a.value === 'inj-usdt') return -1
@@ -52,6 +57,46 @@ const marketOptions = computed(() =>
 const selectedMarket = computed(() =>
   spotStore.markets.find((m) => m.slug === market.value)
 )
+
+const marketRewards = computed(() =>
+  campaignStore.latestRoundCampaigns.reduce(
+    (acc, campaign) => {
+      const market = spotStore.markets.find(
+        ({ marketId }) => marketId === campaign.marketId
+      )
+
+      const reward = campaign.rewards[0]
+
+      const token = tokenStore.verifiedTokens.find(
+        ({ denom }) => denom === reward?.denom
+      )
+
+      if (!market || !reward || !token) {
+        return acc
+      }
+
+      const amount = sharedToBalanceInToken({
+        value: reward.amount,
+        decimalPlaces: token.decimals
+      })
+
+      acc[market.marketId] = {
+        symbol: token.symbol,
+        amount
+      }
+
+      return acc
+    },
+    {} as Record<string, { symbol: string; amount: string }>
+  )
+)
+
+const marketReward = computed(() => {
+  return selectedMarket.value &&
+    marketRewards.value[selectedMarket.value.marketId]
+    ? marketRewards.value[selectedMarket.value.marketId]
+    : undefined
+})
 
 const liquidityValues = computed(() => {
   const currentPrice = new BigNumberInBase(lastTradedPrice.value)
@@ -115,6 +160,7 @@ watch(
   selectedMarket,
   (market) => {
     status.setLoading()
+    resetForm()
 
     if (!market) {
       return
@@ -157,6 +203,10 @@ onWalletConnected(() => {
   })
 })
 
+onMounted(() => {
+  campaignStore.fetchRound()
+})
+
 const activeStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) => strategy.marketId === selectedMarket.value?.marketId
@@ -194,6 +244,11 @@ const activeStrategy = computed(() =>
           clear-search-on-close
           :search-attributes="['label', 'value']"
           size="xl"
+          :ui-menu="{
+            option: {
+              base: 'w-full *:flex-1'
+            }
+          }"
         >
           <template #leading>
             <UAvatar
@@ -201,7 +256,53 @@ const activeStrategy = computed(() =>
               :src="selectedMarket.baseToken.logo"
               size="2xs"
               :alt="market"
+              class="mr-2"
             />
+          </template>
+
+          <template #label="{ selected }">
+            <template v-if="selected">
+              <span>{{ selected.label }}</span>
+              <span
+                v-if="selected.active"
+                class="size-2 bg-green-500 rounded-full"
+              />
+            </template>
+          </template>
+
+          <template #trailing>
+            <span
+              v-if="marketReward"
+              :class="`from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-xs font-semibold text-transparent px-2 py-1 rounded-md`"
+            >
+              {{
+                $t('liquidityBots.upToRewards', {
+                  amount: marketReward.amount,
+                  symbol: marketReward.symbol
+                })
+              }}
+            </span>
+          </template>
+
+          <template #option="{ option }">
+            <UAvatar :src="option.avatar.src" size="2xs" />
+            <span>{{ option.label }}</span>
+            <span
+              v-if="option.active"
+              class="size-2 bg-green-500 rounded-full"
+            />
+
+            <span
+              v-if="option.marketReward"
+              class="from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-xs font-semibold text-transparent px-2 py-1 rounded-md ml-auto"
+            >
+              {{
+                $t('liquidityBots.upToRewards', {
+                  amount: option.marketReward.amount,
+                  symbol: option.marketReward.symbol
+                })
+              }}
+            </span>
           </template>
         </USelectMenu>
 
@@ -236,7 +337,8 @@ const activeStrategy = computed(() =>
             market: selectedMarket,
             activeStrategy,
             liquidityValues,
-            lastTradedPrice: new BigNumberInBase(lastTradedPrice)
+            lastTradedPrice: new BigNumberInBase(lastTradedPrice),
+            marketReward
           }"
         />
       </div>

@@ -41,7 +41,7 @@ function onOpenTradingBotDetails() {
 
 <template>
   <div class="p-4">
-    <PartialsLiquidityCommonActiveStrategy
+    <PartialsLiquidityCommonActiveStrategyDetails
       v-if="activeStrategy"
       v-bind="{ activeStrategy, market: spotMarket }"
     />

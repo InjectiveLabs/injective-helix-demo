@@ -294,6 +294,7 @@ export default {
     timeCreated: 'Time Created',
     totalAmount: 'Total Amount',
     totalProfit: 'Total Profit',
-    currentBalance: 'Current Balance'
+    currentBalance: 'Current Balance',
+    upToRewards: 'Up to {amount} {symbol} weekly rewards'
   }
 }

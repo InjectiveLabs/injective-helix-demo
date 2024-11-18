@@ -10,26 +10,46 @@ withDefaults(
     status: Status
     activeStrategy?: TradingStrategy
     lastTradedPrice: BigNumberInBase
+    marketReward?: {
+      amount: string
+      symbol: string
+    }
   }>(),
   {
-    activeStrategy: undefined
+    activeStrategy: undefined,
+    marketReward: undefined
   }
 )
 </script>
 
 <template>
   <div>
-    <p class="text-2xl font-semibold">
-      <SharedUsdAmount :amount="lastTradedPrice.toString()" />
-    </p>
-    <p class="text-sm text-coolGray-500">
-      {{
-        $t('liquidityBots.currentPriceQuotePerBase', {
-          quote: market.quoteToken.symbol,
-          base: market.baseToken.symbol
-        })
-      }}
-    </p>
+    <div>
+      <div class="flex justify-between items-center gap-1">
+        <p class="text-2xl font-semibold">
+          <SharedUsdAmount :amount="lastTradedPrice.toString()" />
+        </p>
+        <span
+          v-if="marketReward"
+          :class="`from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-sm font-semibold text-transparent px-2 py-1 rounded-md`"
+        >
+          {{
+            $t('liquidityBots.upToRewards', {
+              amount: marketReward.amount,
+              symbol: marketReward.symbol
+            })
+          }}
+        </span>
+      </div>
+      <p class="text-sm text-coolGray-500">
+        {{
+          $t('liquidityBots.currentPriceQuotePerBase', {
+            quote: market.quoteToken.symbol,
+            base: market.baseToken.symbol
+          })
+        }}
+      </p>
+    </div>
 
     <USkeleton v-if="status.isLoading()" class="h-[500px] mt-4" />
 

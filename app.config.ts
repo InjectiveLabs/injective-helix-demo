@@ -7,6 +7,12 @@ export default defineAppConfig({
       background: 'dark:bg-brand-875'
     },
 
+    modal: {
+      overlay: {
+        background: 'dark:bg-brand-900/80'
+      }
+    },
+
     popover: {
       background: 'bg-brand-900 dark:bg-brand-900'
     },

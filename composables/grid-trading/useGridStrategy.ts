@@ -4,8 +4,8 @@ import { indexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { format } from 'date-fns'
 import {
-  addressAndMarketSlugToSubaccountId,
-  durationFormatter
+  formatInterval,
+  addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
 import { SgtMarketType, StrategyStatus } from '@/types'
 
@@ -46,11 +46,9 @@ export const useSpotGridStrategies = (
         'dd MMM HH:mm:ss'
       )
 
-      const durationFormatted = durationFormatter(
-        strategy.createdAt,
-        strategy.state === StrategyStatus.Active
-          ? now.value.getTime()
-          : +strategy.updatedAt
+      const durationFormatted = formatInterval(
+        Number(strategy.createdAt),
+        isActive ? now.value.getTime() : Number(strategy.updatedAt)
       )
 
       const sgtSubaccountBalances =
@@ -211,17 +209,19 @@ export const useSpotGridStrategies = (
       const percentagePnl = pnl
         .div(initialInvestmentInQuote)
         .times(100)
-        .toFixed()
+        .toFixed(2)
 
       return {
         pnl: pnl.toFixed(),
         market,
+        strategy,
         isActive,
         settleIn,
         stopLoss,
         takeProfit,
         upperBound,
         lowerBound,
+        isPositivePnl: pnl.gt(0),
         trailingUpper,
         trailingLower,
         percentagePnl,
@@ -259,23 +259,33 @@ export const useSpotGridStrategies = (
       return
     }
 
-    const lastTradedPrices = await indexerSpotApi.fetchTrades({
-      marketIds,
-      pagination: { limit: marketIds.length }
+    const fetchMarketPrice = marketIds.map(async (marketId) => {
+      const trades = await indexerSpotApi.fetchTrades({
+        marketIds: [marketId],
+        pagination: { limit: 1 }
+      })
+
+      return {
+        marketId,
+        price: trades.trades[0].price
+      }
     })
 
-    lastTradedSpotPrice.value = lastTradedPrices.trades.reduce(
-      (acc, trade) => {
+    const marketPrices = await Promise.all(fetchMarketPrice)
+
+    lastTradedSpotPrice.value = marketPrices.reduce(
+      (acc, { price, marketId }) => {
         const market = spotStore.markets.find(
-          (market) => market.marketId === trade.marketId
+          (market) => market.marketId === marketId
         )!
 
-        const price = sharedToBalanceInToken({
-          value: trade.price,
+        const formattedPrice = sharedToBalanceInToken({
+          value: price,
           decimalPlaces: market.quoteToken.decimals - market.baseToken.decimals
         })
 
-        acc[trade.marketId] = price
+        acc[marketId] = formattedPrice
+
         return acc
       },
       {} as Record<string, string>
