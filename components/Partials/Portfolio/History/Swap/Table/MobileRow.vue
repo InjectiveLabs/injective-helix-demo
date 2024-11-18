@@ -80,7 +80,7 @@ const {
       <div>
         <div
           v-for="({ amount, symbol }, index) in formattedFees"
-          :key="`${amount}-${symbol}-${index}`"
+          :key="`swap-history-${amount}-${symbol}-${index}`"
         >
           <AppAmount v-bind="{ amount }" />
           <span class="ml-1">{{ symbol }}</span>
