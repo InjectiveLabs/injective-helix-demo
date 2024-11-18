@@ -78,8 +78,12 @@ const {
       <p>{{ $t('trade.fee') }}</p>
 
       <div>
-        <div v-for="(fee, index) in formattedFees" :key="`${fee}-${index}`">
-          {{ fee }}
+        <div
+          v-for="({ amount, symbol }, index) in formattedFees"
+          :key="`${amount}-${symbol}-${index}`"
+        >
+          <AppAmount v-bind="{ amount }" />
+          <span class="ml-1">{{ symbol }}</span>
         </div>
       </div>
     </div>
