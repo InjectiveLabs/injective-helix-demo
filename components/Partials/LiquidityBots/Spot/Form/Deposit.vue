@@ -92,15 +92,11 @@ const { value: quoteAmount, errorMessage: quoteErrorMessage } = useStringField({
 })
 
 function setBaseMax() {
-  baseAmount.value = new BigNumberInBase(baseBalance.value).toFixed(
-    props.market.priceDecimals
-  )
+  baseAmount.value = baseBalance.value
 }
 
 function setQuoteMax() {
-  quoteAmount.value = new BigNumberInBase(quoteBalance.value).toFixed(
-    props.market.priceDecimals
-  )
+  quoteAmount.value = quoteBalance.value
 }
 </script>
 
