@@ -127,13 +127,15 @@ async function createLiquidityBot() {
             <div class="text-right">
               <div class="text-lg">
                 <SharedUsdAmount :amount="totalUsd.toFixed()" />
-                <span> USDT</span>
+                <span> $</span>
               </div>
-              <div class="text-gray-500">
-                {{ liquidityFormValues.baseAmount }} INJ
+              <div v-if="liquidityFormValues.baseAmount" class="text-gray-500">
+                {{ liquidityFormValues.baseAmount }}
+                {{ market.baseToken.symbol }}
               </div>
-              <div class="text-gray-500">
-                {{ liquidityFormValues.quoteAmount }} USDT
+              <div v-if="liquidityFormValues.quoteAmount" class="text-gray-500">
+                {{ liquidityFormValues.quoteAmount }}
+                {{ market.quoteToken.symbol }}
               </div>
             </div>
           </div>

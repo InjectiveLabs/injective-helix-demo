@@ -27,7 +27,11 @@ withDefaults(
     <div>
       <div class="flex justify-between items-center gap-1">
         <p class="text-2xl font-semibold">
-          <SharedUsdAmount :amount="lastTradedPrice.toString()" />
+          <SharedAmountFormatter
+            :max-trailing-zeros="3"
+            :decimal-places="2"
+            :amount="lastTradedPrice.toFixed()"
+          />
         </p>
         <span
           v-if="marketReward"

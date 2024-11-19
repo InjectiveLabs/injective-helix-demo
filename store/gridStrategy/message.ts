@@ -536,6 +536,8 @@ export async function createSpotLiquidityBot(params: {
     })
   })
 
+  await sharedWalletStore.validateAndQueue()
+
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
 
   backupPromiseCall(() =>

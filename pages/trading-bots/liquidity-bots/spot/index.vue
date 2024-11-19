@@ -12,6 +12,8 @@ import {
   volatilityStrategyBounds
 } from '@/app/data/grid-strategy'
 import {
+  GST_DEFAULT_PRICE_TICK_SIZE,
+  GST_MAXIMUM_GRIDS,
   MARKETS_HISTORY_CHART_ONE_HOUR,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -101,6 +103,17 @@ const marketReward = computed(() => {
     : undefined
 })
 
+const tickSize = computed(() =>
+  selectedMarket.value
+    ? sharedToBalanceInToken({
+        value: selectedMarket.value.minPriceTickSize,
+        decimalPlaces:
+          selectedMarket.value.quoteToken.decimals -
+          selectedMarket.value.baseToken.decimals
+      })
+    : GST_DEFAULT_PRICE_TICK_SIZE
+)
+
 const liquidityValues = computed(() => {
   const currentPrice = new BigNumberInBase(lastTradedPrice.value)
 
@@ -144,9 +157,13 @@ const liquidityValues = computed(() => {
       )
     : ZERO_IN_BASE
 
+  const range = new BigNumberInBase(upperBound).minus(lowerBound)
+
+  const maximumGrids = range.dividedBy(Number(tickSize.value)).toFixed(0)
+
   const grids = calculateOrderLevels(
     baseAmountInUsd.plus(quoteAmountInUsd).toNumber(),
-    150
+    Math.min(Number(maximumGrids), GST_MAXIMUM_GRIDS)
   )
 
   return {

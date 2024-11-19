@@ -237,6 +237,8 @@ const options = computed<ApexOptions>(() => ({
   dataLabels: { enabled: false },
 
   yaxis: {
+    forceNiceScale: true,
+
     max:
       upperTrailingBound.value.times(1.05).toNumber() ||
       upperBound.value.times(1.05).toNumber(),
