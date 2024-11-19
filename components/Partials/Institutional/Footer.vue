@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const socialLinks = [
-  { icon: NuxtUiIcons.Discord, link: 'https://discord.gg/injective' },
+  { icon: NuxtUiIcons.Discord, link: 'https://discord.com/invite/helixapp' },
   { icon: NuxtUiIcons.Twitter, link: 'https://twitter.com/Injective_' },
   { icon: NuxtUiIcons.Telegram, link: 'https://t.me/joininjective' }
 ]
