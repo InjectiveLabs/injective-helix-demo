@@ -89,7 +89,7 @@ const {
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.fee') }}</p>
 
-      <p>
+      <p class="flex">
         <span>
           <AppAmount
             v-bind="{

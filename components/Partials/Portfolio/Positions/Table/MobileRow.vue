@@ -278,7 +278,7 @@ function sharePosition() {
                 {{ market?.quoteToken.symbol }}
               </span>
             </p>
-            <p class="flex">
+            <p class="flex justify-end">
               <AppAmount
                 v-bind="{
                   amount: percentagePnl.toFixed(),

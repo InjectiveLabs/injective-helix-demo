@@ -102,7 +102,7 @@ function toggleFavorite() {
           :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
           tooltip-class="text-xs"
           :ui="{
-            base: 'translate-y-4'
+            base: isMarketsPage ? '-translate-y-0.5' : 'translate-y-4'
           }"
         >
           <span :data-cy="dataCyTag(MarketCyTags.MarketTicker)">
