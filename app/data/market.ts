@@ -1,5 +1,5 @@
 import { injToken } from '@shared/data/token'
-import { marketCategories } from '@/app/json'
+import { marketCategoriesMap } from '@/app/json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import {
   NotLiquidMarket,
@@ -14,28 +14,16 @@ export interface UnTradableMarket {
 
 export const betaMarketSlugs = [] as string[]
 
-export const newMarketsSlug = marketCategories.newMarketsCategorySlugs || []
-
-export const experimentalMarketsSlug =
-  marketCategories.experimentalCategorySlugs || []
-
-export const slugsToIncludeInCosmosCategory =
-  marketCategories.cosmosCategorySlugs || []
-
-export const slugsToIncludeInEthereumCategory =
-  marketCategories.ethereumCategorySlugs || []
-
-export const slugsToIncludeInInjectiveCategory =
-  marketCategories.injectiveCategorySlugs || []
-
-export const slugsToIncludeInSolanaCategory =
-  marketCategories.solanaCategorySlugs || []
-
-export const olpSlugsToIncludeInLowVolume =
-  marketCategories.olpLowVolumeCategorySlugs || []
-
-export const slugsToIncludeInRWACategory =
-  marketCategories.rwaCategorySlugs || []
+export const experimentalMarketsMarketIds =
+  marketCategoriesMap.experimental || []
+export const olpMarketIdsToIncludeInLowVolume =
+  marketCategoriesMap.olpLowVolume || []
+export const rwaMarketIds = marketCategoriesMap.rwa || []
+export const solanaMarketIds = marketCategoriesMap.solana || []
+export const cosmosMarketIds = marketCategoriesMap.cosmos || []
+export const ethereumMarketIds = marketCategoriesMap.ethereum || []
+export const injectiveMarketIds = marketCategoriesMap.injective || []
+export const newMarketsMarketIds = marketCategoriesMap.newMarkets || []
 
 export const excludedPriceDeviationSlugs = [] as string[]
 

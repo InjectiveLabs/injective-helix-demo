@@ -53,7 +53,12 @@ import {
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
 import { marketIdsToHide } from '@/app/data/market'
-import { derivativeSlugs, expirySlugs } from '@/app/json'
+import {
+  verifiedExpirySlugs,
+  verifiedDerivativeSlugs,
+  verifiedExpiryMarketIds,
+  verifiedDerivativeMarketIds
+} from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
@@ -118,9 +123,11 @@ export const useDerivativeStore = defineStore('derivative', {
     activeMarketIds: (state) =>
       state.markets
         .filter(
-          ({ slug, marketId }) =>
-            [...derivativeSlugs, ...expirySlugs].includes(slug) ||
-            state.marketIdsFromQuery.includes(marketId)
+          ({ marketId }) =>
+            [
+              ...verifiedExpiryMarketIds,
+              ...verifiedDerivativeMarketIds
+            ].includes(marketId) || state.marketIdsFromQuery.includes(marketId)
         )
         .map((m) => m.marketId),
 
@@ -227,7 +234,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const markets =
         (await derivativeCacheApi.fetchMarkets()) as PerpetualMarket[]
 
-      const slugs = [...derivativeSlugs, ...expirySlugs]
+      const slugs = [...verifiedExpirySlugs, ...verifiedDerivativeSlugs]
 
       const uiMarkets = markets
         .map((market) => {
@@ -253,7 +260,10 @@ export const useDerivativeStore = defineStore('derivative', {
 
           return {
             ...formattedMarket,
-            isVerified: slugs.includes(formattedMarket.slug)
+            isVerified: [
+              ...verifiedExpiryMarketIds,
+              ...verifiedDerivativeMarketIds
+            ].includes(market.marketId)
           }
         })
         .filter(

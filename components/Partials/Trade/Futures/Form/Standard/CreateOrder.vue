@@ -2,7 +2,7 @@
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import { rwaSlugs } from '@/app/json'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
@@ -50,9 +50,7 @@ const props = withDefaults(
   {}
 )
 
-const isRWAMarket = slugsToIncludeInRWACategory.includes(
-  route.params.slug as string
-)
+const isRWAMarket = rwaSlugs.includes(route.params.slug as string)
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
