@@ -57,8 +57,8 @@ onUnmounted(() => {
   cancelStreams()
 })
 
-watch(() => accountStore.subaccountId, fetchSpotOrders, {
-  immediate: true
+onSubaccountChange(() => {
+  fetchSpotOrders()
 })
 </script>
 
