@@ -284,9 +284,8 @@ function sharePosition() {
                   amount: percentagePnl.toFixed(),
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
-              >
-                %
-              </AppAmount>
+              />
+              %
             </p>
           </div>
 
