@@ -191,7 +191,7 @@ function chase() {
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.filled') }}</p>
 
-      <div class="font-mono">
+      <div class="font-mono text-right">
         <p>
           <AppAmount
             v-bind="{

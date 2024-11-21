@@ -53,7 +53,7 @@ const {
       <p>{{ $t('trade.side') }}</p>
       <div>
         <p
-          class="font-sans"
+          class="font-sans text-right"
           :class="{
             'text-green-500': isBuy,
             'text-red-500': !isBuy
