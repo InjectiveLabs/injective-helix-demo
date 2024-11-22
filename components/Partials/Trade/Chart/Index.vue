@@ -34,6 +34,9 @@ function setInterval(index: string) {
           v-for="label in viewOptions"
           :key="label"
           v-model="view"
+          :disabled="
+            market.slug === 'agent-inj' && label === ChartViewOption.ProChart // TODO: Remove this once we have a fix for the agent-inj market chart in Chronos
+          "
           :value="label"
           class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-coolGray-600 max-lg:flex-1"
           active-classes="bg-brand-875 text-white"
