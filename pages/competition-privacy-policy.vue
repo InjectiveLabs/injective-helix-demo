@@ -2,24 +2,23 @@
   <div class="container py-16 mx-auto">
     <div class="w-full mx-auto 3xl:w-11/12 4xl:w-10/12 relative">
       <h1 class="text-3xl font-bold mb-4 text-center uppercase">
-        HELIX TRADING COMPETITION AND GIVEAWAY
+        HELIX TESLA TRADING COMPETITION
       </h1>
-
       <h2 class="text-xl font-semibold mb-6 text-center uppercase">
         Privacy Policy
       </h2>
 
       <p class="font-semibold text-center mb-8 uppercase">
-        As of October 25, 2024
+        As of November 21, 2024
       </p>
 
       <p class="mb-4">
-        The Sponsor and Injective Helix Trading Competition and Giveaway respect
-        and protect the privacy of its users and participants. This Privacy
-        Policy explains how we collect, use, and share information gathered
-        through our site at
+        The Sponsor and Injective Helix Tesla Trading Competition respect and
+        protect the privacy of their users and participants. This Privacy Policy
+        explains how we collect, use, and share information gathered through our
+        site at
         <NuxtLink
-          href="https://www.helixapp.com/leaderboard/competition"
+          href="https://helixapp.com/leaderboard/competition"
           class="text-blue-500 hover:text-blue-600"
         >
           https://helixapp.com/leaderboard/competition
@@ -28,19 +27,21 @@
         to your information, and how you can contact us if you have any
         questions or concerns. The terms “Injective,” “we,” and “us” include the
         Sponsor as defined in the Rules, Terms, and Conditions of the Helix
-        Trading Competition and Giveaway.
+        Tesla Trading Competition.
       </p>
 
       <p class="mb-4">
         Regardless of where our servers are located, your personal data may be
         processed by us in the United States, where data protection and privacy
         regulations may or may not be to the same level of protection as in
-        other parts of the world. BY USING THE SERVICE, OR PARTICIPATING IN THE
-        COMPETITION, YOU UNEQUIVOCALLY AND UNAMBIGUOUSLY CONSENT TO THE
-        COLLECTION AND PROCESSING IN THE UNITED STATES OF ANY INFORMATION
-        COLLECTED OR OBTAINED BY US THROUGH VOLUNTARY SUBMISSIONS, AND, TO THE
-        EXTENT POSSIBLE, THAT U.S. LAW GOVERNS ANY SUCH COLLECTION AND
-        PROCESSING.
+        other parts of the world.
+        <strong>
+          BY USING THE SERVICE, OR PARTICIPATING IN THE COMPETITION, YOU
+          UNEQUIVOCALLY AND UNAMBIGUOUSLY CONSENT TO THE COLLECTION AND
+          PROCESSING IN THE UNITED STATES OF ANY INFORMATION COLLECTED OR
+          OBTAINED BY US THROUGH VOLUNTARY SUBMISSIONS, AND, TO THE EXTENT
+          POSSIBLE, THAT U.S. LAW GOVERNS ANY SUCH COLLECTION AND PROCESSING.
+        </strong>
       </p>
 
       <section class="space-y-6">
@@ -63,26 +64,26 @@
           </p>
           <ul class="list-disc ml-4 space-y-2 mt-2">
             <li>
-              <span class="font-bold">Account information.</span>When you
+              <span class="font-bold">Account information.</span> When you
               register for an account on one of our Services, you may provide us
               with account information, such as your contact information,
               username, password, and other information relevant to the
               particular Service.
             </li>
             <li>
-              <span class="font-bold">Communications.</span>When you contact us
+              <span class="font-bold">Communications.</span> When you contact us
               or if you post on the Services, we may receive your account
               information, contact information, and the time, date, and content
               of your message and any attachments.
             </li>
             <li>
-              <span class="font-bold">Contact information.</span>When you sign
+              <span class="font-bold">Contact information.</span> When you sign
               up to receive updates about our products and services you may need
               to provide us with contact information, such as your name and
               email address.
             </li>
             <li>
-              <span class="font-bold">Event information.</span>When you
+              <span class="font-bold">Event information.</span> When you
               participate in one of our events, you may provide us with contact
               information, and other information necessary or relevant for the
               organization of the event.
@@ -102,7 +103,7 @@
           </p>
           <ul class="list-disc ml-4 space-y-2 mt-2">
             <li>
-              <span class="font-bold">Usage information.</span>When you use our
+              <span class="font-bold">Usage information.</span> When you use our
               Services, we may automatically collect information about your use
               of the Services, including via cookies, beacons, invisible tags,
               and similar technologies (collectively “Cookies”) in your browser
@@ -297,7 +298,7 @@
                   </NuxtLink>
                   . You may be able to opt-out of some or all of Google
                   Analytics features by downloading the Google Analytics opt-out
-                  browser add-on, available at,
+                  browser add-on, available at
                   <NuxtLink
                     href="https://tools.google.com/dlpage/gaoptout"
                     class="text-blue-500 hover:text-blue-600"
@@ -403,7 +404,7 @@
             parties, or any third party operating any site or service to which
             the Services link. The inclusion of a link on the Services does not
             imply endorsement of the linked site or service by us or by our
-            affiliates. We encourage you to learn about third-parties’ privacy
+            affiliates. We encourage you to learn about third parties’ privacy
             and security policies before providing them with information.
           </p>
         </article>
@@ -452,7 +453,7 @@
             <span class="min-w-8">A.</span> Your European Privacy Rights
           </p>
           <p>
-            If you are located in the European Economic Area, you have
+            If you are located in the European Economic Area (EEA), you have
             additional rights described below.
           </p>
           <ul class="list-disc ml-4 space-y-2 mt-2">
@@ -579,13 +580,19 @@
 
         <article>
           <p class="font-bold">
-            <span class="min-w-8">9.</span> California Privacy Rights.
+            <span class="min-w-8">9.</span> California Privacy Rights
           </p>
           <p>
             California law allows California residents to request information
             regarding our disclosures in the prior calendar year, if any, of
             their personally identifiable information to third parties. To make
-            such a request, please contact us at campaign@injective.foundation
+            such a request, please contact us at
+            <NuxtLink
+              class="text-blue-500 hover:text-blue-600"
+              href="mailto:campaign@injective.foundation"
+            >
+              campaign@injective.foundation
+            </NuxtLink>
             with "Request for Privacy Information" in the subject line. Please
             include enough detail for us to locate your file; at a minimum, your
             name, email, and username, if any. We will attempt to provide you
@@ -600,7 +607,7 @@
 
         <article>
           <p class="font-bold">
-            <span class="min-w-8">10.</span> Nevada Privacy Rights.
+            <span class="min-w-8">10.</span> Nevada Privacy Rights
           </p>
           <p>
             If you are a Nevada resident, we do not “sell” your “covered
@@ -613,9 +620,14 @@
             including why we process it, and other parties with whom we may
             share such information. If you would like to tell us not to sell
             your information in the future, please email us at
-            campaign@injective.foundation with your name, postal address,
-            telephone number, and email address with “Nevada Do Not sell” in the
-            subject line.
+            <NuxtLink
+              class="text-blue-500 hover:text-blue-600"
+              href="mailto:campaign@injective.foundation"
+            >
+              campaign@injective.foundation
+            </NuxtLink>
+            with your name, postal address, telephone number, and email address
+            with “Nevada Do Not sell” in the subject line.
           </p>
         </article>
 
