@@ -45,32 +45,6 @@ const candlesticksData = computed(() => {
     return []
   }
 
-  // TODO: Remove this once we have a fix for the agent-inj market chart in Chronos
-  const scale = 12
-
-  if (
-    props.market.slug === 'agent-inj' &&
-    marketHistory.lowPrice.length > 0 &&
-    marketHistory.lowPrice[0] > 1000
-  ) {
-    return marketHistory.time.map((time, index) => ({
-      time: time as Time,
-      open: new BigNumberInWei(marketHistory.openPrice[index])
-        .toBase(scale)
-        .toNumber(),
-      high: new BigNumberInWei(marketHistory.highPrice[index])
-        .toBase(scale)
-        .toNumber(),
-      low: new BigNumberInWei(marketHistory.lowPrice[index])
-        .toBase(scale)
-        .toNumber(),
-      close: new BigNumberInWei(marketHistory.closePrice[index])
-        .toBase(scale)
-        .toNumber(),
-      volume: marketHistory.volume[index]
-    }))
-  }
-
   return marketHistory.time.map((time, index) => ({
     time: time as Time,
     open: marketHistory.openPrice[index],
