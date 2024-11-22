@@ -100,7 +100,7 @@ const filteredMarkets = computed(() =>
       )
       const isPartOfCategory =
         shouldIgnoreCategory ||
-        marketIsPartOfCategory(props.activeCategory, market)
+        marketIsPartOfCategory(props.activeCategory, market, !!props.search)
       const isPartOfSearch = marketIsPartOfSearch(props.search, market)
       const isPartOfType = marketIsPartOfType({
         market,

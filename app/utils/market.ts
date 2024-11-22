@@ -125,10 +125,11 @@ export const getDefaultFuturesMarket = () =>
 
 export const marketIsPartOfCategory = (
   activeCategory: MarketCategoryType,
-  market: UiMarketWithToken
+  market: UiMarketWithToken,
+  isSearch: boolean
 ): boolean => {
   if (activeCategory === MarketCategoryType.All) {
-    return market.isVerified
+    return market.isVerified || isSearch
   }
 
   if (activeCategory === MarketCategoryType.Cosmos) {
