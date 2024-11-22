@@ -6,8 +6,8 @@ import {
   SharedMarketChange,
   SharedUiMarketSummary
 } from '@shared/types'
+import { rwaMarketIds } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
@@ -27,9 +27,7 @@ const props = withDefaults(
 const appStore = useAppStore()
 const isMobile = useIsMobile()
 
-const isRWAMarket = computed(() =>
-  slugsToIncludeInRWACategory.includes(props.market.slug)
-)
+const isRWAMarket = computed(() => rwaMarketIds.includes(props.market.marketId))
 
 const lastTradedPrice = computed(
   () =>

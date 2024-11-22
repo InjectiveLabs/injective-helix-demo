@@ -11,8 +11,8 @@ import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 import {
   upcomingMarkets,
   deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume,
-  marketTypeOptionsToHideCategory
+  marketTypeOptionsToHideCategory,
+  olpMarketIdsToIncludeInLowVolume
 } from '@/app/data/market'
 import {
   TradeSubPage,
@@ -111,7 +111,9 @@ const filteredMarkets = computed(() =>
         activeType: props.activeType
       })
       const isQuotePair = marketIsQuotePair(props.activeQuote, market)
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+      const isOLPMarket = olpMarketIdsToIncludeInLowVolume.includes(
+        market.marketId
+      )
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||

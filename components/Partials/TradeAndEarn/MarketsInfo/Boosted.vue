@@ -1,11 +1,18 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { spotSlugs, expirySlugs, derivativeSlugs } from '@/app/json'
+import {
+  verifiedSpotSlugs,
+  verifiedExpirySlugs,
+  verifiedSpotMarketIds,
+  verifiedExpiryMarketIds,
+  verifiedDerivativeSlugs,
+  verifiedDerivativeMarketIds
+} from '@/app/json'
 import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 
 const {
   spotBoostedMarketIdList,
@@ -21,11 +28,12 @@ const derivativeBoostedMarkets = computed(() => {
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
 
   const derivativeMarketsTickerBasedOnIds = derivativeStore.markets
-    .filter((derivativeMarket) =>
-      derivativeMarketIds.includes(derivativeMarket.marketId)
-    )
-    .filter((derivativeMarket) =>
-      [...expirySlugs, ...derivativeSlugs].includes(derivativeMarket.slug)
+    .filter(
+      (derivativeMarket) =>
+        derivativeMarketIds.includes(derivativeMarket.marketId) ||
+        [...verifiedExpiryMarketIds, ...verifiedDerivativeMarketIds].includes(
+          derivativeMarket.marketId
+        )
     )
     .sort(
       (a, b) =>
@@ -79,8 +87,8 @@ const derivativeBoostedMarkets = computed(() => {
 
   return [...derivatives, ...nonBoostedDerivatives].sort(
     (a, b) =>
-      [...expirySlugs, ...derivativeSlugs].indexOf(a.slug) -
-      [...expirySlugs, ...derivativeSlugs].indexOf(b.slug)
+      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(a.slug) -
+      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(b.slug)
   )
 })
 
@@ -90,8 +98,11 @@ const spotBoostedMarkets = computed(() => {
   const spotMarketsBoosts = spotBoostedMultiplierList.value
 
   const spotMarketsTickerBasedOnIds = spotStore.markets
-    .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
-    .filter((spot) => spotSlugs.includes(spot.slug))
+    .filter(
+      (spotMarket) =>
+        spotMarketIds.includes(spotMarket.marketId) ||
+        verifiedSpotMarketIds.includes(spotMarket.marketId)
+    )
     .sort(
       (a, b) =>
         spotMarketIds.indexOf(a.marketId) - spotMarketIds.indexOf(b.marketId)
@@ -139,7 +150,8 @@ const spotBoostedMarkets = computed(() => {
     }, [] as PointsMultiplierWithMarketTicker[])
 
   return [...spot, ...nonBoostedSpot].sort(
-    (a, b) => spotSlugs.indexOf(a.slug) - spotSlugs.indexOf(b.slug)
+    (a, b) =>
+      verifiedSpotSlugs.indexOf(a.slug) - verifiedSpotSlugs.indexOf(b.slug)
   )
 })
 </script>

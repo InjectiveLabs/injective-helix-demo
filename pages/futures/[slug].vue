@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import { rwaSlugs } from '@/app/json'
 import { IsSpotKey, MarketKey } from '@/types'
 
 definePageMeta({
@@ -13,9 +13,7 @@ const derivativeStore = useDerivativeStore()
 
 const { $onError } = useNuxtApp()
 
-const isRWAMarket = slugsToIncludeInRWACategory.includes(
-  route.params.slug as string
-)
+const isRWAMarket = rwaSlugs.includes(route.params.slug as string)
 
 const status = reactive(new Status(StatusType.Loading))
 

@@ -17,15 +17,15 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import {
-  newMarketsSlug,
+  rwaMarketIds,
   upcomingMarkets,
+  solanaMarketIds,
+  cosmosMarketIds,
   deprecatedMarkets,
-  experimentalMarketsSlug,
-  slugsToIncludeInRWACategory,
-  slugsToIncludeInSolanaCategory,
-  slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory,
-  slugsToIncludeInInjectiveCategory
+  ethereumMarketIds,
+  injectiveMarketIds,
+  newMarketsMarketIds,
+  experimentalMarketsMarketIds
 } from '@/app/data/market'
 import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
 import {
@@ -133,27 +133,27 @@ export const marketIsPartOfCategory = (
   }
 
   if (activeCategory === MarketCategoryType.Cosmos) {
-    return slugsToIncludeInCosmosCategory.includes(market.slug)
+    return cosmosMarketIds.includes(market.marketId)
   }
 
   if (activeCategory === MarketCategoryType.Solana) {
-    return slugsToIncludeInSolanaCategory.includes(market.slug)
+    return solanaMarketIds.includes(market.marketId)
   }
 
   if (activeCategory === MarketCategoryType.Ethereum) {
-    return slugsToIncludeInEthereumCategory.includes(market.slug)
+    return ethereumMarketIds.includes(market.marketId)
   }
 
   if (activeCategory === MarketCategoryType.Injective) {
-    return slugsToIncludeInInjectiveCategory.includes(market.slug)
+    return injectiveMarketIds.includes(market.marketId)
   }
 
   if (activeCategory === MarketCategoryType.Experimental) {
-    return experimentalMarketsSlug.includes(market.slug)
+    return experimentalMarketsMarketIds.includes(market.marketId)
   }
 
   if (activeCategory === MarketCategoryType.RWA) {
-    return slugsToIncludeInRWACategory.includes(market.slug)
+    return rwaMarketIds.includes(market.marketId)
   }
 
   return true
@@ -212,7 +212,7 @@ export const marketIsPartOfType = ({
   }
 
   if (activeType === MarketTypeOption.NewListings) {
-    return newMarketsSlug.includes(market.slug)
+    return newMarketsMarketIds.includes(market.marketId)
   }
 
   if (activeType === MarketTypeOption.Permissionless) {
