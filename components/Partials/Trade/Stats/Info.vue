@@ -336,8 +336,29 @@ useIntervalFn(() => {
             decimalPlaces: market.priceDecimals
           }"
         />
+
+        {{ market.quoteToken.symbol }}
       </p>
     </PartialsTradeStatsHeaderItem>
+
+    <div v-if="!isStableQuoteAsset" class="lg:hidden">
+      <PartialsTradeStatsHeaderItem>
+        <template #title>
+          <p class="text-coolGray-400">
+            {{ $t('trade.totalVolumeInUsd') }}
+          </p>
+        </template>
+        <div class="font-mono font-semibold">
+          <AppAmount
+            v-bind="{
+              amount: volumeInUsd.toFixed(),
+              decimalPlaces: market.priceDecimals
+            }"
+          />
+          <span class="ml-1">USD</span>
+        </div>
+      </PartialsTradeStatsHeaderItem>
+    </div>
 
     <PartialsTradeStatsHeaderItem :title="$t('trade.high')">
       <p class="font-mono font-semibold">
@@ -396,6 +417,7 @@ useIntervalFn(() => {
                 }"
               />
             </span>
+
             <span>%</span>
           </AppTooltip>
         </div>

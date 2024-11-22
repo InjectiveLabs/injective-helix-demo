@@ -120,6 +120,11 @@ function toggleFavorite() {
           {{ market.baseToken.name }}
         </div>
       </div>
+      <div v-if="!market.isVerified && isMarketsPage" class="ml-2">
+        <UTooltip :text="$t('markets.permisionlessWarning')">
+          <UIcon name="clarity:shield-line" class="text-gray-400" />
+        </UTooltip>
+      </div>
     </div>
 
     <div

@@ -45,6 +45,7 @@ export default {
     avgPrice: 'Avg. Price',
     totalQuantity: 'Total Quantity ({symbol})',
     totalVolume: 'Total Volume ({symbol})',
+    totalVolumeInUsd: 'Total Volume USD (24h)',
     trigger_price: 'Trigger Price',
     limit_price: 'Limit Price',
     limitPrice: 'Limit Price',
