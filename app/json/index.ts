@@ -8,18 +8,24 @@ import gitVersion from './gitVersion.json'
 import devnetTokens from './tokens/devnet.json'
 import testnetTokens from './tokens/testnet.json'
 import mainnetTokens from './tokens/mainnet.json'
-import devnetSpotSlugs from './slugs/spot/devnet.json'
-import testnetSpotSlugs from './slugs/spot/testnet.json'
-import stagingSpotSlugs from './slugs/spot/staging.json'
-import mainnetSpotSlugs from './slugs/spot/mainnet.json'
-import devnetDerivativeSlugs from './slugs/derivative/devnet.json'
-import testnetDerivativeSlugs from './slugs/derivative/testnet.json'
-import stagingDerivativeSlugs from './slugs/derivative/staging.json'
-import mainnetDerivativeSlugs from './slugs/derivative/mainnet.json'
-import devnetExpirySlugs from './slugs/expiry/devnet.json'
-import testnetExpirySlugs from './slugs/expiry/testnet.json'
-import stagingExpirySlugs from './slugs/expiry/staging.json'
-import mainnetExpirySlugs from './slugs/expiry/mainnet.json'
+import devnetSwapRoutes from './swap/devnet.json'
+import testnetSwapRoutes from './swap/testnet.json'
+import mainnetSwapRoutes from './swap/mainnet.json'
+import devnetCategoryMap from './marketMap/category/devnet.json'
+import testnetCategoryMap from './marketMap/category/testnet.json'
+import mainnetCategoryMap from './marketMap/category/mainnet.json'
+import devnetSpotMarketIdMap from './marketMap/spot/devnet.json'
+import testnetSpotMarketIdMap from './marketMap/spot/testnet.json'
+import stagingSpotMarketIdMap from './marketMap/spot/staging.json'
+import mainnetSpotMarketIdMap from './marketMap/spot/mainnet.json'
+import devnetExpiryMarketIdMap from './marketMap/expiry/devnet.json'
+import testnetExpiryMarketIdMap from './marketMap/expiry/testnet.json'
+import stagingExpiryMarketIdMap from './marketMap/expiry/staging.json'
+import mainnetExpiryMarketIdMap from './marketMap/expiry/mainnet.json'
+import devnetDerivativeMarketIdMap from './marketMap/derivative/devnet.json'
+import testnetDerivativeMarketIdMap from './marketMap/derivative/testnet.json'
+import stagingDerivativeMarketIdMap from './marketMap/derivative/staging.json'
+import mainnetDerivativeMarketIdMap from './marketMap/derivative/mainnet.json'
 import devnetSpotGridMarkets from './grid/spot/devnet.json'
 import testnetSpotGridMarkets from './grid/spot/testnet.json'
 import stagingSpotGridMarkets from './grid/spot/staging.json'
@@ -28,12 +34,8 @@ import devnetDerivativeGridMarkets from './grid/derivative/devnet.json'
 import testnetDerivativeGridMarkets from './grid/derivative/testnet.json'
 import stagingDerivativeGridMarkets from './grid/derivative/staging.json'
 import mainnetDerivativeGridMarkets from './grid/derivative/mainnet.json'
-import marketCategoriesJson from './marketCategories.json'
 import restrictedCountriesJson from './restrictedCountries.json'
 import blacklistedAddressesJson from './blacklistedAddresses.json'
-import devnetSwapRoutes from './swap/devnet.json'
-import testnetSwapRoutes from './swap/testnet.json'
-import mainnetSwapRoutes from './swap/mainnet.json'
 
 const NETWORK: Network = import.meta.env.VITE_NETWORK as Network
 const IS_DEVNET: boolean = isDevnet(NETWORK)
@@ -53,52 +55,52 @@ export const getTokens = () => {
   return mainnetTokens
 }
 
-export const getSpotSlugs = () => {
+export const getVerifiedSpotMarketIdMap = () => {
   if (IS_DEVNET) {
-    return devnetSpotSlugs
+    return devnetSpotMarketIdMap
   }
 
   if (IS_TESTNET) {
-    return testnetSpotSlugs
+    return testnetSpotMarketIdMap
   }
 
   if (IS_MAINNET && IS_STAGING) {
-    return stagingSpotSlugs
+    return stagingSpotMarketIdMap
   }
 
-  return mainnetSpotSlugs
+  return mainnetSpotMarketIdMap
 }
 
-export const getDerivativeSlugs = () => {
+export const getVerifiedDerivativeMarketIdMap = () => {
   if (IS_DEVNET) {
-    return devnetDerivativeSlugs
+    return devnetDerivativeMarketIdMap
   }
 
   if (IS_TESTNET) {
-    return testnetDerivativeSlugs
+    return testnetDerivativeMarketIdMap
   }
 
   if (IS_MAINNET && IS_STAGING) {
-    return stagingDerivativeSlugs
+    return stagingDerivativeMarketIdMap
   }
 
-  return mainnetDerivativeSlugs
+  return mainnetDerivativeMarketIdMap
 }
 
-export const getExpirySlugs = () => {
+export const getVerifiedExpiryMarketIdMap = () => {
   if (IS_DEVNET) {
-    return devnetExpirySlugs
+    return devnetExpiryMarketIdMap
   }
 
   if (IS_TESTNET) {
-    return testnetExpirySlugs
+    return testnetExpiryMarketIdMap
   }
 
   if (IS_MAINNET && IS_STAGING) {
-    return stagingExpirySlugs
+    return stagingExpiryMarketIdMap
   }
 
-  return mainnetExpirySlugs
+  return mainnetExpiryMarketIdMap
 }
 
 export const getSpotGridMarkets = () => {
@@ -123,13 +125,6 @@ export const getDerivativeGridMarkets = () => {
   }
 
   if (IS_TESTNET) {
-    return [
-      {
-        slug: 'inj-usdt-perp',
-        contractAddress: 'inj1vlcry9phmky442w44f3kkkn5sqyhn987yjer6n'
-      }
-    ]
-
     return testnetDerivativeGridMarkets
   }
 
@@ -152,6 +147,44 @@ export const getSwapRoutes = () => {
   return mainnetSwapRoutes
 }
 
+export const getCategoryMap = () => {
+  let listMap: Record<string, { marketId: string }[]> = mainnetCategoryMap
+
+  if (IS_DEVNET) {
+    listMap = devnetCategoryMap
+  }
+
+  if (IS_TESTNET) {
+    listMap = testnetCategoryMap
+  }
+
+  const formattedList = Object.entries(listMap).reduce(
+    (list, [key, marketIdMap]: [string, { marketId: string }[]]) => {
+      return {
+        ...list,
+        [key]: marketIdMap.map((item) => item.marketId)
+      }
+    },
+    {} as Record<string, string[]>
+  )
+
+  return formattedList
+}
+
+export const getRawCategorySlugs = () => {
+  let listMap: Record<string, { slug: string }[]> = mainnetCategoryMap
+
+  if (IS_DEVNET) {
+    listMap = devnetCategoryMap
+  }
+
+  if (IS_TESTNET) {
+    listMap = testnetCategoryMap
+  }
+
+  return listMap.rwa.map((item) => item.slug)
+}
+
 export const gitBuild = () => {
   return (
     gitVersion || {
@@ -163,14 +196,26 @@ export const gitBuild = () => {
   )
 }
 
-export const marketCategories = marketCategoriesJson
 export const restrictedCountries = restrictedCountriesJson
 export const blacklistedAddresses = blacklistedAddressesJson
 
 export const tokens = getTokens()
-export const spotSlugs = getSpotSlugs()
 export const swapRoutes = getSwapRoutes()
-export const expirySlugs = getExpirySlugs()
-export const derivativeSlugs = getDerivativeSlugs()
+export const rwaSlugs = getRawCategorySlugs()
+export const marketCategoriesMap = getCategoryMap()
+
 export const spotGridMarkets = getSpotGridMarkets()
 export const derivativeGridMarkets = getDerivativeGridMarkets()
+
+export const verifiedDerivativeSlugs = Object.keys(
+  getVerifiedDerivativeMarketIdMap()
+)
+export const verifiedExpiryMarketIds = Object.values(
+  getVerifiedExpiryMarketIdMap()
+)
+export const verifiedDerivativeMarketIds = Object.values(
+  getVerifiedDerivativeMarketIdMap()
+)
+export const verifiedSpotSlugs = Object.keys(getVerifiedSpotMarketIdMap())
+export const verifiedExpirySlugs = Object.keys(getVerifiedExpiryMarketIdMap())
+export const verifiedSpotMarketIds = Object.values(getVerifiedSpotMarketIdMap())

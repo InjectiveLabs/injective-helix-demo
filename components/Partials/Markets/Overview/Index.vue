@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { newMarketsSlug } from '@/app/data/market'
+import { newMarketsMarketIds } from '@/app/data/market'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
@@ -22,9 +22,9 @@ const hotMarkets = computed(() =>
 
 const newMarkets = computed(
   () =>
-    newMarketsSlug
-      .map((slug) =>
-        props.markets.find((market) => market.market.slug === slug)
+    newMarketsMarketIds
+      .map((marketId) =>
+        props.markets.find((market) => market.market.marketId === marketId)
       )
       .filter((market) => market)
       .slice(0, 4) as UiMarketAndSummaryWithVolumeInUsd[]
