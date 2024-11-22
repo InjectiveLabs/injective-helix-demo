@@ -263,12 +263,24 @@ watch(isCampaignStarted, (isStarted) => {
 }
 
 .competition-table {
-  > :nth-child(3) {
-    @apply text-left col-span-2 mr-0.5;
+  &.is-campaign-with-entries {
+    > :nth-child(3) {
+      @apply text-left col-span-2 mr-0.5 ml-0;
+    }
+
+    > :nth-child(4) {
+      @apply text-right md:text-left col-span-1 mr-0.5;
+    }
   }
 
-  > :nth-child(4) {
-    @apply text-right md:text-left col-span-1 mr-0.5;
+  &:not(.is-campaign-with-entries) {
+    > :nth-child(3) {
+      @apply text-left col-span-2 mr-0.5 ml-40 2xl:ml-[16rem];
+    }
+
+    > :nth-child(4) {
+      @apply hidden;
+    }
   }
 }
 

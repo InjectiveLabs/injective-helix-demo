@@ -6,6 +6,8 @@ import {
   MAXIMUM_LEADERBOARD_STATS_RANK,
   MIN_COMPETITION_PNL_AMOUNT
 } from '@/app/utils/constants'
+import { checkIsCampaignWithEntries } from '@/app/data/campaign'
+
 import { LeaderboardType, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
@@ -29,6 +31,10 @@ const props = withDefaults(
 
 const formattedAddress = computed(() =>
   formatWalletAddress(props.leader.account)
+)
+
+const isCampaignWithEntries = computed(() =>
+  checkIsCampaignWithEntries(props.campaign?.name || '')
 )
 
 const isShowRank = computed(() => {
@@ -65,7 +71,11 @@ const isShowRank = computed(() => {
 <template>
   <div
     v-if="campaign"
-    :class="[isMobile ? 'competition-table-mobile' : 'competition-table']"
+    :class="{
+      'competition-table': !isMobile,
+      'competition-table-mobile': isMobile,
+      'is-campaign-with-entries': isCampaignWithEntries
+    }"
   >
     <div class="font-semibold ml-1">
       {{ isShowRank ? leader.rank : $t('leaderboard.competition.unranked') }}

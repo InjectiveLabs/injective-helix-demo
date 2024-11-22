@@ -92,7 +92,9 @@ export default {
         getStarted: {
           title: 'Congratulations!',
           description: ({ named }: I18nMessageFunction) =>
-            `You are one of the winners of 'Trade Like a G'! To claim your ${named(
+            `You are one of the winners of ${named(
+              'competition'
+            )}! To claim your ${named(
               'prize'
             )}, please provide additional details.`,
           cta: 'Get Started'

@@ -2,8 +2,14 @@
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
-import { CAMPAIGNS_WITH_ANNOUNCED_WINNERS } from '@/app/data/campaign'
+import {
+  MIN_LEADERBOARD_PNL_AMOUNT,
+  LEADERBOARD_VOLUME_PER_ENTRY
+} from '@/app/utils/constants'
+import {
+  checkIsCampaignWithEntries,
+  CAMPAIGNS_WITH_ANNOUNCED_WINNERS
+} from '@/app/data/campaign'
 import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
@@ -12,7 +18,7 @@ const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     campaign: CampaignV2
   }>(),
@@ -43,6 +49,20 @@ const isNegativePnL = computed(() => {
   ).lte(0)
 })
 
+const isUnranked = computed(() => {
+  if (checkIsCampaignWithEntries(props.campaign.name)) {
+    return isUserWithoutRaffleTickets.value
+  }
+
+  if (!leaderboardStore.competitionLeaderboard?.accountRow) {
+    return true
+  }
+
+  return new BigNumberInBase(
+    leaderboardStore.competitionLeaderboard.accountRow.pnl
+  ).lte(MIN_LEADERBOARD_PNL_AMOUNT)
+})
+
 const isShowMyStats = computed(() => {
   if (!sharedWalletStore.isUserConnected) {
     return false
@@ -52,7 +72,7 @@ const isShowMyStats = computed(() => {
     return true
   }
 
-  return !isUserWithoutRaffleTickets.value
+  return !isUnranked.value
 })
 
 function onShareCompetition() {
@@ -64,10 +84,8 @@ function onShareCompetition() {
 
 <template>
   <div v-if="isShowMyStats && leaderboardStore.competitionLeaderboard">
-    <PartialsLeaderboardMyStats
-      v-bind="{ isUnranked: isUserWithoutRaffleTickets }"
-    >
-      <template v-if="!isUserWithoutRaffleTickets" #add-on>
+    <PartialsLeaderboardMyStats v-bind="{ isUnranked: isUnranked }">
+      <template v-if="!isUnranked" #add-on>
         <div
           class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-[4px] cursor-pointer relative"
           :class="[
@@ -113,7 +131,7 @@ function onShareCompetition() {
       </template>
 
       <template #row>
-        <div v-if="isUserWithoutRaffleTickets">
+        <div v-if="isUnranked">
           <div
             class="flex flex-col items-center justify-center gap-4 sm:gap-6 relative"
           >

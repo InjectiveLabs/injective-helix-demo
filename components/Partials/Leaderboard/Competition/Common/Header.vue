@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
+import { checkIsCampaignWithEntries } from '@/app/data/campaign'
 import { LeaderboardType } from '@/types'
 
 const isMobile = useIsMobile()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     campaign?: CampaignV2
     isHideAmount?: boolean
@@ -14,12 +15,20 @@ withDefaults(
     isHideAmount: false
   }
 )
+
+const isCampaignWithEntries = computed(() =>
+  checkIsCampaignWithEntries(props.campaign?.name || '')
+)
 </script>
 
 <template>
   <div
     v-if="campaign"
-    :class="[isMobile ? 'competition-table-mobile' : 'competition-table']"
+    :class="{
+      'competition-table': !isMobile,
+      'competition-table-mobile': isMobile,
+      'is-campaign-with-entries': isCampaignWithEntries
+    }"
   >
     <div>
       <div class="max-lg:-ml-3">
@@ -32,7 +41,7 @@ withDefaults(
     </div>
 
     <template v-if="!isMobile">
-      <div v-if="!isHideAmount">
+      <div v-if="!isHideAmount" class="w-full">
         <span>
           <span class="hidden lg:block">
             {{
@@ -60,7 +69,7 @@ withDefaults(
       </div>
       <div v-else />
 
-      <div>
+      <div v-if="isCampaignWithEntries">
         <div class="lg:mr-2">
           <span class="block md:hidden xl:block">
             {{ $t('leaderboard.header.numberOfEntries') }}
@@ -96,12 +105,13 @@ withDefaults(
                       : 'tradingPnl'
                   }`
                 )
-              }}/
+              }}
             </span>
+            <span v-if="isCampaignWithEntries">/</span>
           </span>
         </div>
 
-        <div>
+        <div v-if="isCampaignWithEntries">
           <div class="lg:mr-2">
             <span class="block md:hidden xl:block">
               {{ $t('leaderboard.header.numberOfEntries') }}

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { additionalEntriesMap } from '@/app/data/campaign'
+import {
+  additionalEntriesMap,
+  checkIsCampaignWithEntries
+} from '@/app/data/campaign'
 import {
   UI_ZERO_DECIMAL,
   LEADERBOARD_VOLUME_PER_ENTRY,
@@ -17,6 +20,10 @@ const props = withDefaults(
     campaign: CampaignV2
   }>(),
   {}
+)
+
+const isCampaignWithEntries = computed(() =>
+  checkIsCampaignWithEntries(props.campaign?.name)
 )
 
 const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
@@ -65,7 +72,7 @@ const { valueToString: entriesToString } = useSharedBigNumberFormatter(
   </div>
   <div v-else />
 
-  <div class="flex items-center mr-2 gap-1">
+  <div v-if="isCampaignWithEntries" class="flex items-center mr-2 gap-1">
     <span class="text-[13px] md:text-sm">
       {{ entriesToString }}
     </span>

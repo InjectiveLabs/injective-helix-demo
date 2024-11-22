@@ -172,6 +172,7 @@ async function onSubmit(signature: string) {
                     $t(
                       'leaderboard.competition.winnerModal.getStarted.description',
                       {
+                        competition: latestCampaign,
                         prize: campaignStore.leaderboardCompetitionResult?.prize
                       }
                     )
