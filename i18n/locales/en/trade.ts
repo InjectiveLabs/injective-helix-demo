@@ -42,6 +42,7 @@ export default {
     bypassPriceWarning: 'Bypass Price Warning',
     side_tooltip: 'The side of your trade: long or short',
     price: 'Price',
+    priceInUsd: 'Price in USD',
     avgPrice: 'Avg. Price',
     totalQuantity: 'Total Quantity ({symbol})',
     totalVolume: 'Total Volume ({symbol})',
