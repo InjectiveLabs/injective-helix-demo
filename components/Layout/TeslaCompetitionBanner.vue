@@ -1,10 +1,41 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
+import { isWithinInterval } from 'date-fns'
 import { NoticeBanner, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
+const now = useNow({ interval: 1000 })
+
 const isBannerVisible = ref(true)
+
+const isShowCampaign = computed(() => {
+  if (!isBannerVisible.value) {
+    return
+  }
+
+  const isSeenBanner = appStore?.userState?.bannersViewed.includes(
+    NoticeBanner.TeslaCampaign
+  )
+
+  if (isSeenBanner) {
+    return
+  }
+
+  const startDate = new Date(1732633200000)
+  const endDate = new Date(1733497200000)
+
+  const isActiveCampaign = isWithinInterval(now.value, {
+    start: startDate,
+    end: endDate
+  })
+
+  if (!isActiveCampaign) {
+    return
+  }
+
+  return route.name !== LeaderboardSubPage.Competition
+})
 
 function hideBanner() {
   isBannerVisible.value = false
@@ -21,13 +52,7 @@ function hideBanner() {
 
 <template>
   <div
-    v-if="
-      isBannerVisible &&
-      !appStore?.userState?.bannersViewed.includes(
-        NoticeBanner.TeslaCampaign
-      ) &&
-      route.name !== LeaderboardSubPage.Competition
-    "
+    v-if="isShowCampaign"
     class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40"
   >
     <div />

@@ -130,7 +130,6 @@ import { MainPage, LeaderboardSubPage } from '@/types'
       policy, located at
       <NuxtLink
         :to="{ name: MainPage.CompetitionPrivacyPolicyTesla }"
-        href="https://helixapp.com/competition-privacy-policy-tesla"
         class="text-blue-500 hover:text-blue-600"
       >
         https://helixapp.com/competition-privacy-policy-tesla
