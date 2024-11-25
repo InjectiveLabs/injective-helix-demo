@@ -22,6 +22,7 @@ import {
 } from '@/store/campaign/guild'
 import {
   LP_CAMPAIGNS,
+  campaignNameOverrideMap,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
 } from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
@@ -286,10 +287,25 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
-        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
-          type as LeaderboardType
-        )
+      const pnlOrVolumeCampaigns = campaigns.reduce(
+        (pnlOrVolumeCampaigns, campaign) => {
+          if (
+            ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+              campaign.type as LeaderboardType
+            )
+          ) {
+            return pnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignNameOverrideMap[campaign.name] || campaign.name
+            }
+          ]
+        },
+        [] as CampaignV2[]
       )
 
       if (pnlOrVolumeCampaigns.length === 0) {
@@ -312,10 +328,25 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pnlOrVolumeCampaigns = campaigns.filter(({ type }: CampaignV2) =>
-        [LeaderboardType.Pnl, LeaderboardType.Volume].includes(
-          type as LeaderboardType
-        )
+      const pnlOrVolumeCampaigns = campaigns.reduce(
+        (pnlOrVolumeCampaigns, campaign) => {
+          if (
+            ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+              campaign.type as LeaderboardType
+            )
+          ) {
+            return pnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignNameOverrideMap[campaign.name] || campaign.name
+            }
+          ]
+        },
+        [] as CampaignV2[]
       )
 
       campaignStore.$patch({ pnlOrVolumeCampaigns })
@@ -332,8 +363,21 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pastPnlOrVolumeCampaigns = campaigns.filter(
-        ({ name }: CampaignV2) => PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(name)
+      const pastPnlOrVolumeCampaigns = campaigns.reduce(
+        (pastPnlOrVolumeCampaigns, campaign) => {
+          if (!PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(campaign.name)) {
+            return pastPnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pastPnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignNameOverrideMap[campaign.name] || campaign.name
+            }
+          ]
+        },
+        [] as CampaignV2[]
       )
 
       campaignStore.$patch({ pastPnlOrVolumeCampaigns })

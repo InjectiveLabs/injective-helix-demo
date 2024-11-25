@@ -682,8 +682,9 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
 
 export const FIRST_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
+export const SECOND_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
 
-export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = SECOND_CAMPAIGN_NAME
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
@@ -751,6 +752,10 @@ export const additionalEntriesMap: Record<string, Record<string, number>> = {
     inj137teqqm9l7fevja9v5d7n6ljz7y2llc0d0t3aw: 8,
     inj1d50jcfga0e8kaxrhgc7mgfdm5cwraxv6c8rycn: 8
   }
+}
+
+export const campaignNameOverrideMap: Record<string, string> = {
+  'Tesla Giveaway Leaderboard': SECOND_CAMPAIGN_NAME
 }
 
 // Rule: always put the latest campaign name first so Modals/CompetitionWinner/Index.vue works properly
