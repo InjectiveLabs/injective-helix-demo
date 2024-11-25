@@ -57,10 +57,6 @@ const time = computed(() => {
 
   return format(props.transaction.timestamp, DATE_TIME_DISPLAY)
 })
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(amount, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
 </script>
 
 <template>
@@ -85,7 +81,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(amount, {
       <span class="font-mono">
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: amount.toFixed(),
+            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
       /></span>
 

@@ -11,8 +11,6 @@ const sharedWalletStore = useSharedWalletStore()
 
 const isSignUp = ref(false)
 
-const isModalOpen = computed<boolean>(() => modalStore.modals[Modal.Connect])
-
 function onWalletConnect() {
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)
@@ -45,6 +43,19 @@ function onSignIn() {
   isSignUp.value = false
   onWalletConnect()
 }
+
+const isOpen = computed({
+  get: () => modalStore.modals[Modal.Connect],
+  set: (value) => {
+    if (value) {
+      onModalOpen()
+    } else {
+      onCloseModal()
+    }
+
+    modalStore.modals[Modal.Connect] = value
+  }
+})
 </script>
 
 <template>
@@ -74,18 +85,9 @@ function onSignIn() {
     </AppButton>
   </div>
 
-  <AppModal
-    v-bind="{
-      isMd: true,
-      isOpen: isModalOpen,
-      isTransparent: true,
-      parentClass: 'md:min-w-[450px]'
-    }"
-    @modal:open="onModalOpen"
-    @modal:closed="onCloseModal"
-  >
+  <SharedModal v-model="isOpen">
     <LayoutWalletConnect v-bind="{ isSignUp }" @modal:closed="onCloseModal" />
-  </AppModal>
+  </SharedModal>
 
   <ModalsTerms />
 </template>

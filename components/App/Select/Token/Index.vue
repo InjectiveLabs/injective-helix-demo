@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {
+  NuxtUiIcons,
   SharedBalanceWithToken,
-  SharedBalanceWithTokenAndPrice,
-  NuxtUiIcons
+  SharedBalanceWithTokenAndPrice
 } from '@shared/types'
 import { dataCyTag } from '@shared/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
@@ -67,8 +67,6 @@ const props = withDefaults(
   }
 )
 
-const modalStore = useModalStore()
-
 const emit = defineEmits<{
   'on:update': []
   'update:modal': []
@@ -96,6 +94,17 @@ const inputPlaceholder = computed(() => {
 
   return ONE_IN_BASE.shiftedBy(props.tensMultiplier).toFixed()
 })
+
+const tokenOptions = computed(() =>
+  props.options.map(({ denom, token }) => ({
+    label: token.symbol,
+    name: token.name,
+    value: denom,
+    avatar: {
+      src: token.logo
+    }
+  }))
+)
 
 const {
   valueToBigNumber,
@@ -165,19 +174,6 @@ const estimatedTotalInUsd = computed(() => {
 
   return usdValue.toFormat(decimalPlaces, BigNumberInBase.ROUND_DOWN)
 })
-
-function openTokenSelectorModal() {
-  if (props.options.length <= 1) {
-    return
-  }
-
-  if (props.isTokenSelectorDisabled) {
-    return
-  }
-
-  modalStore.openModal(props.modal)
-  emit('update:modal')
-}
 
 function changeAmount(amount: string) {
   setAmountValue(amount)
@@ -276,48 +272,45 @@ export default {
         />
 
         <div class="flex items-center gap-2">
-          <slot
-            name="token-item"
-            v-bind="{ openTokenSelectorModal, selectedToken }"
-          >
-            <div
-              class="flex items-center gap-2 p-1.5"
-              :class="{
-                'hover:bg-coolGray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
-                  options.length > 1
-              }"
-              @click="openTokenSelectorModal"
-            >
-              <AppSelectTokenItem
-                v-if="selectedToken"
-                :class="{
-                  'cursor-default': isDisabled || options.length === 1
-                }"
-                v-bind="{
-                  token: selectedToken.token
-                }"
-              />
+          <slot name="token-item">
+            <div>
+              <USelectMenu
+                v-model="denomValue"
+                searchable
+                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
+                :options="tokenOptions"
+                :search-attributes="['label', 'name', 'symbol']"
+                value-attribute="value"
+              >
+                <template #default="{ open }">
+                  <div class="flex items-center gap-2">
+                    <UAvatar :src="selectedToken?.token.logo" size="xs" />
+                    <span class="font-semibold">
+                      {{ selectedToken?.token.symbol }}
+                    </span>
+                    <UIcon
+                      :name="NuxtUiIcons.ChevronDown"
+                      :class="{ 'rotate-180': open }"
+                      class="transition-all"
+                    />
+                  </div>
+                </template>
 
-              <div v-else-if="options.length > 0" class="whitespace-nowrap">
-                {{ $t('trade.swap.tokenSelector.selectToken') }}
-              </div>
+                <template #option="{ option }">
+                  <div class="flex items-center gap-2">
+                    <UAvatar :src="option.avatar.src" size="xs" />
 
-              <UIcon
-                v-if="options.length > 1 || !selectedToken"
-                class="h-3 w-3 min-w-3"
-                :name="NuxtUiIcons.ChevronDown"
-              />
+                    <div class="truncate">
+                      <span>{{ option.label }} </span>
+                      <span class="text-xs text-coolGray-500">
+                        - {{ option.name }}
+                      </span>
+                    </div>
+                  </div>
+                </template>
+              </USelectMenu>
             </div>
           </slot>
-
-          <ModalsTokenSelector
-            v-model="denomValue"
-            v-bind="{
-              modal,
-              ...$attrs,
-              balances: options
-            }"
-          />
         </div>
       </div>
     </div>

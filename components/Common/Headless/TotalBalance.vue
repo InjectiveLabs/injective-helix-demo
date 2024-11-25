@@ -5,8 +5,7 @@ import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   BTC_COIN_GECKO_ID,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
@@ -14,10 +13,6 @@ const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 
 const { aggregatedPortfolioBalances } = useBalance()
-
-const props = withDefaults(defineProps<{ decimalPlaces?: number }>(), {
-  decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
-})
 
 const aggregatedAccountBalances = computed(() =>
   Object.keys(aggregatedPortfolioBalances.value).reduce(
@@ -44,11 +39,6 @@ const stakedAmount = computed(() => {
   )
 })
 
-const { valueToFixed: stakedAmountToFixed } = useSharedBigNumberFormatter(
-  stakedAmount,
-  { decimalPlaces: props.decimalPlaces }
-)
-
 const stakedAmountInUsd = computed(() => {
   const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
@@ -58,11 +48,6 @@ const stakedAmountInUsd = computed(() => {
 
   return stakedAmount.value.times(injUsdPrice)
 })
-
-const { valueToFixed: stakedAmountInUsdToFixed } = useSharedBigNumberFormatter(
-  stakedAmountInUsd,
-  { decimalPlaces: props.decimalPlaces }
-)
 
 const accountTotalBalanceInUsd = computed(() =>
   aggregatedAccountBalances.value
@@ -88,12 +73,10 @@ const accountTotalBalanceInBtc = computed(() => {
   return accountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
 })
 
-const {
-  valueToString: accountTotalBalanceInUsdToString,
-  valueToFixed: accountTotalBalanceInUsdToFixed
-} = useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
+const { valueToString: accountTotalBalanceInUsdToString } =
+  useSharedBigNumberFormatter(accountTotalBalanceInUsd, {
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  })
 
 const { valueToString: accountTotalBalanceInBtcToString } =
   useSharedBigNumberFormatter(accountTotalBalanceInBtc, {
@@ -106,13 +89,10 @@ const { valueToString: accountTotalBalanceInBtcToString } =
     v-bind="{
       stakedAmount,
       stakedAmountInUsd,
-      stakedAmountToFixed,
-      stakedAmountInUsdToFixed,
       accountTotalBalanceInBtc,
       accountTotalBalanceInUsd,
       accountTotalBalanceInBtcToString,
-      accountTotalBalanceInUsdToString,
-      accountTotalBalanceInUsdToFixed
+      accountTotalBalanceInUsdToString
     }"
   />
 </template>

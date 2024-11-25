@@ -177,22 +177,33 @@ async function onSubmit(signature: string) {
                     )
                   }}
                 </div>
-                <i18n-t
-                  v-else
-                  keypath="leaderboard.competition.winnerModal.contactInfo.description"
-                  tag="p"
-                  class="font-bold text-sm text-white leading-[18px]"
-                >
-                  <template #terms>
-                    <NuxtLink
-                      :to="{ name: MainPage.LikeAGCompetitionTerms }"
-                      class="text-blue-500 hover:opacity-50"
-                      @click="onClose"
-                    >
-                      {{ $t('leaderboard.rulesTermsAndConditions') }}
-                    </NuxtLink>
-                  </template>
-                </i18n-t>
+                <template v-else>
+                  <i18n-t
+                    keypath="leaderboard.competition.winnerModal.contactInfo.description"
+                    tag="p"
+                    class="font-bold text-sm text-white leading-[18px]"
+                  >
+                    <template #terms>
+                      <NuxtLink
+                        :to="{ name: MainPage.LikeAGCompetitionTerms }"
+                        class="text-blue-500 hover:opacity-50"
+                        @click="onClose"
+                      >
+                        {{ $t('leaderboard.rulesTermsAndConditions') }}
+                      </NuxtLink>
+                    </template>
+
+                    <template #privacyPolicy>
+                      <NuxtLink
+                        :to="{ name: MainPage.CompetitionPrivacyPolicy }"
+                        class="text-blue-500 hover:opacity-50"
+                        @click="onClose"
+                      >
+                        {{ $t('leaderboard.privacyPolicy') }}
+                      </NuxtLink>
+                    </template>
+                  </i18n-t>
+                </template>
               </template>
             </CommonSuccessMessage>
 

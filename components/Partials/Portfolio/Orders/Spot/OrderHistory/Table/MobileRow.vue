@@ -20,34 +20,10 @@ const {
   orderStatus,
   triggerPrice,
   priceDecimals,
-  // isMarketOrder,
   quantityDecimals
 } = useOrderHistory(
   computed(() => props.order),
   computed(() => true)
-)
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-})
-
-const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-  }
 )
 </script>
 
@@ -86,7 +62,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </p>
@@ -97,7 +74,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -108,7 +86,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
         />
         <span class="text-coolGray-500 ml-1">
@@ -125,7 +104,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
           <AppAmount
             v-bind="{
               showZeroAsEmDash: true,
-              amount: triggerPriceToFixed
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
             }"
           />
         </span>

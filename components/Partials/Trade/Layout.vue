@@ -46,18 +46,22 @@ function dontShowAutoSignAgain() {
   })
 }
 
+let timeout: NodeJS.Timeout | undefined
+
 onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  setTimeout(() => {
+  clearTimeout(timeout)
+
+  timeout = setTimeout(() => {
     if (
       accountStore.hasBalance &&
       !sharedWalletStore.isAutoSignEnabled &&
       !sharedWalletStore.isAuthzWalletConnected &&
       sharedWalletStore.isUserConnected &&
-      !appStore.userState.dontShowAgain.includes(DontShowAgain.AutoSign) &&
+      !appStore.userState.dontShowAgain?.includes(DontShowAgain.AutoSign) &&
       sharedWalletStore.wallet !== Wallet.Magic
     ) {
       toast.add({
@@ -80,6 +84,12 @@ onWalletConnected(() => {
       })
     }
   }, 8000)
+})
+
+onUnmounted(() => {
+  if (timeout) {
+    clearTimeout(timeout)
+  }
 })
 </script>
 

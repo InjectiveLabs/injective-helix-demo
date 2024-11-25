@@ -11,7 +11,7 @@ import {
   SpotMarketCyTags
 } from '@/types'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     total: BigNumberInBase
     quantity: BigNumberInBase
@@ -28,39 +28,6 @@ const spotMarket = inject(MarketKey)
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(true)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.totalWithFee),
-  { decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS }
-)
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.quantity),
-  {
-    decimalPlaces: spotMarket?.value?.quantityDecimals
-  }
-)
-
-const { valueToFixed: quantityInQuoteToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.total),
-  {
-    decimalPlaces: spotMarket?.value?.priceDecimals
-  }
-)
-
-const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.worstPrice),
-  {
-    decimalPlaces: spotMarket?.value?.priceDecimals
-  }
-)
-
-const { valueToFixed: feeAmountToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.feeAmount.abs().toFixed()),
-  {
-    decimalPlaces: 18
-  }
-)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -93,7 +60,8 @@ function toggle() {
               <span>&asymp;</span>
               <AppAmount
                 v-bind="{
-                  amount: totalToFixed
+                  amount: totalWithFee.toFixed(),
+                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
                 }"
               />
             </span>
@@ -113,7 +81,8 @@ function toggle() {
           >
             <AppAmount
               v-bind="{
-                amount: quantityToFixed
+                amount: quantity.toFixed(),
+                decimalPlaces: spotMarket.quantityDecimals
               }"
             />
             <span class="text-coolGray-400">
@@ -133,7 +102,8 @@ function toggle() {
           >
             <AppAmount
               v-bind="{
-                amount: quantityInQuoteToFixed
+                amount: total.toFixed(),
+                decimalPlaces: spotMarket.priceDecimals
               }"
             />
 
@@ -152,7 +122,8 @@ function toggle() {
           >
             <AppAmount
               v-bind="{
-                amount: worstPriceToFixed
+                amount: worstPrice.toFixed(),
+                decimalPlaces: spotMarket.priceDecimals
               }"
             />
             <span class="text-coolGray-400">
@@ -200,7 +171,8 @@ function toggle() {
             >
               <AppAmount
                 v-bind="{
-                  amount: feeAmountToFixed
+                  decimalPlaces: 18,
+                  amount: feeAmount.toFixed()
                 }"
               />
               <span>USDT</span>

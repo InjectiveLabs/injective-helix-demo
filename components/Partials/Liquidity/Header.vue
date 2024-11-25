@@ -62,11 +62,6 @@ const endDate = computed(() => {
 
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
-
-const { valueToFixed: totalRewardsThisRoundToFixed } =
-  useSharedBigNumberFormatter(totalRewardsThisRound, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
 </script>
 
 <template>
@@ -108,7 +103,7 @@ const { valueToFixed: totalRewardsThisRoundToFixed } =
           <p class="text-xl font-semibold">
             <AppUsdAmount
               v-bind="{
-                amount: totalRewardsThisRoundToFixed
+                amount: totalRewardsThisRound.toFixed()
               }"
             />
             <span class="ml-1">USD</span>

@@ -18,7 +18,9 @@ withDefaults(
     isNotStyled: false,
     textColorClass: 'text-coolGray-350',
     borderColorClass: 'border-coolGray-400',
-    ui: () => ({})
+    ui: () => ({
+      width: 'max-w-96'
+    })
   }
 )
 </script>

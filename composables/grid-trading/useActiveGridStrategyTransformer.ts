@@ -1,6 +1,6 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInWei } from '@injectivelabs/utils'
 import { UiSpotMarket } from '@/types'
 
 export default function useActiveGridStrategyFormatter(
@@ -27,9 +27,13 @@ export default function useActiveGridStrategyFormatter(
     )
   })
 
-  const creationExecutionPrice = computed(
-    () => new BigNumberInBase(strategy.value.executionPrice)
-  )
+  const creationExecutionPrice = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInWei(strategy.value.executionPrice)
+  })
 
   const stopBaseQuantity = computed(() =>
     new BigNumberInWei(strategy.value.baseDeposit || 0).toBase(
@@ -78,24 +82,11 @@ export default function useActiveGridStrategyFormatter(
     )
   )
 
-  const totalInvestment = computed(() => {
-    const baseAmountInUsd = subscriptionBaseQuantity.value.times(
-      new BigNumberInBase(strategy.value.executionPrice)
-    )
-
-    const quoteAmountInUsd = new BigNumberInWei(
-      strategy.value.subscriptionQuoteQuantity || 0
-    ).toBase(market.value?.quoteToken.decimals)
-
-    return baseAmountInUsd.plus(quoteAmountInUsd)
-  })
-
   return {
     stopLoss,
     upperBound,
     lowerBound,
     takeProfit,
-    totalInvestment,
     stopBaseQuantity,
     stopQuoteQuantity,
     creationBaseQuantity,

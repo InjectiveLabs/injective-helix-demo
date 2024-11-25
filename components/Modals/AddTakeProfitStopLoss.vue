@@ -134,55 +134,6 @@ const stopLossPnl = computed(() => {
     : entryTotal.minus(stopLossTotal)
 })
 
-const { valueToFixed: entryPriceToFixed } = useSharedBigNumberFormatter(
-  entryPrice,
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
-  markPrice,
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: liquidationPriceToFixed } = useSharedBigNumberFormatter(
-  liquidationPrice,
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: takeProfitValueToFixed } = useSharedBigNumberFormatter(
-  computed(() => takeProfitValue.value),
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: stopLossValueToFixed } = useSharedBigNumberFormatter(
-  computed(() => stopLossValue.value),
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: takeProfitPnlToFixed } = useSharedBigNumberFormatter(
-  takeProfitPnl,
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
-const { valueToFixed: stopLossPnlToFixed } = useSharedBigNumberFormatter(
-  stopLossPnl,
-  {
-    decimalPlaces: computed(() => market.value?.priceDecimals || 0)
-  }
-)
-
 watch(
   () => isModalOpen.value,
   () => {
@@ -254,7 +205,8 @@ async function submitTpSl() {
             <p>
               <AppAmount
                 v-bind="{
-                  amount: entryPriceToFixed
+                  amount: entryPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
                 }"
               />
             </p>
@@ -265,7 +217,8 @@ async function submitTpSl() {
             <p>
               <AppAmount
                 v-bind="{
-                  amount: markPriceToFixed
+                  amount: markPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
                 }"
               />
             </p>
@@ -276,7 +229,8 @@ async function submitTpSl() {
             <p>
               <AppAmount
                 v-bind="{
-                  amount: liquidationPriceToFixed
+                  amount: liquidationPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
                 }"
               />
             </p>
@@ -318,7 +272,8 @@ async function submitTpSl() {
               <AppAmount
                 v-else
                 v-bind="{
-                  amount: takeProfitValueToFixed
+                  amount: takeProfitValue,
+                  decimalPlaces: market.priceDecimals
                 }"
               />
             </span>
@@ -334,7 +289,12 @@ async function submitTpSl() {
             :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
             class="font-bold inline-flex gap-1"
           >
-            <AppAmount v-bind="{ amount: takeProfitPnlToFixed }" />
+            <AppAmount
+              v-bind="{
+                amount: takeProfitPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>
@@ -364,7 +324,8 @@ async function submitTpSl() {
               <AppAmount
                 v-else
                 v-bind="{
-                  amount: stopLossValueToFixed
+                  amount: stopLossValue,
+                  decimalPlaces: market.priceDecimals
                 }"
               />
             </span>
@@ -380,7 +341,12 @@ async function submitTpSl() {
             :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
             class="font-bold inline-flex gap-1"
           >
-            <AppAmount v-bind="{ amount: stopLossPnlToFixed }" />
+            <AppAmount
+              v-bind="{
+                amount: stopLossPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>

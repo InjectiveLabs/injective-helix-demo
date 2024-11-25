@@ -28,29 +28,6 @@ const {
   computed(() => props.order),
   computed(() => false)
 )
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
-  triggerPrice,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
 </script>
 
 <template>
@@ -76,7 +53,7 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p>{{ $t('trade.side') }}</p>
       <div>
         <p
-          class="font-sans"
+          class="font-sans text-right"
           :class="{
             'text-green-500': isBuy,
             'text-red-500': !isBuy
@@ -102,7 +79,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
         <span v-else>
           <AppAmount
             v-bind="{
-              amount: priceToFixed
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </span>
@@ -114,7 +92,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p>
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -126,7 +105,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
       <p>
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
 
@@ -153,7 +133,8 @@ const { valueToFixed: triggerPriceToFixed } = useSharedBigNumberFormatter(
           <span v-else class="text-white text-xs font-semibold"> &ge; </span>
           <AppAmount
             v-bind="{
-              amount: triggerPriceToFixed
+              amount: triggerPrice.toFixed(),
+              decimalPlaces: quantityDecimals
             }"
           />
         </template>

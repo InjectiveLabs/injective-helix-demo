@@ -166,10 +166,18 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
+    const token = supplyWithBalance.value.find(
+      (token) => token.denom === formValues[SubaccountTransferField.Denom]
+    )
+
     setFormValues({
       [SubaccountTransferField.Amount]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom
+      ...(token
+        ? {}
+        : {
+            [SubaccountTransferField.Token]: injToken,
+            [SubaccountTransferField.Denom]: injToken.denom
+          })
     })
   })
 }
@@ -189,15 +197,19 @@ function resetForm() {
 function closeModal() {
   modalStore.closeModal(Modal.SubaccountTransfer)
 }
+
+const isOpen = computed({
+  get: () => modalStore.modals[Modal.SubaccountTransfer],
+  set: (value) => {
+    if (!value) {
+      closeModal()
+    }
+  }
+})
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
-  >
+  <SharedModal v-model="isOpen">
     <template #title>
       <h3>
         {{ $t('account.subaccountTransfer') }}
@@ -243,5 +255,5 @@ function closeModal() {
         </AppButton>
       </div>
     </div>
-  </AppModal>
+  </SharedModal>
 </template>

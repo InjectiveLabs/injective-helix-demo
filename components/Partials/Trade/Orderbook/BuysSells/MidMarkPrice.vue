@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { UiMarketWithToken } from '@/types'
+import { stableCoinSymbols } from '~/app/data/token'
 
 const props = withDefaults(
   defineProps<{
@@ -11,6 +12,8 @@ const props = withDefaults(
     isSpot: false
   }
 )
+
+const tokenStore = useTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -33,12 +36,12 @@ const lastTradedPrice = computed(() =>
   props.isSpot ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
-const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
-  computed(() => markPrice.value),
-  {
-    decimalPlaces: props.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
+const lastTradedPriceInUsd = computed(() =>
+  lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+)
+
+const isStableCoinMarket = computed(() =>
+  stableCoinSymbols.includes(props.market.quoteToken.symbol)
 )
 </script>
 
@@ -74,9 +77,18 @@ const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
       >
         <AppAmount
           v-bind="{
-            amount: lastTradedPrice.toFixed()
+            amount: lastTradedPrice.toFixed(),
+            decimalPlaces: market.priceDecimals
           }"
         />
+      </span>
+
+      <span
+        v-if="!isStableCoinMarket && isSpot"
+        class="text-xs ml-1 text-coolGray-350 border-b border-dashed border-coolGray-400"
+      >
+        <AppAmount :amount="lastTradedPriceInUsd.toFixed()" />
+        <span> USD</span>
       </span>
 
       <span v-if="!isSpot" class="text-xs ml-2">
@@ -87,7 +99,8 @@ const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
         >
           <AppAmount
             v-bind="{
-              amount: markPriceToFixed
+              amount: markPrice,
+              decimalPlaces: market.priceDecimals
             }"
           />
         </CommonHeaderTooltip>

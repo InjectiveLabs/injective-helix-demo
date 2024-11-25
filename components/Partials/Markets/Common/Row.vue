@@ -6,38 +6,34 @@ import {
   SharedMarketChange,
   SharedUiMarketSummary
 } from '@shared/types'
+import { rwaMarketIds } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
 import { UiMarketWithToken, MarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
-    summary: SharedUiMarketSummary
-    volumeInUsd: BigNumberInBase
     isMarketsPage?: boolean
+    market: UiMarketWithToken
+    volumeInUsd: BigNumberInBase
+    summary: SharedUiMarketSummary
+    marketPriceMap?: Record<string, BigNumberInBase>
   }>(),
   {
-    isMarketsPage: false
+    isMarketsPage: false,
+    marketPriceMap: () => ({})
   }
 )
 
 const appStore = useAppStore()
 const isMobile = useIsMobile()
 
-const isRWAMarket = computed(() =>
-  slugsToIncludeInRWACategory.includes(props.market.slug)
-)
+const isRWAMarket = computed(() => rwaMarketIds.includes(props.market.marketId))
 
 const lastTradedPrice = computed(
-  () => new BigNumberInBase(props.summary.lastPrice || 0)
-)
-
-const { valueToFixed: lastPriceToFixed } = useSharedBigNumberFormatter(
-  lastTradedPrice,
-  {
-    decimalPlaces: props.market.priceDecimals
-  }
+  () =>
+    props.marketPriceMap[props.market.marketId]?.toFixed() ||
+    props.summary.lastPrice ||
+    0
 )
 
 const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
@@ -104,7 +100,7 @@ function toggleFavorite() {
           :classes="isRWAMarket ? 'border-dashed border-b cursor-pointer' : ''"
           tooltip-class="text-xs"
           :ui="{
-            base: 'translate-y-4'
+            base: isMarketsPage ? '-translate-y-0.5' : 'translate-y-4'
           }"
         >
           <span :data-cy="dataCyTag(MarketCyTags.MarketTicker)">
@@ -122,6 +118,11 @@ function toggleFavorite() {
           {{ market.baseToken.name }}
         </div>
       </div>
+      <div v-if="!market.isVerified && isMarketsPage" class="ml-2">
+        <UTooltip :text="$t('markets.permisionlessWarning')">
+          <UIcon name="clarity:shield-line" class="text-gray-400" />
+        </UTooltip>
+      </div>
     </div>
 
     <div
@@ -130,7 +131,8 @@ function toggleFavorite() {
       <AppAmount
         :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
         v-bind="{
-          amount: lastPriceToFixed
+          amount: lastTradedPrice,
+          decimalPlaces: market.priceDecimals
         }"
       />
     </div>
@@ -153,14 +155,22 @@ function toggleFavorite() {
         </span>
         <span v-else>
           <AppUsdAmount
-            v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+            v-bind="{
+              decimalPlaces: 0,
+              isShowNoDecimals: true,
+              amount: volumeInUsd.toFixed()
+            }"
           />
         </span>
       </span>
       <span v-else :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
         <span>$</span>
         <AppUsdAmount
-          v-bind="{ amount: volumeToFixed, isShowNoDecimals: true }"
+          v-bind="{
+            decimalPlaces: 0,
+            isShowNoDecimals: true,
+            amount: volumeInUsd.toFixed()
+          }"
         />
       </span>
     </div>

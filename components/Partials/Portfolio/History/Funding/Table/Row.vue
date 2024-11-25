@@ -12,10 +12,6 @@ const props = withDefaults(
 const { market, time, total } = useFundingPayment(
   computed(() => props.fundingPayment)
 )
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: USDT_DECIMALS
-})
 </script>
 
 <template>
@@ -39,7 +35,8 @@ const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
       >
         <AppAmount
           v-bind="{
-            amount: totalToFixed
+            amount: total.toFixed(),
+            decimalPlaces: USDT_DECIMALS
           }"
         />
       </span>

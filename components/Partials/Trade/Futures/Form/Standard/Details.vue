@@ -54,54 +54,6 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.marginWithFee),
-  {
-    decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: marginToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.margin),
-  {
-    decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.quantity),
-  { decimalPlaces: 4 }
-)
-
-const { valueToFixed: worstPriceToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.worstPrice),
-  {
-    decimalPlaces: derivativeMarket.value.priceDecimals
-  }
-)
-
-const { valueToFixed: feeAmountToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.feeAmount.abs().toFixed()),
-  {
-    decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: estLiquidationPriceToFixed } =
-  useSharedBigNumberFormatter(
-    computed(() => estLiquidationPrice.value),
-    {
-      decimalPlaces: derivativeMarket.value.priceDecimals
-    }
-  )
-
-const { valueToFixed: totalNotionalToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.totalNotional),
-  {
-    decimalPlaces: derivativeMarket.value.priceDecimals
-  }
-)
-
 function toggle() {
   isOpen.value = !isOpen.value
 }
@@ -133,7 +85,8 @@ function toggle() {
               <span>&asymp;</span>
               <AppAmount
                 v-bind="{
-                  amount: totalToFixed
+                  amount: marginWithFee.toFixed(),
+                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
                 }"
               />
             </span>
@@ -151,7 +104,8 @@ function toggle() {
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
-                amount: marginToFixed
+                amount: margin.toFixed(),
+                decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
               }"
             />
             <span class="text-coolGray-400">
@@ -167,7 +121,8 @@ function toggle() {
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
               v-bind="{
-                amount: totalNotionalToFixed
+                amount: totalNotional.toFixed(),
+                decimalPlaces: derivativeMarket.priceDecimals
               }"
             />
             <span class="text-coolGray-400">
@@ -183,7 +138,8 @@ function toggle() {
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
               v-bind="{
-                amount: quantityToFixed
+                amount: quantity.toFixed(),
+                decimalPlaces: 4
               }"
             />
             <span class="text-coolGray-400">
@@ -204,7 +160,8 @@ function toggle() {
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
               v-bind="{
-                amount: worstPriceToFixed
+                amount: worstPrice.toFixed(),
+                decimalPlaces: derivativeMarket.priceDecimals
               }"
             />
 
@@ -223,7 +180,8 @@ function toggle() {
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
               "
               v-bind="{
-                amount: estLiquidationPriceToFixed
+                amount: estLiquidationPrice.toFixed(),
+                decimalPlaces: derivativeMarket.priceDecimals
               }"
             />
 
@@ -254,7 +212,8 @@ function toggle() {
               <AppAmount
                 :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
                 v-bind="{
-                  amount: feeAmountToFixed
+                  amount: feeAmount.toFixed(),
+                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
                 }"
               />
               <span class="text-coolGray-400">
@@ -279,7 +238,8 @@ function toggle() {
             <p v-if="derivativeMarket" class="font-mono flex gap-x-2">
               <AppAmount
                 v-bind="{
-                  amount: feeAmountToFixed
+                  amount: feeAmount.toFixed(),
+                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
                 }"
               />
               {{ derivativeMarket.quoteToken.symbol }}

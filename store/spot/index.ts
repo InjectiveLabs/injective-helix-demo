@@ -45,7 +45,7 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import { spotSlugs } from '@/app/json'
+import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
@@ -88,8 +88,8 @@ export const useSpotStore = defineStore('spot', {
     activeMarketIds: (state) =>
       state.markets
         .filter(
-          ({ slug, marketId }) =>
-            spotSlugs.includes(slug) ||
+          ({ marketId }) =>
+            verifiedSpotMarketIds.includes(marketId) ||
             state.marketIdsFromQuery.includes(marketId)
         )
         .map((m) => m.marketId),
@@ -220,7 +220,7 @@ export const useSpotStore = defineStore('spot', {
 
           return {
             ...formattedMarket,
-            isVerified: spotSlugs.includes(formattedMarket.slug)
+            isVerified: verifiedSpotMarketIds.includes(market.marketId)
           }
         })
         .filter(
@@ -229,8 +229,8 @@ export const useSpotStore = defineStore('spot', {
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex = spotSlugs.indexOf(spotA.slug) || 1
-          const spotBIndex = spotSlugs.indexOf(spotB.slug) || 1
+          const spotAIndex = verifiedSpotSlugs.indexOf(spotA.slug) || 1
+          const spotBIndex = verifiedSpotSlugs.indexOf(spotB.slug) || 1
 
           return spotAIndex - spotBIndex
         })

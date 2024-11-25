@@ -3,12 +3,12 @@ import 'dotenv/config'
 import { writeFileSync } from 'node:fs'
 import { HttpClient } from '@injectivelabs/utils'
 
-export const fetchOFACWalletAddresses = async (): Promise<any> => {
+export const fetchOFACAndRestrictedAddresses = async (): Promise<any> => {
   const client = new HttpClient(
     'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/wallets'
   )
 
-  const fileName = 'ofac.json'
+  const fileName = 'ofacAndRestricted.json'
 
   try {
     const { data: wallets } = (await client.get(fileName)) as any
@@ -48,4 +48,4 @@ export const fetchRestrictedCountries = async (): Promise<any> => {
 }
 
 fetchRestrictedCountries()
-fetchOFACWalletAddresses()
+fetchOFACAndRestrictedAddresses()

@@ -2,7 +2,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { TradeSubPage, LeaderboardSubPage } from '@/types'
+import { TradeSubPage } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -37,11 +37,7 @@ const totalMarkets = computed(
           <span class="">
             {{ $t('home.openFinance') + ' ' }}
           </span>
-          <span class="relative text-coolGray-400">
-            <NuxtLink :to="{ name: LeaderboardSubPage.Competition }">
-              <AssetLikeAG />
-            </NuxtLink>
-
+          <span class="relative text-gray-400">
             {{ $t('home.reimagined') }}
           </span>
         </h1>

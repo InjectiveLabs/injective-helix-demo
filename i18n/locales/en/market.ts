@@ -19,6 +19,7 @@ export default {
     hotMarkets: 'Hot Markets',
     newMarkets: 'New Markets',
     topGainers: 'Top Gainers',
+    unverified: 'Unverified',
     permisionlessWarning:
       'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
     emptyHeader: 'No markets found',

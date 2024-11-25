@@ -79,63 +79,10 @@ const hasReduceOnlyOrders = computed(
   () => reduceOnlyCurrentOrders.value.length > 0
 )
 
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: quantityInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    quantity.value
-      .times(markPrice.value)
-      .times(tokenStore.tokenUsdPrice(market.value?.quoteToken) || 0)
-  ),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: markPriceToFixed } = useSharedBigNumberFormatter(
-  markPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
-
-const { valueToFixed: marginToFixed } = useSharedBigNumberFormatter(margin, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
-
-const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(pnl, {
-  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-})
-
-const { valueToFixed: percentagePnlToFixed } = useSharedBigNumberFormatter(
-  percentagePnl,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: liquidationPriceToFixed } = useSharedBigNumberFormatter(
-  liquidationPrice,
-  {
-    decimalPlaces: priceDecimals.value
-  }
-)
-
-const { valueToFixed: effectiveLeverageToFixed } = useSharedBigNumberFormatter(
-  effectiveLeverage,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+const quantityInUsd = computed(() =>
+  quantity.value
+    .times(markPrice.value)
+    .times(tokenStore.tokenUsdPrice(market.value?.quoteToken) || 0)
 )
 
 const { value: priceValue } = useStringField({
@@ -281,7 +228,8 @@ function sharePosition() {
         >
           <AppAmount
             v-bind="{
-              amount: quantityToFixed
+              amount: quantity.toFixed(),
+              decimalPlaces: quantityDecimals
             }"
           />
           {{ market.baseToken.overrideSymbol || market.baseToken.symbol }}
@@ -292,14 +240,16 @@ function sharePosition() {
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           <AppAmount
             v-bind="{
-              amount: priceToFixed
+              amount: price.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </p>
         <p class="text-coolGray-500">
           <AppAmount
             v-bind="{
-              amount: markPriceToFixed
+              amount: markPrice.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
         </p>
@@ -319,7 +269,8 @@ function sharePosition() {
           >
             <AppAmount
               v-bind="{
-                amount: pnlToFixed
+                amount: pnl.toFixed(),
+                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
             />
 
@@ -327,7 +278,14 @@ function sharePosition() {
               market.quoteToken.symbol
             }}</span>
           </p>
-          <p>{{ percentagePnlToFixed }}%</p>
+          <p class="flex">
+            <AppAmount
+              v-bind="{
+                amount: percentagePnl.toFixed(),
+                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />%
+          </p>
         </div>
 
         <UIcon
@@ -346,7 +304,7 @@ function sharePosition() {
             <span>$</span>
             <AppUsdAmount
               v-bind="{
-                amount: quantityInUsdToFixed
+                amount: quantityInUsd.toFixed()
               }"
             />
           </p>
@@ -357,7 +315,8 @@ function sharePosition() {
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
           <AppAmount
             v-bind="{
-              amount: marginToFixed
+              amount: margin.toFixed(),
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -375,7 +334,8 @@ function sharePosition() {
       >
         <AppAmount
           v-bind="{
-            amount: liquidationPriceToFixed
+            decimalPlaces: priceDecimals,
+            amount: liquidationPrice.toFixed()
           }"
         />
       </div>
@@ -386,7 +346,8 @@ function sharePosition() {
       >
         <AppAmount
           v-bind="{
-            amount: effectiveLeverageToFixed
+            amount: effectiveLeverage.toFixed(),
+            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
         />x
       </div>

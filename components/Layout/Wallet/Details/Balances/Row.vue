@@ -5,22 +5,16 @@ import { AccountBalance } from '@/types'
 
 const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
 
-const { valueToFixed: totalAmountToFixed } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+const totalAmount = computed(() =>
+  new BigNumberInWei(props.balance.accountTotalBalance)
+    .toBase(props.balance.token.decimals)
+    .toFixed()
 )
 
-const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
-      props.balance.token.decimals
-    )
-  }),
-  { decimalPlaces: 18 }
+const totalAmountInUsd = computed(() =>
+  new BigNumberInWei(props.balance.accountTotalBalanceInUsd)
+    .toBase(props.balance.token.decimals)
+    .toFixed()
 )
 </script>
 
@@ -34,7 +28,12 @@ const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
         <div>
           <p class="text-sm font-semibold">{{ balance.token.symbol }}</p>
           <p class="text-coolGray-400">
-            <AppAmount v-bind="{ amount: totalAmountToFixed }" />
+            <AppAmount
+              v-bind="{
+                amount: totalAmount,
+                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
           </p>
         </div>
       </div>
@@ -43,7 +42,12 @@ const { valueToFixed: totalAmountInUsdToFixed } = useSharedBigNumberFormatter(
     <div class="flex items-center">
       <span class="text-sm flex">
         <span>$</span>
-        <AppUsdAmount v-bind="{ amount: totalAmountInUsdToFixed }" />
+        <AppUsdAmount
+          v-bind="{
+            decimalPlaces: 18,
+            amount: totalAmountInUsd
+          }"
+        />
       </span>
     </div>
   </div>

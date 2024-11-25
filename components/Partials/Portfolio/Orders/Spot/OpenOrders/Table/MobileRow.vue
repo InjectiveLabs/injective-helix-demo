@@ -83,36 +83,6 @@ const insufficientBalance = computed(() =>
   chaseBalanceNeeded.value.gt(accountQuoteBalance.value)
 )
 
-const { valueToString: priceToFixed } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: priceDecimals.value,
-  displayAbsoluteDecimalPlace: true
-})
-
-const { valueToFixed: quantityToFixed } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: totalToFixed } = useSharedBigNumberFormatter(total, {
-  decimalPlaces: quantityDecimals.value
-})
-
-const { valueToFixed: filledQuantityToFixed } = useSharedBigNumberFormatter(
-  filledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
-const { valueToFixed: unfilledQuantityToFixed } = useSharedBigNumberFormatter(
-  unfilledQuantity,
-  {
-    decimalPlaces: quantityDecimals.value
-  }
-)
-
 function cancelOrder() {
   status.setLoading()
 
@@ -187,7 +157,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: priceToFixed
+            amount: price.toFixed(),
+            decimalPlaces: priceDecimals
           }"
         />
       </p>
@@ -198,7 +169,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: quantityToFixed
+            amount: quantity.toFixed(),
+            decimalPlaces: quantityDecimals
           }"
         />
       </p>
@@ -209,7 +181,8 @@ function chase() {
       <p class="font-mono">
         <AppAmount
           v-bind="{
-            amount: unfilledQuantityToFixed
+            decimalPlaces: quantityDecimals,
+            amount: unfilledQuantity.toFixed()
           }"
         />
       </p>
@@ -218,11 +191,12 @@ function chase() {
     <div class="justify-between flex items-center px-2 py-4">
       <p>{{ $t('trade.filled') }}</p>
 
-      <div class="font-mono">
+      <div class="font-mono text-right">
         <p>
           <AppAmount
             v-bind="{
-              amount: filledQuantityToFixed
+              decimalPlaces: quantityDecimals,
+              amount: filledQuantity.toFixed()
             }"
           />
         </p>
@@ -234,13 +208,16 @@ function chase() {
       <p>{{ $t('trade.total') }}</p>
 
       <div v-if="market" class="space-y-1 font-mono">
-        <p>
-          <span>$</span>
+        <p class="flex gap-1">
           <AppAmount
             v-bind="{
-              amount: totalToFixed
+              amount: total.toFixed(),
+              decimalPlaces: priceDecimals
             }"
           />
+          <span class="text-coolGray-500 ml-1">
+            {{ market.quoteToken.symbol }}
+          </span>
         </p>
       </div>
     </div>

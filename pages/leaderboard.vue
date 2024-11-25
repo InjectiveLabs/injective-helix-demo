@@ -4,13 +4,21 @@ import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
 import { MainPage, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
+const campaignStore = useCampaignStore()
 const sharedGeoStore = useSharedGeoStore()
 
 const now = useNow({ interval: 1000 })
 
-const isCountryRestrictedUser = computed(() =>
-  isCountryRestrictedForLeaderboard(sharedGeoStore.country)
-)
+const isBlockedBannerVisible = computed(() => {
+  if (!campaignStore.activeCampaign) {
+    return
+  }
+
+  return (
+    route.name === LeaderboardSubPage.Competition &&
+    isCountryRestrictedForLeaderboard(sharedGeoStore.country)
+  )
+})
 
 const filteredSubPages = computed(() =>
   Object.values(LeaderboardSubPage).filter((page) => {
@@ -30,9 +38,7 @@ const filteredSubPages = computed(() =>
 <template>
   <div class="relative">
     <i18n-t
-      v-if="
-        route.name === LeaderboardSubPage.Competition && isCountryRestrictedUser
-      "
+      v-if="isBlockedBannerVisible"
       keypath="leaderboard.blocked"
       tag="p"
       class="text-xs md:text-sm font-medium leading-3 md:leading-[18px] text-center py-1.5 px-4 md:px-10 bg-[#FFA36E] text-coolGray-925 relative z-40"

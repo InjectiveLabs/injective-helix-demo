@@ -3,14 +3,15 @@ export default defineAppConfig({
     primary: 'blue',
     gray: 'slate',
 
-    card: {
-      background: 'dark:bg-brand-875'
+    modal: {
+      background: 'bg-brand-900 dark:bg-brand-900',
+      overlay: {
+        background: 'dark:bg-black/50'
+      }
     },
 
-    modal: {
-      overlay: {
-        background: 'dark:bg-brand-900/80'
-      }
+    card: {
+      background: 'bg-brand-900 dark:bg-brand-900'
     },
 
     popover: {
