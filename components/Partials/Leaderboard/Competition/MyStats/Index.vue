@@ -76,9 +76,9 @@ const isShowMyStats = computed(() => {
 })
 
 function onShareCompetition() {
-  modalStore.openModal(Modal.ShareLeaderboardCompetition)
+  modalStore.openModal(Modal.ShareLeaderboardPnl)
 
-  useEventBus(BusEvents.ShareLeaderboardCompetitionOpened).emit()
+  useEventBus(BusEvents.ShareLeaderboardPnlOpened).emit()
 }
 </script>
 
@@ -179,9 +179,12 @@ function onShareCompetition() {
       </template>
     </PartialsLeaderboardMyStats>
 
-    <ModalsShareLeaderboardCompetition
+    <ModalsShareLeaderboardPnl
       v-if="leaderboardStore.competitionLeaderboard.accountRow"
-      v-bind="{ leader: leaderboardStore.competitionLeaderboard.accountRow }"
+      v-bind="{
+        pnl: leaderboardStore.competitionLeaderboard.accountRow.pnl,
+        rank: leaderboardStore.competitionLeaderboard.accountRow.rank
+      }"
     />
   </div>
 </template>

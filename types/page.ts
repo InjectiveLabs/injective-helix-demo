@@ -11,8 +11,10 @@ export enum MainPage {
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
   LiquidityProvision = 'liquidity-provision',
+  TeslaCompetitionTerms = 'tesla-competition-terms',
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
-  CompetitionPrivacyPolicy = 'competition-privacy-policy',
+  CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
+
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'

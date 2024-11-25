@@ -73,7 +73,7 @@ function fetchPastCampaigns() {
         </Teleport>
 
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardCompetitionBanner
+          <PartialsLeaderboardCompetitionGwagonBanner
             v-if="
               selectedCampaign && selectedCampaign.name === FIRST_CAMPAIGN_NAME
             "

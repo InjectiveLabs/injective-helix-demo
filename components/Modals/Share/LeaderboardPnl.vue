@@ -114,9 +114,11 @@ watchDebounced(
         >
           <div class="text-left">
             {{
-              $t('leaderboard.pnl.currentDuration', {
-                duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
-              })
+              selectedDuration
+                ? $t('leaderboard.pnl.currentDuration', {
+                    duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
+                  })
+                : $t('leaderboard.pnl.tradingPnl')
             }}
           </div>
           <div

@@ -129,10 +129,11 @@ import { MainPage, LeaderboardSubPage } from '@/types'
       Competition will be used by Sponsor in accordance with its online privacy
       policy, located at
       <NuxtLink
-        href="https://helixapp.com/competition-privacy-policy"
+        :to="{ name: MainPage.CompetitionPrivacyPolicyTesla }"
+        href="https://helixapp.com/competition-privacy-policy-tesla"
         class="text-blue-500 hover:text-blue-600"
       >
-        https://helixapp.com/competition-privacy-policy
+        https://helixapp.com/competition-privacy-policy-tesla
       </NuxtLink>
       and with these Rules.
     </p>

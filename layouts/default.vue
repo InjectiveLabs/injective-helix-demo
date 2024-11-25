@@ -131,6 +131,8 @@ provide(PortfolioStatusKey, portfolioStatus)
     <main class="relative pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+      <LayoutTeslaCompetitionBanner />
+
       <ModalsCompetitionWinner
         v-if="
           sharedWalletStore.isUserConnected &&
