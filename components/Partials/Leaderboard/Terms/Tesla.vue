@@ -16,8 +16,8 @@ import { MainPage, LeaderboardSubPage } from '@/types'
 
     <h3 class="text-lg font-bold mb-2 uppercase">COMPETITION DESCRIPTION:</h3>
     <p class="mb-4">
-      The Helix Tesla Trading Competition (the “Competition”) begins on October
-      1, 2024 at 10 a.m. Eastern Time (“ET”) and ends on October 22, 2024 at
+      The Helix Tesla Trading Competition (the “Competition”) begins on November
+      26, 2024 at 10 a.m. Eastern Time (“ET”) and ends on December 6, 2024 at
       10:00 a.m. ET (the “Competition Period”). The winner of the Competition
       will receive a Tesla Model 3 Long Range Rear Wheel Drive or its
       approximate cash equivalent, at the Sponsor’s sole discretion and subject
