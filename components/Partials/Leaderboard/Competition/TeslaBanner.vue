@@ -54,7 +54,7 @@ const isEndedCampaign = computed(() => {
         >
           <template #blog>
             <NuxtLink
-              to="https://blog.helixapp.com/like-a-g/"
+              to="https://blog.helixapp.com/en/turkey-day-tesla-giveaway/"
               target="_blank"
               class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
             >
