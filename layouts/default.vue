@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'

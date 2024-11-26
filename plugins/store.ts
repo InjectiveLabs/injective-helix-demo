@@ -4,8 +4,8 @@ import {
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'

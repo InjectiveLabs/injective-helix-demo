@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 

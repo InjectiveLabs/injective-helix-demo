@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { WalletOption } from '@/types'
 

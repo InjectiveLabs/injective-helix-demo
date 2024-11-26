@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 
 const toast = useToast()
 const walletStore = useWalletStore()

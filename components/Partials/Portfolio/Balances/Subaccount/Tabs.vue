@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { PortfolioCyTags } from '@/types'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
+import { PortfolioCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{

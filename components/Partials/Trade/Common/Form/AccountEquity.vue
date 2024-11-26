@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Modal } from '@/types'

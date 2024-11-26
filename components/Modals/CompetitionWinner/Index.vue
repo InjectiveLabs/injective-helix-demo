@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-ts'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
 import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES,

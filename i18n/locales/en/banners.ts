@@ -1,4 +1,4 @@
-import { NoticeBanner } from '@/types'
+import { NoticeBanner } from './../../../types'
 
 export default {
   banners: {

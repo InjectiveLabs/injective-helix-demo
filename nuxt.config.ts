@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      : 'github:InjectiveLabs/injective-ui/layer#refactor/wallet-ts'
   ],
 
   app: {
@@ -27,11 +27,11 @@ export default defineNuxtConfig({
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
 
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
+
   pinia: {
     autoImports: ['defineStore']
   },
-
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
 
   // @ts-ignore
   i18n: {

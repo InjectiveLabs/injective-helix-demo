@@ -15,7 +15,7 @@ import tradeAndEarn from './en/tradeAndEarn'
 import institutional from './en/institutional'
 import liquidityBots from './en/liquidityBots'
 import liquidityProvision from './en/liquidityProvision'
-import { I18nMessageFunction, TimeDuration } from '@/types'
+import { TimeDuration } from './../../types'
 
 export default {
   ...sgt,
@@ -116,17 +116,10 @@ export default {
         'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
       spotGridIsMigrating:
         'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
-      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          named('attention'),
-          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
-          named('learnMore'),
-          '.'
-        ]),
-      goToNewMarket: ({ named }: I18nMessageFunction) =>
-        `Go to new ${named('market')} market`,
-      goToNewSGT: ({ named }: I18nMessageFunction) =>
-        `Go to new ${named('market')} spot grid`
+      attentionBanner:
+        '{aaa} Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. {bbb}',
+      goToNewMarket: 'Go to new {market} market',
+      goToNewSGT: 'Go to new {market} spot grid'
     }
   },
 
@@ -139,9 +132,6 @@ export default {
   welcome_to_ip_sub:
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'System maintenance in progress',
-  maintenance_subheader:
-    'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
-  maintenance_button: 'View status',
   maintenance_body:
     'We are constantly improving Helix. Please come back later.',
   token_allowance_successful: 'Token allowance set successful',
@@ -204,13 +194,11 @@ export default {
     description: {
       perpetual:
         'Some markets such as perpetual futures are not available in your region.',
-      spot: ({ named }: I18nMessageFunction) =>
-        `${named('symbol')} is not available in your region.`
+      spot: '{symbol} is not available in your region.'
     },
     cta: 'Return to homepage',
     tradeSpot: 'Trade Spot',
-    swapCta: ({ named }: I18nMessageFunction) =>
-      `${named('symbol')} is not available in your region`
+    swapCta: '{symbol} is not available in your region.'
   },
 
   marketNotOnHelix: {
@@ -219,16 +207,30 @@ export default {
     termsAndCondition: 'Terms and Conditions',
     description:
       'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
-    description2: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix ',
-        named('link'),
-        ' as to any use you make of Helix'
-      ])
+    description2:
+      'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix {0} as to any use you make of Helix'
   },
 
   geoRestricted: {
     description: 'Helix is currently not available in your region.'
+  },
+
+  marketExpired: {
+    title: 'Market Expired',
+    expiredNote:
+      'This futures contract has just expired and reached settlement.',
+    activityPageNote:
+      'If you did hold position(s) till expiry, please go to futures trade history to check the settlement record.',
+    exploreMarkets: 'Explore Markets',
+    goToFutures: 'Go To Futures trade history'
+  },
+
+  marketNotLiquid: {
+    title: '{slug} market is no longer liquid',
+    description:
+      'The majority of trading activities for {content}. Please proceed to {slug} for a better trading experience.',
+    cta: 'Go to {slug}',
+    'sol-usdcet-description': 'Solana is in the SOL/USDT market'
   },
 
   navigation: {
@@ -276,8 +278,7 @@ export default {
       tradingDiscounts: 'Trading Discounts'
     },
 
-    makerTakerFee: ({ named }: I18nMessageFunction) =>
-      `-${named('maker')}% maker / -${named('taker')}% taker`,
+    makerTakerFee: '-{maker}% maker / -{taker}% taker',
     noTierLevel: 'No VIP Tier',
     tradeAndEarn: 'Trade and Earn',
     tradeAndEarnDescription: 'Earn rewards with every trade',
@@ -293,8 +294,7 @@ export default {
     spotDescription: 'Buy and sell crypto assets using advanced trading tools',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual & pre-launch futures with leverage',
-    connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
-      `Connected to ${named('address')}. Click to close connection.`,
+    connectedUsingAuthZ: 'Connected to {address}. Click to close connection.',
     tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated trading strategies ',
     liquidityBots: 'Bots',
@@ -352,25 +352,21 @@ export default {
     tier: 'Tier',
     current_apr: 'Current APR',
     fees_taker_maker: 'Fees (Taker / Maker)',
-    fees_taker_maker_percent: ({ named }: I18nMessageFunction) =>
-      `${named('takerFee')}% / ${named('makerFee')}%`,
+    fees_taker_maker_percent: '{takerFee}% / {makerFee}%',
     viewFeeDiscounts: 'View Fee Discounts',
     maker: 'Maker',
     taker: 'Taker',
     off: 'Off',
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
-    in_past_days: ({ named }: I18nMessageFunction) =>
-      `In past ${named('days')} days`,
+    in_past_days: 'In past {days} days',
     tierAuthZ: 'Tier (AuthZ)'
   },
 
   pagination: {
     showRows: 'Show rows',
-    showCountOutOfTotal: ({ named }: I18nMessageFunction) =>
-      `Showing ${named('from')} - ${named('to')} out of ${named('totalCount')}`,
-    paginationPages: ({ named }: I18nMessageFunction) =>
-      `From ${named('from')} to ${named('to')} total ${named('totalCount')}`
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}',
+    paginationPages: 'From {from} to {to} total {totalCount}`'
   },
 
   filters: {
@@ -401,14 +397,8 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix ',
-        named('terms'),
-        ' and the Injective Labs ',
-        named('policy'),
-        '.'
-      ])
+    disclaimerNote:
+      'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix {0} and the Injective Labs {1}.'
   },
 
   devMode: {

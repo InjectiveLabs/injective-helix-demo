@@ -8,10 +8,10 @@ import {
   MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { IS_TESTNET, NETWORK } from '@shared/utils/constant'
 import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import { IS_TESTNET, NETWORK } from '@shared/utils/constant'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import {
   MarketRoute,

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { injToken } from '@shared/data/token'
-import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'

@@ -1,4 +1,4 @@
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { getBridgeUrl } from '@shared/utils/network'
 
 export const getBridgeRedirectionUrl = (suffix?: string) => {

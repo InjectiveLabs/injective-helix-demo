@@ -4,16 +4,13 @@ import {
   indexerRestExplorerApi,
   indexerAccountPortfolioApi
 } from '@shared/Service'
-import {
-  Wallet,
-  isCosmosWallet,
-  WalletStrategy
-} from '@injectivelabs/wallet-ts'
-import { Coin } from '@injectivelabs/ts-types'
 import { usdtToken } from '@shared/data/token'
-import { getInjectiveAddress } from '@injectivelabs/sdk-ts'
+import { Coin } from '@injectivelabs/ts-types'
 import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
+import { getInjectiveAddress } from '@injectivelabs/sdk-ts'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { WalletStrategy } from '@injectivelabs/wallet-strategy'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
 import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
 import {
   streamBankBalance,
@@ -230,7 +227,8 @@ export const useAccountStore = defineStore('account', {
           ethereumOptions: {
             ethereumChainId: ETHEREUM_CHAIN_ID,
             rpcUrl: alchemyRpcEndpoint
-          }
+          },
+          strategies: {}
         })
 
         const addresses = await walletStrategy.enableAndGetAddresses()

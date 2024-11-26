@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   BTC_COIN_GECKO_ID,
