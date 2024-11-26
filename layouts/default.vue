@@ -8,6 +8,7 @@ import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
   MainPage,
+  LeaderboardSubPage,
   PortfolioStatusKey,
   LiquidityRewardsPage
 } from '@/types'
@@ -131,7 +132,9 @@ provide(PortfolioStatusKey, portfolioStatus)
     <main class="relative pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-      <LayoutTeslaCompetitionBanner />
+      <LayoutTeslaCompetitionBanner
+        v-if="route.name !== LeaderboardSubPage.Competition"
+      />
 
       <ModalsCompetitionWinner
         v-if="

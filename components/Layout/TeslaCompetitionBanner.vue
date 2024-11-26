@@ -3,7 +3,6 @@ import { NuxtUiIcons } from '@shared/types'
 import { isWithinInterval } from 'date-fns'
 import { NoticeBanner, LeaderboardSubPage } from '@/types'
 
-const route = useRoute()
 const appStore = useAppStore()
 const now = useNow({ interval: 1000 })
 
@@ -25,16 +24,10 @@ const isShowCampaign = computed(() => {
   const startDate = new Date(1732633200000)
   const endDate = new Date(1733497200000)
 
-  const isActiveCampaign = isWithinInterval(now.value, {
+  return isWithinInterval(now.value, {
     start: startDate,
     end: endDate
   })
-
-  if (!isActiveCampaign) {
-    return
-  }
-
-  return route.name !== LeaderboardSubPage.Competition
 })
 
 function hideBanner() {
