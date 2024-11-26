@@ -108,6 +108,8 @@
     "vue-tsc": "2.1.6"
   },
   "resolutions": {
+    "@injectivelabs/sdk-ts": "1.14.20-beta.3",
+    "@injectivelabs/wallet-ts": "1.14.20-beta.3",
     "**/libsodium": "npm:@bangjelkoski/noop",
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
