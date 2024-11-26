@@ -172,6 +172,7 @@ async function onSubmit(signature: string) {
                     $t(
                       'leaderboard.competition.winnerModal.getStarted.description',
                       {
+                        competition: latestCampaign,
                         prize: campaignStore.leaderboardCompetitionResult?.prize
                       }
                     )
@@ -195,7 +196,7 @@ async function onSubmit(signature: string) {
 
                     <template #privacyPolicy>
                       <NuxtLink
-                        :to="{ name: MainPage.CompetitionPrivacyPolicy }"
+                        :to="{ name: MainPage.CompetitionPrivacyPolicyTesla }"
                         class="text-blue-500 hover:opacity-50"
                         @click="onClose"
                       >

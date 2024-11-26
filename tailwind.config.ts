@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-// import defaultTheme from 'tailwindcss/defaultTheme'
+import defaultTheme from 'tailwindcss/defaultTheme'
 import plugin from 'tailwindcss/plugin'
 import { colors } from './nuxt-config/tailwind'
 
@@ -87,6 +87,15 @@ export default <Partial<Config>>{
 
       rotate: {
         135: '135deg'
+      },
+
+      fontFamily: {
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        mono: ['Azeret Mono', ...defaultTheme.fontFamily.mono],
+        rubik: ['Rubik One'],
+        orbitron: ['Orbitron'],
+        pingFang: ['PingFang SC'],
+        proximaNova: ['Proxima Nova']
       },
 
       lineHeight: {

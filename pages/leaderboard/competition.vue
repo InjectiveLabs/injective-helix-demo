@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
 import { format, isWithinInterval, addHours, isAfter } from 'date-fns'
@@ -171,6 +172,14 @@ watch(isCampaignStarted, (isStarted) => {
       }"
     >
       <div class="overflow-x-auto">
+        <PartialsLeaderboardCompetitionTeslaBanner
+          v-if="upcomingCampaign || campaignStore.activeCampaign"
+          v-bind="{
+            campaign: (campaignStore.activeCampaign ||
+              upcomingCampaign) as CampaignV2
+          }"
+        />
+
         <!-- Active Campaign -->
         <template v-if="campaignStore.activeCampaign && !isCampaignOver">
           <Teleport to="#leaderboard-target" defer>
@@ -196,10 +205,6 @@ watch(isCampaignStarted, (isStarted) => {
           </Teleport>
 
           <div class="w-full text-sm relative">
-            <PartialsLeaderboardCompetitionBanner
-              v-bind="{ campaign: campaignStore.activeCampaign }"
-            />
-
             <PartialsLeaderboardCompetition
               v-if="!isDuringFirstHourOfCampaign"
               v-bind="{ campaign: campaignStore.activeCampaign }"
@@ -263,12 +268,24 @@ watch(isCampaignStarted, (isStarted) => {
 }
 
 .competition-table {
-  > :nth-child(3) {
-    @apply text-left col-span-2 mr-0.5;
+  &.is-campaign-with-entries {
+    > :nth-child(3) {
+      @apply text-left col-span-2 mr-0.5 ml-0;
+    }
+
+    > :nth-child(4) {
+      @apply text-right md:text-left col-span-1 mr-0.5;
+    }
   }
 
-  > :nth-child(4) {
-    @apply text-right md:text-left col-span-1 mr-0.5;
+  &:not(.is-campaign-with-entries) {
+    > :nth-child(3) {
+      @apply text-left col-span-2 mr-0.5 ml-40 2xl:ml-[16rem];
+    }
+
+    > :nth-child(4) {
+      @apply hidden;
+    }
   }
 }
 

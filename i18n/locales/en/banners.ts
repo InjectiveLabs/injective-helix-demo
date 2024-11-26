@@ -45,9 +45,9 @@ export default {
       cta2: 'Swap TALIS'
     },
 
-    [NoticeBanner.scheduledUpgradeJanuary2024]:
+    [NoticeBanner.ScheduledUpgradeJanuary2024]:
       'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more',
-    [NoticeBanner.scheduledUpgradeAugust2024]:
+    [NoticeBanner.ScheduledUpgradeAugust2024]:
       'Scheduled maintenance at ~15:00 UTC, 20th August 2024 due to the Injective mainnet upgrade. Find out more',
 
     footer: {

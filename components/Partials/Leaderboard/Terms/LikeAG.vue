@@ -227,10 +227,10 @@ import { MainPage, LeaderboardSubPage } from '@/types'
         connection with the Competition will be used by Sponsor in accordance
         with its online privacy policy, located at
         <NuxtLink
-          href="https://helixapp.com/competition-privacy-policy"
+          :to="{ name: MainPage.CompetitionPrivacyPolicyGwagon }"
           class="text-blue-500 hover:text-blue-600"
         >
-          https://helixapp.com/competition-privacy-policy
+          https://helixapp.com/competition-privacy-policy-gwagon
         </NuxtLink>
         and with these Rules.
         <br /><br />

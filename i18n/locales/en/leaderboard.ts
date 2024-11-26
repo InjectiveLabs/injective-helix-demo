@@ -34,6 +34,7 @@ export default {
       },
       share: 'Share',
       noPnlData: 'No PnL results found',
+      tradingPnl: 'Trading PnL',
 
       currentDuration: ({ named }: I18nMessageFunction) =>
         `Trading PnL (${named('duration')})`,
@@ -69,7 +70,7 @@ export default {
       additionalEntriesTooltip:
         'These entries are bonus entries earned by participating in one or more bonus periods during the competition.',
       termsAndConditionsApply: 'Terms and conditions apply',
-      banner: {
+      gwagonBanner: {
         title: 'Trade Like a G',
         blog: 'blog',
         ended: 'Ended',
@@ -79,6 +80,23 @@ export default {
             named('blog'),
             '.'
           ])
+      },
+      teslaBanner: {
+        title: 'Win a Tesla!',
+        blog: 'blog',
+        ended: 'Ended',
+        description: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Trade for a chance to win a Tesla! From November 26th at 15:00 UTC to December 6th at 15:00 UTC, the top trader by PnL will win a Tesla Model 3. For more details, visit the ',
+            named('blog'),
+            '.'
+          ]),
+        top: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Trade on Helix between now and Friday, December 6 for your chance to ',
+            named('linkDescription')
+          ]),
+        linkDescription: 'win a brand new Tesla!'
       },
       share: {
         raffleTickets: ({ named, interpolate }: I18nMessageFunction) =>
@@ -92,7 +110,9 @@ export default {
         getStarted: {
           title: 'Congratulations!',
           description: ({ named }: I18nMessageFunction) =>
-            `You are one of the winners of 'Trade Like a G'! To claim your ${named(
+            `You are one of the winners of ${named(
+              'competition'
+            )}! To claim your ${named(
               'prize'
             )}, please provide additional details.`,
           cta: 'Get Started'
