@@ -23,7 +23,7 @@ export const defaultConfiguration = () => {
       '120',
       '240',
       '360',
-      '1D',
+      'D',
       '1W'
     ],
     supports_marks: false,
