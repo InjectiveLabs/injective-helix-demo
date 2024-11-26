@@ -56,7 +56,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 <template>
   <NuxtLink
     :to="marketRoute"
-    class="rounded-lg shadow-card p-4 bg-coolGray-750 bg-opacity-30 block cursor-pointer"
+    class="rounded-lg p-4 bg-coolGray-750 bg-opacity-30 block cursor-pointer"
   >
     <div class="flex items-center justify-between text-coolGray-500">
       <p class="tracking-widest uppercase text-xs">

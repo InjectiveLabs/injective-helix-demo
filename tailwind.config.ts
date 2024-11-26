@@ -81,9 +81,15 @@ export default <Partial<Config>>{
         footer: '0.85rem'
       },
 
+      flex: {
+        2: '2 2 0%'
+      },
+
+      rotate: {
+        135: '135deg'
+      },
+
       lineHeight: {
-        3.5: '0.875rem',
-        5.5: '1.375rem',
         14: '3.5rem'
       },
 
