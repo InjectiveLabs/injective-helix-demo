@@ -22,9 +22,9 @@ onWalletConnected(() => {
   <AppHocLoading :status="status">
     <div v-if="sharedWalletStore.isUserConnected" class="my-8">
       <AppHorizontalScrollView>
-        <PartialsFeeDiscountsTierInfo class="flex-0-full md:col-span-6" />
-        <PartialsFeeDiscountsStakedAmount class="flex-0-full md:col-span-3" />
-        <PartialsFeeDiscountsTradingVolume class="flex-0-full md:col-span-3" />
+        <PartialsFeeDiscountsTierInfo class="md:col-span-6" />
+        <PartialsFeeDiscountsStakedAmount class="md:col-span-3" />
+        <PartialsFeeDiscountsTradingVolume class="md:col-span-3" />
       </AppHorizontalScrollView>
     </div>
   </AppHocLoading>

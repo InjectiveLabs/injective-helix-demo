@@ -73,7 +73,7 @@ function fetchPastCampaigns() {
         </Teleport>
 
         <div class="w-full text-sm relative">
-          <PartialsLeaderboardCompetitionBanner
+          <PartialsLeaderboardCompetitionGwagonBanner
             v-if="
               selectedCampaign && selectedCampaign.name === FIRST_CAMPAIGN_NAME
             "
@@ -95,41 +95,3 @@ function fetchPastCampaigns() {
     </AppHocLoading>
   </div>
 </template>
-
-<style>
-.competition-table,
-.competition-table-mobile {
-  @apply grid grid-cols-6 md:grid-cols-9 relative;
-
-  > :nth-child(1) {
-    @apply pl-3 xl:pl-7 text-left col-span-1 flex items-center;
-  }
-
-  > :nth-child(2) {
-    @apply text-left col-span-2 md:col-span-5 flex items-center;
-  }
-}
-
-.competition-table {
-  > :nth-child(3) {
-    @apply text-left col-span-2 mr-0.5;
-  }
-
-  > :nth-child(4) {
-    @apply text-right md:text-left col-span-1 mr-0.5;
-  }
-}
-
-.competition-table-mobile {
-  > :nth-child(3) {
-    @apply flex flex-col col-span-3 items-end;
-  }
-}
-
-.competition-gradient-text {
-  background: linear-gradient(124deg, #fff 35.59%, #76838e 99.6%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-</style>
