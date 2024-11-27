@@ -29,7 +29,8 @@ withDefaults(
         <p class="text-2xl font-semibold">
           <SharedAmountFormatter
             :max-trailing-zeros="3"
-            :decimal-places="2"
+            :decimal-places="market.priceDecimals"
+            :max-decimal-places="market.priceDecimals"
             :amount="lastTradedPrice.toFixed()"
           />
         </p>

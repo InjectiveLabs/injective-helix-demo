@@ -537,6 +537,9 @@ export async function createSpotLiquidityBot(params: {
     })
   })
 
+  // eslint-disable-next-line no-console
+  console.log(msg.toWeb3())
+
   await sharedWalletStore.validateAndQueue()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })

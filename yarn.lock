@@ -2196,17 +2196,7 @@
     eslint-plugin-prettier "5.0.0"
     eslint-plugin-vue "9.15.1"
 
-"@injectivelabs/exceptions@ 1.14.19", "@injectivelabs/exceptions@^1.14.19":
-  version "1.14.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.19.tgz#9a0232cd0161c78b8c67e7c2dcab3a02bb89c63b"
-  integrity sha512-QwU6Q6jLWjQ11pUFcEczvmQodDXtOBVQr4Q19k+6M4Te5AfF6qRkwaQxUZWpTelRHwrL6zHj8OBbePso7TKhaQ==
-  dependencies:
-    "@injectivelabs/grpc-web" "^0.0.1"
-    "@injectivelabs/ts-types" "^1.14.19"
-    http-status-codes "^2.2.0"
-    shx "^0.3.2"
-
-"@injectivelabs/exceptions@^1.14.32":
+"@injectivelabs/exceptions@ 1.14.32", "@injectivelabs/exceptions@^1.14.32":
   version "1.14.32"
   resolved "https://registry.yarnpkg.com/@injectivelabs/exceptions/-/exceptions-1.14.32.tgz#8f7fbdb6fa8f9828200b5d60a7f199d889d26d79"
   integrity sha512-5GCp+4KWluVwReCnH1xbxGNAXpTbWS9ub+UgBl59BBaXLDrz2u01BnpdWb5Fzr1aTurAXnPmv8b1uQRWrakYJQ==
@@ -2253,17 +2243,7 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-"@injectivelabs/networks@ 1.14.19":
-  version "1.14.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.19.tgz#66e4bad04f6fd5171c749bb8f758613478a87e73"
-  integrity sha512-U6rdOTZSnZlvMF1iJCgL1QQ77tyZhNZ83e0+pdS1v51KW/i2Q4+1gnaNoUYySoVpgeIbJRN1FItAHfK5wLM2EA==
-  dependencies:
-    "@injectivelabs/exceptions" "^1.14.19"
-    "@injectivelabs/ts-types" "^1.14.19"
-    "@injectivelabs/utils" "^1.14.19"
-    shx "^0.3.2"
-
-"@injectivelabs/networks@^1.14.32":
+"@injectivelabs/networks@ 1.14.32", "@injectivelabs/networks@^1.14.32":
   version "1.14.32"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.32.tgz#d1a5b0c8841531ec3121d52f02d7dff13fe8c809"
   integrity sha512-QfXblFWQ8H1d52LbTQzyjcc7gs9Wzc552dgOzjUXFoggmRicEsMx9q75ONQtRK+m66vtz0dyBC/sR9A5pqt3OA==
@@ -2368,35 +2348,14 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/ts-types@ 1.14.19", "@injectivelabs/ts-types@^1.14.19":
-  version "1.14.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.14.19.tgz#1b176c45eac9054e545e09afe5bdcea382665724"
-  integrity sha512-nQVJrHC+yDPK4IaYKWZ/CUZPJ4oeKLUwArObvJhlNGMtsypthDGj1MLctc0otMigdTc64ZEpVcdrT9Q3g5P6wQ==
-  dependencies:
-    shx "^0.3.2"
-
-"@injectivelabs/ts-types@^1.14.32":
+"@injectivelabs/ts-types@ 1.14.32", "@injectivelabs/ts-types@^1.14.32":
   version "1.14.32"
   resolved "https://registry.yarnpkg.com/@injectivelabs/ts-types/-/ts-types-1.14.32.tgz#826fbc632b9012f9dbf6d62d0d10e6a3ed34cc81"
   integrity sha512-8ZT+PrsgcZQVQwskk9o9VIlV59cw5vMngytrtC4E23mXRf299v9NAIMSAB9onRo5s0a1kIgaOb663VTjkMiPOQ==
   dependencies:
     shx "^0.3.2"
 
-"@injectivelabs/utils@ 1.14.19", "@injectivelabs/utils@^1.14.19":
-  version "1.14.19"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.19.tgz#e85b32ae105524eb8536b91255a520ee895263b2"
-  integrity sha512-iiUanV6Y7cUlH5PBoyYpHd4HWDRHlo806DyRZP7IZCpIIvWhyrKRn1JOtzz4j4XDYxH34/99vN3TsK+VUmrQzQ==
-  dependencies:
-    "@injectivelabs/exceptions" "^1.14.19"
-    "@injectivelabs/ts-types" "^1.14.19"
-    axios "^1.6.4"
-    bignumber.js "^9.0.1"
-    http-status-codes "^2.2.0"
-    shx "^0.3.2"
-    snakecase-keys "^5.1.2"
-    store2 "^2.12.0"
-
-"@injectivelabs/utils@^1.14.32":
+"@injectivelabs/utils@ 1.14.32", "@injectivelabs/utils@^1.14.32":
   version "1.14.32"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.32.tgz#1aa36f0ef3bde88b82c46fc7a2c8efc29a0c1c2b"
   integrity sha512-XCQnSWJ5+Xh76OhyO94Jz0Arum00hapl8Xwn+VaXTL4JlmylgMlFhxr8u0xGHUDqiz/cwW7/X3c3SaWdrDgxRQ==
@@ -16037,15 +15996,15 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#3af40cc1f5437dea60f6ac512d3af505ddeacfd5"
+  resolved "https://github.com/InjectiveLabs/shared-packages#149bef01cf0cb736bab1ef0902bec5b880316521"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
-    "@injectivelabs/exceptions" " 1.14.19"
-    "@injectivelabs/networks" " 1.14.19"
+    "@injectivelabs/exceptions" " 1.14.32"
+    "@injectivelabs/networks" " 1.14.32"
     "@injectivelabs/nuxt-bugsnag" "0.0.12"
     "@injectivelabs/sdk-ts" "1.14.33-beta.1"
-    "@injectivelabs/ts-types" " 1.14.19"
-    "@injectivelabs/utils" " 1.14.19"
+    "@injectivelabs/ts-types" " 1.14.32"
+    "@injectivelabs/utils" " 1.14.32"
     "@injectivelabs/wallet-ts" "1.14.33-beta.1"
     "@nuxtjs/i18n" "8.5.5"
     "@types/canvas-confetti" "^1.6.4"
