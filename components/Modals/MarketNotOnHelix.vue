@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, SpotMarketCyTags } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -38,7 +38,7 @@ function onSubmit() {
 <template>
   <AppModal :is-open="isModalOpen" is-sm is-hide-close-button>
     <template #title>
-      <h3>
+      <h3 :data-cy="dataCyTag(SpotMarketCyTags.ExperimentalMarketLabel)">
         {{ $t('marketNotOnHelix.title') }}
       </h3>
     </template>

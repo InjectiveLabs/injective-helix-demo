@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PortfolioCyTags } from '@/types'
 withDefaults(
   defineProps<{ showLowBalance?: boolean; includeBotsSubaccounts?: boolean }>(),
   { showLowBalance: false, includeBotsSubaccounts: false }
@@ -28,6 +29,9 @@ function changeSubaccount(subaccountId: string) {
               v-for="subaccountId in subaccountOptions"
               :key="subaccountId.value"
               class="px-6 py-4 hover:bg-brand-800 text-sm font-semibold cursor-pointer block w-full text-start"
+              :data-cy="`${dataCyTag(
+                PortfolioCyTags.SubAccountDropdownOptions
+              )}`"
               @click="changeSubaccount(subaccountId.value)"
             >
               {{ $t('account.subaccount') }}: {{ subaccountId.display }}

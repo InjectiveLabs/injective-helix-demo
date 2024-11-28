@@ -27,7 +27,7 @@ const isChecked = computed({
     class="relative"
   >
     <template v-if="$slots.default" #label>
-      <span class="text-xs select-none" :data-cy="dataCy">
+      <span class="text-xs select-none" :data-cy="dataCyTag(`checkbox`)">
         <slot />
       </span>
     </template>

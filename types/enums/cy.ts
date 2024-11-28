@@ -82,7 +82,8 @@ export enum SpotMarketCyTags {
   OrderHistoryTotal = 'order-history-total',
   OrderHistoryTrigger = 'order-history-trigger',
   OrderHistoryStatus = 'order-history-status',
-  CancelOrderButton = 'cancel-order-button'
+  CancelOrderButton = 'cancel-order-button',
+  ExperimentalMarketLabel = 'experimental-market-label'
 }
 
 export enum PerpetualMarketCyTags {
@@ -142,4 +143,14 @@ export enum PerpetualMarketCyTags {
   TradeHistoryAmount = 'trade-history-amount',
   TradeHistoryFee = 'trade-history-fee',
   TradeHistoryTotal = 'trade-history-total'
+}
+
+export enum PortfolioCyTags {
+  PortfolioMenuItems = 'portfolio-menu',
+  SubAccountDropdown = 'sub-account-dropdown',
+  SubAccountDropdownOptions = 'sub-account-dropdown-options',
+  SubAccountTotalBalance = 'total-balance',
+  BalanceTokenSymbol = 'token-symbol',
+  BalanceTotalAmount = 'total-amount',
+  AssetSearch = 'asset-search'
 }
