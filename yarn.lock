@@ -2082,16 +2082,22 @@
     browser-headers "^0.4.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c9a275325 (chore: package bump)
 "@injectivelabs/indexer-proto-ts@1.13.3":
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.13.3.tgz#9f1963a8bc87bd4d6f88262fb4a4552b2e6fa79e"
   integrity sha512-rLesVPCARl+OC82vj063/pUawYu0ISty/2+xg6ya4Lwk6PDbXmtRvw8wpNP6K+pAsBOKaSkRnO4ThP5qbX+E6A==
+<<<<<<< HEAD
 =======
 "@injectivelabs/indexer-proto-ts@1.13.2":
   version "1.13.2"
   resolved "https://registry.npmjs.org/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.13.2.tgz#ad784602ea392b7a25410784cf90eed74895d07b"
   integrity sha512-Sn6TiFslc1Lvxhljr5lJCymIRpAcsyfevAyQlGDbls0ZKHcZnl9oBHlFbCPA04dyNGcs9txU2odzBC/1hsYfwQ==
 >>>>>>> 61ea0494a (chore: minor)
+=======
+>>>>>>> c9a275325 (chore: package bump)
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     google-protobuf "^3.14.0"
@@ -2152,16 +2158,22 @@
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c9a275325 (chore: package bump)
 "@injectivelabs/sdk-ts@1.14.33-beta.2", "@injectivelabs/sdk-ts@^1.14.33-beta.2":
   version "1.14.33-beta.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.33-beta.2.tgz#a8412600ed309d3f5c747939569d776ae407f89c"
   integrity sha512-h7R88e9Npg6BjFt10+TaX5OZS+0J6yDeSdC65iy8ilehb6tuI6IvKDX3P67KwZROm+uFlPkLXBBwQoQ+jhQenQ==
+<<<<<<< HEAD
 =======
 "@injectivelabs/sdk-ts@1.14.33-beta.1", "@injectivelabs/sdk-ts@^1.14.33-beta.1":
   version "1.14.33-beta.1"
   resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.14.33-beta.1.tgz#4c7ca12ca5e236b26a98dee8a94b52b0fcc77acc"
   integrity sha512-+hyZSEktxWvORWmSPchHHdY9zOZ1ZyUaQFtJs6dYoHZmw+iSj5HV5Hj7T/QrmwBp0hozfiMeDtTnUcDAzxzvSQ==
 >>>>>>> 61ea0494a (chore: minor)
+=======
+>>>>>>> c9a275325 (chore: package bump)
   dependencies:
     "@apollo/client" "^3.11.10"
     "@cosmjs/amino" "^0.32.3"
@@ -2174,10 +2186,14 @@
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@injectivelabs/indexer-proto-ts" "1.13.3"
 =======
     "@injectivelabs/indexer-proto-ts" "1.13.2"
 >>>>>>> 61ea0494a (chore: minor)
+=======
+    "@injectivelabs/indexer-proto-ts" "1.13.3"
+>>>>>>> c9a275325 (chore: package bump)
     "@injectivelabs/mito-proto-ts" "1.13.0"
     "@injectivelabs/networks" "^1.14.32"
     "@injectivelabs/olp-proto-ts" "1.13.1"
@@ -2246,16 +2262,22 @@
     store2 "^2.12.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c9a275325 (chore: package bump)
 "@injectivelabs/wallet-ts@1.14.33-beta.2":
   version "1.14.33-beta.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.33-beta.2.tgz#7deef23f55643bced9b6a9fd891f7f160fee0217"
   integrity sha512-V7FgkiSD5iplx9aul4J5oH64r2NuS/wi69ahjbsEOQcink72pDZ5YT1mRM4ccf0IKTgcsSCeMGtWYehJI9cKNQ==
+<<<<<<< HEAD
 =======
 "@injectivelabs/wallet-ts@1.14.33-beta.1":
   version "1.14.33-beta.1"
   resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.33-beta.1.tgz#d5a32284792262501ace149e33e4e1cbcf6fedaf"
   integrity sha512-z5LNA00g+gsKLayJ7Sj8gSzlLH4Mb80PaUaWSCBsFtZbXNg5PwPxibnKgPloeU8MCuHFCsP1dMUWPjFscbu0nA==
 >>>>>>> 61ea0494a (chore: minor)
+=======
+>>>>>>> c9a275325 (chore: package bump)
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2266,10 +2288,14 @@
     "@injectivelabs/exceptions" "^1.14.32"
     "@injectivelabs/networks" "^1.14.32"
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@injectivelabs/sdk-ts" "^1.14.33-beta.2"
 =======
     "@injectivelabs/sdk-ts" "^1.14.33-beta.1"
 >>>>>>> 61ea0494a (chore: minor)
+=======
+    "@injectivelabs/sdk-ts" "^1.14.33-beta.2"
+>>>>>>> c9a275325 (chore: package bump)
     "@injectivelabs/ts-types" "^1.14.32"
     "@injectivelabs/utils" "^1.14.32"
     "@keplr-wallet/cosmos" "^0.12.71"
@@ -12688,7 +12714,12 @@ libsodium-wrappers-sumo@^0.7.11:
   dependencies:
     libsodium-sumo "^0.7.15"
 
-libsodium-wrappers@^0.7.6, "libsodium-wrappers@npm:@bangjelkoski/noop", "libsodium@npm:@bangjelkoski/noop":
+libsodium-wrappers@^0.7.6, "libsodium-wrappers@npm:@bangjelkoski/noop":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@bangjelkoski/noop/-/noop-0.0.1.tgz#172235ce00dd4269258c420f01464f07eb9801ed"
+  integrity sha512-lQgYJJbok2Unu2vKh0TAtWxXo16kLXNrjqmfo0hQTAuE/tVvz5zVqMgGsj+gMkkWfsInEbUndG0nlyCwaFv8hQ==
+
+"libsodium@npm:@bangjelkoski/noop":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@bangjelkoski/noop/-/noop-0.0.1.tgz#172235ce00dd4269258c420f01464f07eb9801ed"
   integrity sha512-lQgYJJbok2Unu2vKh0TAtWxXo16kLXNrjqmfo0hQTAuE/tVvz5zVqMgGsj+gMkkWfsInEbUndG0nlyCwaFv8hQ==
@@ -16377,7 +16408,16 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -16446,7 +16486,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -16459,6 +16499,13 @@ strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -18365,7 +18412,7 @@ workbox-cdn@^5.1.4:
   resolved "https://registry.yarnpkg.com/workbox-cdn/-/workbox-cdn-5.1.4.tgz#dbd8acee70b1978be70106207590bbb76af935cf"
   integrity sha512-04gM3mi8QGutokkSaA9xunVfjURnLbo9TTWyi8+pSDCEW5cD8u5GbJiliLK1vB9CShk/9OY1UDfW+XcmD+d6KQ==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -18387,6 +18434,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
