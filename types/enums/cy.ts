@@ -4,7 +4,6 @@ export enum NavBarCyTags {
   WalletLoginButton = 'button-login',
   WalletSignUpButton = 'button-signup'
 }
-
 export enum CommonCyTags {
   PercentageAmount = 'percentage-amount',
   MarketDropdown = 'market-dropdown',
@@ -152,7 +151,11 @@ export enum PortfolioCyTags {
   SubAccountDropdown = 'sub-account-dropdown',
   SubAccountDropdownOptions = 'sub-account-dropdown-options',
   SubAccountTotalBalance = 'total-balance',
+  AssetSearch = 'asset-search',
   BalanceTokenSymbol = 'token-symbol',
+  BalanceAvailableAmount = 'available-amount',
+  BalanceInUseOrReservedAmount = 'use-reserved-amount',
+  BalanceUnrealisedPnl = 'unrealised-pnl',
   BalanceTotalAmount = 'total-amount',
-  AssetSearch = 'asset-search'
+  BalanceTotalValue = 'total-value'
 }
