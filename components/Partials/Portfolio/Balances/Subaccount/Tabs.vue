@@ -2,7 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { NuxtUiIcons } from '@shared/types'
-import { PortfolioCyTags } from '~/types'
+import { PortfolioCyTags } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
 
