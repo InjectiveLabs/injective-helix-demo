@@ -5,6 +5,7 @@ import { marketTypeOptionsToHideCategory } from '@/app/data/market'
 import { MarketQuoteType, MarketTypeOption, MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
+const { sm } = useTwBreakpoints()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
@@ -29,6 +30,15 @@ const activeTypeOptions = Object.values(MarketTypeOption)
 
 const activeCategoryOptions = Object.values(MarketCategoryType).map(
   (value) => ({ label: `markets.${value}`, value })
+)
+
+const mobileMarketTypeOption = Object.values(MarketTypeOption).map((value) => ({
+  label: value,
+  value
+}))
+
+const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
+  ([key, value]) => ({ label: key, value })
 )
 
 const search = ref('')
@@ -78,7 +88,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
         <div
           class="flex max-md:flex-col max-md:items-start gap-2 justify-between"
         >
-          <div class="flex gap-2 flex-wrap">
+          <div v-if="sm" class="flex gap-2 flex-wrap">
             <AppButtonSelect
               v-for="category in activeTypeOptions"
               :key="category.value"
@@ -89,6 +99,20 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
             >
               {{ category.value }}
             </AppButtonSelect>
+          </div>
+          <div v-else class="w-full">
+            <p class="text-xs text-gray-500 mb-2">
+              {{ $t('common.marketType') }}
+            </p>
+            <USelectMenu
+              v-model="activeType"
+              value-attribute="value"
+              :options="mobileMarketTypeOption"
+              :ui-menu="{
+                select: 'capitalize',
+                option: { base: 'capitalize' }
+              }"
+            />
           </div>
 
           <div class="flex overflow-hidden rounded border">
@@ -105,21 +129,36 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
           </div>
         </div>
 
-        <div class="flex justify-between items-center flex-wrap">
+        <div
+          class="flex justify-between sm:items-center flex-wrap max-sm:flex-col"
+        >
           <div
             v-if="!marketTypeOptionsToHideCategory.includes(activeType)"
-            class="flex gap-2 flex-wrap justify-between"
+            class="sm:flex gap-2 flex-wrap justify-between max-sm:w-full"
           >
-            <AppButtonSelect
-              v-for="category in activeCategoryOptions"
-              :key="category.value"
-              v-model="activeCategory"
-              v-bind="{ value: category.value }"
-              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
-              active-classes="text-white !bg-brand-700"
-            >
-              {{ category.value }}
-            </AppButtonSelect>
+            <template v-if="sm">
+              <AppButtonSelect
+                v-for="category in activeCategoryOptions"
+                :key="category.value"
+                v-model="activeCategory"
+                v-bind="{ value: category.value }"
+                class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
+                active-classes="text-white !bg-brand-700"
+              >
+                {{ category.value }}
+              </AppButtonSelect>
+            </template>
+
+            <div v-else>
+              <p class="text-xs text-gray-500 mb-2">
+                {{ $t('common.marketCategory') }}
+              </p>
+              <USelectMenu
+                v-model="activeCategory"
+                value-attribute="value"
+                :options="mobileMarketCategoryType"
+              />
+            </div>
           </div>
 
           <AppCheckbox2 v-model="isLowVolumeMarketsVisible">

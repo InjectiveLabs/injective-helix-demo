@@ -5,10 +5,12 @@ import { backupPromiseCall } from '@/app/utils/async'
 
 const props = withDefaults(
   defineProps<{
+    extraClass?: string
     campaign: Campaign
     forceDisabled?: boolean
   }>(),
   {
+    extraClass: '',
     forceDisabled: false
   }
 )
@@ -58,6 +60,7 @@ function claimRewards() {
 
 <template>
   <AppButton
+    :class="extraClass"
     v-bind="{ status }"
     size="xs"
     :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"

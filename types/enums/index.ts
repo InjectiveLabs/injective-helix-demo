@@ -193,7 +193,7 @@ export enum BusEvents {
   AssetDetailsModalPayload = 'asset-details-modal-payload',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
-  BankTranksferModalWithDenom = 'bank-transfer-modal-with-denom',
+  BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
 
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'

@@ -11,15 +11,15 @@ import {
   SpotOrderHistoryFilterForm
 } from '@/types'
 
-const derivativeStore = useDerivativeStore()
+const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
+const derivativeStore = useDerivativeStore()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
-const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const filterredTriggers = computed(() =>
+const filteredTriggers = computed(() =>
   derivativeStore.subaccountConditionalOrders.filter((trigger) => {
     const isPartOfMarket = formValues[SpotOrderHistoryFilterField.Market]
       ? trigger.marketId === formValues[SpotOrderHistoryFilterField.Market]
@@ -62,10 +62,8 @@ function fetchDerivativeTriggers() {
 </script>
 
 <template>
-  <div class="divide-y border-y">
+  <div class="divide-y" :class="`${lg ? 'border-y' : 'border-t'}`">
     <PartialsPortfolioOrdersFuturesTriggersTabs />
-
-    <PartialsPortfolioOrdersFuturesTriggersTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -75,24 +73,13 @@ function fetchDerivativeTriggers() {
     />
 
     <template v-else>
-      <div v-if="isMobile">
-        <PartialsPortfolioOrdersFuturesTriggersTableMobileRow
-          v-for="trigger in filterredTriggers"
-          :key="`${trigger.orderHash}-${trigger.cid}`"
-          v-bind="{ trigger }"
-        />
-      </div>
-
-      <template v-else>
-        <PartialsPortfolioOrdersFuturesTriggersTableRow
-          v-for="trigger in filterredTriggers"
-          :key="`${trigger.orderHash}-${trigger.cid}`"
-          v-bind="{ trigger }"
-        />
-      </template>
+      <PartialsPortfolioOrdersFuturesTriggersTable
+        v-if="filteredTriggers.length"
+        :triggers="filteredTriggers"
+      />
 
       <CommonEmptyList
-        v-if="derivativeStore.subaccountConditionalOrders.length === 0"
+        v-if="!derivativeStore.subaccountConditionalOrders.length"
         :message="$t('trade.emptyTriggers')"
       />
     </template>

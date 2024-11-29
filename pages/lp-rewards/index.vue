@@ -44,18 +44,11 @@ onMounted(() => {
     />
     <PartialsLiquidityTabs class="mt-10 mb-4" />
 
-    <div class="overflow-y-auto">
-      <table class="w-full min-w-2xl">
-        <PartialsLiquidityTableHeader />
-
-        <tbody v-if="campaignStore.latestRoundCampaigns" class="divide-y">
-          <PartialsLiquidityTableRow
-            v-for="campaign in campaignStore.latestRoundCampaigns"
-            :key="campaign.campaignId"
-            v-bind="{ campaign }"
-          />
-        </tbody>
-      </table>
+    <div class="overflow-y-auto divide-y">
+      <PartialsLiquidityTable
+        v-if="campaignStore.latestRoundCampaigns"
+        :campaigns="campaignStore.latestRoundCampaigns"
+      />
     </div>
 
     <ModalsLpRewards

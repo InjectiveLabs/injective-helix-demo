@@ -7,6 +7,7 @@ const props = withDefaults(
     amount: string | number
     shouldTruncate?: boolean
     maxTrailingZeros?: number
+    showZeroAsEmDash?: boolean
   }>(),
   {
     maxTrailingZeros: 3,
@@ -27,6 +28,7 @@ const { valueToFixed: amountToFixed } = useSharedBigNumberFormatter(
   <SharedAmountCollapsed
     v-bind="{
       shouldTruncate,
+      showZeroAsEmDash,
       maxTrailingZeros,
       amount: amountToFixed
     }"

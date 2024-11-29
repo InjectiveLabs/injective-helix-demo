@@ -1,7 +1,17 @@
-import { I18nMessageFunction } from '@/types'
+import { BalanceTableColumn, I18nMessageFunction } from '@/types'
 
 export default {
   account: {
+    table: {
+      [BalanceTableColumn.Assets]: 'Assets',
+      [BalanceTableColumn.Available]: 'Available',
+      [BalanceTableColumn.UsedOrReserved]: 'In Use/Reserved',
+      [BalanceTableColumn.UnrealizedPnl]: 'Unrealized PnL',
+      [BalanceTableColumn.Total]: 'Total',
+      [BalanceTableColumn.TotalUsd]: 'Total Value (USD)',
+      [BalanceTableColumn.Staked]: 'Staked',
+      [BalanceTableColumn.StakedUsd]: 'Staked (USD)'
+    },
     action: 'Action',
     assets: 'Assets',
     accountOverview: 'Account Overview',

@@ -17,7 +17,6 @@ const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
-const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -112,7 +111,6 @@ onSubaccountChange(fetchData)
       @side:update="fetchData"
       @type:update="fetchData"
     />
-    <PartialsPortfolioOrdersSpotTradeHistoryTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -121,21 +119,10 @@ onSubaccountChange(fetchData)
       :height="57"
     />
     <template v-else>
-      <div v-if="isMobile">
-        <PartialsPortfolioOrdersSpotTradeHistoryTableMobileRow
-          v-for="trade in spotStore.subaccountTrades"
-          :key="`${trade.orderHash}-${trade.tradeId}`"
-          v-bind="{ trade }"
-        />
-      </div>
-
-      <template v-else>
-        <PartialsPortfolioOrdersSpotTradeHistoryTableRow
-          v-for="trade in spotStore.subaccountTrades"
-          :key="`${trade.orderHash}-${trade.tradeId}`"
-          v-bind="{ trade }"
-        />
-      </template>
+      <PartialsPortfolioOrdersSpotTradeHistoryTable
+        v-if="spotStore.subaccountTrades.length"
+        :trades="spotStore.subaccountTrades"
+      />
 
       <AppPagination
         v-if="spotStore.subaccountTrades.length > 0"
@@ -150,7 +137,7 @@ onSubaccountChange(fetchData)
       />
 
       <CommonEmptyList
-        v-if="spotStore.subaccountTrades.length === 0"
+        v-if="!spotStore.subaccountTrades.length"
         :message="$t('trade.emptyOrders')"
       />
     </template>

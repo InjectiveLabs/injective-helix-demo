@@ -1,30 +1,16 @@
 <script setup lang="ts">
 const derivativeStore = useDerivativeStore()
-const isMobile = useIsMobile()
 </script>
 
 <template>
   <div>
-    <PartialsPortfolioOrdersFuturesTradeHistoryTableHeader v-if="!isMobile" />
-
-    <div v-if="isMobile">
-      <PartialsPortfolioOrdersFuturesTradeHistoryTableMobileRow
-        v-for="trade in derivativeStore.subaccountTrades"
-        :key="`${trade.orderHash}-${trade.tradeId}`"
-        v-bind="{ trade }"
-      />
-    </div>
-
-    <template v-else>
-      <PartialsPortfolioOrdersFuturesTradeHistoryTableRow
-        v-for="trade in derivativeStore.subaccountTrades"
-        :key="`${trade.orderHash}-${trade.tradeId}`"
-        v-bind="{ trade }"
-      />
-    </template>
+    <PartialsPortfolioOrdersFuturesTradeHistoryTable
+      v-if="derivativeStore.subaccountTrades.length"
+      :trades="derivativeStore.subaccountTrades"
+    />
 
     <CommonEmptyList
-      v-if="derivativeStore.subaccountTrades.length === 0"
+      v-if="!derivativeStore.subaccountTrades.length"
       :message="'No Trade History'"
     />
   </div>

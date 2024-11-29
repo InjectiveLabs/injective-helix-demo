@@ -1,7 +1,25 @@
-import { I18nMessageFunction } from '@/types'
+import {
+  I18nMessageFunction,
+  LiquidityTableColumn,
+  LiquidityDashboardTableColumn
+} from '@/types'
 
 export default {
   campaign: {
+    table: {
+      liquidity: {
+        [LiquidityTableColumn.Market]: 'Market',
+        [LiquidityTableColumn.Rewards]: 'Rewards',
+        [LiquidityTableColumn.ActiveBots]: 'Active Bots',
+        [LiquidityTableColumn.Volume]: 'Volume'
+      },
+      dashboard: {
+        [LiquidityDashboardTableColumn.Market]: 'Market',
+        [LiquidityDashboardTableColumn.Volume]: 'Volume',
+        [LiquidityDashboardTableColumn.Rewards]: 'Rewards',
+        [LiquidityDashboardTableColumn.EstRewards]: 'Est. Rewards'
+      }
+    },
     apy: 'APY',
     rank: 'Rank',
     error: 'Error',

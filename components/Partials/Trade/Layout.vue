@@ -122,12 +122,10 @@ onUnmounted(() => {
     </div>
 
     <div
-      class="[grid-area:orders] relative h-[500px] overflow-x-auto border-t border-b"
+      class="[grid-area:orders] relative h-[500px] border-t border-b overflow-auto"
     >
       <div class="absolute left-0 right-0 top-0">
-        <div class="lg:min-w-[1600px]">
-          <slot name="orders" />
-        </div>
+        <slot name="orders" />
       </div>
     </div>
   </div>

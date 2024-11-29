@@ -1,7 +1,15 @@
-import { I18nMessageFunction } from '@/types'
+import { MarketsTableColumn, I18nMessageFunction } from '@/types'
 
 export default {
   trade: {
+    table: {
+      markets: {
+        [MarketsTableColumn.Markets]: 'Markets',
+        [MarketsTableColumn.LastPrice]: 'Last Price',
+        [MarketsTableColumn.MarketChange24h]: 'Change (24h)',
+        [MarketsTableColumn.MarketVolume24h]: 'Volume (24h)'
+      }
+    },
     get: 'Get',
     asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
     assetTransfer: 'Asset Transfer',
@@ -110,7 +118,7 @@ export default {
     emptyPositions: 'No positions found',
     emptyTrades: 'No trades found',
     emptySwaps: 'No swaps found',
-    emptyTriggers: 'No triggers found',
+    emptyTriggers: 'No Triggers Found',
     entry_price: 'Entry price',
     liquidation_price: 'Liquidation Price',
     closePosition: 'Close Position',

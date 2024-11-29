@@ -12,7 +12,6 @@ const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 
 const { values } = useForm<PositionsFilterForm>()
-const isMobile = useIsMobile()
 
 const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
@@ -57,36 +56,18 @@ function onSharePosition(position: Position | PositionV2) {
 <template>
   <PartialsPortfolioPositionsTabs />
 
-  <div class="overflow-x-auto">
-    <div class="lg:min-w-[1700px] divide-y border-b">
-      <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
-
-      <template v-if="isMobile">
-        <PartialsPortfolioPositionsTableMobileRow
-          v-for="position in filteredPosition"
-          :key="`${position.marketId}-${position.subaccountId}`"
-          v-bind="{ position }"
-          @margin:add="addMargin"
-          @tpsl:add="addTakeProfitStopLoss"
-          @position:share="onSharePosition"
-        />
-      </template>
-
-      <template v-else>
-        <PartialsPortfolioPositionsTableRow
-          v-for="position in filteredPosition"
-          :key="`${position.marketId}-${position.subaccountId}`"
-          v-bind="{ position }"
-          @margin:add="addMargin"
-          @tpsl:add="addTakeProfitStopLoss"
-          @position:share="onSharePosition"
-        />
-      </template>
-    </div>
+  <div class="overflow-x-auto lg:min-w-[1400px] divide-y border-b">
+    <PartialsPortfolioPositionsTable
+      v-if="filteredPosition.length"
+      :positions="filteredPosition"
+      @margin:add="addMargin"
+      @tpsl:add="addTakeProfitStopLoss"
+      @position:share="onSharePosition"
+    />
   </div>
 
   <CommonEmptyList
-    v-if="filteredPosition.length === 0"
+    v-if="!filteredPosition.length"
     :message="'No Positions Open'"
   />
 

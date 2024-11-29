@@ -16,7 +16,7 @@ useForm<DerivativeGridTradingForm>({
         :key="type"
         v-bind="{ value: type }"
         v-model="strategyType"
-        class="flex-1 p-2 border text-gray-600 border-transparent rounded-md text-sm font-medium"
+        class="flex-1 p-2 border text-coolGray-600 border-transparent rounded-md text-sm font-medium"
         active-classes="text-white !border-blue-400"
       >
         {{ $t(`sgt.${type}`) }}

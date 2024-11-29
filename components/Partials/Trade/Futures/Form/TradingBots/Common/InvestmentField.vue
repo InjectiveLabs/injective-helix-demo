@@ -119,7 +119,7 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-500">
+        <div class="text-right text-xs text-coolGray-500">
           {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>

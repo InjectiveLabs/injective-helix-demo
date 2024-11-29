@@ -93,10 +93,10 @@ const rewardsFormatted = computed(() =>
       <div class="p-3">
         <p>
           <span
-            v-for="({ amount, symbol }, i) in rewardsFormatted"
+            v-for="({ amount, symbol }, index) in rewardsFormatted"
             :key="symbol"
           >
-            {{ i > 0 ? ',' : '' }} {{ amount }} {{ symbol }}
+            {{ index > 0 ? ',' : '' }} {{ amount }} {{ symbol }}
           </span>
         </p>
       </div>
