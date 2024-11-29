@@ -83,7 +83,9 @@ export enum SpotMarketCyTags {
   OrderHistoryTrigger = 'order-history-trigger',
   OrderHistoryStatus = 'order-history-status',
   CancelOrderButton = 'cancel-order-button',
-  ExperimentalMarketLabel = 'experimental-market-label'
+  ExperimentalMarketLabel = 'experimental-market-label',
+  IUnderstandButton = 'i-understand',
+  DoNotShowAgainCheckbox = 'do-not-show-again'
 }
 
 export enum PerpetualMarketCyTags {

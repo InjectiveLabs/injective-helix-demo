@@ -4,7 +4,6 @@ import type { VariantProps } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
 import { ClassValue, clsx } from 'clsx'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { computed, useSlots } from 'vue'
 
 const button = cva(
   'flex items-center justify-center transition-all rounded-md font-semibold font-sans border disabled:cursor-not-allowed',
@@ -74,12 +73,6 @@ const props = withDefaults(
     isLoading: false
   }
 )
-
-const slots = useSlots()
-const formattedSlotContent = computed(() => {
-  const slotContent = slots.default?.()[0]?.children || 'default'
-  return slotContent.toString().trim().replace(/\s+/g, '-').toLowerCase()
-})
 </script>
 
 <template>
@@ -93,7 +86,6 @@ const formattedSlotContent = computed(() => {
       :class="twMerge(button({ size, variant }), clsx(props.class))"
       :disabled="disabled"
       v-bind="$attrs"
-      :data-cy="dataCyTag(`button-${formattedSlotContent}`)"
     >
       <span v-if="status.isLoading() || isLoading">&#8202;</span>
       <AppSpinner v-if="status.isLoading() || isLoading" is-sm is-white />

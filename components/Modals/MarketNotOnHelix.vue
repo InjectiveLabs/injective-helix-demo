@@ -61,12 +61,19 @@ function onSubmit() {
       </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onSubmit">
+        <AppButton
+          class="bg-blue-500 text-blue-900"
+          :data-cy="dataCyTag(SpotMarketCyTags.IUnderstandButton)"
+          @click="onSubmit"
+        >
           {{ $t('marketNotOnHelix.cta') }}
         </AppButton>
       </div>
 
-      <div class="flex">
+      <div
+        class="flex"
+        :data-cy="dataCyTag(SpotMarketCyTags.DoNotShowAgainCheckbox)"
+      >
         <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
           <slot class="text-xs">
             {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}
