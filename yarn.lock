@@ -35,7 +35,7 @@
 
 "@apollo/client@^3.11.10":
   version "3.11.10"
-  resolved "https://registry.npmjs.org/@apollo/client/-/client-3.11.10.tgz#e16ae82ea9b16536ffd109847d24f9293fab5c4d"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.11.10.tgz#e16ae82ea9b16536ffd109847d24f9293fab5c4d"
   integrity sha512-IfGc+X4il0rDqVQBBWdxIKM+ciDCiDzBq9+Bg9z4tJMi87uF6po4v+ddiac1wP0ARgVPsFwEIGxK7jhN4pW8jg==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
@@ -2227,7 +2227,7 @@
 
 "@injectivelabs/test-utils@^1.14.32":
   version "1.14.32"
-  resolved "https://registry.npmjs.org/@injectivelabs/test-utils/-/test-utils-1.14.32.tgz#580c2605dc301c34ce75e3b2267ece47c5291f0d"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/test-utils/-/test-utils-1.14.32.tgz#580c2605dc301c34ce75e3b2267ece47c5291f0d"
   integrity sha512-MF/KJSxBGKB9cbRVAACLABk9dGSAiRP7Utt5cKeRIk1ejMMpF+txcTesDgu3G2mWUJf+MISRJVhxB8iv8Hy2/A==
   dependencies:
     "@injectivelabs/exceptions" "^1.14.32"
