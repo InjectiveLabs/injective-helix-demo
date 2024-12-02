@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, SpotMarketCyTags } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
@@ -38,7 +38,7 @@ function onSubmit() {
 <template>
   <AppModal :is-open="isModalOpen" is-sm is-hide-close-button>
     <template #title>
-      <h3>
+      <h3 :data-cy="dataCyTag(SpotMarketCyTags.ExperimentalMarketLabel)">
         {{ $t('marketNotOnHelix.title') }}
       </h3>
     </template>
@@ -61,12 +61,19 @@ function onSubmit() {
       </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onSubmit">
+        <AppButton
+          class="bg-blue-500 text-blue-900"
+          :data-cy="dataCyTag(SpotMarketCyTags.IUnderstandButton)"
+          @click="onSubmit"
+        >
           {{ $t('marketNotOnHelix.cta') }}
         </AppButton>
       </div>
 
-      <div class="flex">
+      <div
+        class="flex"
+        :data-cy="dataCyTag(SpotMarketCyTags.DoNotShowAgainCheckbox)"
+      >
         <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
           <slot class="text-xs">
             {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}

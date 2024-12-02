@@ -4,7 +4,6 @@ export enum NavBarCyTags {
   WalletLoginButton = 'button-login',
   WalletSignUpButton = 'button-signup'
 }
-
 export enum CommonCyTags {
   PercentageAmount = 'percentage-amount',
   MarketDropdown = 'market-dropdown',
@@ -82,7 +81,10 @@ export enum SpotMarketCyTags {
   OrderHistoryTotal = 'order-history-total',
   OrderHistoryTrigger = 'order-history-trigger',
   OrderHistoryStatus = 'order-history-status',
-  CancelOrderButton = 'cancel-order-button'
+  CancelOrderButton = 'cancel-order-button',
+  ExperimentalMarketLabel = 'experimental-market-label',
+  IUnderstandButton = 'i-understand',
+  DoNotShowAgainCheckbox = 'do-not-show-again'
 }
 
 export enum PerpetualMarketCyTags {
@@ -142,4 +144,18 @@ export enum PerpetualMarketCyTags {
   TradeHistoryAmount = 'trade-history-amount',
   TradeHistoryFee = 'trade-history-fee',
   TradeHistoryTotal = 'trade-history-total'
+}
+
+export enum PortfolioCyTags {
+  PortfolioMenuItems = 'portfolio-menu',
+  SubAccountDropdown = 'sub-account-dropdown',
+  SubAccountDropdownOptions = 'sub-account-dropdown-options',
+  SubAccountTotalBalance = 'total-balance',
+  AssetSearch = 'asset-search',
+  BalanceTokenSymbol = 'token-symbol',
+  BalanceAvailableAmount = 'available-amount',
+  BalanceInUseOrReservedAmount = 'use-reserved-amount',
+  BalanceUnrealisedPnl = 'unrealised-pnl',
+  BalanceTotalAmount = 'total-amount',
+  BalanceTotalValue = 'total-value'
 }

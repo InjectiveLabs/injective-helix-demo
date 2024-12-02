@@ -2,6 +2,7 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { NuxtUiIcons } from '@shared/types'
+import { PortfolioCyTags } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
 
@@ -76,7 +77,9 @@ const { valueToString: accountTotalBalanceInUsdToString } =
       >
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
-          <span>${{ accountTotalBalanceInUsdToString }}</span>
+          <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
+            ${{ accountTotalBalanceInUsdToString }}
+          </span>
         </CommonSkeletonSubaccountAmount>
       </p>
     </div>
@@ -92,6 +95,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
         v-model="search"
         class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
         placeholder="Filter by asset"
+        :data-cy="dataCyTag(PortfolioCyTags.AssetSearch)"
       />
     </label>
 

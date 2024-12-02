@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BalanceTableColumn } from '@/types'
+import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 
 const { t } = useLang()
 const {
@@ -155,7 +155,12 @@ function toggleStakingRow() {
           <div class="flex items-center gap-2 text-left">
             <UAvatar size="xs" :src="row.token.logo" />
             <div class="ml-2">
-              <p class="font-medium text-base mb-1">{{ row.token.symbol }}</p>
+              <p
+                class="font-medium text-base mb-1"
+                :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
+              >
+                {{ row.token.symbol }}
+              </p>
               <p class="text-xs text-coolGray-500">{{ row.token.name }}</p>
             </div>
             <UButton
@@ -189,6 +194,7 @@ function toggleStakingRow() {
         <AppAmount
           v-if="!row.isStakingRow"
           v-bind="{ amount: row[BalanceTableColumn.Available] }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
         />
       </template>
 
@@ -202,6 +208,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved]
           }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
       </template>
 
@@ -212,6 +219,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UnrealizedPnl]
           }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
         />
       </template>
 
@@ -221,6 +229,7 @@ function toggleStakingRow() {
           v-bind="{
             amount: row[BalanceTableColumn.Total]
           }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
       </template>
 
@@ -231,6 +240,7 @@ function toggleStakingRow() {
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd]
             }"
+            :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
           />
         </div>
       </template>

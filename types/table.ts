@@ -45,14 +45,16 @@ export enum LiquidityTableColumn {
   Market = 'market',
   Rewards = 'rewards',
   ActiveBots = 'active-bots',
-  Volume = 'volume'
+  Volume = 'volume',
+  Action = 'action'
 }
 
 export enum LiquidityDashboardTableColumn {
   Market = 'market',
   Volume = 'volume',
   Rewards = 'rewards',
-  EstRewards = 'est-rewards'
+  EstRewards = 'est-rewards',
+  Action = 'action'
 }
 
 export enum PortfolioSpotOpenOrdersTableColumn {

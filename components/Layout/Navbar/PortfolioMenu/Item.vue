@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LocationAsRelativeRaw } from 'vue-router'
 import { NuxtUiIcons } from '@shared/types'
-import { MenuItem, MenuItemType } from '@/types'
+import { MenuItem, MenuItemType, PortfolioCyTags } from '@/types'
 
 const route = useRoute()
 
@@ -44,7 +44,13 @@ function toggle() {
   >
     <UIcon v-if="item.icon" :name="item.icon" class="h-4 w-4 min-w-4" />
 
-    <div>{{ $t(item.label) }}</div>
+    <div
+      :data-cy="`${dataCyTag(PortfolioCyTags.PortfolioMenuItems)}-${
+        item.label
+      }`"
+    >
+      {{ $t(item.label) }}
+    </div>
   </NuxtLink>
 
   <template v-else>
