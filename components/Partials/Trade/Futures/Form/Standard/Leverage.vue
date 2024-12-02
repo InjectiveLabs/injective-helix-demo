@@ -151,24 +151,11 @@ const leverageNumber = computed({
 
     <div class="flex items-center">
       <div class="flex-1 pr-4 relative">
-        <div
-          class="absolute top-2 bottom-3 right-4 inset-x-0 bg-brand-800 rounded-md"
-        />
-
-        <!-- <input
-          v-model="leverageModel"
-          min="0.01"
-          :max="Number(maxLeverageAvailable)"
-          step="0.01"
-          type="range"
-          class="range w-full"
-          @mouseup="onMouseUp"
-        /> -->
-        <URange
+        <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
-          :min="0.01"
-          :max="Number(maxLeverageAvailable)"
           :step="0.01"
+          :min-leverage="0.01"
+          :max-leverage="Number(maxLeverageAvailable)"
           @mouseup="onMouseUp"
         />
       </div>
