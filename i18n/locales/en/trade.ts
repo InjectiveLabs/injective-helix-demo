@@ -191,6 +191,7 @@ export default {
       'Mark Price: The oracle price for the base asset.',
     funding_rate_tooltip:
       'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
+    estFundingRate: 'Est. Funding Rate',
     estFeeRebate: 'Est. Fee Rebate',
     estFeeRebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',

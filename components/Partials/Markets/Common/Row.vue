@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   NuxtUiIcons,
   SharedMarketChange,
   SharedUiMarketSummary
 } from '@shared/types'
+import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { PerpetualMarket } from '@injectivelabs/sdk-ts'
+import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import { rwaMarketIds } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
 import { UiMarketWithToken, MarketCyTags } from '@/types'
@@ -42,6 +44,33 @@ const { valueToFixed: volumeToFixed } = useSharedBigNumberFormatter(
     decimalPlaces: 0
   }
 )
+
+const {
+  valueToFixed: fundingRateToFixed,
+  valueToBigNumber: fundingRateToBigNumber
+} = useSharedBigNumberFormatter(
+  computed(() => {
+    const market = props.market as PerpetualMarket
+
+    return formatFundingRate({
+      info: market.perpetualMarketInfo,
+      funding: market.perpetualMarketFunding
+    })
+  }),
+  {
+    decimalPlaces: 4,
+    roundingMode: BigNumberInBase.ROUND_DOWN
+  }
+)
+
+// const fundingRate = computed(() => {
+//   const sign = rateInBigNumber.value.gt(0) ? '+' : ''
+
+//   return `${sign}${rateInBigNumber.value.toFormat(
+//     4,
+//     BigNumberInBase.ROUND_DOWN
+//   )}%`
+// })
 
 const priceChangeClasses = computed(() => {
   if (props.summary.lastPriceChange === SharedMarketChange.NoChange) {
@@ -143,6 +172,14 @@ function toggleFavorite() {
       :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
     >
       {{ summary.change }}%
+    </div>
+
+    <div
+      v-if="!isMarketsPage"
+      class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-xs"
+    >
+      <span v-if="fundingRateToBigNumber.isZero()"> &mdash; </span>
+      <span v-else>{{ fundingRateToFixed }}%</span>
     </div>
 
     <div

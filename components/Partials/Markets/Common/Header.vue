@@ -97,6 +97,15 @@ function handleIsAscending(value: boolean) {
       </SharedSortableHeaderItem>
     </div>
 
+    <div
+      v-if="!isMarketsPage"
+      class="flex-2 lg:flex-1 min-w-0 truncate lg:text-right max-lg:text-center"
+    >
+      <div>
+        {{ $t('trade.estFundingRate') }}
+      </div>
+    </div>
+
     <div class="flex-1 min-w-0 truncate flex justify-end">
       <SharedSortableHeaderItem
         v-bind="{
