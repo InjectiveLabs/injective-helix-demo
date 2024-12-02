@@ -34,6 +34,9 @@ const columns = [
     key: LiquidityTableColumn.Volume,
     label: t(`campaign.table.liquidity.${LiquidityTableColumn.Volume}`),
     class: 'text-right rtl:text-left'
+  },
+  {
+    key: LiquidityTableColumn.Action
   }
 ]
 </script>
@@ -83,32 +86,6 @@ const columns = [
               is-lg
             />
           </div>
-
-          <AppTablePopover>
-            <div
-              class="flex flex-col gap-1.5 rounded-lg p-2 bg-brand-800 min-w-28"
-            >
-              <NuxtLink
-                class="p-2 text-sm transition-all rounded-md font-semibold bg-transparent text-coolGray-200 hover:text-white hover:bg-blue-500/20 focus-within:ring-[3px] ring-blue-700"
-                :to="{
-                  name: LiquidityRewardsPage.CampaignDetails,
-                  query: { campaign: row.campaignId }
-                }"
-              >
-                {{ $t('campaign.rewardsDetails') }}
-              </NuxtLink>
-
-              <NuxtLink
-                class="p-2 text-sm transition-all rounded-md font-semibold bg-transparent text-coolGray-200 hover:text-white hover:bg-blue-500/20 focus-within:ring-[3px] ring-blue-700"
-                :to="{
-                  name: TradingBotsSubPage.LiquiditySpotMarket,
-                  query: { market: row.market?.slug }
-                }"
-              >
-                {{ $t('campaign.addLiquidity') }}
-              </NuxtLink>
-            </div>
-          </AppTablePopover>
         </div>
       </template>
 
@@ -156,6 +133,30 @@ const columns = [
             />
             <span class="ml-1">USD</span>
           </p>
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="flex space-x-8 justify-end">
+          <NuxtLink
+            class="text-blue-500"
+            :to="{
+              name: LiquidityRewardsPage.CampaignDetails,
+              query: { campaign: row.campaignId }
+            }"
+          >
+            {{ $t('campaign.rewardsDetails') }}
+          </NuxtLink>
+
+          <NuxtLink
+            class="text-blue-500"
+            :to="{
+              name: TradingBotsSubPage.LiquiditySpotMarket,
+              query: { market: row.slug }
+            }"
+          >
+            {{ $t('campaign.addLiquidity') }}
+          </NuxtLink>
         </div>
       </template>
     </UTable>
