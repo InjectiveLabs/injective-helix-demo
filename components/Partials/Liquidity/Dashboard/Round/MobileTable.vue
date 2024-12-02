@@ -17,7 +17,12 @@ const props = withDefaults(
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
-    if (column.key === LiquidityDashboardTableColumn.Market) {
+    const removedKey = [
+      LiquidityDashboardTableColumn.Market,
+      LiquidityDashboardTableColumn.Action
+    ]
+
+    if (removedKey.includes(column.key as LiquidityDashboardTableColumn)) {
       return list
     }
 

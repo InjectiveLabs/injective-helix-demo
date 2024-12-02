@@ -21,14 +21,14 @@ const columns = [
     label: t(
       `campaign.table.dashboard.${LiquidityDashboardTableColumn.Market}`
     ),
-    class: 'w-1/3'
+    class: 'w-4/12'
   },
   {
     key: LiquidityDashboardTableColumn.Volume,
     label: t(
       `campaign.table.dashboard.${LiquidityDashboardTableColumn.Volume}`
     ),
-    class: 'w-1/3'
+    class: 'w-3/12'
   },
   {
     key: LiquidityDashboardTableColumn.Rewards,
@@ -36,7 +36,13 @@ const columns = [
       ? t(
           `campaign.table.dashboard.${LiquidityDashboardTableColumn.EstRewards}`
         )
-      : t(`campaign.table.dashboard.${LiquidityDashboardTableColumn.Rewards}`)
+      : t(`campaign.table.dashboard.${LiquidityDashboardTableColumn.Rewards}`),
+    class: 'w-3/12'
+  },
+
+  {
+    key: LiquidityDashboardTableColumn.Action,
+    class: 'w-2/12'
   }
 ]
 </script>
@@ -80,15 +86,6 @@ const columns = [
               </p>
             </div>
           </NuxtLink>
-
-          <AppTablePopover>
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <PartialsLiquidityCommonClaimButton
-                extra-class="p-2 w-full"
-                :campaign="row.campaign"
-              />
-            </div>
-          </AppTablePopover>
         </div>
       </template>
 
@@ -123,6 +120,14 @@ const columns = [
             />
           </div>
         </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <PartialsLiquidityCommonClaimButton
+          v-bind="{
+            campaign: row.campaign
+          }"
+        />
       </template>
     </UTable>
   </template>
