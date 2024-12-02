@@ -62,7 +62,9 @@ function handleIsAscending(value: boolean) {
       </SharedSortableHeaderItem>
     </div>
 
-    <div class="flex-2 lg:flex-1 min-w-0 truncate text-right">
+    <div
+      class="flex-2 lg:flex-1 min-w-0 truncate lg:text-right max-lg:text-center"
+    >
       <div>
         {{ $t('trade.lastPrice') }}
       </div>

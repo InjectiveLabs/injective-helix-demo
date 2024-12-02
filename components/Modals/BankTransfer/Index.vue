@@ -23,7 +23,7 @@ const submitStatus = reactive(new Status(StatusType.Idle))
 onMounted(() => {
   setTransferFormValues({ [BankTransferField.Denom]: injToken.denom }, false)
 
-  useEventBus(BusEvents.BankTranksferModalWithDenom).on((denom) => {
+  useEventBus(BusEvents.BankTransferModalWithDenom).on((denom) => {
     setTransferFormValues({ [BankTransferField.Denom]: denom }, false)
   })
 })

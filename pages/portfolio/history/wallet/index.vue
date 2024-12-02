@@ -6,8 +6,6 @@ const router = useRouter()
 const activityStore = useActivityStore()
 const { $onError } = useNuxtApp()
 
-const isMobile = useIsMobile()
-
 const { values: formValues } = useForm<{
   token: string
 }>()
@@ -78,9 +76,7 @@ async function handleLimitChange(limit: number) {
       />
 
       <div class="overflow-x-auto">
-        <div class="lg:min-w-[1100px] divide-y border-b">
-          <PartialsPortfolioHistoryWalletTableHeader v-if="!isMobile" />
-
+        <div class="lg:min-w-[1100px] divide-y">
           <CommonSkeletonRow
             v-if="status.isLoading()"
             :rows="10"
@@ -89,24 +85,13 @@ async function handleLimitChange(limit: number) {
           />
 
           <template v-else>
-            <div v-if="isMobile">
-              <PartialsPortfolioHistoryWalletTableMobileRow
-                v-for="transaction in activityStore.subaccountTransfers"
-                :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
-                v-bind="{ transaction }"
-              />
-            </div>
-
-            <template v-else>
-              <PartialsPortfolioHistoryWalletTableRow
-                v-for="transaction in activityStore.subaccountTransfers"
-                :key="`${transaction.timestamp}-${transaction.sender}-${transaction.receiver}-${transaction.denom}`"
-                v-bind="{ transaction }"
-              />
-            </template>
+            <PartialsPortfolioHistoryWalletTable
+              v-if="activityStore.subaccountTransfers.length"
+              :transactions="activityStore.subaccountTransfers"
+            />
 
             <AppPagination
-              v-if="activityStore.subaccountTransfers.length > 0"
+              v-if="activityStore.subaccountTransfers.length"
               class="p-8"
               v-bind="{
                 limit,
@@ -118,7 +103,7 @@ async function handleLimitChange(limit: number) {
             />
 
             <CommonEmptyList
-              v-if="activityStore.subaccountTransfers.length === 0"
+              v-if="!activityStore.subaccountTransfers.length"
               :message="$t('portfolio.history.wallet.noHistory')"
             />
           </template>

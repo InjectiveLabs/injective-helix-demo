@@ -44,16 +44,13 @@ function openTransferModal() {
     </div>
 
     <div class="divide-y border-y">
-      <PartialsPortfolioSubaccountsTableHeader />
       <CommonSubaccountOptions
         :include-bots-subaccounts="true"
         :show-low-balance="true"
       >
         <template #default="{ subaccountOptions }">
-          <PartialsPortfolioSubaccountsTableRow
-            v-for="subaccount in subaccountOptions"
-            :key="subaccount.value"
-            v-bind="{ subaccount }"
+          <PartialsPortfolioSubaccountsTable
+            :sub-accounts="subaccountOptions"
           />
         </template>
       </CommonSubaccountOptions>

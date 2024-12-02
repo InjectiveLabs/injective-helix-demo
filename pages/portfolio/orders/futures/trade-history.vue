@@ -20,7 +20,6 @@ const { limit, page, skip } = usePagination({
 })
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
-const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -106,7 +105,6 @@ onSubaccountChange(fetchData)
       @side:update="fetchData"
       @type:update="fetchData"
     />
-    <PartialsPortfolioOrdersFuturesTradeHistoryTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -116,24 +114,13 @@ onSubaccountChange(fetchData)
     />
 
     <template v-else>
-      <div v-if="isMobile">
-        <PartialsPortfolioOrdersFuturesTradeHistoryTableMobileRow
-          v-for="trade in derivativeStore.subaccountTrades"
-          :key="`${trade.orderHash}-${trade.tradeId}`"
-          v-bind="{ trade }"
-        />
-      </div>
-
-      <template v-else>
-        <PartialsPortfolioOrdersFuturesTradeHistoryTableRow
-          v-for="trade in derivativeStore.subaccountTrades"
-          :key="`${trade.orderHash}-${trade.tradeId}`"
-          v-bind="{ trade }"
-        />
-      </template>
+      <PartialsPortfolioOrdersFuturesTradeHistoryTable
+        v-if="derivativeStore.subaccountTrades.length"
+        :trades="derivativeStore.subaccountTrades"
+      />
 
       <AppPagination
-        v-if="derivativeStore.subaccountTrades.length > 0"
+        v-if="derivativeStore.subaccountTrades.length"
         class="p-8"
         v-bind="{
           limit,
@@ -145,7 +132,7 @@ onSubaccountChange(fetchData)
       />
 
       <CommonEmptyList
-        v-if="derivativeStore.subaccountTrades.length === 0"
+        v-if="!derivativeStore.subaccountTrades.length"
         :message="$t('trade.emptyOrders')"
       />
     </template>

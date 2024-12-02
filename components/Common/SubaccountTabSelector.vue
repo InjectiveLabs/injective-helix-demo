@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { PortfolioCyTags } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -32,6 +33,7 @@ withDefaults(
       >
         <span
           class="text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
+          :data-cy="dataCyTag(PortfolioCyTags.SubAccountDropdown)"
         >
           {{ $t('account.subaccount') }}: {{ activeSubaccountLabel }}
         </span>

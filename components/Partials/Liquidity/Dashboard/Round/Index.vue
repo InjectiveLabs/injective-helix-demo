@@ -25,18 +25,11 @@ const isActive = computed(() => props.activeRound === props.round)
       </div>
     </div>
 
-    <div class="overflow-y-auto">
-      <table class="w-full min-w-3xl">
-        <PartialsLiquidityDashboardRoundTableHeader v-bind="{ isActive }" />
-
-        <tbody>
-          <PartialsLiquidityDashboardRoundTableRow
-            v-for="campaign in campaigns"
-            :key="campaign.campaignId"
-            v-bind="{ campaign }"
-          />
-        </tbody>
-      </table>
+    <div class="overflow-y-auto divide-y">
+      <PartialsLiquidityDashboardRoundTable
+        :is-active="isActive"
+        :campaigns="campaigns"
+      />
     </div>
   </div>
 </template>

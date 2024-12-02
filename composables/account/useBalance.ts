@@ -1,8 +1,10 @@
+import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { AccountBalance } from '@/types'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
+import { AccountBalance } from '@/types'
 
 const showUnverifiedAssets = ref(false)
 
@@ -10,6 +12,7 @@ export function useBalance() {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const accountStore = useAccountStore()
+  const exchangeStore = useExchangeStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -297,9 +300,56 @@ export function useBalance() {
     ...unverifiedHoldingWithTokens.value
   ])
 
+  const stakedAmount = computed(() => {
+    if (
+      !exchangeStore.feeDiscountAccountInfo ||
+      !exchangeStore.feeDiscountAccountInfo.accountInfo
+    ) {
+      return ZERO_IN_BASE
+    }
+
+    return sharedToBalanceInTokenInBase({
+      value: exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
+    })
+  })
+
+  const stakedAmountInUsd = computed(() => {
+    const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+
+    if (!injUsdPrice) {
+      return ZERO_IN_BASE
+    }
+
+    return stakedAmount.value.times(injUsdPrice)
+  })
+
+  const accountTotalBalanceInUsd = computed(() =>
+    Object.keys(aggregatedPortfolioBalances.value)
+      .reduce(
+        (balances, subaccountId) => [
+          ...balances,
+          ...aggregatedPortfolioBalances.value[subaccountId]
+        ],
+        [] as AccountBalance[]
+      )
+      .reduce(
+        (total, balance) =>
+          total.plus(
+            new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
+              balance.token.decimals
+            )
+          ),
+        ZERO_IN_BASE
+      )
+      .plus(stakedAmountInUsd.value)
+  )
+
   return {
+    stakedAmount,
+    stakedAmountInUsd,
     showUnverifiedAssets,
     userBalancesWithToken,
+    accountTotalBalanceInUsd,
     verifiedHoldingsWithToken,
     aggregatedPortfolioBalances
   }

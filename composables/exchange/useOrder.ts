@@ -10,12 +10,12 @@ import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrder(
   order: Ref<SpotLimitOrder | DerivativeLimitOrder>,
-  isSpot: Ref<boolean>
+  isSpot: boolean
 ) {
   const derivativeStore = useDerivativeStore()
   const spotStore = useSpotStore()
 
-  const markets: UiMarketWithToken[] = isSpot.value
+  const markets: UiMarketWithToken[] = isSpot
     ? spotStore.markets
     : derivativeStore.markets
 
@@ -36,7 +36,7 @@ export function useOrder(
   )
 
   const isReduceOnly = computed(() => {
-    if (isSpot.value || !margin.value) {
+    if (isSpot || !margin.value) {
       return false
     }
 
@@ -47,7 +47,7 @@ export function useOrder(
   })
 
   const isBuy = computed(() => {
-    if (isSpot.value) {
+    if (isSpot) {
       return (order.value as SpotLimitOrder).orderSide === OrderSide.Buy
     }
 
@@ -63,7 +63,7 @@ export function useOrder(
   })
 
   const margin = computed(() => {
-    if (!market.value || isSpot.value) {
+    if (!market.value || isSpot) {
       return ZERO_IN_BASE
     }
 
@@ -77,7 +77,7 @@ export function useOrder(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value && market.value.baseToken
+    return isSpot && market.value.baseToken
       ? sharedToBalanceInWei({
           value: order.value.price,
           decimalPlaces:
@@ -93,7 +93,7 @@ export function useOrder(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value
+    return isSpot
       ? new BigNumberInWei(order.value.quantity).toBase(
           (market.value as UiSpotMarket).baseToken.decimals
         )
@@ -105,7 +105,7 @@ export function useOrder(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value
+    return isSpot
       ? new BigNumberInWei(order.value.unfilledQuantity).toBase(
           (market.value as UiSpotMarket).baseToken.decimals
         )
@@ -117,7 +117,7 @@ export function useOrder(
   )
 
   const leverage = computed(() => {
-    if (isReduceOnly.value || isSpot.value) {
+    if (isReduceOnly.value || isSpot) {
       return new BigNumberInBase('')
     }
 

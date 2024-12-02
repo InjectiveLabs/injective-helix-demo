@@ -76,8 +76,6 @@ async function handleLimitChange(limit: number) {
         @form:reset="fetchFundingPayments"
       />
 
-      <PartialsPortfolioHistoryFundingTableHeader />
-
       <CommonSkeletonRow
         v-if="status.isLoading()"
         :rows="10"
@@ -86,14 +84,13 @@ async function handleLimitChange(limit: number) {
       />
 
       <template v-else>
-        <PartialsPortfolioHistoryFundingTableRow
-          v-for="fundingPayment in activityStore.subaccountFundingPayments"
-          :key="`${fundingPayment.amount}-${fundingPayment.marketId}-${fundingPayment.subaccountId}-${fundingPayment.timestamp}`"
-          v-bind="{ fundingPayment }"
+        <PartialsPortfolioHistoryFundingTable
+          v-if="activityStore.subaccountFundingPayments.length"
+          :funding-payments="activityStore.subaccountFundingPayments"
         />
 
         <AppPagination
-          v-if="activityStore.subaccountFundingPayments.length > 0"
+          v-if="activityStore.subaccountFundingPayments.length"
           class="p-8"
           v-bind="{
             limit,
@@ -105,7 +102,7 @@ async function handleLimitChange(limit: number) {
         />
 
         <CommonEmptyList
-          v-if="activityStore.subaccountFundingPayments.length === 0"
+          v-if="!activityStore.subaccountFundingPayments.length"
           :message="$t('fundingPayments.emptyFundingPayments')"
         />
       </template>

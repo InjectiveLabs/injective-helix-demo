@@ -2,13 +2,15 @@
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { formatWalletAddress } from '@injectivelabs/utils'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
-const sharedWalletStore = useSharedWalletStore()
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
+const { accountTotalBalanceInUsd } = useBalance()
 
 const formattedInjectiveAddress = computed(() =>
   formatWalletAddress(sharedWalletStore.injectiveAddress)
@@ -90,16 +92,15 @@ function disconnect() {
                 {{ $t('portfolio.totalValue') }}
               </p>
 
-              <CommonHeadlessTotalBalance>
-                <template #default="{ accountTotalBalanceInUsd }">
-                  <p class="text-2xl font-semibold my-2">
-                    <span>$</span>
-                    <AppUsdAmount
-                      v-bind="{ amount: accountTotalBalanceInUsd.toFixed() }"
-                    />
-                  </p>
-                </template>
-              </CommonHeadlessTotalBalance>
+              <p class="text-2xl font-semibold my-2">
+                <span>$</span>
+                <AppUsdAmount
+                  v-bind="{
+                    amount: accountTotalBalanceInUsd.toFixed(),
+                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                  }"
+                />
+              </p>
 
               <div class="mt-6">
                 <NuxtLink

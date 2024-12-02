@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { isAfter } from 'date-fns'
 import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
 import { MainPage, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
 const campaignStore = useCampaignStore()
 const sharedGeoStore = useSharedGeoStore()
-
-const now = useNow({ interval: 1000 })
 
 const isBlockedBannerVisible = computed(() => {
   if (!campaignStore.activeCampaign) {
@@ -19,20 +16,6 @@ const isBlockedBannerVisible = computed(() => {
     isCountryRestrictedForLeaderboard(sharedGeoStore.country)
   )
 })
-
-const filteredSubPages = computed(() =>
-  Object.values(LeaderboardSubPage).filter((page) => {
-    if (page !== LeaderboardSubPage.PastCompetitions) {
-      return true
-    }
-
-    const FIRST_CAMPAIGN_END_DATE = '1729605600000'
-
-    const campaignEndDate = new Date(Number(FIRST_CAMPAIGN_END_DATE))
-
-    return isAfter(now.value, campaignEndDate)
-  })
-)
 </script>
 
 <template>
@@ -73,7 +56,7 @@ const filteredSubPages = computed(() =>
         >
           <div class="max-md:text-left overflow-x-auto max-sm:max-w-full">
             <NuxtLink
-              v-for="pageName in filteredSubPages"
+              v-for="pageName in Object.values(LeaderboardSubPage)"
               :key="pageName"
               v-bind="{ value: pageName }"
               class="capitalize max-md:mr-4 md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"

@@ -193,7 +193,7 @@ export enum BusEvents {
   AssetDetailsModalPayload = 'asset-details-modal-payload',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
-  BankTranksferModalWithDenom = 'bank-transfer-modal-with-denom',
+  BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
 
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'
@@ -277,8 +277,9 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  scheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
-  scheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024'
+  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  ScheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024',
+  TeslaCampaign = 'tesla-campaign'
 }
 
 export enum SubaccountBalanceStreamType {

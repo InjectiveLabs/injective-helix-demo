@@ -5,7 +5,7 @@ import { UnknownTokenStatusKey } from '@/types'
 
 useHead({
   bodyAttrs: {
-    class: 'bg-brand-900 dark:bg-brand-900'
+    class: 'dark:bg-brand-900'
   }
 })
 

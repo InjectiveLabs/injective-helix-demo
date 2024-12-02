@@ -44,7 +44,7 @@ watch(
 <template>
   <div class="pt-4">
     <div>
-      <h3 class="text-xs text-gray-400">
+      <h3 class="text-xs text-coolGray-400">
         {{ $t('trade.max_leverage', { max: maxLeverage }) }}
       </h3>
     </div>
@@ -58,7 +58,7 @@ watch(
       />
 
       <div
-        class="bg-brand-850 border border-gray-700 px-2 py-1 rounded-md flex"
+        class="bg-brand-850 border border-coolGray-700 px-2 py-1 rounded-md flex"
       >
         <p class="font-mono w-12">{{ leverage }}</p>
         <span>x</span>

@@ -1,12 +1,26 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useModalStore()
+const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
+const { accountTotalBalanceInUsd } = useBalance()
+
+const accountTotalBalanceInBtc = computed(() => {
+  const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
+
+  if (!btcUsdPrice) {
+    return ZERO_IN_BASE
+  }
+
+  return accountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
+})
 
 function onOpenBankTransferModal() {
   modalStore.openModal(Modal.BankTransfer)
@@ -37,14 +51,10 @@ function onFiatOnRamp() {
                 :spacing="8"
                 :width="16"
               >
-                <CommonHeadlessTotalBalance>
-                  <template #default="{ accountTotalBalanceInUsd }">
-                    <CommonNumberCounter
-                      v-bind="{ value: accountTotalBalanceInUsd.toNumber() }"
-                      :size="24"
-                    />
-                  </template>
-                </CommonHeadlessTotalBalance>
+                <CommonNumberCounter
+                  v-bind="{ value: accountTotalBalanceInUsd.toNumber() }"
+                  :size="24"
+                />
               </CommonSkeletonSubaccountAmount>
             </p>
 
@@ -64,17 +74,13 @@ function onFiatOnRamp() {
           <p class="text-coolGray-400 text-sm flex items-center space-x-2 h-6">
             <span>≈</span>
             <CommonSkeletonSubaccountAmount>
-              <CommonHeadlessTotalBalance>
-                <template #default="{ accountTotalBalanceInBtc }">
-                  <CommonNumberCounter
-                    :decimals="4"
-                    v-bind="{
-                      value: accountTotalBalanceInBtc.toNumber(),
-                      size: 14
-                    }"
-                  />
-                </template>
-              </CommonHeadlessTotalBalance>
+              <CommonNumberCounter
+                :decimals="4"
+                v-bind="{
+                  value: accountTotalBalanceInBtc.toNumber(),
+                  size: 14
+                }"
+              />
             </CommonSkeletonSubaccountAmount>
             <span class="pb-[2px]">{{ $t('common.BTC') }}</span>
           </p>

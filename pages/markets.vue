@@ -14,10 +14,20 @@ import {
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
+const { $onError } = useNuxtApp()
+const { sm } = useTwBreakpoints()
 const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
+
+const mobileMarketTypeOption = Object.values(MarketTypeOption).map((value) => ({
+  label: value,
+  value
+}))
+
+const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
+  ([key, value]) => ({ label: key, value })
+)
 
 const search = ref('')
 const activeType = ref(setTypeFromQuery())
@@ -94,7 +104,7 @@ function setTypeFromQuery() {
 
 <template>
   <div>
-    <div class="mx-auto max-w-7xl py-10">
+    <div class="mx-auto max-w-7xl py-10 px-4">
       <h3
         class="text-2xl font-semibold"
         :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
@@ -111,7 +121,7 @@ function setTypeFromQuery() {
         <div
           class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
         >
-          <div class="flex overflow-x-auto">
+          <div v-if="sm" class="flex overflow-x-auto">
             <AppButtonSelect
               v-for="value in Object.values(MarketTypeOption)"
               :key="value"
@@ -124,6 +134,20 @@ function setTypeFromQuery() {
             >
               {{ value }}
             </AppButtonSelect>
+          </div>
+          <div v-else class="w-full">
+            <p class="text-xs text-gray-500 mb-2">
+              {{ $t('common.marketType') }}
+            </p>
+            <USelectMenu
+              v-model="activeType"
+              value-attribute="value"
+              :options="mobileMarketTypeOption"
+              :ui-menu="{
+                select: 'capitalize',
+                option: { base: 'capitalize' }
+              }"
+            />
           </div>
 
           <div class="flex max-lg:w-full">
@@ -148,25 +172,37 @@ function setTypeFromQuery() {
         </div>
       </div>
 
-      <div class="overflow-x-auto max-w-full">
-        <div class="my-4 flex gap-x-2 justify-between flex-wrap">
+      <div class="max-w-full my-6">
+        <div class="flex gap-x-2 justify-between flex-wrap max-sm:flex-col">
           <div
             v-if="!marketTypeOptionsToHideCategory.includes(activeType)"
-            class="flex space-x-2"
+            class="sm:flex space-x-2 max-sm:w-full"
           >
-            <AppButtonSelect
-              v-for="value in Object.values(MarketCategoryType)"
-              :key="value"
-              v-model="activeCategory"
-              v-bind="{ value }"
-              class="py-1 px-3 text-coolGray-400 text-xs capitalize bg-brand-800 rounded"
-              active-classes="text-white !bg-brand-700"
-              :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
-            >
-              {{ value }}
-            </AppButtonSelect>
+            <template v-if="sm">
+              <AppButtonSelect
+                v-for="value in Object.values(MarketCategoryType)"
+                :key="value"
+                v-model="activeCategory"
+                v-bind="{ value }"
+                class="py-1 px-3 text-coolGray-400 text-xs capitalize bg-brand-800 rounded"
+                active-classes="text-white !bg-brand-700"
+                :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
+              >
+                {{ value }}
+              </AppButtonSelect>
+            </template>
+
+            <div v-else>
+              <p class="text-xs text-gray-500 mb-2">
+                {{ $t('common.marketCategory') }}
+              </p>
+              <USelectMenu
+                v-model="activeCategory"
+                value-attribute="value"
+                :options="mobileMarketCategoryType"
+              />
+            </div>
           </div>
-          <div v-else />
 
           <div
             v-if="activeType === MarketTypeOption.Permissionless"
@@ -208,7 +244,6 @@ function setTypeFromQuery() {
       </div>
 
       <PartialsMarkets
-        is-markets-page
         v-bind="{
           search,
           activeType,
@@ -219,19 +254,6 @@ function setTypeFromQuery() {
           isLoading: unverifiedMarketsStatus.isLoading()
         }"
       />
-
-      <!--
-      <PartialsMarkets
-        v-if="type !== MarketTypeOption.Themes"
-        is-markets-page
-        v-bind="{
-          markets: filteredMarkets,
-          isLoading: unverifiedMarketsStatus.isLoading()
-        }"
-      />
-
-      <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
-      -->
     </div>
   </div>
 </template>

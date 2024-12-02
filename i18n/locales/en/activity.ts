@@ -1,5 +1,33 @@
+import {
+  HistorySwapTableColumn,
+  HistoryWalletTableColumn,
+  FundingPaymentsTableColumn
+} from '@/types'
+
 export default {
   activity: {
+    table: {
+      fundingPayments: {
+        [FundingPaymentsTableColumn.Time]: 'Time',
+        [FundingPaymentsTableColumn.Pair]: 'Pair',
+        [FundingPaymentsTableColumn.Payment]: 'Payment'
+      },
+      historyWallet: {
+        [HistoryWalletTableColumn.Time]: 'Time',
+        [HistoryWalletTableColumn.Type]: 'Type',
+        [HistoryWalletTableColumn.Asset]: 'Asset',
+        [HistoryWalletTableColumn.Amount]: 'Amount',
+        [HistoryWalletTableColumn.Origin]: 'Origin',
+        [HistoryWalletTableColumn.Destination]: 'Destination'
+      },
+      historySwap: {
+        [HistorySwapTableColumn.Time]: 'Time',
+        [HistorySwapTableColumn.Outgoing]: 'Outgoing',
+        [HistorySwapTableColumn.Incoming]: 'Incoming',
+        [HistorySwapTableColumn.Route]: 'Route',
+        [HistorySwapTableColumn.Fee]: 'Fee'
+      }
+    },
     swaps: 'Swaps',
     funds: 'Funds',
     activity: 'Activity',

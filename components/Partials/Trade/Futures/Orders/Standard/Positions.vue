@@ -5,7 +5,6 @@ import { Modal, BusEvents } from '@/types'
 const modalStore = useModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
-const isMobile = useIsMobile()
 
 const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
 
@@ -41,32 +40,16 @@ function onSharePosition(position: Position | PositionV2) {
 
 <template>
   <div class="divide-y">
-    <PartialsPortfolioPositionsTableHeader v-if="!isMobile" />
-
-    <div v-if="isMobile">
-      <PartialsPortfolioPositionsTableMobileRow
-        v-for="position in filteredPosition"
-        :key="`${position.marketId}-${position.subaccountId}-${position.entryPrice}`"
-        v-bind="{ position }"
-        @margin:add="addMargin"
-        @tpsl:add="addTakeProfitStopLoss"
-        @position:share="onSharePosition"
-      />
-    </div>
-
-    <template v-else>
-      <PartialsPortfolioPositionsTableRow
-        v-for="position in filteredPosition"
-        :key="`${position.marketId}-${position.subaccountId}-${position.entryPrice}`"
-        v-bind="{ position }"
-        @margin:add="addMargin"
-        @tpsl:add="addTakeProfitStopLoss"
-        @position:share="onSharePosition"
-      />
-    </template>
+    <PartialsPortfolioPositionsTable
+      v-if="filteredPosition.length"
+      :positions="filteredPosition"
+      @margin:add="addMargin"
+      @tpsl:add="addTakeProfitStopLoss"
+      @position:share="onSharePosition"
+    />
 
     <CommonEmptyList
-      v-if="filteredPosition.length === 0"
+      v-if="!filteredPosition.length"
       :message="'No Open Positions'"
     />
 
