@@ -354,6 +354,10 @@ export default {
       'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
     tier: 'Tier',
     current_apr: 'Current APR',
+    fees_taker_maker: 'Fees (Taker/Maker)',
+    fees_taker_maker_percent: ({ named }: I18nMessageFunction) =>
+      `Taker Fee * (1 - ${named('takerFeeDiscount')}) / ${named('makerFee')}%`,
+    viewFeeDiscounts: 'View Fee Discounts',
     maker: 'Maker',
     taker: 'Taker',
     off: 'Off',
