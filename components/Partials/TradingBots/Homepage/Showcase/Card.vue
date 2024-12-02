@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { GridStrategyTransformed, Modal } from '@/types'
+import { GridStrategyTransformed, MainPage } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -10,11 +10,7 @@ const props = withDefaults(
   {}
 )
 
-const modalStore = useModalStore()
-const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
-
-const isOpen = ref(false)
 
 const totalUsers = computed(
   () =>
@@ -25,14 +21,6 @@ const totalUsers = computed(
 const isPositivePnl = computed(() =>
   new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
 )
-
-function connectWallet() {
-  modalStore.openModal(Modal.Terms)
-}
-
-function copyStrategy() {
-  isOpen.value = true
-}
 </script>
 
 <template>
@@ -115,27 +103,13 @@ function copyStrategy() {
       </div>
     </div>
 
-    <SharedModal v-model="isOpen">
-      <template #header>
-        <div class="text-lg font-semibold">
-          {{ $t('tradingBots.copyStrategy') }}
-        </div>
-      </template>
-      <PartialsTradingBotsHomepageShowcaseCopySpotGridStrategy
-        :strategy="strategy"
-      />
-    </SharedModal>
-
     <template #footer>
       <UButton
-        v-if="!sharedWalletStore.isUserConnected"
         block
-        @click="connectWallet"
+        :to="{
+          name: MainPage.TradingBotsLiquidityBotsSpot
+        }"
       >
-        {{ $t('connect.connect') }}
-      </UButton>
-
-      <UButton v-else block @click="copyStrategy">
         {{ $t('common.create') }}
       </UButton>
     </template>
