@@ -1,7 +1,38 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { GridStrategyTransformed, Modal } from '@/types'
 
-//
+const props = withDefaults(
+  defineProps<{
+    strategy: GridStrategyTransformed
+  }>(),
+  {}
+)
+
+const modalStore = useModalStore()
+const sharedWalletStore = useSharedWalletStore()
+const gridStrategyStore = useGridStrategyStore()
+
+const isOpen = ref(false)
+
+const totalUsers = computed(
+  () =>
+    gridStrategyStore.stats?.markets?.find(
+      (m: any) => m.marketId === props.strategy.marketId
+    )?.activeTradingStrategies || 0
+)
+const isPositivePnl = computed(() =>
+  new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
+)
+
+function connectWallet() {
+  modalStore.openModal(Modal.Terms)
+}
+
+function copyStrategy() {
+  isOpen.value = true
+}
 </script>
 
 <template>
@@ -15,45 +46,96 @@ import { NuxtUiIcons } from '@shared/types'
     }"
   >
     <div class="flex">
-      <UAvatar alt="Bot Avatar" size="xl" />
-      <div class="flex flex-col items-start flex-1 pl-2">
-        <p class="text-xl font-bold">TIA-USDT</p>
+      <UAvatar
+        :src="strategy.market.baseToken.logo"
+        :alt="strategy.market.baseToken.symbol"
+        size="lg"
+        class="mt-1"
+      />
+      <div class="flex flex-col items-start flex-1 pl-3">
+        <p class="text-xl font-bold">{{ props.strategy.market.ticker }}</p>
         <p
           class="text-gray-300 bg-gray-600 p-1 font-semibold rounded-md text-xs"
         >
-          Spot Grid
+          {{ $t(`tradingBots.${props.strategy.botType}`) }}
         </p>
       </div>
 
       <div>
         <div class="text-sm flex items-center gap-1">
           <UIcon class="size-6" :name="NuxtUiIcons.User" />
-          <div class="text-gray-300 leading-none">123</div>
+          <div class="text-gray-300 leading-none">{{ totalUsers }}</div>
         </div>
       </div>
     </div>
 
     <div class="mt-4">
       <p class="text-gray-500 mb-1 text-xs">{{ $t('tradingBots.totalRoi') }}</p>
-      <p class="text-green-500 text-2xl font-semibold">+123.43%</p>
+      <p
+        :class="[isPositivePnl ? 'text-green-500' : 'text-red-500']"
+        class="text-2xl font-semibold"
+      >
+        <span v-if="isPositivePnl"> + </span>
+        {{ strategy.strategy.pnlPerc }}
+        %
+      </p>
     </div>
 
     <div class="flex justify-between mt-4">
       <div class="text-left">
         <p class="text-gray-500 mb-1 text-xs">{{ $t('common.runtime') }}</p>
-        <p class="text-sm">40d 2h</p>
+        <p class="text-sm">{{ props.strategy.durationFormatted }}</p>
       </div>
 
       <div class="text-right">
         <p class="text-gray-500 mb-1 text-xs">
           {{ $t('tradingBots.priceRange') }}
         </p>
-        <p class="text-sm">8.45-10.32 USDT</p>
+        <p class="text-sm">
+          {{ strategy.lowerBound }} - {{ strategy.upperBound }}
+          {{ strategy.market.quoteToken.symbol }}
+        </p>
       </div>
     </div>
 
+    <div
+      v-if="strategy.trailingLower && strategy.trailingUpper"
+      class="flex justify-between mt-4"
+    >
+      <div class="text-left"></div>
+
+      <div class="text-right">
+        <p class="text-gray-500 mb-1 text-xs">
+          {{ $t('tradingBots.trailingPriceRange') }}
+        </p>
+        <p class="text-sm">
+          {{ strategy.trailingLower }} - {{ strategy.trailingUpper }}
+          {{ strategy.market.quoteToken.symbol }}
+        </p>
+      </div>
+    </div>
+
+    <SharedModal v-model="isOpen">
+      <template #header>
+        <div class="text-lg font-semibold">
+          {{ $t('tradingBots.copyStrategy') }}
+        </div>
+      </template>
+      <PartialsTradingBotsHomepageShowcaseCopySpotGridStrategy
+        :strategy="strategy"
+      />
+    </SharedModal>
+
     <template #footer>
-      <UButton block>
+      <UButton
+        v-if="!sharedWalletStore.isUserConnected"
+        block
+        @click="connectWallet"
+      >
+        {{ $t('connect.connect') }}
+      </UButton>
+
+      <UButton v-else block @click="copyStrategy">
         {{ $t('common.create') }}
       </UButton>
     </template>

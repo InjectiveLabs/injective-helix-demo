@@ -1,5 +1,10 @@
 <script setup lang="ts">
-//
+import { GridStrategyTransformed } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+
+defineProps<{
+  strategy: GridStrategyTransformed
+}>()
 </script>
 
 <template>
@@ -13,17 +18,24 @@
     }"
   >
     <div class="flex">
-      <UAvatar alt="Bot Avatar" size="xl" />
-      <div class="flex flex-col items-start flex-1 pl-2">
-        <p class="text-xl font-bold">TIA-USDT</p>
+      <UAvatar
+        alt="Bot Avatar"
+        size="lg"
+        class="mt-1"
+        :src="strategy.market.baseToken.logo"
+      />
+      <div class="flex flex-col items-start flex-1 pl-3">
+        <p class="text-xl font-bold">{{ strategy.market.ticker }}</p>
         <p
-          class="text-gray-300 bg-gray-600 p-1 font-semibold rounded-md text-xs"
+          class="text-gray-300 bg-gray-600 p-1 mt-1 font-semibold rounded-md text-xs"
         >
-          Spot Grid
+          {{ $t(`tradingBots.botType.${strategy.botType}`) }}
         </p>
       </div>
       <div class="text-sm">
-        <p class="text-gray-300">2 {{ $t('common.days') }}</p>
+        <p class="text-gray-300">
+          {{ strategy.durationFormatted }}
+        </p>
       </div>
     </div>
 
@@ -32,13 +44,24 @@
         <p class="text-gray-500 mb-1 text-xs">
           {{ $t('tradingBots.assetsInBot') }}
         </p>
-        <p class="text-xl font-bold">$300,232.32</p>
+        <p class="text-xl font-bold">
+          <SharedAmountFormatter
+            :amount="strategy.currentUsdValue.toFixed()"
+            :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+            :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+          />
+        </p>
       </div>
 
       <div class="text-right">
         <p class="text-gray-500 mb-1 text-xs">{{ $t('common.roi') }}</p>
         <p class="text-xl font-bold">
-          <span class="text-green-500">+123.43%</span>
+          <span
+            :class="strategy.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+          >
+            {{ strategy.isPositivePnl ? '+' : '' }}
+            {{ strategy.percentagePnl }}%
+          </span>
         </p>
       </div>
     </div>

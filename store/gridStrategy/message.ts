@@ -3,6 +3,8 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  StrategyType,
+  TradingStrategy,
   MsgExecuteContractCompat,
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
@@ -539,6 +541,88 @@ export async function createSpotLiquidityBot(params: {
 
   // eslint-disable-next-line no-console
   console.log(msg.toWeb3())
+
+  await sharedWalletStore.validateAndQueue()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export async function copySpotGridTradingStrategy({
+  baseAmount,
+  quoteAmount,
+  strategy
+}: {
+  baseAmount?: string
+  quoteAmount?: string
+  strategy: TradingStrategy
+}) {
+  const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const spotMarket = spotStore.markets.find(
+    (m) => m.marketId === strategy.marketId
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === spotMarket?.slug)
+
+  if (!spotMarket || !gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: spotMarket.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: spotMarket.quoteToken.decimals
+      })
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      levels: Number(strategy.numberOfGridLevels),
+      lowerBound: strategy.lowerBound,
+      upperBound: strategy.upperBound,
+      subaccountId: addressAndMarketSlugToSubaccountId(
+        sharedWalletStore.address,
+        spotMarket.slug
+      ),
+      trailingArithmetic:
+        strategy.trailUpPrice && strategy.trailDownPrice
+          ? {
+              lowerTrailing: strategy.trailDownPrice,
+              upperTrailing: strategy.trailUpPrice,
+              lpMode: strategy.strategyType === StrategyType.ArithmeticLP
+            }
+          : undefined
+    }),
+    funds
+  })
 
   await sharedWalletStore.validateAndQueue()
 

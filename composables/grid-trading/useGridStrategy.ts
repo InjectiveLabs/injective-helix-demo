@@ -7,7 +7,7 @@ import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { SgtMarketType, StrategyStatus } from '@/types'
+import { BotType, SgtMarketType, StrategyStatus } from '@/types'
 
 export const useSpotGridStrategies = (
   strategies: ComputedRef<TradingStrategy[]>
@@ -211,9 +211,23 @@ export const useSpotGridStrategies = (
         .times(100)
         .toFixed(2)
 
+      // Bot Type
+
+      let botType = BotType.SpotGrid
+
+      if (
+        strategy.marketType === 'spot' &&
+        strategy.strategyType === StrategyType.ArithmeticLP
+      ) {
+        botType = BotType.LiquidityGrid
+      } else if (strategy.marketType === 'futures') {
+        botType = BotType.FuturesGrid
+      }
+
       return {
         pnl: pnl.toFixed(),
         market,
+        botType,
         strategy,
         isActive,
         settleIn,

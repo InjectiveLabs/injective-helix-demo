@@ -572,3 +572,14 @@ export enum LeaderboardCampaignStatus {
 export enum DontShowAgain {
   AutoSign = 'auto-sign'
 }
+
+export enum BotType {
+  SpotGrid = 'spotGrid',
+  LiquidityGrid = 'liquidityGrid',
+  FuturesGrid = 'futuresGrid'
+}
+
+export enum StrategyPerformance {
+  Top = 'top',
+  Worst = 'worst'
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { t } = useLang()
+import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 
 enum ShowcaseTab {
   All = 'All',
@@ -7,6 +8,30 @@ enum ShowcaseTab {
   Futures = 'Futures',
   Liquidity = 'Liquidity'
 }
+
+const gridStrategyStore = useGridStrategyStore()
+const { t } = useLang()
+
+const status = reactive(new Status(StatusType.Loading))
+const strategies = ref<TradingStrategy[]>([])
+const { $onError } = useNuxtApp()
+
+const formattedStrategies = useSpotGridStrategies(
+  computed(() => strategies.value)
+)
+
+onMounted(() => {
+  status.setLoading()
+
+  Promise.all([gridStrategyStore.fetchStrategyWithPnl()])
+    .then(([tradingStrategies]) => {
+      strategies.value = tradingStrategies
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 
 const items = [
   {
@@ -17,10 +42,10 @@ const items = [
     label: t('tradingBots.spotGrid'),
     value: ShowcaseTab.Spot
   },
-  {
-    label: t('tradingBots.futuresGrid'),
-    value: ShowcaseTab.Futures
-  },
+  // {
+  //   label: t('tradingBots.futuresGrid'),
+  //   value: ShowcaseTab.Futures
+  // },
   {
     label: t('tradingBots.liquidityGrid'),
     value: ShowcaseTab.Liquidity
@@ -31,16 +56,19 @@ const items = [
 <template>
   <div>
     <h3 class="font-bold text-2xl mb-4 space-x-2">
-      <span class="rounded-md bg-yellow-500 px-2 py-1 text-black">
-        {{ $t('tradingBots.title') }}
+      <span>
+        {{ $t('tradingBots.title') }} {{ $t('tradingBots.showcase') }}
       </span>
-      <span>{{ $t('tradingBots.showcase') }}</span>
     </h3>
 
     <UTabs :items="items" :ui="{ list: { width: 'w-auto' } }" />
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
-      <PartialsTradingBotsHomepageShowcaseCard v-for="i in 3" :key="i" />
+      <PartialsTradingBotsHomepageShowcaseCard
+        v-for="strategy in formattedStrategies"
+        :key="strategy.marketId"
+        :strategy="strategy"
+      />
     </div>
   </div>
 </template>

@@ -6,6 +6,7 @@ import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
+    isSingleColumn?: boolean
   }>(),
   {}
 )
@@ -111,7 +112,10 @@ function setQuoteMax() {
       </p>
     </div>
 
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div
+      class="mt-4 grid grid-cols-1 gap-4"
+      :class="{ 'sm:grid-cols-2': !isSingleColumn }"
+    >
       <div>
         <AppInputField v-model="baseAmount">
           <template #top>

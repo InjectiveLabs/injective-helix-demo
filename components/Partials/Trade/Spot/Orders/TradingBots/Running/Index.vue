@@ -99,18 +99,20 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       </template>
 
       <template #totalProfit-data="{ row }">
-        <div :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'">
-          <span>{{ row.isPositivePnl ? '+' : '' }}</span>
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :amount="row.pnl"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          />
-          <span>
-            {{ ' ' + row.market.quoteToken.symbol }} / ({{
-              row.percentagePnl
-            }}%)
-          </span>
+        <div
+          class="flex flex-col"
+          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+        >
+          <div class="flex items-center gap-1">
+            <span>{{ row.isPositivePnl ? '+' : '' }}</span>
+            <SharedAmountFormatter
+              :max-decimal-places="3"
+              :amount="row.pnl"
+              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            />
+            {{ ' ' + row.market.quoteToken.symbol }}
+          </div>
+          <div>({{ row.percentagePnl }}%)</div>
         </div>
       </template>
 

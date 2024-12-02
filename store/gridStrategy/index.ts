@@ -4,19 +4,22 @@ import {
   removeStrategy,
   createPerpStrategy,
   createSpotLiquidityBot,
+  copySpotGridTradingStrategy,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
-import { UiSpotMarket, StrategyStatus } from '@/types'
+import { UiSpotMarket, StrategyStatus, StrategyPerformance } from '@/types'
 
 type GridStrategyStoreState = {
   spotMarket: UiSpotMarket | undefined
   strategies: TradingStrategy[]
+  stats: any
 }
 
 const initialStateFactory = (): GridStrategyStoreState => ({
   spotMarket: undefined,
-  strategies: []
+  strategies: [],
+  stats: undefined
 })
 
 export const useGridStrategyStore = defineStore('gridStrategy', {
@@ -78,6 +81,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     removeStrategy,
     createPerpStrategy,
     createSpotLiquidityBot,
+    copySpotGridTradingStrategy,
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {
@@ -115,6 +119,28 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       })
 
       gridStrategyStore.$patch({ strategies })
+    },
+
+    async fetchStrategyWithPnl() {
+      const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
+        withPerformance: true,
+        withTvl: true,
+        limit: 10
+      })
+
+      return strategies.filter(
+        (strategy) => strategy.performance === StrategyPerformance.Top
+      )
+    },
+
+    async fetchStrategyStats() {
+      const gridStrategyStore = useGridStrategyStore()
+
+      const stats = await indexerGrpcTradingApi.fetchTradingStats()
+
+      gridStrategyStore.$patch((state) => {
+        state.stats = stats
+      })
     }
   }
 })
