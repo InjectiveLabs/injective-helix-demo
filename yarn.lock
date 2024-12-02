@@ -2056,19 +2056,7 @@
   integrity sha512-2c8YzLgwTOOsyc1WheqdM8jEfgGBhVrXN4cZ0jsikFVsLF619IDRn3hjIYqTeNERaEpeRPiuJGfZDu0DomwFrQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
-<<<<<<< Updated upstream
     "@injectivelabs/ts-types" "^1.14.33"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@injectivelabs/ts-types" "^1.14.33"
-=======
-    "@injectivelabs/ts-types" "^1.14.32"
->>>>>>> 61ea0494a (chore: minor)
-=======
-    "@injectivelabs/ts-types" "^1.14.33"
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     http-status-codes "^2.2.0"
     shx "^0.3.2"
 
@@ -2109,29 +2097,10 @@
     protobufjs "^7.0.0"
     rxjs "^7.4.0"
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
 "@injectivelabs/networks@1.14.33", "@injectivelabs/networks@^1.14.33":
   version "1.14.33"
   resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.33.tgz#340bef9948ace5abd7b9a2a69ef1d9bc6ee54c33"
   integrity sha512-XDhAYwWYKdKBRfwO/MIfMyKjKRWz/AliMJG9yaM1C/cDlGHmA3EY7Au2Nf+PdkRhuxl2FzLV2Hp4uWeC0g8BYw==
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-"@injectivelabs/networks@ 1.14.32", "@injectivelabs/networks@^1.14.32":
-  version "1.14.32"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/networks/-/networks-1.14.32.tgz#d1a5b0c8841531ec3121d52f02d7dff13fe8c809"
-  integrity sha512-QfXblFWQ8H1d52LbTQzyjcc7gs9Wzc552dgOzjUXFoggmRicEsMx9q75ONQtRK+m66vtz0dyBC/sR9A5pqt3OA==
->>>>>>> 61ea0494a (chore: minor)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
   dependencies:
     "@injectivelabs/exceptions" "^1.14.33"
     "@injectivelabs/ts-types" "^1.14.33"
@@ -2171,36 +2140,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
 "@injectivelabs/sdk-ts@1.14.34-beta.2", "@injectivelabs/sdk-ts@^1.14.34-beta.2":
   version "1.14.34-beta.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.34-beta.2.tgz#6f287ae976924dc049f2eba0f2456d2da69832eb"
   integrity sha512-L5T/GCm+3b0CjRS5SSNpT4Rq9OgsbtcnH3xcB2V/I9a/u+6AssNiG3CiNRnqjeU74GqH5+M3y/tKIIS0bsnrRw==
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-"@injectivelabs/sdk-ts@1.14.33-beta.1", "@injectivelabs/sdk-ts@^1.14.33-beta.1":
-  version "1.14.33-beta.1"
-  resolved "https://registry.npmjs.org/@injectivelabs/sdk-ts/-/sdk-ts-1.14.33-beta.1.tgz#4c7ca12ca5e236b26a98dee8a94b52b0fcc77acc"
-  integrity sha512-+hyZSEktxWvORWmSPchHHdY9zOZ1ZyUaQFtJs6dYoHZmw+iSj5HV5Hj7T/QrmwBp0hozfiMeDtTnUcDAzxzvSQ==
->>>>>>> 61ea0494a (chore: minor)
-=======
-"@injectivelabs/sdk-ts@1.14.33-beta.2", "@injectivelabs/sdk-ts@^1.14.33-beta.2":
-  version "1.14.33-beta.2"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.33-beta.2.tgz#a8412600ed309d3f5c747939569d776ae407f89c"
-  integrity sha512-h7R88e9Npg6BjFt10+TaX5OZS+0J6yDeSdC65iy8ilehb6tuI6IvKDX3P67KwZROm+uFlPkLXBBwQoQ+jhQenQ==
->>>>>>> c9a275325 (chore: package bump)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
   dependencies:
     "@apollo/client" "^3.11.10"
     "@cosmjs/amino" "^0.32.3"
@@ -2208,11 +2151,6 @@
     "@cosmjs/stargate" "^0.32.3"
     "@ethersproject/bytes" "^5.7.0"
     "@injectivelabs/core-proto-ts" "1.13.4"
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Stashed changes
     "@injectivelabs/exceptions" "^1.14.33"
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
@@ -2224,31 +2162,6 @@
     "@injectivelabs/test-utils" "^1.14.34-beta.1"
     "@injectivelabs/ts-types" "^1.14.33"
     "@injectivelabs/utils" "^1.14.33"
-<<<<<<< Updated upstream
-=======
-=======
-    "@injectivelabs/exceptions" "^1.14.32"
-=======
-    "@injectivelabs/exceptions" "^1.14.33"
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
-    "@injectivelabs/grpc-web" "^0.0.1"
-    "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
-    "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
-    "@injectivelabs/indexer-proto-ts" "1.13.3"
-    "@injectivelabs/mito-proto-ts" "1.13.0"
-    "@injectivelabs/networks" "^1.14.33"
-    "@injectivelabs/olp-proto-ts" "1.13.1"
-<<<<<<< HEAD
-    "@injectivelabs/test-utils" "^1.14.32"
-    "@injectivelabs/ts-types" "^1.14.32"
-    "@injectivelabs/utils" "^1.14.32"
->>>>>>> 61ea0494a (chore: minor)
-=======
-    "@injectivelabs/test-utils" "^1.14.34-beta.1"
-    "@injectivelabs/ts-types" "^1.14.33"
-    "@injectivelabs/utils" "^1.14.33"
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     "@metamask/eth-sig-util" "^4.0.0"
     "@noble/curves" "^1.4.0"
     axios "^1.6.4"
@@ -2274,29 +2187,10 @@
   dependencies:
     stylelint-config-standard "34.0.0"
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
 "@injectivelabs/test-utils@^1.14.34-beta.1":
   version "1.14.34-beta.1"
   resolved "https://registry.yarnpkg.com/@injectivelabs/test-utils/-/test-utils-1.14.34-beta.1.tgz#f52fec765d04a2c20b0aa86f28eab9920eb1a3af"
   integrity sha512-SQcvQZLKNwvb5FofPSaMGGF7IDwR0ljjsFMvwJ+vi4AZqbqOSafMH60MqchS+J1llL0mKn6ylIRFeLee+eANQg==
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-"@injectivelabs/test-utils@^1.14.32":
-  version "1.14.32"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/test-utils/-/test-utils-1.14.32.tgz#580c2605dc301c34ce75e3b2267ece47c5291f0d"
-  integrity sha512-MF/KJSxBGKB9cbRVAACLABk9dGSAiRP7Utt5cKeRIk1ejMMpF+txcTesDgu3G2mWUJf+MISRJVhxB8iv8Hy2/A==
->>>>>>> 61ea0494a (chore: minor)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
   dependencies:
     "@injectivelabs/exceptions" "^1.14.33"
     "@injectivelabs/networks" "^1.14.33"
@@ -2315,38 +2209,13 @@
   dependencies:
     shx "^0.3.2"
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
 "@injectivelabs/utils@1.14.33", "@injectivelabs/utils@^1.14.33":
   version "1.14.33"
   resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.33.tgz#9e6eef0e61f306ef5cd68ceed198ea98c47ada4e"
   integrity sha512-zsezML4dTujF0xGLhcGmWBCghfJiy9MW+r6VqR8zJUlxnmnEdNpmsvBhBI6cmmov6Se4FL+yALAIFRvTm3txbg==
-<<<<<<< HEAD
   dependencies:
     "@injectivelabs/exceptions" "^1.14.33"
     "@injectivelabs/ts-types" "^1.14.33"
-<<<<<<< Updated upstream
-=======
-=======
-"@injectivelabs/utils@ 1.14.32", "@injectivelabs/utils@^1.14.32":
-  version "1.14.32"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/utils/-/utils-1.14.32.tgz#1aa36f0ef3bde88b82c46fc7a2c8efc29a0c1c2b"
-  integrity sha512-XCQnSWJ5+Xh76OhyO94Jz0Arum00hapl8Xwn+VaXTL4JlmylgMlFhxr8u0xGHUDqiz/cwW7/X3c3SaWdrDgxRQ==
-  dependencies:
-    "@injectivelabs/exceptions" "^1.14.32"
-    "@injectivelabs/ts-types" "^1.14.32"
->>>>>>> 61ea0494a (chore: minor)
-=======
-  dependencies:
-    "@injectivelabs/exceptions" "^1.14.33"
-    "@injectivelabs/ts-types" "^1.14.33"
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     axios "^1.6.4"
     bignumber.js "^9.0.1"
     http-status-codes "^2.2.0"
@@ -2354,36 +2223,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
 "@injectivelabs/wallet-ts@1.14.34-beta.2":
   version "1.14.34-beta.2"
   resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.34-beta.2.tgz#72af21b2c168042dc900c7a693f9ec5d53069d2f"
   integrity sha512-L5D55Xg8jPHph4JlZJFJnePxMxB2AEav7Kz850ulrJB7qRKqAqhBdXlBL3wQSs5A0YbfusMXEtmWhKLPvsWp3A==
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-"@injectivelabs/wallet-ts@1.14.33-beta.1":
-  version "1.14.33-beta.1"
-  resolved "https://registry.npmjs.org/@injectivelabs/wallet-ts/-/wallet-ts-1.14.33-beta.1.tgz#d5a32284792262501ace149e33e4e1cbcf6fedaf"
-  integrity sha512-z5LNA00g+gsKLayJ7Sj8gSzlLH4Mb80PaUaWSCBsFtZbXNg5PwPxibnKgPloeU8MCuHFCsP1dMUWPjFscbu0nA==
->>>>>>> 61ea0494a (chore: minor)
-=======
-"@injectivelabs/wallet-ts@1.14.33-beta.2":
-  version "1.14.33-beta.2"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.33-beta.2.tgz#7deef23f55643bced9b6a9fd891f7f160fee0217"
-  integrity sha512-V7FgkiSD5iplx9aul4J5oH64r2NuS/wi69ahjbsEOQcink72pDZ5YT1mRM4ccf0IKTgcsSCeMGtWYehJI9cKNQ==
->>>>>>> c9a275325 (chore: package bump)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2391,31 +2234,11 @@
     "@cosmostation/extension-client" "^0.1.15"
     "@ethereumjs/common" "^3.1.1"
     "@ethereumjs/tx" "^4.1.1"
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     "@injectivelabs/exceptions" "^1.14.33"
     "@injectivelabs/networks" "^1.14.33"
     "@injectivelabs/sdk-ts" "^1.14.34-beta.2"
     "@injectivelabs/ts-types" "^1.14.33"
     "@injectivelabs/utils" "^1.14.33"
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-    "@injectivelabs/exceptions" "^1.14.32"
-    "@injectivelabs/networks" "^1.14.32"
-    "@injectivelabs/sdk-ts" "^1.14.33-beta.2"
-    "@injectivelabs/ts-types" "^1.14.32"
-    "@injectivelabs/utils" "^1.14.32"
->>>>>>> 61ea0494a (chore: minor)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     "@keplr-wallet/cosmos" "^0.12.71"
     "@keplr-wallet/types" "^0.12.71"
     "@ledgerhq/hw-app-cosmos" "^6.29.5"
@@ -16024,47 +15847,16 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-<<<<<<< Updated upstream
   resolved "https://github.com/InjectiveLabs/shared-packages#b7f03b019afe69ed6acf57fdd89a75f43e7bf7eb"
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-  resolved "https://github.com/InjectiveLabs/shared-packages#b7f03b019afe69ed6acf57fdd89a75f43e7bf7eb"
-=======
-  resolved "https://github.com/InjectiveLabs/shared-packages#92794e54fb48ab188006da18bd71018a8ef2bcbd"
->>>>>>> c9a275325 (chore: package bump)
-=======
-  resolved "https://github.com/InjectiveLabs/shared-packages#b7f03b019afe69ed6acf57fdd89a75f43e7bf7eb"
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.33"
     "@injectivelabs/networks" "1.14.33"
     "@injectivelabs/nuxt-bugsnag" "0.0.12"
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     "@injectivelabs/sdk-ts" "1.14.34-beta.2"
     "@injectivelabs/ts-types" "1.14.33"
     "@injectivelabs/utils" "1.14.33"
     "@injectivelabs/wallet-ts" "1.14.34-beta.2"
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
-    "@injectivelabs/sdk-ts" "1.14.33-beta.2"
-    "@injectivelabs/ts-types" " 1.14.32"
-    "@injectivelabs/utils" " 1.14.32"
-    "@injectivelabs/wallet-ts" "1.14.33-beta.2"
->>>>>>> c9a275325 (chore: package bump)
-=======
->>>>>>> 155c05a91 (chore: display horizontally futures header trading display options - IL-402)
->>>>>>> Stashed changes
     "@nuxtjs/i18n" "8.5.5"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
