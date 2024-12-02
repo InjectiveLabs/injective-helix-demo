@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { BalanceTableColumn } from '@/types'
+import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 
 const { t } = useLang()
 const {
