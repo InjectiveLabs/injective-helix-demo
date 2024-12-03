@@ -7,12 +7,8 @@ withDefaults(
   defineProps<{
     sortBy: string
     isAscending?: boolean
-    isMarketsPage?: boolean
   }>(),
-  {
-    isAscending: false,
-    isMarketsPage: false
-  }
+  {}
 )
 
 const emit = defineEmits<{
@@ -98,7 +94,6 @@ function handleIsAscending(value: boolean) {
     </div>
 
     <div
-      v-if="!isMarketsPage"
       class="flex-2 lg:flex-1 min-w-0 truncate lg:text-right max-lg:text-center"
     >
       <div>
@@ -131,8 +126,14 @@ function handleIsAscending(value: boolean) {
           </div>
         </template>
       </SharedSortableHeaderItem>
-    </div>
 
-    <div v-if="isMarketsPage" class="flex-1" />
+      <div
+        class="flex-2 lg:flex-1 min-w-0 truncate lg:text-right max-lg:text-center"
+      >
+        <div>
+          {{ $t('trade.open_interest') }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>

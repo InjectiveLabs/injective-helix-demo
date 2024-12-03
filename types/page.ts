@@ -29,6 +29,11 @@ export enum TradingBotsSubPage {
   LiquiditySpotMarket = 'trading-bots-liquidity-bots-spot'
 }
 
+export enum TradePage {
+  Spot = 'spot',
+  Futures = 'futures'
+}
+
 export enum TradeSubPage {
   Spot = 'spot-slug',
   Market = 'market-market',

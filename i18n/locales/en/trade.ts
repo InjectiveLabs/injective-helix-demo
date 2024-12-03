@@ -129,6 +129,7 @@ export default {
       'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
     long: 'Long',
     short: 'Short',
+    open_interest: 'Open interest',
     available_asset: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,
     availableAmount: 'Available: {amount}',

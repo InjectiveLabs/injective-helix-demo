@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   NuxtUiIcons,
-  SharedMarketChange,
-  SharedMarketType
+  SharedMarketType,
+  SharedMarketChange
 } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { PerpetualMarket } from '@injectivelabs/sdk-ts'
+import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -135,67 +137,23 @@ const low = computed(() => {
   return new BigNumberInBase(summary.value.low)
 })
 
-const { valueToBigNumber: tWapEst } = useSharedBigNumberFormatter(
-  computed(() => {
-    const market = props.market as UiDerivativeMarket
-
-    if (!market.perpetualMarketFunding) {
-      return ZERO_IN_BASE
-    }
-
-    const currentUnixTime = Math.floor(Date.now() / 1000)
-    const divisor = new BigNumberInBase(currentUnixTime).mod(3600).times(24)
-
-    if (divisor.lte(0)) {
-      return ZERO_IN_BASE
-    }
-
-    return new BigNumberInBase(
-      market.perpetualMarketFunding?.cumulativePrice || 0
-    ).dividedBy(divisor)
-  })
-)
-
-const fundingRate = computed(() => {
-  const market = props.market as UiDerivativeMarket
-
-  if (market.subType !== SharedMarketType.Perpetual) {
-    return ZERO_IN_BASE
-  }
-
-  if (
-    !market.perpetualMarketFunding ||
-    !market.isPerpetual ||
-    !market.perpetualMarketInfo
-  ) {
-    return ZERO_IN_BASE
-  }
-
-  const hourlyFundingRateCap = new BigNumberInBase(
-    market.perpetualMarketInfo.hourlyFundingRateCap
-  )
-  const estFundingRate = new BigNumberInBase(
-    market.perpetualMarketInfo.hourlyInterestRate
-  ).plus(tWapEst.value)
-
-  if (estFundingRate.gt(hourlyFundingRateCap)) {
-    return new BigNumberInBase(hourlyFundingRateCap).multipliedBy(100)
-  }
-
-  if (estFundingRate.lt(hourlyFundingRateCap.times(-1))) {
-    return new BigNumberInBase(hourlyFundingRateCap).times(-1).multipliedBy(100)
-  }
-
-  return new BigNumberInBase(estFundingRate).multipliedBy(100)
-})
-
 const {
   valueToFixed: fundingRateToFixed,
   valueToBigNumber: fundingRateToBigNumber
-} = useSharedBigNumberFormatter(fundingRate, {
-  roundingMode: BigNumberInBase.ROUND_DOWN,
-  decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
-})
+} = useSharedBigNumberFormatter(
+  computed(() => {
+    const market = props.market as PerpetualMarket
+
+    return formatFundingRate({
+      info: market.perpetualMarketInfo,
+      funding: market.perpetualMarketFunding
+    })
+  }),
+  {
+    roundingMode: BigNumberInBase.ROUND_DOWN,
+    decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+  }
+)
 
 const { valueToString: annualizedFundingRateToString } =
   useSharedBigNumberFormatter(
@@ -404,15 +362,15 @@ useIntervalFn(() => {
           >
             <span
               :class="{
-                'text-green-500': fundingRate.gte(0),
-                'text-red-500': fundingRate.lt(0)
+                'text-green-500': fundingRateToBigNumber.gte(0),
+                'text-red-500': fundingRateToBigNumber.lt(0)
               }"
               class="cursor-pointer flex"
             >
-              <span> {{ fundingRate.gt(0) ? '+' : '' }}</span>
+              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
               <AppAmount
                 v-bind="{
-                  amount: fundingRate.toFixed(),
+                  amount: fundingRateToFixed,
                   decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
                 }"
               />

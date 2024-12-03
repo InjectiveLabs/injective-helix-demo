@@ -5,11 +5,32 @@ import {
   verifiedExpirySlugs,
   verifiedDerivativeSlugs
 } from './../../app/json'
+import { TradePage, TradeSubPage } from './../../types/page'
 
 const customStaticRoutes: string[] = []
 const upcomingMarketsRoutes: string[] = []
 
 export default {
+  'pages:extend'(pages) {
+    const spotPage = pages.find((page) => page.name === TradePage.Spot)
+    const futuresPage = pages.find((page) => page.name === TradePage.Futures)
+
+    if (futuresPage) {
+      pages.push({
+        ...futuresPage,
+        name: TradeSubPage.Futures,
+        path: '/futures/:slug()'
+      })
+    }
+
+    if (spotPage) {
+      pages.push({
+        ...spotPage,
+        name: TradeSubPage.Spot,
+        path: '/spot/:slug()'
+      })
+    }
+  },
   'nitro:config'(nitroConfig: NitroConfig) {
     if (
       nitroConfig.dev ||

@@ -189,13 +189,13 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               sortedMarkets
             }"
           >
-            <PartialsMarketsCommonHeader
+            <PartialsTradeStatsMarketSelectorTableHeader
               v-bind="{ sortBy, isAscending }"
               @update:is-ascending="onAscending"
               @update:sort-by="onSortBy"
             />
 
-            <PartialsMarketsCommonRow
+            <PartialsTradeStatsMarketSelectorTableRow
               v-for="{ market, summary, volumeInUsd } in sortedMarkets"
               :key="market.marketId"
               v-bind="{ market, summary, volumeInUsd, marketPriceMap }"
