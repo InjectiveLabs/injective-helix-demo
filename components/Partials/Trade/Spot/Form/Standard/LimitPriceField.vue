@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketKey,
   BusEvents,
@@ -45,7 +46,10 @@ function setMidLimitPrice() {
     return
   }
 
-  value.value = lastTradedPrice.value.toFixed()
+  value.value = lastTradedPrice.value.toFixed(
+    market.value.priceDecimals,
+    BigNumberInBase.ROUND_DOWN
+  )
 }
 
 onMounted(() => {

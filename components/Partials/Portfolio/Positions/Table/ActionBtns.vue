@@ -149,7 +149,7 @@ async function closePositionLimit() {
 </script>
 
 <template>
-  <div class="flex items-center overflow-hidden space-x-2">
+  <div class="flex items-center overflow-hidden space-x-2 p-2">
     <AppButton
       v-bind="{
         status: marketCloseStatus,
