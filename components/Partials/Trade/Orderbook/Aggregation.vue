@@ -60,12 +60,32 @@ const filteredOptions = computed(() =>
 <template>
   <USelectMenu
     v-model="value"
-    class="min-w-24"
-    select-class="dark:bg-brand-900"
+    class="min-w-12"
+    select-class="dark:bg-brand-875"
     v-bind="{
       options: filteredOptions
     }"
+    size="xs"
     value-attribute="value"
     option-attribute="display"
+    :ui="{
+      base: 'dark:ring-0 font-semibold dark:cursor-pointer',
+      rounded: 'rounded',
+      trailing: {
+        padding: {
+          xs: 'pe-7'
+        }
+      },
+      icon: {
+        base: 'dark:text-white'
+      }
+    }"
+    :ui-menu="{
+      width: 'w-fit',
+      option: {
+        base: 'cursor-pointer',
+        size: 'text-xs'
+      }
+    }"
   />
 </template>

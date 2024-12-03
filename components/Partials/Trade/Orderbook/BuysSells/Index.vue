@@ -82,13 +82,13 @@ function setSellsIndex(index: number) {
 
 <template>
   <div>
-    <div class="flex justify-between pt-2 px-2">
-      <p class="text-xs space-x-1.5 flex-1 text-right">
+    <div class="flex justify-between py-2 px-3">
+      <p class="text-xs space-x-1.5 flex-1">
         <span class="text-coolGray-500">{{ $t('trade.price') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
 
-      <p class="text-xs space-x-1.5 flex-1 text-right">
+      <p class="text-xs space-x-1.5 flex-1 text-center">
         <span class="text-coolGray-500">{{ $t('trade.amount') }}</span>
         <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
       </p>
@@ -128,7 +128,7 @@ function setSellsIndex(index: number) {
       </template>
     </div>
 
-    <div class="h-header border-y my-1 flex">
+    <div class="h-[44px] border-y my-1 flex">
       <PartialsTradeOrderbookBuysSellsMidMarkPrice
         v-bind="{ market, isSpot }"
       />
@@ -145,6 +145,7 @@ function setSellsIndex(index: number) {
           v-for="i in buysSectionRows"
           :key="i"
           :index="i"
+          is-buy
         />
       </template>
 

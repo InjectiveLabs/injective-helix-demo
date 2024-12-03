@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
-import { UiMarketWithToken } from '@/types'
 import { stableCoinSymbols } from '~/app/data/token'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -50,24 +51,8 @@ const isStableCoinMarket = computed(() =>
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">
-      <UIcon
-        v-if="
-          [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
-            lastTradedPriceChange
-          )
-        "
-        :name="NuxtUiIcons.ArrowLeft"
-        class="transform w-3 h-3 lg:w-4 lg:h-4 4xl:w-5 4xl:h-5"
-        :class="{
-          'text-red-500 -rotate-90':
-            lastTradedPriceChange === SharedMarketChange.Decrease,
-          'text-green-500 rotate-90':
-            lastTradedPriceChange === SharedMarketChange.Increase
-        }"
-      />
-
       <span
-        class="text-xl font-semibold"
+        class="text-sm tracking-wider font-bold spacing"
         :class="{
           'text-red-500 ':
             lastTradedPriceChange === SharedMarketChange.Decrease,
@@ -78,20 +63,36 @@ const isStableCoinMarket = computed(() =>
         <AppAmount
           v-bind="{
             amount: lastTradedPrice.toFixed(),
-            decimalPlaces: market.priceDecimals
+            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
         />
       </span>
 
+      <UIcon
+        v-if="
+          [SharedMarketChange.Increase, SharedMarketChange.Decrease].includes(
+            lastTradedPriceChange
+          )
+        "
+        :name="NuxtUiIcons.ArrowLeft"
+        class="transform w-5 h-5 mx-2"
+        :class="{
+          'text-red-500 -rotate-90':
+            lastTradedPriceChange === SharedMarketChange.Decrease,
+          'text-green-500 rotate-90':
+            lastTradedPriceChange === SharedMarketChange.Increase
+        }"
+      />
+
       <span
         v-if="!isStableCoinMarket && isSpot"
-        class="text-xs ml-1 text-coolGray-350 border-b border-dashed border-coolGray-400"
+        class="text-sm text-coolGray-350 border-b border-dashed border-coolGray-400 tracking-wider"
       >
         <AppAmount :amount="lastTradedPriceInUsd.toFixed()" />
         <span> USD</span>
       </span>
 
-      <span v-if="!isSpot" class="text-xs ml-2">
+      <span v-if="!isSpot" class="text-sm tracking-wider">
         <CommonHeaderTooltip
           v-bind="{
             tooltip: $t('trade.markPrice')
@@ -100,7 +101,7 @@ const isStableCoinMarket = computed(() =>
           <AppAmount
             v-bind="{
               amount: markPrice,
-              decimalPlaces: market.priceDecimals
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
         </CommonHeaderTooltip>

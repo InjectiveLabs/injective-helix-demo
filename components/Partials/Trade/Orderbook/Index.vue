@@ -40,14 +40,14 @@ function setOrderbookLayout(layout: OrderbookLayout) {
 
 <template>
   <div class="pb-2">
-    <div class="h-header border-b flex pr-2">
+    <div class="h-header border-b flex items-center pr-2">
       <AppButtonSelect
         v-for="value in Object.values(OrderbookViewOption)"
         :key="value"
         v-model="activeTab"
         :value="value"
-        class="text-sm font-semibold text-coolGray-500 capitalize px-2"
-        active-classes="!text-white"
+        class="text-xs font-medium text-coolGray-450 capitalize mx-3 py-2 border-b-2 border-solid border-transparent"
+        active-classes="text-white border-blue-550"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
