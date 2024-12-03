@@ -133,10 +133,15 @@ const leverageNumber = computed({
 </script>
 
 <template>
-  <template v-if="!derivativeFormValues[DerivativesTradeFormField.ReduceOnly]">
-    <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
+  <div v-if="!derivativeFormValues[DerivativesTradeFormField.ReduceOnly]">
+    <div class="flex gap-2 text-xs">
+      <p class="font-semibold text-white">
+        {{ $t('trade.leverage') }}
+      </p>
+      <p class="text-coolGray-450">Up to {{ maxLeverageAvailable }}x</p>
+    </div>
 
-    <div class="flex items-center">
+    <div class="flex items-center mt-1">
       <div class="flex-1 pr-4 relative">
         <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
@@ -147,25 +152,27 @@ const leverageNumber = computed({
         />
       </div>
 
-      <label class="field-style flex px-3 basis-24 min-w-0 h-12">
+      <label class="bg-[#181E31] rounded flex px-3 basis-24 min-w-0 h-10">
         <input
           ref="el"
           :value="leverage"
           type="text"
-          class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
+          class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right text-coolGray-450"
           :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageInputField)"
           @keydown.enter="onEnter"
           @blur="onBlur"
         />
-        <span class="flex items-center pl-2 select-none">&times;</span>
+        <span class="flex items-center pl-2 select-none text-white">
+          &times;
+        </span>
       </label>
     </div>
 
     <p
-      class="error-message"
+      class="error-message mt-4"
       :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageError)"
     >
       {{ errorMessage }}
     </p>
-  </template>
+  </div>
 </template>

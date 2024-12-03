@@ -40,7 +40,7 @@ const sliderTrackStyle = computed(() => {
     100
 
   return {
-    background: `linear-gradient(to right, #F8F8F8 0%, #F8F8F8 ${bgLocationValue}%, #4b5563 ${bgLocationValue}%, #4b5563 100%)`
+    background: `linear-gradient(to right, #0082fa 0%, #0082fa ${bgLocationValue}%, #181E31 ${bgLocationValue}%, #181E31 100%)`
   }
 })
 
@@ -59,7 +59,7 @@ function onMouseUp() {
     class="leverage__slider-container relative max-w-[640px] opacity-85 hover:opacity-100 transition-opacity"
   >
     <div
-      class="leverage-slider-track absolute z-[1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[5px] w-full"
+      class="leverage-slider-track absolute z-[1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-full"
       :style="sliderTrackStyle"
     />
 
@@ -67,12 +67,12 @@ function onMouseUp() {
       v-for="(leverage, index) in leverageBreakpoints"
       :key="leverage"
       :class="[
-        'leverage-breakpoint absolute z-[2] border-[3px] border-solid  w-3.5 h-3.5 top-1/2 -translate-y-1/2 rotate-45 rounded-sm cursor-pointer',
+        'leverage-breakpoint absolute z-[2] border-2 border-solid top-1/2 -translate-y-1/2 rotate-45 rounded-sm cursor-pointer',
         `breakpoint--${index + 1}`,
         [
-          leverageAmount > leverage
-            ? 'bg-coolGray-100 border-brand-900'
-            : 'bg-brand-900 border-[#4b5563]'
+          leverageAmount < leverage
+            ? 'bg-[#141620] border-[#181E31] w-3 h-3'
+            : 'bg-blue-550 border-[#181E31] w-3.5 h-3.5'
         ]
       ]"
     />
@@ -81,7 +81,7 @@ function onMouseUp() {
       v-for="(leverageText, index) in leverageBreakpointTexts"
       :key="leverageText"
       :class="[
-        'leverage-breakpoint-text absolute z-[2] -bottom-5 text-xs',
+        'leverage-breakpoint-text text-coolGray-450 absolute z-[2] -bottom-5 text-xs font-mono',
         `text--${index + 1}`
       ]"
     >
@@ -104,10 +104,10 @@ function onMouseUp() {
 .leverage-slider-track {
   background: linear-gradient(
     to right,
-    #f8f8f8 0%,
-    #f8f8f8 25%,
-    #4b5563 25%,
-    #4b5563 100%
+    #0082fa 0%,
+    #0082fa 25%,
+    #181e31 25%,
+    #181e31 100%
   );
 }
 
@@ -120,11 +120,11 @@ function onMouseUp() {
 }
 
 .leverage-slider::-webkit-slider-thumb {
-  @apply appearance-none w-[18px] h-[18px] bg-brand-900 border-[5px] border-solid border-coolGray-100 rotate-45 rounded -mt-1.5 shadow-[0_0_0_3px] shadow-brand-900;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-[#141620] rotate-45 rounded -mt-1.5;
 }
 
 .leverage-slider::-moz-range-thumb {
-  @apply appearance-none w-[18px] h-[18px] bg-brand-900 border-[5px] border-solid border-coolGray-100 rotate-45 rounded -mt-1.5 shadow-[0_0_0_3px] shadow-brand-900;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-[#141620] rotate-45 rounded -mt-1.5;
 }
 
 .leverage-breakpoint.breakpoint--1 {
@@ -148,15 +148,15 @@ function onMouseUp() {
 }
 
 .leverage-breakpoint-text.text--1 {
-  @apply left-[21.5%];
+  @apply left-[22%];
 }
 
 .leverage-breakpoint-text.text--2 {
-  @apply left-[45%];
+  @apply left-[46.5%];
 }
 
 .leverage-breakpoint-text.text--3 {
-  @apply left-[70.5%];
+  @apply left-[69%];
 }
 
 @screen md {
@@ -165,7 +165,7 @@ function onMouseUp() {
   }
 
   .leverage-breakpoint-text.text--1 {
-    @apply left-[23.5%];
+    @apply left-[24%];
   }
 
   .leverage-breakpoint-text.text--2 {
