@@ -103,7 +103,7 @@ onUnmounted(() => {
   </div>
 
   <div
-    class="lg:trade-layout-left w-full min-h-[calc(100vh-122px)] max-lg:divide-y"
+    class="lg:trade-layout-right w-full min-h-[calc(100vh-122px)] max-lg:divide-y"
   >
     <div class="[grid-area:chart]">
       <slot name="chart">

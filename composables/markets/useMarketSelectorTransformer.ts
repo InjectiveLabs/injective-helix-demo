@@ -1,9 +1,9 @@
 import { SharedMarketChange } from '@shared/types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import { rwaMarketIds } from '@/app/data/market'
+import { calculateLeverage } from '@/app/utils/formatters'
 import {
   UiDerivativeMarket,
   MarketsSelectorTableColumn,
@@ -44,11 +44,7 @@ export function useMarketSelectorTransformer(
         derivativeStore.tickerOpenInterestMap[item.market.ticker] || 0
       )
 
-      const leverage = uiDerivativeMarket.initialMarginRatio
-        ? new BigNumberInBase(1).dividedBy(
-            uiDerivativeMarket.initialMarginRatio
-          )
-        : ZERO_IN_BASE
+      const leverage = calculateLeverage(uiDerivativeMarket.initialMarginRatio)
 
       return {
         leverage,

@@ -5,13 +5,12 @@ import {
   SharedUiMarketSummary
 } from '@shared/types'
 import { dataCyTag } from '@shared/utils'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import { rwaMarketIds } from '@/app/data/market'
-import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_FUNDING_RATE_DECIMALS } from '@/app/utils/constants'
+import { calculateLeverage, abbreviateNumber } from '@/app/utils/formatters'
 import { UiMarketWithToken, UiDerivativeMarket, MarketCyTags } from '@/types'
 
 const props = withDefaults(
@@ -75,20 +74,9 @@ const {
 
 const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
   useSharedBigNumberFormatter(
-    computed(() => {
-      const market = props.market as UiDerivativeMarket
-
-      if (!market.initialMarginRatio) {
-        return ZERO_IN_BASE
-      }
-
-      return new BigNumberInBase(1).dividedBy(
-        (props.market as UiDerivativeMarket).initialMarginRatio
-      )
-    }),
-    {
-      decimalPlaces: 0
-    }
+    computed(() =>
+      calculateLeverage((props.market as UiDerivativeMarket).initialMarginRatio)
+    )
   )
 
 const priceChangeClasses = computed(() => {

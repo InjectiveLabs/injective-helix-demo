@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { IsSpotKey, CommonCyTags, UiMarketWithToken } from '@/types'
+import { calculateLeverage } from '@/app/utils/formatters'
+import {
+  IsSpotKey,
+  CommonCyTags,
+  UiMarketWithToken,
+  UiDerivativeMarket
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -23,6 +29,15 @@ const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
 const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
   computed(() => props.market)
 )
+
+const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      calculateLeverage(
+        (props.market as UiDerivativeMarket)?.initialMarginRatio
+      )
+    )
+  )
 
 const isBiudlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
@@ -79,6 +94,13 @@ watch(
             :data-cy="dataCyTag(CommonCyTags.MarketPair)"
           >
             {{ market.ticker }}
+          </span>
+
+          <span
+            v-if="leverageToBigNumber.gt(0)"
+            class="text-xs bg-blue-550 bg-opacity-80 px-1 py-0.5 font-semibold rounded-md text-white ml-2"
+          >
+            {{ leverageToFixed }}
           </span>
 
           <template #customTooltip>

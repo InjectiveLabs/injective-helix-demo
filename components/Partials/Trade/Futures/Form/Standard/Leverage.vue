@@ -4,6 +4,7 @@ import { FactoryOpts } from 'imask'
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { calculateLeverage } from '@/app/utils/formatters'
 import {
   MarketKey,
   UiDerivativeMarket,
@@ -26,23 +27,9 @@ const props = withDefaults(
 
 const { markPrice } = useDerivativeLastPrice(market)
 
-const maxLeverageAvailable = computed(() => {
-  const maxLeverage = new BigNumberInBase(
-    new BigNumberInBase(1).dividedBy(market.value.initialMarginRatio).dp(0)
-  )
-
-  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
-
-  const stepsLessThanMaxLeverage = steps.filter(
-    (step) => step <= maxLeverage.toNumber()
-  )
-
-  return stepsLessThanMaxLeverage.length > 0
-    ? new BigNumberInBase(
-        stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
-      ).toFixed()
-    : new BigNumberInBase(20).toFixed()
-})
+const maxLeverageAvailable = computed(() =>
+  calculateLeverage(market.value.initialMarginRatio).toFixed()
+)
 
 const { el, typed } = useIMask(
   computed(
