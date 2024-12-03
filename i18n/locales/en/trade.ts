@@ -1,4 +1,8 @@
-import { MarketsTableColumn, I18nMessageFunction } from '@/types'
+import {
+  MarketsTableColumn,
+  I18nMessageFunction,
+  MarketsSelectorTableColumn
+} from '@/types'
 
 export default {
   trade: {
@@ -8,6 +12,14 @@ export default {
         [MarketsTableColumn.LastPrice]: 'Last Price',
         [MarketsTableColumn.MarketChange24h]: 'Change (24h)',
         [MarketsTableColumn.MarketVolume24h]: 'Volume (24h)'
+      },
+      marketsSelector: {
+        [MarketsSelectorTableColumn.Markets]: 'Markets',
+        [MarketsSelectorTableColumn.LastPrice]: 'Last Price',
+        [MarketsSelectorTableColumn.MarketChange24h]: 'Change (24h)',
+        [MarketsSelectorTableColumn.FundingRate]: 'Est. Funding Rate',
+        [MarketsSelectorTableColumn.MarketVolume24h]: 'Volume (24h)',
+        [MarketsSelectorTableColumn.OpenInterest]: 'Open Interest'
       }
     },
     get: 'Get',

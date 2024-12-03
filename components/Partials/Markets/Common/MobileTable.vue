@@ -42,7 +42,7 @@ const toggleFavorite = () => {
 </script>
 
 <template>
-  <AppMobileTable :columns="filteredColumns">
+  <AppMobileTable :columns="filteredColumns" extra-class="py-6">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
         <div class="flex flex-col gap-2">
@@ -128,7 +128,7 @@ const toggleFavorite = () => {
                   market.market.marketId
                 )
               }"
-              class="w-6 h-6 text-coolGray-700 hover:text-blue-700"
+              class="w-6 h-6 text-coolGray-700"
               @click.stop.prevent="toggleFavorite"
             >
               <UIcon :name="NuxtUiIcons.Star" class="h-6 w-6 min-w-6" />

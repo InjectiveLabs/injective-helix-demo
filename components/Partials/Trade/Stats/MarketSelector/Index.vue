@@ -142,10 +142,10 @@ watch(
   >
     <div
       ref="el"
-      class="basis-[900px] min-w-0 overflow-y-auto bg-brand-900 border h-[calc(100vh-132px)] pb-2"
+      class="basis-[1100px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-136px)] max-lg:h-[calc(100vh-320px)] max-xs:h-[calc(100vh-290px)]"
       @click.stop
     >
-      <PartialsTradeStatsMarketSelectorTable v-bind="{ marketPriceMap }" />
+      <PartialsTradeStatsMarketSelectorPanel v-bind="{ marketPriceMap }" />
     </div>
   </div>
 </template>
