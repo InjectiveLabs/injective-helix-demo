@@ -45,68 +45,62 @@ const toggleFavorite = () => {
   <AppMobileTable :columns="filteredColumns" extra-class="py-6">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{ $t(`trade.table.markets.${MarketsTableColumn.Markets}`) }}
-          </p>
+        <PartialsCommonMarketRedirection
+          :market="market.market"
+          class="flex items-center"
+        >
+          <div class="w-full flex items-center truncate">
+            <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
 
-          <PartialsCommonMarketRedirection
-            :market="market.market"
-            class="flex items-center"
-          >
-            <div class="w-full flex items-center truncate">
-              <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
-
-              <div class="ml-2">
-                <CommonHeaderTooltip
-                  :tooltip="$t('trade.rwa.marketClosedMarketRow')"
-                  :is-disabled="!market.isRwaMarket"
-                  is-not-styled
-                  text-color-class="text-white"
-                  :classes="
-                    market.isRwaMarket
-                      ? 'border-dashed border-b cursor-pointer'
-                      : ''
-                  "
-                  tooltip-class="text-xs"
-                  :ui="{
-                    base: '-translate-y-0.5'
-                  }"
+            <div class="ml-2">
+              <CommonHeaderTooltip
+                :tooltip="$t('trade.rwa.marketClosedMarketRow')"
+                :is-disabled="!market.isRwaMarket"
+                is-not-styled
+                text-color-class="text-white"
+                :classes="
+                  market.isRwaMarket
+                    ? 'border-dashed border-b cursor-pointer'
+                    : ''
+                "
+                tooltip-class="text-xs"
+                :ui="{
+                  base: '-translate-y-0.5'
+                }"
+              >
+                <span
+                  class="text-sm"
+                  :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
                 >
-                  <span
-                    class="text-sm"
-                    :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
-                  >
-                    {{ market.market.ticker }}
-                  </span>
-                </CommonHeaderTooltip>
+                  {{ market.market.ticker }}
+                </span>
+              </CommonHeaderTooltip>
 
-                <div class="flex items-center gap-1">
-                  <div
-                    class="text-xs font-normal text-coolGray-500"
-                    :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
-                      market.market.baseToken.name
-                    }`"
-                  >
-                    {{ market.market.baseToken.name }}
-                  </div>
+              <div class="flex items-center gap-1">
+                <div
+                  class="text-xs font-normal text-coolGray-500"
+                  :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
+                    market.market.baseToken.name
+                  }`"
+                >
+                  {{ market.market.baseToken.name }}
+                </div>
 
-                  <div v-if="!market.isVerified">
-                    <UTooltip
-                      :text="$t('markets.permisionlessWarning')"
-                      class="flex"
-                    >
-                      <UIcon
-                        name="clarity:shield-line"
-                        class="text-gray-400 size-3"
-                      />
-                    </UTooltip>
-                  </div>
+                <div v-if="!market.isVerified">
+                  <UTooltip
+                    :text="$t('markets.permisionlessWarning')"
+                    class="flex"
+                  >
+                    <UIcon
+                      name="clarity:shield-line"
+                      class="text-gray-400 size-3"
+                    />
+                  </UTooltip>
                 </div>
               </div>
             </div>
-          </PartialsCommonMarketRedirection>
-        </div>
+          </div>
+        </PartialsCommonMarketRedirection>
 
         <PartialsCommonMarketRedirection
           :market="market.market"

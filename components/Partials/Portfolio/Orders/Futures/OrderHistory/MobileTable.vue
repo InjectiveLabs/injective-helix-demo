@@ -30,31 +30,21 @@ const filteredColumns = computed(() =>
 <template>
   <AppMobileTable :columns="filteredColumns">
     <template #header>
-      <div class="flex flex-col gap-2 mb-6">
-        <p class="text-white text-sm font-semibold">
-          {{
-            $t(
-              `portfolio.table.futuresOrderHistory.${PortfolioFuturesOrderHistoryTableColumn.Market}`
-            )
-          }}
-        </p>
-
-        <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 font-sans"
-          v-bind="{ market: order.market }"
+      <PartialsCommonMarketRedirection
+        class="flex items-center space-x-2 font-sans mb-6"
+        v-bind="{ market: order.market }"
+      >
+        <CommonTokenIcon
+          v-bind="{ token: order.market.baseToken }"
+          :is-sm="true"
+        />
+        <p
+          class="text-sm text-coolGray-200"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryMarketTicker)"
         >
-          <CommonTokenIcon
-            v-bind="{ token: order.market.baseToken }"
-            :is-sm="true"
-          />
-          <p
-            class="text-sm text-coolGray-200"
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryMarketTicker)"
-          >
-            {{ order.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
-      </div>
+          {{ order.market.ticker }}
+        </p>
+      </PartialsCommonMarketRedirection>
     </template>
 
     <template #last-updated-data>

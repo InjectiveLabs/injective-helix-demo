@@ -54,33 +54,23 @@ function chase() {
   <AppMobileTable :columns="filteredColumns">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{
-              $t(
-                `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Market}`
-              )
-            }}
-          </p>
-
-          <PartialsCommonMarketRedirection
-            class="flex items-center space-x-2 font-sans"
-            v-bind="{ market: order.market }"
+        <PartialsCommonMarketRedirection
+          class="flex items-center space-x-2 font-sans"
+          v-bind="{ market: order.market }"
+        >
+          <CommonTokenIcon
+            v-bind="{ token: order.market.baseToken }"
+            :is-sm="true"
+          />
+          <p
+            class="text-sm text-coolGray-200"
+            :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderMarketTicker)}-${
+              order.market.ticker
+            }`"
           >
-            <CommonTokenIcon
-              v-bind="{ token: order.market.baseToken }"
-              :is-sm="true"
-            />
-            <p
-              class="text-sm text-coolGray-200"
-              :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderMarketTicker)}-${
-                order.market.ticker
-              }`"
-            >
-              {{ order.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
-        </div>
+            {{ order.market.ticker }}
+          </p>
+        </PartialsCommonMarketRedirection>
 
         <div class="flex space-x-2">
           <AppButton

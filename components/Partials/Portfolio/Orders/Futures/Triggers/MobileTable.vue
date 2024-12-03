@@ -42,28 +42,18 @@ function cancelOrder() {
   <AppMobileTable :columns="filteredColumns">
     <template #header>
       <div class="flex items-start gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{
-              $t(
-                `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Market}`
-              )
-            }}
+        <PartialsCommonMarketRedirection
+          class="flex items-center space-x-2 font-sans"
+          v-bind="{ market: trigger.market }"
+        >
+          <CommonTokenIcon
+            v-bind="{ token: trigger.market.baseToken }"
+            :is-sm="true"
+          />
+          <p class="text-sm text-coolGray-200">
+            {{ trigger.market.ticker }}
           </p>
-
-          <PartialsCommonMarketRedirection
-            class="flex items-center space-x-2 font-sans"
-            v-bind="{ market: trigger.market }"
-          >
-            <CommonTokenIcon
-              v-bind="{ token: trigger.market.baseToken }"
-              :is-sm="true"
-            />
-            <p class="text-sm text-coolGray-200">
-              {{ trigger.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
-        </div>
+        </PartialsCommonMarketRedirection>
 
         <AppButton
           size="sm"

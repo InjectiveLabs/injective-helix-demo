@@ -40,38 +40,28 @@ const filteredColumns = computed(() =>
   >
     <template #header>
       <div class="flex items-start gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{
-              $t(
-                `campaign.table.dashboard.${LiquidityDashboardTableColumn.Market}`
-              )
-            }}
-          </p>
-
-          <NuxtLink
-            :to="{
-              name: LiquidityRewardsPage.CampaignDetails,
-              query: { campaign: campaign?.campaignId }
-            }"
-            class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300"
-          >
-            <div v-if="campaign.token">
-              <CommonTokenIcon :token="campaign.token" />
-            </div>
-            <div>
-              <p class="text-sm font-bold">
-                {{ campaign.market?.ticker }}
-              </p>
-              <p class="text-xs text-coolGray-500">
-                {{ campaign.market?.baseToken?.name }}
-              </p>
-            </div>
-          </NuxtLink>
-        </div>
-
-        <PartialsLiquidityCommonClaimButton :campaign="campaign.campaign" />
+        <NuxtLink
+          :to="{
+            name: LiquidityRewardsPage.CampaignDetails,
+            query: { campaign: campaign?.campaignId }
+          }"
+          class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300"
+        >
+          <div v-if="campaign.token">
+            <CommonTokenIcon :token="campaign.token" />
+          </div>
+          <div>
+            <p class="text-sm font-bold">
+              {{ campaign.market?.ticker }}
+            </p>
+            <p class="text-xs text-coolGray-500">
+              {{ campaign.market?.baseToken?.name }}
+            </p>
+          </div>
+        </NuxtLink>
       </div>
+
+      <PartialsLiquidityCommonClaimButton :campaign="campaign.campaign" />
     </template>
 
     <template #volume-data>
