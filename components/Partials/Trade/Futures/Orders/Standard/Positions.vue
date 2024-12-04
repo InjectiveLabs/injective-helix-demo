@@ -43,6 +43,15 @@ function onSharePosition(position: Position | PositionV2) {
     <PartialsPortfolioPositionsTable
       v-if="filteredPosition.length"
       :positions="filteredPosition"
+      :ui="{
+        th: {
+          base: 'whitespace-nowrap dark:bg-[#141620]'
+        },
+        td: {
+          font: 'font-mono',
+          color: 'dark:text-white'
+        }
+      }"
       @margin:add="addMargin"
       @tpsl:add="addTakeProfitStopLoss"
       @position:share="onSharePosition"

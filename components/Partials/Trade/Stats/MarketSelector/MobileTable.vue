@@ -70,8 +70,13 @@ const toggleFavorite = () => {
                       : ''
                   "
                   tooltip-class="text-xs"
+                  :popper="{
+                    placement: 'top',
+                    strategy: 'fixed',
+                    offsetDistance: -40
+                  }"
                   :ui="{
-                    base: 'translate-y-3.5'
+                    base: '-translate-y-2 xs:translate-y-3'
                   }"
                 >
                   <span
@@ -84,7 +89,7 @@ const toggleFavorite = () => {
 
                 <div
                   v-if="market.leverage.gt(0)"
-                  class="text-3xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
+                  class="text-2xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
                 >
                   {{ market.leverageToFixed }}x
                 </div>

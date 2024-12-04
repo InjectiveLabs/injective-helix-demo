@@ -121,8 +121,12 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       :sort-asc-icon="NuxtUiIcons.TriangleUp"
       :sort-desc-icon="NuxtUiIcons.TriangleDown"
       :ui="{
-        th: { color: 'dark:text-coolGray-500 px-2 first:pl-4 last:pr-4' },
-        td: { color: 'px-2 py-1 text-coolGray-350' }
+        th: {
+          color: 'dark:text-coolGray-500',
+          padding: 'px-2 first:pl-4 last:pr-4'
+        },
+        tr: { base: 'hover:bg-brand-800' },
+        td: { color: 'text-coolGray-350', padding: 'px-2 py-1 ' }
       }"
     >
       <template #markets-data="{ row }">
@@ -158,8 +162,13 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
                       : ''
                   "
                   tooltip-class="text-xs"
+                  :popper="{
+                    placement: 'top',
+                    strategy: 'fixed',
+                    offsetDistance: -40
+                  }"
                   :ui="{
-                    base: 'translate-y-3.5'
+                    base: 'translate-y-2.5'
                   }"
                 >
                   <span
@@ -172,7 +181,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
 
                 <div
                   v-if="row.leverage.gt(0)"
-                  class="text-3xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
+                  class="text-2xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
                 >
                   {{ row.leverageToFixed }}x
                 </div>

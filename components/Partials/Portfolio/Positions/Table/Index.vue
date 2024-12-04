@@ -11,8 +11,18 @@ const { lg } = useTwBreakpoints()
 const props = withDefaults(
   defineProps<{
     positions: PositionV2[] | Position[]
+    ui?: Record<string, any>
   }>(),
-  {}
+  {
+    ui: () => ({
+      th: {
+        base: 'whitespace-nowrap'
+      },
+      td: {
+        font: 'font-mono'
+      }
+    })
+  }
 )
 
 const { rows } = usePositionTransformer(computed(() => props.positions))
@@ -84,7 +94,7 @@ const columns = [
   {
     key: PositionTableColumn.ClosePosition,
     label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-    class: 'w-[16%]'
+    class: 'w-[8%]'
   }
 ]
 
@@ -103,19 +113,7 @@ function sharePosition(position: PositionV2 | Position) {
 
 <template>
   <template v-if="lg">
-    <UTable
-      :rows="rows"
-      :columns="columns"
-      :ui="{
-        th: {
-          base: 'whitespace-nowrap bg-red-500',
-          font: 'font-bold'
-        },
-        td: {
-          font: 'font-mono'
-        }
-      }"
-    >
+    <UTable v-bind="{ rows, columns, ui }">
       <template #market-data="{ row }">
         <PartialsCommonMarketRedirection
           v-bind="{ market: row.market }"
@@ -301,8 +299,13 @@ function sharePosition(position: PositionV2 | Position) {
 
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
-          <button class="flex p-2 rounded-full" @click="addTpSl(row.position)">
-            <UIcon :name="NuxtUiIcons.CirclePlus" class="h-6 w-6 min-w-6" />
+          <button
+            class="flex p-2 focus-visible:outline-none"
+            @click="addTpSl(row.position)"
+          >
+            <div class="flex hover:bg-coolGray-600 rounded-full transition">
+              <UIcon :name="NuxtUiIcons.CirclePlus" class="h-6 w-6 min-w-6" />
+            </div>
           </button>
         </div>
       </template>

@@ -12,7 +12,6 @@ import {
 } from '@/types'
 
 const { t } = useLang()
-const { sm, lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const positionStore = usePositionStore()
 const notificationStore = useSharedNotificationStore()
@@ -159,8 +158,7 @@ function closePositionAndReduceOnlyOrders() {
                 : $t('common.unauthorized')
             }"
             size="sm"
-            :variant="lg ? 'danger-ghost' : 'primary'"
-            :class="[!lg ? 'py-2' : 'min-w-20']"
+            class="py-2"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
             @click="closePositionClicked"
           >
@@ -203,7 +201,7 @@ function closePositionAndReduceOnlyOrders() {
     </template>
 
     <template #entry-data>
-      <div class="space-y-1 flex flex-col" :class="{ 'items-end': sm }">
+      <div class="space-y-1 flex flex-col">
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           <AppAmount
             v-bind="{
@@ -216,15 +214,13 @@ function closePositionAndReduceOnlyOrders() {
     </template>
 
     <template #mark-data>
-      <div class="space-y-1 flex flex-col" :class="{ 'items-end': sm }">
-        <p class="text-coolGray-500">
-          <AppAmount
-            v-bind="{
-              amount: position.markPrice.toFixed(),
-              decimalPlaces: position.priceDecimals
-            }"
-          />
-        </p>
+      <div class="space-y-1 flex flex-col">
+        <AppAmount
+          v-bind="{
+            amount: position.markPrice.toFixed(),
+            decimalPlaces: position.priceDecimals
+          }"
+        />
       </div>
     </template>
 
@@ -288,7 +284,7 @@ function closePositionAndReduceOnlyOrders() {
     </template>
 
     <template #margin-data>
-      <div class="flex items-center space-x-2 justify-end">
+      <div class="flex items-center space-x-2">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
           <AppAmount
             v-bind="{

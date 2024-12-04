@@ -91,6 +91,11 @@ watch(
       <div>
         <CommonHeaderTooltip
           :is-disabled="!isBiudlPerpMarket && !is2024ElectionPerpMarket"
+          :popper="{
+            placement: 'top',
+            strategy: 'fixed',
+            offsetDistance: -40
+          }"
         >
           <span
             class="uppercase tracking-wider font-bold text-sm"
@@ -167,7 +172,7 @@ watch(
   >
     <div
       ref="el"
-      class="basis-[1100px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-136px)] max-lg:h-[calc(100vh-320px)] max-xs:h-[calc(100vh-290px)]"
+      class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-108px)] max-xl:h-[calc(100vh-176px)] max-lg:h-[calc(100vh-308px)] max-xs:h-[calc(100vh-285px)]"
       @click.stop
     >
       <PartialsTradeStatsMarketSelectorPanel v-bind="{ marketPriceMap }" />

@@ -84,7 +84,10 @@ const filteredOptions = computed(() =>
       width: 'w-fit',
       option: {
         base: 'cursor-pointer',
-        size: 'text-xs'
+        size: 'text-xs',
+        selectedIcon: {
+          base: 'w-3 h-3'
+        }
       }
     }"
   />
