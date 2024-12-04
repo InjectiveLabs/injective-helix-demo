@@ -107,7 +107,8 @@ const isPositivePnl = computed(() =>
       <UButton
         block
         :to="{
-          name: MainPage.TradingBotsLiquidityBotsSpot
+          name: MainPage.TradingBotsLiquidityBotsSpot,
+          query: { market: strategy.market.slug }
         }"
       >
         {{ $t('common.create') }}

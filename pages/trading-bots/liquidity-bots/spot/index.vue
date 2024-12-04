@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { spotGridMarkets } from '@/app/json'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   calculateOrderLevels,
   volatilityStrategyBounds
 } from '@/app/data/grid-strategy'
 import {
-  GST_DEFAULT_PRICE_TICK_SIZE,
   GST_MAXIMUM_GRIDS,
+  GST_DEFAULT_PRICE_TICK_SIZE,
   MARKETS_HISTORY_CHART_ONE_HOUR,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { LiquidityBotField, LiquidityBotForm } from '@/types'
+import { spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { LiquidityBotField, LiquidityBotForm } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -224,9 +220,10 @@ watch(
       })
     ])
       .then(([lastTrade]) => {
-        lastTradedPrice.value = new BigNumberInWei(lastTrade.price).toBase(
-          market.quoteToken.decimals - market.baseToken.decimals
-        )
+        lastTradedPrice.value = sharedToBalanceInTokenInBase({
+          value: lastTrade.price,
+          decimalPlaces: market.quoteToken.decimals - market.baseToken.decimals
+        })
       })
       .finally(() => {
         status.setIdle()
