@@ -105,10 +105,16 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem
-    class="xl:hidden 2xl:flex"
-    :title="$t('trade.markPrice')"
-  >
+  <PartialsTradeStatsHeaderItem class="xl:hidden 2xl:flex">
+    <template #title>
+      <CommonHeaderTooltip
+        :tooltip="$t('trade.stats.mark_price_tooltip')"
+        text-color-class="text-coolGray-400"
+      >
+        {{ $t('trade.mark_price') }}
+      </CommonHeaderTooltip>
+    </template>
+
     <AppAmount
       v-bind="{
         amount: markPrice,
@@ -122,8 +128,16 @@ useIntervalFn(() => {
   <PartialsTradeStatsHeaderItem
     v-if="openInterestBigNumber.gt(0)"
     class="xl:hidden 2xl:flex"
-    :title="$t('trade.stats.open_interest')"
   >
+    <template #title>
+      <CommonHeaderTooltip
+        :tooltip="$t('trade.stats.open_interest_tooltip')"
+        text-color-class="text-coolGray-400"
+      >
+        {{ $t('trade.stats.open_interest') }}
+      </CommonHeaderTooltip>
+    </template>
+
     <AppUsdAmount
       v-bind="{
         decimalPlaces: 0,

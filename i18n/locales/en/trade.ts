@@ -33,13 +33,17 @@ export default {
       high: '24h High',
       low: '24h Low',
       open_interest: 'Open Interest (USDT)',
+      open_interest_tooltip:
+        'Total outstanding position of all traders of this contract',
       market_volume_24h: 'Volume (24h)',
       market_volume_24h_tooltip:
         'The total trade volume over the past 24 hours.',
       next_funding: 'Next Funding',
       total_market_volume_24h: 'Total Volume (24H)',
       next_funding_tooltip:
-        'The time remaining for the end of the funding interval.'
+        'The time remaining for the end of the funding interval.',
+      mark_price_tooltip:
+        'Used for computing unrealised PNL and triggering liquidations'
     },
     get: 'Get',
     asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
