@@ -261,6 +261,8 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     swap: 'Swap',
+    points: 'Points',
+    vaults: 'Vaults',
     liquidity: 'Liquidity',
     swapDescription: 'Quickly swap assets through a simple interface',
     activities: 'Activities',
@@ -279,6 +281,19 @@ export default {
     lpRewardsSub: 'Rewards for setting up trading bots',
     account: 'Account',
     home: 'Home',
+    more: {
+      olp: 'OLP',
+      docs: 'Docs',
+      title: 'More',
+      bridge: 'Bridge',
+      explorer: 'Explorer',
+      portfolio: 'Portfolio',
+      lpRewards: 'LP Rewards',
+      apiDocs: 'API Documentation',
+      institutional: 'Institutional',
+      tradingDiscounts: 'Trading Discounts'
+    },
+
     makerTakerFee: ({ named }: I18nMessageFunction) =>
       `-${named('maker')}% maker / -${named('taker')}% taker`,
     noTierLevel: 'No VIP Tier',

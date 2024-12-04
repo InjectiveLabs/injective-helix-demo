@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { MENU_ITEMS, getDepositMenuItem } from '@/app/data/menu'
+import { TOP_NAV_MENU } from '@/app/data/menu'
 
 const appStore = useAppStore()
 
-const depositMenuItem = getDepositMenuItem()
-
-const filteredMenuItems = computed(() => [
-  ...MENU_ITEMS.filter((item) => (!appStore.devMode ? !item.devOnly : item)),
-  depositMenuItem
-])
+const filteredTopNavMenu = computed(() =>
+  TOP_NAV_MENU.filter((item) => {
+    if (item.isDevOnly && !appStore.devMode) return false
+    return true
+  })
+)
 </script>
 
 <template>
-  <div class="flex p-2 max-lg:hidden">
+  <div class="flex p-1.5 max-lg:hidden">
     <LayoutNavbarMenuItem
-      v-for="item in filteredMenuItems"
+      v-for="item in filteredTopNavMenu"
       :key="item.label"
-      v-bind="{ item }"
+      :item="item"
     />
   </div>
 </template>

@@ -7,15 +7,6 @@ import { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
-withDefaults(
-  defineProps<{
-    isSignUp?: boolean
-  }>(),
-  {
-    isSignUp: false
-  }
-)
-
 const emits = defineEmits<{
   'modal:closed': []
 }>()
@@ -176,7 +167,7 @@ function toggleShowMoreWallets() {
 
       <ul v-else class="divide-coolGray-800 border-coolGray-700 rounded-lg">
         <h1 class="text-xl text-center font-semibold">
-          {{ isSignUp ? $t('connect.signUp') : $t('connect.login') }}
+          {{ $t('connect.connect') }}
         </h1>
 
         <LayoutWalletSso

@@ -2,6 +2,7 @@ export enum MainPage {
   Swap = 'swap',
   Terms = 'terms',
   Index = 'index',
+  Points = 'points',
   Guilds = 'guilds',
   Markets = 'markets',
   Portfolio = 'portfolio',

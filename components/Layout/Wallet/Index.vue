@@ -9,8 +9,6 @@ const modalStore = useModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const isSignUp = ref(false)
-
 function onWalletConnect() {
   if (GEO_IP_RESTRICTIONS_ENABLED) {
     modalStore.openModal(Modal.Terms)
@@ -34,16 +32,6 @@ function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
 
-function onSignUp() {
-  isSignUp.value = true
-  onWalletConnect()
-}
-
-function onSignIn() {
-  isSignUp.value = false
-  onWalletConnect()
-}
-
 const isOpen = computed({
   get: () => modalStore.modals[Modal.Connect],
   set: (value) => {
@@ -61,32 +49,21 @@ const isOpen = computed({
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <div v-else class="flex items-center space-x-2">
-    <AppButton
-      class="max-sm:px-2 max-sm:py-1"
-      variant="primary-outline"
-      :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
-      :is-loading="
-        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-      "
-      @click="onSignIn"
-    >
-      <span>{{ $t('connect.login') }}</span>
-    </AppButton>
-    <AppButton
-      class="max-sm:px-2 max-sm:py-1"
-      :data-cy="dataCyTag(NavBarCyTags.WalletSignUpButton)"
-      :is-loading="
-        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-      "
-      @click="onSignUp"
-    >
-      <span>{{ $t('connect.signUp') }}</span>
-    </AppButton>
-  </div>
+  <AppButton
+    v-else
+    class="max-sm:px-1 max-sm:py-1 h-[30px] w-20 text-xs font-medium leading-5 mr-1 xl:mr-5"
+    variant="primary"
+    :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
+    :is-loading="
+      sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+    "
+    @click="onWalletConnect"
+  >
+    <span>{{ $t('connect.connect') }}</span>
+  </AppButton>
 
   <SharedModal v-model="isOpen">
-    <LayoutWalletConnect v-bind="{ isSignUp }" @modal:closed="onCloseModal" />
+    <LayoutWalletConnect @modal:closed="onCloseModal" />
   </SharedModal>
 
   <ModalsTerms />
