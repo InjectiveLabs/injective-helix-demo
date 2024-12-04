@@ -172,7 +172,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
 
                 <div
                   v-if="row.leverage.gt(0)"
-                  class="text-xs bg-blue-550 bg-opacity-80 px-1 py-0.5 font-semibold rounded-md text-white"
+                  class="text-3xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
                 >
                   {{ row.leverageToFixed }}x
                 </div>

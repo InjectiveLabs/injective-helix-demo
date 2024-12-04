@@ -36,7 +36,10 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
       calculateLeverage(
         (props.market as UiDerivativeMarket)?.initialMarginRatio
       )
-    )
+    ),
+    {
+      decimalPlaces: 0
+    }
   )
 
 const isBiudlPerpMarket = computed(
@@ -80,7 +83,7 @@ watch(
 <template>
   <div
     ref="toggleEl"
-    class="flex basis-[400px] max-lg:py-4 items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none"
+    class="flex xl:basis-[450px] max-xl:py-4 items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none"
     @click="toggleOpen"
   >
     <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
@@ -98,9 +101,9 @@ watch(
 
           <span
             v-if="leverageToBigNumber.gt(0)"
-            class="text-xs bg-blue-550 bg-opacity-80 px-1 py-0.5 font-semibold rounded-md text-white ml-2"
+            class="text-xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550 ml-2"
           >
-            {{ leverageToFixed }}
+            {{ leverageToFixed }}x
           </span>
 
           <template #customTooltip>

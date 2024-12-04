@@ -39,7 +39,7 @@ onMounted(() => {
 <template>
   <div>
     <div
-      class="h-header flex border-b"
+      class="h-subHeader flex border-b"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingMode)"
     >
       <AppButtonSelect

@@ -84,7 +84,7 @@ const toggleFavorite = () => {
 
                 <div
                   v-if="market.leverage.gt(0)"
-                  class="text-xs bg-blue-550 bg-opacity-80 px-1 py-0.5 font-semibold rounded-md text-white"
+                  class="text-3xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
                 >
                   {{ market.leverageToFixed }}x
                 </div>

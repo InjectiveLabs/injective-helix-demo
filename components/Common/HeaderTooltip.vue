@@ -3,21 +3,24 @@ withDefaults(
   defineProps<{
     tooltip?: string
     classes?: string
-    tooltipClass?: string
     isDisabled?: boolean
+    tooltipClass?: string
     isNotStyled?: boolean
     textColorClass?: string
+    ui?: Record<string, any>
+    popper?: Record<string, any>
     borderColorClass?: string | Record<string, boolean>
-    ui?: object
   }>(),
   {
     tooltip: '',
     classes: '',
     tooltipClass: 'p-1',
-    isDisabled: false,
-    isNotStyled: false,
     textColorClass: 'text-coolGray-350',
     borderColorClass: 'border-coolGray-400',
+    popper: () => ({
+      placement: 'top',
+      strategy: 'fixed'
+    }),
     ui: () => ({
       width: 'max-w-96'
     })
@@ -26,16 +29,7 @@ withDefaults(
 </script>
 
 <template>
-  <UPopover
-    mode="hover"
-    :popper="{
-      placement: 'top-start',
-      strategy: 'fixed',
-      offsetDistance: -40
-    }"
-    :disabled="isDisabled"
-    :ui="ui"
-  >
+  <UPopover mode="hover" :popper="popper" :disabled="isDisabled" :ui="ui">
     <span
       :class="[
         classes,

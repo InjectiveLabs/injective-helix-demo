@@ -54,6 +54,7 @@ export default <Partial<Config>>{
         orders: '10rem',
         trades: '26rem',
         header: '56px',
+        subHeader: '50px',
         ...extraSizings
       },
 
@@ -71,13 +72,14 @@ export default <Partial<Config>>{
       },
 
       fontSize: {
-        '2xs': '0.775rem',
-        '3xs': ['0.675rem', { lineHeight: '0.7rem' }],
-        xs: ['0.8rem', { lineHeight: '1rem' }],
-        sm: ['0.925rem', { lineHeight: '1.25rem' }],
-        base: ['1.025rem', { lineHeight: '1rem' }],
-        xl: ['1.25rem', { lineHeight: '1.75rem' }],
-        '3xl': ['2rem', { lineHeight: '2.25rem' }],
+        '2xs': ['0.625rem', { lineHeight: '0.625rem' }], // 10px
+        '3xs': ['0.5', { lineHeight: '0.5' }], // 8px
+        xs: ['0.75rem', { lineHeight: '0.75rem' }], // 12px
+        sm: ['0.875rem', { lineHeight: '0.875rem' }], // 14px
+        base: ['1rem', { lineHeight: '1rem' }], // 16px
+        xl: ['1.25rem', { lineHeight: '1.25rem' }], // 20px
+        '2xl': ['1.5rem', { lineHeight: '1.5rem' }], // 24px
+        '3xl': ['1.875rem', { lineHeight: '1.875rem' }], // 30px
         footer: '0.85rem'
       },
 

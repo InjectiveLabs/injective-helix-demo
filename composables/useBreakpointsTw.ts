@@ -6,7 +6,7 @@ export default function useBreakpointsTw() {
     '3md': '840px',
     lg: 1024,
     xl: 1280,
-    '2xl': 1536,
+    '2xl': 1466,
     '3xl': '1440px',
     '4xl': '1681px'
   }

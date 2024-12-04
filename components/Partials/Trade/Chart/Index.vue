@@ -29,18 +29,20 @@ function setInterval(index: string) {
 <template>
   <div class="flex max-lg:h-[500px] h-full flex-col">
     <div class="flex lg:flex-row justify-between">
-      <div class="flex h-header flex-1 shrink-0 border-b">
-        <AppButtonSelect
-          v-for="label in viewOptions"
-          :key="label"
-          v-model="view"
-          :value="label"
-          class="font-bold text-sm flex justify-center items-center lg:px-6 border-r text-coolGray-600 max-lg:flex-1"
-          active-classes="bg-brand-875 text-white"
-          @update:modelValue="onUpdateChart"
-        >
-          {{ $t(`trade.${label}`) }}
-        </AppButtonSelect>
+      <div class="h-subHeader border-b w-full">
+        <div class="flex h-subHeader w-full xl:w-[450px] justify-between">
+          <AppButtonSelect
+            v-for="label in viewOptions"
+            :key="label"
+            v-model="view"
+            :value="label"
+            class="font-bold text-sm flex justify-center items-center lg:px-0 border-r text-coolGray-600 max-lg:flex-1 flex-grow"
+            active-classes="bg-brand-875 text-white"
+            @update:modelValue="onUpdateChart"
+          >
+            {{ $t(`trade.${label}`) }}
+          </AppButtonSelect>
+        </div>
       </div>
     </div>
 
@@ -52,7 +54,7 @@ function setInterval(index: string) {
           value: index.toString(),
           modelValue: interval.toString()
         }"
-        class="text-xs py-2 max-lg:flex-1 hover:bg-brand-800 text-coolGray-500 text-center w-10"
+        class="text-sm py-2 max-lg:flex-1 hover:bg-brand-800 text-coolGray-500 text-center w-10"
         active-classes="bg-brand-875 text-white"
         @update:model-value="setInterval"
       >
