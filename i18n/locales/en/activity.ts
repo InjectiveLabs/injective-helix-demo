@@ -46,7 +46,7 @@ export default {
     cancelOrders: 'Cancel Orders',
     rewardHistory: 'Reward History',
     walletHistory: 'Wallet History',
-    openPositions: 'Open positions',
+    openPositions: 'Open Positions',
     fundingPayments: 'Funding Payments',
     derivativeOrders: 'Derivative Orders',
     activeStrategies: 'Active strategies',

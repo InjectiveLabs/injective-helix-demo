@@ -16,7 +16,7 @@ const { value: sideValue } = useStringField({
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector v-bind="{ isAzaretBlue: true }" />
 
     <CommonTabMarketSelector v-model="marketValue" v-bind="{ markets }" />
     <CommonTabSideFilter v-model="sideValue" />

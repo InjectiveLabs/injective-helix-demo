@@ -202,7 +202,7 @@ function closePositionAndReduceOnlyOrders() {
       </p>
     </template>
 
-    <template #entry-or-mark-data>
+    <template #entry-data>
       <div class="space-y-1 flex flex-col" :class="{ 'items-end': sm }">
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           <AppAmount
@@ -212,6 +212,11 @@ function closePositionAndReduceOnlyOrders() {
             }"
           />
         </p>
+      </div>
+    </template>
+
+    <template #mark-data>
+      <div class="space-y-1 flex flex-col" :class="{ 'items-end': sm }">
         <p class="text-coolGray-500">
           <AppAmount
             v-bind="{
@@ -273,7 +278,6 @@ function closePositionAndReduceOnlyOrders() {
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
           class="flex"
         >
-          <span>$</span>
           <AppUsdAmount
             v-bind="{
               amount: position.quantityInUsd.toFixed()

@@ -61,11 +61,12 @@ export default defineAppConfig({
         padding: 'p-4',
         color: 'dark:text-coolGray-400',
         font: 'font-normal',
-        size: 'text-xs'
+        size: 'text-xs',
+        base: 'dark:bg-[#141620]'
       },
       td: {
         padding: 'p-2',
-        color: 'dark:text-slate-50',
+        color: 'dark:text-white',
         size: 'text-xs'
       },
       default: {
