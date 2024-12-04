@@ -120,7 +120,12 @@ onMounted(() => {
         </p>
         <p class="text-xs text-zinc-500">{{ $t('tradingBots.totalPnl') }}</p>
         <p class="text-xl font-bold">
-          <span :class="totalPnl.gt(0) ? 'text-green-500' : 'text-red-500'">
+          <span
+            :class="{
+              'text-green-500': totalPnl.gt(0),
+              'text-red-500': totalPnl.lt(0)
+            }"
+          >
             {{ totalPnl.toFixed(2) }}%
           </span>
         </p>
