@@ -3,7 +3,7 @@ import { Modal } from '@/types'
 
 withDefaults(defineProps<{ round: number }>(), {})
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.LpRewards])
 

@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 

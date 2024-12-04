@@ -19,7 +19,7 @@ import {
 
 const route = useRoute()
 const resetForm = useResetForm()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()

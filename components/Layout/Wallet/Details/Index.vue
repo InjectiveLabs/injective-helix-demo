@@ -2,14 +2,14 @@
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { formatWalletAddress } from '@injectivelabs/utils'
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import { MainPage, PortfolioSubPage } from '@/types'
+import { Modal, MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const walletStore = useWalletStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { accountTotalBalanceInUsd } = useBalance()
 
@@ -20,6 +20,16 @@ const formattedAddress = computed(() =>
       : sharedWalletStore.injectiveAddress
   )
 )
+
+function openDepositQRModal() {
+  if (sharedWalletStore.wallet === Wallet.Magic) {
+    modalStore.openModal(Modal.FiatOnboard)
+
+    return
+  }
+
+  modalStore.openModal(Modal.DepositQr)
+}
 
 function disconnect() {
   walletStore.disconnect()
@@ -110,15 +120,9 @@ function disconnect() {
               </p>
 
               <div class="mt-6">
-                <NuxtLink
-                  target="_blank"
-                  :external="true"
-                  :to="getBridgeRedirectionUrl()"
-                >
-                  <AppButton class="w-full" size="sm">
-                    {{ $t('connect.deposit') }}
-                  </AppButton>
-                </NuxtLink>
+                <AppButton class="w-full" size="md" @click="openDepositQRModal">
+                  {{ $t('connect.deposit') }}
+                </AppButton>
               </div>
 
               <div>

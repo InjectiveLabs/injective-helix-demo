@@ -20,6 +20,10 @@ const isPortfolioBalancePage = computed(
   () => route.name === PortfolioSubPage.Balances
 )
 
+const formattedAddress = computed(() =>
+  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 4)
+)
+
 function onCloseModal() {
   emit('modal:close')
 }
@@ -64,6 +68,7 @@ onMounted(() => {
     <SharedQRCode
       class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-8"
       :text="sharedWalletStore.injectiveAddress"
+      color="#0082FA"
     />
 
     <p class="mt-8">
@@ -78,8 +83,10 @@ onMounted(() => {
       }}
     </p>
 
-    <div class="flex items-center gap-2 rounded-lg border p-2 mt-2">
-      <p class="truncate">{{ sharedWalletStore.injectiveAddress }}</p>
+    <div
+      class="flex items-center gap-2 rounded-lg border p-2 mt-2 justify-between max-w-xs mx-auto"
+    >
+      <p>{{ formattedAddress }}</p>
       <AppButton variant="primary-outline" @click="onCopyInjectiveAddress">
         {{ $t('onboarding.copy') }}
       </AppButton>

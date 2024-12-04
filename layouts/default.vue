@@ -15,7 +15,7 @@ import {
 
 const route = useRoute()
 const authZStore = useAuthZStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -168,6 +168,8 @@ provide(PortfolioStatusKey, portfolioStatus)
       <ModalsOnboardingLiteBridge />
       <ModalsOnboardingFiat />
     </template>
+
+    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

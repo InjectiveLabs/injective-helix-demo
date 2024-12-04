@@ -10,7 +10,7 @@ import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -108,6 +108,7 @@ const { pause, resume } = useIntervalFn(
       <SharedQRCode
         class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-4"
         :text="qrCodeText"
+        color="#0082FA"
       />
 
       <div class="flex items-center gap-2 max-w-[384px] mt-6 pb-3">

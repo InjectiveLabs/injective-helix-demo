@@ -18,7 +18,7 @@ const props = withDefaults(
   { position: undefined }
 )
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 

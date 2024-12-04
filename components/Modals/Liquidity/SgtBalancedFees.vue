@@ -18,7 +18,7 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.baseAmount),

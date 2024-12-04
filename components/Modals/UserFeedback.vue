@@ -3,7 +3,7 @@ import { Modal, TradeSubPage } from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const url = 'https://helixapp.xyz/3IGFwb9'
 

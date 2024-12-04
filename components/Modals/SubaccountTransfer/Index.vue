@@ -4,7 +4,7 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()

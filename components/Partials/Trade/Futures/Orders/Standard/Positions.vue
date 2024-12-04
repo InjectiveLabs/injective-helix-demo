@@ -2,7 +2,7 @@
 import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
 import { Modal, BusEvents } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 

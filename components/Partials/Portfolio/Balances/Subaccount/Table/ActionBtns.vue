@@ -4,7 +4,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
 
 const { lg } = useTwBreakpoints()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 

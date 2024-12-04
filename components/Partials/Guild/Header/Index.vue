@@ -8,7 +8,7 @@ import {
 } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
 

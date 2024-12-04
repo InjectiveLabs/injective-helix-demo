@@ -7,7 +7,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const { width } = useWindowSize()
 
 const props = withDefaults(

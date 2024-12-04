@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, MainPage, UiSpotMarket } from '@/types'
 
 const router = useRouter()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()

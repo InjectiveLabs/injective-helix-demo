@@ -2,7 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioSubPage, Modal, BusEvents } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const appStore = useAppStore()
 
 const linkOptions = [

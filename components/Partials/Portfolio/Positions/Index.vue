@@ -7,7 +7,7 @@ import {
   PositionsFilterForm
 } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 

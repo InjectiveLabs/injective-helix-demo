@@ -5,7 +5,7 @@ import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 

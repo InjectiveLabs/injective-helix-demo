@@ -2,7 +2,7 @@
 import { Modal, MainPage, SpotMarketCyTags } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isDoNoShowConfirmationAgain = ref(false)
 

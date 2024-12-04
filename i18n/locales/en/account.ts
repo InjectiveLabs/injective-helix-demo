@@ -2,6 +2,17 @@ import { BalanceTableColumn, I18nMessageFunction } from '@/types'
 
 export default {
   account: {
+    qrDeposit: {
+      title: 'Send INJ to this address to begin trading instantly',
+      link: 'Injective bridge',
+      description: "Don't have INJ?",
+      ctaLink: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          "Don't have INJ? Click here to go to the ",
+          named('link'),
+          '.'
+        ])
+    },
     table: {
       [BalanceTableColumn.Assets]: 'Assets',
       [BalanceTableColumn.Available]: 'Available',
