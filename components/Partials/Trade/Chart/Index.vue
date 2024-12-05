@@ -54,7 +54,7 @@ function setInterval(index: string) {
           value: index.toString(),
           modelValue: interval.toString()
         }"
-        class="text-sm py-2 max-lg:flex-1 hover:bg-brand-800 text-coolGray-500 text-center w-10"
+        class="text-xs py-2 max-lg:flex-1 hover:bg-brand-800 text-coolGray-400 text-center w-8"
         active-classes="bg-brand-875 text-white"
         @update:model-value="setInterval"
       >
