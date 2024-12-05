@@ -267,7 +267,8 @@ async function createStrategy() {
 <template>
   <div class="py-4">
     <AppButton
-      class="w-full"
+      class="w-full text-gray-450 text-base font-medium border border-blue-550 py-2.5"
+      :class="[isDisabled ? 'text-coolGray-450' : 'text-coolGray-975']"
       v-bind="{ status, disabled: isDisabled }"
       @click="onCheckBalanceFees"
     >

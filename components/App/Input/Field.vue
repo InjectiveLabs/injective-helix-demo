@@ -111,7 +111,7 @@ onMounted(() => {
     :class="[
       noStyle
         ? wrapperClass
-        : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4',
+        : 'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm py-2 px-4',
       disabled ? 'opacity-50 cursor-not-allowed' : ''
     ]"
   >

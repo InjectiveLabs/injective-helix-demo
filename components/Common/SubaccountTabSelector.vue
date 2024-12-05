@@ -11,7 +11,6 @@ withDefaults(
   defineProps<{
     isSm?: boolean
     wrapperClass?: string
-    isAzaretBlue?: boolean
     showLowBalance?: boolean
     includeBotsSubaccounts?: boolean
   }>(),
@@ -36,13 +35,10 @@ withDefaults(
         :class="[wrapperClass, { 'lg:px-4': !isSm && !xxl }]"
       >
         <span
-          class="font-semibold"
+          class="font-semibold text-blue-500"
           :class="{
             'text-xs': isSm && !xxl,
-            'text-sm': !isSm || xxl,
-            'text-blue-500': isAzaretBlue,
-            'bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent':
-              !isAzaretBlue
+            'text-sm': !isSm || xxl
           }"
           :data-cy="dataCyTag(PortfolioCyTags.SubAccountDropdown)"
         >

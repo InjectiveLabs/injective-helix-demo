@@ -15,9 +15,9 @@ withDefaults(
 
 <template>
   <CommonHeaderTooltip
-    class="inline-block text-xs font-semibold"
-    text-color-class="text-coolGray-500"
-    border-color-class="border-coolGray-500"
+    class="inline-block text-2xs font-semibold tracking-[0.3px]"
+    text-color-class="text-coolGray-450"
+    border-color-class="border-coolGray-450"
     :tooltip="
       $t('sgt.minInvestmentTooltip', {
         amount: threshold,

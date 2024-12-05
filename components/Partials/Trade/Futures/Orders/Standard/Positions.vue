@@ -45,7 +45,7 @@ function onSharePosition(position: Position | PositionV2) {
       :positions="filteredPosition"
       :ui="{
         th: {
-          base: 'whitespace-nowrap dark:bg-[#141620]'
+          base: 'whitespace-nowrap dark:bg-coolGray-975'
         },
         td: {
           font: 'font-mono',

@@ -314,7 +314,7 @@ onMounted(() => {
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-coolGray-400 border-t pt-2 pb-1">
+        <div class="text-right text-2xs text-coolGray-450 pt-2 pb-1">
           <div v-if="isBuy" class="space-x-2">
             <span :data-cy="dataCyTag(SpotMarketCyTags.TokenBuyBalance)">{{
               $t('trade.availableAmount', {

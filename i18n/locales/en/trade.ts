@@ -50,6 +50,7 @@ export default {
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
+    slippage: 'Slippage',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
     tickSize: 'Tick Size',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketKey,
   BusEvents,
@@ -10,6 +11,7 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
+const tokenStore = useTokenStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -40,6 +42,14 @@ const value = computed({
   }
 })
 
+const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(limitValue.value || 0).times(
+      tokenStore.tokenUsdPrice(market.value.quoteToken)
+    )
+  )
+)
+
 function setMidLimitPrice() {
   if (!lastTradedPrice.value) {
     return
@@ -57,7 +67,18 @@ onMounted(() => {
 
 <template>
   <div v-if="market" ref="el" class="space-y-2">
-    <p class="field-label">{{ $t('trade.limitPrice') }}</p>
+    <div class="flex justify-between items-center">
+      <p class="field-label">{{ $t('trade.limitPrice') }}</p>
+
+      <div class="text-xs text-coolGray-450 font-mono">
+        <span>~$</span>
+        <AppUsdAmount
+          v-bind="{
+            amount: limitPriceInUsdToFixed
+          }"
+        />
+      </div>
+    </div>
 
     <AppInputField
       v-model="value"
@@ -77,7 +98,7 @@ onMounted(() => {
       </template>
 
       <template #right>
-        <span class="text-sm">
+        <span class="text-sm flex items-center text-white">
           {{ market.quoteToken.symbol }}
         </span>
       </template>

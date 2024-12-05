@@ -14,7 +14,7 @@ function toggle() {
       class="flex justify-between items-center cursor-pointer py-2"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">
+      <p class="text-xs font-semibold select-none">
         {{ $t('trade.advancedSettings') }}
       </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">

@@ -135,7 +135,8 @@ export default <Partial<Config>>{
         },
         '.field-label': {
           fontSize: theme('fontSize.xs'),
-          fontWeight: theme('fontWeight.medium')
+          fontWeight: theme('fontWeight.semibold'),
+          color: 'white'
         },
         '.tab-field': {
           fontSize: theme('fontSize.sm'),

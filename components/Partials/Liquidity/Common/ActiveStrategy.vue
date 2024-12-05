@@ -132,8 +132,8 @@ useIntervalFn(() => {
 <template>
   <div>
     <div class="flex items-center justify-between mb-2">
-      <p class="font-bold text-lg">{{ $t('sgt.gridDetails') }}</p>
-      <div class="flex items-center">
+      <p class="font-bold text-lg text-white">{{ $t('sgt.gridDetails') }}</p>
+      <div class="flex items-center text-white">
         <div
           class="w-2 h-2 rounded-full mr-2"
           :class="[
@@ -180,7 +180,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.totalProfit') }}</p>
+      <p class="text-coolGray-450">{{ $t('sgt.totalProfit') }}</p>
       <div
         class="text-right"
         :class="[pnl.isPositive() ? 'text-green-500' : 'text-red-500']"
@@ -191,17 +191,20 @@ useIntervalFn(() => {
               amount: pnl.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
+            class="text-white font-mono"
           />
-          <span class="text-xs align-text-bottom ml-1">
+          <span class="text-xs align-text-bottom ml-1 text-coolGray-450">
             {{ market?.quoteToken.symbol }}
           </span>
         </span>
-        <span class="text-xs opacity-75 ml-1">({{ percentagePnl }} %)</span>
+        <span class="text-xs opacity-75 ml-1 font-mono">
+          ({{ percentagePnl }}%)
+        </span>
       </div>
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
+      <span class="text-coolGray-450 flex items-center space-x-2">
         <span>{{ $t('sgt.totalAmount') }}</span>
         <AppTooltip
           :content="
@@ -218,13 +221,18 @@ useIntervalFn(() => {
             amount: totalAmount.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
+          class="text-white font-mono"
         />
-        <span class="text-xs opacity-75 align-text-bottom ml-1">USD</span>
+        <span
+          class="text-xs opacity-75 align-text-bottom ml-1 text-coolGray-450"
+        >
+          USD
+        </span>
       </span>
     </div>
 
     <div class="flex items-start justify-between mb-2 text-sm">
-      <p class="text-coolGray-400 flex items-center space-x-2">
+      <p class="text-coolGray-450 flex items-center space-x-2">
         <template v-if="activeStrategy.state === StrategyStatus.Active">
           <span>{{ $t('sgt.currentBalance') }}</span>
           <AppTooltip
@@ -260,6 +268,7 @@ useIntervalFn(() => {
                 amount: currentBaseBalance.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
           <template #quote>
@@ -268,6 +277,7 @@ useIntervalFn(() => {
                 amount: currentQuoteBalance.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -279,6 +289,7 @@ useIntervalFn(() => {
                 amount: stopBaseQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
           <template #quote>
@@ -287,6 +298,7 @@ useIntervalFn(() => {
                 amount: stopQuoteQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -296,19 +308,19 @@ useIntervalFn(() => {
     <div class="border-t border-coolGray-700 my-4" />
 
     <div class="flex items-center justify-between mb-2">
-      <p class="text-coolGray-400 text-sm">{{ $t('sgt.timeCreated') }}</p>
-      <p class="text-sm">{{ createdAtFormatted }}</p>
+      <p class="text-coolGray-450 text-sm">{{ $t('sgt.timeCreated') }}</p>
+      <p class="text-sm text-white">{{ createdAtFormatted }}</p>
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-coolGray-400">{{ $t('sgt.duration') }}</span>
-      <span>{{ durationFormatted }}</span>
+      <span class="text-coolGray-450">{{ $t('sgt.duration') }}</span>
+      <span class="text-white">{{ durationFormatted }}</span>
     </div>
 
     <div class="border-t border-coolGray-800 my-4" />
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.priceRange') }}</p>
+      <p class="text-coolGray-450">{{ $t('sgt.priceRange') }}</p>
       <div class="text-right">
         <PartialsLiquidityCommonDetailsPair
           v-bind="{
@@ -324,6 +336,7 @@ useIntervalFn(() => {
                   ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
                   : UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
           <template #quote>
@@ -334,6 +347,7 @@ useIntervalFn(() => {
                   ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
                   : UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -341,7 +355,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400 flex items-center self-start space-x-2">
+      <p class="text-coolGray-450 flex items-center self-start space-x-2">
         <span>{{ $t('sgt.initialAmount') }}</span>
         <AppTooltip
           :content="
@@ -360,6 +374,7 @@ useIntervalFn(() => {
                 amount: subscriptionBaseQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
           <template #quote>
@@ -368,6 +383,7 @@ useIntervalFn(() => {
                 amount: subscriptionQuoteQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white font-mono"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -375,7 +391,7 @@ useIntervalFn(() => {
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
+      <span class="text-coolGray-450 flex items-center space-x-2">
         <span>{{ $t('sgt.initialEntryPrice') }}</span>
         <AppTooltip :content="$t('sgt.initialEntryTooltip')" />
       </span>
@@ -385,33 +401,36 @@ useIntervalFn(() => {
             amount: creationExecutionPrice.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
+          class="text-white font-mono"
         />
-        <span class="text-xs opacity-75 align-text-bottom ml-1">{{
-          market?.quoteToken.symbol
-        }}</span>
+        <span
+          class="text-xs opacity-75 align-text-bottom ml-1 text-coolGray-450"
+        >
+          {{ market?.quoteToken.symbol }}
+        </span>
       </span>
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
+      <span class="text-coolGray-450 flex items-center space-x-2">
         <span>{{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </span>
-      <span>
+      <span class="text-white font-mono">
         {{ activeStrategy.numberOfGridLevels }}
       </span>
     </div>
 
     <div class="flex items-center justify-between mb-2 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
+      <span class="text-coolGray-450 flex items-center space-x-2">
         <span>{{ $t('sgt.gridMode') }}</span>
         <AppTooltip :content="$t('sgt.gridModeTooltip')" />
       </span>
 
-      <span v-if="isGeometric">
+      <span v-if="isGeometric" class="text-white">
         {{ $t('sgt.geometric') }}
       </span>
-      <span v-else>
+      <span v-else class="text-white">
         {{ $t('sgt.arithmetic') }}
       </span>
     </div>
@@ -420,11 +439,11 @@ useIntervalFn(() => {
 
     <div class="pb-4">
       <div class="flex justify-between mb-4 text-sm">
-        <span class="text-coolGray-400 flex items-center space-x-2">
+        <span class="text-coolGray-450 flex items-center space-x-2">
           <span>{{ $t('sgt.advanced.settleIn') }}</span>
         </span>
 
-        <span>
+        <span class="text-white">
           <span v-if="activeStrategy.exitType === ExitType.Quote">
             {{ market.quoteToken.symbol }}
           </span>
@@ -438,12 +457,12 @@ useIntervalFn(() => {
       </div>
 
       <div class="flex justify-between mb-2 text-sm">
-        <span class="text-coolGray-400 flex items-center space-x-2">
+        <span class="text-coolGray-450 flex items-center space-x-2">
           <span>{{ $t('sgt.stopLoss') }}</span>
           <AppTooltip :content="$t('sgt.stopLossTooltip')" />
         </span>
 
-        <span>
+        <span class="text-white">
           {{
             activeStrategy.stopLossConfig
               ? $t('sgt.enabled')
@@ -454,7 +473,7 @@ useIntervalFn(() => {
 
       <div v-if="activeStrategy.stopLossConfig">
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-coolGray-400 flex items-center space-x-2">
+          <span class="text-coolGray-450 flex items-center space-x-2">
             <span> &mdash; {{ $t('sgt.advanced.stopLossPrice') }}</span>
           </span>
 
@@ -465,17 +484,18 @@ useIntervalFn(() => {
                   amount: stopLoss.toFixed(),
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
+                class="text-white"
               />
             </span>
 
-            <span class="ml-1">
+            <span class="ml-1 text-coolGray-450">
               {{ market?.quoteToken.symbol }}
             </span>
           </span>
         </div>
 
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-coolGray-400 flex items-center space-x-2">
+          <span class="text-coolGray-450 flex items-center space-x-2">
             <span>
               &mdash;
               {{
@@ -486,7 +506,7 @@ useIntervalFn(() => {
             </span>
           </span>
 
-          <span>
+          <span class="text-white">
             <span
               v-if="activeStrategy.stopLossConfig.exitType === ExitType.Quote"
             >
@@ -500,12 +520,12 @@ useIntervalFn(() => {
       </div>
 
       <div class="flex justify-between mb-2 text-sm">
-        <span class="text-coolGray-400 flex items-center space-x-2">
+        <span class="text-coolGray-450 flex items-center space-x-2">
           <span>{{ $t('sgt.takeProfit') }}</span>
           <AppTooltip :content="$t('sgt.takeProfitTooltip')" />
         </span>
 
-        <span>
+        <span class="text-white">
           {{
             activeStrategy.takeProfitConfig
               ? $t('sgt.enabled')
@@ -516,7 +536,7 @@ useIntervalFn(() => {
 
       <div v-if="activeStrategy.takeProfitConfig">
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-coolGray-400 flex items-center space-x-2">
+          <span class="text-coolGray-450 flex items-center space-x-2">
             <span> &mdash; {{ $t('sgt.advanced.takeProfitPrice') }}</span>
           </span>
 
@@ -527,17 +547,18 @@ useIntervalFn(() => {
                   amount: takeProfit.toFixed(),
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
+                class="text-white"
               />
             </span>
 
-            <span class="ml-1">
+            <span class="ml-1 text-coolGray-450">
               {{ market?.quoteToken.symbol }}
             </span>
           </span>
         </div>
 
         <div class="flex justify-between mb-2 text-sm">
-          <span class="text-coolGray-400 flex items-center space-x-2">
+          <span class="text-coolGray-450 flex items-center space-x-2">
             <span>
               &mdash;
               {{
@@ -548,7 +569,7 @@ useIntervalFn(() => {
             </span>
           </span>
 
-          <span>
+          <span class="text-white">
             <span
               v-if="activeStrategy.takeProfitConfig.exitType === ExitType.Base"
             >

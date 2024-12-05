@@ -25,7 +25,7 @@ function onViewDetails() {
       :is-disabled="hasActiveStrategy"
     />
 
-    <div class="py-4">
+    <div class="pb-4">
       <PartialsTradeSpotFormTradingBotsCommonCreateStrategy
         v-if="!hasActiveStrategy"
         is-auto

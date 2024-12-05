@@ -19,7 +19,7 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
     <AppInputField v-model="trigger" placeholder="0.00">
       <template #right>
-        <span class="text-sm">
+        <span class="text-sm text-white">
           {{ market.quoteToken.symbol }}
         </span>
       </template>

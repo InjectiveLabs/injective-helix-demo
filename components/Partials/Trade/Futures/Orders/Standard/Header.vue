@@ -87,11 +87,10 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
+  <div class="h-header border-b flex">
     <CommonSubaccountTabSelector
       v-bind="{
-        isSm: true,
-        isAzaretBlue: true
+        isSm: true
       }"
     />
 

@@ -77,8 +77,8 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
-    <CommonSubaccountTabSelector is-sm />
+  <div class="h-header border-b flex">
+    <CommonSubaccountTabSelector v-bind="{ isSm: true }" />
 
     <AppTabSelect
       v-if="!lg"
@@ -124,9 +124,9 @@ watch(
       :key="value"
       v-model="view"
       v-bind="{ value }"
-      class="flex items-center"
+      class="flex items-center text-coolGray-450 font-medium"
       :class="[xl ? 'px-3 text-sm' : 'px-2 text-xs']"
-      active-classes="!text-white"
+      active-classes="text-white"
     >
       {{ $t(display) }}
       {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}

@@ -430,7 +430,7 @@ function fetchRWAMarketIsOpen() {
         }"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"
-        class="w-full"
+        class="w-full text-base font-medium text-coolGray-975 py-2.5"
         @click="onSubmit"
       >
         <span v-if="!isAuthorized">

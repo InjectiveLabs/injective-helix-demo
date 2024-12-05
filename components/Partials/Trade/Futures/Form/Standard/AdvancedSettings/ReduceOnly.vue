@@ -39,7 +39,7 @@ watchEffect(() => {
 
 <template>
   <div>
-    <AppCheckbox2 v-bind="{ disabled }" v-model="reduceOnly">
+    <AppCheckbox2 v-bind="{ disabled }" v-model="reduceOnly" class="text-white">
       {{ $t('trade.reduceOnly') }}
     </AppCheckbox2>
   </div>

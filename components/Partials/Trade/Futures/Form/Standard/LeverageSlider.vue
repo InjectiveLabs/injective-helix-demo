@@ -71,7 +71,7 @@ function onMouseUp() {
         `breakpoint--${index + 1}`,
         [
           leverageAmount < leverage
-            ? 'bg-[#141620] border-[#181E31] w-3 h-3'
+            ? 'bg-coolGray-975 border-[#181E31] w-3 h-3'
             : 'bg-blue-550 border-[#181E31] w-3.5 h-3.5'
         ]
       ]"
@@ -120,11 +120,11 @@ function onMouseUp() {
 }
 
 .leverage-slider::-webkit-slider-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-[#141620] rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-slider::-moz-range-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-[#141620] rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-breakpoint.breakpoint--1 {
