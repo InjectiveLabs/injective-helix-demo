@@ -9,6 +9,7 @@ definePageMeta({
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -37,6 +38,7 @@ onWalletConnected(() => {
   Promise.all([
     spotStore.fetchSubaccountOrders(),
     derivativeStore.fetchOpenInterest(),
+    positionStore.fetchSubaccountPositions(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -44,11 +46,12 @@ onWalletConnected(() => {
     derivativeStore.getMarketMarkPrice(market.value)
   ])
     .catch($onError)
+    .then(() => {
+      streamDerivativeData()
+    })
     .finally(() => {
       status.setIdle()
     })
-
-  streamDerivativeData()
 })
 
 onUnmounted(() => {
@@ -65,7 +68,10 @@ function streamDerivativeData() {
   cancelDerivativeStream()
 
   derivativeStore.streamTrades(market.value.marketId)
-  derivativeStore.streamMarketsMarkPrices()
+  derivativeStore.streamMarketsMarkPrices([
+    market.value.marketId,
+    ...positionStore.subaccountPositions.map(({ marketId }) => marketId)
+  ])
 }
 
 function cancelDerivativeStream() {
