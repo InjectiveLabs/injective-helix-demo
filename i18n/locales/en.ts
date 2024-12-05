@@ -4,6 +4,7 @@ import guild from './en/guild'
 import sgt from './en/spotGrid'
 import market from './en/market'
 import wallet from './en/wallet'
+import points from './en/points'
 import banners from './en/banners'
 import account from './en/account'
 import campaign from './en/campaign'
@@ -23,6 +24,7 @@ export default {
   ...trade,
   ...market,
   ...wallet,
+  ...points,
   ...account,
   ...banners,
   ...campaign,
