@@ -505,12 +505,6 @@ export enum DerivativesTradeFormField {
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
-export enum LiquidityProvisionType {
-  MitoVault = 'mito-vault',
-  InjectiveStaking = 'injective-staking',
-  HelixSpotGridBot = 'helix-spot-grid-bot'
-}
-
 export enum ClosePositionLimitFormField {
   Price = 'price',
   Quantity = 'quantity'
@@ -553,4 +547,15 @@ export enum LeaderboardCampaignStatus {
 
 export enum DontShowAgain {
   AutoSign = 'auto-sign'
+}
+
+export enum LiquidityProvisionType {
+  MitoVault = 'mito-vault',
+  InjectiveStaking = 'injective-staking',
+  HelixSpotGridBot = 'helix-spot-grid-bot'
+}
+
+export enum MitoRegistrationMode {
+  Restricted = 'Restricted',
+  Permissionless = 'Permissionless'
 }

@@ -9,6 +9,7 @@ import { spotGridMarkets } from '@/app/json'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MITO_VAULTS, SGT_MARKETS } from '@/app/data/liquidityProvision'
 import {
+  MitoRegistrationMode,
   LiquidityProvisionType,
   LiquidityProvisionMitoCard,
   LiquidityProvisionTypeOption
@@ -66,10 +67,15 @@ const vaults = computed(() => {
         marketId: vault.marketId,
         vaultType: vault.vaultType,
         type: LiquidityProvisionType.MitoVault,
-        contractAddress: vault.contractAddress
+        contractAddress: vault.contractAddress,
+        isPermissionless:
+          vault.registrationMode === MitoRegistrationMode.Permissionless
       } as LiquidityProvisionMitoCard
     })
-    .filter((vault) => MITO_VAULTS.includes(vault.contractAddress))
+    .filter(
+      (vault) =>
+        vault.isPermissionless || MITO_VAULTS.includes(vault.contractAddress)
+    )
     .sort((vault1, vault2) => {
       if (vault2.apy === vault1.apy) {
         return vault2.tvl - vault1.tvl
