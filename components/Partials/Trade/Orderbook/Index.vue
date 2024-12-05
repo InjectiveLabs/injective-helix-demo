@@ -40,7 +40,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
 
 <template>
   <div class="pb-2">
-    <div class="h-subHeader border-b flex items-center pr-2">
+    <div class="h-subHeader border-b-2 flex items-center pr-2">
       <AppButtonSelect
         v-for="value in Object.values(OrderbookViewOption)"
         :key="value"

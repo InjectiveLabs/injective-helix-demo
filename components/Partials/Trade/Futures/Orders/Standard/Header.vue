@@ -144,7 +144,7 @@ watch(
       {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
     </AppButtonSelect>
 
-    <div class="flex-1 flex items-center px-2 justify-end">
+    <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
       <AppCheckbox2
         v-model="isTickerOnlyValue"
         is-plain

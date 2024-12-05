@@ -43,8 +43,8 @@ const {
         :key="value"
         v-bind="{ value }"
         v-model="orderType"
-        class="text-sm font-semibold text-coolGray-600 px-3 py-2"
-        active-classes="border-b border-blue-500 text-white"
+        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
+        active-classes="border-b border-blue-550 text-white"
         :data-cy="`${dataCyTag(
           PerpetualMarketCyTags.DerivativeTradeType
         )}-${value}`"
