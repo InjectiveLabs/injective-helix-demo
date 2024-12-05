@@ -65,7 +65,7 @@
         y2="14.0426"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#0082FA" />
+        <stop stop-color="#40A9FF" />
         <stop offset="1" stop-color="#00F2FE" />
       </linearGradient>
       <linearGradient
@@ -76,7 +76,7 @@
         y2="14.0426"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#0082FA" />
+        <stop stop-color="#40A9FF" />
         <stop offset="1" stop-color="#00F2FE" />
       </linearGradient>
       <clipPath id="clip0_5562_27595">

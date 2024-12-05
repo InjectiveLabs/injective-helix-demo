@@ -36,9 +36,9 @@ function onCopyAddress() {
     <section class="text-center">
       <h3 class="-mt-4">{{ $t('account.qrDeposit.title') }}</h3>
       <SharedQRCode
-        class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-4"
+        class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-6"
         :text="sharedWalletStore.injectiveAddress"
-        color="#0082FA"
+        color="#40A9FF"
       />
 
       <div

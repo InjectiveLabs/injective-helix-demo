@@ -47,7 +47,7 @@ const isStableCoinMarket = computed(() =>
 </script>
 
 <template>
-  <div class="flex-1 flex items-center justify-center">
+  <div class="flex-1 flex items-center justify-center font-mono">
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
     <div v-else class="flex items-center justify-center">

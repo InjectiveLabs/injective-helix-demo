@@ -185,6 +185,7 @@ function onSortBy(value: MarketHeaderType) {
   sortBy.value = value
 }
 
+// todo: refactor/move this!!
 function fetchSpotPageData() {
   Promise.all([
     positionStore.fetchPositions(),

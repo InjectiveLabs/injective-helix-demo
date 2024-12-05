@@ -7,7 +7,7 @@ const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function openDepositQRModal() {
-  if (sharedWalletStore.wallet !== Wallet.Magic) {
+  if (sharedWalletStore.wallet === Wallet.Magic) {
     modalStore.openModal(Modal.FiatOnboard)
 
     return

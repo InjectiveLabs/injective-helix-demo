@@ -161,7 +161,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
                       ? 'border-dashed border-b cursor-pointer'
                       : ''
                   "
-                  tooltip-class="text-xs"
+                  tooltip-class="text-sm"
                   :popper="{
                     placement: 'top',
                     strategy: 'fixed',
@@ -173,7 +173,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
                 >
                   <span
                     :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
-                    class="text-xs"
+                    class="text-sm"
                   >
                     {{ row.market.ticker }}
                   </span>
@@ -181,7 +181,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
 
                 <div
                   v-if="row.leverage.gt(0)"
-                  class="text-2xs bg-blue-550 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
+                  class="text-2xs bg-blue-500 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
                 >
                   {{ row.leverageToFixed }}x
                 </div>
@@ -194,7 +194,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       <template #last-price-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
-            class="flex justify-end truncate min-w-0 font-mono text-xs text-right"
+            class="flex justify-end truncate min-w-0 font-mono text-sm text-right"
           >
             <AppAmount
               :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
@@ -211,7 +211,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
         <PartialsCommonMarketRedirection :market="row.market">
           <div
             :class="row.priceChangeClasses"
-            class="flex items-center truncate min-w-0 font-mono text-xs justify-end"
+            class="flex items-center truncate min-w-0 font-mono text-sm justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
             {{ row[MarketsSelectorTableColumn.MarketChange24h] }}%
@@ -222,7 +222,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       <template #funding-rate-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
-            class="flex items-center justify-end truncate min-w-0 font-mono text-xs"
+            class="flex items-center justify-end truncate min-w-0 font-mono text-sm"
           >
             <span v-if="row[MarketsSelectorTableColumn.FundingRate].isZero()">
               &mdash;
@@ -257,7 +257,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       <template #market-volume-24h-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
-            class="flex items-center justify-end truncate min-w-0 font-mono text-xs"
+            class="flex items-center justify-end truncate min-w-0 font-mono text-sm"
           >
             <span v-if="isMobile">
               <span>$</span>
@@ -291,7 +291,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       <template #open-interest-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
-            class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-xs"
+            class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-sm"
           >
             <span v-if="row[MarketsSelectorTableColumn.OpenInterest].isZero()">
               &mdash;

@@ -40,7 +40,7 @@ const sliderTrackStyle = computed(() => {
     100
 
   return {
-    background: `linear-gradient(to right, #0082fa 0%, #0082fa ${bgLocationValue}%, #181E31 ${bgLocationValue}%, #181E31 100%)`
+    background: `linear-gradient(to right, #40A9FF 0%, #40A9FF ${bgLocationValue}%, #181E31 ${bgLocationValue}%, #181E31 100%)`
   }
 })
 
@@ -72,7 +72,7 @@ function onMouseUp() {
         [
           leverageAmount < leverage
             ? 'bg-coolGray-975 border-[#181E31] w-3 h-3'
-            : 'bg-blue-550 border-[#181E31] w-3.5 h-3.5'
+            : 'bg-blue-500 border-[#181E31] w-3.5 h-3.5'
         ]
       ]"
     />
@@ -104,8 +104,8 @@ function onMouseUp() {
 .leverage-slider-track {
   background: linear-gradient(
     to right,
-    #0082fa 0%,
-    #0082fa 25%,
+    #40a9ff 0%,
+    #40a9ff 25%,
     #181e31 25%,
     #181e31 100%
   );
@@ -120,11 +120,11 @@ function onMouseUp() {
 }
 
 .leverage-slider::-webkit-slider-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-500 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-slider::-moz-range-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-550 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-blue-500 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-breakpoint.breakpoint--1 {

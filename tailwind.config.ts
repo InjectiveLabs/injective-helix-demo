@@ -72,14 +72,14 @@ export default <Partial<Config>>{
       },
 
       fontSize: {
-        '2xs': ['0.625rem', { lineHeight: '0.625rem' }], // 10px
-        '3xs': ['0.5rem', { lineHeight: '0.5' }], // 8px
-        xs: ['0.75rem', { lineHeight: '0.75rem' }], // 12px
-        sm: ['0.875rem', { lineHeight: '0.875rem' }], // 14px
-        base: ['1rem', { lineHeight: '1rem' }], // 16px
-        xl: ['1.25rem', { lineHeight: '1.25rem' }], // 20px
-        '2xl': ['1.5rem', { lineHeight: '1.5rem' }], // 24px
-        '3xl': ['1.875rem', { lineHeight: '1.875rem' }], // 30px
+        '2xs': ['0.625rem', { lineHeight: '1.5' }], // 10px
+        '3xs': ['0.5rem', { lineHeight: '1.5' }], // 8px
+        xs: ['0.75rem', { lineHeight: '1.5' }], // 12px
+        sm: ['0.875rem', { lineHeight: '1.5' }], // 14px
+        base: ['1rem', { lineHeight: '1.5' }], // 16px
+        xl: ['1.25rem', { lineHeight: '1.5' }], // 20px
+        '2xl': ['1.5rem', { lineHeight: '1.5' }], // 24px
+        '3xl': ['1.875rem', { lineHeight: '1.5' }], // 30px
         footer: '0.85rem'
       },
 

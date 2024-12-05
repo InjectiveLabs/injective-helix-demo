@@ -184,8 +184,8 @@ function setTypeFromQuery() {
                 :key="value"
                 v-model="activeCategory"
                 v-bind="{ value }"
-                class="py-1 px-3 text-coolGray-400 text-xs capitalize bg-brand-800 rounded"
-                active-classes="text-white !bg-brand-700"
+                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-3 tracking-wider capitalize font-semibold rounded-md text-blue-550"
+                active-classes="opacity-100"
                 :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
               >
                 {{ value }}

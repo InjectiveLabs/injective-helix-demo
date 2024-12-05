@@ -54,7 +54,7 @@ function onOpenTradingBotDetails() {
           v-bind="{ value: type }"
           v-model="strategyType"
           class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium text-coolGray-475"
-          active-classes="bg-blue-550 text-brand-875"
+          active-classes="bg-blue-500 text-brand-875"
         >
           {{ $t(`sgt.${type}`) }}
         </AppButtonSelect>

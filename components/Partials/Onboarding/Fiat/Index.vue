@@ -68,7 +68,7 @@ onMounted(() => {
     <SharedQRCode
       class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-8"
       :text="sharedWalletStore.injectiveAddress"
-      color="#0082FA"
+      color="#40A9FF"
     />
 
     <p class="mt-8">

@@ -17,10 +17,10 @@ const button = cva(
       },
       variant: {
         primary:
-          'bg-blue-550 text-coolGray-975 border-blue-550 hover:bg-blue-550/70 hover:border-blue-550/70 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-blue-550 focus-within:ring-[3px] ring-blue-700',
+          'bg-blue-500 text-coolGray-975 border-blue-550 hover:bg-blue-500/70 hover:border-blue-550/70 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-blue-550 focus-within:ring-[3px] ring-blue-700',
 
         'primary-outline':
-          'bg-transparent text-coolGray-450 border-blue-550 hover:text-white hover:bg-blue-550/20 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-coolGray-450 focus-within:ring-[3px] ring-blue-700',
+          'bg-transparent text-coolGray-450 border-blue-550 hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-coolGray-450 focus-within:ring-[3px] ring-blue-700',
 
         'primary-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',
