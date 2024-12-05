@@ -21,9 +21,13 @@ import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const fetchBalances = () => {
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
 
   return backupPromiseCall(() =>
-    Promise.all([accountStore.fetchAccountPortfolioBalances()])
+    Promise.all([
+      derivativeStore.fetchSubaccountOrders(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
   )
 }
 

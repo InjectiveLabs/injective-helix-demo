@@ -42,6 +42,7 @@ export default {
     back: 'Back',
     base: 'Base',
     copy: 'Copy',
+    here: 'here',
     view: 'View',
     open: 'Open',
     sort: 'Sort',
@@ -461,12 +462,13 @@ export default {
     copy: 'Copy',
     depositNow: 'Deposit Now',
     fundsNeeded: 'Funds Needed',
+    depositInjNetworkAsset: 'Deposit INJ Network Assets',
     processing: 'Processing your transfer',
     success: 'Your transaction has been confirmed',
     depositNowDescription:
-      'Add funds to your wallet. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+      'You can transfer INJ from anywhere the INJ network is supported, including some exchanges.',
     fundsNeededDescription:
-      'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+      'You can transfer INJ from anywhere the INJ network is supported, including some exchanges.',
     scanQrCodeOrCopy:
       'Scan the QR code or copy your new address below to begin',
     addFundsScanQrCodeOrCopy: 'Scan the QR code or copy your new address below',

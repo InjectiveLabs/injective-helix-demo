@@ -2,7 +2,6 @@
 import { dataCyTag } from '@shared/utils'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import {
   UiSpotMarket,
   SpotMarketCyTags,
@@ -125,13 +124,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
       notificationStore.success({ title: t('trade.order_success_canceling') })
     })
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 

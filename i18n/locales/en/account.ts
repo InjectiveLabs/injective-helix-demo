@@ -5,12 +5,11 @@ export default {
     qrDeposit: {
       title: 'Send INJ to this address to begin trading instantly',
       link: 'Injective bridge',
-      description: "Don't have INJ?",
       ctaLink: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
-          "Don't have INJ? Click here to go to the ",
+          "Don't have INJ? Click ",
           named('link'),
-          '.'
+          ' to go to the bridge.'
         ])
     },
     table: {

@@ -12,7 +12,7 @@ const { copy } = useClipboard()
 const isModalOpen = computed(() => modalStore.modals[Modal.DepositQr])
 
 const formattedAddress = computed(() =>
-  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 4)
+  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
 
 function closeModal() {
@@ -35,27 +35,30 @@ function onCopyAddress() {
   >
     <section class="text-center">
       <h3 class="-mt-4">{{ $t('account.qrDeposit.title') }}</h3>
-      <SharedQRCode
-        class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-6"
-        :text="sharedWalletStore.injectiveAddress"
-        color="#40A9FF"
-      />
 
-      <div
-        class="flex items-center gap-2 max-w-[264px] mt-6 justify-between mx-auto"
-      >
-        <p class="text-ellipsis overflow-hidden">{{ formattedAddress }}</p>
-        <AppButton @click="onCopyAddress">{{ $t('common.copy') }}</AppButton>
+      <div class="max-w-[308px] mx-auto mt-6">
+        <SharedQRCode
+          class="w-full rounded-lg overflow-hidden"
+          :text="sharedWalletStore.injectiveAddress"
+          color="#40A9FF"
+        />
+
+        <div class="flex items-center gap-2 mt-6 justify-between">
+          <p class="text-ellipsis overflow-hidden">{{ formattedAddress }}</p>
+          <AppButton @click="onCopyAddress">
+            {{ $t('common.copy') }}
+          </AppButton>
+        </div>
       </div>
+
       <div class="mt-4">
-        <!-- <p>{{ $t('account.qrDeposit.description') }}</p> -->
         <i18n-t keypath="account.qrDeposit.ctaLink">
           <template #link>
             <PartialsCommonBridgeRedirection
               :denom="usdtToken.denom"
               class="text-blue-550 hover:text-opacity-80"
             >
-              {{ $t('account.qrDeposit.link') }}
+              {{ $t('common.here') }}
             </PartialsCommonBridgeRedirection>
           </template>
         </i18n-t>

@@ -21,7 +21,7 @@ const isPortfolioBalancePage = computed(
 )
 
 const formattedAddress = computed(() =>
-  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 4)
+  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
 
 function onCloseModal() {
@@ -45,12 +45,8 @@ onMounted(() => {
 
 <template>
   <div class="text-center">
-    <h2 class="font-semibold text-xl">
-      {{
-        $t(
-          `onboarding.${isPortfolioBalancePage ? 'depositNow' : 'fundsNeeded'}`
-        )
-      }}
+    <h2 class="font-semibold text-xl -mt-4">
+      {{ $t('onboarding.depositInjNetworkAsset') }}
     </h2>
 
     <p class="text-sm mt-4">
@@ -65,31 +61,21 @@ onMounted(() => {
       }}
     </p>
 
-    <SharedQRCode
-      class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-8"
-      :text="sharedWalletStore.injectiveAddress"
-      color="#40A9FF"
-    />
+    <div class="max-w-[300px] mx-auto mt-8">
+      <SharedQRCode
+        class="w-full rounded-lg overflow-hidden"
+        :text="sharedWalletStore.injectiveAddress"
+        color="#40A9FF"
+      />
 
-    <p class="mt-8">
-      {{
-        $t(
-          `onboarding.${
-            isPortfolioBalancePage
-              ? 'addFundsScanQrCodeOrCopy'
-              : 'scanQrCodeOrCopy'
-          }`
-        )
-      }}
-    </p>
-
-    <div
-      class="flex items-center gap-2 rounded-lg border p-2 mt-2 justify-between max-w-xs mx-auto"
-    >
-      <p>{{ formattedAddress }}</p>
-      <AppButton variant="primary-outline" @click="onCopyInjectiveAddress">
-        {{ $t('onboarding.copy') }}
-      </AppButton>
+      <div
+        class="flex items-center gap-2 rounded-lg mt-4 justify-between max-w-xs mx-auto"
+      >
+        <p>{{ formattedAddress }}</p>
+        <AppButton @click="onCopyInjectiveAddress">
+          {{ $t('onboarding.copy') }}
+        </AppButton>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 gap-2 mt-4">

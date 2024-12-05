@@ -25,10 +25,12 @@ const fetchBalances = (
     shouldFetchCw20Balances: boolean
   } = { shouldFetchCw20Balances: false }
 ) => {
+  const spotStore = useSpotStore()
   const accountStore = useAccountStore()
 
   return backupPromiseCall(() =>
     Promise.all([
+      spotStore.fetchSubaccountOrders(),
       accountStore.fetchAccountPortfolioBalances(),
       ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
     ])

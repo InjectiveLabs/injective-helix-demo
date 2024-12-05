@@ -11,7 +11,7 @@ const { copy } = useClipboard()
 const isModalOpen = computed(() => modalStore.modals[Modal.QrCode])
 
 const formattedAddress = computed(() =>
-  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 4)
+  sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
 
 function closeModal() {
@@ -34,17 +34,17 @@ function onCopyAddress() {
   >
     <section class="text-center">
       <h3 class="-mt-4">{{ $t('connect.qrTitle') }}</h3>
-      <SharedQRCode
-        class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-4"
-        :text="sharedWalletStore.injectiveAddress"
-        color="#40A9FF"
-      />
+      <div class="max-w-[280px] mx-auto">
+        <SharedQRCode
+          class="w-full rounded-lg overflow-hidden mt-4"
+          :text="sharedWalletStore.injectiveAddress"
+          color="#40A9FF"
+        />
 
-      <div
-        class="flex items-center gap-2 max-w-[264px] mt-6 justify-between mx-auto"
-      >
-        <p class="text-ellipsis overflow-hidden">{{ formattedAddress }}</p>
-        <AppButton @click="onCopyAddress">{{ $t('common.copy') }}</AppButton>
+        <div class="flex items-center gap-2 mt-6 justify-between mx-auto">
+          <p class="text-ellipsis overflow-hidden">{{ formattedAddress }}</p>
+          <AppButton @click="onCopyAddress">{{ $t('common.copy') }}</AppButton>
+        </div>
       </div>
     </section>
   </AppModal>

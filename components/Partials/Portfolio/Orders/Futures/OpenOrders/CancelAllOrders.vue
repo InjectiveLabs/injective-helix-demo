@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
 const derivativeStore = useDerivativeStore()
@@ -40,10 +39,6 @@ function cancelAllOrders() {
     })
     .finally(() => {
       status.setIdle()
-
-      backupPromiseCall(async () => {
-        await derivativeStore.fetchSubaccountOrders()
-      })
     })
 }
 </script>
