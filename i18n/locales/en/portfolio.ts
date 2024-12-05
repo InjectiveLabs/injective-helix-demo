@@ -99,7 +99,7 @@ export default {
       position: {
         [PositionTableColumn.Market]: 'Market',
         [PositionTableColumn.Side]: 'Side',
-        [PositionTableColumn.Amount]: 'Amount',
+        [PositionTableColumn.Contracts]: 'Contracts',
         [PositionTableColumn.Entry]: 'Entry Price',
         [PositionTableColumn.Mark]: 'Mark Price',
         [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL',

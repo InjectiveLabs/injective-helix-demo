@@ -180,9 +180,8 @@ useIntervalFn(() => {
               decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
             }"
           />
+          <span>%</span>
         </span>
-
-        <span>%</span>
       </AppTooltip>
     </div>
     <span v-else class="lg:text-right font-mono block"> &mdash; </span>

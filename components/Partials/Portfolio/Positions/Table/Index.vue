@@ -45,8 +45,8 @@ const columns = [
     class: 'w-[4%]'
   },
   {
-    key: PositionTableColumn.Amount,
-    label: t(`portfolio.table.position.${PositionTableColumn.Amount}`),
+    key: PositionTableColumn.Contracts,
+    label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
     class: 'text-right w-[6%]'
   },
   {
@@ -144,7 +144,7 @@ function sharePosition(position: PositionV2 | Position) {
         </div>
       </template>
 
-      <template #amount-data="{ row }">
+      <template #contracts-data="{ row }">
         <div class="flex items-center justify-end p-2">
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
@@ -177,13 +177,14 @@ function sharePosition(position: PositionV2 | Position) {
       </template>
 
       <template #mark-data="{ row }">
-        <div class="flex items-center justify-end p-2 text-gray-475">
+        <div class="flex items-center justify-end p-2">
           <p>
             <AppAmount
               v-bind="{
                 amount: row.markPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="text-coolGray-475"
             />
           </p>
         </div>
@@ -219,9 +220,8 @@ function sharePosition(position: PositionV2 | Position) {
                   amount: row.percentagePnl.toFixed(),
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
-              >
-                %
-              </AppAmount>
+              />
+              %
             </p>
           </div>
 

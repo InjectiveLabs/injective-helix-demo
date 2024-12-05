@@ -214,7 +214,7 @@ function closePositionAndReduceOnlyOrders() {
     </template>
 
     <template #mark-data>
-      <div class="space-y-1 flex flex-col">
+      <div class="space-y-1 flex flex-col text-coolGray-475">
         <AppAmount
           v-bind="{
             amount: position.markPrice.toFixed(),
@@ -254,9 +254,8 @@ function closePositionAndReduceOnlyOrders() {
                 amount: position.percentagePnl.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-            >
-              %
-            </AppAmount>
+            />
+            %
           </p>
         </div>
 

@@ -179,7 +179,7 @@ export enum HistorySwapTableColumn {
 export enum PositionTableColumn {
   Market = 'market',
   Side = 'side',
-  Amount = 'amount',
+  Contracts = 'contracts',
   Entry = 'entry',
   Mark = 'mark',
   UnrealizedPnl = 'unrealized-pnl',
