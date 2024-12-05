@@ -94,7 +94,7 @@ const columns = [
   {
     key: PositionTableColumn.ClosePosition,
     label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-    class: 'w-[8%]'
+    class: 'text-center w-[8%]'
   }
 ]
 

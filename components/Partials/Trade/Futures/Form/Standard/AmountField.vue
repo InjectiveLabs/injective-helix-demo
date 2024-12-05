@@ -359,7 +359,7 @@ onMounted(() => {
       </template>
 
       <template #bottom>
-        <div class="text-right text-2xs text-coolGray-450 pt-2 pb-1">
+        <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
           <div
             class="space-x-2"
             :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"

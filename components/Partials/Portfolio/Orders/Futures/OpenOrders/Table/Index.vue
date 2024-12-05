@@ -225,6 +225,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -239,6 +240,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -253,6 +255,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
               decimalPlaces: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -267,6 +270,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
               decimalPlaces: row.quantityDecimals,
               amount: row.filledQuantity.toFixed()
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -283,6 +287,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
           <span
             v-else
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverage)"
+            class="font-mono"
           >
             {{ row.leverage.toFormat(2) }}&times;
           </span>
@@ -298,6 +303,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
                   amount: row.total.toFixed(),
                   decimalPlaces: row.priceDecimals
                 }"
+                class="font-mono"
               />
               <span class="text-coolGray-500 ml-2">
                 {{ row.market.quoteToken.symbol }}

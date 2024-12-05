@@ -96,6 +96,7 @@ const filteredColumns = computed(() =>
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </span>
     </template>
@@ -107,6 +108,7 @@ const filteredColumns = computed(() =>
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -119,6 +121,7 @@ const filteredColumns = computed(() =>
               amount: order.total.toFixed(),
               decimalPlaces: order.priceDecimals
             }"
+            class="font-mono"
           />
         </span>
 
@@ -154,6 +157,7 @@ const filteredColumns = computed(() =>
                 decimalPlaces: order.priceDecimals,
                 amount: order.triggerPrice.toFixed()
               }"
+              class="font-mono"
             />
           </div>
         </template>

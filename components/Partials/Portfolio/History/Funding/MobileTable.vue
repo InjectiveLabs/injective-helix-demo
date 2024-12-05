@@ -62,6 +62,7 @@ const filteredColumns = computed(() =>
               amount: fundingPayment.total.toFixed(),
               decimalPlaces: USDT_DECIMALS
             }"
+            class="font-mono"
           />
         </span>
 

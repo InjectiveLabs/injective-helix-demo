@@ -150,16 +150,16 @@ function closePositionAndReduceOnlyOrders() {
 </script>
 
 <template>
-  <div class="flex items-center overflow-hidden space-x-2 ml-2">
+  <div class="flex items-center justify-center overflow-hidden space-x-2">
     <AppButton
       v-bind="{
         status: marketCloseStatus,
         disabled: !isMarketOrderAuthorized,
         tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
       }"
-      size="md"
+      size="sm"
       variant="danger"
-      :class="[!lg ? 'py-2' : 'min-w-20']"
+      :class="[!lg ? 'py-2' : 'min-w-16']"
       class="bg-opacity-20 text-red-500 border-none px-3"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"

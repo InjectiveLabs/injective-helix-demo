@@ -50,7 +50,11 @@ const columns = [
 
     <template #address-data="{ row }">
       <div class="items-center p-2">
-        <PartialsWalletHistoryCommonAddress is-xs :address="row.value">
+        <PartialsWalletHistoryCommonAddress
+          is-xs
+          :address="row.value"
+          class="font-mono"
+        >
           {{ row.formattedAddress }}
         </PartialsWalletHistoryCommonAddress>
       </div>
@@ -63,6 +67,7 @@ const columns = [
           v-bind="{
             amount: row.balance.toFixed()
           }"
+          class="font-mono"
         />
       </div>
     </template>

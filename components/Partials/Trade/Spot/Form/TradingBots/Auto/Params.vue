@@ -204,7 +204,7 @@ onMounted(() => {
 
 <template>
   <div class="border-b pb-4 mb-6">
-    <div class="text-2xs space-y-2 pt-4 pb-2 leading-4">
+    <div class="text-xs space-y-2 pt-4 pb-2 leading-4">
       <p class="text-white">{{ $t('sgt.autoModeHeader') }}</p>
       <div>
         <a
@@ -243,7 +243,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <button class="text-blue-550 text-2xs" @click="copyToManual">
+    <button class="text-blue-550 text-xs" @click="copyToManual">
       {{ $t('sgt.copyParametersToManual') }}
     </button>
   </div>

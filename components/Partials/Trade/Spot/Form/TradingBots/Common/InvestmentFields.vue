@@ -260,7 +260,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       </template>
 
       <template #bottom>
-        <div class="text-right text-2xs text-coolGray-450">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ baseDenomAmountToString }}
         </div>
       </template>
@@ -278,7 +278,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       </template>
 
       <template #bottom>
-        <div class="text-right text-2xs text-coolGray-450">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>

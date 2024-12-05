@@ -182,7 +182,7 @@ function closePositionAndReduceOnlyOrders() {
       </span>
     </template>
 
-    <template #amount-data>
+    <template #contracts-data>
       <p
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
         class="flex gap-1"

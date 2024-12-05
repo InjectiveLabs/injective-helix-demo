@@ -90,12 +90,13 @@ const columns = [
       </template>
 
       <template #volume-data="{ row }">
-        <div class="tracking-wider">
+        <div class="tracking-wider text-sm">
           <AppUsdAmount
             v-bind="{
               amount: row.marketVolumeInUsd.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
+            class="font-mono"
           />
           <span class="ml-1">USD</span>
         </div>
@@ -103,12 +104,13 @@ const columns = [
 
       <template #rewards-data="{ row }">
         <div>
-          <p class="font-semibold mb-1">
+          <p class="font-semibold mb-1 text-sm">
             <AppUsdAmount
               v-bind="{
                 amount: row.totalAmountInUsd.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="font-mono"
             />
             <span class="ml-1">USD</span>
           </p>

@@ -119,6 +119,7 @@ function chase() {
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -130,6 +131,7 @@ function chase() {
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -141,6 +143,7 @@ function chase() {
             decimalPlaces: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -152,6 +155,7 @@ function chase() {
             decimalPlaces: order.quantityDecimals,
             amount: order.filledQuantity.toFixed()
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -167,6 +171,7 @@ function chase() {
       <span
         v-else
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverage)"
+        class="font-mono"
       >
         {{ order.leverage.toFormat(2) }}&times;
       </span>
@@ -179,6 +184,7 @@ function chase() {
             amount: order.total.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
         <span class="text-coolGray-500 ml-1">
           {{ order.market.quoteToken.symbol }}

@@ -87,6 +87,7 @@ const filteredColumns = computed(() =>
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -98,6 +99,7 @@ const filteredColumns = computed(() =>
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -109,6 +111,7 @@ const filteredColumns = computed(() =>
             amount: order.total.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
         <span class="text-coolGray-500 ml-1">
           {{ order.market?.quoteToken.symbol }}
@@ -124,6 +127,7 @@ const filteredColumns = computed(() =>
             amount: order.triggerPrice.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </span>
     </template>

@@ -124,6 +124,7 @@ function chase() {
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -135,6 +136,7 @@ function chase() {
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -146,6 +148,7 @@ function chase() {
             decimalPlaces: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -161,9 +164,10 @@ function chase() {
               decimalPlaces: order.quantityDecimals,
               amount: order.filledQuantity.toFixed()
             }"
+            class="font-mono"
           />
         </p>
-        <p class="text-coolGray-500">
+        <p class="text-coolGray-500 font-mono">
           {{ order.filledQuantityPercentageToFormat }}%
         </p>
       </div>
@@ -176,6 +180,7 @@ function chase() {
             amount: order.total.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
         <span
           class="text-coolGray-500 ml-1"

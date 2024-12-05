@@ -152,12 +152,14 @@ const leverageNumber = computed({
         />
       </div>
 
-      <label class="bg-[#181E31] rounded flex px-3 basis-24 min-w-0 h-10">
+      <label
+        class="bg-brand-875 border border-[#181E31] rounded flex px-3 basis-24 min-w-0 h-10 focus-within:focus-ring transition-all duration-300"
+      >
         <input
           ref="el"
           :value="leverage"
           type="text"
-          class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right text-coolGray-450"
+          class="min-w-0 bg-transparent text-coolGray-100 focus:outline-none font-mono text-sm text-right"
           :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageInputField)"
           @keydown.enter="onEnter"
           @blur="onBlur"

@@ -59,9 +59,9 @@ const filteredColumns = computed(() =>
             </p>
           </div>
         </NuxtLink>
-      </div>
 
-      <PartialsLiquidityCommonClaimButton :campaign="campaign.campaign" />
+        <PartialsLiquidityCommonClaimButton :campaign="campaign.campaign" />
+      </div>
     </template>
 
     <template #volume-data>
@@ -71,6 +71,7 @@ const filteredColumns = computed(() =>
             amount: campaign.marketVolumeInUsd.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
+          class="font-mono"
         />
         <span class="ml-1">USD</span>
       </div>
@@ -84,6 +85,7 @@ const filteredColumns = computed(() =>
               amount: campaign.totalAmountInUsd.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
+            class="font-mono"
           />
           <span class="ml-1">USD</span>
         </p>
