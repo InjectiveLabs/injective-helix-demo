@@ -11,6 +11,9 @@ import mainnetTokens from './tokens/mainnet.json'
 import devnetSwapRoutes from './swap/devnet.json'
 import testnetSwapRoutes from './swap/testnet.json'
 import mainnetSwapRoutes from './swap/mainnet.json'
+import devnetDenoms from './denoms/devnet.json'
+import testnetDenoms from './denoms/testnet.json'
+import mainnetDenoms from './denoms/mainnet.json'
 import devnetCategoryMap from './marketMap/category/devnet.json'
 import testnetCategoryMap from './marketMap/category/testnet.json'
 import mainnetCategoryMap from './marketMap/category/mainnet.json'
@@ -53,6 +56,18 @@ export const getTokens = () => {
   }
 
   return mainnetTokens
+}
+
+export const getDenoms = () => {
+  if (IS_DEVNET) {
+    return Object.keys(devnetDenoms)
+  }
+
+  if (IS_TESTNET) {
+    return Object.keys(testnetDenoms)
+  }
+
+  return Object.keys(mainnetDenoms)
 }
 
 export const getVerifiedSpotMarketIdMap = () => {
@@ -200,6 +215,7 @@ export const restrictedCountries = restrictedCountriesJson
 export const blacklistedAddresses = blacklistedAddressesJson
 
 export const tokens = getTokens()
+export const verifiedDenoms = getDenoms()
 export const swapRoutes = getSwapRoutes()
 export const rwaSlugs = getRawCategorySlugs()
 export const marketCategoriesMap = getCategoryMap()

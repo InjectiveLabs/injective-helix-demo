@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { usdtToken } from '@shared/data/token'
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { indexerDerivativesApi } from '@shared/Service'
-import { Orderbook, Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   closePosition,
   closeAllPosition,
@@ -20,7 +20,7 @@ type OrderBookMap = Record<string, Orderbook>
 type PositionStoreState = {
   orderbooks: OrderBookMap
   positions: PositionV2[] /** for account portfolio calculation */
-  subaccountPositions: Position[]
+  subaccountPositions: PositionV2[]
   subaccountPositionsCount: number
 }
 
@@ -34,13 +34,13 @@ const initialStateFactory = (): PositionStoreState => ({
 export const usePositionStore = defineStore('position', {
   state: (): PositionStoreState => initialStateFactory(),
   actions: {
-    addMarginToPosition,
     closePosition,
     closeAllPosition,
+    addMarginToPosition,
     closePositionAndReduceOnlyOrders,
 
-    cancelSubaccountPositionsStream,
     streamSubaccountPositions,
+    cancelSubaccountPositionsStream,
 
     async fetchPositions() {
       const positionStore = usePositionStore()

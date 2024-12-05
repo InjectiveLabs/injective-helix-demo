@@ -9,7 +9,7 @@ export default {
         interpolate([
           "Don't have INJ? Click ",
           named('link'),
-          ' to go to the bridge.'
+          ' to get started.'
         ])
     },
     table: {

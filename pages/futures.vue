@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -23,7 +24,7 @@ const market = computed(() =>
 
 useDerivativeOrderbook(computed(() => market.value))
 
-onMounted(() => {
+onWalletConnected(() => {
   if (!market.value) {
     return navigateTo({
       name: 'futures-slug',
@@ -34,6 +35,7 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
+    spotStore.fetchSubaccountOrders(),
     derivativeStore.fetchOpenInterest(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,

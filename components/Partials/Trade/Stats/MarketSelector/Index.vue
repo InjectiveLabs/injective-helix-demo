@@ -46,10 +46,6 @@ const isBiudlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
 )
 
-const is2024ElectionPerpMarket = computed(
-  () => props.market.slug === '2024election-perp'
-)
-
 const marketPriceMap = computed(() => ({
   [props.market.marketId]: isSpot
     ? spotLastTradedPrice.value
@@ -91,7 +87,7 @@ watch(
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!isBiudlPerpMarket && !is2024ElectionPerpMarket"
+            :is-disabled="!isBiudlPerpMarket"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
