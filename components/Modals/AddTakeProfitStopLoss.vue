@@ -1,39 +1,38 @@
 <script setup lang="ts">
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   Modal,
   TakeProfitStopLossForm,
   TakeProfitStopLossFormField
 } from '@/types'
 
-const props = withDefaults(
-  defineProps<{ position: Position | PositionV2 | undefined }>(),
-  { position: undefined }
-)
-
 const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
-const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
-
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
+
+const props = withDefaults(
+  defineProps<{
+    position: PositionV2
+  }>(),
+  {}
+)
+
+const {
+  liquidationPrice,
+  price: entryPrice,
+  markPriceNotScaled
+} = useDerivativePosition(computed(() => props.position))
+
+const status = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AddTakeProfitStopLoss]
 )
-
-function closeModal() {
-  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
-}
 
 const market = computed(() =>
   derivativeStore.markets.find(
@@ -43,25 +42,13 @@ const market = computed(() =>
 
 const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
 
-const markPrice = computed(() =>
-  new BigNumberInWei(props.position?.markPrice || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
-const liquidationPrice = computed(() =>
-  new BigNumberInWei(props.position?.liquidationPrice || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
 const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
   useStringField({
     name: TakeProfitStopLossFormField.TakeProfit,
     initialValue: '',
     rule: '',
     dynamicRule: computed(() => {
-      const minValueRule = `minValue:${markPrice.value.toFixed(
+      const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
         market.value?.priceDecimals || 2
       )}`
       const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
@@ -87,7 +74,7 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
           market.value?.priceDecimals || 2
         )}`
 
-        const maxValueRule = `maxValue:${markPrice.value.toFixed(
+        const maxValueRule = `maxValue:${markPriceNotScaled.value.toFixed(
           market.value?.priceDecimals || 2
         )}`
 
@@ -97,7 +84,7 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
           market.value?.priceDecimals || 2
         )}`
 
-        const minValueRule = `minValue:${markPrice.value.toFixed(
+        const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
           market.value?.priceDecimals || 2
         )}`
 
@@ -105,12 +92,6 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
       }
     })
   })
-
-const entryPrice = computed(() =>
-  new BigNumberInWei(props.position?.entryPrice || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
 
 const takeProfitPnl = computed(() => {
   const takeProfitPrice = new BigNumberInBase(takeProfitValue.value || 0)
@@ -133,13 +114,6 @@ const stopLossPnl = computed(() => {
     ? stopLossTotal.minus(entryTotal)
     : entryTotal.minus(stopLossTotal)
 })
-
-watch(
-  () => isModalOpen.value,
-  () => {
-    resetForm()
-  }
-)
 
 const isTpDisabled = computed(() => {
   const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
@@ -187,6 +161,17 @@ async function submitTpSl() {
       status.setIdle()
     })
 }
+
+function closeModal() {
+  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+}
+
+watch(
+  () => isModalOpen.value,
+  () => {
+    resetForm()
+  }
+)
 </script>
 
 <template>
@@ -218,7 +203,7 @@ async function submitTpSl() {
             <p>
               <AppAmount
                 v-bind="{
-                  amount: markPrice.toFixed(),
+                  amount: markPriceNotScaled.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
                 class="font-mono"

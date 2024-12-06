@@ -4,7 +4,7 @@ import { PerpOrdersStandardView } from '@/types'
 withDefaults(
   defineProps<{
     view: string
-    isTickerOnly: boolean
+    isTickerOnly?: boolean
   }>(),
   {}
 )
@@ -18,6 +18,7 @@ withDefaults(
 
     <PartialsTradeFuturesOrdersStandardPositions
       v-else-if="view === PerpOrdersStandardView.OpenPositions"
+      v-bind="{ isTickerOnly }"
     />
 
     <PartialsTradeFuturesOrdersStandardOpenOrders

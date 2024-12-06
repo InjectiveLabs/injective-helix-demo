@@ -6,6 +6,7 @@ import {
   TradeExecutionType
 } from '@injectivelabs/ts-types'
 import {
+  PositionV2,
   PerpetualMarket,
   ExpiryFuturesMarket,
   DerivativeLimitOrder,
@@ -28,6 +29,8 @@ import {
   toUiDerivativeMarket,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
+import { usdtToken } from '@shared/data/token'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   cancelOrder,
   submitChase,
@@ -599,6 +602,31 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchRWAMarketIsOpen(pythPriceId: string) {
       return await pythService.fetchRwaMarketOpenNoThrow(pythPriceId)
+    },
+
+    updateMarkPriceMapFromPosition(positions: PositionV2[]) {
+      const derivativeStore = useDerivativeStore()
+
+      const markPricesMap = positions.reduce((markPrices, position) => {
+        const market = derivativeStore.markets.find(
+          ({ marketId }) => marketId === position.marketId
+        )
+
+        return {
+          ...markPrices,
+          [position.marketId]: {
+            marketId: position.marketId,
+            price: sharedToBalanceInToken({
+              value: position.markPrice,
+              decimalPlaces: market?.quoteToken.decimals || usdtToken.decimals
+            })
+          }
+        }
+      }, {} as MarketMarkPriceMap)
+
+      derivativeStore.$patch({
+        marketMarkPriceMap: markPricesMap
+      })
     },
 
     cancelStreams() {

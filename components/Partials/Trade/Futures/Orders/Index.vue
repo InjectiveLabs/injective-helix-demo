@@ -44,7 +44,6 @@ function fetchDerivativeOrders() {
     }),
     derivativeStore.fetchSubaccountConditionalOrders([market.value.marketId]),
     positionStore.fetchSubaccountPositions({
-      subaccountId: accountStore.subaccountId,
       filters: {
         marketIds: isTickerOnly.value
           ? [market?.value?.marketId || '']

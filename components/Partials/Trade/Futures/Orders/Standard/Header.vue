@@ -42,7 +42,7 @@ const options = computed(() => {
     {
       display: `activity.${PerpOrdersStandardView.OpenPositions}`,
       value: PerpOrdersStandardView.OpenPositions,
-      description: `${positionStore.subaccountPositionsCount}`
+      description: `${positionStore.subaccountPositions.length}`
     },
     {
       display: `activity.${PerpOrdersStandardView.OpenOrders}`,

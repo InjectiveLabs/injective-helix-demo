@@ -1,6 +1,5 @@
 import {
   Campaign,
-  Position,
   PositionV2,
   TokenStatic,
   SpotLimitOrder,
@@ -292,6 +291,7 @@ export interface TransformedLiquidityDashboard {
 
 export interface TransformedPosition {
   pnl: BigNumberInBase
+  position: PositionV2
   priceDecimals: number
   price: BigNumberInBase
   quantityDecimals: number
@@ -300,7 +300,6 @@ export interface TransformedPosition {
   hasReduceOnlyOrders: boolean
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
-  position: PositionV2 | Position
   isLimitOrderAuthorized: boolean
   isMarketOrderAuthorized: boolean
   liquidationPrice: BigNumberInBase

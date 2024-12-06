@@ -5,11 +5,9 @@ const derivativeStore = useDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
-    isTickerOnly: boolean
+    isTickerOnly?: boolean
   }>(),
-  {
-    isTickerOnly: false
-  }
+  {}
 )
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>

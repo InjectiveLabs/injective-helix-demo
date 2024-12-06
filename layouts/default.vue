@@ -71,8 +71,8 @@ onSubaccountChange(() => {
 
 function fetchUserPortfolio() {
   return Promise.all([
-    exchangeStore.initFeeDiscounts(),
     authZStore.fetchGrants(),
+    exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
     accountStore.fetchErc20Balances(),
@@ -106,8 +106,8 @@ function checkOnboarding() {
   const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
 
   if (
-    sharedWalletStore.isUserConnected &&
     !accountStore.hasBalance &&
+    sharedWalletStore.isUserConnected &&
     sharedWalletStore.wallet === Wallet.Metamask &&
     Number(erc20UsdtBalance?.balance || 0) > 0
   ) {

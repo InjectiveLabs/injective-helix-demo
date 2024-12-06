@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 
@@ -10,7 +10,7 @@ const { lg } = useTwBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    positions: PositionV2[] | Position[]
+    positions: PositionV2[]
     ui?: Record<string, any>
   }>(),
   {
@@ -28,9 +28,9 @@ const props = withDefaults(
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const emit = defineEmits<{
-  'tpsl:add': [position: Position | PositionV2]
-  'margin:add': [position: Position | PositionV2]
-  'position:share': [state: Position | PositionV2]
+  'tpsl:add': [position: PositionV2]
+  'margin:add': [position: PositionV2]
+  'position:share': [state: PositionV2]
 }>()
 
 const columns = [
@@ -98,15 +98,15 @@ const columns = [
   }
 ]
 
-function addTpSl(position: PositionV2 | Position) {
+function addTpSl(position: PositionV2) {
   emit('tpsl:add', position)
 }
 
-function addMargin(position: PositionV2 | Position) {
+function addMargin(position: PositionV2) {
   emit('margin:add', position)
 }
 
-function sharePosition(position: PositionV2 | Position) {
+function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
 </script>

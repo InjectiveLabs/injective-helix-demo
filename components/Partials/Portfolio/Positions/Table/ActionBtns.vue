@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  Position,
   PositionV2,
   // TradeDirection,
   DerivativeLimitOrder
@@ -20,10 +19,10 @@ import {
 const props = withDefaults(
   defineProps<{
     pnl: BigNumberInBase
+    position: PositionV2
     quantity: BigNumberInBase
     market: UiDerivativeMarket
     hasReduceOnlyOrders: boolean
-    position: PositionV2 | Position
     isLimitOrderAuthorized: boolean
     isMarketOrderAuthorized: boolean
     reduceOnlyCurrentOrders: DerivativeLimitOrder[]
@@ -85,8 +84,8 @@ function closePosition() {
 
   positionStore
     .closePosition({
-      position: props.position,
-      market: props.market
+      market: props.market,
+      position: props.position
     })
     .then(() =>
       notificationStore.success({ title: t('trade.position_closed') })
