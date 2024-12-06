@@ -115,14 +115,14 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
             />
           </div>
 
-          <div class="flex overflow-hidden rounded border">
+          <div class="flex overflow-hidden rounded border border-[#181E31]">
             <AppButtonSelect
               v-for="value in Object.values(MarketQuoteType)"
               :key="value"
               v-model="activeQuote"
               v-bind="{ value }"
-              class="py-1 px-3 text-coolGray-400 text-xs uppercase hover:bg-brand-875"
-              active-classes="text-white !bg-brand-800"
+              class="p-2 text-white opacity-50 text-xs uppercase hover:opacity-75"
+              active-classes="!bg-[#181E31] opacity-100"
             >
               {{ value }}
             </AppButtonSelect>

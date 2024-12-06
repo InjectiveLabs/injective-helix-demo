@@ -212,6 +212,7 @@ export interface TransformedBalances {
 export interface TransformedMarkets {
   isVerified: boolean
   isRwaMarket: boolean
+  formattedChange: string
   market: UiMarketWithToken
   priceChangeClasses: string
   volumeInUsd: BigNumberInBase
@@ -223,13 +224,14 @@ export interface TransformedMarkets {
 }
 
 export interface TransformedMarketsSelector {
+  isRWAMarket: boolean
+  formattedChange: string
+  leverageToFixed: string
   leverage: BigNumberInBase
   market: UiMarketWithToken
-  volumeInUsd: BigNumberInBase
   volumeInUsdToFixed: string
-  isRWAMarket: boolean
-  leverageToFixed: string
   priceChangeClasses: string
+  volumeInUsd: BigNumberInBase
   [MarketsSelectorTableColumn.MarketVolume24h]: number
   [MarketsSelectorTableColumn.Markets]: string
   [MarketsSelectorTableColumn.LastPrice]: string

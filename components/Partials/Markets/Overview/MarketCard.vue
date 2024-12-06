@@ -84,7 +84,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 </script>
 
 <template>
-  <NuxtLink v-bind="{ to }" class="bg-brand-875 py-4 px-2 rounded-lg">
+  <NuxtLink v-bind="{ to }" class="relative bg-brand-875 py-4 px-2 rounded-lg">
     <div class="flex justify-between">
       <div class="flex items-center space-x-2 overflow-hidden">
         <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
@@ -92,7 +92,9 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           {{ market.market.ticker }}
         </p>
       </div>
-      <div class="w-10 h-6 ml-auto">
+      <div
+        class="w-10 h-6 ml-auto max-lg:w-16 max-lg:h-9 max-lg:absolute max-lg:right-6 max-lg:top-1/2 max-lg:-translate-y-1/2"
+      >
         <SharedLineGraph
           v-if="chartData.length > 1"
           :data="chartData"

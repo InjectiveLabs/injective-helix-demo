@@ -104,7 +104,7 @@ function setTypeFromQuery() {
 
 <template>
   <div>
-    <div class="mx-auto max-w-7xl pt-16 pb-10 px-4">
+    <div class="mx-auto max-w-7xl pt-16 pb-10 px-4 max-lg:pt-8">
       <h3
         class="text-3xl font-semibold"
         :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
@@ -187,7 +187,7 @@ function setTypeFromQuery() {
         </div>
       </div>
 
-      <div class="max-w-full mt-4">
+      <div class="max-w-full mt-4 lg:mb-2">
         <div class="flex gap-2 justify-between flex-wrap max-sm:flex-col">
           <div
             v-if="!marketTypeOptionsToHideCategory.includes(activeType)"

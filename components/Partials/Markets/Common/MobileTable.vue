@@ -159,7 +159,7 @@ const toggleFavorite = () => {
           class="w-full flex items-center truncate font-mono justify-end"
           :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
         >
-          {{ market[MarketsTableColumn.MarketChange24h] }}%
+          {{ market.formattedChange }}%
         </div>
       </PartialsCommonMarketRedirection>
     </template>

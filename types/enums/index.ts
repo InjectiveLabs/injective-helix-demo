@@ -556,7 +556,9 @@ export enum MitoRegistrationMode {
 }
 
 export enum PointsLeague {
-  Polaris = 'Polaris',
-  Plasma = 'Plasma',
-  Chroma = 'Chroma'
+  White = 'White',
+  Orange = 'Orange',
+  Blue = 'Blue',
+  Purple = 'Purple',
+  Black = 'Black'
 }

@@ -214,7 +214,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
             class="flex items-center truncate min-w-0 font-mono text-sm justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
-            {{ row[MarketsSelectorTableColumn.MarketChange24h] }}%
+            {{ row.formattedChange }}%
           </div>
         </PartialsCommonMarketRedirection>
       </template>

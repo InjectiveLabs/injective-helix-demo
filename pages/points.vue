@@ -10,15 +10,20 @@ const isShowDownloadButton = ref(true)
 
 const totalPoints = computed(() => '10,912,012')
 const rank = computed(() => '1,888')
-const league = computed(() => PointsLeague.Polaris)
+const league = computed(() => PointsLeague.White)
 
-const leagueBg = computed(() =>
-  league.value === PointsLeague.Polaris
-    ? 'bg-1'
-    : league.value === PointsLeague.Plasma
-    ? 'bg-2'
-    : 'bg-3'
-)
+const leagueBg = computed(() => {
+  // todo: update the asset for Purple & Black once Nelmer confirmed the BG asset
+  const leagueBgList = {
+    [PointsLeague.White]: 'bg-1',
+    [PointsLeague.Orange]: 'bg-2',
+    [PointsLeague.Blue]: 'bg-3',
+    [PointsLeague.Purple]: 'bg-1',
+    [PointsLeague.Black]: 'bg-1'
+  }
+
+  return leagueBgList[league.value]
+})
 
 async function downloadImage() {
   isShowDownloadButton.value = false
@@ -40,7 +45,7 @@ async function downloadImage() {
 
 <template>
   <div
-    class="pt-16 pb-32 px-48 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px]"
+    class="pt-16 pb-32 px-48 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px] 5xl:max-w-[90%]"
   >
     <div class="flex flex-col gap-4 max-xs:gap-1">
       <h1 class="text-3xl max-xs:text-2xl">{{ $t('points.title') }}</h1>
@@ -86,13 +91,13 @@ async function downloadImage() {
 
         <AppButton
           v-if="isShowDownloadButton"
-          class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-white hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
+          class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
           @click="downloadImage"
         >
-          <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
-          <p class="text-sm font-semibold tracking-wide">
+          <p class="text-sm font-medium tracking-wide">
             {{ $t('points.saveImage') }}
           </p>
+          <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
         </AppButton>
       </div>
     </div>
