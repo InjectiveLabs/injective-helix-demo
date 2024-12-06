@@ -95,7 +95,7 @@ function paginate(type: string) {
           size: 'text-sm',
           font: 'font-medium',
           color: 'dark:text-coolGray-450',
-          base: 'dark:bg-brand-825 [&>button]:text-sm [&>button]:dark:text-coolGray-450'
+          base: 'dark:bg-brand-825 [&>button]:text-sm'
         },
         td: {
           size: 'text-sm',

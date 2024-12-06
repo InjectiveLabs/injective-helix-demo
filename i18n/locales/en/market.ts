@@ -17,8 +17,8 @@ export default {
     change24h: 'Change (24h)',
     volume24h: 'Volume (24h)',
     hotMarkets: 'Hot Markets',
-    newMarkets: 'New Markets',
-    topGainers: 'Top Gainers',
+    newMarkets: '🐤 New Markets',
+    topGainers: '🚀 Top Gainers',
     unverified: 'Unverified',
     permisionlessWarning:
       'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',

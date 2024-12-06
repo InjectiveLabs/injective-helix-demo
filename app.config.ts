@@ -77,7 +77,7 @@ export default defineAppConfig({
       default: {
         sortButton: {
           class:
-            'p-0 dark:text-coolGray-500 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
+            'p-0 dark:text-coolGray-450 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
         }
       }
     }

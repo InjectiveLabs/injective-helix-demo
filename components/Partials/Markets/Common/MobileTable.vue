@@ -52,7 +52,7 @@ const toggleFavorite = () => {
           <div class="w-full flex items-center truncate">
             <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
 
-            <div class="ml-2">
+            <div class="ml-3">
               <CommonHeaderTooltip
                 :tooltip="$t('trade.rwa.marketClosedMarketRow')"
                 :is-disabled="!market.isRwaMarket"
@@ -65,11 +65,11 @@ const toggleFavorite = () => {
                 "
                 tooltip-class="text-xs"
                 :ui="{
-                  base: '-translate-y-0.5'
+                  base: 'translate-y-2'
                 }"
               >
                 <span
-                  class="text-sm"
+                  class="text-sm font-bold block"
                   :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
                 >
                   {{ market.market.ticker }}
@@ -78,7 +78,7 @@ const toggleFavorite = () => {
 
               <div class="flex items-center gap-1">
                 <div
-                  class="text-xs font-normal text-coolGray-500"
+                  class="text-xs font-normal text-[#8E919A]"
                   :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
                     market.market.baseToken.name
                   }`"
@@ -108,7 +108,7 @@ const toggleFavorite = () => {
         >
           <div class="w-full flex items-center space-x-2 justify-end">
             <NuxtLink
-              class="flex items-center gap-1.5 py-2 px-3 text-xs bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-500/70 hover:border-blue-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700 rounded-lg font-medium"
+              class="flex items-center leading-none gap-1.5 py-2 px-3 text-xs bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-500/70 hover:border-blue-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700 rounded-lg font-medium"
               :data-cy="`${dataCyTag(MarketCyTags.MarketTrade)}-${
                 market.market.marketId
               }`"
@@ -122,10 +122,10 @@ const toggleFavorite = () => {
                   market.market.marketId
                 )
               }"
-              class="w-6 h-6 text-coolGray-700"
+              class="text-coolGray-700"
               @click.stop.prevent="toggleFavorite"
             >
-              <UIcon :name="NuxtUiIcons.Star" class="h-6 w-6 min-w-6" />
+              <UIcon :name="NuxtUiIcons.Star" class="size-6 block" />
             </div>
           </div>
         </PartialsCommonMarketRedirection>

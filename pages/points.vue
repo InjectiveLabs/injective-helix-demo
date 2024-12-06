@@ -64,7 +64,7 @@ async function downloadImage() {
           backgroundImage: `url('/images/points/helix-points-${leagueBg}.png')`
         }"
       >
-        <AssetLogo class="w-auto h-8" alt="Helix" />
+        <AssetLogo class="w-auto h-9" alt="Helix" />
 
         <p class="text-xl max-xs:text-xl mt-12 drop-shadow-lg">
           {{ $t('points.myTotalPoints') }}

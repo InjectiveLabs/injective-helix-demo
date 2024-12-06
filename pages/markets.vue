@@ -104,9 +104,9 @@ function setTypeFromQuery() {
 
 <template>
   <div>
-    <div class="mx-auto max-w-7xl py-10 px-4">
+    <div class="mx-auto max-w-7xl pt-16 pb-10 px-4">
       <h3
-        class="text-2xl font-semibold"
+        class="text-3xl font-semibold"
         :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
       >
         {{ $t('trade.markets') }}
@@ -114,25 +114,40 @@ function setTypeFromQuery() {
 
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
-        class="my-10"
+        class="mt-8"
       />
 
       <div class="max-w-full">
         <div
-          class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
+          class="border-b-2 border-[#181E31] my-4 flex justify-between items-end flex-wrap max-lg:mt-6"
         >
-          <div v-if="sm" class="flex overflow-x-auto">
+          <div
+            v-if="sm"
+            class="flex max-lg:w-full max-lg:border-b-2 max-lg:border-bg-[#181E31]"
+          >
             <AppButtonSelect
               v-for="value in Object.values(MarketTypeOption)"
               :key="value"
               v-model="activeType"
               v-bind="{ value }"
-              class="capitalize text-coolGray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
-              active-classes="border-blue-500 !text-blue-500"
+              class="relative capitalize text-coolGray-450 px-4 py-3 text-xs font-medium whitespace-nowrap flex items-center gap-2.5"
+              active-classes="!text-white"
               :data-cy="`${dataCyTag(MarketCyTags.MarketType)}-${value}`"
               @update:model-value="onMarketTypeChange"
             >
-              {{ value }}
+              <template #default="{ isActive }">
+                <UIcon
+                  v-if="value === MarketTypeOption.Favorites"
+                  :name="NuxtUiIcons.StarOutline"
+                  class="size-4"
+                />
+                {{ value }}
+
+                <span
+                  class="h-0.5 w-full absolute z-[1] -bottom-0.5 left-1/2 -translate-x-1/2"
+                  :class="[isActive ? 'bg-blue-500' : 'bg-[#181E31]']"
+                />
+              </template>
             </AppButtonSelect>
           </div>
           <div v-else class="w-full">
@@ -152,7 +167,7 @@ function setTypeFromQuery() {
 
           <div class="flex max-lg:w-full">
             <label
-              class="w-full flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
+              class="w-full flex items-center border border-transparent rounded-md p-1"
             >
               <input
                 v-model="search"
@@ -164,7 +179,7 @@ function setTypeFromQuery() {
               <div class="flex items-center pr-3">
                 <UIcon
                   :name="NuxtUiIcons.Search"
-                  class="h-6 w-6 min-w-6 text-coolGray-500"
+                  class="size-5 text-coolGray-450"
                 />
               </div>
             </label>
@@ -172,11 +187,11 @@ function setTypeFromQuery() {
         </div>
       </div>
 
-      <div class="max-w-full my-6">
-        <div class="flex gap-x-2 justify-between flex-wrap max-sm:flex-col">
+      <div class="max-w-full mt-4">
+        <div class="flex gap-2 justify-between flex-wrap max-sm:flex-col">
           <div
             v-if="!marketTypeOptionsToHideCategory.includes(activeType)"
-            class="sm:flex space-x-2 max-sm:w-full"
+            class="sm:flex space-x-2 max-sm:w-full items-center"
           >
             <template v-if="sm">
               <AppButtonSelect
@@ -184,7 +199,7 @@ function setTypeFromQuery() {
                 :key="value"
                 v-model="activeCategory"
                 v-bind="{ value }"
-                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-3 tracking-wider capitalize font-semibold rounded-md text-blue-550"
+                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize rounded text-blue-550"
                 active-classes="opacity-100"
                 :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
               >
@@ -214,15 +229,15 @@ function setTypeFromQuery() {
             }}</span>
           </div>
 
-          <div class="flex gap-x-3 mt-2 lg:mt-0 flex-wrap">
-            <div class="flex rounded border">
+          <div class="flex mt-2 lg:mt-0 flex-wrap">
+            <div class="flex rounded border border-[#181E31]">
               <AppButtonSelect
                 v-for="value in Object.values(MarketQuoteType)"
                 :key="value"
                 v-model="activeQuote"
                 v-bind="{ value }"
-                class="py-1 px-3 text-coolGray-400 text-xs uppercase hover:bg-brand-875"
-                active-classes="text-white !bg-brand-800"
+                class="p-2 text-white opacity-50 text-xs uppercase hover:opacity-75"
+                active-classes="!bg-[#181E31] opacity-100"
                 :data-cy="`${dataCyTag(
                   MarketCyTags.MarketQuoteToken
                 )}-${value}`"
@@ -234,7 +249,7 @@ function setTypeFromQuery() {
             <AppCheckbox2
               v-if="activeType !== MarketTypeOption.Permissionless"
               v-model="isLowVolumeMarketsVisible"
-              class="md:ml-4 flex items-center"
+              class="md:ml-4 flex items-center text-coolGray-450"
               is-sm
             >
               {{ $t('markets.showLowVol') }}
