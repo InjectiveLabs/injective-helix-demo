@@ -82,7 +82,7 @@ function paginate(type: string) {
 
 <template>
   <div
-    class="flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
+    class="w-full flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
   >
     <UTable
       :rows="rows"

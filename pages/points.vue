@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
+import { PointsLeague } from '@/types'
 
 const now = useNow({ interval: 1000 })
 
@@ -9,7 +10,15 @@ const isShowDownloadButton = ref(true)
 
 const totalPoints = computed(() => '10,912,012')
 const rank = computed(() => '1,888')
-const league = computed(() => 'Gold')
+const league = computed(() => PointsLeague.Polaris)
+
+const leagueBg = computed(() =>
+  league.value === PointsLeague.Polaris
+    ? 'bg-1'
+    : league.value === PointsLeague.Plasma
+    ? 'bg-2'
+    : 'bg-3'
+)
 
 async function downloadImage() {
   isShowDownloadButton.value = false
@@ -42,33 +51,48 @@ async function downloadImage() {
 
     <PartialsPointsStats v-bind="{ totalPoints, rank, league }" />
 
-    <div class="flex gap-6 max-lg:flex-col">
+    <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
       <PartialsPointsTable />
 
       <div
         ref="canvas"
-        class="relative flex flex-col items-center justify-center gap-2 max-xs:gap-1 py-[72px] min-w-[420px] max-xs:min-w-0 bg-contain bg-center bg-no-repeat bg-black rounded-lg"
+        :class="[
+          'relative flex flex-col items-center py-4 px-[88px] w-[420px] min-h-[365px] max-xs:w-full max-xs:px-8 bg-cover bg-center bg-no-repeat bg-black text-white',
+          isShowDownloadButton ? 'rounded-lg' : ''
+        ]"
         :style="{
-          backgroundImage: `url('/images/points-banner-bg.png')`
+          backgroundImage: `url('/images/points/helix-points-${leagueBg}.png')`
         }"
       >
-        <p class="text-2xl font-medium leading-tight max-xs:text-xl">
+        <AssetLogo class="w-auto h-8" alt="Helix" />
+
+        <p class="text-xl max-xs:text-xl mt-12 drop-shadow-lg">
           {{ $t('points.myTotalPoints') }}
         </p>
-        <p class="text-5xl font-bold max-xs:text-4xl">{{ totalPoints }}</p>
-        <p class="text-5xl font-bold uppercase max-xs:text-4xl">
-          {{ $t('points.rank') }} {{ rank }}
+        <p
+          class="text-5xl font-medium max-xs:text-4xl mt-2 mb-6 drop-shadow-md"
+        >
+          {{ totalPoints }}
         </p>
+
+        <div class="flex justify-between w-full">
+          <p class="text-base font-medium drop-shadow-lg">
+            {{ $t('points.league') }}: {{ league }}
+          </p>
+          <p class="text-base font-medium drop-shadow-lg">
+            {{ $t('points.rank') }}: {{ rank }}
+          </p>
+        </div>
 
         <AppButton
           v-if="isShowDownloadButton"
-          class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-5 rounded-lg"
+          class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-white hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
           @click="downloadImage"
         >
-          <p class="leading-none text-xs font-medium tracking-wide">
+          <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
+          <p class="text-sm font-semibold tracking-wide">
             {{ $t('points.saveImage') }}
           </p>
-          <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
         </AppButton>
       </div>
     </div>

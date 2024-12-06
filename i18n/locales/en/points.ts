@@ -10,6 +10,6 @@ export default {
     rank: 'Rank',
     league: 'League',
     myTotalPoints: 'My total points on Helix',
-    saveImage: 'Save Image'
+    saveImage: 'Save image'
   }
 }
