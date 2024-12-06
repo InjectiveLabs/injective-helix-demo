@@ -1,4 +1,4 @@
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
+import { NuxtUiIcons } from '@shared/types'
 import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
@@ -10,74 +10,48 @@ import {
 
 export const getMoreMenu = () => [
   {
-    isExpandable: true,
-    label: 'navigation.deposit',
-    description: 'navigation.depositDescription',
-    children: [
-      {
-        isExternal: true,
-        label: 'navigation.depositFiat',
-        to: 'https://injective.com/getinj/#fiats',
-        description: 'navigation.depositFiatDescription'
-      },
-      {
-        isExternal: true,
-        to: getBridgeRedirectionUrl(),
-        label: 'navigation.depositCrypto',
-        description: 'navigation.depositCryptoDescription'
-      },
-      {
-        isExternal: true,
-        label: 'navigation.getInj',
-        to: 'https://injective.com/getinj/#getinj',
-        description: 'navigation.getInjDescription'
-      }
-    ]
+    isConnectedOnly: true,
+    isOpenDepositModal: true,
+    label: 'navigation.deposit'
   },
   {
     to: { name: MainPage.LpRewards },
-    label: 'navigation.more.lpRewards',
-    description: 'navigation.more.lpRewardsSub'
+    label: 'navigation.more.lpRewards'
   },
   {
     to: { name: MainPage.FeeDiscounts },
-    label: 'navigation.more.tradingDiscounts',
-    description: 'navigation.more.tradingDiscountsSub'
+    label: 'navigation.more.tradingDiscounts'
   },
   {
     isExternal: true,
     label: 'navigation.more.bridge',
-    description: 'navigation.more.bridgeSub',
+
     to: 'https://bridge.injective.network/'
   },
   {
     isExternal: true,
     label: 'navigation.more.explorer',
-    to: 'https://explorer.injective.network/',
-    description: 'navigation.more.explorerSub'
+    to: 'https://explorer.injective.network/'
   },
   {
     isExternal: true,
     label: 'navigation.more.apiDocs',
-    to: 'https://api.injective.exchange/',
-    description: 'navigation.more.apiDocsSub'
+    to: 'https://api.injective.exchange/'
   },
   {
     isExternal: true,
     label: 'navigation.more.docs',
-    to: 'https://docs.injective.network/',
-    description: 'navigation.more.docsSub'
+    to: 'https://docs.injective.network/'
   },
   {
     isExternal: true,
     label: 'navigation.more.olp',
-    description: 'navigation.more.olpSub',
+
     to: 'https://trading.injective.network/program/liquidity/'
   },
   {
     to: { name: MainPage.Institutional },
-    label: 'navigation.more.institutional',
-    description: 'navigation.more.institutionalSub'
+    label: 'navigation.more.institutional'
   }
 ]
 
@@ -108,26 +82,31 @@ export const TRADING_OPTIONS = [
 ]
 
 export const POINTS_ITEM = {
+  isConnectedOnly: true,
   label: 'navigation.points',
   to: { name: MainPage.Points }
 }
 
 export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
   {
+    isExact: true,
+    icon: NuxtUiIcons.PieChart,
     label: 'navigation.portfolio',
-    to: { name: MainPage.Portfolio },
-    isExact: true
+    to: { name: MainPage.Portfolio }
   },
   {
+    icon: NuxtUiIcons.BarChart,
     label: 'navigation.balances',
     to: { name: PortfolioSubPage.Balances }
   },
   {
+    icon: NuxtUiIcons.Position,
     label: 'navigation.positions',
     to: { name: PortfolioSubPage.Positions }
   },
   {
     isExpandable: true,
+    icon: NuxtUiIcons.Order,
     label: 'navigation.orders',
     children: [
       {
@@ -153,6 +132,7 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
   {
     isExpandable: true,
     label: 'navigation.history',
+    icon: NuxtUiIcons.PortfolioHistory,
     children: [
       {
         label: 'navigation.swaps',
@@ -169,11 +149,13 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
     ]
   },
   {
+    icon: NuxtUiIcons.SubAccount,
     label: 'navigation.subaccounts',
     to: { name: PortfolioSubPage.Subaccounts }
   },
   {
     label: 'navigation.settings',
+    icon: NuxtUiIcons.SettingsOutline,
     to: { name: PortfolioSubPage.Settings }
   }
 ]
@@ -193,17 +175,19 @@ export const getTopNavMenu = () =>
     }
   ] as MenuItem[]
 
-export const getMobileMenuItems: () => MenuItem[] = () => [
-  {
-    isExpandable: true,
-    label: 'navigation.portfolio',
-    children: PORTFOLIO_MENU_ITEMS
-  },
-  ...TRADING_OPTIONS,
-  POINTS_ITEM,
-  {
-    isExpandable: true,
-    children: getMoreMenu(),
-    label: 'navigation.more.title'
-  }
-]
+export const getMobileMenuItems = () =>
+  [
+    {
+      isExpandable: true,
+      isConnectedOnly: true,
+      label: 'navigation.portfolio',
+      children: PORTFOLIO_MENU_ITEMS
+    },
+    ...TRADING_OPTIONS,
+    POINTS_ITEM,
+    {
+      isExpandable: true,
+      children: getMoreMenu(),
+      label: 'navigation.more.title'
+    }
+  ] as MenuItem[]

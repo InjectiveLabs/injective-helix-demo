@@ -99,6 +99,7 @@ export interface AmplitudeTrackerUser {
   tierLevel: number
 }
 type MenuItemBase = {
+  icon?: string
   label: string
   isExact?: boolean
   isDevOnly?: boolean
@@ -106,6 +107,7 @@ type MenuItemBase = {
   description?: string
   isExpandable?: boolean
   isConnectedOnly?: boolean
+  isOpenDepositModal?: boolean
 }
 
 export interface NavLink extends MenuItemBase {

@@ -287,22 +287,14 @@ export default {
     more: {
       olp: 'OLP',
       docs: 'Docs',
-      olpSub: 'TBD',
       title: 'More',
-      docsSub: 'TBD',
       bridge: 'Bridge',
-      bridgeSub: 'TBD',
-      apiDocsSub: 'TBD',
-      explorerSub: 'TBD',
       explorer: 'Explorer',
       portfolio: 'Portfolio',
       lpRewards: 'LP Rewards',
-      institutionalSub: 'TBD',
-      tradingDiscountsSub: 'TBD',
       apiDocs: 'API Documentation',
       institutional: 'Institutional',
-      tradingDiscounts: 'Trading Discounts',
-      lpRewardsSub: 'Rewards for setting up trading bots'
+      tradingDiscounts: 'Trading Discounts'
     },
 
     makerTakerFee: ({ named }: I18nMessageFunction) =>

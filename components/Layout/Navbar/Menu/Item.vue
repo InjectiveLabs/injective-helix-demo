@@ -5,18 +5,26 @@ import { NuxtUiIcons } from '@shared/types'
 import { NavBarCyTags, MenuItem, NavLink, NavChild } from '@/types'
 
 const route = useRoute()
+const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps<{
-  item: MenuItem
-}>()
+const props = withDefaults(
+  defineProps<{
+    item: MenuItem
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'menu:close': []
 }>()
 
-function closeAllMenus() {
-  emit('menu:close')
-}
+const isShowItem = computed(() => {
+  if (props.item.isConnectedOnly) {
+    return sharedWalletStore.isUserConnected
+  }
+
+  return true
+})
 
 const isActiveLink = computed(() => {
   const routeName = route.name as string
@@ -30,10 +38,15 @@ const isActiveLink = computed(() => {
 
   return routeName.startsWith(itemName)
 })
+
+function closeAllMenus() {
+  emit('menu:close')
+}
 </script>
 
 <template>
   <div
+    v-if="isShowItem"
     class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
   >
     <NuxtLink
@@ -81,12 +94,20 @@ const isActiveLink = computed(() => {
         <div class="bg-coolGray-875 text-white rounded-lg w-[200px] p-3">
           <ul class="space-y-1.5">
             <li
-              v-for="child in (item as NavChild).children"
+              v-for="child in (item as NavChild).children.filter((child) =>
+                child.isConnectedOnly ? sharedWalletStore.isUserConnected : true
+              )"
               :key="child.label"
-              class="relative"
+              class="relative cursor-pointer"
             >
               <template v-if="!child.isExpandable">
+                <LayoutNavbarMenuDepositItem
+                  v-if="child.isOpenDepositModal"
+                  v-bind="{ label: child.label }"
+                />
+
                 <NuxtLink
+                  v-else
                   :to="(child as NavLink).to"
                   :target="child.isExternal ? '_blank' : '_self'"
                   :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
@@ -95,29 +116,16 @@ const isActiveLink = computed(() => {
                   @click="closeAllMenus"
                 >
                   <div
-                    class="group/item block text-2xs text-white hover:text-blue-550 font-semibold w-full hover:bg-[#0F172A] rounded p-1"
+                    class="group/item block text-xs text-white hover:text-blue-550 font-semibold w-full rounded p-1"
                   >
-                    <div
-                      class="inline-block"
-                      :class="{
-                        'border-b border-b-white group-hover/item:border-b-blue-550':
-                          child.isExternal
-                      }"
-                    >
+                    <div class="inline-block">
                       {{ $t(child.label) }}
-                    </div>
-
-                    <div
-                      v-if="child.description"
-                      class="text-[6.78px] tracking-[0.339px] text-coolGray-475 mt-[1.36px] group-hover/item:text-blue-550"
-                    >
-                      {{ $t(child.description) }}
                     </div>
                   </div>
                 </NuxtLink>
               </template>
 
-              <template v-else>
+              <template v-else-if="(child as NavChild).children">
                 <UDropdown
                   mode="hover"
                   :items="
@@ -132,7 +140,7 @@ const isActiveLink = computed(() => {
                     width: 'w-[275px]',
                     padding: 'p-1'
                   }"
-                  class="w-full"
+                  class="w-full cursor-pointer"
                   :popper="{ placement: 'right-start', offsetDistance: 40 }"
                 >
                   <template #default>
@@ -142,12 +150,6 @@ const isActiveLink = computed(() => {
                           class="text-2xs text-white group-hover/child:text-blue-550"
                         >
                           {{ $t(child.label) }}
-                        </div>
-                        <div
-                          v-if="child.description"
-                          class="text-[6.78px] tracking-[0.339px] text-coolGray-475 mt-[1.36px] group-hover/child:text-blue-550"
-                        >
-                          {{ $t(child.description) }}
                         </div>
                       </div>
 
@@ -163,18 +165,8 @@ const isActiveLink = computed(() => {
                       <div>
                         <div
                           class="inline-block text-2xs text-left group-hover/grandchild:text-blue-550 mb-0.5"
-                          :class="{
-                            'border-b border-b-white group-hover/grandchild:border-b-blue-550':
-                              grandchild.isExternal
-                          }"
                         >
                           {{ $t(grandchild.label) }}
-                        </div>
-                        <div
-                          v-if="grandchild.description"
-                          class="text-[6.78px] tracking-[0.339px] text-coolGray-475 mt-[1.36px] group-hover/grandchild:text-blue-550"
-                        >
-                          {{ $t(grandchild.description) }}
                         </div>
                       </div>
                     </div>
