@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { MarketKey, IsSpotKey } from '@/types'
+import { MarketKey, IsSpotKey, PortfolioStatusKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -9,9 +9,16 @@ definePageMeta({
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
+
+const portfolioStatus = inject(
+  PortfolioStatusKey,
+  new Status(StatusType.Loading)
+)
 
 const market = computed(() =>
   spotStore.markets.find(
@@ -23,33 +30,63 @@ const market = computed(() =>
 
 useSpotOrderbook(computed(() => market.value))
 
-onMounted(() => {
+onMounted(async () => {
   if (!market.value) {
     return navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
   }
 
   status.setLoading()
 
-  spotStore
-    .fetchTrades({
+  Promise.all([
+    // market selectors - my markets
+    positionStore.fetchPositions(),
+    derivativeStore.fetchSubaccountOrders(),
+    // spot page data
+    derivativeStore.fetchOpenInterest(),
+    spotStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
     })
+  ])
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+    .finally(() => status.setIdle())
+
+  spotStore.reset()
+  spotStore.cancelTradesStream()
+  derivativeStore.cancelMarketsMarkPrices()
+
+  await until(portfolioStatus).toMatch((status) => status.isIdle())
 
   spotStore.streamTrades(market.value.marketId)
+  derivativeStore.streamMarketsMarkPrices([
+    ...positionStore.positions.map(({ marketId }) => marketId)
+  ])
 })
 
+onSubaccountChange(() =>
+  Promise.all([
+    positionStore.fetchPositions(),
+    derivativeStore.fetchSubaccountOrders()
+  ]).catch($onError)
+)
+
 onUnmounted(() => {
-  spotStore.cancelTradesStream()
   spotStore.reset()
+  spotStore.cancelTradesStream()
+  derivativeStore.cancelMarketsMarkPrices()
 })
 
 provide(IsSpotKey, true)
 provide(MarketKey, market)
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      derivativeStore.fetchMarkets(), // refresh funding rate
+      derivativeStore.fetchOpenInterest()
+    ]),
+  60 * 1000
+)
 </script>
 
 <template>

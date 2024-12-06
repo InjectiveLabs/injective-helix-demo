@@ -15,7 +15,6 @@ import {
   olpMarketIdsToIncludeInLowVolume
 } from '@/app/data/market'
 import {
-  TradeSubPage,
   MarketQuoteType,
   MarketHeaderType,
   MarketTypeOption,
@@ -23,13 +22,11 @@ import {
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
-const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
@@ -183,44 +180,6 @@ function onAscending(value: boolean) {
 function onSortBy(value: MarketHeaderType) {
   sortBy.value = value
 }
-
-// todo: refactor/move this!!
-function fetchSpotPageData() {
-  Promise.all([
-    positionStore.fetchPositions(),
-    derivativeStore.fetchSubaccountOrders()
-  ]).catch($onError)
-}
-
-function fetchFuturesPageData() {
-  Promise.all([spotStore.fetchSubaccountOrders()]).catch($onError)
-}
-
-function fetchMarketsPageData() {
-  Promise.all([
-    positionStore.fetchPositions(),
-    spotStore.fetchSubaccountOrders(),
-    derivativeStore.fetchSubaccountOrders()
-  ]).catch($onError)
-}
-
-function fetchUserOrdersAndPositions() {
-  if ((route?.name as string).includes(TradeSubPage.Spot)) {
-    fetchSpotPageData()
-
-    return
-  }
-
-  if ((route?.name as string).includes(TradeSubPage.Futures)) {
-    fetchFuturesPageData()
-
-    return
-  }
-
-  fetchMarketsPageData()
-}
-
-onSubaccountChange(fetchUserOrdersAndPositions)
 </script>
 
 <template>

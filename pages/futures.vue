@@ -41,7 +41,9 @@ onWalletConnected(async () => {
   status.setLoading()
 
   Promise.all([
+    // market selectors - my markets
     spotStore.fetchSubaccountOrders(),
+    // futures data
     derivativeStore.fetchOpenInterest(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
@@ -50,14 +52,12 @@ onWalletConnected(async () => {
     derivativeStore.getMarketMarkPrice(market.value)
   ])
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-
-  await until(portfolioStatus).toMatch((status) => status.isIdle())
+    .finally(() => status.setIdle())
 
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
+
+  await until(portfolioStatus).toMatch((status) => status.isIdle())
 
   derivativeStore.streamTrades(market.value.marketId)
   derivativeStore.streamMarketsMarkPrices([
@@ -66,10 +66,14 @@ onWalletConnected(async () => {
   ])
 })
 
+onSubaccountChange(() =>
+  Promise.all([spotStore.fetchSubaccountOrders()]).catch($onError)
+)
+
 onUnmounted(() => {
+  derivativeStore.reset()
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
-  derivativeStore.reset()
 })
 
 provide(MarketKey, market)
