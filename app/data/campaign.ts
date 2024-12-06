@@ -684,7 +684,7 @@ export const FIRST_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
 export const SECOND_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
 
-export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = SECOND_CAMPAIGN_NAME
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = ''
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
@@ -759,7 +759,10 @@ export const campaignNameOverrideMap: Record<string, string> = {
 }
 
 // Rule: always put the latest campaign name first so Modals/CompetitionWinner/Index.vue works properly
-export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [FIRST_CAMPAIGN_NAME]
+export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [
+  SECOND_CAMPAIGN_NAME,
+  FIRST_CAMPAIGN_NAME
+]
 
 export const CAMPAIGN_WINNER_MESSAGE =
   'Signing this transaction verifies ownership of this wallet and will not incur any gas fees.'
