@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { TOP_NAV_MENU } from '@/app/data/menu'
+import { getTopNavMenu } from '@/app/data/menu'
 import { MainPage } from '@/types'
 
 const appStore = useAppStore()
@@ -8,7 +8,7 @@ const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
 
 const filteredTopNavMenu = computed(() =>
-  TOP_NAV_MENU.filter((item) => {
+  getTopNavMenu().filter((item) => {
     if (item.isDevOnly) {
       return appStore.devMode
     }

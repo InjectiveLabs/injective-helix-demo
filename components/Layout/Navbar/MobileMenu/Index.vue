@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { MOBILE_MENU_ITEMS } from '@/app/data/menu'
+import { getMobileMenuItems } from '@/app/data/menu'
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -8,7 +8,7 @@ const sharedWalletStore = useSharedWalletStore()
 const isOpen = ref(false)
 
 const filteredMenuItems = computed(() =>
-  MOBILE_MENU_ITEMS.filter((item) => {
+  getMobileMenuItems().filter((item) => {
     if (item.isDevOnly) {
       return appStore.devMode
     }

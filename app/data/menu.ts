@@ -8,7 +8,7 @@ import {
   LeaderboardSubPage
 } from '@/types'
 
-export const MORE_MENU = [
+export const getMoreMenu = () => [
   {
     isExpandable: true,
     label: 'navigation.deposit',
@@ -178,21 +178,22 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
   }
 ]
 
-export const TOP_NAV_MENU = [
-  ...TRADING_OPTIONS,
-  {
-    isConnectedOnly: true,
-    label: 'navigation.portfolio',
-    to: { name: MainPage.Portfolio }
-  },
-  {
-    isExpandable: true,
-    children: MORE_MENU,
-    label: 'navigation.more.title'
-  }
-] as MenuItem[]
+export const getTopNavMenu = () =>
+  [
+    ...TRADING_OPTIONS,
+    {
+      isConnectedOnly: true,
+      label: 'navigation.portfolio',
+      to: { name: MainPage.Portfolio }
+    },
+    {
+      isExpandable: true,
+      children: getMoreMenu(),
+      label: 'navigation.more.title'
+    }
+  ] as MenuItem[]
 
-export const MOBILE_MENU_ITEMS: MenuItem[] = [
+export const getMobileMenuItems: () => MenuItem[] = () => [
   {
     isExpandable: true,
     label: 'navigation.portfolio',
@@ -202,7 +203,7 @@ export const MOBILE_MENU_ITEMS: MenuItem[] = [
   POINTS_ITEM,
   {
     isExpandable: true,
-    children: MORE_MENU,
+    children: getMoreMenu(),
     label: 'navigation.more.title'
   }
 ]
