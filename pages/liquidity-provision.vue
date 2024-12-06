@@ -5,9 +5,8 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { spotGridMarkets } from '@/app/json'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MITO_VAULTS, SGT_MARKETS } from '@/app/data/liquidityProvision'
+import { MITO_VAULTS } from '@/app/data/liquidityProvision'
 import {
   MitoRegistrationMode,
   LiquidityProvisionType,
@@ -74,28 +73,13 @@ const vaults = computed(() => {
     })
     .filter(
       (vault) =>
-        vault.isPermissionless || MITO_VAULTS.includes(vault.contractAddress)
+        (vault.isPermissionless ||
+          MITO_VAULTS.includes(vault.contractAddress)) &&
+        new BigNumberInBase(vault.apy).gt(0)
     )
     .sort((vault1, vault2) => {
-      if (vault2.apy === vault1.apy) {
-        return vault2.tvl - vault1.tvl
-      }
-
-      return new BigNumberInBase(vault2.apy).minus(vault1.apy).toNumber()
+      return new BigNumberInBase(vault2.tvl).minus(vault1.tvl).toNumber()
     })
-})
-
-const spotGridTradingBots = computed(() => {
-  if (
-    ![
-      LiquidityProvisionTypeOption.All,
-      LiquidityProvisionTypeOption.Helix
-    ].includes(type.value)
-  ) {
-    return []
-  }
-
-  return spotGridMarkets.filter((bot) => SGT_MARKETS.includes(bot.slug))
 })
 </script>
 
@@ -109,38 +93,9 @@ const spotGridTradingBots = computed(() => {
         {{ $t('liquidityProvision.description') }}
       </p>
 
-      <div class="max-w-full">
-        <div
-          class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
-        >
-          <div class="flex overflow-x-auto">
-            <AppButtonSelect
-              v-for="value in Object.values(LiquidityProvisionTypeOption)"
-              :key="value"
-              v-model="type"
-              v-bind="{ value }"
-              class="capitalize text-coolGray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
-              active-classes="border-blue-500 !text-blue-500"
-            >
-              {{ value }}
-            </AppButtonSelect>
-          </div>
-        </div>
-      </div>
-
       <div
         class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 py-4"
       >
-        <PartialsLiquidityProvisionItemInjStaking
-          v-if="type === LiquidityProvisionTypeOption.All"
-        />
-
-        <PartialsLiquidityProvisionItemSpotGridBot
-          v-for="gridMarket in spotGridTradingBots"
-          :key="gridMarket.slug"
-          v-bind="{ gridMarket }"
-        />
-
         <PartialsLiquidityProvisionItemMitoVault
           v-for="vault in vaults"
           :key="`${vault.marketId}-${vault.type}`"
