@@ -43,8 +43,6 @@ function disconnect() {
     router.push({ name: MainPage.Index })
   }
 }
-
-// todoz: update this page for conditional MM wallet logic
 </script>
 
 <template>
@@ -67,7 +65,7 @@ function disconnect() {
             :name="NuxtUiIcons.UserOutline"
             class="w-4 h-4 p-1 rounded-md hover:bg-brand-800"
           />
-          <span class="hidden lg:block font-mono lg:ml-2">
+          <span class="hidden lg:block lg:ml-2">
             {{ formattedAddress }}
           </span>
         </div>

@@ -7,8 +7,8 @@ const sharedWalletStore = useSharedWalletStore()
 <template>
   <div class="flex items-center px-1">
     <LayoutNavbarMenuItem
-      v-if="sharedWalletStore.isUserConnected"
-      class="hidden lg:block"
+      class="hidden lg:block px-4"
+      :class="{ 'px-8': sharedWalletStore.isUserConnected }"
       v-bind="{ item: POINTS_ITEM }"
     />
 

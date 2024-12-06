@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import {
-  MENU_ITEMS,
-  USER_MENU_ITEMS,
-  getDepositMenuItem
-} from '@/app/data/menu'
-import { MenuItemType } from '@/types'
+import { MOBILE_MENU_ITEMS } from '@/app/data/menu'
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
-const depositMenuItem = getDepositMenuItem()
-
 const filteredMenuItems = computed(() =>
-  MENU_ITEMS.filter((item) => (!appStore.devMode ? !item.devOnly : item))
+  MOBILE_MENU_ITEMS.filter((item) => {
+    if (item.isDevOnly) {
+      return appStore.devMode
+    }
+
+    if (item.isConnectedOnly) {
+      return sharedWalletStore.isUserConnected
+    }
+
+    return true
+  })
 )
 
 function close() {
@@ -68,26 +71,9 @@ const isLockedDoc = useScrollLock(document.documentElement)
             <div>
               <div class="p-4 font-semibold border-b">
                 <LayoutNavbarPortfolioMenuItem
-                  v-if="sharedWalletStore.isUserConnected"
-                  v-bind="{
-                    item: {
-                      label: 'navigation.portfolio',
-                      type: MenuItemType.Dropdown,
-                      items: USER_MENU_ITEMS
-                    }
-                  }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
                   v-for="item in filteredMenuItems"
                   :key="item.label"
                   v-bind="{ item }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
-                  v-bind="{ item: depositMenuItem }"
                   @menu:close="close"
                 />
               </div>

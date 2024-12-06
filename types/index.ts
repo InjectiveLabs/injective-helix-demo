@@ -7,7 +7,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PointsMultiplier } from '@injectivelabs/sdk-ts'
-import { MenuItemType, NoticeBanner } from './enums'
+import { NoticeBanner } from './enums'
 import { TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
@@ -100,36 +100,23 @@ export interface AmplitudeTrackerUser {
 }
 type MenuItemBase = {
   label: string
-  icon?: string
-  name?: string
-  click?: (...args: any) => any
   isExact?: boolean
-  devOnly?: boolean
-  isExternal?: boolean
-  description?: string
-  connectedOnly?: boolean
-}
-
-export type MenuItem =
-  | (MenuItemBase & {
-      type: MenuItemType.Link
-      to?: RouteLocationRaw
-      items?: MenuItem[]
-    })
-  | (MenuItemBase & {
-      type: MenuItemType.Dropdown
-      icon?: string
-      items: MenuItem[]
-    })
-
-export interface TopNavMenuItem {
-  label: string
   isDevOnly?: boolean
   isExternal?: boolean
-  isShowMore?: boolean
-  to?: RouteLocationRaw
+  description?: string
+  isExpandable?: boolean
   isConnectedOnly?: boolean
 }
+
+export interface NavLink extends MenuItemBase {
+  to: RouteLocationRaw
+}
+
+export interface NavChild extends MenuItemBase {
+  children: Array<NavLink | NavChild>
+}
+
+export type MenuItem = NavLink | NavChild
 
 export type WalletOption = {
   beta?: boolean

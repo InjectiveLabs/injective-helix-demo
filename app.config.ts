@@ -19,6 +19,12 @@ export default defineAppConfig({
       ring: 'ring-coolGray-800'
     },
 
+    dropdown: {
+      background: 'dark:bg-coolGray-875',
+      ring: 'ring-0',
+      padding: 'p-3'
+    },
+
     notification: {
       background: 'dark:bg-brand-900'
     },

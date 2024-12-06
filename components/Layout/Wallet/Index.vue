@@ -51,7 +51,7 @@ const isOpen = computed({
 
   <AppButton
     v-else
-    class="max-sm:px-1 max-sm:py-1 h-[30px] w-20 text-xs font-medium leading-5 mr-1 xl:mr-5"
+    class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
     variant="primary"
     :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
     :is-loading="

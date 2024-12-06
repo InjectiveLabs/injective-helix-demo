@@ -272,6 +272,7 @@ export default {
     activity: 'Activity',
     portfolio: 'Portfolio',
     deposit: 'Deposit',
+    depositDescription: 'TBD',
     getInj: 'Get INJ',
     getInjDescription: 'Deposit INJ from a CEX to your account',
     depositCrypto: 'Crypto',
@@ -281,20 +282,27 @@ export default {
     guilds: 'Guilds',
     guildsSub: 'Create and join Guilds to win team-based competitions',
     lpRewards: 'LP Rewards',
-    lpRewardsSub: 'Rewards for setting up trading bots',
     account: 'Account',
     home: 'Home',
     more: {
       olp: 'OLP',
       docs: 'Docs',
+      olpSub: 'TBD',
       title: 'More',
+      docsSub: 'TBD',
       bridge: 'Bridge',
+      bridgeSub: 'TBD',
+      apiDocsSub: 'TBD',
+      explorerSub: 'TBD',
       explorer: 'Explorer',
       portfolio: 'Portfolio',
       lpRewards: 'LP Rewards',
+      institutionalSub: 'TBD',
+      tradingDiscountsSub: 'TBD',
       apiDocs: 'API Documentation',
       institutional: 'Institutional',
-      tradingDiscounts: 'Trading Discounts'
+      tradingDiscounts: 'Trading Discounts',
+      lpRewardsSub: 'Rewards for setting up trading bots'
     },
 
     makerTakerFee: ({ named }: I18nMessageFunction) =>

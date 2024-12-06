@@ -1,19 +1,41 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { TOP_NAV_MENU } from '@/app/data/menu'
 import { MainPage } from '@/types'
 
+const appStore = useAppStore()
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
+
+const filteredTopNavMenu = computed(() =>
+  TOP_NAV_MENU.filter((item) => {
+    if (item.isDevOnly) {
+      return appStore.devMode
+    }
+
+    if (item.isConnectedOnly) {
+      return sharedWalletStore.isUserConnected
+    }
+
+    return true
+  })
+)
 </script>
 
 <template>
-  <header class="w-full z-50 bg-brand-900 relative">
-    <div class="flex border-b">
-      <NuxtLink to="/" class="pl-6 pr-2 flex justify-center items-center">
+  <header class="w-full z-50 bg-coolGray-975 relative">
+    <div class="flex border-b py-3">
+      <NuxtLink to="/" class="pl-6 pr-4 mr-4 flex justify-center items-center">
         <AssetLogo class="h-6 w-8 lg:h-8 lg:w-8 aspect-square" alt="Helix" />
       </NuxtLink>
 
-      <LayoutNavbarMenu />
+      <div class="flex space-x-4 max-lg:hidden">
+        <LayoutNavbarMenuItem
+          v-for="(item, index) in filteredTopNavMenu"
+          :key="`${item.label}-${index}`"
+          :item="item"
+        />
+      </div>
 
       <div class="flex-1" />
 

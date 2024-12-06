@@ -35,7 +35,7 @@ watchDebounced(
       }"
       @click="closeSidebar"
     >
-      <transition
+      <Transition
         enter-from-class="-translate-x-full"
         enter-active-class="transition ease-in-out duration-300 transform"
         enter-to-class="translate-x-0"
@@ -55,7 +55,7 @@ watchDebounced(
             </div>
           </div>
         </div>
-      </transition>
+      </Transition>
     </div>
   </div>
 </template>

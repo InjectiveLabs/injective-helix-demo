@@ -378,11 +378,6 @@ export enum TimeDuration {
   Second = 'second'
 }
 
-export enum MenuItemType {
-  Link = 'link',
-  Dropdown = 'dropdown'
-}
-
 export enum ChartViewOption {
   Chart = 'chart',
   ProChart = 'pro-chart',
