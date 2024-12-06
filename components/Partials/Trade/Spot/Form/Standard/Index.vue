@@ -117,13 +117,13 @@ const {
       }"
     />
 
-    <div>
-      <PartialsTradeSpotFormStandardCreateOrder
-        v-bind="{
-          quantity,
-          worstPrice
-        }"
-      />
-    </div>
+    <PartialsTradeSpotFormStandardCreateOrder
+      v-bind="{
+        quantity,
+        worstPrice
+      }"
+    />
+
+    <PartialsTradeCommonFormAccountEquity />
   </div>
 </template>

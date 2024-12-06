@@ -2,7 +2,10 @@
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   MarketKey,
   TradeTypes,
@@ -28,6 +31,27 @@ const spotMarket = inject(MarketKey)
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(true)
+
+const { makerFeeRate, takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: spotMarket?.value?.takerFeeRate,
+  marketMakerFeeRate: spotMarket?.value?.makerFeeRate
+})
+
+const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
+  computed(() => takerFeeRate.value.times(100)),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    shouldTruncate: true
+  }
+)
+
+const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
+  computed(() => makerFeeRate.value.times(100)),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    shouldTruncate: true
+  }
+)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -148,8 +172,7 @@ function toggle() {
             class="font-mono text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerTakerRate)"
           >
-            {{ +spotMarket.makerFeeRate * 100 }}% /
-            {{ +spotMarket.takerFeeRate * 100 }}%
+            {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
           </p>
         </div>
 
@@ -162,7 +185,7 @@ function toggle() {
               class="font-mono text-white"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerFeeRate)"
             >
-              {{ +spotMarket.makerFeeRate * 100 }}%
+              {{ makerFeeRateToFixed }}%
             </p>
           </div>
 

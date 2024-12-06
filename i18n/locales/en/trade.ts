@@ -543,6 +543,13 @@ export default {
         ])
     },
 
+    equity: {
+      spot: 'Spot',
+      perps: 'Perps',
+      title: 'Account Equity',
+      unrealizedPnl: 'Unrealized PnL'
+    },
+
     yes: 'Yes',
     no: 'No'
   }
