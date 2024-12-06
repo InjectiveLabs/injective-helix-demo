@@ -112,7 +112,7 @@ async function createLiquidityBot() {
     <SharedModal v-model="confirmationModal">
       <template #header>
         <div class="text-2xl font-bold">
-          {{ $t('sgt.confirmationTitle') }}
+          {{ $t('tradingBots.botCreationConfirmation') }}
         </div>
       </template>
 

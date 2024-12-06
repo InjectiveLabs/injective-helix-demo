@@ -269,6 +269,7 @@ export default {
     liquidityGrid: 'Liquidity Grid',
     totalBotsCreated: 'Total Bots Created',
     trailingPriceRange: 'Trailing Price Range',
+    botCreationConfirmation: 'Bot Creation Confirmation',
     copyStrategy: 'Copy Strategy',
     description:
       'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks',
@@ -280,8 +281,9 @@ export default {
   },
 
   liquidityBots: {
-    title: 'Liquidity Bots',
-    description: 'You can provide liquidity within the range you specify.',
+    title: 'Volume Boost Bot',
+    description:
+      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
     selectPair: 'Select Pair',
     setLiquidityBot: 'Set Up a Liquidity Bot',
     volatilityStrategy: 'Volatility Strategy',
