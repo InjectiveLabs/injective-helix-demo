@@ -2,6 +2,7 @@
 import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
+  MainPage,
   MarketKey,
   TradeTypes,
   UiSpotMarket,
@@ -42,16 +43,27 @@ const {
       class="border-b"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
     >
-      <AppButtonSelect
-        v-for="value in Object.values(TradeTypes)"
-        :key="value"
-        v-bind="{ value }"
-        v-model="orderTypeValue"
-        class="text-sm font-semibold text-coolGray-600 px-4 py-2"
-        active-classes="border-b border-blue-500 text-white"
-      >
-        {{ $t(`trade.${value}`) }}
-      </AppButtonSelect>
+      <div class="flex items-center">
+        <AppButtonSelect
+          v-for="value in Object.values(TradeTypes)"
+          :key="value"
+          v-bind="{ value }"
+          v-model="orderTypeValue"
+          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          active-classes="border-b border-blue-550 text-white"
+        >
+          {{ $t(`trade.${value}`) }}
+        </AppButtonSelect>
+
+        <NuxtLink
+          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          :to="{
+            name: MainPage.Swap
+          }"
+        >
+          {{ $t(`navigation.swap`) }}
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="flex mt-4 bg-brand-875 rounded-md">
@@ -60,10 +72,12 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSideValue"
-        class="flex-1 p-2 border border-transparent rounded-md text-sm"
+        class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium"
         :class="side === OrderSide.Buy ? 'text-green-500' : 'text-red-500'"
         :active-classes="
-          side === OrderSide.Buy ? '!border-green-500' : '!border-red-500'
+          side === OrderSide.Buy
+            ? 'bg-green-500 text-brand-875'
+            : 'bg-red-500 text-brand-875'
         "
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
       >
@@ -71,7 +85,7 @@ const {
       </AppButtonSelect>
     </div>
 
-    <div class="py-4 space-y-4">
+    <div class="pt-4 space-y-4">
       <PartialsTradeSpotFormStandardLimitPriceField
         v-if="orderTypeValue === TradeTypes.Limit"
       />

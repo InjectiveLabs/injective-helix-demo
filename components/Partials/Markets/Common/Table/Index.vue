@@ -235,7 +235,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
     <PartialsMarketsCommonMobileTable
       v-for="market in sortedRows"
       :key="market.market.marketId"
-      v-bind="{ market, columns, noHorizontalPadding: true }"
+      v-bind="{ market, columns }"
       @mobile-table:click="toggleFavorite(market)"
     />
   </template>

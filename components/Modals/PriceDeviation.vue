@@ -6,7 +6,7 @@ const emit = defineEmits<{
   'order:confirmed': []
 }>()
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.PriceDeviation])
 

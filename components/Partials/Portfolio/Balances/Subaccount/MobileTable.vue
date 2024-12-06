@@ -38,19 +38,13 @@ const filteredColumns = computed(() =>
   <AppMobileTable :columns="filteredColumns">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{ $t(`account.table.${BalanceTableColumn.Assets}`) }}
-          </p>
-
-          <div class="flex items-center space-x-2 font-sans">
-            <CommonTokenIcon v-bind="{ token: balance.token }" :is-sm="true" />
-            <div class="ml-2">
-              <p class="font-medium text-coolGray-200 text-sm">
-                {{ balance.token.symbol }}
-              </p>
-              <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
-            </div>
+        <div class="flex items-center space-x-2 font-sans">
+          <CommonTokenIcon v-bind="{ token: balance.token }" :is-sm="true" />
+          <div class="ml-2">
+            <p class="font-medium text-coolGray-200 text-sm">
+              {{ balance.token.symbol }}
+            </p>
+            <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
           </div>
         </div>
 
@@ -65,7 +59,10 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #available-data>
-      <AppAmount v-bind="{ amount: balance[BalanceTableColumn.Available] }" />
+      <AppAmount
+        v-bind="{ amount: balance[BalanceTableColumn.Available] }"
+        class="font-mono"
+      />
     </template>
 
     <template #used-or-reserved-data>
@@ -74,6 +71,7 @@ const filteredColumns = computed(() =>
           showZeroAsEmDash: true,
           amount: balance[BalanceTableColumn.UsedOrReserved]
         }"
+        class="font-mono"
       />
     </template>
 
@@ -83,6 +81,7 @@ const filteredColumns = computed(() =>
           showZeroAsEmDash: true,
           amount: balance[BalanceTableColumn.UnrealizedPnl]
         }"
+        class="font-mono"
       />
     </template>
 
@@ -91,6 +90,7 @@ const filteredColumns = computed(() =>
         v-bind="{
           amount: balance[BalanceTableColumn.Total]
         }"
+        class="font-mono"
       />
     </template>
 
@@ -101,6 +101,7 @@ const filteredColumns = computed(() =>
           v-bind="{
             amount: balance[BalanceTableColumn.TotalUsd]
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -111,6 +112,7 @@ const filteredColumns = computed(() =>
           amount: stakedAmount.toFixed(),
           decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
         }"
+        class="font-mono"
       />
     </template>
 
@@ -120,6 +122,7 @@ const filteredColumns = computed(() =>
           amount: stakedAmountInUsd.toFixed(),
           decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
         }"
+        class="font-mono"
       />
     </template>
   </AppMobileTable>

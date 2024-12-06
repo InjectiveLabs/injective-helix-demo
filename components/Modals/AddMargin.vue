@@ -15,7 +15,7 @@ const props = withDefaults(
   { position: undefined }
 )
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()

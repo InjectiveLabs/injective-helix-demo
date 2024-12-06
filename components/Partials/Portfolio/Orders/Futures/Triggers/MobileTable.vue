@@ -42,28 +42,18 @@ function cancelOrder() {
   <AppMobileTable :columns="filteredColumns">
     <template #header>
       <div class="flex items-start gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{
-              $t(
-                `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Market}`
-              )
-            }}
+        <PartialsCommonMarketRedirection
+          class="flex items-center space-x-2 font-sans"
+          v-bind="{ market: trigger.market }"
+        >
+          <CommonTokenIcon
+            v-bind="{ token: trigger.market.baseToken }"
+            :is-sm="true"
+          />
+          <p class="text-sm text-coolGray-200">
+            {{ trigger.market.ticker }}
           </p>
-
-          <PartialsCommonMarketRedirection
-            class="flex items-center space-x-2 font-sans"
-            v-bind="{ market: trigger.market }"
-          >
-            <CommonTokenIcon
-              v-bind="{ token: trigger.market.baseToken }"
-              :is-sm="true"
-            />
-            <p class="text-sm text-coolGray-200">
-              {{ trigger.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
-        </div>
+        </PartialsCommonMarketRedirection>
 
         <AppButton
           size="sm"
@@ -114,6 +104,7 @@ function cancelOrder() {
               amount: trigger.price.toFixed(),
               decimalPlaces: trigger.priceDecimals
             }"
+            class="font-mono"
           />
         </span>
       </div>
@@ -126,6 +117,7 @@ function cancelOrder() {
             amount: trigger.quantity.toFixed(),
             decimalPlaces: trigger.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -135,7 +127,9 @@ function cancelOrder() {
         <span v-if="trigger.leverage.isNaN()" class="text-coolGray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
-        <span v-else>{{ trigger.leverage.toFormat(2) }} &times;</span>
+        <span v-else class="font-mono">
+          {{ trigger.leverage.toFormat(2) }} &times;
+        </span>
       </div>
     </template>
 
@@ -146,6 +140,7 @@ function cancelOrder() {
             amount: trigger.total.toFixed(),
             decimalPlaces: trigger.priceDecimals
           }"
+          class="font-mono"
         />
         <span class="ml-1">{{ trigger.market.quoteToken.symbol }}</span>
       </div>
@@ -174,6 +169,7 @@ function cancelOrder() {
               amount: trigger.triggerPrice.toFixed(),
               decimalPlaces: trigger.priceDecimals
             }"
+            class="font-mono"
           />
         </span>
       </div>

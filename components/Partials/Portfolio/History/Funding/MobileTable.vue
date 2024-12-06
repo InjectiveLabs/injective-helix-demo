@@ -33,24 +33,14 @@ const filteredColumns = computed(() =>
     grid-class="grid gap-6 grid-cols-2"
   >
     <template #header>
-      <div class="flex flex-col gap-2 mb-6">
-        <p class="text-white text-sm font-semibold">
-          {{
-            $t(
-              `activity.table.fundingPayments.${FundingPaymentsTableColumn.Pair}`
-            )
-          }}
+      <div class="flex items-center space-x-2 font-sans mb-6">
+        <CommonTokenIcon
+          v-bind="{ token: fundingPayment.market.baseToken }"
+          :is-sm="true"
+        />
+        <p class="text-sm text-coolGray-200">
+          {{ fundingPayment.market.ticker }}
         </p>
-
-        <div class="flex items-center space-x-2 font-sans">
-          <CommonTokenIcon
-            v-bind="{ token: fundingPayment.market.baseToken }"
-            :is-sm="true"
-          />
-          <p class="text-sm text-coolGray-200">
-            {{ fundingPayment.market.ticker }}
-          </p>
-        </div>
       </div>
     </template>
 
@@ -72,6 +62,7 @@ const filteredColumns = computed(() =>
               amount: fundingPayment.total.toFixed(),
               decimalPlaces: USDT_DECIMALS
             }"
+            class="font-mono"
           />
         </span>
 

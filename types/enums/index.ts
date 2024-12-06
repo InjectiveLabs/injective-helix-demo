@@ -6,6 +6,7 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  DepositQr = 'deposit-qr',
   SgtBanner = 'sgt-banner',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
@@ -524,12 +525,6 @@ export enum DerivativesTradeFormField {
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
-export enum LiquidityProvisionType {
-  MitoVault = 'mito-vault',
-  InjectiveStaking = 'injective-staking',
-  HelixSpotGridBot = 'helix-spot-grid-bot'
-}
-
 export enum ClosePositionLimitFormField {
   Price = 'price',
   Quantity = 'quantity'
@@ -583,4 +578,15 @@ export enum BotType {
 export enum StrategyPerformance {
   Top = 'top',
   Worst = 'worst'
+}
+
+export enum LiquidityProvisionType {
+  MitoVault = 'mito-vault',
+  InjectiveStaking = 'injective-staking',
+  HelixSpotGridBot = 'helix-spot-grid-bot'
+}
+
+export enum MitoRegistrationMode {
+  Restricted = 'Restricted',
+  Permissionless = 'Permissionless'
 }

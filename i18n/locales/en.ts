@@ -4,6 +4,7 @@ import guild from './en/guild'
 import sgt from './en/spotGrid'
 import market from './en/market'
 import wallet from './en/wallet'
+import points from './en/points'
 import banners from './en/banners'
 import account from './en/account'
 import campaign from './en/campaign'
@@ -23,6 +24,7 @@ export default {
   ...trade,
   ...market,
   ...wallet,
+  ...points,
   ...account,
   ...banners,
   ...campaign,
@@ -45,6 +47,7 @@ export default {
     back: 'Back',
     base: 'Base',
     copy: 'Copy',
+    here: 'here',
     view: 'View',
     open: 'Open',
     days: 'Days',
@@ -268,6 +271,8 @@ export default {
     dashboard: 'Dashboard',
     trade: 'Trade',
     swap: 'Swap',
+    points: 'Points',
+    vaults: 'Vaults',
     liquidity: 'Liquidity',
     swapDescription: 'Quickly swap assets through a simple interface',
     activities: 'Activities',
@@ -286,6 +291,19 @@ export default {
     lpRewardsSub: 'Rewards for setting up trading bots',
     account: 'Account',
     home: 'Home',
+    more: {
+      olp: 'OLP',
+      docs: 'Docs',
+      title: 'More',
+      bridge: 'Bridge',
+      explorer: 'Explorer',
+      portfolio: 'Portfolio',
+      lpRewards: 'LP Rewards',
+      apiDocs: 'API Documentation',
+      institutional: 'Institutional',
+      tradingDiscounts: 'Trading Discounts'
+    },
+
     makerTakerFee: ({ named }: I18nMessageFunction) =>
       `-${named('maker')}% maker / -${named('taker')}% taker`,
     noTierLevel: 'No VIP Tier',
@@ -361,6 +379,10 @@ export default {
       'The amount of INJ required to be staked. Staking INJ secures the protocol, earns rewards and can help obtain a more preferable fee tier.',
     tier: 'Tier',
     current_apr: 'Current APR',
+    fees_taker_maker: 'Fees (Taker/Maker)',
+    fees_taker_maker_percent: ({ named }: I18nMessageFunction) =>
+      `Taker Fee * (1 - ${named('takerFeeDiscount')}) / ${named('makerFee')}%`,
+    viewFeeDiscounts: 'View Fee Discounts',
     maker: 'Maker',
     taker: 'Taker',
     off: 'Off',
@@ -449,12 +471,13 @@ export default {
     copy: 'Copy',
     depositNow: 'Deposit Now',
     fundsNeeded: 'Funds Needed',
+    depositInjNetworkAsset: 'Deposit INJ Network Assets',
     processing: 'Processing your transfer',
     success: 'Your transaction has been confirmed',
     depositNowDescription:
-      'Add funds to your wallet. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+      'You can transfer INJ from anywhere the INJ network is supported, including some exchanges.',
     fundsNeededDescription:
-      'Add funds to your wallet to get started. You can transfer INJ from select platforms like Binance, Bybit, OKX, and Kraken.',
+      'You can transfer INJ from anywhere the INJ network is supported, including some exchanges.',
     scanQrCodeOrCopy:
       'Scan the QR code or copy your new address below to begin',
     addFundsScanQrCodeOrCopy: 'Scan the QR code or copy your new address below',

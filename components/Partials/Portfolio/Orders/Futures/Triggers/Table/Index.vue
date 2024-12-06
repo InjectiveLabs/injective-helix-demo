@@ -161,6 +161,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
                 amount: row.price.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
         </div>
@@ -173,6 +174,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -182,7 +184,9 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
           <span v-if="row.leverage.isNaN()" class="text-coolGray-400">
             {{ $t('trade.not_available_n_a') }}
           </span>
-          <span v-else>{{ row.leverage.toFormat(2) }} &times;</span>
+          <span v-else class="font-mono">
+            {{ row.leverage.toFormat(2) }} &times;
+          </span>
         </div>
       </template>
 
@@ -193,6 +197,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
               amount: row.total.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="font-mono"
           />
           <span class="ml-1">{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -220,6 +225,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
                 amount: row.triggerPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
         </div>

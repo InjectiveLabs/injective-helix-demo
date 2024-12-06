@@ -35,6 +35,6 @@ onMounted(() => {
 <template>
   <div class="text-right">
     <span v-if="status.isLoading()" class="text-coolGray-500">&mdash;</span>
-    <span v-else>{{ activeBots }}</span>
+    <span v-else class="font-mono"> {{ activeBots }}</span>
   </div>
 </template>

@@ -52,13 +52,14 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-import { marketIdsToHide } from '@/app/data/market'
 import {
   verifiedExpirySlugs,
   verifiedDerivativeSlugs,
   verifiedExpiryMarketIds,
   verifiedDerivativeMarketIds
 } from '@/app/json'
+import { marketIdsToHide } from '@/app/data/market'
+import { fetchDerivativeStats } from '@/app/services/derivative'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
@@ -74,6 +75,7 @@ type DerivativeStoreState = {
   marketIdsFromQuery: string[]
   marketsSummary: SharedUiMarketSummary[]
   marketMarkPriceMap: MarketMarkPriceMap
+  tickerOpenInterestMap: Record<string, number>
   trades: SharedUiDerivativeTrade[]
   orderbook?: SharedUiOrderbookWithSequence
   subaccountTrades: SharedUiDerivativeTrade[]
@@ -92,6 +94,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   marketIdsFromQuery: [],
   marketsSummary: [],
   marketMarkPriceMap: {},
+  tickerOpenInterestMap: {},
   orderbook: undefined,
   trades: [],
   subaccountTrades: [],
@@ -327,6 +330,31 @@ export const useDerivativeStore = defineStore('derivative', {
           price: oraclePrice.price
         }
       }
+    },
+
+    async fetchOpenInterest() {
+      const derivativeStore = useDerivativeStore()
+
+      const stats = await fetchDerivativeStats()
+
+      const tickerOpenInterestMap = stats.reduce(
+        (
+          list,
+          {
+            ticker_id: ticker,
+            open_interest: openInterest
+          }: { ticker_id: string; open_interest: number }
+        ) => {
+          list[ticker] = openInterest
+
+          return list
+        },
+        {} as Record<string, number>
+      )
+
+      derivativeStore.$patch({
+        tickerOpenInterestMap
+      })
     },
 
     async fetchOrderbook(marketId: string) {

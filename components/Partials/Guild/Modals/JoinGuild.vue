@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const route = useRoute()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()

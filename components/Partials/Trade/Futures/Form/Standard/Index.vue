@@ -43,8 +43,8 @@ const {
         :key="value"
         v-bind="{ value }"
         v-model="orderType"
-        class="text-sm font-semibold text-coolGray-600 px-3 py-2"
-        active-classes="border-b border-blue-500 text-white"
+        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
+        active-classes="border-b border-blue-550 text-white"
         :data-cy="`${dataCyTag(
           PerpetualMarketCyTags.DerivativeTradeType
         )}-${value}`"
@@ -59,12 +59,14 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSide"
-        class="flex-1 p-2 border border-transparent rounded-md text-sm"
+        class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium"
         :class="
           side === TradeDirection.Long ? 'text-green-500' : 'text-red-500'
         "
         :active-classes="
-          side === TradeDirection.Long ? '!border-green-500' : '!border-red-500'
+          side === TradeDirection.Long
+            ? 'bg-green-500 text-brand-875'
+            : 'bg-red-500 text-brand-875'
         "
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
       >
@@ -78,7 +80,7 @@ const {
       </AppButtonSelect>
     </div>
 
-    <div class="space-y-4 py-4">
+    <div class="space-y-4 pt-4">
       <PartialsTradeFuturesFormStandardTriggerField
         v-if="
           [

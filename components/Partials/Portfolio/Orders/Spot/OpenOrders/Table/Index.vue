@@ -2,7 +2,6 @@
 import { dataCyTag } from '@shared/utils'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import {
   UiSpotMarket,
   SpotMarketCyTags,
@@ -125,13 +124,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
       notificationStore.success({ title: t('trade.order_success_canceling') })
     })
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 
@@ -217,6 +210,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -231,6 +225,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -245,6 +240,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               decimalPlaces: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -254,16 +250,17 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
           <div>
             <p
               :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
-              class="flex gap-1"
+              class="flex gap-1 font-mono"
             >
               <AppAmount
                 v-bind="{
                   decimalPlaces: row.quantityDecimals,
                   amount: row.filledQuantity.toFixed()
                 }"
+                class="font-mono"
               />
             </p>
-            <p class="text-coolGray-500">
+            <p class="text-coolGray-500 font-mono">
               {{ row.filledQuantityPercentageToFormat }}%
             </p>
           </div>
@@ -279,6 +276,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
                   amount: row.total.toFixed(),
                   decimalPlaces: row.priceDecimals
                 }"
+                class="font-mono"
               />
               <span
                 class="text-coolGray-500 ml-1"

@@ -2,22 +2,18 @@
 import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
-
 const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
-
 const totalAmount = computed(() =>
   new BigNumberInWei(props.balance.accountTotalBalance)
     .toBase(props.balance.token.decimals)
     .toFixed()
 )
-
 const totalAmountInUsd = computed(() =>
   new BigNumberInWei(props.balance.accountTotalBalanceInUsd)
     .toBase(props.balance.token.decimals)
     .toFixed()
 )
 </script>
-
 <template>
   <div class="flex justify-between">
     <div class="flex py-2">
@@ -38,7 +34,6 @@ const totalAmountInUsd = computed(() =>
         </div>
       </div>
     </div>
-
     <div class="flex items-center">
       <span class="text-sm flex">
         <span>$</span>

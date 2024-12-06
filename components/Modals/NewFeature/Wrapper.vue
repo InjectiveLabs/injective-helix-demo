@@ -6,7 +6,7 @@ import { Modal, MainPage } from '@/types'
 const route = useRoute()
 const slots = useSlots()
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const props = withDefaults(
   defineProps<{

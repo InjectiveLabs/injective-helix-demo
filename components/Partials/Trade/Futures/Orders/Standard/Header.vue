@@ -30,7 +30,8 @@ const emit = defineEmits<{
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const xxl = breakpoints['4xl']
+const lg = breakpoints['3xl']
+const xl = breakpoints['4xl']
 
 const view = useVModel(props, 'modelValue', emit)
 
@@ -86,11 +87,15 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
-    <CommonSubaccountTabSelector />
+  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
+    <CommonSubaccountTabSelector
+      v-bind="{
+        isSm: true
+      }"
+    />
 
     <AppTabSelect
-      v-if="!xxl"
+      v-if="!lg"
       v-bind="{
         options
       }"
@@ -131,15 +136,20 @@ watch(
       :key="value"
       v-model="view"
       v-bind="{ value }"
-      class="flex items-center px-4 tab-field"
-      active-classes="!text-white"
+      class="flex items-center text-coolGray-450 font-medium"
+      :class="[xl ? 'px-3 text-sm' : 'px-2 text-xs']"
+      active-classes="text-white"
     >
       {{ $t(display) }}
       {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
     </AppButtonSelect>
 
-    <div class="flex-1 flex items-center px-2 justify-end">
-      <AppCheckbox2 v-model="isTickerOnlyValue">
+    <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
+      <AppCheckbox2
+        v-model="isTickerOnlyValue"
+        is-plain
+        :class="[xl ? 'text-sm' : 'text-xs']"
+      >
         {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
       </AppCheckbox2>
 

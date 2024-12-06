@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket, MarketKey } from '@/types'
 
 const spotStore = useSpotStore()
@@ -51,13 +50,7 @@ function cancelAllOrders() {
       })
     )
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 

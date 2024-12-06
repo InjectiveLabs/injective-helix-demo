@@ -170,7 +170,7 @@ function handlePriceClick() {
 
 <template>
   <div
-    class="group flex text-[11px] leading-4 text-right relative text-coolGray-300 hover:text-white cursor-pointer select-none font-mono"
+    class="group flex text-xs py-1 leading-4 relative text-coolGray-300 hover:text-white cursor-pointer select-none font-mono"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
@@ -204,9 +204,9 @@ function handlePriceClick() {
       class="absolute right-px transition-all duration-500 rounded top-px bottom-px"
       :class="{
         'bg-red-700/50': isActive && !isBuy,
-        'bg-red-500/10': !isActive && !isBuy,
+        'bg-red-500/25': !isActive && !isBuy,
         'bg-green-700/60': isActive && isBuy,
-        'bg-green-500/10': !isActive && isBuy
+        'bg-green-500/25': !isActive && isBuy
       }"
       :style="{
         width: (Number(record.totalVolume) / Number(highestVolume)) * 100 + '%'
@@ -240,7 +240,7 @@ function handlePriceClick() {
 
     <div
       :key="record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate px-1 relative text-center"
       :class="{
         [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
           showQuantityFlash,
@@ -254,7 +254,7 @@ function handlePriceClick() {
 
     <div
       :key="record.price + record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate px-1 relative text-right"
       @click="handlePriceClick"
     >
       {{ volumeToString }}

@@ -1,4 +1,4 @@
-import { Position } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { indexerDerivativesApi } from '@shared/Service'
 import {
   MarketIdsArgs,
@@ -8,7 +8,7 @@ import { BaseDataIntegrityStrategy } from '@/app/client/streams/data-integrity/s
 
 export class DerivativeSubaccountPositionIntegrityStrategy
   extends BaseDataIntegrityStrategy<MarketIdsArgs>
-  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, Position[]>
+  implements ConcreteDataIntegrityStrategy<MarketIdsArgs, PositionV2[]>
 {
   static make(
     marketIds: MarketIdsArgs
@@ -48,8 +48,8 @@ export class DerivativeSubaccountPositionIntegrityStrategy
   }
 
   verifyData(
-    existingPositions: Position[],
-    latestPositions: Position[]
+    existingPositions: PositionV2[],
+    latestPositions: PositionV2[]
   ): boolean {
     return existingPositions.every((existingPosition) =>
       latestPositions.find(
@@ -60,14 +60,14 @@ export class DerivativeSubaccountPositionIntegrityStrategy
     )
   }
 
-  async fetchData(): Promise<Position[]> {
+  async fetchData(): Promise<PositionV2[]> {
     const { args: marketIds } = this
 
     const accountStore = useAccountStore()
     const derivativeStore = useDerivativeStore()
 
     const { positions: latestPositions } =
-      await indexerDerivativesApi.fetchPositions({
+      await indexerDerivativesApi.fetchPositionsV2({
         subaccountId: accountStore.subaccountId,
         marketIds: marketIds || derivativeStore.activeMarketIds
       })

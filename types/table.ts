@@ -41,6 +41,15 @@ export enum MarketsTableColumn {
   Action = 'action'
 }
 
+export enum MarketsSelectorTableColumn {
+  Markets = 'markets',
+  LastPrice = 'last-price',
+  MarketChange24h = 'market-change-24h',
+  FundingRate = 'funding-rate',
+  MarketVolume24h = 'market-volume-24h',
+  OpenInterest = 'open-interest'
+}
+
 export enum LiquidityTableColumn {
   Market = 'market',
   Rewards = 'rewards',
@@ -170,8 +179,9 @@ export enum HistorySwapTableColumn {
 export enum PositionTableColumn {
   Market = 'market',
   Side = 'side',
-  Amount = 'amount',
-  EntryOrMark = 'entry-or-mark',
+  Contracts = 'contracts',
+  Entry = 'entry',
+  Mark = 'mark',
   UnrealizedPnl = 'unrealized-pnl',
   TotalUsd = 'total-usd',
   Margin = 'margin',
@@ -211,6 +221,22 @@ export interface TransformedMarkets {
   [MarketsTableColumn.MarketChange24h]: number
   [MarketsTableColumn.MarketVolume24h]: number
   [MarketsTableColumn.Markets]: string
+}
+
+export interface TransformedMarketsSelector {
+  leverage: BigNumberInBase
+  market: UiMarketWithToken
+  volumeInUsd: BigNumberInBase
+  volumeInUsdToFixed: string
+  isRWAMarket: boolean
+  leverageToFixed: string
+  priceChangeClasses: string
+  [MarketsSelectorTableColumn.MarketVolume24h]: number
+  [MarketsSelectorTableColumn.Markets]: string
+  [MarketsSelectorTableColumn.LastPrice]: string
+  [MarketsSelectorTableColumn.FundingRate]: BigNumberInBase
+  [MarketsSelectorTableColumn.OpenInterest]: BigNumberInBase
+  [MarketsSelectorTableColumn.MarketChange24h]: string
 }
 
 export interface TransformedHistorySwap {

@@ -99,12 +99,13 @@ export default {
       position: {
         [PositionTableColumn.Market]: 'Market',
         [PositionTableColumn.Side]: 'Side',
-        [PositionTableColumn.Amount]: 'Amount',
-        [PositionTableColumn.EntryOrMark]: 'Entry / Mark',
+        [PositionTableColumn.Contracts]: 'Contracts',
+        [PositionTableColumn.Entry]: 'Entry Price',
+        [PositionTableColumn.Mark]: 'Mark Price',
         [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL',
         [PositionTableColumn.TotalUsd]: 'Total Value (USD)',
-        [PositionTableColumn.Margin]: 'Margin',
-        [PositionTableColumn.LiquidationPrice]: 'Liquidation Price',
+        [PositionTableColumn.Margin]: 'Position Margin',
+        [PositionTableColumn.LiquidationPrice]: 'Liquid Price',
         [PositionTableColumn.Leverage]: 'Leverage',
         [PositionTableColumn.TpOrSl]: 'TP/SL',
         [PositionTableColumn.ClosePosition]: 'Close Position'

@@ -6,11 +6,92 @@ import {
   MenuItem,
   TradeSubPage,
   MenuItemType,
+  TopNavMenuItem,
   PortfolioSubPage,
   TradingInterface,
   TradingBotsSubPage,
   LeaderboardSubPage
 } from '@/types'
+
+export const TOP_NAV_MENU = [
+  {
+    label: 'navigation.markets',
+    to: { name: MainPage.Markets }
+  },
+  {
+    label: 'navigation.trade',
+    to: {
+      name: TradeSubPage.Futures,
+      params: { slug: IS_TESTNET ? 'btc-usdt-perp-pyth' : 'btc-usdt-perp' }
+    }
+  },
+  {
+    label: 'navigation.vaults',
+    to: { name: MainPage.LiquidityProvision }
+  },
+  {
+    label: 'navigation.tradingBots',
+    to: { name: MainPage.LiquidityProvision }
+  },
+  {
+    label: 'navigation.leaderboard.title',
+    to: { name: LeaderboardSubPage.Pnl }
+  },
+  {
+    label: 'navigation.more.title',
+    isShowMore: true
+  }
+] as TopNavMenuItem[]
+
+export const MORE_MENU = [
+  {
+    label: 'navigation.more.portfolio',
+    to: { name: MainPage.Portfolio },
+    isConnectedOnly: true
+  },
+  {
+    label: 'navigation.more.lpRewards',
+    to: { name: MainPage.LpRewards }
+  },
+  {
+    label: 'navigation.more.tradingDiscounts',
+    to: { name: MainPage.FeeDiscounts }
+  },
+  {
+    label: 'navigation.more.bridge',
+    to: 'https://bridge.injective.network/',
+    isExternal: true
+  },
+  {
+    label: 'navigation.more.explorer',
+    to: 'https://explorer.injective.network/',
+    isExternal: true
+  },
+  {
+    label: 'navigation.more.apiDocs',
+    to: 'https://api.injective.exchange/',
+    isExternal: true
+  },
+  {
+    label: 'navigation.more.docs',
+    to: 'https://docs.injective.network/',
+    isExternal: true
+  },
+  {
+    label: 'navigation.more.olp',
+    to: 'https://trading.injective.network/program/liquidity/',
+    isExternal: true
+  },
+  {
+    label: 'navigation.more.institutional',
+    to: { name: MainPage.Institutional }
+  }
+]
+
+export const POINTS_ITEM = {
+  label: 'navigation.points',
+  to: { name: MainPage.Points }
+}
 
 const tradeMenu: MenuItem = {
   type: MenuItemType.Dropdown,

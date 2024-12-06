@@ -156,7 +156,7 @@ function toggleStakingRow() {
             <UAvatar size="xs" :src="row.token.logo" />
             <div class="ml-2">
               <p
-                class="font-medium text-base mb-1"
+                class="font-medium text-sm mb-1 leading-none"
                 :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
               >
                 {{ row.token.symbol }}
@@ -194,6 +194,7 @@ function toggleStakingRow() {
         <AppAmount
           v-if="!row.isStakingRow"
           v-bind="{ amount: row[BalanceTableColumn.Available] }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
         />
       </template>
@@ -208,6 +209,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
       </template>
@@ -219,6 +221,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UnrealizedPnl]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
         />
       </template>
@@ -229,17 +232,22 @@ function toggleStakingRow() {
           v-bind="{
             amount: row[BalanceTableColumn.Total]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
       </template>
 
       <template #total-usd-data="{ row }">
-        <div :class="{ 'text-coolGray-400': row.isStakingRow }">
+        <div
+          :class="{ 'text-coolGray-400': row.isStakingRow }"
+          class="font-mono"
+        >
           <span>$ </span>
           <AppAmount
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd]
             }"
+            class="font-mono"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
           />
         </div>

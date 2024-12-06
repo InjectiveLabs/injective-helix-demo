@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { LocationAsRelativeRaw } from 'vue-router'
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { MenuItem, MenuItemType, NavBarCyTags } from '@/types'
+import { TopNavMenuItem, NavBarCyTags } from '@/types'
+import { MORE_MENU } from '@/app/data/menu'
 
-const appStore = useAppStore()
+const route = useRoute()
 
-const props = withDefaults(defineProps<{ item: MenuItem; level?: number }>(), {
-  level: 0
-})
+const props = withDefaults(
+  defineProps<{
+    item: TopNavMenuItem
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'menu:close': []
@@ -15,158 +20,120 @@ const emit = defineEmits<{
 
 const sharedWalletStore = useSharedWalletStore()
 
-const isOpen = ref(false)
-const isAnimating = ref(false)
-
-const filteredSubItems = computed(() =>
-  (props.item.items || []).filter(
-    (subItem) => !subItem.devOnly || appStore.devMode
+const filteredMoreOptions = computed(() =>
+  MORE_MENU.filter(({ isConnectedOnly }) =>
+    isConnectedOnly ? sharedWalletStore.isUserConnected : true
   )
 )
 
-const showItem = computed(() =>
-  props.item.connectedOnly ? sharedWalletStore.isUserConnected : true
+const isActiveLink = computed(() => {
+  const routeName = route.name as string
+
+  const itemName = ((props.item as any).to as LocationAsRelativeRaw)
+    ?.name as string
+
+  return routeName.startsWith(itemName)
+})
+
+const isActiveMoreLink = computed(() =>
+  filteredMoreOptions.value.some((menuItem) => {
+    const itemName = ((menuItem.to as LocationAsRelativeRaw)?.name ??
+      '') as string
+
+    if (!itemName) {
+      return false
+    }
+
+    return (route.name as string).startsWith(itemName)
+  })
 )
 
 function closeAllMenus() {
-  if (props.item.click) {
-    props.item.click()
-  }
-
-  isOpen.value = false
-
   emit('menu:close')
-}
-
-function open() {
-  if (isAnimating.value) {
-    return
-  }
-
-  isOpen.value = true
-}
-
-function close() {
-  isOpen.value = false
 }
 </script>
 
 <template>
-  <NuxtLink
-    v-if="item.type === MenuItemType.Link && showItem"
-    class="hover:bg-coolGray-800 flex items-center py-2 px-6 font-semibold text-sm cursor-pointer select-none"
-    :class="{
-      'rounded-lg': level === 0,
-      'w-[325px]': level > 0
-    }"
-    :to="item.to"
-    :target="item?.isExternal ? '_blank' : ''"
-    @click="closeAllMenus"
-  >
-    <div>
-      <div class="flex items-center justify-center">
-        <UIcon
-          v-if="item.icon"
-          class="mr-3 h-6 w-6 min-w-6"
-          :name="item.icon"
-        />
-
-        <div class="flex flex-col justify-start">
-          <div class="flex items-center justify-start space-x-1.5">
-            <p
-              :class="{ 'font-medium': level > 0 }"
-              :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
-                item.label
-              }`"
-            >
-              {{ $t(item.label) }}
-            </p>
-            <UIcon
-              v-if="item.isExternal"
-              :name="NuxtUiIcons.ExternalLink"
-              class="opacity-75 h-3 w-3 min-w-3"
-            />
-          </div>
-
-          <p
-            v-if="item.description"
-            class="text-coolGray-500 text-xs mt-1 font-normal"
-          >
-            {{ $t(item.description) }}
-          </p>
-        </div>
-      </div>
-    </div>
-  </NuxtLink>
-
-  <div
-    v-else-if="item.type === MenuItemType.Dropdown && showItem"
-    tabindex="0"
-    class="hover:bg-coolGray-800 bg-brand-900 flex items-center font-semibold text-sm cursor-pointer select-none relative z-50"
-    :class="{
-      'rounded-lg': level === 0
-    }"
-    @mouseenter="open"
-    @mouseleave="close"
-  >
-    <div
-      class="py-2 px-6 flex w-full"
-      :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
+  <template v-if="props.item.isShowMore">
+    <UPopover
+      mode="hover"
+      :popper="{ placement: 'bottom-start', offsetDistance: 0 }"
+      class="relative z-50 flex items-center h-full"
     >
-      <div class="flex-1 w-full flex justify-between items-center">
-        <div class="flex-1">
-          <p :class="{ '': level > 0 }">
-            {{ $t(item.label) }}
-          </p>
-          <p
-            v-if="item.description"
-            class="text-coolGray-400 text-xs mt-1 font-normal"
-          >
-            {{ $t(item.description) }}
-          </p>
-        </div>
-
-        <div class="ml-2 -mr-2" :class="{ '-rotate-180': !isOpen }">
-          <UIcon :name="NuxtUiIcons.ChevronUp2" class="h-3 w-3 min-w-3" />
-        </div>
-      </div>
-    </div>
-
-    <Transition
-      enter-active-class="transition-all duration-300 "
-      leave-active-class="transition-all duration-300"
-      enter-from-class="opacity-0 scale-95 origin-top"
-      :leave-to-class="`opacity-0 origin-top ${level === 0 ? 'scale-90' : ''}`"
-      mode="out-in"
-      @before-leave="isAnimating = true"
-      @after-leave="isAnimating = false"
-    >
-      <div
-        v-if="isOpen"
-        class="absolute"
-        :class="{
-          'top-full left-0': level === 0,
-          'top-0 right-full': level > 0
-        }"
-      >
+      <template #default="{ open }">
         <div
-          :class="{
-            'pt-2': level === 0,
-            'pl-1': level > 0
-          }"
+          tabindex="0"
+          class="hover:text-blue-550 bg-brand-900 flex items-center text-xs cursor-pointer select-none h-full"
+          :class="{ 'text-blue-550': open || isActiveMoreLink }"
         >
           <div
-            class="bg-brand-900 border-brand-800 border text-white rounded-lg"
+            class="py-2 px-3 flex w-full h-full"
+            :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+              props.item.label
+            }`"
           >
-            <LayoutNavbarMenuItem
-              v-for="subItem in filteredSubItems"
-              :key="subItem.label"
-              v-bind="{ item: subItem, level: level + 1 }"
-              @menu:close="closeAllMenus"
-            />
+            <div class="flex-1 w-full flex justify-between items-center">
+              <div class="flex-1">
+                <p>{{ $t(props.item.label) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template #panel>
+        <div class="bg-brand-900 text-white rounded-lg w-[200px] p-2">
+          <div>
+            <NuxtLink
+              v-for="menuItem in filteredMoreOptions"
+              :key="menuItem.label"
+              :class="{
+                'text-blue-550': (route.name as string).startsWith(
+                  ((menuItem as any).to as LocationAsRelativeRaw)
+                    ?.name as string
+                )
+              }"
+              :to="menuItem.to"
+              :target="menuItem.isExternal ? '_blank' : '_self'"
+              class="block px-3 py-2 hover:text-blue-550 text-xs font-medium"
+              :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+                menuItem.label
+              }`"
+              @click="closeAllMenus"
+            >
+              <div class="flex items-center gap-2">
+                <span>{{ $t(menuItem.label) }}</span>
+                <UIcon
+                  v-if="menuItem.isExternal"
+                  :name="NuxtUiIcons.ExternalLink"
+                  class="opacity-75 h-2 w-2 min-w-2"
+                />
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </template>
+    </UPopover>
+  </template>
+
+  <template v-else>
+    <NuxtLink
+      class="hover:text-blue-550 flex items-center py-2 px-3 text-xs cursor-pointer select-none rounded-lg"
+      :to="props.item.to"
+      :class="{ 'text-blue-550': isActiveLink }"
+      :target="props.item.isExternal ? '_blank' : '_self'"
+      :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+        props.item.label
+      }`"
+      @click="closeAllMenus"
+    >
+      <div class="flex items-center">
+        <div class="flex flex-col justify-start">
+          <div class="flex items-center space-x-1.5">
+            <p class="font-medium">{{ $t(props.item.label) }}</p>
           </div>
         </div>
       </div>
-    </Transition>
-  </div>
+    </NuxtLink>
+  </template>
 </template>

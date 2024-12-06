@@ -15,12 +15,14 @@ const { value: slippageValue } = useStringField({
 
 <template>
   <div class="flex items-center justify-between">
-    <AppCheckbox2 v-model="isSlippageOnValue">Slippage</AppCheckbox2>
+    <AppCheckbox2 v-model="isSlippageOnValue" class="text-white">
+      {{ $t('trade.slippage') }}
+    </AppCheckbox2>
     <AppInputField
       v-bind="{ decimals: 2, max: 100, min: 0 }"
       v-model="slippageValue"
       no-style
-      wrapper-class="border text-xs min-w-0 basis-24 px-2 rounded mb-1"
+      wrapper-class="border text-xs min-w-0 basis-24 px-2 rounded mb-1 text-white"
     >
       <template #right>%</template>
     </AppInputField>

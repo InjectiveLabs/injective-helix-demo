@@ -76,6 +76,7 @@ const columns = [
                 amount: row.total.toFixed(),
                 decimalPlaces: USDT_DECIMALS
               }"
+              class="font-mono"
             />
           </span>
 

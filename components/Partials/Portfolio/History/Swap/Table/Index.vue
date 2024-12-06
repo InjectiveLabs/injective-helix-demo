@@ -75,6 +75,7 @@ const columns = [
                 amount: row.sourceBalanceFormatted,
                 decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
+              class="font-mono"
             />
             {{ row.sourceTokenWithBalance.token.symbol }}
           </div>
@@ -97,6 +98,7 @@ const columns = [
                 amount: row.destinationBalanceFormatted,
                 decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
+              class="font-mono"
             />
             {{ row.destinationTokenWithBalance.token.symbol }}
           </div>
@@ -117,7 +119,7 @@ const columns = [
             v-for="({ amount, symbol }, index) in row.formattedFees"
             :key="`${amount}-${symbol}-${index}`"
           >
-            <AppAmount v-bind="{ amount }" />
+            <AppAmount v-bind="{ amount }" class="font-mono" />
             <span class="ml-1">{{ symbol }}</span>
           </div>
         </div>

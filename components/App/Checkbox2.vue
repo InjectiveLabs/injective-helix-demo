@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(
-  defineProps<{ modelValue: boolean; disabled?: boolean }>(),
+  defineProps<{ isPlain?: boolean; modelValue: boolean; disabled?: boolean }>(),
   {
     disabled: false,
     modelValue: false
@@ -34,7 +34,7 @@ const id = Math.random().toString()
           <use xlink:href="#check-4"></use>
         </svg>
       </span>
-      <span class="text-xs font-medium">
+      <span class="text-xs" :class="{ 'font-medium': isPlain }">
         <slot />
       </span>
     </label>

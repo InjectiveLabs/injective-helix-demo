@@ -122,6 +122,15 @@ export type MenuItem =
       items: MenuItem[]
     })
 
+export interface TopNavMenuItem {
+  label: string
+  isDevOnly?: boolean
+  isExternal?: boolean
+  isShowMore?: boolean
+  to?: RouteLocationRaw
+  isConnectedOnly?: boolean
+}
+
 export type WalletOption = {
   beta?: boolean
   downloadLink?: string

@@ -219,7 +219,14 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 <template>
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
-      <CommonHeaderTooltip v-bind="{ tooltip: $t('sgt.investmentTooltip') }">
+      <CommonHeaderTooltip
+        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        :popper="{
+          placement: 'top',
+          strategy: 'fixed',
+          offsetDistance: -40
+        }"
+      >
         <span v-if="!isAuto" class="text-white font-semibold text-xs">
           3.
         </span>
@@ -232,10 +239,14 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
         class="flex p-2 items-center space-x-2 text-xs bg-brand-875 rounded-md"
       >
         <CommonTokenIcon is-sm v-bind="{ token: market.baseToken }" />
-        <p>{{ market.baseToken.symbol }}</p>
-        <span>+</span>
+        <p class="text-white text-xs font-semibold">
+          {{ market.baseToken.symbol }}
+        </p>
+        <span class="text-white text-xs font-semibold">+</span>
         <CommonTokenIcon is-sm v-bind="{ token: market.quoteToken }" />
-        <p>{{ market.quoteToken.symbol }}</p>
+        <p class="text-white text-xs font-semibold">
+          {{ market.quoteToken.symbol }}
+        </p>
       </div>
     </div>
 
@@ -245,11 +256,11 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       :disabled="isUpperBoundLtLastPrice || isDisabled"
     >
       <template #right>
-        <span>{{ market.baseToken.symbol }}</span>
+        <span class="text-sm text-white">{{ market.baseToken.symbol }}</span>
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-coolGray-500">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ baseDenomAmountToString }}
         </div>
       </template>
@@ -263,11 +274,11 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       :disabled="isLowerBoundGtLastPrice || isDisabled"
     >
       <template #right>
-        <span>{{ market.quoteToken.symbol }}</span>
+        <span class="text-sm text-white">{{ market.quoteToken.symbol }}</span>
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-coolGray-500">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>

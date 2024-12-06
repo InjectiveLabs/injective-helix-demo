@@ -229,7 +229,7 @@ async function submitOrder() {
     <AppButton
       :key="spotFormValues[SpotTradeFormField.Side]"
       :variant="isBuy ? 'success' : 'danger'"
-      class="w-full"
+      class="w-full text-base font-medium text-coolGray-975 py-2.5"
       v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >

@@ -30,7 +30,8 @@ const emit = defineEmits<{
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
-const xxl = breakpoints['4xl']
+const lg = breakpoints['3xl']
+const xl = breakpoints['4xl']
 
 const view = useVModel(props, 'modelValue', emit)
 
@@ -76,11 +77,11 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
-    <CommonSubaccountTabSelector />
+  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
+    <CommonSubaccountTabSelector v-bind="{ isSm: true }" />
 
     <AppTabSelect
-      v-if="!xxl"
+      v-if="!lg"
       v-bind="{
         options
       }"
@@ -123,15 +124,20 @@ watch(
       :key="value"
       v-model="view"
       v-bind="{ value }"
-      class="flex items-center px-4 tab-field"
-      active-classes="!text-white"
+      class="flex items-center text-coolGray-450 font-medium"
+      :class="[xl ? 'px-3 text-sm' : 'px-2 text-xs']"
+      active-classes="text-white"
     >
       {{ $t(display) }}
       {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
-      <AppCheckbox2 v-model="isTickerOnlyValue">
+      <AppCheckbox2
+        v-model="isTickerOnlyValue"
+        is-plain
+        :class="[xl ? 'text-sm' : 'text-xs']"
+      >
         <span>
           {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
         </span>

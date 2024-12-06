@@ -35,28 +35,18 @@ const filteredColumns = computed(() =>
 <template>
   <AppMobileTable :columns="filteredColumns">
     <template #header>
-      <div class="flex flex-col gap-2 mb-6">
-        <p class="text-white text-sm font-semibold">
-          {{
-            $t(
-              `portfolio.table.spotTradeHistory.${PortfolioSpotTradeHistoryTableColumn.Pair}`
-            )
-          }}
+      <PartialsCommonMarketRedirection
+        class="flex items-center space-x-2 font-sans mb-6"
+        v-bind="{ market: trade.market }"
+      >
+        <CommonTokenIcon
+          v-bind="{ token: trade.market.baseToken }"
+          :is-sm="true"
+        />
+        <p class="text-sm text-coolGray-200">
+          {{ trade.market.ticker }}
         </p>
-
-        <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 font-sans"
-          v-bind="{ market: trade.market }"
-        >
-          <CommonTokenIcon
-            v-bind="{ token: trade.market.baseToken }"
-            :is-sm="true"
-          />
-          <p class="text-sm text-coolGray-200">
-            {{ trade.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
-      </div>
+      </PartialsCommonMarketRedirection>
     </template>
 
     <template #time-data>
@@ -87,6 +77,7 @@ const filteredColumns = computed(() =>
           amount: trade.price.toFixed(),
           decimalPlaces: trade.priceDecimals
         }"
+        class="font-mono"
       />
     </template>
 
@@ -96,6 +87,7 @@ const filteredColumns = computed(() =>
           amount: trade.quantity.toFixed(),
           decimalPlaces: trade.quantityDecimals
         }"
+        class="font-mono"
       />
     </template>
 
@@ -108,6 +100,7 @@ const filteredColumns = computed(() =>
               ? UI_DEFAULT_FEE_MIN_DECIMALS
               : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
+          class="font-mono"
         />
         <span class="ml-1 text-coolGray-500">
           {{ trade.market?.quoteToken.symbol }}
@@ -122,6 +115,7 @@ const filteredColumns = computed(() =>
             amount: trade.total.toFixed(),
             decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
+          class="font-mono"
         />
         <span class="ml-1 text-coolGray-500">
           {{ trade.market?.quoteToken.symbol }}

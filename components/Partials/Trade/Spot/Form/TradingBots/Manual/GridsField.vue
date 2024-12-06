@@ -82,7 +82,7 @@ const { value: gridsValue, errorMessage } = useStringField({
   <div class="mb-4">
     <div class="space-y-2">
       <div class="field-label flex items-center space-x-2">
-        <span>2 .{{ $t('sgt.numberOfGrids') }}</span>
+        <span>2. {{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </div>
       <AppInputField

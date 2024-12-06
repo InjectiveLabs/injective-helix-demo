@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const {

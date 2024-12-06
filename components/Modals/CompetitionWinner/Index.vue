@@ -14,7 +14,7 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()

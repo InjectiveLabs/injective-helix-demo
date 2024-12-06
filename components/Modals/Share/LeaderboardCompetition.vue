@@ -7,7 +7,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { LEADERBOARD_VOLUME_PER_ENTRY } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const { width } = useWindowSize()
 
 const props = withDefaults(

@@ -51,7 +51,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
-      const modalStore = useModalStore()
+      const modalStore = useSharedModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()

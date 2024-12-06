@@ -2,7 +2,7 @@
 import { Modal, LeaderboardSubPage } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(
   () =>

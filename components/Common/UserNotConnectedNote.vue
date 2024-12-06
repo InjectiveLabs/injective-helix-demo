@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 withDefaults(defineProps<{ cta?: boolean }>(), { cta: false })
 

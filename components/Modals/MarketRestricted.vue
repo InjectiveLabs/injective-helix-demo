@@ -5,7 +5,7 @@ import {
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 
 const props = withDefaults(

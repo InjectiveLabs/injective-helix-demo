@@ -11,8 +11,18 @@ const { lg } = useTwBreakpoints()
 const props = withDefaults(
   defineProps<{
     positions: PositionV2[] | Position[]
+    ui?: Record<string, any>
   }>(),
-  {}
+  {
+    ui: () => ({
+      th: {
+        base: 'whitespace-nowrap'
+      },
+      td: {
+        font: 'font-mono'
+      }
+    })
+  }
 )
 
 const { rows } = usePositionTransformer(computed(() => props.positions))
@@ -35,13 +45,18 @@ const columns = [
     class: 'w-[4%]'
   },
   {
-    key: PositionTableColumn.Amount,
-    label: t(`portfolio.table.position.${PositionTableColumn.Amount}`),
+    key: PositionTableColumn.Contracts,
+    label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
     class: 'text-right w-[6%]'
   },
   {
-    key: PositionTableColumn.EntryOrMark,
-    label: t(`portfolio.table.position.${PositionTableColumn.EntryOrMark}`),
+    key: PositionTableColumn.Entry,
+    label: t(`portfolio.table.position.${PositionTableColumn.Entry}`),
+    class: 'text-right w-[8%]'
+  },
+  {
+    key: PositionTableColumn.Mark,
+    label: t(`portfolio.table.position.${PositionTableColumn.Mark}`),
     class: 'text-right w-[8%]'
   },
   {
@@ -79,7 +94,7 @@ const columns = [
   {
     key: PositionTableColumn.ClosePosition,
     label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-    class: 'w-[16%]'
+    class: 'text-center w-[8%]'
   }
 ]
 
@@ -98,17 +113,15 @@ function sharePosition(position: PositionV2 | Position) {
 
 <template>
   <template v-if="lg">
-    <UTable
-      :rows="rows"
-      :columns="columns"
-      :ui="{ th: { base: 'whitespace-nowrap' } }"
-    >
+    <UTable v-bind="{ rows, columns, ui }">
       <template #market-data="{ row }">
         <PartialsCommonMarketRedirection
           v-bind="{ market: row.market }"
           class="flex items-center space-x-2 p-2 font-sans"
         >
-          <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
+          <CommonTokenIcon
+            v-bind="{ isSm: true, token: row.market.baseToken }"
+          />
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
             {{ row.market.ticker }}
           </p>
@@ -131,7 +144,7 @@ function sharePosition(position: PositionV2 | Position) {
         </div>
       </template>
 
-      <template #amount-data="{ row }">
+      <template #contracts-data="{ row }">
         <div class="flex items-center justify-end p-2">
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
@@ -150,8 +163,8 @@ function sharePosition(position: PositionV2 | Position) {
         </div>
       </template>
 
-      <template #entry-or-mark-data="{ row }">
-        <div class="space-y-1 p-2 flex flex-col items-end">
+      <template #entry-data="{ row }">
+        <div class="flex items-center justify-end p-2">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
             <AppAmount
               v-bind="{
@@ -160,12 +173,18 @@ function sharePosition(position: PositionV2 | Position) {
               }"
             />
           </p>
-          <p class="text-coolGray-500">
+        </div>
+      </template>
+
+      <template #mark-data="{ row }">
+        <div class="flex items-center justify-end p-2">
+          <p>
             <AppAmount
               v-bind="{
                 amount: row.markPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="text-coolGray-475"
             />
           </p>
         </div>
@@ -201,9 +220,8 @@ function sharePosition(position: PositionV2 | Position) {
                   amount: row.percentagePnl.toFixed(),
                   decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
-              >
-                %
-              </AppAmount>
+              />
+              %
             </p>
           </div>
 
@@ -222,7 +240,6 @@ function sharePosition(position: PositionV2 | Position) {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
               class="flex"
             >
-              <span>$</span>
               <AppUsdAmount
                 v-bind="{
                   amount: row.quantityInUsd.toFixed()
@@ -283,10 +300,12 @@ function sharePosition(position: PositionV2 | Position) {
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
           <button
-            class="flex p-2 rounded-full bg-blue-500 hover:bg-blue-600"
+            class="flex p-2 focus-visible:outline-none"
             @click="addTpSl(row.position)"
           >
-            <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
+            <div class="flex hover:bg-coolGray-600 rounded-full transition">
+              <UIcon :name="NuxtUiIcons.CirclePlus" class="h-6 w-6 min-w-6" />
+            </div>
           </button>
         </div>
       </template>

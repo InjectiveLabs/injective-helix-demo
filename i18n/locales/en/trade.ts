@@ -1,4 +1,8 @@
-import { MarketsTableColumn, I18nMessageFunction } from '@/types'
+import {
+  MarketsTableColumn,
+  I18nMessageFunction,
+  MarketsSelectorTableColumn
+} from '@/types'
 
 export default {
   trade: {
@@ -8,13 +12,45 @@ export default {
         [MarketsTableColumn.LastPrice]: 'Last Price',
         [MarketsTableColumn.MarketChange24h]: 'Change (24h)',
         [MarketsTableColumn.MarketVolume24h]: 'Volume (24h)'
+      },
+      marketsSelector: {
+        [MarketsSelectorTableColumn.Markets]: 'Markets',
+        [MarketsSelectorTableColumn.LastPrice]: 'Last Price',
+        [MarketsSelectorTableColumn.MarketChange24h]: 'Change (24h)',
+        [MarketsSelectorTableColumn.FundingRate]: 'Est. Funding Rate',
+        [MarketsSelectorTableColumn.MarketVolume24h]: 'Volume (24h)',
+        [MarketsSelectorTableColumn.OpenInterest]: 'Open Interest'
       }
+    },
+    stats: {
+      annualized: 'Annualized',
+      usd_value: 'USD Value',
+      usd_value_tooltip: 'The USD value based on the quote asset price',
+      totalVolumeInUsd: 'Total Volume USD (24h)',
+      est_funding_rate: 'Est. Funding Rate',
+      funding_rate_tooltip:
+        'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
+      high: '24h High',
+      low: '24h Low',
+      open_interest: 'Open Interest (USDT)',
+      open_interest_tooltip:
+        'Total outstanding position of all traders of this contract',
+      market_volume_24h: 'Volume (24h)',
+      market_volume_24h_tooltip:
+        'The total trade volume over the past 24 hours.',
+      next_funding: 'Next Funding',
+      total_market_volume_24h: 'Total Volume (24H)',
+      next_funding_tooltip:
+        'The time remaining for the end of the funding interval.',
+      mark_price_tooltip:
+        'Used for computing unrealised PNL and triggering liquidations'
     },
     get: 'Get',
     asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
+    slippage: 'Slippage',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
     tickSize: 'Tick Size',
@@ -54,7 +90,6 @@ export default {
     avgPrice: 'Avg. Price',
     totalQuantity: 'Total Quantity ({symbol})',
     totalVolume: 'Total Volume ({symbol})',
-    totalVolumeInUsd: 'Total Volume USD (24h)',
     trigger_price: 'Trigger Price',
     limit_price: 'Limit Price',
     limitPrice: 'Limit Price',
@@ -129,6 +164,7 @@ export default {
       'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
     long: 'Long',
     short: 'Short',
+    open_interest: 'Open interest',
     available_asset: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,
     availableAmount: 'Available: {amount}',
@@ -143,8 +179,6 @@ export default {
     error_in_form: 'There are errors in your form',
     volume_asset: ({ named }: I18nMessageFunction) =>
       `24h Volume (${named('asset')})`,
-    high: '24h High',
-    low: '24h Low',
     perpetuals: 'Perpetuals',
     perpetual: 'Perpetual',
     spots: 'Spot',
@@ -189,15 +223,12 @@ export default {
     mark_price_tooltip: 'The oracle price for the base asset.',
     mark_price_tooltip_verbose:
       'Mark Price: The oracle price for the base asset.',
-    funding_rate_tooltip:
-      'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
+    estFundingRate: 'Est. Funding Rate',
     estFeeRebate: 'Est. Fee Rebate',
     estFeeRebate_note:
       'The estimated rebate is the rebate that is granted if the limit order is filled as a maker order.',
-    annualized: 'Annualized',
     funding_fee: 'Funding fee',
     funding_rate: 'Funding Rate',
-    est_funding_rate: 'Est. Funding Rate',
     expiry_time: 'Expiry Time',
     expiry_time_with_timezone: ({ named }: I18nMessageFunction) =>
       `Expiry Time (${named('timezone')})`,
@@ -206,9 +237,6 @@ export default {
     not_available_n_a: 'N/A',
     position_closed: 'Position Closed',
     insufficient_balance: 'Insufficient balance',
-    next_funding: 'Next Funding',
-    next_funding_tooltip:
-      'The time remaining for the end of the funding interval.',
     trade_placed: 'Trade placed',
     notional_value: 'Notional Value',
     open_orders: 'Open Orders',
@@ -221,12 +249,7 @@ export default {
     volume: 'Volume',
     volumeUsd: 'Volume (USD)',
     volume_24h: 'Volume (24H)',
-    total_market_volume_24h: 'Total Volume (24H)',
-    usd_value: 'USD Value',
-    usd_value_tooltip: 'The USD value based on the quote asset price',
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
-    market_volume_24h: 'Volume (24h)',
-    market_volume_24h_tooltip: 'The total trade volume over the past 24 hours.',
     search_market: 'Search Market',
     total_volume_in_usd: ({ named }: I18nMessageFunction) =>
       `${named('amount')} USD`,

@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{ isLiquidity?: boolean }>(), {
   isLiquidity: false
 })
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()

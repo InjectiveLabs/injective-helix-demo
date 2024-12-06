@@ -18,7 +18,7 @@ const props = withDefaults(
   { position: undefined }
 )
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 
@@ -208,6 +208,7 @@ async function submitTpSl() {
                   amount: entryPrice.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
+                class="font-mono"
               />
             </p>
           </div>
@@ -220,6 +221,7 @@ async function submitTpSl() {
                   amount: markPrice.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
+                class="font-mono"
               />
             </p>
           </div>
@@ -232,6 +234,7 @@ async function submitTpSl() {
                   amount: liquidationPrice.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
+                class="font-mono"
               />
             </p>
           </div>
@@ -275,6 +278,7 @@ async function submitTpSl() {
                   amount: takeProfitValue,
                   decimalPlaces: market.priceDecimals
                 }"
+                class="font-mono"
               />
             </span>
           </template>
@@ -294,6 +298,7 @@ async function submitTpSl() {
                 amount: takeProfitPnl.toFixed(),
                 decimalPlaces: market.priceDecimals
               }"
+              class="font-mono"
             />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>
@@ -327,6 +332,7 @@ async function submitTpSl() {
                   amount: stopLossValue,
                   decimalPlaces: market.priceDecimals
                 }"
+                class="font-mono"
               />
             </span>
           </template>
@@ -346,6 +352,7 @@ async function submitTpSl() {
                 amount: stopLossPnl.toFixed(),
                 decimalPlaces: market.priceDecimals
               }"
+              class="font-mono"
             />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>

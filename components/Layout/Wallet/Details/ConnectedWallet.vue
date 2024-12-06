@@ -10,7 +10,7 @@ const { copy } = useClipboard()
 
 withDefaults(defineProps<{ wallet: Wallet }>(), {})
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isDropdownVisible = ref(false)
 

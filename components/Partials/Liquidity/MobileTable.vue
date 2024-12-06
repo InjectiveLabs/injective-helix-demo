@@ -44,40 +44,34 @@ const filteredColumns = computed(() =>
   >
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{ $t(`campaign.table.liquidity.${LiquidityTableColumn.Market}`) }}
-          </p>
+        <div class="flex items-center space-x-2">
+          <NuxtLink
+            :to="{
+              name: PortfolioSubPage.OrdersSpotTradeHistory,
+              params: { market: campaign.market?.slug },
+              query: { interface: TradingInterface.TradingBots }
+            }"
+            class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300"
+          >
+            <div v-if="campaign.baseToken">
+              <CommonTokenIcon v-bind="{ token: campaign.baseToken }" />
+            </div>
+            <div>
+              <p class="font-bold text-sm">
+                {{ campaign.market?.ticker }}
+              </p>
+              <p class="text-xs text-coolGray-500">
+                {{ campaign.market?.baseToken?.name }}
+              </p>
+            </div>
+          </NuxtLink>
 
-          <div class="flex items-center space-x-2">
-            <NuxtLink
-              :to="{
-                name: PortfolioSubPage.OrdersSpotTradeHistory,
-                params: { market: campaign.market?.slug },
-                query: { interface: TradingInterface.TradingBots }
-              }"
-              class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300"
-            >
-              <div v-if="campaign.baseToken">
-                <CommonTokenIcon v-bind="{ token: campaign.baseToken }" />
-              </div>
-              <div>
-                <p class="font-bold text-sm">
-                  {{ campaign.market?.ticker }}
-                </p>
-                <p class="text-xs text-coolGray-500">
-                  {{ campaign.market?.baseToken?.name }}
-                </p>
-              </div>
-            </NuxtLink>
-
-            <AppTooltip
-              v-if="campaign.userHasActiveLegacyStrategy"
-              is-warning
-              :content="$t('sgt.legacyBotWarning')"
-              is-lg
-            />
-          </div>
+          <AppTooltip
+            v-if="campaign.userHasActiveLegacyStrategy"
+            is-warning
+            :content="$t('sgt.legacyBotWarning')"
+            is-lg
+          />
         </div>
 
         <div class="flex space-x-2">
@@ -111,6 +105,7 @@ const filteredColumns = computed(() =>
             amount: campaign.totalRewardsInUsd.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
+          class="font-mono"
         />
         <span class="ml-1">USD</span>
       </p>
@@ -142,6 +137,7 @@ const filteredColumns = computed(() =>
             amount: campaign.marketVolumeInUsd.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
+          class="font-mono"
         />
         <span class="ml-1">USD</span>
       </p>

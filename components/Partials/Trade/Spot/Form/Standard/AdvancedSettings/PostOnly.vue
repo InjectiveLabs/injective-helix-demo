@@ -13,7 +13,7 @@ const { value: postOnlyValue } = useBooleanField({
   <div>
     <AppCheckbox2
       v-model="postOnlyValue"
-      class="w-full"
+      class="w-full text-white"
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsPostOnly)"
     >
       {{ $t('trade.postOnly') }}

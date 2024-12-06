@@ -13,7 +13,7 @@ import {
 import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()

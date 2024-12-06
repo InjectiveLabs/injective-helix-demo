@@ -8,7 +8,7 @@ import {
 } from '@/app/utils/constants'
 import { Modal, MainPage, BusEvents, LeaderboardDuration } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 

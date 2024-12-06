@@ -94,8 +94,8 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               :key="category.value"
               v-model="activeType"
               v-bind="{ value: category.value }"
-              class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
-              active-classes="text-white !bg-brand-700"
+              class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize font-semibold rounded-md text-blue-550"
+              active-classes="opacity-100"
             >
               {{ category.value }}
             </AppButtonSelect>
@@ -142,8 +142,8 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
                 :key="category.value"
                 v-model="activeCategory"
                 v-bind="{ value: category.value }"
-                class="py-1 px-2 rounded text-xs bg-brand-850 tracking-wider capitalize text-coolGray-500"
-                active-classes="text-white !bg-brand-700"
+                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize font-semibold rounded-md text-blue-550"
+                active-classes="opacity-100"
               >
                 {{ category.value }}
               </AppButtonSelect>
@@ -169,7 +169,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     </div>
 
     <div class="divide-y overflow-x-auto">
-      <div class="min-w-[600px]">
+      <div class="lg:min-w-[600px] max-lg:px-2">
         <CommonHeadlessMarkets
           v-bind="{
             search,
@@ -180,25 +180,9 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
             markets: marketsWithSummaryAndVolumeInUsd
           }"
         >
-          <template
-            #default="{
-              sortBy,
-              onSortBy,
-              onAscending,
-              isAscending,
-              sortedMarkets
-            }"
-          >
-            <PartialsMarketsCommonHeader
-              v-bind="{ sortBy, isAscending }"
-              @update:is-ascending="onAscending"
-              @update:sort-by="onSortBy"
-            />
-
-            <PartialsMarketsCommonRow
-              v-for="{ market, summary, volumeInUsd } in sortedMarkets"
-              :key="market.marketId"
-              v-bind="{ market, summary, volumeInUsd, marketPriceMap }"
+          <template #default="{ sortedMarkets }">
+            <PartialsTradeStatsMarketSelectorTable
+              v-bind="{ sortedMarkets, marketPriceMap }"
             />
           </template>
         </CommonHeadlessMarkets>

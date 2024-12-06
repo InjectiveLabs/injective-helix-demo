@@ -12,7 +12,6 @@ import {
 } from '@/types'
 
 const { t } = useLang()
-const { sm, lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const positionStore = usePositionStore()
 const notificationStore = useSharedNotificationStore()
@@ -127,27 +126,21 @@ function closePositionAndReduceOnlyOrders() {
   <AppMobileTable :columns="filteredColumns">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <div class="flex flex-col gap-2">
-          <p class="text-white text-sm font-semibold">
-            {{ $t(`portfolio.table.position.${PositionTableColumn.Market}`) }}
-          </p>
-
-          <PartialsCommonMarketRedirection
-            class="flex items-center space-x-2 font-sans"
-            v-bind="{ market: position.market }"
+        <PartialsCommonMarketRedirection
+          class="flex items-center space-x-2 font-sans"
+          v-bind="{ market: position.market }"
+        >
+          <CommonTokenIcon
+            v-bind="{ token: position.market.baseToken }"
+            :is-sm="true"
+          />
+          <p
+            class="text-sm text-coolGray-200"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)"
           >
-            <CommonTokenIcon
-              v-bind="{ token: position.market.baseToken }"
-              :is-sm="true"
-            />
-            <p
-              class="text-sm text-coolGray-200"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)"
-            >
-              {{ position.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
-        </div>
+            {{ position.market.ticker }}
+          </p>
+        </PartialsCommonMarketRedirection>
 
         <div class="flex space-x-2">
           <AppButton size="sm" class="py-2" @click="addTpSl">
@@ -165,8 +158,7 @@ function closePositionAndReduceOnlyOrders() {
                 : $t('common.unauthorized')
             }"
             size="sm"
-            :variant="lg ? 'danger-ghost' : 'primary'"
-            :class="[!lg ? 'py-2' : 'min-w-20']"
+            class="py-2"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
             @click="closePositionClicked"
           >
@@ -190,7 +182,7 @@ function closePositionAndReduceOnlyOrders() {
       </span>
     </template>
 
-    <template #amount-data>
+    <template #contracts-data>
       <p
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
         class="flex gap-1"
@@ -208,8 +200,8 @@ function closePositionAndReduceOnlyOrders() {
       </p>
     </template>
 
-    <template #entry-or-mark-data>
-      <div class="space-y-1 flex flex-col" :class="{ 'items-end': sm }">
+    <template #entry-data>
+      <div class="space-y-1 flex flex-col">
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
           <AppAmount
             v-bind="{
@@ -218,14 +210,17 @@ function closePositionAndReduceOnlyOrders() {
             }"
           />
         </p>
-        <p class="text-coolGray-500">
-          <AppAmount
-            v-bind="{
-              amount: position.markPrice.toFixed(),
-              decimalPlaces: position.priceDecimals
-            }"
-          />
-        </p>
+      </div>
+    </template>
+
+    <template #mark-data>
+      <div class="space-y-1 flex flex-col text-coolGray-475">
+        <AppAmount
+          v-bind="{
+            amount: position.markPrice.toFixed(),
+            decimalPlaces: position.priceDecimals
+          }"
+        />
       </div>
     </template>
 
@@ -259,9 +254,8 @@ function closePositionAndReduceOnlyOrders() {
                 amount: position.percentagePnl.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-            >
-              %
-            </AppAmount>
+            />
+            %
           </p>
         </div>
 
@@ -279,7 +273,6 @@ function closePositionAndReduceOnlyOrders() {
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
           class="flex"
         >
-          <span>$</span>
           <AppUsdAmount
             v-bind="{
               amount: position.quantityInUsd.toFixed()
@@ -290,7 +283,7 @@ function closePositionAndReduceOnlyOrders() {
     </template>
 
     <template #margin-data>
-      <div class="flex items-center space-x-2 justify-end">
+      <div class="flex items-center space-x-2">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
           <AppAmount
             v-bind="{

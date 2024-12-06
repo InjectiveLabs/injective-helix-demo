@@ -18,7 +18,7 @@ const emit = defineEmits<{
   'strategy:create': []
 }>()
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const { valueToString: baseAmountToString } = useSharedBigNumberFormatter(
   computed(() => props.baseAmount),
@@ -57,11 +57,11 @@ function onChangeInvestmentType() {
     @modal:closed="onModalClose"
   >
     <template #title>
-      <h3>{{ $t('sgt.saveOnFees') }}</h3>
+      <h3 class="text-white">{{ $t('sgt.saveOnFees') }}</h3>
     </template>
 
     <div>
-      <p class="text-sm text-coolGray-300">
+      <p class="text-sm text-coolGray-450">
         {{
           $t('sgt.balancedFeesMessage', {
             quote: market.quoteToken.symbol,
@@ -74,23 +74,31 @@ function onChangeInvestmentType() {
         <NuxtLink
           to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
           target="_blank"
-          class="text-blue-500 hover:text-blue-300 font-semibold"
+          class="text-blue-550 hover:text-blue-300 font-semibold"
         >
           {{ $t('sgt.learnMoreHere') }}
         </NuxtLink>
       </p>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-coolGray-500">{{ $t('sgt.totalAmount') }}</p>
-        <p>{{ marginToString }} USD</p>
+        <p class="text-coolGray-450">{{ $t('sgt.totalAmount') }}</p>
+        <p class="text-coolGray-450">
+          <span class="text-white">{{ marginToString }}</span> USD
+        </p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-coolGray-500">{{ $t('sgt.optimizedAmounts') }}</p>
+        <p class="text-coolGray-450">{{ $t('sgt.optimizedAmounts') }}</p>
 
-        <div class="text-coolGray-500 text-right">
-          <p>{{ quoteAmountToString }} {{ market.quoteToken.symbol }}</p>
-          <p>{{ baseAmountToString }} {{ market.baseToken.symbol }}</p>
+        <div class="text-coolGray-450 text-right">
+          <p>
+            <span class="text-white">{{ quoteAmountToString }} </span>
+            {{ market.quoteToken.symbol }}
+          </p>
+          <p>
+            <span class="text-white">{{ baseAmountToString }} </span>
+            {{ market.baseToken.symbol }}
+          </p>
         </div>
       </div>
 
