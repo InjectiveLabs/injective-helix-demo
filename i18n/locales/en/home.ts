@@ -65,7 +65,7 @@ export default {
     secure: 'Secure',
     market: 'Market',
     lastPrice: 'Last price',
-    change24h: 'Change (24H)',
+    change24h: 'Change (24h)',
     tradingVolume: 'Trading volume',
     overviewTitle: 'Better and faster.\nExperience trading like never before.',
     overview: {

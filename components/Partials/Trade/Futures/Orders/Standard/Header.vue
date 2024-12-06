@@ -137,11 +137,15 @@ watch(
       v-model="view"
       v-bind="{ value }"
       class="flex items-center text-coolGray-450 font-medium"
-      :class="[xl ? 'px-3 text-sm' : 'px-2 text-xs']"
+      :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
       active-classes="text-white"
     >
       {{ $t(display) }}
-      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
+      {{
+        Number.isInteger(Number(description)) && Number(description) > 0
+          ? `(${description})`
+          : ''
+      }}
     </AppButtonSelect>
 
     <div class="hidden sm:flex flex-1 items-center px-2 justify-end">

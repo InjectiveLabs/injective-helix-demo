@@ -17,7 +17,7 @@ export default {
         [MarketsSelectorTableColumn.Markets]: 'Markets',
         [MarketsSelectorTableColumn.LastPrice]: 'Last Price',
         [MarketsSelectorTableColumn.MarketChange24h]: 'Change (24h)',
-        [MarketsSelectorTableColumn.FundingRate]: 'Est. Funding Rate',
+        [MarketsSelectorTableColumn.FundingRate]: 'Est. Funding (1h)',
         [MarketsSelectorTableColumn.MarketVolume24h]: 'Volume (24h)',
         [MarketsSelectorTableColumn.OpenInterest]: 'Open Interest'
       }
@@ -26,7 +26,7 @@ export default {
       annualized: 'Annualized',
       usd_value: 'USD Value',
       usd_value_tooltip: 'The USD value based on the quote asset price',
-      totalVolumeInUsd: 'Total Volume USD (24h)',
+      volumeInUsd: 'Volume USD (24h)',
       est_funding_rate: 'Est. Funding Rate',
       funding_rate_tooltip:
         'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
@@ -39,7 +39,7 @@ export default {
       market_volume_24h_tooltip:
         'The total trade volume over the past 24 hours.',
       next_funding: 'Next Funding',
-      total_market_volume_24h: 'Total Volume (24H)',
+      total_market_volume_24h: 'Total Volume (24h)',
       next_funding_tooltip:
         'The time remaining for the end of the funding interval.',
       mark_price_tooltip:
@@ -248,7 +248,7 @@ export default {
     market_change_24h: 'Change (24h)',
     volume: 'Volume',
     volumeUsd: 'Volume (USD)',
-    volume_24h: 'Volume (24H)',
+    volume_24h: 'Volume (24h)',
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
     search_market: 'Search Market',
     total_volume_in_usd: ({ named }: I18nMessageFunction) =>

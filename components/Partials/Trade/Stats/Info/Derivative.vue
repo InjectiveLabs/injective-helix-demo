@@ -128,16 +128,8 @@ useIntervalFn(() => {
   <PartialsTradeStatsHeaderItem
     v-if="openInterestBigNumber.gt(0)"
     class="xl:hidden 2xl:flex"
+    :title="$t('trade.stats.open_interest')"
   >
-    <template #title>
-      <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.open_interest_tooltip')"
-        text-color-class="text-coolGray-400"
-      >
-        {{ $t('trade.stats.open_interest') }}
-      </CommonHeaderTooltip>
-    </template>
-
     <AppUsdAmount
       v-bind="{
         decimalPlaces: 0,
@@ -187,16 +179,7 @@ useIntervalFn(() => {
     <span v-else class="lg:text-right font-mono block"> &mdash; </span>
   </PartialsTradeStatsHeaderItem>
 
-  <PartialsTradeStatsHeaderItem>
-    <template #title>
-      <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.next_funding_tooltip')"
-        text-color-class="text-coolGray-400"
-      >
-        {{ $t('trade.stats.next_funding') }}
-      </CommonHeaderTooltip>
-    </template>
-
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.next_funding')">
     <p class="font-mono lg:text-right">
       {{ countdown }}
     </p>

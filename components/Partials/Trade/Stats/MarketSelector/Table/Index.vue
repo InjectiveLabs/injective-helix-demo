@@ -122,7 +122,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       :sort-desc-icon="NuxtUiIcons.TriangleDown"
       :ui="{
         th: {
-          color: 'dark:text-coolGray-500',
+          color: 'dark:text-coolGray-450',
           padding: 'px-2 first:pl-4 last:pr-4'
         },
         tr: { base: 'hover:bg-brand-800' },
