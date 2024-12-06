@@ -64,6 +64,7 @@ export default defineAppConfig({
       divide: 'dark:divide-coolGray-800',
       tbody: 'dark:divide-coolGray-800',
       th: {
+        base: 'whitespace-nowrap',
         padding: 'p-4',
         color: 'dark:text-coolGray-400',
         font: 'font-normal',

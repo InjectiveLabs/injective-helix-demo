@@ -273,6 +273,8 @@ export default {
     timeTooltipUpdated: ({ named }: I18nMessageFunction) =>
       `The time at which the ${named('type')} was updated.`,
     max: 'Max',
+    noTrades: 'No trades',
+    noOrders: 'No orders',
     orderbook: 'Orderbook',
     standard: 'Standard',
     'trading-bots': 'Trading Bots',

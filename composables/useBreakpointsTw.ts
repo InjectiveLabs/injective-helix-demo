@@ -8,7 +8,8 @@ export default function useBreakpointsTw() {
     xl: 1280,
     '2xl': 1466,
     '3xl': '1440px',
-    '4xl': '1681px'
+    '4xl': '1536px',
+    '5xl': '1681px'
   }
 
   return useBreakpoints(breakpointsTailwind)

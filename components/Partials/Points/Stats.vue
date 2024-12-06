@@ -20,7 +20,7 @@ withDefaults(
         {{ $t('points.totalPoints') }}
       </h4>
       <p
-        class="text-[56px] max-xs:text-4xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
       >
         {{ totalPoints }}
       </p>
@@ -35,7 +35,7 @@ withDefaults(
         {{ $t('points.rank') }}
       </h4>
       <p
-        class="text-[56px] max-xs:text-4xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
       >
         {{ rank }}
       </p>
@@ -50,7 +50,7 @@ withDefaults(
         {{ $t('points.league') }}
       </h4>
       <p
-        class="text-[56px] max-xs:text-4xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
       >
         {{ league }}
       </p>

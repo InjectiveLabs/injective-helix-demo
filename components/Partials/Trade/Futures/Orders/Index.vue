@@ -67,15 +67,15 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PartialsTradeFuturesOrdersStandardHeader
-      v-model:is-ticker-only="isTickerOnly"
       v-model="view"
+      v-model:is-ticker-only="isTickerOnly"
       @update:is-ticker-only="fetchDerivativeOrders"
     />
 
-    <div class="overflow-x-auto w-full">
-      <div class="lg:min-w-[1600px]">
+    <div class="overflow-x-auto w-full h-full">
+      <div class="h-full">
         <PartialsTradeFuturesOrdersStandard
           v-if="tradingMode === TradingInterface.Standard"
           v-bind="{ view, isTickerOnly }"

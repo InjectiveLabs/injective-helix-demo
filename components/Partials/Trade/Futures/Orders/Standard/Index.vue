@@ -11,7 +11,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="border-b">
+  <div class="border-b h-full divide-y">
     <PartialsTradeCommonOrdersBalances
       v-if="view === PerpOrdersStandardView.Balances"
     />

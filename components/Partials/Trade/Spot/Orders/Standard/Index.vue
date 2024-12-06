@@ -11,7 +11,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="overflow-x-auto border-b">
+  <div class="overflow-x-auto border-b divide-y h-full">
     <PartialsTradeCommonOrdersBalances
       v-if="view === SpotOrdersStandardView.Balances"
     />

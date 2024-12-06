@@ -70,7 +70,7 @@ async function downloadImage() {
           {{ $t('points.myTotalPoints') }}
         </p>
         <p
-          class="text-5xl font-medium max-xs:text-4xl mt-2 mb-6 drop-shadow-md"
+          class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6 drop-shadow-md"
         >
           {{ totalPoints }}
         </p>

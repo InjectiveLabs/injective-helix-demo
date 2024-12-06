@@ -37,9 +37,14 @@ function cancelAllTriggers() {
     v-if="derivativeStore.subaccountConditionalOrders.length > 0"
     v-bind="{ status }"
     size="xs"
-    variant="danger-ghost"
+    variant="danger-shade"
     @click="cancelAllTriggers"
   >
-    {{ $t('trade.cancelAllTriggers') }}
+    <span class="hidden 3xl:block 4xl:hidden">
+      {{ $t('trade.cancelAll') }}
+    </span>
+    <span class="3xl:hidden 4xl:block">
+      {{ $t('trade.cancelAllTriggers') }}
+    </span>
   </AppButton>
 </template>

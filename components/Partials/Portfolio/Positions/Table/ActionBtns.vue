@@ -157,9 +157,8 @@ function closePositionAndReduceOnlyOrders() {
         tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
       }"
       size="sm"
-      variant="danger"
+      variant="danger-shade"
       :class="[!lg ? 'py-2' : 'min-w-16']"
-      class="bg-opacity-20 text-red-500 border-none px-3"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >

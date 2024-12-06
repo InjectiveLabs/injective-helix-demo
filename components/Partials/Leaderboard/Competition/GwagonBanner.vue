@@ -39,7 +39,7 @@ const isEndedCampaign = computed(() => {
       class="relative px-6 xl:px-10 flex flex-col space-y-4 xl:space-y-6 items-start py-6 xl:pt-12 flex-1 tracking-[0.4px]"
     >
       <div
-        class="text-left text-4xl xl:text-5xl font-black italic lg:leading-14"
+        class="text-left text-5xl xl:text-5xl font-black italic lg:leading-14"
       >
         {{ $t('leaderboard.competition.gwagonBanner.title') }}
       </div>

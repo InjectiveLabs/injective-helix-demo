@@ -117,9 +117,9 @@ function onConnectWallet() {
       </div>
     </section>
 
-    <p class="max-w-4xl mx-auto mt-8">{{ $t('guild.rewardDescription1') }}</p>
+    <p class="max-w-5xl mx-auto mt-8">{{ $t('guild.rewardDescription1') }}</p>
 
-    <p class="max-w-4xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
+    <p class="max-w-5xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
 
     <PartialsGuildHeaderCountdown
       v-if="summary"

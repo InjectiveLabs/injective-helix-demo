@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const lg = breakpoints['3xl']
-const xl = breakpoints['4xl']
+const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
 

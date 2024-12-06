@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const lg = breakpoints['3xl']
-const xl = breakpoints['4xl']
+const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
 
@@ -150,7 +150,12 @@ watch(
         is-plain
         :class="[xl ? 'text-sm' : 'text-xs']"
       >
-        {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
+        <span class="3xl:hidden 4xl:block">
+          {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
+        </span>
+        <span class="hidden 3xl:block 4xl:hidden">
+          {{ derivativeMarket.ticker }}
+        </span>
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders

@@ -43,46 +43,44 @@ function onSharePosition(position: PositionV2) {
 </script>
 
 <template>
-  <div class="divide-y">
-    <PartialsPortfolioPositionsTable
-      v-if="filteredPositions.length"
-      :positions="filteredPositions"
-      :ui="{
-        th: {
-          base: 'whitespace-nowrap dark:bg-coolGray-975'
-        },
-        td: {
-          font: 'font-mono',
-          color: 'dark:text-white'
-        }
-      }"
-      @margin:add="addMargin"
-      @tpsl:add="addTakeProfitStopLoss"
-      @position:share="onSharePosition"
-    />
+  <PartialsPortfolioPositionsTable
+    v-if="filteredPositions.length"
+    :positions="filteredPositions"
+    :ui="{
+      th: {
+        base: 'whitespace-nowrap dark:bg-coolGray-975'
+      },
+      td: {
+        font: 'font-mono',
+        color: 'dark:text-white'
+      }
+    }"
+    @margin:add="addMargin"
+    @tpsl:add="addTakeProfitStopLoss"
+    @position:share="onSharePosition"
+  />
 
-    <CommonEmptyList
-      v-if="!filteredPositions.length"
-      :message="'No Open Positions'"
-    />
+  <CommonEmptyList
+    v-if="!filteredPositions.length"
+    :message="'No Open Positions'"
+  />
 
-    <ModalsAddMargin
-      v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
-    />
+  <ModalsAddMargin
+    v-if="selectedPosition"
+    v-bind="{
+      position: selectedPosition
+    }"
+  />
 
-    <ModalsAddTakeProfitStopLoss
-      v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
-    />
+  <ModalsAddTakeProfitStopLoss
+    v-if="selectedPosition"
+    v-bind="{
+      position: selectedPosition
+    }"
+  />
 
-    <ModalsSharePositionPnl
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-    />
-  </div>
+  <ModalsSharePositionPnl
+    v-if="selectedPosition"
+    v-bind="{ position: selectedPosition }"
+  />
 </template>

@@ -31,6 +31,9 @@ const button = cva(
         'danger-outline':
           'bg-transparent text-coolGray-200 border-red-500 hover:text-white hover:bg-red-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',
 
+        'danger-shade':
+          'bg-red-500 border-red-500 hover:text-red-900 hover:bg-red-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 ring-red-700 bg-opacity-20 text-red-500 border-none px-3 focus-within:none',
+
         'danger-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-red-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',
 

@@ -88,7 +88,7 @@ watchDebounced(
 <template>
   <SharedModalWrapper
     v-if="isModalOpen"
-    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-4xl max-md:w-[90%] md:w-[700px] font-pingFang"
+    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-5xl max-md:w-[90%] md:w-[700px] font-pingFang"
     wrapper-class="backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-90 max-sm:z-40"
     @modal:closed="onCloseModal"
   >
@@ -155,7 +155,7 @@ watchDebounced(
               'text-red-500': pnl.lt(0)
             }"
           >
-            <span class="text-4xl md:text-6xl leading-[3rem]">
+            <span class="text-5xl md:text-6xl leading-[3rem]">
               {{
                 (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2)
               }}%

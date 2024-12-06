@@ -42,7 +42,7 @@ onSubaccountChange(fetchSubaccountOrders)
     <PartialsPortfolioOrdersSpotOpenOrdersTabs />
 
     <div class="overflow-x-auto">
-      <div class="lg:min-w-[900px] divide-y border-b">
+      <div class="divide-y border-b">
         <CommonSkeletonRow
           v-if="status.isLoading()"
           :rows="10"
