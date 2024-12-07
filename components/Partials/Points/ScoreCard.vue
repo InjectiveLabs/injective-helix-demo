@@ -112,7 +112,7 @@ async function downloadImage() {
         class="bottom-4 right-4 flex justify-center items-center gap-2 py-2.5 px-8 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
         @click="downloadImage"
       >
-        <p class="text-xs font-normal leading-relaxed">
+        <p class="text-xs leading-relaxed font-medium">
           {{ $t('points.share') }}
         </p>
         <UIcon :name="NuxtUiIcons.Download2" class="size-4" />

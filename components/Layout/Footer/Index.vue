@@ -4,7 +4,7 @@ import { MainPage } from '@/types'
 
 const { t } = useLang()
 
-const aboutUsList = [
+const resourcesList = [
   {
     text: t('footer.institutional'),
     link: MainPage.Institutional
@@ -14,27 +14,23 @@ const aboutUsList = [
     link: MainPage.FeeDiscounts
   },
   {
-    text: t('footer.lpRewards'),
-    link: MainPage.LpRewards
+    text: t('footer.privacyPolicy'),
+    link: 'https://injectivelabs.org/privacy'
+  }
+]
+
+const supportList = [
+  {
+    text: t('footer.faq'),
+    link: 'https://helixapp.zendesk.com/'
   },
   {
     text: t('footer.apiDocumentation'),
     link: 'https://api.injective.exchange/'
   },
   {
-    text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy'
-  },
-  {
     text: t('footer.termsAndConditions'),
     link: MainPage.Terms
-  }
-]
-
-const learnList = [
-  {
-    text: t('footer.faq'),
-    link: 'https://helixapp.zendesk.com/'
   }
 ]
 </script>
@@ -53,7 +49,7 @@ const learnList = [
         </NuxtLink>
 
         <span class="text-coolGray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Injective Foundation
+          &copy; {{ new Date().getFullYear() }} Helix Foundation
         </span>
       </div>
 
@@ -61,8 +57,8 @@ const learnList = [
         <h3 class="font-bold text-lg mb-4">{{ $t('footer.resources') }}</h3>
 
         <div
-          v-for="(item, index) in aboutUsList"
-          :key="`about-us-list-${index}`"
+          v-for="(item, index) in resourcesList"
+          :key="`resource-list-${index}`"
           class="mt-4 text-sm"
         >
           <a
@@ -87,8 +83,8 @@ const learnList = [
         <h3 class="font-bold text-lg mb-4">{{ $t('footer.support') }}</h3>
 
         <div
-          v-for="(item, index) in learnList"
-          :key="`about-us-list-${index}`"
+          v-for="(item, index) in supportList"
+          :key="`support-list-${index}`"
           class="mt-4 text-sm"
         >
           <a

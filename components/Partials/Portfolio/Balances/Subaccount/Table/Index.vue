@@ -14,6 +14,7 @@ const {
   verifiedHoldingsWithToken
 } = useBalance()
 const { lg } = useTwBreakpoints()
+const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +30,8 @@ const props = withDefaults(
 const { rows } = useBalanceTransformer(
   showUnverifiedAssets.value ? userBalancesWithToken : verifiedHoldingsWithToken
 )
+
+const fourXl = breakpoints['4xl']
 
 const showStakingRow = ref(false)
 
@@ -79,6 +82,14 @@ const columns = computed(() => {
         class: ''
       }
     )
+  }
+
+  if (fourXl.value) {
+    columnArray.push({
+      key: BalanceTableColumn.Action,
+      label: '',
+      class: ''
+    })
   }
 
   return columnArray
@@ -175,10 +186,11 @@ function toggleStakingRow() {
             />
           </div>
 
-          <AppTablePopover v-if="!row.hasNoActionButtons">
+          <AppTablePopover v-if="!row.hasNoActionButtons && !fourXl">
             <div class="rounded-lg p-2 bg-brand-800 min-w-28">
               <PartialsPortfolioBalancesSubaccountTableActionBtns
                 v-if="!row.isStakingRow"
+                is-table-popover
                 v-bind="{
                   token: row.token,
                   isVerified: row.isVerified,
@@ -249,6 +261,19 @@ function toggleStakingRow() {
             }"
             class="font-mono"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+          />
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="flex justify-center">
+          <PartialsPortfolioBalancesSubaccountTableActionBtns
+            v-if="!row.isStakingRow"
+            v-bind="{
+              token: row.token,
+              isVerified: row.isVerified,
+              isBridgable: row.isBridgable
+            }"
           />
         </div>
       </template>

@@ -7,6 +7,7 @@ import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
+const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{
@@ -25,78 +26,87 @@ const props = withDefaults(
   }
 )
 
-const { rows } = usePositionTransformer(computed(() => props.positions))
-
 const emit = defineEmits<{
   'tpsl:add': [position: PositionV2]
   'margin:add': [position: PositionV2]
   'position:share': [state: PositionV2]
 }>()
 
-const columns = [
-  {
-    key: PositionTableColumn.Market,
-    label: t(`portfolio.table.position.${PositionTableColumn.Market}`),
-    class: 'w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Side,
-    label: t(`portfolio.table.position.${PositionTableColumn.Side}`),
-    class: 'w-[4%]'
-  },
-  {
-    key: PositionTableColumn.Contracts,
-    label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
-    class: 'text-right w-[6%]'
-  },
-  {
-    key: PositionTableColumn.Entry,
-    label: t(`portfolio.table.position.${PositionTableColumn.Entry}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Mark,
-    label: t(`portfolio.table.position.${PositionTableColumn.Mark}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.UnrealizedPnl,
-    label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.TotalUsd,
-    label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Margin,
-    label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.LiquidationPrice,
-    label: t(
-      `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
-    ),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Leverage,
-    label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
-    class: 'text-right w-[7%]'
-  },
-  {
-    key: PositionTableColumn.TpOrSl,
-    label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
-    class: 'text-center w-[8%]'
-  },
-  {
-    key: PositionTableColumn.ClosePosition,
-    label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-    class: 'text-center w-[8%]'
+const { rows } = usePositionTransformer(computed(() => props.positions))
+
+const sixXl = breakpoints['6xl']
+
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PositionTableColumn.Market,
+      label: t(`portfolio.table.position.${PositionTableColumn.Market}`),
+      class: 'w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Side,
+      label: t(`portfolio.table.position.${PositionTableColumn.Side}`),
+      class: 'w-[4%]'
+    },
+    {
+      key: PositionTableColumn.Contracts,
+      label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
+      class: 'text-right w-[6%]'
+    },
+    {
+      key: PositionTableColumn.Entry,
+      label: t(`portfolio.table.position.${PositionTableColumn.Entry}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Mark,
+      label: t(`portfolio.table.position.${PositionTableColumn.Mark}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.UnrealizedPnl,
+      label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.TotalUsd,
+      label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Margin,
+      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.LiquidationPrice,
+      label: t(
+        `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
+      ),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Leverage,
+      label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
+      class: 'text-right w-[7%]'
+    },
+    {
+      key: PositionTableColumn.TpOrSl,
+      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
+      class: 'text-center w-[8%]'
+    }
+  ]
+
+  if (sixXl.value) {
+    baseColumns.push({
+      key: PositionTableColumn.ClosePosition,
+      label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
+      class: 'text-center w-[8%]'
+    })
   }
-]
+
+  return baseColumns
+})
 
 function addTpSl(position: PositionV2) {
   emit('tpsl:add', position)
@@ -115,17 +125,35 @@ function sharePosition(position: PositionV2) {
   <template v-if="lg">
     <UTable v-bind="{ rows, columns, ui }">
       <template #market-data="{ row }">
-        <PartialsCommonMarketRedirection
-          v-bind="{ market: row.market }"
-          class="flex items-center space-x-2 p-2 font-sans"
-        >
-          <CommonTokenIcon
-            v-bind="{ isSm: true, token: row.market.baseToken }"
-          />
-          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
-            {{ row.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
+        <div class="flex items-center gap-1">
+          <PartialsCommonMarketRedirection
+            v-bind="{ market: row.market }"
+            class="flex items-center space-x-2 p-2 font-sans"
+          >
+            <CommonTokenIcon
+              v-bind="{ isSm: true, token: row.market.baseToken }"
+            />
+            <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
+              {{ row.market.ticker }}
+            </p>
+          </PartialsCommonMarketRedirection>
+
+          <AppTablePopover v-if="!sixXl">
+            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
+              <PartialsPortfolioPositionsTableActionBtns
+                is-table-popover
+                :position="row.position"
+                :market="row.market"
+                :pnl="row.pnl"
+                :has-reduce-only-orders="row.hasReduceOnlyOrders"
+                :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
+                :is-market-order-authorized="row.isMarketOrderAuthorized"
+                :is-limit-order-authorized="row.isLimitOrderAuthorized"
+                :quantity="row.quantity"
+              />
+            </div>
+          </AppTablePopover>
+        </div>
       </template>
 
       <template #side-data="{ row }">

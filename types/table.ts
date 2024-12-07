@@ -29,7 +29,8 @@ export enum BalanceTableColumn {
   Total = 'total',
   TotalUsd = 'total-usd',
   Staked = 'staked',
-  StakedUsd = 'staked-usd'
+  StakedUsd = 'staked-usd',
+  Action = 'action'
 }
 
 export enum MarketsTableColumn {
@@ -73,7 +74,8 @@ export enum PortfolioSpotOpenOrdersTableColumn {
   Unfilled = 'unfilled',
   Filled = 'filled',
   TotalAmount = 'total-amount',
-  Chase = 'chase'
+  Chase = 'chase',
+  Action = 'action'
 }
 
 export enum PortfolioSpotOrderHistoryTableColumn {
@@ -108,7 +110,8 @@ export enum PortfolioFuturesOpenOrdersTableColumn {
   Filled = 'filled',
   Leverage = 'leverage',
   Total = 'total',
-  Chase = 'chase'
+  Chase = 'chase',
+  Action = 'action'
 }
 
 export enum PortfolioFuturesTriggersTableColumn {
@@ -119,7 +122,8 @@ export enum PortfolioFuturesTriggersTableColumn {
   Amount = 'amount',
   Leverage = 'leverage',
   Total = 'total',
-  TriggerCondition = 'trigger-condition'
+  TriggerCondition = 'trigger-condition',
+  Action = 'action'
 }
 
 export enum PortfolioFuturesOrderHistoryTableColumn {

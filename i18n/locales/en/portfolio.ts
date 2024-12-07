@@ -28,7 +28,8 @@ export default {
         [PortfolioSpotOpenOrdersTableColumn.Unfilled]: 'Unfilled',
         [PortfolioSpotOpenOrdersTableColumn.Filled]: 'Filled',
         [PortfolioSpotOpenOrdersTableColumn.TotalAmount]: 'Total Amount',
-        [PortfolioSpotOpenOrdersTableColumn.Chase]: 'Chase'
+        [PortfolioSpotOpenOrdersTableColumn.Chase]: 'Chase',
+        [PortfolioSpotOpenOrdersTableColumn.Action]: 'Action'
       },
       spotOrderHistory: {
         [PortfolioSpotOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
@@ -61,7 +62,8 @@ export default {
         [PortfolioFuturesOpenOrdersTableColumn.Filled]: 'Filled',
         [PortfolioFuturesOpenOrdersTableColumn.Leverage]: 'Leverage',
         [PortfolioFuturesOpenOrdersTableColumn.Total]: 'Total',
-        [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase'
+        [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase',
+        [PortfolioFuturesOpenOrdersTableColumn.Action]: 'Action'
       },
       futuresTriggers: {
         [PortfolioFuturesTriggersTableColumn.Market]: 'Market',
@@ -72,7 +74,8 @@ export default {
         [PortfolioFuturesTriggersTableColumn.Leverage]: 'Leverage',
         [PortfolioFuturesTriggersTableColumn.Total]: 'Total',
         [PortfolioFuturesTriggersTableColumn.TriggerCondition]:
-          'Trigger Condition'
+          'Trigger Condition',
+        [PortfolioFuturesTriggersTableColumn.Action]: 'Action'
       },
       futuresOrderHistory: {
         [PortfolioFuturesOrderHistoryTableColumn.LastUpdated]: 'Last Updated',

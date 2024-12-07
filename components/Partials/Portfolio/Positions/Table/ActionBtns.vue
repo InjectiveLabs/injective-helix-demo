@@ -20,6 +20,7 @@ const props = withDefaults(
   defineProps<{
     pnl: BigNumberInBase
     position: PositionV2
+    isTablePopover?: boolean
     quantity: BigNumberInBase
     market: UiDerivativeMarket
     hasReduceOnlyOrders: boolean
@@ -27,10 +28,12 @@ const props = withDefaults(
     isMarketOrderAuthorized: boolean
     reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   }>(),
-  {}
+  {
+    isTablePopover: false
+  }
 )
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+// const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const positionStore = usePositionStore()
 // const derivativeStore = useDerivativeStore()
@@ -157,12 +160,12 @@ function closePositionAndReduceOnlyOrders() {
         tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
       }"
       size="sm"
-      variant="danger-shade"
-      :class="[!lg ? 'py-2' : 'min-w-16']"
+      :variant="isTablePopover ? 'danger-ghost' : 'danger-shade'"
+      :class="[isTablePopover ? 'p-2 w-full focus-within:ring-0' : 'min-w-16']"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >
-      {{ $t('common.close') }}
+      {{ isTablePopover ? $t('trade.closePosition') : $t('common.close') }}
     </AppButton>
 
     <!-- todo: resurrect when limit orders reimplemented -->
