@@ -2,6 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PointsPeriod } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const { t } = useLang()
 const pointsStore = usePointsStore()
@@ -61,7 +62,10 @@ const paginationDetails = computed(() => {
 
 const selectedPeriod = computed({
   get: (): PointsPeriod => props.modelValue,
-  set: (value: PointsPeriod) => emit('update:modelValue', value)
+  set: (value: PointsPeriod) => {
+    page.value = 1
+    emit('update:modelValue', value)
+  }
 })
 
 const isPrevDisabled = computed(() => new BigNumberInBase(page.value).eq(1))
@@ -138,11 +142,25 @@ function onNext() {
       </template>
 
       <template #volume-data="{ row }">
-        <p class="text-center font-mono">${{ row.volume }}</p>
+        <span class="flex justify-center font-mono">
+          <AppAmount
+            v-bind="{
+              amount: row.volume,
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
       </template>
 
       <template #points-data="{ row }">
-        <p class="text-end">{{ row.points }}</p>
+        <span class="flex justify-end">
+          <AppAmount
+            v-bind="{
+              amount: row.points,
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
       </template>
     </UTable>
 

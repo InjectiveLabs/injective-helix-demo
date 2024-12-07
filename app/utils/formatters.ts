@@ -208,14 +208,3 @@ export const calculateLeverage = (initialMarginRatio?: string) => {
     stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
   )
 }
-
-export const commaFormatter = (
-  value: number | string,
-  maxDecimal: number = 2
-) => {
-  const numericValue = typeof value === 'string' ? parseFloat(value) : value
-
-  return new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: maxDecimal
-  }).format(numericValue)
-}

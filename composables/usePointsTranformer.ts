@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import { commaFormatter } from '@/app/utils/formatters'
 import { HistoricalPoints, TransformedPointsHistory } from '@/types'
 
 export function usePointsTransformer(
@@ -7,8 +6,8 @@ export function usePointsTransformer(
 ) {
   const rows = computed<TransformedPointsHistory[]>(() =>
     pointsHistory.value.map((pointHistory) => ({
-      points: commaFormatter(pointHistory.points),
-      volume: commaFormatter(pointHistory.volume),
+      points: pointHistory.points,
+      volume: pointHistory.volume,
       period: `${format(
         new Date(pointHistory.periodStart),
         'MMM dd, yyyy'
