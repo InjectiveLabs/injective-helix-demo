@@ -1,5 +1,6 @@
 export default function useBreakpointsTw() {
   const breakpointsTailwind = {
+    xs: 480,
     sm: 640,
     md: 768,
     '2md': '800px',

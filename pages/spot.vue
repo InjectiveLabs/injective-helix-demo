@@ -82,8 +82,8 @@ provide(MarketKey, market)
 useIntervalFn(
   () =>
     Promise.all([
-      derivativeStore.fetchMarkets(), // refresh funding rate
-      derivativeStore.fetchOpenInterest()
+      derivativeStore.fetchOpenInterest(),
+      derivativeStore.fetchMarketsSummary()
     ]),
   60 * 1000
 )

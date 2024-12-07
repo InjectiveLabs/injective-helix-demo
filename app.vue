@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import { UnknownTokenStatusKey } from '@/types'
 
 useHead({
   bodyAttrs: {
@@ -55,8 +54,6 @@ onWalletInitialConnected(() => {
     address: sharedWalletStore.injectiveAddress
   })
 })
-
-provide(UnknownTokenStatusKey, unknownTokenStatus)
 </script>
 
 <template>

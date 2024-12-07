@@ -1,38 +1,21 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  marketIsActive,
-  marketIsQuotePair,
-  marketIsPartOfType,
-  marketIsPartOfSearch,
-  marketIsPartOfCategory
-} from '@/app/utils/market'
+import { SharedMarketType, SharedMarketStatus } from '@shared/types'
+import { marketCategoriesMap } from '@/app/json'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import {
-  upcomingMarkets,
-  deprecatedMarkets,
-  marketTypeOptionsToHideCategory,
-  olpMarketIdsToIncludeInLowVolume
-} from '@/app/data/market'
-import {
-  MarketQuoteType,
   MarketHeaderType,
-  MarketTypeOption,
+  UiMarketWithToken,
   MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
-const accountStore = useAccountStore()
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
     search?: string
-    activeType: MarketTypeOption
-    activeQuote: MarketQuoteType
     activeCategory: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
     markets: UiMarketAndSummaryWithVolumeInUsd[]
@@ -40,8 +23,6 @@ const props = withDefaults(
   {
     search: '',
     markets: () => [],
-    activeType: MarketTypeOption.All,
-    activeQuote: MarketQuoteType.All,
     activeCategory: MarketCategoryType.All
   }
 )
@@ -49,81 +30,38 @@ const props = withDefaults(
 const isAscending = ref(false)
 const sortBy = ref(MarketHeaderType.Volume)
 
-const userMarkets = computed(() => {
-  const openPositionMarketIds = positionStore.positions.map(
-    ({ marketId }) => marketId
-  )
-  const openSpotOrdersMarketIds = spotStore.subaccountOrders.map(
-    ({ marketId }) => marketId
-  )
-  const openDerivativeOrdersMarketIds = derivativeStore.subaccountOrders.map(
-    ({ marketId }) => marketId
-  )
-
-  const spotBaseTokenDenomToMarketIdMap = spotStore.markets.reduce(
-    (denomToMarketIdMap, market) => {
-      denomToMarketIdMap[market.baseToken.denom] = market.marketId
-
-      return denomToMarketIdMap
-    },
-    {} as Record<string, string>
-  )
-
-  const userBalanceSpotMarketIds = accountStore.bankBalances.reduce(
-    (marketIds, { amount, denom }) =>
-      new BigNumberInBase(amount).gt(0) &&
-      spotBaseTokenDenomToMarketIdMap[denom]
-        ? [...marketIds, spotBaseTokenDenomToMarketIdMap[denom]]
-        : marketIds,
-    [] as string[]
-  )
-
-  return [
-    ...new Set([
-      ...openPositionMarketIds,
-      ...openSpotOrdersMarketIds,
-      ...userBalanceSpotMarketIds,
-      ...openDerivativeOrdersMarketIds
-    ])
-  ]
-})
-
 const filteredMarkets = computed(() =>
   props.markets
     .filter(({ market, volumeInUsd }) => {
-      const shouldIgnoreCategory = marketTypeOptionsToHideCategory.includes(
-        props.activeType
-      )
-      const isPartOfCategory =
-        shouldIgnoreCategory ||
-        marketIsPartOfCategory(props.activeCategory, market, !!props.search)
-      const isPartOfSearch = marketIsPartOfSearch(props.search, market)
-      const isPartOfType = marketIsPartOfType({
-        market,
-        userMarkets:
-          props.activeType === MarketTypeOption.Favorites
-            ? appStore.favoriteMarkets
-            : userMarkets.value,
-        activeType: props.activeType
-      })
-      const isQuotePair = marketIsQuotePair(props.activeQuote, market)
-      const isOLPMarket = olpMarketIdsToIncludeInLowVolume.includes(
-        market.marketId
-      )
+      const formattedSearch = props.search.trim().toLowerCase()
+
+      const isPartOfCategory = verifyMarketIsPartOfType(market)
+      const isPartOfSearch =
+        !formattedSearch ||
+        [
+          market.ticker,
+          market.baseToken.symbol,
+          market.quoteToken.symbol,
+          market.baseToken.name
+        ]
+          .map((piece) => piece.toLowerCase())
+          .some((value) =>
+            (value || '').toLowerCase().startsWith(formattedSearch)
+          )
+
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||
-        props.activeType === MarketTypeOption.Permissionless
+        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
       return (
-        isQuotePair &&
-        isPartOfType &&
         isPartOfSearch &&
         isPartOfCategory &&
-        (isLowVolumeMarket || isOLPMarket || props.search)
+        (isLowVolumeMarket || props.search)
       )
     })
-    .filter((market) => marketIsActive(market.market))
+    .filter(
+      (market) => market.market.marketStatus === SharedMarketStatus.Active
+    )
 )
 
 const sortedMarkets = computed(() => {
@@ -172,6 +110,60 @@ const sortedMarkets = computed(() => {
 
   return isAscending.value ? markets.reverse() : markets
 })
+
+function verifyMarketIsPartOfType(market: UiMarketWithToken) {
+  if (props.activeCategory === MarketCategoryType.All) {
+    return true
+  }
+
+  if (props.activeCategory === MarketCategoryType.Favorites) {
+    return appStore.favoriteMarkets.includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Perps) {
+    return [
+      SharedMarketType.Futures,
+      SharedMarketType.Perpetual,
+      SharedMarketType.Derivative
+    ].includes(market.type)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Spot) {
+    return market.type === SharedMarketType.Spot
+  }
+
+  if (props.activeCategory === MarketCategoryType.Trending) {
+    return (marketCategoriesMap.trending || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Injective) {
+    return (marketCategoriesMap.injective || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Layer1) {
+    return (marketCategoriesMap.layer1 || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Layer2) {
+    return (marketCategoriesMap.layer2 || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Experimental) {
+    return !market.isVerified
+  }
+
+  if (props.activeCategory === MarketCategoryType.DeFi) {
+    return (marketCategoriesMap.defi || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.AI) {
+    return (marketCategoriesMap.ai || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Meme) {
+    return (marketCategoriesMap.meme || []).includes(market.marketId)
+  }
+}
 
 function onAscending(value: boolean) {
   isAscending.value = value

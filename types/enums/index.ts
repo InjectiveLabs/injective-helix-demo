@@ -99,30 +99,6 @@ export enum TradeSelectorType {
   TransferType = 'transfer-type'
 }
 
-export enum MarketFilterType {
-  All = 'all',
-  Volume = 'volume',
-  New = 'new',
-  Upcoming = 'upcoming'
-}
-
-export enum MarketCategoryType {
-  All = 'all',
-  Cosmos = 'cosmos',
-  Ethereum = 'ethereum',
-  Injective = 'injective',
-  Solana = 'solana',
-  Experimental = 'experimental',
-  RWA = 'RWA'
-}
-
-export enum MarketQuoteType {
-  All = 'all',
-  USDT = 'usdt',
-  USDC = 'usdc',
-  INJ = 'inj'
-}
-
 export enum StreamType {
   SpotTrades = 'spot-trades',
   OraclePrices = 'oracle-prices',
@@ -398,18 +374,6 @@ export enum MarketHeaderType {
   Price = 'price'
 }
 
-export enum MarketTypeOption {
-  All = 'all markets',
-  Favorites = 'favorites',
-  Spot = 'Spot',
-  Derivative = 'Derivative',
-  NewListings = 'New Listings',
-  Permissionless = 'permissionless',
-  MyMarkets = 'My Markets'
-
-  // Themes = 'themes'
-}
-
 export enum TradingInterface {
   Standard = 'standard',
   TradingBots = 'trading-bots'
@@ -555,4 +519,40 @@ export enum LiquidityProvisionType {
 export enum MitoRegistrationMode {
   Restricted = 'Restricted',
   Permissionless = 'Permissionless'
+}
+
+export enum MarketFilterType {
+  All = 'all',
+  Volume = 'volume',
+  New = 'new',
+  Upcoming = 'upcoming'
+}
+
+export enum MarketCategoryType {
+  All = 'all',
+  Favorites = 'favorites',
+  Perps = 'perps',
+  Spot = 'spot',
+  Trending = 'trending',
+  Injective = 'injective',
+  Layer1 = 'layer-1',
+  Layer2 = 'layer-2',
+  Experimental = 'experimental',
+  DeFi = 'deFi',
+  AI = 'aI',
+  Meme = 'meme'
+  // All = 'all',
+  // Cosmos = 'cosmos',
+  // Ethereum = 'ethereum',
+  // Injective = 'injective',
+  // Solana = 'solana',
+  // Experimental = 'experimental',
+  // RWA = 'RWA',
+}
+
+export enum MarketQuoteType {
+  All = 'all',
+  USDT = 'usdt',
+  USDC = 'usdc',
+  INJ = 'inj'
 }

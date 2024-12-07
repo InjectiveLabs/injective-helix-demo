@@ -96,11 +96,7 @@ useIntervalFn(() => {
     return
   }
 
-  try {
-    derivativeStore.fetchMarket(props.market.marketId)
-  } catch (e) {
-    //
-  }
+  derivativeStore.fetchMarketsSummary()
 }, 1000)
 </script>
 

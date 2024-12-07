@@ -8,7 +8,6 @@ definePageMeta({
 })
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -41,8 +40,6 @@ onWalletConnected(async () => {
   status.setLoading()
 
   Promise.all([
-    // market selectors - my markets
-    spotStore.fetchSubaccountOrders(),
     // futures data
     derivativeStore.fetchOpenInterest(),
     derivativeStore.fetchTrades({
@@ -66,10 +63,6 @@ onWalletConnected(async () => {
   ])
 })
 
-onSubaccountChange(() =>
-  Promise.all([spotStore.fetchSubaccountOrders()]).catch($onError)
-)
-
 onUnmounted(() => {
   derivativeStore.reset()
   derivativeStore.cancelTradesStream()
@@ -82,8 +75,8 @@ provide(IsSpotKey, false)
 useIntervalFn(
   () =>
     Promise.all([
-      derivativeStore.fetchMarkets(), // refresh funding rate
-      derivativeStore.fetchOpenInterest()
+      derivativeStore.fetchOpenInterest(),
+      derivativeStore.fetchMarketsSummary()
     ]),
   60 * 1000
 )

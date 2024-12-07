@@ -19,9 +19,6 @@ export const MarketKey = Symbol('Market') as InjectionKey<
 export const PortfolioStatusKey = Symbol(
   'PortfolioStatus'
 ) as InjectionKey<Status>
-export const UnknownTokenStatusKey = Symbol(
-  'unknownTokensStatus'
-) as InjectionKey<Status>
 
 export const OrderbookStatusKey = Symbol(
   'orderbookStatus'
