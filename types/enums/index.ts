@@ -21,6 +21,7 @@ export enum Modal {
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
+  MitoRedirect = 'mito-redirect',
   PostOnlyMode = 'post-only-mode',
   GasFeeRebate = 'gas-fee-rebate',
   GeoRestricted = 'geo-restricted',

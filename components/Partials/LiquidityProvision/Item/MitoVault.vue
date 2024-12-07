@@ -9,6 +9,10 @@ const props = withDefaults(
   {}
 )
 
+const emit = defineEmits<{
+  'update:selectedVaultUrl': [value: string]
+}>()
+
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
@@ -18,22 +22,28 @@ const market = computed(() =>
   )
 )
 
-const mitoUrl = `${getMitoUrl()}/vault/${props.vault.contractAddress}/`
+const mitoUrl = computed(
+  () => `${getMitoUrl()}/vault/${props.vault.contractAddress}/`
+)
 
 const { valueToString: tvlToString } = useSharedBigNumberFormatter(
   computed(() => props.vault.tvl),
   { decimalPlaces: 0 }
 )
+
+function onSelectVault() {
+  emit('update:selectedVaultUrl', mitoUrl.value)
+}
 </script>
 
 <template>
   <PartialsLiquidityProvisionItem
     v-if="market"
     v-bind="{
-      url: mitoUrl,
       title: market.ticker,
       description: $t(`liquidityProvision.item.type.${props.vault.type}`)
     }"
+    @click="onSelectVault"
   >
     <template #default>
       <CommonTokenIcon is-lg v-bind="{ token: market?.baseToken }" />

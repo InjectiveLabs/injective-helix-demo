@@ -8,15 +8,18 @@ import {
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MITO_VAULTS } from '@/app/data/liquidityProvision'
 import {
+  Modal,
   MitoRegistrationMode,
   LiquidityProvisionType,
   LiquidityProvisionMitoCard,
   LiquidityProvisionTypeOption
 } from '@/types'
 
+const modalStore = useSharedModalStore()
 const liquidityProvisionStore = useLiquidityProvisionStore()
 const { $onError } = useNuxtApp()
 
+const selectedVaultUrl = ref('')
 const type = ref(LiquidityProvisionTypeOption.All)
 const status = reactive(new Status(StatusType.Loading))
 
@@ -81,6 +84,11 @@ const vaults = computed(() => {
       return new BigNumberInBase(vault2.tvl).minus(vault1.tvl).toNumber()
     })
 })
+
+function onSelectVault(vaultUrl: string) {
+  selectedVaultUrl.value = vaultUrl
+  modalStore.openModal(Modal.MitoRedirect)
+}
 </script>
 
 <template>
@@ -102,8 +110,10 @@ const vaults = computed(() => {
           v-bind="{
             vault
           }"
+          @update:selected-vault-url="onSelectVault"
         />
       </div>
     </AppHocLoading>
+    <ModalsMitoRedirect v-bind="{ url: selectedVaultUrl }" />
   </div>
 </template>

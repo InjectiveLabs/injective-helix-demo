@@ -17,6 +17,11 @@ export default {
       description: {
         [LiquidityProvisionType.InjectiveStaking]: 'Native staking on Injective'
       }
+    },
+
+    modal: {
+      redirect: 'Your are being redirected outside of Helix to Mito',
+      continueToMito: 'Continue to Mito'
     }
   }
 }
