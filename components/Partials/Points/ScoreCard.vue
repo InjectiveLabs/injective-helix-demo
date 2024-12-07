@@ -32,19 +32,23 @@ const league = computed(
 const leagueBg = computed(() => leagueBgList[league.value])
 const beltImage = computed(() => beltImageList[league.value])
 
-const { valueToString: totalPointsToString } = useSharedBigNumberFormatter(
+const {
+  valueToString: totalPointsToString,
+  valueToBigNumber: totalPointsToBigNumber
+} = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
     shouldTruncate: true
   }
 )
 
-const { valueToString: rankToString } = useSharedBigNumberFormatter(
-  computed(() => pointsStore.accountPoints?.rank || '0'),
-  {
-    shouldTruncate: true
-  }
-)
+const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() => pointsStore.accountPoints?.rank || '0'),
+    {
+      shouldTruncate: true
+    }
+  )
 
 async function downloadImage() {
   await nextTick()
@@ -75,7 +79,8 @@ async function downloadImage() {
         {{ $t('points.myTotalPoints') }}
       </p>
       <p class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6">
-        {{ totalPointsToString }}
+        <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
+        <span v-else>{{ totalPointsToString }}</span>
       </p>
 
       <div class="flex justify-between w-full">
@@ -101,7 +106,8 @@ async function downloadImage() {
           </p>
 
           <p class="font-bold">
-            {{ rankToString }}
+            <span v-if="rankToBigNumber.isZero()">&mdash;</span>
+            <span v-else>{{ rankToString }}</span>
           </p>
         </div>
       </div>
@@ -112,10 +118,10 @@ async function downloadImage() {
         class="bottom-4 right-4 flex justify-center items-center gap-2 py-2.5 px-8 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
         @click="downloadImage"
       >
-        <p class="text-xs leading-relaxed font-medium">
+        <p class="text-sm leading-relaxed font-medium">
           {{ $t('points.share') }}
         </p>
-        <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
+        <UIcon :name="NuxtUiIcons.Download2" class="size-5" />
       </AppButton>
     </div>
   </div>

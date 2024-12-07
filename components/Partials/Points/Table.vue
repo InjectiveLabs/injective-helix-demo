@@ -38,11 +38,16 @@ const columns = [
 ]
 
 const limit = 7
-
 const page = ref(1)
 
+const filteredPointsHistory = computed(() => {
+  return pointsStore.pointsHistory.filter(({ points }) =>
+    new BigNumberInBase(points).gt(0)
+  )
+})
+
 const paginatedPointsHistory = computed(() => {
-  return pointsStore.pointsHistory.slice(
+  return filteredPointsHistory.value.slice(
     (page.value - 1) * limit,
     page.value * limit
   )
@@ -51,7 +56,7 @@ const paginatedPointsHistory = computed(() => {
 const paginationDetails = computed(() => {
   const to = limit * page.value
   const from = limit * (page.value - 1) + 1
-  const total = pointsStore.pointsHistory.length
+  const total = filteredPointsHistory.value.length
 
   return {
     from,
@@ -68,12 +73,13 @@ const selectedPeriod = computed({
   }
 })
 
+const isEmpty = computed(() => filteredPointsHistory.value.length === 0)
 const isPrevDisabled = computed(() => new BigNumberInBase(page.value).eq(1))
 
 const isNextDisabled = computed(() =>
   new BigNumberInBase(page.value)
     .times(limit)
-    .gte(pointsStore.pointsHistory.length)
+    .gte(filteredPointsHistory.value.length)
 )
 
 function onPrevious() {
@@ -88,6 +94,7 @@ function onNext() {
 <template>
   <div
     class="w-full flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
+    :class="{ 'h-full': isEmpty }"
   >
     <UTable
       :rows="rows"
@@ -164,7 +171,10 @@ function onNext() {
       </template>
     </UTable>
 
-    <div class="flex items-center justify-end bg-[#262A30] py-4 px-0.5">
+    <div
+      v-if="!isEmpty"
+      class="flex items-center justify-end bg-[#262A30] py-4 px-0.5"
+    >
       <p class="text-sm text-white font-medium mr-2">
         {{
           t('points.paginationDetails', {

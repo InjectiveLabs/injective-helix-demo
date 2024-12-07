@@ -14,19 +14,23 @@ const lastUpdated = computed(() => {
   )
 })
 
-const { valueToString: totalPointsToString } = useSharedBigNumberFormatter(
+const {
+  valueToString: totalPointsToString,
+  valueToBigNumber: totalPointsToBigNumber
+} = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
     shouldTruncate: true
   }
 )
 
-const { valueToString: rankToString } = useSharedBigNumberFormatter(
-  computed(() => pointsStore.accountPoints?.rank || '0'),
-  {
-    shouldTruncate: true
-  }
-)
+const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() => pointsStore.accountPoints?.rank || '0'),
+    {
+      shouldTruncate: true
+    }
+  )
 </script>
 
 <template>
@@ -41,7 +45,8 @@ const { valueToString: rankToString } = useSharedBigNumberFormatter(
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          {{ totalPointsToString }}
+          <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
+          <span v-else>{{ totalPointsToString }}</span>
         </p>
       </div>
 
@@ -56,7 +61,10 @@ const { valueToString: rankToString } = useSharedBigNumberFormatter(
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          {{ rankToString }}
+          <span v-if="rankToBigNumber.isZero()"> &mdash; </span>
+          <span v-else>
+            {{ rankToString }}
+          </span>
         </p>
       </div>
 
