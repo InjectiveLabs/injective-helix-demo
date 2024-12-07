@@ -119,7 +119,7 @@ function onNext() {
           :ui-menu="{
             width: 'w-28',
             background: 'dark:bg-brand-825',
-            option: { base: 'capitalize cursor-pointer' }
+            option: { base: 'capitalize' }
           }"
         >
           <template #default="{ open }">

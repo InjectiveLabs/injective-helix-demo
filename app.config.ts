@@ -52,8 +52,10 @@ export default defineAppConfig({
     },
 
     selectMenu: {
+      trigger: '[&>button]:cursor-pointer',
       background: 'dark:bg-brand-900',
       option: {
+        base: 'cursor-pointer',
         active: 'dark:bg-brand-800',
         selectedIcon: {
           base: 'w-4 h-4'

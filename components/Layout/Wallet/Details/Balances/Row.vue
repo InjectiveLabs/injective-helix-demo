@@ -15,7 +15,7 @@ const totalAmountInUsd = computed(() =>
 )
 </script>
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between pr-2">
     <div class="flex py-2">
       <div class="flex items-center mr-2">
         <CommonTokenIcon v-bind="{ token: balance.token }" />
