@@ -20,7 +20,8 @@ export default {
     },
 
     modal: {
-      redirect: 'Your are being redirected outside of Helix to Mito',
+      redirect:
+        'Entering into vaults will redirect you from Helix to Mito where you can earn yield.',
       continueToMito: 'Continue to Mito'
     }
   }

@@ -38,9 +38,12 @@ const isLockedDoc = useScrollLock(document.documentElement)
 </script>
 
 <template>
-  <div class="flex items-center pr-2 lg:hidden">
+  <div
+    class="flex items-center pr-2 lg:hidden"
+    :class="{ 'ml-2': sharedWalletStore.isAuthzWalletConnected }"
+  >
     <button
-      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
+      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none flex items-center justify-center"
       @click="open"
     >
       <UIcon :name="NuxtUiIcons.Menu" class="h-6 w-6 min-w-6" />

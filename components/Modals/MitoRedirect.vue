@@ -26,7 +26,7 @@ function closeModal() {
   <AppModal :is-open="isModalOpen" is-sm class="p-4" @modal:closed="closeModal">
     <section class="text-center">
       <div
-        class="flex items-center gap-2 max-w-[273px] mt-6 mx-auto text-white"
+        class="flex items-center gap-2 max-w-[300px] mt-6 mx-auto text-white"
       >
         <p class="text-sm font-medium leading-[18px]">
           {{ $t('liquidityProvision.modal.redirect') }}

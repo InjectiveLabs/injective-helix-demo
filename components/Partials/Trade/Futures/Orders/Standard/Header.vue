@@ -156,6 +156,7 @@ watch(
       <AppCheckbox2
         v-model="isTickerOnlyValue"
         is-plain
+        class="3xl:hidden 4xl:block"
         :class="[xl ? 'text-sm' : 'text-xs']"
       >
         <span class="3xl:hidden 4xl:block">

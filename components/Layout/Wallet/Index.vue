@@ -49,18 +49,21 @@ const isOpen = computed({
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton
-    v-else
-    class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
-    variant="primary"
-    :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
-    :is-loading="
-      sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-    "
-    @click="onWalletConnect"
-  >
-    <span>{{ $t('connect.connect') }}</span>
-  </AppButton>
+  <div v-else class="flex items-center justify-center gap-2">
+    <SharedIcon name="rotate-auto" class="text-white h-4 w-4" />
+
+    <AppButton
+      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
+      variant="primary"
+      :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      @click="onWalletConnect"
+    >
+      <span>{{ $t('connect.connect') }}</span>
+    </AppButton>
+  </div>
 
   <SharedModal v-model="isOpen">
     <LayoutWalletConnect @modal:closed="onCloseModal" />

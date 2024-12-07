@@ -10,6 +10,6 @@ const activityStore = useActivityStore()
 
   <CommonEmptyList
     v-if="!activityStore.subaccountFundingHistory.length"
-    v-bind="{ message: $t('activity.fundingHistory.emptyFundingHistory') }"
+    v-bind="{ message: $t('fundingHistory.emptyFundingHistory') }"
   />
 </template>
