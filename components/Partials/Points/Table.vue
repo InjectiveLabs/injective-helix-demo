@@ -1,16 +1,28 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { PointsPeriod } from '@/types'
 
-const pointsStore = usePointsStore()
 const { t } = useLang()
+const pointsStore = usePointsStore()
+const { rows } = usePointsTransformer(
+  computed(() => paginatedPointsHistory.value)
+)
+
+const props = withDefaults(
+  defineProps<{ modelValue: PointsPeriod; pointsPeriodList: PointsPeriod[] }>(),
+  {}
+)
+
+const emit = defineEmits<{
+  'update:modelValue': [value: PointsPeriod]
+}>()
 
 const columns = [
   {
-    key: 'day',
-    label: t('points.day'),
-    sortable: true,
-    class: 'w-[2]'
+    key: 'period',
+    label: t('points.period'),
+    class: 'w-[200px]'
   },
   {
     key: 'volume',
@@ -24,18 +36,32 @@ const columns = [
   }
 ]
 
-const limit = 10
-const page = ref(1)
+const limit = 7
 
-const { rows } = usePointsTransformer(
-  computed(() => paginatedPointsHistory.value)
-)
+const page = ref(1)
 
 const paginatedPointsHistory = computed(() => {
   return pointsStore.pointsHistory.slice(
     (page.value - 1) * limit,
     page.value * limit
   )
+})
+
+const paginationDetails = computed(() => {
+  const to = limit * page.value
+  const from = limit * (page.value - 1) + 1
+  const total = pointsStore.pointsHistory.length
+
+  return {
+    from,
+    total,
+    to: to > total ? total : to
+  }
+})
+
+const selectedPeriod = computed({
+  get: (): PointsPeriod => props.modelValue,
+  set: (value: PointsPeriod) => emit('update:modelValue', value)
 })
 
 const isPrevDisabled = computed(() => new BigNumberInBase(page.value).eq(1))
@@ -81,8 +107,34 @@ function onNext() {
         }
       }"
     >
-      <template #day-data="{ row }">
-        <p>{{ row.period }}</p>
+      <template #period-header>
+        <USelectMenu
+          v-model="selectedPeriod"
+          :options="pointsPeriodList"
+          :popper="{ placement: 'bottom-start' }"
+          :ui-menu="{
+            width: 'w-28',
+            background: 'dark:bg-brand-825',
+            option: { base: 'capitalize cursor-pointer' }
+          }"
+        >
+          <template #default="{ open }">
+            <span
+              class="flex gap-2 items-center dark:text-coolGray-450 hover:dark:text-white transition font-medium text-sm capitalize"
+            >
+              {{ selectedPeriod }}
+              <UIcon
+                :name="NuxtUiIcons.ChevronUp2"
+                class="size-3.5 transition-transform transform rotate-180"
+                :class="[open && 'rotate-0']"
+              />
+            </span>
+          </template>
+        </USelectMenu>
+      </template>
+
+      <template #period-data="{ row }">
+        <p class="leading-tight">{{ row.period }}</p>
       </template>
 
       <template #volume-data="{ row }">
@@ -98,8 +150,9 @@ function onNext() {
       <p class="text-sm text-white font-medium mr-2">
         {{
           t('points.paginationDetails', {
-            from: limit * (page - 1) + 1,
-            to: pointsStore.pointsHistory.length
+            from: paginationDetails.from,
+            to: paginationDetails.to,
+            total: paginationDetails.total
           })
         }}
       </p>

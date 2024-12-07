@@ -436,6 +436,6 @@ export interface TransformedPortfolioFuturesTriggers {
 
 export interface TransformedPointsHistory {
   points: string
-  volume: number
+  volume: string
   period: string
 }

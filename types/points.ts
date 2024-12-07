@@ -1,4 +1,15 @@
-// import { PointsLeague } from './enums'
+export enum PointsLeague {
+  White = 'white',
+  Orange = 'orange',
+  Blue = 'blue',
+  Purple = 'purple',
+  Black = 'black'
+}
+
+export enum PointsPeriod {
+  Day = 'day',
+  Week = 'week'
+}
 
 export type AccountPoints = {
   rank: string

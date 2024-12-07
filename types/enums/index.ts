@@ -554,11 +554,3 @@ export enum MitoRegistrationMode {
   Restricted = 'Restricted',
   Permissionless = 'Permissionless'
 }
-
-export enum PointsLeague {
-  White = 'white',
-  Orange = 'orange',
-  Blue = 'blue',
-  Purple = 'purple',
-  Black = 'black'
-}

@@ -1,14 +1,28 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { PointsPeriod } from '@/types'
 
 definePageMeta({
   middleware: ['connected']
 })
 
-const pointsStore = usePointsStore()
 const { $onError } = useNuxtApp()
+const pointsStore = usePointsStore()
 
+const pointsPeriodList = [PointsPeriod.Day, PointsPeriod.Week]
+
+const selectedPeriod = ref(pointsPeriodList[0])
 const status = reactive(new Status(StatusType.Loading))
+
+const isDailyPeriod = computed(() => selectedPeriod.value === PointsPeriod.Day)
+
+function fetchAccountPoints() {
+  if (isDailyPeriod.value) {
+    pointsStore.fetchAccountDailyPoints()
+  } else {
+    pointsStore.fetchAccountWeeklyPoints()
+  }
+}
 
 onWalletConnected(() => {
   Promise.all([
@@ -23,7 +37,9 @@ useIntervalFn(
   () =>
     Promise.all([
       pointsStore.fetchPoints(),
-      pointsStore.fetchAccountDailyPoints()
+      isDailyPeriod.value
+        ? pointsStore.fetchAccountDailyPoints()
+        : pointsStore.fetchAccountWeeklyPoints()
     ]),
   60 * 1000
 )
@@ -44,7 +60,11 @@ useIntervalFn(
       <PartialsPointsStats />
 
       <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
-        <PartialsPointsTable />
+        <PartialsPointsTable
+          v-model="selectedPeriod"
+          :points-period-list="pointsPeriodList"
+          @update:model-value="fetchAccountPoints"
+        />
         <PartialsPointsScoreCard />
       </div>
     </div>

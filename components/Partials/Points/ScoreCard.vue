@@ -3,33 +3,43 @@ import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
 import { PointsLeague } from '@/types'
 
+const pointsStore = usePointsStore()
 const now = useNow({ interval: 1000 })
 
-const pointsStore = usePointsStore()
-
-// todo: update the asset for Purple & Black once Nelmer confirmed the BG asset
 const leagueBgList = {
-  [PointsLeague.White]: 'bg-1',
-  [PointsLeague.Orange]: 'bg-2',
-  [PointsLeague.Blue]: 'bg-3',
-  [PointsLeague.Purple]: 'bg-1',
-  [PointsLeague.Black]: 'bg-1'
+  [PointsLeague.Blue]: 'blue-belt-bg',
+  [PointsLeague.Black]: 'black-belt-bg',
+  [PointsLeague.White]: 'white-belt-bg',
+  [PointsLeague.Orange]: 'orange-belt-bg',
+  [PointsLeague.Purple]: 'purple-belt-bg'
+}
+
+const beltImageList = {
+  [PointsLeague.Blue]: 'blue-belt',
+  [PointsLeague.Black]: 'black-belt',
+  [PointsLeague.White]: 'white-belt',
+  [PointsLeague.Orange]: 'orange-belt',
+  [PointsLeague.Purple]: 'purple-belt'
 }
 
 const canvas = ref()
-const isShowDownloadButton = ref(true)
 
-const league = computed(() => PointsLeague.White)
+const league = computed(
+  () =>
+    (pointsStore?.accountPoints?.league as PointsLeague) || PointsLeague.White
+)
+
 const leagueBg = computed(() => leagueBgList[league.value])
+const beltImage = computed(() => beltImageList[league.value])
 
-const { valueToFixed: totalPointsToFixed } = useSharedBigNumberFormatter(
+const { valueToString: totalPointsToString } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
     shouldTruncate: true
   }
 )
 
-const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
+const { valueToString: rankToString } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.rank || '0'),
   {
     shouldTruncate: true
@@ -37,61 +47,76 @@ const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
 )
 
 async function downloadImage() {
-  isShowDownloadButton.value = false
-
   await nextTick()
 
-  toJpeg(canvas.value)
-    .then((dataUrl) => {
-      const link = document.createElement('a')
-      link.download = `Helix-Points-${now.value}.jpeg`
-      link.href = dataUrl
-      link.click()
-    })
-    .finally(() => {
-      isShowDownloadButton.value = true
-    })
+  toJpeg(canvas.value).then((dataUrl) => {
+    const link = document.createElement('a')
+    link.download = `Helix-Points-${now.value}.jpeg`
+    link.href = dataUrl
+    link.click()
+  })
 }
 </script>
 
 <template>
   <div
-    ref="canvas"
-    :class="[
-      'relative flex flex-col items-center py-4 px-[88px] w-[420px] min-h-[365px] max-xs:w-full max-xs:px-8 bg-cover bg-center bg-no-repeat bg-black text-white',
-      isShowDownloadButton ? 'rounded-lg' : ''
-    ]"
-    :style="{
-      backgroundImage: `url('/images/points/helix-points-${leagueBg}.png')`
-    }"
+    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white'"
   >
-    <AssetLogo class="w-auto h-9" alt="Helix" />
+    <div
+      ref="canvas"
+      class="flex flex-col flex-1 items-center px-[88px] max-xs:px-8 pt-4 bg-cover bg-center bg-no-repeat"
+      :style="{
+        backgroundImage: `url('/images/points/${leagueBg}.png')`
+      }"
+    >
+      <AssetLogo class="w-auto h-9" alt="Helix" />
 
-    <p class="text-xl max-xs:text-xl mt-12 drop-shadow-lg">
-      {{ $t('points.myTotalPoints') }}
-    </p>
-    <p class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6 drop-shadow-md">
-      {{ totalPointsToFixed }}
-    </p>
+      <p class="text-xl max-xs:text-xl mt-12">
+        {{ $t('points.myTotalPoints') }}
+      </p>
+      <p class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6">
+        {{ totalPointsToString }}
+      </p>
 
-    <div class="flex justify-between w-full">
-      <p class="text-base font-medium drop-shadow-lg">
-        {{ $t('points.league') }}: {{ league }}
-      </p>
-      <p class="text-base font-medium drop-shadow-lg">
-        {{ $t('points.rank') }}: {{ rankToFixed }}
-      </p>
+      <div class="flex justify-between w-full">
+        <div class="flex items-center gap-3">
+          <img :src="`/images/points/level/${beltImage}.png`" class="w-10" />
+          <div>
+            <p>{{ $t('points.level') }}</p>
+            <p class="text-sm font-bold">
+              {{
+                $t(
+                  `points.leagues.${
+                    pointsStore?.accountPoints?.league || PointsLeague.White
+                  }`
+                )
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <p>
+            {{ $t('points.rank') }}
+          </p>
+
+          <p class="font-bold">
+            {{ rankToString }}
+          </p>
+        </div>
+      </div>
     </div>
 
-    <AppButton
-      v-if="isShowDownloadButton"
-      class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
-      @click="downloadImage"
-    >
-      <p class="text-sm font-medium tracking-wide">
-        {{ $t('points.saveImage') }}
-      </p>
-      <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
-    </AppButton>
+    <div class="bg-[#262A30] flex justify-end p-4">
+      <AppButton
+        class="bottom-4 right-4 flex justify-center items-center gap-2 py-2.5 px-8 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
+        @click="downloadImage"
+      >
+        <p class="text-xs font-normal leading-relaxed">
+          {{ $t('points.share') }}
+        </p>
+        <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
+      </AppButton>
+    </div>
   </div>
 </template>

@@ -14,14 +14,14 @@ const lastUpdated = computed(() => {
   )
 })
 
-const { valueToFixed: totalPointsToFixed } = useSharedBigNumberFormatter(
+const { valueToString: totalPointsToString } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
     shouldTruncate: true
   }
 )
 
-const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
+const { valueToString: rankToString } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.rank || '0'),
   {
     shouldTruncate: true
@@ -41,7 +41,7 @@ const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          {{ totalPointsToFixed }}
+          {{ totalPointsToString }}
         </p>
       </div>
 
@@ -56,7 +56,7 @@ const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          {{ rankToFixed }}
+          {{ rankToString }}
         </p>
       </div>
 
@@ -67,7 +67,7 @@ const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
           <h4
             class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
           >
-            {{ $t('points.league') }}
+            {{ $t('points.level') }}
           </h4>
           <p
             class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"

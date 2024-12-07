@@ -141,7 +141,7 @@ const leverageNumber = computed({
       <p class="text-coolGray-450">Up to {{ maxLeverageAvailable }}x</p>
     </div>
 
-    <div class="flex items-center mt-1">
+    <div class="flex items-center my-1">
       <div class="flex-1 pr-4 relative">
         <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
@@ -171,7 +171,7 @@ const leverageNumber = computed({
     </div>
 
     <p
-      class="error-message mt-4"
+      class="error-message mb-4"
       :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageError)"
     >
       {{ errorMessage }}
