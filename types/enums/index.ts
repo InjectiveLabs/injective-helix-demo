@@ -380,7 +380,7 @@ export enum TradingInterface {
 }
 
 export enum SpotOrdersStandardView {
-  Orders = 'Orders',
+  Orders = 'orders',
   Balances = 'balances',
   TradeHistory = 'tradeHistory',
   OrderHistory = 'orderHistory'
