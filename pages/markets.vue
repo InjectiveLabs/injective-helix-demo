@@ -155,7 +155,6 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
       <PartialsMarkets
         v-bind="{
           search,
-          activeQuote,
           activeCategory,
           isLowVolumeMarketsVisible,
           markets: marketsWithSummaryAndVolumeInUsd,

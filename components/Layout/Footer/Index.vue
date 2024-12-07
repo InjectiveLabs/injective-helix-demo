@@ -49,7 +49,7 @@ const supportList = [
         </NuxtLink>
 
         <span class="text-coolGray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Helix Foundation
+          &copy; {{ new Date().getFullYear() }} Helix
         </span>
       </div>
 
