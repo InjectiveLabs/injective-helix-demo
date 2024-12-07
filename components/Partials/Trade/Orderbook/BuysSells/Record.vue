@@ -215,7 +215,7 @@ function handlePriceClick() {
 
     <div
       :key="record.price"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate pl-2 pr-1 relative"
       :class="[
         isBuy ? 'text-green-500' : 'text-red-500',
         {
@@ -254,7 +254,7 @@ function handlePriceClick() {
 
     <div
       :key="record.price + record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative text-right"
+      class="flex-1 min-w-0 truncate pl-1 pr-2 relative text-right"
       @click="handlePriceClick"
     >
       {{ volumeToString }}

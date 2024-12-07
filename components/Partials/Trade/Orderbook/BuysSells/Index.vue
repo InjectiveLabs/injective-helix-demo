@@ -102,7 +102,7 @@ function setSellsIndex(index: number) {
     <div
       v-if="orderbookLayout !== OrderbookLayout.Buys"
       :style="{ height: sellsSectionHeight }"
-      class="flex flex-col-reverse px-2"
+      class="flex flex-col-reverse px-1"
       @mouseleave="activeSellsIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
@@ -137,7 +137,7 @@ function setSellsIndex(index: number) {
     <div
       v-if="orderbookLayout !== OrderbookLayout.Sells"
       :style="{ height: buysSectionHeight }"
-      class="px-2"
+      class="px-1"
       @mouseleave="activeBuysIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
