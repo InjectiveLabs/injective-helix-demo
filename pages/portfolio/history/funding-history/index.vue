@@ -13,19 +13,19 @@ const { values: formValues } = useForm<{
 const status = reactive(new Status(StatusType.Loading))
 
 const { limit, page, skip } = usePagination({
-  totalCount: toRef(activityStore, 'subaccountFundingPaymentsCount')
+  totalCount: toRef(activityStore, 'subaccountFundingHistoryCount')
 })
 
-function fetchFundingPayments() {
+function fetchFundingHistory() {
   status.setLoading()
 
   const marketIds = formValues.market ? [formValues.market] : undefined
 
   activityStore
-    .fetchSubaccountFundingPayments({
+    .fetchSubaccountFundingHistory({
       pagination: {
-        limit: limit.value,
-        skip: skip.value
+        skip: skip.value,
+        limit: limit.value
       },
       filters: {
         marketIds
@@ -38,42 +38,42 @@ function fetchFundingPayments() {
 }
 
 onSubaccountChange(() => {
-  fetchFundingPayments()
+  fetchFundingHistory()
 })
 
 async function handlePageChange(page: number) {
   await router.push({
     query: {
-      ...route.query,
-      page
+      page,
+      ...route.query
     }
   })
 
-  fetchFundingPayments()
+  fetchFundingHistory()
 }
 
 async function handleLimitChange(limit: number) {
   await router.push({
     query: {
-      page: undefined,
-      limit
+      limit,
+      page: undefined
     }
   })
 
-  fetchFundingPayments()
+  fetchFundingHistory()
 }
 </script>
 
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.fundingPayments') }}</h3>
+      <h3 class="portfolio-title">{{ $t('activity.fundingHistory') }}</h3>
     </div>
 
     <div class="border-y divide-y">
       <PartialsPortfolioHistoryFundingTabs
-        @market:update="fetchFundingPayments"
-        @form:reset="fetchFundingPayments"
+        @market:update="fetchFundingHistory"
+        @form:reset="fetchFundingHistory"
       />
 
       <CommonSkeletonRow
@@ -85,25 +85,25 @@ async function handleLimitChange(limit: number) {
 
       <template v-else>
         <PartialsPortfolioHistoryFundingTable
-          v-if="activityStore.subaccountFundingPayments.length"
-          :funding-payments="activityStore.subaccountFundingPayments"
+          v-if="activityStore.subaccountFundingHistory.length"
+          v-bind="{ fundingHistory: activityStore.subaccountFundingHistory }"
         />
 
         <AppPagination
-          v-if="activityStore.subaccountFundingPayments.length"
+          v-if="activityStore.subaccountFundingHistory.length"
           class="p-8"
           v-bind="{
             limit,
             page,
-            totalCount: activityStore.subaccountFundingPaymentsCount
+            totalCount: activityStore.subaccountFundingHistoryCount
           }"
           @update:limit="handleLimitChange"
           @update:page="handlePageChange"
         />
 
         <CommonEmptyList
-          v-if="!activityStore.subaccountFundingPayments.length"
-          :message="$t('fundingPayments.emptyFundingPayments')"
+          v-if="!activityStore.subaccountFundingHistory.length"
+          :message="$t('fundingHistory.emptyFundingHistory')"
         />
       </template>
     </div>

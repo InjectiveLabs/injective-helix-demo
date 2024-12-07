@@ -8,12 +8,13 @@ import {
 
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
+const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const isTickerOnly = ref(false)
-const view = ref(PerpOrdersStandardView.OpenPositions)
+const view = ref(PerpOrdersStandardView.Positions)
 
 function fetchDerivativeOrders() {
   if (!accountStore.subaccountId) {
@@ -44,6 +45,13 @@ function fetchDerivativeOrders() {
     }),
     derivativeStore.fetchSubaccountConditionalOrders([market.value.marketId]),
     positionStore.fetchSubaccountPositions({
+      filters: {
+        marketIds: isTickerOnly.value
+          ? [market?.value?.marketId || '']
+          : undefined
+      }
+    }),
+    activityStore.fetchSubaccountFundingHistory({
       filters: {
         marketIds: isTickerOnly.value
           ? [market?.value?.marketId || '']

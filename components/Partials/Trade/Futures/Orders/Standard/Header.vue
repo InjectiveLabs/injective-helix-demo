@@ -15,8 +15,8 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    modelValue: PerpOrdersStandardView
     isTickerOnly: boolean
+    modelValue: PerpOrdersStandardView
   }>(),
   {
     isTickerOnly: false
@@ -24,8 +24,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'update:modelValue': [value: PerpOrdersStandardView]
   'update:isTickerOnly': [value: boolean]
+  'update:modelValue': [value: PerpOrdersStandardView]
 }>()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -40,36 +40,40 @@ const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${PerpOrdersStandardView.OpenPositions}`,
-      value: PerpOrdersStandardView.OpenPositions,
-      description: `${positionStore.subaccountPositions.length}`
+      value: PerpOrdersStandardView.Positions,
+      description: `${positionStore.subaccountPositions.length}`,
+      display: `activity.${PerpOrdersStandardView.Positions}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.OpenOrders}`,
-      value: PerpOrdersStandardView.OpenOrders,
-      description: `${derivativeStore.subaccountOrdersCount}`
+      value: PerpOrdersStandardView.Orders,
+      description: `${derivativeStore.subaccountOrdersCount}`,
+      display: `activity.${PerpOrdersStandardView.Orders}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.Triggers}`,
       value: PerpOrdersStandardView.Triggers,
+      display: `activity.${PerpOrdersStandardView.Triggers}`,
       description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
       value: PerpOrdersStandardView.OrderHistory,
+      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
       description: `${derivativeStore.subaccountOrderHistoryCount}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.TradeHistory}`,
       value: PerpOrdersStandardView.TradeHistory,
-      description: `${derivativeStore.subaccountTradesCount}`
+      description: `${derivativeStore.subaccountTradesCount}`,
+      display: `activity.${PerpOrdersStandardView.TradeHistory}`
+    },
+    {
+      value: PerpOrdersStandardView.FundingHistory,
+      display: `activity.${PerpOrdersStandardView.FundingHistory}`
     }
   ]
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
-      display: `activity.${PerpOrdersStandardView.Balances}`,
-      value: PerpOrdersStandardView.Balances
+      value: PerpOrdersStandardView.Balances,
+      display: `activity.${PerpOrdersStandardView.Balances}`
     })
   }
 
@@ -80,7 +84,7 @@ watch(
   () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === PerpOrdersStandardView.Balances) {
-      view.value = PerpOrdersStandardView.OpenOrders
+      view.value = PerpOrdersStandardView.Orders
     }
   }
 )
@@ -163,7 +167,7 @@ watch(
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
-        v-if="view === PerpOrdersStandardView.OpenOrders"
+        v-if="view === PerpOrdersStandardView.Orders"
       />
 
       <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers

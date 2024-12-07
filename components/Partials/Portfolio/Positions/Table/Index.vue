@@ -128,7 +128,7 @@ function sharePosition(position: PositionV2) {
         <div class="flex items-center gap-1">
           <PartialsCommonMarketRedirection
             v-bind="{ market: row.market }"
-            class="flex items-center space-x-2 p-2 font-sans"
+            class="flex items-center space-x-2 p-2 font-sans text-coolGray-200"
           >
             <CommonTokenIcon
               v-bind="{ isSm: true, token: row.market.baseToken }"
@@ -173,7 +173,7 @@ function sharePosition(position: PositionV2) {
       </template>
 
       <template #contracts-data="{ row }">
-        <div class="flex items-center justify-end p-2">
+        <div class="flex items-center justify-end p-2 text-white">
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
             class="flex gap-1"
@@ -192,7 +192,7 @@ function sharePosition(position: PositionV2) {
       </template>
 
       <template #entry-data="{ row }">
-        <div class="flex items-center justify-end p-2">
+        <div class="flex items-center justify-end p-2 text-white">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
             <AppAmount
               v-bind="{
@@ -272,6 +272,7 @@ function sharePosition(position: PositionV2) {
                 v-bind="{
                   amount: row.quantityInUsd.toFixed()
                 }"
+                class="text-white"
               />
             </p>
           </div>
@@ -286,6 +287,7 @@ function sharePosition(position: PositionV2) {
                 amount: row.margin.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white"
             />
           </span>
           <button
@@ -307,6 +309,7 @@ function sharePosition(position: PositionV2) {
               amount: row.liquidationPrice.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="text-white"
           />
         </div>
       </template>
@@ -321,6 +324,7 @@ function sharePosition(position: PositionV2) {
               amount: row.effectiveLeverage.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
+            class="text-white"
           />x
         </div>
       </template>

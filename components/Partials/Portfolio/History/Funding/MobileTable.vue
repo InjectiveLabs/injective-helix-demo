@@ -2,21 +2,21 @@
 import { USDT_DECIMALS } from '@/app/utils/constants'
 import {
   UTableColumn,
-  TransformedFundingPayment,
-  FundingPaymentsTableColumn
+  TransformedFundingHistory,
+  FundingHistoryTableColumn
 } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
-    fundingPayment: TransformedFundingPayment
+    fundingHistory: TransformedFundingHistory
   }>(),
   {}
 )
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
-    if (column.key === FundingPaymentsTableColumn.Pair) {
+    if (column.key === FundingHistoryTableColumn.Pair) {
       return list
     }
 
@@ -35,17 +35,17 @@ const filteredColumns = computed(() =>
     <template #header>
       <div class="flex items-center space-x-2 font-sans mb-6">
         <CommonTokenIcon
-          v-bind="{ token: fundingPayment.market.baseToken }"
+          v-bind="{ token: fundingHistory.market.baseToken }"
           :is-sm="true"
         />
         <p class="text-sm text-coolGray-200">
-          {{ fundingPayment.market.ticker }}
+          {{ fundingHistory.market.ticker }}
         </p>
       </div>
     </template>
 
     <template #time-data>
-      <p>{{ fundingPayment.time }}</p>
+      <p>{{ fundingHistory.time }}</p>
     </template>
 
     <template #payment-data>
@@ -53,13 +53,13 @@ const filteredColumns = computed(() =>
         <span
           class="inline-block"
           :class="{
-            'text-green-500': fundingPayment.total.gte(0),
-            'text-red-500': fundingPayment.total.lt(0)
+            'text-green-500': fundingHistory.total.gte(0),
+            'text-red-500': fundingHistory.total.lt(0)
           }"
         >
           <AppAmount
             v-bind="{
-              amount: fundingPayment.total.toFixed(),
+              amount: fundingHistory.total.toFixed(),
               decimalPlaces: USDT_DECIMALS
             }"
             class="font-mono"
@@ -67,7 +67,7 @@ const filteredColumns = computed(() =>
         </span>
 
         <span class="text-coolGray-500">
-          {{ fundingPayment.market.quoteToken.symbol }}
+          {{ fundingHistory.market.quoteToken.symbol }}
         </span>
       </div>
     </template>

@@ -40,8 +40,8 @@ const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.OpenOrders}`,
-      value: SpotOrdersStandardView.OpenOrders,
+      display: `activity.${SpotOrdersStandardView.Orders}`,
+      value: SpotOrdersStandardView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
@@ -70,7 +70,7 @@ watch(
   () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
-      view.value = SpotOrdersStandardView.OpenOrders
+      view.value = SpotOrdersStandardView.Orders
     }
   }
 )
@@ -144,7 +144,7 @@ watch(
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
-        v-if="view === SpotOrdersStandardView.OpenOrders && !isMobile"
+        v-if="view === SpotOrdersStandardView.Orders && !isMobile"
         v-bind="{ isTickerOnly }"
       />
     </div>

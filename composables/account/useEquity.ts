@@ -16,6 +16,10 @@ export function useEquity() {
     const activeSubaccountBalances =
       accountStore.subaccountBalancesMap[accountStore.subaccountId]
 
+    if (!activeSubaccountBalances) {
+      return []
+    }
+
     return activeSubaccountBalances.reduce((list, balance) => {
       if (!verifiedDenoms.includes(balance.denom)) {
         return list

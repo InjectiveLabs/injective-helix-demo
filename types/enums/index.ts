@@ -260,7 +260,7 @@ export enum WalletModalType {
 
 export enum ActivityView {
   Positions = 'Positions/Index',
-  FundingPayments = 'Positions/FundingPayments',
+  FundingHistory = 'Positions/FundingHistory',
   SpotOrders = 'Spot/Index',
   SpotOrderHistory = 'Spot/OrderHistory',
   SpotTradeHistory = 'Spot/TradeHistory',
@@ -416,19 +416,20 @@ export enum TradingInterface {
 }
 
 export enum SpotOrdersStandardView {
+  Orders = 'Orders',
   Balances = 'balances',
-  OpenOrders = 'openOrders',
-  OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
+  TradeHistory = 'tradeHistory',
+  OrderHistory = 'orderHistory'
 }
 
 export enum PerpOrdersStandardView {
   Balances = 'balances',
-  OpenPositions = 'openPositions',
-  OpenOrders = 'openOrders',
+  Positions = 'positions',
+  Orders = 'orders',
   Triggers = 'triggers',
   OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
+  TradeHistory = 'tradeHistory',
+  FundingHistory = 'fundingHistory'
 }
 
 export enum PerpOrdersTradingBotsView {

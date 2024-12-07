@@ -17,12 +17,12 @@ withDefaults(
     />
 
     <PartialsTradeFuturesOrdersStandardPositions
-      v-else-if="view === PerpOrdersStandardView.OpenPositions"
+      v-else-if="view === PerpOrdersStandardView.Positions"
       v-bind="{ isTickerOnly }"
     />
 
     <PartialsTradeFuturesOrdersStandardOpenOrders
-      v-else-if="view === PerpOrdersStandardView.OpenOrders"
+      v-else-if="view === PerpOrdersStandardView.Orders"
       v-bind="{ isTickerOnly }"
     />
 
@@ -36,6 +36,10 @@ withDefaults(
 
     <PartialsTradeFuturesOrdersStandardTradeHistory
       v-else-if="view === PerpOrdersStandardView.TradeHistory"
+    />
+
+    <PartialsTradeFuturesOrdersStandardFundingHistory
+      v-else-if="view === PerpOrdersStandardView.FundingHistory"
     />
   </div>
 </template>

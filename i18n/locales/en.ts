@@ -331,7 +331,7 @@ export default {
     futuresGrid: 'Futures Grid',
     swaps: 'Swaps',
     wallet: 'Wallet',
-    fundingPayments: 'Funding Payments',
+    fundingHistory: 'Funding History',
     subaccounts: 'Subaccounts',
     settings: 'Settings',
     derivativesGrid: 'Derivatives Grid',

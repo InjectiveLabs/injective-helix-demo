@@ -155,7 +155,7 @@ export enum PortfolioSubaccountsTableColumn {
   TotalUsd = 'total-usd'
 }
 
-export enum FundingPaymentsTableColumn {
+export enum FundingHistoryTableColumn {
   Time = 'time',
   Pair = 'pair',
   Payment = 'payment'
@@ -265,7 +265,7 @@ export interface TransformedHistoryWallet {
   [HistoryWalletTableColumn.Amount]: BigNumberInBase
 }
 
-export interface TransformedFundingPayment {
+export interface TransformedFundingHistory {
   time: string
   total: BigNumberInBase
   market: UiDerivativeMarket

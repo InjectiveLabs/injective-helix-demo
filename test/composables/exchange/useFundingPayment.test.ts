@@ -3,30 +3,30 @@ import { setActivePinia, createPinia } from 'pinia'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { marketFactory, exchangeFactory } from '@/test/mocks'
-import { useFundingPayment } from '@/composables/exchange/useFundingPayment'
+import { useFundingHistory } from '@/composables/exchange/useFundingHistory'
 import { useDerivativeStore } from '@/store/derivative'
 
-const fundingPayment = ref<FundingPayment>(
+const fundingHistory = ref<FundingPayment>(
   undefined as unknown as FundingPayment
 )
 
-describe('useFundingPayment', () => {
+describe('useFundingHistory', () => {
   setActivePinia(createPinia())
 
   const derivativeStore = useDerivativeStore()
 
   const { time, total, market, priceDecimals, quantityDecimals } =
-    useFundingPayment(fundingPayment)
+    useFundingHistory(fundingHistory)
 
   describe.concurrent('time', () => {
     test('returns empty string', () => {
-      fundingPayment.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
+      fundingHistory.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
 
       expect(time.value).toEqual('')
     })
 
     test('returns formattedValue', () => {
-      fundingPayment.value = {
+      fundingHistory.value = {
         ...exchangeFactory.injUsdtPerpFundingPayment,
         timestamp: 946684800000
       }
@@ -38,14 +38,14 @@ describe('useFundingPayment', () => {
 
   describe.concurrent('total', () => {
     describe('returns ZERO_IN_BASE', () => {
-      test('fundingPayment.amount is undefined', () => {
-        fundingPayment.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
+      test('fundingHistory.amount is undefined', () => {
+        fundingHistory.value = { ...exchangeFactory.injUsdtPerpFundingPayment }
 
         expect(total.value).toEqual(ZERO_IN_BASE)
       })
 
       test('market is undefined', () => {
-        fundingPayment.value = {
+        fundingHistory.value = {
           ...exchangeFactory.injUsdtPerpFundingPayment,
           amount: '3'
         }
@@ -57,7 +57,7 @@ describe('useFundingPayment', () => {
 
     test('returns total', () => {
       derivativeStore.markets = [marketFactory.injUsdtDerivativeMarketWithToken]
-      fundingPayment.value = {
+      fundingHistory.value = {
         ...exchangeFactory.injUsdtPerpFundingPayment,
         amount: '3000000'
       }

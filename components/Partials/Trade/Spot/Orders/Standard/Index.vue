@@ -17,7 +17,7 @@ withDefaults(
     />
 
     <PartialsTradeSpotOrdersStandardOpenOrders
-      v-else-if="view === SpotOrdersStandardView.OpenOrders"
+      v-else-if="view === SpotOrdersStandardView.Orders"
       v-bind="{ isTickerOnly }"
     />
 

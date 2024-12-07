@@ -143,8 +143,8 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
         to: { name: PortfolioSubPage.HistoryWallet }
       },
       {
-        label: 'navigation.fundingPayments',
-        to: { name: PortfolioSubPage.HistoryFundingPayments }
+        label: 'navigation.fundingHistory',
+        to: { name: PortfolioSubPage.HistoryFundingHistory }
       }
     ]
   },

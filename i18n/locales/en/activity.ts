@@ -1,17 +1,18 @@
 import {
   HistorySwapTableColumn,
   HistoryWalletTableColumn,
-  FundingPaymentsTableColumn
+  FundingHistoryTableColumn
 } from '@/types'
 
 export default {
   activity: {
     table: {
-      fundingPayments: {
-        [FundingPaymentsTableColumn.Time]: 'Time',
-        [FundingPaymentsTableColumn.Pair]: 'Pair',
-        [FundingPaymentsTableColumn.Payment]: 'Payment'
+      fundingHistory: {
+        [FundingHistoryTableColumn.Time]: 'Time',
+        [FundingHistoryTableColumn.Pair]: 'Pair',
+        [FundingHistoryTableColumn.Payment]: 'Payment'
       },
+
       historyWallet: {
         [HistoryWalletTableColumn.Time]: 'Time',
         [HistoryWalletTableColumn.Type]: 'Type',
@@ -30,6 +31,7 @@ export default {
     },
     swaps: 'Swaps',
     funds: 'Funds',
+    orders: 'Orders',
     activity: 'Activity',
     triggers: 'Triggers',
     balances: 'Balances',
@@ -37,17 +39,15 @@ export default {
     positions: 'Positions',
     activities: 'Activities',
     spotOrders: 'Spot Orders',
-    openOrders: 'Open Orders',
     swapHistory: 'Swap History',
     fetchOrders: 'Fetch Orders',
     fetchTrades: 'Fetch Trades',
     tradeHistory: 'Trade History',
     orderHistory: 'Order History',
+    fundingHistory: 'Funding History',
     cancelOrders: 'Cancel Orders',
     rewardHistory: 'Reward History',
     walletHistory: 'Wallet History',
-    openPositions: 'Open Positions',
-    fundingPayments: 'Funding Payments',
     derivativeOrders: 'Derivative Orders',
     activeStrategies: 'Active strategies',
     removedStrategies: 'Removed strategies',
@@ -56,8 +56,8 @@ export default {
     }
   },
 
-  fundingPayments: {
-    emptyFundingPayments: 'No funding payments found',
+  fundingHistory: {
+    emptyFundingHistory: 'No funding history found',
     payment: 'Payment',
     paymentTooltip:
       'A positive payment means you received funding, while a negative payment means you paid funding. Funding is automatically reflected in your open position margin.',

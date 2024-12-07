@@ -65,7 +65,7 @@ export enum PortfolioSubPage {
   SettingsPreferences = 'portfolio-settings-preferences',
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
   OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
-  HistoryFundingPayments = 'portfolio-history-funding-payments',
+  HistoryFundingHistory = 'portfolio-history-funding-history',
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
   OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
