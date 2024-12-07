@@ -433,3 +433,9 @@ export interface TransformedPortfolioFuturesTriggers {
   [PortfolioFuturesTriggersTableColumn.Leverage]: BigNumberInBase
   [PortfolioFuturesTriggersTableColumn.Market]: UiDerivativeMarket
 }
+
+export interface TransformedPointsHistory {
+  points: string
+  volume: number
+  period: string
+}

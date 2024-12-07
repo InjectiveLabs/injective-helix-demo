@@ -1,47 +1,66 @@
 <script lang="ts" setup>
-withDefaults(
-  defineProps<{
-    rank: string
-    league: string
-    totalPoints: string
-  }>(),
-  {}
+import { format } from 'date-fns'
+
+const pointsStore = usePointsStore()
+
+const lastUpdated = computed(() => {
+  if (!pointsStore.accountPoints) {
+    return
+  }
+
+  return format(
+    new Date(pointsStore.accountPoints?.updatedAt),
+    'MMM dd HH:mm:ss'
+  )
+})
+
+const { valueToFixed: totalPointsToFixed } = useSharedBigNumberFormatter(
+  computed(() => pointsStore.accountPoints?.totalPoints || '0'),
+  {
+    shouldTruncate: true
+  }
+)
+
+const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
+  computed(() => pointsStore.accountPoints?.rank || '0'),
+  {
+    shouldTruncate: true
+  }
 )
 </script>
 
 <template>
-  <div
-    class="flex mt-[72px] mb-24 max-lg:flex-col max-lg:gap-6 max-xs:mt-14 max-xs:mb-16"
-  >
-    <div class="flex flex-col gap-1">
-      <h4
-        class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
-      >
-        {{ $t('points.totalPoints') }}
-      </h4>
-      <p
-        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
-      >
-        {{ totalPoints }}
-      </p>
-    </div>
+  <section class="mt-[72px] mb-24 max-xs:mt-14 max-xs:mb-16">
+    <div class="flex max-lg:flex-col max-lg:gap-6">
+      <div class="flex flex-col gap-1">
+        <h4
+          class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
+        >
+          {{ $t('points.totalPoints') }}
+        </h4>
+        <p
+          class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+        >
+          {{ totalPointsToFixed }}
+        </p>
+      </div>
 
-    <span class="w-[1px] bg-[#707883] ml-10 mr-6 max-lg:hidden" />
+      <span class="w-[1px] bg-[#707883] ml-10 mr-6 max-lg:hidden" />
 
-    <div class="flex flex-col gap-1">
-      <h4
-        class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
-      >
-        {{ $t('points.rank') }}
-      </h4>
-      <p
-        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
-      >
-        {{ rank }}
-      </p>
-    </div>
+      <div class="flex flex-col gap-1">
+        <h4
+          class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
+        >
+          {{ $t('points.rank') }}
+        </h4>
+        <p
+          class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+        >
+          {{ rankToFixed }}
+        </p>
+      </div>
 
-    <span class="w-[1px] bg-[#707883] ml-20 mr-6 max-lg:hidden" />
+      <!-- <span class="w-[1px] bg-[#707883] ml-20 mr-6 max-lg:hidden" />
 
     <div class="flex flex-col gap-1">
       <h4
@@ -54,6 +73,11 @@ withDefaults(
       >
         {{ league }}
       </p>
+    </div> -->
     </div>
-  </div>
+    <div v-if="lastUpdated" class="text-sm text-coolGray-500 mt-4">
+      <span>{{ $t('points.lastUpdatedAt') }}</span>
+      <span>{{ lastUpdated }}</span>
+    </div>
+  </section>
 </template>

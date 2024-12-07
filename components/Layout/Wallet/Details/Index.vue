@@ -36,9 +36,11 @@ function disconnect() {
   WalletTracker.trackLogout()
 
   if (
-    [MainPage.Portfolio, ...Object.values(PortfolioSubPage)].includes(
-      route.name as MainPage
-    )
+    [
+      MainPage.Points,
+      MainPage.Portfolio,
+      ...Object.values(PortfolioSubPage)
+    ].includes(route.name as MainPage)
   ) {
     router.push({ name: MainPage.Index })
   }

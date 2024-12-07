@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
+const pointsStore = usePointsStore()
 const { t } = useLang()
 
 const columns = [
@@ -22,61 +24,34 @@ const columns = [
   }
 ]
 
-const pageCount = 7
+const limit = 10
 const page = ref(1)
 
-const pointsData = computed(() => {
-  const mockData = []
-  const baseObject = {
-    week: 'Dec 21, 2024 - Dec 28, 2024',
-    points: '888,888',
-    volume: '100,873.02'
-  }
+const { rows } = usePointsTransformer(
+  computed(() => paginatedPointsHistory.value)
+)
 
-  for (let index = 0; index < 25; index++) {
-    mockData.push({
-      ...baseObject,
-      points: `${index + 1},${baseObject.points}`
-    })
-  }
-
-  return mockData
-})
-
-const rows = computed(() => {
-  return pointsData.value.slice(
-    (page.value - 1) * pageCount,
-    page.value * pageCount
+const paginatedPointsHistory = computed(() => {
+  return pointsStore.pointsHistory.slice(
+    (page.value - 1) * limit,
+    page.value * limit
   )
 })
 
-const getPaginationDetails = computed(() => {
-  const from = 1 + pageCount * (page.value - 1)
-  const to = pageCount * page.value
-  const totalData = pointsData.value.length
-  const maxPage = Math.ceil(totalData / pageCount)
+const isPrevDisabled = computed(() => new BigNumberInBase(page.value).eq(1))
 
-  return {
-    from,
-    maxPage,
-    totalData,
-    to: to > totalData ? totalData : to
-  }
-})
+const isNextDisabled = computed(() =>
+  new BigNumberInBase(page.value)
+    .times(limit)
+    .gte(pointsStore.pointsHistory.length)
+)
 
-const isPaginationDisabled = computed(() => ({
-  prev: page.value === 1,
-  next: page.value === getPaginationDetails.value.maxPage
-}))
+function onPrevious() {
+  page.value--
+}
 
-function paginate(type: string) {
-  if (type === 'prev' && page.value > 1) {
-    page.value--
-  }
-
-  if (type === 'next' && page.value < getPaginationDetails.value.maxPage) {
-    page.value++
-  }
+function onNext() {
+  page.value++
 }
 </script>
 
@@ -107,7 +82,7 @@ function paginate(type: string) {
       }"
     >
       <template #week-data="{ row }">
-        <p>{{ row.week }}</p>
+        <p>{{ row.period }}</p>
       </template>
 
       <template #volume-data="{ row }">
@@ -121,31 +96,35 @@ function paginate(type: string) {
 
     <div class="flex items-center justify-end bg-[#262A30] py-4 px-0.5">
       <p class="text-sm text-white font-medium mr-2">
-        {{ getPaginationDetails.from }}-{{ getPaginationDetails.to }} of
-        {{ getPaginationDetails.totalData }}
+        {{
+          t('points.paginationDetails', {
+            from: limit * (page - 1) + 1,
+            to: pointsStore.pointsHistory.length
+          })
+        }}
       </p>
       <AppButton
         class="p-1.5 disabled:border-none focus-within:ring-0"
         variant="primary-ghost"
-        :disabled="isPaginationDisabled.prev"
-        @click="paginate('prev')"
+        :disabled="isPrevDisabled"
+        @click="onPrevious"
       >
         <UIcon
           :name="NuxtUiIcons.ChevronLeft2"
           class="size-3"
-          :class="{ 'pointer-events-none': isPaginationDisabled.prev }"
+          :class="{ 'pointer-events-none': isPrevDisabled }"
         />
       </AppButton>
       <AppButton
         class="p-1.5 disabled:border-none focus-within:ring-0"
         variant="primary-ghost"
-        :disabled="isPaginationDisabled.next"
-        @click="paginate('next')"
+        :disabled="isNextDisabled"
+        @click="onNext"
       >
         <UIcon
           :name="NuxtUiIcons.ChevronRight2"
           class="size-3"
-          :class="{ 'pointer-events-none': isPaginationDisabled.next }"
+          :class="{ 'pointer-events-none': isNextDisabled }"
         />
       </AppButton>
     </div>

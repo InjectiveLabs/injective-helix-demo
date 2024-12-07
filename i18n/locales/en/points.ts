@@ -1,3 +1,5 @@
+import { I18nMessageFunction } from '@/types'
+
 export default {
   points: {
     week: 'Week',
@@ -10,6 +12,9 @@ export default {
     rank: 'Rank',
     league: 'League',
     myTotalPoints: 'My total points on Helix',
-    saveImage: 'Save image'
+    saveImage: 'Save image',
+    lastUpdatedAt: 'Last updated at ',
+    paginationDetails: ({ named }: I18nMessageFunction) =>
+      `${named('from')} to ${named('to')}`
   }
 }

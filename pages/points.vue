@@ -1,105 +1,52 @@
 <script lang="ts" setup>
-import { toJpeg } from 'html-to-image'
-import { NuxtUiIcons } from '@shared/types'
-import { PointsLeague } from '@/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 
-const now = useNow({ interval: 1000 })
-
-const canvas = ref()
-const isShowDownloadButton = ref(true)
-
-const totalPoints = computed(() => '10,912,012')
-const rank = computed(() => '1,888')
-const league = computed(() => PointsLeague.White)
-
-const leagueBg = computed(() => {
-  // todo: update the asset for Purple & Black once Nelmer confirmed the BG asset
-  const leagueBgList = {
-    [PointsLeague.White]: 'bg-1',
-    [PointsLeague.Orange]: 'bg-2',
-    [PointsLeague.Blue]: 'bg-3',
-    [PointsLeague.Purple]: 'bg-1',
-    [PointsLeague.Black]: 'bg-1'
-  }
-
-  return leagueBgList[league.value]
+definePageMeta({
+  middleware: ['connected']
 })
 
-async function downloadImage() {
-  isShowDownloadButton.value = false
+const pointsStore = usePointsStore()
+const { $onError } = useNuxtApp()
 
-  await nextTick()
+const status = reactive(new Status(StatusType.Loading))
 
-  toJpeg(canvas.value)
-    .then((dataUrl) => {
-      const link = document.createElement('a')
-      link.download = `Helix-Points-${now.value}.jpeg`
-      link.href = dataUrl
-      link.click()
-    })
-    .finally(() => {
-      isShowDownloadButton.value = true
-    })
-}
+onWalletConnected(() => {
+  Promise.all([
+    pointsStore.fetchPoints(),
+    pointsStore.fetchAccountDailyPoints()
+  ])
+    .catch($onError)
+    .finally(() => status.setIdle())
+})
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      pointsStore.fetchPoints(),
+      pointsStore.fetchAccountDailyPoints()
+    ]),
+  60 * 1000
+)
 </script>
 
 <template>
-  <div
-    class="pt-16 pb-32 px-48 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px] 5xl:max-w-[90%]"
-  >
-    <div class="flex flex-col gap-4 max-xs:gap-1">
-      <h1 class="text-3xl max-xs:text-2xl">{{ $t('points.title') }}</h1>
-      <p class="text-base tracking-wide max-xs:text-sm">
-        {{ $t('points.description') }}
-      </p>
-    </div>
-
-    <PartialsPointsStats v-bind="{ totalPoints, rank, league }" />
-
-    <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
-      <PartialsPointsTable />
-
-      <div
-        ref="canvas"
-        :class="[
-          'relative flex flex-col items-center py-4 px-[88px] w-[420px] min-h-[365px] max-xs:w-full max-xs:px-8 bg-cover bg-center bg-no-repeat bg-black text-white',
-          isShowDownloadButton ? 'rounded-lg' : ''
-        ]"
-        :style="{
-          backgroundImage: `url('/images/points/helix-points-${leagueBg}.png')`
-        }"
-      >
-        <AssetLogo class="w-auto h-9" alt="Helix" />
-
-        <p class="text-xl max-xs:text-xl mt-12 drop-shadow-lg">
-          {{ $t('points.myTotalPoints') }}
+  <AppHocLoading v-bind="{ status }">
+    <div
+      class="pt-16 pb-32 px-48 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px] 5xl:max-w-[90%]"
+    >
+      <div class="flex flex-col gap-4 max-xs:gap-1">
+        <h1 class="text-3xl max-xs:text-2xl">{{ $t('points.title') }}</h1>
+        <p class="text-base tracking-wide max-xs:text-sm">
+          {{ $t('points.description') }}
         </p>
-        <p
-          class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6 drop-shadow-md"
-        >
-          {{ totalPoints }}
-        </p>
+      </div>
 
-        <div class="flex justify-between w-full">
-          <p class="text-base font-medium drop-shadow-lg">
-            {{ $t('points.league') }}: {{ league }}
-          </p>
-          <p class="text-base font-medium drop-shadow-lg">
-            {{ $t('points.rank') }}: {{ rank }}
-          </p>
-        </div>
+      <PartialsPointsStats />
 
-        <AppButton
-          v-if="isShowDownloadButton"
-          class="absolute bottom-4 right-4 flex justify-center items-center gap-2 py-2 px-4 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
-          @click="downloadImage"
-        >
-          <p class="text-sm font-medium tracking-wide">
-            {{ $t('points.saveImage') }}
-          </p>
-          <UIcon :name="NuxtUiIcons.Download2" class="size-4" />
-        </AppButton>
+      <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
+        <PartialsPointsTable />
+        <PartialsPointsScoreCard />
       </div>
     </div>
-  </div>
+  </AppHocLoading>
 </template>
