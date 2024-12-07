@@ -7,8 +7,8 @@ const { t } = useLang()
 
 const columns = [
   {
-    key: 'week',
-    label: t('points.week'),
+    key: 'day',
+    label: t('points.day'),
     sortable: true,
     class: 'w-[2]'
   },
@@ -81,7 +81,7 @@ function onNext() {
         }
       }"
     >
-      <template #week-data="{ row }">
+      <template #day-data="{ row }">
         <p>{{ row.period }}</p>
       </template>
 

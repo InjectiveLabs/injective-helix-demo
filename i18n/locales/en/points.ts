@@ -2,6 +2,7 @@ import { I18nMessageFunction } from '@/types'
 
 export default {
   points: {
+    day: 'Day',
     week: 'Week',
     points: 'Points',
     volume: 'Volume',
