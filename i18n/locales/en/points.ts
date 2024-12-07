@@ -1,4 +1,4 @@
-import { I18nMessageFunction } from '@/types'
+import { PointsLeague, I18nMessageFunction } from '@/types'
 
 export default {
   points: {
@@ -16,6 +16,13 @@ export default {
     saveImage: 'Save image',
     lastUpdatedAt: 'Last updated at ',
     paginationDetails: ({ named }: I18nMessageFunction) =>
-      `${named('from')} to ${named('to')}`
+      `${named('from')} to ${named('to')}`,
+    leagues: {
+      [PointsLeague.White]: 'White',
+      [PointsLeague.Orange]: 'Orange',
+      [PointsLeague.Blue]: 'Blue',
+      [PointsLeague.Purple]: 'Purple',
+      [PointsLeague.Black]: 'Black'
+    }
   }
 }

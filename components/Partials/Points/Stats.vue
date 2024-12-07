@@ -60,20 +60,22 @@ const { valueToFixed: rankToFixed } = useSharedBigNumberFormatter(
         </p>
       </div>
 
-      <!-- <span class="w-[1px] bg-[#707883] ml-20 mr-6 max-lg:hidden" />
+      <template v-if="pointsStore.accountPoints">
+        <span class="w-[1px] bg-[#707883] ml-20 mr-6 max-lg:hidden" />
 
-    <div class="flex flex-col gap-1">
-      <h4
-        class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
-      >
-        {{ $t('points.league') }}
-      </h4>
-      <p
-        class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
-      >
-        {{ league }}
-      </p>
-    </div> -->
+        <div class="flex flex-col gap-1">
+          <h4
+            class="text-coolGray-450 text-2xl max-xs:text-base max-lg:text-[18px] max-xl:text-xl"
+          >
+            {{ $t('points.league') }}
+          </h4>
+          <p
+            class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
+          >
+            {{ $t(`points.leagues.${pointsStore.accountPoints.league}`) }}
+          </p>
+        </div>
+      </template>
     </div>
     <div v-if="lastUpdated" class="text-sm text-coolGray-500 mt-4">
       <span>{{ $t('points.lastUpdatedAt') }}</span>
