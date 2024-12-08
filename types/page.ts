@@ -4,6 +4,7 @@ export enum MainPage {
   Index = 'index',
   Points = 'points',
   Guilds = 'guilds',
+  Vaults = 'vaults',
   Markets = 'markets',
   Portfolio = 'portfolio',
   LpRewards = 'lp-rewards',

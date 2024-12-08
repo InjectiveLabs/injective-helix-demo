@@ -2,9 +2,9 @@ import { LiquidityProvisionType } from '@/types'
 
 export default {
   liquidityProvision: {
-    title: 'Liquidity',
+    title: 'Maximize Yield with Mito Vaults',
     description:
-      'Earn sustainable yield through decentralized perpetual vaults and trading bots',
+      'Supercharge your crypto holdings with Mito’s automated market making vaults. Start earning passive income today by providing liquidity to the leading projects in the Injective ecosystem.',
     TVL: 'TVL',
     APY: 'APY',
 

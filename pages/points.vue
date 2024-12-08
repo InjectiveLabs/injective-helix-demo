@@ -13,15 +13,20 @@ const pointsPeriodList = [PointsPeriod.Day, PointsPeriod.Week]
 
 const selectedPeriod = ref(pointsPeriodList[0])
 const status = reactive(new Status(StatusType.Loading))
+const fetchStatus = reactive(new Status(StatusType.Idle))
 
 const isDailyPeriod = computed(() => selectedPeriod.value === PointsPeriod.Day)
 
 function fetchAccountPoints() {
-  if (isDailyPeriod.value) {
-    pointsStore.fetchAccountDailyPoints()
-  } else {
-    pointsStore.fetchAccountWeeklyPoints()
-  }
+  fetchStatus.setLoading()
+
+  const action = isDailyPeriod.value
+    ? pointsStore.fetchAccountDailyPoints
+    : pointsStore.fetchAccountWeeklyPoints
+
+  action()
+    .catch($onError)
+    .finally(() => fetchStatus.setIdle())
 }
 
 onWalletConnected(() => {
@@ -60,11 +65,16 @@ useIntervalFn(
       <PartialsPointsStats />
 
       <div class="flex gap-6 max-lg:flex-col max-lg:items-center flex-1">
-        <PartialsPointsTable
-          v-model="selectedPeriod"
-          :points-period-list="pointsPeriodList"
-          @update:model-value="fetchAccountPoints"
-        />
+        <AppHocLoading
+          v-bind="{ status: fetchStatus }"
+          wrapper-class="self-center flex-1"
+        >
+          <PartialsPointsTable
+            v-model="selectedPeriod"
+            :points-period-list="pointsPeriodList"
+            @update:model-value="fetchAccountPoints"
+          />
+        </AppHocLoading>
         <PartialsPointsScoreCard />
       </div>
     </div>

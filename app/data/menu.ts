@@ -69,11 +69,11 @@ export const TRADING_OPTIONS = [
   },
   {
     label: 'navigation.vaults',
-    to: { name: MainPage.LiquidityProvision }
+    to: { name: MainPage.Vaults }
   },
   {
     label: 'navigation.tradingBots',
-    to: { name: MainPage.LiquidityProvision }
+    to: { name: MainPage.Vaults }
   },
   {
     to: { name: LeaderboardSubPage.Pnl },

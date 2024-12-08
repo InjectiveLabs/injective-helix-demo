@@ -28,7 +28,7 @@ const columns = [
   {
     key: 'volume',
     label: t('points.volume'),
-    class: 'text-center'
+    class: 'text-right'
   },
   {
     key: 'points',
@@ -150,7 +150,7 @@ function onNext() {
       </template>
 
       <template #volume-data="{ row }">
-        <span class="flex justify-center font-mono">
+        <span class="flex justify-end font-mono">
           <AppAmount
             v-bind="{
               amount: row.volume,
