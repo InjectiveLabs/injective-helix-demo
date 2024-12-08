@@ -64,7 +64,7 @@ async function downloadImage() {
 
 <template>
   <div
-    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white'"
+    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white"
   >
     <div
       ref="canvas"

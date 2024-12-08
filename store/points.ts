@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { abacusGrpcApi } from '@/app/Services'
 import { AccountPoints, HistoricalPoints } from '@/types'
 
+const RECORD_LIMIT = 180
+
 type PointStoreState = {
   accountPoints?: AccountPoints
   pointsHistory: HistoricalPoints[]
@@ -46,7 +48,8 @@ export const usePointsStore = defineStore('points', {
 
       pointsStore.$patch({
         pointsHistory: await abacusGrpcApi.fetchAccountDailyPoints(
-          sharedWalletStore.injectiveAddress
+          sharedWalletStore.injectiveAddress,
+          RECORD_LIMIT
         )
       })
     },
@@ -64,7 +67,8 @@ export const usePointsStore = defineStore('points', {
 
       pointsStore.$patch({
         pointsHistory: await abacusGrpcApi.fetchAccountWeeklyPoints(
-          sharedWalletStore.injectiveAddress
+          sharedWalletStore.injectiveAddress,
+          RECORD_LIMIT
         )
       })
     },

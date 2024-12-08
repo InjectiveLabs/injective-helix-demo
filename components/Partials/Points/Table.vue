@@ -41,8 +41,8 @@ const limit = 7
 const page = ref(1)
 
 const filteredPointsHistory = computed(() => {
-  return pointsStore.pointsHistory.filter(({ points }) =>
-    new BigNumberInBase(points).gt(0)
+  return pointsStore.pointsHistory.filter(
+    ({ points }) => !new BigNumberInBase(points).isZero()
   )
 })
 
@@ -94,12 +94,13 @@ function onNext() {
 <template>
   <div
     class="w-full flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
-    :class="{ 'h-full': isEmpty }"
   >
     <UTable
       :rows="rows"
       :columns="columns"
       :ui="{
+        ...(isEmpty ? { wrapper: 'flex-grow' } : {}),
+        base: 'h-full',
         divide: 'dark:divide-y-0',
         tbody: 'dark:divide-y-0',
         th: {

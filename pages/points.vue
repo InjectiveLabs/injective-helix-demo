@@ -59,7 +59,7 @@ useIntervalFn(
 
       <PartialsPointsStats />
 
-      <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
+      <div class="flex gap-6 max-lg:flex-col max-lg:items-center flex-1">
         <PartialsPointsTable
           v-model="selectedPeriod"
           :points-period-list="pointsPeriodList"
