@@ -3,6 +3,8 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage, LiquidityDashboardTableColumn } from '@/types'
 
+const sharedWalletStore = useSharedWalletStore()
+
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
 
@@ -131,6 +133,12 @@ const columns = [
             campaign: row.campaign
           }"
         />
+      </template>
+
+      <template v-if="!sharedWalletStore.isUserConnected" #empty-state>
+        <div class="flex justify-center items-center py-10">
+          <AppConnectWallet />
+        </div>
       </template>
     </UTable>
   </template>

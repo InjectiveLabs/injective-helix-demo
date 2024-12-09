@@ -17,7 +17,7 @@ const currentRoundCampaigns = computed(() =>
   )
 )
 
-onMounted(() => {
+onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([campaignStore.fetchRound()])

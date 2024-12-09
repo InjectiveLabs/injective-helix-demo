@@ -155,7 +155,7 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async disconnect() {
+    disconnect() {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
@@ -169,8 +169,6 @@ export const useWalletStore = defineStore('wallet', {
       const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
-
-      await sharedWalletStore.logout()
 
       appStore.reset()
       pointsStore.reset()

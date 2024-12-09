@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -22,19 +21,9 @@ onMounted(() => {
 <template>
   <UContainer class="py-8">
     <PartialsTradingBotsHomepageHero />
-    <PartialsTradingBotsHomepageMyActiveBots
-      v-if="
-        sharedWalletStore.isUserConnected && sharedWalletStore.injectiveAddress
-      "
-      class="mt-10"
-    />
+    <PartialsTradingBotsHomepageMyActiveBots class="mt-10" />
 
-    <PartialsTradingBotsHomepageMyLpRewards
-      v-if="
-        sharedWalletStore.isUserConnected && sharedWalletStore.injectiveAddress
-      "
-      class="mt-10"
-    />
+    <PartialsTradingBotsHomepageMyLpRewards class="mt-10" />
 
     <!-- <PartialsTradingBotsHomepageShowcase class="mt-10" /> -->
   </UContainer>

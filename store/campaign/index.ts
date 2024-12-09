@@ -400,8 +400,11 @@ export const useCampaignStore = defineStore('campaign', {
     reset() {
       const campaignStore = useCampaignStore()
 
-      campaignStore.userGuildInfo = undefined
-      campaignStore.ownerCampaignInfo = undefined
+      campaignStore.$patch({
+        round: [],
+        userGuildInfo: undefined,
+        ownerCampaignInfo: undefined
+      })
     }
   }
 })
