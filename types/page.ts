@@ -9,6 +9,7 @@ export enum MainPage {
   Portfolio = 'portfolio',
   LpRewards = 'lp-rewards',
   Maintenance = 'maintenance',
+  TradingBots = 'trading-bots',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',

@@ -73,7 +73,7 @@ export const TRADING_OPTIONS = [
   },
   {
     label: 'navigation.tradingBots',
-    to: { name: MainPage.Vaults }
+    to: { name: MainPage.TradingBots }
   },
   {
     to: { name: LeaderboardSubPage.Pnl },
