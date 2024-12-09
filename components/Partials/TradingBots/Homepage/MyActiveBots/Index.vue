@@ -4,7 +4,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BotType } from '@/types'
 
-const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
@@ -137,19 +136,12 @@ onWalletConnected(() => {
         <div class="border-t border-gray-700 -mt-2.5" />
 
         <div
-          v-if="!sharedWalletStore.injectiveAddress"
-          class="flex justify-center items-center py-10"
+          v-if="filteredStrategies.length === 0"
+          class="flex flex-col justify-center items-center py-10"
         >
-          <AppConnectWallet />
-        </div>
-
-        <div
-          v-else-if="filteredStrategies.length === 0"
-          class="flex justify-center items-center py-10"
-        >
-          <p class="text-sm text-zinc-500">
-            {{ t('tradingBots.noActiveBots') }}
-          </p>
+          <div class="lg:pr-48">
+            <CommonEmptyList :message="t('tradingBots.noActiveBots')" />
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">

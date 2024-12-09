@@ -20,6 +20,7 @@ export default {
         [LiquidityDashboardTableColumn.EstRewards]: 'Est. Rewards'
       }
     },
+
     apy: 'APY',
     rank: 'Rank',
     error: 'Error',
@@ -58,6 +59,7 @@ export default {
     volumeThisRound: 'Volume This Round',
     totalEstRewards: 'Total Est. Rewards',
     dashboardTitle: 'LP Rewards Dashboard',
+    noActiveCampaigns: 'No active campaigns',
     endTimeForRound: 'End Time for Round {round}',
     totalRewardsAllTime: 'Total Rewards (All Time)',
     totalRewardsThisRound: 'Total Rewards This Round',
