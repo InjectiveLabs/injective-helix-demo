@@ -138,21 +138,18 @@ function sharePosition(position: PositionV2) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover v-if="!sixXl">
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <PartialsPortfolioPositionsTableActionBtns
-                is-table-popover
-                :position="row.position"
-                :market="row.market"
-                :pnl="row.pnl"
-                :has-reduce-only-orders="row.hasReduceOnlyOrders"
-                :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
-                :is-market-order-authorized="row.isMarketOrderAuthorized"
-                :is-limit-order-authorized="row.isLimitOrderAuthorized"
-                :quantity="row.quantity"
-              />
-            </div>
-          </AppTablePopover>
+          <PartialsPortfolioPositionsTableActionBtns
+            v-if="!sixXl"
+            is-shrinked
+            :position="row.position"
+            :market="row.market"
+            :pnl="row.pnl"
+            :has-reduce-only-orders="row.hasReduceOnlyOrders"
+            :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
+            :is-market-order-authorized="row.isMarketOrderAuthorized"
+            :is-limit-order-authorized="row.isLimitOrderAuthorized"
+            :quantity="row.quantity"
+          />
         </div>
       </template>
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PortfolioFuturesTriggersTableColumn } from '@/types'
@@ -128,21 +129,19 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
             <p>{{ row.market.ticker }}</p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover v-if="!xxl">
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <AppButton
-                variant="danger-ghost"
-                class="p-2 w-full"
-                size="sm"
-                :status="status"
-                :disabled="!row.isCancelable"
-                :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-                @click="cancelOrder(row.trigger, row.isCancelable)"
-              >
-                {{ $t('trade.cancelOrder') }}
-              </AppButton>
-            </div>
-          </AppTablePopover>
+          <AppButton
+            v-if="!xxl"
+            size="xs"
+            :status="status"
+            variant="danger-shade"
+            class="p-1 outline-none"
+            :disabled="!row.isCancelable"
+            :title="$t('trade.cancelOrder')"
+            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
+            @click="cancelOrder(row.trigger, row.isCancelable)"
+          >
+            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
+          </AppButton>
         </div>
       </template>
 

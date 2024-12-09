@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -197,21 +198,19 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover v-if="!fourXl">
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <AppButton
-                variant="danger-ghost"
-                class="p-2 w-full"
-                size="sm"
-                :status="status"
-                :disabled="!row.isAuthorized"
-                :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-                @click="cancelOrder(row.order, row.isAuthorized)"
-              >
-                {{ $t('trade.cancelOrder') }}
-              </AppButton>
-            </div>
-          </AppTablePopover>
+          <AppButton
+            v-if="!fourXl"
+            size="xs"
+            :status="status"
+            variant="danger-shade"
+            class="p-1 outline-none"
+            :title="$t('trade.cancelOrder')"
+            :disabled="!row.isAuthorized"
+            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
+            @click="cancelOrder(row.order, row.isAuthorized)"
+          >
+            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
+          </AppButton>
         </div>
       </template>
 

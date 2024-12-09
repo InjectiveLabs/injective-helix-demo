@@ -4,6 +4,7 @@ import {
   // TradeDirection,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 // import { OrderSide } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 // import { ZERO_IN_BASE } from '@shared/utils/constant'
@@ -20,7 +21,7 @@ const props = withDefaults(
   defineProps<{
     pnl: BigNumberInBase
     position: PositionV2
-    isTablePopover?: boolean
+    isShrinked?: boolean
     quantity: BigNumberInBase
     market: UiDerivativeMarket
     hasReduceOnlyOrders: boolean
@@ -28,9 +29,7 @@ const props = withDefaults(
     isMarketOrderAuthorized: boolean
     reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   }>(),
-  {
-    isTablePopover: false
-  }
+  {}
 )
 const { t } = useLang()
 // const { lg } = useTwBreakpoints()
@@ -160,12 +159,14 @@ function closePositionAndReduceOnlyOrders() {
         tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
       }"
       size="sm"
-      :variant="isTablePopover ? 'danger-ghost' : 'danger-shade'"
-      :class="[isTablePopover ? 'p-2 w-full focus-within:ring-0' : 'min-w-16']"
+      :variant="'danger-shade'"
+      :title="$t('trade.closePosition')"
+      :class="[isShrinked ? 'p-1 outline-none' : 'min-w-16']"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >
-      {{ isTablePopover ? $t('trade.closePosition') : $t('common.close') }}
+      <span v-if="!isShrinked">{{ $t('common.close') }}</span>
+      <UIcon v-else :name="NuxtUiIcons.Trash" class="size-4" />
     </AppButton>
 
     <!-- todo: resurrect when limit orders reimplemented -->
