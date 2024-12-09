@@ -47,10 +47,31 @@ const filteredPointsHistory = computed(() => {
 })
 
 const paginatedPointsHistory = computed(() => {
-  return filteredPointsHistory.value.slice(
+  let paginatedPoints = filteredPointsHistory.value.slice(
     (page.value - 1) * limit,
     page.value * limit
   )
+
+  if (paginatedPoints.length <= 2) {
+    const emptyData = {
+      points: '',
+      volume: 0,
+      periodStart: '',
+      periodEnd: ''
+    }
+
+    const emptyDataList: any = {
+      0: [],
+      1: [emptyData, emptyData],
+      2: [emptyData]
+    }
+
+    paginatedPoints = paginatedPoints.concat(
+      emptyDataList[paginatedPoints.length]
+    )
+  }
+
+  return paginatedPoints
 })
 
 const paginationDetails = computed(() => {
@@ -113,9 +134,9 @@ function onNext() {
         td: {
           size: 'text-sm',
           font: 'font-medium',
-          base: 'bg-[#262A30] leading-none',
           padding: 'py-3 px-2',
-          color: 'dark:text-white'
+          color: 'dark:text-white',
+          base: 'bg-[#262A30] leading-none'
         }
       }"
     >
@@ -146,11 +167,11 @@ function onNext() {
       </template>
 
       <template #period-data="{ row }">
-        <p class="leading-tight">{{ row.period }}</p>
+        <p v-show="row.period" class="leading-tight">{{ row.period }}</p>
       </template>
 
       <template #volume-data="{ row }">
-        <span class="flex justify-end font-mono">
+        <span v-show="row.volume" class="flex justify-end font-mono">
           <AppAmount
             v-bind="{
               amount: row.volume,
@@ -161,7 +182,7 @@ function onNext() {
       </template>
 
       <template #points-data="{ row }">
-        <span class="flex justify-end">
+        <span v-show="row.points" class="flex justify-end">
           <AppAmount
             v-bind="{
               amount: row.points,

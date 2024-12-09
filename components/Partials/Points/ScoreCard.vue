@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { PointsLeague } from '@/types'
 
 const pointsStore = usePointsStore()
@@ -23,6 +24,7 @@ const beltImageList = {
 }
 
 const canvas = ref()
+const status = reactive(new Status(StatusType.Idle))
 
 const league = computed(
   () =>
@@ -52,13 +54,18 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
 
 async function downloadImage() {
   await nextTick()
+  status.setLoading()
 
-  toJpeg(canvas.value).then((dataUrl) => {
-    const link = document.createElement('a')
-    link.download = `Helix-Points-${now.value}.jpeg`
-    link.href = dataUrl
-    link.click()
-  })
+  try {
+    await toJpeg(canvas.value).then((dataUrl) => {
+      const link = document.createElement('a')
+      link.download = `Helix-Points-${now.value}.jpeg`
+      link.href = dataUrl
+      link.click()
+    })
+  } finally {
+    status.setIdle()
+  }
 }
 </script>
 
@@ -115,7 +122,11 @@ async function downloadImage() {
 
     <div class="bg-[#262A30] flex justify-end p-4">
       <AppButton
-        class="bottom-4 right-4 flex justify-center items-center gap-2 py-2.5 px-8 rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0"
+        :class="[
+          'bottom-4 right-4 flex justify-center items-center gap-2 w-[132px] h-[45px] rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0 [&>.spinner]:border-t-black [&>.spinner]:border-r-black',
+          status.isLoading() ? '[&>span]:hidden' : ''
+        ]"
+        :is-loading="status.isLoading()"
         @click="downloadImage"
       >
         <p class="text-sm leading-relaxed font-medium">

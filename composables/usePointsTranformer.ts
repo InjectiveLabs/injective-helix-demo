@@ -8,10 +8,13 @@ export function usePointsTransformer(
     pointsHistory.value.map((pointHistory) => ({
       points: pointHistory.points,
       volume: pointHistory.volume,
-      period: `${format(
-        new Date(pointHistory.periodStart),
-        'MMM dd, yyyy'
-      )} - ${format(new Date(pointHistory.periodEnd), 'MMM dd, yyyy')}`
+      period:
+        pointHistory.periodStart && pointHistory.periodEnd
+          ? `${format(
+              new Date(pointHistory.periodStart),
+              'MMM dd, yyyy'
+            )} - ${format(new Date(pointHistory.periodEnd), 'MMM dd, yyyy')}`
+          : ''
     }))
   )
 

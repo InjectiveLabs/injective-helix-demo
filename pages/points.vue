@@ -64,7 +64,7 @@ useIntervalFn(
 
       <PartialsPointsStats />
 
-      <div class="flex gap-6 max-lg:flex-col max-lg:items-center flex-1">
+      <div class="flex gap-6 max-lg:flex-col max-lg:items-center">
         <AppHocLoading
           v-bind="{ status: fetchStatus }"
           wrapper-class="self-center flex-1"
