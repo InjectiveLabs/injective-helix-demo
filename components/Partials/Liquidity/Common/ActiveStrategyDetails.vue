@@ -277,6 +277,7 @@ function removeStrategy() {
     <div v-if="strategy.isActive" class="pt-4">
       <UButton
         block
+        size="xl"
         color="red"
         :loading="status.isLoading()"
         @click="removeStrategy"

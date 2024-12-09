@@ -159,7 +159,9 @@ const trailingBounds = computed(() => {
             </div>
           </div>
 
-          <div class="flex justify-between items-center">
+          <!-- TODO: Add stop loss and take profit -->
+
+          <!-- <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
               {{ $t('liquidityBots.stopLoss') }}
             </p>
@@ -171,7 +173,7 @@ const trailingBounds = computed(() => {
               {{ $t('liquidityBots.takeProfit') }}
             </p>
             <p class="font-semibold">ToDo</p>
-          </div>
+          </div> -->
         </div>
       </template>
     </UAccordion>
