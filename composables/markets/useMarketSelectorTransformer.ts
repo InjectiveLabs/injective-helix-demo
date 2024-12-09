@@ -14,7 +14,7 @@ export function useMarketSelectorTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>,
   marketPriceMap: ComputedRef<Record<string, BigNumberInBase>>
 ) {
-  const derivativeStore = useDerivativeStore()
+  // const derivativeStore = useDerivativeStore()
 
   const priceChangeClassesMap: Partial<Record<SharedMarketChange, string>> = {
     [SharedMarketChange.Decrease]: 'text-red-500',
@@ -40,9 +40,9 @@ export function useMarketSelectorTransformer(
         funding: perpetualMarket.perpetualMarketFunding
       })
 
-      const openInterest = new BigNumberInBase(
-        derivativeStore.tickerOpenInterestMap[item.market.ticker] || 0
-      )
+      // const openInterest = new BigNumberInBase(
+      //   derivativeStore.tickerOpenInterestMap[item.market.ticker] || 0
+      // )
 
       const leverage = calculateLeverage(uiDerivativeMarket.initialMarginRatio)
 
@@ -70,8 +70,8 @@ export function useMarketSelectorTransformer(
           item.market?.ticker?.toUpperCase() || '',
         [MarketsSelectorTableColumn.MarketChange24h]: change,
         [MarketsSelectorTableColumn.FundingRate]: fundingRate,
-        [MarketsSelectorTableColumn.LastPrice]: lastTradedPrice,
-        [MarketsSelectorTableColumn.OpenInterest]: openInterest
+        [MarketsSelectorTableColumn.LastPrice]: lastTradedPrice
+        // [MarketsSelectorTableColumn.OpenInterest]: openInterest
       }
     })
   })

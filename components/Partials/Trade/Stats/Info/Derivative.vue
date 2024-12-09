@@ -75,17 +75,17 @@ const { valueToString: annualizedFundingRateToString } =
     }
   )
 
-const {
-  valueToFixed: openInterestToFixed,
-  valueToBigNumber: openInterestBigNumber
-} = useSharedBigNumberFormatter(
-  computed(
-    () =>
-      new BigNumberInBase(
-        derivativeStore.tickerOpenInterestMap[props.market.ticker] || 0
-      )
-  )
-)
+// const {
+//   valueToFixed: openInterestToFixed,
+//   valueToBigNumber: openInterestBigNumber
+// } = useSharedBigNumberFormatter(
+//   computed(
+//     () =>
+//       new BigNumberInBase(
+//         derivativeStore.tickerOpenInterestMap[props.market.ticker] || 0
+//       )
+//   )
+// )
 
 useIntervalFn(() => {
   now.value = Date.now()
@@ -121,7 +121,7 @@ useIntervalFn(() => {
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
 
-  <PartialsTradeStatsHeaderItem
+  <!-- <PartialsTradeStatsHeaderItem
     v-if="openInterestBigNumber.gt(0)"
     class="xl:hidden 2xl:flex"
     :title="$t('trade.stats.open_interest')"
@@ -133,7 +133,7 @@ useIntervalFn(() => {
         amount: openInterestToFixed
       }"
     />
-  </PartialsTradeStatsHeaderItem>
+  </PartialsTradeStatsHeaderItem> -->
 
   <PartialsTradeStatsHeaderItem>
     <template #title>

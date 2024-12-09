@@ -18,8 +18,8 @@ export default {
         [MarketsSelectorTableColumn.LastPrice]: 'Last Price',
         [MarketsSelectorTableColumn.MarketChange24h]: 'Change (24h)',
         [MarketsSelectorTableColumn.FundingRate]: 'Est. Funding (1h)',
-        [MarketsSelectorTableColumn.MarketVolume24h]: 'Volume (24h)',
-        [MarketsSelectorTableColumn.OpenInterest]: 'Open Interest'
+        [MarketsSelectorTableColumn.MarketVolume24h]: 'Volume (24h)'
+        // [MarketsSelectorTableColumn.OpenInterest]: 'Open Interest'
       }
     },
     stats: {
@@ -32,9 +32,9 @@ export default {
         'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
       high: '24h High',
       low: '24h Low',
-      open_interest: 'Open Interest (USDT)',
-      open_interest_tooltip:
-        'Total outstanding position of all traders of this contract',
+      // open_interest: 'Open Interest (USDT)',
+      // open_interest_tooltip:
+      //   'Total outstanding position of all traders of this contract',
       market_volume_24h: 'Volume (24h)',
       market_volume_24h_tooltip:
         'The total trade volume over the past 24 hours.',
@@ -164,7 +164,7 @@ export default {
       'The unrealized PnL is an approximation of the realized profit or loss if the position was to be closed.',
     long: 'Long',
     short: 'Short',
-    open_interest: 'Open interest',
+    // open_interest: 'Open interest',
     available_asset: ({ named }: I18nMessageFunction) =>
       `Available ${named('asset')}`,
     availableAmount: 'Available: {amount}',

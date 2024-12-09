@@ -74,16 +74,16 @@ const columns = computed(() => {
       sortable: true,
       sort: valueSortFunction,
       class: 'text-right'
-    },
-    {
-      key: MarketsSelectorTableColumn.OpenInterest,
-      label: t(
-        `trade.table.marketsSelector.${MarketsSelectorTableColumn.OpenInterest}`
-      ),
-      sortable: true,
-      sort: valueSortFunction,
-      class: 'text-right'
     }
+    // {
+    //   key: MarketsSelectorTableColumn.OpenInterest,
+    //   label: t(
+    //     `trade.table.marketsSelector.${MarketsSelectorTableColumn.OpenInterest}`
+    //   ),
+    //   sortable: true,
+    //   sort: valueSortFunction,
+    //   class: 'text-right'
+    // }
   ]
 
   if (!lg.value) {
@@ -288,7 +288,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
         </PartialsCommonMarketRedirection>
       </template>
 
-      <template #open-interest-data="{ row }">
+      <!-- <template #open-interest-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
             class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-sm"
@@ -308,7 +308,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
             </span>
           </div>
         </PartialsCommonMarketRedirection>
-      </template>
+      </template> -->
     </UTable>
   </template>
   <template v-else>

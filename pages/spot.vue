@@ -42,7 +42,7 @@ onMounted(async () => {
     positionStore.fetchPositions(),
     derivativeStore.fetchSubaccountOrders(),
     // spot page data
-    derivativeStore.fetchOpenInterest(),
+    // derivativeStore.fetchOpenInterest(),
     spotStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -82,7 +82,7 @@ provide(MarketKey, market)
 useIntervalFn(
   () =>
     Promise.all([
-      derivativeStore.fetchOpenInterest(),
+      // derivativeStore.fetchOpenInterest(),
       derivativeStore.fetchMarketsSummary()
     ]),
   60 * 1000

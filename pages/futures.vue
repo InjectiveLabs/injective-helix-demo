@@ -41,7 +41,7 @@ onWalletConnected(async () => {
 
   Promise.all([
     // futures data
-    derivativeStore.fetchOpenInterest(),
+    // derivativeStore.fetchOpenInterest(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -75,7 +75,7 @@ provide(IsSpotKey, false)
 useIntervalFn(
   () =>
     Promise.all([
-      derivativeStore.fetchOpenInterest(),
+      // derivativeStore.fetchOpenInterest(),
       derivativeStore.fetchMarketsSummary()
     ]),
   60 * 1000

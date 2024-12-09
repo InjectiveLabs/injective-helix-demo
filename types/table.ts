@@ -46,8 +46,8 @@ export enum MarketsSelectorTableColumn {
   LastPrice = 'last-price',
   MarketChange24h = 'market-change-24h',
   FundingRate = 'funding-rate',
-  MarketVolume24h = 'market-volume-24h',
-  OpenInterest = 'open-interest'
+  MarketVolume24h = 'market-volume-24h'
+  // OpenInterest = 'open-interest'
 }
 
 export enum LiquidityTableColumn {
@@ -240,7 +240,7 @@ export interface TransformedMarketsSelector {
   [MarketsSelectorTableColumn.Markets]: string
   [MarketsSelectorTableColumn.LastPrice]: string
   [MarketsSelectorTableColumn.FundingRate]: BigNumberInBase
-  [MarketsSelectorTableColumn.OpenInterest]: BigNumberInBase
+  // [MarketsSelectorTableColumn.OpenInterest]: BigNumberInBase
   [MarketsSelectorTableColumn.MarketChange24h]: string
 }
 
