@@ -89,7 +89,7 @@ function chase() {
             v-if="order.orderFillable"
             size="sm"
             class="py-2"
-            variant="danger"
+            variant="danger-shade"
             :status="status"
             :disabled="!order.isAuthorized"
             :tooltip="order.isAuthorized ? '' : $t('common.unauthorized')"

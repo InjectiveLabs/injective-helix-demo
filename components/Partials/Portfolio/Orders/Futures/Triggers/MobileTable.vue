@@ -58,7 +58,7 @@ function cancelOrder() {
         <AppButton
           size="sm"
           class="py-2"
-          variant="danger"
+          variant="danger-shade"
           :status="status"
           :disabled="!trigger.isAuthorized"
           :tooltip="trigger.isAuthorized ? '' : $t('common.unauthorized')"
