@@ -31,7 +31,7 @@ export const usePointsStore = defineStore('points', {
 
       pointsStore.$patch({
         accountPoints: await abacusGrpcApi.fetchAccountLatestPoints(
-          sharedWalletStore.injectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         )
       })
     },
@@ -49,7 +49,7 @@ export const usePointsStore = defineStore('points', {
 
       pointsStore.$patch({
         pointsHistory: await abacusGrpcApi.fetchAccountDailyPoints(
-          sharedWalletStore.injectiveAddress,
+          sharedWalletStore.authZOrInjectiveAddress,
           DAILY_LIMIT
         )
       })
@@ -68,7 +68,7 @@ export const usePointsStore = defineStore('points', {
 
       pointsStore.$patch({
         pointsHistory: await abacusGrpcApi.fetchAccountWeeklyPoints(
-          sharedWalletStore.injectiveAddress,
+          sharedWalletStore.authZOrInjectiveAddress,
           WEEKLY_LIMIT
         )
       })
