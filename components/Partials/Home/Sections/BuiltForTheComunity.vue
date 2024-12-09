@@ -1,4 +1,23 @@
 <script setup lang="ts">
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
+const totalVolume = computed(() =>
+  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
+    (sum, market) => {
+      return sum.plus(market.volume || 0)
+    },
+    ZERO_IN_BASE
+  )
+)
+
+const totalMarkets = computed(
+  () =>
+    [...spotStore.activeMarketIds, ...derivativeStore.activeMarketIds].length
+)
+
 onMounted(() => {
   const mm = gsap.matchMedia()
 
@@ -30,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32">
+  <div class="relative pb-32 snap-start">
     <AppBlur
       class="absolute bottom-52 left-1/2 -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
     />
@@ -58,16 +77,17 @@ onMounted(() => {
 
     <div class="flex justify-center space-x-20 font-semibold mt-10">
       <div>
-        <p class="text-coolGray-400">Total Trades</p>
-        <p class="text-2xl">100,000</p>
+        <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
+        <div class="text-2xl">
+          <AppAmount
+            :amount="totalVolume.toFixed()"
+            :min-display-decimals="0"
+          />
+        </div>
       </div>
       <div>
-        <p class="text-coolGray-400">Total Trades</p>
-        <p class="text-2xl">100,000</p>
-      </div>
-      <div>
-        <p class="text-coolGray-400">Total Trades</p>
-        <p class="text-2xl">100,000</p>
+        <p class="text-coolGray-400">{{ $t('home.totalMarkets') }}</p>
+        <p class="text-2xl">{{ totalMarkets }}</p>
       </div>
     </div>
   </div>
