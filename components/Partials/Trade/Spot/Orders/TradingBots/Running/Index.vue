@@ -1,31 +1,165 @@
 <script setup lang="ts">
-const isMobile = useIsMobile()
+import { NuxtUiIcons } from '@shared/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { GridStrategyTransformed } from '~/types'
+
 const gridStrategyStore = useGridStrategyStore()
+const { t } = useLang()
+
+const isOpen = ref(false)
+const selectedStrategy = ref<GridStrategyTransformed | null>(null)
+
+const strategies = useSpotGridStrategies(
+  computed(() => gridStrategyStore.activeStrategies)
+)
+
+const formattedStrategies = computed(() =>
+  strategies.value.map((strategy) => ({
+    ...strategy
+  }))
+)
+
+const columns = computed(() => [
+  { key: 'time', label: t('sgt.time'), class: 'w-32' },
+  { key: 'market', label: t('sgt.market') },
+  { key: 'lowerBound', label: t('sgt.lowerBound') },
+  { key: 'upperBound', label: t('sgt.upperBound') },
+  { key: 'totalAmount', label: t('sgt.totalAmount') },
+  { key: 'totalProfit', label: t('sgt.totalProfit') },
+  { key: 'duration', label: t('sgt.duration') },
+  { key: 'details', label: t('sgt.details') },
+  { key: 'removeStrategy', label: t('sgt.removeStrategy') }
+])
+
+function selectStrategy(strategy: GridStrategyTransformed) {
+  selectedStrategy.value = strategy
+  isOpen.value = true
+}
 </script>
 
 <template>
   <div class="divide-y border-b">
-    <PartialsTradeSpotOrdersTradingBotsRunningTableHeader v-if="!isMobile" />
+    <UTable
+      :ui="{
+        divide: 'dark:divide-cool-800',
+        th: {
+          color: 'text-coolGray-400',
+          size: 'text-xs',
+          font: 'font-normal'
+        },
+        td: {
+          color: 'text-white',
+          size: 'text-xs'
+        }
+      }"
+      :rows="formattedStrategies"
+      :columns="columns"
+    >
+      <template #time-data="{ row }">
+        <span>{{ row.createdAtFormatted }}</span>
+      </template>
 
-    <div v-if="isMobile">
-      <PartialsTradeSpotOrdersTradingBotsRunningTableMobileRow
-        v-for="strategy in gridStrategyStore.activeStrategies"
-        v-bind="{ strategy }"
-        :key="strategy.createdAt"
-      />
-    </div>
+      <template #market-data="{ row }">
+        <div class="flex items-center gap-2">
+          <UAvatar :src="row.market.baseToken.logo" />
+          <span>{{ row.market.ticker }}</span>
+        </div>
+      </template>
 
-    <template v-else>
-      <PartialsTradeSpotOrdersTradingBotsRunningTableRow
-        v-for="strategy in gridStrategyStore.activeStrategies"
-        v-bind="{ strategy }"
-        :key="strategy.createdAt"
+      <template #lowerBound-data="{ row }">
+        <div class="flex items-center gap-1">
+          <SharedAmountFormatter
+            :max-decimal-places="3"
+            :decimal-places="2"
+            :amount="row.lowerBound"
+          />
+          <span>{{ row.market.quoteToken.symbol }}</span>
+        </div>
+      </template>
+
+      <template #upperBound-data="{ row }">
+        <div class="flex items-center gap-1">
+          <SharedAmountFormatter
+            :max-decimal-places="3"
+            :decimal-places="2"
+            :amount="row.upperBound"
+          />
+          <span>{{ row.market.quoteToken.symbol }}</span>
+        </div>
+      </template>
+
+      <template #totalAmount-data="{ row }">
+        <div class="flex items-center gap-1">
+          <SharedAmountFormatter
+            :decimal-places="2"
+            :max-decimal-places="3"
+            :amount="row.currentUsdValue.toFixed()"
+          />
+        </div>
+      </template>
+
+      <template #totalProfit-data="{ row }">
+        <div
+          class="flex flex-col"
+          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+        >
+          <div class="flex items-center gap-1">
+            <span>{{ row.isPositivePnl ? '+' : '' }}</span>
+            <SharedAmountFormatter
+              :max-decimal-places="3"
+              :amount="row.pnl"
+              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            />
+            {{ ' ' + row.market.quoteToken.symbol }}
+          </div>
+          <div>({{ row.percentagePnl }}%)</div>
+        </div>
+      </template>
+
+      <template #duration-data="{ row }">
+        <span>{{ row.durationFormatted }}</span>
+      </template>
+
+      <template #details-data="{ row }">
+        <UButton size="xs" variant="ghost" @click="selectStrategy(row)">
+          {{ t('sgt.details') }}
+        </UButton>
+      </template>
+
+      <template #removeStrategy-data="{ row }">
+        <PartialsLiquidityBotsSpotCommonRemoveStrategy :strategy="row.strategy">
+          <template #default="{ removeStrategy, status }">
+            <UButton
+              :loading="status.isLoading()"
+              :icon="NuxtUiIcons.Trash"
+              variant="ghost"
+              color="red"
+              @click="removeStrategy"
+            />
+          </template>
+        </PartialsLiquidityBotsSpotCommonRemoveStrategy>
+      </template>
+    </UTable>
+
+    <!-- <template v-else>
+      <PartialsTradeSpotOrdersTradingBotsRunningMobileTable
+        v-for="strategy in formattedStrategies"
+        :key="strategy.subaccountId + strategy.createdAt"
+        :strategy="strategy"
+        @strategy:select="selectStrategy"
       />
-    </template>
+    </template> -->
 
     <CommonEmptyList
       v-if="gridStrategyStore.activeStrategies.length === 0"
       :message="$t('sgt.noActiveStrategies')"
     />
+
+    <SharedModal v-model="isOpen">
+      <PartialsLiquidityCommonActiveStrategyDetails
+        v-if="selectedStrategy"
+        :active-strategy="selectedStrategy.strategy"
+      />
+    </SharedModal>
   </div>
 </template>

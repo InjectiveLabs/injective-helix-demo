@@ -36,10 +36,13 @@ export default {
   ...institutional,
   ...liquidityBots,
   ...liquidityProvision,
+
   common: {
     or: 'or',
     ok: 'OK',
     BTC: 'BTC',
+    roi: 'ROI',
+    max: 'Max',
     docs: 'docs',
     back: 'Back',
     base: 'Base',
@@ -47,6 +50,7 @@ export default {
     here: 'here',
     view: 'View',
     open: 'Open',
+    days: 'Days',
     sort: 'Sort',
     quote: 'Quote',
     helix: 'Helix',
@@ -54,6 +58,7 @@ export default {
     value: 'Value',
     close: 'Close',
     enable: 'Enable',
+    create: 'Create',
     active: 'active',
     submit: 'Submit',
     search: 'Search',
@@ -61,6 +66,7 @@ export default {
     waived: 'Waived',
     sortBy: 'Sort By',
     details: 'Details',
+    runtime: 'Runtime',
     network: 'Network',
     deposit: 'Deposit',
     filters: 'Filters',
@@ -71,6 +77,7 @@ export default {
     withdraw: 'Withdraw',
     download: 'Download',
     required: 'Required',
+    learnMore: 'Learn more',
     ascending: 'Ascending',
     descending: 'Descending',
     marketType: 'Market Type',
@@ -480,5 +487,7 @@ export default {
     injectiveBridge: 'Injective Bridge',
     processingMessageInfo:
       'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
-  }
+  },
+
+  helix: 'Helix'
 }

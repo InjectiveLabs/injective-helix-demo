@@ -118,6 +118,9 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.TakeProfit]: string
   [SpotGridTradingField.StrategyType]: StrategyType
   [SpotGridTradingField.IsAssetRebalanceOn]: boolean
+  [SpotGridTradingField.IsTrailingEnabled]: boolean
+  [SpotGridTradingField.TrailingUpper]: string
+  [SpotGridTradingField.TrailingLower]: string
 }
 
 export type DerivativeGridTradingForm = {
@@ -178,4 +181,13 @@ export type ClosePositionLimitForm = {
 export type TakeProfitStopLossForm = {
   [TakeProfitStopLossFormField.StopLoss]: string
   [TakeProfitStopLossFormField.TakeProfit]: string
+}
+
+export type LiquidityValues = {
+  upperBound: BigNumberInBase
+  lowerBound: BigNumberInBase
+  trailingUpperBound: BigNumberInBase
+  trailingLowerBound: BigNumberInBase
+  currentPrice: BigNumberInBase
+  grids: number
 }

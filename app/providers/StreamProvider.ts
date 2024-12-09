@@ -63,6 +63,7 @@ export class StreamProvider {
     const argsWithCallbacks = {
       ...args,
       onEndCallback: (status: StreamStatusResponse): any => {
+        console.log('onEndCallback', status)
         this.reconnectOnTimeout(key, status)
       },
       onStatusCallback: (status: StreamStatusResponse): any => {

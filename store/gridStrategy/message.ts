@@ -3,6 +3,8 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  StrategyType,
+  TradingStrategy,
   MsgExecuteContractCompat,
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
@@ -39,7 +41,10 @@ export const createStrategy = async (
     [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
     [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
     [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
-    [SpotGridTradingField.StrategyType]: strategyType
+    [SpotGridTradingField.StrategyType]: strategyType,
+    [SpotGridTradingField.IsTrailingEnabled]: isTrailingEnabled,
+    [SpotGridTradingField.TrailingLower]: trailingLower,
+    [SpotGridTradingField.TrailingUpper]: trailingUpper
   }: Partial<SpotGridTradingForm>,
   market?: UiSpotMarket
 ) => {
@@ -82,6 +87,22 @@ export const createStrategy = async (
   if (!gridMarket) {
     return
   }
+
+  const trailingArgs =
+    isTrailingEnabled && trailingLower && trailingUpper
+      ? {
+          lowerTrailing: spotPriceToChainPriceToFixed({
+            value: trailingLower,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          }),
+          upperTrailing: spotPriceToChainPriceToFixed({
+            value: trailingUpper,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          })
+        }
+      : undefined
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
@@ -155,7 +176,8 @@ export const createStrategy = async (
         quoteDecimals: actualMarket.quoteToken.decimals
       }),
       exitType: exitType || ExitType.Default,
-      strategyType
+      strategyType,
+      trailingArithmetic: trailingArgs
     }),
 
     funds
@@ -416,6 +438,198 @@ export const createPerpStrategy = async (
   backupPromiseCall(() =>
     Promise.all([
       authZStore.fetchGrants(),
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export async function createSpotLiquidityBot(params: {
+  grids: number
+  lowerBound: string
+  upperBound: string
+
+  baseAmount?: string
+  quoteAmount?: string
+
+  lowerTrailingBound: string
+  upperTrailingBound: string
+
+  market: UiSpotMarket
+}) {
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const {
+    grids,
+    market,
+    lowerBound,
+    upperBound,
+    baseAmount,
+    quoteAmount,
+    lowerTrailingBound,
+    upperTrailingBound
+  } = params
+
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.slug
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+
+  if (!gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: market.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: market.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: market.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: market.quoteToken.decimals
+      })
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
+    funds,
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      subaccountId,
+      levels: grids,
+      lowerBound: spotPriceToChainPriceToFixed({
+        value: lowerBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
+      upperBound: spotPriceToChainPriceToFixed({
+        value: upperBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
+      trailingArithmetic: {
+        lowerTrailing: spotPriceToChainPriceToFixed({
+          value: lowerTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        upperTrailing: spotPriceToChainPriceToFixed({
+          value: upperTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        lpMode: true
+      }
+    })
+  })
+
+  // eslint-disable-next-line no-console
+  console.log(msg.toWeb3())
+
+  await sharedWalletStore.validateAndQueue()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export async function copySpotGridTradingStrategy({
+  baseAmount,
+  quoteAmount,
+  strategy
+}: {
+  baseAmount?: string
+  quoteAmount?: string
+  strategy: TradingStrategy
+}) {
+  const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const spotMarket = spotStore.markets.find(
+    (m) => m.marketId === strategy.marketId
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === spotMarket?.slug)
+
+  if (!spotMarket || !gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: spotMarket.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: spotMarket.quoteToken.decimals
+      })
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      levels: Number(strategy.numberOfGridLevels),
+      lowerBound: strategy.lowerBound,
+      upperBound: strategy.upperBound,
+      subaccountId: addressAndMarketSlugToSubaccountId(
+        sharedWalletStore.address,
+        spotMarket.slug
+      ),
+      trailingArithmetic:
+        strategy.trailUpPrice && strategy.trailDownPrice
+          ? {
+              lowerTrailing: strategy.trailDownPrice,
+              upperTrailing: strategy.trailUpPrice,
+              lpMode: strategy.strategyType === StrategyType.ArithmeticLP
+            }
+          : undefined
+    }),
+    funds
+  })
+
+  await sharedWalletStore.validateAndQueue()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+
+  backupPromiseCall(() =>
+    Promise.all([
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()

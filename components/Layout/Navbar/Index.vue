@@ -20,7 +20,7 @@ const filteredTopNavMenu = computed(() =>
 </script>
 
 <template>
-  <header class="w-full z-50 bg-coolGray-975 relative">
+  <header class="w-full z-50 bg-brand-900 relative">
     <div class="flex border-b py-3">
       <NuxtLink
         to="/"

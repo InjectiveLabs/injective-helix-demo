@@ -305,6 +305,17 @@ export const defineGlobalRules = () => {
     }
   )
 
+  defineRule('minTotalAmountUsdSgt', (_value: string, [amount]: string[]) => {
+    const min = 50
+    const amountInBigNumber = new BigNumberInBase(amount)
+
+    if (amountInBigNumber.lt(min)) {
+      return `Total amount should be greater than $ ${min} USD`
+    }
+
+    return true
+  })
+
   defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
     if (!fieldValue && !value) {
       return 'At least one field is required'

@@ -69,6 +69,8 @@ export default {
     campaignNotFound: 'Campaign not found, please try again later.',
     description: 'Earn rewards by trading different spot markets',
     eligibleMarkets: 'Eligible Market for Rewards ',
+    rewardsPending:
+      'LP Rewards Pending: Rewards for this pair are currently being processed. Funding may take up to a week after the round ends.',
     lastUpdatedAt: 'Last updated at {date}',
     lastUpdated: ({ named }: I18nMessageFunction) =>
       `Last updated at ${named('date')}`,

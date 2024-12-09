@@ -59,14 +59,18 @@ function claimRewards() {
 </script>
 
 <template>
-  <AppButton
-    :class="extraClass"
-    v-bind="{ status }"
-    size="xs"
-    :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
-    @click="claimRewards"
+  <UTooltip
+    :prevent="campaign.isClaimable || campaign.endDate > Date.now()"
+    :text="t('campaign.rewardsPending')"
   >
-    <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
-    <span v-else>{{ $t('campaign.claim') }}</span>
-  </AppButton>
+    <AppButton
+      :class="extraClass"
+      v-bind="{ status }"
+      :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
+      @click="claimRewards"
+    >
+      <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
+      <span v-else>{{ $t('campaign.claim') }}</span>
+    </AppButton>
+  </UTooltip>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PerpOrdersTradingBotsView } from '@/types'
 
-const view = ref(PerpOrdersTradingBotsView.OpenOrders)
+const view = ref(PerpOrdersTradingBotsView.ActiveStrategies)
 </script>
 
 <template>

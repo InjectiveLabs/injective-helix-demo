@@ -51,6 +51,7 @@ export default {
     saveOnFees: 'Adjust Deposit Amounts',
     tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
+    enableTrailing: 'Enable Trailing',
     keepQuote: 'Keep {quote} Only',
     totalAmount: 'Total Amount',
     optimizedAmounts: 'Optimized Amounts',
@@ -66,6 +67,7 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    trailingPriceRange: 'Trailing Price Range',
     minInvestmentDescription: ({ named }: I18nMessageFunction) =>
       `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
     minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
@@ -186,6 +188,7 @@ export default {
     endABot: 'End a bot',
     accountEndBot:
       'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
+    helixTradingBots: 'Helix Trading Bots',
 
     step1: {
       priceRange:
@@ -224,6 +227,97 @@ export default {
       buyBaseOnStop: 'Buy {symbol} on stop',
       stopLossPrice: 'Stop Loss Price',
       takeProfitPrice: 'Take Profit Price'
+    },
+
+    tabs: {
+      liveSpotGrid: 'Live Spot Grid',
+      spotGridHistory: 'Spot Grid History'
+    },
+
+    modes: {
+      arithmetic: 'Arithmetic',
+      geometric: 'Geometric',
+      arithmetic_lp: 'Arithmetic LP',
+      trailing_arithmetic_lp: 'Trailing Arithmetic LP',
+      trailing_arithmetic: 'Trailing Arithmetic'
+    },
+
+    confirmationTitle: 'Grid Order Confirmation',
+    confirmationDescription:
+      'Please read the below information carefully before you confirm to proceed.',
+    profitPerGrid: 'Profit/grid (fees deducted)',
+    disclaimer:
+      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.'
+  },
+
+  tradingBots: {
+    all: 'All',
+    title: 'Trade Smarter',
+    overview: 'Overview',
+    spotGrid: 'Spot Grid',
+    showcase: 'Showcase',
+    totalTvl: 'Total TVL',
+    totalPnl: 'Total PnL',
+    totalRoi: 'Total ROI',
+    priceRange: 'Price Range',
+    activeBots: 'Active Bots',
+    setUpNewBot: 'Set up a new Bot',
+    futuresGrid: 'Futures Grid',
+    noActiveBots: 'No Active Bots',
+    totalAssets: 'Total Assets',
+    assetsInBot: 'Assets In Bot',
+    liquidityGrid: 'Liquidity Grid',
+    totalBotsCreated: 'Total Bots Created',
+    trailingPriceRange: 'Trailing Price Range',
+    botCreationConfirmation: 'Bot Creation Confirmation',
+    copyStrategy: 'Copy Strategy',
+    createYourStrategy: 'Create Your Strategy',
+    topPerformers: 'Top Performers',
+    volumeBoost: 'Volume Boost',
+    description:
+      'Level up your Helix game with institutional-grade automation. 179K+ traders are already leveraging our gas-free bot strategies.',
+    botType: {
+      spotGrid: 'Spot Grid',
+      liquidityGrid: 'Liquidity Grid',
+      futuresGrid: 'Futures Grid'
+    },
+    myLpRewards: {
+      viewAll: 'View All',
+      title: 'My LP Rewards',
+      volumeAllTime: 'Total Volume',
+      rewardsAllTime: 'Total LP Rewards',
+      volumeThisRound: 'Volume This Round',
+      roundEndTime: 'End Time For Round {round}',
+      totalEstRewards: 'Total Est. Rewards'
     }
+  },
+
+  liquidityBots: {
+    title: 'Volume Boost Bot',
+    description:
+      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
+    selectPair: 'Select Pair',
+    setLiquidityBot: 'Set Up a Liquidity Bot',
+    volatilityStrategy: 'Volatility Strategy',
+    deposit: 'Deposit',
+    depositDescription: 'You can add liquidity with a single asset',
+    depositAmount: 'Deposit Amount',
+    trailingBoundaries: 'Trailing Boundaries',
+    currentPrice: 'Current Price',
+    stopLoss: 'Stop Loss',
+    takeProfit: 'Take Profit',
+    trailingUpper: 'Trailing Upper',
+    trailingLower: 'Trailing Lower',
+    currentPriceQuotePerBase: 'Current price {quote} per {base}',
+    passive: 'Passive',
+    moderate: 'Moderate',
+    aggressive: 'Aggressive',
+    createBot: 'Create Bot',
+    duration: 'Duration',
+    timeCreated: 'Time Created',
+    totalAmount: 'Total Amount',
+    totalProfit: 'Total Profit',
+    currentBalance: 'Current Balance',
+    upToRewards: 'Up to {amount} {symbol} weekly rewards'
   }
 }

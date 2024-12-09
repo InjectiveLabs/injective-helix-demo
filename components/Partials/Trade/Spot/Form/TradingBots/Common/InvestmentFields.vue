@@ -286,12 +286,13 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
     <p v-if="quoteAmountError" class="error-message">{{ quoteAmountError }}</p>
 
-    <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
+    <!-- TODO: Uncomment this once we have the new design -->
+    <!-- <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
       v-bind="{
         market,
         threshold: gridThreshold.toFixed(),
         investmentType: spotFormValues[SpotGridTradingField.InvestmentType]
       }"
-    />
+    /> -->
   </div>
 </template>

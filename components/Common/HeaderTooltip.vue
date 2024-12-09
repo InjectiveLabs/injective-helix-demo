@@ -46,7 +46,7 @@ withDefaults(
     </span>
 
     <template #panel>
-      <div :class="tooltipClass" class="text-xs text-coolGray-200">
+      <div :class="tooltipClass" class="text-xs text-coolGray-200 max-w-xs">
         <span v-if="tooltip">{{ tooltip }}</span>
         <slot v-else name="customTooltip" />
       </div>

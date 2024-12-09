@@ -293,7 +293,10 @@ export enum SpotGridTradingField {
   SellBaseOnStopLoss = 'sellBaseOnStopLoss',
   BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
   BaseInvestmentAmount = 'baseInvestmentAmount',
-  IsAssetRebalanceOn = 'isAssetRebalanceOn'
+  IsAssetRebalanceOn = 'isAssetRebalanceOn',
+  IsTrailingEnabled = 'isTrailingEnabled',
+  TrailingUpper = 'trailingUpper',
+  TrailingLower = 'trailingLower'
 }
 
 export enum DerivativeGridTradingField {
@@ -379,6 +382,23 @@ export enum TradingInterface {
   TradingBots = 'trading-bots'
 }
 
+export enum SgtMarketType {
+  Spot = 'spot',
+  Derivative = 'derivative'
+}
+
+export enum VolatilityStrategyType {
+  Passive = 'passive',
+  Moderate = 'moderate',
+  Aggressive = 'aggressive'
+}
+
+export enum LiquidityBotField {
+  Volatility = 'volatility',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
+}
+
 export enum SpotOrdersStandardView {
   Orders = 'orders',
   Balances = 'balances',
@@ -398,12 +418,12 @@ export enum PerpOrdersStandardView {
 
 export enum PerpOrdersTradingBotsView {
   ActiveStrategies = 'activeStrategies',
-  RemovedStrategies = 'removedStrategies',
-  OpenPositions = 'openPositions',
-  OpenOrders = 'openOrders',
-  Triggers = 'triggers',
-  OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
+  RemovedStrategies = 'removedStrategies'
+  // OpenPositions = 'openPositions',
+  // OpenOrders = 'openOrders',
+  // Triggers = 'triggers',
+  // OrderHistory = 'orderHistory',
+  // TradeHistory = 'tradeHistory'
 }
 
 export enum PositionsFilterField {
@@ -508,6 +528,17 @@ export enum LeaderboardCampaignStatus {
 
 export enum DontShowAgain {
   AutoSign = 'auto-sign'
+}
+
+export enum BotType {
+  SpotGrid = 'spotGrid',
+  LiquidityGrid = 'liquidityGrid',
+  FuturesGrid = 'futuresGrid'
+}
+
+export enum StrategyPerformance {
+  Top = 'top',
+  Worst = 'worst'
 }
 
 export enum LiquidityProvisionType {
