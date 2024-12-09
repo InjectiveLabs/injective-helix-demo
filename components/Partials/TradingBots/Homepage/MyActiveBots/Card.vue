@@ -67,7 +67,7 @@ defineProps<{
             {{ $t('tradingBots.assetsInBot') }}
           </p>
           <p class="text-xl font-bold">
-            <SharedAmountFormatter
+            <AppAmount
               :amount="strategy.currentUsdValue.toFixed()"
               :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
               :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"

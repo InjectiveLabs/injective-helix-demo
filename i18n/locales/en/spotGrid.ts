@@ -252,7 +252,7 @@ export default {
 
   tradingBots: {
     all: 'All',
-    title: 'Trading Bots',
+    title: 'Trade Smarter',
     overview: 'Overview',
     spotGrid: 'Spot Grid',
     showcase: 'Showcase',
@@ -271,8 +271,11 @@ export default {
     trailingPriceRange: 'Trailing Price Range',
     botCreationConfirmation: 'Bot Creation Confirmation',
     copyStrategy: 'Copy Strategy',
+    createYourStrategy: 'Create Your Strategy',
+    topPerformers: 'Top Performers',
+    volumeBoost: 'Volume Boost',
     description:
-      'Automate your trades with pre-built bots for spot, futures, and liquidity. Simplify trading and liquidity management with just a few clicks',
+      'Level up your Helix game with institutional-grade automation. 179K+ traders are already leveraging our gas-free bot strategies.',
     botType: {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Liquidity Grid',

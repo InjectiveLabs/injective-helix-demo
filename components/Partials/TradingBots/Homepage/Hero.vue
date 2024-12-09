@@ -8,7 +8,7 @@ const gridStrategyStore = useGridStrategyStore()
 <template>
   <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
     <h1 class="font-bold text-6xl">
-      <span>{{ $t('helix') }} {{ $t('tradingBots.title') }}</span>
+      <span>{{ $t('tradingBots.title') }}</span>
     </h1>
     <p class="text-xl mt-4">
       {{ $t('tradingBots.description') }}
@@ -21,7 +21,9 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.activeBots') }}
           </h2>
           <p class="text-2xl font-bold">
-            {{ gridStrategyStore.stats.activeTradingStrategies }}
+            <AppAmount
+              :amount="gridStrategyStore.stats.activeTradingStrategies"
+            />
           </p>
         </div>
         <div class="text-center p-4">
@@ -29,7 +31,9 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.totalBotsCreated') }}
           </h2>
           <p class="text-2xl font-bold">
-            {{ gridStrategyStore.stats.totalTradingStrategiesCreated }}
+            <AppAmount
+              :amount="gridStrategyStore.stats.totalTradingStrategiesCreated"
+            />
           </p>
         </div>
         <div class="text-center p-4">
@@ -37,7 +41,7 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.totalTvl') }}
           </h2>
           <p class="text-2xl font-bold">
-            <SharedAmountFormatter
+            <AppAmount
               :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
               :amount="gridStrategyStore.stats.totalTvl"
               :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
@@ -52,7 +56,7 @@ const gridStrategyStore = useGridStrategyStore()
         :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
         class="px-8 py-2"
       >
-        {{ $t('tradingBots.setUpNewBot') }}
+        {{ $t('tradingBots.createYourStrategy') }}
       </UButton>
       <UButton class="px-8 py-2" color="white" variant="outline">
         {{ $t('common.learnMore') }}

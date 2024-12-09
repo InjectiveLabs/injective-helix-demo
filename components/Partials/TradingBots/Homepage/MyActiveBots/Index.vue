@@ -28,16 +28,16 @@ const items = computed(() => [
     })`,
     value: BotType.SpotGrid
   },
+  // {
+  //   label: `${t('tradingBots.futuresGrid')} (${
+  //     formattedStrategies.value.filter(
+  //       (strategy) => strategy.botType === BotType.FuturesGrid
+  //     ).length
+  //   })`,
+  //   value: BotType.FuturesGrid
+  // },
   {
-    label: `${t('tradingBots.futuresGrid')} (${
-      formattedStrategies.value.filter(
-        (strategy) => strategy.botType === BotType.FuturesGrid
-      ).length
-    })`,
-    value: BotType.FuturesGrid
-  },
-  {
-    label: `${t('tradingBots.liquidityGrid')} (${
+    label: `${t('tradingBots.volumeBoost')} (${
       formattedStrategies.value.filter(
         (strategy) => strategy.botType === BotType.LiquidityGrid
       ).length
@@ -112,7 +112,7 @@ onMounted(() => {
         </h3>
         <p class="text-xs text-zinc-500">{{ $t('tradingBots.totalAssets') }}</p>
         <p class="text-xl font-bold">
-          <SharedAmountFormatter
+          <AppAmount
             :amount="totalAssets.toFixed()"
             :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"

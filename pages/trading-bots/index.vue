@@ -36,6 +36,6 @@ onMounted(() => {
       class="mt-10"
     />
 
-    <PartialsTradingBotsHomepageShowcase class="mt-10" />
+    <!-- <PartialsTradingBotsHomepageShowcase class="mt-10" /> -->
   </UContainer>
 </template>

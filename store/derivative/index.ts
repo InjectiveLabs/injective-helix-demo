@@ -625,7 +625,10 @@ export const useDerivativeStore = defineStore('derivative', {
       }, {} as MarketMarkPriceMap)
 
       derivativeStore.$patch({
-        marketMarkPriceMap: markPricesMap
+        marketMarkPriceMap: {
+          ...derivativeStore.marketMarkPriceMap,
+          ...markPricesMap
+        }
       })
     },
 

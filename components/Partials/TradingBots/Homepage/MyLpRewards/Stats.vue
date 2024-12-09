@@ -147,13 +147,16 @@ const endDate = computed(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-4 mt-4">
+  <div class="lg:flex gap-4 justify-between mt-4">
     <div class="flex flex-col gap-1">
       <span class="text-coolGray-475 font-semibold text-sm">
         {{ $t('tradingBots.myLpRewards.rewardsAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        ${{ totalRewardsInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+        <AppAmount
+          :amount="totalRewardsInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        />
+        USD
       </span>
     </div>
 
@@ -162,7 +165,10 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        {{ volumeAllTime.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
+        <AppAmount
+          :amount="volumeAllTime.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        />
+        USD
       </span>
     </div>
 
@@ -171,7 +177,10 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeThisRound') }}
       </span>
       <span class="text-xl font-semibold">
-        {{ volumeThisRound.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
+        <AppAmount
+          :amount="volumeThisRound.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        />
+        USD
       </span>
     </div>
 
@@ -188,7 +197,10 @@ const endDate = computed(() => {
   >
     <span>{{ $t('tradingBots.myLpRewards.totalEstRewards') }}</span>
     <span class="text-white">
-      {{ rewardsThisRoundInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
+      <AppAmount
+        :amount="rewardsThisRoundInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+      />
+      USD
     </span>
   </div>
 </template>

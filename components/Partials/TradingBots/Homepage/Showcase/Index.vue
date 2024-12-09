@@ -36,7 +36,7 @@ const items = [
   //   value: ShowcaseTab.Futures
   // },
   {
-    label: t('tradingBots.liquidityGrid'),
+    label: t('tradingBots.volumeBoost'),
     value: ShowcaseTab.Liquidity
   }
 ]
@@ -88,7 +88,7 @@ onMounted(() => {
   <div class="pb-10 min-h-[500px]">
     <h3 class="font-bold text-2xl mb-4 space-x-2">
       <span>
-        {{ $t('tradingBots.title') }} {{ $t('tradingBots.showcase') }}
+        {{ $t('tradingBots.topPerformers') }}
       </span>
     </h3>
 

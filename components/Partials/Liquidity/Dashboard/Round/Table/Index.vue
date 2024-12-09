@@ -42,7 +42,8 @@ const columns = [
 
   {
     key: LiquidityDashboardTableColumn.Action,
-    class: 'w-2/12'
+    class: 'w-2/12',
+    rowClass: 'flex justify-end'
   }
 ]
 </script>
