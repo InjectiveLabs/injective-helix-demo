@@ -4,6 +4,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 import { utcToZonedTime, format } from 'date-fns-tz'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -152,7 +153,7 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.rewardsAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        ${{ totalRewardsInUsd.toFixed(2) }}
+        ${{ totalRewardsInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
       </span>
     </div>
 
@@ -161,7 +162,7 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        {{ volumeAllTime.toFixed(2) }} USD
+        {{ volumeAllTime.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
       </span>
     </div>
 
@@ -170,7 +171,7 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeThisRound') }}
       </span>
       <span class="text-xl font-semibold">
-        {{ volumeThisRound.toFixed(2) }} USD
+        {{ volumeThisRound.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
       </span>
     </div>
 
@@ -186,6 +187,8 @@ const endDate = computed(() => {
     class="mt-4 md:-mb-12 flex items-center md:justify-end text-coolGray-475 font-semibold text-sm space-x-2"
   >
     <span>{{ $t('tradingBots.myLpRewards.totalEstRewards') }}</span>
-    <span class="text-white"> {{ rewardsThisRoundInUsd.toFixed(2) }} USD </span>
+    <span class="text-white">
+      {{ rewardsThisRoundInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }} USD
+    </span>
   </div>
 </template>
