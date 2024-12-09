@@ -97,7 +97,14 @@ async function createLiquidityBot() {
 
 <template>
   <div>
+    <AppConnectWallet
+      v-if="!sharedWalletStore.isUserConnected"
+      class="w-full"
+      block
+    />
+
     <UButton
+      v-else
       :disabled="Object.keys(formErrors).length > 0 || isAutoSignOrAuthzEnabled"
       :variant="Object.keys(formErrors).length > 0 ? 'outline' : 'solid'"
       block

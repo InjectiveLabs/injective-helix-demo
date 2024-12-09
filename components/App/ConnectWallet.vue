@@ -17,13 +17,12 @@ const sharedWalletStore = useSharedWalletStore()
 </script>
 
 <template>
-  <AppButton
-    variant="primary"
-    :is-loading="
+  <SharedButton
+    :loading="
       sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
     "
     @click="onWalletConnect"
   >
     <span>{{ $t('connect.connectWallet') }}</span>
-  </AppButton>
+  </SharedButton>
 </template>
