@@ -4,6 +4,8 @@ export default {
   home: {
     title: 'Open Finance Reimagined',
     openFinance: 'Open Finance',
+    description:
+      'Helix unlocks limitless financial possibilities for everyone. Take back control of your money and access any asset with unmatched liquidity on the only chain purpose built for finance.',
     reimagined: 'Reimagined',
     subtitle:
       'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
@@ -16,6 +18,8 @@ export default {
     mevResistant: 'MEV Resistant',
     getStartedHome: 'Get Started',
     infrastructure: 'The Premier On-Chain Exchange Infrastructure',
+    builtForTheCommunity: 'Built for the Community',
+    builtForTheCommunityDescription: 'No investors, no VCs, no nonsense.',
     unprecedentedAccessToGlobalMarkets:
       'Unprecedented Access to Global Markets',
     engage:
@@ -71,11 +75,7 @@ export default {
     overview: {
       faster: 'faster',
       title: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Better and ',
-          named('faster'),
-          '.\nExperience trading like never before.'
-        ]),
+        interpolate(['Better and ', named('faster'), '.']),
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
         'Trade smarter and leverage advanced strategies in just a click.',
@@ -87,7 +87,8 @@ export default {
         'Evaluate and assess the financial performance of your portfolio.',
       gasFreeTitle: 'Gas Free Trading',
       gasFreeDescription:
-        'Never worry about gas fees on Helix. Zero gas, always.'
+        'Never worry about gas fees on Helix. Zero gas, always.',
+      experienceTrading: 'Experience trading like never before.'
     },
 
     gettingStarted: {
