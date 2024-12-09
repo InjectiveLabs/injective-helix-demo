@@ -277,6 +277,15 @@ export default {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Liquidity Grid',
       futuresGrid: 'Futures Grid'
+    },
+    myLpRewards: {
+      viewAll: 'View All',
+      title: 'My LP Rewards',
+      volumeAllTime: 'Total Volume',
+      rewardsAllTime: 'Total LP Rewards',
+      volumeThisRound: 'Volume This Round',
+      roundEndTime: 'End Time For Round {round}',
+      totalEstRewards: 'Total Est. Rewards'
     }
   },
 

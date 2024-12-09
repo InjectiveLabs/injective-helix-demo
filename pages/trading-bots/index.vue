@@ -23,9 +23,19 @@ onMounted(() => {
   <UContainer class="py-8">
     <PartialsTradingBotsHomepageHero />
     <PartialsTradingBotsHomepageMyActiveBots
-      v-if="sharedWalletStore.isUserConnected"
+      v-if="
+        sharedWalletStore.isUserConnected && sharedWalletStore.injectiveAddress
+      "
       class="mt-10"
     />
+
+    <PartialsTradingBotsHomepageMyLpRewards
+      v-if="
+        sharedWalletStore.isUserConnected && sharedWalletStore.injectiveAddress
+      "
+      class="mt-10"
+    />
+
     <PartialsTradingBotsHomepageShowcase class="mt-10" />
   </UContainer>
 </template>

@@ -101,7 +101,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="{ background: 'dark:bg-brand-875' }">
     <USkeleton v-if="status.isLoading()" class="h-52 w-full" />
 
     <div v-else class="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4">

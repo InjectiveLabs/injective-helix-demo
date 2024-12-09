@@ -32,7 +32,7 @@ defineProps<{
   >
     <UCard
       :ui="{
-        background: 'dark:bg-brand-850',
+        background: 'dark:bg-brand-875',
         ring: 'dark:hover:ring-primary-500',
         body: {
           padding: 'px-2 sm:px-4 py-2 sm:py-4'
@@ -76,7 +76,7 @@ defineProps<{
         </div>
 
         <div class="text-right">
-          <p class="text-gray-500 mb-1 text-xs">{{ $t('common.roi') }}</p>
+          <p class="text-gray-500 mb-1 text-xs">{{ $t('sgt.pnl') }}</p>
           <p class="text-xl font-bold">
             <span
               :class="

@@ -11,6 +11,7 @@ export default defineAppConfig({
     },
 
     card: {
+      ring: 'dark:ring-coolGray-800',
       background: 'dark:bg-brand-900'
     },
 
@@ -72,6 +73,10 @@ export default defineAppConfig({
         }
       },
       input: 'dark:bg-brand-900'
+    },
+
+    skeleton: {
+      background: 'dark:bg-brand-800'
     },
 
     table: {
