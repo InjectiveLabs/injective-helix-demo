@@ -54,13 +54,13 @@ onMounted(() => {
 
 <template>
   <div
-    class="min-h-screen flex flex-col lg:justify-center max-lg:py-10 relative"
+    class="lg:min-h-screen flex flex-col lg:justify-center max-lg:py-10 relative"
   >
     <AppBlur
-      class="absolute top-[-500px] z-50 left-0 -rotate-45 -translate-x-1/2 opacity-15 text-blue-400"
+      class="max-lg:hidden absolute top-[-500px] z-50 left-0 -rotate-45 -translate-x-1/2 opacity-15 text-blue-400"
     />
     <AppBlur
-      class="absolute top-0 left-full -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
+      class="max-lg:hidden absolute top-0 left-full -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
     />
 
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">

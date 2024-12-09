@@ -73,7 +73,7 @@ onMounted(() => {
 <template>
   <div class="relative">
     <AppBlur
-      class="absolute top-full -translate-y-full right-32 translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
+      class="max-lg:hidden absolute top-full -translate-y-full right-32 translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
     />
 
     <div id="overview-section" class="relative">

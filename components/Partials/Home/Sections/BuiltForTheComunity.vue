@@ -51,11 +51,11 @@ onMounted(() => {
 <template>
   <div class="relative pb-32 snap-start">
     <AppBlur
-      class="absolute bottom-52 left-1/2 -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
+      class="max-lg:hidden absolute bottom-52 left-1/2 -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
     />
 
     <AppBlur
-      class="absolute top-full -translate-y-1/2 left-32 -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
+      class="max-lg:hidden absolute top-full -translate-y-1/2 left-32 -translate-x-1/2 rotate-45 opacity-15 scale-50 text-blue-500"
     />
 
     <div id="built-for-the-community-text" class="opacity-0 blur-3xl">

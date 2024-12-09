@@ -6,7 +6,7 @@
     <!-- hide for launch -->
     <!-- <AssetKadoBanner /> -->
 
-    <div class="max-w-7xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full px-2">
       <PartialsHomeSectionsHero />
       <PartialsHomeSectionsBuiltForTheComunity />
 
