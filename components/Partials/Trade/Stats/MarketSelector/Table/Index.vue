@@ -122,7 +122,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       :sort-desc-icon="NuxtUiIcons.TriangleDown"
       :ui="{
         th: {
-          color: 'dark:text-coolGray-500',
+          color: 'dark:text-coolGray-450',
           padding: 'px-2 first:pl-4 last:pr-4'
         },
         tr: { base: 'hover:bg-brand-800' },
@@ -214,7 +214,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
             class="flex items-center truncate min-w-0 font-mono text-sm justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
-            {{ row[MarketsSelectorTableColumn.MarketChange24h] }}%
+            {{ row.formattedChange }}%
           </div>
         </PartialsCommonMarketRedirection>
       </template>

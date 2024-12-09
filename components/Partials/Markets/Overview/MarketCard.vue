@@ -84,18 +84,17 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 </script>
 
 <template>
-  <NuxtLink
-    v-bind="{ to }"
-    class="border border-brand-800 px-4 py-2 rounded-lg"
-  >
+  <NuxtLink v-bind="{ to }" class="relative bg-brand-875 py-4 px-2 rounded-lg">
     <div class="flex justify-between">
       <div class="flex items-center space-x-2 overflow-hidden">
-        <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
-        <p class="text-sm tracking-wide truncate min-w-0">
+        <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
+        <p class="text-sm font-bold tracking-wide truncate min-w-0">
           {{ market.market.ticker }}
         </p>
       </div>
-      <div class="w-16 h-8 ml-auto">
+      <div
+        class="w-10 h-6 ml-auto max-lg:w-16 max-lg:h-9 max-lg:absolute max-lg:right-6 max-lg:top-1/2 max-lg:-translate-y-1/2"
+      >
         <SharedLineGraph
           v-if="chartData.length > 1"
           :data="chartData"
@@ -105,9 +104,9 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       </div>
     </div>
 
-    <div class="flex items-center justify-start mt-2">
+    <div class="flex items-center justify-start my-2">
       <p
-        class="text-sm tracking-wide font-mono font-semibold flex items-center mr-2"
+        class="text-xs tracking-wide font-mono font-medium flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
           'text-green-500 ':
@@ -136,23 +135,22 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           'text-red-500': change.lt(0)
         }"
       >
-        {{ changeToFormat }}%
+        {{ change.gt(0) ? '+' : '' }}{{ changeToFormat }}%
       </span>
     </div>
 
     <span
-      class="text-coolGray-500 w-full text-xs"
+      class="block text-coolGray-500 w-full text-xs leading-none"
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="font-mono">
-        <AppUsdAmount
-          v-bind="{
-            amount: market.volumeInUsd.toFixed(),
-            decimalPlaces: 2
-          }"
-        />
-      </span>
+      <AppUsdAmount
+        v-bind="{
+          amount: market.volumeInUsd.toFixed(),
+          decimalPlaces: 2
+        }"
+        class="font-mono mx-0.5"
+      />
       USD
     </span>
   </NuxtLink>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  Position,
   PositionV2,
   // TradeDirection,
   DerivativeLimitOrder
@@ -20,18 +19,21 @@ import {
 const props = withDefaults(
   defineProps<{
     pnl: BigNumberInBase
+    position: PositionV2
+    isTablePopover?: boolean
     quantity: BigNumberInBase
     market: UiDerivativeMarket
     hasReduceOnlyOrders: boolean
-    position: PositionV2 | Position
     isLimitOrderAuthorized: boolean
     isMarketOrderAuthorized: boolean
     reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   }>(),
-  {}
+  {
+    isTablePopover: false
+  }
 )
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+// const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const positionStore = usePositionStore()
 // const derivativeStore = useDerivativeStore()
@@ -85,8 +87,8 @@ function closePosition() {
 
   positionStore
     .closePosition({
-      position: props.position,
-      market: props.market
+      market: props.market,
+      position: props.position
     })
     .then(() =>
       notificationStore.success({ title: t('trade.position_closed') })
@@ -158,13 +160,12 @@ function closePositionAndReduceOnlyOrders() {
         tooltip: isMarketOrderAuthorized ? '' : $t('common.unauthorized')
       }"
       size="sm"
-      variant="danger"
-      :class="[!lg ? 'py-2' : 'min-w-16']"
-      class="bg-opacity-20 text-red-500 border-none px-3"
+      :variant="isTablePopover ? 'danger-ghost' : 'danger-shade'"
+      :class="[isTablePopover ? 'p-2 w-full focus-within:ring-0' : 'min-w-16']"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >
-      {{ $t('common.close') }}
+      {{ isTablePopover ? $t('trade.closePosition') : $t('common.close') }}
     </AppButton>
 
     <!-- todo: resurrect when limit orders reimplemented -->

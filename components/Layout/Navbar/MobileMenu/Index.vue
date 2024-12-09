@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import {
-  MENU_ITEMS,
-  USER_MENU_ITEMS,
-  getDepositMenuItem
-} from '@/app/data/menu'
-import { MenuItemType } from '@/types'
+import { getMobileMenuItems } from '@/app/data/menu'
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
-const depositMenuItem = getDepositMenuItem()
-
 const filteredMenuItems = computed(() =>
-  MENU_ITEMS.filter((item) => (!appStore.devMode ? !item.devOnly : item))
+  getMobileMenuItems().filter((item) => {
+    if (item.isDevOnly) {
+      return appStore.devMode
+    }
+
+    if (item.isConnectedOnly) {
+      return sharedWalletStore.isUserConnected
+    }
+
+    return true
+  })
 )
 
 function close() {
@@ -35,9 +38,12 @@ const isLockedDoc = useScrollLock(document.documentElement)
 </script>
 
 <template>
-  <div class="flex items-center pr-2 lg:hidden">
+  <div
+    class="flex items-center pr-2 lg:hidden"
+    :class="{ 'ml-2': sharedWalletStore.isAuthzWalletConnected }"
+  >
     <button
-      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
+      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none flex items-center justify-center"
       @click="open"
     >
       <UIcon :name="NuxtUiIcons.Menu" class="h-6 w-6 min-w-6" />
@@ -68,26 +74,9 @@ const isLockedDoc = useScrollLock(document.documentElement)
             <div>
               <div class="p-4 font-semibold border-b">
                 <LayoutNavbarPortfolioMenuItem
-                  v-if="sharedWalletStore.isUserConnected"
-                  v-bind="{
-                    item: {
-                      label: 'navigation.portfolio',
-                      type: MenuItemType.Dropdown,
-                      items: USER_MENU_ITEMS
-                    }
-                  }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
                   v-for="item in filteredMenuItems"
                   :key="item.label"
                   v-bind="{ item }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
-                  v-bind="{ item: depositMenuItem }"
                   @menu:close="close"
                 />
               </div>

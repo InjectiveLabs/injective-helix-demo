@@ -12,6 +12,7 @@ import {
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
+const breakpoints = useBreakpointsTw()
 const orderbookStore = useOrderbookStore()
 const derivativeStore = useDerivativeStore()
 const { userBalancesWithToken } = useBalance()
@@ -28,69 +29,85 @@ const { rows } = useFuturesOpenOrdersTransformer(
   userBalancesWithToken
 )
 
-const columns = [
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Market,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Market}`
-    )
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Side,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Side}`
-    )
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Price,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Price}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Amount,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Amount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Unfilled,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Unfilled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Filled,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Filled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Leverage,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Leverage}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Total,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Total}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesOpenOrdersTableColumn.Chase,
-    label: t(
-      `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Chase}`
-    ),
-    class: 'text-center'
+const fourXl = breakpoints['4xl']
+
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Market,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Market}`
+      )
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Side,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Side}`
+      )
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Price,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Price}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Amount,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Amount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Unfilled,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Unfilled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Filled,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Filled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Leverage,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Leverage}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Total,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Total}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesOpenOrdersTableColumn.Chase,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Chase}`
+      ),
+      class: 'text-center'
+    }
+  ]
+
+  if (fourXl.value) {
+    baseColumns.push({
+      key: PortfolioFuturesOpenOrdersTableColumn.Action,
+      label: t(
+        `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Action}`
+      ),
+      class: 'text-center'
+    })
   }
-]
+
+  return baseColumns
+})
 
 const status = reactive(new Status(StatusType.Idle))
 const chaseStatus = reactive(new Status(StatusType.Idle))
@@ -180,7 +197,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover>
+          <AppTablePopover v-if="!fourXl">
             <div class="rounded-lg p-2 bg-brand-800 min-w-28">
               <AppButton
                 variant="danger-ghost"
@@ -191,7 +208,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
                 :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
                 @click="cancelOrder(row.order, row.isAuthorized)"
               >
-                Cancel Order
+                {{ $t('trade.cancelOrder') }}
               </AppButton>
             </div>
           </AppTablePopover>
@@ -328,6 +345,24 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
               class="!w-4 !h-4"
             />
           </button>
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="p-2 flex justify-center">
+          <AppButton
+            v-bind="{
+              status,
+              disabled: !row.isAuthorized,
+              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+            }"
+            size="sm"
+            variant="danger-shade"
+            class="min-w-16"
+            @click="cancelOrder(row.order, row.isAuthorized)"
+          >
+            {{ $t('trade.cancelOrder') }}
+          </AppButton>
         </div>
       </template>
     </UTable>

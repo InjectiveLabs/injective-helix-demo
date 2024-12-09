@@ -68,7 +68,8 @@ export default <Partial<Config>>{
         xl: '1280px',
         '2xl': '1366px',
         '3xl': '1440px',
-        '4xl': '1681px'
+        '4xl': '1536px',
+        '5xl': '1681px'
       },
 
       fontSize: {

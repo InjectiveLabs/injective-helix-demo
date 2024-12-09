@@ -18,9 +18,9 @@ import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
 // todo: Ivan clean up
 type ActivityStoreState = {
-  subaccountFundingPayments: FundingPayment[]
+  subaccountFundingHistory: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
-  subaccountFundingPaymentsCount: number
+  subaccountFundingHistoryCount: number
   latestDerivativeOrderHistory?: DerivativeOrderHistory
   latestDerivativeTrade?: SharedUiDerivativeTrade
   latestSpotOrderHistory?: SpotOrderHistory
@@ -30,9 +30,9 @@ type ActivityStoreState = {
 }
 
 const initialStateFactory = (): ActivityStoreState => ({
-  subaccountFundingPayments: [],
+  subaccountFundingHistory: [],
   tradingRewardsHistory: [],
-  subaccountFundingPaymentsCount: 0,
+  subaccountFundingHistoryCount: 0,
   latestDerivativeOrderHistory: undefined,
   latestDerivativeTrade: undefined,
   latestSpotOrderHistory: undefined,
@@ -66,7 +66,7 @@ export const useActivityStore = defineStore('activity', {
       })
     },
 
-    async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
+    async fetchSubaccountFundingHistory(options?: ActivityFetchOptions) {
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
@@ -78,7 +78,7 @@ export const useActivityStore = defineStore('activity', {
 
       const filters = options?.filters
 
-      const { fundingPayments: subaccountFundingPayments, pagination } =
+      const { fundingPayments: subaccountFundingHistory, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
           subaccountId: accountStore.subaccountId,
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
@@ -86,8 +86,8 @@ export const useActivityStore = defineStore('activity', {
         })
 
       activityStore.$patch({
-        subaccountFundingPayments,
-        subaccountFundingPaymentsCount: pagination.total
+        subaccountFundingHistory,
+        subaccountFundingHistoryCount: pagination.total
       })
     },
 

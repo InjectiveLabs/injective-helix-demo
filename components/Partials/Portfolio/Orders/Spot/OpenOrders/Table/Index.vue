@@ -11,7 +11,7 @@ import {
 
 const { t } = useLang()
 const spotStore = useSpotStore()
-const { lg } = useTwBreakpoints()
+const { lg, xl } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const orderbookStore = useOrderbookStore()
 const { userBalancesWithToken } = useBalance()
@@ -25,62 +25,76 @@ const { rows } = useSpotOpenOrdersTransformer(
   userBalancesWithToken
 )
 
-const columns = [
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Market,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Market}`
-    )
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Side,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Side}`
-    )
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Price,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Price}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Amount,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Amount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Unfilled,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Unfilled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Filled,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Filled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.TotalAmount,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.TotalAmount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Chase,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
-    ),
-    class: 'text-center'
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Market,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Market}`
+      )
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Side,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Side}`
+      )
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Price,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Price}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Amount,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Amount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Unfilled,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Unfilled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Filled,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Filled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.TotalAmount,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.TotalAmount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Chase,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
+      ),
+      class: 'text-center'
+    }
+  ]
+
+  if (xl.value) {
+    baseColumns.push({
+      key: PortfolioSpotOpenOrdersTableColumn.Action,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Action}`
+      ),
+      class: 'text-center'
+    })
   }
-]
+
+  return baseColumns
+})
 
 const status = reactive(new Status(StatusType.Idle))
 const chaseStatus = reactive(new Status(StatusType.Idle))
@@ -164,7 +178,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover v-if="row.orderFillable">
+          <AppTablePopover v-if="row.orderFillable && !xl">
             <div class="rounded-lg p-2 bg-brand-800 min-w-28">
               <AppButton
                 variant="danger-ghost"
@@ -176,7 +190,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
                 :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
                 @click="cancelOrder(row.order, row.isAuthorized)"
               >
-                Cancel Order
+                {{ $t('trade.cancelOrder') }}
               </AppButton>
             </div>
           </AppTablePopover>
@@ -306,6 +320,25 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               class="!w-4 !h-4"
             />
           </button>
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="p-2 flex justify-center">
+          <AppButton
+            v-bind="{
+              status,
+              disabled: !row.isAuthorized,
+              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+            }"
+            size="sm"
+            variant="danger-shade"
+            class="min-w-16"
+            :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
+            @click="cancelOrder(row.order, row.isAuthorized)"
+          >
+            {{ $t('trade.cancelOrder') }}
+          </AppButton>
         </div>
       </template>
     </UTable>

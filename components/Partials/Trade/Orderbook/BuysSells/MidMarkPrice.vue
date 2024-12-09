@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { stableCoinSymbols } from '~/app/data/token'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
@@ -63,7 +62,7 @@ const isStableCoinMarket = computed(() =>
         <AppAmount
           v-bind="{
             amount: lastTradedPrice.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            decimalPlaces: market.priceDecimals
           }"
         />
       </span>
@@ -101,7 +100,7 @@ const isStableCoinMarket = computed(() =>
           <AppAmount
             v-bind="{
               amount: markPrice,
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              decimalPlaces: market.priceDecimals
             }"
           />
         </CommonHeaderTooltip>

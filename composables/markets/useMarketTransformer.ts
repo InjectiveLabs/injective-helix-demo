@@ -1,4 +1,5 @@
 import { SharedMarketChange } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { rwaMarketIds } from '@/app/data/market'
 import { MarketsTableColumn, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
@@ -16,15 +17,22 @@ export function useMarketTransformer(
       const priceChangeClassKey =
         item?.summary?.lastPriceChange || SharedMarketChange.NoChange
 
+      const change = item.summary?.change || 0
+
+      const changePrefix = new BigNumberInBase(change).gt(0) ? '+' : ''
+
+      const formattedChange = changePrefix + change
+
       return {
+        formattedChange,
         market: item.market,
         summary: item.summary,
         volumeInUsd: item.volumeInUsd,
         isVerified: item.market.isVerified,
-        priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         isRwaMarket: rwaMarketIds.includes(item.market.marketId),
+        priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
+        [MarketsTableColumn.MarketChange24h]: change,
         [MarketsTableColumn.LastPrice]: item.summary?.lastPrice || 0,
-        [MarketsTableColumn.MarketChange24h]: item.summary?.change || 0,
         [MarketsTableColumn.MarketVolume24h]: item.volumeInUsd.toNumber(),
         [MarketsTableColumn.Markets]: item.market?.ticker?.toUpperCase() || ''
       }

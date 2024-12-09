@@ -159,6 +159,7 @@ function closePositionAndReduceOnlyOrders() {
             }"
             size="sm"
             class="py-2"
+            variant="danger"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
             @click="closePositionClicked"
           >

@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const lg = breakpoints['3xl']
-const xl = breakpoints['4xl']
+const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
 
@@ -40,8 +40,8 @@ const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.OpenOrders}`,
-      value: SpotOrdersStandardView.OpenOrders,
+      display: `activity.${SpotOrdersStandardView.Orders}`,
+      value: SpotOrdersStandardView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
@@ -70,7 +70,7 @@ watch(
   () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
-      view.value = SpotOrdersStandardView.OpenOrders
+      view.value = SpotOrdersStandardView.Orders
     }
   }
 )
@@ -125,11 +125,15 @@ watch(
       v-model="view"
       v-bind="{ value }"
       class="flex items-center text-coolGray-450 font-medium"
-      :class="[xl ? 'px-3 text-sm' : 'px-2 text-xs']"
+      :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
       active-classes="text-white"
     >
       {{ $t(display) }}
-      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
+      {{
+        Number.isInteger(Number(description)) && Number(description) > 0
+          ? `(${description})`
+          : ''
+      }}
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
@@ -144,7 +148,7 @@ watch(
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
-        v-if="view === SpotOrdersStandardView.OpenOrders && !isMobile"
+        v-if="view === SpotOrdersStandardView.Orders && !isMobile"
         v-bind="{ isTickerOnly }"
       />
     </div>

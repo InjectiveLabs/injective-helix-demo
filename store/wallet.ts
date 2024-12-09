@@ -159,6 +159,7 @@ export const useWalletStore = defineStore('wallet', {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
+      const pointsStore = usePointsStore()
       const accountStore = useAccountStore()
       const exchangeStore = useExchangeStore()
       const activityStore = useActivityStore()
@@ -172,6 +173,7 @@ export const useWalletStore = defineStore('wallet', {
       await sharedWalletStore.logout()
 
       appStore.reset()
+      pointsStore.reset()
       sharedWalletStore.logout()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()

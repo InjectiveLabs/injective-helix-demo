@@ -79,9 +79,14 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
       :sort-asc-icon="NuxtUiIcons.TriangleUp"
       :sort-desc-icon="NuxtUiIcons.TriangleDown"
       :ui="{
-        th: { color: 'dark:text-coolGray-500' },
-        tr: { base: 'text-coolGray-350 hover:text-white' },
-        td: { color: 'text-inherit p-4' }
+        divide: 'dark:divide-y-0',
+        tbody: 'dark:divide-[#181E31]',
+        th: {
+          color: 'dark:text-coolGray-450',
+          padding: 'first:pl-6 last:pr-6'
+        },
+        tr: { base: 'text-white hover:text-coolGray-350' },
+        td: { color: 'text-inherit p-4', padding: 'first:pl-6 last:pr-6 py-3' }
       }"
     >
       <template #markets-data="{ row }">
@@ -92,7 +97,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
           <div class="w-full flex items-center truncate">
             <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
 
-            <div class="ml-2">
+            <div class="ml-3">
               <CommonHeaderTooltip
                 :tooltip="$t('trade.rwa.marketClosedMarketRow')"
                 :is-disabled="!row.isRwaMarket"
@@ -103,11 +108,11 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
                 "
                 tooltip-class="text-xs"
                 :ui="{
-                  base: '-translate-y-0.5'
+                  base: 'translate-y-2'
                 }"
               >
                 <span
-                  class="text-base"
+                  class="text-sm font-bold"
                   :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
                 >
                   {{ row.market.ticker }}
@@ -116,7 +121,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
 
               <div class="flex items-center gap-1">
                 <div
-                  class="text-xs font-normal text-coolGray-500"
+                  class="text-xs font-normal text-[#8E919A]"
                   :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
                     row.market.baseToken.name
                   }`"
@@ -168,7 +173,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
             class="w-full flex items-center truncate font-mono justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
-            {{ row[MarketsTableColumn.MarketChange24h] }}%
+            {{ row.formattedChange }}%
           </div>
         </PartialsCommonMarketRedirection>
       </template>
@@ -200,7 +205,7 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
         >
           <div class="w-full flex items-center p-2 space-x-8 justify-end">
             <NuxtLink
-              class="text-blue-500 hover:text-blue-600 text-base"
+              class="text-blue-500 hover:text-blue-600 text-sm font-medium"
               :data-cy="`${dataCyTag(MarketCyTags.MarketTrade)}-${
                 row.market.marketId
               }`"
@@ -214,10 +219,10 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
                   row.market.marketId
                 )
               }"
-              class="pr-2 w-8 h-6 text-coolGray-700 hover:text-blue-700"
+              class="pr-2 text-coolGray-700 hover:text-blue-700"
               @click.stop.prevent="toggleFavorite(row)"
             >
-              <UIcon :name="NuxtUiIcons.Star" class="h-6 w-6 min-w-6" />
+              <UIcon :name="NuxtUiIcons.Star" class="size-5 block" />
             </div>
           </div>
         </PartialsCommonMarketRedirection>

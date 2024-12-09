@@ -34,13 +34,13 @@ export class DerivativeSubaccountPositionIntegrityStrategy
 
     const positionStore = usePositionStore()
 
-    const existingPositions = [...positionStore.subaccountPositions]
+    const existingPositions = [...positionStore.positions]
 
     const isDataValid = this.verifyData(existingPositions, latestPositions)
 
     if (!isDataValid) {
       positionStore.cancelSubaccountPositionsStream()
-      positionStore.$patch({ subaccountPositions: await this.fetchData() })
+      positionStore.$patch({ positions: await this.fetchData() })
 
       const [marketId] = marketIds || []
       positionStore.streamSubaccountPositions(marketId)

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Modal, MainPage, UiMarketWithToken, MarketTypeOption } from '@/types'
+import { Modal, MainPage, UiMarketWithToken, MarketCategoryType } from '@/types'
 import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
@@ -10,9 +10,7 @@ const sharedGeoStore = useSharedGeoStore()
 
 const props = withDefaults(
   defineProps<{ isSpot?: boolean; market: UiMarketWithToken }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
 
 const disallowedTokenSymbol = computed(() => {
@@ -81,7 +79,7 @@ function closeModal() {
           :to="{
             name: MainPage.Markets,
             query: {
-              type: MarketTypeOption.Spot
+              category: MarketCategoryType.Spot
             }
           }"
         >

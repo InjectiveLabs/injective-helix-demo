@@ -20,7 +20,7 @@ const button = cva(
           'bg-blue-500 text-coolGray-975 border-blue-550 hover:bg-blue-500/70 hover:border-blue-550/70 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-blue-550 focus-within:ring-[3px] ring-blue-700',
 
         'primary-outline':
-          'bg-transparent text-coolGray-450 border-blue-550 hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-coolGray-450 focus-within:ring-[3px] ring-blue-700',
+          'bg-transparent text-coolGray-100 border-blue-550 hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-450 disabled:border-coolGray-450 focus-within:ring-[3px] ring-blue-700',
 
         'primary-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',
@@ -30,6 +30,9 @@ const button = cva(
 
         'danger-outline':
           'bg-transparent text-coolGray-200 border-red-500 hover:text-white hover:bg-red-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',
+
+        'danger-shade':
+          'bg-red-500 border-red-500 hover:text-red-900 hover:bg-red-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 ring-red-700 bg-opacity-20 text-red-500 border-none px-3 focus-within:none',
 
         'danger-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-red-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',

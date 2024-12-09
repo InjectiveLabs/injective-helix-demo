@@ -18,8 +18,6 @@ const emit = defineEmits<{
   mouseup: []
 }>()
 
-const leverageBreakpointTexts = [25, 50, 75]
-
 const leverageBreakpoints = computed(() => {
   const { minLeverage, maxLeverage } = props
   const breakpointsList = [
@@ -76,17 +74,6 @@ function onMouseUp() {
         ]
       ]"
     />
-
-    <span
-      v-for="(leverageText, index) in leverageBreakpointTexts"
-      :key="leverageText"
-      :class="[
-        'leverage-breakpoint-text text-coolGray-450 absolute z-[2] -bottom-5 text-xs font-mono',
-        `text--${index + 1}`
-      ]"
-    >
-      {{ leverageText }}%
-    </span>
 
     <input
       v-model="leverageAmount"

@@ -88,7 +88,7 @@ async function onSubmit() {
     @modal:closed="closeModal"
   >
     <div>
-      <h3 class="text-4xl pb-4">
+      <h3 class="text-5xl pb-4">
         {{ $t('institutional.modalTitle') }}
       </h3>
       <p>

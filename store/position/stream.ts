@@ -19,13 +19,15 @@ export const streamSubaccountPositions = (marketId?: string) => {
 
   grpcStreamSubaccountPositions({
     marketId,
-    subaccountId: accountStore.subaccountId,
+    address: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ position }) => {
       if (position) {
         const positionQuantity = new BigNumberInBase(position.quantity)
 
-        const positionExist = positionStore.subaccountPositions.some(
-          (p) => p.marketId === position.marketId
+        const positionExist = positionStore.positions.some(
+          (p) =>
+            p.marketId === position.marketId &&
+            p.subaccountId === position.subaccountId
         )
 
         // filter out non-tradable markets
@@ -39,37 +41,34 @@ export const streamSubaccountPositions = (marketId?: string) => {
         if (positionExist) {
           if (positionQuantity.lte(0)) {
             // Position closed
-            const subaccountPositions = [
-              ...positionStore.subaccountPositions
-            ].filter((p) => p.marketId !== position.marketId)
-
-            positionStore.$patch({
-              subaccountPositions,
-              subaccountPositionsCount: subaccountPositions.length
-            })
-          } else {
-            // Position updated
-            const subaccountPositions = positionStore.subaccountPositions.map(
-              (p) => {
-                return p.marketId === position.marketId ? position : p
-              }
+            const positions = [...positionStore.positions].filter(
+              (p) =>
+                p.marketId !== position.marketId &&
+                p.subaccountId !== position.subaccountId
             )
 
             positionStore.$patch({
-              subaccountPositions,
-              subaccountPositionsCount: subaccountPositions.length
+              positions
+            })
+          } else {
+            // Position updated
+            const positions = positionStore.positions.map((p) => {
+              return p.marketId === position.marketId &&
+                p.subaccountId === position.subaccountId
+                ? position
+                : p
+            })
+
+            positionStore.$patch({
+              positions
             })
           }
         } else if (positionQuantity.gt(0)) {
           // Position added
-          const subaccountPositions = [
-            position,
-            ...positionStore.subaccountPositions
-          ]
+          const positions = [position, ...positionStore.positions]
 
           positionStore.$patch({
-            subaccountPositions,
-            subaccountPositionsCount: subaccountPositions.length
+            positions
           })
         }
       }

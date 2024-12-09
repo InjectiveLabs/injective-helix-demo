@@ -68,11 +68,11 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
   <div
     class="lg:flex max-lg:text-xs max-lg:p-1 max-lg:divide-y max-lg:[&>*]:p-1 lg:space-x-8"
   >
-    <section class="flex p-2 justify-between">
+    <section class="flex p-2 2xl:px-0 3xl:p-2 justify-between">
       <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
-        class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 font-mono lg:py-0.5"
+        class="flex items-center lg:flex-col lg:items-end lg:justify-between font-mono lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
       >
         <div class="flex items-center justify-between">
           <div

@@ -28,7 +28,7 @@ function nextStep() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.SgtBanner]"
-    class="max-w-4xl w-full"
+    class="max-w-5xl w-full"
     @modal:closed="onCloseModal"
   >
     <div class="max-h-[70vh] md:max-h-[60vh] grid grid-rows-[1fr_auto]">

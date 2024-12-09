@@ -27,7 +27,7 @@ const totalMarkets = computed(
     <div class="flex flex-col items-center">
       <div class="flex items-center space-x-4">
         <AssetLogo class="h-12 w-12" />
-        <h1 class="font-light text-4xl">{{ $t('common.helix') }}</h1>
+        <h1 class="font-light text-5xl">{{ $t('common.helix') }}</h1>
       </div>
 
       <div class="max-w-3xl space-y-4 my-4">

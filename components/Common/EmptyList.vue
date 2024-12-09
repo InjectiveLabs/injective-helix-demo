@@ -14,7 +14,7 @@ withDefaults(defineProps<{ message?: string }>(), {
       <img v-else src="/svg/empty-list.svg" />
     </div>
 
-    <p class="text-sm text-coolGray-400">
+    <p class="text-sm text-coolGray-400 mb-8">
       {{ message }}
     </p>
 

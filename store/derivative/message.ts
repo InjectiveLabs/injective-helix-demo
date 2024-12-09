@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
@@ -451,7 +450,7 @@ export const submitTpSlOrder = async ({
   stopLoss,
   takeProfit
 }: {
-  position: Position | PositionV2
+  position: PositionV2
   takeProfit?: BigNumberInBase
   stopLoss?: BigNumberInBase
 }) => {

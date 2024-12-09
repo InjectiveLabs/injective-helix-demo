@@ -6,32 +6,32 @@ import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { TransformedFundingPayment } from '@/types'
+import { TransformedFundingHistory } from '@/types'
 
-export function useFundingPaymentsTransformer(
-  fundingPaymentList: ComputedRef<FundingPayment[]>
+export function useFundingHistoryTransformer(
+  fundingHistoryList: ComputedRef<FundingPayment[]>
 ) {
   const derivativeStore = useDerivativeStore()
 
   const rows = computed(() =>
-    fundingPaymentList.value.reduce((list, fundingPayment) => {
+    fundingHistoryList.value.reduce((list, fundingHistory) => {
       const market = derivativeStore.markets.find(
-        (market) => market.marketId === fundingPayment.marketId
+        (market) => market.marketId === fundingHistory.marketId
       )
 
       if (!market) {
         return list
       }
 
-      const time = fundingPayment.timestamp
-        ? format(fundingPayment.timestamp, DATE_TIME_DISPLAY)
+      const time = fundingHistory.timestamp
+        ? format(fundingHistory.timestamp, DATE_TIME_DISPLAY)
         : ''
 
       const decimals =
         market.quoteToken?.decimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-      const total = fundingPayment.amount
-        ? new BigNumberInWei(fundingPayment.amount).toBase(decimals)
+      const total = fundingHistory.amount
+        ? new BigNumberInWei(fundingHistory.amount).toBase(decimals)
         : ZERO_IN_BASE
 
       list.push({
@@ -41,7 +41,7 @@ export function useFundingPaymentsTransformer(
       })
 
       return list
-    }, [] as TransformedFundingPayment[])
+    }, [] as TransformedFundingHistory[])
   )
 
   return { rows }

@@ -20,6 +20,12 @@ export default defineAppConfig({
       ring: 'ring-coolGray-800'
     },
 
+    dropdown: {
+      background: 'dark:bg-coolGray-875',
+      ring: 'ring-0',
+      padding: 'p-3'
+    },
+
     notification: {
       background: 'dark:bg-brand-900'
     },
@@ -64,9 +70,11 @@ export default defineAppConfig({
     },
 
     selectMenu: {
+      trigger: '[&>button]:cursor-pointer',
       background: 'dark:bg-brand-900',
 
       option: {
+        base: 'cursor-pointer',
         active: 'dark:bg-brand-800',
         selectedIcon: {
           base: 'w-4 h-4'
@@ -83,6 +91,7 @@ export default defineAppConfig({
       divide: 'dark:divide-coolGray-800',
       tbody: 'dark:divide-coolGray-800',
       th: {
+        base: 'whitespace-nowrap',
         padding: 'p-4',
         color: 'dark:text-coolGray-400',
         font: 'font-normal',
@@ -96,7 +105,7 @@ export default defineAppConfig({
       default: {
         sortButton: {
           class:
-            'p-0 dark:text-coolGray-500 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
+            'p-0 dark:text-coolGray-450 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
         }
       }
     }

@@ -69,29 +69,7 @@ const low = computed(() => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem>
-    <template #title>
-      <CommonHeaderTooltip text-color-class="text-coolGray-400">
-        <template #default>
-          {{ $t('trade.stats.total_market_volume_24h') }}
-        </template>
-        <template #customTooltip>
-          <span v-if="isStableQuoteAsset">
-            {{ $t('trade.stats.market_volume_24h_tooltip') }}
-          </span>
-          <span v-else>
-            <AppUsdAmount
-              v-bind="{
-                isShowNoDecimals: true,
-                amount: volumeInUsd.toFixed(),
-                decimalPlaces: market.priceDecimals
-              }"
-            />
-            <span class="ml-1">USD</span>
-          </span>
-        </template>
-      </CommonHeaderTooltip>
-    </template>
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.market_volume_24h')">
     <p class="font-mono">
       <AppAmount
         v-bind="{
@@ -104,11 +82,11 @@ const low = computed(() => {
     </p>
   </PartialsTradeStatsHeaderItem>
 
-  <div v-if="!isStableQuoteAsset" class="lg:hidden">
+  <div v-if="!isStableQuoteAsset" class="flex items-center lg:hidden">
     <PartialsTradeStatsHeaderItem>
       <template #title>
         <p class="text-coolGray-400">
-          {{ $t('trade.stats.totalVolumeInUsd') }}
+          {{ $t('trade.stats.volumeInUsd') }}
         </p>
       </template>
       <div class="font-mono">

@@ -1,70 +1,36 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import {
-  ONE_IN_BASE,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MainPage } from '@/types'
 
 const exchangeStore = useExchangeStore()
 const { $onError } = useNuxtApp()
 
-const MAKER_FEE = -0.005
-const MAKER_FEE_DECIMALS = 3
-
 const status = reactive(new Status(StatusType.Loading))
+
+const { makerFeeRate, takerFeeRate } = useTradeFee({})
+
+const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
+  computed(() => takerFeeRate.value.times(100)),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    shouldTruncate: true
+  }
+)
+
+const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
+  computed(() => makerFeeRate.value.times(100)),
+  {
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    shouldTruncate: true
+  }
+)
 
 const tierLevel = computed(() =>
   new BigNumberInBase(
     exchangeStore.feeDiscountAccountInfo?.tierLevel || 0
   ).toNumber()
 )
-
-const { valueToFixed: makerFeeDiscount } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!exchangeStore.feeDiscountAccountInfo?.accountInfo) {
-      return ''
-    }
-
-    return sharedToBalanceInTokenInBase({
-      value: exchangeStore.feeDiscountAccountInfo.accountInfo.makerDiscountRate
-    })
-  }),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: takerFeeDiscount } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!exchangeStore.feeDiscountAccountInfo?.accountInfo) {
-      return ''
-    }
-
-    return sharedToBalanceInTokenInBase({
-      value: exchangeStore.feeDiscountAccountInfo.accountInfo.takerDiscountRate
-    })
-  }),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
-
-const { valueToFixed: discountedMakerFeeRateToFixed } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      const makerFeeRate = new BigNumberInBase(MAKER_FEE).toFixed()
-      const feeRate = new BigNumberInBase(makerFeeRate)
-
-      return feeRate.lte(0)
-        ? feeRate
-        : feeRate.times(ONE_IN_BASE.minus(makerFeeDiscount.value))
-    }),
-    {
-      decimalPlaces: MAKER_FEE_DECIMALS
-    }
-  )
 
 onMounted(() => {
   status.setLoading()
@@ -98,8 +64,8 @@ onMounted(() => {
           <b class="max-sm:text-xs lg:text-2xl text-white tracking-normal">
             {{
               $t('feeDiscounts.fees_taker_maker_percent', {
-                takerFeeDiscount,
-                makerFee: discountedMakerFeeRateToFixed
+                takerFee: takerFeeRateToFixed,
+                makerFee: makerFeeRateToFixed
               })
             }}
           </b>

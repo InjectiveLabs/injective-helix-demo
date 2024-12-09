@@ -5,7 +5,7 @@ import { PortfolioCyTags } from '@/types'
 const breakpoints = useBreakpointsTw()
 const sharedWalletStore = useSharedWalletStore()
 
-const xxl = breakpoints['4xl']
+const xxl = breakpoints['5xl']
 
 withDefaults(
   defineProps<{

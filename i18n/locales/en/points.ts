@@ -1,15 +1,27 @@
+import { PointsLeague, I18nMessageFunction } from '@/types'
+
 export default {
   points: {
-    week: 'Week',
+    rank: 'Rank',
+    level: 'Level',
+    share: 'Share',
+    title: 'Points',
+    period: 'Period',
     points: 'Points',
     volume: 'Volume',
-    title: 'Points',
-    description:
-      '[PLACEHOLDER] Earn points by using Helix. Points are distributed on [dayOfWeek]',
     totalPoints: 'Total Points',
-    rank: 'Rank',
-    league: 'League',
+    lastUpdatedAt: 'Last updated at ',
     myTotalPoints: 'My total points on Helix',
-    saveImage: 'Save Image'
+    leagues: {
+      [PointsLeague.Blue]: 'Blue Belt',
+      [PointsLeague.Black]: 'Black Belt',
+      [PointsLeague.White]: 'White Belt',
+      [PointsLeague.Orange]: 'Orange Belt',
+      [PointsLeague.Purple]: 'Purple Belt'
+    },
+    paginationDetails: ({ named }: I18nMessageFunction) =>
+      `${named('from')}-${named('to')} of ${named('total')}`,
+    description:
+      '[PLACEHOLDER] Earn points by using Helix. Points are distributed on [dayOfWeek]'
   }
 }

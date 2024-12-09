@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { marketTypeOptionsToHideCategory } from '@/app/data/market'
-import { MarketQuoteType, MarketTypeOption, MarketCategoryType } from '@/types'
+import { MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
 const { sm } = useTwBreakpoints()
@@ -16,26 +15,9 @@ withDefaults(
   {}
 )
 
-const activeTypeOptions = Object.values(MarketTypeOption)
-  .filter(
-    (marketType) =>
-      ![MarketTypeOption.Permissionless /* MarketTypeOption.Themes */].includes(
-        marketType
-      )
-  )
-  .map((value) => ({
-    label: `markets.${value}`,
-    value
-  }))
-
 const activeCategoryOptions = Object.values(MarketCategoryType).map(
   (value) => ({ label: `markets.${value}`, value })
 )
-
-const mobileMarketTypeOption = Object.values(MarketTypeOption).map((value) => ({
-  label: value,
-  value
-}))
 
 const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
   ([key, value]) => ({ label: key, value })
@@ -43,8 +25,6 @@ const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
 
 const search = ref('')
 const isLowVolumeMarketsVisible = ref(false)
-const activeQuote = ref(MarketQuoteType.All)
-const activeType = ref(MarketTypeOption.All)
 const activeCategory = ref(MarketCategoryType.All)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
@@ -88,54 +68,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
         <div
           class="flex max-md:flex-col max-md:items-start gap-2 justify-between"
         >
-          <div v-if="sm" class="flex gap-2 flex-wrap">
-            <AppButtonSelect
-              v-for="category in activeTypeOptions"
-              :key="category.value"
-              v-model="activeType"
-              v-bind="{ value: category.value }"
-              class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize font-semibold rounded-md text-blue-550"
-              active-classes="opacity-100"
-            >
-              {{ category.value }}
-            </AppButtonSelect>
-          </div>
-          <div v-else class="w-full">
-            <p class="text-xs text-gray-500 mb-2">
-              {{ $t('common.marketType') }}
-            </p>
-            <USelectMenu
-              v-model="activeType"
-              value-attribute="value"
-              :options="mobileMarketTypeOption"
-              :ui-menu="{
-                select: 'capitalize',
-                option: { base: 'capitalize' }
-              }"
-            />
-          </div>
-
-          <div class="flex overflow-hidden rounded border">
-            <AppButtonSelect
-              v-for="value in Object.values(MarketQuoteType)"
-              :key="value"
-              v-model="activeQuote"
-              v-bind="{ value }"
-              class="py-1 px-3 text-coolGray-400 text-xs uppercase hover:bg-brand-875"
-              active-classes="text-white !bg-brand-800"
-            >
-              {{ value }}
-            </AppButtonSelect>
-          </div>
-        </div>
-
-        <div
-          class="flex justify-between sm:items-center flex-wrap max-sm:flex-col"
-        >
-          <div
-            v-if="!marketTypeOptionsToHideCategory.includes(activeType)"
-            class="sm:flex gap-2 flex-wrap justify-between max-sm:w-full"
-          >
+          <div class="sm:flex gap-2 flex-wrap justify-between max-sm:w-full">
             <template v-if="sm">
               <AppButtonSelect
                 v-for="category in activeCategoryOptions"
@@ -145,8 +78,9 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
                 class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize font-semibold rounded-md text-blue-550"
                 active-classes="opacity-100"
               >
-                {{ category.value }}
+                {{ $t(`markets.filters.${category.value}`) }}
               </AppButtonSelect>
+              <div class="flex-grow"></div>
             </template>
 
             <div v-else>
@@ -173,8 +107,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
         <CommonHeadlessMarkets
           v-bind="{
             search,
-            activeType,
-            activeQuote,
             activeCategory,
             isLowVolumeMarketsVisible,
             markets: marketsWithSummaryAndVolumeInUsd

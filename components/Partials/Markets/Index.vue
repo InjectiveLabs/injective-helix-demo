@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import {
-  MarketQuoteType,
-  MarketTypeOption,
-  MarketCategoryType,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
+import { MarketCategoryType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 withDefaults(
   defineProps<{
     search?: string
     markets: UiMarketAndSummaryWithVolumeInUsd[]
     isLoading?: boolean
-    activeType: MarketTypeOption
-    activeQuote: MarketQuoteType
     activeCategory: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
   }>(),
@@ -31,8 +24,6 @@ withDefaults(
         v-bind="{
           search,
           markets,
-          activeType,
-          activeQuote,
           activeCategory,
           isLowVolumeMarketsVisible
         }"

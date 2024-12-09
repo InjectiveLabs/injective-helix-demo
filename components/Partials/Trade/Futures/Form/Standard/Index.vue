@@ -122,18 +122,18 @@ const {
       }"
     />
 
-    <div>
-      <PartialsTradeFuturesFormStandardCreateOrder
-        v-bind="{
-          margin,
-          quantity,
-          feeAmount,
-          worstPrice,
-          feePercentage,
-          marginWithFee,
-          totalNotional
-        }"
-      />
-    </div>
+    <PartialsTradeFuturesFormStandardCreateOrder
+      v-bind="{
+        margin,
+        quantity,
+        feeAmount,
+        worstPrice,
+        feePercentage,
+        marginWithFee,
+        totalNotional
+      }"
+    />
+
+    <PartialsTradeCommonFormAccountEquity />
   </div>
 </template>

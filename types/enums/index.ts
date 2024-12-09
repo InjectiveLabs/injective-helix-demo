@@ -21,6 +21,7 @@ export enum Modal {
   AssetDetails = 'asset-details',
   OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
+  MitoRedirect = 'mito-redirect',
   PostOnlyMode = 'post-only-mode',
   GasFeeRebate = 'gas-fee-rebate',
   GeoRestricted = 'geo-restricted',
@@ -96,30 +97,6 @@ export enum TradeSelectorType {
   Side = 'side',
   PositionSide = 'position-side',
   TransferType = 'transfer-type'
-}
-
-export enum MarketFilterType {
-  All = 'all',
-  Volume = 'volume',
-  New = 'new',
-  Upcoming = 'upcoming'
-}
-
-export enum MarketCategoryType {
-  All = 'all',
-  Cosmos = 'cosmos',
-  Ethereum = 'ethereum',
-  Injective = 'injective',
-  Solana = 'solana',
-  Experimental = 'experimental',
-  RWA = 'RWA'
-}
-
-export enum MarketQuoteType {
-  All = 'all',
-  USDT = 'usdt',
-  USDC = 'usdc',
-  INJ = 'inj'
 }
 
 export enum StreamType {
@@ -259,7 +236,7 @@ export enum WalletModalType {
 
 export enum ActivityView {
   Positions = 'Positions/Index',
-  FundingPayments = 'Positions/FundingPayments',
+  FundingHistory = 'Positions/FundingHistory',
   SpotOrders = 'Spot/Index',
   SpotOrderHistory = 'Spot/OrderHistory',
   SpotTradeHistory = 'Spot/TradeHistory',
@@ -381,11 +358,6 @@ export enum TimeDuration {
   Second = 'second'
 }
 
-export enum MenuItemType {
-  Link = 'link',
-  Dropdown = 'dropdown'
-}
-
 export enum ChartViewOption {
   Chart = 'chart',
   ProChart = 'pro-chart',
@@ -403,18 +375,6 @@ export enum MarketHeaderType {
   Change = 'change',
   Volume = 'volume',
   Price = 'price'
-}
-
-export enum MarketTypeOption {
-  All = 'all',
-  Favorites = 'favorites',
-  Spot = 'Spot',
-  Derivative = 'Derivative',
-  NewListings = 'New Listings',
-  Permissionless = 'permissionless',
-  MyMarkets = 'My Markets'
-
-  // Themes = 'themes'
 }
 
 export enum TradingInterface {
@@ -440,19 +400,20 @@ export enum LiquidityBotField {
 }
 
 export enum SpotOrdersStandardView {
+  Orders = 'orders',
   Balances = 'balances',
-  OpenOrders = 'openOrders',
-  OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
+  TradeHistory = 'tradeHistory',
+  OrderHistory = 'orderHistory'
 }
 
 export enum PerpOrdersStandardView {
   Balances = 'balances',
-  OpenPositions = 'openPositions',
-  OpenOrders = 'openOrders',
+  Positions = 'positions',
+  Orders = 'orders',
   Triggers = 'triggers',
   OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
+  TradeHistory = 'tradeHistory',
+  FundingHistory = 'fundingHistory'
 }
 
 export enum PerpOrdersTradingBotsView {
@@ -589,4 +550,40 @@ export enum LiquidityProvisionType {
 export enum MitoRegistrationMode {
   Restricted = 'Restricted',
   Permissionless = 'Permissionless'
+}
+
+export enum MarketFilterType {
+  All = 'all',
+  Volume = 'volume',
+  New = 'new',
+  Upcoming = 'upcoming'
+}
+
+export enum MarketCategoryType {
+  All = 'all',
+  Favorites = 'favorites',
+  Perps = 'perps',
+  Spot = 'spot',
+  Trending = 'trending',
+  Injective = 'injective',
+  Layer1 = 'layer-1',
+  Layer2 = 'layer-2',
+  Experimental = 'experimental',
+  DeFi = 'deFi',
+  AI = 'aI',
+  Meme = 'meme'
+  // All = 'all',
+  // Cosmos = 'cosmos',
+  // Ethereum = 'ethereum',
+  // Injective = 'injective',
+  // Solana = 'solana',
+  // Experimental = 'experimental',
+  // RWA = 'RWA',
+}
+
+export enum MarketQuoteType {
+  All = 'all',
+  USDT = 'usdt',
+  USDC = 'usdc',
+  INJ = 'inj'
 }

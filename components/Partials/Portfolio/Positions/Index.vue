@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   Modal,
   BusEvents,
@@ -13,7 +13,7 @@ const positionStore = usePositionStore()
 
 const { values } = useForm<PositionsFilterForm>()
 
-const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
+const selectedPosition = ref<PositionV2 | undefined>(undefined)
 
 const filteredPosition = computed(() =>
   positionStore.positions.filter((position) => {
@@ -32,21 +32,17 @@ const filteredPosition = computed(() =>
   })
 )
 
-const positionToAddMargin = ref<Position | PositionV2 | undefined>(undefined)
-
-function addMargin(position: Position | PositionV2) {
+function addMargin(position: PositionV2) {
+  selectedPosition.value = position
   modalStore.openModal(Modal.AddMarginToPosition)
-
-  positionToAddMargin.value = position
 }
 
-function addTakeProfitStopLoss(position: Position | PositionV2) {
+function addTakeProfitStopLoss(position: PositionV2) {
+  selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
-
-  positionToAddMargin.value = position
 }
 
-function onSharePosition(position: Position | PositionV2) {
+function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
@@ -72,14 +68,16 @@ function onSharePosition(position: Position | PositionV2) {
   />
 
   <ModalsAddMargin
+    v-if="selectedPosition"
     v-bind="{
-      position: positionToAddMargin
+      position: selectedPosition
     }"
   />
 
   <ModalsAddTakeProfitStopLoss
+    v-if="selectedPosition"
     v-bind="{
-      position: positionToAddMargin
+      position: selectedPosition
     }"
   />
 

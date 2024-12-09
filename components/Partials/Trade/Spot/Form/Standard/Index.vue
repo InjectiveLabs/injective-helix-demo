@@ -58,7 +58,11 @@ const {
         <NuxtLink
           class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
-            name: MainPage.Swap
+            name: MainPage.Swap,
+            query: {
+              to: market.baseDenom,
+              from: market.quoteDenom
+            }
           }"
         >
           {{ $t(`navigation.swap`) }}
@@ -113,13 +117,13 @@ const {
       }"
     />
 
-    <div>
-      <PartialsTradeSpotFormStandardCreateOrder
-        v-bind="{
-          quantity,
-          worstPrice
-        }"
-      />
-    </div>
+    <PartialsTradeSpotFormStandardCreateOrder
+      v-bind="{
+        quantity,
+        worstPrice
+      }"
+    />
+
+    <PartialsTradeCommonFormAccountEquity />
   </div>
 </template>

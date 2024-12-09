@@ -46,8 +46,15 @@ export function useMarketSelectorTransformer(
 
       const leverage = calculateLeverage(uiDerivativeMarket.initialMarginRatio)
 
+      const change = item.summary?.change || 0
+
+      const changePrefix = new BigNumberInBase(change).gt(0) ? '+' : ''
+
+      const formattedChange = changePrefix + change
+
       return {
         leverage,
+        formattedChange,
         market: item.market,
         volumeInUsd: item.volumeInUsd,
         volumeInUsdToFixed: item.volumeInUsd.toFixed(
@@ -61,10 +68,10 @@ export function useMarketSelectorTransformer(
           item.volumeInUsd.toNumber(),
         [MarketsSelectorTableColumn.Markets]:
           item.market?.ticker?.toUpperCase() || '',
-        [MarketsSelectorTableColumn.LastPrice]: lastTradedPrice,
+        [MarketsSelectorTableColumn.MarketChange24h]: change,
         [MarketsSelectorTableColumn.FundingRate]: fundingRate,
-        [MarketsSelectorTableColumn.OpenInterest]: openInterest,
-        [MarketsSelectorTableColumn.MarketChange24h]: item.summary?.change || 0
+        [MarketsSelectorTableColumn.LastPrice]: lastTradedPrice,
+        [MarketsSelectorTableColumn.OpenInterest]: openInterest
       }
     })
   })

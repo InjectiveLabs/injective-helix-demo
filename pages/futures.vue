@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { IsSpotKey, MarketKey } from '@/types'
+import { IsSpotKey, MarketKey, PortfolioStatusKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
 })
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
+
+const portfolioStatus = inject(
+  PortfolioStatusKey,
+  new Status(StatusType.Loading)
+)
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -25,7 +29,7 @@ const market = computed(() =>
 
 useDerivativeOrderbook(computed(() => market.value))
 
-onWalletConnected(() => {
+onWalletConnected(async () => {
   if (!market.value) {
     return navigateTo({
       name: 'futures-slug',
@@ -36,9 +40,8 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    spotStore.fetchSubaccountOrders(),
+    // futures data
     derivativeStore.fetchOpenInterest(),
-    positionStore.fetchSubaccountPositions(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -46,38 +49,25 @@ onWalletConnected(() => {
     derivativeStore.getMarketMarkPrice(market.value)
   ])
     .catch($onError)
-    .then(() => {
-      streamDerivativeData()
-    })
-    .finally(() => {
-      status.setIdle()
-    })
-})
+    .finally(() => status.setIdle())
 
-onUnmounted(() => {
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
-  derivativeStore.reset()
-})
 
-function streamDerivativeData() {
-  if (!market.value) {
-    return
-  }
-
-  cancelDerivativeStream()
+  await until(portfolioStatus).toMatch((status) => status.isIdle())
 
   derivativeStore.streamTrades(market.value.marketId)
   derivativeStore.streamMarketsMarkPrices([
     market.value.marketId,
-    ...positionStore.subaccountPositions.map(({ marketId }) => marketId)
+    ...positionStore.positions.map(({ marketId }) => marketId)
   ])
-}
+})
 
-function cancelDerivativeStream() {
+onUnmounted(() => {
+  derivativeStore.reset()
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
-}
+})
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
@@ -85,8 +75,8 @@ provide(IsSpotKey, false)
 useIntervalFn(
   () =>
     Promise.all([
-      derivativeStore.fetchMarkets(), // refresh funding rate
-      derivativeStore.fetchOpenInterest()
+      derivativeStore.fetchOpenInterest(),
+      derivativeStore.fetchMarketsSummary()
     ]),
   60 * 1000
 )

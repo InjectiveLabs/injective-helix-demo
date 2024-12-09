@@ -1,19 +1,34 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { PointsPeriod } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const { t } = useLang()
+const pointsStore = usePointsStore()
+const { rows } = usePointsTransformer(
+  computed(() => paginatedPointsHistory.value)
+)
+
+const props = withDefaults(
+  defineProps<{ modelValue: PointsPeriod; pointsPeriodList: PointsPeriod[] }>(),
+  {}
+)
+
+const emit = defineEmits<{
+  'update:modelValue': [value: PointsPeriod]
+}>()
 
 const columns = [
   {
-    key: 'week',
-    label: t('points.week'),
-    sortable: true,
-    class: 'w-[2]'
+    key: 'period',
+    label: t('points.period'),
+    class: 'w-[200px]'
   },
   {
     key: 'volume',
     label: t('points.volume'),
-    class: 'text-center'
+    class: 'text-right'
   },
   {
     key: 'points',
@@ -22,72 +37,70 @@ const columns = [
   }
 ]
 
-const pageCount = 7
+const limit = 7
 const page = ref(1)
 
-const pointsData = computed(() => {
-  const mockData = []
-  const baseObject = {
-    week: 'Dec 21, 2024 - Dec 28, 2024',
-    points: '888,888',
-    volume: '100,873.02'
-  }
-
-  for (let index = 0; index < 25; index++) {
-    mockData.push({
-      ...baseObject,
-      points: `${index + 1},${baseObject.points}`
-    })
-  }
-
-  return mockData
-})
-
-const rows = computed(() => {
-  return pointsData.value.slice(
-    (page.value - 1) * pageCount,
-    page.value * pageCount
+const filteredPointsHistory = computed(() => {
+  return pointsStore.pointsHistory.filter(
+    ({ points }) => !new BigNumberInBase(points).isZero()
   )
 })
 
-const getPaginationDetails = computed(() => {
-  const from = 1 + pageCount * (page.value - 1)
-  const to = pageCount * page.value
-  const totalData = pointsData.value.length
-  const maxPage = Math.ceil(totalData / pageCount)
+const paginatedPointsHistory = computed(() => {
+  return filteredPointsHistory.value.slice(
+    (page.value - 1) * limit,
+    page.value * limit
+  )
+})
+
+const paginationDetails = computed(() => {
+  const to = limit * page.value
+  const from = limit * (page.value - 1) + 1
+  const total = filteredPointsHistory.value.length
 
   return {
     from,
-    maxPage,
-    totalData,
-    to: to > totalData ? totalData : to
+    total,
+    to: to > total ? total : to
   }
 })
 
-const isPaginationDisabled = computed(() => ({
-  prev: page.value === 1,
-  next: page.value === getPaginationDetails.value.maxPage
-}))
-
-function paginate(type: string) {
-  if (type === 'prev' && page.value > 1) {
-    page.value--
+const selectedPeriod = computed({
+  get: (): PointsPeriod => props.modelValue,
+  set: (value: PointsPeriod) => {
+    page.value = 1
+    emit('update:modelValue', value)
   }
+})
 
-  if (type === 'next' && page.value < getPaginationDetails.value.maxPage) {
-    page.value++
-  }
+const isEmpty = computed(() => filteredPointsHistory.value.length === 0)
+const isPrevDisabled = computed(() => new BigNumberInBase(page.value).eq(1))
+
+const isNextDisabled = computed(() =>
+  new BigNumberInBase(page.value)
+    .times(limit)
+    .gte(filteredPointsHistory.value.length)
+)
+
+function onPrevious() {
+  page.value--
+}
+
+function onNext() {
+  page.value++
 }
 </script>
 
 <template>
   <div
-    class="flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
+    class="w-full flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
   >
     <UTable
       :rows="rows"
       :columns="columns"
       :ui="{
+        ...(isEmpty ? { wrapper: 'flex-grow' } : {}),
+        base: 'h-full',
         divide: 'dark:divide-y-0',
         tbody: 'dark:divide-y-0',
         th: {
@@ -95,7 +108,7 @@ function paginate(type: string) {
           size: 'text-sm',
           font: 'font-medium',
           color: 'dark:text-coolGray-450',
-          base: 'dark:bg-brand-825 [&>button]:text-sm [&>button]:dark:text-coolGray-450'
+          base: 'dark:bg-brand-825 [&>button]:text-sm'
         },
         td: {
           size: 'text-sm',
@@ -106,46 +119,94 @@ function paginate(type: string) {
         }
       }"
     >
-      <template #week-data="{ row }">
-        <p>{{ row.week }}</p>
+      <template #period-header>
+        <USelectMenu
+          v-model="selectedPeriod"
+          :options="pointsPeriodList"
+          :popper="{ placement: 'bottom-start' }"
+          :ui-menu="{
+            width: 'w-28',
+            background: 'dark:bg-brand-825',
+            option: { base: 'capitalize' }
+          }"
+        >
+          <template #default="{ open }">
+            <span
+              class="flex gap-2 items-center dark:text-coolGray-450 hover:dark:text-white transition font-medium text-sm capitalize"
+            >
+              {{ selectedPeriod }}
+              <UIcon
+                :name="NuxtUiIcons.ChevronUp2"
+                class="size-3.5 transition-transform transform rotate-180"
+                :class="[open && 'rotate-0']"
+              />
+            </span>
+          </template>
+        </USelectMenu>
+      </template>
+
+      <template #period-data="{ row }">
+        <p class="leading-tight">{{ row.period }}</p>
       </template>
 
       <template #volume-data="{ row }">
-        <p class="text-center font-mono">${{ row.volume }}</p>
+        <span class="flex justify-end font-mono">
+          <AppAmount
+            v-bind="{
+              amount: row.volume,
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
       </template>
 
       <template #points-data="{ row }">
-        <p class="text-end">{{ row.points }}</p>
+        <span class="flex justify-end">
+          <AppAmount
+            v-bind="{
+              amount: row.points,
+              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+        </span>
       </template>
     </UTable>
 
-    <div class="flex items-center justify-end bg-[#262A30] py-4 px-0.5">
+    <div
+      v-if="!isEmpty"
+      class="flex items-center justify-end bg-[#262A30] py-4 px-0.5"
+    >
       <p class="text-sm text-white font-medium mr-2">
-        {{ getPaginationDetails.from }}-{{ getPaginationDetails.to }} of
-        {{ getPaginationDetails.totalData }}
+        {{
+          t('points.paginationDetails', {
+            from: paginationDetails.from,
+            to: paginationDetails.to,
+            total: paginationDetails.total
+          })
+        }}
       </p>
       <AppButton
         class="p-1.5 disabled:border-none focus-within:ring-0"
         variant="primary-ghost"
-        :disabled="isPaginationDisabled.prev"
-        @click="paginate('prev')"
+        :disabled="isPrevDisabled"
+        @click="onPrevious"
       >
         <UIcon
           :name="NuxtUiIcons.ChevronLeft2"
           class="size-3"
-          :class="{ 'pointer-events-none': isPaginationDisabled.prev }"
+          :class="{ 'pointer-events-none': isPrevDisabled }"
         />
       </AppButton>
       <AppButton
         class="p-1.5 disabled:border-none focus-within:ring-0"
         variant="primary-ghost"
-        :disabled="isPaginationDisabled.next"
-        @click="paginate('next')"
+        :disabled="isNextDisabled"
+        @click="onNext"
       >
         <UIcon
           :name="NuxtUiIcons.ChevronRight2"
           class="size-3"
-          :class="{ 'pointer-events-none': isPaginationDisabled.next }"
+          :class="{ 'pointer-events-none': isNextDisabled }"
         />
       </AppButton>
     </div>

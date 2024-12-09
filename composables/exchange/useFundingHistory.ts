@@ -8,14 +8,14 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
+export function useFundingHistory(fundingHistory: Ref<FundingPayment>) {
   const derivativeStore = useDerivativeStore()
 
   const UI_MINIMAL_AMOUNT = new BigNumberInWei(1).shiftedBy(-6)
 
   const market = computed(() =>
     derivativeStore.markets.find(
-      (m) => m.marketId === fundingPayment.value.marketId
+      (m) => m.marketId === fundingHistory.value.marketId
     )
   )
 
@@ -32,7 +32,7 @@ export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
   )
 
   const total = computed(() => {
-    if (!fundingPayment.value.amount) {
+    if (!fundingHistory.value.amount) {
       return ZERO_IN_BASE
     }
 
@@ -44,15 +44,15 @@ export function useFundingPayment(fundingPayment: Ref<FundingPayment>) {
       ? market.value.quoteToken.decimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-    return new BigNumberInWei(fundingPayment.value.amount).toBase(decimals)
+    return new BigNumberInWei(fundingHistory.value.amount).toBase(decimals)
   })
 
   const time = computed(() => {
-    if (!fundingPayment.value.timestamp) {
+    if (!fundingHistory.value.timestamp) {
       return ''
     }
 
-    return format(fundingPayment.value.timestamp, DATE_TIME_DISPLAY)
+    return format(fundingHistory.value.timestamp, DATE_TIME_DISPLAY)
   })
 
   return {

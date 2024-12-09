@@ -36,15 +36,15 @@ function disconnect() {
   WalletTracker.trackLogout()
 
   if (
-    [MainPage.Portfolio, ...Object.values(PortfolioSubPage)].includes(
-      route.name as MainPage
-    )
+    [
+      MainPage.Points,
+      MainPage.Portfolio,
+      ...Object.values(PortfolioSubPage)
+    ].includes(route.name as MainPage)
   ) {
     router.push({ name: MainPage.Index })
   }
 }
-
-// todoz: update this page for conditional MM wallet logic
 </script>
 
 <template>
@@ -62,12 +62,23 @@ function disconnect() {
             is-sm
             is-white
           />
-          <UIcon
-            v-else
-            :name="NuxtUiIcons.UserOutline"
-            class="w-4 h-4 p-1 rounded-md hover:bg-brand-800"
-          />
-          <span class="hidden lg:block font-mono lg:ml-2">
+          <div v-else class="flex items-center justify-center space-x-2">
+            <UIcon
+              :name="NuxtUiIcons.UserOutline"
+              class="w-4 h-4 rounded-md text-[#black]"
+            />
+            <div
+              v-if="sharedWalletStore.isAutoSignEnabled"
+              class="bg-white px-1 py-0.5 rounded flex items-center justify-center"
+            >
+              <UIcon
+                :name="NuxtUiIcons.RotateAuto"
+                class="w-4 h-4 rounded-md text-black"
+              />
+            </div>
+          </div>
+
+          <span class="hidden lg:block lg:ml-2">
             {{ formattedAddress }}
           </span>
         </div>
