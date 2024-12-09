@@ -161,7 +161,7 @@ function closePositionAndReduceOnlyOrders() {
       size="sm"
       :variant="'danger-shade'"
       :title="$t('trade.closePosition')"
-      :class="[isShrinked ? 'p-1 outline-none' : 'min-w-16']"
+      :class="[isShrinked ? 'p-1 outline-none rounded-full' : 'min-w-16']"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >

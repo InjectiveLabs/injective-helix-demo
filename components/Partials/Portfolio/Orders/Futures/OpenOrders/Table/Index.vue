@@ -203,7 +203,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
             size="xs"
             :status="status"
             variant="danger-shade"
-            class="p-1 outline-none"
+            class="p-1 outline-none rounded-full"
             :title="$t('trade.cancelOrder')"
             :disabled="!row.isAuthorized"
             :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"

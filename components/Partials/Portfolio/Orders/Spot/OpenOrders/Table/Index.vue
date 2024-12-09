@@ -184,7 +184,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
             size="xs"
             :status="status"
             variant="danger-shade"
-            class="p-1 outline-none"
+            class="p-1 outline-none rounded-full"
             :disabled="!row.isAuthorized"
             :title="$t('trade.cancelOrder')"
             :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
