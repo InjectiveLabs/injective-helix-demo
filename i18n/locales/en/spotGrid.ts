@@ -275,7 +275,7 @@ export default {
     topPerformers: 'Top Performers',
     volumeBoost: 'Volume Boost',
     description:
-      'Level up your Helix game with institutional-grade automation. 179K+ traders are already leveraging our gas-free bot strategies.',
+      'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
     botType: {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Liquidity Grid',

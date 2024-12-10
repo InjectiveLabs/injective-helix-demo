@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MainPage } from '~/types'
+import { MainPage } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 </script>
@@ -41,10 +40,10 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.totalTvl') }}
           </h2>
           <p class="text-2xl font-bold">
+            <span class="-mr-0.25">$</span>
             <AppAmount
-              :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+              :decimal-places="0"
               :amount="gridStrategyStore.stats.totalTvl"
-              :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             />
           </p>
         </div>
@@ -52,15 +51,20 @@ const gridStrategyStore = useGridStrategyStore()
     </div>
 
     <div class="flex gap-4 mt-4">
-      <AppButton
-        :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
-        size="lg"
+      <NuxtLink :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }">
+        <AppButton size="lg">
+          {{ $t('tradingBots.createYourStrategy') }}
+        </AppButton>
+      </NuxtLink>
+
+      <NuxtLink
+        to="https://helixapp.zendesk.com/hc/en-us/articles/8057052788623-Helix-Trading-Bot-Launch"
+        target="_blank"
       >
-        {{ $t('tradingBots.createYourStrategy') }}
-      </AppButton>
-      <AppButton variant="primary-outline" class="border-white" size="lg">
-        {{ $t('common.learnMore') }}
-      </AppButton>
+        <AppButton variant="primary-outline" class="border-white" size="lg">
+          {{ $t('common.learnMore') }}
+        </AppButton>
+      </NuxtLink>
     </div>
   </div>
 </template>
