@@ -129,7 +129,7 @@ provide(PortfolioStatusKey, portfolioStatus)
 <template>
   <div class="relative min-h-screen">
     <LayoutNavbar />
-    <main class="relative pb-6">
+    <main class="relative mt-[60px] pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
       <LayoutTeslaCompetitionBanner

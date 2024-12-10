@@ -24,12 +24,12 @@ const filteredTopNavMenu = computed(() =>
 <template>
   <header
     :class="[
-      'w-full z-50 relative',
+      'w-full z-50 fixed top-0 left-0',
       route.name === MainPage.Index ? '' : 'bg-brand-900'
     ]"
   >
     <div
-      :class="['flex  py-3', route.name === MainPage.Index ? '' : 'border-b']"
+      :class="['flex py-3', route.name === MainPage.Index ? '' : 'border-b']"
     >
       <NuxtLink
         to="/"

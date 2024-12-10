@@ -4,20 +4,6 @@
   <div
     class="gradient-bg__container fixed top-0 l-0 p-10 pointer-events-none brightness-50 w-screen h-screen overflow-hidden"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
-      <defs>
-        <filter id="blursvg">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-          <feColorMatrix
-            in="blur"
-            mode="matrix"
-            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
-            result="blursvg"
-          />
-          <feBlend in="SourceGraphic" in2="blursvg" />
-        </filter>
-      </defs>
-    </svg>
     <div class="gradients-container w-full h-full">
       <div class="g1 absolute mix-blend-hard-light" />
       <div class="g2 absolute mix-blend-hard-light" />
