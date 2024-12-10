@@ -49,7 +49,7 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
           <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
-          <span v-else>{{ totalPointsToString }}</span>
+          <span v-else>≈{{ totalPointsToString }}</span>
         </p>
       </div>
 
