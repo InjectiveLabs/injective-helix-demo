@@ -25,7 +25,10 @@ onMounted(() => {
       >
         {{ $t('home.latestNews') }}
       </div>
-      <div v-if="announcements.length > 0" class="grid gap-8 md:grid-cols-3">
+      <div
+        v-if="announcements.length > 0"
+        class="grid gap-8 md:grid-cols-3 px-4"
+      >
         <CommonCardAnnouncement
           v-for="(announcement, index) in announcements"
           :key="`news-card-${index}`"

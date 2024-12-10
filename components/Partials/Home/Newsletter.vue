@@ -36,12 +36,6 @@ const subscribe = handleSubmit((values) => {
 
 <template>
   <div class="my-10 md:my-20 py-40 text-center relative">
-    <img
-      class="absolute inset-0 h-full w-full opacity-30 mix-blend-lighten"
-      src="/images/starburst.png"
-      alt=""
-    />
-
     <div class="relative z-20">
       <h1
         class="text-3xl font-semibold bg-gradient-to-r from-white to-coolGray-500 bg-clip-text text-transparent"
@@ -51,25 +45,22 @@ const subscribe = handleSubmit((values) => {
 
       <div class="max-w-[340px] xs:max-w-[360px] mt-6 mx-auto">
         <div class="rounded-lg flex space-x-2 items-center">
-          <AppInput
+          <UInput
             v-model="value"
+            size="xl"
             :placeholder="$t('newsletter.emailAddress')"
-            transparent-bg
-            class="p-3"
-          >
-          </AppInput>
+          />
 
-          <AppButton
-            size="lg"
-            class="bg-blue-500 text-blue-900"
+          <SharedButton
+            size="xl"
             :disabled="errors.length > 0"
-            :is-loading="status.isLoading()"
+            :loading="status.isLoading()"
             @click="subscribe"
           >
             <span class="text-sm">
               {{ $t('newsletter.subscribe') }}
             </span>
-          </AppButton>
+          </SharedButton>
         </div>
         <div
           v-if="errors.length > 0"
