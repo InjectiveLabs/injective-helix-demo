@@ -42,7 +42,7 @@ const page = ref(1)
 
 const filteredPointsHistory = computed(() => {
   return pointsStore.pointsHistory.filter(
-    ({ points }) => !new BigNumberInBase(points).isZero()
+    ({ pointsPrecise }) => !new BigNumberInBase(pointsPrecise).isZero()
   )
 })
 

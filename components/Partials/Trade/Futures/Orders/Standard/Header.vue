@@ -154,6 +154,7 @@ watch(
 
     <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
       <AppCheckbox2
+        v-if="view !== PerpOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
         class="3xl:hidden 4xl:block"

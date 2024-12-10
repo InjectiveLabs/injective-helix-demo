@@ -6,8 +6,8 @@ export function usePointsTransformer(
 ) {
   const rows = computed<TransformedPointsHistory[]>(() =>
     pointsHistory.value.map((pointHistory) => ({
-      points: pointHistory.points,
       volume: pointHistory.volume,
+      points: pointHistory.pointsPrecise,
       period:
         pointHistory.periodStart && pointHistory.periodEnd
           ? `${format(

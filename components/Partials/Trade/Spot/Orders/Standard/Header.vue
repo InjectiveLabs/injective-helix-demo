@@ -138,6 +138,7 @@ watch(
 
     <div class="flex items-center flex-1 justify-end px-2">
       <AppCheckbox2
+        v-if="view !== SpotOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
         :class="[xl ? 'text-sm' : 'text-xs']"

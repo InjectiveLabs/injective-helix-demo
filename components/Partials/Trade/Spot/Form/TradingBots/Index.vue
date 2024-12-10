@@ -58,13 +58,8 @@ function onOpenTradingBotDetails() {
         >
           <template #default="{ isActive }">
             <AppButton
-              variant="primary-cta"
-              :class="[
-                'w-full py-1.5 leading-relaxed focus-within:ring-0 hover:bg-transparent',
-                isActive
-                  ? 'text-brand-875 hover:text-brand-875'
-                  : 'text-coolGray-475 hover:text-coolGray-475'
-              ]"
+              :variant="isActive ? 'primary' : 'primary-cta'"
+              :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
             >
               {{ $t(`sgt.${type}`) }}
             </AppButton>

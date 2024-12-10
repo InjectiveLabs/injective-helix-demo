@@ -20,6 +20,7 @@ export type AccountPoints = {
 
 export type HistoricalPoints = {
   points: string
+  pointsPrecise: number
   volume: number
   periodStart: string
   periodEnd: string

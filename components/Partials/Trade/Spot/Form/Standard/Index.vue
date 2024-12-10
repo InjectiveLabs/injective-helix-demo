@@ -76,21 +76,20 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSideValue"
-        class="flex-1 rounded-md"
-        :class="side === OrderSide.Buy ? 'text-green-500' : 'text-red-500'"
-        :active-classes="
-          side === OrderSide.Buy
-            ? 'bg-green-500 text-brand-875'
-            : 'bg-red-500 text-brand-875'
-        "
+        class="flex-1"
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
       >
         <AppButton
-          :variant="side === OrderSide.Buy ? 'success' : 'danger-cta'"
-          :class="[
-            'w-full py-1.5 leading-relaxed',
-            side === OrderSide.Buy ? 'hover:bg-green-500' : ''
-          ]"
+          :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
+          :variant="
+            side === orderSideValue
+              ? side === OrderSide.Buy
+                ? 'success'
+                : 'danger'
+              : side === OrderSide.Buy
+              ? 'success-cta'
+              : 'danger-cta'
+          "
         >
           {{ $t(`trade.${side}`) }}
         </AppButton>

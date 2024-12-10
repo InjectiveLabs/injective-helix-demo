@@ -63,9 +63,17 @@ const {
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
       >
         <AppButton
-          :variant="side === TradeDirection.Long ? 'success' : 'danger-cta'"
+          :variant="
+            orderSide === side
+              ? side === TradeDirection.Long
+                ? 'success'
+                : 'danger'
+              : side === TradeDirection.Long
+              ? 'success-cta'
+              : 'danger-cta'
+          "
           :class="[
-            'w-full py-1.5 leading-relaxed',
+            'w-full py-1.5 leading-relaxed focus-within:ring-0',
             side === TradeDirection.Long ? 'hover:bg-green-500' : ''
           ]"
         >
