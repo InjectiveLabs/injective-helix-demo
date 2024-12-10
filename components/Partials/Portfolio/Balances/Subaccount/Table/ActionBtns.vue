@@ -15,9 +15,7 @@ const props = withDefaults(
     isBridgable?: boolean
     isTablePopover?: boolean
   }>(),
-  {
-    isTablePopover: false
-  }
+  {}
 )
 
 function onFiatOnRamp() {

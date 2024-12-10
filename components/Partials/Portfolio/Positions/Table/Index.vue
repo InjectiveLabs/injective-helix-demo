@@ -341,14 +341,14 @@ function sharePosition(position: PositionV2) {
 
       <template #close-position-data="{ row }">
         <PartialsPortfolioPositionsTableActionBtns
-          :position="row.position"
-          :market="row.market"
           :pnl="row.pnl"
+          :market="row.market"
+          :position="row.position"
+          :quantity="row.quantity"
           :has-reduce-only-orders="row.hasReduceOnlyOrders"
+          :is-limit-order-authorized="row.isLimitOrderAuthorized"
           :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
           :is-market-order-authorized="row.isMarketOrderAuthorized"
-          :is-limit-order-authorized="row.isLimitOrderAuthorized"
-          :quantity="row.quantity"
         />
       </template>
     </UTable>

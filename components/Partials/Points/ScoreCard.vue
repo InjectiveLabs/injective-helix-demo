@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { PointsLeague } from '@/types'
 
 const pointsStore = usePointsStore()
@@ -40,7 +40,8 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
-    shouldTruncate: true
+    shouldTruncate: true,
+    roundingMode: BigNumberInBase.ROUND_DOWN
   }
 )
 
@@ -48,7 +49,8 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => pointsStore.accountPoints?.rank || '0'),
     {
-      shouldTruncate: true
+      shouldTruncate: true,
+      roundingMode: BigNumberInBase.ROUND_DOWN
     }
   )
 
