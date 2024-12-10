@@ -59,6 +59,14 @@ useIntervalFn(
         <h1 class="text-3xl max-xs:text-2xl">{{ $t('points.title') }}</h1>
         <p class="text-base tracking-wide max-xs:text-sm">
           {{ $t('points.description') }}
+          <NuxtLink
+            to="https://helixapp.com/"
+            target="_blank"
+            class="text-blue-500 font-bold"
+          >
+            {{ $t('common.here') }}
+          </NuxtLink>
+          <span>.</span>
         </p>
       </div>
 

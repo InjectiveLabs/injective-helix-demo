@@ -22,6 +22,6 @@ export default {
     paginationDetails: ({ named }: I18nMessageFunction) =>
       `${named('from')}-${named('to')} of ${named('total')}`,
     description:
-      '[PLACEHOLDER] Earn points by using Helix. Points are distributed on [dayOfWeek]'
+      'Trade on Helix and earn points. Points are distributed every single day. For more information, see'
   }
 }
