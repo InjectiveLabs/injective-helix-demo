@@ -69,6 +69,7 @@ type ReplaceOrderbookType = {
   data: {
     buys: any[]
     sells: any[]
+    midPrice: string
   }
 }
 

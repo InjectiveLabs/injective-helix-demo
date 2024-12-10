@@ -12,6 +12,7 @@ import {
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
+const orderbookStore = useOrderbookStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -51,11 +52,11 @@ const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
 )
 
 function setMidLimitPrice() {
-  if (!lastTradedPrice.value) {
+  if (!orderbookStore.midPrice) {
     return
   }
 
-  value.value = lastTradedPrice.value.toFixed(
+  value.value = new BigNumberInBase(orderbookStore.midPrice).toFixed(
     market.value.priceDecimals,
     BigNumberInBase.ROUND_DOWN
   )

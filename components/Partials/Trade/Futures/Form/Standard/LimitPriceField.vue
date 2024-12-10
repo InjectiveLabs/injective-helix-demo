@@ -12,6 +12,7 @@ import {
 
 const appStore = useAppStore()
 const tokenStore = useTokenStore()
+const orderbookStore = useOrderbookStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -42,11 +43,11 @@ const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
 )
 
 function setMidLimitPrice() {
-  if (!lastTradedPrice.value) {
+  if (!orderbookStore.midPrice) {
     return
   }
 
-  limit.value = lastTradedPrice.value.toFixed(
+  limit.value = new BigNumberInBase(orderbookStore.midPrice).toFixed(
     market.value.priceDecimals,
     BigNumberInBase.ROUND_DOWN
   )
