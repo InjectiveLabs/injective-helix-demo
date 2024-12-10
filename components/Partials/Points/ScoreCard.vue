@@ -86,7 +86,7 @@ async function downloadImage() {
   >
     <div
       ref="canvas"
-      class="flex flex-col flex-1 items-center pt-24 bg-cover bg-center bg-no-repeat"
+      class="flex flex-col flex-1 items-center pt-16 bg-cover bg-center bg-no-repeat"
       :style="{
         backgroundImage: `url('/images/points/${leagueBg}.png')`
       }"
@@ -96,7 +96,7 @@ async function downloadImage() {
       <p class="text-xl mt-4">
         {{ $t('points.myTotalPoints') }}
       </p>
-      <p class="text-5xl font-bold mt-2 mb-16">
+      <p class="text-5xl font-bold mt-2 mb-12">
         <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
         <span v-else>{{ totalPointsToString }}</span>
       </p>
@@ -136,7 +136,7 @@ async function downloadImage() {
       </div>
     </div>
 
-    <div class="absolute top-0 right-0 flex justify-end p-4">
+    <div class="absolute bottom-0 right-0 flex justify-end p-4">
       <AppButton
         variant="primary-outline"
         :class="[
