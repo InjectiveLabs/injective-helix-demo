@@ -114,7 +114,7 @@ function onNext() {
 
 <template>
   <div
-    class="w-full flex-1 flex flex-col justify-between bg-[#262A30] rounded-lg overflow-hidden"
+    class="w-full flex-1 flex flex-col justify-between bg-[#1d2130] rounded-lg overflow-hidden"
   >
     <UTable
       :rows="rows"
@@ -136,7 +136,7 @@ function onNext() {
           font: 'font-medium',
           padding: 'py-3 px-2',
           color: 'dark:text-white',
-          base: 'bg-[#262A30] leading-none'
+          base: 'bg-[#1d2130] leading-none'
         }
       }"
     >
@@ -167,7 +167,9 @@ function onNext() {
       </template>
 
       <template #period-data="{ row }">
-        <p v-show="row.period" class="leading-tight">{{ row.period }}</p>
+        <p v-show="row.period" class="leading-tight">
+          {{ row.period.split(' - ')[1] }}
+        </p>
       </template>
 
       <template #volume-data="{ row }">
@@ -175,8 +177,10 @@ function onNext() {
           <AppAmount
             v-if="row.volumeInBigNumber.gte(1)"
             v-bind="{
-              amount: row.volume,
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              amount: row.volumeInBigNumber,
+              decimalPlaces: row.volumeInBigNumber.gte(1_000_000)
+                ? 0
+                : UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
           <span v-else>{{ '< 1' }}</span>
@@ -199,7 +203,7 @@ function onNext() {
 
     <div
       v-if="!isEmpty"
-      class="flex items-center justify-end bg-[#262A30] py-4 px-0.5"
+      class="flex items-center justify-end bg-[#1d2130] py-4 px-0.5"
     >
       <p class="text-sm text-white font-medium mr-2">
         {{

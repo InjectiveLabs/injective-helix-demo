@@ -37,7 +37,7 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
 </script>
 
 <template>
-  <section class="mt-[72px] mb-24 max-xs:mt-14 max-xs:mb-16">
+  <section class="mt-[72px] mb-20 max-xs:mt-14 max-xs:mb-16">
     <div class="flex max-lg:flex-col max-lg:gap-6">
       <div class="flex flex-col gap-1">
         <h4

@@ -82,7 +82,6 @@ export const TRADING_OPTIONS = [
 ]
 
 export const POINTS_ITEM = {
-  isConnectedOnly: true,
   label: 'navigation.points',
   to: { name: MainPage.Points }
 }

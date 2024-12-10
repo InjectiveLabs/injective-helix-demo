@@ -82,11 +82,11 @@ async function downloadImage() {
 
 <template>
   <div
-    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white"
+    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white relative"
   >
     <div
       ref="canvas"
-      class="flex flex-col flex-1 items-center pt-10 bg-cover bg-center bg-no-repeat"
+      class="flex flex-col flex-1 items-center pt-24 bg-cover bg-center bg-no-repeat"
       :style="{
         backgroundImage: `url('/images/points/${leagueBg}.png')`
       }"
@@ -96,7 +96,7 @@ async function downloadImage() {
       <p class="text-xl mt-4">
         {{ $t('points.myTotalPoints') }}
       </p>
-      <p class="text-5xl font-bold mt-2 mb-8">
+      <p class="text-5xl font-bold mt-2 mb-16">
         <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
         <span v-else>{{ totalPointsToString }}</span>
       </p>
@@ -136,10 +136,11 @@ async function downloadImage() {
       </div>
     </div>
 
-    <div class="bg-[#262A30] flex justify-end p-4">
+    <div class="absolute top-0 right-0 flex justify-end p-4">
       <AppButton
+        variant="primary-outline"
         :class="[
-          'bottom-4 right-4 flex justify-center items-center gap-2 w-[132px] h-[45px] rounded-lg text-black hover:bg-blue-600 hover:border-blue-600 focus-within:ring-0 [&>.spinner]:border-t-black [&>.spinner]:border-r-black',
+          'bottom-4 right-4 flex justify-center items-center gap-2 w-[132px] h-[45px] rounded-lg text-white ',
           status.isLoading() ? '[&>span]:hidden' : ''
         ]"
         :is-loading="status.isLoading()"
