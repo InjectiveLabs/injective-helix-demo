@@ -61,7 +61,14 @@ onMounted(() => {
 
     <div class="pt-8 pb-4">
       <div id="built-for-the-community-image" class="rounded-xl">
-        <img src="/images/helix-platform.png" class="w-full h-full" alt="" />
+        <img
+          :style="{
+            aspectRatio: 1264 / 828
+          }"
+          src="/images/helix-platform.png"
+          class="w-full"
+          alt=""
+        />
       </div>
     </div>
 
