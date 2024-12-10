@@ -40,11 +40,11 @@ const columns = [
 const limit = 7
 const page = ref(1)
 
-const filteredPointsHistory = computed(() => {
-  return pointsStore.pointsHistory.filter(
-    ({ points }) => !new BigNumberInBase(points).isZero()
+const filteredPointsHistory = computed(() =>
+  pointsStore.pointsHistory.filter(
+    ({ pointsPrecise }) => !new BigNumberInBase(pointsPrecise).isZero()
   )
-})
+)
 
 const paginatedPointsHistory = computed(() => {
   let paginatedPoints = filteredPointsHistory.value.slice(
@@ -173,22 +173,26 @@ function onNext() {
       <template #volume-data="{ row }">
         <span v-show="row.volume" class="flex justify-end font-mono">
           <AppAmount
+            v-if="row.volumeInBigNumber.gte(1)"
             v-bind="{
               amount: row.volume,
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
+          <span v-else>{{ '< 1' }}</span>
         </span>
       </template>
 
       <template #points-data="{ row }">
         <span v-show="row.points" class="flex justify-end">
           <AppAmount
+            v-if="row.pointsInBigNumber.gte(1)"
             v-bind="{
               amount: row.points,
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
+          <span v-else>{{ '< 1' }}</span>
         </span>
       </template>
     </UTable>

@@ -89,7 +89,7 @@ async function downloadImage() {
       </p>
       <p class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6">
         <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
-        <span v-else>≈{{ totalPointsToString }}</span>
+        <span v-else>{{ totalPointsToString }}</span>
       </p>
 
       <div class="flex justify-between w-full">
