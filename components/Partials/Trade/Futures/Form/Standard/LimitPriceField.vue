@@ -46,7 +46,10 @@ function setMidLimitPrice() {
     return
   }
 
-  limit.value = lastTradedPrice.value.toFixed()
+  limit.value = lastTradedPrice.value.toFixed(
+    market.value.priceDecimals,
+    BigNumberInBase.ROUND_DOWN
+  )
 }
 
 onMounted(() => {

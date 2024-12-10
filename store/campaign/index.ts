@@ -365,7 +365,10 @@ export const useCampaignStore = defineStore('campaign', {
 
       const pastPnlOrVolumeCampaigns = campaigns.reduce(
         (pastPnlOrVolumeCampaigns, campaign) => {
-          if (!PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(campaign.name)) {
+          const campaignName =
+            campaignNameOverrideMap[campaign.name] || campaign.name
+
+          if (!PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(campaignName)) {
             return pastPnlOrVolumeCampaigns
           }
 
@@ -373,7 +376,7 @@ export const useCampaignStore = defineStore('campaign', {
             ...pastPnlOrVolumeCampaigns,
             {
               ...campaign,
-              name: campaignNameOverrideMap[campaign.name] || campaign.name
+              name: campaignName
             }
           ]
         },
