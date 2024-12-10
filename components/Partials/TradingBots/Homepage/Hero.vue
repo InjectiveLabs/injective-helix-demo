@@ -58,7 +58,7 @@ const gridStrategyStore = useGridStrategyStore()
       </NuxtLink>
 
       <NuxtLink
-        to="https://helixapp.zendesk.com/hc/en-us/articles/8057052788623-Helix-Trading-Bot-Launch"
+        to="https://docs.helixapp.com/advanced/trading-bots"
         target="_blank"
       >
         <AppButton variant="primary-outline" class="border-white" size="lg">
