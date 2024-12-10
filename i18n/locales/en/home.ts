@@ -77,6 +77,9 @@ export default {
       faster: 'faster',
       title: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate(['Better and ', named('faster'), '.']),
+      accountOverviewTitle: 'Account Overview',
+      accountOverviewDescription:
+        'View your open positions, trading history, and portfolio all in one convenient location.',
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
         'Trade smarter and leverage advanced strategies in just a click.',

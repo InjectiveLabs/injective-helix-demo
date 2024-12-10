@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
-
 enum OverviewSection {
+  AccountOverview = 'accountOverview',
   TradingBots = 'tradingBots',
-  NewAccounts = 'newAccounts',
   Pnl = 'pnl',
   GasFree = 'gasFree'
 }
 
 const imgList = {
   [OverviewSection.TradingBots]: '/images/home/tradingBots.png',
-  [OverviewSection.NewAccounts]: '/images/home/newAccounts.png',
-  [OverviewSection.Pnl]: '/images/home/pnlOverview.png',
+  [OverviewSection.AccountOverview]: '/images/home/AccountsOverview.png',
+  [OverviewSection.Pnl]: '/images/home/PnL.png',
   [OverviewSection.GasFree]: '/images/home/gasFee.png'
 }
 
@@ -19,28 +17,24 @@ const activeType = ref(OverviewSection.TradingBots)
 
 const options = [
   {
-    type: OverviewSection.TradingBots,
-    title: 'home.overview.tradingBotsTitle',
-    description: 'home.overview.tradingBotsDescription',
-    icon: NuxtUiIcons.Robot
+    type: OverviewSection.AccountOverview,
+    title: 'home.overview.accountOverviewTitle',
+    description: 'home.overview.accountOverviewDescription'
   },
   {
-    type: OverviewSection.NewAccounts,
-    title: 'home.overview.newAccountsTitle',
-    description: 'home.overview.newAccountsDescription',
-    icon: NuxtUiIcons.Notebook
+    type: OverviewSection.TradingBots,
+    title: 'home.overview.tradingBotsTitle',
+    description: 'home.overview.tradingBotsDescription'
   },
   {
     type: OverviewSection.Pnl,
     title: 'home.overview.pnlTitle',
-    description: 'home.overview.pnlDescription',
-    icon: NuxtUiIcons.BarChart
+    description: 'home.overview.pnlDescription'
   },
   {
     type: OverviewSection.GasFree,
     title: 'home.overview.gasFreeTitle',
-    description: 'home.overview.gasFreeDescription',
-    icon: NuxtUiIcons.Gas
+    description: 'home.overview.gasFreeDescription'
   }
 ]
 
@@ -90,12 +84,13 @@ onMounted(() => {
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-10">
-          <div class="space-y-4">
+          <div class="space-y-12">
             <SharedSelectorItem
               v-for="item in options"
               :key="`home-${item.type}`"
               v-model="activeType"
-              class="hover:bg-brand-875 px-6 py-2 rounded-lg cursor-pointer flex"
+              class="hover:text-white cursor-pointer flex text-coolGray-475"
+              :class="{ 'text-white': activeType === item.type }"
               :value="item.type"
             >
               <div class="flex-1 space-y-2 flex items-center space-x-6">
@@ -103,27 +98,14 @@ onMounted(() => {
                   <div class="flex items-center justify-between">
                     <div class="flex justify-center items-center space-x-3">
                       <h2
-                        :class="{
-                          'text-white': activeType === item.type,
-                          'text-coolGray-600': activeType !== item.type
-                        }"
                         class="text-xl xs:text-2xl xs:leading-8 font-semibold"
                       >
                         {{ $t(item.title) }}
                       </h2>
-                      <div
-                        v-if="item.type === OverviewSection.NewAccounts"
-                        class="p-1 text-[10px] font-semibold rounded-[4px] bg-[#E79E11] uppercase"
-                      >
-                        {{ $t('common.new') }}
-                      </div>
                     </div>
                   </div>
 
-                  <p
-                    :class="{ 'text-white': activeType === item.type }"
-                    class="text-base text-coolGray-400 xs:leading-6 xs:min-h-12"
-                  >
+                  <p class="text-lg xs:leading-6 xs:min-h-12">
                     {{ $t(item.description) }}
                   </p>
                 </div>
