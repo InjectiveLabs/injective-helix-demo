@@ -60,7 +60,7 @@ useIntervalFn(
         <p class="text-base tracking-wide max-xs:text-sm">
           {{ $t('points.description') }}
           <NuxtLink
-            to="https://helixapp.com/"
+            to="https://docs.helixapp.com/advanced/points"
             target="_blank"
             class="text-blue-500 font-bold"
           >
