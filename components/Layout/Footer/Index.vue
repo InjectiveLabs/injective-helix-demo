@@ -3,6 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const { t } = useLang()
+const route = useRoute()
 
 const resourcesList = [
   {
@@ -36,7 +37,14 @@ const supportList = [
 </script>
 
 <template>
-  <footer class="w-full py-16 bg-brand-900 border-t border-t-coolGray-900">
+  <footer
+    :class="[
+      'relative z-[3] w-full py-16',
+      route.name === MainPage.Index
+        ? ''
+        : 'bg-brand-900 border-t border-t-coolGray-900'
+    ]"
+  >
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >

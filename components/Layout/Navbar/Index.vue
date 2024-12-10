@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { getTopNavMenu } from '@/app/data/menu'
+import { MainPage } from '@/types'
 
+const route = useRoute()
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -20,8 +22,15 @@ const filteredTopNavMenu = computed(() =>
 </script>
 
 <template>
-  <header class="w-full z-50 bg-brand-900 relative">
-    <div class="flex border-b py-3">
+  <header
+    :class="[
+      'w-full z-50 relative',
+      route.name === MainPage.Index ? '' : 'bg-brand-900'
+    ]"
+  >
+    <div
+      :class="['flex  py-3', route.name === MainPage.Index ? '' : 'border-b']"
+    >
       <NuxtLink
         to="/"
         class="pl-6 pr-4 mr-4 flex justify-center items-center cursor-pointer"

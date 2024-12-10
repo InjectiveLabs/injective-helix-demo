@@ -2,11 +2,12 @@
 
 <template>
   <div>
-    <AssetNoticeBanners />
+    <PartialsHomeGradientBg />
+    <AssetNoticeBanners class="relative z-[2]" />
     <!-- hide for launch -->
     <!-- <AssetKadoBanner /> -->
 
-    <div class="max-w-7xl mx-auto w-full px-2">
+    <div class="max-w-7xl mx-auto w-full px-2 relative z-[3]">
       <PartialsHomeSectionsHero />
       <PartialsHomeSectionsBuiltForTheComunity />
 
