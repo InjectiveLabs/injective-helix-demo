@@ -72,7 +72,9 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="flex justify-center space-x-20 font-semibold mt-10">
+    <div
+      class="flex justify-center space-x-20 font-semibold mt-10 gap-x-[120px]"
+    >
       <div>
         <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
         <div class="text-2xl">
@@ -82,6 +84,12 @@ onMounted(() => {
           />
         </div>
       </div>
+
+      <div class="text-center mx-auto">
+        <p class="text-coolGray-400">{{ $t('home.gasFees') }}</p>
+        <div class="text-2xl">0</div>
+      </div>
+
       <div>
         <p class="text-coolGray-400">{{ $t('home.totalMarkets') }}</p>
         <p class="text-2xl">{{ totalMarkets }}</p>

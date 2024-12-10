@@ -9,6 +9,7 @@ export default {
     reimagined: 'Reimagined',
     subtitle:
       'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
+    gasFees: 'Gas Fees',
     tradeNow: 'Trade Now',
     latestNews: 'Latest News',
     viewAllMarkets: 'View all markets',
