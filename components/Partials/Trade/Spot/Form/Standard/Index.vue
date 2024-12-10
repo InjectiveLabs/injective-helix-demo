@@ -76,7 +76,7 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSideValue"
-        class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium"
+        class="flex-1 rounded-md"
         :class="side === OrderSide.Buy ? 'text-green-500' : 'text-red-500'"
         :active-classes="
           side === OrderSide.Buy
@@ -85,7 +85,15 @@ const {
         "
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
       >
-        {{ $t(`trade.${side}`) }}
+        <AppButton
+          :variant="side === OrderSide.Buy ? 'success' : 'danger-cta'"
+          :class="[
+            'w-full py-1.5 leading-relaxed',
+            side === OrderSide.Buy ? 'hover:bg-green-500' : ''
+          ]"
+        >
+          {{ $t(`trade.${side}`) }}
+        </AppButton>
       </AppButtonSelect>
     </div>
 

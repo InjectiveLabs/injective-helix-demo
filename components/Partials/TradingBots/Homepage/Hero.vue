@@ -52,15 +52,15 @@ const gridStrategyStore = useGridStrategyStore()
     </div>
 
     <div class="flex gap-4 mt-4">
-      <UButton
+      <AppButton
         :to="{ name: MainPage.TradingBotsLiquidityBotsSpot }"
-        class="px-8 py-2"
+        size="lg"
       >
         {{ $t('tradingBots.createYourStrategy') }}
-      </UButton>
-      <UButton class="px-8 py-2" color="white" variant="outline">
+      </AppButton>
+      <AppButton variant="primary-outline" class="border-white" size="lg">
         {{ $t('common.learnMore') }}
-      </UButton>
+      </AppButton>
     </div>
   </div>
 </template>

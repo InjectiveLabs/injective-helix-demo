@@ -80,7 +80,7 @@ function openDepositQRModal() {
       v-bind="{
         variant: 'primary-outline'
       }"
-      class="text-white w-full font-medium text-base py-2.5 leading-4"
+      class="w-full"
       @click="openDepositQRModal"
     >
       {{ $t('account.deposit') }}

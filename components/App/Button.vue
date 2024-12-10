@@ -6,7 +6,7 @@ import { ClassValue, clsx } from 'clsx'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const button = cva(
-  'flex items-center justify-center transition-all rounded-md font-semibold font-sans border disabled:cursor-not-allowed',
+  'flex items-center justify-center transition-all rounded-md font-medium font-sans border disabled:cursor-not-allowed',
   {
     variants: {
       size: {
@@ -25,6 +25,8 @@ const button = cva(
         'primary-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-blue-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-blue-500 focus-within:ring-[3px] ring-blue-700',
 
+        'primary-cta': 'bg-transparent text-coolGray-200 border-transparent',
+
         danger:
           'bg-red-500 text-red-900 border-red-500 hover:text-red-900 hover:bg-red-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',
 
@@ -36,6 +38,8 @@ const button = cva(
 
         'danger-ghost':
           'bg-transparent text-coolGray-200 border-transparent hover:text-white hover:bg-red-500/20 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-red-500 focus-within:ring-[3px] ring-red-700',
+
+        'danger-cta': 'bg-transparent text-red-500 border-transparent',
 
         success:
           'bg-green-500 text-green-900 border-green-500 hover:text-green-900 hover:bg-green-500/70 disabled:bg-transparent disabled:text-coolGray-400 disabled:border-green-500 focus-within:ring-[3px] ring-green-700',

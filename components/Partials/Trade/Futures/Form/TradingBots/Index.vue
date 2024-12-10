@@ -21,6 +21,25 @@ useForm<DerivativeGridTradingForm>({
       >
         {{ $t(`sgt.${type}`) }}
       </AppButtonSelect>
+
+      <AppButtonSelect
+        v-for="type in Object.values(GridStrategyType)"
+        :key="type"
+        v-bind="{ value: type }"
+        v-model="strategyType"
+        class="flex-1 border rounded-md"
+        active-classes="!border-blue-400"
+      >
+        <AppButton
+          variant="primary-cta"
+          :class="[
+            'w-full py-1.5 leading-relaxed',
+            strategyType === type ? 'text-white' : 'text-coolGray-600'
+          ]"
+        >
+          {{ $t(`sgt.${type}`) }}
+        </AppButton>
+      </AppButtonSelect>
     </div>
 
     <div>

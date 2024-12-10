@@ -53,10 +53,22 @@ function onOpenTradingBotDetails() {
           :key="type"
           v-bind="{ value: type }"
           v-model="strategyType"
-          class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium text-coolGray-475"
-          active-classes="bg-blue-500 text-brand-875"
+          class="flex-1 rounded-md"
+          active-classes="bg-blue-500"
         >
-          {{ $t(`sgt.${type}`) }}
+          <template #default="{ isActive }">
+            <AppButton
+              variant="primary-cta"
+              :class="[
+                'w-full py-1.5 leading-relaxed focus-within:ring-0 hover:bg-transparent',
+                isActive
+                  ? 'text-brand-875 hover:text-brand-875'
+                  : 'text-coolGray-475 hover:text-coolGray-475'
+              ]"
+            >
+              {{ $t(`sgt.${type}`) }}
+            </AppButton>
+          </template>
         </AppButtonSelect>
       </div>
 

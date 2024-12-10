@@ -275,15 +275,15 @@ function removeStrategy() {
     </div>
 
     <div v-if="strategy.isActive" class="pt-4">
-      <UButton
-        block
-        size="xl"
-        color="red"
-        :loading="status.isLoading()"
+      <AppButton
+        variant="danger"
+        :is-loading="status.isLoading()"
+        size="lg"
+        class="w-full"
         @click="removeStrategy"
       >
         {{ $t('sgt.removeStrategy') }}
-      </UButton>
+      </AppButton>
     </div>
   </div>
 </template>
