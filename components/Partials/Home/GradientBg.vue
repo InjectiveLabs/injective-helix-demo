@@ -1,148 +1,71 @@
-<script lang="ts" setup></script>
+<script setup lang="ts">
+const ellipses = [
+  {
+    x: 100,
+    y: 100,
+    size: 500
+  },
+  {
+    x: 200,
+    y: 700,
+    size: 300
+  },
+  {
+    x: 800,
+    y: 200,
+    size: 700
+  },
+  {
+    x: 700,
+    y: 300,
+    size: 300
+  },
+  {
+    x: 1000,
+    y: 1000,
+    size: 300
+  },
+  {
+    x: 1500,
+    y: 1400,
+    size: 300
+  }
+]
+
+onMounted(() => {
+  gsap.utils.toArray('.ellipse').forEach((ellipse) => {
+    gsap.set('#gradient-bg', {
+      filter: `blur(${Math.random() * 2 + 5}rem)`
+    })
+
+    gsap.to(ellipse as HTMLElement, {
+      x: Math.random() * 1000 - 500,
+      y: Math.random() * 1000 - 500,
+      duration: Math.random() * 4 + 5,
+      ease: 'none',
+      repeat: -1,
+      yoyo: true
+    })
+  })
+})
+</script>
 
 <template>
-  <div
-    class="gradient-bg__container fixed top-0 l-0 p-10 pointer-events-none brightness-50 w-screen h-screen overflow-hidden"
-  >
-    <div class="gradients-container w-full h-full">
-      <div class="g1 absolute mix-blend-hard-light" />
-      <div class="g2 absolute mix-blend-hard-light" />
-      <div class="g3 absolute mix-blend-hard-light" />
-      <div class="g4 absolute mix-blend-hard-light opacity-70" />
-      <div class="g5 absolute mix-blend-hard-light opacity-70" />
-    </div>
+  <div id="gradient-bg" class="fixed inset-0 filter opacity-30">
+    <div
+      v-for="(ellipse, i) in ellipses"
+      :id="`ellipse-${i}`"
+      :key="i"
+      class="absolute ellipse rounded-full"
+      :style="{
+        width: `${ellipse.size}px`,
+        height: `${ellipse.size}px`,
+        left: `${ellipse.x}px`,
+        top: `${ellipse.y}px`,
+        background: `hsl(${Math.random() * 50 - 25 + 190}, 100%, ${
+          55 - i * 10
+        }%)`
+      }"
+    ></div>
   </div>
 </template>
-
-<style>
-.gradient-bg__container {
-  --color1: 0, 130, 250;
-  --color2: 64, 169, 255;
-  --color3: 0, 130, 250;
-  --color4: 14, 226, 155;
-  --color5: 64, 169, 255;
-  --circle-size: 80%;
-}
-
-.gradient-bg__container .gradients-container {
-  filter: url(#blursvg) blur(40px);
-}
-
-.gradient-bg__container .g1 {
-  background: radial-gradient(
-      circle at center,
-      rgba(var(--color1), 0.8) 0,
-      rgba(var(--color1), 0) 50%
-    )
-    no-repeat;
-
-  width: var(--circle-size);
-  height: var(--circle-size);
-  top: calc(50% - var(--circle-size) / 2);
-  left: calc(50% - var(--circle-size) / 2);
-
-  transform-origin: center center;
-  animation: moveVertical 30s ease infinite;
-}
-
-.gradient-bg__container .g2 {
-  background: radial-gradient(
-      circle at center,
-      rgba(var(--color2), 0.8) 0,
-      rgba(var(--color2), 0) 50%
-    )
-    no-repeat;
-
-  width: var(--circle-size);
-  height: var(--circle-size);
-  top: calc(50% - var(--circle-size) / 2);
-  left: calc(50% - var(--circle-size) / 2);
-
-  transform-origin: calc(50% - 400px);
-  animation: moveInCircle 20s reverse infinite;
-}
-
-.gradient-bg__container .g3 {
-  background: radial-gradient(
-      circle at center,
-      rgba(var(--color3), 0.8) 0,
-      rgba(var(--color3), 0) 50%
-    )
-    no-repeat;
-
-  width: var(--circle-size);
-  height: var(--circle-size);
-  top: calc(50% - var(--circle-size) / 2 + 200px);
-  left: calc(50% - var(--circle-size) / 2 - 500px);
-
-  transform-origin: calc(50% + 400px);
-  animation: moveInCircle 40s linear infinite;
-}
-
-.gradient-bg__container .g4 {
-  background: radial-gradient(
-      circle at center,
-      rgba(var(--color4), 0.8) 0,
-      rgba(var(--color4), 0) 50%
-    )
-    no-repeat;
-
-  width: var(--circle-size);
-  height: var(--circle-size);
-  top: calc(50% - var(--circle-size) / 2);
-  left: calc(50% - var(--circle-size) / 2);
-
-  transform-origin: calc(50% - 200px);
-  animation: moveHorizontal 40s ease infinite;
-}
-
-.gradient-bg__container .g5 {
-  background: radial-gradient(
-      circle at center,
-      rgba(var(--color5), 0.8) 0,
-      rgba(var(--color5), 0) 50%
-    )
-    no-repeat;
-
-  width: 100%;
-  height: 100%;
-  top: -50%;
-  left: -50%;
-}
-
-@keyframes moveInCircle {
-  0% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(180deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes moveVertical {
-  0% {
-    transform: translateY(-50%);
-  }
-  50% {
-    transform: translateY(50%);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
-}
-
-@keyframes moveHorizontal {
-  0% {
-    transform: translateX(-50%) translateY(-10%);
-  }
-  50% {
-    transform: translateX(50%) translateY(10%);
-  }
-  100% {
-    transform: translateX(-50%) translateY(-10%);
-  }
-}
-</style>

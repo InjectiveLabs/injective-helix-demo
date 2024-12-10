@@ -25,8 +25,8 @@ onMounted(() => {
     gsap.to('#built-for-the-community-text', {
       scrollTrigger: {
         trigger: '#built-for-the-community-text',
-        start: 'top 40%',
-        end: 'bottom 0%',
+        start: () => 'top 40%',
+        end: () => 'bottom 0%',
         scrub: 1,
         pin: true
       },
@@ -37,8 +37,8 @@ onMounted(() => {
     gsap.to('#built-for-the-community-image', {
       scrollTrigger: {
         trigger: '#built-for-the-community-image',
-        start: 'top 20%',
-        end: 'bottom 40%',
+        start: () => 'top 20%',
+        end: () => 'bottom 40%',
         scrub: 2,
         pin: true
       },
@@ -59,12 +59,10 @@ onMounted(() => {
       </p>
     </div>
 
-    <div class="px-10 mt-20">
-      <img
-        id="built-for-the-community-image"
-        src="/images/home/hero.webp"
-        class="w-full h-full border rounded-xl shadow-[0_0_16px_rgba(0,255,0,0.5)] origin-top"
-      />
+    <div class="pt-8 pb-4">
+      <div id="built-for-the-community-image" class="rounded-xl">
+        <img src="/images/helix-platform.png" class="w-full h-full" alt="" />
+      </div>
     </div>
 
     <div class="flex justify-center space-x-20 font-semibold mt-10">
