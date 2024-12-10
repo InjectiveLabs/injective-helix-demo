@@ -5,8 +5,14 @@ import { HistoricalPoints, TransformedPointsHistory } from '@/types'
 export function usePointsTransformer(
   pointsHistory: ComputedRef<HistoricalPoints[]>
 ) {
+  const appStore = useAppStore()
+
   const rows = computed<TransformedPointsHistory[]>(() =>
     pointsHistory.value.map((pointHistory) => {
+      const dateFormat = appStore.devMode
+        ? 'MMM dd, yyyy hh:mm:ss'
+        : 'MMM dd, yyyy'
+
       return {
         points: pointHistory.points,
         volume: pointHistory.volume,
@@ -16,8 +22,8 @@ export function usePointsTransformer(
           pointHistory.periodStart && pointHistory.periodEnd
             ? `${format(
                 new Date(pointHistory.periodStart),
-                'MMM dd, yyyy'
-              )} - ${format(new Date(pointHistory.periodEnd), 'MMM dd, yyyy')}`
+                dateFormat
+              )} - ${format(new Date(pointHistory.periodEnd), dateFormat)}`
             : ''
       }
     })
