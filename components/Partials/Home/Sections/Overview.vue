@@ -65,10 +65,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative mb-36 lg:mb-16">
     <div id="overview-section" class="relative">
       <div class="min-h-[900px]">
-        <div class="lg:py-20">
+        <div class="pb-12 lg:py-20">
           <h2
             class="text-xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
           >
@@ -89,7 +89,7 @@ onMounted(() => {
               v-for="item in options"
               :key="`home-${item.type}`"
               v-model="activeType"
-              class="hover:text-white cursor-pointer flex text-coolGray-475"
+              class="hover:text-white cursor-pointer flex text-coolGray-475 transition-colors"
               :class="{ 'text-white': activeType === item.type }"
               :value="item.type"
             >
@@ -105,7 +105,7 @@ onMounted(() => {
                     </div>
                   </div>
 
-                  <p class="text-lg xs:leading-6 xs:min-h-12">
+                  <p class="text-base lg:text-lg xs:leading-6 xs:min-h-12">
                     {{ $t(item.description) }}
                   </p>
                 </div>

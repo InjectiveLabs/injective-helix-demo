@@ -49,7 +49,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32 snap-start">
+  <div class="relative pb-32 max-lg:pb-28 max-xs:pb-24 snap-start">
     <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
@@ -59,7 +59,7 @@ onMounted(() => {
       </p>
     </div>
 
-    <div class="pt-8 pb-4">
+    <div class="pt-8 pb-4 max-lg:p-0">
       <div id="built-for-the-community-image" class="rounded-xl">
         <img
           :style="{
@@ -67,15 +67,14 @@ onMounted(() => {
           }"
           src="/images/helix-platform.png"
           class="w-full"
-          alt=""
         />
       </div>
     </div>
 
     <div
-      class="flex justify-center space-x-20 font-semibold mt-10 gap-x-[120px]"
+      class="flex justify-center font-semibold mt-10 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col"
     >
-      <div>
+      <div class="lg:min-w-44 max-xs:flex max-xs:flex-col max-xs:items-center">
         <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
         <div class="text-2xl">
           <AppAmount
@@ -85,13 +84,17 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="text-center mx-auto">
+      <div
+        class="lg:text-center lg:min-w-44 max-xs:flex max-xs:flex-col max-xs:items-center"
+      >
         <p class="text-coolGray-400">{{ $t('home.gasFees') }}</p>
         <div class="text-2xl">0</div>
       </div>
 
-      <div>
-        <p class="text-coolGray-400">{{ $t('home.totalMarkets') }}</p>
+      <div class="max-xs:flex max-xs:flex-col max-xs:items-center">
+        <p class="text-coolGray-400 lg:min-w-44">
+          {{ $t('home.totalMarkets') }}
+        </p>
         <p class="text-2xl">{{ totalMarkets }}</p>
       </div>
     </div>

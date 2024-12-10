@@ -16,24 +16,13 @@ useForm<DerivativeGridTradingForm>({
         :key="type"
         v-bind="{ value: type }"
         v-model="strategyType"
-        class="flex-1 p-2 border text-coolGray-600 border-transparent rounded-md text-sm font-medium"
-        active-classes="text-white !border-blue-400"
-      >
-        {{ $t(`sgt.${type}`) }}
-      </AppButtonSelect>
-
-      <AppButtonSelect
-        v-for="type in Object.values(GridStrategyType)"
-        :key="type"
-        v-bind="{ value: type }"
-        v-model="strategyType"
         class="flex-1 border rounded-md"
         active-classes="!border-blue-400"
       >
         <AppButton
           variant="primary-cta"
           :class="[
-            'w-full py-1.5 leading-relaxed',
+            'w-full py-1.5 leading-relaxed hover:bg-transparent',
             strategyType === type ? 'text-white' : 'text-coolGray-600'
           ]"
         >

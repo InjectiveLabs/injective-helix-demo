@@ -35,7 +35,7 @@ const subscribe = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="my-10 md:my-20 py-40 text-center relative">
+  <div class="my-10 lg:my-20 py-40 text-center relative">
     <div class="relative z-20">
       <h1
         class="text-3xl font-semibold bg-gradient-to-r from-white to-coolGray-500 bg-clip-text text-transparent"
