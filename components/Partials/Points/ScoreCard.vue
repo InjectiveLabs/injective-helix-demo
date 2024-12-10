@@ -23,6 +23,14 @@ const beltImageList = {
   [PointsLeague.Purple]: 'purple-belt'
 }
 
+const unionImageList = {
+  [PointsLeague.Blue]: 'blue-union',
+  [PointsLeague.Black]: 'black-union',
+  [PointsLeague.White]: 'white-union',
+  [PointsLeague.Orange]: 'orange-union',
+  [PointsLeague.Purple]: 'purple-union'
+}
+
 const canvas = ref()
 const status = reactive(new Status(StatusType.Idle))
 
@@ -33,6 +41,7 @@ const league = computed(
 
 const leagueBg = computed(() => leagueBgList[league.value])
 const beltImage = computed(() => beltImageList[league.value])
+const unionImage = computed(() => unionImageList[league.value])
 
 const {
   valueToString: totalPointsToString,
@@ -77,23 +86,28 @@ async function downloadImage() {
   >
     <div
       ref="canvas"
-      class="flex flex-col flex-1 items-center px-[88px] max-xs:px-8 pt-4 bg-cover bg-center bg-no-repeat"
+      class="flex flex-col flex-1 items-center pt-10 bg-cover bg-center bg-no-repeat"
       :style="{
         backgroundImage: `url('/images/points/${leagueBg}.png')`
       }"
     >
-      <AssetLogo class="w-auto h-9" alt="Helix" />
+      <AssetLogo class="w-auto h-10" alt="Helix" />
 
-      <p class="text-xl max-xs:text-xl mt-12">
+      <p class="text-xl mt-4">
         {{ $t('points.myTotalPoints') }}
       </p>
-      <p class="text-5xl font-medium max-xs:text-5xl mt-2 mb-6">
+      <p class="text-5xl font-bold mt-2 mb-8">
         <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
         <span v-else>{{ totalPointsToString }}</span>
       </p>
 
-      <div class="flex justify-between w-full">
-        <div class="flex items-center gap-3">
+      <div class="relative flex justify-between w-full px-[88px] max-xs:px-8">
+        <img
+          :src="`/images/points/level/${unionImage}.png`"
+          class="h-20 w-full absolute z-[1] top-[calc(50%-10px)] -translate-y-1/2 left-0"
+        />
+
+        <div class="relative z-[2] flex items-center gap-3">
           <img :src="`/images/points/level/${beltImage}.png`" class="w-10" />
           <div>
             <p>{{ $t('points.level') }}</p>
@@ -109,7 +123,7 @@ async function downloadImage() {
           </div>
         </div>
 
-        <div class="text-right">
+        <div class="relative z-[2] text-right">
           <p>
             {{ $t('points.rank') }}
           </p>
