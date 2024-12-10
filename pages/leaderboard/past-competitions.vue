@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   FIRST_CAMPAIGN_NAME,
+  SECOND_CAMPAIGN_NAME,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
 } from '@/app/data/campaign'
 
@@ -76,6 +77,13 @@ function fetchPastCampaigns() {
           <PartialsLeaderboardCompetitionGwagonBanner
             v-if="
               selectedCampaign && selectedCampaign.name === FIRST_CAMPAIGN_NAME
+            "
+            v-bind="{ campaign: selectedCampaign }"
+          />
+
+          <PartialsLeaderboardCompetitionTeslaBanner
+            v-if="
+              selectedCampaign && selectedCampaign.name === SECOND_CAMPAIGN_NAME
             "
             v-bind="{ campaign: selectedCampaign }"
           />

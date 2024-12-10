@@ -59,24 +59,20 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSide"
-        class="flex-1 px-2 py-2.5 border border-transparent rounded-md text-sm font-medium"
-        :class="
-          side === TradeDirection.Long ? 'text-green-500' : 'text-red-500'
-        "
-        :active-classes="
-          side === TradeDirection.Long
-            ? 'bg-green-500 text-brand-875'
-            : 'bg-red-500 text-brand-875'
-        "
+        class="flex-1"
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
       >
-        <span v-if="market.slug === '2024election-perp'">
-          {{ $t(`trade.${side === TradeDirection.Long ? 'yes' : 'no'}`) }}
-          {{ market.baseToken.name }}
-        </span>
-        <span v-else>
-          {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
-        </span>
+        <AppButton
+          :variant="side === TradeDirection.Long ? 'success' : 'danger-cta'"
+          :class="[
+            'w-full py-1.5 leading-relaxed',
+            side === TradeDirection.Long ? 'hover:bg-green-500' : ''
+          ]"
+        >
+          <span>
+            {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+          </span>
+        </AppButton>
       </AppButtonSelect>
     </div>
 

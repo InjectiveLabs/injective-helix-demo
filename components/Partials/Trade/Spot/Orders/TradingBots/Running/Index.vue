@@ -121,21 +121,27 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       </template>
 
       <template #details-data="{ row }">
-        <UButton size="xs" variant="ghost" @click="selectStrategy(row)">
+        <AppButton
+          size="xs"
+          variant="primary-ghost"
+          class="text-blue-500 hover:text-blue-500"
+          @click="selectStrategy(row)"
+        >
           {{ t('sgt.details') }}
-        </UButton>
+        </AppButton>
       </template>
 
       <template #removeStrategy-data="{ row }">
         <PartialsLiquidityBotsSpotCommonRemoveStrategy :strategy="row.strategy">
           <template #default="{ removeStrategy, status }">
-            <UButton
-              :loading="status.isLoading()"
-              :icon="NuxtUiIcons.Trash"
-              variant="ghost"
-              color="red"
+            <AppButton
+              :is-loading="status.isLoading()"
+              variant="danger-ghost"
+              class="p-1"
               @click="removeStrategy"
-            />
+            >
+              <UIcon :name="NuxtUiIcons.Trash" class="size-4 text-red-500" />
+            </AppButton>
           </template>
         </PartialsLiquidityBotsSpotCommonRemoveStrategy>
       </template>

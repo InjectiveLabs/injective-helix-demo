@@ -90,11 +90,20 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
                 :key="value"
                 v-model="activeCategory"
                 v-bind="{ value }"
-                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize rounded text-blue-550"
-                active-classes="opacity-100"
                 :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
               >
-                {{ $t(`markets.filters.${value}`) }}
+                <template #default="{ isActive }">
+                  <AppButton
+                    variant="primary"
+                    size="xs"
+                    :class="[
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
+                      isActive ? 'opacity-100' : 'opacity-50'
+                    ]"
+                  >
+                    {{ $t(`markets.filters.${value}`) }}
+                  </AppButton>
+                </template>
               </AppButtonSelect>
             </template>
 

@@ -174,16 +174,23 @@ function toggleStakingRow() {
               </p>
               <p class="text-xs text-coolGray-500">{{ row.token.name }}</p>
             </div>
-            <UButton
+
+            <AppButton
               v-if="row.token.denom === injToken.denom"
-              variant="ghost"
-              :icon="
-                showStakingRow ? NuxtUiIcons.ChevronUp : NuxtUiIcons.ChevronDown
-              "
+              variant="primary-ghost"
               size="xs"
-              class="dark:text-coolGray-400 dark:hover:bg-transparent dark:hover:text-white"
+              class="text-coolGray-400 hover:bg-transparent hover:text-white focus-within:ring-0"
               @click="toggleStakingRow"
-            />
+            >
+              <UIcon
+                :name="
+                  showStakingRow
+                    ? NuxtUiIcons.ChevronUp
+                    : NuxtUiIcons.ChevronDown
+                "
+                class="size-4"
+              />
+            </AppButton>
           </div>
 
           <AppTablePopover v-if="!row.hasNoActionButtons && !fourXl">

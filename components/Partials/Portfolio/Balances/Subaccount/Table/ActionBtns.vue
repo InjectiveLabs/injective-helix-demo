@@ -15,9 +15,7 @@ const props = withDefaults(
     isBridgable?: boolean
     isTablePopover?: boolean
   }>(),
-  {
-    isTablePopover: false
-  }
+  {}
 )
 
 function onFiatOnRamp() {
@@ -50,7 +48,7 @@ function onTransfer() {
           }"
         >
           <AppButton
-            class="max-lg:py-2 lg:w-full lg:p-2"
+            class="max-lg:py-2 lg:w-full lg:leading-snug"
             :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
             size="sm"
           >
@@ -65,7 +63,7 @@ function onTransfer() {
           }"
         >
           <AppButton
-            class="max-lg:py-2 lg:w-full lg:p-2"
+            class="max-lg:py-2 lg:w-full lg:leading-snug"
             :variant="
               lg && isTablePopover ? 'primary-ghost' : 'primary-outline'
             "
@@ -90,7 +88,7 @@ function onTransfer() {
 
       <template v-else>
         <AppButton
-          class="max-lg:py-2 lg:w-full lg:p-2"
+          class="max-lg:py-2 lg:w-full lg:leading-snug"
           :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
           size="sm"
           @click="onFiatOnRamp"
@@ -99,7 +97,7 @@ function onTransfer() {
         </AppButton>
 
         <AppButton
-          class="max-lg:py-2 lg:w-full lg:p-2"
+          class="max-lg:py-2 lg:w-full lg:leading-snug"
           :variant="lg && isTablePopover ? 'primary-ghost' : 'primary-outline'"
           size="sm"
           @click="onTransfer"
@@ -114,7 +112,10 @@ function onTransfer() {
       :to="{ name: PortfolioSubPage.Subaccounts }"
     >
       <AppButton
-        :class="['max-lg:py-2 lg:p-2', isTablePopover ? 'lg:w-full' : '']"
+        :class="[
+          'max-lg:py-2 lg:leading-snug',
+          isTablePopover ? 'lg:w-full' : ''
+        ]"
         :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
         :to="{ name: PortfolioSubPage.Subaccounts }"
         size="sm"

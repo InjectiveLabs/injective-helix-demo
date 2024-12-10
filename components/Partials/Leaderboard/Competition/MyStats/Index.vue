@@ -142,7 +142,7 @@ function onShareCompetition() {
             </div>
             <NuxtLink :to="{ name: MainPage.Markets }">
               <AppButton
-                class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
+                class="border-white p-2 max-sm:text-xs sm:px-4"
                 v-bind="{ variant: 'primary-outline' }"
               >
                 {{ $t('leaderboard.startTrading') }}

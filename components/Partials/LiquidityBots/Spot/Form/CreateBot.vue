@@ -104,19 +104,19 @@ async function createLiquidityBot() {
       block
     />
 
-    <UButton
+    <AppButton
       v-else
-      size="xl"
+      size="lg"
       :disabled="Object.keys(formErrors).length > 0 || isAutoSignOrAuthzEnabled"
-      :variant="Object.keys(formErrors).length > 0 ? 'outline' : 'solid'"
-      block
+      :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
+      class="w-full"
       @click="openConfirmationModal"
     >
       <span v-if="isAutoSignOrAuthzEnabled">
         {{ $t('common.unauthorized') }}
       </span>
       <span v-else>{{ $t('liquidityBots.createBot') }}</span>
-    </UButton>
+    </AppButton>
 
     <SharedModal v-model="confirmationModal">
       <template #header>

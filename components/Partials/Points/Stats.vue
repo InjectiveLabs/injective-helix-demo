@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 
 const pointsStore = usePointsStore()
@@ -20,7 +21,8 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() => pointsStore.accountPoints?.totalPoints || '0'),
   {
-    shouldTruncate: true
+    shouldTruncate: true,
+    roundingMode: BigNumberInBase.ROUND_DOWN
   }
 )
 
@@ -28,7 +30,8 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => pointsStore.accountPoints?.rank || '0'),
     {
-      shouldTruncate: true
+      shouldTruncate: true,
+      roundingMode: BigNumberInBase.ROUND_DOWN
     }
   )
 </script>

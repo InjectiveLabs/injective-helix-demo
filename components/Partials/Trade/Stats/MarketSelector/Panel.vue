@@ -75,10 +75,19 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
                 :key="category.value"
                 v-model="activeCategory"
                 v-bind="{ value: category.value }"
-                class="text-xs bg-blue-500 bg-opacity-20 opacity-50 py-1 px-2 tracking-wider capitalize font-semibold rounded-md text-blue-550"
-                active-classes="opacity-100"
               >
-                {{ $t(`markets.filters.${category.value}`) }}
+                <template #default="{ isActive }">
+                  <AppButton
+                    variant="primary"
+                    size="xs"
+                    :class="[
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
+                      isActive ? 'opacity-100' : 'opacity-50'
+                    ]"
+                  >
+                    {{ $t(`markets.filters.${category.value}`) }}
+                  </AppButton>
+                </template>
               </AppButtonSelect>
               <div class="flex-grow"></div>
             </template>

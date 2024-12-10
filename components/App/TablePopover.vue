@@ -4,27 +4,12 @@ import { NuxtUiIcons } from '@shared/types'
 
 <template>
   <UPopover>
-    <UButton
-      :icon="NuxtUiIcons.MenuDots"
-      size="sm"
-      color="black"
-      :ui="{
-        rounded: 'rounded-sm',
-        square: {
-          sm: 'px-2 py-1'
-        },
-        color: {
-          black: {
-            solid: 'dark:bg-brand-875 dark:hover:bg-brand-800 dark:text-white'
-          }
-        },
-        icon: {
-          size: {
-            sm: 'h-4 w-4'
-          }
-        }
-      }"
-    />
+    <AppButton
+      size="xs"
+      class="dark:bg-brand-875 dark:hover:bg-brand-800 dark:text-white border-0 rounded-sm"
+    >
+      <UIcon :name="NuxtUiIcons.MenuDots" class="size-4" />
+    </AppButton>
 
     <template #panel>
       <slot />
