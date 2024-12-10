@@ -50,7 +50,6 @@ const subscribe = handleSubmit((values) => {
             size="xl"
             :placeholder="$t('newsletter.emailAddress')"
             :ui="{
-              base: 'dark:bg-brand-800',
               color: {
                 white: {
                   outline: 'dark:bg-brand-800 focus:ring-1'
