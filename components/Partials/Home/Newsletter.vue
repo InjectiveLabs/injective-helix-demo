@@ -49,6 +49,14 @@ const subscribe = handleSubmit((values) => {
             v-model="value"
             size="xl"
             :placeholder="$t('newsletter.emailAddress')"
+            :ui="{
+              base: 'dark:bg-brand-800',
+              color: {
+                white: {
+                  outline: 'dark:bg-brand-800 focus:ring-1'
+                }
+              }
+            }"
           />
 
           <SharedButton
