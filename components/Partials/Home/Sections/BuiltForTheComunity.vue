@@ -1,16 +1,30 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { usdtToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 
 const spotStore = useSpotStore()
+const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
-const totalVolume = computed(() =>
-  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
-    (sum, market) => {
-      return sum.plus(market.volume || 0)
-    },
-    ZERO_IN_BASE
-  )
+const { valueToFixed: totalVolumeInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
+      (sum, market) => {
+        if (new BigNumberInBase(market.volume).isNaN()) {
+          return sum
+        }
+
+        const volumeInUsd = new BigNumberInBase(market.volume).times(
+          tokenStore.tokenUsdPrice(usdtToken)
+        )
+
+        return sum.plus(volumeInUsd)
+      },
+      ZERO_IN_BASE
+    )
+  ),
+  { decimalPlaces: 0 }
 )
 
 const totalMarkets = computed(
@@ -75,11 +89,11 @@ onMounted(() => {
       class="flex justify-center font-semibold mt-10 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col"
     >
       <div class="lg:min-w-44 max-xs:flex max-xs:flex-col max-xs:items-center">
-        <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
+        <p class="text-coolGray-400">{{ $t('home.dailyVolume') }}</p>
         <div class="text-2xl">
-          <AppAmount
-            :amount="totalVolume.toFixed()"
-            :min-display-decimals="0"
+          <span>$</span>
+          <AppUsdAmount
+            v-bind="{ amount: totalVolumeInUsdToFixed, isShowNoDecimals: true }"
           />
         </div>
       </div>

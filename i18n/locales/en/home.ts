@@ -15,7 +15,7 @@ export default {
     viewAllMarkets: 'View all markets',
     trending: 'Trending',
     totalMarkets: 'Total Markets',
-    totalVolume: 'Total Volume',
+    dailyVolume: 'Daily Volume',
     infiniteMarkets: 'Infinite Markets',
     mevResistant: 'MEV Resistant',
     getStartedHome: 'Get Started',
