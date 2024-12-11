@@ -65,6 +65,10 @@ onMounted(() => {
         onEnterBack: () => goToSection(section)
       })
     })
+
+    return () => {
+      scrolling.enable()
+    }
   })
 })
 </script>

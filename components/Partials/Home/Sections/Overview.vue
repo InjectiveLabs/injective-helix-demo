@@ -115,7 +115,7 @@ onMounted(() => {
 
           <div class="flex justify-center items-center lg:ml-20">
             <img
-              class="ml-auto object-contain max-h-[530px]"
+              class="max-lg:m-auto lg:ml-auto object-contain max-h-[530px]"
               :src="imgList[activeType]"
             />
           </div>
