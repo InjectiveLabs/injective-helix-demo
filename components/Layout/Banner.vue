@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { Modal, PortfolioStatusKey } from '@/types'
+import { PortfolioStatusKey } from '@/types'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
 
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -31,10 +31,6 @@ const portfolioStatus = inject(
   PortfolioStatusKey,
   new Status(StatusType.Loading)
 )
-
-function openDepositQrModal() {
-  modalStore.openModal(Modal.FiatOnboard)
-}
 </script>
 
 <template>
@@ -44,7 +40,11 @@ function openDepositQrModal() {
   >
     <div />
 
-    <button class="hover:text-white" @click="openDepositQrModal">
+    <NuxtLink
+      :to="getBridgeRedirectionUrl()"
+      target="_blank"
+      class="hover:text-white"
+    >
       <div class="flex items-center space-x-2">
         <p>{{ $t('globalBanner.title') }}</p>
 
@@ -53,7 +53,7 @@ function openDepositQrModal() {
           class="h-4 w-4 min-w-4 rotate rotate-180"
         />
       </div>
-    </button>
+    </NuxtLink>
 
     <UIcon
       :name="NuxtUiIcons.Close"
