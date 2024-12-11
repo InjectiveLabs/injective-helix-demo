@@ -65,19 +65,19 @@ onMounted(() => {
     <div
       class="flex justify-center font-semibold mt-10 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col"
     >
+      <div
+        class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
+      >
+        <p class="text-coolGray-400">{{ $t('home.gasFees') }}</p>
+        <div class="text-2xl">0</div>
+      </div>
+
       <div class="lg:min-w-44 flex flex-col items-center justify-center">
         <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
         <div class="text-2xl flex">
           <span>$</span>
           <div>{{ TOTAL_VOLUME_IN_USD }}</div>
         </div>
-      </div>
-
-      <div
-        class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
-      >
-        <p class="text-coolGray-400">{{ $t('home.gasFees') }}</p>
-        <div class="text-2xl">0</div>
       </div>
 
       <div class="flex flex-col items-center justify-center">
