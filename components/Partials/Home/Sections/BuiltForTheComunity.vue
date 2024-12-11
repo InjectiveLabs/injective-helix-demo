@@ -1,31 +1,8 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { usdtToken } from '@shared/data/token'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 
-const { valueToFixed: totalVolumeInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
-      (sum, market) => {
-        if (new BigNumberInBase(market.volume).isNaN()) {
-          return sum
-        }
-
-        const volumeInUsd = new BigNumberInBase(market.volume).times(
-          tokenStore.tokenUsdPrice(usdtToken)
-        )
-
-        return sum.plus(volumeInUsd)
-      },
-      ZERO_IN_BASE
-    )
-  ),
-  { decimalPlaces: 0 }
-)
+const TOTAL_VOLUME_IN_USD = '42.5 Billion'
 
 const totalMarkets = computed(
   () =>
@@ -88,25 +65,23 @@ onMounted(() => {
     <div
       class="flex justify-center font-semibold mt-10 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col"
     >
-      <div class="lg:min-w-44 max-xs:flex max-xs:flex-col max-xs:items-center">
-        <p class="text-coolGray-400">{{ $t('home.dailyVolume') }}</p>
-        <div class="text-2xl">
+      <div class="lg:min-w-44 flex flex-col items-center justify-center">
+        <p class="text-coolGray-400">{{ $t('home.totalVolume') }}</p>
+        <div class="text-2xl flex">
           <span>$</span>
-          <AppUsdAmount
-            v-bind="{ amount: totalVolumeInUsdToFixed, isShowNoDecimals: true }"
-          />
+          <div>{{ TOTAL_VOLUME_IN_USD }}</div>
         </div>
       </div>
 
       <div
-        class="lg:text-center lg:min-w-44 max-xs:flex max-xs:flex-col max-xs:items-center"
+        class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
       >
         <p class="text-coolGray-400">{{ $t('home.gasFees') }}</p>
         <div class="text-2xl">0</div>
       </div>
 
-      <div class="max-xs:flex max-xs:flex-col max-xs:items-center">
-        <p class="text-coolGray-400 lg:min-w-44">
+      <div class="flex flex-col items-center justify-center">
+        <p class="text-coolGray-400">
           {{ $t('home.totalMarkets') }}
         </p>
         <p class="text-2xl">{{ totalMarkets }}</p>
