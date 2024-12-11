@@ -85,7 +85,7 @@ const subscribe = handleSubmit((values) => {
             <template #termsAndCondition>
               <NuxtLink
                 target="_blank"
-                class="underline hover:text-opacity-80"
+                class="underline hover:text-blue-500"
                 :to="{ name: MainPage.Terms }"
               >
                 {{ $t('terms.termsAndCondition') }}
