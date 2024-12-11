@@ -49,7 +49,10 @@ useIntervalFn(() => {
 </script>
 
 <template>
-  <AppHocLoading v-bind="{ status }">
+  <AppHocLoading
+    v-bind="{ status }"
+    wrapper-class="h-screen flex items-center justify-center"
+  >
     <div
       class="pt-12 pb-32 px-40 max-xs:pt-8 max-xs:px-4 max-xs:pb-16 max-xl:pt-12 max-xl:px-12 max-xl:pb-24 max-3xl:px-40 max-w-[1400px] 5xl:max-w-[90%] mx-auto"
     >
