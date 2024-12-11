@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCyTags, MarketCategoryType } from '@/types'
 
 const route = useRoute()
@@ -20,7 +20,6 @@ const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
 const isLowVolumeMarketsVisible = ref(false)
-const unverifiedMarketsStatus = reactive(new Status(StatusType.Idle))
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [
@@ -166,8 +165,7 @@ useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
           search,
           activeCategory,
           isLowVolumeMarketsVisible,
-          markets: marketsWithSummaryAndVolumeInUsd,
-          isLoading: unverifiedMarketsStatus.isLoading()
+          markets: marketsWithSummaryAndVolumeInUsd
         }"
       />
     </div>

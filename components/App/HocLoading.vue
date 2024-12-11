@@ -49,11 +49,10 @@ watch(isLoading, (isLoading, oldIsLoading) => {
     <div
       v-if="isLoading"
       :class="[
-        wrapperClass || props.isFullScreen ? 'h-screen' : 'h-full',
+        wrapperClass || (isFullScreen ? 'h-screen' : 'h-full'),
         {
           'py-4': !noPadding,
-          'flex items-center justify-center':
-            props.isHelix || props.isFullScreen
+          'flex items-center justify-center': isHelix || isFullScreen
         }
       ]"
     >
