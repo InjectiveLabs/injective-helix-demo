@@ -20,7 +20,9 @@ export const tokenFactoryStatic = new TokenFactoryStatic(
 
 // Services
 export const abacusGrpcApi = new AbacusGrpcApi(
-  'https://abacus.injective.cooking/grpc'
+  IS_MAINNET
+    ? 'https://mainnet.abacus.injective.cooking/grpc'
+    : 'https://abacus.injective.cooking/grpc'
 )
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const tendermintApi = new ChainGrpcTendermintApi(ENDPOINTS.grpc)
