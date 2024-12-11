@@ -30,9 +30,12 @@ export const usePositionStore = defineStore('position', {
   getters: {
     subaccountPositions: (state) => {
       const accountStore = useAccountStore()
+      const derivativeStore = useDerivativeStore()
 
       return state.positions.filter(
-        ({ subaccountId }) => subaccountId === accountStore.subaccountId
+        ({ marketId, subaccountId }) =>
+          subaccountId === accountStore.subaccountId &&
+          derivativeStore.activeMarketIds.includes(marketId)
       )
     }
   },

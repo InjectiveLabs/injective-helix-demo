@@ -35,7 +35,7 @@ const gridStrategyStore = useGridStrategyStore()
             />
           </p>
         </div>
-        <div class="text-center p-4">
+        <div class="text-center p-4 hidden">
           <h2 class="text-sm font-semibold text-zinc-600">
             {{ $t('tradingBots.totalTvl') }}
           </h2>

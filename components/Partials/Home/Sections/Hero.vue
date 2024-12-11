@@ -1,6 +1,36 @@
 <script setup lang="ts">
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { TradeSubPage } from '@/types'
+
+onMounted(() => {
+  const mm = gsap.matchMedia()
+
+  mm.add('(min-width: 1024px)', () => {
+    gsap.from('#hero-section', {
+      opacity: 0,
+      filter: 'blur(10px)',
+      duration: 2,
+      delay: 0.2,
+      scale: 1.2
+    })
+
+    gsap.utils.toArray('.gsap-text').forEach((text, _i, arr) => {
+      gsap.to(text as HTMLElement, {
+        scrollTrigger: {
+          trigger: text as HTMLElement,
+          start: '50px 40%',
+          end: 'bottom 0%',
+          scrub: 2
+        },
+        y: arr.length * -40,
+        scale: 1.2,
+        filter: 'blur(10px)',
+        opacity: 0,
+        duration: 1
+      })
+    })
+  })
+})
 </script>
 
 <template>

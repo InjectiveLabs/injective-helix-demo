@@ -71,15 +71,13 @@ onSubaccountChange(() => {
       @update:is-ticker-only="fetchSpotOrders"
     />
 
-    <div class="overflow-x-auto w-full h-full">
-      <div class="h-full">
-        <PartialsTradeSpotOrdersStandard
-          v-if="tradingMode === TradingInterface.Standard"
-          v-bind="{ view, isTickerOnly }"
-        />
+    <div class="w-full">
+      <PartialsTradeSpotOrdersStandard
+        v-if="tradingMode === TradingInterface.Standard"
+        v-bind="{ view, isTickerOnly }"
+      />
 
-        <PartialsTradeSpotOrdersTradingBots v-else />
-      </div>
+      <PartialsTradeSpotOrdersTradingBots v-else />
     </div>
   </div>
 </template>

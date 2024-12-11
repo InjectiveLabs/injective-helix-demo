@@ -258,7 +258,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
             size="sm"
             variant="danger-shade"
             class="min-w-16"
-            @click="cancelOrder(row.order, row.isCancelable)"
+            @click="cancelOrder(row.trigger, row.isCancelable)"
           >
             {{ $t('trade.cancelOrder') }}
           </AppButton>

@@ -38,7 +38,7 @@ const {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-4 lg:pb-8">
     <div
       class="border-b"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"

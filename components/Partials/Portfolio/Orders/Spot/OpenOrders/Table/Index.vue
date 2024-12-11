@@ -324,20 +324,12 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
 
       <template #action-data="{ row }">
         <div class="p-2 flex justify-center">
-          <AppButton
+          <PartialsPortfolioOrdersSpotOpenOrdersTableActionBtns
             v-bind="{
-              status,
-              disabled: !row.isAuthorized,
-              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+              order: row.order,
+              isAuthorized: row.isAuthorized
             }"
-            size="sm"
-            variant="danger-shade"
-            class="min-w-16"
-            :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
-            @click="cancelOrder(row.order, row.isAuthorized)"
-          >
-            {{ $t('trade.cancelOrder') }}
-          </AppButton>
+          />
         </div>
       </template>
     </UTable>
