@@ -12,7 +12,7 @@ const totalMarkets = computed(
 
 <template>
   <div
-    class="relative pb-32 max-lg:pb-28 max-xs:pb-24 gsap-section lg:h-screen grid place-items-center"
+    class="relative max-lg:pb-28 max-xs:pb-24 gsap-section lg:h-screen grid place-items-center"
   >
     <div>
       <div id="built-for-the-community-text">

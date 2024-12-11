@@ -50,8 +50,8 @@ onMounted(() => {
               scrolling.enable()
             }, 500)
           },
-          duration: 1.2
-          // ease: 'power1.out'
+          duration: 1.2,
+          ease: 'power1.out'
         })
       }
     }
@@ -87,8 +87,12 @@ onMounted(() => {
       <!-- <PartialsHomeSectionsGettingStarted class="mb-16" /> -->
 
       <PartialsHomeSectionsOverview />
-      <PartialsHomeAnnouncements />
-      <PartialsHomeNewsletter />
+      <div class="gsap-section lg:h-screen grid place-items-center">
+        <div>
+          <PartialsHomeAnnouncements />
+          <PartialsHomeNewsletter />
+        </div>
+      </div>
     </div>
   </div>
 </template>
