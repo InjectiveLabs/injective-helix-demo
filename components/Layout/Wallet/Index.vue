@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
-import { WalletConnectStatus } from '@shared/types'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
@@ -50,7 +50,7 @@ const isOpen = computed({
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
   <div v-else class="flex items-center justify-center gap-2">
-    <SharedIcon name="rotate-auto" class="text-white h-4 w-4" />
+    <UIcon :name="NuxtUiIcons.RotateAuto" class="text-white size-4" />
 
     <AppButton
       class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
