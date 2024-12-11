@@ -24,7 +24,7 @@ const totalMarkets = computed(
         </p>
       </div>
 
-      <div class="pt-8 pb-4 max-lg:p-0">
+      <div class="pt-8 pb-8">
         <div id="built-for-the-community-image" class="rounded-xl">
           <img
             :style="{
