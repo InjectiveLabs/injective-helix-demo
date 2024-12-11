@@ -36,7 +36,7 @@ const {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-4 lg:pb-8">
     <div class="border-b">
       <AppButtonSelect
         v-for="value in Object.values(DerivativeTradeTypes)"
