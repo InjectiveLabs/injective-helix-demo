@@ -1,31 +1,33 @@
 <script lang="ts" setup>
-const scrolling = {
+const preventFunction = (e: Event) => e.preventDefault()
+
+const scrolling = reactive({
   enabled: true,
-  events: 'scroll,wheel,touchmove,pointermove'.split(','),
-  prevent: (e: Event) => e.preventDefault(),
+  events: ['scroll', 'wheel', 'touchmove', 'pointermove'],
+
   disable() {
-    if (scrolling.enabled) {
-      scrolling.enabled = false
+    if (this.enabled) {
+      this.enabled = false
       window.addEventListener('scroll', gsap.ticker.tick, { passive: true })
-      scrolling.events.forEach((e, i) =>
-        (i ? document : window).addEventListener(e, scrolling.prevent, {
-          passive: false
-        })
-      )
+      this.events.forEach((e) => {
+        const target = e === 'scroll' ? window : document
+        target.addEventListener(e, preventFunction, { passive: false })
+      })
     }
   },
   enable() {
-    if (!scrolling.enabled) {
-      scrolling.enabled = true
+    if (!this.enabled) {
+      this.enabled = true
       window.removeEventListener('scroll', gsap.ticker.tick)
-      scrolling.events.forEach((e, i) =>
-        (i ? document : window).removeEventListener(e, scrolling.prevent)
-      )
+      this.events.forEach((e) => {
+        const target = e === 'scroll' ? window : document
+        target.removeEventListener(e, preventFunction)
+      })
     }
   }
-}
+})
 
-let isInitialScroll = true
+const scrollTriggers = ref<ReturnType<typeof ScrollTrigger.create>[]>([])
 
 onMounted(() => {
   const mm = gsap.matchMedia()
@@ -35,41 +37,39 @@ onMounted(() => {
 
     function goToSection(section: Element) {
       if (scrolling.enabled) {
-        // skip if a scroll tween is in progress
         scrolling.disable()
         gsap.to(window, {
           scrollTo: { y: section, autoKill: false },
-          onComplete: () => {
-            if (isInitialScroll) {
-              isInitialScroll = false
-              scrolling.enable()
-              return
-            }
-
-            setTimeout(() => {
-              scrolling.enable()
-            }, 500)
-          },
-          duration: 1.2,
-          ease: 'power1.out'
+          onComplete: () => scrolling.enable(),
+          duration: 1.2
         })
       }
     }
 
     sections.forEach((section) => {
-      ScrollTrigger.create({
+      const trigger = ScrollTrigger.create({
         trigger: section,
         start: 'top bottom-=1',
         end: 'bottom top+=1',
         onEnter: () => goToSection(section),
         onEnterBack: () => goToSection(section)
       })
+
+      scrollTriggers.value.push(trigger)
     })
 
     return () => {
       scrolling.enable()
+      scrollTriggers.value.forEach((trigger) => trigger.kill())
+      scrollTriggers.value = []
     }
   })
+})
+
+onUnmounted(() => {
+  scrolling.enable()
+  scrollTriggers.value.forEach((trigger) => trigger.kill())
+  scrollTriggers.value = []
 })
 </script>
 
