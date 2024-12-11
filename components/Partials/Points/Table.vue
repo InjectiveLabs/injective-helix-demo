@@ -51,32 +51,12 @@ const filteredPointsHistory = computed(() =>
   )
 )
 
-const paginatedPointsHistory = computed(() => {
-  return filteredPointsHistory.value.slice(
+const paginatedPointsHistory = computed(() =>
+  filteredPointsHistory.value.slice(
     (page.value - 1) * limit,
     page.value * limit
   )
-
-  // @fred todo
-  // if (paginatedPoints.length <= 2) {
-  //   const emptyData = {
-  //     points: '',
-  //     volume: 0,
-  //     day: '',
-  //     week: ''
-  //   }
-
-  //   const emptyDataList: any = {
-  //     0: [],
-  //     1: [emptyData, emptyData],
-  //     2: [emptyData]
-  //   }
-
-  //   return [...paginatedPoints, ...emptyDataList[paginatedPoints.length]]
-  // }
-
-  // return paginatedPoints
-})
+)
 
 const paginationDetails = computed(() => {
   const to = limit * page.value
@@ -174,6 +154,7 @@ function onNext() {
         <p v-show="row.period" class="leading-tight">
           {{ row.period }}
         </p>
+        <span v-if="rows.length === 1" class="block w-full h-10" />
       </template>
 
       <template #volume-data="{ row }">
@@ -187,6 +168,7 @@ function onNext() {
           />
           <span v-else>{{ '< 1' }}</span>
         </span>
+        <span v-if="rows.length === 1" class="block w-full h-10" />
       </template>
 
       <template #points-data="{ row }">
@@ -200,6 +182,7 @@ function onNext() {
           />
           <span v-else>{{ '< 1' }}</span>
         </span>
+        <span v-if="rows.length === 1" class="block w-full h-10" />
       </template>
     </UTable>
 

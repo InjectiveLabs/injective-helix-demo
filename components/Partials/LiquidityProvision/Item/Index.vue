@@ -11,7 +11,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="card-opaque px-6 py-4">
+  <div class="card-opaque px-6 py-4 cursor-pointer">
     <div class="flex items-center relative">
       <div class="relative">
         <slot />
