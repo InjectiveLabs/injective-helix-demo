@@ -1,5 +1,4 @@
 import { NuxtUiIcons } from '@shared/types'
-import { IS_TESTNET } from '@/app/utils/constants'
 import {
   MainPage,
   MenuItem,
@@ -63,8 +62,8 @@ export const TRADING_OPTIONS = [
   {
     label: 'navigation.trade',
     to: {
-      name: TradeSubPage.Futures,
-      params: { slug: IS_TESTNET ? 'btc-usdt-perp-pyth' : 'btc-usdt-perp' }
+      name: TradeSubPage.Spot,
+      params: { slug: 'inj-usdt' }
     }
   },
   {
