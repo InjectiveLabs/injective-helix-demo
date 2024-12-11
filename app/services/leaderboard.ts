@@ -38,14 +38,18 @@ export const fetchLeaderboardCompetitionResults = async (
   competitionName: string,
   injectiveAddress: string
 ) => {
-  const { data } = (await httpClient.get(`competition/is-winner`, {
-    competitionName,
-    injectiveAddress
-  })) as {
-    data: {
-      result?: CompetitionResult
+  try {
+    const { data } = (await httpClient.get(`competition/is-winner`, {
+      competitionName,
+      injectiveAddress
+    })) as {
+      data: {
+        result?: CompetitionResult
+      }
     }
-  }
 
-  return data.result
+    return data.result
+  } catch (e) {
+    //
+  }
 }
