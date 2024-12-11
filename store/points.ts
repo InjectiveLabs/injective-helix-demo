@@ -18,7 +18,7 @@ const initialStateFactory = (): PointStoreState => ({
 export const usePointsStore = defineStore('points', {
   state: (): PointStoreState => initialStateFactory(),
   actions: {
-    async fetchPoints() {
+    async fetchAccountPointsStat() {
       const pointsStore = usePointsStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -80,8 +80,6 @@ export const usePointsStore = defineStore('points', {
       pointsStore.$patch({
         ...initialStateFactory()
       })
-
-      // pointsStore.$reset()
     }
   }
 })

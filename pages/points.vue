@@ -27,7 +27,7 @@ onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    pointsStore.fetchPoints(),
+    pointsStore.fetchAccountPointsStat(),
     pointsStore.fetchAccountDailyPoints()
   ])
     .catch($onError)
@@ -40,7 +40,7 @@ useIntervalFn(() => {
   }
 
   return Promise.all([
-    pointsStore.fetchPoints(),
+    pointsStore.fetchAccountPointsStat(),
     selectedPeriod.value === PointsPeriod.Day
       ? pointsStore.fetchAccountDailyPoints()
       : pointsStore.fetchAccountWeeklyPoints()
