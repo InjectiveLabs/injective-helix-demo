@@ -13,7 +13,7 @@ const imgList = {
   [OverviewSection.GasFree]: '/images/home/gasFee.png'
 }
 
-const activeType = ref(OverviewSection.TradingBots)
+const activeType = ref(OverviewSection.AccountOverview)
 
 const options = [
   {
@@ -65,9 +65,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative mb-36 lg:mb-16">
+  <div class="relative mb-36 lg:mb-16 gsap-section">
     <div id="overview-section" class="relative">
-      <div class="min-h-[900px]">
+      <div>
         <div class="pb-12 lg:py-20">
           <h2
             class="text-xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
@@ -113,9 +113,9 @@ onMounted(() => {
             </SharedSelectorItem>
           </div>
 
-          <div class="flex justify-center lg:ml-20">
+          <div class="flex justify-center items-center lg:ml-20">
             <img
-              class="m-auto object-contain max-h-[630px]"
+              class="ml-auto object-contain max-h-[530px]"
               :src="imgList[activeType]"
             />
           </div>

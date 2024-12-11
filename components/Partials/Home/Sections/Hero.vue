@@ -1,60 +1,11 @@
 <script setup lang="ts">
-// import { ZERO_IN_BASE } from '@shared/utils/constant'
-// import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { TradeSubPage } from '@/types'
-
-// const spotStore = useSpotStore()
-// const derivativeStore = useDerivativeStore()
-
-// const totalVolume = computed(() =>
-//   [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
-//     (sum, market) => {
-//       return sum.plus(market.volume || 0)
-//     },
-//     ZERO_IN_BASE
-//   )
-// )
-
-// const totalMarkets = computed(
-//   () =>
-//     [...spotStore.activeMarketIds, ...derivativeStore.activeMarketIds].length
-// )
-
-onMounted(() => {
-  const mm = gsap.matchMedia()
-
-  mm.add('(min-width: 1024px)', () => {
-    gsap.from('#hero-section', {
-      opacity: 0,
-      filter: 'blur(10px)',
-      duration: 2,
-      delay: 0.2,
-      scale: 1.2
-    })
-
-    gsap.utils.toArray('.gsap-text').forEach((text, _i, arr) => {
-      gsap.to(text as HTMLElement, {
-        scrollTrigger: {
-          trigger: text as HTMLElement,
-          start: '50px 40%',
-          end: 'bottom 0%',
-          scrub: 2
-        },
-        y: arr.length * -40,
-        scale: 1.2,
-        filter: 'blur(10px)',
-        opacity: 0,
-        duration: 1
-      })
-    })
-  })
-})
 </script>
 
 <template>
   <div
-    class="lg:min-h-screen flex flex-col lg:justify-center max-lg:py-10 relative"
+    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section"
   >
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
       <h1
