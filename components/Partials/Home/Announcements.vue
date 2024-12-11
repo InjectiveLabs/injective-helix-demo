@@ -21,7 +21,7 @@ onMounted(() => {
   <AppHocLoading :status="status">
     <div>
       <div
-        class="text-center text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
+        class="text-center max-lg:mt-10 text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
       >
         {{ $t('home.latestNews') }}
       </div>

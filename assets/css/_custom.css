@@ -238,7 +238,3 @@ input[type='range']::-webkit-slider-runnable-track {
 
   @apply bg-transparent;
 } */
-
-html {
-  scroll-behavior: smooth;
-}
