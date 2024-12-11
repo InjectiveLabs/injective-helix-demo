@@ -75,7 +75,7 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
 </script>
 
 <template>
-  <div class="h-full">
+  <div>
     <PartialsTradeFuturesOrdersStandardHeader
       v-model="view"
       v-model:is-ticker-only="isTickerOnly"
