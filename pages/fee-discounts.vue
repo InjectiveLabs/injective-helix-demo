@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppHocLoading :status="status">
+  <AppHocLoading :status="status" is-full-screen>
     <div class="fee-discounts min-h-screen-excluding-header-and-footer">
       <div class="container mx-auto">
         <div class="w-full mx-auto xl:w-4/5">

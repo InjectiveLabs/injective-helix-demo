@@ -240,15 +240,19 @@ onWalletConnected(() => {
   })
 })
 
-onMounted(() => {
-  campaignStore.fetchRound()
-})
-
 const activeStrategy = computed(() =>
   gridStrategyStore.activeStrategies.find(
     (strategy) => strategy.marketId === selectedMarket.value?.marketId
   )
 )
+
+onMounted(() => {
+  campaignStore.fetchRound()
+
+  if (!marketOptions.value.some((option) => option.value === market.value)) {
+    market.value = 'inj-usdt'
+  }
+})
 </script>
 
 <template>

@@ -10,17 +10,19 @@ const props = withDefaults(
     isEmitting?: boolean
     loaderClass?: string
     wrapperClass?: string
+    isFullScreen?: boolean
     isHideLoader?: boolean
   }>(),
   {
-    status: () => new Status(StatusType.Idle),
     isHelix: false,
     wrapperClass: '',
     noPadding: false,
     isLoading: false,
     isEmitting: false,
+    isFullScreen: false,
     isHideLoader: false,
-    loaderClass: 'relative'
+    loaderClass: 'relative',
+    status: () => new Status(StatusType.Idle)
   }
 )
 
@@ -47,10 +49,11 @@ watch(isLoading, (isLoading, oldIsLoading) => {
     <div
       v-if="isLoading"
       :class="[
-        wrapperClass || 'h-full',
+        wrapperClass || props.isFullScreen ? 'h-screen' : 'h-full',
         {
           'py-4': !noPadding,
-          'flex items-center justify-center': props.isHelix
+          'flex items-center justify-center':
+            props.isHelix || props.isFullScreen
         }
       ]"
     >
