@@ -5,33 +5,38 @@ withDefaults(
   defineProps<{
     search?: string
     markets: UiMarketAndSummaryWithVolumeInUsd[]
-    isLoading?: boolean
     activeCategory: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
   }>(),
   {
     search: '',
-    isLoading: false,
     isLowVolumeMarketsVisible: false
   }
 )
 </script>
 
 <template>
-  <AppHocLoading v-bind="{ isLoading }">
-    <div class="divide-y">
-      <CommonHeadlessMarkets
-        v-bind="{
-          search,
-          markets,
-          activeCategory,
-          isLowVolumeMarketsVisible
-        }"
-      >
-        <template #default="{ sortedMarkets }">
+  <div class="divide-y">
+    <CommonHeadlessMarkets
+      v-bind="{
+        search,
+        markets,
+        activeCategory,
+        isLowVolumeMarketsVisible
+      }"
+    >
+      <template #default="{ sortedMarkets }">
+        <AppHocLoading
+          v-bind="{
+            isLoading:
+              !sortedMarkets.length &&
+              activeCategory === MarketCategoryType.All,
+            wrapperClass: 'mt-4'
+          }"
+        >
           <PartialsMarketsCommonTable v-bind="{ sortedMarkets }" />
-        </template>
-      </CommonHeadlessMarkets>
-    </div>
-  </AppHocLoading>
+        </AppHocLoading>
+      </template>
+    </CommonHeadlessMarkets>
+  </div>
 </template>
