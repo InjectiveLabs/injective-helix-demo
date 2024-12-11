@@ -31,7 +31,7 @@ const totalMarkets = computed(
               aspectRatio: 1264 / 828
             }"
             src="/images/helix-platform.png"
-            class="max-w-[800px] mx-auto"
+            class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full"
           />
         </div>
       </div>
