@@ -64,7 +64,7 @@ function closeAllMenus() {
       v-else
       mode="hover"
       :popper="{ placement: 'bottom-start', offsetDistance: 0 }"
-      class="relative z-50 flex items-center h-full"
+      class="relative z-50 flex items-center h-full px-3 py-1.5 hover:text-blue-550 text-xs cursor-pointer select-none text-white"
     >
       <template #default="{ open }">
         <div tabindex="0" :class="{ 'text-blue-550': open }">
@@ -75,7 +75,7 @@ function closeAllMenus() {
             }`"
           >
             <div class="flex-1 w-full flex justify-between items-center">
-              <div class="flex-1">
+              <div class="flex-1 font-medium">
                 <p>{{ $t(item.label) }}</p>
               </div>
             </div>
