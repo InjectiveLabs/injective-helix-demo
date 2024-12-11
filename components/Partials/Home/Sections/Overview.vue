@@ -56,7 +56,7 @@ const options = [
                 </template>
               </i18n-t>
             </h2>
-            <p class="text-center text-lg text-coolGray-400">
+            <p class="text-center text-lg text-white">
               {{ $t('home.overview.experienceTrading') }}
             </p>
           </div>

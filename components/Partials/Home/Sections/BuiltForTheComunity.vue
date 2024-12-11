@@ -30,14 +30,14 @@ const totalMarkets = computed(
             :style="{
               aspectRatio: 1264 / 828
             }"
-            src="/images/helix-platform.png"
-            class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full"
+            src="/images/helix-platform-long.png"
+            class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
           />
         </div>
       </div>
 
       <div
-        class="flex justify-center font-semibold -mt-4 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col"
+        class="flex justify-center font-semibold -mt-4 max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8"
       >
         <div
           class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
