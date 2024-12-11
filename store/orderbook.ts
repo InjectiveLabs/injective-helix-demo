@@ -5,13 +5,15 @@ type OrderbookStoreState = {
   sells: OrderbookFormattedRecord[]
   isSpot: boolean
   worstPrice: string
+  midPrice: string
 }
 
 const initialStateFactory = (): OrderbookStoreState => ({
   buys: [],
   sells: [],
   isSpot: false,
-  worstPrice: ''
+  worstPrice: '',
+  midPrice: ''
 })
 
 export const useOrderbookStore = defineStore('orderbook', {

@@ -1,7 +1,9 @@
 import {
+  LiquidityBotField,
   PositionsFilterField,
   SpotOpenOrdersFilterField,
-  SpotOrderHistoryFilterField
+  SpotOrderHistoryFilterField,
+  VolatilityStrategyType
 } from './enums'
 
 export type PositionsFilterForm = {
@@ -50,4 +52,10 @@ export enum CompetitionWinnerField {
 export type CompetitionWinnerForm = {
   [CompetitionWinnerField.Name]: string
   [CompetitionWinnerField.Email]: string
+}
+
+export type LiquidityBotForm = {
+  [LiquidityBotField.Volatility]: VolatilityStrategyType
+  [LiquidityBotField.BaseAmount]: string
+  [LiquidityBotField.QuoteAmount]: string
 }

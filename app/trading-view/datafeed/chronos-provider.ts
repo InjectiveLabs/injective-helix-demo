@@ -113,7 +113,7 @@ export class ChronosApiProvider {
     }
 
     if (countBack) {
-      endpoint += `&countBack=${countBack}`
+      endpoint += `&countback=${countBack}`
     }
 
     if (firstDataRequest) {
@@ -153,7 +153,7 @@ export class ChronosApiProvider {
     }
 
     if (countBack) {
-      endpoint += `&countBack=${countBack}`
+      endpoint += `&countback=${countBack}`
     }
 
     if (firstDataRequest) {

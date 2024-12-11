@@ -56,10 +56,10 @@ const time = computed(() =>
 
 <template>
   <div
-    class="flex font-mono leading-4 !text-[11px] text-right hover:bg-brand-800 cursor-pointer"
+    class="flex font-mono leading-4 text-xs py-1 hover:bg-brand-800 cursor-pointer"
   >
     <div
-      class="flex-1 min-w-0 truncate px-1"
+      class="flex-1 min-w-0 truncate"
       :class="{
         'text-green-500': trade.tradeDirection === TradeDirection.Buy,
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
@@ -68,11 +68,11 @@ const time = computed(() =>
       {{ priceToFormat }}
     </div>
 
-    <div class="flex-1 min-w-0 truncate px-1">
+    <div class="flex-1 min-w-0 truncate text-center">
       {{ quantityToFormat }}
     </div>
 
-    <div class="flex-1 min-w-0 truncate px-1 text-coolGray-500">
+    <div class="flex-1 min-w-0 truncate text-coolGray-500 text-right">
       {{ time }}
     </div>
   </div>

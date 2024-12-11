@@ -8,12 +8,13 @@ import {
 
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
+const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const isTickerOnly = ref(false)
-const view = ref(PerpOrdersStandardView.OpenPositions)
+const view = ref(PerpOrdersStandardView.Positions)
 
 function fetchDerivativeOrders() {
   if (!accountStore.subaccountId) {
@@ -44,7 +45,13 @@ function fetchDerivativeOrders() {
     }),
     derivativeStore.fetchSubaccountConditionalOrders([market.value.marketId]),
     positionStore.fetchSubaccountPositions({
-      subaccountId: accountStore.subaccountId,
+      filters: {
+        marketIds: isTickerOnly.value
+          ? [market?.value?.marketId || '']
+          : undefined
+      }
+    }),
+    activityStore.fetchSubaccountFundingHistory({
       filters: {
         marketIds: isTickerOnly.value
           ? [market?.value?.marketId || '']
@@ -68,15 +75,15 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PartialsTradeFuturesOrdersStandardHeader
-      v-model:is-ticker-only="isTickerOnly"
       v-model="view"
+      v-model:is-ticker-only="isTickerOnly"
       @update:is-ticker-only="fetchDerivativeOrders"
     />
 
-    <div class="overflow-x-auto w-full">
-      <div class="lg:min-w-[1600px]">
+    <div class="overflow-x-auto w-full h-full">
+      <div class="h-full">
         <PartialsTradeFuturesOrdersStandard
           v-if="tradingMode === TradingInterface.Standard"
           v-bind="{ view, isTickerOnly }"

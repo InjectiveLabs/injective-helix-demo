@@ -4,7 +4,7 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
 
 const { lg } = useTwBreakpoints()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -13,6 +13,7 @@ const props = withDefaults(
     token: TokenStatic
     isVerified?: boolean
     isBridgable?: boolean
+    isTablePopover?: boolean
   }>(),
   {}
 )
@@ -33,7 +34,10 @@ function onTransfer() {
   >
     <div
       v-if="accountStore.isDefaultSubaccount"
-      class="shrink-0 flex max-lg:space-x-2 lg:flex-col lg:gap-1.5"
+      :class="[
+        'shrink-0 flex max-lg:space-x-2',
+        isTablePopover ? 'lg:flex-col lg:gap-1.5' : 'lg:gap-2'
+      ]"
     >
       <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
         <PartialsCommonBridgeRedirection
@@ -44,8 +48,8 @@ function onTransfer() {
           }"
         >
           <AppButton
-            class="max-lg:py-2 lg:w-full lg:p-2"
-            :variant="lg ? 'primary-ghost' : 'primary'"
+            class="max-lg:py-2 lg:w-full lg:leading-snug"
+            :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
             size="sm"
           >
             {{ $t('account.deposit') }}
@@ -59,8 +63,10 @@ function onTransfer() {
           }"
         >
           <AppButton
-            class="max-lg:py-2 lg:w-full lg:p-2"
-            :variant="lg ? 'primary-ghost' : 'primary-outline'"
+            class="max-lg:py-2 lg:w-full lg:leading-snug"
+            :variant="
+              lg && isTablePopover ? 'primary-ghost' : 'primary-outline'
+            "
             size="sm"
           >
             {{ $t('account.withdraw') }}
@@ -82,8 +88,8 @@ function onTransfer() {
 
       <template v-else>
         <AppButton
-          class="max-lg:py-2 lg:w-full lg:p-2"
-          :variant="lg ? 'primary-ghost' : 'primary'"
+          class="max-lg:py-2 lg:w-full lg:leading-snug"
+          :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
           size="sm"
           @click="onFiatOnRamp"
         >
@@ -91,8 +97,8 @@ function onTransfer() {
         </AppButton>
 
         <AppButton
-          class="max-lg:py-2 lg:w-full lg:p-2"
-          :variant="lg ? 'primary-ghost' : 'primary-outline'"
+          class="max-lg:py-2 lg:w-full lg:leading-snug"
+          :variant="lg && isTablePopover ? 'primary-ghost' : 'primary-outline'"
           size="sm"
           @click="onTransfer"
         >
@@ -106,8 +112,11 @@ function onTransfer() {
       :to="{ name: PortfolioSubPage.Subaccounts }"
     >
       <AppButton
-        class="max-lg:py-2 lg:w-full lg:p-2"
-        :variant="lg ? 'primary-ghost' : 'primary'"
+        :class="[
+          'max-lg:py-2 lg:leading-snug',
+          isTablePopover ? 'lg:w-full' : ''
+        ]"
+        :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
         :to="{ name: PortfolioSubPage.Subaccounts }"
         size="sm"
       >

@@ -158,23 +158,23 @@ export default function ({
     time_frames: [
       {
         text: '1D',
-        resolution: '5' as ResolutionString,
+        resolution: '1D' as ResolutionString,
         description: '1 Day'
       },
       {
         text: '1W',
-        resolution: '120' as ResolutionString,
+        resolution: '1W' as ResolutionString,
         description: '1 Week'
       },
       {
-        text: '1M',
-        resolution: '360' as ResolutionString,
-        description: '1 Month'
+        text: '5m',
+        resolution: '5' as ResolutionString,
+        description: '5 Minutes'
       },
       {
-        text: '3M',
-        resolution: '1D' as ResolutionString,
-        description: '3 Month'
+        text: '1H',
+        resolution: '60' as ResolutionString,
+        description: '1 Hour'
       }
     ],
     favorites: {

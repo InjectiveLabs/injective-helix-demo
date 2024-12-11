@@ -116,8 +116,8 @@ export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
 
-export const ORDERBOOK_ROW_HEIGHT = 16
-export const ORDERBOOK_ROWS = 15
+export const ORDERBOOK_ROW_HEIGHT = 24
+export const ORDERBOOK_ROWS = 10
 export const ORDERBOOK_HEADER_HEIGHT = 56
 export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
 export const MAXIMUM_RANKED_TRADERS = 500

@@ -61,10 +61,7 @@ const description = computed(() => {
       </div>
 
       <div class="mt-4">
-        <p
-          v-if="description"
-          class="text-coolGray-400 text-sm leading-6 text-justify"
-        >
+        <p v-if="description" class="text-coolGray-400 text-sm leading-6">
           {{ description }}
         </p>
       </div>

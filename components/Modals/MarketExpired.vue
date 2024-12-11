@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal, MainPage, PortfolioSubPage, UiDerivativeMarket } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const router = useRouter()
 
 const props = withDefaults(defineProps<{ market: UiDerivativeMarket }>(), {})

@@ -35,7 +35,6 @@ html {
 
 body {
   @apply font-sans text-base leading-normal text-coolGray-100 antialiased bg-brand-900 overflow-hidden;
-  scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
 }
 

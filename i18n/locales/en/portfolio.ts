@@ -28,7 +28,8 @@ export default {
         [PortfolioSpotOpenOrdersTableColumn.Unfilled]: 'Unfilled',
         [PortfolioSpotOpenOrdersTableColumn.Filled]: 'Filled',
         [PortfolioSpotOpenOrdersTableColumn.TotalAmount]: 'Total Amount',
-        [PortfolioSpotOpenOrdersTableColumn.Chase]: 'Chase'
+        [PortfolioSpotOpenOrdersTableColumn.Chase]: 'Chase',
+        [PortfolioSpotOpenOrdersTableColumn.Action]: 'Action'
       },
       spotOrderHistory: {
         [PortfolioSpotOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
@@ -61,7 +62,8 @@ export default {
         [PortfolioFuturesOpenOrdersTableColumn.Filled]: 'Filled',
         [PortfolioFuturesOpenOrdersTableColumn.Leverage]: 'Leverage',
         [PortfolioFuturesOpenOrdersTableColumn.Total]: 'Total',
-        [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase'
+        [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase',
+        [PortfolioFuturesOpenOrdersTableColumn.Action]: 'Action'
       },
       futuresTriggers: {
         [PortfolioFuturesTriggersTableColumn.Market]: 'Market',
@@ -72,7 +74,8 @@ export default {
         [PortfolioFuturesTriggersTableColumn.Leverage]: 'Leverage',
         [PortfolioFuturesTriggersTableColumn.Total]: 'Total',
         [PortfolioFuturesTriggersTableColumn.TriggerCondition]:
-          'Trigger Condition'
+          'Trigger Condition',
+        [PortfolioFuturesTriggersTableColumn.Action]: 'Action'
       },
       futuresOrderHistory: {
         [PortfolioFuturesOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
@@ -99,12 +102,13 @@ export default {
       position: {
         [PositionTableColumn.Market]: 'Market',
         [PositionTableColumn.Side]: 'Side',
-        [PositionTableColumn.Amount]: 'Amount',
-        [PositionTableColumn.EntryOrMark]: 'Entry / Mark',
+        [PositionTableColumn.Contracts]: 'Contracts',
+        [PositionTableColumn.Entry]: 'Entry Price',
+        [PositionTableColumn.Mark]: 'Mark Price',
         [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL',
         [PositionTableColumn.TotalUsd]: 'Total Value (USD)',
-        [PositionTableColumn.Margin]: 'Margin',
-        [PositionTableColumn.LiquidationPrice]: 'Liquidation Price',
+        [PositionTableColumn.Margin]: 'Position Margin',
+        [PositionTableColumn.LiquidationPrice]: 'Liquid Price',
         [PositionTableColumn.Leverage]: 'Leverage',
         [PositionTableColumn.TpOrSl]: 'TP/SL',
         [PositionTableColumn.ClosePosition]: 'Close Position'
@@ -186,7 +190,6 @@ export default {
 
       autoSign: {
         title: 'Auto-Sign',
-        titleWithoutHyphen: 'Auto Sign',
         description: 'Automatically sign transactions',
         howItWorks:
           'During the enabled duration (1 hour), you can perform many operations on Helix (including opening/closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters) without signing additional transactions. Interactions with the swap feature or trading bots are not included. For security reasons, the auto sign function will expire after the 1 hour time frame, at which point you may choose to initiate a new session.',

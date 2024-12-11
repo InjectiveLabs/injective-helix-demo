@@ -58,7 +58,8 @@ export function useOrderbook(
         if (data.messageType === WorkerMessageResponseType.ReplaceOrderbook) {
           orderbookStore.$patch({
             buys: data.data.buys,
-            sells: data.data.sells
+            sells: data.data.sells,
+            midPrice: data.data.midPrice
           })
         }
 

@@ -2,11 +2,14 @@ export enum MainPage {
   Swap = 'swap',
   Terms = 'terms',
   Index = 'index',
+  Points = 'points',
   Guilds = 'guilds',
+  Vaults = 'vaults',
   Markets = 'markets',
   Portfolio = 'portfolio',
   LpRewards = 'lp-rewards',
   Maintenance = 'maintenance',
+  TradingBots = 'trading-bots',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
@@ -27,6 +30,11 @@ export enum CampaignSubPage {
 
 export enum TradingBotsSubPage {
   LiquiditySpotMarket = 'trading-bots-liquidity-bots-spot'
+}
+
+export enum TradePage {
+  Spot = 'spot',
+  Futures = 'futures'
 }
 
 export enum TradeSubPage {
@@ -59,7 +67,7 @@ export enum PortfolioSubPage {
   SettingsPreferences = 'portfolio-settings-preferences',
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
   OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
-  HistoryFundingPayments = 'portfolio-history-funding-payments',
+  HistoryFundingHistory = 'portfolio-history-funding-history',
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
   OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'

@@ -44,7 +44,8 @@ export class DerivativeOraclePriceIntegrityStrategy
     if (!isDataValid) {
       derivativeStore.cancelMarketsMarkPrices()
       derivativeStore.$patch({ marketMarkPriceMap: await this.fetchData() })
-      derivativeStore.streamMarketsMarkPrices()
+      // todo: pass position marketId
+      derivativeStore.streamMarketsMarkPrices([])
     }
   }
 

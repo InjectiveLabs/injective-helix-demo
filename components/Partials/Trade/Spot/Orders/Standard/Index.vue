@@ -11,13 +11,13 @@ withDefaults(
 </script>
 
 <template>
-  <div class="overflow-x-auto border-b">
+  <div class="overflow-x-auto border-b divide-y h-full">
     <PartialsTradeCommonOrdersBalances
       v-if="view === SpotOrdersStandardView.Balances"
     />
 
     <PartialsTradeSpotOrdersStandardOpenOrders
-      v-else-if="view === SpotOrdersStandardView.OpenOrders"
+      v-else-if="view === SpotOrdersStandardView.Orders"
       v-bind="{ isTickerOnly }"
     />
 

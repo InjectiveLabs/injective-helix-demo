@@ -55,6 +55,7 @@ onMounted(() => {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  padding-top: 2rem;
 }
 
 @media (min-width: 480px) {

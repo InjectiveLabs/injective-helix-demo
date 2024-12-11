@@ -148,6 +148,7 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
           hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
       )
       ?.slug.toUpperCase()
+      .replace('-P', '-PERP')
   }
 
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
@@ -199,10 +200,24 @@ export const durationFormatter = (
   from: number | string,
   to: number | string
 ) => {
-  const { days, hours, minutes } = intervalToDuration({
+  const { months, days, hours, minutes } = intervalToDuration({
     start: new Date(Number(from)),
     end: new Date(Number(to))
   })
+
+  return `${months}M ${days}D ${hours}H ${minutes}M`
+}
+
+export function formatInterval(
+  startTimestamp: number,
+  endTimestamp: number
+): string {
+  const diffMs = Math.abs(endTimestamp - startTimestamp)
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+  // const seconds = Math.floor((diffMs % (1000 * 60)) / 1000)
 
   return `${days}D ${hours}H ${minutes}M`
 }

@@ -51,7 +51,7 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
-      const modalStore = useModalStore()
+      const modalStore = useSharedModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -155,10 +155,11 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async disconnect() {
+    disconnect() {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
+      const pointsStore = usePointsStore()
       const accountStore = useAccountStore()
       const exchangeStore = useExchangeStore()
       const activityStore = useActivityStore()
@@ -169,9 +170,8 @@ export const useWalletStore = defineStore('wallet', {
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      await sharedWalletStore.logout()
-
       appStore.reset()
+      pointsStore.reset()
       sharedWalletStore.logout()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()

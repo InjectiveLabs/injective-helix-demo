@@ -6,7 +6,7 @@ import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()

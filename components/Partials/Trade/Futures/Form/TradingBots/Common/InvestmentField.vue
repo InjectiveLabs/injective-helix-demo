@@ -89,7 +89,14 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
 <template>
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
-      <CommonHeaderTooltip v-bind="{ tooltip: $t('sgt.investmentTooltip') }">
+      <CommonHeaderTooltip
+        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        :popper="{
+          placement: 'top',
+          strategy: 'fixed',
+          offsetDistance: -40
+        }"
+      >
         <span v-if="!isAuto" class="text-white font-semibold text-xs">
           3.
         </span>

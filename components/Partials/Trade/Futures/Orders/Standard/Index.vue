@@ -4,24 +4,25 @@ import { PerpOrdersStandardView } from '@/types'
 withDefaults(
   defineProps<{
     view: string
-    isTickerOnly: boolean
+    isTickerOnly?: boolean
   }>(),
   {}
 )
 </script>
 
 <template>
-  <div class="border-b">
+  <div class="border-b h-full divide-y">
     <PartialsTradeCommonOrdersBalances
       v-if="view === PerpOrdersStandardView.Balances"
     />
 
     <PartialsTradeFuturesOrdersStandardPositions
-      v-else-if="view === PerpOrdersStandardView.OpenPositions"
+      v-else-if="view === PerpOrdersStandardView.Positions"
+      v-bind="{ isTickerOnly }"
     />
 
     <PartialsTradeFuturesOrdersStandardOpenOrders
-      v-else-if="view === PerpOrdersStandardView.OpenOrders"
+      v-else-if="view === PerpOrdersStandardView.Orders"
       v-bind="{ isTickerOnly }"
     />
 
@@ -35,6 +36,10 @@ withDefaults(
 
     <PartialsTradeFuturesOrdersStandardTradeHistory
       v-else-if="view === PerpOrdersStandardView.TradeHistory"
+    />
+
+    <PartialsTradeFuturesOrdersStandardFundingHistory
+      v-else-if="view === PerpOrdersStandardView.FundingHistory"
     />
   </div>
 </template>

@@ -19,11 +19,11 @@
       <feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_5428_6293"/>
     </filter>
     <linearGradient id="paint0_linear_5428_6293" x1="433.553" y1="-17.5394" x2="285.992" y2="252.856" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0082FA"/>
+      <stop stop-color="#40A9FF"/>
       <stop offset="1" stop-color="#00F2FE"/>
     </linearGradient>
     <linearGradient id="paint1_linear_5428_6293" x1="39.6467" y1="205.772" x2="10.5709" y2="395.681" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0082FA"/>
+      <stop stop-color="#40A9FF"/>
       <stop offset="1" stop-color="#00F2FE"/>
     </linearGradient>
     <clipPath id="clip0_5428_6293">

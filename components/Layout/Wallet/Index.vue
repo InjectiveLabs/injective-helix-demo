@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
-import { WalletConnectStatus } from '@shared/types'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
-
-const isSignUp = ref(false)
 
 function onWalletConnect() {
   if (GEO_IP_RESTRICTIONS_ENABLED) {
@@ -34,16 +32,6 @@ function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
 
-function onSignUp() {
-  isSignUp.value = true
-  onWalletConnect()
-}
-
-function onSignIn() {
-  isSignUp.value = false
-  onWalletConnect()
-}
-
 const isOpen = computed({
   get: () => modalStore.modals[Modal.Connect],
   set: (value) => {
@@ -61,32 +49,24 @@ const isOpen = computed({
 <template>
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <div v-else class="flex items-center space-x-2">
+  <div v-else class="flex items-center justify-center gap-2">
+    <UIcon :name="NuxtUiIcons.RotateAuto" class="text-white size-4" />
+
     <AppButton
-      class="max-sm:px-2 max-sm:py-1"
-      variant="primary-outline"
+      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
+      variant="primary"
       :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
       :is-loading="
         sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
       "
-      @click="onSignIn"
+      @click="onWalletConnect"
     >
-      <span>{{ $t('connect.login') }}</span>
-    </AppButton>
-    <AppButton
-      class="max-sm:px-2 max-sm:py-1"
-      :data-cy="dataCyTag(NavBarCyTags.WalletSignUpButton)"
-      :is-loading="
-        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
-      "
-      @click="onSignUp"
-    >
-      <span>{{ $t('connect.signUp') }}</span>
+      <span>{{ $t('connect.connect') }}</span>
     </AppButton>
   </div>
 
   <SharedModal v-model="isOpen">
-    <LayoutWalletConnect v-bind="{ isSignUp }" @modal:closed="onCloseModal" />
+    <LayoutWalletConnect @modal:closed="onCloseModal" />
   </SharedModal>
 
   <ModalsTerms />

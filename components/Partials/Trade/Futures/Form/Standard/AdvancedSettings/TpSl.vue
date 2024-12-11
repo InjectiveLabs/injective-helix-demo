@@ -96,7 +96,7 @@ watch(
 <template>
   <div class="border-t mt-2">
     <div class="py-2">
-      <AppCheckbox2 v-model="isTpSlEnabled">
+      <AppCheckbox2 v-model="isTpSlEnabled" class="text-white">
         {{ $t('trade.tpSl') }}
       </AppCheckbox2>
     </div>

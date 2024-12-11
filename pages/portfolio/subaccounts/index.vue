@@ -2,7 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const isDisabled = computed(

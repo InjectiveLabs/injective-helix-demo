@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal, TradeSubPage, NotLiquidMarket } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const props = withDefaults(
   defineProps<{ notLiquidMarket: NotLiquidMarket }>(),

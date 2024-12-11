@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
@@ -91,7 +90,7 @@ export const calculateLiquidationPrice = ({
 }
 
 export const getRoundedLiquidationPrice = (
-  position: Position | PositionV2,
+  position: PositionV2,
   market: UiDerivativeMarket
 ) => {
   const minTickPrice = derivativePriceToChainPrice({

@@ -9,7 +9,7 @@ import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
 

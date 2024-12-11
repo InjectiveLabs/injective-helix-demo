@@ -30,31 +30,21 @@ const filteredColumns = computed(() =>
 <template>
   <AppMobileTable :columns="filteredColumns">
     <template #header>
-      <div class="flex flex-col gap-2 mb-6">
-        <p class="text-white text-sm font-semibold">
-          {{
-            $t(
-              `portfolio.table.spotOrderHistory.${PortfolioSpotOrderHistoryTableColumn.Market}`
-            )
-          }}
-        </p>
-
-        <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 font-sans"
-          v-bind="{ market: order.market }"
+      <PartialsCommonMarketRedirection
+        class="flex items-center space-x-2 font-sans mb-6"
+        v-bind="{ market: order.market }"
+      >
+        <CommonTokenIcon
+          v-bind="{ token: order.market.baseToken }"
+          :is-sm="true"
+        />
+        <p
+          class="text-sm text-coolGray-200"
+          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryMarketTicker)"
         >
-          <CommonTokenIcon
-            v-bind="{ token: order.market.baseToken }"
-            :is-sm="true"
-          />
-          <p
-            class="text-sm text-coolGray-200"
-            :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryMarketTicker)"
-          >
-            {{ order.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
-      </div>
+          {{ order.market.ticker }}
+        </p>
+      </PartialsCommonMarketRedirection>
     </template>
 
     <template #last-updated-data>
@@ -97,6 +87,7 @@ const filteredColumns = computed(() =>
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -108,6 +99,7 @@ const filteredColumns = computed(() =>
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
+          class="font-mono"
         />
       </div>
     </template>
@@ -119,6 +111,7 @@ const filteredColumns = computed(() =>
             amount: order.total.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
         <span class="text-coolGray-500 ml-1">
           {{ order.market?.quoteToken.symbol }}
@@ -134,6 +127,7 @@ const filteredColumns = computed(() =>
             amount: order.triggerPrice.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
+          class="font-mono"
         />
       </span>
     </template>

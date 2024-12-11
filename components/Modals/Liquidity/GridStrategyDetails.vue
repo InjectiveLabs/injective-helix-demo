@@ -2,7 +2,7 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Modal, UiSpotMarket } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{ strategy?: TradingStrategy; market?: UiSpotMarket }>(),

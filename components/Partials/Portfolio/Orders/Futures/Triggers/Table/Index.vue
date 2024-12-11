@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PortfolioFuturesTriggersTableColumn } from '@/types'
@@ -6,6 +7,7 @@ import { PortfolioFuturesTriggersTableColumn } from '@/types'
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
+const breakpoints = useBreakpointsTw()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
 
@@ -18,63 +20,79 @@ const props = withDefaults(
 
 const { rows } = useFuturesTriggersTransformer(computed(() => props.triggers))
 
-const columns = [
-  {
-    key: PortfolioFuturesTriggersTableColumn.Market,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Market}`
-    ),
-    class: 'w-[10%]'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Type,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Type}`
-    ),
-    class: 'w-[10%]'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Side,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Side}`
-    )
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Price,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Price}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Amount,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Amount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Leverage,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Leverage}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.Total,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Total}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioFuturesTriggersTableColumn.TriggerCondition,
-    label: t(
-      `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.TriggerCondition}`
-    ),
-    class: 'text-right'
+const xxl = breakpoints['2xl']
+
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PortfolioFuturesTriggersTableColumn.Market,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Market}`
+      ),
+      class: 'w-[10%]'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Type,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Type}`
+      ),
+      class: 'w-[10%]'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Side,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Side}`
+      )
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Price,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Price}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Amount,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Amount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Leverage,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Leverage}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.Total,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Total}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioFuturesTriggersTableColumn.TriggerCondition,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.TriggerCondition}`
+      ),
+      class: 'text-right'
+    }
+  ]
+
+  if (xxl.value) {
+    baseColumns.push({
+      key: PortfolioFuturesTriggersTableColumn.Action,
+      label: t(
+        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Action}`
+      ),
+      class: 'text-center'
+    })
   }
-]
+
+  return baseColumns
+})
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -111,21 +129,19 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
             <p>{{ row.market.ticker }}</p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover>
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <AppButton
-                variant="danger-ghost"
-                class="p-2 w-full"
-                size="sm"
-                :status="status"
-                :disabled="!row.isCancelable"
-                :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-                @click="cancelOrder(row.trigger, row.isCancelable)"
-              >
-                Cancel Order
-              </AppButton>
-            </div>
-          </AppTablePopover>
+          <AppButton
+            v-if="!xxl"
+            size="xs"
+            :status="status"
+            variant="danger-shade"
+            class="p-1 outline-none rounded-full"
+            :disabled="!row.isCancelable"
+            :title="$t('trade.cancelOrder')"
+            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
+            @click="cancelOrder(row.trigger, row.isCancelable)"
+          >
+            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
+          </AppButton>
         </div>
       </template>
 
@@ -161,6 +177,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
                 amount: row.price.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
         </div>
@@ -173,6 +190,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -182,7 +200,9 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
           <span v-if="row.leverage.isNaN()" class="text-coolGray-400">
             {{ $t('trade.not_available_n_a') }}
           </span>
-          <span v-else>{{ row.leverage.toFormat(2) }} &times;</span>
+          <span v-else class="font-mono">
+            {{ row.leverage.toFormat(2) }} &times;
+          </span>
         </div>
       </template>
 
@@ -193,6 +213,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
               amount: row.total.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="font-mono"
           />
           <span class="ml-1">{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -220,8 +241,27 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
                 amount: row.triggerPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="p-2 flex justify-center">
+          <AppButton
+            v-bind="{
+              status,
+              disabled: !row.isCancelable,
+              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+            }"
+            size="sm"
+            variant="danger-shade"
+            class="min-w-16"
+            @click="cancelOrder(row.order, row.isCancelable)"
+          >
+            {{ $t('trade.cancelOrder') }}
+          </AppButton>
         </div>
       </template>
     </UTable>

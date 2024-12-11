@@ -1,37 +1,41 @@
 <script setup lang="ts">
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal, BusEvents } from '@/types'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { Modal, BusEvents, MarketKey, UiDerivativeMarket } from '@/types'
 
-const modalStore = useModalStore()
-const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const selectedPosition = ref<Position | PositionV2 | undefined>(undefined)
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {}
+)
 
-const filteredPosition = computed(() =>
+const selectedPosition = ref<PositionV2 | undefined>(undefined)
+
+const filteredPositions = computed(() =>
   positionStore.subaccountPositions.filter((position) => {
-    const isPartOfSubaccount =
-      position.subaccountId === accountStore.subaccountId
+    if (props.isTickerOnly) {
+      return position.marketId === market.value.marketId
+    }
 
-    return isPartOfSubaccount
+    return true
   })
 )
 
-const positionToAddMargin = ref<Position | PositionV2 | undefined>(undefined)
-
-function addMargin(position: Position | PositionV2) {
+function addMargin(position: PositionV2) {
+  selectedPosition.value = position
   modalStore.openModal(Modal.AddMarginToPosition)
-
-  positionToAddMargin.value = position
 }
 
-function addTakeProfitStopLoss(position: Position | PositionV2) {
+function addTakeProfitStopLoss(position: PositionV2) {
+  selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
-
-  positionToAddMargin.value = position
 }
 
-function onSharePosition(position: Position | PositionV2) {
+function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
@@ -39,35 +43,44 @@ function onSharePosition(position: Position | PositionV2) {
 </script>
 
 <template>
-  <div class="divide-y">
-    <PartialsPortfolioPositionsTable
-      v-if="filteredPosition.length"
-      :positions="filteredPosition"
-      @margin:add="addMargin"
-      @tpsl:add="addTakeProfitStopLoss"
-      @position:share="onSharePosition"
-    />
+  <PartialsPortfolioPositionsTable
+    v-if="filteredPositions.length"
+    :positions="filteredPositions"
+    :ui="{
+      th: {
+        base: 'whitespace-nowrap dark:bg-coolGray-975'
+      },
+      td: {
+        font: 'font-mono',
+        color: 'dark:text-white'
+      }
+    }"
+    @margin:add="addMargin"
+    @tpsl:add="addTakeProfitStopLoss"
+    @position:share="onSharePosition"
+  />
 
-    <CommonEmptyList
-      v-if="!filteredPosition.length"
-      :message="'No Open Positions'"
-    />
+  <CommonEmptyList
+    v-if="!filteredPositions.length"
+    :message="'No Open Positions'"
+  />
 
-    <ModalsAddMargin
-      v-bind="{
-        position: positionToAddMargin
-      }"
-    />
+  <ModalsAddMargin
+    v-if="selectedPosition"
+    v-bind="{
+      position: selectedPosition
+    }"
+  />
 
-    <ModalsAddTakeProfitStopLoss
-      v-bind="{
-        position: positionToAddMargin
-      }"
-    />
+  <ModalsAddTakeProfitStopLoss
+    v-if="selectedPosition"
+    v-bind="{
+      position: selectedPosition
+    }"
+  />
 
-    <ModalsSharePositionPnl
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-    />
-  </div>
+  <ModalsSharePositionPnl
+    v-if="selectedPosition"
+    v-bind="{ position: selectedPosition }"
+  />
 </template>

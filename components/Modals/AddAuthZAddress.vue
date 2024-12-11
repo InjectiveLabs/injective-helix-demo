@@ -4,7 +4,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()

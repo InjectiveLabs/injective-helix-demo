@@ -7,7 +7,7 @@ import {
 import { UiMarketWithToken } from '@/types'
 
 const SECTION_HEIGHT =
-  2 * ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + ORDERBOOK_HEADER_HEIGHT + 8
+  2 * ORDERBOOK_ROWS * ORDERBOOK_ROW_HEIGHT + ORDERBOOK_HEADER_HEIGHT
 
 const NUMBER_OF_ROWS =
   ORDERBOOK_ROWS * 2 +
@@ -36,14 +36,14 @@ const trades = computed(() => {
 </script>
 
 <template>
-  <div class="px-2">
-    <div class="flex justify-between pt-2">
-      <p class="text-xs space-x-1.5 flex-1 text-right">
+  <div class="px-3">
+    <div class="flex justify-between py-2">
+      <p class="text-xs space-x-1.5 flex-1">
         <span class="text-coolGray-500">{{ $t('trade.price') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
 
-      <p class="text-xs space-x-1.5 flex-1 text-right">
+      <p class="text-xs space-x-1.5 flex-1 text-center">
         <span class="text-coolGray-500">{{ $t('trade.amount') }}</span>
         <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
       </p>
@@ -54,7 +54,7 @@ const trades = computed(() => {
     </div>
 
     <div :style="{ height: SECTION_HEIGHT + 'px' }">
-      <template v-if="trades.length === 0">
+      <template v-if="!trades.length">
         <PartialsTradeOrderbookBuysSellsSkeletonRecord
           v-for="index in NUMBER_OF_ROWS"
           :key="index"

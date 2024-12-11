@@ -3,15 +3,13 @@ const spotStore = useSpotStore()
 </script>
 
 <template>
-  <div class="divide-y">
-    <PartialsPortfolioOrdersSpotTradeHistoryTable
-      v-if="spotStore.subaccountTrades.length"
-      :trades="spotStore.subaccountTrades"
-    />
+  <PartialsPortfolioOrdersSpotTradeHistoryTable
+    v-if="spotStore.subaccountTrades.length"
+    :trades="spotStore.subaccountTrades"
+  />
 
-    <CommonEmptyList
-      v-if="!spotStore.subaccountTrades.length"
-      v-bind="{ message: 'No Trades' }"
-    />
-  </div>
+  <CommonEmptyList
+    v-if="!spotStore.subaccountTrades.length"
+    v-bind="{ message: $t('trade.noTrades') }"
+  />
 </template>

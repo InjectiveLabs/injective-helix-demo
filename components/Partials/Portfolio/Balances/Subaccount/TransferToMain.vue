@@ -2,7 +2,7 @@
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()

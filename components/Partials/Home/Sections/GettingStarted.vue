@@ -50,7 +50,7 @@ const options = [
 <template>
   <div>
     <h1
-      class="text-xl lg:text-4xl pb-1 whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
+      class="text-xl lg:text-5xl pb-1 whitespace-pre-wrap font-semibold text-center lg:mt-20 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
     >
       {{ $t('home.gettingStarted.title') }}
     </h1>

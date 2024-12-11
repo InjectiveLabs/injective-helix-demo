@@ -61,7 +61,10 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
     </p>
 
     <div class="!mt-2 !-mb-2">
-      <AppCheckbox2 v-model="buyBaseOnTakeProfitValue" class="!mt-2 !-mb-2">
+      <AppCheckbox2
+        v-model="buyBaseOnTakeProfitValue"
+        class="!mt-2 !-mb-2 text-coolGray-450 font-medium"
+      >
         {{ $t('sgt.buySymbolOnStop', { symbol: market.baseToken.symbol }) }}
       </AppCheckbox2>
     </div>
@@ -76,7 +79,7 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
       {{ stopLossErrorMessage }}
     </p>
 
-    <div class="!mt-2 !-mb-2">
+    <div class="!mt-2 !-mb-2 text-coolGray-450 font-medium">
       <AppCheckbox2 v-model="sellBaseOnStopLossValue">
         {{ $t('sgt.sellAllSymbolOnStop', { symbol: market.baseToken.symbol }) }}
       </AppCheckbox2>

@@ -43,8 +43,8 @@ const {
         :key="value"
         v-bind="{ value }"
         v-model="orderType"
-        class="text-sm font-semibold text-coolGray-600 px-3 py-2"
-        active-classes="border-b border-blue-500 text-white"
+        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
+        active-classes="border-b border-blue-550 text-white"
         :data-cy="`${dataCyTag(
           PerpetualMarketCyTags.DerivativeTradeType
         )}-${value}`"
@@ -59,26 +59,32 @@ const {
         :key="side"
         v-bind="{ value: side }"
         v-model="orderSide"
-        class="flex-1 p-2 border border-transparent rounded-md text-sm"
-        :class="
-          side === TradeDirection.Long ? 'text-green-500' : 'text-red-500'
-        "
-        :active-classes="
-          side === TradeDirection.Long ? '!border-green-500' : '!border-red-500'
-        "
+        class="flex-1"
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
       >
-        <span v-if="market.slug === '2024election-perp'">
-          {{ $t(`trade.${side === TradeDirection.Long ? 'yes' : 'no'}`) }}
-          {{ market.baseToken.name }}
-        </span>
-        <span v-else>
-          {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
-        </span>
+        <AppButton
+          :variant="
+            orderSide === side
+              ? side === TradeDirection.Long
+                ? 'success'
+                : 'danger'
+              : side === TradeDirection.Long
+              ? 'success-cta'
+              : 'danger-cta'
+          "
+          :class="[
+            'w-full py-1.5 leading-relaxed focus-within:ring-0',
+            side === TradeDirection.Long ? 'hover:bg-green-500' : ''
+          ]"
+        >
+          <span>
+            {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+          </span>
+        </AppButton>
       </AppButtonSelect>
     </div>
 
-    <div class="space-y-4 py-4">
+    <div class="space-y-4 pt-4">
       <PartialsTradeFuturesFormStandardTriggerField
         v-if="
           [
@@ -120,18 +126,18 @@ const {
       }"
     />
 
-    <div>
-      <PartialsTradeFuturesFormStandardCreateOrder
-        v-bind="{
-          margin,
-          quantity,
-          feeAmount,
-          worstPrice,
-          feePercentage,
-          marginWithFee,
-          totalNotional
-        }"
-      />
-    </div>
+    <PartialsTradeFuturesFormStandardCreateOrder
+      v-bind="{
+        margin,
+        quantity,
+        feeAmount,
+        worstPrice,
+        feePercentage,
+        marginWithFee,
+        totalNotional
+      }"
+    />
+
+    <PartialsTradeCommonFormAccountEquity />
   </div>
 </template>

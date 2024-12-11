@@ -11,6 +11,7 @@ export default defineAppConfig({
     },
 
     card: {
+      ring: 'dark:ring-coolGray-800',
       background: 'dark:bg-brand-900'
     },
 
@@ -19,12 +20,19 @@ export default defineAppConfig({
       ring: 'ring-coolGray-800'
     },
 
+    dropdown: {
+      background: 'dark:bg-coolGray-875',
+      ring: 'ring-0',
+      padding: 'p-3'
+    },
+
     notification: {
       background: 'dark:bg-brand-900'
     },
 
     tooltip: {
-      base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap'
+      base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap',
+      width: 'w-full max-w-[200px]'
     },
 
     checkbox: {
@@ -45,19 +53,45 @@ export default defineAppConfig({
       }
     },
 
+    tabs: {
+      list: {
+        background: 'dark:bg-transparent',
+        padding: 'pb-0',
+        rounded: 'rounded-none',
+        marker: {
+          background:
+            'dark:bg-transparent translate-y-px border-b border-primary-500',
+          rounded: 'rounded-none'
+        },
+        tab: {
+          active: 'dark:text-primary-500'
+        }
+      }
+    },
+
     selectMenu: {
+      trigger: '[&>button]:cursor-pointer',
       background: 'dark:bg-brand-900',
+
       option: {
+        base: 'cursor-pointer',
         active: 'dark:bg-brand-800',
         selectedIcon: {
           base: 'w-4 h-4'
         }
-      }
+      },
+      input: 'dark:bg-brand-900'
     },
+
+    skeleton: {
+      background: 'dark:bg-brand-800'
+    },
+
     table: {
       divide: 'dark:divide-coolGray-800',
       tbody: 'dark:divide-coolGray-800',
       th: {
+        base: 'whitespace-nowrap',
         padding: 'p-4',
         color: 'dark:text-coolGray-400',
         font: 'font-normal',
@@ -71,7 +105,7 @@ export default defineAppConfig({
       default: {
         sortButton: {
           class:
-            'p-0 dark:text-coolGray-500 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
+            'p-0 dark:text-coolGray-450 text-xs font-normal dark:hover:bg-transparent [&>.iconify]:size-4'
         }
       }
     }

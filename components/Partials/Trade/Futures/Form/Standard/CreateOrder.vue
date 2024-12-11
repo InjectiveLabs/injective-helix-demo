@@ -19,7 +19,7 @@ import {
 
 const route = useRoute()
 const resetForm = useResetForm()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
@@ -442,16 +442,9 @@ function fetchRWAMarketIsOpen() {
         </span>
 
         <span v-else>
-          <span v-if="derivativeMarket.slug === '2024election-perp'">
-            {{ $t(`trade.${isBuy ? 'yes' : 'no'}`) }}
-            /
-            {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
-          </span>
-          <span v-else>
-            {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-            /
-            {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
-          </span>
+          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+          /
+          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
         </span>
       </AppButton>
     </div>

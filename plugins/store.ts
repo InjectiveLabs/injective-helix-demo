@@ -97,6 +97,7 @@ const actionsThatSetAppStateToBusy = [
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
   'gridStrategy/removeStrategyForSubaccount',
+  'gridStrategy/createSpotLiquidityBot',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',

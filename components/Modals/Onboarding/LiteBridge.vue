@@ -9,7 +9,7 @@ enum View {
 const view = ref<View>(View.Widget)
 const isAlwaysOpen = ref<boolean>(false)
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.LiteBridge])
 
