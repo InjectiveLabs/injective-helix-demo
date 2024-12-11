@@ -33,7 +33,11 @@ const totalUsd = computed(() =>
     liquidityFormValues.value[LiquidityBotField.BaseAmount] || 0
   )
     .times(tokenStore.tokenUsdPrice(props.market.baseToken))
-    .plus(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    .plus(
+      new BigNumberInBase(
+        liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0
+      ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    )
 )
 
 const isAutoSignOrAuthzEnabled = computed(
