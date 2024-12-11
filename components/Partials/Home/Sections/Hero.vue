@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { TradeSubPage } from '@/types'
+import { Modal, TradeSubPage } from '@/types'
+
+const modalStore = useSharedModalStore()
 
 onMounted(() => {
   const mm = gsap.matchMedia()
@@ -31,6 +32,10 @@ onMounted(() => {
     })
   })
 })
+
+function openDepositQrModal() {
+  modalStore.openModal(Modal.FiatOnboard)
+}
 </script>
 
 <template>
@@ -63,11 +68,13 @@ onMounted(() => {
           </AppButton>
         </NuxtLink>
 
-        <NuxtLink :to="getBridgeRedirectionUrl()" target="_blank">
-          <AppButton class="lg:py-4 w-full" variant="primary-outline">
-            {{ $t('home.depositCrypto') }}
-          </AppButton>
-        </NuxtLink>
+        <AppButton
+          class="lg:py-4 w-full"
+          variant="primary-outline"
+          @click="openDepositQrModal"
+        >
+          {{ $t('home.depositCrypto') }}
+        </AppButton>
       </div>
     </div>
   </div>
