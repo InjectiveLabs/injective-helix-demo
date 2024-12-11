@@ -46,7 +46,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
-  <AppHocLoading class="h-full container" v-bind="{ status }">
+  <AppHocLoading v-bind="{ status }" is-full-screen>
     <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-12">
       <PartialsGuildHeader
         v-bind="{ now, summary: campaignStore.guildCampaignSummary }"

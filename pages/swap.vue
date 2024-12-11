@@ -291,84 +291,79 @@ function resetQueryError() {
 </script>
 
 <template>
-  <div>
-    <AppHocLoading :status="status" wrapper-class="mt-20">
-      <div class="max-w-xl mx-auto w-full lg:mt-20">
+  <AppHocLoading :status="status" is-full-screen>
+    <div class="max-w-xl mx-auto w-full lg:mt-20">
+      <div
+        class="w-full border border-brand-800 rounded-lg px-4 mx-auto h-full overflow-auto flex items-center justify-center"
+      >
         <div
-          class="w-full border border-brand-800 rounded-lg px-4 mx-auto h-full overflow-auto flex items-center justify-center"
+          class="rounded-lg mx-auto p-6 h-fit w-full"
+          :data-cy="dataCyTag(SwapCyTags.SwapForm)"
         >
-          <div
-            class="rounded-lg mx-auto p-6 h-fit w-full"
-            :data-cy="dataCyTag(SwapCyTags.SwapForm)"
-          >
-            <div class="mb-4 flex items-center justify-between">
-              <h3
-                class="font-bold text-lg"
-                :data-cy="dataCyTag(SwapCyTags.SwapHeaderLabel)"
-              >
-                {{ $t('trade.swap.swap') }}
-              </h3>
-
-              <PartialsSwapSlippageSelector />
-            </div>
-
-            <PartialsSwapTokenForm
-              v-bind="{
-                disabled: fetchStatus.isLoading() || submitStatus.isLoading()
-              }"
-              @reset:price-warning="resetPriceWarning"
-              @update:inputQuantity="getInputQuantity"
-              @update:outputQuantity="getOutputQuantity"
-              @queryError:reset="resetQueryError"
-              @form:reset="resetFormValues"
-            />
-
-            <PartialsSwapSummary
-              v-if="
-                (!showErrorState &&
-                  orderedRouteTokensAndDecimals.length > 0 &&
-                  outputToken) ||
-                status.isLoading()
-              "
-              ref="summaryRef"
-              class="mx-4 mt-4 mb-6"
-              v-bind="{
-                minimumOutput,
-                isLoading: status.isLoading() || fetchStatus.isLoading()
-              }"
-            />
-            <div
-              v-else
-              class="flex flex-col items-center text-coolGray-700 my-8"
+          <div class="mb-4 flex items-center justify-between">
+            <h3
+              class="font-bold text-lg"
+              :data-cy="dataCyTag(SwapCyTags.SwapHeaderLabel)"
             >
-              <UIcon :name="NuxtUiIcons.CloudSlash" class="h-10 w-10" />
+              {{ $t('trade.swap.swap') }}
+            </h3>
 
-              <div>
-                {{ $t('trade.swap.somethingWentWrong') }}
-              </div>
-              <div>
-                {{ $t('trade.swap.pleaseTryAgain') }}
-              </div>
-            </div>
-
-            <PartialsSwapPriceWarning v-if="showPriceWarning" />
-
-            <PartialsSwapSubmit
-              v-bind="{
-                queryError,
-                showErrorState,
-                status: submitStatus,
-                isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
-              }"
-              @submit="submit"
-              @update:outputQuantity="getOutputQuantity"
-              @update:inputQuantity="getInputQuantity"
-            />
-
-            <ModalsSwapSuccess v-bind="{ txHash }" />
+            <PartialsSwapSlippageSelector />
           </div>
+
+          <PartialsSwapTokenForm
+            v-bind="{
+              disabled: fetchStatus.isLoading() || submitStatus.isLoading()
+            }"
+            @reset:price-warning="resetPriceWarning"
+            @update:inputQuantity="getInputQuantity"
+            @update:outputQuantity="getOutputQuantity"
+            @queryError:reset="resetQueryError"
+            @form:reset="resetFormValues"
+          />
+
+          <PartialsSwapSummary
+            v-if="
+              (!showErrorState &&
+                orderedRouteTokensAndDecimals.length > 0 &&
+                outputToken) ||
+              status.isLoading()
+            "
+            ref="summaryRef"
+            class="mx-4 mt-4 mb-6"
+            v-bind="{
+              minimumOutput,
+              isLoading: status.isLoading() || fetchStatus.isLoading()
+            }"
+          />
+          <div v-else class="flex flex-col items-center text-coolGray-700 my-8">
+            <UIcon :name="NuxtUiIcons.CloudSlash" class="h-10 w-10" />
+
+            <div>
+              {{ $t('trade.swap.somethingWentWrong') }}
+            </div>
+            <div>
+              {{ $t('trade.swap.pleaseTryAgain') }}
+            </div>
+          </div>
+
+          <PartialsSwapPriceWarning v-if="showPriceWarning" />
+
+          <PartialsSwapSubmit
+            v-bind="{
+              queryError,
+              showErrorState,
+              status: submitStatus,
+              isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
+            }"
+            @submit="submit"
+            @update:outputQuantity="getOutputQuantity"
+            @update:inputQuantity="getInputQuantity"
+          />
+
+          <ModalsSwapSuccess v-bind="{ txHash }" />
         </div>
       </div>
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

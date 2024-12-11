@@ -30,9 +30,9 @@ onWalletConnected(() => {
 </script>
 
 <template>
-  <div class="mb-40">
-    <AppHocLoading v-bind="{ status }">
+  <AppHocLoading v-bind="{ status }" is-full-screen>
+    <div class="mb-40">
       <NuxtPage />
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

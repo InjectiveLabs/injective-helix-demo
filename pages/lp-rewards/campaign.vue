@@ -88,7 +88,7 @@ function onPageChange(value: number) {
 <template>
   <AppHocLoading
     :is-loading="status.isLoading() || !campaignStore.campaign"
-    wrapper-class="h-screen flex items-center justify-center"
+    is-full-screen
   >
     <div
       v-if="campaignStore.campaign"

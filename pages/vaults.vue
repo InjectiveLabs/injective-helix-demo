@@ -92,8 +92,8 @@ function onSelectVault(vaultUrl: string) {
 </script>
 
 <template>
-  <div class="container py-10 mx-auto">
-    <AppHocLoading v-bind="{ status }">
+  <AppHocLoading v-bind="{ status }" is-full-screen>
+    <div class="container py-10 mx-auto">
       <h2 class="text-2xl font-semibold">
         {{ $t('liquidityProvision.title') }}
       </h2>
@@ -113,7 +113,7 @@ function onSelectVault(vaultUrl: string) {
           @update:selected-vault-url="onSelectVault"
         />
       </div>
-    </AppHocLoading>
-    <ModalsMitoRedirect v-bind="{ url: selectedVaultUrl }" />
-  </div>
+      <ModalsMitoRedirect v-bind="{ url: selectedVaultUrl }" />
+    </div>
+  </AppHocLoading>
 </template>
