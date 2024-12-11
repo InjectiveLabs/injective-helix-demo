@@ -45,13 +45,11 @@ function closeAllMenus() {
 </script>
 
 <template>
-  <div
-    v-if="isShowItem"
-    class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
-  >
+  <div v-if="isShowItem">
     <NuxtLink
       v-if="!item.isExpandable"
       :to="(item as NavLink).to"
+      class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
       :class="{
         'text-blue-550': isActiveLink
       }"
