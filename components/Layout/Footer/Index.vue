@@ -121,7 +121,7 @@ const supportList = [
         <div class="flex items-center">
           <a
             class="w-6 h-6 mr-4"
-            href="https://discord.com/invite/injective"
+            href="https://discord.com/invite/helixapp"
             target="_blank"
           >
             <div
