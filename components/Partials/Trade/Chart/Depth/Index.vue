@@ -9,7 +9,11 @@ const market = inject(MarketKey)
 <template>
   <div class="relative">
     <PartialsTradeChartDepthChart
-      v-if="!orderbookStatus?.isLoading()"
+      v-if="
+        !orderbookStatus?.isLoading() &&
+        orderbookStore.sells.length > 0 &&
+        orderbookStore.buys.length > 0
+      "
       v-bind="{
         sells: orderbookStore.sells,
         buys: orderbookStore.buys,

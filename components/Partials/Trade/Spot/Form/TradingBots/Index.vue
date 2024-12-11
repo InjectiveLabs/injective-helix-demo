@@ -41,7 +41,7 @@ function onOpenTradingBotDetails() {
 
 <template>
   <div class="p-4">
-    <PartialsLiquidityCommonActiveStrategy
+    <PartialsLiquidityCommonActiveStrategyDetails
       v-if="activeStrategy"
       v-bind="{ activeStrategy, market: spotMarket }"
     />
@@ -53,10 +53,17 @@ function onOpenTradingBotDetails() {
           :key="type"
           v-bind="{ value: type }"
           v-model="strategyType"
-          class="flex-1 p-2 border text-coolGray-600 border-transparent rounded-md text-sm font-medium"
-          active-classes="text-white !border-blue-400"
+          class="flex-1 rounded-md"
+          active-classes="bg-blue-500"
         >
-          {{ $t(`sgt.${type}`) }}
+          <template #default="{ isActive }">
+            <AppButton
+              :variant="isActive ? 'primary' : 'primary-cta'"
+              :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
+            >
+              {{ $t(`sgt.${type}`) }}
+            </AppButton>
+          </template>
         </AppButtonSelect>
       </div>
 

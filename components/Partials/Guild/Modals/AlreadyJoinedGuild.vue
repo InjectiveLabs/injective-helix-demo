@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function onCloseModal() {

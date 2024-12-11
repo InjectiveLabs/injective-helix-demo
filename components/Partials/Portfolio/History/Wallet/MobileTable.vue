@@ -30,22 +30,14 @@ const filteredColumns = computed(() =>
 <template>
   <AppMobileTable :columns="filteredColumns">
     <template #header>
-      <div class="flex flex-col gap-2 mb-6">
-        <p class="text-white text-sm font-semibold">
-          {{
-            $t(`activity.table.historyWallet.${HistoryWalletTableColumn.Asset}`)
-          }}
+      <div class="flex items-center space-x-2 font-sans mb-6">
+        <CommonTokenIcon
+          v-bind="{ token: transaction.transaction.token }"
+          :is-sm="true"
+        />
+        <p class="text-sm text-coolGray-200">
+          {{ transaction.transaction.token.symbol }}
         </p>
-
-        <div class="flex items-center space-x-2 font-sans">
-          <CommonTokenIcon
-            v-bind="{ token: transaction.transaction.token }"
-            :is-sm="true"
-          />
-          <p class="text-sm text-coolGray-200">
-            {{ transaction.transaction.token.symbol }}
-          </p>
-        </div>
       </div>
     </template>
 

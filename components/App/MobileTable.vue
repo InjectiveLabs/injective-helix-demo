@@ -6,23 +6,28 @@ const { sm } = useTwBreakpoints()
 const props = withDefaults(
   defineProps<{
     gridClass?: string
+    extraClass?: string
     columns: UTableColumn[]
-    noHorizontalPadding?: boolean
+    isAlwaysThreeColumn?: boolean
   }>(),
   {
-    gridClass: 'grid gap-6 grid-cols-2 sm:grid-cols-3',
-    noHorizontalPadding: false
+    extraClass: '',
+    gridClass: 'grid gap-6 grid-cols-2 sm:grid-cols-3'
   }
 )
 
 const hasOnlyTwoColumn = computed(() => props.columns.length === 2)
 
 function alignmentClass(index: number) {
-  const modulusCount = sm.value ? 3 : 2
+  const modulusCount = sm.value || props.isAlwaysThreeColumn ? 3 : 2
   const colIndex = index % modulusCount
   let baseClass = ''
 
-  if ((!sm.value || hasOnlyTwoColumn.value) && colIndex === 1) {
+  if (
+    (!sm.value || hasOnlyTwoColumn.value) &&
+    colIndex === 1 &&
+    !props.isAlwaysThreeColumn
+  ) {
     baseClass = 'items-end'
   } else if (colIndex === 1) {
     baseClass = 'items-center'
@@ -35,7 +40,7 @@ function alignmentClass(index: number) {
 </script>
 
 <template>
-  <div :class="['py-6', !noHorizontalPadding ? 'px-4' : '']">
+  <div :class="[extraClass || 'py-6 px-4']">
     <slot name="header" />
 
     <div class="text-xs" :class="gridClass">

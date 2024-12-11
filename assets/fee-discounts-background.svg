@@ -97,7 +97,7 @@
       y2="301.184"
       gradientUnits="userSpaceOnUse"
     >
-      <stop stop-color="#0082FA" />
+      <stop stop-color="#40A9FF" />
       <stop offset="1" stop-color="#00F2FE" />
     </linearGradient>
     <linearGradient
@@ -108,7 +108,7 @@
       y2="515.681"
       gradientUnits="userSpaceOnUse"
     >
-      <stop stop-color="#0082FA" />
+      <stop stop-color="#40A9FF" />
       <stop offset="1" stop-color="#00F2FE" />
     </linearGradient>
     <linearGradient

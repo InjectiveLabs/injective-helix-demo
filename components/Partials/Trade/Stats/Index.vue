@@ -10,8 +10,8 @@ withDefaults(
 </script>
 
 <template>
-  <div class="lg:h-header lg:flex relative max-lg:divide-y">
-    <PartialsTradeStatsMarketSelector v-bind="{ market }" />
-    <PartialsTradeStatsInfo v-bind="{ market }" />
+  <div class="lg:flex lg:flex-col xl:flex-row relative max-lg:divide-y">
+    <PartialsTradeStatsMarketSelector v-bind="{ market }" class="lg:h-header" />
+    <PartialsTradeStatsInfo v-bind="{ market }" class="pl-2" />
   </div>
 </template>

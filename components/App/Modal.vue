@@ -47,7 +47,7 @@ const classes = computed(() => {
   } else if (props.isLg) {
     result.push('max-w-lg', 'lg:max-w-3xl')
   } else {
-    result.push('max-w-lg', 'lg:max-w-4xl')
+    result.push('max-w-lg', 'lg:max-w-5xl')
   }
 
   return result.join(' ')

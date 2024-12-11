@@ -1,118 +1,156 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { Position, PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
+const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{
-    positions: PositionV2[] | Position[]
+    positions: PositionV2[]
+    ui?: Record<string, any>
   }>(),
-  {}
+  {
+    ui: () => ({
+      th: {
+        base: 'whitespace-nowrap'
+      },
+      td: {
+        font: 'font-mono'
+      }
+    })
+  }
 )
+
+const emit = defineEmits<{
+  'tpsl:add': [position: PositionV2]
+  'margin:add': [position: PositionV2]
+  'position:share': [state: PositionV2]
+}>()
 
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
-const emit = defineEmits<{
-  'tpsl:add': [position: Position | PositionV2]
-  'margin:add': [position: Position | PositionV2]
-  'position:share': [state: Position | PositionV2]
-}>()
+const sixXl = breakpoints['6xl']
 
-const columns = [
-  {
-    key: PositionTableColumn.Market,
-    label: t(`portfolio.table.position.${PositionTableColumn.Market}`),
-    class: 'w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Side,
-    label: t(`portfolio.table.position.${PositionTableColumn.Side}`),
-    class: 'w-[4%]'
-  },
-  {
-    key: PositionTableColumn.Amount,
-    label: t(`portfolio.table.position.${PositionTableColumn.Amount}`),
-    class: 'text-right w-[6%]'
-  },
-  {
-    key: PositionTableColumn.EntryOrMark,
-    label: t(`portfolio.table.position.${PositionTableColumn.EntryOrMark}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.UnrealizedPnl,
-    label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.TotalUsd,
-    label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Margin,
-    label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.LiquidationPrice,
-    label: t(
-      `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
-    ),
-    class: 'text-right w-[8%]'
-  },
-  {
-    key: PositionTableColumn.Leverage,
-    label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
-    class: 'text-right w-[7%]'
-  },
-  {
-    key: PositionTableColumn.TpOrSl,
-    label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
-    class: 'text-center w-[8%]'
-  },
-  {
-    key: PositionTableColumn.ClosePosition,
-    label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-    class: 'w-[16%]'
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PositionTableColumn.Market,
+      label: t(`portfolio.table.position.${PositionTableColumn.Market}`),
+      class: 'w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Side,
+      label: t(`portfolio.table.position.${PositionTableColumn.Side}`),
+      class: 'w-[4%]'
+    },
+    {
+      key: PositionTableColumn.Contracts,
+      label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
+      class: 'text-right w-[6%]'
+    },
+    {
+      key: PositionTableColumn.Entry,
+      label: t(`portfolio.table.position.${PositionTableColumn.Entry}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Mark,
+      label: t(`portfolio.table.position.${PositionTableColumn.Mark}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.UnrealizedPnl,
+      label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.TotalUsd,
+      label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Margin,
+      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.LiquidationPrice,
+      label: t(
+        `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
+      ),
+      class: 'text-right w-[8%]'
+    },
+    {
+      key: PositionTableColumn.Leverage,
+      label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
+      class: 'text-right w-[7%]'
+    },
+    {
+      key: PositionTableColumn.TpOrSl,
+      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
+      class: 'text-center w-[8%]'
+    }
+  ]
+
+  if (sixXl.value) {
+    baseColumns.push({
+      key: PositionTableColumn.ClosePosition,
+      label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
+      class: 'text-center w-[8%]'
+    })
   }
-]
 
-function addTpSl(position: PositionV2 | Position) {
+  return baseColumns
+})
+
+function addTpSl(position: PositionV2) {
   emit('tpsl:add', position)
 }
 
-function addMargin(position: PositionV2 | Position) {
+function addMargin(position: PositionV2) {
   emit('margin:add', position)
 }
 
-function sharePosition(position: PositionV2 | Position) {
+function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
 </script>
 
 <template>
   <template v-if="lg">
-    <UTable
-      :rows="rows"
-      :columns="columns"
-      :ui="{ th: { base: 'whitespace-nowrap' } }"
-    >
+    <UTable v-bind="{ rows, columns, ui }">
       <template #market-data="{ row }">
-        <PartialsCommonMarketRedirection
-          v-bind="{ market: row.market }"
-          class="flex items-center space-x-2 p-2 font-sans"
-        >
-          <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-          <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
-            {{ row.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
+        <div class="flex items-center gap-1">
+          <PartialsCommonMarketRedirection
+            v-bind="{ market: row.market }"
+            class="flex items-center space-x-2 p-2 font-sans text-coolGray-200"
+          >
+            <CommonTokenIcon
+              v-bind="{ isSm: true, token: row.market.baseToken }"
+            />
+            <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
+              {{ row.market.ticker }}
+            </p>
+          </PartialsCommonMarketRedirection>
+
+          <PartialsPortfolioPositionsTableActionBtns
+            v-if="!sixXl"
+            is-shrinked
+            :position="row.position"
+            :market="row.market"
+            :pnl="row.pnl"
+            :has-reduce-only-orders="row.hasReduceOnlyOrders"
+            :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
+            :is-market-order-authorized="row.isMarketOrderAuthorized"
+            :is-limit-order-authorized="row.isLimitOrderAuthorized"
+            :quantity="row.quantity"
+          />
+        </div>
       </template>
 
       <template #side-data="{ row }">
@@ -131,8 +169,8 @@ function sharePosition(position: PositionV2 | Position) {
         </div>
       </template>
 
-      <template #amount-data="{ row }">
-        <div class="flex items-center justify-end p-2">
+      <template #contracts-data="{ row }">
+        <div class="flex items-center justify-end p-2 text-white">
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
             class="flex gap-1"
@@ -150,8 +188,8 @@ function sharePosition(position: PositionV2 | Position) {
         </div>
       </template>
 
-      <template #entry-or-mark-data="{ row }">
-        <div class="space-y-1 p-2 flex flex-col items-end">
+      <template #entry-data="{ row }">
+        <div class="flex items-center justify-end p-2 text-white">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
             <AppAmount
               v-bind="{
@@ -160,12 +198,18 @@ function sharePosition(position: PositionV2 | Position) {
               }"
             />
           </p>
-          <p class="text-coolGray-500">
+        </div>
+      </template>
+
+      <template #mark-data="{ row }">
+        <div class="flex items-center justify-end p-2">
+          <p>
             <AppAmount
               v-bind="{
                 amount: row.markPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="text-coolGray-475"
             />
           </p>
         </div>
@@ -221,11 +265,11 @@ function sharePosition(position: PositionV2 | Position) {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
               class="flex"
             >
-              <span>$</span>
               <AppUsdAmount
                 v-bind="{
                   amount: row.quantityInUsd.toFixed()
                 }"
+                class="text-white"
               />
             </p>
           </div>
@@ -240,6 +284,7 @@ function sharePosition(position: PositionV2 | Position) {
                 amount: row.margin.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
+              class="text-white"
             />
           </span>
           <button
@@ -261,6 +306,7 @@ function sharePosition(position: PositionV2 | Position) {
               amount: row.liquidationPrice.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="text-white"
           />
         </div>
       </template>
@@ -275,6 +321,7 @@ function sharePosition(position: PositionV2 | Position) {
               amount: row.effectiveLeverage.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
+            class="text-white"
           />x
         </div>
       </template>
@@ -282,24 +329,26 @@ function sharePosition(position: PositionV2 | Position) {
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
           <button
-            class="flex p-2 rounded-full bg-blue-500 hover:bg-blue-600"
+            class="flex p-2 focus-visible:outline-none"
             @click="addTpSl(row.position)"
           >
-            <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
+            <div class="flex hover:bg-coolGray-600 rounded-full transition">
+              <UIcon :name="NuxtUiIcons.CirclePlus" class="h-6 w-6 min-w-6" />
+            </div>
           </button>
         </div>
       </template>
 
       <template #close-position-data="{ row }">
         <PartialsPortfolioPositionsTableActionBtns
-          :position="row.position"
-          :market="row.market"
           :pnl="row.pnl"
+          :market="row.market"
+          :position="row.position"
+          :quantity="row.quantity"
           :has-reduce-only-orders="row.hasReduceOnlyOrders"
+          :is-limit-order-authorized="row.isLimitOrderAuthorized"
           :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
           :is-market-order-authorized="row.isMarketOrderAuthorized"
-          :is-limit-order-authorized="row.isLimitOrderAuthorized"
-          :quantity="row.quantity"
         />
       </template>
     </UTable>

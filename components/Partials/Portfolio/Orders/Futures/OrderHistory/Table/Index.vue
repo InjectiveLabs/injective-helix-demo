@@ -155,6 +155,7 @@ const columns = [
                 amount: row.price.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
         </div>
@@ -170,6 +171,7 @@ const columns = [
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -182,6 +184,7 @@ const columns = [
                 amount: row.total.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              class="font-mono"
             />
           </span>
 
@@ -221,6 +224,7 @@ const columns = [
                   decimalPlaces: row.priceDecimals,
                   amount: row.triggerPrice.toFixed()
                 }"
+                class="font-mono"
               />
             </div>
           </template>

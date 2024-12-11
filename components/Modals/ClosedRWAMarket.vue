@@ -10,7 +10,7 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const derivativeFormValues = useFormValues()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>

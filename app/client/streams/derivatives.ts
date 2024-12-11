@@ -165,11 +165,13 @@ export const streamSubaccountOrderHistory = ({
 
 export const streamSubaccountPositions = ({
   marketId,
+  address,
   callback,
   subaccountId
 }: {
-  subaccountId?: string
+  address?: string
   marketId?: string
+  subaccountId?: string
   callback: PositionsStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
@@ -177,6 +179,7 @@ export const streamSubaccountPositions = ({
   )
 
   const streamFnArgs = {
+    ...(address && { address }),
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
     callback

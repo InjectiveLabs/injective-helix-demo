@@ -8,7 +8,7 @@ import {
 } from '@/app/utils/constants'
 import { Modal, MainPage, BusEvents, LeaderboardDuration } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -81,7 +81,7 @@ function onSharePnl() {
           </div>
           <NuxtLink :to="{ name: MainPage.Markets }">
             <AppButton
-              class="border-white p-2 text-xs sm:text-sm sm:px-4 sm:py-2.5 sm:font-medium sm:leading-4"
+              class="border-white p-2 max-sm:text-xs sm:px-4"
               v-bind="{ variant: 'primary-outline' }"
             >
               {{ $t('leaderboard.startTrading') }}

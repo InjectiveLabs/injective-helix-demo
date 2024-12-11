@@ -19,7 +19,7 @@ const strategyType = computed({
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center text-coolGray-450 font-medium">
     <AppCheckbox2 v-model="strategyType">
       {{
         $t('sgt.sellSymbolUponTermination', { symbol: market.baseToken.symbol })

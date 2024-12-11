@@ -6,6 +6,7 @@ import {
 } from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/sdk-ts'
 import { SharedBalanceWithToken } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TimeDuration } from '@/types'
 
 BigNumber.config({
@@ -182,4 +183,28 @@ export const abbreviateNumber = (value: string | number) => {
   }).format(valueToBigNumber.toNumber())
 
   return abbreviatedValue
+}
+
+export const calculateLeverage = (initialMarginRatio?: string) => {
+  if (!initialMarginRatio) {
+    return ZERO_IN_BASE
+  }
+
+  const leverage = new BigNumberInBase(
+    new BigNumberInBase(1).dividedBy(initialMarginRatio).dp(0)
+  )
+
+  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
+
+  const stepsLessThanMaxLeverage = steps.filter(
+    (step) => step <= leverage.toNumber()
+  )
+
+  if (!stepsLessThanMaxLeverage.length) {
+    return leverage
+  }
+
+  return new BigNumberInBase(
+    stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+  )
 }

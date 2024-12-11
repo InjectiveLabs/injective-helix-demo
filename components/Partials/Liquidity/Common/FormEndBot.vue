@@ -20,7 +20,7 @@ const props = withDefaults(
 )
 
 const spotStore = useSpotStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()

@@ -45,3 +45,7 @@ export type CompetitionResult = {
   prize: string
   hasClaimed: boolean
 }
+
+export type GridStrategyTransformed = ReturnType<
+  typeof useSpotGridStrategies
+>['value'][number]

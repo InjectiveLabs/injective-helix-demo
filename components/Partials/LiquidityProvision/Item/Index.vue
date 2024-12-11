@@ -1,7 +1,6 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    url: string | object
     title: string
     description?: string
   }>(),
@@ -12,7 +11,7 @@ withDefaults(
 </script>
 
 <template>
-  <NuxtLink :to="url" target="_blank" class="card-opaque px-6 py-4">
+  <div class="card-opaque px-6 py-4 cursor-pointer">
     <div class="flex items-center relative">
       <div class="relative">
         <slot />
@@ -33,5 +32,5 @@ withDefaults(
     <div class="grid grid-cols-2 mt-6">
       <slot name="content" />
     </div>
-  </NuxtLink>
+  </div>
 </template>

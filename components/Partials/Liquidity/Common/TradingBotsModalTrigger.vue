@@ -3,7 +3,7 @@ import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Modal, BusEvents, UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const selectedMarket = ref<UiSpotMarket>()
 const selectedStrategy = ref<TradingStrategy | undefined>()

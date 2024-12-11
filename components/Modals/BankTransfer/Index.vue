@@ -4,7 +4,7 @@ import { injToken } from '@shared/data/token'
 import { BusEvents, Modal, BankTransferField } from '@/types'
 
 const accountStore = useAccountStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()

@@ -10,7 +10,7 @@ const { copy } = useClipboard()
 
 withDefaults(defineProps<{ wallet: Wallet }>(), {})
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isDropdownVisible = ref(false)
 
@@ -45,7 +45,7 @@ function openQrCodeModal() {
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <SharedIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
-        <p class="font-mono text-sm font-medium">
+        <p class="text-sm font-medium">
           {{ formattedInjectiveAddress }}
         </p>
       </div>

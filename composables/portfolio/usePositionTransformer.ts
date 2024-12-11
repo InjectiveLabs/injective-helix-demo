@@ -1,12 +1,12 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { PositionTableColumn, TransformedPosition } from '@/types'
 
 export function usePositionTransformer(
-  positionList: ComputedRef<PositionV2[] | Position[]>
+  positionList: ComputedRef<PositionV2[]>
 ) {
   const authZStore = useAuthZStore()
   const tokenStore = useTokenStore()

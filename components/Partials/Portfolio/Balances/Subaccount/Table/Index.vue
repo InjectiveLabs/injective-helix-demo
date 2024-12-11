@@ -14,6 +14,7 @@ const {
   verifiedHoldingsWithToken
 } = useBalance()
 const { lg } = useTwBreakpoints()
+const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{
@@ -29,6 +30,8 @@ const props = withDefaults(
 const { rows } = useBalanceTransformer(
   showUnverifiedAssets.value ? userBalancesWithToken : verifiedHoldingsWithToken
 )
+
+const fourXl = breakpoints['4xl']
 
 const showStakingRow = ref(false)
 
@@ -79,6 +82,14 @@ const columns = computed(() => {
         class: ''
       }
     )
+  }
+
+  if (fourXl.value) {
+    columnArray.push({
+      key: BalanceTableColumn.Action,
+      label: '',
+      class: ''
+    })
   }
 
   return columnArray
@@ -156,29 +167,37 @@ function toggleStakingRow() {
             <UAvatar size="xs" :src="row.token.logo" />
             <div class="ml-2">
               <p
-                class="font-medium text-base mb-1"
+                class="font-medium text-sm mb-1 leading-none"
                 :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
               >
                 {{ row.token.symbol }}
               </p>
               <p class="text-xs text-coolGray-500">{{ row.token.name }}</p>
             </div>
-            <UButton
+
+            <AppButton
               v-if="row.token.denom === injToken.denom"
-              variant="ghost"
-              :icon="
-                showStakingRow ? NuxtUiIcons.ChevronUp : NuxtUiIcons.ChevronDown
-              "
+              variant="primary-ghost"
               size="xs"
-              class="dark:text-coolGray-400 dark:hover:bg-transparent dark:hover:text-white"
+              class="text-coolGray-400 hover:bg-transparent hover:text-white focus-within:ring-0"
               @click="toggleStakingRow"
-            />
+            >
+              <UIcon
+                :name="
+                  showStakingRow
+                    ? NuxtUiIcons.ChevronUp
+                    : NuxtUiIcons.ChevronDown
+                "
+                class="size-4"
+              />
+            </AppButton>
           </div>
 
-          <AppTablePopover v-if="!row.hasNoActionButtons">
+          <AppTablePopover v-if="!row.hasNoActionButtons && !fourXl">
             <div class="rounded-lg p-2 bg-brand-800 min-w-28">
               <PartialsPortfolioBalancesSubaccountTableActionBtns
                 v-if="!row.isStakingRow"
+                is-table-popover
                 v-bind="{
                   token: row.token,
                   isVerified: row.isVerified,
@@ -194,6 +213,7 @@ function toggleStakingRow() {
         <AppAmount
           v-if="!row.isStakingRow"
           v-bind="{ amount: row[BalanceTableColumn.Available] }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
         />
       </template>
@@ -208,6 +228,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
       </template>
@@ -219,6 +240,7 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UnrealizedPnl]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
         />
       </template>
@@ -229,18 +251,36 @@ function toggleStakingRow() {
           v-bind="{
             amount: row[BalanceTableColumn.Total]
           }"
+          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
       </template>
 
       <template #total-usd-data="{ row }">
-        <div :class="{ 'text-coolGray-400': row.isStakingRow }">
+        <div
+          :class="{ 'text-coolGray-400': row.isStakingRow }"
+          class="font-mono"
+        >
           <span>$ </span>
           <AppAmount
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd]
             }"
+            class="font-mono"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+          />
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="flex justify-center">
+          <PartialsPortfolioBalancesSubaccountTableActionBtns
+            v-if="!row.isStakingRow"
+            v-bind="{
+              token: row.token,
+              isVerified: row.isVerified,
+              isBridgable: row.isBridgable
+            }"
           />
         </div>
       </template>

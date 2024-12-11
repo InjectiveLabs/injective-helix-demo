@@ -15,7 +15,7 @@ import {
 
 const route = useRoute()
 const authZStore = useAuthZStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -71,8 +71,8 @@ onSubaccountChange(() => {
 
 function fetchUserPortfolio() {
   return Promise.all([
-    exchangeStore.initFeeDiscounts(),
     authZStore.fetchGrants(),
+    exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
     accountStore.fetchErc20Balances(),
@@ -106,8 +106,8 @@ function checkOnboarding() {
   const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
 
   if (
-    sharedWalletStore.isUserConnected &&
     !accountStore.hasBalance &&
+    sharedWalletStore.isUserConnected &&
     sharedWalletStore.wallet === Wallet.Metamask &&
     Number(erc20UsdtBalance?.balance || 0) > 0
   ) {
@@ -127,9 +127,9 @@ provide(PortfolioStatusKey, portfolioStatus)
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative min-h-screen">
     <LayoutNavbar />
-    <main class="relative pb-6">
+    <main class="relative mt-[60px] pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
       <LayoutTeslaCompetitionBanner
@@ -168,6 +168,8 @@ provide(PortfolioStatusKey, portfolioStatus)
       <ModalsOnboardingLiteBridge />
       <ModalsOnboardingFiat />
     </template>
+
+    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

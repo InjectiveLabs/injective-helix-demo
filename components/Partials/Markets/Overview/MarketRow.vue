@@ -32,9 +32,9 @@ const priceChangeClasses = computed(() => {
     v-bind="{ to }"
     class="flex p-2 items-center space-x-2 rounded-md hover:bg-brand-800"
   >
-    <div class="flex-[2] flex items-center space-x-2 overflow-hidden">
-      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
-      <p class="text-sm tracking-wide truncate min-w-0">
+    <div class="flex-[3] flex items-center space-x-3 overflow-hidden">
+      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
+      <p class="text-sm tracking-wide font-bold truncate min-w-0">
         {{ market.market.ticker }}
       </p>
     </div>
@@ -47,17 +47,18 @@ const priceChangeClasses = computed(() => {
         }"
       />
     </p>
-    <p class="flex-1 text-right font-mono text-xs" :class="priceChangeClasses">
+    <p
+      class="flex flex-1 text-right font-mono text-xs justify-end"
+      :class="priceChangeClasses"
+    >
       <span v-if="Number(market.summary.change) > 0">+</span>
-      <span>
-        <AppAmount
-          v-bind="{
-            amount: market.summary.change,
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-          }"
-        />
-        %
-      </span>
+      <AppAmount
+        v-bind="{
+          amount: market.summary.change,
+          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        }"
+      />
+      %
     </p>
   </NuxtLink>
 </template>

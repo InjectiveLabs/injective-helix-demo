@@ -1,21 +1,19 @@
 <script lang="ts" setup>
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const props = withDefaults(
-  defineProps<{ position: Position | PositionV2 | undefined }>(),
-  { position: undefined }
+  defineProps<{
+    position: PositionV2
+  }>(),
+  {}
 )
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { t } = useLang()
@@ -26,9 +24,7 @@ const { userBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const isModalOpen = computed(
-  () => modalStore.modals[Modal.AddMarginToPosition] && !!props.position
-)
+const isModalOpen = computed(() => modalStore.modals[Modal.AddMarginToPosition])
 
 const market = computed(() => {
   if (!props.position) {
@@ -49,9 +45,10 @@ const quoteBalance = computed(() => {
     (balance) => balance.denom === market.value?.quoteDenom
   )
 
-  return new BigNumberInWei(quoteBalance?.availableMargin || '0').toBase(
-    market.value.quoteToken.decimals
-  )
+  return sharedToBalanceInToken({
+    value: quoteBalance?.availableMargin || '0',
+    decimalPlaces: market.value.quoteToken.decimals
+  })
 })
 
 const {

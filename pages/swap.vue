@@ -15,7 +15,7 @@ definePageMeta({
 
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()

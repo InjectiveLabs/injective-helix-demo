@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import {
   UiSpotMarket,
   SpotMarketCyTags,
@@ -12,7 +12,7 @@ import {
 
 const { t } = useLang()
 const spotStore = useSpotStore()
-const { lg } = useTwBreakpoints()
+const { lg, xl } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
 const orderbookStore = useOrderbookStore()
 const { userBalancesWithToken } = useBalance()
@@ -26,62 +26,76 @@ const { rows } = useSpotOpenOrdersTransformer(
   userBalancesWithToken
 )
 
-const columns = [
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Market,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Market}`
-    )
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Side,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Side}`
-    )
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Price,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Price}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Amount,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Amount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Unfilled,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Unfilled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Filled,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Filled}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.TotalAmount,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.TotalAmount}`
-    ),
-    class: 'text-right'
-  },
-  {
-    key: PortfolioSpotOpenOrdersTableColumn.Chase,
-    label: t(
-      `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
-    ),
-    class: 'text-center'
+const columns = computed(() => {
+  const baseColumns = [
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Market,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Market}`
+      )
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Side,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Side}`
+      )
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Price,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Price}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Amount,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Amount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Unfilled,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Unfilled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Filled,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Filled}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.TotalAmount,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.TotalAmount}`
+      ),
+      class: 'text-right'
+    },
+    {
+      key: PortfolioSpotOpenOrdersTableColumn.Chase,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
+      ),
+      class: 'text-center'
+    }
+  ]
+
+  if (xl.value) {
+    baseColumns.push({
+      key: PortfolioSpotOpenOrdersTableColumn.Action,
+      label: t(
+        `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Action}`
+      ),
+      class: 'text-center'
+    })
   }
-]
+
+  return baseColumns
+})
 
 const status = reactive(new Status(StatusType.Idle))
 const chaseStatus = reactive(new Status(StatusType.Idle))
@@ -125,13 +139,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
       notificationStore.success({ title: t('trade.order_success_canceling') })
     })
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 
@@ -171,22 +179,20 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppTablePopover v-if="row.orderFillable">
-            <div class="rounded-lg p-2 bg-brand-800 min-w-28">
-              <AppButton
-                variant="danger-ghost"
-                class="p-2 w-full"
-                size="sm"
-                :status="status"
-                :disabled="!row.isAuthorized"
-                :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-                :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
-                @click="cancelOrder(row.order, row.isAuthorized)"
-              >
-                Cancel Order
-              </AppButton>
-            </div>
-          </AppTablePopover>
+          <AppButton
+            v-if="row.orderFillable && !xl"
+            size="xs"
+            :status="status"
+            variant="danger-shade"
+            class="p-1 outline-none rounded-full"
+            :disabled="!row.isAuthorized"
+            :title="$t('trade.cancelOrder')"
+            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
+            :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
+            @click="cancelOrder(row.order, row.isAuthorized)"
+          >
+            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
+          </AppButton>
         </div>
       </template>
 
@@ -217,6 +223,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -231,6 +238,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -245,6 +253,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               decimalPlaces: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
+            class="font-mono"
           />
         </div>
       </template>
@@ -254,16 +263,17 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
           <div>
             <p
               :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
-              class="flex gap-1"
+              class="flex gap-1 font-mono"
             >
               <AppAmount
                 v-bind="{
                   decimalPlaces: row.quantityDecimals,
                   amount: row.filledQuantity.toFixed()
                 }"
+                class="font-mono"
               />
             </p>
-            <p class="text-coolGray-500">
+            <p class="text-coolGray-500 font-mono">
               {{ row.filledQuantityPercentageToFormat }}%
             </p>
           </div>
@@ -279,6 +289,7 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
                   amount: row.total.toFixed(),
                   decimalPlaces: row.priceDecimals
                 }"
+                class="font-mono"
               />
               <span
                 class="text-coolGray-500 ml-1"
@@ -308,6 +319,25 @@ function cancelOrder(order: SpotLimitOrder, isAuthorized: boolean) {
               class="!w-4 !h-4"
             />
           </button>
+        </div>
+      </template>
+
+      <template #action-data="{ row }">
+        <div class="p-2 flex justify-center">
+          <AppButton
+            v-bind="{
+              status,
+              disabled: !row.isAuthorized,
+              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+            }"
+            size="sm"
+            variant="danger-shade"
+            class="min-w-16"
+            :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
+            @click="cancelOrder(row.order, row.isAuthorized)"
+          >
+            {{ $t('trade.cancelOrder') }}
+          </AppButton>
         </div>
       </template>
     </UTable>

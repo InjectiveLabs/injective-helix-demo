@@ -13,7 +13,7 @@ import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
 import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 const swapStore = useSwapStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const formErrors = useFormErrors()
 const sharedGeoStore = useSharedGeoStore()
 const formValues = useFormValues<SwapForm>()

@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const confetti = useSharedConfetti()
 const ninjaPassStore = useNinjaPassStore()
 const sharedWalletStore = useSharedWalletStore()

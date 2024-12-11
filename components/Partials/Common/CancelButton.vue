@@ -30,17 +30,14 @@ function click() {
 
 <template>
   <AppTooltip :is-disabled="!tooltip" :content="tooltip">
-    <UButton
+    <AppButton
       :disabled="isDisabled"
-      :icon="status.isLoading() ? NuxtUiIcons.Loading : NuxtUiIcons.Trash"
-      variant="ghost"
-      :color="isDisabled || status.isLoading() ? 'gray' : 'red'"
-      :ui="{
-        rounded: 'rounded-full',
-        icon: { size: { sm: 'h-4 w-4' } },
-        color: { red: { ghost: 'dark:text-red-500' } }
-      }"
+      :is-loading="status.isLoading()"
+      variant="danger-cta"
+      class="rounded-full p-1 text-red-500"
       @click="click"
-    />
+    >
+      <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
+    </AppButton>
   </AppTooltip>
 </template>

@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   DerivativeLimitOrder,
   MsgIncreasePositionMargin,
@@ -19,8 +18,8 @@ export const closePosition = async ({
   market,
   position
 }: {
+  position: PositionV2
   market: UiDerivativeMarket
-  position: Position | PositionV2
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -63,9 +62,7 @@ export const closePosition = async ({
   backupPromiseCall(() => positionStore.fetchPositions())
 }
 
-export const closeAllPosition = async (
-  positions: Array<Position | PositionV2>
-) => {
+export const closeAllPosition = async (positions: PositionV2[]) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -148,7 +145,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  position: Position | PositionV2
+  position: PositionV2
   market?: UiDerivativeMarket
   reduceOnlyOrders: DerivativeLimitOrder[]
 }) => {

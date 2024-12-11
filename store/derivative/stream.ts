@@ -311,11 +311,11 @@ export const streamSubaccountOrders = (marketId?: string) => {
   })
 }
 
-export const streamMarketsMarkPrices = () => {
+export const streamMarketsMarkPrices = (marketIds: string[] = []) => {
   const derivativeStore = useDerivativeStore()
 
   grpcStreamMarketsMarkPrices({
-    marketIds: derivativeStore.activeMarketIds,
+    marketIds,
     callback: (marketMarkPrice) => {
       if (!marketMarkPrice.price || !marketMarkPrice.marketId) {
         return

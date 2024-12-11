@@ -22,6 +22,7 @@ const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
         v-bind="{
           amount: amount
         }"
+        class="font-mono"
       />
       <span class="ml-1">{{ symbol }}</span>
     </p>

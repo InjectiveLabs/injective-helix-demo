@@ -4,6 +4,7 @@ import { FactoryOpts } from 'imask'
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { calculateLeverage } from '@/app/utils/formatters'
 import {
   MarketKey,
   UiDerivativeMarket,
@@ -26,23 +27,9 @@ const props = withDefaults(
 
 const { markPrice } = useDerivativeLastPrice(market)
 
-const maxLeverageAvailable = computed(() => {
-  const maxLeverage = new BigNumberInBase(
-    new BigNumberInBase(1).dividedBy(market.value.initialMarginRatio).dp(0)
-  )
-
-  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
-
-  const stepsLessThanMaxLeverage = steps.filter(
-    (step) => step <= maxLeverage.toNumber()
-  )
-
-  return stepsLessThanMaxLeverage.length > 0
-    ? new BigNumberInBase(
-        stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
-      ).toFixed()
-    : new BigNumberInBase(20).toFixed()
-})
+const maxLeverageAvailable = computed(() =>
+  calculateLeverage(market.value.initialMarginRatio).toFixed()
+)
 
 const { el, typed } = useIMask(
   computed(
@@ -146,52 +133,48 @@ const leverageNumber = computed({
 </script>
 
 <template>
-  <template v-if="!derivativeFormValues[DerivativesTradeFormField.ReduceOnly]">
-    <p class="field-label mb-2">{{ $t('trade.leverage') }}</p>
+  <div v-if="!derivativeFormValues[DerivativesTradeFormField.ReduceOnly]">
+    <div class="flex gap-2 text-xs">
+      <p class="font-semibold text-white">
+        {{ $t('trade.leverage') }}
+      </p>
+      <p class="text-coolGray-450">Up to {{ maxLeverageAvailable }}x</p>
+    </div>
 
-    <div class="flex items-center">
+    <div class="flex items-center my-1">
       <div class="flex-1 pr-4 relative">
-        <div
-          class="absolute top-2 bottom-3 right-4 inset-x-0 bg-brand-800 rounded-md"
-        />
-
-        <!-- <input
-          v-model="leverageModel"
-          min="0.01"
-          :max="Number(maxLeverageAvailable)"
-          step="0.01"
-          type="range"
-          class="range w-full"
-          @mouseup="onMouseUp"
-        /> -->
-        <URange
+        <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
-          :min="0.01"
-          :max="Number(maxLeverageAvailable)"
           :step="0.01"
+          :min-leverage="0.01"
+          :max-leverage="Number(maxLeverageAvailable)"
           @mouseup="onMouseUp"
         />
       </div>
 
-      <label class="field-style flex px-3 basis-24 min-w-0 h-12">
+      <label
+        class="bg-brand-875 border border-[#181E31] rounded flex px-3 basis-24 min-w-0 h-10 focus-within:focus-ring transition-all duration-300"
+      >
         <input
           ref="el"
           :value="leverage"
           type="text"
-          class="min-w-0 bg-transparent focus:outline-none font-mono text-sm text-right"
+          class="min-w-0 bg-transparent text-coolGray-100 focus:outline-none font-mono text-sm text-right"
           :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageInputField)"
           @keydown.enter="onEnter"
           @blur="onBlur"
         />
-        <span class="flex items-center pl-2 select-none">&times;</span>
+        <span class="flex items-center pl-2 select-none text-white">
+          &times;
+        </span>
       </label>
     </div>
 
     <p
-      class="error-message"
+      class="error-message mb-4"
       :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageError)"
     >
       {{ errorMessage }}
     </p>
-  </template>
+  </div>
 </template>

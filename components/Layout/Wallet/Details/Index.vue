@@ -1,20 +1,35 @@
 <script lang="ts" setup>
+import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { formatWalletAddress } from '@injectivelabs/utils'
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import { MainPage, PortfolioSubPage } from '@/types'
+import { Modal, MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const walletStore = useWalletStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { accountTotalBalanceInUsd } = useBalance()
 
-const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(sharedWalletStore.injectiveAddress)
+const formattedAddress = computed(() =>
+  formatWalletAddress(
+    sharedWalletStore.wallet === Wallet.Metamask
+      ? sharedWalletStore.address
+      : sharedWalletStore.injectiveAddress
+  )
 )
+
+function openDepositQRModal() {
+  if (sharedWalletStore.wallet === Wallet.Magic) {
+    modalStore.openModal(Modal.FiatOnboard)
+
+    return
+  }
+
+  modalStore.openModal(Modal.DepositQr)
+}
 
 function disconnect() {
   walletStore.disconnect()
@@ -31,11 +46,11 @@ function disconnect() {
 </script>
 
 <template>
-  <div class="flex items-center min-h-[40px]">
+  <div class="flex items-center min-h-[22px]">
     <UPopover mode="hover" :ui="{ base: 'overflow-visible' }">
       <template #default>
         <div
-          class="font-medium text-sm cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
+          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-4 rounded-lg"
         >
           <AppSpinner
             v-if="
@@ -45,13 +60,24 @@ function disconnect() {
             is-sm
             is-white
           />
-          <UIcon
-            v-else
-            :name="NuxtUiIcons.UserOutline"
-            class="w-6 h-6 p-1 rounded-md hover:bg-brand-800"
-          />
-          <span class="hidden lg:block font-mono lg:ml-2">
-            {{ formattedInjectiveAddress }}
+          <div v-else class="flex items-center justify-center space-x-2">
+            <UIcon
+              :name="NuxtUiIcons.UserOutline"
+              class="w-4 h-4 rounded-md text-[#black]"
+            />
+            <div
+              v-if="sharedWalletStore.isAutoSignEnabled"
+              class="bg-white px-1 py-0.5 rounded flex items-center justify-center"
+            >
+              <UIcon
+                :name="NuxtUiIcons.RotateAuto"
+                class="w-4 h-4 rounded-md text-black"
+              />
+            </div>
+          </div>
+
+          <span class="hidden lg:block lg:ml-2">
+            {{ formattedAddress }}
           </span>
         </div>
       </template>
@@ -103,15 +129,9 @@ function disconnect() {
               </p>
 
               <div class="mt-6">
-                <NuxtLink
-                  target="_blank"
-                  :external="true"
-                  :to="getBridgeRedirectionUrl()"
-                >
-                  <AppButton class="w-full" size="sm">
-                    {{ $t('connect.deposit') }}
-                  </AppButton>
-                </NuxtLink>
+                <AppButton class="w-full" size="md" @click="openDepositQRModal">
+                  {{ $t('connect.deposit') }}
+                </AppButton>
               </div>
 
               <div>

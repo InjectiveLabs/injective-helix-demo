@@ -54,8 +54,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 lg:grid-cols-5 lg:gap-8">
-    <div class="col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 lg:grid-cols-8 lg:gap-6">
+    <div class="col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6">
       <PartialsMarketsOverviewMarketCard
         v-for="market in hotMarkets"
         v-bind="{ market }"
@@ -63,13 +63,13 @@ onMounted(() => {
       />
     </div>
 
-    <div class="col-span-3 grid grid-cols-1 mt-8 lg:grid-cols-2 gap-4 lg:mt-0">
+    <div class="col-span-5 grid grid-cols-1 mt-6 lg:grid-cols-2 gap-6 lg:mt-0">
       <div
         v-for="category in categories"
         :key="category.title"
-        class="border border-brand-800 p-4 rounded-lg space-y-1"
+        class="bg-brand-875 p-4 rounded-lg space-y-1"
       >
-        <h3 class="mb-4 text-coolGray-200 text-sm px-2 font-semibold">
+        <h3 class="mb-3 text-coolGray-450 text-sm">
           {{ $t(category.title) }}
         </h3>
 

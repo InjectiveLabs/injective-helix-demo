@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
@@ -21,9 +20,13 @@ import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const fetchBalances = () => {
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
 
   return backupPromiseCall(() =>
-    Promise.all([accountStore.fetchAccountPortfolioBalances()])
+    Promise.all([
+      derivativeStore.fetchSubaccountOrders(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
   )
 }
 
@@ -447,7 +450,7 @@ export const submitTpSlOrder = async ({
   stopLoss,
   takeProfit
 }: {
-  position: Position | PositionV2
+  position: PositionV2
   takeProfit?: BigNumberInBase
   stopLoss?: BigNumberInBase
 }) => {

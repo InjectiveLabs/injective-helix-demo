@@ -5,7 +5,7 @@ const props = withDefaults(defineProps<{ modal?: Modal }>(), {
   modal: Modal.TokenSelector
 })
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 function onCloseModal() {
   modalStore.closeModal(props.modal)

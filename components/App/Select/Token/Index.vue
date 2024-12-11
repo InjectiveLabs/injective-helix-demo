@@ -241,7 +241,7 @@ export default {
         <div v-if="selectedToken" class="text-right flex items-center gap-2">
           <span
             v-if="valueToBigNumber.gt(0) && !isMaxHidden"
-            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
+            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-500 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
             @click="changeMax"
           >
             {{ $t('trade.max') }}

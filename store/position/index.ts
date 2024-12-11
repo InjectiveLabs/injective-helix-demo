@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
-import { usdtToken } from '@shared/data/token'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { indexerDerivativesApi } from '@shared/Service'
-import { Orderbook, Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   closePosition,
   closeAllPosition,
@@ -13,34 +11,39 @@ import {
   streamSubaccountPositions,
   cancelSubaccountPositionsStream
 } from '@/store/position/stream'
-import { ActivityFetchOptions, MarketMarkPriceMap } from '@/types'
+import { ActivityFetchOptions } from '@/types'
 
 type OrderBookMap = Record<string, Orderbook>
 
 type PositionStoreState = {
   orderbooks: OrderBookMap
-  positions: PositionV2[] /** for account portfolio calculation */
-  subaccountPositions: Position[]
-  subaccountPositionsCount: number
+  positions: PositionV2[]
 }
 
 const initialStateFactory = (): PositionStoreState => ({
   orderbooks: {} as OrderBookMap,
-  positions: [],
-  subaccountPositions: [],
-  subaccountPositionsCount: 0
+  positions: []
 })
 
 export const usePositionStore = defineStore('position', {
   state: (): PositionStoreState => initialStateFactory(),
+  getters: {
+    subaccountPositions: (state) => {
+      const accountStore = useAccountStore()
+
+      return state.positions.filter(
+        ({ subaccountId }) => subaccountId === accountStore.subaccountId
+      )
+    }
+  },
   actions: {
-    addMarginToPosition,
     closePosition,
     closeAllPosition,
+    addMarginToPosition,
     closePositionAndReduceOnlyOrders,
 
-    cancelSubaccountPositionsStream,
     streamSubaccountPositions,
+    cancelSubaccountPositionsStream,
 
     async fetchPositions() {
       const positionStore = usePositionStore()
@@ -54,39 +57,14 @@ export const usePositionStore = defineStore('position', {
         return
       }
 
-      const marketsToTokenDecimals = derivativeStore.markets.reduce(
-        (marketsMap, market) => {
-          return {
-            ...marketsMap,
-            [market.marketId]: market.quoteToken.decimals
-          }
-        },
-        {} as Record<string, number>
-      )
       const { positions } = await indexerDerivativesApi.fetchPositionsV2({
         address: sharedWalletStore.authZOrInjectiveAddress
       })
 
-      const markPricesMap = positions.reduce((markPrices, position) => {
-        return {
-          ...markPrices,
-          [position.marketId]: {
-            marketId: position.marketId,
-            price: new BigNumberInWei(position.markPrice)
-              .toBase(
-                marketsToTokenDecimals[position.marketId] || usdtToken.decimals
-              )
-              .toFixed()
-          }
-        }
-      }, {} as MarketMarkPriceMap)
+      derivativeStore.updateMarkPriceMapFromPosition(positions)
 
       positionStore.$patch({
         positions
-      })
-
-      derivativeStore.$patch({
-        marketMarkPriceMap: markPricesMap
       })
     },
 
@@ -104,19 +82,29 @@ export const usePositionStore = defineStore('position', {
 
       const filters = activityFetchOptions?.filters
 
-      const { positions, pagination } =
-        await indexerDerivativesApi.fetchPositionsV2({
-          subaccountId: accountStore.subaccountId,
-          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          direction: filters?.direction
-        })
+      const { positions } = await indexerDerivativesApi.fetchPositionsV2({
+        subaccountId: accountStore.subaccountId,
+        marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
+        direction: filters?.direction
+      })
+
+      derivativeStore.updateMarkPriceMapFromPosition(positions)
+
+      const filteredExistingPositions = positionStore.positions.filter(
+        (position) =>
+          !positions.some(
+            (p) =>
+              p.marketId === position.marketId &&
+              p.subaccountId === position.subaccountId
+          )
+      )
 
       positionStore.$patch({
-        subaccountPositions: positions,
-        subaccountPositionsCount: pagination.total
+        positions: [...filteredExistingPositions, ...positions]
       })
     },
 
+    // Todo: @ivan verify if we still needs this
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
       const accountStore = useAccountStore()

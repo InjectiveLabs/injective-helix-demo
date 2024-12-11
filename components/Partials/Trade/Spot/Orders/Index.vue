@@ -12,7 +12,7 @@ const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const isTickerOnly = ref(false)
-const view = ref(SpotOrdersStandardView.OpenOrders)
+const view = ref(SpotOrdersStandardView.Orders)
 
 function fetchSpotOrders() {
   if (!accountStore.subaccountId) {
@@ -64,15 +64,15 @@ onSubaccountChange(() => {
 </script>
 
 <template>
-  <div class="min-h-[360px]">
+  <div class="h-full">
     <PartialsTradeSpotOrdersStandardHeader
       v-model:is-ticker-only="isTickerOnly"
       v-model="view"
       @update:is-ticker-only="fetchSpotOrders"
     />
 
-    <div class="overflow-x-auto w-full">
-      <div class="lg:min-w-[1600px]">
+    <div class="overflow-x-auto w-full h-full">
+      <div class="h-full">
         <PartialsTradeSpotOrdersStandard
           v-if="tradingMode === TradingInterface.Standard"
           v-bind="{ view, isTickerOnly }"

@@ -9,7 +9,7 @@ enum ConnectType {
 }
 
 const toast = useToast()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const walletStore = useWalletStore()
 const { t } = useLang()
 const { resetForm } = useForm()

@@ -1,40 +1,36 @@
 <script setup lang="ts">
 import { FundingPayment } from '@injectivelabs/sdk-ts'
 import { USDT_DECIMALS } from '@/app/utils/constants'
-import { FundingPaymentsTableColumn } from '@/types'
+import { FundingHistoryTableColumn } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    fundingPayments: FundingPayment[]
+    fundingHistory: FundingPayment[]
   }>(),
   {}
 )
 
-const { rows } = useFundingPaymentsTransformer(
-  computed(() => props.fundingPayments)
+const { rows } = useFundingHistoryTransformer(
+  computed(() => props.fundingHistory)
 )
 
 const columns = [
   {
-    key: FundingPaymentsTableColumn.Time,
-    label: t(
-      `activity.table.fundingPayments.${FundingPaymentsTableColumn.Time}`
-    ),
+    key: FundingHistoryTableColumn.Time,
+    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Time}`),
     class: 'w-1/5'
   },
   {
-    key: FundingPaymentsTableColumn.Pair,
-    label: t(
-      `activity.table.fundingPayments.${FundingPaymentsTableColumn.Pair}`
-    )
+    key: FundingHistoryTableColumn.Pair,
+    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Pair}`)
   },
   {
-    key: FundingPaymentsTableColumn.Payment,
+    key: FundingHistoryTableColumn.Payment,
     label: t(
-      `activity.table.fundingPayments.${FundingPaymentsTableColumn.Payment}`
+      `activity.table.fundingHistory.${FundingHistoryTableColumn.Payment}`
     ),
     class: 'text-right'
   }
@@ -45,19 +41,19 @@ const columns = [
   <template v-if="lg">
     <UTable :rows="rows" :columns="columns">
       <template #time-data="{ row }">
-        <div class="p-2 flex items-center">
+        <div class="p-2 flex items-center text-white">
           <div>{{ row.time }}</div>
         </div>
       </template>
 
       <template #pair-data="{ row }">
         <div class="p-2 flex items-center">
-          <div class="flex space-x-2 items-center">
+          <div class="flex space-x-2 items-center text-coolGray-200">
             <CommonTokenIcon
               v-if="row.market.baseToken"
               :token="row.market.baseToken"
             />
-            <p class="font-semibold">{{ row.market.ticker }}</p>
+            <p>{{ row.market.ticker }}</p>
           </div>
         </div>
       </template>
@@ -76,10 +72,11 @@ const columns = [
                 amount: row.total.toFixed(),
                 decimalPlaces: USDT_DECIMALS
               }"
+              class="font-mono"
             />
           </span>
 
-          <span class="text-coolGray-500">
+          <span class="text-coolGray-450">
             {{ row.market.quoteToken.symbol }}
           </span>
         </div>
@@ -89,11 +86,11 @@ const columns = [
 
   <template v-else>
     <PartialsPortfolioHistoryFundingMobileTable
-      v-for="fundingPayment in rows"
-      :key="`${fundingPayment.total.toString()}-${
-        fundingPayment.market.marketId
-      }-${fundingPayment.time}`"
-      v-bind="{ fundingPayment, columns }"
+      v-for="fundingHistoryRow in rows"
+      :key="`${fundingHistoryRow.total.toString()}-${
+        fundingHistoryRow.market.marketId
+      }-${fundingHistoryRow.time}`"
+      v-bind="{ fundingHistory: fundingHistoryRow, columns }"
     />
   </template>
 </template>

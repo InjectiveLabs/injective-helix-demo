@@ -1,6 +1,5 @@
 import {
   Campaign,
-  Position,
   PositionV2,
   TokenStatic,
   SpotLimitOrder,
@@ -30,7 +29,8 @@ export enum BalanceTableColumn {
   Total = 'total',
   TotalUsd = 'total-usd',
   Staked = 'staked',
-  StakedUsd = 'staked-usd'
+  StakedUsd = 'staked-usd',
+  Action = 'action'
 }
 
 export enum MarketsTableColumn {
@@ -39,6 +39,15 @@ export enum MarketsTableColumn {
   MarketChange24h = 'market-change-24h',
   MarketVolume24h = 'market-volume-24h',
   Action = 'action'
+}
+
+export enum MarketsSelectorTableColumn {
+  Markets = 'markets',
+  LastPrice = 'last-price',
+  MarketChange24h = 'market-change-24h',
+  FundingRate = 'funding-rate',
+  MarketVolume24h = 'market-volume-24h'
+  // OpenInterest = 'open-interest'
 }
 
 export enum LiquidityTableColumn {
@@ -65,7 +74,8 @@ export enum PortfolioSpotOpenOrdersTableColumn {
   Unfilled = 'unfilled',
   Filled = 'filled',
   TotalAmount = 'total-amount',
-  Chase = 'chase'
+  Chase = 'chase',
+  Action = 'action'
 }
 
 export enum PortfolioSpotOrderHistoryTableColumn {
@@ -100,7 +110,8 @@ export enum PortfolioFuturesOpenOrdersTableColumn {
   Filled = 'filled',
   Leverage = 'leverage',
   Total = 'total',
-  Chase = 'chase'
+  Chase = 'chase',
+  Action = 'action'
 }
 
 export enum PortfolioFuturesTriggersTableColumn {
@@ -111,7 +122,8 @@ export enum PortfolioFuturesTriggersTableColumn {
   Amount = 'amount',
   Leverage = 'leverage',
   Total = 'total',
-  TriggerCondition = 'trigger-condition'
+  TriggerCondition = 'trigger-condition',
+  Action = 'action'
 }
 
 export enum PortfolioFuturesOrderHistoryTableColumn {
@@ -143,7 +155,7 @@ export enum PortfolioSubaccountsTableColumn {
   TotalUsd = 'total-usd'
 }
 
-export enum FundingPaymentsTableColumn {
+export enum FundingHistoryTableColumn {
   Time = 'time',
   Pair = 'pair',
   Payment = 'payment'
@@ -170,8 +182,9 @@ export enum HistorySwapTableColumn {
 export enum PositionTableColumn {
   Market = 'market',
   Side = 'side',
-  Amount = 'amount',
-  EntryOrMark = 'entry-or-mark',
+  Contracts = 'contracts',
+  Entry = 'entry',
+  Mark = 'mark',
   UnrealizedPnl = 'unrealized-pnl',
   TotalUsd = 'total-usd',
   Margin = 'margin',
@@ -203,6 +216,7 @@ export interface TransformedBalances {
 export interface TransformedMarkets {
   isVerified: boolean
   isRwaMarket: boolean
+  formattedChange: string
   market: UiMarketWithToken
   priceChangeClasses: string
   volumeInUsd: BigNumberInBase
@@ -211,6 +225,23 @@ export interface TransformedMarkets {
   [MarketsTableColumn.MarketChange24h]: number
   [MarketsTableColumn.MarketVolume24h]: number
   [MarketsTableColumn.Markets]: string
+}
+
+export interface TransformedMarketsSelector {
+  isRWAMarket: boolean
+  formattedChange: string
+  leverageToFixed: string
+  leverage: BigNumberInBase
+  market: UiMarketWithToken
+  volumeInUsdToFixed: string
+  priceChangeClasses: string
+  volumeInUsd: BigNumberInBase
+  [MarketsSelectorTableColumn.MarketVolume24h]: number
+  [MarketsSelectorTableColumn.Markets]: string
+  [MarketsSelectorTableColumn.LastPrice]: string
+  [MarketsSelectorTableColumn.FundingRate]: BigNumberInBase
+  // [MarketsSelectorTableColumn.OpenInterest]: BigNumberInBase
+  [MarketsSelectorTableColumn.MarketChange24h]: string
 }
 
 export interface TransformedHistorySwap {
@@ -234,7 +265,7 @@ export interface TransformedHistoryWallet {
   [HistoryWalletTableColumn.Amount]: BigNumberInBase
 }
 
-export interface TransformedFundingPayment {
+export interface TransformedFundingHistory {
   time: string
   total: BigNumberInBase
   market: UiDerivativeMarket
@@ -266,6 +297,7 @@ export interface TransformedLiquidityDashboard {
 
 export interface TransformedPosition {
   pnl: BigNumberInBase
+  position: PositionV2
   priceDecimals: number
   price: BigNumberInBase
   quantityDecimals: number
@@ -274,7 +306,6 @@ export interface TransformedPosition {
   hasReduceOnlyOrders: boolean
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
-  position: PositionV2 | Position
   isLimitOrderAuthorized: boolean
   isMarketOrderAuthorized: boolean
   liquidationPrice: BigNumberInBase
@@ -405,4 +436,12 @@ export interface TransformedPortfolioFuturesTriggers {
   [PortfolioFuturesTriggersTableColumn.Price]: BigNumberInBase
   [PortfolioFuturesTriggersTableColumn.Leverage]: BigNumberInBase
   [PortfolioFuturesTriggersTableColumn.Market]: UiDerivativeMarket
+}
+
+export interface TransformedPointsHistory {
+  points: string
+  volume: number
+  period: string
+  pointsInBigNumber: BigNumberInBase
+  volumeInBigNumber: BigNumberInBase
 }

@@ -44,6 +44,37 @@ function priceLevelsToMap({
   })
 }
 
+function getMidPrice({
+  buys,
+  sells
+}: {
+  buys: Map<string, string>
+  sells: Map<string, string>
+}): string {
+  const buyPrices = [...buys.keys()].map((price) => price)
+  const sellPrices = [...sells.keys()].map((price) => price)
+
+  if (buyPrices.length === 0 || sellPrices.length === 0) {
+    return ''
+  }
+
+  const maxBuyPrice = buyPrices.reduce(
+    (max, price) =>
+      new BigNumberInBase(price).isGreaterThan(max) ? price : max,
+    buyPrices[0]
+  )
+
+  const minSellPrice = sellPrices.reduce(
+    (min, price) => (new BigNumberInBase(price).isLessThan(min) ? price : min),
+    sellPrices[0]
+  )
+
+  return new BigNumberInBase(maxBuyPrice)
+    .plus(minSellPrice)
+    .dividedBy(2)
+    .toFixed()
+}
+
 function priceMapToAggregatedArray({
   priceMap,
   aggregation,
@@ -201,7 +232,8 @@ self.addEventListener(
               aggregation,
               isBuy: false,
               priceMap: sells
-            }).slice(0, 2000)
+            }).slice(0, 2000),
+            midPrice: getMidPrice({ buys, sells })
           }
         } as OrderbookWorkerResult)
       }

@@ -24,7 +24,10 @@ describe('useTradeFee', () => {
     takerFeeRate,
     makerFeeRateDiscount,
     takerFeeRateDiscount
-  } = useTradeFee(market)
+  } = useTradeFee({
+    marketMakerFeeRate: market.value?.makerFeeRate,
+    marketTakerFeeRate: market.value?.takerFeeRate
+  })
 
   describe.concurrent('tierLevel', () => {
     test('returns default tierLevel', () => {

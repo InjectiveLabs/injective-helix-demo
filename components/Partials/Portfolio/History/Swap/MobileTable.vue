@@ -66,6 +66,7 @@ const filteredColumns = computed(() =>
               amount: swap.sourceBalanceFormatted,
               decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
             }"
+            class="font-mono"
           />
           {{ swap.sourceTokenWithBalance.token.symbol }}
         </div>
@@ -88,6 +89,7 @@ const filteredColumns = computed(() =>
               amount: swap.destinationBalanceFormatted,
               decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
             }"
+            class="font-mono"
           />
           {{ swap.destinationTokenWithBalance.token.symbol }}
         </div>
@@ -107,7 +109,7 @@ const filteredColumns = computed(() =>
         v-for="({ amount, symbol }, index) in swap.formattedFees"
         :key="`swap-history-${amount}-${symbol}-${index}`"
       >
-        <AppAmount v-bind="{ amount }" />
+        <AppAmount v-bind="{ amount }" class="font-mono" />
         <span class="ml-1">{{ symbol }}</span>
       </div>
     </template>

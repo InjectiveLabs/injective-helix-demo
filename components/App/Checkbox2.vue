@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(
-  defineProps<{ modelValue: boolean; disabled?: boolean }>(),
+  defineProps<{ isPlain?: boolean; modelValue: boolean; disabled?: boolean }>(),
   {
     disabled: false,
     modelValue: false
@@ -34,7 +34,7 @@ const id = Math.random().toString()
           <use xlink:href="#check-4"></use>
         </svg>
       </span>
-      <span class="text-xs font-medium">
+      <span class="text-xs" :class="{ 'font-medium': isPlain }">
         <slot />
       </span>
     </label>
@@ -75,9 +75,8 @@ const id = Math.random().toString()
   position: relative;
   width: 18px;
   height: 18px;
-  border-radius: 4px;
-  transform: scale(1);
-  border: 1px solid #cccfdb;
+  transform: scale(0.9);
+  border: 1px solid white;
   transition: all 0.2s ease;
   box-shadow: 0 1px 1px rgba(0, 16, 75, 0.05);
 }
