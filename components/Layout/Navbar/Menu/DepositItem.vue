@@ -19,7 +19,7 @@ function openDepositQRModal() {
     return
   }
 
-  modalStore.openModal(Modal.DepositQr)
+  modalStore.openModal(Modal.FiatOnboard)
 }
 </script>
 
