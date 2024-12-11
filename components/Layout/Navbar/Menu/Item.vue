@@ -118,8 +118,13 @@ function closeAllMenus() {
                   <div
                     class="group/item block text-xs text-white hover:text-blue-550 font-semibold w-full rounded p-1"
                   >
-                    <div class="inline-block">
+                    <div class="flex items-center gap-2">
                       {{ $t(child.label) }}
+                      <UIcon
+                        v-if="child.isExternal"
+                        :name="NuxtUiIcons.ExternalLink"
+                        class="size-2.5"
+                      />
                     </div>
                   </div>
                 </NuxtLink>

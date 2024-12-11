@@ -72,11 +72,17 @@ function closeMenu() {
       <UIcon v-if="item.icon" :name="item.icon" class="h-4 w-4 min-w-4" />
 
       <div
+        class="flex items-center gap-2"
         :data-cy="`${dataCyTag(PortfolioCyTags.PortfolioMenuItems)}-${
           item.label
         }`"
       >
         {{ $t(item.label) }}
+        <UIcon
+          v-if="item?.isExternal"
+          :name="NuxtUiIcons.ExternalLink"
+          class="size-2.5"
+        />
       </div>
     </NuxtLink>
 

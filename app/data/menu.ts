@@ -23,6 +23,10 @@ export const getMoreMenu = () => [
     label: 'navigation.more.tradingDiscounts'
   },
   {
+    to: { name: MainPage.Institutional },
+    label: 'navigation.more.institutional'
+  },
+  {
     isExternal: true,
     label: 'navigation.more.bridge',
 
@@ -48,10 +52,6 @@ export const getMoreMenu = () => [
     label: 'navigation.more.olp',
 
     to: 'https://trading.injective.network/program/liquidity/'
-  },
-  {
-    to: { name: MainPage.Institutional },
-    label: 'navigation.more.institutional'
   }
 ]
 
