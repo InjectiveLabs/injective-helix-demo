@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PointsPeriod } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const { t } = useLang()
 const pointsStore = usePointsStore()
-const { rows } = usePointsTransformer(
-  computed(() => paginatedPointsHistory.value)
-)
 
 const props = withDefaults(
-  defineProps<{ modelValue: PointsPeriod; pointsPeriodList: PointsPeriod[] }>(),
+  defineProps<{
+    isDailyPeriod: boolean
+    modelValue: PointsPeriod
+  }>(),
   {}
 )
 
@@ -40,38 +40,42 @@ const columns = [
 const limit = 7
 const page = ref(1)
 
+const { rows } = usePointsTransformer(
+  computed(() => props.isDailyPeriod),
+  computed(() => paginatedPointsHistory.value)
+)
+
 const filteredPointsHistory = computed(() =>
   pointsStore.pointsHistory.filter(
-    ({ pointsPrecise }) => !new BigNumberInBase(pointsPrecise).isZero()
+    ({ pointsPrecise }) => !new BigNumberInBase(pointsPrecise || 0).isZero()
   )
 )
 
 const paginatedPointsHistory = computed(() => {
-  let paginatedPoints = filteredPointsHistory.value.slice(
+  return filteredPointsHistory.value.slice(
     (page.value - 1) * limit,
     page.value * limit
   )
 
-  if (paginatedPoints.length <= 2) {
-    const emptyData = {
-      points: '',
-      volume: 0,
-      periodStart: '',
-      periodEnd: ''
-    }
+  // @fred todo
+  // if (paginatedPoints.length <= 2) {
+  //   const emptyData = {
+  //     points: '',
+  //     volume: 0,
+  //     day: '',
+  //     week: ''
+  //   }
 
-    const emptyDataList: any = {
-      0: [],
-      1: [emptyData, emptyData],
-      2: [emptyData]
-    }
+  //   const emptyDataList: any = {
+  //     0: [],
+  //     1: [emptyData, emptyData],
+  //     2: [emptyData]
+  //   }
 
-    paginatedPoints = paginatedPoints.concat(
-      emptyDataList[paginatedPoints.length]
-    )
-  }
+  //   return [...paginatedPoints, ...emptyDataList[paginatedPoints.length]]
+  // }
 
-  return paginatedPoints
+  // return paginatedPoints
 })
 
 const paginationDetails = computed(() => {
@@ -143,7 +147,7 @@ function onNext() {
       <template #period-header>
         <USelectMenu
           v-model="selectedPeriod"
-          :options="pointsPeriodList"
+          :options="[PointsPeriod.Day, PointsPeriod.Week]"
           :popper="{ placement: 'bottom-start' }"
           :ui-menu="{
             width: 'w-28',
@@ -168,7 +172,7 @@ function onNext() {
 
       <template #period-data="{ row }">
         <p v-show="row.period" class="leading-tight">
-          {{ row.period.split(' - ')[1] }}
+          {{ row.period }}
         </p>
       </template>
 
@@ -177,10 +181,8 @@ function onNext() {
           <AppAmount
             v-if="row.volumeInBigNumber.gte(1)"
             v-bind="{
-              amount: row.volumeInBigNumber,
-              decimalPlaces: row.volumeInBigNumber.gte(1_000_000)
-                ? 0
-                : UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              amount: row.volumeInBigNumber.toFixed(),
+              decimalPlaces: 0
             }"
           />
           <span v-else>{{ '< 1' }}</span>

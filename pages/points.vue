@@ -4,21 +4,19 @@ import { PointsPeriod } from '@/types'
 
 const { $onError } = useNuxtApp()
 const pointsStore = usePointsStore()
+const sharedWalletStore = useSharedWalletStore()
 
-const pointsPeriodList = [PointsPeriod.Day, PointsPeriod.Week]
-
-const selectedPeriod = ref(pointsPeriodList[0])
+const selectedPeriod = ref(PointsPeriod.Day)
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
-
-const isDailyPeriod = computed(() => selectedPeriod.value === PointsPeriod.Day)
 
 function fetchAccountPoints() {
   fetchStatus.setLoading()
 
-  const action = isDailyPeriod.value
-    ? pointsStore.fetchAccountDailyPoints
-    : pointsStore.fetchAccountWeeklyPoints
+  const action =
+    selectedPeriod.value === PointsPeriod.Day
+      ? pointsStore.fetchAccountDailyPoints
+      : pointsStore.fetchAccountWeeklyPoints
 
   action()
     .catch($onError)
@@ -26,6 +24,8 @@ function fetchAccountPoints() {
 }
 
 onWalletConnected(() => {
+  status.setLoading()
+
   Promise.all([
     pointsStore.fetchPoints(),
     pointsStore.fetchAccountDailyPoints()
@@ -34,16 +34,18 @@ onWalletConnected(() => {
     .finally(() => status.setIdle())
 })
 
-useIntervalFn(
-  () =>
-    Promise.all([
-      pointsStore.fetchPoints(),
-      isDailyPeriod.value
-        ? pointsStore.fetchAccountDailyPoints()
-        : pointsStore.fetchAccountWeeklyPoints()
-    ]),
-  60 * 1000
-)
+useIntervalFn(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  return Promise.all([
+    pointsStore.fetchPoints(),
+    selectedPeriod.value === PointsPeriod.Day
+      ? pointsStore.fetchAccountDailyPoints()
+      : pointsStore.fetchAccountWeeklyPoints()
+  ])
+}, 60 * 1000)
 </script>
 
 <template>
@@ -75,7 +77,9 @@ useIntervalFn(
         >
           <PartialsPointsTable
             v-model="selectedPeriod"
-            :points-period-list="pointsPeriodList"
+            v-bind="{
+              isDailyPeriod: selectedPeriod === PointsPeriod.Day
+            }"
             @update:model-value="fetchAccountPoints"
           />
         </AppHocLoading>

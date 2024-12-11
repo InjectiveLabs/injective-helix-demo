@@ -77,7 +77,11 @@ export const usePointsStore = defineStore('points', {
     reset() {
       const pointsStore = usePointsStore()
 
-      pointsStore.$reset()
+      pointsStore.$patch({
+        ...initialStateFactory()
+      })
+
+      // pointsStore.$reset()
     }
   }
 })
