@@ -50,7 +50,11 @@ const isOpen = computed({
   <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
   <div v-else class="flex items-center justify-center gap-2">
-    <UIcon :name="NuxtUiIcons.RotateAuto" class="text-white size-4" />
+    <UIcon
+      v-if="sharedWalletStore.isAutoSignEnabled"
+      :name="NuxtUiIcons.RotateAuto"
+      class="text-white size-4"
+    />
 
     <AppButton
       class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
