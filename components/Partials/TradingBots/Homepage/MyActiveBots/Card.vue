@@ -91,6 +91,7 @@ defineProps<{
               :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
               :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             />
+            <span> USD</span>
           </p>
         </div>
 

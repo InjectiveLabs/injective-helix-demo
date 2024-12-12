@@ -117,6 +117,7 @@ onWalletConnected(() => {
             :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
             :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
           />
+          <span> USD</span>
         </p>
         <p class="text-xs text-zinc-500">{{ $t('tradingBots.totalPnl') }}</p>
         <p class="text-xl font-bold">
