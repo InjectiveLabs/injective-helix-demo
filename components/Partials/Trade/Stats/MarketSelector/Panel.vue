@@ -42,6 +42,14 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     }
   )
 )
+
+function resetCategory() {
+  if (activeCategory.value === MarketCategoryType.All) {
+    return
+  }
+
+  activeCategory.value = MarketCategoryType.All
+}
 </script>
 
 <template>
@@ -61,6 +69,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
               type="text"
               class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               autocomplete="off"
+              @update:model-value="resetCategory"
             />
           </label>
         </div>

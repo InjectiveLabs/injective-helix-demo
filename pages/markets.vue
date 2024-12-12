@@ -45,6 +45,14 @@ function setCategoryFromQuery() {
 
   return MarketCategoryType.All
 }
+
+function resetCategory() {
+  if (activeCategory.value === MarketCategoryType.All) {
+    return
+  }
+
+  activeCategory.value = MarketCategoryType.All
+}
 </script>
 
 <template>
@@ -109,6 +117,7 @@ function setCategoryFromQuery() {
                 type="text"
                 class="focus:outline-none bg-transparent p-1 px-3 w-full"
                 :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
+                @update:model-value="resetCategory"
               />
 
               <div class="flex items-center pr-3">

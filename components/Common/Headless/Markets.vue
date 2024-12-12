@@ -35,29 +35,31 @@ const filteredMarkets = computed(() =>
     .filter(({ market, volumeInUsd }) => {
       const formattedSearch = props.search.trim().toLowerCase()
 
-      const isPartOfCategory = verifyMarketIsPartOfType(market)
-      const isPartOfSearch =
-        !formattedSearch ||
-        [
+      if (formattedSearch) {
+        const isDeprecatedMarket = (
+          marketCategoriesMap.deprecated || []
+        ).includes(market.marketId)
+
+        if (isDeprecatedMarket) {
+          return market.ticker.toLowerCase() === formattedSearch
+        }
+
+        return [
           market.ticker,
+          market.baseToken.name,
           market.baseToken.symbol,
-          market.quoteToken.symbol,
-          market.baseToken.name
+          market.quoteToken.symbol
         ]
           .map((piece) => piece.toLowerCase())
-          .some((value) =>
-            (value || '').toLowerCase().startsWith(formattedSearch)
-          )
+          .some((value) => value.startsWith(formattedSearch))
+      }
 
+      const isPartOfCategory = verifyMarketIsPartOfType(market)
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-      return (
-        isPartOfSearch &&
-        isPartOfCategory &&
-        (isLowVolumeMarket || props.search)
-      )
+      return isPartOfCategory && isLowVolumeMarket
     })
     .filter(
       (market) => market.market.marketStatus === SharedMarketStatus.Active
