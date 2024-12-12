@@ -241,7 +241,7 @@ export enum ActivityView {
   SpotOrderHistory = 'Spot/OrderHistory',
   SpotTradeHistory = 'Spot/TradeHistory',
   DerivativeOrders = 'Derivatives/Index',
-  DerivativeTriggers = 'Derivatives/Triggers',
+  DerivativeAdvancedOrders = 'Derivatives/AdvancedOrders',
   DerivativeOrderHistory = 'Derivatives/OrderHistory',
   DerivativeTradeHistory = 'Derivatives/TradeHistory',
   WalletTransfers = 'WalletHistory/Transfers',
@@ -410,7 +410,7 @@ export enum PerpOrdersStandardView {
   Balances = 'balances',
   Positions = 'positions',
   Orders = 'orders',
-  Triggers = 'triggers',
+  AdvancedOrders = 'advancedOrders',
   OrderHistory = 'orderHistory',
   TradeHistory = 'tradeHistory',
   FundingHistory = 'fundingHistory'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { PortfolioFuturesTriggersTableColumn } from '@/types'
+import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
@@ -8,69 +8,71 @@ const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{
-    triggers: DerivativeOrderHistory[]
+    advancedOrders: DerivativeOrderHistory[]
   }>(),
   {}
 )
 
-const { rows } = useFuturesTriggersTransformer(computed(() => props.triggers))
+const { rows } = useFuturesAdvancedOrdersTransformer(
+  computed(() => props.advancedOrders)
+)
 
 const xxl = breakpoints['2xl']
 
 const columns = computed(() => {
   const baseColumns = [
     {
-      key: PortfolioFuturesTriggersTableColumn.Market,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Market,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Market}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Market}`
       ),
       class: 'w-[10%]'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Type,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Type,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Type}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Type}`
       ),
       class: 'w-[10%]'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Side,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Side,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Side}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Side}`
       )
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Price,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Price,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Price}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Price}`
       ),
       class: 'text-right'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Amount,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Amount,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Amount}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Amount}`
       ),
       class: 'text-right'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Leverage,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Leverage,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Leverage}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Leverage}`
       ),
       class: 'text-right'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.Total,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Total,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Total}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Total}`
       ),
       class: 'text-right'
     },
     {
-      key: PortfolioFuturesTriggersTableColumn.TriggerCondition,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.TriggerCondition,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.TriggerCondition}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.TriggerCondition}`
       ),
       class: 'text-right'
     }
@@ -78,9 +80,9 @@ const columns = computed(() => {
 
   if (xxl.value) {
     baseColumns.push({
-      key: PortfolioFuturesTriggersTableColumn.Action,
+      key: PortfolioFuturesAdvancedOrdersTableColumn.Action,
       label: t(
-        `portfolio.table.futuresTriggers.${PortfolioFuturesTriggersTableColumn.Action}`
+        `portfolio.table.futuresAdvancedOrders.${PortfolioFuturesAdvancedOrdersTableColumn.Action}`
       ),
       class: 'text-center'
     })
@@ -103,7 +105,7 @@ const columns = computed(() => {
             <p>{{ row.market.ticker }}</p>
           </PartialsCommonMarketRedirection>
 
-          <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
+          <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
             v-if="!xxl"
             v-bind="{
               trigger: row.trigger,
@@ -218,7 +220,7 @@ const columns = computed(() => {
 
       <template #action-data="{ row }">
         <div class="p-2 flex justify-center">
-          <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
+          <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
             v-bind="{
               trigger: row.trigger,
               isAuthorized: row.isAuthorized,
@@ -231,7 +233,7 @@ const columns = computed(() => {
   </template>
 
   <template v-else>
-    <PartialsPortfolioOrdersFuturesTriggersMobileTable
+    <PartialsPortfolioOrdersFuturesAdvancedOrdersMobileTable
       v-for="trigger in rows"
       :key="trigger.trigger.orderHash"
       v-bind="{ trigger, columns }"

@@ -50,8 +50,8 @@ const options = computed(() => {
       display: `activity.${PerpOrdersStandardView.Orders}`
     },
     {
-      value: PerpOrdersStandardView.Triggers,
-      display: `activity.${PerpOrdersStandardView.Triggers}`,
+      value: PerpOrdersStandardView.AdvancedOrders,
+      display: `activity.${PerpOrdersStandardView.AdvancedOrders}`,
       description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
@@ -157,7 +157,7 @@ watch(
         v-if="view !== PerpOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
-        class="3xl:hidden 4xl:block"
+        class="3xl:hidden 5xl:block"
         :class="[xl ? 'text-sm' : 'text-xs']"
       >
         <span class="3xl:hidden 4xl:block">
@@ -172,8 +172,8 @@ watch(
         v-if="view === PerpOrdersStandardView.Orders"
       />
 
-      <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers
-        v-if="view === PerpOrdersStandardView.Triggers"
+      <PartialsPortfolioOrdersFuturesAdvancedOrdersCancelAllAdvancedOrders
+        v-if="view === PerpOrdersStandardView.AdvancedOrders"
       />
     </div>
   </div>

@@ -4,7 +4,7 @@ import {
   I18nMessageFunction,
   PortfolioSubaccountsTableColumn,
   PortfolioSpotOpenOrdersTableColumn,
-  PortfolioFuturesTriggersTableColumn,
+  PortfolioFuturesAdvancedOrdersTableColumn,
   PortfolioSpotOrderHistoryTableColumn,
   PortfolioSpotTradeHistoryTableColumn,
   PortfolioFuturesOpenOrdersTableColumn,
@@ -65,17 +65,17 @@ export default {
         [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase',
         [PortfolioFuturesOpenOrdersTableColumn.Action]: 'Action'
       },
-      futuresTriggers: {
-        [PortfolioFuturesTriggersTableColumn.Market]: 'Market',
-        [PortfolioFuturesTriggersTableColumn.Type]: 'Type',
-        [PortfolioFuturesTriggersTableColumn.Side]: 'Side',
-        [PortfolioFuturesTriggersTableColumn.Price]: 'Price',
-        [PortfolioFuturesTriggersTableColumn.Amount]: 'Amount',
-        [PortfolioFuturesTriggersTableColumn.Leverage]: 'Leverage',
-        [PortfolioFuturesTriggersTableColumn.Total]: 'Total',
-        [PortfolioFuturesTriggersTableColumn.TriggerCondition]:
+      futuresAdvancedOrders: {
+        [PortfolioFuturesAdvancedOrdersTableColumn.Market]: 'Market',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Type]: 'Type',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Side]: 'Side',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Price]: 'Price',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Amount]: 'Amount',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Leverage]: 'Leverage',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Total]: 'Total',
+        [PortfolioFuturesAdvancedOrdersTableColumn.TriggerCondition]:
           'Trigger Condition',
-        [PortfolioFuturesTriggersTableColumn.Action]: 'Action'
+        [PortfolioFuturesAdvancedOrdersTableColumn.Action]: 'Action'
       },
       futuresOrderHistory: {
         [PortfolioFuturesOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
@@ -108,7 +108,7 @@ export default {
         [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL',
         [PositionTableColumn.TotalUsd]: 'Total Value (USD)',
         [PositionTableColumn.Margin]: 'Position Margin',
-        [PositionTableColumn.LiquidationPrice]: 'Liquid Price',
+        [PositionTableColumn.LiquidationPrice]: 'Liq. Price',
         [PositionTableColumn.Leverage]: 'Leverage',
         [PositionTableColumn.TpOrSl]: 'TP/SL',
         [PositionTableColumn.ClosePosition]: 'Close Position'

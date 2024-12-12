@@ -3,13 +3,13 @@ const derivativeStore = useDerivativeStore()
 </script>
 
 <template>
-  <PartialsPortfolioOrdersFuturesTriggersTable
+  <PartialsPortfolioOrdersFuturesAdvancedOrdersTable
     v-if="derivativeStore.subaccountConditionalOrders.length"
-    :triggers="derivativeStore.subaccountConditionalOrders"
+    :advanced-orders="derivativeStore.subaccountConditionalOrders"
   />
 
   <CommonEmptyList
     v-if="!derivativeStore.subaccountConditionalOrders.length"
-    :message="$t('trade.emptyTriggers')"
+    :message="$t('trade.emptyAdvancedOrders')"
   />
 </template>
