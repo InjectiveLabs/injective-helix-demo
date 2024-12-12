@@ -131,7 +131,7 @@ function sharePosition(position: PositionV2) {
             class="flex items-center space-x-2 p-2 font-sans text-coolGray-200"
           >
             <CommonTokenIcon
-              v-bind="{ isSm: true, token: row.market.baseToken }"
+              v-bind="{ isMd: true, token: row.market.baseToken }"
             />
             <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMarketTicker)">
               {{ row.market.ticker }}
