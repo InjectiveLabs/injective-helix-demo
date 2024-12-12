@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Status } from '@injectivelabs/utils'
 import {
   UTableColumn,
   SpotMarketCyTags,
@@ -11,24 +10,17 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    status: Status
-    chaseStatus: Status
     columns: UTableColumn[]
     order: TransformedPortfolioSpotOpenOrders
   }>(),
   {}
 )
 
-const emit = defineEmits<{
-  'order:cancel': []
-  'chase:click': []
-}>()
-
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
     const removedKey = [
-      PortfolioSpotOpenOrdersTableColumn.Market,
-      PortfolioSpotOpenOrdersTableColumn.Chase
+      PortfolioSpotOpenOrdersTableColumn.Chase,
+      PortfolioSpotOpenOrdersTableColumn.Market
     ]
 
     if (removedKey.includes(column.key as PortfolioSpotOpenOrdersTableColumn)) {
@@ -40,14 +32,6 @@ const filteredColumns = computed(() =>
     return list
   }, [] as UTableColumn[])
 )
-
-function cancelOrder() {
-  emit('order:cancel')
-}
-
-function chase() {
-  emit('chase:click')
-}
 </script>
 
 <template>
@@ -73,31 +57,24 @@ function chase() {
         </PartialsCommonMarketRedirection>
 
         <div class="flex space-x-2">
-          <AppButton
-            size="sm"
-            class="py-2"
-            :status="chaseStatus"
-            :disabled="
-              !sharedWalletStore.isAutoSignEnabled || order.insufficientBalance
-            "
-            @click="chase"
-          >
-            <span>{{ $t('trade.chase') }}</span>
-          </AppButton>
+          <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-bind="{
+              order: order.order,
+              isBuy: order.isBuy,
+              market: order.market,
+              isDisabled:
+                !sharedWalletStore.isAutoSignEnabled ||
+                order.insufficientBalance
+            }"
+          />
 
-          <AppButton
+          <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
             v-if="order.orderFillable"
-            size="sm"
-            class="py-2"
-            variant="danger-shade"
-            :status="status"
-            :disabled="!order.isAuthorized"
-            :tooltip="order.isAuthorized ? '' : $t('common.unauthorized')"
-            :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
-            @click="cancelOrder"
-          >
-            Cancel Order
-          </AppButton>
+            v-bind="{
+              order: order.order,
+              isAuthorized: order.isAuthorized
+            }"
+          />
         </div>
       </div>
     </template>

@@ -149,7 +149,10 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   }
 
   if (props.activeCategory === MarketCategoryType.Experimental) {
-    return !market.isVerified
+    return (
+      !market.isVerified &&
+      !(marketCategoriesMap.deprecated || []).includes(market.marketId)
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.DeFi) {

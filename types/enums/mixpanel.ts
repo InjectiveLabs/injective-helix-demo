@@ -12,7 +12,8 @@ export enum MixPanelEvent {
   LiteBridgePageView = 'Lite Bridge Page View',
   LiteBridgeBridged = 'Lite Bridge Bridged',
   QrCodePageView = 'QR Code Page View',
-  QrCodeBuyFunds = 'QR Code Buy Funds'
+  QrCodeBuyFunds = 'QR Code Buy Funds',
+  TradingBotError = 'Trading Bot Error'
 }
 
 export enum MixPanelCounter {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
@@ -10,11 +9,6 @@ import {
   TransformedPosition,
   PerpetualMarketCyTags
 } from '@/types'
-
-const { t } = useLang()
-const { $onError } = useNuxtApp()
-const positionStore = usePositionStore()
-const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{
@@ -29,8 +23,6 @@ const emit = defineEmits<{
   'margin:add': []
   'position:share': []
 }>()
-
-const marketCloseStatus = reactive(new Status(StatusType.Idle))
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
@@ -61,65 +53,6 @@ function addMargin() {
 function sharePosition() {
   emit('position:share')
 }
-
-function closePositionClicked() {
-  if (!props.position.market) {
-    return
-  }
-
-  if (props.position.pnl.isNaN()) {
-    return notificationStore.error({ title: t('trade.no_liquidity') })
-  }
-
-  if (props.position.hasReduceOnlyOrders) {
-    return closePositionAndReduceOnlyOrders()
-  }
-
-  closePosition()
-}
-
-function closePosition() {
-  if (!props.position.market) {
-    return
-  }
-
-  marketCloseStatus.setLoading()
-
-  positionStore
-    .closePosition({
-      position: props.position.position,
-      market: props.position.market
-    })
-    .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      marketCloseStatus.setIdle()
-    })
-}
-
-function closePositionAndReduceOnlyOrders() {
-  if (!props.position.market) {
-    return
-  }
-
-  marketCloseStatus.setLoading()
-
-  positionStore
-    .closePositionAndReduceOnlyOrders({
-      market: props.position.market,
-      position: props.position.position,
-      reduceOnlyOrders: props.position.reduceOnlyCurrentOrders
-    })
-    .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      marketCloseStatus.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -149,22 +82,16 @@ function closePositionAndReduceOnlyOrders() {
             </span>
           </AppButton>
 
-          <AppButton
-            v-bind="{
-              status: marketCloseStatus,
-              disabled: !position.isMarketOrderAuthorized,
-              tooltip: position.isMarketOrderAuthorized
-                ? ''
-                : $t('common.unauthorized')
-            }"
-            size="sm"
-            class="py-2"
-            variant="danger-shade"
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
-            @click="closePositionClicked"
-          >
-            {{ $t('trade.closePosition') }}
-          </AppButton>
+          <PartialsPortfolioPositionsTableActionBtns
+            :pnl="position.pnl"
+            :market="position.market"
+            :position="position.position"
+            :quantity="position.quantity"
+            :has-reduce-only-orders="position.hasReduceOnlyOrders"
+            :is-limit-order-authorized="position.isLimitOrderAuthorized"
+            :reduce-only-current-orders="position.reduceOnlyCurrentOrders"
+            :is-market-order-authorized="position.isMarketOrderAuthorized"
+          />
         </div>
       </div>
     </template>

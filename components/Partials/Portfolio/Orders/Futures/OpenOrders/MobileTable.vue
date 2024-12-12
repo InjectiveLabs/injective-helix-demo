@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Status } from '@injectivelabs/utils'
 import {
   UTableColumn,
   PerpetualMarketCyTags,
@@ -11,24 +10,17 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    status: Status
-    chaseStatus: Status
     columns: UTableColumn[]
     order: TransformedPortfolioFuturesOpenOrders
   }>(),
   {}
 )
 
-const emit = defineEmits<{
-  'order:cancel': []
-  'chase:click': []
-}>()
-
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
     const removedKey = [
-      PortfolioFuturesOpenOrdersTableColumn.Market,
-      PortfolioFuturesOpenOrdersTableColumn.Chase
+      PortfolioFuturesOpenOrdersTableColumn.Chase,
+      PortfolioFuturesOpenOrdersTableColumn.Market
     ]
 
     if (
@@ -42,14 +34,6 @@ const filteredColumns = computed(() =>
     return list
   }, [] as UTableColumn[])
 )
-
-function cancelOrder() {
-  emit('order:cancel')
-}
-
-function chase() {
-  emit('chase:click')
-}
 </script>
 
 <template>
@@ -70,29 +54,24 @@ function chase() {
         </PartialsCommonMarketRedirection>
 
         <div class="flex space-x-2">
-          <AppButton
-            size="sm"
-            class="py-2"
-            :status="chaseStatus"
-            :disabled="
-              !sharedWalletStore.isAutoSignEnabled || order.insufficientBalance
-            "
-            @click="chase"
-          >
-            <span>{{ $t('trade.chase') }}</span>
-          </AppButton>
+          <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-bind="{
+              order: order.order,
+              isBuy: order.isBuy,
+              market: order.market,
+              isDisabled:
+                !sharedWalletStore.isAutoSignEnabled ||
+                order.insufficientBalance
+            }"
+            is-futures
+          />
 
-          <AppButton
-            size="sm"
-            class="py-2"
-            variant="danger-shade"
-            :status="status"
-            :disabled="!order.isAuthorized"
-            :tooltip="order.isAuthorized ? '' : $t('common.unauthorized')"
-            @click="cancelOrder"
-          >
-            Cancel Order
-          </AppButton>
+          <PartialsPortfolioOrdersFuturesOpenOrdersTableCancelOrder
+            v-bind="{
+              order: order.order,
+              isAuthorized: order.isAuthorized
+            }"
+          />
         </div>
       </div>
     </template>
@@ -131,7 +110,7 @@ function chase() {
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
-          class="font-mono"
+          class="inline-block font-mono"
         />
       </div>
     </template>
@@ -143,7 +122,7 @@ function chase() {
             decimalPlaces: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
-          class="font-mono"
+          class="inline-block font-mono"
         />
       </div>
     </template>

@@ -19,7 +19,6 @@ withDefaults(
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
-const { allCoinGeckoIdsOnPriceMap } = useTokenUsdPrice()
 
 const portfolioStatus = inject(
   PortfolioStatusKey,
@@ -31,7 +30,7 @@ const portfolioStatus = inject(
   <div v-if="!sharedWalletStore.isUserConnected">&mdash;</div>
 
   <div
-    v-else-if="portfolioStatus.isLoading() || !allCoinGeckoIdsOnPriceMap"
+    v-else-if="portfolioStatus.isLoading()"
     :style="{ height: size + 'px', gap: spacing + 'px' }"
     class="flex p-1 bg-brand-800 rounded-md animate-pulse"
   >

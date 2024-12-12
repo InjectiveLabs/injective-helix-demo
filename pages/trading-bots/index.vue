@@ -25,6 +25,7 @@ onMounted(() => {
 
     <PartialsTradingBotsHomepageMyLpRewards class="mt-10" />
 
-    <PartialsTradingBotsHomepageShowcase class="mt-10" />
+    <!-- Add when API is ready -->
+    <!-- <PartialsTradingBotsHomepageShowcase class="mt-10" /> -->
   </UContainer>
 </template>

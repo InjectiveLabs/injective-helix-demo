@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   PortfolioSubPage,
-  UiDerivativeMarket,
   PerpetualMarketCyTags,
   PortfolioFuturesOpenOrdersTableColumn
 } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
-const { $onError } = useNuxtApp()
 const breakpoints = useBreakpointsTw()
-const orderbookStore = useOrderbookStore()
-const derivativeStore = useDerivativeStore()
 const { userBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{ orders: DerivativeLimitOrder[] }>(),
@@ -109,57 +102,6 @@ const columns = computed(() => {
 
   return baseColumns
 })
-
-const status = reactive(new Status(StatusType.Idle))
-const chaseStatus = reactive(new Status(StatusType.Idle))
-
-function chase(
-  order: DerivativeLimitOrder,
-  market: UiDerivativeMarket,
-  isBuy: boolean
-) {
-  const price = isBuy
-    ? orderbookStore.buys[0]?.price
-    : orderbookStore.sells[0]?.price
-
-  if (!market || !price) {
-    return
-  }
-
-  chaseStatus.setLoading()
-
-  derivativeStore
-    .submitChase({
-      market: market as UiDerivativeMarket,
-      order,
-      price: new BigNumberInBase(price)
-    })
-    .then(() => {
-      notificationStore.success({ title: t('trade.orderUpdated') })
-    })
-    .catch($onError)
-    .then(() => {
-      chaseStatus.setIdle()
-    })
-}
-
-function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
-  if (!isAuthorized) {
-    return
-  }
-
-  status.setLoading()
-
-  derivativeStore
-    .cancelOrder(order as DerivativeLimitOrder)
-    .then(() =>
-      notificationStore.success({ title: t('trade.order_success_canceling') })
-    )
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -198,19 +140,13 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <AppButton
+          <PartialsPortfolioOrdersFuturesOpenOrdersTableCancelOrder
             v-if="!fourXl"
-            size="xs"
-            :status="status"
-            variant="danger-shade"
-            class="p-1 outline-none rounded-full"
-            :title="$t('trade.cancelOrder')"
-            :disabled="!row.isAuthorized"
-            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-            @click="cancelOrder(row.order, row.isAuthorized)"
-          >
-            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
-          </AppButton>
+            v-bind="{
+              order: row.order,
+              isAuthorized: row.isAuthorized
+            }"
+          />
         </div>
       </template>
 
@@ -331,37 +267,27 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
 
       <template #chase-data="{ row }">
         <div class="p-2 flex items-center justify-center">
-          <button
-            class="hover:underline text-green-500 font-semibold disabled:text-coolGray-600 disabled:cursor-not-allowed flex items-center space-x-1"
-            :disabled="
-              !sharedWalletStore.isAutoSignEnabled || row.insufficientBalance
-            "
-            @click="chase(row.order, row.market, row.isBuy)"
-          >
-            <span>{{ $t('trade.chase') }}</span>
-            <AssetLogoSpinner
-              v-if="chaseStatus.isLoading()"
-              class="!w-4 !h-4"
-            />
-          </button>
+          <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-bind="{
+              order: row.order,
+              isBuy: row.isBuy,
+              market: row.market,
+              isDisabled:
+                !sharedWalletStore.isAutoSignEnabled || row.insufficientBalance
+            }"
+            is-futures
+          />
         </div>
       </template>
 
       <template #action-data="{ row }">
         <div class="p-2 flex justify-center">
-          <AppButton
+          <PartialsPortfolioOrdersFuturesOpenOrdersTableCancelOrder
             v-bind="{
-              status,
-              disabled: !row.isAuthorized,
-              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+              order: row.order,
+              isAuthorized: row.isAuthorized
             }"
-            size="sm"
-            variant="danger-shade"
-            class="min-w-16"
-            @click="cancelOrder(row.order, row.isAuthorized)"
-          >
-            {{ $t('trade.cancelOrder') }}
-          </AppButton>
+          />
         </div>
       </template>
     </UTable>
@@ -371,9 +297,7 @@ function cancelOrder(order: DerivativeLimitOrder, isAuthorized: boolean) {
     <PartialsPortfolioOrdersFuturesOpenOrdersMobileTable
       v-for="order in rows"
       :key="order.order.orderHash"
-      v-bind="{ order, columns, status, chaseStatus }"
-      @order:cancel="cancelOrder(order.order, order.isAuthorized)"
-      @chase:click="chase(order.order, order.market, order.isBuy)"
+      v-bind="{ order, columns }"
     />
   </template>
 </template>

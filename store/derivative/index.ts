@@ -194,34 +194,8 @@ export const useDerivativeStore = defineStore('derivative', {
     cancelSubaccountTradesStream,
     cancelSubaccountOrderHistoryStream,
 
-    async init() {
+    async appendMarketId(marketIdFromQuery: string) {
       const derivativeStore = useDerivativeStore()
-
-      await derivativeStore.fetchMarkets()
-      await derivativeStore.fetchRecentlyExpiredMarkets()
-      await derivativeStore.fetchMarketsSummary()
-    },
-
-    async initIfNotInit() {
-      const derivativeStore = useDerivativeStore()
-
-      const marketsAlreadyFetched = derivativeStore.markets.length
-
-      if (marketsAlreadyFetched) {
-        await derivativeStore.fetchMarketsSummary()
-      } else {
-        await derivativeStore.init()
-      }
-    },
-
-    async initFromTradingPage(marketIdFromQuery?: string) {
-      const derivativeStore = useDerivativeStore()
-
-      if (!marketIdFromQuery) {
-        await derivativeStore.initIfNotInit()
-
-        return
-      }
 
       derivativeStore.$patch({
         marketIdsFromQuery: [
@@ -230,7 +204,7 @@ export const useDerivativeStore = defineStore('derivative', {
         ]
       })
 
-      await derivativeStore.init()
+      await derivativeStore.fetchMarkets()
     },
 
     async fetchMarkets() {

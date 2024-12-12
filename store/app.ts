@@ -191,14 +191,6 @@ export const useAppStore = defineStore('app', {
       appStore.$patch({ userState })
     },
 
-    async pollMarkets() {
-      const derivativeStore = useDerivativeStore()
-      const spotStore = useSpotStore()
-
-      await derivativeStore.fetchMarketsSummary()
-      await spotStore.fetchMarketsSummary()
-    },
-
     cancelAllStreams() {
       streamProvider.cancelAll()
     },

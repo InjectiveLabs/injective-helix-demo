@@ -1,15 +1,10 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PortfolioFuturesTriggersTableColumn } from '@/types'
 
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
-const { $onError } = useNuxtApp()
 const breakpoints = useBreakpointsTw()
-const derivativeStore = useDerivativeStore()
-const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{
@@ -93,27 +88,6 @@ const columns = computed(() => {
 
   return baseColumns
 })
-
-const status = reactive(new Status(StatusType.Idle))
-
-function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
-  if (!isCancelable) {
-    return
-  }
-
-  status.setLoading()
-
-  derivativeStore
-    .cancelOrder(trigger)
-    .then(() => notificationStore.success({ title: t('common.success') }))
-    .catch((e) => {
-      notificationStore.error({ title: t('common.error') })
-      $onError(e)
-    })
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -129,19 +103,14 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
             <p>{{ row.market.ticker }}</p>
           </PartialsCommonMarketRedirection>
 
-          <AppButton
+          <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
             v-if="!xxl"
-            size="xs"
-            :status="status"
-            variant="danger-shade"
-            class="p-1 outline-none rounded-full"
-            :disabled="!row.isCancelable"
-            :title="$t('trade.cancelOrder')"
-            :tooltip="row.isAuthorized ? '' : $t('common.unauthorized')"
-            @click="cancelOrder(row.trigger, row.isCancelable)"
-          >
-            <UIcon :name="NuxtUiIcons.Trash" class="size-4" />
-          </AppButton>
+            v-bind="{
+              trigger: row.trigger,
+              isAuthorized: row.isAuthorized,
+              isCancelable: row.isCancelable
+            }"
+          />
         </div>
       </template>
 
@@ -249,19 +218,13 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
 
       <template #action-data="{ row }">
         <div class="p-2 flex justify-center">
-          <AppButton
+          <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
             v-bind="{
-              status,
-              disabled: !row.isCancelable,
-              tooltip: row.isAuthorized ? '' : $t('common.unauthorized')
+              trigger: row.trigger,
+              isAuthorized: row.isAuthorized,
+              isCancelable: row.isCancelable
             }"
-            size="sm"
-            variant="danger-shade"
-            class="min-w-16"
-            @click="cancelOrder(row.trigger, row.isCancelable)"
-          >
-            {{ $t('trade.cancelOrder') }}
-          </AppButton>
+          />
         </div>
       </template>
     </UTable>
@@ -271,8 +234,7 @@ function cancelOrder(trigger: DerivativeOrderHistory, isCancelable: boolean) {
     <PartialsPortfolioOrdersFuturesTriggersMobileTable
       v-for="trigger in rows"
       :key="trigger.trigger.orderHash"
-      v-bind="{ trigger, columns, status }"
-      @order:cancel="cancelOrder(trigger.trigger, trigger.isCancelable)"
+      v-bind="{ trigger, columns }"
     />
   </template>
 </template>

@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
-import { GridStrategyTransformed } from '~/types'
+import {
+  BotType,
+  GridStrategyTransformed,
+  MainPage,
+  TradeSubPage,
+  TradingInterface
+} from '~/types'
 
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
@@ -60,10 +66,32 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       </template>
 
       <template #market-data="{ row }">
-        <div class="flex items-center gap-2">
+        <NuxtLink
+          :to="{
+            name:
+              row.botType === BotType.SpotGrid
+                ? TradeSubPage.Spot
+                : MainPage.TradingBotsLiquidityBotsSpot,
+            query: {
+              market:
+                row.botType === BotType.LiquidityGrid
+                  ? row.market.slug
+                  : undefined,
+              interface:
+                row.botType === BotType.SpotGrid
+                  ? TradingInterface.TradingBots
+                  : undefined
+            },
+            params: {
+              slug:
+                row.botType === BotType.SpotGrid ? row.market.slug : undefined
+            }
+          }"
+          class="flex items-center gap-2"
+        >
           <UAvatar :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
-        </div>
+        </NuxtLink>
       </template>
 
       <template #lowerBound-data="{ row }">
