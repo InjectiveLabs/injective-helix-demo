@@ -114,7 +114,7 @@ export enum PortfolioFuturesOpenOrdersTableColumn {
   Action = 'action'
 }
 
-export enum PortfolioFuturesTriggersTableColumn {
+export enum PortfolioFuturesAdvancedOrdersTableColumn {
   Market = 'market',
   Type = 'type',
   Side = 'side',
@@ -418,7 +418,7 @@ export interface TransformedPortfolioFuturesTradeHistory {
   [PortfolioFuturesTradeHistoryTableColumn.Price]: BigNumberInBase
 }
 
-export interface TransformedPortfolioFuturesTriggers {
+export interface TransformedPortfolioFuturesAdvancedOrders {
   isBuy: boolean
   isStopLoss: boolean
   isReduceOnly: boolean
@@ -431,11 +431,11 @@ export interface TransformedPortfolioFuturesTriggers {
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
   trigger: DerivativeOrderHistory
-  [PortfolioFuturesTriggersTableColumn.Type]: string
-  [PortfolioFuturesTriggersTableColumn.Total]: BigNumberInBase
-  [PortfolioFuturesTriggersTableColumn.Price]: BigNumberInBase
-  [PortfolioFuturesTriggersTableColumn.Leverage]: BigNumberInBase
-  [PortfolioFuturesTriggersTableColumn.Market]: UiDerivativeMarket
+  [PortfolioFuturesAdvancedOrdersTableColumn.Type]: string
+  [PortfolioFuturesAdvancedOrdersTableColumn.Total]: BigNumberInBase
+  [PortfolioFuturesAdvancedOrdersTableColumn.Price]: BigNumberInBase
+  [PortfolioFuturesAdvancedOrdersTableColumn.Leverage]: BigNumberInBase
+  [PortfolioFuturesAdvancedOrdersTableColumn.Market]: UiDerivativeMarket
 }
 
 export interface TransformedPointsHistory {

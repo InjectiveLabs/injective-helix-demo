@@ -1,15 +1,17 @@
 <script setup lang="ts">
+const { t } = useLang()
+
 const options = [
   {
-    label: 'Open Orders',
-    to: '/portfolio/orders/spot'
+    to: '/portfolio/orders/spot',
+    label: t('trade.open_orders')
   },
   {
-    label: 'Order History',
+    label: t('activity.orderHistory'),
     to: '/portfolio/orders/spot/order-history'
   },
   {
-    label: 'Trade History',
+    label: t('activity.tradeHistory'),
     to: '/portfolio/orders/spot/trade-history'
   }
 ]

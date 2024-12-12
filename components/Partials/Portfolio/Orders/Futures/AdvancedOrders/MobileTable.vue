@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   UTableColumn,
-  TransformedPortfolioFuturesTriggers,
-  PortfolioFuturesTriggersTableColumn
+  TransformedPortfolioFuturesAdvancedOrders,
+  PortfolioFuturesAdvancedOrdersTableColumn
 } from '@/types'
 
 const { sm } = useTwBreakpoints()
@@ -10,14 +10,14 @@ const { sm } = useTwBreakpoints()
 const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
-    trigger: TransformedPortfolioFuturesTriggers
+    trigger: TransformedPortfolioFuturesAdvancedOrders
   }>(),
   {}
 )
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
-    if (column.key === PortfolioFuturesTriggersTableColumn.Market) {
+    if (column.key === PortfolioFuturesAdvancedOrdersTableColumn.Market) {
       return list
     }
 
@@ -45,7 +45,7 @@ const filteredColumns = computed(() =>
           </p>
         </PartialsCommonMarketRedirection>
 
-        <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
+        <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
           v-bind="{
             trigger: trigger.trigger,
             isAuthorized: trigger.isAuthorized,

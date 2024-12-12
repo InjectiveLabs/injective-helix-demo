@@ -26,8 +26,8 @@ withDefaults(
       v-bind="{ isTickerOnly }"
     />
 
-    <PartialsTradeFuturesOrdersStandardTriggers
-      v-else-if="view === PerpOrdersStandardView.Triggers"
+    <PartialsTradeFuturesOrdersStandardAdvancedOrders
+      v-else-if="view === PerpOrdersStandardView.AdvancedOrders"
     />
 
     <PartialsTradeFuturesOrdersStandardOrderHistory

@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { PortfolioSubPage } from '@/types'
 
+const { t } = useLang()
+
 const options = [
   {
-    label: 'Open Orders',
+    label: t('trade.open_orders'),
     to: { name: PortfolioSubPage.OrdersFutures }
   },
   {
-    label: 'Triggers',
-    to: { name: PortfolioSubPage.OrdersFuturesTriggers }
+    label: t('activity.advancedOrders'),
+
+    to: { name: PortfolioSubPage.OrdersFuturesAdvancedOrders }
   },
   {
-    label: 'Order History',
+    label: t('activity.orderHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesOrderHistory }
   },
   {
-    label: 'Trade History',
+    label: t('activity.tradeHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesTradeHistory }
   }
 ]

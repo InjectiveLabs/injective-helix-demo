@@ -66,11 +66,11 @@ export enum PortfolioSubPage {
   OrdersFuturesGrid = 'portfolio-orders-futures-grid',
   SettingsPreferences = 'portfolio-settings-preferences',
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
-  OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
   HistoryFundingHistory = 'portfolio-history-funding-history',
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
-  OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
+  OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history',
+  OrdersFuturesAdvancedOrders = 'portfolio-orders-futures-advanced-orders'
 }
 
 export enum LeaderboardSubPage {

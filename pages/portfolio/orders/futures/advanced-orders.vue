@@ -19,26 +19,28 @@ const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const filteredTriggers = computed(() =>
-  derivativeStore.subaccountConditionalOrders.filter((trigger) => {
+const filteredAdvancedOrders = computed(() =>
+  derivativeStore.subaccountConditionalOrders.filter((advancedOrders) => {
     const isPartOfMarket = formValues[SpotOrderHistoryFilterField.Market]
-      ? trigger.marketId === formValues[SpotOrderHistoryFilterField.Market]
+      ? advancedOrders.marketId ===
+        formValues[SpotOrderHistoryFilterField.Market]
       : true
 
     const isPartOfType = formValues[SpotOrderHistoryFilterField.Type]
       ? derivativeTypeToOrderType(
           formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
-        ).includes(trigger.orderType as ConditionalOrderSide)
+        ).includes(advancedOrders.orderType as ConditionalOrderSide)
       : true
 
     const isPartOfExecutionType = formValues[SpotOrderHistoryFilterField.Type]
       ? derivativeTypeToExecutionTypes(
           formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
-        ).includes(trigger.executionType as ConditionalOrderSide)
+        ).includes(advancedOrders.executionType as ConditionalOrderSide)
       : true
 
     const isPartOfSide = formValues[SpotOrderHistoryFilterField.Side]
-      ? formValues[SpotOrderHistoryFilterField.Side] === trigger.direction
+      ? formValues[SpotOrderHistoryFilterField.Side] ===
+        advancedOrders.direction
       : true
 
     return (
@@ -47,9 +49,9 @@ const filteredTriggers = computed(() =>
   })
 )
 
-onSubaccountChange(fetchDerivativeTriggers)
+onSubaccountChange(fetchAdvancedOrders)
 
-function fetchDerivativeTriggers() {
+function fetchAdvancedOrders() {
   status.setLoading()
 
   derivativeStore
@@ -63,7 +65,7 @@ function fetchDerivativeTriggers() {
 
 <template>
   <div class="divide-y" :class="`${lg ? 'border-y' : 'border-t'}`">
-    <PartialsPortfolioOrdersFuturesTriggersTabs />
+    <PartialsPortfolioOrdersFuturesAdvancedOrdersTabs />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -73,14 +75,14 @@ function fetchDerivativeTriggers() {
     />
 
     <template v-else>
-      <PartialsPortfolioOrdersFuturesTriggersTable
-        v-if="filteredTriggers.length"
-        :triggers="filteredTriggers"
+      <PartialsPortfolioOrdersFuturesAdvancedOrdersTable
+        v-if="filteredAdvancedOrders.length"
+        :advanced-orders="filteredAdvancedOrders"
       />
 
       <CommonEmptyList
         v-if="!derivativeStore.subaccountConditionalOrders.length"
-        :message="$t('trade.emptyTriggers')"
+        :message="$t('trade.emptyAdvancedOrders')"
       />
     </template>
   </div>
