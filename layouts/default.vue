@@ -44,8 +44,6 @@ onWalletConnected(() => {
 
   Promise.all([
     fetchUserPortfolio(),
-    spotStore.fetchMarkets(),
-    derivativeStore.fetchMarkets(),
     spotStore.fetchMarketsSummary(),
     derivativeStore.fetchMarketsSummary()
   ])
