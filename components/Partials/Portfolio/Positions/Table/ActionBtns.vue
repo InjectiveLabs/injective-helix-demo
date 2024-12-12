@@ -21,7 +21,6 @@ const props = withDefaults(
   defineProps<{
     pnl: BigNumberInBase
     position: PositionV2
-    isShrinked?: boolean
     quantity: BigNumberInBase
     market: UiDerivativeMarket
     hasReduceOnlyOrders: boolean
@@ -32,8 +31,9 @@ const props = withDefaults(
   {}
 )
 const { t } = useLang()
-// const { lg } = useTwBreakpoints()
+const { lg } = useTwBreakpoints()
 const { $onError } = useNuxtApp()
+const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
 // const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
@@ -60,6 +60,8 @@ const marketCloseStatus = reactive(new Status(StatusType.Idle))
 //     price.isNaN() || price.isZero() || quantity.isNaN() || quantity.isZero()
 //   )
 // })
+
+const sixXl = breakpoints['6xl']
 
 function closePositionClicked() {
   if (!props.market) {
@@ -161,12 +163,15 @@ function closePositionAndReduceOnlyOrders() {
       size="sm"
       :variant="'danger-shade'"
       :title="$t('trade.closePosition')"
-      :class="[isShrinked ? 'p-1 outline-none rounded-full' : 'min-w-16']"
+      :class="[
+        sixXl ? 'min-w-16' : lg ? 'p-1 outline-none rounded-full' : 'py-2'
+      ]"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
       @click="closePositionClicked"
     >
-      <span v-if="!isShrinked">{{ $t('common.close') }}</span>
-      <UIcon v-else :name="NuxtUiIcons.Trash" class="size-4" />
+      <span v-if="sixXl">{{ $t('common.close') }}</span>
+      <UIcon v-else-if="lg" :name="NuxtUiIcons.Trash" class="size-4" />
+      <span v-else>{{ $t('trade.closePosition') }}</span>
     </AppButton>
 
     <!-- todo: resurrect when limit orders reimplemented -->

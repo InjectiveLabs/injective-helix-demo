@@ -140,7 +140,6 @@ function sharePosition(position: PositionV2) {
 
           <PartialsPortfolioPositionsTableActionBtns
             v-if="!sixXl"
-            is-shrinked
             :position="row.position"
             :market="row.market"
             :pnl="row.pnl"

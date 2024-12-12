@@ -1,28 +1,37 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
-import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags } from '@/types'
 
 const { t } = useLang()
-const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
+const { lg } = useTwBreakpoints()
+const breakpoints = useBreakpointsTw()
+const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{
-    order: SpotLimitOrder
     isAuthorized?: boolean
+    order: DerivativeLimitOrder
   }>(),
   {}
 )
 
+const fourXl = breakpoints['4xl']
+
 const status = reactive(new Status(StatusType.Idle))
 
 function cancelOrder() {
+  if (!props.isAuthorized) {
+    return
+  }
+
   status.setLoading()
 
-  spotStore
+  derivativeStore
     .cancelOrder(props.order)
     .then(() => {
       notificationStore.success({ title: t('trade.order_success_canceling') })
@@ -37,14 +46,16 @@ function cancelOrder() {
     v-bind="{
       status,
       disabled: !isAuthorized,
+      variant: 'danger-shade',
+      title: $t('trade.cancelOrder'),
+      size: lg && !fourXl ? 'xs' : 'sm',
+      dataCy: dataCyTag(SpotMarketCyTags.CancelOrderButton),
       tooltip: isAuthorized ? '' : $t('common.unauthorized')
     }"
-    size="sm"
-    variant="danger-shade"
-    class="min-w-16"
-    :data-cy="dataCyTag(SpotMarketCyTags.CancelOrderButton)"
+    :class="fourXl ? 'min-w-16' : lg ? 'p-1 outline-none rounded-full' : 'py-2'"
     @click="cancelOrder"
   >
-    {{ $t('trade.cancelOrder') }}
+    <UIcon v-if="lg && !fourXl" :name="NuxtUiIcons.Trash" class="size-4" />
+    <span v-else> {{ $t('trade.cancelOrder') }} </span>
   </AppButton>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Status } from '@injectivelabs/utils'
 import {
   UTableColumn,
   TransformedPortfolioFuturesTriggers,
@@ -10,16 +9,11 @@ const { sm } = useTwBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    status: Status
     columns: UTableColumn[]
     trigger: TransformedPortfolioFuturesTriggers
   }>(),
   {}
 )
-
-const emit = defineEmits<{
-  'order:cancel': []
-}>()
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
@@ -32,10 +26,6 @@ const filteredColumns = computed(() =>
     return list
   }, [] as UTableColumn[])
 )
-
-function cancelOrder() {
-  emit('order:cancel')
-}
 </script>
 
 <template>
@@ -55,17 +45,13 @@ function cancelOrder() {
           </p>
         </PartialsCommonMarketRedirection>
 
-        <AppButton
-          size="sm"
-          class="py-2"
-          variant="danger-shade"
-          :status="status"
-          :disabled="!trigger.isAuthorized"
-          :tooltip="trigger.isAuthorized ? '' : $t('common.unauthorized')"
-          @click="cancelOrder"
-        >
-          Cancel Order
-        </AppButton>
+        <PartialsPortfolioOrdersFuturesTriggersTableCancelOrder
+          v-bind="{
+            trigger: trigger.trigger,
+            isAuthorized: trigger.isAuthorized,
+            isCancelable: trigger.isCancelable
+          }"
+        />
       </div>
     </template>
 
