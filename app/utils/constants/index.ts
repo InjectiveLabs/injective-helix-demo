@@ -105,6 +105,7 @@ export const GST_STABLE_LOWER_PERCENTAGE = '0.99'
 export const GST_STABLE_UPPER_PERCENTAGE = '1.01'
 export const GST_STABLE_GRIDS = 3
 export const GST_AUTO_PRICE_THRESHOLD = 2
+export const GST_MIN_TOTAL_AMOUNT_USD = 50
 
 export const GST_ROUTE = 'trading-bots-grid-spot'
 

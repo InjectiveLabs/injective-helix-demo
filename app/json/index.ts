@@ -220,9 +220,7 @@ export const swapRoutes = getSwapRoutes()
 export const rwaSlugs = getRawCategorySlugs()
 export const marketCategoriesMap = getCategoryMap()
 
-export const spotGridMarkets = getSpotGridMarkets().filter(
-  (market) => market.slug !== 'agent-inj'
-)
+export const spotGridMarkets = getSpotGridMarkets()
 export const derivativeGridMarkets = getDerivativeGridMarkets()
 
 export const verifiedDerivativeSlugs = Object.keys(
