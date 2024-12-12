@@ -29,6 +29,7 @@ withDefaults(
         <AppHocLoading
           v-bind="{
             isLoading:
+              !search.trim() &&
               !sortedMarkets.length &&
               activeCategory === MarketCategoryType.All,
             wrapperClass: 'mt-4'
