@@ -540,9 +540,6 @@ export async function createSpotLiquidityBot(params: {
     })
   })
 
-  // eslint-disable-next-line no-console
-  console.log(msg.toWeb3())
-
   const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
     (messageType) =>
       MsgGrant.fromJSON({
