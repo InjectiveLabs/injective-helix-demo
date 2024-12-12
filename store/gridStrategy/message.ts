@@ -458,6 +458,7 @@ export async function createSpotLiquidityBot(params: {
 
   market: UiSpotMarket
 }) {
+  const authZStore = useAuthZStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -542,9 +543,34 @@ export async function createSpotLiquidityBot(params: {
   // eslint-disable-next-line no-console
   console.log(msg.toWeb3())
 
+  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
+    (messageType) =>
+      MsgGrant.fromJSON({
+        grantee: gridMarket.contractAddress,
+        granter: sharedWalletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
+      })
+  )
+
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants.some(
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
+    )
+  )
+
+  const messages: Msgs[] = []
+
+  if (!isAuthorized) {
+    messages.push(...grantAuthZMessages)
+  }
+
+  messages.push(msg)
+
   await sharedWalletStore.validateAndQueue()
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() =>
     Promise.all([
