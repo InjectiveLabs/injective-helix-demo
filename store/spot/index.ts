@@ -151,39 +151,14 @@ export const useSpotStore = defineStore('spot', {
     submitStopLimitOrder,
     submitStopMarketOrder,
 
-    async init() {
+    async appendMarketId(marketIdFromQuery: string) {
       const spotStore = useSpotStore()
-
-      await spotStore.fetchMarkets()
-      await spotStore.fetchMarketsSummary()
-    },
-
-    async initIfNotInit() {
-      const spotStore = useSpotStore()
-
-      const marketsAlreadyFetched = spotStore.markets.length
-
-      if (marketsAlreadyFetched) {
-        await spotStore.fetchMarketsSummary()
-      } else {
-        await spotStore.init()
-      }
-    },
-
-    async initFromTradingPage(marketIdFromQuery?: string) {
-      const spotStore = useSpotStore()
-
-      if (!marketIdFromQuery) {
-        await spotStore.initIfNotInit()
-
-        return
-      }
 
       spotStore.$patch({
         marketIdsFromQuery: [...spotStore.marketIdsFromQuery, marketIdFromQuery]
       })
 
-      await spotStore.init()
+      await spotStore.fetchMarkets()
     },
 
     async fetchMarkets() {
@@ -239,10 +214,6 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
-
-      if (spotStore.marketsSummary.length > 0) {
-        return
-      }
 
       const marketsSummaries = (await spotCacheApi.fetchMarketsSummary()) || []
 

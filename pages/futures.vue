@@ -30,6 +30,10 @@ const market = computed(() =>
 useDerivativeOrderbook(computed(() => market.value))
 
 onWalletConnected(async () => {
+  if (route.query.marketId) {
+    await derivativeStore.appendMarketId(route.query.marketId as string)
+  }
+
   if (!market.value) {
     return navigateTo({
       name: 'futures-slug',
@@ -40,8 +44,6 @@ onWalletConnected(async () => {
   status.setLoading()
 
   Promise.all([
-    // futures data
-    // derivativeStore.fetchOpenInterest(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -71,15 +73,6 @@ onUnmounted(() => {
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
-
-useIntervalFn(
-  () =>
-    Promise.all([
-      // derivativeStore.fetchOpenInterest(),
-      derivativeStore.fetchMarketsSummary()
-    ]),
-  60 * 1000
-)
 </script>
 
 <template>

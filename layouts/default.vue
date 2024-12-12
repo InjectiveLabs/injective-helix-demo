@@ -14,11 +14,13 @@ import {
 } from '@/types'
 
 const route = useRoute()
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -35,28 +37,18 @@ const showFooter = computed(() =>
   ].includes(route.name as MainPage)
 )
 
-/**
- * Post only mode modal when we do chain upgrade
-watch(
-  () => appStore.blockHeight,
-  () => {
-    if (
-      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
-      appStore.blockHeight <=
-        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
-    ) {
-      modalStore.openModal(Modal.PostOnlyMode)
-    }
-  }
-)
- */
-
 onWalletConnected(() => {
   portfolioStatus.setLoading()
 
   mixpanelAnalytics.init()
 
-  fetchUserPortfolio()
+  Promise.all([
+    fetchUserPortfolio(),
+    spotStore.fetchMarkets(),
+    derivativeStore.fetchMarkets(),
+    spotStore.fetchMarketsSummary(),
+    derivativeStore.fetchMarketsSummary()
+  ])
     .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
@@ -124,6 +116,15 @@ function checkOnboarding() {
 }
 
 provide(PortfolioStatusKey, portfolioStatus)
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      spotStore.fetchMarketsSummary(),
+      derivativeStore.fetchMarketsSummary()
+    ]),
+  30 * 1000
+)
 </script>
 
 <template>

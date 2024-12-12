@@ -13,12 +13,15 @@ export const rwaMarketIds = marketCategoriesMap.rwa || []
 export const newMarketsMarketIds = marketCategoriesMap.newMarkets || []
 
 export const excludedPriceDeviationSlugs = [] as string[]
-
 export const marketIdsToHide = [] as string[]
 
+// todo: refactor/re-implement this functionality when we have a use case in the future
 export const upcomingMarkets = [
   //
 ] as Array<UiMarketWithToken>
+
+export const deprecatedMarkets =
+  IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
 
 export const notLiquidMarkets = [
   {
@@ -26,9 +29,6 @@ export const notLiquidMarkets = [
     redirectionSlug: 'sol-usdt'
   }
 ] as NotLiquidMarket[]
-
-export const deprecatedMarkets =
-  IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
 
 export const marketPromotions = [
   {

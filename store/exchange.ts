@@ -1,26 +1,16 @@
 import { defineStore } from 'pinia'
 import {
-  exchangeApi,
-  indexerSpotApi,
-  indexerDerivativesApi,
-  indexerRestMarketChronosApi
-} from '@shared/Service'
-import {
   TokenStatic,
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import {
-  toUiMarketHistory,
-  toZeroUiMarketSummary
-} from '@shared/transformer/market'
+import { SharedUiMarketHistory } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiMarketHistory, SharedUiMarketSummary } from '@shared/types'
+import { toUiMarketHistory } from '@shared/transformer/market'
+import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
 import { getToken } from '@/app/utils/helpers'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import { UiMarketWithToken, UiMarketAndSummary } from '@/types'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
@@ -29,10 +19,6 @@ type ExchangeStoreState = {
   tradingRewardsCampaign?: TradingRewardsCampaign
   tradeRewardsPoints: string[]
   pendingTradeRewardsPoints: string[]
-  upcomingMarkets: UiMarketWithToken[]
-  upcomingMarketsSummaries: SharedUiMarketSummary[]
-  deprecatedMarkets: UiMarketWithToken[]
-  deprecatedMarketsSummaries: SharedUiMarketSummary[]
   marketsHistory: SharedUiMarketHistory[]
 }
 
@@ -43,43 +29,11 @@ const initialStateFactory = (): ExchangeStoreState => ({
   tradingRewardsCampaign: undefined,
   tradeRewardsPoints: [],
   pendingTradeRewardsPoints: [],
-
-  upcomingMarkets,
-  upcomingMarketsSummaries: upcomingMarkets.map((m) =>
-    toZeroUiMarketSummary(m.marketId)
-  ),
-
-  deprecatedMarkets,
-  deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
-    toZeroUiMarketSummary(m.marketId)
-  ),
   marketsHistory: []
 })
 
 export const useExchangeStore = defineStore('exchange', {
   state: (): ExchangeStoreState => initialStateFactory(),
-
-  getters: {
-    deprecatedMarketsWithSummary: (state) =>
-      state.deprecatedMarkets
-        .map((market) => ({
-          market,
-          summary: state.deprecatedMarketsSummaries.find(
-            (summary) => summary.marketId === market.marketId
-          )
-        }))
-        .filter((summary) => summary) as UiMarketAndSummary[],
-
-    upcomingMarketsWithSummary: (state) =>
-      state.upcomingMarkets
-        .map((market) => ({
-          market,
-          summary: state.upcomingMarketsSummaries.find(
-            (summary) => summary.marketId === market.marketId
-          )
-        }))
-        .filter((summary) => summary) as UiMarketAndSummary[]
-  },
 
   actions: {
     async initFeeDiscounts() {
@@ -101,24 +55,6 @@ export const useExchangeStore = defineStore('exchange', {
       exchangeStore.$patch({
         params: await exchangeApi.fetchModuleParams()
       })
-    },
-
-    async fetchMarketsFromTicker(ticker: string) {
-      const spotMarkets = await indexerSpotApi.fetchMarkets()
-      const derivativeMarkets = await indexerDerivativesApi.fetchMarkets()
-
-      return {
-        spotMarketIds: spotMarkets
-          .filter((market) =>
-            market.ticker.toLowerCase().includes(ticker.toLowerCase())
-          )
-          .map((m) => m.marketId),
-        derivativeMarketIds: derivativeMarkets
-          .filter((market) =>
-            market.ticker.toLowerCase().includes(ticker.toLowerCase())
-          )
-          .map((m) => m.marketId)
-      }
     },
 
     async fetchFeeDiscountSchedule() {

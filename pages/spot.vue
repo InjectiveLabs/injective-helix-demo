@@ -31,6 +31,10 @@ const market = computed(() =>
 useSpotOrderbook(computed(() => market.value))
 
 onMounted(async () => {
+  if (route.query.marketId) {
+    await spotStore.appendMarketId(route.query.marketId as string)
+  }
+
   if (!market.value) {
     return navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
   }
@@ -38,9 +42,7 @@ onMounted(async () => {
   status.setLoading()
 
   Promise.all([
-    // market selectors - my markets
     positionStore.fetchPositions(),
-    derivativeStore.fetchSubaccountOrders(),
     // spot page data
     // derivativeStore.fetchOpenInterest(),
     spotStore.fetchTrades({
@@ -64,10 +66,7 @@ onMounted(async () => {
 })
 
 onSubaccountChange(() =>
-  Promise.all([
-    positionStore.fetchPositions(),
-    derivativeStore.fetchSubaccountOrders()
-  ]).catch($onError)
+  Promise.all([positionStore.fetchPositions()]).catch($onError)
 )
 
 onUnmounted(() => {
@@ -78,15 +77,6 @@ onUnmounted(() => {
 
 provide(IsSpotKey, true)
 provide(MarketKey, market)
-
-useIntervalFn(
-  () =>
-    Promise.all([
-      // derivativeStore.fetchOpenInterest(),
-      derivativeStore.fetchMarketsSummary()
-    ]),
-  60 * 1000
-)
 </script>
 
 <template>
