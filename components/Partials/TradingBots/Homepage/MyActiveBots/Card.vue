@@ -4,7 +4,9 @@ import {
   TradePage,
   TradeSubPage,
   TradingInterface,
-  GridStrategyTransformed
+  GridStrategyTransformed,
+  BotType,
+  MainPage
 } from '@/types'
 
 defineProps<{
@@ -17,9 +19,26 @@ defineProps<{
     :to="
       strategy.market.isVerified
         ? {
-            name: TradeSubPage.Spot,
-            params: { slug: strategy.market.slug },
-            query: { interface: TradingInterface.TradingBots }
+            name:
+              strategy.botType === BotType.SpotGrid
+                ? TradeSubPage.Spot
+                : MainPage.TradingBotsLiquidityBotsSpot,
+            params: {
+              slug:
+                strategy.botType === BotType.SpotGrid
+                  ? strategy.market.slug
+                  : undefined
+            },
+            query: {
+              interface:
+                strategy.botType === BotType.SpotGrid
+                  ? TradingInterface.TradingBots
+                  : undefined,
+              market:
+                strategy.botType === BotType.LiquidityGrid
+                  ? strategy.market.slug
+                  : undefined
+            }
           }
         : {
             name: TradePage.Spot,
