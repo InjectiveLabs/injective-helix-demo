@@ -5,7 +5,10 @@ import { NUMBER_REGEX } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_MIN_TOTAL_AMOUNT_USD,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
 
 const formatFieldName = (value: string) => {
@@ -306,7 +309,7 @@ export const defineGlobalRules = () => {
   )
 
   defineRule('minTotalAmountUsdSgt', (_value: string, [amount]: string[]) => {
-    const min = 50
+    const min = GST_MIN_TOTAL_AMOUNT_USD
     const amountInBigNumber = new BigNumberInBase(amount)
 
     if (amountInBigNumber.lt(min)) {

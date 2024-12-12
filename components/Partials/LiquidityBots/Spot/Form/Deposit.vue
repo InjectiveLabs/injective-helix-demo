@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityBotField, LiquidityBotForm, UiMarketWithToken } from '@/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_MIN_TOTAL_AMOUNT_USD,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -206,7 +209,7 @@ function setQuoteMax() {
         {{
           $t('sgt.minInvestmentDescription', {
             symbols: market.baseToken.symbol,
-            amount: 20
+            amount: GST_MIN_TOTAL_AMOUNT_USD
           })
         }}
       </p>
@@ -216,7 +219,7 @@ function setQuoteMax() {
             base: props.market.baseToken.symbol,
             quote: props.market.quoteToken.symbol
           })
-        }}:100$
+        }}:{{ GST_MIN_TOTAL_AMOUNT_USD }}$
       </p>
     </div>
   </div>
