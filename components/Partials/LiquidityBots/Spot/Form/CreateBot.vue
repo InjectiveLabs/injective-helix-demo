@@ -110,7 +110,8 @@ async function createLiquidityBot() {
             props.liquidityValues.trailingLowerBound.toFixed(),
           error: e.message || '',
           originalMessage: e.originalMessage || '',
-          botType: BotType.LiquidityGrid
+          botType: BotType.LiquidityGrid,
+          grids: String(props.liquidityValues.grids)
         })
       }
 
