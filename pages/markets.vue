@@ -5,13 +5,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCyTags, MarketCategoryType } from '@/types'
 
 const route = useRoute()
-const appStore = useAppStore()
 const spotStore = useSpotStore()
-const { $onError } = useNuxtApp()
-const { sm } = useTwBreakpoints()
 const tokenStore = useTokenStore()
-const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
+const { sm } = useTwBreakpoints()
 
 const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
   ([key, value]) => ({ label: key, value })
@@ -22,12 +19,7 @@ const activeCategory = ref(setCategoryFromQuery())
 const isLowVolumeMarketsVisible = ref(false)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
-  [
-    ...spotStore.marketsWithSummary,
-    ...derivativeStore.marketsWithSummary,
-    ...exchangeStore.upcomingMarketsWithSummary,
-    ...exchangeStore.deprecatedMarketsWithSummary
-  ]
+  [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary]
     .map(({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
         tokenStore.tokenUsdPrice(market.quoteToken)
@@ -42,14 +34,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     .filter(({ summary }) => summary)
 )
 
-onMounted(() => {
-  getQuoteTokenPrice()
-})
-
-function getQuoteTokenPrice() {
-  Promise.all([appStore.pollMarkets()]).catch($onError)
-}
-
 function setCategoryFromQuery() {
   if (
     Object.values(MarketCategoryType).includes(
@@ -61,8 +45,6 @@ function setCategoryFromQuery() {
 
   return MarketCategoryType.All
 }
-
-useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
 </script>
 
 <template>
