@@ -9,8 +9,10 @@ useHead({
 })
 
 // const appStore = useAppStore()
+const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const derivativeStore = useDerivativeStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
@@ -23,6 +25,8 @@ onMounted(() => {
 
   Promise.all([
     walletStore.init(),
+    spotStore.fetchMarkets(),
+    derivativeStore.fetchMarkets(),
     sharedGeoStore.fetchGeoLocation(),
     tokenStore.fetchTokensUsdPriceMap()
   ])
