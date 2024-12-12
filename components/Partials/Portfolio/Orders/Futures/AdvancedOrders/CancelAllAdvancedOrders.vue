@@ -8,7 +8,7 @@ const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
-function cancelAllTriggers() {
+function cancelAllAdvancedOrders() {
   status.setLoading()
 
   derivativeStore
@@ -38,13 +38,10 @@ function cancelAllTriggers() {
     v-bind="{ status }"
     size="xs"
     variant="danger-shade"
-    @click="cancelAllTriggers"
+    @click="cancelAllAdvancedOrders"
   >
-    <span class="hidden 3xl:block 4xl:hidden">
+    <span>
       {{ $t('trade.cancelAll') }}
-    </span>
-    <span class="3xl:hidden 4xl:block">
-      {{ $t('trade.cancelAllTriggers') }}
     </span>
   </AppButton>
 </template>

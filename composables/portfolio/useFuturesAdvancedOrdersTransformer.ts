@@ -7,11 +7,11 @@ import {
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  PortfolioFuturesTriggersTableColumn,
-  TransformedPortfolioFuturesTriggers
+  PortfolioFuturesAdvancedOrdersTableColumn,
+  TransformedPortfolioFuturesAdvancedOrders
 } from '@/types'
 
-export function useFuturesTriggersTransformer(
+export function useFuturesAdvancedOrdersTransformer(
   triggerList: ComputedRef<DerivativeOrderHistory[]>
 ) {
   const { t } = useLang()
@@ -87,7 +87,8 @@ export function useFuturesTriggersTransformer(
         trigger.orderType === OrderSide.TakeSell
 
       const isMarketOrder =
-        trigger.executionType === PortfolioFuturesTriggersTableColumn.Market
+        trigger.executionType ===
+        PortfolioFuturesAdvancedOrdersTableColumn.Market
 
       const isAuthorized =
         !sharedWalletStore.isAuthzWalletConnected ||
@@ -106,15 +107,15 @@ export function useFuturesTriggersTransformer(
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
         isCancelable: trigger.state === OrderState.Booked,
-        [PortfolioFuturesTriggersTableColumn.Type]: type,
-        [PortfolioFuturesTriggersTableColumn.Total]: total,
-        [PortfolioFuturesTriggersTableColumn.Price]: price,
-        [PortfolioFuturesTriggersTableColumn.Market]: market,
-        [PortfolioFuturesTriggersTableColumn.Leverage]: leverage
+        [PortfolioFuturesAdvancedOrdersTableColumn.Type]: type,
+        [PortfolioFuturesAdvancedOrdersTableColumn.Total]: total,
+        [PortfolioFuturesAdvancedOrdersTableColumn.Price]: price,
+        [PortfolioFuturesAdvancedOrdersTableColumn.Market]: market,
+        [PortfolioFuturesAdvancedOrdersTableColumn.Leverage]: leverage
       })
 
       return list
-    }, [] as TransformedPortfolioFuturesTriggers[])
+    }, [] as TransformedPortfolioFuturesAdvancedOrders[])
   )
 
   return { rows }
