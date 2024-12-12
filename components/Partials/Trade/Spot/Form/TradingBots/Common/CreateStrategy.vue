@@ -9,7 +9,8 @@ import {
   UiSpotMarket,
   InvestmentTypeGst,
   SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  BotType
 } from '@/types'
 import {
   GST_GRID_THRESHOLD,
@@ -238,6 +239,23 @@ async function createStrategy() {
     })
     .catch((e) => {
       err = e
+
+      if (e.message && e.originalMessage) {
+        EventTracker.trackTradingBotError({
+          wallet: sharedWalletStore.injectiveAddress,
+          market: market.value.slug,
+          grids: spotFormValues.value[SpotGridTradingField.Grids]!,
+          baseAmount:
+            spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount]!,
+          quoteAmount:
+            spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount]!,
+          lowerBound: spotFormValues.value[SpotGridTradingField.LowerPrice]!,
+          upperBound: spotFormValues.value[SpotGridTradingField.UpperPrice]!,
+          error: e.message || '',
+          originalMessage: e.originalMessage || '',
+          botType: BotType.SpotGrid
+        })
+      }
       $onError(e)
     })
     .finally(async () => {

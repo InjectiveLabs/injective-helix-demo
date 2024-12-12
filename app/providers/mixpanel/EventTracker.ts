@@ -10,7 +10,8 @@ import {
   MixPanelOrderType,
   SpotGridTradingForm,
   SpotGridTradingField,
-  MixPanelStrategyPage
+  MixPanelStrategyPage,
+  BotType
 } from '@/types'
 
 const formatStatus = (error?: string) => ({
@@ -202,32 +203,38 @@ export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
   })
 }
 
-export const trackLiquidityBotError = ({
+export const trackTradingBotError = ({
+  grids,
   wallet,
   market,
+  botType,
   baseAmount,
   quoteAmount,
   lowerBound,
   upperBound,
   upperTrailingBound,
   lowerTrailingBound,
-  error,
-  originalMessage
+  originalMessage,
+  error
 }: {
   wallet: string
   market: string
+  grids: string
   baseAmount: string
   quoteAmount: string
   lowerBound: string
   upperBound: string
-  upperTrailingBound: string
-  lowerTrailingBound: string
-  error: string
-  originalMessage: string
+  upperTrailingBound?: string
+  lowerTrailingBound?: string
+  error?: string
+  originalMessage?: string
+  botType: BotType
 }) => {
-  mixpanelAnalytics.track(MixPanelEvent.LiquidityBotError, {
+  mixpanelAnalytics.track(MixPanelEvent.TradingBotError, {
+    type: botType,
     Wallet: wallet,
     Market: market,
+    Grids: grids,
     'Base Amount': baseAmount,
     'Quote Amount': quoteAmount,
     'Lower Bound': lowerBound,

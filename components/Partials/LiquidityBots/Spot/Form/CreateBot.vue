@@ -2,6 +2,7 @@
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 
 import {
+  BotType,
   LiquidityBotField,
   LiquidityBotForm,
   LiquidityValues,
@@ -95,7 +96,7 @@ async function createLiquidityBot() {
     })
     .catch((e) => {
       if (e.message && e.originalMessage) {
-        EventTracker.trackLiquidityBotError({
+        EventTracker.trackTradingBotError({
           wallet: sharedWalletStore.injectiveAddress,
           market: props.market.slug,
           baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
@@ -108,7 +109,8 @@ async function createLiquidityBot() {
           lowerTrailingBound:
             props.liquidityValues.trailingLowerBound.toFixed(),
           error: e.message || '',
-          originalMessage: e.originalMessage || ''
+          originalMessage: e.originalMessage || '',
+          botType: BotType.LiquidityGrid
         })
       }
 
