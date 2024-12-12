@@ -17,8 +17,6 @@ export class DerivativeSubaccountPositionIntegrityStrategy
   }
 
   async validate(): Promise<void> {
-    const marketIds = this.args
-
     const accountStore = useAccountStore()
     const sharedWalletStore = useSharedWalletStore()
 
@@ -42,8 +40,7 @@ export class DerivativeSubaccountPositionIntegrityStrategy
       positionStore.cancelSubaccountPositionsStream()
       positionStore.$patch({ positions: await this.fetchData() })
 
-      const [marketId] = marketIds || []
-      positionStore.streamSubaccountPositions(marketId)
+      positionStore.streamSubaccountPositions()
     }
   }
 
