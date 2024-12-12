@@ -201,3 +201,40 @@ export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
     ...formatStatus(error)
   })
 }
+
+export const trackLiquidityBotError = ({
+  wallet,
+  market,
+  baseAmount,
+  quoteAmount,
+  lowerBound,
+  upperBound,
+  upperTrailingBound,
+  lowerTrailingBound,
+  error,
+  originalMessage
+}: {
+  wallet: string
+  market: string
+  baseAmount: string
+  quoteAmount: string
+  lowerBound: string
+  upperBound: string
+  upperTrailingBound: string
+  lowerTrailingBound: string
+  error: string
+  originalMessage: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiquidityBotError, {
+    Wallet: wallet,
+    Market: market,
+    'Base Amount': baseAmount,
+    'Quote Amount': quoteAmount,
+    'Lower Bound': lowerBound,
+    'Upper Bound': upperBound,
+    'Upper Trailing Bound': upperTrailingBound,
+    'Lower Trailing Bound': lowerTrailingBound,
+    Error: error,
+    'Original Message': originalMessage
+  })
+}

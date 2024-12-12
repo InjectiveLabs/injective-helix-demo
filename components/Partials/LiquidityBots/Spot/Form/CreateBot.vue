@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+
 import {
   LiquidityBotField,
   LiquidityBotForm,
@@ -7,6 +8,7 @@ import {
   UiMarketWithToken,
   UiSpotMarket
 } from '@/types'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 
 const props = withDefaults(
   defineProps<{
@@ -91,7 +93,27 @@ async function createLiquidityBot() {
     .then(() => {
       status.setIdle()
     })
-    .catch($onError)
+    .catch((e) => {
+      if (e.message && e.originalMessage) {
+        EventTracker.trackLiquidityBotError({
+          wallet: sharedWalletStore.injectiveAddress,
+          market: props.market.slug,
+          baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
+          quoteAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
+          lowerBound: props.liquidityValues.lowerBound.toFixed(),
+          upperBound: props.liquidityValues.upperBound.toFixed(),
+          upperTrailingBound:
+            props.liquidityValues.trailingUpperBound.toFixed(),
+          lowerTrailingBound:
+            props.liquidityValues.trailingLowerBound.toFixed(),
+          error: e.message || '',
+          originalMessage: e.originalMessage || ''
+        })
+      }
+
+      $onError(e)
+    })
     .finally(() => {
       status.setIdle()
     })
