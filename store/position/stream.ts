@@ -7,7 +7,7 @@ import {
 export const cancelSubaccountPositionsStream =
   grpcCancelSubaccountPositionsStream
 
-export const streamSubaccountPositions = (marketId?: string) => {
+export const streamSubaccountPositions = () => {
   const accountStore = useAccountStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
@@ -18,7 +18,6 @@ export const streamSubaccountPositions = (marketId?: string) => {
   }
 
   grpcStreamSubaccountPositions({
-    marketId,
     address: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ position }) => {
       if (position) {
@@ -31,10 +30,7 @@ export const streamSubaccountPositions = (marketId?: string) => {
         )
 
         // filter out non-tradable markets
-        if (
-          !marketId &&
-          !derivativeStore.activeMarketIds.includes(position.marketId)
-        ) {
+        if (!derivativeStore.activeMarketIds.includes(position.marketId)) {
           return
         }
 
