@@ -50,6 +50,17 @@ const leverageAmount = computed({
 function onMouseUp() {
   emit('mouseup')
 }
+
+function onChange() {
+  leverageBreakpoints.value.forEach((num) => {
+    const diffSnapAmount = props.maxLeverage > 10 ? 0.2 : 0.1
+    const diff = Math.abs(num - leverageAmount.value)
+
+    if (parseFloat(diff.toFixed(2)) <= diffSnapAmount) {
+      emit('update:modelValue', num)
+    }
+  })
+}
 </script>
 
 <template>
@@ -83,6 +94,7 @@ function onMouseUp() {
       :max="maxLeverage"
       :step="step"
       @mouseup="onMouseUp"
+      @change="onChange"
     />
   </div>
 </template>
@@ -127,58 +139,22 @@ function onMouseUp() {
 }
 
 .leverage-breakpoint.breakpoint--4 {
-  @apply left-[73%];
+  @apply left-[72.5%];
 }
 
 .leverage-breakpoint.breakpoint--5 {
   @apply left-[95%];
 }
 
-.leverage-breakpoint-text.text--1 {
-  @apply left-[22%];
-}
-
-.leverage-breakpoint-text.text--2 {
-  @apply left-[46.5%];
-}
-
-.leverage-breakpoint-text.text--3 {
-  @apply left-[69%];
-}
-
 @screen md {
   .leverage-breakpoint.breakpoint--5 {
     @apply left-[98%];
-  }
-
-  .leverage-breakpoint-text.text--1 {
-    @apply left-[24%];
-  }
-
-  .leverage-breakpoint-text.text--2 {
-    @apply left-[48%];
-  }
-
-  .leverage-breakpoint-text.text--3 {
-    @apply left-[72.5%];
   }
 }
 
 @screen lg {
   .leverage-breakpoint.breakpoint--5 {
     @apply left-[95%];
-  }
-
-  .leverage-breakpoint-text.text--1 {
-    @apply left-[21.5%];
-  }
-
-  .leverage-breakpoint-text.text--2 {
-    @apply left-[45%];
-  }
-
-  .leverage-breakpoint-text.text--3 {
-    @apply left-[70.5%];
   }
 }
 </style>
