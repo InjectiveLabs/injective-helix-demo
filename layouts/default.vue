@@ -3,11 +3,13 @@ import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { helixTopHeaderHeight } from '@/app/data/trade'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
   MainPage,
+  TradeSubPage,
   LeaderboardSubPage,
   PortfolioStatusKey,
   LiquidityRewardsPage
@@ -126,9 +128,18 @@ useIntervalFn(
 </script>
 
 <template>
-  <div class="relative min-h-screen">
+  <div
+    :class="[
+      'relative',
+      [TradeSubPage.Futures, TradeSubPage.Spot].includes(
+        route.name as TradeSubPage
+      )
+        ? `min-h-[calc(100vh-${helixTopHeaderHeight}px)]`
+        : 'min-h-screen'
+    ]"
+  >
     <LayoutNavbar />
-    <main class="relative mt-[60px] pb-6">
+    <main :class="`relative mt-[${helixTopHeaderHeight}px] pb-6`">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
       <LayoutTeslaCompetitionBanner
