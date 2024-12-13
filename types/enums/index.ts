@@ -360,7 +360,7 @@ export enum TimeDuration {
 
 export enum ChartViewOption {
   Chart = 'chart',
-  ProChart = 'pro-chart',
+  // ProChart = 'pro-chart',
   Depth = 'depth',
   Info = 'info'
 }

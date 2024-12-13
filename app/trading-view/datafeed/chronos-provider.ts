@@ -120,6 +120,8 @@ export class ChronosApiProvider {
       endpoint += `&firstDataRequest=${firstDataRequest}`
     }
 
+    endpoint += `&cache=true`
+
     return await this.client.get(endpoint)
   }
 
@@ -159,6 +161,8 @@ export class ChronosApiProvider {
     if (firstDataRequest) {
       endpoint += `&firstDataRequest=${firstDataRequest}`
     }
+
+    endpoint += `&cache=true`
 
     return await this.client.get(endpoint)
   }
