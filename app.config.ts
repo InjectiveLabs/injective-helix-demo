@@ -88,6 +88,7 @@ export default defineAppConfig({
     },
 
     table: {
+      base: 'border-b border-coolGray-800',
       divide: 'dark:divide-coolGray-800',
       tbody: 'dark:divide-coolGray-800',
       th: {

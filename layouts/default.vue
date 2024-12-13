@@ -8,6 +8,7 @@ import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
   MainPage,
+  TradeSubPage,
   LeaderboardSubPage,
   PortfolioStatusKey,
   LiquidityRewardsPage
@@ -126,9 +127,18 @@ useIntervalFn(
 </script>
 
 <template>
-  <div class="relative min-h-screen">
+  <div
+    :class="[
+      'relative',
+      [TradeSubPage.Futures, TradeSubPage.Spot].includes(
+        route.name as TradeSubPage
+      )
+        ? 'min-h-vhMinusHeader'
+        : 'min-h-screen'
+    ]"
+  >
     <LayoutNavbar />
-    <main class="relative mt-[60px] pb-6">
+    <main class="relative mt-[56px] pb-6">
       <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
       <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
       <LayoutTeslaCompetitionBanner

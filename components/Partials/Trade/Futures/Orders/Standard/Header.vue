@@ -91,7 +91,7 @@ watch(
 </script>
 
 <template>
-  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
+  <div class="h-header border-b-2 flex sticky top-0 bg-coolGray-975 z-10">
     <CommonSubaccountTabSelector
       v-bind="{
         isSm: true

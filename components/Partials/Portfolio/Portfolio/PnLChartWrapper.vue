@@ -86,7 +86,11 @@ const isProfit = computed(() => {
 
     <PartialsPortfolioPortfolioAreaChart
       v-else
-      v-bind="{ series: pnlSeries, isProfit }"
+      v-bind="{
+        series: pnlSeries,
+        isProfit,
+        label: 'common.pnl'
+      }"
     />
   </div>
 </template>

@@ -94,9 +94,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
-    class="[grid-area:stats] border-b-2 border-coolGray-700 bg-brand-900 z-30"
-  >
+  <div class="[grid-area:stats] border-b-2 bg-brand-900 z-30">
     <PartialsTradeCommonMarketMultiplierBanner v-bind="{ market }" />
 
     <slot name="stats">
@@ -105,7 +103,7 @@ onUnmounted(() => {
   </div>
 
   <div
-    class="lg:trade-layout-right w-full min-h-[calc(100vh-122px)] max-lg:divide-y"
+    class="lg:trade-layout-right w-full min-h-[calc(100vh-140px)] max-lg:divide-y"
   >
     <div class="[grid-area:chart]">
       <slot name="chart">
@@ -113,20 +111,20 @@ onUnmounted(() => {
       </slot>
     </div>
 
-    <div class="[grid-area:form] border-b-2 border-coolGray-700">
+    <div class="[grid-area:form] border-coolGray-700 lg:min-h-[950px]">
       <slot name="form" />
     </div>
 
-    <div class="[grid-area:orderbook] border-r-2 border-coolGray-700">
+    <div class="[grid-area:orderbook] border-r-2">
       <slot name="orderbook">
         <PartialsTradeOrderbook v-bind="{ market, isSpot }" />
       </slot>
     </div>
 
     <div
-      class="[grid-area:orders] relative min-h-[500px] lg:min-h-[320px] lg:h-full border-t-2 border-b-2 border-r-2 border-coolGray-700 lg:overflow-auto"
+      class="[grid-area:orders] relative lg:h-full border-t-2 border-r-2 lg:overflow-auto"
     >
-      <div class="lg:absolute left-0 right-0 top-0">
+      <div class="lg:absolute left-0 right-0 top-0 h-full">
         <slot name="orders" />
       </div>
     </div>

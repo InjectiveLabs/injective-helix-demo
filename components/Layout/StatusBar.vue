@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { TradeSubPage } from '@/types'
+
+const route = useRoute()
 const tokenStore = useTokenStore()
 
 const markets = computed(() =>
@@ -10,8 +13,17 @@ const markets = computed(() =>
 </script>
 
 <template>
-  <div class="md:fixed bottom-0 w-full z-[5]">
-    <div class="flex items-center bg-brand-900 border-t px-4 py-1 text-xs z-30">
+  <div class="md:fixed bottom-0 w-full z-[11]">
+    <div
+      class="flex items-center bg-brand-900 px-4 py-1 text-xs z-30"
+      :class="[
+        [TradeSubPage.Futures, TradeSubPage.Spot].includes(
+          route.name as TradeSubPage
+        )
+          ? 'border-t-2'
+          : 'border-t'
+      ]"
+    >
       <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
       <div class="divide-x-2 border-white flex">
         <div class="px-2">
