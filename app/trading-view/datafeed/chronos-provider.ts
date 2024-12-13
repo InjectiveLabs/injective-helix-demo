@@ -162,7 +162,7 @@ export class ChronosApiProvider {
       endpoint += `&firstDataRequest=${firstDataRequest}`
     }
 
-    // endpoint += `&cache=true`
+    endpoint += `&cache=true`
 
     return await this.client.get(endpoint)
   }
