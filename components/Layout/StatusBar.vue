@@ -20,7 +20,7 @@ const markets = computed(() =>
         [TradeSubPage.Futures, TradeSubPage.Spot].includes(
           route.name as TradeSubPage
         )
-          ? 'border-coolGray-700 border-t-2'
+          ? 'border-t-2'
           : 'border-t'
       ]"
     >
