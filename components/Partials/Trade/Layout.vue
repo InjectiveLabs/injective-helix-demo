@@ -113,7 +113,7 @@ onUnmounted(() => {
       </slot>
     </div>
 
-    <div class="[grid-area:form] border-coolGray-700 min-h-[950px]">
+    <div class="[grid-area:form] border-coolGray-700 lg:min-h-[950px]">
       <slot name="form" />
     </div>
 
