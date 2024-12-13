@@ -8,6 +8,7 @@ import { sharedTokenClient } from '@shared/Service'
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import { IS_MAINNET } from '@shared/utils/constant'
 import {
   NETWORK,
   ENDPOINTS,
@@ -46,6 +47,11 @@ export const getDecimalsBasedOnNumber = (
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
+  // Todo: Replace with actual endpoint once devops deploy this to production server
+  if (IS_MAINNET) {
+    return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
+  }
+
   return `${ENDPOINTS.indexer}/api/chronos/v1/${marketType}`
 }
 
