@@ -39,9 +39,7 @@ const exchangeStore = useExchangeStore()
 
 const apexChart = ref(undefined as ApexChart | undefined)
 
-const strategies = useSpotGridStrategies(
-  computed(() => (props.activeStrategy ? [props.activeStrategy] : []))
-)
+const strategies = useSpotGridStrategies(computed(() => props.activeStrategy))
 
 const strategy = computed(() => strategies.value[0])
 
