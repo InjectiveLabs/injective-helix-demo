@@ -10,8 +10,15 @@ import {
 import { BotType, SgtMarketType, StrategyStatus } from '@/types'
 
 export const useSpotGridStrategies = (
-  strategies: ComputedRef<TradingStrategy[]>
+  strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>
 ) => {
+  const strategies = computed(() =>
+    strategiesArg.value
+      ? Array.isArray(strategiesArg.value)
+        ? strategiesArg.value
+        : [strategiesArg.value]
+      : []
+  )
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const sharedWalletStore = useSharedWalletStore()

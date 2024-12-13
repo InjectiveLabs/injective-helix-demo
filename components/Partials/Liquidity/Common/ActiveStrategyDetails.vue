@@ -14,11 +14,11 @@ const props = withDefaults(
 )
 
 const gridStrategyStore = useGridStrategyStore()
-
-const status = reactive(new Status(StatusType.Idle))
 const { $onError } = useNuxtApp()
 
-const strategies = useSpotGridStrategies(computed(() => [props.activeStrategy]))
+const status = reactive(new Status(StatusType.Idle))
+
+const strategies = useSpotGridStrategies(computed(() => props.activeStrategy))
 
 const strategy = computed(() => strategies.value[0])
 
@@ -27,7 +27,7 @@ const isPositivePnl = computed(() =>
 )
 
 const percentagePnl = computed(() =>
-  new BigNumberInBase(strategy.value.pnl).toFormat(2)
+  new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
 )
 
 function removeStrategy() {
