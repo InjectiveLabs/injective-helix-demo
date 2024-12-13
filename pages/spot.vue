@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { MarketKey, IsSpotKey, PortfolioStatusKey } from '@/types'
+import { MarketKey, IsSpotKey, UiSpotMarket, PortfolioStatusKey } from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -42,9 +42,6 @@ onMounted(async () => {
   status.setLoading()
 
   Promise.all([
-    positionStore.fetchPositions(),
-    // spot page data
-    // derivativeStore.fetchOpenInterest(),
     spotStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -59,15 +56,18 @@ onMounted(async () => {
 
   await until(portfolioStatus).toMatch((status) => status.isIdle())
 
-  spotStore.streamTrades(market.value.marketId)
-  derivativeStore.streamMarketsMarkPrices([
-    ...positionStore.positions.map(({ marketId }) => marketId)
-  ])
-})
+  spotStore.streamTrades({
+    marketId: market.value.marketId,
+    onResetCallback: () =>
+      spotStore.fetchTrades({
+        marketId: (market.value as UiSpotMarket).marketId
+      })
+  })
 
-onSubaccountChange(() =>
-  Promise.all([positionStore.fetchPositions()]).catch($onError)
-)
+  derivativeStore.streamMarketsMarkPrices({
+    marketIds: [...positionStore.positions.map(({ marketId }) => marketId)]
+  })
+})
 
 onUnmounted(() => {
   spotStore.reset()
@@ -80,14 +80,14 @@ provide(MarketKey, market)
 </script>
 
 <template>
-  <div v-if="market">
+  <div v-if="market" v-bind="{ market }">
     <PartialsTradeLayout v-bind="{ market }" is-spot>
       <template #form>
         <PartialsTradeSpotForm />
       </template>
 
       <template #orders>
-        <PartialsTradeSpotOrders />
+        <PartialsTradeSpotOrders v-bind="{ market }" />
       </template>
     </PartialsTradeLayout>
 

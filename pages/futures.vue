@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { IsSpotKey, MarketKey, PortfolioStatusKey } from '@/types'
+import {
+  IsSpotKey,
+  MarketKey,
+  PortfolioStatusKey,
+  UiDerivativeMarket
+} from '@/types'
 
 definePageMeta({
   middleware: ['orderbook']
@@ -58,11 +63,25 @@ onWalletConnected(async () => {
 
   await until(portfolioStatus).toMatch((status) => status.isIdle())
 
-  derivativeStore.streamTrades(market.value.marketId)
-  derivativeStore.streamMarketsMarkPrices([
-    market.value.marketId,
-    ...positionStore.positions.map(({ marketId }) => marketId)
-  ])
+  derivativeStore.streamSubaccountOrders({ marketId: market.value.marketId })
+  derivativeStore.streamSubaccountOrderHistory({
+    marketId: market.value.marketId
+  })
+  derivativeStore.streamSubaccountTrades({ marketId: market.value.marketId })
+
+  derivativeStore.streamTrades({
+    marketId: market.value.marketId,
+    onResetCallback: () =>
+      derivativeStore.fetchTrades({
+        marketId: (market.value as UiDerivativeMarket).marketId
+      })
+  })
+  derivativeStore.streamMarketsMarkPrices({
+    marketIds: [
+      market.value.marketId,
+      ...positionStore.positions.map(({ marketId }) => marketId)
+    ]
+  })
 })
 
 onUnmounted(() => {

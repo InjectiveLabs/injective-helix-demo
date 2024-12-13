@@ -20,15 +20,18 @@ export const cancelSubaccountBalanceStream = () => {
 
 export const streamBankBalances = ({
   callback,
-  accountAddress
+  accountAddress,
+  onResetCallback
 }: {
-  callback: AccountPortfolioStreamCallback
+  onResetCallback?: Function
   accountAddress: string
+  callback: AccountPortfolioStreamCallback
 }) => {
   const streamFn = portfolioStream.streamAccountPortfolio.bind(portfolioStream)
   const streamFnArgs = {
     accountAddress,
-    callback
+    callback,
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -39,22 +42,25 @@ export const streamBankBalances = ({
 }
 
 export const streamSubaccountBalances = ({
+  type,
   callback,
   subaccountId,
   accountAddress,
-  type
+  onResetCallback
 }: {
-  callback: AccountPortfolioStreamCallback
-  accountAddress: string
-  subaccountId?: string
   type?: string
+  subaccountId?: string
+  accountAddress: string
+  onResetCallback?: Function
+  callback: AccountPortfolioStreamCallback
 }) => {
   const streamFn = portfolioStream.streamAccountPortfolio.bind(portfolioStream)
   const streamFnArgs = {
     subaccountId,
     accountAddress,
     type,
-    callback
+    callback,
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({

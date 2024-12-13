@@ -23,5 +23,6 @@ export const PortfolioStatusKey = Symbol(
 export const OrderbookStatusKey = Symbol(
   'orderbookStatus'
 ) as InjectionKey<Status>
+
 export const IsSpotKey = Symbol('isSpot') as InjectionKey<boolean>
 export const AggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>

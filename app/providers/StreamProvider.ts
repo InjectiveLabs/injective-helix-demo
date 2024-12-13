@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { differenceInSeconds } from 'date-fns'
 import type { StreamStatusResponse } from '@injectivelabs/ts-types'
 import {
   oracleStream,
@@ -14,6 +15,7 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotOrders
   | typeof spotMarketStream.streamSpotTrades
   | typeof spotMarketStream.streamSpotOrderbook
+  | typeof portfolioStream.streamAccountPortfolio
   | typeof spotMarketStream.streamSpotOrderHistory
   | typeof oracleStream.streamOraclePricesByMarkets
   | typeof spotMarketStream.streamSpotOrderbookUpdate
@@ -24,7 +26,6 @@ type StreamFn =
   | typeof derivativesMarketStream.streamDerivativePositions
   | typeof derivativesMarketStream.streamDerivativeOrderHistory
   | typeof derivativesMarketStream.streamDerivativeOrderbookUpdate
-  | typeof portfolioStream.streamAccountPortfolio
 
 type Stream = ReturnType<StreamFn>
 
@@ -35,6 +36,11 @@ const GRPC_ERROR_CODES = {
 
 const MAX_RECONNECTION = 2
 
+const streamRefreshInterval: Partial<Record<StreamType, number>> = {
+  [StreamType.BankBalance]: 60,
+  [StreamType.SubaccountBalances]: 60
+}
+
 /**
  * Every stream we extend with
  * an end and a status callback
@@ -44,9 +50,9 @@ const MAX_RECONNECTION = 2
  * we are reconnecting the stream
  * */
 export class StreamProvider {
-  private streamManager: Map<
+  public streamManager: Map<
     StreamType,
-    { fn: Function; stream: Stream; args: any }
+    { fn: Function; stream: Stream; args: any; updatedAt: number }
   >
 
   private reconnectCount: Record<string, number> = {}
@@ -62,8 +68,19 @@ export class StreamProvider {
 
     const argsWithCallbacks = {
       ...args,
+      callback: (data: any) => {
+        const existingStream = this.streamManager.get(key)
+
+        if (existingStream) {
+          this.streamManager.set(key, {
+            ...existingStream,
+            updatedAt: Date.now()
+          })
+        }
+
+        args.callback(data)
+      },
       onEndCallback: (status: StreamStatusResponse): any => {
-        console.log('onEndCallback', status)
         this.reconnectOnTimeout(key, status)
       },
       onStatusCallback: (status: StreamStatusResponse): any => {
@@ -81,7 +98,8 @@ export class StreamProvider {
     this.streamManager.set(key, {
       stream,
       fn,
-      args: argsWithCallbacks
+      args: argsWithCallbacks,
+      updatedAt: Date.now()
     })
   }
 
@@ -102,17 +120,19 @@ export class StreamProvider {
   }
 
   private reconnect(key: StreamType) {
-    if (!this.exists(key)) {
-      return
+    const { fn, args } = this.streamManager.get(key)!
+
+    this.cancel(key)
+
+    if (args.onResetCallback) {
+      args.onResetCallback()
     }
 
-    const { fn, args } = this.streamManager.get(key)!
-    const newStream = fn(args)
-
     this.streamManager.set(key, {
-      stream: newStream,
+      stream: fn(args),
       fn,
-      args
+      args,
+      updatedAt: Date.now()
     })
   }
 
@@ -137,6 +157,28 @@ export class StreamProvider {
     } else if (status) {
       console.error(JSON.stringify({ status }))
     }
+  }
+
+  public healthCheck() {
+    this.streamManager.entries().forEach(([key, value]) => {
+      const inactiveTimeInSeconds = differenceInSeconds(
+        new Date(),
+        value.updatedAt
+      )
+      const refreshInterval = streamRefreshInterval[key] || 30
+
+      if (inactiveTimeInSeconds > refreshInterval) {
+        this.reconnect(key)
+      }
+
+      // added this to ease QA testing, will remove after this passes QA
+      console.log('health check', {
+        key,
+        refreshInterval,
+        inactiveTimeInSeconds,
+        value
+      })
+    })
   }
 }
 
