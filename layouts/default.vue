@@ -3,7 +3,6 @@ import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { helixTopHeaderHeight } from '@/app/data/trade'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
@@ -134,7 +133,7 @@ useIntervalFn(
       [TradeSubPage.Futures, TradeSubPage.Spot].includes(
         route.name as TradeSubPage
       )
-        ? `min-h-[calc(100vh-${helixTopHeaderHeight}px)]`
+        ? 'min-h-vhMinusHeader'
         : 'min-h-screen'
     ]"
   >

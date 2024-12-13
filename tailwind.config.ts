@@ -55,6 +55,8 @@ export default <Partial<Config>>{
         trades: '26rem',
         header: '56px',
         subHeader: '50px',
+        screenMinusHeader: 'calc(100% - 56px)',
+        vhMinusHeader: 'calc(100vh - 56px)',
         ...extraSizings
       },
 

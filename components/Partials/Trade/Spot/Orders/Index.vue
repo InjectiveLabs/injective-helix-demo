@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { helixTopHeaderHeight } from '@/app/data/trade'
 import {
   MarketKey,
   UiSpotMarket,
@@ -72,7 +71,7 @@ onSubaccountChange(() => {
       @update:is-ticker-only="fetchSpotOrders"
     />
 
-    <div :class="`w-full h-[calc(100%-${helixTopHeaderHeight}px)]`">
+    <div class="w-full h-screenMinusHeader">
       <PartialsTradeSpotOrdersStandard
         v-if="tradingMode === TradingInterface.Standard"
         v-bind="{ view, isTickerOnly }"

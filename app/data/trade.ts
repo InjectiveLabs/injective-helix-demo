@@ -1,7 +1,4 @@
 import { MsgType } from '@injectivelabs/ts-types'
-
-export const helixTopHeaderHeight = 56
-
 export const TRADING_MESSAGES = [
   MsgType.MsgCancelSpotOrder,
   MsgType.MsgBatchUpdateOrders,
