@@ -37,10 +37,12 @@ export const streamSubaccountPositions = () => {
         if (positionExist) {
           if (positionQuantity.lte(0)) {
             // Position closed
-            const positions = [...positionStore.positions].filter(
+            const positions = positionStore.positions.filter(
               (p) =>
-                p.marketId !== position.marketId &&
-                p.subaccountId !== position.subaccountId
+                !(
+                  p.marketId === position.marketId &&
+                  p.subaccountId === position.subaccountId
+                )
             )
 
             positionStore.$patch({
@@ -61,6 +63,7 @@ export const streamSubaccountPositions = () => {
           }
         } else if (positionQuantity.gt(0)) {
           // Position added
+
           const positions = [position, ...positionStore.positions]
 
           positionStore.$patch({

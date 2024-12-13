@@ -24,7 +24,6 @@ export const closePosition = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -59,14 +58,12 @@ export const closePosition = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const closeAllPosition = async (positions: PositionV2[]) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -138,7 +135,6 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const closePositionAndReduceOnlyOrders = async ({
@@ -152,7 +148,6 @@ export const closePositionAndReduceOnlyOrders = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const actualMarket = market as UiDerivativeMarket
@@ -189,7 +184,6 @@ export const closePositionAndReduceOnlyOrders = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const addMarginToPosition = async ({

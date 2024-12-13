@@ -31,9 +31,7 @@ const columns = [
   {
     key: MarketsTableColumn.LastPrice,
     label: t(`trade.table.markets.${MarketsTableColumn.LastPrice}`),
-    class: 'text-right rtl:text-left',
-    sortable: true,
-    sort: valueSortFunction
+    class: 'text-right rtl:text-left'
   },
   {
     key: MarketsTableColumn.MarketChange24h,

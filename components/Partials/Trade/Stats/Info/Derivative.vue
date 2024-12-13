@@ -114,7 +114,7 @@ useIntervalFn(() => {
     <AppAmount
       v-bind="{
         amount: markPrice,
-        decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        decimalPlaces: market.priceDecimals
       }"
     />
   </PartialsTradeStatsHeaderItem>

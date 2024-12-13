@@ -46,8 +46,6 @@ const columns = computed(() => {
       label: t(
         `trade.table.marketsSelector.${MarketsSelectorTableColumn.LastPrice}`
       ),
-      sortable: true,
-      sort: valueSortFunction,
       class: 'text-right'
     },
     {
