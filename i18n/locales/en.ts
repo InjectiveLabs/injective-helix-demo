@@ -42,6 +42,7 @@ export default {
     ok: 'OK',
     BTC: 'BTC',
     roi: 'ROI',
+    pnl: 'PnL',
     max: 'Max',
     docs: 'docs',
     back: 'Back',

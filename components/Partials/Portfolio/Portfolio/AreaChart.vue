@@ -8,9 +8,11 @@ const props = withDefaults(
   defineProps<{
     series: number[][]
     isProfit: boolean
+    label?: string
   }>(),
   {
-    isProfit: false
+    isProfit: false,
+    label: 'trade.amount'
   }
 )
 
@@ -22,7 +24,7 @@ let chart: ApexCharts
 const options: ApexOptions = {
   series: [
     {
-      name: t('trade.volume'),
+      name: t(props.label),
       data: props.series,
       color: props.isProfit ? colors.green[500] : colors.red[500]
     }
