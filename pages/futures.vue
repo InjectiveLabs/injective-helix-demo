@@ -3,10 +3,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { IsSpotKey, MarketKey, PortfolioStatusKey } from '@/types'
 
-definePageMeta({
-  middleware: ['orderbook']
-})
-
 const route = useRoute()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
