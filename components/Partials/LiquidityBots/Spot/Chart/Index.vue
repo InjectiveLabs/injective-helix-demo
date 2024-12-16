@@ -26,13 +26,14 @@ withDefaults(
   <div>
     <div>
       <div class="flex justify-between items-center gap-1">
-        <p class="text-2xl font-semibold">
+        <p class="text-2xl font-semibold flex gap-1.5 items-center">
           <SharedAmountFormatter
             :max-trailing-zeros="3"
             :decimal-places="market.priceDecimals"
             :max-decimal-places="market.priceDecimals"
             :amount="lastTradedPrice.toFixed()"
           />
+          <span>{{ market.quoteToken.symbol }}</span>
         </p>
         <span
           v-if="marketReward"

@@ -107,10 +107,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
   })
 }
 
-const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
-  rows,
-  columns
-)
+const { sortedRows } = useSort(rows, columns)
 </script>
 
 <template>
@@ -312,13 +309,6 @@ const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
     </UTable>
   </template>
   <template v-else>
-    <AppMobileSort
-      v-model:sort-by="sortBy"
-      v-model:sort-direction="sortDirection"
-      :sort-options="sortOptions"
-      class="mb-3"
-    />
-
     <PartialsTradeStatsMarketSelectorMobileTable
       v-for="market in sortedRows"
       :key="market.market.marketId"
