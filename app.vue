@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { InitialStatusKey } from '@/types'
 
 useHead({
   bodyAttrs: {
@@ -65,6 +66,8 @@ watch(
 )
  */
 
+provide(InitialStatusKey, status)
+
 useIntervalFn(
   () => Promise.all([tokenStore.fetchTokensUsdPriceMap()]),
   30 * 1000
@@ -72,9 +75,7 @@ useIntervalFn(
 </script>
 
 <template>
-  <AppHocLoading is-helix wrapper-class="h-screen" :status="status">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </AppHocLoading>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
