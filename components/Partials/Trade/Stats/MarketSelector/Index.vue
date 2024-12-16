@@ -74,6 +74,10 @@ watch(
     isLocked.value = isOpen
   }
 )
+
+onUnmounted(() => {
+  appStore.marketsOpen = false
+})
 </script>
 
 <template>
