@@ -22,8 +22,8 @@ const resourcesList = [
 
 const supportList = [
   {
-    text: t('footer.faq'),
-    link: 'https://helixapp.zendesk.com/'
+    text: t('footer.docs'),
+    link: 'https://docs.helixapp.com/'
   },
   {
     text: t('footer.apiDocumentation'),

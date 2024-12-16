@@ -34,7 +34,7 @@ function onCopyAddress() {
     @modal:closed="closeModal"
   >
     <section class="text-center">
-      <h3 class="-mt-4">{{ $t('account.qrDeposit.title') }}</h3>
+      <h3 class="-mt-4 text-white">{{ $t('account.qrDeposit.title') }}</h3>
 
       <div class="max-w-[308px] mx-auto mt-6">
         <SharedQRCode
@@ -44,24 +44,36 @@ function onCopyAddress() {
         />
 
         <div class="flex items-center gap-2 mt-6 justify-between">
-          <p class="text-ellipsis overflow-hidden">{{ formattedAddress }}</p>
-          <AppButton @click="onCopyAddress">
+          <p class="text-ellipsis overflow-hidden text-white font-medium">
+            {{ formattedAddress }}
+          </p>
+          <AppButton
+            class="py-2 border-none text-base leading-5"
+            @click="onCopyAddress"
+          >
             {{ $t('common.copy') }}
           </AppButton>
         </div>
       </div>
 
-      <div class="mt-4">
-        <i18n-t keypath="account.qrDeposit.ctaLink">
-          <template #link>
-            <PartialsCommonBridgeRedirection
-              :denom="usdtToken.denom"
-              class="text-blue-550 hover:text-opacity-80"
-            >
-              {{ $t('common.here') }}
-            </PartialsCommonBridgeRedirection>
-          </template>
-        </i18n-t>
+      <div
+        class="mt-8 flex flex-col justify-center items-center space-y-4 w-full"
+      >
+        <div class="text-white text-sm font-medium leading-[18px]">
+          {{ $t('account.qrDeposit.cta') }}
+        </div>
+
+        <PartialsCommonBridgeRedirection
+          :denom="usdtToken.denom"
+          class="w-full"
+        >
+          <AppButton
+            variant="primary-outline"
+            class="w-full text-white hover:text-white text-base leading-5 py-2.5"
+          >
+            {{ $t('account.qrDeposit.bridge') }}
+          </AppButton>
+        </PartialsCommonBridgeRedirection>
       </div>
     </section>
   </AppModal>
