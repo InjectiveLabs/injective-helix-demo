@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { InitialStatusKey } from '@/types'
 
 useHead({
   bodyAttrs: {
@@ -66,14 +67,7 @@ watch(
   }
 )
  */
-
-watch(isActiveTab, (isActive) => {
-  if (!isActive) {
-    return
-  }
-
-  streamProvider.healthCheck()
-})
+provide(InitialStatusKey, status)
 
 useIntervalFn(
   () =>
@@ -83,12 +77,17 @@ useIntervalFn(
     ]),
   30 * 1000
 )
+watch(isActiveTab, (isActive) => {
+  if (!isActive) {
+    return
+  }
+
+  streamProvider.healthCheck()
+})
 </script>
 
 <template>
-  <AppHocLoading is-helix wrapper-class="h-screen" :status="status">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </AppHocLoading>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

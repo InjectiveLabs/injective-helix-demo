@@ -9,8 +9,9 @@ import {
   Modal,
   MainPage,
   TradeSubPage,
-  LeaderboardSubPage,
+  InitialStatusKey,
   PortfolioStatusKey,
+  LeaderboardSubPage,
   LiquidityRewardsPage
 } from '@/types'
 
@@ -25,6 +26,8 @@ const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
+const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
+
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
@@ -38,10 +41,12 @@ const showFooter = computed(() =>
   ].includes(route.name as MainPage)
 )
 
-onWalletConnected(() => {
+onWalletConnected(async () => {
   portfolioStatus.setLoading()
 
   mixpanelAnalytics.init()
+
+  await until(initialStatus).toMatch((status) => status.isIdle())
 
   Promise.all([
     fetchUserPortfolio(),
@@ -142,23 +147,29 @@ useIntervalFn(
     ]"
   >
     <LayoutNavbar />
-    <main class="relative mt-[56px] pb-6">
-      <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-      <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-      <LayoutTeslaCompetitionBanner
-        v-if="route.name !== LeaderboardSubPage.Competition"
-      />
+    <AppHocLoading
+      is-helix
+      wrapper-class="h-screen"
+      :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
+    >
+      <main class="relative mt-[56px] pb-6">
+        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
+        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+        <LayoutTeslaCompetitionBanner
+          v-if="route.name !== LeaderboardSubPage.Competition"
+        />
 
-      <ModalsCompetitionWinner
-        v-if="
-          sharedWalletStore.isUserConnected &&
-          sharedWalletStore.walletConnectStatus !==
-            WalletConnectStatus.disconnecting
-        "
-      />
+        <ModalsCompetitionWinner
+          v-if="
+            sharedWalletStore.isUserConnected &&
+            sharedWalletStore.walletConnectStatus !==
+              WalletConnectStatus.disconnecting
+          "
+        />
 
-      <slot v-bind="{ portfolioStatus }" />
-    </main>
+        <slot v-bind="{ portfolioStatus }" />
+      </main>
+    </AppHocLoading>
 
     <ModalsNinjaPassWinner />
     <!-- hide survey for now but can be resurrected and modified for future surveys -->

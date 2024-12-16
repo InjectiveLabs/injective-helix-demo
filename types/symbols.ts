@@ -25,4 +25,5 @@ export const OrderbookStatusKey = Symbol(
 ) as InjectionKey<Status>
 
 export const IsSpotKey = Symbol('isSpot') as InjectionKey<boolean>
+export const InitialStatusKey = Symbol('InitialStatus') as InjectionKey<Status>
 export const AggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>

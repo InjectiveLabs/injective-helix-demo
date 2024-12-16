@@ -140,13 +140,13 @@ async function downloadImage() {
       <AppButton
         variant="primary-outline"
         :class="[
-          'bottom-4 right-4 flex justify-center items-center gap-2 w-[132px] h-[45px] rounded-lg text-white ',
+          'bottom-4 right-4 flex justify-center items-center gap-2 w-[115px] h-10 rounded-lg text-white p-2',
           status.isLoading() ? '[&>span]:hidden' : ''
         ]"
         :is-loading="status.isLoading()"
         @click="downloadImage"
       >
-        <p class="text-sm leading-relaxed font-medium">
+        <p class="text-sm leading-none font-medium">
           {{ $t('points.share') }}
         </p>
         <UIcon :name="NuxtUiIcons.Download2" class="size-5" />

@@ -120,7 +120,9 @@ export default <Partial<Config>>{
       },
 
       minHeight: {
-        ...extraSizings
+        ...extraSizings,
+        screenMinusHeader: 'calc(100% - 56px)',
+        vhMinusHeader: 'calc(100vh - 56px)'
       },
 
       width: {

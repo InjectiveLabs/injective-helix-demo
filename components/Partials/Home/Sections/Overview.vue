@@ -7,10 +7,10 @@ enum OverviewSection {
 }
 
 const imgList = {
-  [OverviewSection.TradingBots]: '/images/home/tradingBots.png',
-  [OverviewSection.AccountOverview]: '/images/home/AccountsOverview.png',
-  [OverviewSection.Pnl]: '/images/home/PnL.png',
-  [OverviewSection.GasFree]: '/images/home/gasFee.png'
+  [OverviewSection.TradingBots]: '/images/home/tradingBots.webp',
+  [OverviewSection.AccountOverview]: '/images/home/AccountsOverview.webp',
+  [OverviewSection.Pnl]: '/images/home/PnL.webp',
+  [OverviewSection.GasFree]: '/images/home/gasFee.webp'
 }
 
 const activeType = ref(OverviewSection.AccountOverview)

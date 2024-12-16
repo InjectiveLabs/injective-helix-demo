@@ -8,10 +8,6 @@ import {
   UiDerivativeMarket
 } from '@/types'
 
-definePageMeta({
-  middleware: ['orderbook']
-})
-
 const route = useRoute()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
