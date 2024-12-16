@@ -56,7 +56,7 @@ onMounted(() => {
           :style="{
             aspectRatio: 1264 / 828
           }"
-          src="/images/helix-platform-long.png"
+          src="/images/helix-platform-long.webp"
           class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
           s
           alt=""

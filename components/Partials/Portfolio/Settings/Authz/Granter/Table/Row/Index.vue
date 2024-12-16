@@ -30,7 +30,9 @@ function connectAuthZ() {
       <span class="font-mono">{{ formatWalletAddress(granter) }}</span>
     </div>
 
-    <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>
+    <div class="xs:flex-1 max-xs:w-10 flex items-center p-2">
+      {{ grants.length }}
+    </div>
 
     <div
       class="flex-1 flex items-center p-2 space-x-2 hover:text-blue-500 rounded-md cursor-pointer select-none"
@@ -60,7 +62,13 @@ function connectAuthZ() {
         {{ $t('common.notAvailableinAutoSignMode') }}
       </AppButton>
 
-      <AppButton v-else variant="success" size="sm" @click.stop="connectAuthZ">
+      <AppButton
+        v-else
+        variant="success"
+        size="sm"
+        class="text-nowrap px-2"
+        @click.stop="connectAuthZ"
+      >
         {{ $t('portfolio.settings.authz.connectAs') }}
       </AppButton>
     </div>
