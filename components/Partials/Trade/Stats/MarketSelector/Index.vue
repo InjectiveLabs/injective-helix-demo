@@ -11,12 +11,16 @@ import {
 
 const props = withDefaults(
   defineProps<{
+    isMarketOpen?: boolean
     market: UiMarketWithToken
   }>(),
   {}
 )
 
-const appStore = useAppStore()
+const emit = defineEmits<{
+  'update:isMarketOpen': [value: boolean]
+}>()
+
 const isSpot = inject(IsSpotKey)
 const isLocked = useScrollLock(document.documentElement)
 
@@ -53,31 +57,18 @@ const marketPriceMap = computed(() => ({
 }))
 
 function toggleOpen() {
-  appStore.marketsOpen = !appStore.marketsOpen
-}
+  const value = !props.isMarketOpen
 
-onClickOutside(
-  el,
-  () => {
-    closeMarketSection()
-  },
-  { ignore: [toggleEl] }
-)
+  isLocked.value = value
+  emit('update:isMarketOpen', value)
+}
 
 function closeMarketSection() {
-  appStore.marketsOpen = false
+  isLocked.value = false
+  emit('update:isMarketOpen', false)
 }
 
-watch(
-  () => appStore.marketsOpen,
-  (isOpen) => {
-    isLocked.value = isOpen
-  }
-)
-
-onUnmounted(() => {
-  appStore.marketsOpen = false
-})
+onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
 </script>
 
 <template>
@@ -167,13 +158,13 @@ onUnmounted(() => {
     </div>
 
     <div
-      v-if="appStore.marketsOpen"
+      v-if="isMarketOpen"
       class="absolute backdrop-blur-sm top-full z-30 w-screen left-0 flex"
       @keydown.escape="closeMarketSection"
     >
       <div
         ref="el"
-        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-108px)] max-xl:h-[calc(100vh-176px)] max-lg:h-[calc(100vh-308px)] max-xs:h-[calc(100vh-285px)]"
+        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-131px)] sm:h-[calc(100vh-272px)] lg:h-[calc(100vh-185px)] xl:h-[calc(100vh-140px)]"
         @click.stop
       >
         <PartialsTradeStatsMarketSelectorPanel v-bind="{ marketPriceMap }" />

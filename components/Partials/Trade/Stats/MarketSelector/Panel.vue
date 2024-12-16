@@ -56,7 +56,7 @@ function resetCategory() {
   <div class="relative">
     <div class="z-10 sticky top-0 bg-brand-900 border-b">
       <div class="p-2 space-y-2">
-        <div class="border-b py-2">
+        <div class="sm:border-b sm:py-2">
           <label class="flex rounded p-1">
             <div class="flex items-center text-coolGray-500">
               <UIcon :name="NuxtUiIcons.Search" class="h-6 w-6 min-w-6" />
@@ -75,6 +75,7 @@ function resetCategory() {
         </div>
 
         <div
+          v-if="sm"
           class="flex max-md:flex-col max-md:items-start gap-2 justify-between"
         >
           <div class="sm:flex gap-2 flex-wrap justify-between max-sm:w-full">
@@ -113,7 +114,7 @@ function resetCategory() {
             </div>
           </div>
 
-          <AppCheckbox2 v-model="isLowVolumeMarketsVisible">
+          <AppCheckbox2 v-model="isLowVolumeMarketsVisible" no-wrap>
             {{ $t('markets.showLowVol') }}
           </AppCheckbox2>
         </div>
