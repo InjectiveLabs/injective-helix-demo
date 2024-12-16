@@ -110,7 +110,7 @@ function resetCategory() {
 
           <div class="flex justify-between max-xl:w-full">
             <label
-              class="flex items-center border border-transparent rounded-md p-1 max-xs:w-full"
+              class="flex items-center border border-transparent rounded-md p-1 max-xs:w-full max-xs:flex-1"
             >
               <input
                 v-model="search"
