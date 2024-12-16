@@ -44,8 +44,8 @@ export const streamOrderbookUpdate = ({
   const streamFn =
     spotMarketStream.streamSpotOrderbookUpdate.bind(spotMarketStream)
   const streamFnArgs = {
-    marketIds: [marketId],
     callback,
+    marketIds: [marketId],
     ...(onResetCallback && { onResetCallback })
   }
 
@@ -67,8 +67,8 @@ export const streamTrades = ({
 }) => {
   const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
-    marketId,
     callback,
+    marketId,
     executionSide: TradeExecutionSide.Taker,
     ...(onResetCallback && { onResetCallback })
   }
@@ -93,9 +93,9 @@ export const streamSubaccountTrades = ({
 }) => {
   const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback,
     ...(onResetCallback && { onResetCallback })
   }
 
@@ -119,9 +119,9 @@ export const streamSubaccountOrders = ({
 }) => {
   const streamFn = spotMarketStream.streamSpotOrders.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback,
     ...(onResetCallback && { onResetCallback })
   }
 
@@ -146,9 +146,9 @@ export const streamSubaccountOrderHistory = ({
   const streamFn =
     spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback,
     ...(onResetCallback && { onResetCallback })
   }
 

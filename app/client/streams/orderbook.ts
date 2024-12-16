@@ -23,8 +23,8 @@ export const streamSpotOrderbookUpdate = ({
   const streamFn =
     spotMarketStream.streamSpotOrderbookUpdate.bind(spotMarketStream)
   const streamFnArgs = {
-    marketIds: [marketId],
     callback,
+    marketIds: [marketId],
     ...(onResetCallback && { onResetCallback })
   }
 
@@ -48,8 +48,8 @@ export const streamDerivativeOrderbookUpdate = ({
     derivativesMarketStream
   )
   const streamFnArgs = {
-    marketIds: [marketId],
     callback,
+    marketIds: [marketId],
     ...(onResetCallback && { onResetCallback })
   }
 

@@ -36,6 +36,8 @@ const GRPC_ERROR_CODES = {
 
 const MAX_RECONNECTION = 2
 
+const DEFAULT_REFRESH_INTERVAL = 30
+
 const streamRefreshInterval: Partial<Record<StreamType, number>> = {
   [StreamType.BankBalance]: 60,
   [StreamType.SubaccountBalances]: 60
@@ -165,7 +167,8 @@ export class StreamProvider {
         new Date(),
         value.updatedAt
       )
-      const refreshInterval = streamRefreshInterval[key] || 30
+      const refreshInterval =
+        streamRefreshInterval[key] || DEFAULT_REFRESH_INTERVAL
 
       if (inactiveTimeInSeconds > refreshInterval) {
         this.reconnect(key)

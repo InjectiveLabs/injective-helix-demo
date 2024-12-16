@@ -109,10 +109,10 @@ export const streamSubaccountTrades = ({
     derivativesMarketStream
   )
   const streamFnArgs = {
+    callback,
     ...(marketId && { marketId }),
     ...(subaccountId && { subaccountId }),
-    ...(onResetCallback && { onResetCallback }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -137,10 +137,10 @@ export const streamSubaccountOrders = ({
     derivativesMarketStream
   )
   const streamFnArgs = {
+    callback,
     ...(marketId && { marketId }),
     ...(subaccountId && { subaccountId }),
-    ...(onResetCallback && { onResetCallback }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -165,10 +165,10 @@ export const streamSubaccountOrderHistory = ({
     derivativesMarketStream
   )
   const streamFnArgs = {
+    callback,
     ...(marketId && { marketId }),
     ...(subaccountId && { subaccountId }),
-    ...(onResetCallback && { onResetCallback }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -196,11 +196,11 @@ export const streamSubaccountPositions = ({
   )
 
   const streamFnArgs = {
+    callback,
     ...(address && { address }),
     ...(marketId && { marketId }),
     ...(subaccountId && { subaccountId }),
-    ...(onResetCallback && { onResetCallback }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({

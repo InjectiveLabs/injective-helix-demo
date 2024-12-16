@@ -41,7 +41,7 @@ export const streamSubaccountBalance = ({
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
 
-  if (!sharedWalletStore.isUserConnected || accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
