@@ -1,8 +1,12 @@
 <script setup lang="ts">
 const props = withDefaults(
-  defineProps<{ isPlain?: boolean; modelValue: boolean; disabled?: boolean }>(),
+  defineProps<{
+    noWrap?: boolean
+    isPlain?: boolean
+    disabled?: boolean
+    modelValue: boolean
+  }>(),
   {
-    disabled: false,
     modelValue: false
   }
 )
@@ -20,7 +24,7 @@ const id = Math.random().toString()
 </script>
 
 <template>
-  <div class="checkbox-wrapper-4 flex items-center">
+  <div class="checkbox-wrapper-4 flex" :class="{ 'items-center': !noWrap }">
     <input
       :id="id"
       v-model="value"
@@ -28,13 +32,20 @@ const id = Math.random().toString()
       class="inp-cbx"
       type="checkbox"
     />
-    <label class="cbx" :for="id">
+    <label
+      class="cbx"
+      :class="[noWrap ? 'flex flex-nowrap' : 'inline-block']"
+      :for="id"
+    >
       <span>
         <svg width="12px" height="10px">
           <use xlink:href="#check-4"></use>
         </svg>
       </span>
-      <span class="text-xs" :class="{ 'font-medium': isPlain }">
+      <span
+        class="text-xs"
+        :class="{ 'font-medium': isPlain, 'whitespace-nowrap': noWrap }"
+      >
         <slot />
       </span>
     </label>
@@ -58,7 +69,6 @@ const id = Math.random().toString()
   border-radius: 6px;
   overflow: hidden;
   transition: all 0.2s ease;
-  display: inline-block;
 }
 .checkbox-wrapper-4 .cbx:not(:last-child) {
   margin-right: 6px;

@@ -7,11 +7,25 @@ withDefaults(
   }>(),
   {}
 )
+
+const breakpoints = useBreakpointsTw()
+
+const sm = breakpoints.sm
+
+const isMarketOpen = ref(false)
 </script>
 
 <template>
   <div class="lg:flex lg:flex-col xl:flex-row relative max-lg:divide-y">
-    <PartialsTradeStatsMarketSelector v-bind="{ market }" class="lg:h-header" />
-    <PartialsTradeStatsInfo v-bind="{ market }" class="pl-2" />
+    <PartialsTradeStatsMarketSelector
+      v-model:is-market-open="isMarketOpen"
+      v-bind="{ market }"
+      class="lg:h-header"
+    />
+    <PartialsTradeStatsInfo
+      v-show="!isMarketOpen || sm"
+      v-bind="{ market }"
+      class="pl-2"
+    />
   </div>
 </template>
