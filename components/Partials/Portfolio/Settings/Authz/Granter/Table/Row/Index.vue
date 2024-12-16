@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { formatWalletAddress } from '@injectivelabs/utils'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -26,7 +27,7 @@ function connectAuthZ() {
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
     <div class="flex-1 flex items-center p-2">
-      <span class="font-mono">{{ granter }}</span>
+      <span class="font-mono">{{ formatWalletAddress(granter) }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>

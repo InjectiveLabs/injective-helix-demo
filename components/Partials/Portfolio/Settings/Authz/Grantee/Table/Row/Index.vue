@@ -4,7 +4,7 @@ import {
   GrantAuthorizationType,
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 
 const props = withDefaults(
@@ -51,7 +51,9 @@ function revokeAll() {
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
     <div class="flex-1 flex items-center p-2 truncate min-w-0">
-      <span class="font-mono truncate min-w-0">{{ grantee }}</span>
+      <span class="font-mono truncate min-w-0">{{
+        formatWalletAddress(grantee)
+      }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>
