@@ -67,10 +67,6 @@ watch(
 )
  */
 
-function streamHealthCheck() {
-  streamProvider.healthCheck()
-}
-
 watch(isActiveTab, (isActive) => {
   if (!isActive) {
     return
@@ -94,8 +90,5 @@ useIntervalFn(
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <SharedWhiteboard>
-      <AppButton @click="streamHealthCheck">Stream health check</AppButton>
-    </SharedWhiteboard>
   </AppHocLoading>
 </template>
