@@ -56,7 +56,9 @@ function revokeAll() {
       }}</span>
     </div>
 
-    <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>
+    <div class="xs:flex-1 max-xs:w-10 flex items-center p-2">
+      {{ grants.length }}
+    </div>
 
     <div
       class="flex-1 flex items-center p-2 space-x-2 hover:text-blue-500 rounded-md cursor-pointer select-none"
@@ -69,7 +71,7 @@ function revokeAll() {
       <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2" @click.stop>
+    <div class="xs:flex-1 flex items-center p-2" @click.stop>
       <AppButton
         v-if="
           sharedWalletStore.isAuthzWalletConnected ||
@@ -80,6 +82,7 @@ function revokeAll() {
         :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
         size="sm"
         disabled
+        class="text-nowrap px-2"
       >
         {{ $t('portfolio.settings.authz.revokeAll') }}
       </AppButton>
@@ -89,6 +92,7 @@ function revokeAll() {
         v-bind="{ status }"
         :variant="'danger-ghost'"
         size="sm"
+        class="text-nowrap px-2"
         @click="revokeAll"
       >
         {{ $t('portfolio.settings.authz.revokeAll') }}
