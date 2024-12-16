@@ -92,6 +92,23 @@ async function createLiquidityBot() {
       quoteAmount: liquidityFormValues.value[LiquidityBotField.QuoteAmount]
     })
     .then(() => {
+      EventTracker.trackCreateStrategy({
+        market: props.market.slug,
+        isLiquidity: true,
+        formValues: {
+          baseInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.BaseAmount],
+          quoteInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount],
+          lowerPrice: props.liquidityValues.lowerBound.toFixed(),
+          upperPrice: props.liquidityValues.upperBound.toFixed(),
+          trailingLower: props.liquidityValues.trailingLowerBound.toFixed(),
+          trailingUpper: props.liquidityValues.trailingUpperBound.toFixed(),
+          grids: String(props.liquidityValues.grids)
+        },
+        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed()
+      })
+
       status.setIdle()
     })
     .catch((e) => {
