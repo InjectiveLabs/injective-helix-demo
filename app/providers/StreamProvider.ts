@@ -160,7 +160,7 @@ export class StreamProvider {
   }
 
   public healthCheck() {
-    this.streamManager.entries().forEach(([key, value]) => {
+    this.streamManager.entries().forEach(([key, value]: [StreamType, any]) => {
       const inactiveTimeInSeconds = differenceInSeconds(
         new Date(),
         value.updatedAt
