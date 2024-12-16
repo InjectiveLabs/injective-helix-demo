@@ -33,7 +33,7 @@ withDefaults(
             :max-decimal-places="market.priceDecimals"
             :amount="lastTradedPrice.toFixed()"
           />
-          {{ market.quoteToken.symbol }}
+          <span>{{ market.quoteToken.symbol }}</span>
         </p>
         <span
           v-if="marketReward"
