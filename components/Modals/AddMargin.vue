@@ -46,7 +46,7 @@ const quoteBalance = computed(() => {
   )
 
   return sharedToBalanceInToken({
-    value: quoteBalance?.availableMargin || '0',
+    value: quoteBalance?.availableBalance || '0',
     decimalPlaces: market.value.quoteToken.decimals
   })
 })

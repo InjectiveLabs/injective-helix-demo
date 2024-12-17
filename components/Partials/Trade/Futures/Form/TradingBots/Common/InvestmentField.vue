@@ -27,11 +27,11 @@ withDefaults(
   }
 )
 
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const accountBalance = computed(
   () =>
-    aggregatedPortfolioBalances.value[
+    subaccountPortfolioBalanceMap.value[
       sharedWalletStore.authZOrDefaultSubaccountId
     ]
 )

@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { format, formatDistance } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   durationFormatter,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
+
+const spotStore = useSpotStore()
+const gridStrategyStore = useGridStrategyStore()
+const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
@@ -22,12 +27,6 @@ const props = withDefaults(
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
-
-const spotStore = useSpotStore()
-const gridStrategyStore = useGridStrategyStore()
-const sharedWalletStore = useSharedWalletStore()
-const { $onError } = useNuxtApp()
-
 const now = useNow({ interval: 1000 })
 
 const lastTradedPrice = ref(ZERO_IN_BASE)
@@ -70,7 +69,7 @@ const duration = computed(() =>
   formatDistance(Number(props.strategy.createdAt), now.value.getTime())
 )
 
-const gridStrategySubaccountId = computed(() =>
+const marketSubaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
     market.value.slug
@@ -85,7 +84,7 @@ function removeStrategy() {
   gridStrategyStore
     .removeStrategyForSubaccount(
       props.strategy.contractAddress,
-      gridStrategySubaccountId.value
+      marketSubaccountId.value
     )
     .catch((e) => {
       err = e
@@ -139,16 +138,16 @@ useIntervalFn(
       upperBound,
       lowerBound,
       takeProfit,
+      removeStatus,
       percentagePnl,
       removeStrategy,
-      removeStatus,
       stopBaseQuantity,
       stopQuoteQuantity,
+      marketSubaccountId,
       creationBaseQuantity,
       creationQuoteQuantity,
       creationExecutionPrice,
       subscriptionBaseQuantity,
-      gridStrategySubaccountId,
       subscriptionQuoteQuantity
     }"
   />

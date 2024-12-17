@@ -38,12 +38,12 @@ const setBaseAmount = useSetFieldValue(
 const setQuoteAmount = useSetFieldValue(
   SpotGridTradingField.QuoteInvestmentAmount
 )
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 const { lastTradedPrice } = useSpotLastPrice(market)
 
 const accountBalance = computed(
   () =>
-    aggregatedPortfolioBalances.value[
+    subaccountPortfolioBalanceMap.value[
       sharedWalletStore.authZOrDefaultSubaccountId
     ]
 )

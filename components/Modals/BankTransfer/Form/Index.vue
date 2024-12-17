@@ -53,11 +53,11 @@ const { value: doubleCheck } = useBooleanField({
 
 const balances = computed(() => {
   const balances = userBalancesWithToken.value.map(
-    ({ denom, token, availableMargin }) => {
+    ({ denom, token, availableBalance }) => {
       return {
         denom,
         token,
-        balance: availableMargin
+        balance: availableBalance
       }
     }
   )

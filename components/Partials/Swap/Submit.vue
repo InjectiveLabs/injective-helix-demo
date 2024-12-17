@@ -117,7 +117,7 @@ const selectedTokenBalance = computed(() => {
   )
 
   return inputToken.value
-    ? new BigNumberInWei(balance?.availableMargin || '').toBase(
+    ? new BigNumberInWei(balance?.availableBalance || '').toBase(
         inputToken.value.token.decimals
       )
     : new BigNumberInBase(0)

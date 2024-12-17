@@ -8,6 +8,10 @@ export interface SubaccountBalance {
   totalBalance: string
 }
 
+export interface SubaccountBalanceWithInOrder extends SubaccountBalance {
+  inOrderBalance: string
+}
+
 export type AccountBalance = Omit<
   SharedBalanceInUsdWithTokenAndPrice,
   'balance'
@@ -16,19 +20,16 @@ export type AccountBalance = Omit<
   // Bank balance
   bankBalance: string
   // the available balance for the subaccount, defaults to 0 for the default subaccount
+  // for the default subaccount its the bank balance
   availableBalance: string
-  // for the default subaccount its the reservedBalance, for the others its available + reserved
+  // the total balance -  bank + available + inOrderBalance + unrealizedPnL
+  // non default subaccount - available + inOrderBalance + unrealizedPnL
   totalBalance: string
   // The unrealized PnL from open positions
   unrealizedPnl: string
   // Balance in orders (total - available from the subaccount)
   inOrderBalance: string
-  // the available margin depending on the subaccount (bank for default, subaccount available for non-default)
-  availableMargin: string
-
-  // The total balance of the account - bank + available + inOrderBalance + unrealizedPnL
-  accountTotalBalance: string
-  accountTotalBalanceInUsd: string
+  totalBalanceInUsd: string
 }
 
 export type AccountBalanceWithAggregatedType = AccountBalance & {

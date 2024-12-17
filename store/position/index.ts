@@ -28,6 +28,16 @@ const initialStateFactory = (): PositionStoreState => ({
 export const usePositionStore = defineStore('position', {
   state: (): PositionStoreState => initialStateFactory(),
   getters: {
+    positionsBySubaccountId: (state) => (subaccountId: string) => {
+      const derivativeStore = useDerivativeStore()
+
+      return state.positions.filter(
+        (position) =>
+          position.subaccountId === subaccountId &&
+          derivativeStore.activeMarketIds.includes(position.marketId)
+      )
+    },
+
     subaccountPositions: (state) => {
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()

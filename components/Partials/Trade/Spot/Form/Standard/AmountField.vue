@@ -75,7 +75,7 @@ const {
   computed(() => {
     const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.baseToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return sharedToBalanceInToken({
       value: balance || 0,
@@ -91,7 +91,7 @@ const {
   computed(() => {
     const balance = userBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return sharedToBalanceInToken({
       value: balance || 0,

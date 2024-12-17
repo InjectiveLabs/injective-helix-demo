@@ -12,14 +12,16 @@ enum ShowcaseTab {
 
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const selectedTab = ref(ShowcaseTab.Spot)
 const status = reactive(new Status(StatusType.Loading))
 const strategies = ref<TradingStrategy[]>([])
-const { $onError } = useNuxtApp()
 
 const formattedStrategies = useSpotGridStrategies(
-  computed(() => strategies.value)
+  computed(() => strategies.value),
+  subaccountPortfolioBalanceMap
 )
 
 const items = [

@@ -59,7 +59,7 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
       }
 
       return toBalanceInToken({
-        value: balance.accountTotalBalance,
+        value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })
     })

@@ -6,13 +6,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 
 const { t } = useLang()
-const {
-  stakedAmount,
-  stakedAmountInUsd,
-  showUnverifiedAssets,
-  userBalancesWithToken,
-  verifiedHoldingsWithToken
-} = useBalance()
+const { stakedAmount, stakedAmountInUsd, userBalancesWithToken } = useBalance()
 const { lg } = useTwBreakpoints()
 const breakpoints = useBreakpointsTw()
 
@@ -27,9 +21,7 @@ const props = withDefaults(
   }
 )
 
-const { rows } = useBalanceTransformer(
-  showUnverifiedAssets.value ? userBalancesWithToken : verifiedHoldingsWithToken
-)
+const { rows } = useBalanceTransformer(userBalancesWithToken)
 
 const fourXl = breakpoints['4xl']
 

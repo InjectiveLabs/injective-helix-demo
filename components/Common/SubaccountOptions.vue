@@ -19,7 +19,7 @@ const props = withDefaults(
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 onMounted(() => {
   const isSubaccountOptionAvailable = subaccountOptionsFiltered.value.some(
@@ -38,7 +38,7 @@ onMounted(() => {
 })
 
 const subaccountOptions = computed(() =>
-  Object.keys(aggregatedPortfolioBalances.value)
+  Object.keys(subaccountPortfolioBalanceMap.value)
     .map((value) => {
       if (getSubaccountIndex(value) === 0) {
         return { display: `${t('account.main')}`, value }
@@ -74,11 +74,9 @@ const subaccountOptionsFiltered = computed(() =>
     const includeBotsSubaccounts =
       props.includeBotsSubaccounts || !isBotsSubaccount
 
-    const hasBalance = aggregatedPortfolioBalances.value[subaccountId]?.some(
+    const hasBalance = subaccountPortfolioBalanceMap.value[subaccountId]?.some(
       (balance) =>
-        new BigNumberInBase(balance.accountTotalBalance).gte(
-          DUST_AMOUNT_THRESHOLD
-        )
+        new BigNumberInBase(balance.totalBalance).gte(DUST_AMOUNT_THRESHOLD)
     )
 
     const includeLowBalance =
@@ -101,8 +99,8 @@ const activeSubaccountLabel = computed(
 <template>
   <slot
     v-bind="{
-      subaccountOptions: subaccountOptionsFiltered,
-      activeSubaccountLabel
+      activeSubaccountLabel,
+      subaccountOptions: subaccountOptionsFiltered
     }"
   />
 </template>

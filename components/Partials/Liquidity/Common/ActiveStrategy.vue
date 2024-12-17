@@ -8,11 +8,10 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
-  durationFormatter,
-  addressAndMarketSlugToSubaccountId
-} from '@/app/utils/helpers'
+import { durationFormatter } from '@/app/utils/helpers'
 import { StopReason, StrategyStatus, UiSpotMarket } from '@/types'
+
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
   defineProps<{
@@ -20,21 +19,15 @@ const props = withDefaults(
     isLiquidity?: boolean
     activeStrategy: TradingStrategy
   }>(),
-  {
-    isLiquidity: false
-  }
+  {}
 )
 
-const sharedWalletStore = useSharedWalletStore()
-
-const { aggregatedPortfolioBalances } = useBalance()
-
-const market = computed(() => props.market)
-
-const { percentagePnl, pnl, investment } = useActiveGridStrategy(
-  market,
-  computed(() => props.activeStrategy)
-)
+const { percentagePnl, pnl, investment, marketSubaccountBalances } =
+  useActiveGridStrategy(
+    computed(() => props.market),
+    computed(() => props.activeStrategy),
+    subaccountPortfolioBalanceMap
+  )
 
 const {
   stopLoss,
@@ -47,32 +40,15 @@ const {
   subscriptionBaseQuantity,
   subscriptionQuoteQuantity
 } = useActiveGridStrategyTransformer(
-  market,
+  computed(() => props.market),
   computed(() => props.activeStrategy)
 )
 
 const now = ref(Date.now())
 
-const marketSubaccountId = computed(() =>
-  addressAndMarketSlugToSubaccountId(
-    sharedWalletStore.address,
-    market.value.slug
-  )
-)
-
-const subaccountBalances = computed(
-  () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
-)
-
 const accountTotalBalanceInUsd = computed(() =>
-  (subaccountBalances.value || []).reduce(
-    (total, balance) =>
-      total.plus(
-        sharedToBalanceInTokenInBase({
-          value: balance.accountTotalBalanceInUsd,
-          decimalPlaces: balance.token.decimals
-        })
-      ),
+  (marketSubaccountBalances.value || []).reduce(
+    (total, balance) => total.plus(balance.totalBalanceInUsd),
     ZERO_IN_BASE
   )
 )
@@ -101,26 +77,26 @@ const totalAmount = computed(() => {
 })
 
 const currentBaseBalance = computed(() => {
-  if (!subaccountBalances.value) return ZERO_IN_BASE
+  if (!marketSubaccountBalances.value) return ZERO_IN_BASE
 
   return sharedToBalanceInTokenInBase({
     value:
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value.baseDenom
+      marketSubaccountBalances.value.find(
+        (balance) => balance.denom === props.market.baseDenom
       )?.totalBalance || 0,
-    decimalPlaces: market.value.baseToken.decimals
+    decimalPlaces: props.market.baseToken.decimals
   })
 })
 
 const currentQuoteBalance = computed(() => {
-  if (!subaccountBalances.value) return ZERO_IN_BASE
+  if (!marketSubaccountBalances.value) return ZERO_IN_BASE
 
   return sharedToBalanceInTokenInBase({
     value:
-      subaccountBalances.value.find(
-        (balance) => balance.denom === market.value.quoteDenom
+      marketSubaccountBalances.value.find(
+        (balance) => balance.denom === props.market.quoteDenom
       )?.totalBalance || 0,
-    decimalPlaces: market.value.quoteToken.decimals
+    decimalPlaces: props.market.quoteToken.decimals
   })
 })
 

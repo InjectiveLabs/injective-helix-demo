@@ -13,12 +13,12 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
   const rows = computed(() => {
     const sortedBalances = balances.value.sort((a, b) => {
       const aBalanceInToken = sharedToBalanceInTokenInBase({
-        value: a.accountTotalBalanceInUsd,
+        value: a.totalBalanceInUsd,
         decimalPlaces: a.token.decimals
       })
 
       const bBalanceInToken = sharedToBalanceInTokenInBase({
-        value: b.accountTotalBalanceInUsd,
+        value: b.totalBalanceInUsd,
         decimalPlaces: b.token.decimals
       })
 
@@ -47,19 +47,16 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         : accountStore.isSgtSubaccount
 
       const availableAmount = sharedToBalanceInTokenInBase({
-        value: balance.availableMargin,
+        value: balance.availableBalance,
         decimalPlaces: balance.token.decimals
       })
 
       const totalAmount = sharedToBalanceInTokenInBase({
-        value: balance.accountTotalBalance,
+        value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })
 
-      const totalAmountInUsd = sharedToBalanceInTokenInBase({
-        value: balance.accountTotalBalanceInUsd,
-        decimalPlaces: balance.token.decimals
-      })
+      const totalAmountInUsd = balance.totalBalanceInUsd
 
       const usedOrReserved = sharedToBalanceInTokenInBase({
         value: balance.inOrderBalance,
@@ -81,10 +78,6 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
           UI_DEFAULT_DISPLAY_DECIMALS,
           BigNumberInBase.ROUND_DOWN
         ),
-        [BalanceTableColumn.TotalUsd]: totalAmountInUsd.toFixed(
-          UI_DEFAULT_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_DOWN
-        ),
         [BalanceTableColumn.Available]: availableAmount.eq(0)
           ? ''
           : availableAmount.toFixed(
@@ -102,7 +95,10 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
           : usedOrReserved.toFixed(
               UI_DEFAULT_DISPLAY_DECIMALS,
               BigNumberInBase.ROUND_DOWN
-            )
+            ),
+        [BalanceTableColumn.TotalUsd]: new BigNumberInBase(
+          totalAmountInUsd
+        ).toFixed(UI_DEFAULT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
       }
     })
   })

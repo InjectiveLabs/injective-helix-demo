@@ -11,7 +11,7 @@ const router = useRouter()
 const walletStore = useWalletStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
-const { accountTotalBalanceInUsd } = useBalance()
+const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
 const formattedAddress = computed(() =>
   formatWalletAddress(
@@ -122,7 +122,7 @@ function disconnect() {
                 <span>$</span>
                 <AppUsdAmount
                   v-bind="{
-                    amount: accountTotalBalanceInUsd.toFixed(),
+                    amount: aggregatedSubaccountTotalBalanceInUsd.toFixed(),
                     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                   }"
                 />
