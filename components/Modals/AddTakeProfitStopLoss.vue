@@ -365,7 +365,7 @@ watch(
           v-bind="{ status: cancelTpStatus }"
           @click="cancelTp"
         >
-          Cancel Take Profit
+          {{ $t('trade.cancelTakeProfit') }}
         </AppButton>
 
         <div class="border-b"></div>
@@ -431,7 +431,7 @@ watch(
           v-bind="{ status: cancelSlStatus }"
           @click="cancelSl"
         >
-          Cancel Stop Loss
+          {{ $t('trade.cancelStopLoss') }}
         </AppButton>
       </div>
 
