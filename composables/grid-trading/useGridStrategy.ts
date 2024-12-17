@@ -44,7 +44,7 @@ export const useSpotGridStrategies = (
       )!
 
       const subaccountId = addressAndMarketSlugToSubaccountId(
-        sharedWalletStore.address,
+        sharedWalletStore.authZOrAddress,
         market.slug
       )
 

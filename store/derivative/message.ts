@@ -116,6 +116,13 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
+
+  backupPromiseCall(() =>
+    Promise.all([
+      derivativeStore.fetchSubaccountOrders(),
+      derivativeStore.fetchSubaccountConditionalOrders()
+    ])
+  )
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {

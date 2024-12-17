@@ -146,6 +146,8 @@ export default {
     takeProfitStopLoss: 'Take Profit / Stop Loss',
     takeProfitStopLossForEntirePosition:
       'Take Profit / Stop Loss For Entire Position',
+    cancelTakeProfit: 'Cancel Take Profit',
+    cancelStopLoss: 'Cancel Stop Loss',
     lastPrice: 'Last Price',
     margin_tooltip: 'The total margin required to execute the trade.',
     emptyOrders: 'No orders found',

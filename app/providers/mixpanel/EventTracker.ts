@@ -128,6 +128,12 @@ export const trackCreateStrategy = ({
     ).toNumber(),
     'Market Price': new BigNumberInBase(marketPrice).toNumber(),
     Market: market,
+    'Trailing Upper Price': formValues[SpotGridTradingField.TrailingUpper]
+      ? new BigNumberInBase(formValues[SpotGridTradingField.TrailingUpper])
+      : undefined,
+    'Trailing Lower Price': formValues[SpotGridTradingField.TrailingLower]
+      ? new BigNumberInBase(formValues[SpotGridTradingField.TrailingLower])
+      : undefined,
 
     Page: isLiquidity
       ? MixPanelStrategyPage.LiquidityPage
