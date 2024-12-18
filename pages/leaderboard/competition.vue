@@ -249,7 +249,7 @@ watch(isCampaignStarted, (isStarted) => {
       </div>
     </AppHocLoading>
 
-    <ModalsLeaderboardTerms />
+    <ModalsLeaderboardTerms v-if="campaignStore.activeCampaign" />
   </div>
 </template>
 
