@@ -1,21 +1,20 @@
 import { defineStore } from 'pinia'
+import {
+  web3Client,
+  indexerRestExplorerApi,
+  indexerAccountPortfolioApi
+} from '@shared/Service'
+import {
+  Wallet,
+  isCosmosWallet,
+  WalletStrategy
+} from '@injectivelabs/wallet-ts'
 import { Coin } from '@injectivelabs/ts-types'
 import { usdtToken } from '@shared/data/token'
 import { getInjectiveAddress } from '@injectivelabs/sdk-ts'
 import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
-import {
-  Wallet,
-  isCosmosWallet,
-  WalletStrategy
-} from '@injectivelabs/wallet-ts'
-import {
-  web3Client,
-  indexerRestExplorerApi,
-  indexerAccountPortfolioApi
-} from '@shared/Service'
-import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   streamBankBalance,
   streamSubaccountBalance,
@@ -34,6 +33,7 @@ import {
   getNonDefaultSubaccountBalances
 } from '@/app/client/utils/account'
 import { getAccountDetails } from '@/app/services/account'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import { BusEvents, SubaccountBalance } from '@/types'
 
 type AccountStoreState = {

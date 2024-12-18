@@ -6,74 +6,50 @@ import {
   PerpOrdersStandardView
 } from '@/types'
 
-const accountStore = useAccountStore()
-const positionStore = usePositionStore()
 const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
-const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+const { $onError } = useNuxtApp()
+
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
+
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const isTickerOnly = ref(false)
 const view = ref(PerpOrdersStandardView.Positions)
 
-function fetchDerivativeOrders() {
-  if (!accountStore.subaccountId) {
-    return
-  }
+onSubaccountChange(refreshData)
+onUnmounted(() => derivativeStore.cancelSubaccountStream())
 
-  streamDerivativeOrders()
+function refreshData() {
+  const marketId = isTickerOnly.value ? market.value.marketId : undefined
+  const filters = marketId ? { filters: { marketIds: [marketId] } } : undefined
+
+  derivativeStore.cancelSubaccountStream()
 
   Promise.all([
-    derivativeStore.fetchSubaccountOrders(
-      isTickerOnly.value ? [market.value.marketId] : undefined
-    ),
-    derivativeStore.fetchSubaccountOrderHistory({
-      subaccountId: accountStore.subaccountId,
-      filters: {
-        marketIds: isTickerOnly.value
-          ? [market?.value?.marketId || '']
-          : undefined
-      }
-    }),
-    derivativeStore.fetchSubaccountTrades({
-      subaccountId: accountStore.subaccountId,
-      filters: {
-        marketIds: isTickerOnly.value
-          ? [market?.value?.marketId || '']
-          : undefined
-      }
-    }),
+    derivativeStore.fetchSubaccountTrades(filters),
     derivativeStore.fetchSubaccountConditionalOrders(
-      isTickerOnly.value ? [market?.value?.marketId || ''] : undefined
+      marketId ? [marketId] : undefined
     ),
-    positionStore.fetchSubaccountPositions({
-      filters: {
-        marketIds: isTickerOnly.value
-          ? [market?.value?.marketId || '']
-          : undefined
-      }
-    }),
-    activityStore.fetchSubaccountFundingHistory({
-      filters: {
-        marketIds: isTickerOnly.value
-          ? [market?.value?.marketId || '']
-          : undefined
-      }
-    })
-  ])
+    activityStore.fetchSubaccountFundingHistory(filters),
+    derivativeStore.fetchSubaccountOrderHistory(filters),
+    derivativeStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
+  ]).catch($onError)
+
+  derivativeStore.streamSubaccountOrders({
+    marketId,
+    onResetCallback: () =>
+      derivativeStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
+  })
+  derivativeStore.streamSubaccountTrades({
+    marketId,
+    onResetCallback: () => derivativeStore.fetchSubaccountTrades(filters)
+  })
+  derivativeStore.streamSubaccountOrderHistory({
+    marketId,
+    onResetCallback: () => derivativeStore.fetchSubaccountOrderHistory(filters)
+  })
 }
-
-function streamDerivativeOrders() {
-  derivativeStore.cancelStreams()
-
-  derivativeStore.streamSubaccountOrders(market.value.marketId)
-  derivativeStore.streamSubaccountOrderHistory(market.value.marketId)
-  derivativeStore.streamSubaccountTrades(market.value.marketId)
-}
-
-watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
-  immediate: true
-})
 </script>
 
 <template>
@@ -81,14 +57,44 @@ watch(() => [accountStore.subaccountId, market.value], fetchDerivativeOrders, {
     <PartialsTradeFuturesOrdersStandardHeader
       v-model="view"
       v-model:is-ticker-only="isTickerOnly"
-      @update:is-ticker-only="fetchDerivativeOrders"
+      @update:is-ticker-only="refreshData"
     />
 
     <div class="w-full h-screenMinusHeader">
-      <PartialsTradeFuturesOrdersStandard
+      <div
         v-if="tradingMode === TradingInterface.Standard"
-        v-bind="{ view, isTickerOnly }"
-      />
+        class="divide-y h-full"
+      >
+        <PartialsTradeCommonOrdersBalances
+          v-if="view === PerpOrdersStandardView.Balances"
+        />
+
+        <PartialsTradeFuturesOrdersStandardPositions
+          v-else-if="view === PerpOrdersStandardView.Positions"
+          v-bind="{ isTickerOnly }"
+        />
+
+        <PartialsTradeFuturesOrdersStandardOpenOrders
+          v-else-if="view === PerpOrdersStandardView.Orders"
+          v-bind="{ isTickerOnly }"
+        />
+
+        <PartialsTradeFuturesOrdersStandardAdvancedOrders
+          v-else-if="view === PerpOrdersStandardView.AdvancedOrders"
+        />
+
+        <PartialsTradeFuturesOrdersStandardOrderHistory
+          v-else-if="view === PerpOrdersStandardView.OrderHistory"
+        />
+
+        <PartialsTradeFuturesOrdersStandardTradeHistory
+          v-else-if="view === PerpOrdersStandardView.TradeHistory"
+        />
+
+        <PartialsTradeFuturesOrdersStandardFundingHistory
+          v-else-if="view === PerpOrdersStandardView.FundingHistory"
+        />
+      </div>
 
       <PartialsTradeFuturesOrdersTradingBots v-else />
     </div>

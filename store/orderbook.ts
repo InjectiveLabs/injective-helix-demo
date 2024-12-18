@@ -1,4 +1,10 @@
 import { OrderbookFormattedRecord } from '@/types/worker'
+import {
+  streamSpotOrderbookUpdate,
+  cancelSpotOrderbookUpdate,
+  streamDerivativeOrderbookUpdate,
+  cancelDerivativeOrderbookUpdate
+} from '@/app/client/streams/orderbook'
 
 type OrderbookStoreState = {
   buys: OrderbookFormattedRecord[]
@@ -17,5 +23,11 @@ const initialStateFactory = (): OrderbookStoreState => ({
 })
 
 export const useOrderbookStore = defineStore('orderbook', {
-  state: () => initialStateFactory()
+  state: () => initialStateFactory(),
+  actions: {
+    streamSpotOrderbookUpdate,
+    cancelSpotOrderbookUpdate,
+    streamDerivativeOrderbookUpdate,
+    cancelDerivativeOrderbookUpdate
+  }
 })

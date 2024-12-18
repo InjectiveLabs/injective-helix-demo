@@ -94,6 +94,8 @@ const columns = computed(() => {
   return columnList
 })
 
+const { sortedRows } = useSort(rows, columns)
+
 function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
   appStore.setUserState({
     ...appStore.userState,
@@ -106,8 +108,6 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       : [...appStore.userState.favoriteMarkets, item.market.marketId]
   })
 }
-
-const { sortedRows } = useSort(rows, columns)
 </script>
 
 <template>

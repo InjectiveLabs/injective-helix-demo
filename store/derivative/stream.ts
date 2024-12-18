@@ -22,18 +22,25 @@ import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 
 export const cancelTradesStream = grpcCancelTradesStream
-export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
+export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
 export const cancelSubaccountOrdersStream = grpcCancelSubaccountOrdersStream
 export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrderHistoryStream =
   grpcCancelSubaccountOrderHistoryStream
 
-export const streamOrderbookUpdate = (marketId: string) => {
+export const streamOrderbookUpdate = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId: string
+  onResetCallback?: Function
+}) => {
   const derivativeStore = useDerivativeStore()
 
   grpcStreamOrderbookUpdate({
     marketId,
+    onResetCallback,
     callback: ({ orderbook }) => {
       if (!orderbook) {
         return
@@ -81,11 +88,18 @@ export const streamOrderbookUpdate = (marketId: string) => {
   })
 }
 
-export const streamTrades = (marketId: string) => {
+export const streamTrades = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId: string
+  onResetCallback?: Function
+}) => {
   const derivativeStore = useDerivativeStore()
 
   grpcStreamsTrades({
     marketId,
+    onResetCallback,
     callback: ({ trade, operation }) => {
       if (!trade || trade.executionSide !== TradeExecutionSide.Taker) {
         return
@@ -101,7 +115,13 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const streamSubaccountOrderHistory = (marketId?: string) => {
+export const streamSubaccountOrderHistory = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId?: string
+  onResetCallback?: Function
+}) => {
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -112,6 +132,7 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
 
   grpcStreamsSubaccountOrderHistory({
     marketId,
+    onResetCallback,
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
@@ -157,7 +178,13 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
   })
 }
 
-export const streamSubaccountTrades = (marketId?: string) => {
+export const streamSubaccountTrades = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId?: string
+  onResetCallback?: Function
+}) => {
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -168,6 +195,7 @@ export const streamSubaccountTrades = (marketId?: string) => {
 
   grpcStreamsSubaccountTrades({
     marketId,
+    onResetCallback,
     subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
@@ -221,7 +249,13 @@ export const streamSubaccountTrades = (marketId?: string) => {
   })
 }
 
-export const streamSubaccountOrders = (marketId?: string) => {
+export const streamSubaccountOrders = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId?: string
+  onResetCallback?: Function
+}) => {
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -232,6 +266,7 @@ export const streamSubaccountOrders = (marketId?: string) => {
 
   grpcStreamsSubaccountOrders({
     marketId,
+    onResetCallback,
     subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
@@ -311,11 +346,19 @@ export const streamSubaccountOrders = (marketId?: string) => {
   })
 }
 
-export const streamMarketsMarkPrices = (marketIds: string[] = []) => {
+export const streamMarketsMarkPrices = (
+  {
+    marketIds,
+    onResetCallback
+  }: { marketIds: string[]; onResetCallback?: Function } = {
+    marketIds: []
+  }
+) => {
   const derivativeStore = useDerivativeStore()
 
   grpcStreamMarketsMarkPrices({
     marketIds,
+    onResetCallback,
     callback: (marketMarkPrice) => {
       if (!marketMarkPrice.price || !marketMarkPrice.marketId) {
         return
