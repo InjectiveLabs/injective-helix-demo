@@ -8,8 +8,8 @@ import {
   closePositionAndReduceOnlyOrders
 } from '@/store/position/message'
 import {
-  streamSubaccountPositions,
-  cancelSubaccountPositionsStream
+  streamAccountPositions,
+  cancelAccountPositionsStream
 } from '@/store/position/stream'
 import { ActivityFetchOptions } from '@/types'
 
@@ -45,8 +45,8 @@ export const usePositionStore = defineStore('position', {
     addMarginToPosition,
     closePositionAndReduceOnlyOrders,
 
-    streamSubaccountPositions,
-    cancelSubaccountPositionsStream,
+    streamAccountPositions,
+    cancelAccountPositionsStream,
 
     async fetchPositions() {
       const positionStore = usePositionStore()

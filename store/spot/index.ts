@@ -30,10 +30,6 @@ import {
   submitChase
 } from '@/store/spot/message'
 import {
-  cancelBankBalanceStream,
-  cancelSubaccountBalanceStream
-} from '@/store/account/stream'
-import {
   streamTrades,
   cancelTradesStream,
   streamOrderbookUpdate,
@@ -294,10 +290,7 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (
-        !sharedWalletStore.isUserConnected ||
-        !(accountStore.subaccountId || options?.subaccountId)
-      ) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
@@ -305,9 +298,7 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId: options?.subaccountId
-            ? options?.subaccountId
-            : accountStore.subaccountId,
+          subaccountId: accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
@@ -413,8 +404,6 @@ export const useSpotStore = defineStore('spot', {
     },
 
     cancelSubaccountStream() {
-      cancelBankBalanceStream()
-      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()

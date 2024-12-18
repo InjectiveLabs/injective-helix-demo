@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { streamProvider } from '@/app/providers/StreamProvider'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { InitialStatusKey } from '@/types'
 
@@ -13,8 +14,9 @@ useHead({
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
-const derivativeStore = useDerivativeStore()
 const sharedGeoStore = useSharedGeoStore()
+const isActiveTab = useDocumentVisibility()
+const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -65,13 +67,23 @@ watch(
   }
 )
  */
-
 provide(InitialStatusKey, status)
 
 useIntervalFn(
-  () => Promise.all([tokenStore.fetchTokensUsdPriceMap()]),
+  () =>
+    Promise.all([
+      streamProvider.healthCheck(),
+      tokenStore.fetchTokensUsdPriceMap()
+    ]),
   30 * 1000
 )
+watch(isActiveTab, (isActive) => {
+  if (!isActive) {
+    return
+  }
+
+  streamProvider.healthCheck()
+})
 </script>
 
 <template>

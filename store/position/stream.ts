@@ -4,10 +4,11 @@ import {
   cancelSubaccountPositionsStream as grpcCancelSubaccountPositionsStream
 } from '@/app/client/streams/derivatives'
 
-export const cancelSubaccountPositionsStream =
-  grpcCancelSubaccountPositionsStream
+export const cancelAccountPositionsStream = grpcCancelSubaccountPositionsStream
 
-export const streamSubaccountPositions = () => {
+export const streamAccountPositions = ({
+  onResetCallback
+}: { onResetCallback?: Function } = {}) => {
   const accountStore = useAccountStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
@@ -18,6 +19,7 @@ export const streamSubaccountPositions = () => {
   }
 
   grpcStreamSubaccountPositions({
+    onResetCallback,
     address: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ position }) => {
       if (position) {

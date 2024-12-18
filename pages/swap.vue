@@ -16,7 +16,6 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useSharedModalStore()
-const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const {
@@ -64,17 +63,6 @@ const hideErrorToast = computed(() =>
 
 onMounted(() => {
   initRoutes()
-})
-
-onWalletConnected(() => {
-  fetchStatus.setLoading()
-
-  Promise.all([
-    accountStore.streamBankBalance(),
-    accountStore.streamSubaccountBalance()
-  ])
-    .catch($onError)
-    .finally(() => fetchStatus.setIdle())
 })
 
 function initRoutes() {
