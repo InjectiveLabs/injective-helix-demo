@@ -162,7 +162,7 @@ export class StreamProvider {
   }
 
   public healthCheck() {
-    this.streamManager.keys().forEach((key) => {
+    ;[...this.streamManager.keys()].forEach((key) => {
       const stream = this.streamManager.get(key)
 
       if (stream) {
