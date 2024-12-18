@@ -162,27 +162,21 @@ export class StreamProvider {
   }
 
   public healthCheck() {
-    const streamEntries = [...this.streamManager.entries()]
+    this.streamManager.keys().forEach((key) => {
+      const stream = this.streamManager.get(key)
 
-    streamEntries.forEach(([key, value]: [StreamType, any]) => {
-      const inactiveTimeInSeconds = differenceInSeconds(
-        new Date(),
-        value.updatedAt
-      )
-      const refreshInterval =
-        streamRefreshInterval[key] || DEFAULT_REFRESH_INTERVAL
+      if (stream) {
+        const inactiveTimeInSeconds = differenceInSeconds(
+          new Date(),
+          stream.updatedAt
+        )
+        const refreshInterval =
+          streamRefreshInterval[key] || DEFAULT_REFRESH_INTERVAL
 
-      if (inactiveTimeInSeconds > refreshInterval) {
-        this.reconnect(key)
+        if (inactiveTimeInSeconds >= refreshInterval) {
+          this.reconnect(key)
+        }
       }
-
-      // added this to ease QA testing, will remove after this passes QA
-      console.log('health check', {
-        key,
-        refreshInterval,
-        inactiveTimeInSeconds,
-        value
-      })
     })
   }
 }
