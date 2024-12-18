@@ -4,7 +4,8 @@ import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  GST_MIN_TOTAL_AMOUNT_USD
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
@@ -77,13 +78,15 @@ const gridThreshold = computed(() => {
 
   const isGridHigherThanGridThreshold =
     !!spotFormValues.value[SpotGridTradingField.Grids] &&
-    Number(spotFormValues.value[SpotGridTradingField.Grids]) >=
+    Number(spotFormValues.value[SpotGridTradingField.Grids]) >
       GST_GRID_THRESHOLD
 
+  if (!isGridHigherThanGridThreshold) {
+    return new BigNumberInBase(GST_MIN_TOTAL_AMOUNT_USD)
+  }
+
   return new BigNumberInBase(
-    isGridHigherThanGridThreshold
-      ? Number(spotFormValues.value[SpotGridTradingField.Grids])
-      : GST_GRID_THRESHOLD
+    spotFormValues.value[SpotGridTradingField.Grids] || GST_GRID_THRESHOLD
   ).times(tradingSize)
 })
 
