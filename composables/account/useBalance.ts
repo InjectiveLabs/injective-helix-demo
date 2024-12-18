@@ -29,10 +29,23 @@ function calculateSubaccountBalance(
 function calculateDefaultSubaccountBalance(
   balances: SubaccountBalance[]
 ): SubaccountBalanceWithInOrder[] {
+  const spotStore = useSpotStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
+
+  const tradeableDenoms = [
+    ...new Set([
+      ...spotStore.tradeableDenoms,
+      ...derivativeStore.tradeableDenoms
+    ])
+  ]
 
   return Object.entries(accountStore.balancesMap).reduce(
     (list, [denom, amount]) => {
+      if (!showUnverifiedAssets.value && !tradeableDenoms.includes(denom)) {
+        return list
+      }
+
       const cw20Address = getCw20AddressFromDenom(denom)
       const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
       const subaccountBalance = balances.find(
@@ -193,9 +206,9 @@ export function useBalance() {
     )
   })
 
-  const activeSubaccountPositionPnlDenomMap = computed(() => {
-    return getDenomPositionMap(positionStore.subaccountPositions)
-  })
+  const activeSubaccountPositionPnlDenomMap = computed(() =>
+    getDenomPositionMap(positionStore.subaccountPositions)
+  )
 
   const activeSubaccountTradableBalancesWithToken = computed(() => {
     const tradeableDenoms = [
@@ -211,11 +224,13 @@ export function useBalance() {
       (balance) => balance && tradeableDenoms.includes(balance.denom)
     ) as AccountBalance[]
   })
-  const activeSubaccountBalancesWithToken = computed(() => {
-    return (
-      subaccountPortfolioBalanceMap.value[accountStore.subaccountId] || []
-    ).filter((balance) => balance) as AccountBalance[]
-  })
+
+  const activeSubaccountBalancesWithToken = computed(
+    () =>
+      (
+        subaccountPortfolioBalanceMap.value[accountStore.subaccountId] || []
+      ).filter((balance) => balance) as AccountBalance[]
+  )
 
   const userBalancesWithToken = computed(() => {
     if (showUnverifiedAssets.value) {
@@ -224,6 +239,7 @@ export function useBalance() {
 
     return activeSubaccountTradableBalancesWithToken.value
   })
+
   const stakedAmount = computed(() => {
     if (
       !exchangeStore.feeDiscountAccountInfo ||

@@ -6,8 +6,8 @@ export function useSubaccountsTransformer(
   subAccountList: ComputedRef<SubAccount[]>,
   balances: ComputedRef<Record<string, AccountBalance[]>>
 ) {
-  const rows = computed(() => {
-    return subAccountList.value.map((subaccount) => {
+  const rows = computed(() =>
+    subAccountList.value.map((subaccount) => {
       const balance = balances.value[subaccount.value].reduce(
         (sum, balance) => {
           return sum.plus(balance.totalBalanceInUsd)
@@ -22,7 +22,7 @@ export function useSubaccountsTransformer(
         formattedAddress: formatWalletAddress(subaccount.value)
       }
     })
-  })
+  )
 
   return { rows }
 }

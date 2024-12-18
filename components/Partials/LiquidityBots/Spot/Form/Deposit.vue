@@ -6,6 +6,11 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
+const formValues = useFormValues<LiquidityBotForm>()
+const { subaccountPortfolioBalanceMap } = useBalance()
+
 const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
@@ -14,16 +19,19 @@ const props = withDefaults(
   {}
 )
 
-const { userBalancesWithToken } = useBalance()
-const formValues = useFormValues<LiquidityBotForm>()
-const tokenStore = useTokenStore()
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
+)
 
 const baseBalance = computed(() =>
   sharedToBalanceInToken({
     value:
-      userBalancesWithToken.value?.find(
+      accountBalance.value?.find(
         (balance) => balance.denom === props.market.baseToken.denom
-      )?.bankBalance || '0',
+      )?.availableBalance || '0',
     decimalPlaces: props.market.baseToken.decimals
   })
 )
@@ -31,9 +39,9 @@ const baseBalance = computed(() =>
 const quoteBalance = computed(() =>
   sharedToBalanceInToken({
     value:
-      userBalancesWithToken.value?.find(
+      accountBalance.value?.find(
         (balance) => balance.denom === props.market.quoteToken.denom
-      )?.bankBalance || '0',
+      )?.availableBalance || '0',
     decimalPlaces: props.market.quoteToken.decimals
   })
 )

@@ -17,9 +17,7 @@ export type AccountBalance = Omit<
   'balance'
 > & {
   isVerified: boolean
-  // Bank balance
-  bankBalance: string
-  // the available balance for the subaccount, defaults to 0 for the default subaccount
+  // the available balance for the subaccount
   // for the default subaccount its the bank balance
   availableBalance: string
   // the total balance -  bank + available + inOrderBalance + unrealizedPnL

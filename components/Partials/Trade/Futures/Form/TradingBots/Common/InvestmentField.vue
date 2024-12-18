@@ -14,6 +14,7 @@ import {
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const sharedWalletStore = useSharedWalletStore()
+const { subaccountPortfolioBalanceMap } = useBalance()
 const derivativeGridFormValues = useFormValues<DerivativeGridTradingForm>()
 
 withDefaults(
@@ -26,8 +27,6 @@ withDefaults(
     isDisabled: false
   }
 )
-
-const { subaccountPortfolioBalanceMap } = useBalance()
 
 const accountBalance = computed(
   () =>
@@ -62,7 +61,7 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
-      value: quoteDenomBalance.value?.bankBalance || 0,
+      value: quoteDenomBalance.value?.availableBalance || 0,
       decimalPlaces: quoteDenomBalance.value?.token.decimals
     })
   )

@@ -12,17 +12,17 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
 
   const rows = computed(() => {
     const sortedBalances = balances.value.sort((a, b) => {
-      const aBalanceInToken = sharedToBalanceInTokenInBase({
-        value: a.totalBalanceInUsd,
-        decimalPlaces: a.token.decimals
-      })
+      const aBalanceInToken = new BigNumberInBase(a.totalBalanceInUsd)
+      const bBalanceInToken = new BigNumberInBase(b.totalBalanceInUsd)
 
-      const bBalanceInToken = sharedToBalanceInTokenInBase({
-        value: b.totalBalanceInUsd,
-        decimalPlaces: b.token.decimals
-      })
+      const aBalanceIsInj = a.token.denom === INJ_DENOM
+      const bBalanceIsInj = b.token.denom === INJ_DENOM
 
-      if (b.token.denom === INJ_DENOM) {
+      if (aBalanceIsInj && !bBalanceIsInj) {
+        return -1
+      }
+
+      if (bBalanceIsInj && !aBalanceIsInj) {
         return 1
       }
 

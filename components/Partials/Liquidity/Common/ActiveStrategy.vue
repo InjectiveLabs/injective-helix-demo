@@ -77,7 +77,9 @@ const totalAmount = computed(() => {
 })
 
 const currentBaseBalance = computed(() => {
-  if (!marketSubaccountBalances.value) return ZERO_IN_BASE
+  if (!marketSubaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
 
   return sharedToBalanceInTokenInBase({
     value:
@@ -89,7 +91,9 @@ const currentBaseBalance = computed(() => {
 })
 
 const currentQuoteBalance = computed(() => {
-  if (!marketSubaccountBalances.value) return ZERO_IN_BASE
+  if (!marketSubaccountBalances.value) {
+    return ZERO_IN_BASE
+  }
 
   return sharedToBalanceInTokenInBase({
     value:

@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  isPgtSubaccountId,
   isSgtSubaccountId,
   getSubaccountIndex,
-  getMarketSlugFromSubaccountId,
-  isPgtSubaccountId
+  getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
+
+const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
+const { t } = useLang()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
   defineProps<{ showLowBalance?: boolean; includeBotsSubaccounts?: boolean }>(),
@@ -15,11 +20,6 @@ const props = withDefaults(
     includeBotsSubaccounts: false
   }
 )
-
-const accountStore = useAccountStore()
-const sharedWalletStore = useSharedWalletStore()
-const { t } = useLang()
-const { subaccountPortfolioBalanceMap } = useBalance()
 
 onMounted(() => {
   const isSubaccountOptionAvailable = subaccountOptionsFiltered.value.some(

@@ -3,7 +3,11 @@ import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import {
+  PortfolioCyTags,
+  BalanceTableColumn,
+  TransformedBalances
+} from '@/types'
 
 const { t } = useLang()
 const { stakedAmount, stakedAmountInUsd, userBalancesWithToken } = useBalance()
@@ -105,7 +109,7 @@ const rowsData = computed(() => {
         [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value.toFixed(
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )
-      },
+      } as TransformedBalances,
       ...data.slice(1)
     ]
   }
@@ -281,7 +285,7 @@ function toggleStakingRow() {
 
   <template v-else>
     <PartialsPortfolioBalancesSubaccountMobileTable
-      v-for="balance in rows"
+      v-for="balance in filteredRows"
       :key="balance.token.denom"
       v-bind="{ balance, columns, stakedAmount, stakedAmountInUsd }"
     />

@@ -105,7 +105,7 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
-      value: quoteDenomBalance.value?.bankBalance || 0,
+      value: quoteDenomBalance.value?.availableBalance || 0,
       decimalPlaces: quoteDenomBalance.value?.token.decimals
     })
   )
@@ -117,7 +117,7 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
-      value: baseDenomBalance.value?.bankBalance || 0,
+      value: baseDenomBalance.value?.availableBalance || 0,
       decimalPlaces: baseDenomBalance.value?.token.decimals
     })
   )
