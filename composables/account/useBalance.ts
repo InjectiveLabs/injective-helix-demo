@@ -1,8 +1,8 @@
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { injToken, usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { PositionV2, TokenStatic } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import {
@@ -81,7 +81,6 @@ function getDenomPositionMap(positions: PositionV2[]) {
     (list, position) => {
       const quoteToken =
         tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
-
       const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
         .price
         ? sharedToBalanceInWei({
@@ -102,6 +101,7 @@ function getDenomPositionMap(positions: PositionV2[]) {
           ...list,
           [position.denom]: {
             pnl: totalPnL,
+            token: quoteToken,
             margin: totalMargin,
             pnlPlusMargin: totalPnL.plus(totalMargin)
           }
@@ -112,6 +112,7 @@ function getDenomPositionMap(positions: PositionV2[]) {
         ...list,
         [position.denom]: {
           pnl,
+          token: quoteToken,
           pnlPlusMargin: pnl.plus(position.margin),
           margin: new BigNumberInBase(position.margin)
         }
@@ -121,6 +122,7 @@ function getDenomPositionMap(positions: PositionV2[]) {
       string,
       {
         pnl: BigNumberInBase
+        token: TokenStatic
         margin: BigNumberInBase
         pnlPlusMargin: BigNumberInBase
       }
@@ -182,11 +184,9 @@ export function useBalance() {
               ).plus(unrealizedPnlAndMargin)
 
               const totalBalanceInUsd = sharedToBalanceInTokenInBase({
-                value: totalBalance.toFixed(),
+                value: totalBalance.times(usdPrice).toFixed(),
                 decimalPlaces: token.decimals
-              })
-                .times(usdPrice)
-                .toFixed()
+              }).toFixed()
 
               return {
                 ...balance,
@@ -285,11 +285,7 @@ export function useBalance() {
         return total.plus(balance.totalBalanceInUsd)
       }, ZERO_IN_BASE) || ZERO_IN_BASE
 
-    if (!accountStore.isDefaultSubaccount) {
-      return totalBalanceInUsd
-    }
-
-    return totalBalanceInUsd.plus(stakedAmountInUsd.value)
+    return totalBalanceInUsd
   })
 
   const aggregatedSubaccountTotalBalanceInUsd = computed(() => {
