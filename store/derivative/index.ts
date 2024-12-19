@@ -606,7 +606,7 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    cancelStreams() {
+    cancelSubaccountStream() {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrderHistoryStream()
@@ -625,7 +625,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
       const initialState = initialStateFactory()
 
-      derivativeStore.cancelStreams()
+      derivativeStore.cancelSubaccountStream()
 
       derivativeStore.$patch({
         subaccountOrders: initialState.subaccountOrders,

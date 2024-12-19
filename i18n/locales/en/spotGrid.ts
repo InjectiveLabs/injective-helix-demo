@@ -278,7 +278,7 @@ export default {
       'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
     botType: {
       spotGrid: 'Spot Grid',
-      liquidityGrid: 'Liquidity Grid',
+      liquidityGrid: 'Volume Boost',
       futuresGrid: 'Futures Grid'
     },
     myLpRewards: {

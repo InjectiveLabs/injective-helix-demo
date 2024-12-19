@@ -1,20 +1,16 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
-import {
-  WorkerMessageType,
-  OrderbookWorkerResult,
-  OrderbookWorkerMessage,
-  WorkerMessageResponseType
-} from '@/types/worker'
-import { spotMarketStream } from '@/app/client/streams/spot'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
-import { derivativesMarketStream } from '@/app/client/streams/derivatives'
 import {
   AggregationKey,
   UiMarketWithToken,
   OrderbookWorkerKey,
-  OrderbookStatusKey
+  OrderbookStatusKey,
+  WorkerMessageType,
+  OrderbookWorkerResult,
+  OrderbookWorkerMessage,
+  WorkerMessageResponseType
 } from '@/types'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
@@ -72,13 +68,6 @@ export function useOrderbook(
     }
   })
 
-  let spotStream:
-    | ReturnType<typeof spotMarketStream.streamSpotOrderbookUpdate>
-    | undefined
-  let derivativesStream:
-    | ReturnType<typeof derivativesMarketStream.streamDerivativeOrderbookUpdate>
-    | undefined
-
   function fetchSpotOrderbook() {
     if (!market.value) {
       return
@@ -134,12 +123,11 @@ export function useOrderbook(
   }
 
   function fetchAndStreamSpot(market: UiMarketWithToken) {
-    if (spotStream) {
-      spotStream.unsubscribe()
-    }
+    orderbookStore.cancelSpotOrderbookUpdate()
 
-    spotStream = spotMarketStream.streamSpotOrderbookUpdate({
-      marketIds: [market.marketId],
+    orderbookStore.streamSpotOrderbookUpdate({
+      marketId: market.marketId,
+      onResetCallback: fetchSpotOrderbook,
       callback: (data) => {
         worker.value?.postMessage({
           type: WorkerMessageType.Stream,
@@ -159,28 +147,25 @@ export function useOrderbook(
   }
 
   function fetchAndStreamDerivative(market: UiMarketWithToken) {
-    if (derivativesStream) {
-      derivativesStream.unsubscribe()
-    }
+    orderbookStore.cancelDerivativeOrderbookUpdate()
 
-    derivativesStream = derivativesMarketStream.streamDerivativeOrderbookUpdate(
-      {
-        marketIds: [market.marketId],
-        callback: (data) => {
-          worker.value?.postMessage({
-            type: WorkerMessageType.Stream,
-            data: {
-              isSpot: false,
-              baseDecimals: market.baseToken.decimals,
-              quoteDecimals: market.quoteToken.decimals,
-              orderbook: data.orderbook!,
-              aggregation: aggregation.value,
-              sequence: data.orderbook!.sequence
-            }
-          })
-        }
+    orderbookStore.streamDerivativeOrderbookUpdate({
+      marketId: market.marketId,
+      onResetCallback: fetchDerivativeOrderbook,
+      callback: (data) => {
+        worker.value?.postMessage({
+          type: WorkerMessageType.Stream,
+          data: {
+            isSpot: false,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals,
+            orderbook: data.orderbook!,
+            aggregation: aggregation.value,
+            sequence: data.orderbook!.sequence
+          }
+        })
       }
-    )
+    })
 
     fetchDerivativeOrderbook()
   }
@@ -208,8 +193,8 @@ export function useOrderbook(
         return
       }
 
-      spotStream?.unsubscribe()
-      derivativesStream?.unsubscribe()
+      orderbookStore.cancelSpotOrderbookUpdate()
+      orderbookStore.cancelDerivativeOrderbookUpdate()
 
       if (isSpot) {
         fetchAndStreamSpot(market)
@@ -225,8 +210,8 @@ export function useOrderbook(
       worker.value.terminate()
     }
 
-    spotStream?.unsubscribe()
-    derivativesStream?.unsubscribe()
+    orderbookStore.cancelSpotOrderbookUpdate()
+    orderbookStore.cancelDerivativeOrderbookUpdate()
 
     orderbookStore.$reset()
   })

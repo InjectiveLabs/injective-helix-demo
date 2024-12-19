@@ -1,30 +1,13 @@
 import { defineStore } from 'pinia'
-import {
-  TradingReward,
-  FundingPayment,
-  SpotOrderHistory,
-  DerivativeOrderHistory
-} from '@injectivelabs/sdk-ts'
-import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { TradingReward, FundingPayment } from '@injectivelabs/sdk-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
-import {
-  streamSpotSubaccountTrades,
-  streamSpotSubaccountOrderHistory,
-  streamDerivativeSubaccountTrades,
-  streamDerivativeSubaccountOrderHistory
-} from '@/store/activity/stream'
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
 import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
-// todo: Ivan clean up
 type ActivityStoreState = {
   subaccountFundingHistory: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
   subaccountFundingHistoryCount: number
-  latestDerivativeOrderHistory?: DerivativeOrderHistory
-  latestDerivativeTrade?: SharedUiDerivativeTrade
-  latestSpotOrderHistory?: SpotOrderHistory
-  latestSpotTrade?: SharedUiSpotTrade
   subaccountTransfers: UiSubaccountTransactionWithToken[]
   subaccountTransferTransactionsCount: number
 }
@@ -33,10 +16,6 @@ const initialStateFactory = (): ActivityStoreState => ({
   subaccountFundingHistory: [],
   tradingRewardsHistory: [],
   subaccountFundingHistoryCount: 0,
-  latestDerivativeOrderHistory: undefined,
-  latestDerivativeTrade: undefined,
-  latestSpotOrderHistory: undefined,
-  latestSpotTrade: undefined,
   subaccountTransfers: [],
   subaccountTransferTransactionsCount: 0
 })
@@ -44,11 +23,6 @@ const initialStateFactory = (): ActivityStoreState => ({
 export const useActivityStore = defineStore('activity', {
   state: (): ActivityStoreState => initialStateFactory(),
   actions: {
-    streamDerivativeSubaccountOrderHistory,
-    streamDerivativeSubaccountTrades,
-    streamSpotSubaccountOrderHistory,
-    streamSpotSubaccountTrades,
-
     async fetchTradingRewardsHistory() {
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()

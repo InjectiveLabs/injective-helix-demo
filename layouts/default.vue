@@ -79,13 +79,17 @@ function fetchUserPortfolio() {
 }
 
 function fetchSubaccountStream() {
-  accountStore.cancelSubaccountBalanceStream()
   accountStore.cancelBankBalanceStream()
-  positionStore.cancelSubaccountPositionsStream()
+  accountStore.cancelSubaccountBalanceStream()
+  positionStore.cancelAccountPositionsStream()
 
   accountStore.streamSubaccountBalance()
-  accountStore.streamBankBalance()
-  positionStore.streamSubaccountPositions()
+  positionStore.streamAccountPositions({
+    onResetCallback: positionStore.fetchPositions
+  })
+  accountStore.streamBankBalance({
+    onResetCallback: accountStore.fetchAccountPortfolioBalances
+  })
 }
 
 function checkOnboarding() {

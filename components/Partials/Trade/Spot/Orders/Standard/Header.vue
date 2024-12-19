@@ -15,12 +15,10 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    modelValue: SpotOrdersStandardView
     isTickerOnly?: boolean
+    modelValue: SpotOrdersStandardView
   }>(),
-  {
-    isTickerOnly: false
-  }
+  {}
 )
 
 const emit = defineEmits<{
@@ -34,7 +32,6 @@ const lg = breakpoints['3xl']
 const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
-
 const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {

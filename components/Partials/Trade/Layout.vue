@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-ts'
-import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
 
 const toast = useToast()
 const appStore = useAppStore()
