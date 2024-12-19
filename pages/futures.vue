@@ -5,7 +5,8 @@ import {
   IsSpotKey,
   MarketKey,
   PortfolioStatusKey,
-  UiDerivativeMarket
+  UiDerivativeMarket,
+  MarkPriceStatusKey
 } from '@/types'
 
 const route = useRoute()
@@ -88,6 +89,7 @@ onUnmounted(() => {
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
+provide(MarkPriceStatusKey, status)
 </script>
 
 <template>
