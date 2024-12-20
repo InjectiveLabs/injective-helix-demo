@@ -60,7 +60,6 @@ function refreshData() {
         v-if="tradingMode === TradingInterface.Standard"
         class="overflow-x-auto divide-y h-full"
       >
-        >
         <PartialsTradeCommonOrdersBalances
           v-if="view === SpotOrdersStandardView.Balances"
         />

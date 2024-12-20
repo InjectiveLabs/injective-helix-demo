@@ -84,30 +84,32 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
                 percentageChangeStatus === SharedMarketChange.Decrease
             }"
           >
-            <UIcon
-              v-if="
-                [
-                  SharedMarketChange.Increase,
-                  SharedMarketChange.Decrease
-                ].includes(percentageChangeStatus)
-              "
-              :name="NuxtUiIcons.ArrowLeft"
-              class="w-3 h-3 mr-1"
-              :class="{
-                ' rotate-90':
-                  percentageChangeStatus === SharedMarketChange.Increase,
-                ' -rotate-90':
-                  percentageChangeStatus === SharedMarketChange.Decrease
-              }"
-            />
-
-            <AppAmount
-              v-bind="{
-                amount: lastTradedPrice.toFixed(),
-                decimalPlaces: market.priceDecimals
-              }"
-              class="leading-none"
-            />
+            <span v-if="lastTradedPrice.isZero()"> &mdash; </span>
+            <template v-else>
+              <UIcon
+                v-if="
+                  [
+                    SharedMarketChange.Increase,
+                    SharedMarketChange.Decrease
+                  ].includes(percentageChangeStatus)
+                "
+                :name="NuxtUiIcons.ArrowLeft"
+                class="w-3 h-3 mr-1"
+                :class="{
+                  ' rotate-90':
+                    percentageChangeStatus === SharedMarketChange.Increase,
+                  ' -rotate-90':
+                    percentageChangeStatus === SharedMarketChange.Decrease
+                }"
+              />
+              <AppAmount
+                v-bind="{
+                  amount: lastTradedPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+                class="leading-none"
+              />
+            </template>
           </div>
         </div>
 
