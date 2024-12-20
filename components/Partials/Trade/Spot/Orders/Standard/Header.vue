@@ -11,6 +11,7 @@ import {
 const spotStore = useSpotStore()
 const isMobile = useIsMobile()
 const breakpoints = useBreakpointsTw()
+const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
@@ -53,11 +54,13 @@ const options = computed(() => {
     },
     {
       display: `activity.${SpotOrdersStandardView.ActiveStrategies}`,
-      value: SpotOrdersStandardView.ActiveStrategies
+      value: SpotOrdersStandardView.ActiveStrategies,
+      description: `${gridStrategyStore.activeStrategies.length}`
     },
     {
       display: `activity.${SpotOrdersStandardView.RemovedStrategies}`,
-      value: SpotOrdersStandardView.RemovedStrategies
+      value: SpotOrdersStandardView.RemovedStrategies,
+      description: `${gridStrategyStore.removedStrategies.length}`
     }
   ]
 
