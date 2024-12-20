@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
@@ -7,9 +7,14 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, MarkPriceStatusKey } from '@/types'
 
 const derivativeStore = useDerivativeStore()
+
+const markPriceStatus = inject(
+  MarkPriceStatusKey,
+  new Status(StatusType.Loading)
+)
 
 const props = withDefaults(
   defineProps<{
@@ -111,7 +116,9 @@ useIntervalFn(() => {
       </CommonHeaderTooltip>
     </template>
 
+    <AppSpinner v-if="markPriceStatus.isLoading()" class="relative" is-sm />
     <AppAmount
+      v-else
       v-bind="{
         amount: markPrice,
         decimalPlaces: market.priceDecimals
