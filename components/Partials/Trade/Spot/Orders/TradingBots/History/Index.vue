@@ -18,14 +18,8 @@ const { t } = useLang()
 const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
-const strategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => gridStrategyStore.removedStrategies)
-)
-
-const formattedStrategies = computed(() =>
-  strategies.value.map((strategy) => ({
-    ...strategy
-  }))
 )
 
 const columns = computed(() => [
@@ -121,10 +115,9 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :decimal-places="2"
-            :max-decimal-places="3"
-            :amount="row.currentUsdValue.toFixed()"
+          <AppUsdAmount
+            :decimal-places="4"
+            :amount="row.totalAmount.toFixed()"
           />
         </div>
       </template>

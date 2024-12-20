@@ -94,7 +94,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="[grid-area:stats] border-b-2 bg-brand-900 z-30">
+  <div class="[grid-area:stats] border-b bg-brand-900 z-30">
     <PartialsTradeCommonMarketMultiplierBanner v-bind="{ market }" />
 
     <slot name="stats">
@@ -115,14 +115,14 @@ onUnmounted(() => {
       <slot name="form" />
     </div>
 
-    <div class="[grid-area:orderbook] border-r-2">
+    <div class="[grid-area:orderbook] border-r">
       <slot name="orderbook">
         <PartialsTradeOrderbook v-bind="{ market, isSpot }" />
       </slot>
     </div>
 
     <div
-      class="[grid-area:orders] relative lg:h-full border-t-2 border-r-2 lg:overflow-auto"
+      class="[grid-area:orders] relative lg:h-full border-t border-r lg:overflow-auto"
     >
       <div class="lg:absolute left-0 right-0 top-0 h-full">
         <slot name="orders" />

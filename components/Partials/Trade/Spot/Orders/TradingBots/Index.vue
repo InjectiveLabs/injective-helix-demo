@@ -1,41 +1,87 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GridStrategyTabs } from '@/types'
+import { SpotOrdersTradingBotsView, UiSpotMarket } from '@/types'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
+const spotStore = useSpotStore()
+const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
-const view = ref(GridStrategyTabs.Running)
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+  }>(),
+  {}
+)
+
+const view = ref(SpotOrdersTradingBotsView.ActiveStrategies)
 const status = reactive(new Status(StatusType.Loading))
 
-onWalletConnected(() => {
-  fetchStrategies()
-})
+onWalletConnected(fetchStrategies)
 
 function fetchStrategies() {
   status.setLoading()
 
-  gridStrategyStore
-    .fetchAllStrategies()
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    props.market.slug
+  )
+
+  Promise.all([
+    gridStrategyStore.fetchAllStrategies(),
+    spotStore.fetchOrdersBySubaccount({
+      subaccountId,
+      marketIds: [props.market.marketId]
+    }),
+    spotStore.fetchSubaccountOrderHistory({
+      subaccountId,
+      filters: {
+        marketIds: [props.market.marketId]
+      },
+      pagination: {
+        limit: 100
+      }
+    }),
+    spotStore.fetchSubaccountTrades({
+      subaccountId,
+      filters: {
+        marketIds: [props.market.marketId]
+      }
+    })
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 }
+
+onUnmounted(() => {
+  spotStore.resetSubaccount()
+})
 </script>
 
 <template>
   <div>
-    <PartialsTradeSpotOrdersTradingBotsTabs
-      v-model="view"
-      @update:model-value="fetchStrategies"
-    />
+    <PartialsTradeSpotOrdersTradingBotsHeader v-model="view" />
 
     <PartialsTradeSpotOrdersTradingBotsRunning
-      v-if="view === GridStrategyTabs.Running"
+      v-if="view === SpotOrdersTradingBotsView.ActiveStrategies"
     />
-    <PartialsTradeSpotOrdersTradingBotsHistory v-else />
+    <PartialsTradeSpotOrdersTradingBotsHistory
+      v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
+    />
 
-    <PartialsLiquidityCommonTradingBotsModalTrigger />
+    <PartialsTradeSpotOrdersTradingBotsOpenOrders
+      v-else-if="view === SpotOrdersTradingBotsView.Orders"
+    />
+
+    <PartialsTradeSpotOrdersTradingBotsOrderHistory
+      v-else-if="view === SpotOrdersTradingBotsView.OrderHistory"
+    />
+
+    <PartialsTradeSpotOrdersTradingBotsTradeHistory
+      v-else-if="view === SpotOrdersTradingBotsView.TradeHistory"
+    />
   </div>
 </template>

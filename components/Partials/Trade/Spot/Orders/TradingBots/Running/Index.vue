@@ -15,14 +15,8 @@ const { t } = useLang()
 const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
-const strategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => gridStrategyStore.activeStrategies)
-)
-
-const formattedStrategies = computed(() =>
-  strategies.value.map((strategy) => ({
-    ...strategy
-  }))
 )
 
 const columns = computed(() => [
@@ -121,7 +115,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
           <SharedAmountFormatter
             :decimal-places="2"
             :max-decimal-places="3"
-            :amount="row.currentUsdValue.toFixed()"
+            :amount="row.totalAmount.toFixed()"
           />
         </div>
       </template>

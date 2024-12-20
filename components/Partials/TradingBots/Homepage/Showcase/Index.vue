@@ -18,7 +18,7 @@ const status = reactive(new Status(StatusType.Loading))
 const strategies = ref<TradingStrategy[]>([])
 const { $onError } = useNuxtApp()
 
-const formattedStrategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => strategies.value)
 )
 

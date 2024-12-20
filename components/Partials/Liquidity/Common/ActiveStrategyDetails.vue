@@ -19,7 +19,8 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const strategies = useSpotGridStrategies(computed(() => props.activeStrategy))
+const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
+  useSpotGridStrategies(computed(() => props.activeStrategy))
 
 const strategy = computed(() => strategies.value[0])
 
@@ -69,7 +70,10 @@ function removeStrategy() {
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
       <div
-        v-if="new BigNumberInBase(strategy.pnl).isZero()"
+        v-if="
+          new BigNumberInBase(strategy.pnl).isZero() ||
+          lastTradedPriceStatus.isLoading()
+        "
         class="text-coolGray-400"
       >
         &mdash;
@@ -96,11 +100,14 @@ function removeStrategy() {
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div>
+      <div v-if="lastTradedPriceStatus.isLoading()" class="text-coolGray-400">
+        &mdash;
+      </div>
+      <div v-else>
         $
         <SharedAmountFormatter
           :max-decimal-places="3"
-          :amount="strategy.currentUsdValue.toFixed()"
+          :amount="strategy.totalAmount.toFixed()"
           :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         />
         USD
@@ -109,7 +116,10 @@ function removeStrategy() {
 
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.currentBalance') }}
+        <span v-if="strategy.isActive">
+          {{ $t('liquidityBots.currentBalance') }}
+        </span>
+        <span v-else>{{ $t('liquidityBots.finalBalance') }}</span>
       </p>
 
       <div>
@@ -118,14 +128,14 @@ function removeStrategy() {
         >
           <template #base>
             <SharedAmountFormatter
-              :amount="strategy.currentBaseBalanceAmount"
+              :amount="strategy.finalBaseBalanceQuantity"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
               :max-decimal-places="3"
             />
           </template>
           <template #quote>
             <SharedAmountFormatter
-              :amount="strategy.currentQuoteBalanceAmount"
+              :amount="strategy.finalQuoteBalanceQuantity"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
               :max-decimal-places="3"
             />
@@ -177,8 +187,8 @@ function removeStrategy() {
             market: strategy.market
           }"
         >
-          <template #base>{{ strategy.initialBaseBalanceAmount }}</template>
-          <template #quote>{{ strategy.initialQuoteBalanceAmount }}</template>
+          <template #base>{{ strategy.initialBaseBalanceQuantity }}</template>
+          <template #quote>{{ strategy.initialQuoteBalanceQuantity }}</template>
         </PartialsLiquidityCommonDetailsPair>
       </div>
     </div>

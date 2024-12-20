@@ -290,7 +290,10 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
+      if (
+        !(sharedWalletStore.isUserConnected && accountStore.subaccountId) &&
+        !options?.subaccountId
+      ) {
         return
       }
 
@@ -298,7 +301,7 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId: accountStore.subaccountId,
+          subaccountId: options?.subaccountId || accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
