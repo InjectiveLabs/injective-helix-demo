@@ -29,23 +29,10 @@ function calculateSubaccountBalance(
 function calculateDefaultSubaccountBalance(
   balances: SubaccountBalance[]
 ): SubaccountBalanceWithInOrder[] {
-  const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-
-  const tradeableDenoms = [
-    ...new Set([
-      ...spotStore.tradeableDenoms,
-      ...derivativeStore.tradeableDenoms
-    ])
-  ]
 
   return Object.entries(accountStore.balancesMap).reduce(
     (list, [denom, amount]) => {
-      if (!showUnverifiedAssets.value && !tradeableDenoms.includes(denom)) {
-        return list
-      }
-
       const cw20Address = getCw20AddressFromDenom(denom)
       const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
       const subaccountBalance = balances.find(
@@ -232,14 +219,6 @@ export function useBalance() {
       ).filter((balance) => balance) as AccountBalance[]
   )
 
-  const userBalancesWithToken = computed(() => {
-    if (showUnverifiedAssets.value) {
-      return activeSubaccountBalancesWithToken.value
-    }
-
-    return activeSubaccountTradableBalancesWithToken.value
-  })
-
   const stakedAmount = computed(() => {
     if (
       !exchangeStore.feeDiscountAccountInfo ||
@@ -325,9 +304,9 @@ export function useBalance() {
     stakedAmount,
     stakedAmountInUsd,
     showUnverifiedAssets,
-    userBalancesWithToken,
     subaccountPortfolioBalanceMap,
     activeSubaccountTotalBalanceInUsd,
+    activeSubaccountBalancesWithToken,
     activeSubaccountPositionPnlDenomMap,
     aggregatedSubaccountTotalBalanceInUsd,
     activeSubaccountTradableBalancesWithToken

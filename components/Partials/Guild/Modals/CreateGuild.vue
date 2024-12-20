@@ -27,7 +27,7 @@ const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
@@ -50,7 +50,7 @@ const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => {
-      const balance = userBalancesWithToken.value.find(
+      const balance = activeSubaccountBalancesWithToken.value.find(
         ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
       )
 

@@ -4,10 +4,18 @@ import { INJ_DENOM } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 const { subaccount } = useSubaccounts()
-const { userBalancesWithToken } = useBalance()
+const {
+  showUnverifiedAssets,
+  activeSubaccountBalancesWithToken,
+  activeSubaccountTradableBalancesWithToken
+} = useBalance()
 
 const balancesSorted = computed(() => {
-  const filteredBalances = userBalancesWithToken.value.filter((balance) => {
+  const balances = showUnverifiedAssets.value
+    ? activeSubaccountBalancesWithToken.value
+    : activeSubaccountTradableBalancesWithToken.value
+
+  const filteredBalances = balances.filter((balance) => {
     const hasBalance = new BigNumberInBase(balance.totalBalance).gte(1)
 
     return hasBalance

@@ -36,7 +36,7 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
   defineProps<{
@@ -84,7 +84,7 @@ const {
   valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
     )?.availableBalance
 

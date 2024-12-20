@@ -10,7 +10,13 @@ import {
 } from '@/types'
 
 const { t } = useLang()
-const { stakedAmount, stakedAmountInUsd, userBalancesWithToken } = useBalance()
+const {
+  stakedAmount,
+  stakedAmountInUsd,
+  showUnverifiedAssets,
+  activeSubaccountBalancesWithToken,
+  activeSubaccountTradableBalancesWithToken
+} = useBalance()
 const { lg } = useTwBreakpoints()
 const breakpoints = useBreakpointsTw()
 
@@ -25,7 +31,13 @@ const props = withDefaults(
   }
 )
 
-const { rows } = useBalanceTransformer(userBalancesWithToken)
+const { rows } = useBalanceTransformer(
+  computed(() =>
+    showUnverifiedAssets.value
+      ? activeSubaccountBalancesWithToken.value
+      : activeSubaccountTradableBalancesWithToken.value
+  )
+)
 
 const fourXl = breakpoints['4xl']
 

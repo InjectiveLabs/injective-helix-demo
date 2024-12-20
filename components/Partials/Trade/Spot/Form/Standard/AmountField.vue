@@ -21,7 +21,7 @@ import {
 const orderbookStore = useOrderbookStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
 const validateLimitField = useValidateField(SpotTradeFormField.Price)
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -73,7 +73,7 @@ const {
   valueToBigNumber: baseBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.baseToken.denom
     )?.availableBalance
 
@@ -89,7 +89,7 @@ const {
   valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
     )?.availableBalance
 
