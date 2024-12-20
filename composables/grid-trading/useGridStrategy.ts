@@ -7,7 +7,7 @@ import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { BotType, SgtMarketType, StrategyStatus } from '@/types'
+import { BotType, SgtMarketType, StopReason, StrategyStatus } from '@/types'
 
 export const useSpotGridStrategies = (
   strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>
@@ -258,6 +258,7 @@ export const useSpotGridStrategies = (
         currentQuoteBalanceAmount,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
+        stopReason: strategy.stopReason as StopReason,
         strategyType: strategy.strategyType,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,

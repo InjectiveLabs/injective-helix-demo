@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BotType,
   GridStrategyTransformed,
   MainPage,
   TradeSubPage,
   TradingInterface
-} from '~/types'
+} from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
@@ -44,7 +44,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 </script>
 
 <template>
-  <div class="divide-y border-b">
+  <div>
     <UTable
       :ui="{
         divide: 'dark:divide-cool-800',
@@ -62,7 +62,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       :columns="columns"
     >
       <template #time-data="{ row }">
-        <span>{{ row.createdAtFormatted }}</span>
+        <span class="p-2 text-xs">{{ row.createdAtFormatted }}</span>
       </template>
 
       <template #market-data="{ row }">
@@ -89,7 +89,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
           }"
           class="flex items-center gap-2"
         >
-          <UAvatar :src="row.market.baseToken.logo" />
+          <UAvatar size="xs" :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
         </NuxtLink>
       </template>
@@ -128,7 +128,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col"
+          class="flex flex-col font-mono"
           :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
         >
           <div class="flex items-center gap-1">

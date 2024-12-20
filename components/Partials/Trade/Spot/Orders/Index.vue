@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarket, TradingInterface, SpotOrdersStandardView } from '@/types'
+import { UiSpotMarket, SpotOrdersStandardView } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -9,15 +9,11 @@ const props = withDefaults(
 )
 
 const spotStore = useSpotStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
-
-const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const isTickerOnly = ref(false)
 const view = ref(SpotOrdersStandardView.Orders)
-
-onSubaccountChange(refreshData)
-onUnmounted(() => spotStore.cancelSubaccountStream())
 
 function refreshData() {
   const marketId = isTickerOnly.value ? props.market.marketId : undefined
@@ -45,6 +41,18 @@ function refreshData() {
     onResetCallback: () => spotStore.fetchSubaccountOrderHistory(filters)
   })
 }
+
+onWalletConnected(() => {
+  fetchStrategies()
+})
+
+function fetchStrategies() {
+  gridStrategyStore.fetchAllStrategies().catch($onError)
+}
+
+onSubaccountChange(refreshData)
+
+onUnmounted(() => spotStore.cancelSubaccountStream())
 </script>
 
 <template>
@@ -56,10 +64,7 @@ function refreshData() {
     />
 
     <div class="w-full h-screenMinusHeader">
-      <div
-        v-if="tradingMode === TradingInterface.Standard"
-        class="overflow-x-auto divide-y h-full"
-      >
+      <div class="overflow-x-auto divide-y h-full">
         <PartialsTradeCommonOrdersBalances
           v-if="view === SpotOrdersStandardView.Balances"
         />
@@ -76,9 +81,15 @@ function refreshData() {
         <PartialsTradeSpotOrdersStandardTradeHistory
           v-else-if="view === SpotOrdersStandardView.TradeHistory"
         />
-      </div>
 
-      <PartialsTradeSpotOrdersTradingBots v-else />
+        <PartialsTradeSpotOrdersTradingBotsRunning
+          v-else-if="view === SpotOrdersStandardView.ActiveStrategies"
+        />
+
+        <PartialsTradeSpotOrdersTradingBotsHistory
+          v-else-if="view === SpotOrdersStandardView.RemovedStrategies"
+        />
+      </div>
     </div>
   </div>
 </template>

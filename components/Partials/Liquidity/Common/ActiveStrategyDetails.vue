@@ -2,6 +2,7 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
+  STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -271,6 +272,15 @@ function removeStrategy() {
       </p>
       <div class="text-right">
         {{ $t(`sgt.modes.${strategy.strategyType}`) }}
+      </div>
+    </div>
+
+    <div v-if="strategy.stopReason" class="flex justify-between mb-2 text-sm">
+      <p class="text-coolGray-400">
+        {{ $t('sgt.stopReason') }}
+      </p>
+      <div class="text-right">
+        {{ $t(STOP_REASON_MAP[strategy.stopReason]) }}
       </div>
     </div>
 

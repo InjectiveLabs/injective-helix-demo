@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
 const { t } = useLang()
+
+const gridStrategyStore = useGridStrategyStore()
+
+const status = reactive(new Status(StatusType.Loading))
+const { $onError } = useNuxtApp()
 
 const options = [
   {
@@ -11,6 +17,17 @@ const options = [
     to: '/portfolio/orders/spot-grid/history'
   }
 ]
+
+onWalletConnected(() => {
+  status.setLoading()
+
+  gridStrategyStore
+    .fetchAllStrategies()
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 </script>
 
 <template>
@@ -32,7 +49,10 @@ const options = [
     </div>
 
     <div>
-      <NuxtPage />
+      <div v-if="status.isLoading()" class="p-4">
+        <USkeleton class="w-full h-52" />
+      </div>
+      <NuxtPage v-else />
     </div>
   </div>
 </template>

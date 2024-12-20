@@ -50,6 +50,14 @@ const options = computed(() => {
       display: `activity.${SpotOrdersStandardView.TradeHistory}`,
       value: SpotOrdersStandardView.TradeHistory,
       description: `${spotStore.subaccountTradesCount}`
+    },
+    {
+      display: `activity.${SpotOrdersStandardView.ActiveStrategies}`,
+      value: SpotOrdersStandardView.ActiveStrategies
+    },
+    {
+      display: `activity.${SpotOrdersStandardView.RemovedStrategies}`,
+      value: SpotOrdersStandardView.RemovedStrategies
     }
   ]
 
