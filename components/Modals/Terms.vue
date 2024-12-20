@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import { Modal, MainPage } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
 
 function onConfirm() {
   closeModal()
+
+  appStore.setUserState({
+    ...appStore.userState,
+    hasAcceptedTerms: true
+  })
 
   modalStore.openModal(Modal.Connect)
 }

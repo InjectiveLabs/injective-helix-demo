@@ -11,7 +11,7 @@ const props = withDefaults(
   {
     denom: '',
     symbol: '',
-    isDeposit: false,
+    isDeposit: true,
     isTransfer: false
   }
 )
