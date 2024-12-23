@@ -7,10 +7,11 @@ import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { BotType, SgtMarketType, StrategyStatus } from '@/types'
+import { BotType, AccountBalance, SgtMarketType, StrategyStatus } from '@/types'
 
 export const useSpotGridStrategies = (
-  strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>
+  strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>,
+  subaccountBalancesMap: ComputedRef<Record<string, AccountBalance[]>>
 ) => {
   const strategies = computed(() =>
     strategiesArg.value
@@ -22,7 +23,6 @@ export const useSpotGridStrategies = (
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const sharedWalletStore = useSharedWalletStore()
-  const { aggregatedPortfolioBalances } = useBalance()
   const now = useNow({ interval: 10000 })
 
   const lastTradedSpotPrice = ref<Record<string, string>>({})
@@ -43,7 +43,7 @@ export const useSpotGridStrategies = (
         (market) => market.marketId === strategy.marketId
       )!
 
-      const subaccountId = addressAndMarketSlugToSubaccountId(
+      const marketSubaccountId = addressAndMarketSlugToSubaccountId(
         sharedWalletStore.authZOrAddress,
         market.slug
       )
@@ -59,7 +59,7 @@ export const useSpotGridStrategies = (
       )
 
       const sgtSubaccountBalances =
-        aggregatedPortfolioBalances.value[subaccountId] || []
+        subaccountBalancesMap.value[marketSubaccountId] || []
 
       const executionPrice = new BigNumberInBase(strategy.executionPrice)
 

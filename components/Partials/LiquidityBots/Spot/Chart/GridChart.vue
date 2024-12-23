@@ -22,6 +22,10 @@ type OrderAnnotation = {
   }
 }
 
+const spotStore = useSpotStore()
+const exchangeStore = useExchangeStore()
+const { subaccountPortfolioBalanceMap } = useBalance()
+
 const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
@@ -34,12 +38,12 @@ const props = withDefaults(
   }
 )
 
-const spotStore = useSpotStore()
-const exchangeStore = useExchangeStore()
-
 const apexChart = ref(undefined as ApexChart | undefined)
 
-const strategies = useSpotGridStrategies(computed(() => props.activeStrategy))
+const strategies = useSpotGridStrategies(
+  computed(() => props.activeStrategy),
+  subaccountPortfolioBalanceMap
+)
 
 const strategy = computed(() => strategies.value[0])
 

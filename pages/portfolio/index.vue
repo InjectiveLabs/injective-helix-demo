@@ -1,7 +1,3 @@
-<script setup lang="ts">
-const { accountTotalBalanceInUsd } = useBalance()
-</script>
-
 <template>
   <div class="p-4">
     <h1 class="portfolio-title">{{ $t('navigation.portfolio') }}</h1>
@@ -9,9 +5,7 @@ const { accountTotalBalanceInUsd } = useBalance()
     <PartialsPortfolioPortfolioFeeDiscounts />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-      <PartialsPortfolioPortfolioBalanceChartWrapper
-        v-bind="{ accountTotalBalanceInUsd }"
-      />
+      <PartialsPortfolioPortfolioBalanceChartWrapper />
 
       <PartialsPortfolioPortfolioPnLChartWrapper />
 

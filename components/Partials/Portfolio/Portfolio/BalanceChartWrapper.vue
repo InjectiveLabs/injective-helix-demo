@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-
-const props = withDefaults(
-  defineProps<{
-    accountTotalBalanceInUsd: BigNumberInBase
-  }>(),
-  {}
-)
 
 const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
+const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -36,7 +30,7 @@ const percentageChange = computed(() => {
     return 0
   }
 
-  return props.accountTotalBalanceInUsd
+  return aggregatedSubaccountTotalBalanceInUsd.value
     .minus(oldBalance[1])
     .dividedBy(oldBalance[1])
     .times(100)
@@ -63,7 +57,7 @@ const isProfit = computed(() => {
               <CommonSkeletonSubaccountAmount>
                 <CommonNumberCounter
                   v-bind="{
-                    value: accountTotalBalanceInUsd.toNumber() || 0
+                    value: aggregatedSubaccountTotalBalanceInUsd.toNumber() || 0
                   }"
                   :size="isMobile ? 16 : 24"
                 />

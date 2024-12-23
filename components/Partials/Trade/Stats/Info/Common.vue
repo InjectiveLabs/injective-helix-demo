@@ -83,7 +83,7 @@ const low = computed(() => {
   </PartialsTradeStatsHeaderItem>
 
   <div v-if="!isStableQuoteAsset" class="flex items-center lg:hidden">
-    <PartialsTradeStatsHeaderItem>
+    <PartialsTradeStatsHeaderItem class="w-full">
       <template #title>
         <p class="text-coolGray-400">
           {{ $t('trade.stats.volumeInUsd') }}

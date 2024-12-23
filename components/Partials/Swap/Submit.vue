@@ -18,7 +18,7 @@ const formErrors = useFormErrors()
 const sharedGeoStore = useSharedGeoStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
-const { userBalancesWithToken } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 withDefaults(
   defineProps<{
@@ -54,6 +54,13 @@ const {
   isNotionalLessThanMinNotional
 } = useSwap(formValues)
 
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
+)
+
 const hasAmounts = computed(() => {
   return (
     new BigNumberInBase(formValues.value[SwapFormField.InputAmount] || '').gt(
@@ -88,9 +95,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     return
   }
 
-  return userBalancesWithToken.value.find(
-    ({ denom }) => denom === disallowedDenom
-  )
+  return accountBalance.value.find(({ denom }) => denom === disallowedDenom)
 })
 
 const handlerFunction = computed(() =>
@@ -112,12 +117,12 @@ const formError = computed(() => {
 })
 
 const selectedTokenBalance = computed(() => {
-  const balance = userBalancesWithToken.value?.find(
+  const balance = accountBalance.value?.find(
     ({ denom }) => denom === inputToken.value?.denom
   )
 
   return inputToken.value
-    ? new BigNumberInWei(balance?.availableMargin || '').toBase(
+    ? new BigNumberInWei(balance?.availableBalance || '').toBase(
         inputToken.value.token.decimals
       )
     : new BigNumberInBase(0)

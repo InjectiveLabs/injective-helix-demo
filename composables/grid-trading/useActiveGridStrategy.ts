@@ -2,16 +2,16 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { UiSpotMarket, StrategyStatus } from '@/types'
+import { UiSpotMarket, AccountBalance, StrategyStatus } from '@/types'
 
 export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarket>,
-  strategy: ComputedRef<TradingStrategy>
+  strategy: ComputedRef<TradingStrategy>,
+  subaccountBalancesMap?: ComputedRef<Record<string, AccountBalance[]>>
 ) {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const sharedWalletStore = useSharedWalletStore()
-  const { aggregatedPortfolioBalances } = useBalance()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
 
@@ -22,19 +22,13 @@ export default function useActiveGridStrategy(
     )
   )
 
-  const subaccountBalances = computed(
-    () => aggregatedPortfolioBalances.value[marketSubaccountId.value]
+  const marketSubaccountBalances = computed(
+    () => (subaccountBalancesMap?.value || {})[marketSubaccountId.value] || []
   )
 
   const accountTotalBalanceInUsd = computed(() =>
-    subaccountBalances.value.reduce(
-      (total, balance) =>
-        total.plus(
-          sharedToBalanceInTokenInBase({
-            value: balance.accountTotalBalanceInUsd,
-            decimalPlaces: balance.token.decimals
-          })
-        ),
+    marketSubaccountBalances.value.reduce(
+      (total, balance) => total.plus(balance.totalBalanceInUsd),
       ZERO_IN_BASE
     )
   )
@@ -62,7 +56,7 @@ export default function useActiveGridStrategy(
   })
 
   const pnl = computed(() => {
-    if (!market.value || !subaccountBalances.value) {
+    if (!market.value || !marketSubaccountBalances.value) {
       return ZERO_IN_BASE
     }
 
@@ -79,7 +73,7 @@ export default function useActiveGridStrategy(
     const currentQuoteQuantity =
       strategy.value.state === StrategyStatus.Active
         ? new BigNumberInWei(
-            subaccountBalances.value.find(
+            marketSubaccountBalances.value.find(
               (balance) => balance.denom === market.value?.quoteDenom
             )?.totalBalance || 0
           ).toBase(market.value?.quoteToken.decimals)
@@ -90,7 +84,7 @@ export default function useActiveGridStrategy(
     const currentBaseQuantity =
       strategy.value.state === StrategyStatus.Active
         ? new BigNumberInWei(
-            subaccountBalances.value.find(
+            marketSubaccountBalances.value.find(
               (balance) => balance.denom === market.value?.baseDenom
             )?.totalBalance || 0
           ).toBase(market.value?.baseToken.decimals)
@@ -144,6 +138,7 @@ export default function useActiveGridStrategy(
   return {
     pnl,
     investment,
-    percentagePnl
+    percentagePnl,
+    marketSubaccountBalances
   }
 }

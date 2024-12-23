@@ -6,36 +6,29 @@ import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 const { subaccount } = useSubaccounts()
 const {
   showUnverifiedAssets,
-  verifiedHoldingsWithToken,
-  userBalancesWithToken
+  activeSubaccountBalancesWithToken,
+  activeSubaccountTradableBalancesWithToken
 } = useBalance()
 
-const balances = computed(() => {
-  if (!showUnverifiedAssets.value) {
-    return verifiedHoldingsWithToken.value
-  }
-
-  return userBalancesWithToken.value
-})
-
 const balancesSorted = computed(() => {
-  const filteredBalances = balances.value.filter((balance) => {
-    const hasBalance =
-      new BigNumberInBase(balance.accountTotalBalance).gte(1) ||
-      new BigNumberInBase(balance.availableMargin).gte(1) ||
-      new BigNumberInBase(balance.bankBalance).gte(1)
+  const balances = showUnverifiedAssets.value
+    ? activeSubaccountBalancesWithToken.value
+    : activeSubaccountTradableBalancesWithToken.value
+
+  const filteredBalances = balances.filter((balance) => {
+    const hasBalance = new BigNumberInBase(balance.totalBalance).gte(1)
 
     return hasBalance
   })
 
   return filteredBalances.sort((a, b) => {
     const aBalanceInToken = sharedToBalanceInTokenInBase({
-      value: a.accountTotalBalanceInUsd,
+      value: a.totalBalanceInUsd,
       decimalPlaces: a.token.decimals
     })
 
     const bBalanceInToken = sharedToBalanceInTokenInBase({
-      value: b.accountTotalBalanceInUsd,
+      value: b.totalBalanceInUsd,
       decimalPlaces: b.token.decimals
     })
 

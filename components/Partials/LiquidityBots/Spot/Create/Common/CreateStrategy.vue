@@ -48,30 +48,37 @@ const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
 
-const { userBalancesWithToken } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
+)
 
 const quoteDenomBalance = computed(() =>
-  userBalancesWithToken.value.find(
+  accountBalance.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
 
 const quoteDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: quoteDenomBalance.value?.bankBalance || 0,
+    value: quoteDenomBalance.value?.availableBalance || 0,
     decimalPlaces: quoteDenomBalance.value?.token.decimals
   })
 )
 
 const baseDenomBalance = computed(() =>
-  userBalancesWithToken.value.find(
+  accountBalance.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )
 
 const baseDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: baseDenomBalance.value?.bankBalance || 0,
+    value: baseDenomBalance.value?.availableBalance || 0,
     decimalPlaces: baseDenomBalance.value?.token.decimals
   })
 )

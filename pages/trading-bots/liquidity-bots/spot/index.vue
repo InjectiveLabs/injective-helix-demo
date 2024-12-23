@@ -361,9 +361,9 @@ onMounted(() => {
         <PartialsLiquidityBotsSpotForm
           v-else-if="selectedMarket"
           v-bind="{
-            market: selectedMarket,
-            liquidityValues,
             status,
+            liquidityValues,
+            market: selectedMarket,
             lastTradedPrice: new BigNumberInBase(lastTradedPrice)
           }"
           class="mt-4"

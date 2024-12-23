@@ -17,7 +17,7 @@ const getBalanceWithToken = (
   return {
     token: balanceWithToken?.token,
     denom: balanceWithToken?.denom,
-    balance: balanceWithToken?.availableMargin,
+    balance: balanceWithToken?.availableBalance,
     usdPrice: balanceWithToken?.usdPrice
   } as SharedBalanceWithTokenAndPrice
 }
