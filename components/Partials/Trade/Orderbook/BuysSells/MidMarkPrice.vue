@@ -85,10 +85,15 @@ const isStableCoinMarket = computed(() =>
 
       <span
         v-if="!isStableCoinMarket && isSpot"
-        class="text-sm text-coolGray-350 border-b border-dashed border-coolGray-400 tracking-wider"
+        class="flex items-center text-sm text-coolGray-350 border-b border-dashed border-coolGray-400 tracking-wider"
       >
-        <AppAmount :amount="lastTradedPriceInUsd.toFixed()" />
-        <span> USD</span>
+        <AppUsdAmount
+          v-bind="{
+            amount: lastTradedPriceInUsd.toFixed(),
+            decimalPlaces: market.priceDecimals
+          }"
+        />
+        <span class="ml-1"> USD</span>
       </span>
 
       <span v-if="!isSpot" class="text-sm tracking-wider">
