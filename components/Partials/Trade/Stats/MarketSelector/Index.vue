@@ -142,7 +142,9 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
         </div>
       </div>
 
-      <div class="text-coolGray-400 ml-auto flex items-center">
+      <div
+        class="text-coolGray-400 max-lg:ml-auto max-xl:ml-12 xl:ml-auto flex items-center"
+      >
         <div
           class="ml-10 mr-4 text-sm"
           :data-cy="dataCyTag(CommonCyTags.MarketDropdown)"
