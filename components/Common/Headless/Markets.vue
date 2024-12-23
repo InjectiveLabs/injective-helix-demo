@@ -106,7 +106,19 @@ const sortedMarkets = computed(() => {
           .toNumber()
       }
 
-      return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      if (m2.volumeInUsd.toFixed() !== m1.volumeInUsd.toFixed()) {
+        return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      }
+
+      if (m1.market.isVerified && !m2.market.isVerified) {
+        return -1
+      }
+
+      if (!m1.market.isVerified && m2.market.isVerified) {
+        return 1
+      }
+
+      return 0
     }
   )
 

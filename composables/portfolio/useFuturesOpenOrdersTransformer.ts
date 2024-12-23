@@ -71,7 +71,7 @@ export function useFuturesOpenOrdersTransformer(
       )
 
       const accountQuoteBalance = toBalanceInToken({
-        value: balance?.availableMargin || 0,
+        value: balance?.availableBalance || 0,
         decimalPlaces: market.quoteToken.decimals
       })
 

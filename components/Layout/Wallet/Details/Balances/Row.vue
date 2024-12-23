@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
+
 const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
+
 const totalAmount = computed(() =>
-  new BigNumberInWei(props.balance.accountTotalBalance)
-    .toBase(props.balance.token.decimals)
-    .toFixed()
-)
-const totalAmountInUsd = computed(() =>
-  new BigNumberInWei(props.balance.accountTotalBalanceInUsd)
-    .toBase(props.balance.token.decimals)
-    .toFixed()
+  sharedToBalanceInToken({
+    value: props.balance.totalBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 </script>
 <template>
@@ -40,7 +37,7 @@ const totalAmountInUsd = computed(() =>
         <AppUsdAmount
           v-bind="{
             decimalPlaces: 18,
-            amount: totalAmountInUsd
+            amount: balance.totalBalanceInUsd
           }"
         />
       </span>

@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { PortfolioSubPage } from '@/types'
+import { usdtToken } from '@shared/data/token'
 import {
   trackQrCodeBuyFunds,
   trackQrCodePageView
 } from '@/app/providers/mixpanel/EventTracker'
+import { PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
-const { copy } = useClipboard()
 const { t } = useI18n()
+const { copy } = useClipboard()
 
 const emit = defineEmits<{
-  'funds:purchase': []
   'modal:close': []
+  'funds:purchase': []
 }>()
 
 const isPortfolioBalancePage = computed(
@@ -45,11 +46,11 @@ onMounted(() => {
 
 <template>
   <div class="text-center">
-    <h2 class="font-semibold text-xl -mt-4">
+    <h2 class="font-semibold text-xl -mt-4 text-white">
       {{ $t('onboarding.depositInjNetworkAsset') }}
     </h2>
 
-    <p class="text-sm mt-4">
+    <p class="text-sm mt-4 text-white">
       {{
         $t(
           `onboarding.${
@@ -71,26 +72,33 @@ onMounted(() => {
       <div
         class="flex items-center gap-2 rounded-lg mt-4 justify-between max-w-xs mx-auto"
       >
-        <p>{{ formattedAddress }}</p>
-        <AppButton @click="onCopyInjectiveAddress">
+        <p class="text-white font-medium">{{ formattedAddress }}</p>
+        <AppButton
+          class="py-2 border-none text-base leading-5 font-semibold"
+          @click="onCopyInjectiveAddress"
+        >
           {{ $t('onboarding.copy') }}
         </AppButton>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-2 mt-4">
-      <AppButton class="w-full" @click="onPurchaseFunds">
+    <div class="grid grid-cols-1 gap-4 mt-6">
+      <AppButton
+        class="w-full text-base leading-5 py-2.5 font-semibold"
+        @click="onPurchaseFunds"
+      >
         {{ $t('onboarding.qr.cta') }}
       </AppButton>
 
-      <AppButton
-        v-if="!isPortfolioBalancePage"
-        variant="primary-ghost"
-        class="w-full text-coolGray-400 hover:text-white"
-        @click="onCloseModal"
-      >
-        {{ $t('onboarding.qr.skip') }}
-      </AppButton>
+      <PartialsCommonBridgeRedirection :denom="usdtToken.denom">
+        <AppButton
+          variant="primary-outline"
+          class="w-full text-white hover:text-white text-base leading-5 py-2.5 font-semibold"
+          @click="onCloseModal"
+        >
+          {{ $t('onboarding.qr.bridge') }}
+        </AppButton>
+      </PartialsCommonBridgeRedirection>
     </div>
   </div>
 </template>

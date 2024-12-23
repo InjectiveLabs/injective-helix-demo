@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioCyTags } from '@/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
@@ -12,8 +10,7 @@ const props = withDefaults(
     showUnverifiedAssets?: boolean
   }>(),
   {
-    search: '',
-    showUnverifiedAssets: false
+    search: ''
   }
 )
 
@@ -24,7 +21,7 @@ const emit = defineEmits<{
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
-const { aggregatedPortfolioBalances } = useBalance()
+const { activeSubaccountTotalBalanceInUsd } = useBalance()
 
 const search = computed({
   get: () => props.search,
@@ -42,18 +39,7 @@ const isGridTradingAccount = computed(() =>
 
 const { valueToString: accountTotalBalanceInUsdToString } =
   useSharedBigNumberFormatter(
-    computed(
-      () =>
-        aggregatedPortfolioBalances.value[accountStore.subaccountId]?.reduce(
-          (total, balance) =>
-            total.plus(
-              new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
-                balance.token.decimals
-              )
-            ),
-          ZERO_IN_BASE
-        ) || ZERO_IN_BASE
-    ),
+    computed(() => activeSubaccountTotalBalanceInUsd.value),
     {
       decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
     }

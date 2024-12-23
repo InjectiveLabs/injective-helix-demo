@@ -11,7 +11,7 @@ const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const setBankTransferFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const fetchAddressStatus = reactive(new Status(StatusType.Idle))
 
@@ -52,12 +52,12 @@ const { value: doubleCheck } = useBooleanField({
 })
 
 const balances = computed(() => {
-  const balances = userBalancesWithToken.value.map(
-    ({ denom, token, availableMargin }) => {
+  const balances = activeSubaccountBalancesWithToken.value.map(
+    ({ denom, token, availableBalance }) => {
       return {
         denom,
         token,
-        balance: availableMargin
+        balance: availableBalance
       }
     }
   )

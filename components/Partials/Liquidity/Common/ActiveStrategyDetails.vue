@@ -6,6 +6,10 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
+const gridStrategyStore = useGridStrategyStore()
+const { $onError } = useNuxtApp()
+const { subaccountPortfolioBalanceMap } = useBalance()
+
 const props = withDefaults(
   defineProps<{
     activeStrategy: TradingStrategy
@@ -13,12 +17,12 @@ const props = withDefaults(
   {}
 )
 
-const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
-
 const status = reactive(new Status(StatusType.Idle))
 
-const strategies = useSpotGridStrategies(computed(() => props.activeStrategy))
+const strategies = useSpotGridStrategies(
+  computed(() => props.activeStrategy),
+  subaccountPortfolioBalanceMap
+)
 
 const strategy = computed(() => strategies.value[0])
 
@@ -38,10 +42,6 @@ function removeStrategy() {
       strategy.value.contractAddress,
       strategy.value.subaccountId
     )
-
-    .then(() => {
-      //
-    })
     .catch($onError)
     .finally(() => {
       status.setIdle()

@@ -4,13 +4,8 @@ export default {
   account: {
     qrDeposit: {
       title: 'Send INJ to this address to begin trading instantly',
-      link: 'Injective bridge',
-      ctaLink: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          "Don't have INJ? Click ",
-          named('link'),
-          ' to get started.'
-        ])
+      bridge: 'Bridge',
+      cta: 'Don’t have INJ? Bridge from anywhere'
     },
     table: {
       [BalanceTableColumn.Assets]: 'Assets',
