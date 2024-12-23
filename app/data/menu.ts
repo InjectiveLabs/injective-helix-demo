@@ -44,7 +44,7 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.docs',
-    to: 'https://docs.injective.network/'
+    to: 'https://docs.helixapp.com/'
   },
   {
     isExternal: true,

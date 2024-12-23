@@ -5,12 +5,13 @@ import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function onWalletConnect() {
-  if (GEO_IP_RESTRICTIONS_ENABLED) {
+  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
     modalStore.openModal(Modal.Terms)
   } else {
     modalStore.openModal(Modal.Connect)
