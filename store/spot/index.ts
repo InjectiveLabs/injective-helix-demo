@@ -386,14 +386,14 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected && !options?.subaccountId) {
         return
       }
 
       const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        subaccountId: accountStore.subaccountId,
+        subaccountId: options?.subaccountId || accountStore.subaccountId,
         direction: filters?.direction,
         pagination: options?.pagination,
         marketIds: filters?.marketIds || spotStore.activeMarketIds,
