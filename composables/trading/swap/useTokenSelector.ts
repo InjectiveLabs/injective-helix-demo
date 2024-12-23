@@ -4,35 +4,18 @@ import { SharedBalanceWithTokenAndPrice } from '@shared/types'
 import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 import { AccountBalance } from '@/types'
 
-const getBalanceWithToken = (
-  swapDenom: string,
-  balances: AccountBalance[]
-): SharedBalanceWithTokenAndPrice | undefined => {
-  const balanceWithToken = balances.find(({ denom }) => denom === swapDenom)
-
-  if (!balanceWithToken) {
-    return
-  }
-
-  return {
-    token: balanceWithToken?.token,
-    denom: balanceWithToken?.denom,
-    balance: balanceWithToken?.availableBalance,
-    usdPrice: balanceWithToken?.usdPrice
-  } as SharedBalanceWithTokenAndPrice
-}
-
 export function useSwapTokenSelector({
   balances,
   inputDenom,
   outputDenom
 }: {
-  balances: Ref<AccountBalance[]>
   inputDenom: Ref<string>
   outputDenom: Ref<string>
+  balances: ComputedRef<AccountBalance[]>
 }) {
   const swapStore = useSwapStore()
   const spotStore = useSpotStore()
+  const tokenStore = useTokenStore()
 
   const tradableTokenMaps = computed(() =>
     swapStore.routes
@@ -43,17 +26,31 @@ export function useSwapTokenSelector({
       )
       .reduce(
         (tokens, route: Route) => {
-          const inputTokenWithBalance = getBalanceWithToken(
-            route.sourceDenom,
-            balances.value
+          const inputBalance = balances.value.find(
+            ({ denom }) => denom === route.sourceDenom
           )
+          const inputToken = tokenStore.tokenByDenomOrSymbol(route.sourceDenom)
 
-          const outputTokenWithBalance = getBalanceWithToken(
-            route.targetDenom,
-            balances.value
+          const inputTokenWithBalance = {
+            token: inputToken,
+            denom: route.sourceDenom,
+            balance: inputBalance?.availableBalance || '0',
+            usdPrice: tokenStore.tokenUsdPrice(inputToken)
+          } as SharedBalanceWithTokenAndPrice
+
+          const outputBalance = balances.value.find(
+            ({ denom }) => denom === route.targetDenom
           )
+          const outputToken = tokenStore.tokenByDenomOrSymbol(route.targetDenom)
 
-          if (!inputTokenWithBalance || !outputTokenWithBalance) {
+          const outputTokenWithBalance = {
+            token: outputToken,
+            denom: route.targetDenom,
+            balance: outputBalance?.availableBalance || '0',
+            usdPrice: tokenStore.tokenUsdPrice(inputToken)
+          } as SharedBalanceWithTokenAndPrice
+
+          if (!inputTokenWithBalance.token || !outputTokenWithBalance.token) {
             return tokens
           }
 
@@ -87,10 +84,26 @@ export function useSwapTokenSelector({
       )
   )
 
-  const inputDenomOptions = computed(() =>
-    (
+  const inputDenomOptions = computed(() => {
+    if (!tradableTokenMaps.value) {
+      return []
+    }
+
+    return (
       Object.keys(tradableTokenMaps.value)
-        .map((denom) => getBalanceWithToken(denom, balances.value))
+        .map((denom) => {
+          const balance = balances.value.find(
+            (balance) => balance.denom === denom
+          )
+          const token = tokenStore.tokenByDenomOrSymbol(denom)
+
+          return {
+            token,
+            denom,
+            balance: balance?.availableBalance || '0',
+            usdPrice: tokenStore.tokenUsdPrice(token)
+          }
+        })
         .filter(
           (balanceWithToken) =>
             balanceWithToken && balanceWithToken.denom !== outputDenom.value
@@ -111,10 +124,14 @@ export function useSwapTokenSelector({
         return b1.token.symbol.localeCompare(b2.token.symbol)
       }
     )
-  )
+  })
 
-  const outputDenomOptions = computed(() =>
-    tradableTokenMaps.value[inputDenom.value].sort(
+  const outputDenomOptions = computed(() => {
+    if (!tradableTokenMaps.value[inputDenom.value]) {
+      return []
+    }
+
+    return tradableTokenMaps.value[inputDenom.value].sort(
       (
         b1: SharedBalanceWithTokenAndPrice,
         b2: SharedBalanceWithTokenAndPrice
@@ -130,7 +147,7 @@ export function useSwapTokenSelector({
         return b1.token.symbol.localeCompare(b2.token.symbol)
       }
     )
-  )
+  })
 
   /**
    * Token selector output denom must be tradable to the input denom
