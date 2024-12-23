@@ -39,7 +39,7 @@ const accountBalance = computed(
   () =>
     subaccountPortfolioBalanceMap.value[
       sharedWalletStore.authZOrDefaultSubaccountId
-    ]
+    ] || []
 )
 
 const {
