@@ -90,6 +90,18 @@ export enum PortfolioSpotOrderHistoryTableColumn {
   Status = 'status'
 }
 
+export enum PortfolioSpotTradingBotsRunningTableColumn {
+  Time = 'time',
+  Market = 'market',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  Duration = 'duration',
+  Details = 'details',
+  RemoveStrategy = 'removeStrategy'
+}
+
 export enum PortfolioSpotTradeHistoryTableColumn {
   Time = 'time',
   Pair = 'pair',
