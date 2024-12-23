@@ -1,7 +1,6 @@
 import { Route } from '@injectivelabs/sdk-ts'
 import { injToken, usdtToken } from '@shared/data/token'
 import { SharedBalanceWithTokenAndPrice } from '@shared/types'
-import { useTokenStore } from '../../../store/token'
 import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
 import { AccountBalance } from '@/types'
 
@@ -37,7 +36,7 @@ export function useSwapTokenSelector({
             denom: route.sourceDenom,
             balance: inputBalance?.availableBalance || '0',
             usdPrice: tokenStore.tokenUsdPrice(inputToken)
-          }
+          } as SharedBalanceWithTokenAndPrice
 
           const outputBalance = balances.value.find(
             ({ denom }) => denom === route.targetDenom
@@ -49,7 +48,7 @@ export function useSwapTokenSelector({
             denom: route.targetDenom,
             balance: outputBalance?.availableBalance || '0',
             usdPrice: tokenStore.tokenUsdPrice(inputToken)
-          }
+          } as SharedBalanceWithTokenAndPrice
 
           if (!inputTokenWithBalance.token || !outputTokenWithBalance.token) {
             return tokens
