@@ -66,7 +66,11 @@ function selectStrategy() {
         </PartialsCommonMarketRedirection>
 
         <div class="flex items-center gap-2">
-          <AppButton variant="primary-ghost" size="xs" @click="selectStrategy">
+          <AppButton
+            variant="primary-outline"
+            size="xs"
+            @click="selectStrategy"
+          >
             {{ t('sgt.details') }}
           </AppButton>
           <PartialsLiquidityBotsSpotCommonRemoveStrategy

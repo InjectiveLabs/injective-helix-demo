@@ -102,6 +102,18 @@ export enum PortfolioSpotTradingBotsRunningTableColumn {
   RemoveStrategy = 'removeStrategy'
 }
 
+export enum PortfolioSpotTradingBotsHistoryTableColumn {
+  Time = 'time',
+  Market = 'market',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  Duration = 'duration',
+  Details = 'details',
+  StopReason = 'stopReason'
+}
+
 export enum PortfolioSpotTradeHistoryTableColumn {
   Time = 'time',
   Pair = 'pair',

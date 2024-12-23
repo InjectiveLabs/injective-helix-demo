@@ -7,12 +7,14 @@ import {
   BotType,
   GridStrategyTransformed,
   MainPage,
+  PortfolioSpotTradingBotsHistoryTableColumn,
   StopReason,
   TradeSubPage,
   TradingInterface
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
+const { lg } = useTwBreakpoints()
 const { t } = useLang()
 
 const isOpen = ref(false)
@@ -23,15 +25,43 @@ const { formattedStrategies } = useSpotGridStrategies(
 )
 
 const columns = computed(() => [
-  { key: 'time', label: t('sgt.time'), class: 'w-32' },
-  { key: 'market', label: t('sgt.market') },
-  { key: 'lowerBound', label: t('sgt.lowerBound') },
-  { key: 'upperBound', label: t('sgt.upperBound') },
-  { key: 'totalAmount', label: t('sgt.totalAmount') },
-  { key: 'totalProfit', label: t('sgt.totalProfit') },
-  { key: 'duration', label: t('sgt.duration') },
-  { key: 'details', label: t('sgt.details') },
-  { key: 'stopReason', label: t('sgt.stopReason') }
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.Time,
+    label: t('sgt.time'),
+    class: 'w-32'
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.Market,
+    label: t('sgt.market')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.LowerBound,
+    label: t('sgt.lowerBound')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.UpperBound,
+    label: t('sgt.upperBound')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalAmount,
+    label: t('sgt.totalAmount')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalProfit,
+    label: t('sgt.totalProfit')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.Duration,
+    label: t('sgt.duration')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.Details,
+    label: t('sgt.details')
+  },
+  {
+    key: PortfolioSpotTradingBotsHistoryTableColumn.StopReason,
+    label: t('sgt.stopReason')
+  }
 ])
 
 function selectStrategy(strategy: GridStrategyTransformed) {
@@ -43,6 +73,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 <template>
   <div>
     <UTable
+      v-if="lg"
       :ui="{
         divide: 'dark:divide-cool-800',
         th: {
@@ -161,6 +192,16 @@ function selectStrategy(strategy: GridStrategyTransformed) {
         </span>
       </template>
     </UTable>
+
+    <template v-else>
+      <PartialsTradeSpotOrdersTradingBotsHistoryTableMobileRow
+        v-for="strategy in formattedStrategies"
+        :key="strategy.marketId + strategy.strategy.createdAt"
+        :strategy="strategy"
+        :columns="columns"
+        @strategy:select="selectStrategy"
+      />
+    </template>
 
     <CommonEmptyList
       v-if="gridStrategyStore.activeStrategies.length === 0"
