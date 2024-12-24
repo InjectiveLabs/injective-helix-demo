@@ -3,7 +3,6 @@ import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
-    alignLeft?: boolean
     decimalPlaces?: number
     amount: string | number
     shouldTruncate?: boolean
@@ -27,8 +26,8 @@ const { valueToFixed: amountToFixed } = useSharedBigNumberFormatter(
 
 <template>
   <SharedAmountCollapsed
+    class="inline-flex"
     v-bind="{
-      alignLeft,
       shouldTruncate,
       showZeroAsEmDash,
       maxTrailingZeros,

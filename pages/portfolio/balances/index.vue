@@ -89,7 +89,7 @@ function onFiatOnRamp() {
         </div>
 
         <div
-          class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0"
+          class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0 max-lg:mt-3"
         >
           <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
             <PartialsCommonBridgeRedirection
