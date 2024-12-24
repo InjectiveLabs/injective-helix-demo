@@ -318,6 +318,7 @@ export default {
     totalAmount: 'Total Amount',
     totalProfit: 'Total Profit',
     currentBalance: 'Current Balance',
+    finalBalance: 'Final Balance',
     upToRewards: 'Up to {amount} {symbol} weekly rewards'
   }
 }

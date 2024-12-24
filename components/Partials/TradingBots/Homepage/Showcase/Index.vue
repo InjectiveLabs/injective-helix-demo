@@ -19,7 +19,7 @@ const selectedTab = ref(ShowcaseTab.Spot)
 const status = reactive(new Status(StatusType.Loading))
 const strategies = ref<TradingStrategy[]>([])
 
-const formattedStrategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => strategies.value),
   subaccountPortfolioBalanceMap
 )

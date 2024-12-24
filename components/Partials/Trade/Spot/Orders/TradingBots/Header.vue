@@ -1,82 +1,62 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { SharedDropdownOption } from '@shared/types'
-import {
-  MarketKey,
-  UiSpotMarket,
-  SpotOrdersStandardView,
-  SpotMarketCyTags
-} from '@/types'
+import { SpotOrdersTradingBotsView, SpotMarketCyTags } from '@/types'
 
 const spotStore = useSpotStore()
-const isMobile = useIsMobile()
 const breakpoints = useBreakpointsTw()
-const sharedWalletStore = useSharedWalletStore()
+const gridStrategyStore = useGridStrategyStore()
 
 const props = withDefaults(
   defineProps<{
-    isTickerOnly?: boolean
-    modelValue: SpotOrdersStandardView
+    modelValue: SpotOrdersTradingBotsView
   }>(),
   {}
 )
 
 const emit = defineEmits<{
-  'update:modelValue': [value: SpotOrdersStandardView]
-  'update:isTickerOnly': [value: boolean]
+  'update:modelValue': [value: SpotOrdersTradingBotsView]
 }>()
-
-const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const lg = breakpoints['3xl']
 const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
-const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.Orders}`,
-      value: SpotOrdersStandardView.Orders,
+      display: `activity.${SpotOrdersTradingBotsView.ActiveStrategies}`,
+      value: SpotOrdersTradingBotsView.ActiveStrategies,
+      description: `${gridStrategyStore.activeStrategies.length}`
+    },
+    {
+      display: `activity.${SpotOrdersTradingBotsView.RemovedStrategies}`,
+      value: SpotOrdersTradingBotsView.RemovedStrategies,
+      description: `${gridStrategyStore.removedStrategies.length}`
+    },
+    {
+      display: `activity.${SpotOrdersTradingBotsView.Orders}`,
+      value: SpotOrdersTradingBotsView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.OrderHistory}`,
-      value: SpotOrdersStandardView.OrderHistory,
-      description: `${spotStore.subaccountOrderHistoryCount}`
+      display: `activity.${SpotOrdersTradingBotsView.OrderHistory}`,
+      value: SpotOrdersTradingBotsView.OrderHistory,
+      description: `${spotStore.subaccountOrderHistory.length}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.TradeHistory}`,
-      value: SpotOrdersStandardView.TradeHistory,
-      description: `${spotStore.subaccountTradesCount}`
+      display: `activity.${SpotOrdersTradingBotsView.TradeHistory}`,
+      value: SpotOrdersTradingBotsView.TradeHistory
     }
   ]
 
-  if (sharedWalletStore.isUserConnected) {
-    items.unshift({
-      display: `activity.${SpotOrdersStandardView.Balances}`,
-      value: SpotOrdersStandardView.Balances
-    })
-  }
-
   return items
 })
-
-watch(
-  () => sharedWalletStore.isUserConnected,
-  (isConnected) => {
-    if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
-      view.value = SpotOrdersStandardView.Orders
-    }
-  }
-)
 </script>
 
 <template>
   <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
-    <CommonSubaccountTabSelector v-bind="{ isSm: true }" />
-
     <AppTabSelect
       v-if="!lg"
       v-bind="{
@@ -132,24 +112,6 @@ watch(
           : ''
       }}
     </AppButtonSelect>
-
-    <div class="flex items-center flex-1 justify-end px-2">
-      <AppCheckbox2
-        v-if="view !== SpotOrdersStandardView.Balances"
-        v-model="isTickerOnlyValue"
-        is-plain
-        :class="[xl ? 'text-sm' : 'text-xs']"
-      >
-        <span>
-          {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
-        </span>
-      </AppCheckbox2>
-
-      <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
-        v-if="view === SpotOrdersStandardView.Orders && !isMobile"
-        v-bind="{ isTickerOnly }"
-      />
-    </div>
 
     <div class="flex-1 lg:hidden" />
   </div>

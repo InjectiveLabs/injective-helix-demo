@@ -3,7 +3,7 @@ import { SpotOpenOrdersFilterField } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-
+const accountStore = useAccountStore()
 const { value: marketValue } = useStringField({
   name: SpotOpenOrdersFilterField.Market,
   rule: ''
@@ -33,7 +33,10 @@ const { value: sideValue } = useStringField({
     <CommonTabSideFilter v-model="sideValue" is-spot />
     <CommonTabFormReset />
 
-    <div class="hidden lg:flex justify-end items-center px-2 flex-1">
+    <div
+      v-if="!accountStore.isSgtSubaccount"
+      class="hidden lg:flex justify-end items-center px-2 flex-1"
+    >
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders />
     </div>
 

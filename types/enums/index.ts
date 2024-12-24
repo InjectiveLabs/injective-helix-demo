@@ -406,6 +406,14 @@ export enum SpotOrdersStandardView {
   OrderHistory = 'orderHistory'
 }
 
+export enum SpotOrdersTradingBotsView {
+  Orders = 'orders',
+  TradeHistory = 'tradeHistory',
+  OrderHistory = 'orderHistory',
+  ActiveStrategies = 'activeStrategies',
+  RemovedStrategies = 'removedStrategies'
+}
+
 export enum PerpOrdersStandardView {
   Balances = 'balances',
   Positions = 'positions',

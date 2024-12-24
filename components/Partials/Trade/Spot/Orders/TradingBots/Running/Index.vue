@@ -1,42 +1,64 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  BotType,
   GridStrategyTransformed,
-  MainPage,
+  PortfolioSpotTradingBotsRunningTableColumn,
   TradeSubPage,
   TradingInterface
-} from '~/types'
+} from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
+const { lg } = useTwBreakpoints()
 const { t } = useLang()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
-const strategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => gridStrategyStore.activeStrategies),
   subaccountPortfolioBalanceMap
 )
 
-const formattedStrategies = computed(() =>
-  strategies.value.map((strategy) => ({
-    ...strategy
-  }))
-)
-
 const columns = computed(() => [
-  { key: 'time', label: t('sgt.time'), class: 'w-32' },
-  { key: 'market', label: t('sgt.market') },
-  { key: 'lowerBound', label: t('sgt.lowerBound') },
-  { key: 'upperBound', label: t('sgt.upperBound') },
-  { key: 'totalAmount', label: t('sgt.totalAmount') },
-  { key: 'totalProfit', label: t('sgt.totalProfit') },
-  { key: 'duration', label: t('sgt.duration') },
-  { key: 'details', label: t('sgt.details') },
-  { key: 'removeStrategy', label: t('sgt.removeStrategy') }
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.Time,
+    label: t('sgt.time'),
+    class: 'w-32'
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.Market,
+    label: t('sgt.market')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.LowerBound,
+    label: t('sgt.lowerBound')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.UpperBound,
+    label: t('sgt.upperBound')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.TotalAmount,
+    label: t('sgt.totalAmount')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.TotalProfit,
+    label: t('sgt.totalProfit')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.Duration,
+    label: t('sgt.duration')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.Details,
+    label: t('sgt.details')
+  },
+  {
+    key: PortfolioSpotTradingBotsRunningTableColumn.RemoveStrategy,
+    label: t('sgt.removeStrategy')
+  }
 ])
 
 function selectStrategy(strategy: GridStrategyTransformed) {
@@ -46,8 +68,9 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 </script>
 
 <template>
-  <div class="divide-y border-b">
+  <div>
     <UTable
+      v-if="lg"
       :ui="{
         divide: 'dark:divide-cool-800',
         th: {
@@ -64,34 +87,23 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       :columns="columns"
     >
       <template #time-data="{ row }">
-        <span>{{ row.createdAtFormatted }}</span>
+        <span class="p-2 text-xs">{{ row.createdAtFormatted }}</span>
       </template>
 
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name:
-              row.botType === BotType.SpotGrid
-                ? TradeSubPage.Spot
-                : MainPage.TradingBotsLiquidityBotsSpot,
+            name: TradeSubPage.Spot,
             query: {
-              market:
-                row.botType === BotType.LiquidityGrid
-                  ? row.market.slug
-                  : undefined,
-              interface:
-                row.botType === BotType.SpotGrid
-                  ? TradingInterface.TradingBots
-                  : undefined
+              interface: TradingInterface.TradingBots
             },
             params: {
-              slug:
-                row.botType === BotType.SpotGrid ? row.market.slug : undefined
+              slug: row.market.slug
             }
           }"
           class="flex items-center gap-2"
         >
-          <UAvatar :src="row.market.baseToken.logo" />
+          <UAvatar size="xs" :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
         </NuxtLink>
       </template>
@@ -123,14 +135,14 @@ function selectStrategy(strategy: GridStrategyTransformed) {
           <SharedAmountFormatter
             :decimal-places="2"
             :max-decimal-places="3"
-            :amount="row.currentUsdValue.toFixed()"
+            :amount="row.totalAmount.toFixed()"
           />
         </div>
       </template>
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col"
+          class="flex flex-col font-mono"
           :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
         >
           <div class="flex items-center gap-1">
@@ -175,19 +187,24 @@ function selectStrategy(strategy: GridStrategyTransformed) {
           </template>
         </PartialsLiquidityBotsSpotCommonRemoveStrategy>
       </template>
+
+      <template #empty-state>
+        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+      </template>
     </UTable>
 
-    <!-- <template v-else>
-      <PartialsTradeSpotOrdersTradingBotsRunningMobileTable
+    <template v-else>
+      <PartialsTradeSpotOrdersTradingBotsRunningTableMobileRow
         v-for="strategy in formattedStrategies"
         :key="strategy.subaccountId + strategy.createdAt"
         :strategy="strategy"
+        :columns="columns"
         @strategy:select="selectStrategy"
       />
-    </template> -->
+    </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.activeStrategies.length === 0"
+      v-if="gridStrategyStore.activeStrategies.length === 0 && !lg"
       :message="$t('sgt.noActiveStrategies')"
     />
 
