@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import {
-  GridStrategyTransformed,
-  PortfolioSpotTradingBotsRunningTableColumn,
-  UTableColumn
-} from '@/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UTableColumn,
+  GridStrategyTransformed,
+  PortfolioSpotTradingBotsRunningTableColumn
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{

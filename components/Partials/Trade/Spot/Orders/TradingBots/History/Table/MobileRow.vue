@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
-  GridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn,
-  StopReason,
-  UTableColumn
-} from '@/types'
-import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import {
+  StopReason,
+  UTableColumn,
+  GridStrategyTransformed,
+  PortfolioSpotTradingBotsHistoryTableColumn
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    strategy: GridStrategyTransformed
     columns: UTableColumn[]
+    strategy: GridStrategyTransformed
   }>(),
   {}
 )

@@ -13,10 +13,11 @@ const { activeSubaccountBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
-  defineProps<{ orders: SpotLimitOrder[]; isTradingBots?: boolean }>(),
-  {
-    isTradingBots: false
-  }
+  defineProps<{
+    isTradingBots?: boolean
+    orders: SpotLimitOrder[]
+  }>(),
+  {}
 )
 
 const { rows } = useSpotOpenOrdersTransformer(

@@ -10,13 +10,11 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
+    isTradingBots?: boolean
     columns: UTableColumn[]
     order: TransformedPortfolioSpotOpenOrders
-    isTradingBots?: boolean
   }>(),
-  {
-    isTradingBots: false
-  }
+  {}
 )
 
 const filteredColumns = computed(() =>

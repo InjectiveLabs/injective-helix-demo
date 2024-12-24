@@ -1,21 +1,17 @@
-import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { format } from 'date-fns'
 import { indexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { format } from 'date-fns'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
 import {
   BotType,
-  SgtMarketType,
   StopReason,
+  SgtMarketType,
   AccountBalance,
   StrategyStatus
 } from '@/types'
@@ -176,9 +172,10 @@ export const useSpotGridStrategies = (
 
       // PNL
 
-      const midPrice = new BigNumberInWei(strategy.marketMidPrice).toBase(
-        market.quoteToken.decimals - market.baseToken.decimals
-      )
+      const midPrice = sharedToBalanceInTokenInBase({
+        value: strategy.marketMidPrice,
+        decimalPlaces: market.quoteToken.decimals - market.baseToken.decimals
+      })
 
       const initialInvestmentQuantityInQuote = new BigNumberInBase(
         initialBaseBalanceQuantity

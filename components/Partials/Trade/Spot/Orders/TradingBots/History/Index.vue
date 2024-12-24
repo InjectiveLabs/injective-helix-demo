@@ -4,11 +4,11 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  GridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn,
   StopReason,
   TradeSubPage,
-  TradingInterface
+  TradingInterface,
+  GridStrategyTransformed,
+  PortfolioSpotTradingBotsHistoryTableColumn
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
