@@ -51,6 +51,9 @@ watch(isModalOpen, (isModalOpen: boolean) => {
       status.setIdle()
     })
 })
+
+const TREASURE_HUNT_BEGIN_TIMESTAMP = 1735207200
+const TREASURE_HUNT_END_TIMESTAMP = 1735761600
 </script>
 
 <template>
@@ -90,13 +93,26 @@ watch(isModalOpen, (isModalOpen: boolean) => {
           </NuxtLink>
         </div>
 
-        <AppButton
-          class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
-          size="md"
-          @click="onModalClose"
-        >
-          {{ $t('trade.swap.backToSwap') }}
-        </AppButton>
+        <div class="flex flex-col items-center gap-2">
+          <AppButton
+            class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
+            size="md"
+            @click="onModalClose"
+          >
+            {{ $t('trade.swap.backToSwap') }}
+          </AppButton>
+
+          <p
+            v-if="
+              new Date().getTime() > TREASURE_HUNT_BEGIN_TIMESTAMP * 1000 &&
+              new Date().getTime() < TREASURE_HUNT_END_TIMESTAMP * 1000
+            "
+            class="font-bold text-lg mt-2"
+          >
+            <!-- TODO: Remove When Treasure Hunt Ends -->
+            Mattress
+          </p>
+        </div>
       </div>
     </AppHocLoading>
   </AppModal>
