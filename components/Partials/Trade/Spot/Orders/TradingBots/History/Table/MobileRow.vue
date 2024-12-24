@@ -57,6 +57,7 @@ function selectStrategy() {
         <PartialsCommonMarketRedirection
           class="flex items-center space-x-2 font-sans"
           v-bind="{ market: strategy.market }"
+          is-trading-bot-tab
         >
           <CommonTokenIcon
             v-bind="{ token: strategy.market.baseToken }"

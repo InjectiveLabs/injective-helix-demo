@@ -4,9 +4,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  BotType,
   GridStrategyTransformed,
-  MainPage,
   PortfolioSpotTradingBotsHistoryTableColumn,
   StopReason,
   TradeSubPage,
@@ -14,6 +12,7 @@ import {
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
+const { subaccountPortfolioBalanceMap } = useBalance()
 const { lg } = useTwBreakpoints()
 const { t } = useLang()
 
@@ -21,7 +20,8 @@ const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.removedStrategies)
+  computed(() => gridStrategyStore.removedStrategies),
+  subaccountPortfolioBalanceMap
 )
 
 const columns = computed(() => [
@@ -96,23 +96,12 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name:
-              row.botType === BotType.SpotGrid
-                ? TradeSubPage.Spot
-                : MainPage.TradingBotsLiquidityBotsSpot,
+            name: TradeSubPage.Spot,
             query: {
-              market:
-                row.botType === BotType.LiquidityGrid
-                  ? row.market.slug
-                  : undefined,
-              interface:
-                row.botType === BotType.SpotGrid
-                  ? TradingInterface.TradingBots
-                  : undefined
+              interface: TradingInterface.TradingBots
             },
             params: {
-              slug:
-                row.botType === BotType.SpotGrid ? row.market.slug : undefined
+              slug: row.market.slug
             }
           }"
           class="flex items-center gap-2"
@@ -191,6 +180,10 @@ function selectStrategy(strategy: GridStrategyTransformed) {
           {{ $t(STOP_REASON_MAP[row.stopReason as StopReason]) }}
         </span>
       </template>
+
+      <template #empty-state>
+        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+      </template>
     </UTable>
 
     <template v-else>
@@ -204,7 +197,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
     </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.activeStrategies.length === 0"
+      v-if="gridStrategyStore.activeStrategies.length === 0 && !lg"
       :message="$t('sgt.noActiveStrategies')"
     />
 

@@ -38,7 +38,7 @@ const options = computed(() => {
     {
       display: `activity.${SpotOrdersTradingBotsView.Orders}`,
       value: SpotOrdersTradingBotsView.Orders,
-      description: `${spotStore.subaccountOrders.length}`
+      description: `${spotStore.subaccountOrdersCount}`
     },
     {
       display: `activity.${SpotOrdersTradingBotsView.OrderHistory}`,
@@ -47,8 +47,7 @@ const options = computed(() => {
     },
     {
       display: `activity.${SpotOrdersTradingBotsView.TradeHistory}`,
-      value: SpotOrdersTradingBotsView.TradeHistory,
-      description: `${spotStore.subaccountTrades.length}`
+      value: SpotOrdersTradingBotsView.TradeHistory
     }
   ]
 

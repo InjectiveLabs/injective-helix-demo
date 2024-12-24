@@ -34,7 +34,7 @@ function fetchStrategies() {
       subaccountId,
       marketIds: [props.market.marketId]
     }),
-    spotStore.fetchSubaccountOrderHistory({
+    spotStore.fetchOrderHistoryForSubaccount({
       subaccountId,
       filters: {
         marketIds: [props.market.marketId]
@@ -43,7 +43,7 @@ function fetchStrategies() {
         limit: 100
       }
     }),
-    spotStore.fetchSubaccountTrades({
+    spotStore.fetchTradesForSubaccount({
       subaccountId,
       filters: {
         marketIds: [props.market.marketId]

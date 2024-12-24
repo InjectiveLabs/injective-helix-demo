@@ -72,7 +72,7 @@ export const useSpotGridStrategies = (
       )
 
       const sgtSubaccountBalances =
-        subaccountBalancesMap.value[marketSubaccountId] || []
+        subaccountBalancesMap?.value?.[marketSubaccountId] || []
 
       const executionPrice = new BigNumberInBase(strategy.executionPrice)
 
