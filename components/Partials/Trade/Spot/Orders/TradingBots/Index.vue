@@ -72,16 +72,41 @@ onUnmounted(() => {
       v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
     />
 
-    <PartialsTradeSpotOrdersTradingBotsOpenOrders
-      v-else-if="view === SpotOrdersTradingBotsView.Orders"
-    />
+    <template v-if="view === SpotOrdersTradingBotsView.Orders">
+      <PartialsPortfolioOrdersSpotOpenOrdersTable
+        v-if="spotStore.subaccountOrders.length"
+        :orders="spotStore.subaccountOrders"
+        :is-trading-bots="true"
+      />
 
-    <PartialsTradeSpotOrdersTradingBotsOrderHistory
-      v-else-if="view === SpotOrdersTradingBotsView.OrderHistory"
-    />
+      <CommonEmptyList
+        v-if="!spotStore.subaccountOrders.length"
+        v-bind="{ message: $t('trade.noOrders') }"
+      />
+    </template>
 
-    <PartialsTradeSpotOrdersTradingBotsTradeHistory
-      v-else-if="view === SpotOrdersTradingBotsView.TradeHistory"
-    />
+    <template v-else-if="view === SpotOrdersTradingBotsView.OrderHistory">
+      <PartialsPortfolioOrdersSpotOrderHistoryTable
+        v-if="spotStore.subaccountOrderHistory.length"
+        :orders="spotStore.subaccountOrderHistory"
+      />
+
+      <CommonEmptyList
+        v-if="!spotStore.subaccountOrderHistory.length"
+        v-bind="{ message: $t('trade.noOrders') }"
+      />
+    </template>
+
+    <template v-else-if="view === SpotOrdersTradingBotsView.TradeHistory">
+      <PartialsPortfolioOrdersSpotTradeHistoryTable
+        v-if="spotStore.subaccountTrades.length"
+        :trades="spotStore.subaccountTrades"
+      />
+
+      <CommonEmptyList
+        v-if="!spotStore.subaccountTrades.length"
+        v-bind="{ message: $t('trade.noTrades') }"
+      />
+    </template>
   </div>
 </template>

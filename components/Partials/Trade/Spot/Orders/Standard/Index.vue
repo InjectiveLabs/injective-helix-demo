@@ -11,8 +11,18 @@ const props = withDefaults(
 const spotStore = useSpotStore()
 const { $onError } = useNuxtApp()
 
-const view = ref(SpotOrdersStandardView.Orders)
 const isTickerOnly = ref(false)
+const view = ref(SpotOrdersStandardView.Orders)
+
+const filteredOrders = computed(() =>
+  spotStore.subaccountOrders.filter((order) => {
+    if (isTickerOnly.value) {
+      return order.marketId === props.market.marketId
+    }
+
+    return true
+  })
+)
 
 function refreshData() {
   const marketId = isTickerOnly.value ? props.market.marketId : undefined
@@ -62,18 +72,41 @@ onUnmounted(() => {
         v-if="view === SpotOrdersStandardView.Balances"
       />
 
-      <PartialsTradeSpotOrdersStandardOpenOrders
-        v-else-if="view === SpotOrdersStandardView.Orders"
-        v-bind="{ isTickerOnly }"
-      />
+      <template v-if="view === SpotOrdersStandardView.Orders">
+        <PartialsPortfolioOrdersSpotOpenOrdersTable
+          v-if="filteredOrders.length"
+          :orders="filteredOrders"
+        />
 
-      <PartialsTradeSpotOrdersStandardOrderHistory
-        v-else-if="view === SpotOrdersStandardView.OrderHistory"
-      />
+        <CommonEmptyList
+          v-if="!filteredOrders.length"
+          v-bind="{ message: $t('trade.noOrders') }"
+        />
+      </template>
 
-      <PartialsTradeSpotOrdersStandardTradeHistory
-        v-else-if="view === SpotOrdersStandardView.TradeHistory"
-      />
+      <template v-else-if="view === SpotOrdersStandardView.OrderHistory">
+        <PartialsPortfolioOrdersSpotOrderHistoryTable
+          v-if="spotStore.subaccountOrderHistory.length"
+          :orders="spotStore.subaccountOrderHistory"
+        />
+
+        <CommonEmptyList
+          v-if="!spotStore.subaccountOrderHistory.length"
+          v-bind="{ message: $t('trade.noOrders') }"
+        />
+      </template>
+
+      <template v-else-if="view === SpotOrdersStandardView.TradeHistory">
+        <PartialsPortfolioOrdersSpotTradeHistoryTable
+          v-if="spotStore.subaccountTrades.length"
+          :trades="spotStore.subaccountTrades"
+        />
+
+        <CommonEmptyList
+          v-if="!spotStore.subaccountTrades.length"
+          v-bind="{ message: $t('trade.noTrades') }"
+        />
+      </template>
     </div>
   </div>
 </template>
