@@ -67,7 +67,9 @@ function resetCategory() {
       />
 
       <div class="max-w-full mt-4 lg:mb-2">
-        <div class="flex gap-2 justify-between flex-wrap max-sm:flex-col">
+        <div
+          class="flex sm:gap-4 lg:gap-2 justify-between flex-wrap max-sm:flex-col"
+        >
           <div class="sm:flex max-sm:w-full items-center flex-wrap gap-2">
             <template v-if="sm">
               <AppButtonSelect
@@ -95,7 +97,7 @@ function resetCategory() {
 
           <div class="flex justify-between max-xl:w-full">
             <label
-              class="flex items-center border-b border-[#181E31] rounded-md p-1 max-xs:w-full max-xs:flex-1"
+              class="flex items-center border-b border-[#181E31] rounded-md p-1 max-sm:w-full max-xs:flex-1"
             >
               <input
                 v-model="search"
@@ -114,7 +116,7 @@ function resetCategory() {
               </div>
             </label>
 
-            <div class="flex max-lg:hidden">
+            <div class="flex max-sm:hidden">
               <AppCheckbox2
                 v-model="isLowVolumeMarketsVisible"
                 class="text-coolGray-450"
