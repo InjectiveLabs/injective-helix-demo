@@ -10,10 +10,6 @@ const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 const { sm } = useTwBreakpoints()
 
-const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
-  ([key, value]) => ({ label: key, value })
-)
-
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
 const isLowVolumeMarketsVisible = ref(false)
@@ -95,17 +91,6 @@ function resetCategory() {
                 </template>
               </AppButtonSelect>
             </template>
-
-            <div v-else>
-              <p class="text-xs text-gray-500 mb-2">
-                {{ $t('common.marketCategory') }}
-              </p>
-              <USelectMenu
-                v-model="activeCategory"
-                value-attribute="value"
-                :options="mobileMarketCategoryType"
-              />
-            </div>
           </div>
 
           <div class="flex justify-between max-xl:w-full">
@@ -117,6 +102,7 @@ function resetCategory() {
                 type="text"
                 class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
                 :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
+                :placeholder="$t('trade.search_market')"
                 @update:model-value="resetCategory"
               />
 
@@ -128,7 +114,7 @@ function resetCategory() {
               </div>
             </label>
 
-            <div class="flex">
+            <div class="flex max-lg:hidden">
               <AppCheckbox2
                 v-model="isLowVolumeMarketsVisible"
                 class="text-coolGray-450"

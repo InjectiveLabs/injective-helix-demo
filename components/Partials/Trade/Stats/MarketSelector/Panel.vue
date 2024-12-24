@@ -4,9 +4,9 @@ import { NuxtUiIcons } from '@shared/types'
 import { MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
-const { sm } = useTwBreakpoints()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const { sm } = useTwBreakpoints()
 
 withDefaults(
   defineProps<{
@@ -65,7 +65,7 @@ function resetCategory() {
               id="search-market"
               v-model="search"
               v-focus
-              placeholder="Search Market..."
+              :placeholder="$t('trade.search_market')"
               type="text"
               class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               autocomplete="off"
