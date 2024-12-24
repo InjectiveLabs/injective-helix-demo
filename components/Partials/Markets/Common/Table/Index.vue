@@ -52,11 +52,6 @@ const columns = [
 
 const { rows } = useMarketTransformer(computed(() => props.sortedMarkets))
 
-const { sortedRows, sortBy, sortDirection, sortOptions } = useSort(
-  rows,
-  columns
-)
-
 function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
   appStore.setUserState({
     ...appStore.userState,
@@ -231,14 +226,8 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
   </template>
 
   <template v-else>
-    <AppMobileSort
-      v-model:sort-by="sortBy"
-      v-model:sort-direction="sortDirection"
-      :sort-options="sortOptions"
-    />
-
     <PartialsMarketsCommonMobileTable
-      v-for="market in sortedRows"
+      v-for="market in rows"
       :key="market.market.marketId"
       v-bind="{ market, columns }"
       @mobile-table:click="toggleFavorite(market)"

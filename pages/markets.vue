@@ -115,7 +115,7 @@ function resetCategory() {
               <input
                 v-model="search"
                 type="text"
-                class="focus:outline-none bg-transparent p-1 px-3 w-full"
+                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
                 :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
                 @update:model-value="resetCategory"
               />
