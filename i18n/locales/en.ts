@@ -466,7 +466,7 @@ export default {
 
   onboarding: {
     qr: {
-      skip: 'Skip',
+      bridge: 'Bridge',
       cta: 'Buy INJ with Card'
     },
     copy: 'Copy',

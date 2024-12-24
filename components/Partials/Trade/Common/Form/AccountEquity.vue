@@ -1,21 +1,59 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
+const tokenStore = useTokenStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const { perpBalancesInUsd, spotTotalBalanceInUsd, positionTotalPNLInUsd } =
-  useEquity()
+const {
+  activeSubaccountTotalBalanceInUsd,
+  activeSubaccountPositionPnlDenomMap
+} = useBalance()
 
-const { valueToFixed: spotTotalBalanceInUsdToFixed } =
-  useSharedBigNumberFormatter(spotTotalBalanceInUsd)
+const { valueToFixed: marginAndPnlToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
+      (sum, { pnlPlusMargin, token }) => {
+        const usdPrice = tokenStore.tokenUsdPrice(token)
+        const usdValue = sharedToBalanceInToken({
+          value: new BigNumberInBase(pnlPlusMargin).times(usdPrice).toFixed(),
+          decimalPlaces: token.decimals
+        })
 
-const { valueToFixed: perpBalancesInUsdToFixed } =
-  useSharedBigNumberFormatter(perpBalancesInUsd)
+        return sum.plus(usdValue)
+      },
+      ZERO_IN_BASE
+    )
+  )
+)
 
-const { valueToFixed: positionTotalPNLInUsdToFixed } =
-  useSharedBigNumberFormatter(positionTotalPNLInUsd)
+const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
+      (sum, { pnl, token }) => {
+        const usdPrice = tokenStore.tokenUsdPrice(token)
+        const usdValue = sharedToBalanceInToken({
+          value: new BigNumberInBase(pnl).times(usdPrice).toFixed(),
+          decimalPlaces: token.decimals
+        })
+
+        return sum.plus(usdValue)
+      },
+      ZERO_IN_BASE
+    )
+  )
+)
+
+const { valueToFixed: spotBalanceInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(activeSubaccountTotalBalanceInUsd.value).minus(
+      marginAndPnlToFixed.value
+    )
+  )
+)
 
 function openDepositQRModal() {
   if (sharedWalletStore.wallet === Wallet.Magic) {
@@ -40,7 +78,7 @@ function openDepositQRModal() {
       <p class="font-mono space-x-1">
         $<AppUsdAmount
           v-bind="{
-            amount: spotTotalBalanceInUsdToFixed
+            amount: spotBalanceInUsdToFixed
           }"
           class="text-white"
         />
@@ -54,7 +92,7 @@ function openDepositQRModal() {
       <p class="font-mono space-x-1">
         $<AppUsdAmount
           v-bind="{
-            amount: perpBalancesInUsdToFixed
+            amount: marginAndPnlToFixed
           }"
           class="text-white"
         />
@@ -68,7 +106,7 @@ function openDepositQRModal() {
       <p class="font-mono space-x-1">
         $<AppUsdAmount
           v-bind="{
-            amount: positionTotalPNLInUsdToFixed
+            amount: pnlToFixed
           }"
           class="text-white"
         />

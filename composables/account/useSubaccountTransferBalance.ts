@@ -15,13 +15,11 @@ export function useSubaccountTransferBalance(
       sharedWalletStore.defaultSubaccountId
 
     if (isDefaultSubaccount) {
-      return accountStore.bankBalances.map((bankBalance) => {
-        return {
-          denom: bankBalance.denom,
-          availableBalance: bankBalance.amount,
-          totalBalance: '0'
-        }
-      })
+      return accountStore.bankBalances.map((bankBalance) => ({
+        totalBalance: '0',
+        denom: bankBalance.denom,
+        availableBalance: bankBalance.amount
+      }))
     }
 
     return (

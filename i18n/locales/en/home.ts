@@ -155,7 +155,7 @@ export default {
     termsAndConditions: 'Terms & Conditions',
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
-    faq: 'FAQ',
+    docs: 'Helix Docs',
     lpRewards: 'LP Rewards',
     submitRequest: 'Submit A Request',
     institutional: 'Institutional',

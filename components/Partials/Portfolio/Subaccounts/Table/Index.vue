@@ -2,7 +2,7 @@
 import { SubAccount, PortfolioSubaccountsTableColumn } from '@/types'
 
 const { t } = useLang()
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
   defineProps<{
@@ -13,7 +13,7 @@ const props = withDefaults(
 
 const { rows } = useSubaccountsTransformer(
   computed(() => props.subAccounts),
-  computed(() => aggregatedPortfolioBalances.value)
+  computed(() => subaccountPortfolioBalanceMap.value)
 )
 
 const columns = [

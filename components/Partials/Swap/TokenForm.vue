@@ -9,7 +9,7 @@ const setFormValues = useSetFormValues()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { query } = useRoute()
-const { userBalancesWithToken } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const emit = defineEmits<{
   'form:reset': []
@@ -35,6 +35,13 @@ const { value: outputDenom } = useStringField({
   initialValue: swapStore.routes[0]?.targetDenom
 })
 
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ] || []
+)
+
 const {
   inputDenomOptions,
   outputDenomOptions,
@@ -43,7 +50,7 @@ const {
 } = useSwapTokenSelector({
   inputDenom,
   outputDenom,
-  balances: userBalancesWithToken
+  balances: accountBalance
 })
 
 const outputIsDisabledBaseDenom = computed(() =>

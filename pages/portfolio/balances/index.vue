@@ -10,7 +10,7 @@ const modalStore = useSharedModalStore()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
-const { accountTotalBalanceInUsd } = useBalance()
+const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
 const accountTotalBalanceInBtc = computed(() => {
   const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
@@ -19,7 +19,7 @@ const accountTotalBalanceInBtc = computed(() => {
     return ZERO_IN_BASE
   }
 
-  return accountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
+  return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
 })
 
 function onOpenBankTransferModal() {
@@ -52,7 +52,9 @@ function onFiatOnRamp() {
                 :width="16"
               >
                 <CommonNumberCounter
-                  v-bind="{ value: accountTotalBalanceInUsd.toNumber() }"
+                  v-bind="{
+                    value: aggregatedSubaccountTotalBalanceInUsd.toNumber()
+                  }"
                   :size="24"
                 />
               </CommonSkeletonSubaccountAmount>
@@ -87,7 +89,7 @@ function onFiatOnRamp() {
         </div>
 
         <div
-          class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0"
+          class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0 max-lg:mt-3"
         >
           <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
             <PartialsCommonBridgeRedirection

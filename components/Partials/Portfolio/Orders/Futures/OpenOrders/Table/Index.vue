@@ -10,7 +10,7 @@ import {
 const { t } = useLang()
 const { lg } = useTwBreakpoints()
 const breakpoints = useBreakpointsTw()
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
@@ -20,7 +20,7 @@ const props = withDefaults(
 
 const { rows } = useFuturesOpenOrdersTransformer(
   computed(() => props.orders),
-  userBalancesWithToken
+  activeSubaccountBalancesWithToken
 )
 
 const fourXl = breakpoints['4xl']

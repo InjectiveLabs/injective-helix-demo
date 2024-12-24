@@ -30,30 +30,15 @@ const props = withDefaults(
 const isAscending = ref(false)
 const sortBy = ref(MarketHeaderType.Volume)
 
-const filteredMarkets = computed(() =>
-  props.markets
-    .filter(({ market, volumeInUsd }) => {
-      const formattedSearch = props.search.trim().toLowerCase()
+const filteredMarkets = computed(() => {
+  const formattedSearch = props.search.trim().toLowerCase()
 
-      if (formattedSearch) {
-        const isDeprecatedMarket = (
-          marketCategoriesMap.deprecated || []
-        ).includes(market.marketId)
+  const activeMarkets = props.markets.filter(
+    (market) => market.market.marketStatus === SharedMarketStatus.Active
+  )
 
-        if (isDeprecatedMarket) {
-          return market.ticker.toLowerCase() === formattedSearch
-        }
-
-        return [
-          market.ticker,
-          market.baseToken.name,
-          market.baseToken.symbol,
-          market.quoteToken.symbol
-        ]
-          .map((piece) => piece.toLowerCase())
-          .some((value) => value.startsWith(formattedSearch))
-      }
-
+  if (!formattedSearch) {
+    return activeMarkets.filter(({ market, volumeInUsd }) => {
       const isPartOfCategory = verifyMarketIsPartOfType(market)
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
@@ -61,10 +46,50 @@ const filteredMarkets = computed(() =>
 
       return isPartOfCategory && isLowVolumeMarket
     })
-    .filter(
-      (market) => market.market.marketStatus === SharedMarketStatus.Active
+  }
+
+  const searchWithStartWith = activeMarkets.filter(({ market }) => {
+    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
+      market.marketId
     )
-)
+
+    if (isDeprecatedMarket) {
+      return market.ticker.toLowerCase() === formattedSearch
+    }
+
+    return [
+      market.ticker,
+      market.baseToken.name,
+      market.baseToken.symbol,
+      market.quoteToken.symbol
+    ]
+      .map((piece) => piece.toLowerCase())
+      .some((value) => value.startsWith(formattedSearch))
+  })
+
+  if (searchWithStartWith.length) {
+    return searchWithStartWith
+  }
+
+  return activeMarkets.filter(({ market }) => {
+    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
+      market.marketId
+    )
+
+    if (isDeprecatedMarket) {
+      return market.ticker.toLowerCase() === formattedSearch
+    }
+
+    return [
+      market.ticker,
+      market.baseToken.name,
+      market.baseToken.symbol,
+      market.quoteToken.symbol
+    ]
+      .map((piece) => piece.toLowerCase())
+      .some((value) => value.includes(formattedSearch))
+  })
+})
 
 const sortedMarkets = computed(() => {
   const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
@@ -106,7 +131,19 @@ const sortedMarkets = computed(() => {
           .toNumber()
       }
 
-      return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      if (m2.volumeInUsd.toFixed() !== m1.volumeInUsd.toFixed()) {
+        return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      }
+
+      if (m1.market.isVerified && !m2.market.isVerified) {
+        return -1
+      }
+
+      if (!m1.market.isVerified && m2.market.isVerified) {
+        return 1
+      }
+
+      return 0
     }
   )
 

@@ -13,12 +13,14 @@ import {
 const gridStrategyStore = useGridStrategyStore()
 const { lg } = useTwBreakpoints()
 const { t } = useLang()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies)
+  computed(() => gridStrategyStore.activeStrategies),
+  subaccountPortfolioBalanceMap
 )
 
 const columns = computed(() => [

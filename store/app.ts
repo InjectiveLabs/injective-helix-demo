@@ -20,6 +20,7 @@ import {
 } from '@/types'
 
 export interface UserBasedState {
+  hasAcceptedTerms: boolean
   modalsViewed: Modal[]
   bannersViewed: NoticeBanner[]
   dontShowAgain: DontShowAgain[]
@@ -66,6 +67,7 @@ const initialStateFactory = (): AppStoreState => ({
 
   // User settings
   userState: {
+    hasAcceptedTerms: false,
     modalsViewed: [],
     bannersViewed: [],
     dontShowAgain: [],
@@ -198,10 +200,13 @@ export const useAppStore = defineStore('app', {
 
       const initialState = initialStateFactory()
 
+      const hasAcceptedTerms = appStore.userState.hasAcceptedTerms
+
       appStore.$patch({
         ...initialState
       })
-      appStore.userState = initialState.userState
+
+      appStore.userState = { ...initialState.userState, hasAcceptedTerms }
     }
   }
 })

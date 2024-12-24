@@ -20,7 +20,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 const { handleSubmit, resetForm } = useForm()
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -41,12 +41,12 @@ const quoteBalance = computed(() => {
     return ZERO_IN_BASE
   }
 
-  const quoteBalance = userBalancesWithToken.value.find(
+  const quoteBalance = activeSubaccountBalancesWithToken.value.find(
     (balance) => balance.denom === market.value?.quoteDenom
   )
 
   return sharedToBalanceInToken({
-    value: quoteBalance?.availableMargin || '0',
+    value: quoteBalance?.availableBalance || '0',
     decimalPlaces: market.value.quoteToken.decimals
   })
 })

@@ -20,8 +20,9 @@ const isMarketOpen = ref(false)
     <PartialsTradeStatsMarketSelector
       v-model:is-market-open="isMarketOpen"
       v-bind="{ market }"
-      class="lg:h-header"
+      class="lg:h-header max-lg:max-w-none max-xl:max-w-fit"
     />
+
     <PartialsTradeStatsInfo
       v-show="!isMarketOpen || sm"
       v-bind="{ market }"

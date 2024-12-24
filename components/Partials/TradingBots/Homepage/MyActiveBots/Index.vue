@@ -5,14 +5,16 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BotType } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const selected = ref<string | BotType>('all')
 const status = reactive(new Status(StatusType.Loading))
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies)
+  computed(() => gridStrategyStore.activeStrategies),
+  subaccountPortfolioBalanceMap
 )
 
 const items = computed(() => [

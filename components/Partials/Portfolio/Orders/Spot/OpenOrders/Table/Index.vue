@@ -9,7 +9,7 @@ import {
 
 const { t } = useLang()
 const { lg, xl } = useTwBreakpoints()
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
@@ -21,7 +21,7 @@ const props = withDefaults(
 
 const { rows } = useSpotOpenOrdersTransformer(
   computed(() => props.orders),
-  userBalancesWithToken
+  activeSubaccountBalancesWithToken
 )
 
 const columns = computed(() => {
