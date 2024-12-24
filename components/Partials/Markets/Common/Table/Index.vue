@@ -79,7 +79,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       :sort-asc-icon="NuxtUiIcons.TriangleUp"
       :sort-desc-icon="NuxtUiIcons.TriangleDown"
       :ui="{
-        divide: 'dark:divide-y-0',
+        divide: 'dark:divide-y-0 dark:border-[#181E31]',
         tbody: 'dark:divide-[#181E31]',
         th: {
           color: 'dark:text-coolGray-450',
