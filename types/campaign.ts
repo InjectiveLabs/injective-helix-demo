@@ -48,4 +48,4 @@ export type CompetitionResult = {
 
 export type GridStrategyTransformed = ReturnType<
   typeof useSpotGridStrategies
->['value'][number]
+>['formattedStrategies']['value'][number]

@@ -40,12 +40,12 @@ const props = withDefaults(
 
 const apexChart = ref(undefined as ApexChart | undefined)
 
-const strategies = useSpotGridStrategies(
+const { formattedStrategies } = useSpotGridStrategies(
   computed(() => props.activeStrategy),
   subaccountPortfolioBalanceMap
 )
 
-const strategy = computed(() => strategies.value[0])
+const strategy = computed(() => formattedStrategies.value[0])
 
 const priceSeries = computed(() => {
   const market = exchangeStore.marketsHistory.find(

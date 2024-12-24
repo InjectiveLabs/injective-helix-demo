@@ -10,6 +10,7 @@ const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
+    isTradingBots?: boolean
     columns: UTableColumn[]
     order: TransformedPortfolioSpotOpenOrders
   }>(),
@@ -58,6 +59,7 @@ const filteredColumns = computed(() =>
 
         <div class="flex space-x-2">
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-if="!isTradingBots"
             v-bind="{
               order: order.order,
               isBuy: order.isBuy,
@@ -69,7 +71,7 @@ const filteredColumns = computed(() =>
           />
 
           <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
-            v-if="order.orderFillable"
+            v-if="order.orderFillable && !isTradingBots"
             v-bind="{
               order: order.order,
               isAuthorized: order.isAuthorized

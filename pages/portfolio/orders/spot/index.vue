@@ -4,6 +4,7 @@ import { SpotOpenOrdersFilterForm } from '@/types/forms'
 import { SpotOpenOrdersFilterField } from '@/types'
 
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
 
@@ -54,6 +55,7 @@ onSubaccountChange(fetchSubaccountOrders)
           <PartialsPortfolioOrdersSpotOpenOrdersTable
             v-if="filteredOrders.length"
             :orders="filteredOrders"
+            :is-trading-bots="accountStore.isSgtSubaccount"
           />
 
           <CommonEmptyList

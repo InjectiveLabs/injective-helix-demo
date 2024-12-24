@@ -12,7 +12,13 @@ const { lg, xl } = useTwBreakpoints()
 const { activeSubaccountBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
 
-const props = withDefaults(defineProps<{ orders: SpotLimitOrder[] }>(), {})
+const props = withDefaults(
+  defineProps<{
+    isTradingBots?: boolean
+    orders: SpotLimitOrder[]
+  }>(),
+  {}
+)
 
 const { rows } = useSpotOpenOrdersTransformer(
   computed(() => props.orders),
@@ -67,17 +73,20 @@ const columns = computed(() => {
         `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.TotalAmount}`
       ),
       class: 'text-right'
-    },
-    {
+    }
+  ]
+
+  if (!props.isTradingBots) {
+    baseColumns.push({
       key: PortfolioSpotOpenOrdersTableColumn.Chase,
       label: t(
         `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
       ),
       class: 'text-center'
-    }
-  ]
+    })
+  }
 
-  if (xl.value) {
+  if (xl.value && !props.isTradingBots) {
     baseColumns.push({
       key: PortfolioSpotOpenOrdersTableColumn.Action,
       label: t(
@@ -128,7 +137,7 @@ const columns = computed(() => {
           </PartialsCommonMarketRedirection>
 
           <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
-            v-if="row.orderFillable && !xl"
+            v-if="row.orderFillable && !xl && !isTradingBots"
             v-bind="{
               order: row.order,
               isAuthorized: row.isAuthorized
@@ -276,7 +285,7 @@ const columns = computed(() => {
     <PartialsPortfolioOrdersSpotOpenOrdersMobileTable
       v-for="order in rows"
       :key="order.order.orderHash"
-      v-bind="{ order, columns }"
+      v-bind="{ order, columns, isTradingBots }"
     />
   </template>
 </template>

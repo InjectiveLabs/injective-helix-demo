@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IntervalOption } from '@/types'
+import { IntervalOption, StopReason } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -168,5 +168,14 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
   },
   {} as Record<string, string>
 )
+
+export const STOP_REASON_MAP = {
+  [StopReason.User]: 'sgt.user',
+  [StopReason.StopLoss]: 'sgt.stopLoss',
+  [StopReason.TakeProfit]: 'sgt.takeProfit',
+  [StopReason.InsufficientFunds]: 'sgt.insufficientFunds',
+  [StopReason.ExceededMaxRetries]: 'sgt.exceededMaxRetries',
+  [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
+}
 
 export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'

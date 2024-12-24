@@ -29,14 +29,14 @@ function onUpdateChart(chart: string) {
 <template>
   <div class="flex max-lg:h-[500px] h-full flex-col">
     <div class="flex lg:flex-row justify-between">
-      <div class="h-subHeader border-b-2 w-full">
+      <div class="h-subHeader border-b w-full">
         <div class="flex h-subHeader w-full xl:w-[450px]">
           <AppButtonSelect
             v-for="label in viewOptions"
             :key="label"
             v-model="view"
             :value="label"
-            class="text-xs font-medium capitalize mx-6 py-2 border-b-2 text-coolGray-400"
+            class="text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
             active-classes="text-white border-blue-550"
             @update:modelValue="onUpdateChart"
           >

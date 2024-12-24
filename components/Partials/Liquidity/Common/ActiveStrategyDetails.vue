@@ -2,6 +2,7 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import {
+  STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
@@ -19,10 +20,11 @@ const props = withDefaults(
 
 const status = reactive(new Status(StatusType.Idle))
 
-const strategies = useSpotGridStrategies(
-  computed(() => props.activeStrategy),
-  subaccountPortfolioBalanceMap
-)
+const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
+  useSpotGridStrategies(
+    computed(() => props.activeStrategy),
+    subaccountPortfolioBalanceMap
+  )
 
 const strategy = computed(() => strategies.value[0])
 
@@ -68,7 +70,10 @@ function removeStrategy() {
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
       <div
-        v-if="new BigNumberInBase(strategy.pnl).isZero()"
+        v-if="
+          new BigNumberInBase(strategy.pnl).isZero() ||
+          lastTradedPriceStatus.isLoading()
+        "
         class="text-coolGray-400"
       >
         &mdash;
@@ -95,11 +100,14 @@ function removeStrategy() {
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div>
+      <div v-if="lastTradedPriceStatus.isLoading()" class="text-coolGray-400">
+        &mdash;
+      </div>
+      <div v-else>
         $
         <SharedAmountFormatter
           :max-decimal-places="3"
-          :amount="strategy.currentUsdValue.toFixed()"
+          :amount="strategy.totalAmount.toFixed()"
           :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
         />
         USD
@@ -108,7 +116,10 @@ function removeStrategy() {
 
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.currentBalance') }}
+        <span v-if="strategy.isActive">
+          {{ $t('liquidityBots.currentBalance') }}
+        </span>
+        <span v-else>{{ $t('liquidityBots.finalBalance') }}</span>
       </p>
 
       <div>
@@ -117,14 +128,14 @@ function removeStrategy() {
         >
           <template #base>
             <SharedAmountFormatter
-              :amount="strategy.currentBaseBalanceAmount"
+              :amount="strategy.finalBaseBalanceQuantity"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
               :max-decimal-places="3"
             />
           </template>
           <template #quote>
             <SharedAmountFormatter
-              :amount="strategy.currentQuoteBalanceAmount"
+              :amount="strategy.finalQuoteBalanceQuantity"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
               :max-decimal-places="3"
             />
@@ -176,8 +187,8 @@ function removeStrategy() {
             market: strategy.market
           }"
         >
-          <template #base>{{ strategy.initialBaseBalanceAmount }}</template>
-          <template #quote>{{ strategy.initialQuoteBalanceAmount }}</template>
+          <template #base>{{ strategy.initialBaseBalanceQuantity }}</template>
+          <template #quote>{{ strategy.initialQuoteBalanceQuantity }}</template>
         </PartialsLiquidityCommonDetailsPair>
       </div>
     </div>
@@ -271,6 +282,15 @@ function removeStrategy() {
       </p>
       <div class="text-right">
         {{ $t(`sgt.modes.${strategy.strategyType}`) }}
+      </div>
+    </div>
+
+    <div v-if="strategy.stopReason" class="flex justify-between mb-2 text-sm">
+      <p class="text-coolGray-400">
+        {{ $t('sgt.stopReason') }}
+      </p>
+      <div class="text-right">
+        {{ $t(STOP_REASON_MAP[strategy.stopReason]) }}
       </div>
     </div>
 

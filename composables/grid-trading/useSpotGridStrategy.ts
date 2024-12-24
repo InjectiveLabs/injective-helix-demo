@@ -1,13 +1,20 @@
-import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { format } from 'date-fns'
 import { indexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { format } from 'date-fns'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
 import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
-import { BotType, AccountBalance, SgtMarketType, StrategyStatus } from '@/types'
+import {
+  BotType,
+  StopReason,
+  SgtMarketType,
+  AccountBalance,
+  StrategyStatus
+} from '@/types'
 
 export const useSpotGridStrategies = (
   strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>,
@@ -24,6 +31,8 @@ export const useSpotGridStrategies = (
   const tokenStore = useTokenStore()
   const sharedWalletStore = useSharedWalletStore()
   const now = useNow({ interval: 10000 })
+
+  const status = reactive(new Status(StatusType.Loading))
 
   const lastTradedSpotPrice = ref<Record<string, string>>({})
 
@@ -59,7 +68,7 @@ export const useSpotGridStrategies = (
       )
 
       const sgtSubaccountBalances =
-        subaccountBalancesMap.value[marketSubaccountId] || []
+        subaccountBalancesMap?.value?.[marketSubaccountId] || []
 
       const executionPrice = new BigNumberInBase(strategy.executionPrice)
 
@@ -73,49 +82,47 @@ export const useSpotGridStrategies = (
         decimalPlaces: market.quoteToken.decimals - market.baseToken.decimals
       })
 
-      const currentBaseBalance = sgtSubaccountBalances.find(
+      const currentAccountBaseBalance = sgtSubaccountBalances.find(
         (balance) => balance.denom === market.baseToken.denom
       )
 
-      const currentQuoteBalance = sgtSubaccountBalances.find(
+      const currentAccountQuoteBalance = sgtSubaccountBalances.find(
         (balance) => balance.denom === market.quoteToken.denom
       )
 
-      const currentBaseBalanceAmount = sharedToBalanceInToken({
-        value: currentBaseBalance?.totalBalance || 0,
+      const currentBaseAccountBalanceQuantity = sharedToBalanceInToken({
+        value: currentAccountBaseBalance?.totalBalance || 0,
         decimalPlaces: market.baseToken.decimals
       })
 
-      const currentQuoteBalanceAmount = sharedToBalanceInToken({
-        value: currentQuoteBalance?.totalBalance || 0,
+      const currentQuoteAccountBalanceQuantity = sharedToBalanceInToken({
+        value: currentAccountQuoteBalance?.totalBalance || 0,
         decimalPlaces: market.quoteToken.decimals
       })
 
-      const currentUsdValue = new BigNumberInBase(currentBaseBalanceAmount)
-        .times(tokenStore.tokenUsdPrice(market.baseToken))
-        .plus(
-          new BigNumberInBase(currentQuoteBalanceAmount).times(
-            tokenStore.tokenUsdPrice(market.quoteToken)
-          )
-        )
+      const currentUsdValue = new BigNumberInBase(
+        currentBaseAccountBalanceQuantity
+      )
+        .times(lastTradedSpotPrice.value[strategy.marketId] || 0)
+        .plus(new BigNumberInBase(currentQuoteAccountBalanceQuantity))
+        .times(tokenStore.tokenUsdPrice(market.quoteToken))
 
-      const initialBaseBalanceAmount = sharedToBalanceInToken({
+      const initialBaseBalanceQuantity = sharedToBalanceInToken({
         value: strategy.subscriptionBaseQuantity,
         decimalPlaces: market.baseToken.decimals
       })
 
-      const initialQuoteBalanceAmount = sharedToBalanceInToken({
+      const initialQuoteBalanceQuantity = sharedToBalanceInToken({
         value: strategy.subscriptionQuoteQuantity,
         decimalPlaces: market.quoteToken.decimals
       })
 
-      const initialUsdValue = new BigNumberInBase(initialBaseBalanceAmount)
+      const initialUsdValue = new BigNumberInBase(initialBaseBalanceQuantity)
         .times(executionPrice)
-        .plus(
-          new BigNumberInBase(initialQuoteBalanceAmount).times(
-            // TODO: Use Initial Quote Price
-            tokenStore.tokenUsdPrice(market.quoteToken)
-          )
+        .plus(new BigNumberInBase(initialQuoteBalanceQuantity))
+        .times(
+          // TODO: Use Initial Quote Price
+          tokenStore.tokenUsdPrice(market.quoteToken)
         )
 
       const stopLoss = strategy.stopLossConfig
@@ -165,58 +172,70 @@ export const useSpotGridStrategies = (
 
       // PNL
 
-      const baseAmountInQuote = new BigNumberInWei(
-        strategy.subscriptionBaseQuantity || 0
+      const midPrice = sharedToBalanceInTokenInBase({
+        value: strategy.marketMidPrice,
+        decimalPlaces: market.quoteToken.decimals - market.baseToken.decimals
+      })
+
+      const initialInvestmentQuantityInQuote = new BigNumberInBase(
+        initialBaseBalanceQuantity
       )
-        .toBase(market.baseToken.decimals)
-        .times(new BigNumberInBase(strategy.executionPrice))
+        .times(executionPrice)
+        .plus(initialQuoteBalanceQuantity)
 
-      const quoteAmount = new BigNumberInWei(
-        strategy.subscriptionQuoteQuantity || 0
-      ).toBase(market.quoteToken.decimals)
+      const currentMidPrice = isActive
+        ? new BigNumberInBase(lastTradedSpotPrice.value[strategy.marketId] || 0)
+        : midPrice
 
-      const initialInvestmentInQuote = baseAmountInQuote
-        .plus(quoteAmount)
-        .times(tokenStore.tokenUsdPrice(market.quoteToken)) // TODO: Use Initial Quote Price
+      const depositBaseQuantity = sharedToBalanceInToken({
+        value: strategy.baseDeposit,
+        decimalPlaces: market.baseToken.decimals
+      })
 
-      const currentMidPrice = new BigNumberInBase(
-        lastTradedSpotPrice.value[strategy.marketId] || 0
+      const depositQuoteQuantity = sharedToBalanceInToken({
+        value: strategy.quoteDeposit,
+        decimalPlaces: market.quoteToken.decimals
+      })
+
+      const currentBaseQuantity = isActive
+        ? currentBaseAccountBalanceQuantity
+        : depositBaseQuantity
+
+      const currentQuoteQuantity = isActive
+        ? currentQuoteAccountBalanceQuantity
+        : depositQuoteQuantity
+
+      const currentInvestmentQuantityInQuote = new BigNumberInBase(
+        currentBaseQuantity
       )
-
-      const currentBaseQuantity =
-        strategy.state === StrategyStatus.Active
-          ? currentBaseBalanceAmount
-          : sharedToBalanceInToken({
-              value: strategy.baseDeposit,
-              decimalPlaces: market.baseToken.decimals
-            })
-
-      const currentQuoteQuantity =
-        strategy.state === StrategyStatus.Active
-          ? currentQuoteBalanceAmount
-          : sharedToBalanceInToken({
-              value: strategy.quoteDeposit,
-              decimalPlaces: market.quoteToken.decimals
-            })
+        .times(currentMidPrice)
+        .plus(currentQuoteQuantity)
 
       const pnl = currentMidPrice.eq(0)
         ? ZERO_IN_BASE
-        : new BigNumberInBase(currentQuoteQuantity)
-            .plus(
-              new BigNumberInBase(currentBaseQuantity).times(currentMidPrice)
-            )
-            .minus(
-              new BigNumberInBase(initialQuoteBalanceAmount).plus(
-                new BigNumberInBase(initialBaseBalanceAmount).times(
-                  executionPrice
-                )
-              )
-            )
+        : new BigNumberInBase(currentInvestmentQuantityInQuote).minus(
+            initialInvestmentQuantityInQuote
+          )
 
       const percentagePnl = pnl
-        .div(initialInvestmentInQuote)
+        .div(initialInvestmentQuantityInQuote)
         .times(100)
         .toFixed(2)
+
+      const depositUsdValue = new BigNumberInBase(depositBaseQuantity)
+        .times(midPrice)
+        .plus(depositQuoteQuantity)
+        .times(tokenStore.tokenUsdPrice(market.quoteToken))
+
+      const totalAmount = isActive ? currentUsdValue : depositUsdValue
+
+      const finalBaseBalanceQuantity = isActive
+        ? currentBaseAccountBalanceQuantity
+        : depositBaseQuantity
+
+      const finalQuoteBalanceQuantity = isActive
+        ? currentQuoteAccountBalanceQuantity
+        : depositQuoteQuantity
 
       // Bot Type
 
@@ -242,6 +261,7 @@ export const useSpotGridStrategies = (
         takeProfit,
         upperBound,
         lowerBound,
+        totalAmount,
         isPositivePnl: pnl.gt(0),
         trailingUpper,
         trailingLower,
@@ -251,13 +271,16 @@ export const useSpotGridStrategies = (
         initialUsdValue,
         durationFormatted,
         createdAtFormatted,
-        initialInvestmentInQuote,
-        initialBaseBalanceAmount,
-        initialQuoteBalanceAmount,
-        currentBaseBalanceAmount,
-        currentQuoteBalanceAmount,
+        finalBaseBalanceQuantity,
+        finalQuoteBalanceQuantity,
+        initialInvestmentQuantityInQuote,
+        initialBaseBalanceQuantity,
+        initialQuoteBalanceQuantity,
+        currentBaseAccountBalanceQuantity,
+        currentQuoteAccountBalanceQuantity,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
+        stopReason: strategy.stopReason as StopReason,
         strategyType: strategy.strategyType,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
@@ -311,9 +334,11 @@ export const useSpotGridStrategies = (
       },
       {} as Record<string, string>
     )
+
+    status.setIdle()
   }
 
   watch(filteredStrategies, fetchSpotLastTradedPrices, { immediate: true })
 
-  return formattedStrategies
+  return { formattedStrategies, status }
 }
