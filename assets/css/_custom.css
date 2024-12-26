@@ -130,7 +130,7 @@
   .trade-layout-left {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 400px 336px 1fr;
+    grid-template-columns: 275px 225px 1fr;
 
     grid-template-areas:
       'form orderbook chart'
@@ -141,7 +141,7 @@
   .trade-layout-right {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 1fr 336px 400px;
+    grid-template-columns: 1fr 225px 275px;
 
     grid-template-areas:
       'chart orderbook form'
@@ -160,8 +160,39 @@
   .input-style {
     @apply block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
   }
+
+  @media screen and (min-width: 1280px) {
+    .trade-layout-left {
+      grid-template-columns: 350px 250px 1fr;
+    }
+
+    .trade-layout-right {
+      grid-template-columns: 1fr 250px 350px;
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    .trade-layout-left {
+      grid-template-columns: 350px 275px 1fr;
+    }
+
+    .trade-layout-right {
+      grid-template-columns: 1fr 275px 350px;
+    }
+  }
+
+  @media screen and (min-width: 1681px) {
+    .trade-layout-left {
+      grid-template-columns: 400px 336px 1fr;
+    }
+
+    .trade-layout-right {
+      grid-template-columns: 1fr 336px 400px;
+    }
+  }
 }
-/* 
+
+/*
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
