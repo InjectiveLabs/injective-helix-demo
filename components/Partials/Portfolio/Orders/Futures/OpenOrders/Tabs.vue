@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SpotOpenOrdersFilterField } from '@/types'
 
+const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 
 const { value: marketValue } = useStringField({
@@ -16,7 +17,12 @@ const { value: sideValue } = useStringField({
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts
+      }"
+    />
 
     <CommonTabMarketSelector
       v-bind="{ markets: derivativeStore.markets }"

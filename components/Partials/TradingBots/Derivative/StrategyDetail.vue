@@ -20,11 +20,10 @@ const props = withDefaults(
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
-  useSpotGridStrategies(
-    computed(() => props.activeStrategy),
-    subaccountPortfolioBalanceMap
-  )
+const { formattedStrategies: strategies } = useDerivativeGridStrategies(
+  computed(() => props.activeStrategy),
+  subaccountPortfolioBalanceMap
+)
 
 const strategy = computed(() => strategies.value[0])
 
@@ -70,10 +69,7 @@ function removeStrategy() {
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
       <div
-        v-if="
-          new BigNumberInBase(strategy.pnl).isZero() ||
-          lastTradedPriceStatus.isLoading()
-        "
+        v-if="new BigNumberInBase(strategy.pnl).isZero()"
         class="text-coolGray-400"
       >
         &mdash;
@@ -100,10 +96,7 @@ function removeStrategy() {
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div v-if="lastTradedPriceStatus.isLoading()" class="text-coolGray-400">
-        &mdash;
-      </div>
-      <div v-else>
+      <div>
         $
         <SharedAmountFormatter
           :max-decimal-places="3"
@@ -123,24 +116,12 @@ function removeStrategy() {
       </p>
 
       <div>
-        <PartialsLiquidityCommonDetailsPair
-          v-bind="{ market: strategy.market }"
-        >
-          <template #base>
-            <SharedAmountFormatter
-              :amount="strategy.finalBaseBalanceQuantity"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-              :max-decimal-places="3"
-            />
-          </template>
-          <template #quote>
-            <SharedAmountFormatter
-              :amount="strategy.finalQuoteBalanceQuantity"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-              :max-decimal-places="3"
-            />
-          </template>
-        </PartialsLiquidityCommonDetailsPair>
+        <SharedAmountFormatter
+          :amount="strategy.finalQuoteBalanceQuantity"
+          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          :max-decimal-places="3"
+        />
+        {{ strategy.market.quoteToken.symbol }}
       </div>
     </div>
 
@@ -182,14 +163,8 @@ function removeStrategy() {
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">{{ $t('sgt.initialAmount') }}</p>
       <div class="text-right">
-        <PartialsLiquidityCommonDetailsPair
-          v-bind="{
-            market: strategy.market
-          }"
-        >
-          <template #base>{{ strategy.initialBaseBalanceQuantity }}</template>
-          <template #quote>{{ strategy.initialQuoteBalanceQuantity }}</template>
-        </PartialsLiquidityCommonDetailsPair>
+        {{ strategy.initialQuoteBalanceQuantity }}
+        {{ strategy.market.quoteToken.symbol }}
       </div>
     </div>
 
@@ -214,7 +189,9 @@ function removeStrategy() {
       </div>
     </div>
 
-    <div class="flex justify-between mb-4 text-sm">
+    <!-- Uncomment When we have the data -->
+
+    <!-- <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.advanced.settleIn') }}</span>
       </span>
@@ -274,7 +251,7 @@ function removeStrategy() {
       <div class="text-right">
         {{ strategy.trailingLower }}
       </div>
-    </div>
+    </div> -->
 
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">

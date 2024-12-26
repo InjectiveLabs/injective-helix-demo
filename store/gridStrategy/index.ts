@@ -49,7 +49,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       return state.strategies.filter((strategy) => {
         const isActive = strategy.state === StrategyStatus.Active
-        const isSpot = strategy.marketType === 'spot'
+        const isSpot = strategy.marketType === MarketType.Spot
         const isMarketInSpotStore = spotStore.markets.some(
           ({ marketId }) => strategy.marketId === marketId
         )
@@ -63,7 +63,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       return state.strategies.filter((strategy) => {
         const isActive = strategy.state === StrategyStatus.Active
-        const isDerivative = strategy.marketType === 'derivative'
+        const isDerivative = strategy.marketType === MarketType.Derivative
         const isMarketInDerivativeStore = derivativeStore.markets.some(
           ({ marketId }) => strategy.marketId === marketId
         )
@@ -96,7 +96,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       return state.strategies.filter((strategy) => {
         const isRemoved = strategy.state === StrategyStatus.Removed
-        const isSpot = strategy.marketType === 'spot'
+        const isSpot = strategy.marketType === MarketType.Spot
         const isMarketInSpotStore = spotStore.markets.some(
           ({ marketId }) => strategy.marketId === marketId
         )
@@ -110,7 +110,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       return state.strategies.filter((strategy) => {
         const isRemoved = strategy.state === StrategyStatus.Removed
-        const isDerivative = strategy.marketType === 'derivative'
+        const isDerivative = strategy.marketType === MarketType.Derivative
         const isMarketInDerivativeStore = derivativeStore.markets.some(
           ({ marketId }) => strategy.marketId === marketId
         )
@@ -157,8 +157,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         accountAddress: sharedWalletStore.authZOrInjectiveAddress,
         limit: 100,
-        state: active ? StrategyStatus.Active : undefined,
-        marketType: MarketType.Spot
+        state: active ? StrategyStatus.Active : undefined
       })
 
       gridStrategyStore.$patch({ strategies })

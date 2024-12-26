@@ -117,14 +117,14 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
       },
       {
         label: 'navigation.spotGrid',
-        to: { name: PortfolioSubPage.OrdersSpotGrid }
+        to: { name: PortfolioSubPage.OrdersSpotGrid },
+        isExact: true
+      },
+      {
+        label: 'navigation.futuresGrid',
+        to: { name: PortfolioSubPage.OrdersFuturesGrid },
+        isExact: true
       }
-      // TODO: Uncomment when futures grid is ready
-      // {
-      //
-      //   label: 'navigation.futuresGrid',
-      //   to: { name: PortfolioSubPage.OrdersFuturesGrid }
-      // }
     ]
   },
   {
