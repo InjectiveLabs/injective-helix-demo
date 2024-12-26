@@ -6,8 +6,6 @@ import {
   MarketKey,
   UiDerivativeMarket
 } from '@/types'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { derivativeGridMarkets } from '~/app/json'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -56,29 +54,6 @@ async function createStrategy() {
       status.setIdle()
     })
 }
-
-function removeStrategy() {
-  status.setLoading()
-
-  const subaccountId = addressAndMarketSlugToSubaccountId(
-    sharedWalletStore.address,
-    market.value.slug
-  )
-
-  const perpMarket = derivativeGridMarkets.find(
-    (m) => m.slug === market.value.slug
-  )
-
-  gridStrategyStore
-    .removeStrategyForSubaccount(perpMarket?.contractAddress, subaccountId)
-    .then(() => {
-      notificationStore.success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -91,18 +66,15 @@ function removeStrategy() {
       <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
+
+      <span
+        v-else-if="sharedWalletStore.isAutoSignEnabled"
+        class="text-xs text-red-500"
+      >
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
-
-    <AppButton class="w-full mt-4" variant="danger" @click="removeStrategy">
-      {{ $t('sgt.removeStrategy') }}
-    </AppButton>
-
-    <span
-      v-if="sharedWalletStore.isAutoSignEnabled"
-      class="text-xs text-red-500"
-    >
-      {{ $t('common.notAvailableinAutoSignMode') }}
-    </span>
   </div>
 </template>

@@ -27,53 +27,96 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   getters: {
     activeStrategies: (state) => {
       const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.state === StrategyStatus.Active &&
-          strategy.marketType === 'spot' &&
-          spotStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
-      )
+      return state.strategies.filter((strategy) => {
+        const marketInSpotStore = spotStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        const marketInDerivativeStore = derivativeStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        const isActive = strategy.state === StrategyStatus.Active
+
+        return isActive && (marketInSpotStore || marketInDerivativeStore)
+      })
     },
 
-    removedStrategies: (state) => {
+    activeSpotStrategies: (state) => {
       const spotStore = useSpotStore()
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.state === StrategyStatus.Removed &&
-          strategy.marketType === 'spot' &&
-          spotStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
-      )
+      return state.strategies.filter((strategy) => {
+        const isActive = strategy.state === StrategyStatus.Active
+        const isSpot = strategy.marketType === 'spot'
+        const isMarketInSpotStore = spotStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isActive && isSpot && isMarketInSpotStore
+      })
     },
 
     activeDerivativeStrategies: (state) => {
       const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.marketType === 'derivative' &&
-          derivativeStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
-      )
+      return state.strategies.filter((strategy) => {
+        const isActive = strategy.state === StrategyStatus.Active
+        const isDerivative = strategy.marketType === 'derivative'
+        const isMarketInDerivativeStore = derivativeStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isActive && isDerivative && isMarketInDerivativeStore
+      })
+    },
+
+    removedStrategies: (state) => {
+      const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
+
+      return state.strategies.filter((strategy) => {
+        const isRemoved = strategy.state === StrategyStatus.Removed
+
+        const isMarketInSpotStore = spotStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        const isMarketInDerivativeStore = derivativeStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isRemoved && (isMarketInSpotStore || isMarketInDerivativeStore)
+      })
+    },
+
+    removedSpotStrategies: (state) => {
+      const spotStore = useSpotStore()
+
+      return state.strategies.filter((strategy) => {
+        const isRemoved = strategy.state === StrategyStatus.Removed
+        const isSpot = strategy.marketType === 'spot'
+        const isMarketInSpotStore = spotStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isRemoved && isSpot && isMarketInSpotStore
+      })
     },
 
     removedDerivativeStrategies: (state) => {
       const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.marketType === 'derivative' &&
-          strategy.state === StrategyStatus.Removed &&
-          derivativeStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
-      )
+      return state.strategies.filter((strategy) => {
+        const isRemoved = strategy.state === StrategyStatus.Removed
+        const isDerivative = strategy.marketType === 'derivative'
+        const isMarketInDerivativeStore = derivativeStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isRemoved && isDerivative && isMarketInDerivativeStore
+      })
     }
   },
   actions: {
@@ -125,7 +168,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         withPerformance: true,
         withTvl: true,
-        limit: 10
+        limit: 100
       })
 
       return strategies.filter(

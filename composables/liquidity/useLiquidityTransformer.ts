@@ -22,7 +22,7 @@ export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
       }
 
       const userHasActiveLegacyStrategy =
-        gridStrategyStore.activeStrategies.some(
+        gridStrategyStore.activeSpotStrategies.some(
           (strategy) =>
             strategy.marketId ===
             CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[campaign.marketId]

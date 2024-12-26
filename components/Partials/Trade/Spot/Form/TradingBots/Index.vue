@@ -21,7 +21,7 @@ useForm<SpotGridTradingForm>({
 })
 
 const activeStrategy = computed(() => {
-  return gridStrategyStore.activeStrategies.find((strategy) => {
+  return gridStrategyStore.activeSpotStrategies.find((strategy) => {
     return strategy.marketId === spotMarket.value?.marketId
   })
 })

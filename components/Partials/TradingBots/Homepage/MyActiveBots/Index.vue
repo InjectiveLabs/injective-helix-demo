@@ -13,7 +13,7 @@ const selected = ref<string | BotType>('all')
 const status = reactive(new Status(StatusType.Loading))
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies),
+  computed(() => gridStrategyStore.activeSpotStrategies),
   subaccountPortfolioBalanceMap
 )
 

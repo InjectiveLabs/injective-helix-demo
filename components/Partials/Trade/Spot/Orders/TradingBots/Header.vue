@@ -28,7 +28,7 @@ const options = computed(() => {
     {
       display: `activity.${SpotOrdersTradingBotsView.ActiveStrategies}`,
       value: SpotOrdersTradingBotsView.ActiveStrategies,
-      description: `${gridStrategyStore.activeStrategies.length}`
+      description: `${gridStrategyStore.activeSpotStrategies.length}`
     },
     {
       display: `activity.${SpotOrdersTradingBotsView.RemovedStrategies}`,

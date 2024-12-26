@@ -17,7 +17,7 @@ const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies),
+  computed(() => gridStrategyStore.activeSpotStrategies),
   subaccountPortfolioBalanceMap
 )
 
@@ -204,7 +204,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
     </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.activeStrategies.length === 0 && !lg"
+      v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
       :message="$t('sgt.noActiveStrategies')"
     />
 
