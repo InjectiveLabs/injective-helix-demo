@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { TokenType } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { stableCoinSymbols } from '@/app/data/token'
 import { UiMarketWithToken } from '@/types'
 
@@ -24,6 +26,18 @@ const lastTradedPriceInUsd = computed(() =>
     tokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 )
+
+const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
+  computed(() => {
+    const totalSupply = sharedToBalanceInTokenInBase({
+      decimalPlaces: props.market.baseToken.decimals,
+      value: tokenStore.denomSupplyMap[props.market.baseToken.denom]
+    })
+    const usdPrice = tokenStore.tokenUsdPrice(props.market.baseToken)
+
+    return new BigNumberInBase(usdPrice).times(totalSupply)
+  })
+)
 </script>
 
 <template>
@@ -42,4 +56,30 @@ const lastTradedPriceInUsd = computed(() =>
   </PartialsTradeStatsHeaderItem>
 
   <PartialsTradeStatsInfoCommon v-bind="{ market, isSpot: true }" />
+
+  <PartialsTradeStatsHeaderItem
+    v-if="
+      market.baseToken.tokenType === TokenType.Cw20 ||
+      market.baseToken.tokenType === TokenType.TokenFactory
+    "
+  >
+    <template #title>
+      <CommonHeaderTooltip
+        :tooltip="$t('trade.stats.marketCapTooltip')"
+        text-color-class="text-coolGray-400"
+      >
+        {{ $t('trade.stats.marketCap') }}
+      </CommonHeaderTooltip>
+    </template>
+
+    <p class="font-mono">
+      <span>$</span>
+      <AppUsdAmount
+        v-bind="{
+          amount: marketCapToFixed,
+          decimalPlaces: market.priceDecimals
+        }"
+      />
+    </p>
+  </PartialsTradeStatsHeaderItem>
 </template>

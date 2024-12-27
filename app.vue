@@ -24,7 +24,7 @@ const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  tokenStore.fetchUntrackedTokens().finally(() => unknownTokenStatus.setIdle())
+  tokenStore.fetchTotalSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
