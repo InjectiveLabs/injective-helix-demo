@@ -26,7 +26,7 @@ withDefaults(
     </span>
     <span
       v-if="quote && base"
-      class="mx-1 text-sm opacity-75 text-coolGray-450"
+      class="5xl:mx-1 text-sm opacity-75 text-coolGray-450"
     >
       /
     </span>

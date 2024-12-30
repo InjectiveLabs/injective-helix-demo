@@ -69,7 +69,7 @@ const filteredOptions = computed(() =>
     value-attribute="value"
     option-attribute="display"
     :ui="{
-      base: 'dark:ring-0 font-semibold dark:cursor-pointer',
+      base: 'dark:ring-0 font-semibold dark:cursor-pointer max-w-24 max-lg:max-w-full 5xl:max-w-full',
       rounded: 'rounded',
       trailing: {
         padding: {

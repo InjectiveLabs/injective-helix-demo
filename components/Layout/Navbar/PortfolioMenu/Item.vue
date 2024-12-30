@@ -89,11 +89,7 @@ function closeMenu() {
     <template v-else>
       <div
         class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 select-none cursor-pointer border border-transparent text-xs"
-        :class="{
-          'text-blue-500 bg-brand-875': (route.name as string).startsWith(
-            itemName
-          )
-        }"
+        :class="[isActiveLink ? 'text-blue-550' : 'text-white']"
         @click="toggle"
       >
         <UIcon v-if="item.icon" :name="item.icon" class="h-4 w-4 min-w-4" />
