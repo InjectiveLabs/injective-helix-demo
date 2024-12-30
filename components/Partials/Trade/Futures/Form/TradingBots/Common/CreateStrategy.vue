@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { derivativeGridMarkets } from '@/app/json'
 import {
   DerivativeGridTradingField,
   DerivativeGridTradingForm,
@@ -9,6 +11,7 @@ import {
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
+const appStore = useAppStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
 const sharedWalletStore = useSharedWalletStore()
@@ -54,6 +57,19 @@ async function createStrategy() {
       status.setIdle()
     })
 }
+
+function removeStrategy() {
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.value.slug
+  )
+
+  const scAddress = derivativeGridMarkets.find(
+    ({ slug }) => slug === market.value.slug
+  )!.contractAddress
+
+  gridStrategyStore.removeStrategyForSubaccount(scAddress, subaccountId)
+}
 </script>
 
 <template>
@@ -75,6 +91,15 @@ async function createStrategy() {
       </span>
 
       <span v-else>{{ $t('sgt.create') }}</span>
+    </AppButton>
+
+    <AppButton
+      v-if="appStore.devMode"
+      variant="danger-shade"
+      class="w-full mt-2"
+      @click="removeStrategy"
+    >
+      Remove Strategy
     </AppButton>
   </div>
 </template>
