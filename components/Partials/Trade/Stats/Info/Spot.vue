@@ -31,7 +31,7 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
   computed(() => {
     const totalSupply = sharedToBalanceInTokenInBase({
       decimalPlaces: props.market.baseToken.decimals,
-      value: tokenStore.denomSupplyMap[props.market.baseToken.denom]
+      value: tokenStore.denomSupplyMap[props.market.baseToken.denom] || 0
     })
     const usdPrice = tokenStore.tokenUsdPrice(props.market.baseToken)
 
