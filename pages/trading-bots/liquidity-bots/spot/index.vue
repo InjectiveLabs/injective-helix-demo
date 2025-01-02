@@ -235,7 +235,18 @@ watch(
 onWalletConnected(() => {
   gridStrategyStatus.setLoading()
 
-  gridStrategyStore.fetchAllStrategies({ active: true }).finally(() => {
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.value
+  )
+
+  Promise.all([
+    gridStrategyStore.fetchAllStrategies({ active: true }),
+    spotStore.fetchOrdersBySubaccount({
+      subaccountId,
+      marketIds: selectedMarket.value ? [selectedMarket.value?.marketId] : []
+    })
+  ]).finally(() => {
     gridStrategyStatus.setIdle()
   })
 })

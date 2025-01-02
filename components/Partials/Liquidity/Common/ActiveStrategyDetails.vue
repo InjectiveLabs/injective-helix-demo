@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
@@ -17,8 +15,6 @@ const props = withDefaults(
   }>(),
   {}
 )
-
-const status = reactive(new Status(StatusType.Idle))
 
 const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
   useSpotGridStrategies(
@@ -35,20 +31,6 @@ const isPositivePnl = computed(() =>
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
 )
-
-function removeStrategy() {
-  status.setLoading()
-
-  gridStrategyStore
-    .removeStrategyForSubaccount(
-      strategy.value.contractAddress,
-      strategy.value.subaccountId
-    )
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -80,7 +62,7 @@ function removeStrategy() {
       </div>
       <div
         v-else
-        class="font-bold"
+        class="font-bold flex"
         :class="isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
         <span>{{ isPositivePnl ? '+' : '' }}</span>
@@ -295,15 +277,20 @@ function removeStrategy() {
     </div>
 
     <div v-if="strategy.isActive" class="pt-4">
-      <AppButton
-        variant="danger"
-        :is-loading="status.isLoading()"
-        size="lg"
-        class="w-full"
-        @click="removeStrategy"
+      <PartialsLiquidityBotsSpotCommonRemoveStrategy
+        v-slot="{ removeStrategy, status }"
+        :strategy="strategy.strategy"
       >
-        {{ $t('sgt.removeStrategy') }}
-      </AppButton>
+        <AppButton
+          variant="danger"
+          :is-loading="status.isLoading()"
+          size="lg"
+          class="w-full"
+          @click="removeStrategy"
+        >
+          {{ $t('sgt.removeStrategy') }}
+        </AppButton>
+      </PartialsLiquidityBotsSpotCommonRemoveStrategy>
     </div>
   </div>
 </template>
