@@ -27,7 +27,6 @@ onMounted(() => {
   status.setLoading()
 
   Promise.all([
-    liquidityProvisionStore.fetchAprParams(),
     liquidityProvisionStore.fetchMitoVaults(),
     liquidityProvisionStore.fetchMitoStakingPools()
   ])
