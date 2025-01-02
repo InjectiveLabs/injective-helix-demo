@@ -279,7 +279,6 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -309,7 +308,6 @@ export const removeStrategyForSubaccount = async (
   backupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
