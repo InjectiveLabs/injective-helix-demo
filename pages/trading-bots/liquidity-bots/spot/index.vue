@@ -59,6 +59,13 @@ const selectedMarket = computed(() =>
   spotStore.markets.find((m) => m.slug === market.value)
 )
 
+const sgtSubaccountId = computed(() =>
+  addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.authZOrAddress,
+    market.value
+  )
+)
+
 const marketRewards = computed(() =>
   campaignStore.latestRoundCampaigns.reduce(
     (acc, campaign) => {
@@ -202,17 +209,9 @@ watch(
       return
     }
 
-    const subaccountId = addressAndMarketSlugToSubaccountId(
-      sharedWalletStore.address,
-      market.slug
-    )
-
     Promise.all([
       spotStore.fetchLastTrade({ marketId: market.marketId }),
-      spotStore.fetchOrdersBySubaccount({
-        subaccountId,
-        marketIds: [market.marketId]
-      }),
+
       exchangeStore.fetchMarketHistory({
         marketIds: [market.marketId],
         countback: 7 * 24,
@@ -235,9 +234,11 @@ watch(
 onWalletConnected(() => {
   gridStrategyStatus.setLoading()
 
-  gridStrategyStore.fetchAllStrategies({ active: true }).finally(() => {
-    gridStrategyStatus.setIdle()
-  })
+  Promise.all([gridStrategyStore.fetchAllStrategies({ active: true })]).finally(
+    () => {
+      gridStrategyStatus.setIdle()
+    }
+  )
 })
 
 const activeStrategy = computed(() =>
@@ -253,6 +254,25 @@ onMounted(() => {
     market.value = 'inj-usdt'
   }
 })
+
+watch(
+  () => ({
+    marketId: selectedMarket.value?.marketId,
+    slug: selectedMarket.value?.slug,
+    address: sharedWalletStore.authZOrAddress,
+    activeStrategy: activeStrategy.value
+  }),
+  ({ marketId, slug, address, activeStrategy }) => {
+    if (!marketId || !slug || !address || !activeStrategy) {
+      return
+    }
+
+    spotStore.fetchOrdersBySubaccount({
+      subaccountId: sgtSubaccountId.value,
+      marketIds: [marketId]
+    })
+  }
+)
 </script>
 
 <template>

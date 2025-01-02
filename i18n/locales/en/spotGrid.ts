@@ -155,6 +155,7 @@ export default {
     copyParametersToManual: 'Copy Parameters to Manual',
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
+    gridStrategyRemovedSuccessfully: 'Grid Strategy Removed Successfully!',
     gridOrderConfirmation: 'Grid Order Confirmation',
     investmentAmountTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',

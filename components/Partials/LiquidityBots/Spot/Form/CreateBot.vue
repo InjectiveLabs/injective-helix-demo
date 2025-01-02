@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 
 import {
   BotType,
@@ -19,6 +20,7 @@ const props = withDefaults(
   {}
 )
 
+const toast = useToast()
 const tokenStore = useTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -26,6 +28,7 @@ const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
 const liquidityFormValues = useFormValues<LiquidityBotForm>()
 const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const hasConfirmed = ref(false)
 const confirmationModal = ref(false)
@@ -107,6 +110,14 @@ async function createLiquidityBot() {
           grids: String(props.liquidityValues.grids)
         },
         marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed()
+      })
+
+      confirmationModal.value = false
+
+      toast.add({
+        title: t('sgt.success'),
+        description: t('sgt.gridStrategyCreatedSuccessfully'),
+        icon: NuxtUiIcons.Checkmark
       })
 
       status.setIdle()
