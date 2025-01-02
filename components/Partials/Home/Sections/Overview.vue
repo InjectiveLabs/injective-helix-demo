@@ -6,11 +6,11 @@ enum OverviewSection {
   GasFree = 'gasFree'
 }
 
-const imgList = {
-  [OverviewSection.TradingBots]: '/images/home/tradingBots.webp',
-  [OverviewSection.AccountOverview]: '/images/home/AccountsOverview.webp',
-  [OverviewSection.Pnl]: '/images/home/PnL.webp',
-  [OverviewSection.GasFree]: '/images/home/gasFee.webp'
+const animationList = {
+  [OverviewSection.AccountOverview]: '1AccountOverview.json',
+  [OverviewSection.TradingBots]: '2TradingBots.json',
+  [OverviewSection.Pnl]: '3pnlAnalysis.json',
+  [OverviewSection.GasFree]: '4gasFees.json'
 }
 
 const activeType = ref(OverviewSection.AccountOverview)
@@ -114,10 +114,15 @@ onMounted(() => {
           </div>
 
           <div class="flex justify-center items-center lg:ml-20">
-            <img
-              class="max-lg:m-auto lg:ml-auto object-contain max-h-[530px]"
-              :src="imgList[activeType]"
-            />
+            <div class="max-lg:h-[400px]">
+              <Transition name="fade">
+                <CommonLottieAnimation
+                  :key="`home-${activeType}`"
+                  class="rounded-xl overflow-hidden"
+                  :name="animationList[activeType]"
+                />
+              </Transition>
+            </div>
           </div>
         </div>
       </div>
