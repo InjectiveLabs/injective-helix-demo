@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { MitoVault, MitoStakingPool } from '@injectivelabs/sdk-ts'
 import { mitoApi } from '@shared/Service'
+import { MitoVault, MitoStakingPool } from '@injectivelabs/sdk-ts'
 import { STAKING_CONTRACT_ADDRESS } from '@/app/utils/constants'
 
 type LiquidityProvisionStoreState = {

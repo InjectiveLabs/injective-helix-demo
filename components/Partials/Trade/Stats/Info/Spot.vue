@@ -65,8 +65,10 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
   >
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.marketCapTooltip')"
-        text-color-class="text-coolGray-400"
+        v-bind="{
+          textColorClass: 'text-coolGray-400',
+          tooltip: $t('trade.stats.marketCapTooltip')
+        }"
       >
         {{ $t('trade.stats.marketCap') }}
       </CommonHeaderTooltip>
