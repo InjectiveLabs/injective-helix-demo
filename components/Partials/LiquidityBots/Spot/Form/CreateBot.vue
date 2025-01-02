@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 
 import {
   BotType,
@@ -116,7 +117,7 @@ async function createLiquidityBot() {
       toast.add({
         title: t('sgt.success'),
         description: t('sgt.gridStrategyCreatedSuccessfully'),
-        icon: 'i-heroicons-check-circle'
+        icon: NuxtUiIcons.Checkmark
       })
 
       status.setIdle()

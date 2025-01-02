@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 
 import { Status, StatusType } from '@injectivelabs/utils'
 
@@ -26,7 +27,7 @@ function removeStrategy() {
       toast.add({
         title: t('sgt.success'),
         description: t('sgt.gridStrategyRemovedSuccessfully'),
-        icon: 'i-heroicons-check-circle'
+        icon: NuxtUiIcons.Checkmark
       })
 
       // Optimistically remove the strategy from the state
