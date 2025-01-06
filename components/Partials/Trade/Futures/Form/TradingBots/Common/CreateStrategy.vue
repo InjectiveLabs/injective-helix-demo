@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { derivativeGridMarkets } from '@/app/json'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
-  DerivativeGridTradingField,
-  DerivativeGridTradingForm,
   MarketKey,
+  DerivativeGridTradingForm,
+  DerivativeGridTradingField,
   UiDerivativeMarket
 } from '@/types'
 

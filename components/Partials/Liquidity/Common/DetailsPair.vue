@@ -5,9 +5,9 @@ const { quote, base } = useSlots()
 
 withDefaults(
   defineProps<{
-    market?: UiMarketWithToken
     baseSymbol?: string
     quoteSymbol?: string
+    market?: UiMarketWithToken
   }>(),
   {
     market: undefined,

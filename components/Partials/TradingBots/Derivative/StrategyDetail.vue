@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, StatusType, Status } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
@@ -8,8 +8,8 @@ import {
 } from '@/app/utils/constants'
 
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 const { subaccountPortfolioBalanceMap } = useBalance()
+const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
@@ -189,7 +189,7 @@ function removeStrategy() {
       </div>
     </div>
 
-    <!-- Uncomment When we have the data -->
+    <!-- TODO: Uncomment When we have the data from indexer -->
 
     <!-- <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">

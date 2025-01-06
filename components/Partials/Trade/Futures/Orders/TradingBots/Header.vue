@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SharedDropdownOption } from '@shared/types'
-import { PerpOrdersTradingBotsView, PerpetualMarketCyTags } from '@/types'
+import { PerpetualMarketCyTags, PerpOrdersTradingBotsView } from '@/types'
 
 const breakpoints = useBreakpointsTw()
 const gridStrategyStore = useGridStrategyStore()
@@ -20,22 +20,18 @@ const emit = defineEmits<{
 
 const view = useVModel(props, 'modelValue', emit)
 
-const options = computed(() => {
-  const items: SharedDropdownOption[] = [
-    {
-      display: `activity.${PerpOrdersTradingBotsView.ActiveStrategies}`,
-      value: PerpOrdersTradingBotsView.ActiveStrategies,
-      description: `${gridStrategyStore.activeDerivativeStrategies.length}`
-    },
-    {
-      display: `activity.${PerpOrdersTradingBotsView.RemovedStrategies}`,
-      value: PerpOrdersTradingBotsView.RemovedStrategies,
-      description: `${gridStrategyStore.removedStrategies.length}`
-    }
-  ]
-
-  return items
-})
+const options = computed<SharedDropdownOption[]>(() => [
+  {
+    display: `activity.${PerpOrdersTradingBotsView.ActiveStrategies}`,
+    value: PerpOrdersTradingBotsView.ActiveStrategies,
+    description: `${gridStrategyStore.activeDerivativeStrategies.length}`
+  },
+  {
+    display: `activity.${PerpOrdersTradingBotsView.RemovedStrategies}`,
+    value: PerpOrdersTradingBotsView.RemovedStrategies,
+    description: `${gridStrategyStore.removedStrategies.length}`
+  }
+])
 </script>
 
 <template>

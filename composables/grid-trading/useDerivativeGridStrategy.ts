@@ -1,10 +1,10 @@
 import { format } from 'date-fns'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  TradingStrategy,
   ExitType,
+  MarketType,
   StrategyType,
-  MarketType
+  TradingStrategy
 } from '@injectivelabs/sdk-ts'
 import { formatInterval } from '@/app/utils/helpers'
 import {
@@ -12,7 +12,8 @@ import {
   StopReason,
   SgtMarketType,
   AccountBalance,
-  StrategyStatus
+  StrategyStatus,
+  UiDerivativeMarket
 } from '@/types'
 
 export const useDerivativeGridStrategies = (
@@ -26,26 +27,36 @@ export const useDerivativeGridStrategies = (
         : [strategiesArg.value]
       : []
   )
-  const derivativeStore = useDerivativeStore()
   const tokenStore = useTokenStore()
-
+  const derivativeStore = useDerivativeStore()
   const now = useNow({ interval: 10000 })
 
-  const filteredStrategies = computed(() =>
-    strategies.value.filter(
-      (strategy) =>
-        derivativeStore.markets.some(
-          (derivativeMarket) => derivativeMarket.marketId === strategy.marketId
-        ) && strategy.marketType === SgtMarketType.Derivative
+  const marketsMap = computed(() =>
+    derivativeStore.markets.reduce(
+      (acc, market) => {
+        acc[market.marketId] = market
+        return acc
+      },
+      {} as Record<string, UiDerivativeMarket>
     )
   )
+
+  const filteredStrategies = computed(() => {
+    const marketIds = new Set(
+      derivativeStore.markets.map(({ marketId }) => marketId)
+    )
+
+    return strategies.value.filter(
+      (strategy) =>
+        marketIds.has(strategy.marketId) &&
+        strategy.marketType === SgtMarketType.Derivative
+    )
+  })
 
   const formattedStrategies = computed(() =>
     filteredStrategies.value.map((strategy) => {
       const isActive = strategy.state === StrategyStatus.Active
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === strategy.marketId
-      )!
+      const market = marketsMap.value[strategy.marketId]
 
       const marketSubaccountId = strategy.subaccountId
 
@@ -174,6 +185,8 @@ export const useDerivativeGridStrategies = (
         botType = BotType.FuturesGrid
       }
 
+      const isPositivePnl = new BigNumberInBase(strategy.pnl || '0').gte(0)
+
       return {
         pnl: strategy.pnl || '0',
         market,
@@ -186,23 +199,23 @@ export const useDerivativeGridStrategies = (
         upperBound,
         lowerBound,
         totalAmount,
-        isPositivePnl: new BigNumberInBase(strategy.pnl || '0').gte(0),
+        isPositivePnl,
         trailingUpper,
         trailingLower,
-        percentagePnl: strategy.pnlPerc || '0',
         currentUsdValue,
         initialUsdValue,
         durationFormatted,
         createdAtFormatted,
         finalQuoteBalanceQuantity,
         initialQuoteBalanceQuantity,
-        currentQuoteAccountBalanceQuantity,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
+        percentagePnl: strategy.pnlPerc || '0',
         stopReason: strategy.stopReason as StopReason,
-        strategyType: strategy.strategyType,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
+        currentQuoteAccountBalanceQuantity,
+        strategyType: strategy.strategyType,
         subaccountId: strategy.subaccountId,
         executionPrice: executionPrice.toFixed(),
         accountAddress: strategy.accountAddress,

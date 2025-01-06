@@ -10,6 +10,8 @@ import {
   PortfolioSpotTradingBotsHistoryTableColumn
 } from '@/types'
 
+const { t } = useLang()
+
 const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
@@ -21,8 +23,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'strategy:select': [strategy: DerivativeGridStrategyTransformed]
 }>()
-
-const { t } = useLang()
 
 const keysToFilter = [
   PortfolioSpotTradingBotsHistoryTableColumn.Market,

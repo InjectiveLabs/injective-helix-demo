@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-const { t } = useLang()
 
 const gridStrategyStore = useGridStrategyStore()
+const { $onError } = useNuxtApp()
+const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Loading))
-const { $onError } = useNuxtApp()
 
 const options = [
   {

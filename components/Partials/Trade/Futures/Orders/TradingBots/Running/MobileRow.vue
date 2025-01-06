@@ -3,14 +3,16 @@ import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   UTableColumn,
-  PortfolioSpotTradingBotsRunningTableColumn,
-  DerivativeGridStrategyTransformed
+  DerivativeGridStrategyTransformed,
+  PortfolioSpotTradingBotsRunningTableColumn
 } from '@/types'
+
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
-    strategy: DerivativeGridStrategyTransformed
     columns: UTableColumn[]
+    strategy: DerivativeGridStrategyTransformed
   }>(),
   {}
 )
@@ -18,8 +20,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'strategy:select': [strategy: DerivativeGridStrategyTransformed]
 }>()
-
-const { t } = useLang()
 
 const keysToFilter = [
   PortfolioSpotTradingBotsRunningTableColumn.Market,

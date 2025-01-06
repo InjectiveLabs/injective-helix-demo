@@ -29,19 +29,16 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       const spotStore = useSpotStore()
       const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter((strategy) => {
-        const marketInSpotStore = spotStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
+      const marketIds = new Set([
+        ...spotStore.markets.map(({ marketId }) => marketId),
+        ...derivativeStore.markets.map(({ marketId }) => marketId)
+      ])
 
-        const marketInDerivativeStore = derivativeStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        const isActive = strategy.state === StrategyStatus.Active
-
-        return isActive && (marketInSpotStore || marketInDerivativeStore)
-      })
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Active &&
+          marketIds.has(strategy.marketId)
+      )
     },
 
     activeSpotStrategies: (state) => {
@@ -60,63 +57,60 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
     activeDerivativeStrategies: (state) => {
       const derivativeStore = useDerivativeStore()
+      const derivativeMarketIds = new Set(
+        derivativeStore.markets.map(({ marketId }) => marketId)
+      )
 
-      return state.strategies.filter((strategy) => {
-        const isActive = strategy.state === StrategyStatus.Active
-        const isDerivative = strategy.marketType === MarketType.Derivative
-        const isMarketInDerivativeStore = derivativeStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        return isActive && isDerivative && isMarketInDerivativeStore
-      })
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Active &&
+          strategy.marketType === MarketType.Derivative &&
+          derivativeMarketIds.has(strategy.marketId)
+      )
     },
 
     removedStrategies: (state) => {
       const spotStore = useSpotStore()
       const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter((strategy) => {
-        const isRemoved = strategy.state === StrategyStatus.Removed
+      const marketIds = new Set([
+        ...spotStore.markets.map(({ marketId }) => marketId),
+        ...derivativeStore.markets.map(({ marketId }) => marketId)
+      ])
 
-        const isMarketInSpotStore = spotStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        const isMarketInDerivativeStore = derivativeStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        return isRemoved && (isMarketInSpotStore || isMarketInDerivativeStore)
-      })
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          marketIds.has(strategy.marketId)
+      )
     },
 
     removedSpotStrategies: (state) => {
       const spotStore = useSpotStore()
+      const spotMarketIds = new Set(
+        spotStore.markets.map(({ marketId }) => marketId)
+      )
 
-      return state.strategies.filter((strategy) => {
-        const isRemoved = strategy.state === StrategyStatus.Removed
-        const isSpot = strategy.marketType === MarketType.Spot
-        const isMarketInSpotStore = spotStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        return isRemoved && isSpot && isMarketInSpotStore
-      })
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          strategy.marketType === MarketType.Spot &&
+          spotMarketIds.has(strategy.marketId)
+      )
     },
 
     removedDerivativeStrategies: (state) => {
       const derivativeStore = useDerivativeStore()
+      const derivativeMarketIds = new Set(
+        derivativeStore.markets.map(({ marketId }) => marketId)
+      )
 
-      return state.strategies.filter((strategy) => {
-        const isRemoved = strategy.state === StrategyStatus.Removed
-        const isDerivative = strategy.marketType === MarketType.Derivative
-        const isMarketInDerivativeStore = derivativeStore.markets.some(
-          ({ marketId }) => strategy.marketId === marketId
-        )
-
-        return isRemoved && isDerivative && isMarketInDerivativeStore
-      })
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          strategy.marketType === MarketType.Derivative &&
+          derivativeMarketIds.has(strategy.marketId)
+      )
     }
   },
   actions: {

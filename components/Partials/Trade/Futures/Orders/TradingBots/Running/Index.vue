@@ -2,17 +2,17 @@
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  DerivativeGridStrategyTransformed,
-  PortfolioSpotTradingBotsRunningTableColumn,
   TradeSubPage,
-  TradingInterface
+  TradingInterface,
+  DerivativeGridStrategyTransformed,
+  PortfolioSpotTradingBotsRunningTableColumn
 } from '@/types'
 import { PartialsTradingBotsDerivativeStrategyDetail } from '#components'
 
 const gridStrategyStore = useGridStrategyStore()
+const { subaccountPortfolioBalanceMap } = useBalance()
 const { lg } = useTwBreakpoints()
 const { t } = useLang()
-const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<DerivativeGridStrategyTransformed | null>(null)
@@ -75,13 +75,13 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
       :ui="{
         divide: 'dark:divide-cool-800',
         th: {
-          color: 'text-coolGray-400',
           size: 'text-xs',
-          font: 'font-normal'
+          font: 'font-normal',
+          color: 'text-coolGray-400'
         },
         td: {
-          color: 'text-white',
-          size: 'text-xs'
+          size: 'text-xs',
+          color: 'text-white'
         }
       }"
       :rows="formattedStrategies"
@@ -111,7 +111,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
 
       <template #lowerBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
+          <AppAmount
             :max-decimal-places="3"
             :decimal-places="2"
             :amount="row.lowerBound"
@@ -122,7 +122,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
 
       <template #upperBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
+          <AppAmount
             :max-decimal-places="3"
             :decimal-places="2"
             :amount="row.upperBound"
@@ -133,7 +133,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
+          <AppAmount
             :decimal-places="2"
             :max-decimal-places="3"
             :amount="row.totalAmount.toFixed()"
@@ -148,7 +148,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
         >
           <div class="flex items-center gap-1">
             <span>{{ row.isPositivePnl ? '+' : '' }}</span>
-            <SharedAmountFormatter
+            <AppAmount
               :max-decimal-places="3"
               :amount="row.pnl"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
