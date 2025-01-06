@@ -173,7 +173,6 @@ const columns = computed(() => {
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -188,7 +187,6 @@ const columns = computed(() => {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -203,7 +201,6 @@ const columns = computed(() => {
               decimalPlaces: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -213,17 +210,16 @@ const columns = computed(() => {
           <div>
             <p
               :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
-              class="flex gap-1 font-mono"
+              class="flex gap-1"
             >
               <AppAmount
                 v-bind="{
                   decimalPlaces: row.quantityDecimals,
                   amount: row.filledQuantity.toFixed()
                 }"
-                class="font-mono"
               />
             </p>
-            <p class="text-coolGray-500 font-mono">
+            <p class="text-coolGray-500">
               {{ row.filledQuantityPercentageToFormat }}%
             </p>
           </div>
@@ -239,7 +235,6 @@ const columns = computed(() => {
                   amount: row.total.toFixed(),
                   decimalPlaces: row.priceDecimals
                 }"
-                class="font-mono"
               />
               <span
                 class="text-coolGray-500 ml-1"

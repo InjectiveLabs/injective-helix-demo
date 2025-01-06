@@ -20,7 +20,7 @@ const props = withDefaults(
         base: 'whitespace-nowrap'
       },
       td: {
-        font: 'font-mono'
+        font: 'font-sans'
       }
     })
   }

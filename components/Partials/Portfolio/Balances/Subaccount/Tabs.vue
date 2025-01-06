@@ -59,7 +59,7 @@ const { valueToString: accountTotalBalanceInUsdToString } =
 
     <div class="flex items-center">
       <p
-        class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2 font-mono"
+        class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2"
       >
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>

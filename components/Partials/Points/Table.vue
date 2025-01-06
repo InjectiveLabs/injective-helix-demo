@@ -158,7 +158,7 @@ function onNext() {
       </template>
 
       <template #volume-data="{ row }">
-        <span v-show="row.volume" class="flex justify-end font-mono">
+        <span v-show="row.volume" class="flex justify-end">
           <AppAmount
             v-if="row.volumeInBigNumber.gte(1)"
             v-bind="{

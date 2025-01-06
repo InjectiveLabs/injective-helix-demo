@@ -77,7 +77,6 @@ const filteredColumns = computed(() =>
           amount: trade.price.toFixed(),
           decimalPlaces: trade.priceDecimals
         }"
-        class="font-mono"
       />
     </template>
 
@@ -87,7 +86,6 @@ const filteredColumns = computed(() =>
           amount: trade.quantity.toFixed(),
           decimalPlaces: trade.quantityDecimals
         }"
-        class="font-mono"
       />
     </template>
 
@@ -100,7 +98,6 @@ const filteredColumns = computed(() =>
               ? UI_DEFAULT_FEE_MIN_DECIMALS
               : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
-          class="font-mono"
         />
         <span class="ml-1 text-coolGray-500">
           {{ trade.market?.quoteToken.symbol }}
@@ -115,7 +112,6 @@ const filteredColumns = computed(() =>
             amount: trade.total.toFixed(),
             decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
-          class="font-mono"
         />
         <span class="ml-1 text-coolGray-500">
           {{ trade.market?.quoteToken.symbol }}
