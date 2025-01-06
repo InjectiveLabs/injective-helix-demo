@@ -100,6 +100,7 @@ export default {
     priceDeviation: 'Price Deviation',
     orderStatus: 'Order Status',
     amount: 'Amount',
+    size: 'Size',
     tickerOnly: '{ticker} only',
     advancedSettings: 'Advanced Settings',
     totalNotional: 'Total Notional',

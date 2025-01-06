@@ -14,6 +14,8 @@ import {
   PerpetualMarketCyTags
 } from '@/types'
 
+const appStore = useAppStore()
+
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -30,6 +32,15 @@ const { markPrice } = useDerivativeLastPrice(market)
 const maxLeverageAvailable = computed(() =>
   calculateLeverage(market.value.initialMarginRatio).toFixed()
 )
+
+const futuresLeveragePreference = computed(() => {
+  const leveragePreference = appStore.userState.preferences.futuresLeverage
+  const futuresLeverage = Math.round(parseFloat(leveragePreference) * 100) / 100
+
+  return futuresLeverage > Number(maxLeverageAvailable.value)
+    ? maxLeverageAvailable.value
+    : leveragePreference
+})
 
 const { el, typed } = useIMask(
   computed(
@@ -59,6 +70,7 @@ const leverageModel = computed({
   set: (value) => {
     leverage.value = value
     typed.value = value
+    appStore.setFuturesLeverage(value)
   }
 })
 
@@ -92,7 +104,7 @@ const maxLeverageAllowed = computed(() => {
 
 const { value: leverage, errorMessage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
-  initialValue: '1',
+  initialValue: futuresLeveragePreference.value || '1',
   dynamicRule: computed(() => `maxLeverage:${maxLeverageAllowed.value}`)
 })
 
@@ -120,15 +132,13 @@ function onMouseUp() {
 watch(
   () => derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly],
   () => {
-    leverageModel.value = '1'
+    leverageModel.value = futuresLeveragePreference.value || '1'
   }
 )
 
 const leverageNumber = computed({
   get: () => Number(leverageModel.value),
-  set: (value) => {
-    leverageModel.value = value.toString()
-  }
+  set: (value) => (leverageModel.value = value.toString())
 })
 </script>
 

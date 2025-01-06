@@ -14,20 +14,21 @@ import { OrderbookLayout, TradingLayout } from '@/types'
 const stateToPersist = {
   app: {
     userState: {
-      favoriteMarkets: [],
-      bannersViewed: [],
       modalsViewed: [],
+      bannersViewed: [],
       dontShowAgain: [],
+      favoriteMarkets: [],
 
       preferences: {
-        skipTradeConfirmationModal: false,
-        skipExperimentalConfirmationModal: false,
-        orderbookLayout: OrderbookLayout.Default,
-        tradingLayout: TradingLayout.Left,
-        subaccountManagement: false,
-        authZManagement: false,
+        futuresLeverage: '1',
         isHideBalances: false,
-        thousandsSeparator: false
+        authZManagement: false,
+        thousandsSeparator: false,
+        subaccountManagement: false,
+        skipTradeConfirmationModal: false,
+        tradingLayout: TradingLayout.Left,
+        skipExperimentalConfirmationModal: false,
+        orderbookLayout: OrderbookLayout.Default
       }
     }
   },
