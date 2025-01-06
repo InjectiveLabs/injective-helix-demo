@@ -190,9 +190,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
 
       <template #last-price-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
-          <div
-            class="flex justify-end truncate min-w-0 font-mono text-sm text-right"
-          >
+          <div class="flex justify-end truncate min-w-0 text-sm text-right">
             <AppAmount
               :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
               v-bind="{
@@ -208,7 +206,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
         <PartialsCommonMarketRedirection :market="row.market">
           <div
             :class="row.priceChangeClasses"
-            class="flex items-center truncate min-w-0 font-mono text-sm justify-end"
+            class="flex items-center truncate min-w-0 text-sm justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
             {{ row.formattedChange }}%
@@ -218,9 +216,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
 
       <template #funding-rate-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
-          <div
-            class="flex items-center justify-end truncate min-w-0 font-mono text-sm"
-          >
+          <div class="flex items-center justify-end truncate min-w-0 text-sm">
             <span v-if="row[MarketsSelectorTableColumn.FundingRate].isZero()">
               &mdash;
             </span>
@@ -253,9 +249,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
 
       <template #market-volume-24h-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
-          <div
-            class="flex items-center justify-end truncate min-w-0 font-mono text-sm"
-          >
+          <div class="flex items-center justify-end truncate min-w-0 text-sm">
             <span v-if="isMobile">
               <span>$</span>
               <span v-if="abbreviateNumber(row.volumeInUsdToFixed)">
@@ -288,7 +282,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       <!-- <template #open-interest-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div
-            class="flex items-center justify-end flex-[2] truncate min-w-0 font-mono text-sm"
+            class="flex items-center justify-end flex-[2] truncate min-w-0 text-sm"
           >
             <span v-if="row[MarketsSelectorTableColumn.OpenInterest].isZero()">
               &mdash;

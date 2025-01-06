@@ -297,13 +297,13 @@ function updateTooltip({ price, volume }: { price: number; volume: number }) {
 
   const innerHtml = `
     <div >Price:</div>
-    <div class="text-white font-mono text-right">${new BigNumberInBase(
-      price
-    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
+    <div class="text-white text-right">${new BigNumberInBase(price).toFormat(
+      props.priceDecimals
+    )} ${props.symbol}</div>
     <div>Volume:</div>
-    <div class="text-white font-mono text-right">${new BigNumberInBase(
-      volume
-    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
+    <div class="text-white text-right">${new BigNumberInBase(volume).toFormat(
+      props.priceDecimals
+    )} ${props.symbol}</div>
   `
   tooltipEl.value!.innerHTML = innerHtml
 }

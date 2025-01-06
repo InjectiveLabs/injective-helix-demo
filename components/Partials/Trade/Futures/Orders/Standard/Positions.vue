@@ -51,7 +51,6 @@ function onSharePosition(position: PositionV2) {
         base: 'whitespace-nowrap dark:bg-coolGray-975'
       },
       td: {
-        font: 'font-mono',
         color: 'dark:text-white'
       }
     }"

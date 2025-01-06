@@ -45,7 +45,7 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
     v-if="!isStableQuoteAsset"
     :title="$t('trade.stats.usd_value')"
   >
-    <p class="font-mono">
+    <p>
       <AppUsdAmount
         v-bind="{
           decimalPlaces: market.priceDecimals,
@@ -74,7 +74,7 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
       </CommonHeaderTooltip>
     </template>
 
-    <p class="font-mono">
+    <p>
       <span>$</span>
       <AppUsdAmount
         v-bind="{

@@ -70,7 +70,7 @@ const low = computed(() => {
 
 <template>
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.market_volume_24h')">
-    <p class="font-mono">
+    <p>
       <AppAmount
         v-bind="{
           amount: volume.toFixed(),
@@ -89,7 +89,7 @@ const low = computed(() => {
           {{ $t('trade.stats.volumeInUsd') }}
         </p>
       </template>
-      <div class="font-mono">
+      <div>
         <AppAmount
           v-bind="{
             amount: volumeInUsd.toFixed(),
@@ -102,7 +102,7 @@ const low = computed(() => {
   </div>
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.high')">
-    <p class="font-mono">
+    <p>
       <AppAmount
         v-bind="{
           amount: high.toFixed(),
@@ -113,7 +113,7 @@ const low = computed(() => {
   </PartialsTradeStatsHeaderItem>
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.low')">
-    <p class="font-mono">
+    <p>
       <AppAmount
         v-bind="{
           amount: low.toFixed(),

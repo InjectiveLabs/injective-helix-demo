@@ -78,7 +78,7 @@ watch(
   <input
     ref="el"
     type="text"
-    class="bg-transparent focus:outline-none font-mono"
+    class="bg-transparent focus:outline-none"
     :class="thousandsSeparator ? 'text-right' : ''"
     v-bind="$attrs"
   />
