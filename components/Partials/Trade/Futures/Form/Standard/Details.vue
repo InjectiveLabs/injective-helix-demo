@@ -102,7 +102,7 @@ function toggle() {
           <div class="flex-1 mx-2" />
 
           <p
-            class="font-mono space-x-2 flex text-white"
+            class="space-x-2 flex text-white"
             :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)"
           >
             <span class="flex space-x-2">
@@ -124,7 +124,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
           <div class="flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p class="space-x-2">
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
@@ -142,7 +142,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
           <div class="flex-1 mx-2" />
-          <p class="font-mono space-x-2 flex">
+          <p class="space-x-2 flex">
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
               v-bind="{
@@ -160,7 +160,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.quantity') }}</p>
           <div class="flex-1 mx-2" />
-          <p class="font-mono space-x-2">
+          <p class="space-x-2">
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
               v-bind="{
@@ -183,7 +183,7 @@ function toggle() {
             {{ $t('trade.averagePrice') }}
           </p>
           <div class="flex-1 mx-2" />
-          <p class="font-mono space-x-2 flex">
+          <p class="space-x-2 flex">
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
               v-bind="{
@@ -202,7 +202,7 @@ function toggle() {
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="flex-1 mx-2" />
-          <p class="font-mono space-x-2 flex">
+          <p class="space-x-2 flex">
             <AppAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
@@ -226,7 +226,7 @@ function toggle() {
             <div class="flex-1 mx-2" />
             <p
               v-if="derivativeMarket"
-              class="font-mono text-white"
+              class="text-white"
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)"
             >
               {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
@@ -236,7 +236,7 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
             <div class="flex-1 mx-2" />
-            <p class="font-mono space-x-2 flex">
+            <p class="space-x-2 flex">
               <AppAmount
                 :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
                 v-bind="{
@@ -256,7 +256,7 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-450">{{ $t('trade.maker_rate') }}</p>
             <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="font-mono text-white">
+            <p v-if="derivativeMarket" class="text-white">
               {{ makerFeeRateToFixed }}%
             </p>
           </div>
@@ -264,7 +264,7 @@ function toggle() {
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
             <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="font-mono flex gap-x-2">
+            <p v-if="derivativeMarket" class="flex gap-x-2">
               <AppAmount
                 v-bind="{
                   amount: feeAmount.toFixed(),

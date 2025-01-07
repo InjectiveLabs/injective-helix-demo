@@ -170,7 +170,7 @@ const spotBoostedMarkets = computed(() => {
           class="mt-1 text-coolGray-550"
           is-sm
         >
-          <p class="text-white font-mono">
+          <p class="text-white">
             <span>
               {{ derivative.makerPointsMultiplier }}x
               <span class="text-sm text-coolGray-350 font-sans">
@@ -197,7 +197,7 @@ const spotBoostedMarkets = computed(() => {
           class="mt-1 text-coolGray-550"
           is-sm
         >
-          <p class="text-white font-mono">
+          <p class="text-white">
             <span>
               {{ spot.makerPointsMultiplier }}x
               <span class="text-sm text-coolGray-350 font-sans">

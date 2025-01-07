@@ -97,7 +97,6 @@ const columns = [
                 amount: row.totalRewardsInUsd.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="font-mono"
             />
             <span class="ml-1">USD</span>
           </p>
@@ -131,7 +130,6 @@ const columns = [
                 amount: row.marketVolumeInUsd.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="font-mono"
             />
             <span class="ml-1">USD</span>
           </p>

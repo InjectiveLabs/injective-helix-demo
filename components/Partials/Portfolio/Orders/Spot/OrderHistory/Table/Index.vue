@@ -135,7 +135,6 @@ const columns = [
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -150,7 +149,6 @@ const columns = [
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -165,7 +163,6 @@ const columns = [
               amount: row.total.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
-            class="font-mono"
           />
           <span class="text-coolGray-500 ml-1">
             {{ row.market?.quoteToken.symbol }}
@@ -185,7 +182,6 @@ const columns = [
                 amount: row.triggerPrice.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
-              class="font-mono"
             />
           </span>
         </div>

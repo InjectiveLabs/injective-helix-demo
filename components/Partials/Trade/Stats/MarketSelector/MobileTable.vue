@@ -117,7 +117,7 @@ const toggleFavorite = () => {
 
     <template #last-price-data>
       <PartialsCommonMarketRedirection :market="market.market">
-        <div class="truncate min-w-0 font-mono text-xs">
+        <div class="truncate min-w-0 text-xs">
           <AppAmount
             :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
             v-bind="{
@@ -133,7 +133,7 @@ const toggleFavorite = () => {
       <PartialsCommonMarketRedirection :market="market.market">
         <div
           :class="market.priceChangeClasses"
-          class="truncate min-w-0 font-mono text-xs"
+          class="truncate min-w-0 text-xs"
           :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
         >
           {{ market.formattedChange }}%
@@ -143,7 +143,7 @@ const toggleFavorite = () => {
 
     <template #market-volume-24h-data>
       <PartialsCommonMarketRedirection :market="market.market">
-        <div class="truncate min-w-0 font-mono text-xs">
+        <div class="truncate min-w-0 text-xs">
           <span>$</span>
           <span v-if="abbreviateNumber(market.volumeInUsdToFixed)">
             {{ abbreviateNumber(market.volumeInUsdToFixed) }}

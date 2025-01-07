@@ -144,7 +144,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col font-mono"
+          class="flex flex-col"
           :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
         >
           <div class="flex items-center gap-1">

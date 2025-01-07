@@ -86,7 +86,6 @@ const formattedNumber = computed(() => {
 <template>
   <div :class="{ 'flex justify-start items-center gap-1': isFlex }">
     <span
-      class="font-mono"
       :class="{
         'text-xs': isXs,
         'text-sm': isSm,

@@ -90,7 +90,6 @@ const filteredColumns = computed(() =>
               amount: trigger.price.toFixed(),
               decimalPlaces: trigger.priceDecimals
             }"
-            class="font-mono"
           />
         </span>
       </div>
@@ -103,7 +102,6 @@ const filteredColumns = computed(() =>
             amount: trigger.quantity.toFixed(),
             decimalPlaces: trigger.quantityDecimals
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -113,9 +111,7 @@ const filteredColumns = computed(() =>
         <span v-if="trigger.leverage.isNaN()" class="text-coolGray-400">
           {{ $t('trade.not_available_n_a') }}
         </span>
-        <span v-else class="font-mono">
-          {{ trigger.leverage.toFormat(2) }} &times;
-        </span>
+        <span v-else> {{ trigger.leverage.toFormat(2) }} &times; </span>
       </div>
     </template>
 
@@ -126,7 +122,6 @@ const filteredColumns = computed(() =>
             amount: trigger.total.toFixed(),
             decimalPlaces: trigger.priceDecimals
           }"
-          class="font-mono"
         />
         <span class="ml-1">{{ trigger.market.quoteToken.symbol }}</span>
       </div>
@@ -155,7 +150,6 @@ const filteredColumns = computed(() =>
               amount: trigger.triggerPrice.toFixed(),
               decimalPlaces: trigger.priceDecimals
             }"
-            class="font-mono"
           />
         </span>
       </div>

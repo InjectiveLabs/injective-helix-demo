@@ -123,7 +123,7 @@ const onSubmit = handleSubmit(() => {
             </div>
             <div class="mt-4 text-center">
               <span
-                class="font-mono flex items-center justify-center text-coolGray-200 text-base lg:text-xl"
+                class="flex items-center justify-center text-coolGray-200 text-base lg:text-xl"
                 data-cy="add-margin-modal-available-text-content"
               >
                 {{ availableMarginToString }}

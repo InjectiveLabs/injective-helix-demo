@@ -92,7 +92,6 @@ const filteredColumns = computed(() =>
             amount: trade.price.toFixed(),
             decimalPlaces: trade.priceDecimals
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -104,7 +103,6 @@ const filteredColumns = computed(() =>
             amount: trade.quantity.toFixed(),
             decimalPlaces: trade.quantityDecimals
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -119,7 +117,6 @@ const filteredColumns = computed(() =>
                 ? UI_DEFAULT_FEE_MIN_DECIMALS
                 : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
             }"
-            class="font-mono"
           />
         </span>
         <span class="ml-1 text-coolGray-500">
@@ -136,7 +133,6 @@ const filteredColumns = computed(() =>
               amount: trade.total.toFixed(),
               decimalPlaces: trade.priceDecimals
             }"
-            class="font-mono"
           />
         </span>
         <span class="ml-1 text-coolGray-500">
