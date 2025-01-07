@@ -12,7 +12,7 @@ const props = withDefaults(
 )
 
 const isSpot = props.market.type === SharedMarketType.Spot
-const interval = '1D'
+const interval = '1H'
 
 const status = reactive(new Status(StatusType.Loading))
 
