@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  MAX_QUOTE_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +13,7 @@ const props = withDefaults(
     isShowNoDecimals?: boolean
   }>(),
   {
-    maxTrailingZeros: 3,
+    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     shouldTruncate: false,
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
