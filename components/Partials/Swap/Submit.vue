@@ -225,20 +225,12 @@ watch(
     </AppButton>
 
     <AppButton
-      v-else-if="
-        sharedWalletStore.isAuthzWalletConnected ||
-        sharedWalletStore.isAutoSignEnabled
-      "
+      v-else-if="sharedWalletStore.isAuthzWalletConnected"
       variant="danger-ghost"
       class="mb-2 w-full"
       :disabled="true"
     >
-      <span v-if="sharedWalletStore.isAuthzWalletConnected">
-        {{ $t('common.unauthorized') }}
-      </span>
-      <span v-else>
-        {{ $t('common.notAvailableinAutoSignMode') }}
-      </span>
+      {{ $t('common.unauthorized') }}
     </AppButton>
 
     <AppButton
