@@ -75,7 +75,7 @@ function openDepositQRModal() {
     <div class="flex items-center text-xs font-medium">
       <p class="text-coolGray-450">{{ $t('trade.equity.spot') }}</p>
       <div class="flex-1 mx-2" />
-      <p class="font-mono space-x-1">
+      <p class="space-x-1">
         $<AppUsdAmount
           v-bind="{
             amount: spotBalanceInUsdToFixed
@@ -89,7 +89,7 @@ function openDepositQRModal() {
     <div class="flex items-center text-xs font-medium">
       <p class="text-coolGray-450">{{ $t('trade.equity.perps') }}</p>
       <div class="flex-1 mx-2" />
-      <p class="font-mono space-x-1">
+      <p class="space-x-1">
         $<AppUsdAmount
           v-bind="{
             amount: marginAndPnlToFixed
@@ -103,7 +103,7 @@ function openDepositQRModal() {
     <div class="flex items-center text-xs font-medium">
       <p class="text-coolGray-450">{{ $t('trade.equity.unrealizedPnl') }}</p>
       <div class="flex-1 mx-2" />
-      <p class="font-mono space-x-1">
+      <p class="space-x-1">
         $<AppUsdAmount
           v-bind="{
             amount: pnlToFixed

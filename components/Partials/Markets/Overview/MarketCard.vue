@@ -106,7 +106,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 
     <div class="flex items-center justify-start my-2">
       <p
-        class="text-xs tracking-wide font-mono font-medium flex items-center mr-2"
+        class="text-xs tracking-wide font-medium flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
           'text-green-500 ':
@@ -127,7 +127,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       </p>
 
       <span
-        class="text-xs font-mono"
+        class="text-xs"
         data-cy="market-card-change_24h-text-content"
         :class="{
           'text-green-500': change.gt(0),
@@ -149,7 +149,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           amount: market.volumeInUsd.toFixed(),
           decimalPlaces: 2
         }"
-        class="font-mono mx-0.5"
+        class="mx-0.5"
       />
       USD
     </span>

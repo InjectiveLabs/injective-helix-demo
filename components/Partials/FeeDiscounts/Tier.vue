@@ -104,7 +104,7 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
 
 <template>
   <tr>
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-left">
       <div class="flex items-center gap-4">
         <div
           v-if="isUserTierLevel"
@@ -114,20 +114,20 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
         <span>#{{ index }}</span>
       </div>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-right">
       &#8805; {{ stakedAmountToFormat }}
       <span class="text-xs text-coolGray-500"> INJ </span>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-right">
       <span class="text-coolGray-500 uppercase text-xs tracking-wider">
         {{ $t('and') }}
       </span>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-right">
       &#8805; {{ volumeToFormat }}
       <span class="text-xs text-coolGray-500"> USD </span>
     </td>
-    <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
-    <td class="h-8 text-right font-mono">{{ takerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right">{{ makerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right">{{ takerFeeDiscountToFormat }}%</td>
   </tr>
 </template>

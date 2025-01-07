@@ -137,7 +137,7 @@ const toggleFavorite = () => {
         :market="market.market"
         class="flex items-center"
       >
-        <div class="w-full truncate font-mono">
+        <div class="w-full truncate">
           <AppAmount
             :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
             v-bind="{
@@ -156,7 +156,7 @@ const toggleFavorite = () => {
       >
         <div
           :class="market.priceChangeClasses"
-          class="w-full flex items-center truncate font-mono justify-end"
+          class="w-full flex items-center truncate justify-end"
           :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
         >
           {{ market.formattedChange }}%
@@ -169,7 +169,7 @@ const toggleFavorite = () => {
         :market="market.market"
         class="flex items-center"
       >
-        <div class="w-full flex items-center truncate font-mono">
+        <div class="w-full flex items-center truncate">
           <div>
             <span>$</span>
             <span v-if="abbreviateNumber(market.volumeInUsd.toFixed())">

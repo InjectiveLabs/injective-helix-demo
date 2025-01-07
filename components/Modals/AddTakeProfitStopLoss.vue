@@ -260,7 +260,6 @@ watch(
                   amount: entryPrice.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
-                class="font-mono"
               />
             </p>
           </div>
@@ -273,7 +272,6 @@ watch(
                   amount: markPriceNotScaled.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
-                class="font-mono"
               />
             </p>
           </div>
@@ -286,7 +284,6 @@ watch(
                   amount: liquidationPrice.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
-                class="font-mono"
               />
             </p>
           </div>
@@ -331,7 +328,6 @@ watch(
                   amount: tpTriggerPrice || takeProfitValue,
                   decimalPlaces: market.priceDecimals
                 }"
-                class="font-mono"
               />
             </span>
           </template>
@@ -351,7 +347,6 @@ watch(
                 amount: takeProfitPnl.toFixed(),
                 decimalPlaces: market.priceDecimals
               }"
-              class="font-mono"
             />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>
@@ -397,7 +392,6 @@ watch(
                   amount: slTriggerPrice || stopLossValue,
                   decimalPlaces: market.priceDecimals
                 }"
-                class="font-mono"
               />
             </span>
           </template>
@@ -417,7 +411,6 @@ watch(
                 amount: stopLossPnl.toFixed(),
                 decimalPlaces: market.priceDecimals
               }"
-              class="font-mono"
             />
             <span>{{ market.quoteToken.symbol }}</span>
           </span>

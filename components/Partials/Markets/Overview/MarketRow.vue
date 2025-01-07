@@ -38,7 +38,7 @@ const priceChangeClasses = computed(() => {
         {{ market.market.ticker }}
       </p>
     </div>
-    <p class="flex flex-1 text-right font-mono text-xs">
+    <p class="flex flex-1 text-right text-xs">
       <span class="mr-1">$</span>
       <AppAmount
         v-bind="{
@@ -48,7 +48,7 @@ const priceChangeClasses = computed(() => {
       />
     </p>
     <p
-      class="flex flex-1 text-right font-mono text-xs justify-end"
+      class="flex flex-1 text-right text-xs justify-end"
       :class="priceChangeClasses"
     >
       <span v-if="Number(market.summary.change) > 0">+</span>

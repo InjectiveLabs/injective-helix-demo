@@ -127,7 +127,7 @@ onMounted(() => {
       <input
         ref="el"
         type="text"
-        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
+        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none"
         :class="{
           'cursor-not-allowed': disabled,
           'text-right': thousandsSeparator

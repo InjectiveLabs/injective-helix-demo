@@ -158,6 +158,7 @@ useIntervalFn(
         <LayoutTeslaCompetitionBanner
           v-if="route.name !== LeaderboardSubPage.Competition"
         />
+        <LayoutFTMPerpBanner />
 
         <ModalsCompetitionWinner
           v-if="

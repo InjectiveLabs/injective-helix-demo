@@ -103,7 +103,6 @@ const filteredColumns = computed(() =>
             amount: order.price.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -115,7 +114,6 @@ const filteredColumns = computed(() =>
             amount: order.quantity.toFixed(),
             decimalPlaces: order.quantityDecimals
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -127,7 +125,6 @@ const filteredColumns = computed(() =>
             decimalPlaces: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
-          class="font-mono"
         />
       </div>
     </template>
@@ -143,10 +140,9 @@ const filteredColumns = computed(() =>
               decimalPlaces: order.quantityDecimals,
               amount: order.filledQuantity.toFixed()
             }"
-            class="font-mono"
           />
         </p>
-        <p class="text-coolGray-500 font-mono">
+        <p class="text-coolGray-500">
           {{ order.filledQuantityPercentageToFormat }}%
         </p>
       </div>
@@ -159,7 +155,6 @@ const filteredColumns = computed(() =>
             amount: order.total.toFixed(),
             decimalPlaces: order.priceDecimals
           }"
-          class="font-mono"
         />
         <span
           class="text-coolGray-500 ml-1"

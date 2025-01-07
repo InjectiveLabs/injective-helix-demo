@@ -60,7 +60,7 @@ watch(
       <div
         class="bg-brand-850 border border-coolGray-700 px-2 py-1 rounded-md flex"
       >
-        <p class="font-mono w-12">{{ leverage }}</p>
+        <p class="w-12">{{ leverage }}</p>
         <span>x</span>
       </div>
     </div>
