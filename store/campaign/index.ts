@@ -268,7 +268,7 @@ export const useCampaignStore = defineStore('campaign', {
       const sharedWalletStore = useSharedWalletStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        accountAddress: sharedWalletStore.injectiveAddress,
+        accountAddress: sharedWalletStore.authZOrInjectiveAddress,
         contractAddress: ADMIN_UI_SMART_CONTRACT,
         toRoundId: roundId
       })
