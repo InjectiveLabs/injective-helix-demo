@@ -7,8 +7,9 @@ import {
   StopReason,
   TradeSubPage,
   TradingInterface,
+  GridStrategyTransformed,
   DerivativeGridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn
+  PortfolioTradingBotsHistoryTableColumn
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -17,54 +18,64 @@ const { lg } = useTwBreakpoints()
 const { t } = useLang()
 
 const isOpen = ref(false)
-const selectedStrategy = ref<DerivativeGridStrategyTransformed | null>(null)
+const selectedStrategy = ref<
+  DerivativeGridStrategyTransformed | GridStrategyTransformed | null
+>(null)
 
-const { formattedStrategies } = useDerivativeGridStrategies(
-  computed(() => gridStrategyStore.removedDerivativeStrategies),
+const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
+  computed(() => gridStrategyStore.removedSpotStrategies),
   subaccountPortfolioBalanceMap
 )
 
+const { formattedStrategies: derivativeFormattedStrategies } =
+  useDerivativeGridStrategies(
+    computed(() => gridStrategyStore.removedDerivativeStrategies),
+    subaccountPortfolioBalanceMap
+  )
+
 const columns = computed(() => [
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Time,
+    key: PortfolioTradingBotsHistoryTableColumn.Time,
     label: t('sgt.time'),
     class: 'w-32'
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Market,
+    key: PortfolioTradingBotsHistoryTableColumn.Market,
     label: t('sgt.market')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.LowerBound,
+    key: PortfolioTradingBotsHistoryTableColumn.LowerBound,
     label: t('sgt.lowerBound')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.UpperBound,
+    key: PortfolioTradingBotsHistoryTableColumn.UpperBound,
     label: t('sgt.upperBound')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalAmount,
+    key: PortfolioTradingBotsHistoryTableColumn.TotalAmount,
     label: t('sgt.totalAmount')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalProfit,
+    key: PortfolioTradingBotsHistoryTableColumn.TotalProfit,
     label: t('sgt.totalProfit')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Duration,
+    key: PortfolioTradingBotsHistoryTableColumn.Duration,
     label: t('sgt.duration')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Details,
+    key: PortfolioTradingBotsHistoryTableColumn.Details,
     label: t('sgt.details')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.StopReason,
+    key: PortfolioTradingBotsHistoryTableColumn.StopReason,
     label: t('sgt.stopReason')
   }
 ])
 
-function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
+function selectStrategy(
+  strategy: DerivativeGridStrategyTransformed | GridStrategyTransformed
+) {
   selectedStrategy.value = strategy
   isOpen.value = true
 }
@@ -86,7 +97,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
           size: 'text-xs'
         }
       }"
-      :rows="formattedStrategies"
+      :rows="[...spotFormattedStrategies, ...derivativeFormattedStrategies]"
       :columns="columns"
     >
       <template #time-data="{ row }">
@@ -96,7 +107,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name: TradeSubPage.Spot,
+            name: row.isSpot ? TradeSubPage.Spot : TradeSubPage.Futures,
             query: {
               interface: TradingInterface.TradingBots
             },
@@ -187,8 +198,11 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
     </UTable>
 
     <template v-else>
-      <PartialsTradeFuturesOrdersTradingBotsHistoryMobileRow
-        v-for="strategy in formattedStrategies"
+      <PartialsTradingBotsGridStrategiesHistoryTableMobileRow
+        v-for="strategy in [
+          ...spotFormattedStrategies,
+          ...derivativeFormattedStrategies
+        ]"
         :key="strategy.marketId + strategy.strategy.createdAt"
         :strategy="strategy"
         :columns="columns"

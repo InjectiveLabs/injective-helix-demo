@@ -7,7 +7,6 @@ import {
   DerivativeGridStrategyTransformed,
   PortfolioSpotTradingBotsRunningTableColumn
 } from '@/types'
-import { PartialsTradingBotsDerivativeStrategyDetail } from '#components'
 
 const gridStrategyStore = useGridStrategyStore()
 const { subaccountPortfolioBalanceMap } = useBalance()
@@ -94,7 +93,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name: TradeSubPage.Spot,
+            name: TradeSubPage.Futures,
             query: {
               interface: TradingInterface.TradingBots
             },
@@ -214,7 +213,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
     />
 
     <SharedModal v-model="isOpen">
-      <PartialsTradingBotsDerivativeStrategyDetail
+      <PartialsTradingBotsDerivativeStrategyDetails
         v-if="selectedStrategy"
         :active-strategy="selectedStrategy.strategy"
       />

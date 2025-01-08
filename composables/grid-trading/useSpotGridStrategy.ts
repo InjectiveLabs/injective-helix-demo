@@ -254,8 +254,11 @@ export const useSpotGridStrategies = (
 
       const isZeroPnl = pnl.isZero()
 
+      const isSpot = true
+
       return {
         pnl: pnl.toFixed(),
+        isSpot,
         market,
         botType,
         strategy,

@@ -241,7 +241,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = spotGridMarkets.find(
+  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
     (m) => m.slug === gridStrategyStore.spotMarket!.slug
   )
 

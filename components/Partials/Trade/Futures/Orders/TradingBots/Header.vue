@@ -3,6 +3,7 @@ import { SharedDropdownOption } from '@shared/types'
 import { PerpetualMarketCyTags, PerpOrdersTradingBotsView } from '@/types'
 
 const breakpoints = useBreakpointsTw()
+const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const lg = breakpoints['3xl']
@@ -10,6 +11,7 @@ const lg = breakpoints['3xl']
 const props = withDefaults(
   defineProps<{
     modelValue: PerpOrdersTradingBotsView
+    positionsLength: number
   }>(),
   {}
 )
@@ -24,18 +26,38 @@ const options = computed<SharedDropdownOption[]>(() => [
   {
     display: `activity.${PerpOrdersTradingBotsView.ActiveStrategies}`,
     value: PerpOrdersTradingBotsView.ActiveStrategies,
-    description: `${gridStrategyStore.activeDerivativeStrategies.length}`
+    description: `${gridStrategyStore.activeStrategies.length}`
   },
   {
     display: `activity.${PerpOrdersTradingBotsView.RemovedStrategies}`,
     value: PerpOrdersTradingBotsView.RemovedStrategies,
     description: `${gridStrategyStore.removedStrategies.length}`
+  },
+  {
+    display: `activity.${PerpOrdersTradingBotsView.Positions}`,
+    value: PerpOrdersTradingBotsView.Positions,
+    description: `${props.positionsLength}`
+  },
+  {
+    display: `activity.${PerpOrdersTradingBotsView.OpenOrders}`,
+    value: PerpOrdersTradingBotsView.OpenOrders,
+    description: `${derivativeStore.subaccountOrdersCount}`
+  },
+  {
+    display: `activity.${PerpOrdersTradingBotsView.OrderHistory}`,
+    value: PerpOrdersTradingBotsView.OrderHistory,
+    description: `${derivativeStore.subaccountOrderHistoryCount}`
+  },
+  {
+    display: `activity.${PerpOrdersTradingBotsView.TradeHistory}`,
+    value: PerpOrdersTradingBotsView.TradeHistory,
+    description: `${derivativeStore.subaccountTradesCount}`
   }
 ])
 </script>
 
 <template>
-  <div class="h-header border-b-2 flex sticky top-0 bg-coolGray-975 z-10">
+  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
     <AppTabSelect
       v-if="!lg"
       v-bind="{
@@ -47,7 +69,9 @@ const options = computed<SharedDropdownOption[]>(() => [
       <template #default="{ selected }">
         <button
           class="px-2"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdown)"
+          :data-cy="
+            dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdownOptions)
+          "
         >
           {{ $t(selected?.display || '') }}
           {{
@@ -76,15 +100,22 @@ const options = computed<SharedDropdownOption[]>(() => [
 
     <template v-else>
       <AppButtonSelect
-        v-for="value in Object.values(PerpOrdersTradingBotsView)"
+        v-for="{ value, display, description } in options"
         :key="value"
         v-model="view"
         v-bind="{ value }"
-        class="flex items-center px-4 tab-field"
-        active-classes="!text-white"
+        class="flex items-center text-coolGray-450 font-medium px-2 text-xs"
+        active-classes="text-white"
       >
-        {{ $t(`activity.${value}`) }}
+        {{ $t(display) }}
+        {{
+          Number.isInteger(Number(description)) && Number(description) > 0
+            ? `(${description})`
+            : ''
+        }}
       </AppButtonSelect>
     </template>
+
+    <div class="flex-1 lg:hidden" />
   </div>
 </template>

@@ -19,7 +19,6 @@ const emit = defineEmits<{
 }>()
 
 const lg = breakpoints['3xl']
-const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
 
@@ -28,7 +27,7 @@ const options = computed(() => {
     {
       display: `activity.${SpotOrdersTradingBotsView.ActiveStrategies}`,
       value: SpotOrdersTradingBotsView.ActiveStrategies,
-      description: `${gridStrategyStore.activeSpotStrategies.length}`
+      description: `${gridStrategyStore.activeStrategies.length}`
     },
     {
       display: `activity.${SpotOrdersTradingBotsView.RemovedStrategies}`,
@@ -95,23 +94,23 @@ const options = computed(() => {
       </template>
     </AppTabSelect>
 
-    <AppButtonSelect
-      v-for="{ value, display, description } in options"
-      v-else
-      :key="value"
-      v-model="view"
-      v-bind="{ value }"
-      class="flex items-center text-coolGray-450 font-medium"
-      :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
-      active-classes="text-white"
-    >
-      {{ $t(display) }}
-      {{
-        Number.isInteger(Number(description)) && Number(description) > 0
-          ? `(${description})`
-          : ''
-      }}
-    </AppButtonSelect>
+    <template v-else>
+      <AppButtonSelect
+        v-for="{ value, display, description } in options"
+        :key="value"
+        v-model="view"
+        v-bind="{ value }"
+        class="flex items-center text-coolGray-450 font-medium px-2 text-xs"
+        active-classes="text-white"
+      >
+        {{ $t(display) }}
+        {{
+          Number.isInteger(Number(description)) && Number(description) > 0
+            ? `(${description})`
+            : ''
+        }}
+      </AppButtonSelect>
+    </template>
 
     <div class="flex-1 lg:hidden" />
   </div>

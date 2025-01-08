@@ -69,18 +69,12 @@ function removeStrategy() {
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
-      <div
-        v-if="
-          new BigNumberInBase(strategy.pnl).isZero() ||
-          lastTradedPriceStatus.isLoading()
-        "
-        class="text-coolGray-400"
-      >
+      <div v-if="lastTradedPriceStatus.isLoading()" class="text-coolGray-400">
         &mdash;
       </div>
       <div
         v-else
-        class="font-bold"
+        class="font-bold flex items-center"
         :class="isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
         <span>{{ isPositivePnl ? '+' : '' }}</span>

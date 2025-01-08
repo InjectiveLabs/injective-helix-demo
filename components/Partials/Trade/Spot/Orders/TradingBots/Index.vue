@@ -65,10 +65,11 @@ onUnmounted(() => {
   <div>
     <PartialsTradeSpotOrdersTradingBotsHeader v-model="view" />
 
-    <PartialsTradeSpotOrdersTradingBotsRunning
+    <PartialsTradingBotsGridStrategiesRunningTable
       v-if="view === SpotOrdersTradingBotsView.ActiveStrategies"
     />
-    <PartialsTradeSpotOrdersTradingBotsHistory
+
+    <PartialsTradingBotsGridStrategiesHistoryTable
       v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
     />
 

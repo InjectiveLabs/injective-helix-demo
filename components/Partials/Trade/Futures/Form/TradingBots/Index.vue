@@ -22,7 +22,7 @@ const activeStrategy = computed(() =>
 
 <template>
   <div class="p-4">
-    <PartialsTradingBotsDerivativeStrategyDetail
+    <PartialsTradingBotsDerivativeStrategyDetails
       v-if="activeStrategy"
       :active-strategy="activeStrategy"
     />

@@ -189,8 +189,11 @@ export const useDerivativeGridStrategies = (
 
       const isZeroPnl = new BigNumberInBase(strategy.pnl || '0').isZero()
 
+      const isSpot = false
+
       return {
         pnl: strategy.pnl || '0',
+        isSpot,
         market,
         botType,
         strategy,

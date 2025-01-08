@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { PartialsTradeFuturesOrdersStandard } from '#components'
-import { TradingInterface } from '@/types'
+import { MarketKey, TradingInterface, UiDerivativeMarket } from '@/types'
 
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
+
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 </script>
 
 <template>
@@ -13,6 +15,7 @@ const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
     <PartialsTradeFuturesOrdersTradingBots
       v-else-if="tradingMode === TradingInterface.TradingBots"
+      v-bind="{ market }"
     />
   </div>
 </template>

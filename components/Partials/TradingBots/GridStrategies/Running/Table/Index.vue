@@ -1,70 +1,79 @@
 <script setup lang="ts">
+import { MarketType } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  STOP_REASON_MAP,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
-import {
-  StopReason,
-  TradeSubPage,
-  TradingInterface,
   DerivativeGridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn
+  GridStrategyTransformed,
+  PortfolioTradingBotsRunningTableColumn,
+  TradeSubPage,
+  TradingInterface
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
-const { subaccountPortfolioBalanceMap } = useBalance()
 const { lg } = useTwBreakpoints()
 const { t } = useLang()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
-const selectedStrategy = ref<DerivativeGridStrategyTransformed | null>(null)
+const selectedStrategy = ref<
+  GridStrategyTransformed | DerivativeGridStrategyTransformed | null
+>(null)
 
-const { formattedStrategies } = useDerivativeGridStrategies(
-  computed(() => gridStrategyStore.removedDerivativeStrategies),
+const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
+  computed(() => gridStrategyStore.activeSpotStrategies),
   subaccountPortfolioBalanceMap
 )
 
+const { formattedStrategies: derivativeFormattedStrategies } =
+  useDerivativeGridStrategies(
+    computed(() => gridStrategyStore.activeDerivativeStrategies),
+    subaccountPortfolioBalanceMap
+  )
+
 const columns = computed(() => [
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Time,
+    key: PortfolioTradingBotsRunningTableColumn.Time,
     label: t('sgt.time'),
     class: 'w-32'
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Market,
+    key: PortfolioTradingBotsRunningTableColumn.Market,
     label: t('sgt.market')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.LowerBound,
+    key: PortfolioTradingBotsRunningTableColumn.LowerBound,
     label: t('sgt.lowerBound')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.UpperBound,
+    key: PortfolioTradingBotsRunningTableColumn.UpperBound,
     label: t('sgt.upperBound')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalAmount,
+    key: PortfolioTradingBotsRunningTableColumn.TotalAmount,
     label: t('sgt.totalAmount')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.TotalProfit,
+    key: PortfolioTradingBotsRunningTableColumn.TotalProfit,
     label: t('sgt.totalProfit')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Duration,
+    key: PortfolioTradingBotsRunningTableColumn.Duration,
     label: t('sgt.duration')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.Details,
+    key: PortfolioTradingBotsRunningTableColumn.Details,
     label: t('sgt.details')
   },
   {
-    key: PortfolioSpotTradingBotsHistoryTableColumn.StopReason,
-    label: t('sgt.stopReason')
+    key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
+    label: t('sgt.removeStrategy')
   }
 ])
 
-function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
+function selectStrategy(
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
+) {
   selectedStrategy.value = strategy
   isOpen.value = true
 }
@@ -86,7 +95,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
           size: 'text-xs'
         }
       }"
-      :rows="formattedStrategies"
+      :rows="[...spotFormattedStrategies, ...derivativeFormattedStrategies]"
       :columns="columns"
     >
       <template #time-data="{ row }">
@@ -96,7 +105,7 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name: TradeSubPage.Spot,
+            name: row.isSpot ? TradeSubPage.Spot : TradeSubPage.Futures,
             query: {
               interface: TradingInterface.TradingBots
             },
@@ -135,8 +144,9 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
-          <AppUsdAmount
-            :decimal-places="4"
+          <SharedAmountFormatter
+            :decimal-places="2"
+            :max-decimal-places="3"
             :amount="row.totalAmount.toFixed()"
           />
         </div>
@@ -145,7 +155,11 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
       <template #totalProfit-data="{ row }">
         <div
           class="flex flex-col font-mono"
-          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+          :class="{
+            'text-green-500': row.isPositivePnl,
+            'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
+            'text-coolGray-500': row.isZeroPnl
+          }"
         >
           <div class="flex items-center gap-1">
             <span>{{ row.isPositivePnl ? '+' : '' }}</span>
@@ -175,10 +189,19 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
         </AppButton>
       </template>
 
-      <template #stopReason-data="{ row }">
-        <span v-if="row.stopReason">
-          {{ $t(STOP_REASON_MAP[row.stopReason as StopReason]) }}
-        </span>
+      <template #removeStrategy-data="{ row }">
+        <PartialsLiquidityBotsSpotCommonRemoveStrategy :strategy="row.strategy">
+          <template #default="{ removeStrategy, status }">
+            <AppButton
+              :is-loading="status.isLoading()"
+              variant="danger-ghost"
+              class="p-1"
+              @click="removeStrategy"
+            >
+              <UIcon :name="NuxtUiIcons.Trash" class="size-4 text-red-500" />
+            </AppButton>
+          </template>
+        </PartialsLiquidityBotsSpotCommonRemoveStrategy>
       </template>
 
       <template #empty-state>
@@ -187,9 +210,12 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
     </UTable>
 
     <template v-else>
-      <PartialsTradeFuturesOrdersTradingBotsHistoryMobileRow
-        v-for="strategy in formattedStrategies"
-        :key="strategy.marketId + strategy.strategy.createdAt"
+      <PartialsTradingBotsGridStrategiesRunningTableMobileRow
+        v-for="strategy in [
+          ...spotFormattedStrategies,
+          ...derivativeFormattedStrategies
+        ]"
+        :key="strategy.subaccountId + strategy.createdAt"
         :strategy="strategy"
         :columns="columns"
         @strategy:select="selectStrategy"
@@ -197,13 +223,24 @@ function selectStrategy(strategy: DerivativeGridStrategyTransformed) {
     </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.removedDerivativeStrategies.length === 0 && !lg"
-      :message="$t('sgt.noStrategies')"
+      v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
+      :message="$t('sgt.noActiveStrategies')"
     />
 
     <SharedModal v-model="isOpen">
+      <PartialsTradingBotsSpotStrategyDetails
+        v-if="
+          selectedStrategy &&
+          selectedStrategy.strategy.marketType === MarketType.Spot
+        "
+        :active-strategy="selectedStrategy.strategy"
+      />
+
       <PartialsTradingBotsDerivativeStrategyDetails
-        v-if="selectedStrategy"
+        v-else-if="
+          selectedStrategy &&
+          selectedStrategy.strategy.marketType === MarketType.Derivative
+        "
         :active-strategy="selectedStrategy.strategy"
       />
     </SharedModal>

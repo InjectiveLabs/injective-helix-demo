@@ -81,7 +81,11 @@ function removeStrategy() {
       <div
         v-else
         class="font-bold"
-        :class="isPositivePnl ? 'text-green-500' : 'text-red-500'"
+        :class="{
+          'text-green-500': isPositivePnl,
+          'text-red-500': !isPositivePnl && !strategy.isZeroPnl,
+          'text-coolGray-400': strategy.isZeroPnl
+        }"
       >
         <span>{{ isPositivePnl ? '+' : '' }}</span>
         <SharedAmountFormatter

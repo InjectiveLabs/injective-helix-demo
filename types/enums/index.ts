@@ -426,12 +426,11 @@ export enum PerpOrdersStandardView {
 
 export enum PerpOrdersTradingBotsView {
   ActiveStrategies = 'activeStrategies',
-  RemovedStrategies = 'removedStrategies'
-  // OpenPositions = 'openPositions',
-  // OpenOrders = 'openOrders',
-  // Triggers = 'triggers',
-  // OrderHistory = 'orderHistory',
-  // TradeHistory = 'tradeHistory'
+  RemovedStrategies = 'removedStrategies',
+  Positions = 'positions',
+  OpenOrders = 'openOrders',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory'
 }
 
 export enum PositionsFilterField {
