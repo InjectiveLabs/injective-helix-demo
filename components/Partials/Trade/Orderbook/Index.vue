@@ -46,7 +46,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
         :key="value"
         v-model="activeTab"
         :value="value"
-        class="text-xs font-medium text-coolGray-450 capitalize mx-3 py-2 border-b-2 border-solid border-transparent"
+        class="text-xs font-medium text-coolGray-450 capitalize mx-2 max-lg:mx-3 5xl:mx-3 py-2 border-b-2 border-solid border-transparent"
         active-classes="text-white border-blue-550"
       >
         {{ $t(`trade.${value}`) }}

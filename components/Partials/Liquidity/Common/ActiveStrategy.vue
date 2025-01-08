@@ -171,15 +171,13 @@ useIntervalFn(() => {
               amount: pnl.toFixed(),
               decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
-            class="text-white font-mono"
+            class="text-white"
           />
           <span class="text-xs align-text-bottom ml-1 text-coolGray-450">
             {{ market?.quoteToken.symbol }}
           </span>
         </span>
-        <span class="text-xs opacity-75 ml-1 font-mono">
-          ({{ percentagePnl }}%)
-        </span>
+        <span class="text-xs opacity-75 ml-1"> ({{ percentagePnl }}%) </span>
       </div>
     </div>
 
@@ -201,7 +199,7 @@ useIntervalFn(() => {
             amount: totalAmount.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
-          class="text-white font-mono"
+          class="text-white"
         />
         <span
           class="text-xs opacity-75 align-text-bottom ml-1 text-coolGray-450"
@@ -248,7 +246,7 @@ useIntervalFn(() => {
                 amount: currentBaseBalance.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
           <template #quote>
@@ -257,7 +255,7 @@ useIntervalFn(() => {
                 amount: currentQuoteBalance.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -269,7 +267,7 @@ useIntervalFn(() => {
                 amount: stopBaseQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
           <template #quote>
@@ -278,7 +276,7 @@ useIntervalFn(() => {
                 amount: stopQuoteQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -316,7 +314,7 @@ useIntervalFn(() => {
                   ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
                   : UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
           <template #quote>
@@ -327,7 +325,7 @@ useIntervalFn(() => {
                   ? UI_DEFAULT_MAX_DISPLAY_DECIMALS
                   : UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -354,7 +352,7 @@ useIntervalFn(() => {
                 amount: subscriptionBaseQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
           <template #quote>
@@ -363,7 +361,7 @@ useIntervalFn(() => {
                 amount: subscriptionQuoteQuantity.toFixed(),
                 decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
-              class="text-white font-mono"
+              class="text-white"
             />
           </template>
         </PartialsLiquidityCommonDetailsPair>
@@ -381,7 +379,7 @@ useIntervalFn(() => {
             amount: creationExecutionPrice.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
-          class="text-white font-mono"
+          class="text-white"
         />
         <span
           class="text-xs opacity-75 align-text-bottom ml-1 text-coolGray-450"
@@ -396,7 +394,7 @@ useIntervalFn(() => {
         <span>{{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </span>
-      <span class="text-white font-mono">
+      <span class="text-white">
         {{ activeStrategy.numberOfGridLevels }}
       </span>
     </div>

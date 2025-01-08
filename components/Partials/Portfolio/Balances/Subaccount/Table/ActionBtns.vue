@@ -30,7 +30,7 @@ function onTransfer() {
 
 <template>
   <div
-    class="flex col-span-2 items-center justify-end font-mono text-x max-lg:pl-4 lg:block"
+    class="flex col-span-2 items-center justify-end text-xs max-lg:pl-4 lg:block"
   >
     <div
       v-if="accountStore.isDefaultSubaccount"

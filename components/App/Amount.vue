@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  MAX_QUOTE_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -10,22 +13,30 @@ const props = withDefaults(
     showZeroAsEmDash?: boolean
   }>(),
   {
-    maxTrailingZeros: 3,
+    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     shouldTruncate: true,
     decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   }
 )
 
-const { valueToFixed: amountToFixed } = useSharedBigNumberFormatter(
-  computed(() => props.amount),
-  {
-    decimalPlaces: computed(() => props.decimalPlaces)
-  }
+const minimumAmount = computed(() =>
+  props.decimalPlaces === 0 ? '0' : `0.${'0'.repeat(props.decimalPlaces - 1)}1`
 )
+
+const { valueToFixed: amountToFixed, valueToBigNumber: amountToBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() => props.amount),
+    { decimalPlaces: computed(() => props.decimalPlaces) }
+  )
 </script>
 
 <template>
   <SharedAmountCollapsed
+    v-if="
+      amountToBigNumber.isZero() ||
+      amountToBigNumber.isNegative() ||
+      amountToBigNumber.gte(minimumAmount)
+    "
     class="inline-flex"
     v-bind="{
       shouldTruncate,
@@ -34,4 +45,5 @@ const { valueToFixed: amountToFixed } = useSharedBigNumberFormatter(
       amount: amountToFixed
     }"
   />
+  <span v-else> &lt; {{ minimumAmount }} </span>
 </template>

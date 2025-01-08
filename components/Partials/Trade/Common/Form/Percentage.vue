@@ -16,7 +16,7 @@ function setPercentage(percentage: string) {
     <AppButtonSelect
       v-for="percentage in [25, 50, 75, 100]"
       :key="percentage"
-      class="text-xs leading-none px-1 py-1.5 font-mono text-coolGray-450 hover:bg-brand-875 hover:text-white"
+      class="text-xs leading-none px-1 py-1.5 text-coolGray-450 hover:bg-brand-875 hover:text-white"
       v-bind="{ value: String(percentage), modelValue: '' }"
       :data-cy="`${dataCyTag(CommonCyTags.PercentageAmount)}-${percentage}`"
       @update:model-value="setPercentage"

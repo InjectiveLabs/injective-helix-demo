@@ -221,6 +221,26 @@ const currentPriceAnnotation = computed(() => {
   }
 })
 
+const chartMax = computed(() => {
+  const high = Math.max(...priceSeries.value.map(([_, high]) => high))
+
+  return Math.max(
+    upperTrailingBound.value.times(1.05).toNumber() ||
+      upperBound.value.times(1.05).toNumber(),
+    high
+  )
+})
+
+const chartMin = computed(() => {
+  const low = Math.min(...priceSeries.value.map(([_, low]) => low))
+
+  return Math.min(
+    lowerTrailingBound.value.times(0.95).toNumber() ||
+      lowerBound.value.times(0.95).toNumber(),
+    low
+  )
+})
+
 const options = computed<ApexOptions>(() => ({
   chart: {
     height: 500,
@@ -241,12 +261,8 @@ const options = computed<ApexOptions>(() => ({
   yaxis: {
     forceNiceScale: true,
 
-    max:
-      upperTrailingBound.value.times(1.05).toNumber() ||
-      upperBound.value.times(1.05).toNumber(),
-    min:
-      lowerTrailingBound.value.times(0.95).toNumber() ||
-      lowerBound.value.times(0.95).toNumber(),
+    max: chartMax.value,
+    min: chartMin.value,
     stepSize: 10,
     tooltip: {
       enabled: true

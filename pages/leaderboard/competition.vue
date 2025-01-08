@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedGetDuration } from '@shared/utils/time'
 import { format, isWithinInterval, addHours, isAfter } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
@@ -11,10 +11,10 @@ import { Modal } from '@/types'
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
-const { $onError } = useNuxtApp()
 
-const upcomingCampaignStatus = reactive(new Status(StatusType.Idle))
-const activeCampaignStatus = reactive(new Status(StatusType.Idle))
+const emit = defineEmits<{
+  'campaigns:fetch': []
+}>()
 
 const now = useNow({ interval: 1000 })
 
@@ -128,9 +128,6 @@ const isCampaignOver = computed(() => {
 })
 
 onMounted(() => {
-  fetchUpcomingCampaigns()
-  fetchActiveCampaigns()
-
   if (appStore.userState.modalsViewed.includes(Modal.LeaderboardTerms)) {
     return
   }
@@ -138,167 +135,92 @@ onMounted(() => {
   modalStore.openModal(Modal.LeaderboardTerms)
 })
 
-function fetchUpcomingCampaigns() {
-  upcomingCampaignStatus.setLoading()
-
-  campaignStore
-    .fetchUpcomingCampaigns()
-    .catch($onError)
-    .finally(() => upcomingCampaignStatus.setIdle())
-}
-
-function fetchActiveCampaigns() {
-  activeCampaignStatus.setLoading()
-
-  campaignStore
-    .fetchActiveCampaign()
-    .catch($onError)
-    .finally(() => activeCampaignStatus.setIdle())
-}
-
 watch(isCampaignStarted, (isStarted) => {
   if (isStarted) {
-    fetchActiveCampaigns()
+    emit('campaigns:fetch')
   }
 })
 </script>
 
 <template>
   <div>
-    <AppHocLoading
-      v-bind="{
-        isLoading:
-          upcomingCampaignStatus.isLoading() || activeCampaignStatus.isLoading()
-      }"
-    >
-      <div class="overflow-x-auto">
-        <PartialsLeaderboardCompetitionTeslaBanner
-          v-if="upcomingCampaign || campaignStore.activeCampaign"
-          v-bind="{
-            campaign: (campaignStore.activeCampaign ||
-              upcomingCampaign) as CampaignV2
-          }"
-        />
+    <div class="overflow-x-auto">
+      <PartialsLeaderboardCompetitionTeslaBanner
+        v-if="upcomingCampaign || campaignStore.activeCampaign"
+        v-bind="{
+          campaign: (campaignStore.activeCampaign ||
+            upcomingCampaign) as CampaignV2
+        }"
+      />
 
-        <!-- Active Campaign -->
-        <template v-if="campaignStore.activeCampaign && !isCampaignOver">
-          <Teleport to="#leaderboard-target" defer>
-            <CommonHeaderTooltip
-              :tooltip="$t('leaderboard.refresh')"
-              class="text-xs md:text-sm md:leading-4 text-coolGray-350 border-b cursor-pointer border-dashed border-coolGray-350"
-              is-not-styled
+      <!-- Active Campaign -->
+      <template v-if="campaignStore.activeCampaign && !isCampaignOver">
+        <Teleport to="#leaderboard-target" defer>
+          <CommonHeaderTooltip
+            :tooltip="$t('leaderboard.refresh')"
+            class="text-xs md:text-sm md:leading-4 text-coolGray-350 border-b cursor-pointer border-dashed border-coolGray-350"
+            is-not-styled
+          >
+            <i18n-t
+              tag="p"
+              keypath="leaderboard.competition.competitionDuration"
+              class="text-xs md:text-base leading-5 text-coolGray-350 flex items-center"
             >
-              <i18n-t
-                tag="p"
-                keypath="leaderboard.competition.competitionDuration"
-                class="text-xs md:text-base leading-5 text-coolGray-350 flex items-center"
-              >
-                <template #duration>
-                  <div
-                    class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
-                  >
-                    {{ timeLeftInActiveCampaign }}
-                  </div>
-                </template>
-              </i18n-t>
-            </CommonHeaderTooltip>
-          </Teleport>
+              <template #duration>
+                <div
+                  class="text-sm md:text-xl leading-6 font-bold text-white ml-2"
+                >
+                  {{ timeLeftInActiveCampaign }}
+                </div>
+              </template>
+            </i18n-t>
+          </CommonHeaderTooltip>
+        </Teleport>
 
-          <div class="w-full text-sm relative">
-            <PartialsLeaderboardCompetition
-              v-if="!isDuringFirstHourOfCampaign"
-              v-bind="{ campaign: campaignStore.activeCampaign }"
-            />
+        <div class="w-full text-sm relative">
+          <PartialsLeaderboardCompetition
+            v-if="!isDuringFirstHourOfCampaign"
+            v-bind="{ campaign: campaignStore.activeCampaign }"
+          />
 
-            <div
-              v-else
-              class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
-            >
-              {{
-                $t('leaderboard.competition.firstHourOfCampaign', {
-                  afterFirstHour: endOfCampaignFirstHourInUTC
-                })
-              }}
-            </div>
-          </div>
-        </template>
-
-        <!-- Upcoming Campaign -->
-        <div
-          v-else-if="countdownUntilCampaignStart"
-          class="w-full text-sm relative"
-        >
-          <div class="relative mb-20">
-            <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
-              {{ $t('leaderboard.competition.competitionBeginning') }}
-            </div>
-            <div
-              class="font-rubik text-2xl sm:text-[54px] sm:leading-[54px] tracking-[0.4px] competition-gradient-text"
-            >
-              {{ countdownUntilCampaignStart }}
-            </div>
+          <div
+            v-else
+            class="mb-20 text-2xl sm:text-3xl font-bold tracking-[0.4px]"
+          >
+            {{
+              $t('leaderboard.competition.firstHourOfCampaign', {
+                afterFirstHour: endOfCampaignFirstHourInUTC
+              })
+            }}
           </div>
         </div>
+      </template>
 
-        <!-- No Campaign -->
-        <div v-else class="w-full text-sm relative mb-20">
+      <!-- Upcoming Campaign -->
+      <div
+        v-else-if="countdownUntilCampaignStart"
+        class="w-full text-sm relative"
+      >
+        <div class="relative mb-20">
           <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
-            {{ $t('leaderboard.competition.noCompetition') }}
+            {{ $t('leaderboard.competition.competitionBeginning') }}
+          </div>
+          <div
+            class="font-rubik text-2xl sm:text-[54px] sm:leading-[54px] tracking-[0.4px] competition-gradient-text"
+          >
+            {{ countdownUntilCampaignStart }}
           </div>
         </div>
       </div>
-    </AppHocLoading>
+
+      <!-- No Campaign -->
+      <div v-else class="w-full text-sm relative mb-20">
+        <div class="text-2xl sm:text-3xl font-bold tracking-[0.4px] mb-2">
+          {{ $t('leaderboard.competition.noCompetition') }}
+        </div>
+      </div>
+    </div>
 
     <ModalsLeaderboardTerms v-if="campaignStore.activeCampaign" />
   </div>
 </template>
-
-<style>
-.competition-table,
-.competition-table-mobile {
-  @apply grid grid-cols-6 md:grid-cols-9 relative;
-
-  > :nth-child(1) {
-    @apply pl-3 xl:pl-7 text-left col-span-1 flex items-center;
-  }
-
-  > :nth-child(2) {
-    @apply text-left col-span-2 md:col-span-5 flex items-center;
-  }
-}
-
-.competition-table {
-  &.is-campaign-with-entries {
-    > :nth-child(3) {
-      @apply text-left col-span-2 mr-0.5 ml-0;
-    }
-
-    > :nth-child(4) {
-      @apply text-right md:text-left col-span-1 mr-0.5;
-    }
-  }
-
-  &:not(.is-campaign-with-entries) {
-    > :nth-child(3) {
-      @apply text-left col-span-2 mr-0.5 ml-40 2xl:ml-[16rem];
-    }
-
-    > :nth-child(4) {
-      @apply hidden;
-    }
-  }
-}
-
-.competition-table-mobile {
-  > :nth-child(3) {
-    @apply flex flex-col col-span-3 items-end;
-  }
-}
-
-.competition-gradient-text {
-  background: linear-gradient(124deg, #fff 35.59%, #76838e 99.6%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-</style>

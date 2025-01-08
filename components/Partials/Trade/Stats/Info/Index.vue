@@ -72,7 +72,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
       <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
-        class="flex items-center lg:flex-col lg:items-end lg:justify-between font-mono lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
+        class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
       >
         <div class="flex items-center justify-between">
           <div

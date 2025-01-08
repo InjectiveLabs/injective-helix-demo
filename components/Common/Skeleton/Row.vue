@@ -22,7 +22,7 @@ withDefaults(
     v-for="row in rows"
     :key="row"
     :style="{ height: height ? height + 'px' : 'auto' }"
-    class="flex p-2 text-xs font-mono"
+    class="flex p-2 text-xs"
   >
     <div
       v-for="column in columns"

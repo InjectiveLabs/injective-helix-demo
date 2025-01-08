@@ -268,7 +268,7 @@ export const useCampaignStore = defineStore('campaign', {
       const sharedWalletStore = useSharedWalletStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        accountAddress: sharedWalletStore.injectiveAddress,
+        accountAddress: sharedWalletStore.authZOrInjectiveAddress,
         contractAddress: ADMIN_UI_SMART_CONTRACT,
         toRoundId: roundId
       })
@@ -355,8 +355,12 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchPastCampaigns() {
       const campaignStore = useCampaignStore()
 
+      const PNL_LEADERBOARD_TYPE = 'pnl_leaderboard'
+
+      // todo: if we want to support a volume_leaderboard type competition, we can do another fetchCampaigns with volume_leaderboard type and combine the results
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        status: LeaderboardCampaignStatus.Inactive
+        status: LeaderboardCampaignStatus.Inactive,
+        type: PNL_LEADERBOARD_TYPE
       })
 
       if (campaigns.length === 0) {

@@ -221,7 +221,6 @@ function toggleStakingRow() {
         <AppAmount
           v-if="!row.isStakingRow"
           v-bind="{ amount: row[BalanceTableColumn.Available] }"
-          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
         />
       </template>
@@ -236,7 +235,6 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved]
           }"
-          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
       </template>
@@ -248,7 +246,6 @@ function toggleStakingRow() {
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UnrealizedPnl]
           }"
-          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
         />
       </template>
@@ -259,22 +256,17 @@ function toggleStakingRow() {
           v-bind="{
             amount: row[BalanceTableColumn.Total]
           }"
-          class="font-mono"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
       </template>
 
       <template #total-usd-data="{ row }">
-        <div
-          :class="{ 'text-coolGray-400': row.isStakingRow }"
-          class="font-mono"
-        >
+        <div :class="{ 'text-coolGray-400': row.isStakingRow }">
           <span>$ </span>
           <AppAmount
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd]
             }"
-            class="font-mono"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
           />
         </div>

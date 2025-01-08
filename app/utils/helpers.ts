@@ -8,10 +8,10 @@ import { sharedTokenClient } from '@shared/Service'
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
-import { IS_MAINNET } from '@shared/utils/constant'
 import {
   NETWORK,
   ENDPOINTS,
+  IS_MAINNET,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'

@@ -109,7 +109,8 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
     children: [
       {
         label: 'navigation.spot',
-        to: { name: PortfolioSubPage.OrdersSpot }
+        to: { name: PortfolioSubPage.OrdersSpot },
+        isExact: true
       },
       {
         label: 'navigation.derivative',

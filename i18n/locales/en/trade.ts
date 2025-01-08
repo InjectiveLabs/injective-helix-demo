@@ -32,6 +32,9 @@ export default {
         'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
       high: '24h High',
       low: '24h Low',
+      marketCap: 'Market Cap',
+      marketCapTooltip:
+        'The market cap is calculated by multiplying the current price by the current circulating supply. Some tokens on Injective have an infinite maximum supply.',
       // open_interest: 'Open Interest (USDT)',
       // open_interest_tooltip:
       //   'Total outstanding position of all traders of this contract',
@@ -541,6 +544,11 @@ export default {
           named('terms'),
           ' apply.'
         ])
+    },
+
+    ftmMarketBanner: {
+      settleMarket:
+        'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.'
     },
 
     equity: {

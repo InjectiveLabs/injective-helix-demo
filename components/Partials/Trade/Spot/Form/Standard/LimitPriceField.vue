@@ -74,7 +74,7 @@ onMounted(() => {
     <div class="flex justify-between items-center">
       <p class="field-label">{{ $t('trade.limitPrice') }}</p>
 
-      <div class="text-xs text-coolGray-450 font-mono">
+      <div class="text-xs text-coolGray-450">
         <span>~$</span>
         <AppUsdAmount
           v-bind="{
@@ -94,7 +94,7 @@ onMounted(() => {
     >
       <template #left>
         <div
-          class="text-xs text-coolGray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          class="text-xs text-coolGray-400 select-none hover:text-white flex cursor-pointer"
           @click="setMidLimitPrice"
         >
           {{ $t('trade.mid') }}

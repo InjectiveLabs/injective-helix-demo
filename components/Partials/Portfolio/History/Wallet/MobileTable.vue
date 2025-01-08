@@ -55,7 +55,7 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div class="flex items-center space-x-2">
-        <span class="font-mono">
+        <span>
           <AppAmount
             v-bind="{
               amount: transaction.amount.toFixed(),

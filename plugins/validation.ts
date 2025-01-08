@@ -348,7 +348,7 @@ export const defineGlobalRules = () => {
     (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
       const upperInBigNumber = new BigNumberInBase(upper)
       const lowerInBigNumber = new BigNumberInBase(lower)
-      const levelsInBigNumber = new BigNumberInBase(levels)
+      const levelsInBigNumber = new BigNumberInBase(levels).minus(1)
 
       const deltaPrice = upperInBigNumber
         .minus(lowerInBigNumber)

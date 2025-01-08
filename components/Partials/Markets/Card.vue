@@ -88,7 +88,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 
     <div class="flex items-center justify-start mt-4">
       <p
-        class="text-xl tracking-wide font-mono font-semibold flex items-center mr-2"
+        class="text-xl tracking-wide font-semibold flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
           'text-green-500 ':
@@ -102,7 +102,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       </p>
 
       <span
-        class="text-sm font-mono"
+        class="text-sm"
         data-cy="market-card-change_24h-text-content"
         :class="{
           'text-green-500': change.gt(0),
@@ -119,7 +119,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
+      <span class="">{{ volumeInUsdToFormat }}</span> USD
     </span>
   </NuxtLink>
 </template>
