@@ -28,7 +28,11 @@ const { formattedStrategies: strategies } = useDerivativeGridStrategies(
 const strategy = computed(() => strategies.value[0])
 
 const isPositivePnl = computed(() =>
-  new BigNumberInBase(strategy.value.pnl).gte(0)
+  new BigNumberInBase(strategy.value.pnl).gt(0)
+)
+
+const isZeroPnl = computed(() =>
+  new BigNumberInBase(strategy.value.pnl).isZero()
 )
 
 const percentagePnl = computed(() =>
@@ -69,15 +73,12 @@ function removeStrategy() {
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
       <div
-        v-if="new BigNumberInBase(strategy.pnl).isZero()"
-        class="text-coolGray-400"
-      >
-        &mdash;
-      </div>
-      <div
-        v-else
         class="font-bold"
-        :class="isPositivePnl ? 'text-green-500' : 'text-red-500'"
+        :class="{
+          'text-green-500': isPositivePnl,
+          'text-red-500': !isPositivePnl && !isZeroPnl,
+          'text-coolGray-500': isZeroPnl
+        }"
       >
         <span>{{ isPositivePnl ? '+' : '' }}</span>
         <SharedAmountFormatter

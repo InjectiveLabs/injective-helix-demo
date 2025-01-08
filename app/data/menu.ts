@@ -114,16 +114,6 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
       {
         label: 'navigation.derivative',
         to: { name: PortfolioSubPage.OrdersFutures }
-      },
-      {
-        label: 'navigation.spotGrid',
-        to: { name: PortfolioSubPage.OrdersSpotGrid },
-        isExact: true
-      },
-      {
-        label: 'navigation.futuresGrid',
-        to: { name: PortfolioSubPage.OrdersFuturesGrid },
-        isExact: true
       }
     ]
   },

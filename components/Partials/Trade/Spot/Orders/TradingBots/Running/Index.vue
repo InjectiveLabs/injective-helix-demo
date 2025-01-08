@@ -143,7 +143,11 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       <template #totalProfit-data="{ row }">
         <div
           class="flex flex-col font-mono"
-          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+          :class="{
+            'text-green-500': row.isPositivePnl,
+            'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
+            'text-coolGray-500': row.isZeroPnl
+          }"
         >
           <div class="flex items-center gap-1">
             <span>{{ row.isPositivePnl ? '+' : '' }}</span>

@@ -185,7 +185,9 @@ export const useDerivativeGridStrategies = (
         botType = BotType.FuturesGrid
       }
 
-      const isPositivePnl = new BigNumberInBase(strategy.pnl || '0').gte(0)
+      const isPositivePnl = new BigNumberInBase(strategy.pnl || '0').gt(0)
+
+      const isZeroPnl = new BigNumberInBase(strategy.pnl || '0').isZero()
 
       return {
         pnl: strategy.pnl || '0',
@@ -195,6 +197,7 @@ export const useDerivativeGridStrategies = (
         isActive,
         settleIn,
         stopLoss,
+        isZeroPnl,
         takeProfit,
         upperBound,
         lowerBound,
