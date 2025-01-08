@@ -33,6 +33,13 @@ const { formattedStrategies: derivativeFormattedStrategies } =
     subaccountPortfolioBalanceMap
   )
 
+const formattedStrategies = computed(() =>
+  [
+    ...spotFormattedStrategies.value,
+    ...derivativeFormattedStrategies.value
+  ].sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+)
+
 const columns = computed(() => [
   {
     key: PortfolioTradingBotsHistoryTableColumn.Time,
@@ -97,7 +104,7 @@ function selectStrategy(
           size: 'text-xs'
         }
       }"
-      :rows="[...spotFormattedStrategies, ...derivativeFormattedStrategies]"
+      :rows="formattedStrategies"
       :columns="columns"
     >
       <template #time-data="{ row }">
@@ -199,10 +206,7 @@ function selectStrategy(
 
     <template v-else>
       <PartialsTradingBotsGridStrategiesHistoryTableMobileRow
-        v-for="strategy in [
-          ...spotFormattedStrategies,
-          ...derivativeFormattedStrategies
-        ]"
+        v-for="strategy in formattedStrategies"
         :key="strategy.marketId + strategy.strategy.createdAt"
         :strategy="strategy"
         :columns="columns"
@@ -216,8 +220,13 @@ function selectStrategy(
     />
 
     <SharedModal v-model="isOpen">
+      <PartialsTradingBotsSpotStrategyDetails
+        v-if="selectedStrategy && selectedStrategy.isSpot"
+        :active-strategy="selectedStrategy.strategy"
+      />
+
       <PartialsTradingBotsDerivativeStrategyDetails
-        v-if="selectedStrategy"
+        v-if="selectedStrategy && !selectedStrategy.isSpot"
         :active-strategy="selectedStrategy.strategy"
       />
     </SharedModal>

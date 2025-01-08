@@ -31,6 +31,13 @@ const { formattedStrategies: derivativeFormattedStrategies } =
     subaccountPortfolioBalanceMap
   )
 
+const formattedStrategies = computed(() =>
+  [
+    ...spotFormattedStrategies.value,
+    ...derivativeFormattedStrategies.value
+  ].sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+)
+
 const columns = computed(() => [
   {
     key: PortfolioTradingBotsRunningTableColumn.Time,
@@ -95,7 +102,7 @@ function selectStrategy(
           size: 'text-xs'
         }
       }"
-      :rows="[...spotFormattedStrategies, ...derivativeFormattedStrategies]"
+      :rows="formattedStrategies"
       :columns="columns"
     >
       <template #time-data="{ row }">
@@ -211,10 +218,7 @@ function selectStrategy(
 
     <template v-else>
       <PartialsTradingBotsGridStrategiesRunningTableMobileRow
-        v-for="strategy in [
-          ...spotFormattedStrategies,
-          ...derivativeFormattedStrategies
-        ]"
+        v-for="strategy in formattedStrategies"
         :key="strategy.subaccountId + strategy.createdAt"
         :strategy="strategy"
         :columns="columns"
