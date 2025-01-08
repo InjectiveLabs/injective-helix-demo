@@ -45,13 +45,11 @@ const options = computed<SharedDropdownOption[]>(() => [
   },
   {
     display: `activity.${PerpOrdersTradingBotsView.OrderHistory}`,
-    value: PerpOrdersTradingBotsView.OrderHistory,
-    description: `${derivativeStore.subaccountOrderHistoryCount}`
+    value: PerpOrdersTradingBotsView.OrderHistory
   },
   {
     display: `activity.${PerpOrdersTradingBotsView.TradeHistory}`,
-    value: PerpOrdersTradingBotsView.TradeHistory,
-    description: `${derivativeStore.subaccountTradesCount}`
+    value: PerpOrdersTradingBotsView.TradeHistory
   }
 ])
 </script>

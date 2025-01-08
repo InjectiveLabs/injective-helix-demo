@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { BotType } from '~/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { BotType } from '@/types'
 
 enum ShowcaseTab {
   All = 'All',
@@ -15,14 +15,25 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
-const selectedTab = ref(ShowcaseTab.Spot)
+const selectedTab = ref(ShowcaseTab.All)
 const status = reactive(new Status(StatusType.Loading))
 const strategies = ref<TradingStrategy[]>([])
 
-const { formattedStrategies } = useSpotGridStrategies(
+const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
   computed(() => strategies.value),
   subaccountPortfolioBalanceMap
 )
+
+const { formattedStrategies: derivativeFormattedStrategies } =
+  useDerivativeGridStrategies(
+    computed(() => strategies.value),
+    subaccountPortfolioBalanceMap
+  )
+
+const formattedStrategies = computed(() => [
+  ...spotFormattedStrategies.value,
+  ...derivativeFormattedStrategies.value
+])
 
 const items = [
   {
@@ -33,10 +44,10 @@ const items = [
     label: t('tradingBots.spotGrid'),
     value: ShowcaseTab.Spot
   },
-  // {
-  //   label: t('tradingBots.futuresGrid'),
-  //   value: ShowcaseTab.Futures
-  // },
+  {
+    label: t('tradingBots.futuresGrid'),
+    value: ShowcaseTab.Futures
+  },
   {
     label: t('tradingBots.volumeBoost'),
     value: ShowcaseTab.Liquidity
@@ -51,25 +62,33 @@ const activeTab = computed({
 })
 
 const filteredStrategies = computed(() =>
-  formattedStrategies.value.filter((strategy) => {
-    if (selectedTab.value === ShowcaseTab.All) {
-      return true
-    }
+  formattedStrategies.value
+    .filter((strategy) => {
+      if (!strategy.isPositivePnl) {
+        return false
+      }
 
-    if (selectedTab.value === ShowcaseTab.Spot) {
-      return strategy.botType === BotType.SpotGrid
-    }
+      if (selectedTab.value === ShowcaseTab.All) {
+        return true
+      }
 
-    if (selectedTab.value === ShowcaseTab.Liquidity) {
-      return strategy.botType === BotType.LiquidityGrid
-    }
+      if (selectedTab.value === ShowcaseTab.Spot) {
+        return strategy.botType === BotType.SpotGrid
+      }
 
-    if (selectedTab.value === ShowcaseTab.Futures) {
-      return strategy.botType === BotType.FuturesGrid
-    }
+      if (selectedTab.value === ShowcaseTab.Liquidity) {
+        return strategy.botType === BotType.LiquidityGrid
+      }
 
-    return false
-  })
+      if (selectedTab.value === ShowcaseTab.Futures) {
+        return strategy.botType === BotType.FuturesGrid
+      }
+
+      return false
+    })
+    .sort((a, b) =>
+      new BigNumberInBase(b.percentagePnl).comparedTo(a.percentagePnl)
+    )
 )
 
 onMounted(() => {

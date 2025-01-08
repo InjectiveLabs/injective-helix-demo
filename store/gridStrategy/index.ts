@@ -161,7 +161,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         withPerformance: true,
         withTvl: true,
-        limit: 100
+        limit: 300
       })
 
       return strategies.filter(
