@@ -30,14 +30,15 @@ export interface UserBasedState {
   preferences: {
     isHideBalances: boolean
     authZManagement: boolean
+    futuresLeverage: string
     thousandsSeparator: boolean
     tradingLayout: TradingLayout
     subaccountManagement: boolean
     orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
-    tradingChartInterval: TradingChartInterval
-    skipExperimentalConfirmationModal: boolean
     showGridTradingSubaccounts: boolean
+    skipExperimentalConfirmationModal: boolean
+    tradingChartInterval: TradingChartInterval
   }
 }
 
@@ -76,16 +77,17 @@ const initialStateFactory = (): AppStoreState => ({
     favoriteMarkets: [],
 
     preferences: {
+      futuresLeverage: '1',
       isHideBalances: false,
       authZManagement: false,
       thousandsSeparator: true,
       subaccountManagement: false,
+      showGridTradingSubaccounts: true,
       skipTradeConfirmationModal: false,
       tradingLayout: TradingLayout.Left,
-      tradingChartInterval: TradingChartInterval.D,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
-      showGridTradingSubaccounts: true
+      tradingChartInterval: TradingChartInterval.D
     }
   }
 })
@@ -182,6 +184,18 @@ export const useAppStore = defineStore('app', {
         preferences: {
           ...appStore.userState.preferences,
           isHideBalances: !appStore.userState.preferences.isHideBalances
+        }
+      })
+    },
+
+    setFuturesLeverage(leverageAmount: string) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          futuresLeverage: leverageAmount
         }
       })
     },

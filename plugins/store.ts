@@ -14,12 +14,13 @@ import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 const stateToPersist = {
   app: {
     userState: {
-      favoriteMarkets: [],
-      bannersViewed: [],
       modalsViewed: [],
+      bannersViewed: [],
       dontShowAgain: [],
+      favoriteMarkets: [],
 
       preferences: {
+        futuresLeverage: '1',
         isHideBalances: false,
         authZManagement: false,
         thousandsSeparator: false,
