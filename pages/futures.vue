@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   IsSpotKey,
@@ -87,15 +88,16 @@ onWalletConnected(async () => {
 
 useHead({
   title: computed(() => {
-    const prefix = !derivativeLastTradedPriceInUsd.value.eq(0)
-      ? `$${derivativeLastTradedPriceInUsd.value.toFormat(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )} |`
+    const price = !derivativeLastTradedPriceInUsd.value.eq(0)
+      ? `$${roundDustAmount({
+          value: derivativeLastTradedPriceInUsd.value.toFixed(),
+          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        })} |`
       : ''
 
     const ticker = market.value ? `${market.value.ticker} |` : ''
 
-    return `${prefix} ${ticker} Helix`
+    return `${price} ${ticker} Helix`
   })
 })
 

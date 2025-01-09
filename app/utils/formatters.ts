@@ -208,3 +208,22 @@ export const calculateLeverage = (initialMarginRatio?: string) => {
     stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
   )
 }
+
+export const roundDustAmount = ({
+  value,
+  decimalPlaces
+}: {
+  value: string
+  decimalPlaces: number
+}) => {
+  const valueInBase = new BigNumberInBase(value)
+
+  if (valueInBase.gte(0.01)) {
+    return valueInBase.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)
+  }
+
+  const leadingZeros = value.match(/(0+\.0*)/)?.[0] || '0'
+  const dustAmount = value.slice(leadingZeros.length).slice(0, decimalPlaces)
+
+  return `${leadingZeros}${dustAmount}`
+}
