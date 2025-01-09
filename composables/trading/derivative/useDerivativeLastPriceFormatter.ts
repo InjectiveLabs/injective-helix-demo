@@ -1,12 +1,13 @@
-import { SharedMarketChange, SharedUiDerivativeTrade } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { SharedMarketChange, SharedUiDerivativeTrade } from '@shared/types'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket, UiMarketWithToken } from '@/types'
 
 export function useDerivativeLastPrice(
   market: Ref<UiMarketWithToken | undefined>
 ) {
+  const tokenStore = useTokenStore()
   const derivateStore = useDerivativeStore()
 
   const latestTrade = computed<SharedUiDerivativeTrade | undefined>(() => {
@@ -22,11 +23,10 @@ export function useDerivativeLastPrice(
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInBase(
-      new BigNumberInWei(latestTrade.value.executionPrice).toBase(
-        market.value.quoteToken.decimals
-      )
-    )
+    return sharedToBalanceInTokenInBase({
+      value: latestTrade.value.executionPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const changeInPercentage = computed(() => {
@@ -89,11 +89,22 @@ export function useDerivativeLastPrice(
     return marketMarkPrice.value || lastTradedPrice.value.toFixed()
   })
 
+  const lastTradedPriceInUsd = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return lastTradedPrice.value.times(
+      tokenStore.tokenUsdPrice(market.value.quoteToken)
+    )
+  })
+
   return {
     markPrice,
     marketMarkPrice,
     lastTradedPrice,
     changeInPercentage,
+    lastTradedPriceInUsd,
     lastTradedPriceChange
   }
 }
