@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MarketKey, IsSpotKey, UiSpotMarket, PortfolioStatusKey } from '@/types'
 
 const route = useRoute()
@@ -25,6 +26,9 @@ const market = computed(() =>
 )
 
 useSpotOrderbook(computed(() => market.value))
+
+const { lastTradedPriceInUsd: spotLastTradedPriceInUsd } =
+  useSpotLastPrice(market)
 
 onMounted(async () => {
   if (route.query.marketId) {
@@ -62,6 +66,20 @@ onMounted(async () => {
 
   derivativeStore.streamMarketsMarkPrices({
     marketIds: [...positionStore.positions.map(({ marketId }) => marketId)]
+  })
+})
+
+useHead({
+  title: computed(() => {
+    const prefix = !spotLastTradedPriceInUsd.value.eq(0)
+      ? `$${spotLastTradedPriceInUsd.value.toFormat(
+          UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        )} |`
+      : ''
+
+    const ticker = market.value ? `${market.value.ticker} |` : ''
+
+    return `${prefix} ${ticker} Helix`
   })
 })
 
