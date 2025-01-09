@@ -15,6 +15,7 @@ jobs:
     env:
       ## Public
       VITE_NAME: 'TESTNET - Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
+      VITE_PRODUCT: helix
       VITE_BASE_URL: https://testnet.helixapp.com
       VITE_ENV: testnet
       VITE_NETWORK: testnetSentry
