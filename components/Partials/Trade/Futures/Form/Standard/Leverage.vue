@@ -34,7 +34,9 @@ const maxLeverageAvailable = computed(() =>
 )
 
 const futuresLeveragePreference = computed(() => {
-  const leveragePreference = appStore.userState.preferences.futuresLeverage
+  const leveragePreference =
+    appStore.userState.preferences.futuresLeverage || '1'
+
   const futuresLeverage = Math.round(parseFloat(leveragePreference) * 100) / 100
 
   return futuresLeverage > Number(maxLeverageAvailable.value)
@@ -70,7 +72,6 @@ const leverageModel = computed({
   set: (value) => {
     leverage.value = value
     typed.value = value
-    appStore.setFuturesLeverage(value)
   }
 })
 
@@ -78,6 +79,7 @@ watch(
   () => typed.value,
   (value) => {
     leverage.value = value
+    appStore.setFuturesLeverage(value)
   }
 )
 

@@ -13,8 +13,8 @@ const props = withDefaults(
     showZeroAsEmDash?: boolean
   }>(),
   {
-    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     shouldTruncate: true,
+    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   }
 )
