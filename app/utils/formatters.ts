@@ -223,7 +223,11 @@ export const roundDustAmount = ({
   }
 
   const leadingZeros = value.match(/(0+\.0*)/)?.[0] || '0'
-  const dustAmount = value.slice(leadingZeros.length).slice(0, decimalPlaces)
+  const dustAmount = new BigNumberInBase(
+    `0.${value.slice(leadingZeros.length).slice(0, decimalPlaces)}`
+  )
+    .toFixed(decimalPlaces)
+    .replace('0.', '')
 
   return `${leadingZeros}${dustAmount}`
 }
