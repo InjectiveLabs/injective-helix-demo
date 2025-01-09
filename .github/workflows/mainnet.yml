@@ -14,6 +14,7 @@ jobs:
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
+      VITE_PRODUCT: helix
       VITE_BASE_URL: https://helixapp.com
       VITE_ENV: mainnet
       VITE_NETWORK: internal

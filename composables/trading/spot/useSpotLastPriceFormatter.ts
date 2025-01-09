@@ -1,10 +1,12 @@
 import { SharedMarketChange } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInWei } from '@shared/utils/formatter'
 import { UiMarketWithToken } from '@/types'
 
-export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
+export function useSpotLastPrice(market: Ref<UiMarketWithToken | undefined>) {
   const spotStore = useSpotStore()
+  const tokenStore = useTokenStore()
 
   const latestTrade = computed(() => {
     if (spotStore.trades.length === 0) {
@@ -15,15 +17,15 @@ export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
   })
 
   const lastTradedPrice = computed(() => {
-    if (!latestTrade.value) {
+    if (!market.value || !latestTrade.value) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInBase(
-      new BigNumberInBase(latestTrade.value.price).toWei(
+    return sharedToBalanceInWei({
+      value: latestTrade.value.price,
+      decimalPlaces:
         market.value.baseToken.decimals - market.value.quoteToken.decimals
-      )
-    )
+    })
   })
 
   const changeInPercentage = computed(() => {
@@ -64,9 +66,20 @@ export function useSpotLastPrice(market: Ref<UiMarketWithToken>) {
       : SharedMarketChange.Decrease
   })
 
+  const lastTradedPriceInUsd = computed(() => {
+    if (!market.value) {
+      return ZERO_IN_BASE
+    }
+
+    return lastTradedPrice.value.times(
+      tokenStore.tokenUsdPrice(market.value.quoteToken)
+    )
+  })
+
   return {
     lastTradedPrice,
     changeInPercentage,
+    lastTradedPriceInUsd,
     lastTradedPriceChange
   }
 }
