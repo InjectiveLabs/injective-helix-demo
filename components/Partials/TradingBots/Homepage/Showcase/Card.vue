@@ -23,7 +23,7 @@ const totalUsers = computed(
     )?.activeTradingStrategies || 0
 )
 const isPositivePnl = computed(() =>
-  new BigNumberInBase(props.strategy.percentagePnl).gt(0)
+  new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
 )
 </script>
 
@@ -70,7 +70,7 @@ const isPositivePnl = computed(() =>
         class="text-2xl font-semibold"
       >
         <span v-if="isPositivePnl"> + </span>
-        {{ strategy.percentagePnl }}
+        {{ props.strategy.strategy.pnlPerc }}
         %
       </p>
     </div>

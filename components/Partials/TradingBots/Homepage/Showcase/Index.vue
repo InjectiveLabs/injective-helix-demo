@@ -64,7 +64,7 @@ const activeTab = computed({
 const filteredStrategies = computed(() =>
   formattedStrategies.value
     .filter((strategy) => {
-      if (!strategy.isPositivePnl) {
+      if (new BigNumberInBase(strategy.strategy.pnlPerc).lte(0)) {
         return false
       }
 
@@ -87,7 +87,7 @@ const filteredStrategies = computed(() =>
       return false
     })
     .sort((a, b) =>
-      new BigNumberInBase(b.percentagePnl).comparedTo(a.percentagePnl)
+      new BigNumberInBase(b.strategy.pnlPerc).comparedTo(a.strategy.pnlPerc)
     )
 )
 
