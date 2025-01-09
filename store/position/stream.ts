@@ -36,37 +36,38 @@ export const streamAccountPositions = ({
           return
         }
 
-        if (positionExist) {
-          if (positionQuantity.lte(0)) {
-            // Position closed
-            const positions = positionStore.positions.filter(
-              (p) =>
-                !(
-                  p.marketId === position.marketId &&
-                  p.subaccountId === position.subaccountId
-                )
-            )
-
-            positionStore.$patch({
-              positions
-            })
-          } else {
-            // Position updated
-            const positions = positionStore.positions.map((p) => {
-              return p.marketId === position.marketId &&
-                p.subaccountId === position.subaccountId
-                ? position
-                : p
-            })
-
-            positionStore.$patch({
-              positions
-            })
-          }
-        } else if (positionQuantity.gt(0)) {
-          // Position added
-
+        // New Position
+        if (positionQuantity.gt(0) && !positionExist) {
           const positions = [position, ...positionStore.positions]
+
+          positionStore.$patch({
+            positions
+          })
+
+          return
+        }
+
+        // Position closed
+        if (positionQuantity.lte(0)) {
+          const positions = positionStore.positions.filter(
+            (p) =>
+              !(
+                p.marketId === position.marketId &&
+                p.subaccountId === position.subaccountId
+              )
+          )
+
+          positionStore.$patch({
+            positions
+          })
+        } else {
+          // Position updated
+          const positions = positionStore.positions.map((p) => {
+            return p.marketId === position.marketId &&
+              p.subaccountId === position.subaccountId
+              ? position
+              : p
+          })
 
           positionStore.$patch({
             positions

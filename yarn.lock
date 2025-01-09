@@ -2087,10 +2087,10 @@
   dependencies:
     browser-headers "^0.4.1"
 
-"@injectivelabs/indexer-proto-ts@1.13.4":
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.13.4.tgz#75f7d5caa23843b862fea6199975a88c5c88290e"
-  integrity sha512-4i7jc2LQd3KRziSUCjQOt2VfhRFlJVwuWDPjKnAJRYCnbaJeZRxtZOY+2kFNthXDV2dYJkoiu+mOUHuGvWUM7Q==
+"@injectivelabs/indexer-proto-ts@1.13.5":
+  version "1.13.5"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/indexer-proto-ts/-/indexer-proto-ts-1.13.5.tgz#1c5d43b7a274270ee919b973272b959bcf8553cd"
+  integrity sha512-Z/oSKRS2dNaMcC0zc5OYFpE2UVilDb7IzLhIisd0HBavZ9KU1UeD3WTTGUQjIT3qZv/mhOiTlCqTk+zhbdCWHQ==
   dependencies:
     "@injectivelabs/grpc-web" "^0.0.1"
     google-protobuf "^3.14.0"
@@ -2150,10 +2150,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.34-beta.21", "@injectivelabs/sdk-ts@^1.14.34-beta.21":
-  version "1.14.34-beta.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.34-beta.21.tgz#2c74adf3514ae143101d758f9a22a302f2c1f5de"
-  integrity sha512-CAqwOh2VW0T3adcaEbqodyUL7e0Et4XwyTDYBJKNNt40r9pEHfGn1ToKbIFjZF9fVu9j/zVVl/HDHu7WndEKvw==
+"@injectivelabs/sdk-ts@1.14.34-beta.22", "@injectivelabs/sdk-ts@^1.14.34-beta.22":
+  version "1.14.34-beta.22"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.34-beta.22.tgz#5af9ccd7867d6f9055983804404a8f565d7c7a1d"
+  integrity sha512-eKa+16VJNXjQiGbICA09B/cN3v2hJN4SF7sWNS7H67hr9KFhZvtD3Z9QGSTrbgcA9AnAFstyM/rLDBh/vs6ioA==
   dependencies:
     "@apollo/client" "^3.11.10"
     "@cosmjs/amino" "^0.32.3"
@@ -2166,7 +2166,7 @@
     "@injectivelabs/grpc-web" "^0.0.1"
     "@injectivelabs/grpc-web-node-http-transport" "^0.0.2"
     "@injectivelabs/grpc-web-react-native-transport" "^0.0.2"
-    "@injectivelabs/indexer-proto-ts" "1.13.4"
+    "@injectivelabs/indexer-proto-ts" "1.13.5"
     "@injectivelabs/mito-proto-ts" "1.13.2"
     "@injectivelabs/networks" "^1.14.34-beta.5"
     "@injectivelabs/olp-proto-ts" "1.13.1"
@@ -2234,10 +2234,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.34-beta.21":
-  version "1.14.34-beta.21"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.34-beta.21.tgz#4aff143c05e0b9487b4495dfab75b968fcfe8daa"
-  integrity sha512-FeWZdYv2sl1wD3rFTiLuqVHPKJIwlwvtARYzzfMehrLB1fDJwJnFq9SVJeEBG33Wh+vYDN6yziYnFUZ/ps0hVw==
+"@injectivelabs/wallet-ts@1.14.34-beta.22":
+  version "1.14.34-beta.22"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.34-beta.22.tgz#9a8fe4dd0fe7731408a2ae1865749a86b095e253"
+  integrity sha512-kc+0kZOukT8BbXzQDMmnxfcdmnPzPBWu1sLGvGagVv1H9tnfW3Dl9qyFiIe6gAG/I9+3BYVoB2rYr7MpLiTqwA==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2247,7 +2247,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.14.34-beta.5"
     "@injectivelabs/networks" "^1.14.34-beta.5"
-    "@injectivelabs/sdk-ts" "^1.14.34-beta.21"
+    "@injectivelabs/sdk-ts" "^1.14.34-beta.22"
     "@injectivelabs/ts-types" "^1.14.34-beta.2"
     "@injectivelabs/utils" "^1.14.34-beta.5"
     "@keplr-wallet/cosmos" "^0.12.71"
@@ -15891,16 +15891,16 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#c326badc307bfdb70161f6d1befb2ad0a27ee456"
+  resolved "https://github.com/InjectiveLabs/shared-packages#da86a582ebf9a36ddb6ded1b2e6bae6f71459c3a"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.34-beta.5"
     "@injectivelabs/networks" "1.14.34-beta.5"
     "@injectivelabs/nuxt-bugsnag" "0.0.12"
-    "@injectivelabs/sdk-ts" "1.14.34-beta.21"
+    "@injectivelabs/sdk-ts" "1.14.34-beta.22"
     "@injectivelabs/ts-types" "1.14.34-beta.2"
     "@injectivelabs/utils" "1.14.34-beta.5"
-    "@injectivelabs/wallet-ts" "1.14.34-beta.21"
+    "@injectivelabs/wallet-ts" "1.14.34-beta.22"
     "@nuxtjs/i18n" "8.5.5"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
