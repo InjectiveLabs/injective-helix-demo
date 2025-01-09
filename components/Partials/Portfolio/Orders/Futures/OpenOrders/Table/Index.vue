@@ -177,7 +177,6 @@ const columns = computed(() => {
               amount: row.price.toFixed(),
               decimalPlaces: row.priceDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -192,7 +191,6 @@ const columns = computed(() => {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -207,7 +205,6 @@ const columns = computed(() => {
               decimalPlaces: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -222,7 +219,6 @@ const columns = computed(() => {
               decimalPlaces: row.quantityDecimals,
               amount: row.filledQuantity.toFixed()
             }"
-            class="font-mono"
           />
         </div>
       </template>
@@ -239,7 +235,6 @@ const columns = computed(() => {
           <span
             v-else
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverage)"
-            class="font-mono"
           >
             {{ row.leverage.toFormat(2) }}&times;
           </span>
@@ -255,7 +250,6 @@ const columns = computed(() => {
                   amount: row.total.toFixed(),
                   decimalPlaces: row.priceDecimals
                 }"
-                class="font-mono"
               />
               <span class="text-coolGray-500 ml-2">
                 {{ row.market.quoteToken.symbol }}

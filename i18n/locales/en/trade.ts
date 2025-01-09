@@ -547,6 +547,11 @@ export default {
         ])
     },
 
+    ftmMarketBanner: {
+      settleMarket:
+        'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.'
+    },
+
     equity: {
       spot: 'Spot',
       perps: 'Perps',

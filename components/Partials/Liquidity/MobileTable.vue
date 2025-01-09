@@ -105,7 +105,6 @@ const filteredColumns = computed(() =>
             amount: campaign.totalRewardsInUsd.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
-          class="font-mono"
         />
         <span class="ml-1">USD</span>
       </p>
@@ -137,7 +136,6 @@ const filteredColumns = computed(() =>
             amount: campaign.marketVolumeInUsd.toFixed(),
             decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
-          class="font-mono"
         />
         <span class="ml-1">USD</span>
       </p>

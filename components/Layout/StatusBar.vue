@@ -4,12 +4,23 @@ import { TradeSubPage } from '@/types'
 const route = useRoute()
 const tokenStore = useTokenStore()
 
-const markets = computed(() =>
-  tokenStore.tradeableTokens
-    .map((token) => [token.symbol, tokenStore.tokenUsdPrice(token)])
+const markets = ref<[string, number][]>([])
+
+const isLoaded = computed(
+  () => Object.keys(tokenStore.tokenUsdPriceMap).length > 0
+)
+
+onMounted(async () => {
+  await until(isLoaded).toBe(true)
+
+  markets.value = tokenStore.tradeableTokens
+    .map<[string, number]>((token) => [
+      token.symbol,
+      tokenStore.tokenUsdPrice(token)
+    ])
     .filter(([_, price]) => Number(price) > 0.001)
     .sort(() => Math.random() - 0.5)
-)
+})
 </script>
 
 <template>
@@ -37,7 +48,7 @@ const markets = computed(() =>
       </div>
 
       <AppMarquee class="flex-1">
-        <div class="text-[10px] font-mono text-white space-x-2 flex">
+        <div class="text-[10px] text-white space-x-2 flex">
           <template v-for="([symbol, price], i) in markets" :key="symbol">
             <span v-if="i !== 0" class="text-coolGray-600">|</span>
 

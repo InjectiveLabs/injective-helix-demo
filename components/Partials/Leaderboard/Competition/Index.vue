@@ -18,7 +18,7 @@ const props = withDefaults(
 
 const status = reactive(new Status(StatusType.Loading))
 
-onWalletConnected(() => fetchLeaderboard())
+onWalletConnected(fetchLeaderboard)
 
 function fetchLeaderboard() {
   if (!props.campaign) {

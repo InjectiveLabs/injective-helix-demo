@@ -130,7 +130,7 @@ function selectStrategy() {
 
     <template #totalProfit-data>
       <div
-        class="flex flex-col font-mono"
+        class="flex flex-col"
         :class="strategy.isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
         <div class="flex items-center gap-1">

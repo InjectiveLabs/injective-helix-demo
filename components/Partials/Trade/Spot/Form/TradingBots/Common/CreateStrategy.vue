@@ -79,10 +79,7 @@ const baseDenomAmount = computed(() =>
 )
 
 const isDisabled = computed(() => {
-  if (
-    sharedWalletStore.isAutoSignEnabled ||
-    sharedWalletStore.isAuthzWalletConnected
-  ) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -301,13 +298,6 @@ async function createStrategy() {
       </span>
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
-
-    <span
-      v-if="sharedWalletStore.isAutoSignEnabled"
-      class="text-xs text-red-500"
-    >
-      {{ $t('common.notAvailableinAutoSignMode') }}
-    </span>
 
     <ModalsLiquiditySgtBalancedFees
       v-bind="{

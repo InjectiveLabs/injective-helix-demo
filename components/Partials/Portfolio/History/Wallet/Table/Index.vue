@@ -75,7 +75,7 @@ const columns = [
 
       <template #amount-data="{ row }">
         <div class="p-2 flex items-center space-x-2 justify-end">
-          <span class="font-mono">
+          <span>
             <AppAmount
               v-bind="{
                 amount: row.amount.toFixed(),

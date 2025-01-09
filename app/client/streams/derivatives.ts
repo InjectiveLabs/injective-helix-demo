@@ -1,7 +1,7 @@
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   IndexerGrpcOracleStream,
-  PositionsStreamCallback,
+  PositionsV2StreamCallback,
   IndexerGrpcDerivativesStream,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
@@ -189,9 +189,9 @@ export const streamSubaccountPositions = ({
   marketId?: string
   subaccountId?: string
   onResetCallback?: Function
-  callback: PositionsStreamCallback
+  callback: PositionsV2StreamCallback
 }) => {
-  const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
+  const streamFn = derivativesMarketStream.streamDerivativePositionsV2.bind(
     derivativesMarketStream
   )
 

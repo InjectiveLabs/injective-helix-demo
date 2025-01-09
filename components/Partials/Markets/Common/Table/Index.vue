@@ -146,7 +146,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
           :market="row.market"
           class="flex items-center"
         >
-          <div class="w-full flex justify-end truncate font-mono">
+          <div class="w-full flex justify-end truncate">
             <AppAmount
               :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
               v-bind="{
@@ -165,7 +165,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
         >
           <div
             :class="row.priceChangeClasses"
-            class="w-full flex items-center truncate font-mono justify-end"
+            class="w-full flex items-center truncate justify-end"
             :data-cy="dataCyTag(MarketCyTags.MarketPriceChange)"
           >
             {{ row.formattedChange }}%
@@ -178,7 +178,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
           :market="row.market"
           class="flex items-center"
         >
-          <div class="w-full flex items-center justify-end truncate font-mono">
+          <div class="w-full flex items-center justify-end truncate">
             <span :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
               <span>$</span>
               <AppUsdAmount

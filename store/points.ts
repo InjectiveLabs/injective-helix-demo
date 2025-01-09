@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { abacusGrpcApi } from '@/app/Services'
 import { AccountPoints, HistoricalPoints } from '@/types'
 
-const DAILY_LIMIT = 7
+const DAILY_LIMIT = 365
 const WEEKLY_LIMIT = 52
 
 type PointStoreState = {

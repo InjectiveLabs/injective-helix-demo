@@ -79,7 +79,7 @@ function toggle() {
           <div class="flex-1 mx-2" />
 
           <p
-            class="flex font-mono space-x-2 text-white"
+            class="flex space-x-2 text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsTotal)"
           >
             <span class="flex space-x-2">
@@ -102,7 +102,7 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.amount') }}</p>
           <div class="flex-1 mx-2" />
           <p
-            class="font-mono space-x-2 flex"
+            class="space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
           >
             <AppAmount
@@ -124,7 +124,7 @@ function toggle() {
           </p>
           <div class="flex-1 mx-2" />
           <p
-            class="font-mono space-x-2 flex text-white"
+            class="space-x-2 flex text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
           >
             <AppAmount
@@ -145,7 +145,7 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.price') }}</p>
           <div class="flex-1 mx-2" />
           <p
-            class="font-mono space-x-2 flex"
+            class="space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
             <AppAmount
@@ -169,7 +169,7 @@ function toggle() {
           <div class="flex-1 mx-2" />
           <p
             v-if="spotMarket"
-            class="font-mono text-white"
+            class="text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerTakerRate)"
           >
             {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
@@ -182,7 +182,7 @@ function toggle() {
             <div class="flex-1 mx-2" />
             <p
               v-if="spotMarket"
-              class="font-mono text-white"
+              class="text-white"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerFeeRate)"
             >
               {{ makerFeeRateToFixed }}%
@@ -194,7 +194,7 @@ function toggle() {
             <div class="flex-1 mx-2" />
             <p
               v-if="spotMarket"
-              class="font-mono gap-x-2 flex"
+              class="gap-x-2 flex"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsEstFeeRebate)"
             >
               <AppAmount

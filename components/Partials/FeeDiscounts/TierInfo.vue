@@ -84,9 +84,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
-          <b
-            class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
-          >
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
             {{ makerFeeDiscount }}%
           </b>
           {{ $t('feeDiscounts.off') }}
@@ -101,9 +99,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
-          <b
-            class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
-          >
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
             {{ takerFeeDiscount }}%
           </b>
           {{ $t('feeDiscounts.off') }}

@@ -221,25 +221,25 @@ onMounted(() => {
       <div class="flex justify-between">
         <p>{{ $t('sgt.lowerPrice') }}</p>
         <p class="text-coolGray-450">
-          <span class="font-mono text-white">{{ lowerPrice }}</span> USDT
+          <span class="text-white">{{ lowerPrice }}</span> USDT
         </p>
       </div>
 
       <div class="flex justify-between">
         <p>{{ $t('sgt.upperPrice') }}</p>
         <p class="text-coolGray-450">
-          <span class="font-mono text-white">{{ upperPrice }}</span> USDT
+          <span class="text-white">{{ upperPrice }}</span> USDT
         </p>
       </div>
 
       <div class="flex justify-between">
         <p>{{ $t('sgt.gridNumber') }}</p>
-        <p class="text-white font-mono">{{ grids }}</p>
+        <p class="text-white">{{ grids }}</p>
       </div>
 
       <div class="flex justify-between">
         <p>{{ $t('sgt.profitGrid') }}</p>
-        <p class="text-white font-mono">{{ profitPerGridToString }}%</p>
+        <p class="text-white">{{ profitPerGridToString }}%</p>
       </div>
     </div>
 

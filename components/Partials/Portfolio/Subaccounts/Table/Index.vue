@@ -67,7 +67,6 @@ const columns = [
           v-bind="{
             amount: row.balance.toFixed()
           }"
-          class="font-mono"
         />
       </div>
     </template>

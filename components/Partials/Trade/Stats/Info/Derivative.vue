@@ -152,10 +152,7 @@ useIntervalFn(() => {
       </CommonHeaderTooltip>
     </template>
 
-    <div
-      v-if="!fundingRateToBigNumber.isNaN()"
-      class="lg:text-right font-mono block"
-    >
+    <div v-if="!fundingRateToBigNumber.isNaN()" class="lg:text-right block">
       <AppTooltip
         :content="`${$t('trade.stats.annualized')}: ${
           fundingRateToBigNumber.gt(0) ? '+' : ''
@@ -179,11 +176,11 @@ useIntervalFn(() => {
         </span>
       </AppTooltip>
     </div>
-    <span v-else class="lg:text-right font-mono block"> &mdash; </span>
+    <span v-else class="lg:text-right block"> &mdash; </span>
   </PartialsTradeStatsHeaderItem>
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.next_funding')">
-    <p class="font-mono lg:text-right">
+    <p class="lg:text-right">
       {{ countdown }}
     </p>
   </PartialsTradeStatsHeaderItem>
