@@ -15,8 +15,9 @@ import {
   Modal,
   NoticeBanner,
   TradingLayout,
+  DontShowAgain,
   OrderbookLayout,
-  DontShowAgain
+  TradingChartInterval
 } from '@/types'
 
 export interface UserBasedState {
@@ -37,6 +38,7 @@ export interface UserBasedState {
     skipTradeConfirmationModal: boolean
     showGridTradingSubaccounts: boolean
     skipExperimentalConfirmationModal: boolean
+    tradingChartInterval: TradingChartInterval
   }
 }
 
@@ -75,16 +77,17 @@ const initialStateFactory = (): AppStoreState => ({
     favoriteMarkets: [],
 
     preferences: {
+      futuresLeverage: '1',
       isHideBalances: false,
       authZManagement: false,
-      futuresLeverage: '1',
       thousandsSeparator: true,
       subaccountManagement: false,
+      showGridTradingSubaccounts: true,
       skipTradeConfirmationModal: false,
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
-      showGridTradingSubaccounts: true,
-      orderbookLayout: OrderbookLayout.Default
+      orderbookLayout: OrderbookLayout.Default,
+      tradingChartInterval: TradingChartInterval.D
     }
   }
 })

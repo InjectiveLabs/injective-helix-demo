@@ -9,7 +9,7 @@ import { StatusType } from '@injectivelabs/utils'
 import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -28,7 +28,8 @@ const stateToPersist = {
         skipTradeConfirmationModal: false,
         tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
-        orderbookLayout: OrderbookLayout.Default
+        orderbookLayout: OrderbookLayout.Default,
+        tradingChartInterval: TradingChartInterval.D
       }
     }
   },
