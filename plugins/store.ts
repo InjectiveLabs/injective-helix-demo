@@ -9,7 +9,7 @@ import { StatusType } from '@injectivelabs/utils'
 import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -20,14 +20,15 @@ const stateToPersist = {
       dontShowAgain: [],
 
       preferences: {
+        isHideBalances: false,
+        authZManagement: false,
+        thousandsSeparator: false,
+        subaccountManagement: false,
         skipTradeConfirmationModal: false,
+        tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
-        tradingLayout: TradingLayout.Left,
-        subaccountManagement: false,
-        authZManagement: false,
-        isHideBalances: false,
-        thousandsSeparator: false
+        tradingChartInterval: TradingChartInterval.D
       }
     }
   },

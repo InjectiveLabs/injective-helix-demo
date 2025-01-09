@@ -15,8 +15,9 @@ import {
   Modal,
   NoticeBanner,
   TradingLayout,
+  DontShowAgain,
   OrderbookLayout,
-  DontShowAgain
+  TradingChartInterval
 } from '@/types'
 
 export interface UserBasedState {
@@ -34,6 +35,7 @@ export interface UserBasedState {
     subaccountManagement: boolean
     orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
+    tradingChartInterval: TradingChartInterval
     skipExperimentalConfirmationModal: boolean
     showGridTradingSubaccounts: boolean
   }
@@ -80,6 +82,7 @@ const initialStateFactory = (): AppStoreState => ({
       subaccountManagement: false,
       skipTradeConfirmationModal: false,
       tradingLayout: TradingLayout.Left,
+      tradingChartInterval: TradingChartInterval.D,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
       showGridTradingSubaccounts: true
