@@ -14,7 +14,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   ready: []
-  'update:interval': [value: TradingChartInterval]
+  'interval:change': [value: TradingChartInterval]
 }>()
 
 const containerId = `tv_chart_container-${window.crypto
@@ -77,7 +77,7 @@ onMounted(() => {
           return
         }
 
-        emit('update:interval', interval)
+        emit('interval:change', interval)
       })
     })
   })

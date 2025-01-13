@@ -5,6 +5,7 @@ import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { calculateLeverage } from '@/app/utils/formatters'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {
   MarketKey,
   UiDerivativeMarket,
@@ -106,12 +107,12 @@ const maxLeverageAllowed = computed(() => {
 
 const { value: leverage, errorMessage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
-  initialValue: futuresLeveragePreference.value || '1',
+  initialValue: futuresLeveragePreference.value || UI_DEFAULT_LEVERAGE,
   dynamicRule: computed(() => `maxLeverage:${maxLeverageAllowed.value}`)
 })
 
 function onBlur() {
-  typed.value = leverage.value || '1'
+  typed.value = leverage.value || UI_DEFAULT_LEVERAGE
 
   onMouseUp()
 }
@@ -134,7 +135,7 @@ function onMouseUp() {
 watch(
   () => derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly],
   () => {
-    leverageModel.value = futuresLeveragePreference.value || '1'
+    leverageModel.value = futuresLeveragePreference.value || UI_DEFAULT_LEVERAGE
   }
 )
 

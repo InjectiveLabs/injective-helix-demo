@@ -64,7 +64,7 @@ function onIntervalChange(value: TradingChartInterval) {
         "
         :datafeed-endpoint="datafeedEndpoint"
         @ready="onReady"
-        @update:interval="onIntervalChange"
+        @interval:change="onIntervalChange"
       />
     </ClientOnly>
   </div>
