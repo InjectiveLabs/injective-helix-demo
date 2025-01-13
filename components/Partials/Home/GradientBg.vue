@@ -2,11 +2,16 @@
 //
 </script>
 <template>
-  <video
-    class="fixed inset-0 w-full h-full object-cover brightness-75"
-    src="/helixbg_new.webm"
-    autoplay
-    loop
-    muted
-  />
+  <div class="relative -mt-[56px]">
+    <video
+      class="absolute inset-0 w-full h-screen object-cover"
+      src="/helixbg_new.webm"
+      autoplay
+      loop
+      muted
+    />
+    <div
+      class="absolute inset-0 bg-gradient-to-t w-full h-screen from-[#00001A] to-transparent"
+    />
+  </div>
 </template>

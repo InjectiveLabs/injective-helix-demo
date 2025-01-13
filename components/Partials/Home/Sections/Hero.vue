@@ -22,8 +22,8 @@ onMounted(() => {
       gsap.to(text as HTMLElement, {
         scrollTrigger: {
           trigger: text as HTMLElement,
-          start: '50px 40%',
-          end: 'bottom 0%',
+          start: 'clamp(50px 40%)',
+          end: 'clamp(bottom 0%)',
           scrub: 2
         },
         y: arr.length * -40,
@@ -58,19 +58,18 @@ function onWalletConnect() {
     class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section"
   >
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
-      <h1
-        id="hero-title"
-        class="text-2xl lg:text-6xl font-semibold gsap-text mb-5"
-      >
-        <span class="">
+      <h1 id="hero-title" class="font-semibold gsap-text mb-5">
+        <p class="text-2xl lg:text-7xl">
           {{ $t('home.openFinance') + ' ' }}
-        </span>
-        <span class="relative text-blue-500">
+        </p>
+        <p
+          class="text-blue-500 text-2xl lg:text-[128px] font-bold leading-none"
+        >
           {{ $t('home.reimagined') }}
-        </span>
+        </p>
       </h1>
 
-      <p id="hero-description" class="text-lg gsap-text">
+      <p id="hero-description" class="text-lg font-semibold gsap-text">
         {{ $t('home.description') }}
       </p>
 
@@ -78,13 +77,13 @@ function onWalletConnect() {
         <NuxtLink
           :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
         >
-          <AppButton class="lg:py-4 w-full">
+          <AppButton class="w-full">
             {{ $t('home.startTrading') }}
           </AppButton>
         </NuxtLink>
 
         <AppButton
-          class="lg:py-4 w-full"
+          class="w-full"
           variant="primary-outline"
           @click="openDepositQrModal"
         >

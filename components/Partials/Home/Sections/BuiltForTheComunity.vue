@@ -41,6 +41,12 @@ onMounted(() => {
 
 <template>
   <div class="relative pb-32">
+    <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
+    <img
+      src="/svg/blurs/blur-1.svg"
+      class="absolute -top-20 left-1/2 blur-xl"
+    />
+
     <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
@@ -64,8 +70,12 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex justify-center font-semibold max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8"
+      class="flex justify-center font-semibold max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8 relative"
     >
+      <img
+        src="/svg/blurs/blur-1.svg"
+        class="absolute -top-52 -left-0 rotate-180 blur-xl"
+      />
       <div
         class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
       >
