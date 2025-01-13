@@ -146,6 +146,12 @@ function onChange() {
   @apply left-[95%];
 }
 
+@screen xs {
+  .leverage-breakpoint.breakpoint--5 {
+    @apply left-[97%];
+  }
+}
+
 @screen md {
   .leverage-breakpoint.breakpoint--5 {
     @apply left-[98%];
@@ -153,6 +159,12 @@ function onChange() {
 }
 
 @screen lg {
+  .leverage-breakpoint.breakpoint--5 {
+    @apply left-[93%];
+  }
+}
+
+@screen 4xl {
   .leverage-breakpoint.breakpoint--5 {
     @apply left-[95%];
   }

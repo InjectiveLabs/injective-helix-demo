@@ -157,16 +157,6 @@ export default function ({
     },
     time_frames: [
       {
-        text: '1D',
-        resolution: '1D' as ResolutionString,
-        description: '1 Day'
-      },
-      {
-        text: '1W',
-        resolution: '1W' as ResolutionString,
-        description: '1 Week'
-      },
-      {
         text: '5m',
         resolution: '5' as ResolutionString,
         description: '5 Minutes'
@@ -175,6 +165,16 @@ export default function ({
         text: '1H',
         resolution: '60' as ResolutionString,
         description: '1 Hour'
+      },
+      {
+        text: '1D',
+        resolution: '1D' as ResolutionString,
+        description: '1 Day'
+      },
+      {
+        text: '1W',
+        resolution: '1W' as ResolutionString,
+        description: '1 Week'
       }
     ],
     favorites: {

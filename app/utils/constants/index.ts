@@ -21,6 +21,8 @@ export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
 export const UI_DEFAULT_PRICE_MIN_DECIMALS = 10
 export const UI_DEFAULT_PRICE_MAX_DECIMALS = 0.00001
 
+export const UI_DEFAULT_LEVERAGE = '1'
+
 export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
 export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
