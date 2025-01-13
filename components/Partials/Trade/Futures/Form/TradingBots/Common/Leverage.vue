@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
+  UI_DEFAULT_LEVERAGE,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import {
   MarketKey,
-  DerivativeGridTradingField,
-  UiDerivativeMarket
+  UiDerivativeMarket,
+  DerivativeGridTradingField
 } from '@/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { value: leverageValue } = useStringField({
   name: DerivativeGridTradingField.Leverage,
   rule: '',
-  initialValue: '1',
+  initialValue: UI_DEFAULT_LEVERAGE,
   dynamicRule: computed(() => `requiredSgt`)
 })
 
@@ -28,7 +31,8 @@ watch(
   leverage,
   (leverage) => {
     if (leverage === 0) {
-      leverageValue.value = '1'
+      leverageValue.value = UI_DEFAULT_LEVERAGE
+
       return
     }
 

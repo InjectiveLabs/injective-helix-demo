@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 import { cva } from 'class-variance-authority'
 import type { VariantProps } from 'class-variance-authority'
-import { twMerge } from 'tailwind-merge'
-import { ClassValue, clsx } from 'clsx'
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const button = cva(
@@ -67,32 +67,36 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
-    size?: ButtonProps['size']
-    class?: ClassValue | ClassValue[]
     status?: Status
-    variant?: ButtonProps['variant']
     tooltip?: string
     disabled?: boolean
     isLoading?: boolean
+    size?: ButtonProps['size']
+    variant?: ButtonProps['variant']
+    class?: ClassValue | ClassValue[]
   }>(),
   {
     size: 'md',
-    class: () => [],
-    status: () => new Status(StatusType.Idle),
-    variant: 'primary',
     tooltip: '',
+    class: () => [],
     disabled: false,
-    isLoading: false
+    isLoading: false,
+    variant: 'primary',
+    status: () => new Status(StatusType.Idle)
   }
 )
 </script>
 
 <template>
-  <SharedTooltip
-    v-bind="{
-      disabled: !tooltip
+  <UTooltip
+    :prevent="!tooltip && !$slots.content"
+    :ui="{
+      base: 'text-sm',
+      wrapper: 'relative block',
+      width: 'w-fit',
+      background: 'dark:bg-black/80'
     }"
-    :triggers="['hover', 'click']"
+    :popper="{ placement: 'top', offsetDistance: 5 }"
   >
     <button
       :class="twMerge(button({ size, variant }), clsx(props.class))"
@@ -105,10 +109,10 @@ const props = withDefaults(
       <slot v-else />
     </button>
 
-    <template #content>
+    <template #text>
       <slot name="content">
         <span>{{ tooltip }}</span>
       </slot>
     </template>
-  </SharedTooltip>
+  </UTooltip>
 </template>
