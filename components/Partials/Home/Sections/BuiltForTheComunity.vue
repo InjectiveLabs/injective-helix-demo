@@ -40,7 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32 snap-start">
+  <div class="relative pb-32">
     <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
@@ -57,8 +57,7 @@ onMounted(() => {
             aspectRatio: 1264 / 828
           }"
           src="/images/helix-platform-long.webp"
-          class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
-          s
+          class="max-w-[500px] 2xl:max-w-[800px] bg-black mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
           alt=""
         />
       </div>
