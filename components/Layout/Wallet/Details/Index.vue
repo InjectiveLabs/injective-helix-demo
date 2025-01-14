@@ -11,7 +11,8 @@ const router = useRouter()
 const walletStore = useWalletStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
-const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
+const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
+  useBalance()
 
 const formattedAddress = computed(() =>
   formatWalletAddress(
@@ -118,7 +119,7 @@ function disconnect() {
                 {{ $t('portfolio.totalValue') }}
               </p>
 
-              <p class="text-2xl font-semibold my-2">
+              <p class="text-2xl font-semibold mb-2 mt-0">
                 <span>$</span>
                 <AppUsdAmount
                   v-bind="{
@@ -127,6 +128,23 @@ function disconnect() {
                   }"
                 />
               </p>
+
+              <div class="flex items-center space-x-1 text-sm">
+                <UIcon
+                  :name="NuxtUiIcons.PottedPlant"
+                  class="max-sm:h-4 max-sm:w-4 h-5 w-5 hidden sm:block"
+                />
+                <div>{{ $t('account.staked') }}:</div>
+                <div>
+                  <span>$</span>
+                  <AppUsdAmount
+                    class="leading-5"
+                    v-bind="{
+                      amount: stakedAmountInUsd.toFixed()
+                    }"
+                  />
+                </div>
+              </div>
 
               <div class="mt-6">
                 <AppButton class="w-full" size="md" @click="openDepositQRModal">
