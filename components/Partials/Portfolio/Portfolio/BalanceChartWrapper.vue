@@ -5,21 +5,14 @@ import { NuxtUiIcons } from '@shared/types'
 const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
-const {
-  stakedAmountInUsd,
-  showUnverifiedAssets,
-  aggregatedSubaccountTotalBalanceInUsd
-} = useBalance()
 const { $onError } = useNuxtApp()
+const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } = useBalance(
+  { showUnverifiedAssetsOverride: true }
+)
 
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  /** Chart value includes unverified assets, so we want our portfolio value
-   * to include unverified assets as well
-   **/
-  showUnverifiedAssets.value = true
-
   status.setLoading()
 
   leaderboardStore
@@ -28,9 +21,7 @@ onMounted(() => {
     .finally(() => status.setIdle())
 })
 
-onUnmounted(() => {
-  showUnverifiedAssets.value = false
-})
+const isProfit = computed(() => percentageChange.value > 0)
 
 const balanceSeries = computed(() =>
   leaderboardStore.historicalBalance.map((item) => [item.time, item.value])
@@ -56,8 +47,6 @@ const percentageChange = computed(() => {
     .times(100)
     .toNumber()
 })
-
-const isProfit = computed(() => percentageChange.value > 0)
 </script>
 
 <template>
