@@ -5,12 +5,21 @@ import { NuxtUiIcons } from '@shared/types'
 const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
-const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
+const {
+  stakedAmountInUsd,
+  showUnverifiedAssets,
+  aggregatedSubaccountTotalBalanceInUsd
+} = useBalance()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
+  /** Chart value includes unverified assets, so we want our portfolio value
+   * to include unverified assets as well
+   **/
+  showUnverifiedAssets.value = true
+
   status.setLoading()
 
   leaderboardStore
@@ -19,9 +28,20 @@ onMounted(() => {
     .finally(() => status.setIdle())
 })
 
+onUnmounted(() => {
+  showUnverifiedAssets.value = false
+})
+
 const balanceSeries = computed(() =>
   leaderboardStore.historicalBalance.map((item) => [item.time, item.value])
 )
+
+const { valueToBigNumber: aggregatedSubaccountTotalWithoutStaking } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      aggregatedSubaccountTotalBalanceInUsd.value.minus(stakedAmountInUsd.value)
+    )
+  )
 
 const percentageChange = computed(() => {
   const oldBalance = balanceSeries.value[0]
@@ -30,16 +50,14 @@ const percentageChange = computed(() => {
     return 0
   }
 
-  return aggregatedSubaccountTotalBalanceInUsd.value
+  return aggregatedSubaccountTotalWithoutStaking.value
     .minus(oldBalance[1])
     .dividedBy(oldBalance[1])
     .times(100)
     .toNumber()
 })
 
-const isProfit = computed(() => {
-  return percentageChange.value > 0
-})
+const isProfit = computed(() => percentageChange.value > 0)
 </script>
 
 <template>
@@ -53,15 +71,40 @@ const isProfit = computed(() => {
         <div class="flex items-center space-x-2">
           <div class="flex flex-col">
             <div class="flex items-center space-x-2">
-              <span class="lg:text-2xl">$</span>
-              <CommonSkeletonSubaccountAmount>
-                <CommonNumberCounter
-                  v-bind="{
-                    value: aggregatedSubaccountTotalBalanceInUsd.toNumber() || 0
-                  }"
-                  :size="isMobile ? 16 : 24"
+              <div class="flex space-x-1 items-center">
+                <span class="lg:text-2xl">$</span>
+                <CommonSkeletonSubaccountAmount>
+                  <CommonNumberCounter
+                    v-bind="{
+                      value:
+                        aggregatedSubaccountTotalWithoutStaking.toNumber() || 0
+                    }"
+                    :size="isMobile ? 16 : 24"
+                  />
+                </CommonSkeletonSubaccountAmount>
+              </div>
+
+              <div class="h-1 w-1 rounded-full bg-coolGray-300" />
+
+              <div class="space-x-1 flex items-center text-xs sm:text-sm">
+                <UIcon
+                  :name="NuxtUiIcons.PottedPlant"
+                  class="max-sm:h-4 max-sm:w-4 h-5 w-5 hidden sm:block"
                 />
-              </CommonSkeletonSubaccountAmount>
+
+                <div>{{ $t('account.staked') }}:</div>
+                <div>
+                  <span>$</span>
+                  <CommonSkeletonSubaccountAmount>
+                    <AppUsdAmount
+                      class="leading-5"
+                      v-bind="{
+                        amount: stakedAmountInUsd.toFixed()
+                      }"
+                    />
+                  </CommonSkeletonSubaccountAmount>
+                </div>
+              </div>
 
               <button
                 class="text-coolGray-500 flex justify-center cursor-pointer"
