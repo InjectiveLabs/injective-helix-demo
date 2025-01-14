@@ -17,7 +17,11 @@ const { value: sideValue } = useStringField({
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector :include-bots-subaccounts="appStore.devMode" />
+    <CommonSubaccountTabSelector
+      :include-bots-subaccounts="
+        appStore.userState.preferences.showGridTradingSubaccounts
+      "
+    />
 
     <CommonTabMarketSelector v-model="marketValue" v-bind="{ markets }" />
     <CommonTabSideFilter v-model="sideValue" />

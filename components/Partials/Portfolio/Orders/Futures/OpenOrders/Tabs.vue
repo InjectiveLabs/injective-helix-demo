@@ -4,6 +4,15 @@ import { SpotOpenOrdersFilterField } from '@/types'
 const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 
+withDefaults(
+  defineProps<{
+    isTradingBots?: boolean
+  }>(),
+  {
+    isTradingBots: false
+  }
+)
+
 const { value: marketValue } = useStringField({
   name: SpotOpenOrdersFilterField.Market,
   rule: ''
@@ -34,7 +43,10 @@ const { value: sideValue } = useStringField({
 
     <CommonTabFormReset />
 
-    <div class="hidden lg:flex flex-1 items-center justify-end px-2">
+    <div
+      v-if="!isTradingBots"
+      class="hidden lg:flex flex-1 items-center justify-end px-2"
+    >
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders />
     </div>
 
