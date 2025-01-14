@@ -78,6 +78,7 @@ const positions = computed(() =>
     <PartialsPortfolioPositionsTable
       v-else-if="view === PerpOrdersTradingBotsView.Positions"
       v-bind="{ positions }"
+      is-trading-bots
     />
 
     <PartialsPortfolioOrdersFuturesOpenOrdersTable

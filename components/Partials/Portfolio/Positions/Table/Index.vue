@@ -13,8 +13,10 @@ const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     ui?: Record<string, any>
+    isTradingBots?: boolean
   }>(),
   {
+    isTradingBots: false,
     ui: () => ({
       th: {
         base: 'whitespace-nowrap'
@@ -89,15 +91,18 @@ const columns = computed(() => {
       key: PositionTableColumn.Leverage,
       label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
       class: 'text-right w-[7%]'
-    },
-    {
-      key: PositionTableColumn.TpOrSl,
-      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
-      class: 'text-center w-[8%]'
     }
   ]
 
-  if (sixXl.value) {
+  if (!props.isTradingBots) {
+    baseColumns.push({
+      key: PositionTableColumn.TpOrSl,
+      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
+      class: 'text-center w-[8%]'
+    })
+  }
+
+  if (sixXl.value && !props.isTradingBots) {
     baseColumns.push({
       key: PositionTableColumn.ClosePosition,
       label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
@@ -139,7 +144,7 @@ function sharePosition(position: PositionV2) {
           </PartialsCommonMarketRedirection>
 
           <PartialsPortfolioPositionsTableActionBtns
-            v-if="!sixXl"
+            v-if="!sixXl && !isTradingBots"
             :position="row.position"
             :market="row.market"
             :pnl="row.pnl"
@@ -357,6 +362,7 @@ function sharePosition(position: PositionV2) {
     <PartialsPortfolioPositionsMobileTable
       v-for="position in rows"
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
+      :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
       @margin:add="addMargin(position.position)"
       @tpsl:add="addTpSl(position.position)"
