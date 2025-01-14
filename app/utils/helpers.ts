@@ -48,8 +48,10 @@ export const getDecimalsBasedOnNumber = (
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
   // Todo: Replace with actual endpoint once devops deploy this to production server
+  // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
+
   if (IS_MAINNET) {
-    return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
+    return `https://k8s.global.mainnet.chronos.grpc-web.injective.network/api/chronos/v1/${marketType}`
   }
 
   return `${ENDPOINTS.indexer}/api/chronos/v1/${marketType}`
