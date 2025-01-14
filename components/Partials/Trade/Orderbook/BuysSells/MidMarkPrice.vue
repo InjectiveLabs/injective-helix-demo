@@ -49,7 +49,7 @@ const isStableCoinMarket = computed(() =>
   <div class="flex-1 flex items-center justify-center">
     <CommonSkeletonNumber v-if="lastTradedPrice.eq(0)" />
 
-    <div v-else class="flex items-center justify-center">
+    <div v-else class="flex items-center justify-center space-x-2">
       <span
         class="text-sm tracking-wider font-bold spacing"
         :class="{
@@ -74,7 +74,7 @@ const isStableCoinMarket = computed(() =>
           )
         "
         :name="NuxtUiIcons.ArrowLeft"
-        class="transform w-5 h-5 mx-2"
+        class="transform w-5 h-5"
         :class="{
           'text-red-500 -rotate-90':
             lastTradedPriceChange === SharedMarketChange.Decrease,
