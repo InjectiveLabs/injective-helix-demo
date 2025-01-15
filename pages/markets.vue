@@ -8,7 +8,7 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
-const { sm } = useTwBreakpoints()
+const { sm } = useSharedBreakpoints()
 
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())

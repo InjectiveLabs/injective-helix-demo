@@ -5,7 +5,7 @@ import { UI_DEFAULT_AGGREGATION_DECIMALS } from '@/app/utils/constants'
 import { HistorySwapTableColumn } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

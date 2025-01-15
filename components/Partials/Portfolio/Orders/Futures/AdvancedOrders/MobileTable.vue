@@ -5,7 +5,7 @@ import {
   PortfolioFuturesAdvancedOrdersTableColumn
 } from '@/types'
 
-const { sm } = useTwBreakpoints()
+const { sm } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

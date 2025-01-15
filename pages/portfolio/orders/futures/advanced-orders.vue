@@ -5,15 +5,15 @@ import {
   derivativeTypeToOrderType
 } from '@/app/utils/trade'
 import {
-  ConditionalOrderSide,
   OrderTypeFilter,
-  SpotOrderHistoryFilterField,
-  SpotOrderHistoryFilterForm
+  ConditionalOrderSide,
+  SpotOrderHistoryFilterForm,
+  SpotOrderHistoryFilterField
 } from '@/types'
 
-const { lg } = useTwBreakpoints()
-const { $onError } = useNuxtApp()
 const derivativeStore = useDerivativeStore()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
 

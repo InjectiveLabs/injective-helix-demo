@@ -4,7 +4,7 @@ import { SharedDropdownOption } from '@shared/types'
 import { SpotOrdersTradingBotsView, SpotMarketCyTags } from '@/types'
 
 const spotStore = useSpotStore()
-const breakpoints = useBreakpointsTw()
+const breakpoints = useSharedBreakpoints()
 const gridStrategyStore = useGridStrategyStore()
 
 const props = withDefaults(

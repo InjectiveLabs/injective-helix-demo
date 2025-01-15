@@ -7,11 +7,11 @@ import {
   PortfolioFuturesOpenOrdersTableColumn
 } from '@/types'
 
-const { t } = useLang()
-const { lg } = useTwBreakpoints()
-const breakpoints = useBreakpointsTw()
-const { activeSubaccountBalancesWithToken } = useBalance()
+const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
+const { t } = useLang()
+const { lg } = useSharedBreakpoints()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
   defineProps<{ orders: DerivativeLimitOrder[] }>(),

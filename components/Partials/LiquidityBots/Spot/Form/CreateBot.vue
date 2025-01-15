@@ -174,7 +174,10 @@ async function createLiquidityBot() {
       <span v-else>{{ $t('liquidityBots.createBot') }}</span>
     </AppButton>
 
-    <SharedModal v-model="confirmationModal">
+    <SharedModal
+      v-model="confirmationModal"
+      v-bind="{ isHideCloseButton: true }"
+    >
       <template #header>
         <div class="text-2xl font-bold">
           {{ $t('tradingBots.botCreationConfirmation') }}

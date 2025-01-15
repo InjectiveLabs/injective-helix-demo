@@ -8,8 +8,8 @@ import {
   PerpOrdersStandardView
 } from '@/types'
 
-const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
+const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 

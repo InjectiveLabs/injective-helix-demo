@@ -12,9 +12,9 @@ import {
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
-const { subaccountPortfolioBalanceMap } = useBalance()
-const { lg } = useTwBreakpoints()
 const { t } = useLang()
+const { lg } = useSharedBreakpoints()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
@@ -201,7 +201,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       :message="$t('sgt.noActiveStrategies')"
     />
 
-    <SharedModal v-model="isOpen">
+    <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
       <PartialsLiquidityCommonActiveStrategyDetails
         v-if="selectedStrategy"
         :active-strategy="selectedStrategy.strategy"

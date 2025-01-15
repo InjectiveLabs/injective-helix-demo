@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UTableColumn } from '@/types'
 
-const { sm } = useTwBreakpoints()
+const { sm } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

@@ -7,10 +7,10 @@ import {
   PortfolioSpotOpenOrdersTableColumn
 } from '@/types'
 
-const { t } = useLang()
-const { lg, xl } = useTwBreakpoints()
-const { activeSubaccountBalancesWithToken } = useBalance()
 const sharedWalletStore = useSharedWalletStore()
+const { t } = useLang()
+const { lg, xl } = useSharedBreakpoints()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
   defineProps<{

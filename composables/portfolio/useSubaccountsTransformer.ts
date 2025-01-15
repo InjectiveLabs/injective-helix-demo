@@ -1,5 +1,6 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { formatWalletAddress } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { SubAccount, AccountBalance } from '@/types'
 
 export function useSubaccountsTransformer(
@@ -19,7 +20,10 @@ export function useSubaccountsTransformer(
         balance,
         value: subaccount.value,
         display: subaccount.display,
-        formattedAddress: formatWalletAddress(subaccount.value)
+        formattedAddress: sharedEllipsisFormatText(
+          subaccount.value,
+          DEFAULT_TRUNCATE_LENGTH
+        )
       }
     })
   )

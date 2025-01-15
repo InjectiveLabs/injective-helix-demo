@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import { getExplorerUrl } from '@shared/utils/network'
-import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
-  GUILD_BASE_TOKEN_SYMBOL
+  GUILD_BASE_TOKEN_SYMBOL,
+  DEFAULT_TRUNCATE_LENGTH
 } from '@/app/utils/constants'
 import { guildDescriptionMap } from '@/app/data/campaign'
 import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
@@ -251,7 +253,10 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                     <p class="text-blue-500">
                       <span class="sm:hidden">
                         {{
-                          formatWalletAddress(campaignStore.guild.masterAddress)
+                          sharedEllipsisFormatText(
+                            campaignStore.guild.masterAddress,
+                            DEFAULT_TRUNCATE_LENGTH
+                          )
                         }}
                       </span>
                       <span class="max-sm:hidden">

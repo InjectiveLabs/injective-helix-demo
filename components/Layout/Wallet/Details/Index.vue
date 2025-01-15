@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { formatWalletAddress } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import {
+  DEFAULT_TRUNCATE_LENGTH,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { Modal, MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
@@ -15,10 +18,11 @@ const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
   useBalance()
 
 const formattedAddress = computed(() =>
-  formatWalletAddress(
+  sharedEllipsisFormatText(
     sharedWalletStore.wallet === Wallet.Metamask
       ? sharedWalletStore.address
-      : sharedWalletStore.injectiveAddress
+      : sharedWalletStore.injectiveAddress,
+    DEFAULT_TRUNCATE_LENGTH
   )
 )
 

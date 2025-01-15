@@ -5,12 +5,12 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags } from '@/types'
 
-const { t } = useLang()
-const { $onError } = useNuxtApp()
-const { lg } = useTwBreakpoints()
-const breakpoints = useBreakpointsTw()
+const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

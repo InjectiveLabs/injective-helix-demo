@@ -3,13 +3,13 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { UiSpotMarket, UiDerivativeMarket } from '@/types'
 
-const { t } = useLang()
 const spotStore = useSpotStore()
-const { $onError } = useNuxtApp()
-const { lg } = useTwBreakpoints()
 const orderbookStore = useOrderbookStore()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

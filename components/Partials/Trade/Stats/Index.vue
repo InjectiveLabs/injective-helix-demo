@@ -8,7 +8,7 @@ withDefaults(
   {}
 )
 
-const breakpoints = useBreakpointsTw()
+const breakpoints = useSharedBreakpoints()
 
 const sm = breakpoints.sm
 

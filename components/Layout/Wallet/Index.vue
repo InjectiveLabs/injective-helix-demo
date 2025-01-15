@@ -70,7 +70,7 @@ const isOpen = computed({
     </AppButton>
   </div>
 
-  <SharedModal v-model="isOpen">
+  <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
     <LayoutWalletConnect @modal:closed="onCloseModal" />
   </SharedModal>
 

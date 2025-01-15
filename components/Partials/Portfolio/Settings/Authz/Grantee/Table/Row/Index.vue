@@ -4,23 +4,25 @@ import {
   GrantAuthorizationType,
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
-import { Status, StatusType, formatWalletAddress } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
-    grants: GrantAuthorizationWithDecodedAuthorization[]
     grantee: string
+    grants: GrantAuthorizationWithDecodedAuthorization[]
   }>(),
   {}
 )
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
 
 const isOpen = ref(false)
 const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -51,9 +53,9 @@ function revokeAll() {
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
     <div class="flex-1 flex items-center p-2 truncate min-w-0">
-      <span class="font-mono truncate min-w-0">{{
-        formatWalletAddress(grantee)
-      }}</span>
+      <span class="font-mono truncate min-w-0">
+        {{ sharedEllipsisFormatText(grantee, DEFAULT_TRUNCATE_LENGTH) }}
+      </span>
     </div>
 
     <div class="xs:flex-1 max-xs:w-10 flex items-center p-2">
