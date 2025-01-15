@@ -2,7 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioCyTags } from '@/types'
 
-const breakpoints = useBreakpointsTw()
+const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
 
 const xxl = breakpoints['5xl']

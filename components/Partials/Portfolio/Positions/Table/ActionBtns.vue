@@ -30,13 +30,13 @@ const props = withDefaults(
   }>(),
   {}
 )
-const { t } = useLang()
-const { lg } = useTwBreakpoints()
-const { $onError } = useNuxtApp()
-const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
+const breakpoints = useSharedBreakpoints()
 // const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 // const { validate } = useForm<ClosePositionLimitForm>()
 
 // const limitCloseStatus = reactive(new Status(StatusType.Idle))

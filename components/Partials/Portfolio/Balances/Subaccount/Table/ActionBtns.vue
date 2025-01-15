@@ -3,10 +3,10 @@ import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
 
-const { lg } = useTwBreakpoints()
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

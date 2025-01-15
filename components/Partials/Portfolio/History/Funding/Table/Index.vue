@@ -4,7 +4,7 @@ import { USDT_DECIMALS } from '@/app/utils/constants'
 import { FundingHistoryTableColumn } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

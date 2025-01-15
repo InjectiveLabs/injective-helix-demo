@@ -10,7 +10,7 @@ import { valueSortFunction } from '~/app/utils/helpers'
 
 const { t } = useLang()
 const appStore = useAppStore()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
-import { formatWalletAddress, BigNumberInBase } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   MAXIMUM_RANKED_TRADERS,
-  MAXIMUM_LEADERBOARD_STATS_RANK,
-  MIN_COMPETITION_PNL_AMOUNT
+  DEFAULT_TRUNCATE_LENGTH,
+  MIN_COMPETITION_PNL_AMOUNT,
+  MAXIMUM_LEADERBOARD_STATS_RANK
 } from '@/app/utils/constants'
 import { checkIsCampaignWithEntries } from '@/app/data/campaign'
-
 import { LeaderboardType, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
@@ -30,7 +31,7 @@ const props = withDefaults(
 )
 
 const formattedAddress = computed(() =>
-  formatWalletAddress(props.leader.account)
+  sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
 const isCampaignWithEntries = computed(() =>

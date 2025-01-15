@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -15,10 +16,13 @@ const modalStore = useSharedModalStore()
 const isDropdownVisible = ref(false)
 
 const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(sharedWalletStore.injectiveAddress)
+  sharedEllipsisFormatText(
+    sharedWalletStore.injectiveAddress,
+    DEFAULT_TRUNCATE_LENGTH
+  )
 )
 const formattedAddress = computed(() =>
-  formatWalletAddress(sharedWalletStore.address)
+  sharedEllipsisFormatText(sharedWalletStore.address, DEFAULT_TRUNCATE_LENGTH)
 )
 
 function onToggleDropdown() {

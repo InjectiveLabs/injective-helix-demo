@@ -8,9 +8,9 @@ import {
   SpotMarketCyTags
 } from '@/types'
 
-const spotStore = useSpotStore()
 const isMobile = useIsMobile()
-const breakpoints = useBreakpointsTw()
+const spotStore = useSpotStore()
+const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
@@ -22,8 +22,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'update:modelValue': [value: SpotOrdersStandardView]
   'update:isTickerOnly': [value: boolean]
+  'update:modelValue': [value: SpotOrdersStandardView]
 }>()
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>

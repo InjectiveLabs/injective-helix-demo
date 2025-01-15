@@ -5,11 +5,11 @@ import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotMarketCyTags } from '@/types'
 
-const { t } = useLang()
 const spotStore = useSpotStore()
-const { $onError } = useNuxtApp()
-const { lg, xl } = useTwBreakpoints()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { lg, xl } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

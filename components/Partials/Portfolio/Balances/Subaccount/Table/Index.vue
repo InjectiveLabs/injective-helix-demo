@@ -9,7 +9,9 @@ import {
   TransformedBalances
 } from '@/types'
 
+const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
+const { lg } = useSharedBreakpoints()
 const {
   stakedAmount,
   stakedAmountInUsd,
@@ -17,8 +19,6 @@ const {
   activeSubaccountBalancesWithToken,
   activeSubaccountTradableBalancesWithToken
 } = useBalance()
-const { lg } = useTwBreakpoints()
-const breakpoints = useBreakpointsTw()
 
 const props = withDefaults(
   defineProps<{

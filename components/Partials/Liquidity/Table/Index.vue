@@ -10,7 +10,7 @@ import {
 } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(defineProps<{ campaigns: Campaign[] }>(), {})
 

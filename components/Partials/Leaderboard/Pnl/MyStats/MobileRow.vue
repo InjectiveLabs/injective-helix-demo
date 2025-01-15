@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { LeaderboardRow } from '@injectivelabs/sdk-ts'
-import { formatWalletAddress } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import {
+  DEFAULT_TRUNCATE_LENGTH,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +21,7 @@ const props = withDefaults(
 )
 
 const formattedAddress = computed(() =>
-  formatWalletAddress(props.leader.account)
+  sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
 const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =

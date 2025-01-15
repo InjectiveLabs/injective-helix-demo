@@ -20,17 +20,6 @@ BigNumber.config({
   }
 })
 
-export const formatWalletAddress = (address: string): string => {
-  if (address.length <= 10) {
-    return address
-  }
-
-  return `${address.slice(0, 6)}...${address.slice(
-    address.length - 6,
-    address.length
-  )}`
-}
-
 export function formatAmount(
   amount: BigNumberInBase,
   displayDecimals: number

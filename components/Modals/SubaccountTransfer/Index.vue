@@ -209,7 +209,7 @@ const isOpen = computed({
 </script>
 
 <template>
-  <SharedModal v-model="isOpen">
+  <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
     <template #title>
       <h3>
         {{ $t('account.subaccountTransfer') }}
@@ -217,43 +217,41 @@ const isOpen = computed({
     </template>
 
     <div>
-      <div class="mt-6">
-        <div>
-          <ModalsSubaccountTransferSelect
-            @update:subaccount-id="onSubaccountIdChange"
-          />
-          <div v-if="supplyWithBalance.length > 0" class="mt-6">
-            <AppSelectToken
-              v-model:denom="denomValue"
-              v-bind="{
-                maxDecimals,
-                isRequired: true,
-                amountFieldName: SubaccountTransferField.Amount,
-                options: supplyWithBalance
-              }"
-              @update:max="onAmountChange"
-              @update:denom="onTokenChange"
-            >
-              <span> {{ $t('account.amount') }} </span>
-            </AppSelectToken>
-          </div>
-          <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
-            {{ t('account.noAssetToTransfer') }}
-          </div>
+      <div>
+        <ModalsSubaccountTransferSelect
+          @update:subaccount-id="onSubaccountIdChange"
+        />
+        <div v-if="supplyWithBalance.length > 0" class="mt-6">
+          <AppSelectToken
+            v-model:denom="denomValue"
+            v-bind="{
+              maxDecimals,
+              isRequired: true,
+              amountFieldName: SubaccountTransferField.Amount,
+              options: supplyWithBalance
+            }"
+            @update:max="onAmountChange"
+            @update:denom="onTokenChange"
+          >
+            <span> {{ $t('account.amount') }} </span>
+          </AppSelectToken>
         </div>
-
-        <AppButton
-          size="lg"
-          class="w-full text-blue-900 bg-blue-500 mt-6"
-          :is-loading="status.isLoading()"
-          :disabled="isDisabled"
-          @click="onSubaccountTransfer"
-        >
-          <span class="font-semibold">
-            {{ $t('account.transfer') }}
-          </span>
-        </AppButton>
+        <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
+          {{ t('account.noAssetToTransfer') }}
+        </div>
       </div>
+
+      <AppButton
+        size="lg"
+        class="w-full text-blue-900 bg-blue-500 mt-6"
+        :is-loading="status.isLoading()"
+        :disabled="isDisabled"
+        @click="onSubaccountTransfer"
+      >
+        <span class="font-semibold">
+          {{ $t('account.transfer') }}
+        </span>
+      </AppButton>
     </div>
   </SharedModal>
 </template>

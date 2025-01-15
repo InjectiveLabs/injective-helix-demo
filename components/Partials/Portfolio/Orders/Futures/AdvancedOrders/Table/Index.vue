@@ -3,8 +3,8 @@ import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
-const breakpoints = useBreakpointsTw()
+const { lg } = useSharedBreakpoints()
+const breakpoints = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

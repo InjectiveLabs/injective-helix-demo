@@ -2,15 +2,15 @@
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  GridStrategyTransformed,
-  PortfolioSpotTradingBotsRunningTableColumn,
   TradeSubPage,
-  TradingInterface
+  TradingInterface,
+  GridStrategyTransformed,
+  PortfolioSpotTradingBotsRunningTableColumn
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
-const { lg } = useTwBreakpoints()
 const { t } = useLang()
+const { lg } = useSharedBreakpoints()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
@@ -208,7 +208,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
       :message="$t('sgt.noActiveStrategies')"
     />
 
-    <SharedModal v-model="isOpen">
+    <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
       <PartialsLiquidityCommonActiveStrategyDetails
         v-if="selectedStrategy"
         :active-strategy="selectedStrategy.strategy"
