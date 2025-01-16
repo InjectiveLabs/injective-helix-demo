@@ -50,10 +50,6 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
       })
     : new BigNumberInBase((trade as DerivativeTrade).executionQuantity)
 
-  const formattedQuantity = parseFloat(
-    quantity.toFixed(market.quantityDecimals)
-  ).toString()
-
   const price = props.isSpot
     ? sharedToBalanceInWei({
         value: (trade as SpotTrade).price,
@@ -68,24 +64,24 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
     tokenStore.tokenUsdPrice(market.quoteToken)
   ).times(price)
 
-  const isPriceWithoutDecimals = usdPrice.mod(1).eq(0)
-  const formattedUsdPrice = isPriceWithoutDecimals
-    ? usdPrice.toFixed(0)
-    : usdPrice.toFixed(Math.max(2, market.priceDecimals))
-
   notificationStore.success({
     title:
       trade.tradeDirection === TradeDirection.Buy
         ? t('trade.tradeToast.bought', {
-            quantity: formattedQuantity,
-            usdPrice: formattedUsdPrice,
-            symbol: market.baseToken.symbol
+            quantity,
+            usdPrice,
+            symbol: market.baseToken.symbol,
+            usdPriceDecimals: market.priceDecimals,
+            quantityDecimals: market.quantityDecimals
           })
         : t('trade.tradeToast.sold', {
-            quantity: formattedQuantity,
-            usdPrice: formattedUsdPrice,
-            symbol: market.baseToken.symbol
-          })
+            quantity,
+            usdPrice,
+            symbol: market.baseToken.symbol,
+            usdPriceDecimals: market.priceDecimals,
+            quantityDecimals: market.quantityDecimals
+          }),
+    isTemplateString: true
   })
 }
 </script>

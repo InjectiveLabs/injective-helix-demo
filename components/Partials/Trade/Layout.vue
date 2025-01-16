@@ -130,5 +130,5 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <PartialsCommonLimitTradeToast v-bind="{ isSpot }" />
+  <PartialsTradeNotificationLimit v-bind="{ isSpot }" />
 </template>

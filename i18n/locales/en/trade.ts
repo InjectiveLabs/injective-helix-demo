@@ -564,13 +564,17 @@ export default {
 
     tradeToast: {
       bought: ({ named }: I18nMessageFunction) =>
-        `${named('quantity')} ${named(
+        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
           'symbol'
-        )} bought at average price $${named('usdPrice')}`,
+        )} bought at average price \${{usdPrice:${named('usdPrice')}-${named(
+          'usdPriceDecimals'
+        )}}}`,
       sold: ({ named }: I18nMessageFunction) =>
-        `${named('quantity')} ${named('symbol')} sold at average price $${named(
-          'usdPrice'
-        )}`
+        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
+          'symbol'
+        )} sold at average price \${{usdPrice:${named('usdPrice')}-${named(
+          'usdPriceDecimals'
+        )}}}`
     }
   }
 }
