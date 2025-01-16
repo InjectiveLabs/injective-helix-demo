@@ -560,6 +560,17 @@ export default {
     },
 
     yes: 'Yes',
-    no: 'No'
+    no: 'No',
+
+    tradeToast: {
+      bought: ({ named }: I18nMessageFunction) =>
+        `${named('quantity')} ${named(
+          'symbol'
+        )} bought at average price $${named('usdPrice')}`,
+      sold: ({ named }: I18nMessageFunction) =>
+        `${named('quantity')} ${named('symbol')} sold at average price $${named(
+          'usdPrice'
+        )}`
+    }
   }
 }

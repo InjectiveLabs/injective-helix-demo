@@ -172,9 +172,10 @@ export enum BusEvents {
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
-
+  SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'
+  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
+  DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
 }
 
 export enum ActivityField {
