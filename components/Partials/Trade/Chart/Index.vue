@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { intervalOptions } from '@/app/utils/constants'
 import { BusEvents, ChartViewOption, UiMarketWithToken } from '@/types'
+import { MARKETS_POWERED_BY_STORK } from '@/app/data/marketInfo'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     isSpot?: boolean
     market: UiMarketWithToken
@@ -24,6 +25,10 @@ function onUpdateChart(chart: string) {
 function setInterval(index: string) {
   interval.value = Number(index)
 }
+
+const isStorkPowered = computed(() =>
+  MARKETS_POWERED_BY_STORK.includes(props.market.marketId)
+)
 </script>
 
 <template>
@@ -42,6 +47,22 @@ function setInterval(index: string) {
           >
             {{ $t(`trade.${label}`) }}
           </AppButtonSelect>
+
+          <div v-if="isStorkPowered" class="flex items-center">
+            <a
+              class="flex justify-center items-center text-coolGray-500 text-xs font-semibold px-4 space-x-2 hover:text-white py-2"
+              href="https://www.stork.network/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <p>Powered By Stork</p>
+              <img
+                src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
+                alt=""
+                class="size-4 rounded"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </div>
