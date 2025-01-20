@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { intervalOptions } from '@/app/utils/constants'
+// import { intervalOptions } from '@/app/utils/constants'
 import { BusEvents, ChartViewOption, UiMarketWithToken } from '@/types'
 import { MARKETS_POWERED_BY_STORK } from '@/app/data/marketInfo'
 
@@ -13,7 +13,7 @@ const props = withDefaults(
   }
 )
 
-const interval = ref(4)
+// const interval = ref(4)
 const view = ref(ChartViewOption.Chart)
 
 const viewOptions = Object.values(ChartViewOption)
@@ -22,9 +22,9 @@ function onUpdateChart(chart: string) {
   useEventBus(BusEvents.UpdateMarketChart).emit(chart)
 }
 
-function setInterval(index: string) {
-  interval.value = Number(index)
-}
+// function setInterval(index: string) {
+//   interval.value = Number(index)
+// }
 
 const isStorkPowered = computed(() =>
   MARKETS_POWERED_BY_STORK.includes(props.market.marketId)
@@ -68,7 +68,7 @@ const isStorkPowered = computed(() =>
     </div>
 
     <!-- Light Trading Chart -->
-    <div v-if="view === ChartViewOption.Chart" class="border-b flex">
+    <!-- <div v-if="view === ChartViewOption.Chart" class="border-b flex">
       <AppButtonSelect
         v-for="(_, index) in intervalOptions"
         :key="index"
@@ -82,9 +82,9 @@ const isStorkPowered = computed(() =>
       >
         {{ intervalOptions[Number(index)].label }}
       </AppButtonSelect>
-    </div>
+    </div> -->
 
-    <PartialsTradingLightTradingChartWrapper
+    <!-- <PartialsTradingLightTradingChartWrapper
       v-if="view === ChartViewOption.Chart"
       v-bind="{
         market: market as UiMarketWithToken,
@@ -92,12 +92,12 @@ const isStorkPowered = computed(() =>
         isSpot,
         interval
       }"
-    />
+    /> -->
 
-    <!-- <PartialsTradingMarketChart
+    <PartialsTradingMarketChart
       v-if="view === ChartViewOption.Chart"
       v-bind="{ market }"
-    /> -->
+    />
 
     <PartialsTradeChartDepth v-else-if="view === ChartViewOption.Depth" />
     <PartialsTradeChartInfo v-else />
