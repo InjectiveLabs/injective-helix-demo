@@ -217,3 +217,7 @@ export const MARKETS_INFO = [
       'Whale token generates non-inflationary yield from all the liquidity pools and flashloans vaults across IBC-enabled blockchains.'
   }
 ]
+
+export const MARKETS_POWERED_BY_STORK = [
+  '0xf99ac012c3e97f434fe0d0ba4948fef763635bb06de5e3c43abc7f1da7c427a8'
+]
