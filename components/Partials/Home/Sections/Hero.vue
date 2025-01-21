@@ -55,7 +55,7 @@ function onWalletConnect() {
 
 <template>
   <div
-    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section"
+    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section z-30"
   >
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
       <h1 id="hero-title" class="font-semibold gsap-text mb-5">
@@ -83,7 +83,7 @@ function onWalletConnect() {
         </NuxtLink>
 
         <AppButton
-          class="w-full"
+          class="w-full isolate"
           variant="primary-outline"
           @click="openDepositQrModal"
         >

@@ -9,20 +9,14 @@ function onPurchaseFunds() {
   isPurchaseFunds.value = true
 }
 
-const isModalOpen = computed(() => modalStore.modals[Modal.FiatOnboard])
-
 function closeModal() {
   isPurchaseFunds.value = false
-  modalStore.closeModal(Modal.FiatOnboard)
 }
 </script>
 
 <template>
-  <AppModal
-    v-bind="{
-      isSm: true,
-      isOpen: isModalOpen
-    }"
+  <SharedModal
+    v-model="modalStore.modals[Modal.FiatOnboard]"
     @modal:closed="closeModal"
   >
     <PartialsOnboardingFiat
@@ -32,5 +26,5 @@ function closeModal() {
     />
 
     <PartialsOnboardingFiatMercuryo v-else />
-  </AppModal>
+  </SharedModal>
 </template>
