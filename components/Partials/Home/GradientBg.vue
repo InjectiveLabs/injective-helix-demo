@@ -9,6 +9,8 @@
       autoplay
       loop
       muted
+      webkit-playsinline
+      playsinline
     />
     <div
       class="absolute inset-0 bg-gradient-to-t w-full h-screen from-[#00001A] to-transparent"
