@@ -1,8 +1,19 @@
 <script setup lang="ts">
-//
+const isLoaded = ref(false)
+
+onMounted(() => {
+  const video = document.createElement('video')
+  video.src = '/helixbg_new.webm'
+  video.autoplay = true
+  video.loop = true
+  video.muted = true
+  video.onloadeddata = () => {
+    isLoaded.value = true
+  }
+})
 </script>
 <template>
-  <div class="relative -mt-[56px]">
+  <div v-if="isLoaded" class="relative -mt-[56px] animate-fade-in">
     <video
       class="absolute inset-0 w-full h-screen object-cover"
       src="/helixbg_new.webm"
@@ -17,3 +28,18 @@
     />
   </div>
 </template>
+
+<style scoped>
+.animate-fade-in {
+  animation: fade-in 1s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
