@@ -9,7 +9,7 @@ withDefaults(
 )
 
 const parseNotification = (notification: string) => {
-  const regex = /{{([\w-]+):([0-9.-]+)}}/g
+  const regex = /{{([\w-]+):([\\/\w.-]+)}}/g
   const parts = []
   let lastIndex = 0
   let match
