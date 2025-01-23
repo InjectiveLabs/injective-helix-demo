@@ -3,7 +3,7 @@ const isLoaded = ref(false)
 
 onMounted(() => {
   const video = document.createElement('video')
-  video.src = '/helixbg_new.webm'
+  video.src = '/helix_bg.mp4'
   video.autoplay = true
   video.loop = true
   video.muted = true
@@ -16,7 +16,7 @@ onMounted(() => {
   <div v-if="isLoaded" class="relative -mt-[56px] animate-fade-in">
     <video
       class="absolute inset-0 w-full h-screen object-cover"
-      src="/helixbg_new.webm"
+      src="/helix_bg.mp4"
       autoplay
       loop
       muted
