@@ -14,9 +14,9 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div v-if="isLoaded" class="relative -mt-[56px] animate-fade-in">
+  <div v-if="isLoaded" class="relative animate-fade-in">
     <video
-      class="absolute inset-0 w-full h-screen object-cover"
+      class="absolute inset-0 w-full h-screen object-cover -mt-[56px]"
       src="/helix_bg.mp4"
       autoplay
       loop
@@ -24,7 +24,7 @@ onMounted(() => {
       playsinline
     />
     <div
-      class="absolute inset-0 bg-gradient-to-t w-full h-screen from-[#00001A] to-transparent"
+      class="absolute inset-0 bg-gradient-to-t w-full h-screen -mt-[56px] from-[#00001A] to-transparent"
     />
   </div>
 </template>
