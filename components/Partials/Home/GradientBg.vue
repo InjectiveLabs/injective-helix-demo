@@ -7,6 +7,7 @@ onMounted(() => {
   video.autoplay = true
   video.loop = true
   video.muted = true
+  video.playsInline = true
   video.onloadeddata = () => {
     isLoaded.value = true
   }
@@ -20,7 +21,6 @@ onMounted(() => {
       autoplay
       loop
       muted
-      webkit-playsinline
       playsinline
     />
     <div
