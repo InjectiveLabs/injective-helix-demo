@@ -40,7 +40,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32 snap-start">
+  <div class="relative pb-32">
+    <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
+    <img
+      src="/svg/blurs/blur-1.svg"
+      class="absolute -top-20 left-1/2 blur-xl"
+    />
+
     <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
@@ -57,16 +63,19 @@ onMounted(() => {
             aspectRatio: 1264 / 828
           }"
           src="/images/helix-platform-long.webp"
-          class="max-w-[500px] 2xl:max-w-[800px] mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
-          s
+          class="max-w-[500px] 2xl:max-w-[800px] bg-black mx-auto w-full shadow-[0_-1px_16px_rgba(14,226,155,0.70)] rounded-xl border border-white/50"
           alt=""
         />
       </div>
     </div>
 
     <div
-      class="flex justify-center font-semibold max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8"
+      class="flex justify-center font-semibold max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8 relative"
     >
+      <img
+        src="/svg/blurs/blur-1.svg"
+        class="absolute -top-52 -left-0 rotate-180 blur-xl"
+      />
       <div
         class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
       >

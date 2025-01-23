@@ -4,12 +4,6 @@ import { streamProvider } from '@/app/providers/StreamProvider'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { InitialStatusKey } from '@/types'
 
-useHead({
-  bodyAttrs: {
-    class: 'dark:bg-brand-900'
-  }
-})
-
 // const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()

@@ -5,7 +5,7 @@ export default {
     title: 'Open Finance Reimagined',
     openFinance: 'Open Finance',
     description:
-      'Helix unlocks limitless financial possibilities for everyone. Take back control of your money and access any asset with unmatched liquidity on the only chain purpose built for finance.',
+      'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',
     reimagined: 'Reimagined',
     subtitle:
       'Explore limitless financial possibilities. Helix provides unmatched access to global financial primitives, endless on-chain gateways, and true institutional liquidity.',

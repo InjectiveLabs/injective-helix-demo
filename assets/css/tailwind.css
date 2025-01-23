@@ -30,3 +30,7 @@
     @apply dark:border-coolGray-800;
   }
 }
+
+body {
+  @apply dark:bg-brand-900;
+}
