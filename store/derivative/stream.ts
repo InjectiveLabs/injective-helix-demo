@@ -20,6 +20,7 @@ import {
 } from '@/app/client/streams/derivatives'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
 export const cancelMarketsMarkPrices = grpcCancelMarketsMarkPrices
@@ -200,6 +201,10 @@ export const streamSubaccountTrades = ({
     callback: ({ trade, operation }) => {
       if (!trade) {
         return
+      }
+
+      if (trade.tradeExecutionType === TradeExecutionType.LimitFill) {
+        useEventBus(BusEvents.DerivativeStreamLimitTradeExecuted).emit(trade)
       }
 
       switch (operation) {

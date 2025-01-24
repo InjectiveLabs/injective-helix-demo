@@ -210,6 +210,9 @@ useIntervalFn(
           class="pointer-events-auto bg-brand-900"
           wrapper-class="bg-brand-900 border-brand-700 border"
         >
+          <template v-if="notification.isTemplateString" #custom>
+            <PartialsNotificationsCustom :title="notification.title" />
+          </template>
           <template #close="{ closeNotification }">
             <UIcon
               :name="NuxtUiIcons.CloseBold"
