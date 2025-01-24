@@ -1,5 +1,5 @@
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
   }>(),
@@ -8,7 +8,9 @@ withDefaults(
   }
 )
 
-const parseNotification = (notification: string) => {
+const parsedNotification = computed(() => parseNotification(props.title))
+
+function parseNotification(notification: string) {
   const regex = /{{([\w-]+):([\\/\w.-]+)}}/g
   const parts = []
   let lastIndex = 0
@@ -43,7 +45,7 @@ const parseNotification = (notification: string) => {
 
 <template>
   <div>
-    <template v-for="(part, index) in parseNotification(title)" :key="index">
+    <template v-for="(part, index) in parsedNotification" :key="index">
       <template v-if="part.type === 'text'">{{ part.content }}</template>
 
       <PartialsNotificationsCustomQuantity
