@@ -22,11 +22,9 @@ const symbol = computed(() => {
     return props.market.ticker
   }
 
-  const spotTicker = `${(props.market as UiSpotMarket).baseDenom}/${
+  return `${(props.market as UiSpotMarket).baseDenom}/${
     (props.market as UiSpotMarket).quoteDenom
   }`
-
-  return spotTicker.replaceAll('ibc/', 'ibc@')
 })
 
 const datafeedEndpoint = computed(() =>
