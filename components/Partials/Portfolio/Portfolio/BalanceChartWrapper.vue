@@ -82,7 +82,7 @@ const percentageChange = computed(() => {
                 />
 
                 <div>{{ $t('account.staked') }}:</div>
-                <div>
+                <div class="flex items-center">
                   <span>$</span>
                   <CommonSkeletonSubaccountAmount>
                     <AppUsdAmount

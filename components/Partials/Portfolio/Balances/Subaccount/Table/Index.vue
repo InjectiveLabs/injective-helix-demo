@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   PortfolioCyTags,
   BalanceTableColumn,
@@ -112,15 +112,11 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
-        [BalanceTableColumn.Available]: '',
-        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value.toFixed(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        ),
-        [BalanceTableColumn.UnrealizedPnl]: '',
-        [BalanceTableColumn.Total]: '',
-        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value.toFixed(
-          UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        )
+        [BalanceTableColumn.Available]: ZERO_IN_BASE,
+        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value,
+        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
+        [BalanceTableColumn.Total]: ZERO_IN_BASE,
+        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value
       } as TransformedBalances,
       ...data.slice(1)
     ]
@@ -139,9 +135,9 @@ const filteredRows = computed(() =>
     const isIncludedInName = balance.token.name.toLowerCase().includes(search)
     const isPartOfSearch = !search || isIncludedInSymbol || isIncludedInName
 
-    const isZeroBalance = new BigNumberInBase(
-      balance[BalanceTableColumn.Total]
-    ).isZero()
+    const isZeroBalance =
+      new BigNumberInBase(balance[BalanceTableColumn.Total]).isZero() &&
+      !balance.isStakingRow
 
     return !isZeroBalance && isPartOfSearch
   })
@@ -218,11 +214,12 @@ function toggleStakingRow() {
       </template>
 
       <template #available-data="{ row }">
-        <AppAmount
+        <AppBalanceAmount
           v-if="!row.isStakingRow"
-          v-bind="{ amount: row[BalanceTableColumn.Available] }"
+          v-bind="{ amount: row[BalanceTableColumn.Available].toFixed() }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
         />
+        <span v-else />
       </template>
 
       <template #used-or-reserved-data="{ row }">
@@ -230,42 +227,44 @@ function toggleStakingRow() {
           {{ $t('trade.staked') }}:
         </span>
 
-        <AppAmount
+        <AppBalanceAmount
           v-bind="{
             showZeroAsEmDash: true,
-            amount: row[BalanceTableColumn.UsedOrReserved]
+            amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
           }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
         />
       </template>
 
       <template #unrealized-pnl-data="{ row }">
-        <AppAmount
+        <AppBalanceAmount
           v-if="!row.isStakingRow"
           v-bind="{
             showZeroAsEmDash: true,
-            amount: row[BalanceTableColumn.UnrealizedPnl]
+            amount: row[BalanceTableColumn.UnrealizedPnl].toFixed()
           }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
         />
+        <span v-else />
       </template>
 
       <template #total-data="{ row }">
-        <AppAmount
+        <AppBalanceAmount
           v-if="!row.isStakingRow"
           v-bind="{
-            amount: row[BalanceTableColumn.Total]
+            amount: row[BalanceTableColumn.Total].toFixed()
           }"
           :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
         />
+        <span v-else />
       </template>
 
       <template #total-usd-data="{ row }">
         <div :class="{ 'text-coolGray-400': row.isStakingRow }">
-          <span>$ </span>
-          <AppAmount
+          <span>$</span>
+          <AppUsdBalanceAmount
             v-bind="{
-              amount: row[BalanceTableColumn.TotalUsd]
+              amount: row[BalanceTableColumn.TotalUsd].toFixed()
             }"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
           />

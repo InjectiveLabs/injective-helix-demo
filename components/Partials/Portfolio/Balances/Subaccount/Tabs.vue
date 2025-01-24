@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioCyTags } from '@/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { isSgtSubaccountId } from '@/app/utils/helpers'
 
 const props = withDefaults(
@@ -37,12 +36,9 @@ const isGridTradingAccount = computed(() =>
   isSgtSubaccountId(accountStore.subaccountId)
 )
 
-const { valueToString: accountTotalBalanceInUsdToString } =
+const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
   useSharedBigNumberFormatter(
-    computed(() => activeSubaccountTotalBalanceInUsd.value),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
+    computed(() => activeSubaccountTotalBalanceInUsd.value)
   )
 </script>
 
@@ -64,7 +60,13 @@ const { valueToString: accountTotalBalanceInUsdToString } =
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
           <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
-            ${{ accountTotalBalanceInUsdToString }}
+            <span>$</span>
+            <AppUsdBalanceAmount
+              v-bind="{
+                amount: accountTotalBalanceInUsdToBigNumber.toFixed()
+              }"
+              :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+            />
           </span>
         </CommonSkeletonSubaccountAmount>
       </p>
