@@ -2,7 +2,10 @@
 import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BTC_COIN_GECKO_ID } from '@/app/utils/constants'
+import {
+  BTC_COIN_GECKO_ID,
+  UI_DEFAULT_TOKEN_ASSET_DECIMALS
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -77,7 +80,7 @@ function onFiatOnRamp() {
             <span>≈</span>
             <CommonSkeletonSubaccountAmount>
               <CommonNumberCounter
-                :decimals="4"
+                :decimals="UI_DEFAULT_TOKEN_ASSET_DECIMALS"
                 v-bind="{
                   value: accountTotalBalanceInBtc.toNumber(),
                   size: 14

@@ -3,19 +3,16 @@ import { getExplorerUrl } from '@shared/utils/network'
 
 const slots = useSlots()
 
-const props = defineProps({
-  isHideConfetti: Boolean,
-
-  title: {
-    type: String,
-    required: true
-  },
-
-  txHash: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    title: string
+    txHash?: string
+    isHideConfetti?: boolean
+  }>(),
+  {
+    txHash: ''
   }
-})
+)
 
 const explorerUrl = computed(() => {
   if (!props.txHash) {

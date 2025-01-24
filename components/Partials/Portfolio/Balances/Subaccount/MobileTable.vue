@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UTableColumn, TransformedBalances, BalanceTableColumn } from '@/types'
 
 const props = withDefaults(
@@ -59,62 +58,65 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #available-data>
-      <AppAmount v-bind="{ amount: balance[BalanceTableColumn.Available] }" />
+      <AppBalanceAmount
+        v-bind="{ amount: balance[BalanceTableColumn.Available].toFixed() }"
+      />
     </template>
 
     <template #used-or-reserved-data>
-      <AppAmount
+      <AppBalanceAmount
         v-bind="{
           showZeroAsEmDash: true,
-          amount: balance[BalanceTableColumn.UsedOrReserved]
+          amount: balance[BalanceTableColumn.UsedOrReserved].toFixed()
         }"
       />
     </template>
 
     <template #unrealized-pnl-data>
-      <AppAmount
+      <AppBalanceAmount
         v-bind="{
           showZeroAsEmDash: true,
-          amount: balance[BalanceTableColumn.UnrealizedPnl]
+          amount: balance[BalanceTableColumn.UnrealizedPnl].toFixed()
         }"
       />
     </template>
 
     <template #total-data>
-      <AppAmount
+      <AppBalanceAmount
         v-bind="{
-          amount: balance[BalanceTableColumn.Total]
+          amount: balance[BalanceTableColumn.Total].toFixed()
         }"
       />
     </template>
 
     <template #total-usd-data>
       <div>
-        <span>$ </span>
-        <AppAmount
+        <span>$</span>
+        <AppUsdBalanceAmount
           v-bind="{
-            amount: balance[BalanceTableColumn.TotalUsd]
+            amount: balance[BalanceTableColumn.TotalUsd].toFixed()
           }"
         />
       </div>
     </template>
 
     <template #staked-data>
-      <AppAmount
+      <AppBalanceAmount
         v-bind="{
-          amount: stakedAmount.toFixed(),
-          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          amount: stakedAmount.toFixed()
         }"
       />
     </template>
 
     <template #staked-usd-data>
-      <AppAmount
-        v-bind="{
-          amount: stakedAmountInUsd.toFixed(),
-          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-        }"
-      />
+      <div>
+        <span>$</span>
+        <AppUsdBalanceAmount
+          v-bind="{
+            amount: stakedAmountInUsd.toFixed()
+          }"
+        />
+      </div>
     </template>
   </AppMobileTable>
 </template>
