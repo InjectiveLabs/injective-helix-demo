@@ -8,22 +8,18 @@ import { Modal, BusEvents, LeaderboardDuration } from '@/types'
 const modalStore = useSharedModalStore()
 const { width } = useWindowSize()
 
-const props = defineProps({
-  pnl: {
-    type: Number,
-    default: 0
-  },
-
-  rank: {
-    type: Number,
-    default: 0
-  },
-
-  selectedDuration: {
-    type: String as PropType<LeaderboardDuration>,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    pnl?: number
+    rank?: number
+    selectedDuration?: LeaderboardDuration
+  }>(),
+  {
+    pnl: 0,
+    rank: 0,
+    selectedDuration: undefined
   }
-})
+)
 
 const TIMESTAMP_FORMAT = 'yyyy-MM-dd kk:mm'
 

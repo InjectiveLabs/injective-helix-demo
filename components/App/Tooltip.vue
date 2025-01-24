@@ -3,15 +3,17 @@ import { NuxtUiIcons } from '@shared/types'
 
 withDefaults(
   defineProps<{
+    ui?: object
     isLg?: boolean
     content?: string
     isWarning?: boolean
-    contentClass?: string
     isDisabled?: boolean
+    contentClass?: string
   }>(),
   {
     isLg: false,
     content: '',
+    ui: () => ({}),
     isWarning: false,
     contentClass: '',
     isDisabled: false
@@ -26,7 +28,8 @@ withDefaults(
     :ui="{
       popper: {
         placement: 'top'
-      }
+      },
+      ...ui
     }"
   >
     <slot>
