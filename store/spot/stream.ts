@@ -17,6 +17,7 @@ import {
 } from '@/app/client/streams/spot'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
 export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
@@ -258,6 +259,10 @@ export const streamSubaccountTrades = ({
     callback: ({ trade, operation }) => {
       if (!trade) {
         return
+      }
+
+      if (trade.tradeExecutionType === TradeExecutionType.LimitFill) {
+        useEventBus(BusEvents.SpotStreamLimitTradeExecuted).emit(trade)
       }
 
       switch (operation) {
