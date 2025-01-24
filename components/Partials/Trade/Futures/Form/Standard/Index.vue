@@ -7,8 +7,8 @@ import {
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
