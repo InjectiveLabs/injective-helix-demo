@@ -1,13 +1,25 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import { UiSpotMarket, UiMarketWithToken, TradingChartInterval } from '@/types'
+import {
+  UiSpotMarket,
+  UiMarketWithToken,
+  UiDerivativeMarket,
+  TradingChartInterval
+} from '@/types'
 
 const appStore = useAppStore()
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
+    isSpot: boolean
     market: UiMarketWithToken
   }>(),
   {}
@@ -16,6 +28,7 @@ const props = withDefaults(
 const isSpot = props.market.type === SharedMarketType.Spot
 
 const status = reactive(new Status(StatusType.Loading))
+const orderStatus = reactive(new Status(StatusType.Idle))
 
 const symbol = computed(() => {
   if (!isSpot) {
@@ -33,6 +46,12 @@ const datafeedEndpoint = computed(() =>
   )
 )
 
+const limitOrders = computed(() =>
+  [...spotStore.subaccountOrders, ...derivativeStore.subaccountOrders].filter(
+    (order) => order.marketId === props.market.marketId
+  )
+)
+
 function onReady() {
   status.setIdle()
 }
@@ -46,24 +65,89 @@ function onIntervalChange(value: TradingChartInterval) {
     }
   })
 }
+
+function onLimitPriceChange({
+  order,
+  newPrice
+}: {
+  newPrice: number
+  order: SpotLimitOrder | DerivativeLimitOrder
+}) {
+  orderStatus.setLoading()
+
+  if (props.isSpot) {
+    spotStore
+      .submitChase({
+        order: order as SpotLimitOrder,
+        price: new BigNumberInBase(newPrice),
+        market: props.market as UiSpotMarket
+      })
+      .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
+      .catch($onError)
+      .finally(() => orderStatus.setIdle())
+
+    return
+  }
+
+  derivativeStore
+    .submitChase({
+      order: order as DerivativeLimitOrder,
+      price: new BigNumberInBase(newPrice),
+      market: props.market as UiDerivativeMarket
+    })
+    .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
+    .catch($onError)
+    .finally(() => orderStatus.setIdle())
+}
+
+function onLimitOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
+  orderStatus.setLoading()
+
+  if (props.isSpot) {
+    spotStore
+      .cancelOrder(order as SpotLimitOrder)
+      .then(() => {
+        notificationStore.success({ title: t('trade.order_success_canceling') })
+      })
+      .catch($onError)
+      .finally(() => orderStatus.setIdle())
+
+    return
+  }
+
+  derivativeStore
+    .cancelOrder(order as DerivativeLimitOrder)
+    .then(() =>
+      notificationStore.success({ title: t('trade.order_success_canceling') })
+    )
+    .catch($onError)
+    .finally(() => orderStatus.setIdle())
+}
 </script>
 
 <template>
-  <div ref="trading-view-wrap" class="h-full relative">
+  <div class="h-full relative">
     <AppHocLoading v-bind="{ status }" is-helix />
     <ClientOnly>
-      <PartialsTradingMarketChartTradingView
-        v-show="status.isNotLoading()"
-        ref="trading-view"
-        :symbol="symbol"
-        :interval="
-          appStore.userState.preferences.tradingChartInterval ||
-          TradingChartInterval.D
-        "
-        :datafeed-endpoint="datafeedEndpoint"
-        @ready="onReady"
-        @interval:change="onIntervalChange"
-      />
+      <AppHocLoading v-bind="{ status: orderStatus }" is-helix>
+        <PartialsTradingMarketChartTradingView
+          v-show="status.isNotLoading()"
+          v-bind="{
+            symbol: symbol,
+            isSpot: isSpot,
+            market: market,
+            datafeedEndpoint,
+            orders: limitOrders,
+            interval:
+              appStore.userState.preferences.tradingChartInterval ||
+              TradingChartInterval.D
+          }"
+          @ready="onReady"
+          @interval:change="onIntervalChange"
+          @limit-price:change="onLimitPriceChange"
+          @order:close="onLimitOrderClose"
+        />
+      </AppHocLoading>
     </ClientOnly>
   </div>
 </template>

@@ -107,7 +107,7 @@ const isLightChartMarket = computed(() =>
 
     <PartialsTradingMarketChart
       v-else-if="view === ChartViewOption.Chart"
-      v-bind="{ market }"
+      v-bind="{ market, isSpot }"
     />
 
     <PartialsTradeChartDepth v-else-if="view === ChartViewOption.Depth" />
