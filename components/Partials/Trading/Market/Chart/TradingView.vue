@@ -39,10 +39,20 @@ const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
 onMounted(() => {
-  useEventBus(BusEvents.LimitOrdersChanged).on(modifyLimitOrderLines)
-  useEventBus(BusEvents.LimitOrdersCancelled).on((order) =>
+  useEventBus(BusEvents.LimitOrdersModifyOnChart).on(modifyLimitOrderLines)
+  useEventBus(BusEvents.LimitOrdersRemoveFromChart).on((order) => {
+    if (!order) {
+      Object.values(orderLines.value).forEach((orderLine) => {
+        orderLine.remove()
+      })
+
+      orderLines.value = {}
+
+      return
+    }
+
     onRemoveOrderLines(order as SpotLimitOrder | DerivativeLimitOrder)
-  )
+  })
 
   const widgetOptions = config({
     containerId,

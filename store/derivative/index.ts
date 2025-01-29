@@ -69,6 +69,7 @@ import {
 } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
+  BusEvents,
   UiDerivativeMarket,
   UiMarketAndSummary,
   MarketMarkPriceMap,
@@ -639,6 +640,8 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountOrderHistory: initialState.subaccountOrderHistory,
         subaccountOrderHistoryCount: initialState.subaccountOrderHistoryCount
       })
+
+      useEventBus(BusEvents.LimitOrdersRemoveFromChart).emit()
     },
 
     reset() {

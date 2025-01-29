@@ -155,7 +155,7 @@ export const streamSubaccountOrders = ({
             subaccountOrdersCount: subaccountOrders.length
           })
 
-          useEventBus(BusEvents.LimitOrdersChanged).emit()
+          useEventBus(BusEvents.LimitOrdersModifyOnChart).emit()
 
           break
         }
@@ -170,7 +170,7 @@ export const streamSubaccountOrders = ({
             subaccountOrdersCount: subaccountOrders.length
           })
 
-          useEventBus(BusEvents.LimitOrdersCancelled).emit(order)
+          useEventBus(BusEvents.LimitOrdersRemoveFromChart).emit(order)
 
           break
         }

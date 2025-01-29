@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { UiSpotMarket, SpotOrdersStandardView, SpotMarketCyTags } from '@/types'
+import {
+  BusEvents,
+  UiSpotMarket,
+  SpotMarketCyTags,
+  SpotOrdersStandardView
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +39,9 @@ function refreshData() {
     spotStore.fetchSubaccountTrades(filters),
     spotStore.fetchSubaccountOrderHistory(filters),
     spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
-  ]).catch($onError)
+  ])
+    .catch($onError)
+    .finally(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
 
   spotStore.streamSubaccountOrders({
     marketId,
