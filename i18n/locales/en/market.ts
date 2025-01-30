@@ -52,6 +52,14 @@ export default {
         named('docs'),
         '.'
       ]),
+    indexMarketTooltip: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'This market follows the ',
+        named('label'),
+        '. More details can be found ',
+        named('link'),
+        '.'
+      ]),
     filters: {
       [MarketCategoryType.All]: 'All',
       [MarketCategoryType.Favorites]: 'Favorites',

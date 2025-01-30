@@ -47,8 +47,8 @@ withDefaults(
 
     <template #panel>
       <div :class="tooltipClass" class="text-xs text-coolGray-200 max-w-xs">
-        <span v-if="tooltip">{{ tooltip }}</span>
-        <slot v-else name="customTooltip" />
+        <slot v-if="$slots.customTooltip" name="customTooltip" />
+        <span v-else-if="tooltip">{{ tooltip }}</span>
       </div>
     </template>
   </UPopover>
