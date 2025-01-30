@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { newMarketsMarketIds } from '@/app/data/market'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
 
 const exchangeStore = useExchangeStore()
 
@@ -68,6 +68,7 @@ onMounted(() => {
         v-for="category in categories"
         :key="category.title"
         class="bg-brand-875 p-4 rounded-lg space-y-1"
+        :data-cy="`${dataCyTag(MarketCyTags.MarketsCard)}-${category.title}`"
       >
         <h3 class="mb-3 text-coolGray-450 text-sm">
           {{ $t(category.title) }}

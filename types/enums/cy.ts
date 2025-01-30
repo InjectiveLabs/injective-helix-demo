@@ -21,7 +21,11 @@ export enum MarketCyTags {
   MarketLastPrice = 'last-price',
   MarketPriceChange = 'price-change',
   MarketVolume = 'token-volume',
-  MarketTrade = 'trade'
+  MarketTrade = 'trade',
+  MarketCardDenoms = 'card-denoms',
+  MarketsCard = 'markets-card',
+  NewMarketsDenoms = 'new-markets-denoms',
+  MarketsCategoryType = 'category-type'
 }
 
 export enum SwapCyTags {
