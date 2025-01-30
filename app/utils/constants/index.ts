@@ -183,7 +183,3 @@ export const STOP_REASON_MAP = {
 }
 
 export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
-
-export const MARKET_IDS_TO_HIDE = [
-  '0x0314518c986964f6ae97695330b4ba4377313a11778b0dfd69525b57d66bf006'
-]
