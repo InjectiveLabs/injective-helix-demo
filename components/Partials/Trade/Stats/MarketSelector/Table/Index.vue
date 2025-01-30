@@ -127,115 +127,24 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       }"
     >
       <template #markets-data="{ row }">
-        <PartialsCommonMarketRedirection :market="row.market">
-          <div class="flex items-center truncate min-w-0">
-            <div
-              :class="{
-                '!text-blue-500': appStore.favoriteMarkets.includes(
-                  row.market.marketId
-                )
-              }"
-              class="pr-2 w-8 text-coolGray-700 hover:text-blue-700"
-              @click.stop.prevent="toggleFavorite(row)"
-            >
-              <UIcon
-                :name="NuxtUiIcons.Star"
-                class="h-6 w-6 min-w-6 align-bottom"
-              />
-            </div>
-
-            <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-
-            <div class="ml-2">
-              <div class="flex items-center gap-2">
-                <CommonHeaderTooltip
-                  v-if="row.isRWAMarket"
-                  :tooltip="$t('trade.rwa.marketClosedMarketRow')"
-                  :is-disabled="!row.isRWAMarket"
-                  is-not-styled
-                  text-color-class="text-white"
-                  :classes="
-                    row.isRWAMarket
-                      ? 'border-dashed border-b cursor-pointer'
-                      : ''
-                  "
-                  tooltip-class="text-sm"
-                  :popper="{
-                    placement: 'top',
-                    strategy: 'fixed',
-                    offsetDistance: -40
-                  }"
-                  :ui="{
-                    base: 'translate-y-2.5'
-                  }"
-                >
-                  <span
-                    :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
-                    class="text-sm"
-                  >
-                    {{ row.market.ticker }}
-                  </span>
-                </CommonHeaderTooltip>
-
-                <div v-else>
-                  <UPopover
-                    :close-delay="500"
-                    mode="hover"
-                    :popper="{
-                      placement: 'top'
-                    }"
-                    :ui="{
-                      base: 'translate-y-8 z-50 isolate'
-                    }"
-                  >
-                    <div :data-cy="dataCyTag(MarketCyTags.MarketTicker)">
-                      <span
-                        :class="{
-                          'border-b border-dashed border-white':
-                            row.indexMarketInfo
-                        }"
-                        class="text-sm"
-                      >
-                        {{ row.market.ticker }}
-                      </span>
-                    </div>
-
-                    <template v-if="row.indexMarketInfo" #panel>
-                      <div class="p-1">
-                        <i18n-t
-                          :keypath="`markets.indexMarketTooltip`"
-                          tag="p"
-                          class="text-xs"
-                        >
-                          <template #label>
-                            {{ row.indexMarketInfo.label }}
-                          </template>
-                          <template #link>
-                            <a
-                              class="text-blue-500"
-                              :href="row.indexMarketInfo.link"
-                              target="_blank"
-                              @click.stop
-                            >
-                              here
-                            </a>
-                          </template>
-                        </i18n-t>
-                      </div>
-                    </template>
-                  </UPopover>
-                </div>
-
-                <div
-                  v-if="row.leverage.gt(0)"
-                  class="text-2xs bg-blue-500 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
-                >
-                  {{ row.leverageToFixed }}x
-                </div>
-              </div>
-            </div>
+        <div class="flex items-center">
+          <div
+            :class="{
+              '!text-blue-500': appStore.favoriteMarkets.includes(
+                row.market.marketId
+              )
+            }"
+            class="pr-2 w-8 text-coolGray-700 hover:text-blue-700"
+            @click.stop.prevent="toggleFavorite(row)"
+          >
+            <UIcon
+              :name="NuxtUiIcons.Star"
+              class="h-6 w-6 min-w-6 align-bottom"
+            />
           </div>
-        </PartialsCommonMarketRedirection>
+
+          <PartialsMarketsCommonMarketInfo :market="row.market" />
+        </div>
       </template>
 
       <template #last-price-data="{ row }">
