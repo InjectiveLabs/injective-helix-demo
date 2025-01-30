@@ -183,7 +183,7 @@ export const calculateLeverage = (initialMarginRatio?: string) => {
     new BigNumberInBase(1).dividedBy(initialMarginRatio).dp(0)
   )
 
-  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
+  const steps = [1, 2, 3, 5, 10, 20, 25, 50, 100, 150, 200]
 
   const stepsLessThanMaxLeverage = steps.filter(
     (step) => step <= leverage.toNumber()
