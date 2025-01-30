@@ -7,6 +7,7 @@ export default {
     quote: 'Quote',
     market: 'Market',
     category: 'Category',
+    marketId: 'Market ID',
     whatsNew: "What's new",
     topGainer: 'Top Gainer',
     topVolume: 'Top Volume',
