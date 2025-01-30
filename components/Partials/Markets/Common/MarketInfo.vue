@@ -3,12 +3,16 @@ import { SharedMarketType } from '@shared/types'
 import {
   TradePage,
   TradeSubPage,
+  TradingInterface,
   UiDerivativeMarket,
   UiMarketWithToken
 } from '@/types'
 import { rwaMarketIds } from '@/app/data/market'
 import { INDEX_MARKETS_INFO } from '~/app/utils/constants'
 import { calculateLeverage } from '~/app/utils/formatters'
+import { derivativeGridMarkets, spotGridMarkets } from '~/app/json'
+
+const route = useRoute()
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +24,16 @@ const props = withDefaults(
   }
 )
 
+const hasGridStrategyEnabled = computed(() =>
+  [...spotGridMarkets, ...derivativeGridMarkets]
+    .map(({ slug }) => slug)
+    .includes(props.market.slug)
+)
+
+const isGridTradeInterface = computed(
+  () => route.query.interface === TradingInterface.TradingBots
+)
+
 const marketRoute = computed(() =>
   props.market.isVerified
     ? {
@@ -27,7 +41,13 @@ const marketRoute = computed(() =>
           props.market.type === SharedMarketType.Spot
             ? TradeSubPage.Spot
             : TradeSubPage.Futures,
-        params: { slug: props.market.slug }
+        params: { slug: props.market.slug },
+        query:
+          isGridTradeInterface.value && hasGridStrategyEnabled.value
+            ? {
+                interface: TradingInterface.TradingBots
+              }
+            : undefined
       }
     : {
         name: `${
@@ -70,26 +90,31 @@ const leverage = computed(() =>
       <NuxtLink :to="marketRoute" class="flex items-center gap-2 text-sm">
         <CommonTokenIcon v-bind="{ token: market.baseToken }" />
 
-        <div>
-          <p
+        <div
+          :class="{
+            'ml-1': includeName
+          }"
+        >
+          <div
             :class="{
               'border-b border-white border-dashed':
-                isRwaMarket || indexMarketInfo
+                isRwaMarket || indexMarketInfo,
+              'font-bold': includeName
             }"
-            class="uppercase"
+            class="uppercase flex items-center gap-2"
           >
-            {{ market.ticker }}
-          </p>
+            <span>{{ market.ticker }}</span>
+
+            <span
+              v-if="leverage"
+              class="text-2xs bg-blue-500 bg-opacity-20 font-semibold rounded-md text-blue-550 p-1"
+            >
+              {{ leverage }}x
+            </span>
+          </div>
           <p v-if="includeName" class="text-xs text-coolGray-500">
             {{ market.baseToken.name }}
           </p>
-        </div>
-
-        <div
-          v-if="leverage"
-          class="text-2xs bg-blue-500 bg-opacity-20 p-1 font-semibold rounded-md text-blue-550"
-        >
-          {{ leverage }}x
         </div>
       </NuxtLink>
 
