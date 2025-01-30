@@ -63,7 +63,10 @@ import {
 } from '@/app/json'
 import { marketIdsToHide } from '@/app/data/market'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import {
+  MARKET_IDS_TO_HIDE,
+  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+} from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
   UiDerivativeMarket,
@@ -217,6 +220,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const slugs = [...verifiedExpirySlugs, ...verifiedDerivativeSlugs]
 
       const uiMarkets = markets
+        .filter((market) => !MARKET_IDS_TO_HIDE.includes(market.marketId))
         .map((market) => {
           const slug = market.ticker
             .replaceAll('/', '-')
