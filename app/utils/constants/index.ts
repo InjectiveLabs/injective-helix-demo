@@ -187,3 +187,7 @@ export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
 export const MARKET_IDS_TO_HIDE = [
   '0x0314518c986964f6ae97695330b4ba4377313a11778b0dfd69525b57d66bf006'
 ]
+
+export const LIGHT_CHART_MARKET_IDS = [
+  '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
+]
