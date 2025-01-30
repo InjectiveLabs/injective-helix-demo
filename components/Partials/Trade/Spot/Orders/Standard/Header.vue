@@ -122,6 +122,7 @@ watch(
       v-model="view"
       v-bind="{ value }"
       class="flex items-center text-coolGray-450 font-medium"
+      :data-cy="`${dataCyTag(SpotMarketCyTags.OrderDetails)}-${value}`"
       :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
       active-classes="text-white"
     >

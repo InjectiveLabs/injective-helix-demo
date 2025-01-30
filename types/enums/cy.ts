@@ -84,7 +84,22 @@ export enum SpotMarketCyTags {
   CancelOrderButton = 'cancel-order-button',
   ExperimentalMarketLabel = 'experimental-market-label',
   IUnderstandButton = 'i-understand',
-  DoNotShowAgainCheckbox = 'do-not-show-again'
+  DoNotShowAgainCheckbox = 'do-not-show-again',
+  ChartHeader = 'chart-header',
+  TradeStats = 'trade-stats',
+  TradeStatsMarketSelector = 'market-selector',
+  TradeStatsInfo = 'trade-stats-info',
+  TradeStatsInfoPrice = 'trade-stats-info-price',
+  TradeStatsInfoVol = 'trade-stats-info-vol',
+  TradeStatsInfoHigh = 'trade-stats-info-high',
+  TradeStatsInfoLow = 'trade-stats-info-low',
+  OrderbookGrid = 'orderbook-grid',
+  OrderDetails = 'order-details',
+  OrderbookViewOptions = 'orderbook-view-options',
+  OrderbookMidMarkPrice = 'orderbook-mid-mark-price',
+  OrderbookGridBuys = 'orderbook-grid-buys',
+  OrderbookGridSells = 'orderbook-grid-sells',
+  OrderDetailsTable = 'order-details-table'
 }
 
 export enum PerpetualMarketCyTags {
