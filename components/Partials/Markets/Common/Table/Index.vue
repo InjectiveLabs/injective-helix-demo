@@ -6,7 +6,7 @@ import {
   MarketsTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
-import { valueSortFunction } from '~/app/utils/helpers'
+import { valueSortFunction } from '@/app/utils/helpers'
 
 const { t } = useLang()
 const appStore = useAppStore()
@@ -94,6 +94,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
 
             <div class="ml-3">
               <CommonHeaderTooltip
+                v-if="row.isRwaMarket"
                 :tooltip="$t('trade.rwa.marketClosedMarketRow')"
                 :is-disabled="!row.isRwaMarket"
                 is-not-styled
@@ -113,6 +114,55 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
                   {{ row.market.ticker }}
                 </span>
               </CommonHeaderTooltip>
+
+              <div v-else>
+                <UPopover
+                  :close-delay="500"
+                  mode="hover"
+                  :popper="{
+                    placement: 'top'
+                  }"
+                  :ui="{
+                    base: 'z-50 isolate'
+                  }"
+                >
+                  <div :data-cy="dataCyTag(MarketCyTags.MarketTicker)">
+                    <span
+                      :class="{
+                        'border-b border-dashed border-white':
+                          row.indexMarketInfo
+                      }"
+                      class="text-sm"
+                    >
+                      {{ row.market.ticker }}
+                    </span>
+                  </div>
+
+                  <template v-if="row.indexMarketInfo" #panel>
+                    <div class="p-1">
+                      <i18n-t
+                        :keypath="`markets.indexMarketTooltip`"
+                        tag="p"
+                        class="text-xs"
+                      >
+                        <template #label>
+                          {{ row.indexMarketInfo.label }}
+                        </template>
+                        <template #link>
+                          <a
+                            class="text-blue-500"
+                            :href="row.indexMarketInfo.link"
+                            target="_blank"
+                            @click.stop
+                          >
+                            here
+                          </a>
+                        </template>
+                      </i18n-t>
+                    </div>
+                  </template>
+                </UPopover>
+              </div>
 
               <div class="flex items-center gap-1">
                 <div
