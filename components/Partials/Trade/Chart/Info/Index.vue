@@ -47,7 +47,7 @@ const description = computed(() => {
 
 <template>
   <div v-if="market" class="lg:flex overflow-y-auto">
-    <div class="flex-1 p-8">
+    <div class="basis-[500px] p-8">
       <div class="flex">
         <div class="flex items-center pr-4">
           <CommonTokenIcon v-bind="{ token: market.baseToken }" />
@@ -88,6 +88,14 @@ const description = computed(() => {
       <div v-if="!isSpot" class="flex justify-between border-b pb-1">
         <p>{{ $t('trade.maxLeverage') }}:</p>
         <p>{{ maxLeverage }}</p>
+      </div>
+
+      <div class="flex justify-between border-b pb-1 gap-8">
+        <p>
+          <span class="whitespace-nowrap">{{ $t('markets.marketId') }}:</span>
+        </p>
+
+        <p class="truncate">{{ market.marketId }}</p>
       </div>
     </div>
   </div>
