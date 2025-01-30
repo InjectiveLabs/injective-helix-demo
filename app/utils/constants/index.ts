@@ -191,3 +191,12 @@ export const MARKET_IDS_TO_HIDE = [
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
 ]
+
+export const INDEX_MARKETS_INFO = [
+  {
+    marketId:
+      '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82',
+    label: '$AIX Index',
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index'
+  }
+]

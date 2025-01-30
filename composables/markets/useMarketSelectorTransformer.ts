@@ -9,6 +9,7 @@ import {
   MarketsSelectorTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
+import { INDEX_MARKETS_INFO } from '~/app/utils/constants'
 
 export function useMarketSelectorTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>,
@@ -52,6 +53,10 @@ export function useMarketSelectorTransformer(
 
       const formattedChange = changePrefix + change
 
+      const indexMarketInfo = INDEX_MARKETS_INFO.find(
+        (market) => market.marketId === item.market.marketId
+      )
+
       return {
         leverage,
         formattedChange,
@@ -61,6 +66,7 @@ export function useMarketSelectorTransformer(
           0,
           BigNumberInBase.ROUND_DOWN
         ),
+        indexMarketInfo,
         isRWAMarket: rwaMarketIds.includes(item.market.marketId),
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
