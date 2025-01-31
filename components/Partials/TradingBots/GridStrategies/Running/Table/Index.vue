@@ -11,7 +11,7 @@ import {
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 const { t } = useLang()
 const { subaccountPortfolioBalanceMap } = useBalance()
 

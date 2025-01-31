@@ -14,7 +14,7 @@ import {
 
 const gridStrategyStore = useGridStrategyStore()
 const { subaccountPortfolioBalanceMap } = useBalance()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 const { t } = useLang()
 
 const isOpen = ref(false)
