@@ -2,7 +2,7 @@
 import { SharedDropdownOption } from '@shared/types'
 import { PerpetualMarketCyTags, PerpOrdersTradingBotsView } from '@/types'
 
-const breakpoints = useBreakpointsTw()
+const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
 
