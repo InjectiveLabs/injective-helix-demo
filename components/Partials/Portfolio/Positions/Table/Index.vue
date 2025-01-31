@@ -6,8 +6,8 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
-const breakpoints = useBreakpointsTw()
+const { lg } = useSharedBreakpoints()
+const breakpoints = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{

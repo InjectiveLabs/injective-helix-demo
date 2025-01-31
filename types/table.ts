@@ -230,11 +230,11 @@ export interface TransformedBalances {
   isBridgable: boolean
   isStakingRow: boolean
   hasNoActionButtons: boolean
-  [BalanceTableColumn.Total]: string
-  [BalanceTableColumn.TotalUsd]: string
-  [BalanceTableColumn.Available]: string
-  [BalanceTableColumn.UnrealizedPnl]: string
-  [BalanceTableColumn.UsedOrReserved]: string
+  [BalanceTableColumn.Total]: BigNumberInBase
+  [BalanceTableColumn.TotalUsd]: BigNumberInBase
+  [BalanceTableColumn.Available]: BigNumberInBase
+  [BalanceTableColumn.UnrealizedPnl]: BigNumberInBase
+  [BalanceTableColumn.UsedOrReserved]: BigNumberInBase
 }
 
 export interface TransformedMarkets {

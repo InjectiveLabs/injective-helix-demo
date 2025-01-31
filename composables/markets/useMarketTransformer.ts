@@ -2,6 +2,7 @@ import { SharedMarketChange } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { rwaMarketIds } from '@/app/data/market'
 import { MarketsTableColumn, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { INDEX_MARKETS_INFO } from '~/app/utils/constants'
 
 export function useMarketTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>
@@ -23,7 +24,12 @@ export function useMarketTransformer(
 
       const formattedChange = changePrefix + change
 
+      const indexMarketInfo = INDEX_MARKETS_INFO.find(
+        (market) => market.marketId === item.market.marketId
+      )
+
       return {
+        indexMarketInfo,
         formattedChange,
         market: item.market,
         summary: item.summary,

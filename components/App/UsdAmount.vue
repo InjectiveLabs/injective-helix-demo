@@ -13,8 +13,8 @@ const props = withDefaults(
     isShowNoDecimals?: boolean
   }>(),
   {
-    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     shouldTruncate: false,
+    maxTrailingZeros: MAX_QUOTE_DECIMALS,
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )

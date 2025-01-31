@@ -6,11 +6,11 @@ import {
   MarketsTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
-import { valueSortFunction } from '~/app/utils/helpers'
+import { valueSortFunction } from '@/app/utils/helpers'
 
 const { t } = useLang()
 const appStore = useAppStore()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
@@ -85,60 +85,7 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       }"
     >
       <template #markets-data="{ row }">
-        <PartialsCommonMarketRedirection
-          :market="row.market"
-          class="flex items-center"
-        >
-          <div class="w-full flex items-center truncate">
-            <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-
-            <div class="ml-3">
-              <CommonHeaderTooltip
-                :tooltip="$t('trade.rwa.marketClosedMarketRow')"
-                :is-disabled="!row.isRwaMarket"
-                is-not-styled
-                text-color-class="text-white"
-                :classes="
-                  row.isRwaMarket ? 'border-dashed border-b cursor-pointer' : ''
-                "
-                tooltip-class="text-xs"
-                :ui="{
-                  base: 'translate-y-2'
-                }"
-              >
-                <span
-                  class="text-sm font-bold"
-                  :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
-                >
-                  {{ row.market.ticker }}
-                </span>
-              </CommonHeaderTooltip>
-
-              <div class="flex items-center gap-1">
-                <div
-                  class="text-xs font-normal text-[#8E919A]"
-                  :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
-                    row.market.baseToken.name
-                  }`"
-                >
-                  {{ row.market.baseToken.name }}
-                </div>
-
-                <div v-if="!row.isVerified">
-                  <UTooltip
-                    :text="$t('markets.permisionlessWarning')"
-                    class="flex"
-                  >
-                    <UIcon
-                      name="clarity:shield-line"
-                      class="text-gray-400 size-3"
-                    />
-                  </UTooltip>
-                </div>
-              </div>
-            </div>
-          </div>
-        </PartialsCommonMarketRedirection>
+        <PartialsMarketsCommonMarketInfo :market="row.market" include-name />
       </template>
 
       <template #last-price-data="{ row }">

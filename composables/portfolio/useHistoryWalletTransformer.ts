@@ -1,7 +1,11 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInWei, formatWalletAddress } from '@injectivelabs/utils'
-import { DATE_TIME_DISPLAY } from '@/app/utils/constants'
+import { BigNumberInWei } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import {
+  DATE_TIME_DISPLAY,
+  DEFAULT_TRUNCATE_LENGTH
+} from '@/app/utils/constants'
 import {
   HistoryWalletTableColumn,
   UiSubaccountTransactionWithToken
@@ -35,8 +39,14 @@ export function useHistoryWalletTransformer(
       return {
         transaction,
         transferType,
-        formattedOrigin: formatWalletAddress(transaction.sender),
-        formattedDestination: formatWalletAddress(transaction.receiver),
+        formattedOrigin: sharedEllipsisFormatText(
+          transaction.sender,
+          DEFAULT_TRUNCATE_LENGTH
+        ),
+        formattedDestination: sharedEllipsisFormatText(
+          transaction.receiver,
+          DEFAULT_TRUNCATE_LENGTH
+        ),
         [HistoryWalletTableColumn.Time]: time,
         [HistoryWalletTableColumn.Amount]: amount
       }

@@ -100,6 +100,7 @@ export default {
     priceDeviation: 'Price Deviation',
     orderStatus: 'Order Status',
     amount: 'Amount',
+    size: 'Size',
     tickerOnly: '{ticker} only',
     advancedSettings: 'Advanced Settings',
     totalNotional: 'Total Notional',
@@ -559,6 +560,21 @@ export default {
     },
 
     yes: 'Yes',
-    no: 'No'
+    no: 'No',
+
+    tradeToast: {
+      bought: ({ named }: I18nMessageFunction) =>
+        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
+          'symbol'
+        )} bought at average price \${{usdPrice:${named('usdPrice')}-${named(
+          'usdPriceDecimals'
+        )}}}`,
+      sold: ({ named }: I18nMessageFunction) =>
+        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
+          'symbol'
+        )} sold at average price \${{usdPrice:${named('usdPrice')}-${named(
+          'usdPriceDecimals'
+        )}}}`
+    }
   }
 }

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
-const { sm } = useTwBreakpoints()
+const { sm } = useSharedBreakpoints()
 
 withDefaults(
   defineProps<{

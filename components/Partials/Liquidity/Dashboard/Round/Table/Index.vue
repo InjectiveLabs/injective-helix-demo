@@ -4,7 +4,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage, LiquidityDashboardTableColumn } from '@/types'
 
 const { t } = useLang()
-const { lg } = useTwBreakpoints()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{ isActive: boolean; campaigns: Campaign[] }>(),

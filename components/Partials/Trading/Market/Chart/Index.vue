@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { SharedMarketType } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import { UiSpotMarket, UiMarketWithToken } from '@/types'
+import { UiSpotMarket, UiMarketWithToken, TradingChartInterval } from '@/types'
+
+const appStore = useAppStore()
 
 const props = withDefaults(
   defineProps<{
@@ -12,7 +14,6 @@ const props = withDefaults(
 )
 
 const isSpot = props.market.type === SharedMarketType.Spot
-const interval = '1D'
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -21,11 +22,9 @@ const symbol = computed(() => {
     return props.market.ticker
   }
 
-  const spotTicker = `${(props.market as UiSpotMarket).baseDenom}/${
+  return `${(props.market as UiSpotMarket).baseDenom}/${
     (props.market as UiSpotMarket).quoteDenom
   }`
-
-  return spotTicker.replaceAll('ibc/', 'ibc@')
 })
 
 const datafeedEndpoint = computed(() =>
@@ -37,6 +36,16 @@ const datafeedEndpoint = computed(() =>
 function onReady() {
   status.setIdle()
 }
+
+function onIntervalChange(value: TradingChartInterval) {
+  appStore.setUserState({
+    ...appStore.userState,
+    preferences: {
+      ...appStore.userState.preferences,
+      tradingChartInterval: value
+    }
+  })
+}
 </script>
 
 <template>
@@ -46,10 +55,14 @@ function onReady() {
       <PartialsTradingMarketChartTradingView
         v-show="status.isNotLoading()"
         ref="trading-view"
-        :interval="interval"
         :symbol="symbol"
+        :interval="
+          appStore.userState.preferences.tradingChartInterval ||
+          TradingChartInterval.D
+        "
         :datafeed-endpoint="datafeedEndpoint"
         @ready="onReady"
+        @interval:change="onIntervalChange"
       />
     </ClientOnly>
   </div>

@@ -21,6 +21,9 @@ export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
 export const UI_DEFAULT_PRICE_MIN_DECIMALS = 10
 export const UI_DEFAULT_PRICE_MAX_DECIMALS = 0.00001
 
+export const UI_DEFAULT_LEVERAGE = '1'
+export const UI_AMOUNT_ABBREVIATION_FLOOR = 1_000_000
+
 export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
 export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
 export const UI_MINIMAL_AMOUNT = new BigNumber(1).shiftedBy(
@@ -89,6 +92,7 @@ export const MAX_SYMBOL_LENGTH = 6
 export const SYMBOL_DISPLAY_LENGTH = 3
 
 export const DUST_AMOUNT_THRESHOLD = 1
+export const DEFAULT_TRUNCATE_LENGTH = 6
 
 export const GST_MINIMUM_GRIDS = 3
 export const GST_MAXIMUM_GRIDS = 150
@@ -179,3 +183,20 @@ export const STOP_REASON_MAP = {
 }
 
 export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
+
+export const MARKET_IDS_TO_HIDE = [
+  '0x0314518c986964f6ae97695330b4ba4377313a11778b0dfd69525b57d66bf006'
+]
+
+export const LIGHT_CHART_MARKET_IDS = [
+  '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
+]
+
+export const INDEX_MARKETS_INFO = [
+  {
+    marketId:
+      '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82',
+    label: '$AIX Index',
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index'
+  }
+]

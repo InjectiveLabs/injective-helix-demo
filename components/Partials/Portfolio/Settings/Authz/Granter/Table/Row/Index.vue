@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
-import { formatWalletAddress } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 
 const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
-    grants: GrantAuthorizationWithDecodedAuthorization[]
     granter: string
+    grants: GrantAuthorizationWithDecodedAuthorization[]
   }>(),
   {}
 )
@@ -27,7 +28,9 @@ function connectAuthZ() {
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
     <div class="flex-1 flex items-center p-2">
-      <span class="font-mono">{{ formatWalletAddress(granter) }}</span>
+      <span class="font-mono">
+        {{ sharedEllipsisFormatText(granter, DEFAULT_TRUNCATE_LENGTH) }}
+      </span>
     </div>
 
     <div class="xs:flex-1 max-xs:w-10 flex items-center p-2">

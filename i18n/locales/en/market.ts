@@ -7,6 +7,7 @@ export default {
     quote: 'Quote',
     market: 'Market',
     category: 'Category',
+    marketId: 'Market ID',
     whatsNew: "What's new",
     topGainer: 'Top Gainer',
     topVolume: 'Top Volume',
@@ -49,6 +50,14 @@ export default {
       interpolate([
         'This product is an Index Perp. For more information, please refer to the ',
         named('docs'),
+        '.'
+      ]),
+    indexMarketTooltip: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'This market follows the ',
+        named('label'),
+        '. More details can be found ',
+        named('link'),
         '.'
       ]),
     filters: {

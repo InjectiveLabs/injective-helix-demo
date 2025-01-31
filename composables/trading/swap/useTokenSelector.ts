@@ -47,7 +47,7 @@ export function useSwapTokenSelector({
             token: outputToken,
             denom: route.targetDenom,
             balance: outputBalance?.availableBalance || '0',
-            usdPrice: tokenStore.tokenUsdPrice(inputToken)
+            usdPrice: tokenStore.tokenUsdPrice(outputToken)
           } as SharedBalanceWithTokenAndPrice
 
           if (!inputTokenWithBalance.token || !outputTokenWithBalance.token) {

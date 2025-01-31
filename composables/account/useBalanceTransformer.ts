@@ -1,9 +1,9 @@
 import { injToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { INJ_DENOM, BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance, BalanceTableColumn } from '@/types'
 
 export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
@@ -74,31 +74,17 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         isStakingRow: false,
         token: balance.token,
         isVerified: balance.isVerified,
-        [BalanceTableColumn.Total]: totalAmount.toFixed(
-          UI_DEFAULT_DISPLAY_DECIMALS,
-          BigNumberInBase.ROUND_DOWN
-        ),
+        [BalanceTableColumn.Total]: totalAmount,
         [BalanceTableColumn.Available]: availableAmount.eq(0)
-          ? ''
-          : availableAmount.toFixed(
-              UI_DEFAULT_DISPLAY_DECIMALS,
-              BigNumberInBase.ROUND_DOWN
-            ),
+          ? ZERO_IN_BASE
+          : availableAmount,
         [BalanceTableColumn.UnrealizedPnl]: unrealizedPnl.eq(0)
-          ? ''
-          : unrealizedPnl.toFixed(
-              UI_DEFAULT_DISPLAY_DECIMALS,
-              BigNumberInBase.ROUND_DOWN
-            ),
+          ? ZERO_IN_BASE
+          : unrealizedPnl,
         [BalanceTableColumn.UsedOrReserved]: usedOrReserved.eq(0)
-          ? ''
-          : usedOrReserved.toFixed(
-              UI_DEFAULT_DISPLAY_DECIMALS,
-              BigNumberInBase.ROUND_DOWN
-            ),
-        [BalanceTableColumn.TotalUsd]: new BigNumberInBase(
-          totalAmountInUsd
-        ).toFixed(UI_DEFAULT_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
+          ? ZERO_IN_BASE
+          : usedOrReserved,
+        [BalanceTableColumn.TotalUsd]: new BigNumberInBase(totalAmountInUsd)
       }
     })
   })

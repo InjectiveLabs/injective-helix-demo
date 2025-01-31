@@ -25,6 +25,21 @@ const pairs = [
     slug: 'ftm-usdt-perp',
     marketId:
       '0x4be4791338907626dd77a806c6e4dff76d1428768080fe232f32ef990c8d064f'
+  },
+  {
+    slug: 'jup-usdt-perp',
+    marketId:
+      '0x03841e74624fd885d1ee28453f921d18c211e78a0d7646c792c7903054eb152c'
+  },
+  {
+    slug: 'popcat-usdt-perp',
+    marketId:
+      '0x8157dd4bf502fc688aaa722c725124da3f411d7a92c569d55f34826f9ee040a9'
+  },
+  {
+    slug: 'mother-usdt-perp',
+    marketId:
+      '0xa9ff3263c6a23bd1effb92f663bd8a1c9f9fa25f83f02c45364f92d77473827b'
   }
 ]
 

@@ -3,6 +3,7 @@ import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { rwaSlugs } from '@/app/json'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
@@ -104,7 +105,7 @@ const currentFormValues = computed(
         derivativeFormValues.value[DerivativesTradeFormField.Slippage],
       [DerivativesTradeFormField.IsSlippageOn]:
         derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn],
-      [DerivativesTradeFormField.Leverage]: '1'
+      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE
     }) as DerivativesTradeForm
 )
 

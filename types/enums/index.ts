@@ -172,9 +172,10 @@ export enum BusEvents {
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
-
+  SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened'
+  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
+  DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
 }
 
 export enum ActivityField {
@@ -593,4 +594,18 @@ export enum MarketQuoteType {
   USDT = 'usdt',
   USDC = 'usdc',
   INJ = 'inj'
+}
+
+export enum TradingChartInterval {
+  '1m' = '1',
+  '3m' = '3',
+  '5m' = '5',
+  '15m' = '15',
+  '30m' = '30',
+  '1h' = '60',
+  '2h' = '120',
+  '4h' = '240',
+  '6h' = '360',
+  'D' = '1D',
+  'W' = '1W'
 }

@@ -66,6 +66,16 @@ onMounted(() => {
 
 <template>
   <div class="relative lg:mb-16 gsap-section">
+    <img
+      src="/svg/blurs/blur-1.svg"
+      class="absolute bottom-32 -right-[50%] -rotate-180 blur-xl"
+    />
+
+    <img
+      src="/svg/blurs/blur-1.svg"
+      class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl"
+    />
+
     <div id="overview-section" class="relative my-8 lg:py-20">
       <div>
         <div class="pb-4">

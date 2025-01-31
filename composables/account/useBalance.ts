@@ -117,7 +117,13 @@ function getDenomPositionMap(positions: PositionV2[]) {
   )
 }
 
-export function useBalance() {
+export function useBalance(
+  {
+    showUnverifiedAssetsOverride
+  }: {
+    showUnverifiedAssetsOverride: boolean
+  } = { showUnverifiedAssetsOverride: false }
+) {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const accountStore = useAccountStore()
@@ -256,6 +262,7 @@ export function useBalance() {
       ).reduce((total, balance) => {
         if (
           !showUnverifiedAssets.value &&
+          !showUnverifiedAssetsOverride &&
           !tradeableDenoms.includes(balance.denom)
         ) {
           return total
@@ -290,6 +297,7 @@ export function useBalance() {
 
         if (
           !showUnverifiedAssets.value &&
+          !showUnverifiedAssetsOverride &&
           !tradeableDenoms.includes(balance.denom)
         ) {
           return total

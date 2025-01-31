@@ -120,6 +120,14 @@ const supportList = [
 
         <div class="flex items-center">
           <a
+            class="w-6 h-6 text-coolGray-500 rounded-full hover:text-blue-500 mr-4"
+            href="https://x.com/helixapp_"
+            target="_blank"
+          >
+            <UIcon :name="NuxtUiIcons.TwitterX" class="h-6 w-6 min-w-6" />
+          </a>
+
+          <a
             class="w-6 h-6 mr-4"
             href="https://discord.com/invite/helixapp"
             target="_blank"
@@ -129,14 +137,6 @@ const supportList = [
             >
               <UIcon :name="NuxtUiIcons.Discord" class="h-4 w-4 min-w-4" />
             </div>
-          </a>
-
-          <a
-            class="w-6 h-6 text-coolGray-500 hover:text-blue-500 mr-4"
-            href="https://twitter.com/helixapp_"
-            target="_blank"
-          >
-            <UIcon :name="NuxtUiIcons.TwitterCircle" class="h-6 w-6 min-w-6" />
           </a>
 
           <a

@@ -20,17 +20,6 @@ BigNumber.config({
   }
 })
 
-export const formatWalletAddress = (address: string): string => {
-  if (address.length <= 10) {
-    return address
-  }
-
-  return `${address.slice(0, 6)}...${address.slice(
-    address.length - 6,
-    address.length
-  )}`
-}
-
 export function formatAmount(
   amount: BigNumberInBase,
   displayDecimals: number
@@ -194,7 +183,7 @@ export const calculateLeverage = (initialMarginRatio?: string) => {
     new BigNumberInBase(1).dividedBy(initialMarginRatio).dp(0)
   )
 
-  const steps = [1, 2, 3, 5, 10, 20, 50, 100, 150, 200]
+  const steps = [1, 2, 3, 5, 10, 20, 25, 50, 100, 150, 200]
 
   const stepsLessThanMaxLeverage = steps.filter(
     (step) => step <= leverage.toNumber()
@@ -207,4 +196,27 @@ export const calculateLeverage = (initialMarginRatio?: string) => {
   return new BigNumberInBase(
     stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
   )
+}
+
+export const roundDustAmount = ({
+  value,
+  decimalPlaces
+}: {
+  value: string
+  decimalPlaces: number
+}) => {
+  const valueInBase = new BigNumberInBase(value)
+
+  if (valueInBase.gte(0.01)) {
+    return valueInBase.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)
+  }
+
+  const leadingZeros = value.match(/(0+\.0*)/)?.[0] || '0'
+  const dustAmount = new BigNumberInBase(
+    `0.${value.slice(leadingZeros.length).slice(0, decimalPlaces)}`
+  )
+    .toFixed(decimalPlaces)
+    .replace('0.', '')
+
+  return `${leadingZeros}${dustAmount}`
 }
