@@ -223,4 +223,13 @@ export const defineTradeRules = () => {
       return true
     }
   )
+
+  defineRule('markPriceThresholdError', (_: string, [isError]: string[]) => {
+    const isMarkPriceThresholdError = isError === 'true'
+
+    if (isMarkPriceThresholdError) {
+      return 'Please modify price, amount, or leverage to meet mark price requirement'
+    }
+    return true
+  })
 }

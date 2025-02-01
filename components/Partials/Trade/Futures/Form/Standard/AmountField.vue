@@ -34,14 +34,17 @@ const validateTriggerField = useValidateField(
 )
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
+const { markPrice } = useDerivativeLastPrice(market)
+
 const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
   defineProps<{
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+    marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
   }>(),
   {}
@@ -94,6 +97,16 @@ const {
   })
 )
 
+const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
+  isBuy,
+  market,
+  markPrice,
+  formValues: derivativeFormValues,
+  price: computed(() => props.worstPrice),
+  quantity: computed(() => props.quantity),
+  marginWithFee: computed(() => props.marginWithFee)
+})
+
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
   initialValue: TradeAmountOption.Base
@@ -107,11 +120,13 @@ const {
   name: DerivativesTradeFormField.Amount,
   initialValue: '',
   dynamicRule: computed(() => {
+    const markPriceThresholdError = `markPriceThresholdError:${isMarkPriceThresholdError.value}`
+
     if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
       const maxAmount = activePosition.value?.quantity
       const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule, markPriceThresholdError]
 
       return rules.join('|')
     } else {
@@ -120,7 +135,7 @@ const {
 
       const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
 
-      const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule, markPriceThresholdError]
 
       if (typeValue.value === TradeAmountOption.Quote) {
         rules.push(minAmountRule)
