@@ -5,6 +5,7 @@ import {
   DEFAULT_TRUNCATE_LENGTH,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { LeaderBoardCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -43,7 +44,10 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         v-else
         class="-ml-0.5 md:-ml-2 min-w-6 h-6 w-6 md:min-w-10 md:w-10 md:h-10"
       >
-        <img :src="`/images/leaderboard/rank-${leader.rank}.svg`" />
+        <img
+          :src="`/images/leaderboard/rank-${leader.rank}.svg`"
+          :data-cy="dataCyTag(LeaderBoardCyTags.rankLogo)"
+        />
       </div>
     </div>
 
@@ -55,6 +59,7 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         <span
           class="hidden lg:block"
           :class="[leader.rank > 3 ? 'text-sm' : 'text-sm xl:text-base']"
+          :data-cy="dataCyTag(LeaderBoardCyTags.rankAddress)"
         >
           {{ leader.account }}
         </span>
@@ -62,7 +67,10 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <span class="text-[13px] md:text-sm mr-4">
+      <span
+        class="text-[13px] md:text-sm mr-4"
+        :data-cy="dataCyTag(LeaderBoardCyTags.rankPnl)"
+      >
         {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
       </span>
     </div>

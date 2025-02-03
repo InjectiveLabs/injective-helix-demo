@@ -2,7 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
-import { MainPage, LeaderboardSubPage } from '@/types'
+import { MainPage, LeaderboardSubPage, LeaderBoardCyTags } from '@/types'
 
 const route = useRoute()
 const campaignStore = useCampaignStore()
@@ -83,7 +83,10 @@ function fetchCampaigns() {
     <div class="container lg:px-[120px] mx-auto text-center relative">
       <AppHocLoading v-bind="{ status, isFullScreen: true }">
         <section class="flex flex-col space-y-2 pt-12 pb-7 md:py-40">
-          <div class="uppercase font-rubik font-black text-3xl md:text-6xl">
+          <div
+            class="uppercase font-rubik font-black text-3xl md:text-6xl"
+            :data-cy="dataCyTag(LeaderBoardCyTags.title)"
+          >
             {{ $t('leaderboard.title') }}
           </div>
           <div class="max-sm:text-xs">
@@ -112,6 +115,7 @@ function fetchCampaigns() {
                     'border-b-4 border-blue-500 text-blue-500 inline-block mx-2':
                       route.name === page.pageName
                   }"
+                  :data-cy="dataCyTag(LeaderBoardCyTags.pageName)"
                 >
                   {{ $t(`leaderboard.tabs.${page.pageName}`) }}
                 </span>

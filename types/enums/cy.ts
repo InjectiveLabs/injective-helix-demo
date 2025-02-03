@@ -185,3 +185,14 @@ export enum VaultsCyTags {
   tvl = 'tvl',
   apy = 'apy'
 }
+
+export enum LeaderBoardCyTags {
+  title = 'title',
+  pageName = 'page-name',
+  duration = 'duration',
+  rankLogo = 'rank-logo',
+  rankAddress = 'rank-address',
+  rankPnl = 'rank-pnl',
+  startTrading = 'start-trading',
+  timestamp = 'timestamp'
+}
