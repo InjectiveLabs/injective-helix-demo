@@ -2173,10 +2173,10 @@
   resolved "https://registry.yarnpkg.com/@injectivelabs/prettier-config/-/prettier-config-1.0.3.tgz#b112f3944fc332f42a54d14bbf3e82db65234ba4"
   integrity sha512-WvzCXTJZp2h0K21Q94W5SkjZJVE5hFJsXe6IHXXipuOPBouaO5PMYReUzp2nKe+Xuw2clbh3F+c1n2x7aes5Bg==
 
-"@injectivelabs/sdk-ts@1.14.41-beta.5", "@injectivelabs/sdk-ts@^1.14.41-beta.5":
-  version "1.14.41-beta.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.41-beta.5.tgz#7bf208618b2b2d11e753260b650d7ad88f4dae2f"
-  integrity sha512-y6KwJXR4kT5KLqQ0FSEtTVPYf1Y8Rd+JMXFN39tLBbzKzMijsXFVr4+A5OuMFADCTYlanW6jMNTVDWCGOGhHdQ==
+"@injectivelabs/sdk-ts@1.14.41-beta.6", "@injectivelabs/sdk-ts@^1.14.41-beta.6":
+  version "1.14.41-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/sdk-ts/-/sdk-ts-1.14.41-beta.6.tgz#98991fd502b8b1f38235574ed1498571c9564f83"
+  integrity sha512-9IDv1zQOkp+D3jb+HLQJLcwc25JdPLKaN2c+BOdJi0IeNSz91ftV3U9jP03fjVOWv21aWEsEGYqJrs8UWqNeJg==
   dependencies:
     "@apollo/client" "^3.11.10"
     "@cosmjs/amino" "^0.32.3"
@@ -2277,10 +2277,10 @@
     snakecase-keys "^5.1.2"
     store2 "^2.12.0"
 
-"@injectivelabs/wallet-ts@1.14.41-beta.5":
-  version "1.14.41-beta.5"
-  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.41-beta.5.tgz#0b729b856974464db388a01f43ae390bed73ab5e"
-  integrity sha512-aKcfAVo8Pi+54kNYHogIv5HFdewKGN8rvDYcYCLotzyYiKuzjohYyPqM76yd6O/yUq7uaHOBTDPsUXIc8RZ19g==
+"@injectivelabs/wallet-ts@1.14.41-beta.6":
+  version "1.14.41-beta.6"
+  resolved "https://registry.yarnpkg.com/@injectivelabs/wallet-ts/-/wallet-ts-1.14.41-beta.6.tgz#e73bde742a57ea6f187c25a9acd8d64dcbeb42f5"
+  integrity sha512-3tnnnDJ1irGQbeJFiJOa3PZSwcZh6mO8kYLroxOFCeBwzemkjOqqFx6I1JaJv8aMISXYQ6tGBMF+3y4eHhMekg==
   dependencies:
     "@cosmjs/launchpad" "0.27.1"
     "@cosmjs/proto-signing" "0.32.2"
@@ -2290,7 +2290,7 @@
     "@ethereumjs/tx" "^4.1.1"
     "@injectivelabs/exceptions" "^1.14.40"
     "@injectivelabs/networks" "^1.14.41-beta.1"
-    "@injectivelabs/sdk-ts" "^1.14.41-beta.5"
+    "@injectivelabs/sdk-ts" "^1.14.41-beta.6"
     "@injectivelabs/ts-types" "^1.14.40"
     "@injectivelabs/utils" "^1.14.40"
     "@keplr-wallet/cosmos" "^0.12.71"
@@ -16011,16 +16011,16 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#f2bbc06d9af2279972ff8fe1238dbb9a7161baa2"
+  resolved "https://github.com/InjectiveLabs/shared-packages#618919beb73c7039e696aa2eefb21665b34d519c"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.36-beta.5"
     "@injectivelabs/networks" "1.14.41-beta.1"
     "@injectivelabs/nuxt-bugsnag" "0.0.12"
-    "@injectivelabs/sdk-ts" "1.14.41-beta.5"
+    "@injectivelabs/sdk-ts" "1.14.41-beta.6"
     "@injectivelabs/ts-types" "1.14.34-beta.2"
     "@injectivelabs/utils" "1.14.36-beta.5"
-    "@injectivelabs/wallet-ts" "1.14.41-beta.5"
+    "@injectivelabs/wallet-ts" "1.14.41-beta.6"
     "@nuxtjs/i18n" "8.5.5"
     "@types/canvas-confetti" "^1.6.4"
     "@vuepic/vue-datepicker" "^5.4.0"
