@@ -178,3 +178,10 @@ export enum PortfolioCyTags {
   BalanceTotalAmount = 'total-amount',
   BalanceTotalValue = 'total-value'
 }
+
+export enum VaultsCyTags {
+  title = 'title',
+  denoms = 'denoms',
+  tvl = 'tvl',
+  apy = 'apy'
+}
