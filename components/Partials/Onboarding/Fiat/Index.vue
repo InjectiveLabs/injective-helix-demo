@@ -46,7 +46,7 @@ onMounted(() => {
 
 <template>
   <div class="text-center">
-    <h2 class="font-semibold text-xl -mt-4 text-white">
+    <h2 class="font-semibold text-xl pt-2 text-white">
       {{ $t('onboarding.depositInjNetworkAsset') }}
     </h2>
 

@@ -25,12 +25,8 @@ const explorerUrl = computed(() => {
   return `${getExplorerUrl()}/transaction/${props.txHash}`
 })
 
-function closeModal() {
-  modalStore.closeModal(Modal.SwapSuccess)
-}
-
 function onModalClose() {
-  closeModal()
+  modalStore.closeModal(Modal.SwapSuccess)
 }
 
 watch(isModalOpen, (isModalOpen: boolean) => {
@@ -51,16 +47,13 @@ watch(isModalOpen, (isModalOpen: boolean) => {
       status.setIdle()
     })
 })
-
-const TREASURE_HUNT_BEGIN_TIMESTAMP = 1735207200
-const TREASURE_HUNT_END_TIMESTAMP = 1735761600
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-model="modalStore.modals[Modal.SwapSuccess]">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative p-8">
-        <SharedRainConfetti class="absolute inset-0 h-48 -mt-9 w-full" />
+        <SharedRainConfetti class="absolute inset-0 h-48 -mt-6 w-full" />
 
         <AppLottie
           v-bind="{ name: 'circle-check-border' }"
@@ -101,17 +94,6 @@ const TREASURE_HUNT_END_TIMESTAMP = 1735761600
           >
             {{ $t('trade.swap.backToSwap') }}
           </AppButton>
-
-          <p
-            v-if="
-              new Date().getTime() > TREASURE_HUNT_BEGIN_TIMESTAMP * 1000 &&
-              new Date().getTime() < TREASURE_HUNT_END_TIMESTAMP * 1000
-            "
-            class="font-bold text-lg mt-2"
-          >
-            <!-- TODO: Remove When Treasure Hunt Ends -->
-            Mattress
-          </p>
         </div>
       </div>
     </AppHocLoading>

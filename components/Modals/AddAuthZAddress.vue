@@ -17,8 +17,6 @@ const { validate } = useForm<{
 const msgs = ref(TRADING_MESSAGES)
 const status = reactive(new Status(StatusType.Idle))
 
-const isOpen = computed(() => modalStore.modals[Modal.AddGrantee])
-
 const { value: addressValue, errorMessage } = useStringField({
   name: 'address',
   rule: 'required|injAddress'
@@ -52,7 +50,10 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal is-md v-bind="{ isOpen }" @modal:closed="closeModal">
+  <AppModal
+    v-model="modalStore.modals[Modal.AddGrantee]"
+    v-bind="{ isMd: true }"
+  >
     <template #title>
       <h3>
         {{ $t('portfolio.settings.authz.addNewGrantee') }}

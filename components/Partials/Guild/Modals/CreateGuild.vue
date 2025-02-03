@@ -120,12 +120,7 @@ watch(
 </script>
 
 <template>
-  <AppModal
-    is-sm
-    :ignore="['.v-popper__popper']"
-    :is-open="modalStore.modals[Modal.CreateGuild]"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.CreateGuild]">
     <template #title>
       <h2 class="text-xl font-semibold normal-case">
         {{ $t('guild.createGuild.title') }}
@@ -210,10 +205,12 @@ watch(
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
           <UIcon
+            v-if="hasSufficientBalance"
             :name="NuxtUiIcons.Checkmark"
             class="text-green-500 w-4 h-4 min-w-4"
           />
           <UIcon
+            v-else
             :name="NuxtUiIcons.Warning"
             class="text-orange-400 w-4 h-4 min-w-4"
           />

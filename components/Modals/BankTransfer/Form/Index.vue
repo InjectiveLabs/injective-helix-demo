@@ -151,14 +151,16 @@ function onWalletSelected(wallet: Wallet) {
 <template>
   <div>
     <div class="mb-4">
-      <div class="p-2 py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md">
+      <div class="py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md">
         <AppInput
           v-model="injAddressValue"
           v-bind="{
+            isNoPadding: true,
             isTransparentBg: true,
-            placeholder: $t('portfolio.bankTransfer.enterAddress')
+            placeholder: $t('portfolio.bankTransfer.enterAddress'),
+            wrapperClasses:
+              'border border-brand-700 rounded text-xs p-3 outline-none'
           }"
-          class="text-xs"
         >
           <template v-if="injAddressValue" #addon>
             <UIcon

@@ -32,19 +32,6 @@ function onModalOpen() {
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
-
-const isOpen = computed({
-  get: () => modalStore.modals[Modal.Connect],
-  set: (value) => {
-    if (value) {
-      onModalOpen()
-    } else {
-      onCloseModal()
-    }
-
-    modalStore.modals[Modal.Connect] = value
-  }
-})
 </script>
 
 <template>
@@ -70,9 +57,13 @@ const isOpen = computed({
     </AppButton>
   </div>
 
-  <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
+  <AppModal
+    v-model="modalStore.modals[Modal.Connect]"
+    v-bind="{ isSm: true, isHideCloseButton: true }"
+    @on:open="onModalOpen"
+  >
     <LayoutWalletConnect @modal:closed="onCloseModal" />
-  </SharedModal>
+  </AppModal>
 
   <ModalsTerms />
 </template>

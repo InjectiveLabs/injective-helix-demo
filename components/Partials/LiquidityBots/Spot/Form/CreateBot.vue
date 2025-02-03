@@ -174,17 +174,17 @@ async function createLiquidityBot() {
       <span v-else>{{ $t('liquidityBots.createBot') }}</span>
     </AppButton>
 
-    <SharedModal
+    <AppModal
       v-model="confirmationModal"
-      v-bind="{ isHideCloseButton: true }"
+      v-bind="{ isSm: true, isHideCloseButton: true }"
     >
-      <template #header>
-        <div class="text-2xl font-bold">
+      <template #title>
+        <div class="text-xl font-bold">
           {{ $t('tradingBots.botCreationConfirmation') }}
         </div>
       </template>
 
-      <div class="space-y-4 p-4 text-sm">
+      <div class="space-y-4 text-sm">
         <p class="text-gray-300 mb-6">
           {{ $t('sgt.confirmationDescription') }}
         </p>
@@ -259,6 +259,6 @@ async function createLiquidityBot() {
           {{ $t('sgt.confirm') }}
         </SharedButton>
       </div>
-    </SharedModal>
+    </AppModal>
   </div>
 </template>

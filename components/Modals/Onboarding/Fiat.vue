@@ -2,6 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
+const { xs } = useSharedBreakpoints()
 
 const isPurchaseFunds = ref(false)
 
@@ -15,9 +16,10 @@ function closeModal() {
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.FiatOnboard]"
-    @modal:closed="closeModal"
+    v-bind="{ isHideCloseButton: !xs }"
+    @on:close="closeModal"
   >
     <PartialsOnboardingFiat
       v-if="!isPurchaseFunds"
@@ -26,5 +28,5 @@ function closeModal() {
     />
 
     <PartialsOnboardingFiatMercuryo v-else />
-  </SharedModal>
+  </AppModal>
 </template>

@@ -13,6 +13,7 @@ const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { sm } = useSharedBreakpoints()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 
 const props = withDefaults(
@@ -242,7 +243,10 @@ watch(
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
+  <AppModal
+    v-model="modalStore.modals[Modal.AddTakeProfitStopLoss]"
+    v-bind="{ isHideCloseButton: !sm }"
+  >
     <template #title>
       <p class="text-center font-bold">
         {{ $t('trade.takeProfitStopLossForEntirePosition') }}

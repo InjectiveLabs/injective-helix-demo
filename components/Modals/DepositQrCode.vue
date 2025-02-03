@@ -9,15 +9,9 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.DepositQr])
-
 const formattedAddress = computed(() =>
   sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
-
-function closeModal() {
-  modalStore.closeModal(Modal.DepositQr)
-}
 
 function onCopyAddress() {
   copy(sharedWalletStore.address)
@@ -26,15 +20,9 @@ function onCopyAddress() {
 </script>
 
 <template>
-  <AppModal
-    :is-open="isModalOpen"
-    is-sm
-    is-dense
-    class="p-4"
-    @modal:closed="closeModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.DepositQr]">
     <section class="text-center">
-      <h3 class="-mt-4 text-white">{{ $t('account.qrDeposit.title') }}</h3>
+      <h3 class="mt-8 text-white">{{ $t('account.qrDeposit.title') }}</h3>
 
       <div class="max-w-[308px] mx-auto mt-6">
         <SharedQRCode

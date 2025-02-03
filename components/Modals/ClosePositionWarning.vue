@@ -23,8 +23,9 @@ function closePosition() {
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.ClosePositionWarning]"
+    v-bind="{ isSm: true }"
     @on:close="closeModal"
   >
     <div class="flex flex-col items-center pt-8">
@@ -57,5 +58,5 @@ function closePosition() {
         />
       </div>
     </div>
-  </SharedModal>
+  </AppModal>
 </template>
