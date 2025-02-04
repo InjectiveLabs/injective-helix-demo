@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getMitoUrl } from '@shared/utils/network'
-import { LiquidityProvisionMitoCard } from '@/types'
+import { LiquidityProvisionMitoCard, VaultsCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -58,14 +58,22 @@ function onSelectVault() {
         <p class="text-coolGray-300 text-sm">
           {{ $t('liquidityProvision.TVL') }}
         </p>
-        <p class="text-xl font-semibold truncate">${{ tvlToString }}</p>
+        <p
+          class="text-xl font-semibold truncate"
+          :data-cy="dataCyTag(VaultsCyTags.tvl)"
+        >
+          ${{ tvlToString }}
+        </p>
       </div>
 
       <div class="min-w-0 truncate">
         <p class="text-coolGray-300 text-sm">
           {{ $t('liquidityProvision.APY') }}
         </p>
-        <p class="text-green-500 text-xl font-semibold truncate">
+        <p
+          class="text-green-500 text-xl font-semibold truncate"
+          :data-cy="dataCyTag(VaultsCyTags.apy)"
+        >
           {{ vault.apyToShow }}%
         </p>
       </div>

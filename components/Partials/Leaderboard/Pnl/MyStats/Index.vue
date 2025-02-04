@@ -6,7 +6,13 @@ import {
   MAXIMUM_LEADERBOARD_STATS_RANK,
   MIN_LEADERBOARD_PNL_AMOUNT
 } from '@/app/utils/constants'
-import { Modal, MainPage, BusEvents, LeaderboardDuration } from '@/types'
+import {
+  Modal,
+  MainPage,
+  BusEvents,
+  LeaderboardDuration,
+  LeaderBoardCyTags
+} from '@/types'
 
 const modalStore = useSharedModalStore()
 const leaderboardStore = useLeaderboardStore()
@@ -82,6 +88,7 @@ function onSharePnl() {
           <NuxtLink :to="{ name: MainPage.Markets }">
             <AppButton
               class="border-white p-2 max-sm:text-xs sm:px-4"
+              :data-cy="dataCyTag(LeaderBoardCyTags.startTrading)"
               v-bind="{ variant: 'primary-outline' }"
             >
               {{ $t('leaderboard.startTrading') }}

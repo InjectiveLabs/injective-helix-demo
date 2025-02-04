@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
 import { stableCoinSymbols } from '@/app/data/token'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -76,6 +77,7 @@ const low = computed(() => {
           amount: volume.toFixed(),
           decimalPlaces: market.priceDecimals
         }"
+        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
       />
 
       {{ market.quoteToken.symbol }}
@@ -108,6 +110,7 @@ const low = computed(() => {
           amount: high.toFixed(),
           decimalPlaces: market.priceDecimals
         }"
+        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoHigh)"
       />
     </p>
   </PartialsTradeStatsHeaderItem>
@@ -119,6 +122,7 @@ const low = computed(() => {
           amount: low.toFixed(),
           decimalPlaces: market.priceDecimals
         }"
+        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoLow)"
       />
     </p>
   </PartialsTradeStatsHeaderItem>

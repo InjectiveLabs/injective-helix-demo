@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +34,10 @@ const priceChangeClasses = computed(() => {
   >
     <div class="flex-[3] flex items-center space-x-3 overflow-hidden">
       <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
-      <p class="text-sm tracking-wide font-bold truncate min-w-0">
+      <p
+        class="text-sm tracking-wide font-bold truncate min-w-0"
+        :data-cy="dataCyTag(MarketCyTags.NewMarketsDenoms)"
+      >
         {{ market.market.ticker }}
       </p>
     </div>

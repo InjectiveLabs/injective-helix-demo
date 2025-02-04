@@ -2,7 +2,7 @@
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
 import { TokenSymbols } from '@/app/data/token'
-import { Modal, SwapForm, SwapFormField } from '@/types'
+import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
@@ -206,7 +206,7 @@ function onMaxSelected({ amount }: { amount: string }) {
 <template>
   <div class="flex flex-col">
     <Transition name="fade-down" mode="out-in">
-      <div :key="animationCount">
+      <div :key="animationCount" :data-cy="dataCyTag(SwapCyTags.YouPayForm)">
         <AppSelectToken
           v-model:denom="inputDenom"
           v-bind="{
@@ -249,7 +249,10 @@ function onMaxSelected({ amount }: { amount: string }) {
     </div>
 
     <Transition name="fade-up" mode="out-in">
-      <div :key="animationCount">
+      <div
+        :key="animationCount"
+        :data-cy="dataCyTag(SwapCyTags.YouReceiveForm)"
+      >
         <AppSelectToken
           v-model:denom="outputDenom"
           v-bind="{

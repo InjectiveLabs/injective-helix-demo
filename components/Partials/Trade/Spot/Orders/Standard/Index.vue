@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiSpotMarket, SpotOrdersStandardView } from '@/types'
+import { UiSpotMarket, SpotOrdersStandardView, SpotMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -66,7 +66,10 @@ onUnmounted(() => {
     @update:is-ticker-only="refreshData"
   />
 
-  <div class="w-full h-screenMinusHeader">
+  <div
+    class="w-full h-screenMinusHeader"
+    :data-cy="dataCyTag(SpotMarketCyTags.OrderDetailsTable)"
+  >
     <div class="overflow-x-auto divide-y h-full">
       <PartialsTradeCommonOrdersBalances
         v-if="view === SpotOrdersStandardView.Balances"
