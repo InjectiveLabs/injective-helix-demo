@@ -30,7 +30,7 @@ export enum MarketCyTags {
 
 export enum SwapCyTags {
   SwapHeaderLabel = 'header-label',
-  SwapForm = 'token-form',
+  SwapForm = 'form',
   SwapSummaryRoute = 'summary-route',
   SwapSummaryRate = 'rate',
   SwapSummaryFees = 'fees',
@@ -43,7 +43,9 @@ export enum SwapCyTags {
   WarningAmountTooLow = 'amount-too-low-warning',
   EnterAmountButton = 'enter-amount-button',
   Swapbutton = 'swap-button',
-  SlippageSelectorSetting = 'slippage-selector-setting'
+  SlippageSelectorSetting = 'slippage-selector-setting',
+  YouPayForm = 'you-pay-form',
+  YouReceiveForm = 'you-receive-form'
 }
 
 export enum SpotMarketCyTags {
