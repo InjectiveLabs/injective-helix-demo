@@ -1,4 +1,5 @@
 import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import {
   MainPage,
   MenuItem,
@@ -34,7 +35,7 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.explorer',
-    to: 'https://injscan.com'
+    to: getExplorerUrl()
   },
   {
     isExternal: true,
