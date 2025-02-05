@@ -34,7 +34,7 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.explorer',
-    to: 'https://explorer.injective.network/'
+    to: 'https://injscan.com'
   },
   {
     isExternal: true,
