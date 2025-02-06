@@ -205,6 +205,10 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   if (props.activeCategory === MarketCategoryType.Meme) {
     return (marketCategoriesMap.meme || []).includes(market.marketId)
   }
+
+  if (props.activeCategory === MarketCategoryType.RWA) {
+    return (marketCategoriesMap.rwaMarkets || []).includes(market.marketId)
+  }
 }
 
 function onAscending(value: boolean) {
