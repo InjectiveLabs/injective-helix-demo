@@ -129,6 +129,7 @@ function onSharePosition(position: PositionV2) {
       v-bind="{
         position: selectedPosition
       }"
+      is-pgt
     />
 
     <ModalsAddTakeProfitStopLoss

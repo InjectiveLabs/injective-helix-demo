@@ -222,3 +222,44 @@ export const addMarginToPosition = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 }
+
+export const addMarginToSubaccountPosition = async ({
+  market,
+  amount,
+  fromSubaccountId,
+  toSubaccountId
+}: {
+  market: UiDerivativeMarket
+  amount: BigNumberInBase
+  fromSubaccountId: string
+  toSubaccountId: string
+}) => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (
+    !market ||
+    !fromSubaccountId ||
+    !toSubaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
+    return
+  }
+
+  await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validate()
+
+  const messages = MsgIncreasePositionMargin.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: market.marketId,
+    srcSubaccountId: fromSubaccountId,
+    dstSubaccountId: toSubaccountId,
+    amount: derivativeMarginToChainMarginToFixed({
+      value: amount.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    })
+  })
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+}
