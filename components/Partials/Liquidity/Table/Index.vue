@@ -2,8 +2,6 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  PortfolioSubPage,
-  TradingInterface,
   TradingBotsSubPage,
   LiquidityRewardsPage,
   LiquidityTableColumn
@@ -60,9 +58,8 @@ const columns = [
           <div class="flex items-center space-x-2">
             <NuxtLink
               :to="{
-                name: PortfolioSubPage.OrdersSpotTradeHistory,
-                params: { market: row.market?.slug },
-                query: { interface: TradingInterface.TradingBots }
+                name: TradingBotsSubPage.LiquiditySpotMarket,
+                query: { market: row.market?.slug }
               }"
               class="flex items-center space-x-2 hover:bg-coolGray-800 rounded-md transition-colors duration-300 p-2"
             >
@@ -152,7 +149,7 @@ const columns = [
             class="text-blue-500"
             :to="{
               name: TradingBotsSubPage.LiquiditySpotMarket,
-              query: { market: row.slug }
+              query: { market: row.market?.slug }
             }"
           >
             {{ $t('campaign.addLiquidity') }}
