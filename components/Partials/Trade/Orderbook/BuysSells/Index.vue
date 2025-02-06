@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { Status } from '@injectivelabs/utils'
 import { ORDERBOOK_ROWS, ORDERBOOK_ROW_HEIGHT } from '@/app/utils/constants'
-import { OrderbookLayout, UiMarketWithToken, OrderbookStatusKey } from '@/types'
+import {
+  OrderbookLayout,
+  UiMarketWithToken,
+  OrderbookStatusKey,
+  SpotMarketCyTags
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -103,6 +108,7 @@ function setSellsIndex(index: number) {
       v-if="orderbookLayout !== OrderbookLayout.Buys"
       :style="{ height: sellsSectionHeight }"
       class="flex flex-col-reverse px-1"
+      :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGridBuys)"
       @mouseleave="activeSellsIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
@@ -138,6 +144,7 @@ function setSellsIndex(index: number) {
       v-if="orderbookLayout !== OrderbookLayout.Sells"
       :style="{ height: buysSectionHeight }"
       class="px-1"
+      :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGridSells)"
       @mouseleave="activeBuysIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">

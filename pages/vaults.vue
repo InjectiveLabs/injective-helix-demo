@@ -12,7 +12,8 @@ import {
   MitoRegistrationMode,
   LiquidityProvisionType,
   LiquidityProvisionMitoCard,
-  LiquidityProvisionTypeOption
+  LiquidityProvisionTypeOption,
+  VaultsCyTags
 } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -93,7 +94,10 @@ function onSelectVault(vaultUrl: string) {
 <template>
   <AppHocLoading v-bind="{ status }" is-full-screen>
     <div class="container py-10 mx-auto">
-      <h2 class="text-2xl font-semibold">
+      <h2
+        class="text-2xl font-semibold"
+        :data-cy="dataCyTag(VaultsCyTags.title)"
+      >
         {{ $t('liquidityProvision.title') }}
       </h2>
       <p class="text-coolGray-300 mt-2">

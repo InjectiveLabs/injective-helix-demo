@@ -5,7 +5,8 @@ import {
   SharedMarketChange
 } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { UiMarketWithToken } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -73,6 +74,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
 
       <article
         class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
+        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoPrice)"
       >
         <div class="flex items-center justify-between">
           <div

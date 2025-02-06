@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { intervalOptions, LIGHT_CHART_MARKET_IDS } from '@/app/utils/constants'
-import { BusEvents, ChartViewOption, UiMarketWithToken } from '@/types'
+import { BusEvents, ChartViewOption, UiMarketWithToken, SpotMarketCyTags } from '@/types'
 import { MARKETS_POWERED_BY_STORK } from '@/app/data/marketInfo'
 
 const props = withDefaults(
@@ -39,13 +39,17 @@ const isLightChartMarket = computed(() =>
   <div class="flex max-lg:h-[500px] h-full flex-col">
     <div class="flex lg:flex-row justify-between">
       <div class="h-subHeader border-b w-full">
-        <div class="flex h-subHeader w-full xl:w-[450px]">
+        <div
+          class="flex h-subHeader w-full xl:w-[450px]"
+          :data-cy="dataCyTag(SpotMarketCyTags.ChartHeader)"
+        >
           <AppButtonSelect
             v-for="label in viewOptions"
             :key="label"
             v-model="view"
             :value="label"
             class="text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
+            :data-cy="`${dataCyTag(SpotMarketCyTags.ChartHeader)}-${label}`"
             active-classes="text-white border-blue-550"
             @update:modelValue="onUpdateChart"
           >
