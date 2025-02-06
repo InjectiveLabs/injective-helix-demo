@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PerpOrdersTradingBotsView, UiDerivativeMarket } from '@/types'
-import { addressAndMarketSlugToSubaccountId } from '~/app/utils/helpers'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
+import {
+  Modal,
+  BusEvents,
+  UiDerivativeMarket,
+  PerpOrdersTradingBotsView
+} from '@/types'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -17,6 +24,7 @@ const props = withDefaults(
 
 const view = ref(PerpOrdersTradingBotsView.ActiveStrategies)
 const status = reactive(new Status(StatusType.Loading))
+const selectedPosition = ref<PositionV2 | undefined>(undefined)
 const { $onError } = useNuxtApp()
 
 onWalletConnected(fetchStrategies)
@@ -56,6 +64,22 @@ const positions = computed(() =>
     ({ subaccountId }) => subaccountId === pgtSubaccount.value
   )
 )
+
+function addMargin(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.AddMarginToPosition)
+}
+
+function addTakeProfitStopLoss(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.AddTakeProfitStopLoss)
+}
+
+function onSharePosition(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.SharePositionPnl)
+  useEventBus(BusEvents.SharePositionOpened).emit()
+}
 </script>
 
 <template>
@@ -79,6 +103,9 @@ const positions = computed(() =>
       v-else-if="view === PerpOrdersTradingBotsView.Positions"
       v-bind="{ positions }"
       is-trading-bots
+      @margin:add="addMargin"
+      @tpsl:add="addTakeProfitStopLoss"
+      @position:share="onSharePosition"
     />
 
     <PartialsPortfolioOrdersFuturesOpenOrdersTable
@@ -95,6 +122,25 @@ const positions = computed(() =>
     <PartialsPortfolioOrdersFuturesTradeHistoryTable
       v-else-if="view === PerpOrdersTradingBotsView.TradeHistory"
       v-bind="{ trades: derivativeStore.subaccountTrades }"
+    />
+
+    <ModalsAddMargin
+      v-if="selectedPosition"
+      v-bind="{
+        position: selectedPosition
+      }"
+    />
+
+    <ModalsAddTakeProfitStopLoss
+      v-if="selectedPosition"
+      v-bind="{
+        position: selectedPosition
+      }"
+    />
+
+    <ModalsSharePositionPnl
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
     />
   </div>
 </template>
