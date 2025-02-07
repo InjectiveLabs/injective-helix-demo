@@ -24,7 +24,9 @@ export const tradeErrorMessages = {
     `Base amount must be >= ${minBaseAmount}`,
   minAmount: (minBaseAmount: string) => `Amount must be > ${minBaseAmount}`,
   quantityTensMultiplier: (tensMultiplier: string) =>
-    `Quantity must be a multiple of ${tensMultiplier}`
+    `Quantity must be a multiple of ${tensMultiplier}`,
+  markPriceThresholdError:
+    'Please modify price, amount, or leverage to meet mark price requirement'
 } as Record<string, any>
 
 export const defineTradeRules = () => {
@@ -142,14 +144,6 @@ export const defineTradeRules = () => {
   defineRule('maxLeverage', (value: string | number, [max]: [string]) => {
     const leverage = new BigNumberInBase(value)
 
-    // if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
-    //   return leverage.eq(1)
-    //     ? isBuy
-    //       ? tradeErrorMessages.orderPriceHigh()
-    //       : tradeErrorMessages.orderPriceLow()
-    //     : tradeErrorMessages.maxLeverage()
-    // }
-
     if (leverage.gt(max)) {
       return tradeErrorMessages.maxLeverage()
     }
@@ -228,7 +222,7 @@ export const defineTradeRules = () => {
     const isMarkPriceThresholdError = isError === 'true'
 
     if (isMarkPriceThresholdError) {
-      return 'Please modify price, amount, or leverage to meet mark price requirement'
+      return tradeErrorMessages.markPriceThresholdError()
     }
     return true
   })

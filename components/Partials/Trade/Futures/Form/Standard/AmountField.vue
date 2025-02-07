@@ -18,12 +18,12 @@ import {
   UiDerivativeMarket,
   DerivativesTradeForm,
   DerivativeTradeTypes,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
-const orderbookStore = useOrderbookStore()
 const positionStore = usePositionStore()
+const orderbookStore = useOrderbookStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
@@ -35,10 +35,8 @@ const validateTriggerField = useValidateField(
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(market)
-
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
-
 const { activeSubaccountBalancesWithToken } = useBalance()
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
