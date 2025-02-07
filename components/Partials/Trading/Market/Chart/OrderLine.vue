@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { UiSpotMarket, UiDerivativeMarket } from '@/types'
 
 const props = defineProps<{
@@ -21,9 +21,10 @@ const { valueToString: priceToString } = useSharedBigNumberFormatter(
           decimalPlaces:
             props.market.baseToken.decimals - props.market.quoteToken.decimals
         })
-      : new BigNumberInWei(props.order.price).toBase(
-          props.market.quoteToken.decimals
-        )
+      : sharedToBalanceInTokenInBase({
+          value: props.order.price,
+          decimalPlaces: props.market.quoteToken.decimals
+        })
   }),
   {
     shouldTruncate: true,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
 import {
   UiSpotMarket,
@@ -47,9 +47,10 @@ const datafeedEndpoint = computed(() =>
 )
 
 const limitOrders = computed(() =>
-  [...spotStore.subaccountOrders, ...derivativeStore.subaccountOrders].filter(
-    (order) => order.marketId === props.market.marketId
-  )
+  (isSpot
+    ? spotStore.subaccountOrders
+    : derivativeStore.subaccountOrders
+  ).filter((order) => order.marketId === props.market.marketId)
 )
 
 function onReady() {

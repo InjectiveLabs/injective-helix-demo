@@ -123,16 +123,16 @@ onMounted(() => {
 })
 
 const mixPanelFields = computed(() => ({
-  isAutoSign: sharedWalletStore.isAutoSignEnabled,
-  isBuy: isBuy.value,
-  market: market.value.slug,
-  marketType: SharedMarketType.Spot,
-  amount: props.quantity.toFixed(),
   leverage: '',
   triggerPrice: '',
-  slippageTolerance: spotFormValues.value[SpotTradeFormField.Slippage] || '',
+  isBuy: isBuy.value,
+  market: market.value.slug,
+  chartType: chartType.value,
+  amount: props.quantity.toFixed(),
+  marketType: SharedMarketType.Spot,
+  isAutoSign: sharedWalletStore.isAutoSignEnabled,
   postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
-  chartType: chartType.value
+  slippageTolerance: spotFormValues.value[SpotTradeFormField.Slippage] || ''
 }))
 
 function submitLimitOrder() {

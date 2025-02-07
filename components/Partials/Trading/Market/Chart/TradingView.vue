@@ -24,35 +24,25 @@ const props = withDefaults(
 const emit = defineEmits<{
   ready: []
   'interval:change': [value: TradingChartInterval]
+  'order:close': [order: SpotLimitOrder | DerivativeLimitOrder]
   'limit-price:change': [
     { order: SpotLimitOrder | DerivativeLimitOrder; newPrice: number }
   ]
-  'order:close': [order: SpotLimitOrder | DerivativeLimitOrder]
 }>()
 
 const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
 
-const orderLineRefs = ref<Array<any>>([])
+const orderLineRefs = ref<any[]>([])
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
 onMounted(() => {
   useEventBus(BusEvents.LimitOrdersModifyOnChart).on(modifyLimitOrderLines)
-  useEventBus(BusEvents.LimitOrdersRemoveFromChart).on((order) => {
-    if (!order) {
-      Object.values(orderLines.value).forEach((orderLine) => {
-        orderLine.remove()
-      })
-
-      orderLines.value = {}
-
-      return
-    }
-
-    onRemoveOrderLines(order as SpotLimitOrder | DerivativeLimitOrder)
-  })
+  useEventBus(BusEvents.LimitOrdersRemoveFromChart).on((order) =>
+    cancelLimitOrders(order as SpotLimitOrder | DerivativeLimitOrder)
+  )
 
   const widgetOptions = config({
     containerId,
@@ -172,6 +162,20 @@ function onRemoveOrderLines(order: SpotLimitOrder | DerivativeLimitOrder) {
 
   orderLine.remove()
   delete orderLines.value[order.orderHash]
+}
+
+function cancelLimitOrders(order: SpotLimitOrder | DerivativeLimitOrder) {
+  if (!order) {
+    Object.values(orderLines.value).forEach((orderLine) => {
+      orderLine.remove()
+    })
+
+    orderLines.value = {}
+
+    return
+  }
+
+  onRemoveOrderLines(order as SpotLimitOrder | DerivativeLimitOrder)
 }
 </script>
 
