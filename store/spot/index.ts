@@ -238,8 +238,8 @@ export const useSpotStore = defineStore('spot', {
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        marketIds,
         subaccountId: accountStore.subaccountId,
-        marketIds: marketIds || spotStore.activeMarketIds,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
         }
