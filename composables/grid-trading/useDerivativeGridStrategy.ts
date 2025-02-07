@@ -155,6 +155,16 @@ export const useDerivativeGridStrategies = (
           })
         : undefined
 
+      // PNL New
+
+      const pnl = currentUsdValue.minus(initialUsdValue).toString()
+
+      const percentagePnl = currentUsdValue
+        .minus(initialUsdValue)
+        .div(initialUsdValue)
+        .times(100)
+        .toFixed(2)
+
       // PNL
 
       const depositQuoteQuantity = sharedToBalanceInToken({
@@ -185,14 +195,14 @@ export const useDerivativeGridStrategies = (
         botType = BotType.FuturesGrid
       }
 
-      const isPositivePnl = new BigNumberInBase(strategy.pnl || '0').gt(0)
+      const isPositivePnl = new BigNumberInBase(pnl).gt(0)
 
-      const isZeroPnl = new BigNumberInBase(strategy.pnl || '0').isZero()
+      const isZeroPnl = new BigNumberInBase(pnl).isZero()
 
       const isSpot = false
 
       return {
-        pnl: strategy.pnl || '0',
+        pnl,
         isSpot,
         market,
         botType,
@@ -216,7 +226,7 @@ export const useDerivativeGridStrategies = (
         initialQuoteBalanceQuantity,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
-        percentagePnl: strategy.pnlPerc || '0',
+        percentagePnl,
         stopReason: strategy.stopReason as StopReason,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
