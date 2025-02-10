@@ -7,7 +7,7 @@ import {
   UiDerivativeMarket,
   UiMarketWithToken
 } from '@/types'
-import { rwaMarketIds, RWA_TRADFI_MARKET_ID } from '@/app/data/market'
+import { rwaMarketIds, RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
@@ -124,7 +124,7 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  market.marketId !== RWA_TRADFI_MARKET_ID
+                  RWA_TRADFI_MARKET_IDS.includes(market.marketId)
                     ? 'marketClosedMarketRow'
                     : 'nyseClosedMarketRow'
                 }`

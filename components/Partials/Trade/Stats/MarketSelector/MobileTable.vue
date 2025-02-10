@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { abbreviateNumber } from '@/app/utils/formatters'
-import { RWA_TRADFI_MARKET_ID } from '@/app/data/market'
+import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   MarketCyTags,
   UTableColumn,
@@ -64,7 +64,7 @@ const toggleFavorite = () => {
                   :tooltip="
                     $t(
                       `trade.rwa.${
-                        market.market.marketId !== RWA_TRADFI_MARKET_ID
+                        RWA_TRADFI_MARKET_IDS.includes(market.market.marketId)
                           ? 'marketClosedMarketRow'
                           : 'nyseClosedMarketRow'
                       }`

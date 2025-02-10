@@ -506,7 +506,8 @@ export default {
 
     rwa: {
       warning: 'Warning',
-      acknowledge: 'I understand, I accept the risk, and I wish to proceed',
+      acknowledge:
+        'I understand, I accept the risk, and I wish to proceed with my trade.',
       marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
           'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
@@ -532,7 +533,8 @@ export default {
       marketClosedTimes: ' traditional RWA price feeds',
       nyseClosedTimes: 'NYSE trading hours',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
-      marketIsClosed: 'This market is currently closed.'
+      marketIsClosed: 'This market is currently closed.',
+      submit: 'Submit Trade'
     },
 
     liquidationModal: {

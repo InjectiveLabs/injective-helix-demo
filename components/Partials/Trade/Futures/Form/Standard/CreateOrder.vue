@@ -354,6 +354,7 @@ function submitStopMarketOrder() {
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
+      err = e
       $onError(e)
     })
     .finally(() => {
@@ -371,11 +372,21 @@ function submitStopMarketOrder() {
     })
 }
 
-function onSubmit() {
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
+async function onSubmit() {
+  if (!isRWAMarket) {
+    submit()
+  }
 
-    return
+  status.setLoading()
+
+  const isMarketOpen = await derivativeStore.fetchRWAMarketIsOpen(
+    derivativeMarket.value.oracleBase
+  )
+
+  status.setIdle()
+
+  if (!isMarketOpen) {
+    return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 
   submit()
@@ -398,25 +409,6 @@ async function submit() {
     case DerivativeTradeTypes.StopMarket:
       submitStopMarketOrder()
   }
-}
-
-function fetchRWAMarketIsOpen() {
-  if (!derivativeMarket.value) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-
-        return
-      }
-
-      submit()
-    })
-    .catch($onError)
 }
 </script>
 
