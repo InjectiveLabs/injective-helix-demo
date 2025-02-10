@@ -76,11 +76,6 @@ const columns = computed(() => {
       class: 'text-right w-[8%]'
     },
     {
-      key: PositionTableColumn.Margin,
-      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
-      class: 'text-right w-[8%]'
-    },
-    {
       key: PositionTableColumn.LiquidationPrice,
       label: t(
         `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
@@ -95,6 +90,12 @@ const columns = computed(() => {
   ]
 
   if (!props.isTradingBots) {
+    baseColumns.splice(8, 0, {
+      key: PositionTableColumn.Margin,
+      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
+      class: 'text-right w-[8%]'
+    })
+
     baseColumns.push({
       key: PositionTableColumn.TpOrSl,
       label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
