@@ -28,7 +28,7 @@ import {
   toUiMarketSummary,
   toUiDerivativeMarket,
   toZeroUiMarketSummary,
-  sharedDerivativeGetSlugAndTicket
+  sharedGetDerivativeSlugOverride
 } from '@shared/transformer/market'
 import { usdtToken } from '@shared/data/token'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
@@ -223,20 +223,10 @@ export const useDerivativeStore = defineStore('derivative', {
       const uiMarkets = markets
         .filter((market) => !MARKET_IDS_TO_HIDE.includes(market.marketId))
         .map((market) => {
-          const marketSlug = market.ticker
-            .replaceAll('/', '-')
-            .replaceAll(' ', '-')
-            .toLowerCase()
-          const { slug: actualSlug, ticker: marketTicker } =
-            sharedDerivativeGetSlugAndTicket({
-              slug: marketSlug,
-              ticker: market.ticker,
-              marketId: market.marketId
-            })
-          const slug = actualSlug
-            .replaceAll('/', '-')
-            .replaceAll(' ', '-')
-            .toLowerCase()
+          const slug = sharedGetDerivativeSlugOverride({
+            ticker: market.ticker,
+            marketId: market.marketId
+          })
 
           const [baseTokenSymbol] = slug.split('-')
           const baseToken = tokenStore.tokenBySymbol(
@@ -257,7 +247,6 @@ export const useDerivativeStore = defineStore('derivative', {
 
           return {
             ...formattedMarket,
-            ticker: marketTicker || market.ticker,
             isVerified: [
               ...verifiedExpiryMarketIds,
               ...verifiedDerivativeMarketIds
