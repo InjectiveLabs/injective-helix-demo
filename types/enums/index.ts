@@ -54,6 +54,7 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
+  NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   TransferToMainSubaccount = 'transfer-to-main-subaccount',
