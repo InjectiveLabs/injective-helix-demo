@@ -519,8 +519,18 @@ export default {
           named('marketClosedTimes'),
           '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
         ]),
+      nyseMarketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'This market follows ',
+          named('nyseClosedTimes'),
+          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays. Trades can be placed outside of these times, but prices will not update until the market reopens. This may increase your trading risk.'
+        ]),
+      tradfiMarketClosedTrade:
+        'This market follows traditional NYSE trading hours',
       marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
+      nyseClosedMarketRow: 'This market follows NSYE trading hours.',
       marketClosedTimes: ' traditional RWA price feeds',
+      nyseClosedTimes: 'NYSE trading hours',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
       marketIsClosed: 'This market is currently closed.'
     },
