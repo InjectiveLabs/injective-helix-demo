@@ -127,6 +127,7 @@ jobs:
 
       - name: Upload bugsnag release
         uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+        if: false
         with:
           apiKey: ${{ env.VITE_BUGSNAG_KEY }}
           directory: ./.nuxt/dist/client/_nuxt
