@@ -223,15 +223,19 @@ export const useDerivativeStore = defineStore('derivative', {
       const uiMarkets = markets
         .filter((market) => !MARKET_IDS_TO_HIDE.includes(market.marketId))
         .map((market) => {
-          const actualSlug = market.ticker
+          const marketSlug = market.ticker
             .replaceAll('/', '-')
             .replaceAll(' ', '-')
             .toLowerCase()
-          const { slug } = sharedDerivativeGetSlugAndTicket({
-            slug: actualSlug,
+          const { slug: actualSlug } = sharedDerivativeGetSlugAndTicket({
+            slug: marketSlug,
             ticker: market.ticker,
             marketId: market.marketId
           })
+          const slug = actualSlug
+            .replaceAll('/', '-')
+            .replaceAll(' ', '-')
+            .toLowerCase()
 
           const [baseTokenSymbol] = slug
           const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
