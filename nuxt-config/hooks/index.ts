@@ -48,6 +48,8 @@ export default {
       ...[...verifiedDerivativeSlugs, ...verifiedExpirySlugs].map(
         (s) => `/futures/${s}`
       ),
+      // todo: remove this once the market is fixed on chain
+      '/futures/tradfi-usdt-perp',
       ...['ef3bc2', '25269b', '5f90cb', '50be68'].map(
         (guildId) => `/guild/${guildId}`
       )
