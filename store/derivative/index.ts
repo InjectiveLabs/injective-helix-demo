@@ -227,18 +227,21 @@ export const useDerivativeStore = defineStore('derivative', {
             .replaceAll('/', '-')
             .replaceAll(' ', '-')
             .toLowerCase()
-          const { slug: actualSlug } = sharedDerivativeGetSlugAndTicket({
-            slug: marketSlug,
-            ticker: market.ticker,
-            marketId: market.marketId
-          })
+          const { slug: actualSlug, ticker: marketTicker } =
+            sharedDerivativeGetSlugAndTicket({
+              slug: marketSlug,
+              ticker: market.ticker,
+              marketId: market.marketId
+            })
           const slug = actualSlug
             .replaceAll('/', '-')
             .replaceAll(' ', '-')
             .toLowerCase()
 
-          const [baseTokenSymbol] = slug
-          const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
+          const [baseTokenSymbol] = slug.split('-')
+          const baseToken = tokenStore.tokenBySymbol(
+            baseTokenSymbol.toUpperCase()
+          )
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
           if (!baseToken || !quoteToken) {
@@ -254,6 +257,7 @@ export const useDerivativeStore = defineStore('derivative', {
 
           return {
             ...formattedMarket,
+            ticker: marketTicker || market.ticker,
             isVerified: [
               ...verifiedExpiryMarketIds,
               ...verifiedDerivativeMarketIds
