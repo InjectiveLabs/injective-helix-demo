@@ -140,7 +140,7 @@ const leverage = computed(() =>
                 :href="indexMarketInfo.link"
                 target="_blank"
               >
-                here
+                {{ $t('common.here') }}
               </a>
             </template>
           </i18n-t>
