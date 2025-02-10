@@ -68,3 +68,7 @@ export const QUOTE_DENOMS_TO_SHOW_USD_VALUE: string[] = [injToken.denom]
 export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
   [key: string]: { price?: string; denom?: string } | undefined
 }
+
+export const RWA_TRADFI_MARKET_IDS = [
+  '0x2236b4cd97300c79fca5c2fff4b647ab24a6d48c1554255ff8ec7cf29429ba74'
+]

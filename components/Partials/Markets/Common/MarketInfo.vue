@@ -7,10 +7,10 @@ import {
   UiDerivativeMarket,
   UiMarketWithToken
 } from '@/types'
-import { rwaMarketIds } from '@/app/data/market'
-import { INDEX_MARKETS_INFO } from '~/app/utils/constants'
-import { calculateLeverage } from '~/app/utils/formatters'
-import { derivativeGridMarkets, spotGridMarkets } from '~/app/json'
+import { rwaMarketIds, RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
+import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
+import { calculateLeverage } from '@/app/utils/formatters'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 
 const route = useRoute()
 
@@ -121,7 +121,15 @@ const leverage = computed(() =>
       <template v-if="isRwaMarket || indexMarketInfo" #panel>
         <div v-if="isRwaMarket">
           <span>
-            {{ $t('trade.rwa.marketClosedMarketRow') }}
+            {{
+              $t(
+                `trade.rwa.${
+                  RWA_TRADFI_MARKET_IDS.includes(market.marketId)
+                    ? 'marketClosedMarketRow'
+                    : 'nyseClosedMarketRow'
+                }`
+              )
+            }}
           </span>
         </div>
 

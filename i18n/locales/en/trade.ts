@@ -506,7 +506,8 @@ export default {
 
     rwa: {
       warning: 'Warning',
-      acknowledge: 'I understand, I accept the risk, and I wish to proceed',
+      acknowledge:
+        'I understand, I accept the risk, and I wish to proceed with my trade.',
       marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
           'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
@@ -519,10 +520,21 @@ export default {
           named('marketClosedTimes'),
           '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
         ]),
+      nyseMarketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
+        interpolate([
+          'This market follows ',
+          named('nyseClosedTimes'),
+          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays. Trades can be placed outside of these times, but prices will not update until the market reopens. This may increase your trading risk.'
+        ]),
+      tradfiMarketClosedTrade:
+        'This market follows traditional NYSE trading hours',
       marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
+      nyseClosedMarketRow: 'This market follows NSYE trading hours.',
       marketClosedTimes: ' traditional RWA price feeds',
+      nyseClosedTimes: 'NYSE trading hours',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
-      marketIsClosed: 'This market is currently closed.'
+      marketIsClosed: 'This market is currently closed.',
+      submit: 'Submit Trade'
     },
 
     liquidationModal: {
