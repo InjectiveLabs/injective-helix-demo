@@ -2,6 +2,7 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { RWA_TRADFI_MARKET_ID } from '@/app/data/market'
 import {
   Modal,
   MarketKey,
@@ -23,6 +24,10 @@ const emit = defineEmits<{
 
 const { marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
+)
+
+const isTradfiMarket = computed(
+  () => derivativeMarket.value.marketId === RWA_TRADFI_MARKET_ID
 )
 
 const executionPrice = computed(() => {
@@ -104,7 +109,11 @@ function confirm() {
           {{ $t('trade.rwa.marketIsClosed') }}
         </p>
 
-        <i18n-t keypath="trade.rwa.marketClosedTrade" tag="p">
+        <i18n-t
+          v-if="!isTradfiMarket"
+          keypath="trade.rwa.marketClosedTrade"
+          tag="p"
+        >
           <template #marketClosedTimes>
             <NuxtLink
               class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
@@ -112,6 +121,17 @@ function confirm() {
               target="_blank"
             >
               {{ $t('trade.rwa.marketClosedTimes') }}
+            </NuxtLink>
+          </template>
+        </i18n-t>
+        <i18n-t v-else keypath="trade.rwa.nyseMarketClosedTrade" tag="p">
+          <template #nyseClosedTimes>
+            <NuxtLink
+              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
+              to="https://docs.pyth.network/price-feeds/market-hours"
+              target="_blank"
+            >
+              {{ $t('trade.rwa.nyseClosedTimes') }}
             </NuxtLink>
           </template>
         </i18n-t>
