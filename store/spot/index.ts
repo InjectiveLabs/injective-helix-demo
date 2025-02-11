@@ -44,12 +44,7 @@ import {
 import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
-import {
-  BusEvents,
-  UiSpotMarket,
-  UiMarketAndSummary,
-  ActivityFetchOptions
-} from '@/types'
+import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 import { marketIdsToHide } from '@/app/data/market'
 
 type SpotStoreState = {
@@ -491,8 +486,6 @@ export const useSpotStore = defineStore('spot', {
         subaccountOrderHistory,
         subaccountOrderHistoryCount
       })
-
-      useEventBus(BusEvents.LimitOrdersRemoveFromChart).emit()
     },
 
     reset() {

@@ -9,6 +9,9 @@ import {
   TradingChartInterval
 } from '@/types'
 
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
 const props = withDefaults(
   defineProps<{
     symbol: string
@@ -16,7 +19,11 @@ const props = withDefaults(
     interval: string
     datafeedEndpoint: string
     market: UiSpotMarket | UiDerivativeMarket
-    orders?: Array<SpotLimitOrder | DerivativeLimitOrder>
+    orders?: {
+      formattedPrice: string
+      formattedQuantity: string
+      order: SpotLimitOrder | DerivativeLimitOrder
+    }[]
   }>(),
   { orders: () => [] }
 )
@@ -34,15 +41,13 @@ const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
 
-const orderLineRefs = ref<any[]>([])
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
+onWalletDisconnected(clearAllOrderLines)
+
 onMounted(() => {
   useEventBus(BusEvents.LimitOrdersModifyOnChart).on(modifyLimitOrderLines)
-  useEventBus(BusEvents.LimitOrdersRemoveFromChart).on((order) =>
-    cancelLimitOrders(order as SpotLimitOrder | DerivativeLimitOrder)
-  )
 
   const widgetOptions = config({
     containerId,
@@ -114,28 +119,22 @@ function modifyLimitOrderLines() {
       return
     }
 
+    clearAllOrderLines()
+
     if (props.orders.length === 0) {
       return
     }
 
-    props.orders?.forEach((order) => {
-      const orderlineRef = orderLineRefs.value.find(
-        (ref) => ref?.orderHash === order.orderHash
-      )
-
-      if (!orderlineRef) {
-        return
-      }
-
+    props.orders?.forEach(({ order, formattedPrice, formattedQuantity }) => {
       const orderLine = chart.createOrderLine({ disableUndo: true })
 
       orderLine.setLineStyle(2)
       orderLine.setLineColor('#F16969')
       orderLine.setBodyBackgroundColor('#FFF')
       orderLine.setQuantityBackgroundColor('#000')
-      orderLine.setPrice(orderlineRef.priceToString)
-      orderLine.setQuantity(orderlineRef.quantityToString)
-      orderLine.setText(`Limit @ ${orderlineRef.priceToString}`)
+      orderLine.setPrice(formattedPrice)
+      orderLine.setQuantity(formattedQuantity)
+      orderLine.setText(`Limit @ ${formattedPrice}`)
 
       orderLine.onMove?.(() => {
         const newPrice = orderLine.getPrice()
@@ -153,7 +152,7 @@ function modifyLimitOrderLines() {
   })
 }
 
-function onRemoveOrderLines(order: SpotLimitOrder | DerivativeLimitOrder) {
+function removeOrderline(order: SpotLimitOrder | DerivativeLimitOrder) {
   const orderLine = orderLines.value[order.orderHash]
 
   if (!orderLine) {
@@ -164,19 +163,42 @@ function onRemoveOrderLines(order: SpotLimitOrder | DerivativeLimitOrder) {
   delete orderLines.value[order.orderHash]
 }
 
-function cancelLimitOrders(order: SpotLimitOrder | DerivativeLimitOrder) {
-  if (!order) {
-    Object.values(orderLines.value).forEach((orderLine) => {
-      orderLine.remove()
-    })
+function clearAllOrderLines() {
+  Object.values(orderLines.value).forEach((orderLine) => {
+    orderLine.remove()
+  })
 
-    orderLines.value = {}
-
-    return
-  }
-
-  onRemoveOrderLines(order as SpotLimitOrder | DerivativeLimitOrder)
+  orderLines.value = {}
 }
+
+watch(
+  [() => spotStore.subaccountOrders, () => derivativeStore.subaccountOrders],
+  (
+    [newSpotOrders, newDerivativeOrders],
+    [oldSpotOrders, oldDerivativeOrders]
+  ) => {
+    const newOrders = props.isSpot ? newSpotOrders : newDerivativeOrders
+    const oldOrders = props.isSpot ? oldSpotOrders : oldDerivativeOrders
+
+    if (newOrders.length === oldOrders.length) {
+      modifyLimitOrderLines()
+
+      return
+    }
+
+    const newOrderHashes = new Set(newOrders.map((o) => o.orderHash))
+    const [removedOrder] = oldOrders.filter(
+      ({ orderHash }) => !newOrderHashes.has(orderHash)
+    )
+
+    if (!removedOrder) {
+      return
+    }
+
+    removeOrderline(removedOrder)
+  },
+  { deep: true }
+)
 </script>
 
 <template>
@@ -185,17 +207,6 @@ function cancelLimitOrders(order: SpotLimitOrder | DerivativeLimitOrder) {
       :id="containerId"
       ref="tradingView"
       class="tv_chart_container w-full h-full"
-    />
-
-    <PartialsTradingMarketChartOrderLine
-      v-for="order in orders"
-      :key="order.orderHash"
-      v-bind="{
-        order,
-        isSpot,
-        market
-      }"
-      ref="orderLineRefs"
     />
   </div>
 </template>

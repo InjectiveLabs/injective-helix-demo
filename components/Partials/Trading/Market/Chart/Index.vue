@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  Status,
+  StatusType,
+  BigNumberInWei,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
 import {
@@ -47,10 +52,37 @@ const datafeedEndpoint = computed(() =>
 )
 
 const limitOrders = computed(() =>
-  (isSpot
-    ? spotStore.subaccountOrders
-    : derivativeStore.subaccountOrders
-  ).filter((order) => order.marketId === props.market.marketId)
+  (isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders)
+    .filter((order) => order.marketId === props.market.marketId)
+    .map((order) => {
+      const formattedPrice = (
+        isSpot
+          ? sharedToBalanceInWei({
+              value: order.price,
+              decimalPlaces:
+                props.market.baseToken.decimals -
+                props.market.quoteToken.decimals
+            })
+          : sharedToBalanceInTokenInBase({
+              value: order.price,
+              decimalPlaces: props.market.quoteToken.decimals
+            })
+      ).toFixed(props.market.priceDecimals)
+
+      const formattedQuantity = (
+        isSpot
+          ? new BigNumberInWei(order.quantity).toBase(
+              (props.market as UiSpotMarket).baseToken.decimals
+            )
+          : new BigNumberInBase(order.quantity)
+      ).toFixed(props.market.quantityDecimals)
+
+      return {
+        order,
+        formattedPrice,
+        formattedQuantity
+      }
+    })
 )
 
 function onReady() {

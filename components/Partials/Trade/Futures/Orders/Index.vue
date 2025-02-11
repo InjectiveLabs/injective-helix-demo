@@ -36,8 +36,8 @@ function refreshData() {
     derivativeStore.fetchSubaccountOrderHistory(filters),
     derivativeStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
   ])
+    .then(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
     .catch($onError)
-    .finally(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
 
   derivativeStore.streamSubaccountOrders({
     marketId,

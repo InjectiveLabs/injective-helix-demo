@@ -173,7 +173,6 @@ export enum BusEvents {
   LimitOrdersModifyOnChart = 'limit-orders-modify-on-chart',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
-  LimitOrdersRemoveFromChart = 'limit-orders-remove-from-chart',
   SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
   TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
   ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',

@@ -40,8 +40,8 @@ function refreshData() {
     spotStore.fetchSubaccountOrderHistory(filters),
     spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
   ])
+    .then(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
     .catch($onError)
-    .finally(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
 
   spotStore.streamSubaccountOrders({
     marketId,

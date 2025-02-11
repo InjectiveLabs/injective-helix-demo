@@ -316,8 +316,6 @@ export const streamSubaccountOrders = ({
             })
           }
 
-          useEventBus(BusEvents.LimitOrdersModifyOnChart).emit()
-
           break
         }
         case OrderState.Triggered:
@@ -345,8 +343,6 @@ export const streamSubaccountOrders = ({
               subaccountOrdersCount: subaccountOrders.length
             })
           }
-
-          useEventBus(BusEvents.LimitOrdersRemoveFromChart).emit(order)
 
           break
         }

@@ -155,8 +155,6 @@ export const streamSubaccountOrders = ({
             subaccountOrdersCount: subaccountOrders.length
           })
 
-          useEventBus(BusEvents.LimitOrdersModifyOnChart).emit()
-
           break
         }
         case OrderState.Canceled:
@@ -169,8 +167,6 @@ export const streamSubaccountOrders = ({
             subaccountOrders,
             subaccountOrdersCount: subaccountOrders.length
           })
-
-          useEventBus(BusEvents.LimitOrdersRemoveFromChart).emit(order)
 
           break
         }
