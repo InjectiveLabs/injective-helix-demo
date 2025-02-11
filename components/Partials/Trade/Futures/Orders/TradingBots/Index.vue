@@ -29,29 +29,6 @@ const { $onError } = useNuxtApp()
 
 onWalletConnected(fetchStrategies)
 
-function fetchStrategies() {
-  status.setLoading()
-
-  Promise.all([
-    gridStrategyStore.fetchAllStrategies(),
-    positionStore.fetchPositions(),
-    derivativeStore.fetchOrdersForSubaccount({
-      marketIds: [props.market.marketId],
-      subaccountId: pgtSubaccount.value
-    }),
-    derivativeStore.fetchOrderHistoryForSubaccount({
-      subaccountId: pgtSubaccount.value
-    }),
-    derivativeStore.fetchTradesForSubaccount({
-      subaccountId: pgtSubaccount.value
-    })
-  ])
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
 const pgtSubaccount = computed(() =>
   addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
@@ -79,6 +56,33 @@ function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
+}
+
+function fetchStrategies() {
+  if (!sharedWalletStore.address) {
+    return
+  }
+
+  status.setLoading()
+
+  Promise.all([
+    gridStrategyStore.fetchAllStrategies(),
+    positionStore.fetchPositions(),
+    derivativeStore.fetchOrdersForSubaccount({
+      marketIds: [props.market.marketId],
+      subaccountId: pgtSubaccount.value
+    }),
+    derivativeStore.fetchOrderHistoryForSubaccount({
+      subaccountId: pgtSubaccount.value
+    }),
+    derivativeStore.fetchTradesForSubaccount({
+      subaccountId: pgtSubaccount.value
+    })
+  ])
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 }
 </script>
 
