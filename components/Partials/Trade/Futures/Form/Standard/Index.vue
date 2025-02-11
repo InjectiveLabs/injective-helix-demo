@@ -131,7 +131,7 @@ function onTradeTypeChange() {
       />
 
       <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity, minimumAmountInQuote }"
+        v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
       />
 
       <PartialsTradeFuturesFormStandardLeverage
