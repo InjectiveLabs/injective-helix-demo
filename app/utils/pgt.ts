@@ -97,7 +97,7 @@ export function validateTickSize({
 
     // Calculate target grids to achieve exactly the marketMinTickSize:
     // (amount / targetGrids * leverage) / upperPrice = marketMinTickSize  =>  targetGrids = (amount * leverage) / (marketMinTickSize * upperPrice)
-    let targetGrids = Math.ceil(
+    let targetGrids = Math.floor(
       (amount * leverage) / (marketMinTickSize * upperPrice)
     )
     // Cannot reduce grids below the minimum allowed.
@@ -120,9 +120,7 @@ export function validateTickSize({
       targetLeverage > leverage ? targetLeverage - leverage : 0
 
     // Round leverageIncreaseNeeded to 2 decimal places and then apply ceiling
-    leverageIncreaseNeeded = Math.ceil(
-      parseFloat(leverageIncreaseNeeded.toFixed(2))
-    )
+    leverageIncreaseNeeded = parseFloat(leverageIncreaseNeeded.toFixed(2))
   }
 
   return {

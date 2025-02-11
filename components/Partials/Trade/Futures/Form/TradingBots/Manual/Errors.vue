@@ -51,19 +51,25 @@ const errors = computed(() => {
     }
 
     if (additionalAmountNeeded > 0) {
+      const amount = additionalAmountNeeded + Number(margin)
+
       errors.push(
-        `Additional amount needed: ${additionalAmountNeeded.toFixed(3)} ${
+        `Add funds to reach a minimum of: ${amount.toFixed(3)} ${
           futuresMarket.value.quoteToken.symbol
         }`
       )
     }
 
     if (leverageIncreaseNeeded > 0) {
-      errors.push(`Leverage increase needed: ${leverageIncreaseNeeded}`)
+      const newLeverage = Number(leverage) + leverageIncreaseNeeded
+
+      errors.push(`Increase leverage above: ${newLeverage.toFixed(2)}x`)
     }
 
     if (gridReductionNeeded > 0) {
-      errors.push(`Grid reduction needed: ${-gridReductionNeeded}`)
+      const newGrids = Number(grids) - gridReductionNeeded
+
+      errors.push(`Reduce the number of grids to: ${newGrids}`)
     }
 
     return errors
