@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   MarketKey,
   UiDerivativeMarket,
   DerivativesTradeForm,
+  DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
@@ -19,7 +21,11 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
 
-const { value: limit, errorMessage } = useStringField({
+const {
+  errorMessage,
+  value: limitValue,
+  resetField: resetLimitValue
+} = useStringField({
   name: DerivativesTradeFormField.LimitPrice,
   initialValue: '',
   dynamicRule: computed(() => {
@@ -34,30 +40,64 @@ const { value: limit, errorMessage } = useStringField({
   })
 })
 
+const hasClickedLimitField = ref(false)
+
 const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInBase(limit.value || 0).times(
+    new BigNumberInBase(limitValue.value || 0).times(
       tokenStore.tokenUsdPrice(market.value.quoteToken)
     )
   )
 )
 
-function setMidLimitPrice() {
-  if (!orderbookStore.midPrice) {
+onMounted(() => {
+  setLimitPriceToTopOfOrderbook()
+
+  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
+    limitValue.value = price
+  })
+
+  useEventBus(BusEvents.OrderSideToggled).on(() => {
+    hasClickedLimitField.value = false
+    setLimitPriceToTopOfOrderbook()
+  })
+
+  useEventBus(BusEvents.OrderbookReplaced).on(() => {
+    if (limitValue.value || hasClickedLimitField.value) {
+      return
+    }
+
+    setLimitPriceToTopOfOrderbook()
+  })
+})
+
+function setLimitPriceToTopOfOrderbook() {
+  if (!orderbookStore.highestBuyPrice || !orderbookStore.lowestSellPrice) {
     return
   }
 
-  limit.value = new BigNumberInBase(orderbookStore.midPrice).toFixed(
-    market.value.priceDecimals,
-    BigNumberInBase.ROUND_DOWN
-  )
+  if (
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+    DerivativeTradeTypes.StopLimit
+  ) {
+    return
+  }
+
+  limitValue.value =
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
+      ? orderbookStore.highestBuyPrice
+      : orderbookStore.lowestSellPrice
 }
 
-onMounted(() => {
-  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
-    limit.value = price
-  })
-})
+function onResetLimitField() {
+  if (hasClickedLimitField.value) {
+    return
+  }
+
+  resetLimitValue()
+  hasClickedLimitField.value = true
+}
 </script>
 
 <template>
@@ -76,22 +116,14 @@ onMounted(() => {
     </div>
 
     <AppInputField
-      v-model="limit"
+      v-model="limitValue"
       v-bind="{
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
       :data-cy="dataCyTag(PerpetualMarketCyTags.LimitpriceInputField)"
+      @click="onResetLimitField"
     >
-      <template #left>
-        <div
-          class="text-xs text-coolGray-400 select-none hover:text-white flex cursor-pointer"
-          @click="setMidLimitPrice"
-        >
-          {{ $t('trade.mid') }}
-        </div>
-      </template>
-
       <template #right>
         <span class="text-sm flex items-center text-white">
           {{ market.quoteToken.symbol }}
