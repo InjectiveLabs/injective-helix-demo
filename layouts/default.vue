@@ -176,7 +176,7 @@ useIntervalFn(
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
 
-    <ModalsNewFeature v-if="false" />
+    <ModalsNewFeature />
     <ModalsPostOnlyMode />
     <ModalsDevMode />
     <ModalsGeoRestricted />
