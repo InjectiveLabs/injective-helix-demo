@@ -40,7 +40,7 @@ const balancesSorted = computed(() => {
       return 1
     }
 
-    return bBalanceInToken.minus(aBalanceInToken).toFixed()
+    return bBalanceInToken.minus(aBalanceInToken).toNumber()
   })
 })
 </script>
