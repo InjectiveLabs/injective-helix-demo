@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//
+const error = ref(false)
 </script>
 
 <template>
@@ -8,6 +8,10 @@
     <PartialsTradeFuturesFormTradingBotsManualGridsField />
     <PartialsTradeFuturesFormTradingBotsCommonInvestmentField />
     <PartialsTradeFuturesFormTradingBotsCommonLeverage />
-    <PartialsTradeFuturesFormTradingBotsCommonCreateStrategy />
+    <PartialsTradeFuturesFormTradingBotsManualErrors v-model:error="error" />
+    {{ error }}
+    <PartialsTradeFuturesFormTradingBotsCommonCreateStrategy
+      v-bind="{ error }"
+    />
   </div>
 </template>

@@ -21,6 +21,15 @@ const derivativeFormValues = useFormValues<DerivativeGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const props = withDefaults(
+  defineProps<{
+    error: boolean
+  }>(),
+  {
+    error: false
+  }
+)
+
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
@@ -31,7 +40,7 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (Object.keys(formErrors.value).length > 0) {
+  if (Object.keys(formErrors.value).length > 0 || props.error) {
     return true
   }
 
