@@ -64,7 +64,7 @@ const toggleFavorite = () => {
                   :tooltip="
                     $t(
                       `trade.rwa.${
-                        RWA_TRADFI_MARKET_IDS.includes(market.market.marketId)
+                        !RWA_TRADFI_MARKET_IDS.includes(market.market.marketId)
                           ? 'marketClosedMarketRow'
                           : 'nyseClosedMarketRow'
                       }`
