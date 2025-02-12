@@ -395,7 +395,7 @@ export const createPerpStrategy = async (
       quoteDecimals: market.quoteToken.decimals
     }),
 
-    marginRatio: leverage
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
