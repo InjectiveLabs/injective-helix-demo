@@ -36,7 +36,11 @@ const {
       return ''
     }
 
-    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+    if (lastTradedPrice.value.isZero()) {
+      return ''
+    }
+
+    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value.toFixed()}`
   })
 })
 
@@ -52,8 +56,6 @@ const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
 )
 
 onMounted(() => {
-  setLimitPriceToTopOfOrderbook()
-
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
     limitValue.value = price
   })
