@@ -25,7 +25,7 @@ export const tradeErrorMessages = {
   minAmount: (minBaseAmount: string) => `Amount must be > ${minBaseAmount}`,
   quantityTensMultiplier: (tensMultiplier: string) =>
     `Quantity must be a multiple of ${tensMultiplier}`,
-  markPriceThresholdError:
+  markPriceThresholdError: () =>
     'Please modify price, amount, or leverage to meet mark price requirement'
 } as Record<string, any>
 
