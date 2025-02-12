@@ -124,7 +124,7 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  RWA_TRADFI_MARKET_IDS.includes(market.marketId)
+                  !RWA_TRADFI_MARKET_IDS.includes(market.marketId)
                     ? 'marketClosedMarketRow'
                     : 'nyseClosedMarketRow'
                 }`
