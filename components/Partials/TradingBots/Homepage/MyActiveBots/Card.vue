@@ -1,55 +1,77 @@
 <script setup lang="ts">
+import { SharedMarketType } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BotType,
   MainPage,
-  TradePage,
   TradeSubPage,
   TradingInterface,
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
 } from '@/types'
 
-defineProps<{
+const props = defineProps<{
   strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
 }>()
+
+const to = computed(() => {
+  if (props.strategy.market.type === SharedMarketType.Spot) {
+    return props.strategy.market.isVerified
+      ? {
+          name:
+            props.strategy.botType === BotType.SpotGrid
+              ? TradeSubPage.Spot
+              : MainPage.TradingBotsLiquidityBotsSpot,
+          params: {
+            slug:
+              props.strategy.botType === BotType.SpotGrid
+                ? props.strategy.market.slug
+                : undefined
+          },
+          query: {
+            interface:
+              props.strategy.botType === BotType.SpotGrid
+                ? TradingInterface.TradingBots
+                : undefined,
+            market:
+              props.strategy.botType === BotType.LiquidityGrid
+                ? props.strategy.market.slug
+                : undefined
+          }
+        }
+      : {
+          name: TradeSubPage.Futures,
+          params: {
+            slug: props.strategy.market.slug
+          },
+          query: {
+            interface: TradingInterface.TradingBots
+          }
+        }
+  }
+
+  return props.strategy.market.isVerified
+    ? {
+        name: TradeSubPage.Futures,
+        params: {
+          slug: props.strategy.market.slug
+        },
+        query: {
+          interface: TradingInterface.TradingBots
+        }
+      }
+    : {
+        name: TradeSubPage.Futures,
+        query: {
+          interface: TradingInterface.TradingBots,
+          marketId: props.strategy.market.marketId
+        }
+      }
+})
 </script>
 
 <template>
-  <NuxtLink
-    :to="
-      strategy.market.isVerified
-        ? {
-            name:
-              strategy.botType === BotType.SpotGrid
-                ? TradeSubPage.Spot
-                : MainPage.TradingBotsLiquidityBotsSpot,
-            params: {
-              slug:
-                strategy.botType === BotType.SpotGrid
-                  ? strategy.market.slug
-                  : undefined
-            },
-            query: {
-              interface:
-                strategy.botType === BotType.SpotGrid
-                  ? TradingInterface.TradingBots
-                  : undefined,
-              market:
-                strategy.botType === BotType.LiquidityGrid
-                  ? strategy.market.slug
-                  : undefined
-            }
-          }
-        : {
-            name: TradePage.Spot,
-            query: {
-              marketId: strategy.market.marketId,
-              interface: TradingInterface.TradingBots
-            }
-          }
-    "
-  >
+  <NuxtLink :to="to">
     <UCard
       :ui="{
         base: 'h-full',

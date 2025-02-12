@@ -169,7 +169,8 @@ function removeStrategy() {
       </div>
     </div>
 
-    <div class="flex justify-between mb-2 text-sm">
+    <!-- TODO: Uncomment When we have the data from indexer -->
+    <!-- <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">{{ $t('sgt.initialEntryPrice') }}</p>
       <div class="text-right">
         <SharedAmountFormatter
@@ -181,7 +182,7 @@ function removeStrategy() {
           {{ ' ' + strategy.market.quoteToken.symbol }}
         </span>
       </div>
-    </div>
+    </div> -->
 
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">{{ $t('sgt.numberOfGrids') }}</p>
