@@ -375,6 +375,8 @@ function submitStopMarketOrder() {
 async function onSubmit() {
   if (!isRWAMarket) {
     submit()
+
+    return
   }
 
   status.setLoading()
