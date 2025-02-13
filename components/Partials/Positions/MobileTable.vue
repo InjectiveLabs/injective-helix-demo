@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  PositionV2,
-  TradeDirection,
-  DerivativeLimitOrder
-} from '@injectivelabs/sdk-ts'
+import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   UTableColumn,
-  UiDerivativeMarket,
   PositionTableColumn,
   TransformedPosition,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  PositionAndReduceOnlyOrders
 } from '@/types'
 
 const props = withDefaults(
@@ -27,15 +23,8 @@ const emit = defineEmits<{
   'tpsl:add': []
   'margin:add': []
   'position:share': []
-  'close:position': [
-    positionDetails: {
-      position: PositionV2
-      market: UiDerivativeMarket
-      isShowWarningModal: boolean
-      hasReduceOnlyOrders: boolean
-      reduceOnlyCurrentOrders: DerivativeLimitOrder[]
-    }
-  ]
+  'position:close': []
+  'position:set': [PositionAndReduceOnlyOrders]
 }>()
 
 const filteredColumns = computed(() =>
@@ -68,14 +57,12 @@ function sharePosition() {
   emit('position:share')
 }
 
-function onClosePosition(value: {
-  position: PositionV2
-  market: UiDerivativeMarket
-  isShowWarningModal: boolean
-  hasReduceOnlyOrders: boolean
-  reduceOnlyCurrentOrders: DerivativeLimitOrder[]
-}) {
-  emit('close:position', value)
+function onClosePosition() {
+  emit('position:close')
+}
+
+function onSetPosition(value: PositionAndReduceOnlyOrders) {
+  emit('position:set', value)
 }
 </script>
 
@@ -116,7 +103,8 @@ function onClosePosition(value: {
             :is-limit-order-authorized="position.isLimitOrderAuthorized"
             :reduce-only-current-orders="position.reduceOnlyCurrentOrders"
             :is-market-order-authorized="position.isMarketOrderAuthorized"
-            @close:position="onClosePosition"
+            @position:close="onClosePosition"
+            @position:set="onSetPosition"
           />
         </div>
       </div>

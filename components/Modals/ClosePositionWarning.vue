@@ -29,7 +29,7 @@ function closePosition() {
   >
     <div class="flex flex-col items-center pt-8">
       <img
-        src="/images/warning-sign.png"
+        src="/images/warning-sign.webp"
         class="w-full max-w-[150px] object-contain"
       />
 

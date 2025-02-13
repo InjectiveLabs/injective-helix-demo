@@ -392,7 +392,8 @@ function setPositionStatusIdle() {
           :is-limit-order-authorized="row.isLimitOrderAuthorized"
           :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
           :is-market-order-authorized="row.isMarketOrderAuthorized"
-          @close:position="onClosePosition"
+          @position:close="onClosePosition"
+          @position:set="setSelectedPosition"
         />
       </template>
     </UTable>
@@ -403,7 +404,8 @@ function setPositionStatusIdle() {
       v-for="position in rows"
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       v-bind="{ position, columns }"
-      @close:position="onClosePosition"
+      @position:close="onClosePosition"
+      @position:set="setSelectedPosition"
       @tpsl:add="addTpSl(position.position)"
       @margin:add="addMargin(position.position)"
       @position:share="sharePosition(position.position)"
