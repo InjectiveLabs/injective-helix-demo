@@ -131,11 +131,11 @@ function confirm() {
     :ui="{
       background:
         'bg-[radial-gradient(103.02%_103.02%_at_50.07%_0%,#0d1e43_0%,rgba(0,0,26,0.863)_100%)]',
-      width: 'w-full sm:max-w-xl'
+      width: 'w-full sm:max-w-[600px]'
     }"
-    :model-value="modalStore.modals[Modal.ClosedRWAMarket]"
+    :model-value="modalStore.modals[Modal.ClosedRWAMarket] || true"
   >
-    <div class="flex flex-col items-center justify-center p-4 lg:p-8">
+    <div class="flex flex-col items-center justify-center p-4 lg:p-10">
       <img
         src="/svg/rwa_warning.svg"
         alt="RWA Warning"
@@ -189,7 +189,7 @@ function confirm() {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 w-full mt-6 gap-2">
+      <div class="grid grid-cols-1 lg:grid-cols-3 w-full mt-8 gap-2">
         <div class="flex justify-between lg:flex-col-reverse gap-2">
           <span class="text-white/30 text-sm">
             {{ $t('trade.previousMarkPrice') }}
@@ -223,7 +223,7 @@ function confirm() {
         </div>
       </div>
 
-      <div class="mt-6 border-t pt-6">
+      <div class="mt-4 lg:mt-8 border-t pt-6">
         <AppCheckbox v-model="termsAccepted">
           <div class="text-sm pl-2 leading-4 tracking-wide text-white/30">
             {{ $t('trade.rwa.acknowledge') }}
