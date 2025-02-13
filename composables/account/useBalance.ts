@@ -69,7 +69,7 @@ function getDenomPositionMap(positions: PositionV2[]) {
       const quoteToken =
         tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
       const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
-        .price
+        ?.price
         ? sharedToBalanceInWei({
             value: derivativeStore.marketMarkPriceMap[position.marketId].price,
             decimalPlaces: quoteToken.decimals
