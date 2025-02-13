@@ -38,7 +38,6 @@ function onCopyAddress() {
         <SharedQRCode
           class="w-full rounded-lg overflow-hidden mt-4"
           :text="sharedWalletStore.injectiveAddress"
-          color="#40A9FF"
         />
 
         <div class="flex items-center gap-2 mt-6 justify-between mx-auto">
