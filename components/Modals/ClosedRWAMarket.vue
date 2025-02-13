@@ -133,7 +133,7 @@ function confirm() {
         'bg-[radial-gradient(103.02%_103.02%_at_50.07%_0%,#0d1e43_0%,rgba(0,0,26,0.863)_100%)]',
       width: 'w-full sm:max-w-[600px]'
     }"
-    :model-value="modalStore.modals[Modal.ClosedRWAMarket] || true"
+    :model-value="modalStore.modals[Modal.ClosedRWAMarket]"
   >
     <div class="flex flex-col items-center justify-center p-4 lg:p-10">
       <img
