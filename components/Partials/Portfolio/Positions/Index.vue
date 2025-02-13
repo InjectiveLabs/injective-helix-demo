@@ -53,7 +53,7 @@ function onSharePosition(position: PositionV2) {
   <PartialsPortfolioPositionsTabs />
 
   <div class="overflow-x-auto lg:min-w-[1400px] divide-y border-b">
-    <PartialsPortfolioPositionsTable
+    <PartialsPositionsTable
       v-if="filteredPosition.length"
       :positions="filteredPosition"
       @margin:add="addMargin"

@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { TradeDirection } from '@injectivelabs/sdk-ts'
+import {
+  PositionV2,
+  TradeDirection,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   UTableColumn,
+  UiDerivativeMarket,
   PositionTableColumn,
   TransformedPosition,
   PerpetualMarketCyTags
@@ -22,6 +27,15 @@ const emit = defineEmits<{
   'tpsl:add': []
   'margin:add': []
   'position:share': []
+  'close:position': [
+    positionDetails: {
+      position: PositionV2
+      market: UiDerivativeMarket
+      isShowWarningModal: boolean
+      hasReduceOnlyOrders: boolean
+      reduceOnlyCurrentOrders: DerivativeLimitOrder[]
+    }
+  ]
 }>()
 
 const filteredColumns = computed(() =>
@@ -53,6 +67,16 @@ function addMargin() {
 function sharePosition() {
   emit('position:share')
 }
+
+function onClosePosition(value: {
+  position: PositionV2
+  market: UiDerivativeMarket
+  isShowWarningModal: boolean
+  hasReduceOnlyOrders: boolean
+  reduceOnlyCurrentOrders: DerivativeLimitOrder[]
+}) {
+  emit('close:position', value)
+}
 </script>
 
 <template>
@@ -82,15 +106,17 @@ function sharePosition() {
             </span>
           </AppButton>
 
-          <PartialsPortfolioPositionsTableActionBtns
+          <PartialsPositionsTableClosePositionButton
             :pnl="position.pnl"
             :market="position.market"
             :position="position.position"
             :quantity="position.quantity"
+            :mark-price="position.markPrice"
             :has-reduce-only-orders="position.hasReduceOnlyOrders"
             :is-limit-order-authorized="position.isLimitOrderAuthorized"
             :reduce-only-current-orders="position.reduceOnlyCurrentOrders"
             :is-market-order-authorized="position.isMarketOrderAuthorized"
+            @close:position="onClosePosition"
           />
         </div>
       </div>

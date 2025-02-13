@@ -4,33 +4,22 @@ import {
   // TradeDirection,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
-import { NuxtUiIcons } from '@shared/types'
-// import { OrderSide } from '@injectivelabs/ts-types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-// import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { indexerDerivativesApi } from '@shared/Service'
 // import { NuxtUiIcons } from '@shared/types'
+// import { OrderSide } from '@injectivelabs/ts-types'
+// import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import {
   UiDerivativeMarket,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  BusEvents
   // ClosePositionLimitForm,
   // ClosePositionLimitFormField
 } from '@/types'
 
-const props = withDefaults(
-  defineProps<{
-    pnl: BigNumberInBase
-    position: PositionV2
-    quantity: BigNumberInBase
-    market: UiDerivativeMarket
-    hasReduceOnlyOrders: boolean
-    isLimitOrderAuthorized: boolean
-    isMarketOrderAuthorized: boolean
-    reduceOnlyCurrentOrders: DerivativeLimitOrder[]
-  }>(),
-  {}
-)
-const positionStore = usePositionStore()
 const breakpoints = useSharedBreakpoints()
 // const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
@@ -38,6 +27,33 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { lg } = useSharedBreakpoints()
 // const { validate } = useForm<ClosePositionLimitForm>()
+
+const props = withDefaults(
+  defineProps<{
+    pnl: BigNumberInBase
+    position: PositionV2
+    quantity: BigNumberInBase
+    market: UiDerivativeMarket
+    markPrice: BigNumberInBase
+    hasReduceOnlyOrders: boolean
+    isLimitOrderAuthorized: boolean
+    isMarketOrderAuthorized: boolean
+    reduceOnlyCurrentOrders: DerivativeLimitOrder[]
+  }>(),
+  {}
+)
+
+const emit = defineEmits<{
+  'close:position': [
+    positionDetails: {
+      position: PositionV2
+      market: UiDerivativeMarket
+      isShowWarningModal: boolean
+      hasReduceOnlyOrders: boolean
+      reduceOnlyCurrentOrders: DerivativeLimitOrder[]
+    }
+  ]
+}>()
 
 // const limitCloseStatus = reactive(new Status(StatusType.Idle))
 const marketCloseStatus = reactive(new Status(StatusType.Idle))
@@ -63,63 +79,69 @@ const marketCloseStatus = reactive(new Status(StatusType.Idle))
 
 const sixXl = breakpoints['6xl']
 
-function closePositionClicked() {
+onMounted(() => {
+  useEventBus(BusEvents.SetPositionStatusIdle).on(() => {
+    marketCloseStatus.setIdle()
+  })
+})
+
+async function validateSlippage() {
+  const orderbookRecords = await indexerDerivativesApi
+    .fetchOrderbookV2(props.market.marketId)
+    .catch($onError)
+    .finally(() => {
+      marketCloseStatus.setIdle()
+    })
+
+  const { worstPrice } = calculateWorstPriceFromPriceLevel(
+    props.quantity.toString(),
+    orderbookRecords?.sells || []
+  )
+
+  const formattedWorstPrice = parseFloat(
+    sharedToBalanceInToken({
+      value: worstPrice.toFixed(),
+      decimalPlaces: props.market.quoteToken.decimals
+    })
+  )
+
+  const formattedMarkPrice = parseFloat(props.markPrice.toFixed())
+
+  const slippagePercentage = Math.abs(
+    (Math.abs(formattedWorstPrice - formattedMarkPrice) /
+      ((formattedWorstPrice + formattedMarkPrice) / 2)) *
+      100
+  )
+
+  if (slippagePercentage > 5) {
+    return true
+  } else {
+    return false
+  }
+}
+
+async function closePosition() {
   if (!props.market) {
-    return
+    return false
   }
 
   if (props.pnl.isNaN()) {
-    return notificationStore.error({ title: t('trade.no_liquidity') })
+    notificationStore.error({ title: t('trade.no_liquidity') })
+
+    return false
   }
 
-  if (props.hasReduceOnlyOrders) {
-    return closePositionAndReduceOnlyOrders()
-  }
-
-  closePosition()
-}
-
-function closePosition() {
-  if (!props.market) {
-    return
-  }
+  const isShowWarningModal = await validateSlippage()
 
   marketCloseStatus.setLoading()
 
-  positionStore
-    .closePosition({
-      market: props.market,
-      position: props.position
-    })
-    .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      marketCloseStatus.setIdle()
-    })
-}
-
-function closePositionAndReduceOnlyOrders() {
-  if (!props.market) {
-    return
-  }
-
-  marketCloseStatus.setLoading()
-
-  positionStore
-    .closePositionAndReduceOnlyOrders({
-      market: props.market,
-      position: props.position,
-      reduceOnlyOrders: props.reduceOnlyCurrentOrders
-    })
-    .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      marketCloseStatus.setIdle()
-    })
+  emit('close:position', {
+    isShowWarningModal,
+    market: props.market,
+    position: props.position,
+    hasReduceOnlyOrders: props.hasReduceOnlyOrders,
+    reduceOnlyCurrentOrders: props.reduceOnlyCurrentOrders
+  })
 }
 
 // todo: resurrect logic when limit orders are enabled
@@ -167,7 +189,7 @@ function closePositionAndReduceOnlyOrders() {
         sixXl ? 'min-w-16' : lg ? 'p-1 outline-none rounded-full' : 'py-2'
       ]"
       :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
-      @click="closePositionClicked"
+      @click="closePosition"
     >
       <span v-if="sixXl">{{ $t('common.close') }}</span>
       <UIcon v-else-if="lg" :name="NuxtUiIcons.Trash" class="size-4" />
