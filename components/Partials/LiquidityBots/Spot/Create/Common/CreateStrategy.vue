@@ -152,7 +152,7 @@ const isUpperBoundLtLastPrice = computed(() =>
 )
 
 const hasActiveLegacyStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) =>
       strategy.marketId ===
       CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]

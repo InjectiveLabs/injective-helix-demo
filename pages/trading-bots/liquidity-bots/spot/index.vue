@@ -44,7 +44,7 @@ const marketOptions = computed(() =>
       avatar: {
         src: market.baseToken.logo
       },
-      active: gridStrategyStore.activeStrategies.some(
+      active: gridStrategyStore.activeSpotStrategies.some(
         (strategy) => strategy.marketId === market.marketId
       )
     }))
@@ -242,7 +242,7 @@ onWalletConnected(() => {
 })
 
 const activeStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) => strategy.marketId === selectedMarket.value?.marketId
   )
 )

@@ -39,7 +39,10 @@ const maximumGrids = computed(() => {
     derivativeGridFormValues.value[DerivativeGridTradingField.LowerPrice] || 0
   )
 
-  const maximumGrids = range.dividedBy(Number(tickSize.value)).toFixed(0)
+  const maximumGrids = range
+    .dividedBy(Number(tickSize.value))
+    .plus(1)
+    .toFixed(0)
 
   if (Number(maximumGrids) < GST_MINIMUM_GRIDS) {
     return GST_MINIMUM_GRIDS
@@ -67,7 +70,7 @@ const { value: gridsValue, errorMessage } = useStringField({
 
     const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${maximumGrids.value}`
 
-    rules.push(betweenRule, gridRangeRule)
+    rules.push(gridRangeRule, betweenRule)
 
     return rules.join('|')
   })

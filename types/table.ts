@@ -93,12 +93,12 @@ export enum PortfolioSpotOrderHistoryTableColumn {
 export enum PortfolioSpotTradingBotsRunningTableColumn {
   Time = 'time',
   Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
   LowerBound = 'lowerBound',
   UpperBound = 'upperBound',
   TotalAmount = 'totalAmount',
   TotalProfit = 'totalProfit',
-  Duration = 'duration',
-  Details = 'details',
   RemoveStrategy = 'removeStrategy'
 }
 
@@ -468,4 +468,28 @@ export interface TransformedPointsHistory {
   period: string
   pointsInBigNumber: BigNumberInBase
   volumeInBigNumber: BigNumberInBase
+}
+
+export enum PortfolioTradingBotsRunningTableColumn {
+  Time = 'time',
+  Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  RemoveStrategy = 'removeStrategy'
+}
+
+export enum PortfolioTradingBotsHistoryTableColumn {
+  Time = 'time',
+  Market = 'market',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  Duration = 'duration',
+  Details = 'details',
+  StopReason = 'stopReason'
 }

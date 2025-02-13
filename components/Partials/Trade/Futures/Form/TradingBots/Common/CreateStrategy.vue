@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { derivativeGridMarkets } from '@/app/json'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
-  DerivativeGridTradingField,
-  DerivativeGridTradingForm,
   MarketKey,
+  DerivativeGridTradingForm,
+  DerivativeGridTradingField,
   UiDerivativeMarket
 } from '@/types'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { derivativeGridMarkets } from '~/app/json'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
+const appStore = useAppStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
 const sharedWalletStore = useSharedWalletStore()
@@ -19,6 +20,15 @@ const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativeGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+
+const props = withDefaults(
+  defineProps<{
+    error: boolean
+  }>(),
+  {
+    error: false
+  }
+)
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -30,7 +40,7 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (Object.keys(formErrors.value).length > 0) {
+  if (Object.keys(formErrors.value).length > 0 || props.error) {
     return true
   }
 
@@ -58,26 +68,16 @@ async function createStrategy() {
 }
 
 function removeStrategy() {
-  status.setLoading()
-
   const subaccountId = addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
     market.value.slug
   )
 
-  const perpMarket = derivativeGridMarkets.find(
-    (m) => m.slug === market.value.slug
-  )
+  const scAddress = derivativeGridMarkets.find(
+    ({ slug }) => slug === market.value.slug
+  )!.contractAddress
 
-  gridStrategyStore
-    .removeStrategyForSubaccount(perpMarket?.contractAddress, subaccountId)
-    .then(() => {
-      notificationStore.success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
+  gridStrategyStore.removeStrategyForSubaccount(scAddress, subaccountId)
 }
 </script>
 
@@ -91,18 +91,24 @@ function removeStrategy() {
       <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
+
+      <span
+        v-else-if="sharedWalletStore.isAutoSignEnabled"
+        class="text-xs text-red-500"
+      >
+        {{ $t('common.notAvailableinAutoSignMode') }}
+      </span>
+
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
 
-    <AppButton class="w-full mt-4" variant="danger" @click="removeStrategy">
-      {{ $t('sgt.removeStrategy') }}
-    </AppButton>
-
-    <span
-      v-if="sharedWalletStore.isAutoSignEnabled"
-      class="text-xs text-red-500"
+    <AppButton
+      v-if="appStore.devMode"
+      variant="danger-shade"
+      class="w-full mt-2"
+      @click="removeStrategy"
     >
-      {{ $t('common.notAvailableinAutoSignMode') }}
-    </span>
+      Remove Strategy
+    </AppButton>
   </div>
 </template>

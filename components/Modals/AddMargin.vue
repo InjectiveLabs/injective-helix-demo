@@ -9,13 +9,17 @@ import { Modal } from '@/types'
 const props = withDefaults(
   defineProps<{
     position: PositionV2
+    isPgt?: boolean
   }>(),
-  {}
+  {
+    isPgt: false
+  }
 )
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
@@ -78,6 +82,28 @@ function onModalClose() {
 
 const onSubmit = handleSubmit(() => {
   if (!market.value) {
+    return
+  }
+
+  if (props.isPgt && sharedWalletStore.defaultSubaccountId) {
+    status.setLoading()
+
+    positionStore
+      .addMarginToSubaccountPosition({
+        market: market.value,
+        amount: new BigNumberInBase(amountValue.value),
+        fromSubaccountId: sharedWalletStore.defaultSubaccountId,
+        toSubaccountId: props.position.subaccountId
+      })
+      .then(() => {
+        resetForm()
+        notificationStore.success({ title: t('trade.success_added_margin') })
+        onModalClose()
+      })
+      .catch($onError)
+      .finally(() => {
+        status.setIdle()
+      })
     return
   }
 

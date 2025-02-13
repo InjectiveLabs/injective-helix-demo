@@ -131,7 +131,7 @@ export const isSgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return spotGridMarkets.find((m) => m.slug === slug)?.slug
+  return spotGridMarkets.find((market) => market.slug === slug)?.slug
 }
 
 export const isPgtSubaccountId = (subaccountId: string) => {
@@ -139,8 +139,8 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return (derivativeGridMarkets as GridMarket[]).find(
-    (m) => m.slug.replace('-perp', '-p') === slug
+  return derivativeGridMarkets.find(
+    (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
 }
 
@@ -148,16 +148,16 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
       ...spotGridMarkets,
-      ...derivativeGridMarkets.map((m: GridMarket) => ({
-        ...m,
-        slug: m.slug.replace('-perp', '-p')
+      ...derivativeGridMarkets.map((market: GridMarket) => ({
+        ...market,
+        slug: market.slug.replace('-perp', '-p')
       }))
     ] as GridMarket[]
 
     return gridMarkets
       .find(
-        (m) =>
-          m.slug.toLowerCase() ===
+        (market) =>
+          market.slug.toLowerCase() ===
           hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
       )
       ?.slug.toUpperCase()

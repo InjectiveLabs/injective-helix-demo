@@ -18,8 +18,10 @@ const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     ui?: Record<string, any>
+    isTradingBots?: boolean
   }>(),
   {
+    isTradingBots: false,
     ui: () => ({
       th: {
         base: 'whitespace-nowrap'
@@ -84,11 +86,6 @@ const columns = computed(() => {
       class: 'text-right w-[8%]'
     },
     {
-      key: PositionTableColumn.Margin,
-      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
-      class: 'text-right w-[8%]'
-    },
-    {
       key: PositionTableColumn.LiquidationPrice,
       label: t(
         `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
@@ -99,15 +96,24 @@ const columns = computed(() => {
       key: PositionTableColumn.Leverage,
       label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
       class: 'text-right w-[7%]'
-    },
-    {
-      key: PositionTableColumn.TpOrSl,
-      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
-      class: 'text-center w-[8%]'
     }
   ]
 
-  if (sixXl.value) {
+  if (!props.isTradingBots) {
+    baseColumns.splice(8, 0, {
+      key: PositionTableColumn.Margin,
+      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
+      class: 'text-right w-[8%]'
+    })
+
+    baseColumns.push({
+      key: PositionTableColumn.TpOrSl,
+      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
+      class: 'text-center w-[8%]'
+    })
+  }
+
+  if (sixXl.value && !props.isTradingBots) {
     baseColumns.push({
       key: PositionTableColumn.ClosePosition,
       label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
@@ -179,7 +185,7 @@ function setPositionStatusIdle() {
           </PartialsCommonMarketRedirection>
 
           <PartialsPositionsTableClosePositionButton
-            v-if="!sixXl"
+            v-if="!sixXl && !isTradingBots"
             :pnl="row.pnl"
             :market="row.market"
             :quantity="row.quantity"
@@ -403,6 +409,7 @@ function setPositionStatusIdle() {
     <PartialsPositionsMobileTable
       v-for="position in rows"
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
+      :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
       @position:close="onClosePosition"
       @position:set="setSelectedPosition"

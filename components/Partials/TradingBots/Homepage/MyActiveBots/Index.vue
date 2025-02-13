@@ -12,10 +12,21 @@ const { subaccountPortfolioBalanceMap } = useBalance()
 const selected = ref<string | BotType>('all')
 const status = reactive(new Status(StatusType.Loading))
 
-const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies),
+const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
+  computed(() => gridStrategyStore.activeSpotStrategies),
   subaccountPortfolioBalanceMap
 )
+
+const { formattedStrategies: derivativeFormattedStrategies } =
+  useDerivativeGridStrategies(
+    computed(() => gridStrategyStore.activeDerivativeStrategies),
+    subaccountPortfolioBalanceMap
+  )
+
+const formattedStrategies = computed(() => [
+  ...spotFormattedStrategies.value,
+  ...derivativeFormattedStrategies.value
+])
 
 const items = computed(() => [
   {
@@ -30,14 +41,14 @@ const items = computed(() => [
     })`,
     value: BotType.SpotGrid
   },
-  // {
-  //   label: `${t('tradingBots.futuresGrid')} (${
-  //     formattedStrategies.value.filter(
-  //       (strategy) => strategy.botType === BotType.FuturesGrid
-  //     ).length
-  //   })`,
-  //   value: BotType.FuturesGrid
-  // },
+  {
+    label: `${t('tradingBots.futuresGrid')} (${
+      formattedStrategies.value.filter(
+        (strategy) => strategy.botType === BotType.FuturesGrid
+      ).length
+    })`,
+    value: BotType.FuturesGrid
+  },
   {
     label: `${t('tradingBots.volumeBoost')} (${
       formattedStrategies.value.filter(

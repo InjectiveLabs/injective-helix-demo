@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioCyTags } from '@/types'
-import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 
 const props = withDefaults(
   defineProps<{
@@ -32,8 +32,10 @@ const showUnverifiedAssets = computed({
   set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
 
-const isGridTradingAccount = computed(() =>
-  isSgtSubaccountId(accountStore.subaccountId)
+const isGridTradingAccount = computed(
+  () =>
+    isSgtSubaccountId(accountStore.subaccountId) ||
+    isPgtSubaccountId(accountStore.subaccountId)
 )
 
 const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =

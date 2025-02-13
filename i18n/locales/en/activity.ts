@@ -33,6 +33,7 @@ export default {
     funds: 'Funds',
     orders: 'Orders',
     activity: 'Activity',
+    openOrders: 'Open Orders',
     advancedOrders: 'Advanced Orders',
     balances: 'Balances',
     spotGrid: 'Spot Grid',

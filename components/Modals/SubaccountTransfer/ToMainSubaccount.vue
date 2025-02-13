@@ -12,7 +12,7 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 
 const activeStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )

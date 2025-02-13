@@ -52,10 +52,11 @@ function onSharePosition(position: PositionV2) {
 <template>
   <PartialsPortfolioPositionsTabs />
 
-  <div class="overflow-x-auto lg:min-w-[1400px] divide-y border-b">
+  <div class="overflow-x-auto divide-y border-b">
     <PartialsPositionsTable
       v-if="filteredPosition.length"
       :positions="filteredPosition"
+      :is-trading-bots="accountStore.isSgtSubaccount"
       @margin:add="addMargin"
       @tpsl:add="addTakeProfitStopLoss"
       @position:share="onSharePosition"

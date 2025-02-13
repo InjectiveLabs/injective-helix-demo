@@ -241,7 +241,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = spotGridMarkets.find(
+  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
     (m) => m.slug === gridStrategyStore.spotMarket!.slug
   )
 
@@ -395,7 +395,7 @@ export const createPerpStrategy = async (
       quoteDecimals: market.quoteToken.decimals
     }),
 
-    marginRatio: leverage
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
