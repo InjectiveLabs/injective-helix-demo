@@ -12,7 +12,8 @@ import {
   ExecArgCreatePerpGridStrategy,
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed,
-  getGenericAuthorizationFromMessageType
+  getGenericAuthorizationFromMessageType,
+  MsgWithdraw
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -201,6 +202,32 @@ export const createStrategy = async (
   )
 
   const messages: Msgs[] = []
+
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
@@ -422,7 +449,33 @@ export const createPerpStrategy = async (
     )
   )
 
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
   const messages: Msgs[] = []
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
@@ -556,6 +609,30 @@ export async function createSpotLiquidityBot(params: {
   )
 
   const messages: Msgs[] = []
+
+  const withdrawMsgs = (accountStore.subaccountBalancesMap[subaccountId] || [])
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
