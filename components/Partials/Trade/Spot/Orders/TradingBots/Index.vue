@@ -21,6 +21,10 @@ const status = reactive(new Status(StatusType.Loading))
 onWalletConnected(fetchStrategies)
 
 function fetchStrategies() {
+  if (!sharedWalletStore.address || !props.market) {
+    return
+  }
+
   status.setLoading()
 
   const subaccountId = addressAndMarketSlugToSubaccountId(
@@ -65,10 +69,11 @@ onUnmounted(() => {
   <div>
     <PartialsTradeSpotOrdersTradingBotsHeader v-model="view" />
 
-    <PartialsTradeSpotOrdersTradingBotsRunning
+    <PartialsTradingBotsGridStrategiesRunningTable
       v-if="view === SpotOrdersTradingBotsView.ActiveStrategies"
     />
-    <PartialsTradeSpotOrdersTradingBotsHistory
+
+    <PartialsTradingBotsGridStrategiesHistoryTable
       v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
     />
 
@@ -76,7 +81,7 @@ onUnmounted(() => {
       <PartialsPortfolioOrdersSpotOpenOrdersTable
         v-if="spotStore.subaccountOrders.length"
         :orders="spotStore.subaccountOrders"
-        :is-trading-bots="true"
+        is-trading-bots
       />
 
       <CommonEmptyList

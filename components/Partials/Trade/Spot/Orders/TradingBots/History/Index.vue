@@ -197,7 +197,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
     </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.activeStrategies.length === 0 && !lg"
+      v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
       :message="$t('sgt.noActiveStrategies')"
     />
 

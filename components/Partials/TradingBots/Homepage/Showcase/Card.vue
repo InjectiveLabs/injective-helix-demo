@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { GridStrategyTransformed, MainPage } from '@/types'
+import {
+  MainPage,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    strategy: GridStrategyTransformed
+    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
   }>(),
   {}
 )
@@ -26,14 +30,16 @@ const isPositivePnl = computed(() =>
 <template>
   <UCard
     :ui="{
+      base: 'h-full flex flex-col',
       background: 'dark:bg-brand-875',
       ring: 'dark:hover:ring-primary-500',
       body: {
+        base: 'flex-1',
         padding: 'px-2 sm:px-4 py-2 sm:py-4'
       }
     }"
   >
-    <div class="flex">
+    <div class="flex flex-1">
       <UAvatar
         :src="strategy.market.baseToken.logo"
         :alt="strategy.market.baseToken.symbol"
@@ -64,7 +70,7 @@ const isPositivePnl = computed(() =>
         class="text-2xl font-semibold"
       >
         <span v-if="isPositivePnl"> + </span>
-        {{ strategy.strategy.pnlPerc }}
+        {{ props.strategy.strategy.pnlPerc }}
         %
       </p>
     </div>
