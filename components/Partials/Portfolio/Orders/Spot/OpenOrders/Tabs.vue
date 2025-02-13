@@ -4,6 +4,8 @@ import { SpotOpenOrdersFilterField } from '@/types'
 const appStore = useAppStore()
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
+
 const { value: marketValue } = useStringField({
   name: SpotOpenOrdersFilterField.Market,
   rule: ''
@@ -13,6 +15,12 @@ const { value: sideValue } = useStringField({
   name: SpotOpenOrdersFilterField.Side,
   rule: ''
 })
+
+const hasActiveStrategyInSubaccount = computed(() =>
+  gridStrategyStore.activeSpotStrategies.find(
+    (strategy) => strategy.subaccountId === accountStore.subaccountId
+  )
+)
 </script>
 
 <template>
@@ -35,7 +43,7 @@ const { value: sideValue } = useStringField({
     <CommonTabFormReset />
 
     <div
-      v-if="!accountStore.isSgtSubaccount"
+      v-if="!accountStore.isSgtSubaccount && !hasActiveStrategyInSubaccount"
       class="hidden lg:flex justify-end items-center px-2 flex-1"
     >
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders />
