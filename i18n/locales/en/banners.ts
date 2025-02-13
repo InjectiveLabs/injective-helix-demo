@@ -35,14 +35,10 @@ export default {
     newFeature: {
       close: 'Close',
       blogPost: 'blog post',
-      tia: '$TIA',
-      talis: '$TALIS',
-      here: 'here',
-      title: 'TALIS is now live on Helix!',
+      title: 'Introducing the TradFi Stocks Index!',
       description:
-        'Helix is the first venue available to trade TALIS, the native token of Talis - the leading NFT marketplace in Cosmos. Explore ways to trade TALIS!',
-      cta1: 'Go to TALIS/USDT',
-      cta2: 'Swap TALIS'
+        'Trade the largest publicly traded stocks on-chain via one integrated index for the first time. Access TradFi 24/7 with the lowest fees and up to 25X leverage only on Helix. ',
+      cta1: 'Trade TradFi'
     },
 
     [NoticeBanner.ScheduledUpgradeJanuary2024]:

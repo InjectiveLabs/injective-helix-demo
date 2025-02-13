@@ -37,7 +37,7 @@ const id = Math.random().toString()
       :class="[noWrap ? 'flex flex-nowrap' : 'inline-block']"
       :for="id"
     >
-      <span>
+      <span class="w-4 h-4">
         <svg width="12px" height="10px">
           <use xlink:href="#check-4"></use>
         </svg>

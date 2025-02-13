@@ -175,10 +175,9 @@ useIntervalFn(
     <ModalsNinjaPassWinner />
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
-    <!-- <ModalsNewFeature /> -->
 
+    <ModalsNewFeature />
     <ModalsPostOnlyMode />
-
     <ModalsDevMode />
     <ModalsGeoRestricted />
     <SharedPageConfetti />

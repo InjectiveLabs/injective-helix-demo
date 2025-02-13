@@ -50,5 +50,5 @@ export const indexerRestLeaderboardChronosApi =
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-helix-v4-${NETWORK}`
+  `inj-helix-v5-${NETWORK}`
 )

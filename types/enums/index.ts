@@ -55,6 +55,7 @@ export enum Modal {
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   ClosePositionWarning = 'close-position-warning',
   NewFeatureTalisLaunch = 'new-feature-talis-launch',
+  NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   CreateSpotGridStrategy = 'create-spot-grid-strategy',
   TransferToMainSubaccount = 'transfer-to-main-subaccount',
