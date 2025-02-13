@@ -444,7 +444,6 @@ async function submit() {
     </div>
 
     <ModalsClosedRWAMarket
-      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
       v-bind="{ worstPrice: worstPrice.toString() }"
       @terms:agreed="submit"
     />
