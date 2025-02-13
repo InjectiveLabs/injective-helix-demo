@@ -505,6 +505,10 @@ export default {
       ]),
 
     rwa: {
+      statusOfThisMarket: 'Status of this market',
+      closed: 'Closed',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
       warning: 'Warning',
       acknowledge:
         'I understand, I accept the risk, and I wish to proceed with my trade.',
@@ -524,8 +528,13 @@ export default {
         interpolate([
           'This market follows ',
           named('nyseClosedTimes'),
-          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays. Trades can be placed outside of these times, but prices will not update until the market reopens. This may increase your trading risk.'
+          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.'
         ]),
+
+      tradesCanBePlace:
+        'Trades can be placed outside of these times, but prices will not update until the market reopens.',
+      thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',
+
       tradfiMarketClosedTrade:
         'This market follows traditional NYSE trading hours',
       marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
