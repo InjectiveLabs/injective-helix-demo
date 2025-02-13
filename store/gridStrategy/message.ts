@@ -214,7 +214,7 @@ export const createStrategy = async (
     .map((balance) =>
       MsgWithdraw.fromJSON({
         injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId: accountStore.subaccountId,
+        subaccountId: gridStrategySubaccountId,
         amount: {
           amount: new BigNumberInBase(balance.availableBalance).toFixed(
             0,
@@ -460,7 +460,7 @@ export const createPerpStrategy = async (
     .map((balance) =>
       MsgWithdraw.fromJSON({
         injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId: accountStore.subaccountId,
+        subaccountId: gridStrategySubaccountId,
         amount: {
           amount: new BigNumberInBase(balance.availableBalance).toFixed(
             0,
@@ -619,7 +619,7 @@ export async function createSpotLiquidityBot(params: {
     .map((balance) =>
       MsgWithdraw.fromJSON({
         injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId: accountStore.subaccountId,
+        subaccountId,
         amount: {
           amount: new BigNumberInBase(balance.availableBalance).toFixed(
             0,
