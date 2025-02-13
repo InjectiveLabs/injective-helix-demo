@@ -4,7 +4,6 @@ import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  Modal,
   IsSpotKey,
   MarketKey,
   PortfolioStatusKey,
@@ -13,7 +12,6 @@ import {
 } from '@/types'
 
 const route = useRoute()
-const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -42,8 +40,6 @@ onWalletConnected(async () => {
   if (route.query.marketId) {
     await derivativeStore.appendMarketId(route.query.marketId as string)
   }
-
-  modalStore.openModal(Modal.ClosedRWAMarket)
 
   if (!market.value) {
     return navigateTo({
