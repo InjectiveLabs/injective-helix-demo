@@ -6,18 +6,18 @@ const breakpoints = useSharedBreakpoints()
 
 const emit = defineEmits<{
   close: []
-  'close:position': []
+  'position:close': []
 }>()
 
 const isSmallMobile = computed(() => !breakpoints['2xs'].value)
 
 function closeModal() {
-  modalStore.closeModal(Modal.ClosePositionWarning)
   emit('close')
+  modalStore.closeModal(Modal.ClosePositionWarning)
 }
 
 function closePosition() {
-  emit('close:position')
+  emit('position:close')
   modalStore.closeModal(Modal.ClosePositionWarning)
 }
 </script>

@@ -14,17 +14,16 @@ import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
 import { backupPromiseCall } from '@/app/utils/async'
 
-export const closePosition = async ({
-  market,
-  position
-}: {
-  position: PositionV2
-  market: UiDerivativeMarket
-}) => {
+export const closePosition = async (position: PositionV2) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
+
+  const market = derivativeStore.markets.find(
+    (m) => m.marketId === position.marketId
+  )
 
   if (
     !market ||
@@ -138,22 +137,23 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
 }
 
 export const closePositionAndReduceOnlyOrders = async ({
-  market,
   position
 }: {
   position: PositionV2
-  market?: UiDerivativeMarket
   reduceOnlyOrders: DerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
-  const actualMarket = market as UiDerivativeMarket
+  const market = derivativeStore.markets.find(
+    (m) => m.marketId === position.marketId
+  )
 
   if (
-    !actualMarket ||
+    !market ||
     !accountStore.subaccountId ||
     !sharedWalletStore.isUserConnected
   ) {
@@ -165,14 +165,14 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   const orderType =
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
-  const liquidationPrice = getRoundedLiquidationPrice(position, actualMarket)
+  const liquidationPrice = getRoundedLiquidationPrice(position, market)
 
   const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
     feeRecipient: FEE_RECIPIENT,
-    marketId: actualMarket.marketId,
+    marketId: market.marketId,
     price: liquidationPrice.toFixed(),
     subaccountId: accountStore.subaccountId,
     quantity: derivativeQuantityToChainQuantityToFixed({

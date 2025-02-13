@@ -13,13 +13,16 @@ import { indexerDerivativesApi } from '@shared/Service'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import {
+  Modal,
+  BusEvents,
   UiDerivativeMarket,
   PerpetualMarketCyTags,
-  BusEvents
+  PositionAndReduceOnlyOrders
   // ClosePositionLimitForm,
   // ClosePositionLimitFormField
 } from '@/types'
 
+const modalStore = useSharedModalStore()
 const breakpoints = useSharedBreakpoints()
 // const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
@@ -44,15 +47,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'close:position': [
-    positionDetails: {
-      position: PositionV2
-      market: UiDerivativeMarket
-      isShowWarningModal: boolean
-      hasReduceOnlyOrders: boolean
-      reduceOnlyCurrentOrders: DerivativeLimitOrder[]
-    }
-  ]
+  'position:close': []
+  'position:set': [PositionAndReduceOnlyOrders]
 }>()
 
 // const limitCloseStatus = reactive(new Status(StatusType.Idle))
@@ -121,6 +117,11 @@ async function validateSlippage() {
 }
 
 async function closePosition() {
+  emit('position:set', {
+    position: props.position,
+    reduceOnlyOrders: props.reduceOnlyCurrentOrders
+  })
+
   if (!props.market) {
     return false
   }
@@ -135,13 +136,13 @@ async function closePosition() {
 
   marketCloseStatus.setLoading()
 
-  emit('close:position', {
-    isShowWarningModal,
-    market: props.market,
-    position: props.position,
-    hasReduceOnlyOrders: props.hasReduceOnlyOrders,
-    reduceOnlyCurrentOrders: props.reduceOnlyCurrentOrders
-  })
+  if (isShowWarningModal) {
+    modalStore.openModal(Modal.ClosePositionWarning)
+
+    return
+  }
+
+  emit('position:close')
 }
 
 // todo: resurrect logic when limit orders are enabled

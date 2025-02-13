@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  PositionV2,
-  TradeDirection,
-  DerivativeLimitOrder
-} from '@injectivelabs/sdk-ts'
+import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  Modal,
   BusEvents,
-  UiDerivativeMarket,
   PositionTableColumn,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  PositionAndReduceOnlyOrders
 } from '@/types'
 
 const { t } = useLang()
@@ -43,14 +38,13 @@ const emit = defineEmits<{
 }>()
 
 const positionStore = usePositionStore()
-const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
 
-const selectedPositionDetails = ref()
+const selectedPositionDetails = ref<PositionAndReduceOnlyOrders | undefined>()
 
 const columns = computed(() => {
   const baseColumns = [
@@ -136,37 +130,21 @@ function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
 
-function onClosePosition(value: {
-  position: PositionV2
-  market: UiDerivativeMarket
-  isShowWarningModal: boolean
-  hasReduceOnlyOrders: boolean
-  reduceOnlyCurrentOrders: DerivativeLimitOrder[]
-}) {
+function setSelectedPosition(value: PositionAndReduceOnlyOrders) {
   selectedPositionDetails.value = value
+}
 
-  if (value.isShowWarningModal) {
-    modalStore.modals[Modal.ClosePositionWarning] = true
-  } else {
-    closePosition()
+function onClosePosition() {
+  if (!selectedPositionDetails.value) {
+    return
   }
-}
 
-function setPositionStatusIdle() {
-  useEventBus(BusEvents.SetPositionStatusIdle).emit()
-}
-
-function closePosition() {
-  const action = selectedPositionDetails.value.hasReduceOnlyOrders
+  const action = selectedPositionDetails.value.reduceOnlyOrders.length
     ? positionStore.closePositionAndReduceOnlyOrders({
-        market: selectedPositionDetails.value.market,
         position: selectedPositionDetails.value.position,
-        reduceOnlyOrders: selectedPositionDetails.value.reduceOnlyCurrentOrders
+        reduceOnlyOrders: selectedPositionDetails.value.reduceOnlyOrders
       })
-    : positionStore.closePosition({
-        market: selectedPositionDetails.value.market,
-        position: selectedPositionDetails.value.position
-      })
+    : positionStore.closePosition(selectedPositionDetails.value.position)
 
   action
     .then(() =>
@@ -176,6 +154,10 @@ function closePosition() {
     .finally(() => {
       setPositionStatusIdle()
     })
+}
+
+function setPositionStatusIdle() {
+  useEventBus(BusEvents.SetPositionStatusIdle).emit()
 }
 </script>
 
@@ -207,7 +189,8 @@ function closePosition() {
             :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
             :is-market-order-authorized="row.isMarketOrderAuthorized"
             :is-limit-order-authorized="row.isLimitOrderAuthorized"
-            @close:position="onClosePosition"
+            @position:close="onClosePosition"
+            @position:set="setSelectedPosition"
           />
         </div>
       </template>
@@ -429,6 +412,6 @@ function closePosition() {
 
   <ModalsClosePositionWarning
     @close="setPositionStatusIdle"
-    @close:position="closePosition"
+    @position:close="onClosePosition"
   />
 </template>
