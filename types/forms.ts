@@ -59,3 +59,7 @@ export type LiquidityBotForm = {
   [LiquidityBotField.BaseAmount]: string
   [LiquidityBotField.QuoteAmount]: string
 }
+
+export enum RwaMarketField {
+  TermsAccepted = 'terms-accepted'
+}

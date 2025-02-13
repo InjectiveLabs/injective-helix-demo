@@ -150,8 +150,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
         accountAddress: sharedWalletStore.authZOrInjectiveAddress,
-        limit: 100,
-        state: active ? StrategyStatus.Active : undefined
+        limit: 200,
+        state: active ? StrategyStatus.Active : undefined,
+        marketType: MarketType.Spot
       })
 
       gridStrategyStore.$patch({ strategies })

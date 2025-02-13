@@ -2,7 +2,8 @@
 import {
   OrderbookLayout,
   OrderbookViewOption,
-  UiMarketWithToken
+  UiMarketWithToken,
+  SpotMarketCyTags
 } from '@/types'
 
 withDefaults(
@@ -39,7 +40,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
 </script>
 
 <template>
-  <div class="pb-2">
+  <div class="pb-2" :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGrid)">
     <div class="h-subHeader border-b-2 flex items-center pr-2">
       <AppButtonSelect
         v-for="value in Object.values(OrderbookViewOption)"
@@ -47,6 +48,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
         v-model="activeTab"
         :value="value"
         class="text-xs font-medium text-coolGray-450 capitalize mx-2 max-lg:mx-3 5xl:mx-3 py-2 border-b-2 border-solid border-transparent"
+        :data-cy="`${dataCyTag(SpotMarketCyTags.OrderbookGrid)}-${value}`"
         active-classes="text-white border-blue-550"
       >
         {{ $t(`trade.${value}`) }}
@@ -63,6 +65,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
             :src="option.img"
             :class="{ 'opacity-50': orderbookLayout !== option.value }"
             class="cursor-pointer"
+            :data-cy="dataCyTag(SpotMarketCyTags.OrderbookViewOptions)"
             @click="setOrderbookLayout(option.value)"
           />
         </div>

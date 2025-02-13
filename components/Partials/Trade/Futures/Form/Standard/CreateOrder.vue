@@ -2,7 +2,7 @@
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { rwaSlugs } from '@/app/json'
+import { rwaMarketIds } from '@/app/data/market'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
@@ -18,7 +18,6 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
-const route = useRoute()
 const resetForm = useResetForm()
 const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
@@ -51,7 +50,7 @@ const props = withDefaults(
   {}
 )
 
-const isRWAMarket = rwaSlugs.includes(route.params.slug as string)
+const isRWAMarket = rwaMarketIds.includes(derivativeMarket.value.marketId)
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
@@ -355,6 +354,7 @@ function submitStopMarketOrder() {
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
+      err = e
       $onError(e)
     })
     .finally(() => {
@@ -372,11 +372,23 @@ function submitStopMarketOrder() {
     })
 }
 
-function onSubmit() {
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
+async function onSubmit() {
+  if (!isRWAMarket) {
+    submit()
 
     return
+  }
+
+  status.setLoading()
+
+  const isMarketOpen = await derivativeStore.fetchRWAMarketIsOpen(
+    derivativeMarket.value.oracleBase
+  )
+
+  status.setIdle()
+
+  if (!isMarketOpen) {
+    return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 
   submit()
@@ -399,25 +411,6 @@ async function submit() {
     case DerivativeTradeTypes.StopMarket:
       submitStopMarketOrder()
   }
-}
-
-function fetchRWAMarketIsOpen() {
-  if (!derivativeMarket.value) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-
-        return
-      }
-
-      submit()
-    })
-    .catch($onError)
 }
 </script>
 

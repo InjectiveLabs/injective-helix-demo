@@ -7,7 +7,7 @@ import {
   SharedUiMarketHistory
 } from '@shared/types'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
 import { getFormattedMarketsHistoryChartData } from '@/app/utils/market'
 
 const exchangeStore = useExchangeStore()
@@ -88,7 +88,10 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
     <div class="flex justify-between">
       <div class="flex items-center space-x-2 overflow-hidden">
         <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
-        <p class="text-sm font-bold tracking-wide truncate min-w-0">
+        <p
+          class="text-sm font-bold tracking-wide truncate min-w-0"
+          :data-cy="dataCyTag(MarketCyTags.MarketCardDenoms)"
+        >
           {{ market.market.ticker }}
         </p>
       </div>

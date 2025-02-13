@@ -21,12 +21,16 @@ export enum MarketCyTags {
   MarketLastPrice = 'last-price',
   MarketPriceChange = 'price-change',
   MarketVolume = 'token-volume',
-  MarketTrade = 'trade'
+  MarketTrade = 'trade',
+  MarketCardDenoms = 'card-denoms',
+  MarketsCard = 'markets-card',
+  NewMarketsDenoms = 'new-markets-denoms',
+  MarketsCategoryType = 'category-type'
 }
 
 export enum SwapCyTags {
   SwapHeaderLabel = 'header-label',
-  SwapForm = 'token-form',
+  SwapForm = 'form',
   SwapSummaryRoute = 'summary-route',
   SwapSummaryRate = 'rate',
   SwapSummaryFees = 'fees',
@@ -39,7 +43,9 @@ export enum SwapCyTags {
   WarningAmountTooLow = 'amount-too-low-warning',
   EnterAmountButton = 'enter-amount-button',
   Swapbutton = 'swap-button',
-  SlippageSelectorSetting = 'slippage-selector-setting'
+  SlippageSelectorSetting = 'slippage-selector-setting',
+  YouPayForm = 'you-pay-form',
+  YouReceiveForm = 'you-receive-form'
 }
 
 export enum SpotMarketCyTags {
@@ -84,7 +90,22 @@ export enum SpotMarketCyTags {
   CancelOrderButton = 'cancel-order-button',
   ExperimentalMarketLabel = 'experimental-market-label',
   IUnderstandButton = 'i-understand',
-  DoNotShowAgainCheckbox = 'do-not-show-again'
+  DoNotShowAgainCheckbox = 'do-not-show-again',
+  ChartHeader = 'chart-header',
+  TradeStats = 'trade-stats',
+  TradeStatsMarketSelector = 'market-selector',
+  TradeStatsInfo = 'trade-stats-info',
+  TradeStatsInfoPrice = 'trade-stats-info-price',
+  TradeStatsInfoVol = 'trade-stats-info-vol',
+  TradeStatsInfoHigh = 'trade-stats-info-high',
+  TradeStatsInfoLow = 'trade-stats-info-low',
+  OrderbookGrid = 'orderbook-grid',
+  OrderDetails = 'order-details',
+  OrderbookViewOptions = 'orderbook-view-options',
+  OrderbookMidMarkPrice = 'orderbook-mid-mark-price',
+  OrderbookGridBuys = 'orderbook-grid-buys',
+  OrderbookGridSells = 'orderbook-grid-sells',
+  OrderDetailsTable = 'order-details-table'
 }
 
 export enum PerpetualMarketCyTags {
@@ -158,4 +179,22 @@ export enum PortfolioCyTags {
   BalanceUnrealisedPnl = 'unrealised-pnl',
   BalanceTotalAmount = 'total-amount',
   BalanceTotalValue = 'total-value'
+}
+
+export enum VaultsCyTags {
+  title = 'title',
+  denoms = 'denoms',
+  tvl = 'tvl',
+  apy = 'apy'
+}
+
+export enum LeaderBoardCyTags {
+  title = 'title',
+  pageName = 'page-name',
+  duration = 'duration',
+  rankLogo = 'rank-logo',
+  rankAddress = 'rank-address',
+  rankPnl = 'rank-pnl',
+  startTrading = 'start-trading',
+  timestamp = 'timestamp'
 }

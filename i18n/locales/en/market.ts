@@ -72,7 +72,8 @@ export default {
       [MarketCategoryType.Experimental]: 'Experimental',
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
-      [MarketCategoryType.Meme]: 'Meme'
+      [MarketCategoryType.Meme]: 'Meme',
+      [MarketCategoryType.RWA]: 'RWA'
     }
   },
 

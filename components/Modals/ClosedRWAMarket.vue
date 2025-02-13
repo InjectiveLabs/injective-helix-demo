@@ -2,9 +2,11 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   Modal,
   MarketKey,
+  RwaMarketField,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeFormField
@@ -15,14 +17,25 @@ const derivativeFormValues = useFormValues()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const props = withDefaults(defineProps<{ worstPrice: String }>(), {})
+useForm()
 
+const props = withDefaults(defineProps<{ worstPrice: String }>(), {})
 const emit = defineEmits<{
   'terms:agreed': []
 }>()
 
+const { value: termsAccepted } = useBooleanField({
+  name: RwaMarketField.TermsAccepted,
+  initialValue: false,
+  rule: 'required'
+})
+
 const { marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
+)
+
+const isTradFiMarket = computed(() =>
+  RWA_TRADFI_MARKET_IDS.includes(derivativeMarket.value.marketId)
 )
 
 const executionPrice = computed(() => {
@@ -82,6 +95,10 @@ function closeModal() {
 }
 
 function confirm() {
+  if (!termsAccepted.value) {
+    return
+  }
+
   emit('terms:agreed')
   closeModal()
 }
@@ -93,41 +110,52 @@ function confirm() {
       <div class="text-orange-300 flex space-x-1 items-center justif-center">
         <UIcon :name="NuxtUiIcons.WarningOutline" class="w-5 h-5 min-w-5" />
         <h3 class="normal-case text-lg">
-          {{ $t('trade.rwa.warning') }}
+          {{ $t('trade.rwa.marketIsClosed') }}
         </h3>
       </div>
     </template>
 
     <div class="relative">
       <div class="flex flex-col gap-4">
-        <p>
-          {{ $t('trade.rwa.marketIsClosed') }}
-        </p>
-
-        <i18n-t keypath="trade.rwa.marketClosedTrade" tag="p">
+        <i18n-t
+          v-if="!isTradFiMarket"
+          keypath="trade.rwa.marketClosedTrade"
+          tag="p"
+        >
           <template #marketClosedTimes>
             <NuxtLink
               class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
               to="https://docs.pyth.network/price-feeds/market-hours"
               target="_blank"
             >
-              {{ $t('trade.rwa.marketClosedTimes') }}
+              <strong>{{ $t('trade.rwa.marketClosedTimes') }}</strong>
+            </NuxtLink>
+          </template>
+        </i18n-t>
+        <i18n-t v-else keypath="trade.rwa.nyseMarketClosedTrade" tag="p">
+          <template #nyseClosedTimes>
+            <NuxtLink
+              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
+              to="https://docs.pyth.network/price-feeds/market-hours"
+              target="_blank"
+            >
+              <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
             </NuxtLink>
           </template>
         </i18n-t>
 
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2 mt-4">
           <div class="flex">
-            <span class="flex-1 text-left">{{
+            <span class="flex-1 text-left text-gray-400 text-sm uppercase">{{
               $t('trade.previousMarkPrice')
             }}</span>
-            <span class="flex-1 text-left">
+            <span class="flex-1 text-right font-semibold">
               {{ markPriceToString }}
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </div>
           <div class="flex">
-            <span class="flex-1 text-left">
+            <span class="flex-1 text-left text-gray-400 text-sm uppercase">
               <span
                 v-if="
                   [
@@ -154,22 +182,34 @@ function confirm() {
                 >{{ $t('trade.triggerPrice') }}
               </span>
             </span>
-            <span class="flex-1 text-left">
+            <span class="flex-1 text-right font-semibold">
               {{ executionPriceToString }}
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </div>
           <div class="flex">
-            <span class="flex-1 text-left">{{
+            <span class="flex-1 text-left text-gray-400 text-sm uppercase">{{
               $t('trade.priceDeviation')
             }}</span>
-            <span class="flex-1 text-left">{{ priceDeviationToString }}%</span>
+            <span class="flex-1 text-right font-semibold">
+              {{ priceDeviationToString }}%
+            </span>
           </div>
         </div>
 
-        <div class="mt-6 flex items-center justify-center gap-2">
-          <AppButton class="bg-blue-500 text-blue-900 w-full" @click="confirm">
-            {{ $t('trade.rwa.acknowledge') }}
+        <div class="mt-6">
+          <AppCheckbox v-model="termsAccepted">
+            <div class="text-sm leading-4 tracking-wide text-coolGray-200">
+              {{ $t('trade.rwa.acknowledge') }}
+            </div>
+          </AppCheckbox>
+
+          <AppButton
+            class="bg-blue-500 text-blue-900 w-full mt-4"
+            :disabled="!termsAccepted"
+            @click="confirm"
+          >
+            {{ $t('trade.rwa.submit') }}
           </AppButton>
         </div>
       </div>

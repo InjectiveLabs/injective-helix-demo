@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { stableCoinSymbols } from '~/app/data/token'
-import { UiMarketWithToken } from '@/types'
+import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -52,6 +52,7 @@ const isStableCoinMarket = computed(() =>
     <div v-else class="flex items-center justify-center space-x-2">
       <span
         class="text-sm tracking-wider font-bold spacing"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         :class="{
           'text-red-500 ':
             lastTradedPriceChange === SharedMarketChange.Decrease,

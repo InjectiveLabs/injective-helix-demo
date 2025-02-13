@@ -70,7 +70,10 @@ function resetCategory() {
         <div
           class="flex sm:gap-4 lg:gap-2 justify-between flex-wrap max-sm:flex-col"
         >
-          <div class="sm:flex max-sm:w-full items-center flex-wrap gap-2">
+          <div
+            class="sm:flex max-sm:w-full items-center flex-wrap gap-2"
+            :data-cy="dataCyTag(MarketCyTags.MarketsCategoryType)"
+          >
             <template v-if="sm">
               <AppButtonSelect
                 v-for="value in Object.values(MarketCategoryType)"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { abbreviateNumber } from '@/app/utils/formatters'
+import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   MarketCyTags,
   UTableColumn,
@@ -60,7 +61,15 @@ const toggleFavorite = () => {
             <div class="ml-2">
               <div class="flex items-center gap-2">
                 <CommonHeaderTooltip
-                  :tooltip="$t('trade.rwa.marketClosedMarketRow')"
+                  :tooltip="
+                    $t(
+                      `trade.rwa.${
+                        !RWA_TRADFI_MARKET_IDS.includes(market.market.marketId)
+                          ? 'marketClosedMarketRow'
+                          : 'nyseClosedMarketRow'
+                      }`
+                    )
+                  "
                   :is-disabled="!market.isRWAMarket"
                   is-not-styled
                   text-color-class="text-white"

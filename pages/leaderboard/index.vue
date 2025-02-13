@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { UTC_TIMEZONE } from '@shared/utils/constant'
-import { LeaderboardDuration } from '@/types'
+import { LeaderboardDuration, LeaderBoardCyTags } from '@/types'
 
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -71,6 +71,7 @@ function fetchPnlLeaderboard() {
           v-model="selectedDuration"
           v-bind="{ value }"
           class="text-xs md:text-sm p-1 md:p-2 text-white opacity-50 hover:opacity-100 cursor-pointer"
+          :data-cy="`${dataCyTag(LeaderBoardCyTags.duration)}-${value}`"
           active-classes="!opacity-100"
           @update:model-value="fetchPnlLeaderboard"
         >
