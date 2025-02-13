@@ -203,9 +203,9 @@ export const createStrategy = async (
 
   const messages: Msgs[] = []
 
-  const withdrawMsgs = accountStore.subaccountBalancesMap[
-    gridStrategySubaccountId
-  ]
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
     .filter((balance) =>
       new BigNumberInBase(balance.availableBalance)
         .dp(0, BigNumberInBase.ROUND_DOWN)
@@ -449,9 +449,9 @@ export const createPerpStrategy = async (
     )
   )
 
-  const withdrawMsgs = accountStore.subaccountBalancesMap[
-    gridStrategySubaccountId
-  ]
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
     .filter((balance) =>
       new BigNumberInBase(balance.availableBalance)
         .dp(0, BigNumberInBase.ROUND_DOWN)
@@ -610,7 +610,7 @@ export async function createSpotLiquidityBot(params: {
 
   const messages: Msgs[] = []
 
-  const withdrawMsgs = accountStore.subaccountBalancesMap[subaccountId]
+  const withdrawMsgs = (accountStore.subaccountBalancesMap[subaccountId] || [])
     .filter((balance) =>
       new BigNumberInBase(balance.availableBalance)
         .dp(0, BigNumberInBase.ROUND_DOWN)
