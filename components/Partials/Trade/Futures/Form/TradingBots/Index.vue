@@ -1,42 +1,36 @@
 <script setup lang="ts">
-import { DerivativeGridTradingForm, GridStrategyType } from '@/types'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  DerivativeGridTradingForm
+} from '@/types'
 
-const strategyType = ref(GridStrategyType.Manual)
+const futuresMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const gridStrategyStore = useGridStrategyStore()
 
 useForm<DerivativeGridTradingForm>({
   keepValuesOnUnmount: true
 })
+
+const activeStrategy = computed(() =>
+  gridStrategyStore.activeDerivativeStrategies.find(
+    (strategy) => strategy.marketId === futuresMarket.value?.marketId
+  )
+)
 </script>
 
 <template>
   <div class="p-4">
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="type in Object.values(GridStrategyType)"
-        :key="type"
-        v-bind="{ value: type }"
-        v-model="strategyType"
-        class="flex-1 border rounded-md"
-        active-classes="!border-blue-400"
-      >
-        <AppButton
-          variant="primary-cta"
-          :class="[
-            'w-full py-1.5 leading-relaxed hover:bg-transparent',
-            strategyType === type ? 'text-white' : 'text-coolGray-600'
-          ]"
-        >
-          {{ $t(`sgt.${type}`) }}
-        </AppButton>
-      </AppButtonSelect>
-    </div>
+    <PartialsTradingBotsDerivativeStrategyDetails
+      v-if="activeStrategy"
+      :active-strategy="activeStrategy"
+    />
 
-    <div>
-      <PartialsTradeFuturesFormTradingBotsManual
-        v-if="strategyType === GridStrategyType.Manual"
-      />
-
-      <PartialsTradeFuturesFormTradingBotsAuto v-else />
+    <div v-else>
+      <div>
+        <PartialsTradeFuturesFormTradingBotsManual />
+      </div>
     </div>
   </div>
 </template>

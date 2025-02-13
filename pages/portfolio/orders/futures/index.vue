@@ -2,6 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOpenOrdersFilterField, SpotOpenOrdersFilterForm } from '@/types'
 
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -41,7 +42,9 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 
 <template>
   <div class="divide-y border-y">
-    <PartialsPortfolioOrdersFuturesOpenOrdersTabs />
+    <PartialsPortfolioOrdersFuturesOpenOrdersTabs
+      :is-trading-bots="accountStore.isSgtSubaccount"
+    />
     <div class="overflow-x-auto">
       <div class="lg:min-w-[1200px] divide-y border-b">
         <CommonSkeletonRow
@@ -55,6 +58,7 @@ onSubaccountChange(fetchDerivativeOpenOrders)
           <PartialsPortfolioOrdersFuturesOpenOrdersTable
             v-if="filteredOrders.length"
             :orders="filteredOrders"
+            :is-trading-bots="accountStore.isSgtSubaccount"
           />
 
           <CommonEmptyList

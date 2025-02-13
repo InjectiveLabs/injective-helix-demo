@@ -14,8 +14,11 @@ const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
     position: TransformedPosition
+    isTradingBots?: boolean
   }>(),
-  {}
+  {
+    isTradingBots: false
+  }
 )
 
 const emit = defineEmits<{
@@ -75,7 +78,7 @@ function sharePosition() {
           </p>
         </PartialsCommonMarketRedirection>
 
-        <div class="flex space-x-2">
+        <div v-if="!isTradingBots" class="flex space-x-2">
           <AppButton size="sm" class="py-2" @click="addTpSl">
             <span>
               {{ $t('trade.addTpSl') }}

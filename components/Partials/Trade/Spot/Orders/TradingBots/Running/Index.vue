@@ -17,7 +17,7 @@ const isOpen = ref(false)
 const selectedStrategy = ref<GridStrategyTransformed | null>(null)
 
 const { formattedStrategies } = useSpotGridStrategies(
-  computed(() => gridStrategyStore.activeStrategies),
+  computed(() => gridStrategyStore.activeSpotStrategies),
   subaccountPortfolioBalanceMap
 )
 
@@ -142,8 +142,12 @@ function selectStrategy(strategy: GridStrategyTransformed) {
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col"
-          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+          class="flex flex-col font-mono"
+          :class="{
+            'text-green-500': row.isPositivePnl,
+            'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
+            'text-coolGray-500': row.isZeroPnl
+          }"
         >
           <div class="flex items-center gap-1">
             <span>{{ row.isPositivePnl ? '+' : '' }}</span>
@@ -204,7 +208,7 @@ function selectStrategy(strategy: GridStrategyTransformed) {
     </template>
 
     <CommonEmptyList
-      v-if="gridStrategyStore.activeStrategies.length === 0 && !lg"
+      v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
       :message="$t('sgt.noActiveStrategies')"
     />
 

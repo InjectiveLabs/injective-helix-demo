@@ -232,7 +232,9 @@ export default {
 
     tabs: {
       liveSpotGrid: 'Live Spot Grid',
-      spotGridHistory: 'Spot Grid History'
+      spotGridHistory: 'Spot Grid History',
+      liveFuturesGrid: 'Live Futures Grid',
+      futuresGridHistory: 'Futures Grid History'
     },
 
     modes: {
@@ -240,7 +242,8 @@ export default {
       geometric: 'Geometric',
       arithmetic_lp: 'Arithmetic LP',
       trailing_arithmetic_lp: 'Trailing Arithmetic LP',
-      trailing_arithmetic: 'Trailing Arithmetic'
+      trailing_arithmetic: 'Trailing Arithmetic',
+      perpetual: 'Perpetual'
     },
 
     confirmationTitle: 'Grid Order Confirmation',

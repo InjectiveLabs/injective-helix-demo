@@ -116,17 +116,7 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
       {
         label: 'navigation.derivative',
         to: { name: PortfolioSubPage.OrdersFutures }
-      },
-      {
-        label: 'navigation.spotGrid',
-        to: { name: PortfolioSubPage.OrdersSpotGrid }
       }
-      // TODO: Uncomment when futures grid is ready
-      // {
-      //
-      //   label: 'navigation.futuresGrid',
-      //   to: { name: PortfolioSubPage.OrdersFuturesGrid }
-      // }
     ]
   },
   {

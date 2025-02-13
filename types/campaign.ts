@@ -49,3 +49,7 @@ export type CompetitionResult = {
 export type GridStrategyTransformed = ReturnType<
   typeof useSpotGridStrategies
 >['formattedStrategies']['value'][number]
+
+export type DerivativeGridStrategyTransformed = ReturnType<
+  typeof useDerivativeGridStrategies
+>['formattedStrategies']['value'][number]

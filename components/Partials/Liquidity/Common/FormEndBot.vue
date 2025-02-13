@@ -38,7 +38,7 @@ const market = computed(
 
 const activeStrategy = computed(
   () =>
-    gridStrategyStore.activeStrategies.find(
+    gridStrategyStore.activeSpotStrategies.find(
       (strategy) =>
         strategy.contractAddress ===
         getSgtContractAddressFromSlug(market.value.slug)
