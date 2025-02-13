@@ -157,13 +157,17 @@ export const useDerivativeGridStrategies = (
 
       // PNL New
 
-      const pnl = currentUsdValue.minus(initialUsdValue).toString()
+      const pnl = isActive
+        ? currentUsdValue.minus(initialUsdValue).toString()
+        : strategy.pnl
 
-      const percentagePnl = currentUsdValue
-        .minus(initialUsdValue)
-        .div(initialUsdValue)
-        .times(100)
-        .toFixed(2)
+      const percentagePnl = isActive
+        ? currentUsdValue
+            .minus(initialUsdValue)
+            .div(initialUsdValue)
+            .times(100)
+            .toFixed(2)
+        : strategy.pnlPerc
 
       // PNL
 
