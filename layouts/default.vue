@@ -23,6 +23,7 @@ const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
+const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -74,7 +75,8 @@ function fetchUserPortfolio() {
     accountStore.fetchErc20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
-    positionStore.fetchPositions()
+    positionStore.fetchPositions(),
+    gridStrategyStore.fetchStrategies()
   ])
 }
 

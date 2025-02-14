@@ -205,6 +205,9 @@ export const useDerivativeGridStrategies = (
 
       const isSpot = false
 
+      const isLoadingMarkPrice =
+        !derivativeStore.marketMarkPriceMap[market.marketId]
+
       return {
         pnl,
         isSpot,
@@ -222,15 +225,16 @@ export const useDerivativeGridStrategies = (
         isPositivePnl,
         trailingUpper,
         trailingLower,
+        percentagePnl,
         currentUsdValue,
         initialUsdValue,
         durationFormatted,
+        isLoadingMarkPrice,
         createdAtFormatted,
         finalQuoteBalanceQuantity,
         initialQuoteBalanceQuantity,
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
-        percentagePnl,
         stopReason: strategy.stopReason as StopReason,
         gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
@@ -246,5 +250,17 @@ export const useDerivativeGridStrategies = (
     })
   )
 
-  return { formattedStrategies }
+  async function fetchDerivativeMarkPrice() {
+    const markPriceRequest = formattedStrategies.value.map((strategy) => {
+      return derivativeStore.getMarketMarkPrice(strategy.market)
+    })
+
+    await Promise.all(markPriceRequest)
+  }
+
+  onMounted(async () => {
+    await fetchDerivativeMarkPrice()
+  })
+
+  return { formattedStrategies, fetchDerivativeMarkPrice }
 }
