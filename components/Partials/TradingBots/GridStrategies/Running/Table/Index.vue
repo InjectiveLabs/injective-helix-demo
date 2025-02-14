@@ -160,7 +160,9 @@ function selectStrategy(
       </template>
 
       <template #totalProfit-data="{ row }">
+        <AppSpinner v-if="!row.isSpot && row.isLoadingMarkPrice" />
         <div
+          v-else
           class="flex flex-col font-mono"
           :class="{
             'text-green-500': row.isPositivePnl,

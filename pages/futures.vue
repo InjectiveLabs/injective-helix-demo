@@ -14,6 +14,7 @@ import {
 const route = useRoute()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 
 const portfolioStatus = inject(
@@ -80,8 +81,11 @@ onWalletConnected(async () => {
   })
   derivativeStore.streamMarketsMarkPrices({
     marketIds: [
-      market.value.marketId,
-      ...positionStore.positions.map(({ marketId }) => marketId)
+      ...new Set([
+        market.value.marketId,
+        ...positionStore.positions.map(({ marketId }) => marketId),
+        ...gridStrategyStore.strategies.map(({ marketId }) => marketId)
+      ])
     ]
   })
 })
