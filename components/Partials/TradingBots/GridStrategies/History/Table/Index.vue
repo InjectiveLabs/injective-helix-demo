@@ -220,15 +220,17 @@ function selectStrategy(
     />
 
     <SharedModal v-model="isOpen">
-      <PartialsTradingBotsSpotStrategyDetails
-        v-if="selectedStrategy && selectedStrategy.isSpot"
-        :active-strategy="selectedStrategy.strategy"
-      />
+      <div class="pt-6">
+        <PartialsTradingBotsSpotStrategyDetails
+          v-if="selectedStrategy && selectedStrategy.isSpot"
+          :active-strategy="selectedStrategy.strategy"
+        />
 
-      <PartialsTradingBotsDerivativeStrategyDetails
-        v-if="selectedStrategy && !selectedStrategy.isSpot"
-        :active-strategy="selectedStrategy.strategy"
-      />
+        <PartialsTradingBotsDerivativeStrategyDetails
+          v-if="selectedStrategy && !selectedStrategy.isSpot"
+          :active-strategy="selectedStrategy.strategy"
+        />
+      </div>
     </SharedModal>
   </div>
 </template>
