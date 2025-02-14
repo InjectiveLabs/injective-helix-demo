@@ -85,9 +85,6 @@ async function validateSlippage() {
   const orderbookRecords = await indexerDerivativesApi
     .fetchOrderbookV2(props.market.marketId)
     .catch($onError)
-    .finally(() => {
-      marketCloseStatus.setIdle()
-    })
 
   const { worstPrice } = calculateWorstPriceFromPriceLevel(
     props.quantity.toString(),
@@ -117,32 +114,36 @@ async function validateSlippage() {
 }
 
 async function closePosition() {
-  emit('position:set', {
-    position: props.position,
-    reduceOnlyOrders: props.reduceOnlyCurrentOrders
-  })
+  try {
+    emit('position:set', {
+      position: props.position,
+      reduceOnlyOrders: props.reduceOnlyCurrentOrders
+    })
 
-  if (!props.market) {
-    return false
+    if (!props.market) {
+      return false
+    }
+
+    if (props.pnl.isNaN()) {
+      notificationStore.error({ title: t('trade.no_liquidity') })
+
+      return false
+    }
+
+    marketCloseStatus.setLoading()
+
+    const isShowWarningModal = await validateSlippage()
+
+    if (isShowWarningModal) {
+      modalStore.openModal(Modal.ClosePositionWarning)
+
+      return
+    }
+
+    emit('position:close')
+  } catch (error) {
+    marketCloseStatus.setIdle()
   }
-
-  if (props.pnl.isNaN()) {
-    notificationStore.error({ title: t('trade.no_liquidity') })
-
-    return false
-  }
-
-  const isShowWarningModal = await validateSlippage()
-
-  marketCloseStatus.setLoading()
-
-  if (isShowWarningModal) {
-    modalStore.openModal(Modal.ClosePositionWarning)
-
-    return
-  }
-
-  emit('position:close')
 }
 
 // todo: resurrect logic when limit orders are enabled
