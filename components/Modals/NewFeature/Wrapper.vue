@@ -10,9 +10,9 @@ const modalStore = useSharedModalStore()
 
 const props = withDefaults(
   defineProps<{
+    modal: Modal
     route1?: RouteLocationNamedRaw
     route2?: RouteLocationNamedRaw
-    modal: Modal
   }>(),
   {
     route1: () => ({
@@ -31,7 +31,10 @@ const isModalOpen = computed(
 )
 
 onMounted(() => {
-  if (route.name === MainPage.Index) {
+  if (
+    route.name === MainPage.Index &&
+    !appStore.userState.modalsViewed.includes(props.modal)
+  ) {
     init()
   }
 })
@@ -40,6 +43,11 @@ function init() {
   const DELAY_MODAL_DISPLAY_TIME = 3 * 1000
 
   setTimeout(() => {
+    appStore.setUserState({
+      ...appStore.userState,
+      modalsViewed: [...appStore.userState.modalsViewed, Modal.LeaderboardTerms]
+    })
+
     modalStore.openModal(props.modal)
   }, DELAY_MODAL_DISPLAY_TIME)
 }
