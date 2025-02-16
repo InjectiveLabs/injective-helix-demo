@@ -190,7 +190,6 @@ export const MARKET_IDS_TO_HIDE = [
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
-  // '0x2236b4cd97300c79fca5c2fff4b647ab24a6d48c1554255ff8ec7cf29429ba74/' // TRADFI/USDT  - SPY/USDT
 ]
 
 export const INDEX_MARKETS_INFO = [
