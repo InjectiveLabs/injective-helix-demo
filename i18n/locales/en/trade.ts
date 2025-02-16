@@ -534,7 +534,6 @@ export default {
       tradesCanBePlace:
         'Trades can be placed outside of these times, but prices will not update until the market reopens.',
       thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',
-
       tradfiMarketClosedTrade:
         'This market follows traditional NYSE trading hours',
       marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
