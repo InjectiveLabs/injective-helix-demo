@@ -28,7 +28,7 @@ jobs:
 
       ## Flags
       VITE_SHOW_REDEEM_VOUCHER: true
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_MAINTENANCE_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
