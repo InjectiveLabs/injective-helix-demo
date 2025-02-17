@@ -16004,9 +16004,9 @@ shallow-clone@^3.0.0:
   dependencies:
     kind-of "^6.0.2"
 
-"shared-packages@https://github.com/InjectiveLabs/shared-packages#feat/chain-upgrade":
+"shared-packages@https://github.com/InjectiveLabs/shared-packages#master":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#22f8e36f789495877c7b50f6d4781ba682f4f15b"
+  resolved "https://github.com/InjectiveLabs/shared-packages#47f48bd628e430d2c4eb9b23e74880beebce8e6f"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.36-beta.5"
