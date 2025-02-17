@@ -143,7 +143,7 @@ export default {
     'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
   maintenance_button: 'View status',
   maintenance_body:
-    'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
+    'We are constantly improving Helix. Please come back later.',
   token_allowance_successful: 'Token allowance set successful',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
