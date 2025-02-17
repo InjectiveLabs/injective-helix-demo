@@ -17,7 +17,7 @@
     "start": "nuxi start",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
-    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#feat/chain-upgrade --ignore-scripts && yarn fetch:data && yarn github:version",
+    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#master --ignore-scripts && yarn fetch:data && yarn github:version",
     "analyze": "nuxi build --analyze",
     "preview": "nuxi preview",
     "test": "vitest --segfault-retry=3",
@@ -58,7 +58,7 @@
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
     "nuxt": "3.13.2",
-    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#feat/chain-upgrade",
+    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
     "simple-git": "3.27.0",
     "tailwind-merge": "^2.5.2",
     "vue-jest": "^4.0.0-0"
