@@ -102,7 +102,7 @@ const priceLabel = computed(() => {
   }
 
   if (tradeType === DerivativeTradeTypes.Market) {
-    return t('trade.averagePrice')
+    return t('trade.worstPrice')
   }
 
   if (tradeType === DerivativeTradeTypes.StopMarket) {
