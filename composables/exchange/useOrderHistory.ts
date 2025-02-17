@@ -16,13 +16,13 @@ import { UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export function useOrderHistory(
   order: Ref<DerivativeOrderHistory | SpotOrderHistory>,
-  isSpot: Ref<boolean>
+  isSpot: boolean
 ) {
   const derivativeStore = useDerivativeStore()
   const spotStore = useSpotStore()
   const { t } = useLang()
 
-  const markets: UiMarketWithToken[] = isSpot.value
+  const markets: UiMarketWithToken[] = isSpot
     ? spotStore.markets
     : derivativeStore.markets
 
@@ -35,7 +35,7 @@ export function useOrderHistory(
   )
 
   const isReduceOnly = computed(() => {
-    if (isSpot.value || !margin.value) {
+    if (isSpot || !margin.value) {
       return false
     }
 
@@ -62,7 +62,7 @@ export function useOrderHistory(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value && market.value.baseToken
+    return isSpot && market.value.baseToken
       ? new BigNumberInBase(
           new BigNumberInBase(order.value.price).toWei(
             market.value.baseToken.decimals - market.value.quoteToken.decimals
@@ -74,7 +74,7 @@ export function useOrderHistory(
   })
 
   const triggerPrice = computed(() => {
-    if (isSpot.value || !market.value) {
+    if (isSpot || !market.value) {
       return ZERO_IN_BASE
     }
 
@@ -84,7 +84,7 @@ export function useOrderHistory(
   })
 
   const margin = computed(() => {
-    if (!market.value || isSpot.value) {
+    if (!market.value || isSpot) {
       return ZERO_IN_BASE
     }
 
@@ -98,7 +98,7 @@ export function useOrderHistory(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value
+    return isSpot
       ? new BigNumberInWei(order.value.quantity).toBase(
           (market.value as UiSpotMarket).baseToken.decimals
         )

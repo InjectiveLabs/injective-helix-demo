@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
+import { NuxtUiIcons } from '@shared/types'
 import { PortfolioStatusKey } from '@/types'
+import { getBridgeRedirectionUrl } from '@/app/utils/network'
+
+const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isBannerVisible = ref(true)
-const sharedWalletStore = useSharedWalletStore()
-const accountStore = useAccountStore()
 
 function hideBanner() {
   isBannerVisible.value = false
@@ -34,7 +36,7 @@ const portfolioStatus = inject(
 <template>
   <div
     v-if="isBannerVisible && !hasBalance"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-2 text-sm justify-between"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40"
   >
     <div />
 
@@ -46,14 +48,16 @@ const portfolioStatus = inject(
       <div class="flex items-center space-x-2">
         <p>{{ $t('globalBanner.title') }}</p>
 
-        <SharedIcon name="arrow" class="rotate rotate-180" is-md />
+        <UIcon
+          :name="NuxtUiIcons.ArrowLeft"
+          class="h-4 w-4 min-w-4 rotate rotate-180"
+        />
       </div>
     </NuxtLink>
 
-    <SharedIcon
-      name="close"
-      class="hover:text-white"
-      is-md
+    <UIcon
+      :name="NuxtUiIcons.Close"
+      class="h-4 w-4 min-w-4 hover:text-white"
       @click="hideBanner"
     />
   </div>

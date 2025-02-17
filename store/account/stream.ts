@@ -10,7 +10,9 @@ import { SubaccountBalance, SubaccountBalanceStreamType } from '@/types'
 export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
 
-export const streamBankBalance = () => {
+export const streamBankBalance = ({
+  onResetCallback
+}: { onResetCallback?: Function } = {}) => {
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -19,6 +21,7 @@ export const streamBankBalance = () => {
   }
 
   grpcStreamBankBalances({
+    onResetCallback,
     accountAddress: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ amount, denom }) => {
       const bankBalancesExcludingDenom = accountStore.bankBalances.filter(
@@ -32,20 +35,20 @@ export const streamBankBalance = () => {
   })
 }
 
-export const streamSubaccountBalance = (subaccountId?: string) => {
+export const streamSubaccountBalance = ({
+  onResetCallback
+}: { onResetCallback?: Function } = {}) => {
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
 
-  if (
-    !sharedWalletStore.isUserConnected ||
-    !(accountStore.subaccountId || subaccountId)
-  ) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountBalance({
+    onResetCallback,
+    subaccountId: accountStore.subaccountId,
     accountAddress: sharedWalletStore.authZOrInjectiveAddress,
-    subaccountId: subaccountId || accountStore.subaccountId,
     callback: (payload) => {
       const subaccountBalancesMapOrBlank =
         accountStore.subaccountBalancesMap[accountStore.subaccountId] || []

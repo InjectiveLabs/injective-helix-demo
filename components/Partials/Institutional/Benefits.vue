@@ -37,7 +37,7 @@ const benefits = [
   <div>
     <p class="text-xl mb-4">{{ $t('institutional.benefits') }}</p>
 
-    <h2 class="text-4xl max-w-md mb-8">
+    <h2 class="text-5xl max-w-md mb-8">
       {{ $t('institutional.whyFinancialInstitutionsChooseHelix') }}
     </h2>
 
@@ -45,13 +45,13 @@ const benefits = [
       <div
         v-for="item in benefits"
         :key="item.title"
-        class="bg-gray-950 p-5 group hover:bg-gray-700 cursor-pointer rounded-xl transition-all duration-300"
+        class="bg-coolGray-950 p-5 group hover:bg-coolGray-700 cursor-pointer rounded-xl transition-all duration-300"
       >
         <div>
           <img
             :src="`/images/benefits/${item.icon}`"
             alt=""
-            class="bg-gray-800 p-3 rounded-full group-hover:invert transition-all duration-300"
+            class="bg-coolGray-800 p-3 rounded-full group-hover:invert transition-all duration-300"
           />
         </div>
 

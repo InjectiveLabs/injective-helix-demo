@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { TokenSymbols } from '@/app/data/token'
-import { Modal, SwapForm, SwapFormField } from '@/types'
+import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { query } = useRoute()
-const { userBalancesWithToken } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
 const emit = defineEmits<{
   'form:reset': []
@@ -34,15 +35,22 @@ const { value: outputDenom } = useStringField({
   initialValue: swapStore.routes[0]?.targetDenom
 })
 
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ] || []
+)
+
 const {
   inputDenomOptions,
   outputDenomOptions,
-  selectorOutputDenom,
-  selectorInputDenom
+  selectorInputDenom,
+  selectorOutputDenom
 } = useSwapTokenSelector({
   inputDenom,
   outputDenom,
-  balances: userBalancesWithToken
+  balances: accountBalance
 })
 
 const outputIsDisabledBaseDenom = computed(() =>
@@ -198,21 +206,21 @@ function onMaxSelected({ amount }: { amount: string }) {
 <template>
   <div class="flex flex-col">
     <Transition name="fade-down" mode="out-in">
-      <div :key="animationCount">
+      <div :key="animationCount" :data-cy="dataCyTag(SwapCyTags.YouPayForm)">
         <AppSelectToken
           v-model:denom="inputDenom"
           v-bind="{
             debounce: 600,
-            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom,
             isMaxHidden: false,
             isUsdVisible: true,
             shouldCheckBalance: true,
             options: inputDenomOptions,
             modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
-            maxDecimals: inputToken?.quantityDecimals || 0,
             tensMultiplier: inputToken?.tensMultiplier,
-            hideBalance: !sharedWalletStore.isUserConnected
+            maxDecimals: inputToken?.quantityDecimals || 0,
+            hideBalance: !sharedWalletStore.isUserConnected,
+            isDisabled: shouldDisableQuoteToken && outputIsDisabledBaseDenom
           }"
           @on:update="onUpdateAmount"
           @update:max="onMaxSelected"
@@ -230,29 +238,34 @@ function onMaxSelected({ amount }: { amount: string }) {
       </div>
     </Transition>
 
-    <div>
-      <SharedIcon
-        name="arrow"
-        class="mx-auto min-w-6 w-10 h-10 -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-20 relative hover:scale-110 transition-transform"
+    <div
+      class="flex justify-center mx-auto -rotate-90 border p-2 rounded-full -my-3 bg-brand-900 border-brand-700 z-10 relative hover:scale-110 transition-transform"
+    >
+      <UIcon
+        :name="NuxtUiIcons.ArrowLeft"
+        class="min-w-6 w-6 h-6"
         @click="swap"
       />
     </div>
 
     <Transition name="fade-up" mode="out-in">
-      <div :key="animationCount">
+      <div
+        :key="animationCount"
+        :data-cy="dataCyTag(SwapCyTags.YouReceiveForm)"
+      >
         <AppSelectToken
           v-model:denom="outputDenom"
           v-bind="{
             debounce: 600,
             isMaxHidden: true,
-            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom,
             isUsdVisible: true,
             options: outputDenomOptions,
             modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
-            maxDecimals: outputToken?.quantityDecimals || 0,
             tensMultiplier: outputToken?.tensMultiplier,
-            hideBalance: !sharedWalletStore.isUserConnected
+            hideBalance: !sharedWalletStore.isUserConnected,
+            maxDecimals: outputToken?.quantityDecimals || 0,
+            isDisabled: shouldDisableQuoteToken && !outputIsDisabledBaseDenom
           }"
           @update:amount="getInputQuantity"
           @update:denom="onOutputDenomChange"

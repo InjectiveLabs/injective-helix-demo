@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket, MarketKey } from '@/types'
 
 const spotStore = useSpotStore()
@@ -11,9 +10,14 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isTickerOnly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {
+    isTickerOnly: false
+  }
+)
 
 const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
@@ -46,13 +50,7 @@ function cancelAllOrders() {
       })
     )
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 

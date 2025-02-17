@@ -8,7 +8,7 @@ import {
 } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
 
@@ -16,17 +16,15 @@ const TOTAL_INJ_REWARDS = '1,000'
 const TOTAL_TIA_REWARDS = '10,000'
 const DATE_FORMAT = 'MMM dd, yyyy'
 
-const props = defineProps({
-  now: {
-    type: Number,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<GuildCampaignSummary>,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    now: number
+    summary?: GuildCampaignSummary
+  }>(),
+  {
+    summary: undefined
   }
-})
+)
 
 const campaignDateRange = computed(() => {
   if (!props.summary) {
@@ -84,7 +82,7 @@ function onConnectWallet() {
         class="flex items-center justify-center gap-10 font-semibold text-2xl mt-10 flex-wrap"
       >
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.guilds') }}
           </p>
           <p v-if="summary">{{ summary.totalGuildsCount }}</p>
@@ -92,7 +90,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.participants') }}
           </p>
           <p v-if="summary">{{ summary.totalMembersCount }}</p>
@@ -100,7 +98,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.totalRewards') }}
           </p>
           <p v-if="campaignDateRange">
@@ -110,7 +108,7 @@ function onConnectWallet() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm text-gray-475">
+          <p class="text-sm text-coolGray-475">
             {{ $t('guild.currentSeason') }}
           </p>
           <p v-if="campaignDateRange">{{ campaignDateRange }}</p>
@@ -119,9 +117,9 @@ function onConnectWallet() {
       </div>
     </section>
 
-    <p class="max-w-4xl mx-auto mt-8">{{ $t('guild.rewardDescription1') }}</p>
+    <p class="max-w-5xl mx-auto mt-8">{{ $t('guild.rewardDescription1') }}</p>
 
-    <p class="max-w-4xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
+    <p class="max-w-5xl mx-auto mt-4">{{ $t('guild.rewardDescription2') }}</p>
 
     <PartialsGuildHeaderCountdown
       v-if="summary"
@@ -146,7 +144,7 @@ function onConnectWallet() {
 
       <section class="grid lg:grid-cols-2 gap-10 pt-6">
         <article
-          class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg flex flex-col"
+          class="bg-coolGray-900 p-8 text-center basis-1/2 rounded-lg flex flex-col"
         >
           <div class="grow">
             <img src="/guild/howToParticipate.svg" class="mx-auto" />
@@ -174,10 +172,10 @@ function onConnectWallet() {
             <AppButton
               v-else
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
-              :is-disabled="isCampaignOver"
+              :disabled="isCampaignOver"
               @click="openCreateGuildModal"
             >
-              <span v-if="isCampaignOver" class="text-gray-600">
+              <span v-if="isCampaignOver" class="text-coolGray-600">
                 {{ $t('guild.seasonEnded') }}
               </span>
               <span v-else>
@@ -187,7 +185,7 @@ function onConnectWallet() {
           </div>
         </article>
 
-        <article class="bg-gray-900 p-8 text-center basis-1/2 rounded-lg">
+        <article class="bg-coolGray-900 p-8 text-center basis-1/2 rounded-lg">
           <img src="/guild/joinGuild.svg" class="mx-auto" />
           <h2 class="text-2xl font-semibold max-w-[364px] mx-auto mt-3">
             {{ $t('guild.howToParticipate.joinGuild.title') }}
@@ -202,9 +200,9 @@ function onConnectWallet() {
           <NuxtLink :to="GUILD_DISCORD_LINK" target="_blank">
             <AppButton
               class="bg-blue-500 text-blue-900 min-w-3xs mt-10 text-sm"
-              :is-disabled="isCampaignOver"
+              :disabled="isCampaignOver"
             >
-              <span v-if="isCampaignOver" class="text-gray-600">
+              <span v-if="isCampaignOver" class="text-coolGray-600">
                 {{ $t('guild.seasonEnded') }}
               </span>
               <span v-else>

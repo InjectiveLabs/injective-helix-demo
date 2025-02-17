@@ -3,11 +3,8 @@ import { thumbnailMap } from '@/app/data/campaign'
 
 const campaignStore = useCampaignStore()
 
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  }
+const props = withDefaults(defineProps<{ modelValue: string }>(), {
+  modelValue: ''
 })
 
 const emit = defineEmits<{

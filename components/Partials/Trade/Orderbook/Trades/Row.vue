@@ -5,19 +5,16 @@ import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import { UiMarketWithToken, UiTrade } from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  trade: {
-    required: true,
-    type: Object as PropType<UiTrade>
+const props = withDefaults(
+  defineProps<{
+    trade: UiTrade
+    market: UiMarketWithToken
+    isSpot?: boolean
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const price = computed(() =>
   props.isSpot
@@ -58,11 +55,9 @@ const time = computed(() =>
 </script>
 
 <template>
-  <div
-    class="flex font-mono leading-4 !text-[11px] text-right hover:bg-brand-800 cursor-pointer"
-  >
+  <div class="flex leading-4 text-xs py-1 hover:bg-brand-800 cursor-pointer">
     <div
-      class="flex-1 min-w-0 truncate px-1"
+      class="flex-1 min-w-0 truncate"
       :class="{
         'text-green-500': trade.tradeDirection === TradeDirection.Buy,
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
@@ -71,11 +66,11 @@ const time = computed(() =>
       {{ priceToFormat }}
     </div>
 
-    <div class="flex-1 min-w-0 truncate px-1">
+    <div class="flex-1 min-w-0 truncate text-center">
       {{ quantityToFormat }}
     </div>
 
-    <div class="flex-1 min-w-0 truncate px-1 text-gray-500">
+    <div class="flex-1 min-w-0 truncate text-coolGray-500 text-right">
       {{ time }}
     </div>
   </div>

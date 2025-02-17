@@ -7,14 +7,22 @@
     "verbatimModuleSyntax": false,
     "allowSyntheticDefaultImports": true,
     "types": [
+      "@pinia/nuxt",
       "@vueuse/nuxt",
-      "@pinia/nuxt"
+      "@injectivelabs/nuxt-bugsnag",
+      "@injectivelabs/networks",
+      "@injectivelabs/utils",
+      "@injectivelabs/sdk-ts",
+      "@injectivelabs/exceptions",
+      "@injectivelabs/ts-types",
+      "@injectivelabs/wallet-ts"
     ]
   },
   "exclude": [
     "node_modules",
     "dist",
-    ".output"
+    ".output",
+    "public"
   ],
   "ts-node": {
     // these options are overrides used only by ts-node
@@ -22,5 +30,5 @@
       "module": "commonjs",
       "esModuleInterop": true
     }
-  },
+  }
 }

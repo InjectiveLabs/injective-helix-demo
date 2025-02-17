@@ -1,25 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100..900&family=Inter:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100..900&family=Inter:wght@100..900&family=Orbitron:wght@400..900&display=swap');
 
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
 @import '@vuepic/vue-datepicker/dist/main.css';
-@import 'floating-vue/dist/style.css';
 
-/* @import './mixins'; */
 @import './_root.css';
 @import './_charts.css';
 @import './_fonts.css';
 
-@import './_inputs.css';
+@import './_scrollbar.css';
 @import './_table.css';
+
+@import './_transitions.css';
+@import './_animate.css';
+@import './_custom.css';
+
+/* @import './_inputs.css';
 @import './_tabs.css';
 @import './_slider.css';
-@import './_scrollbar.css';
 @import './_dropdown.css';
+@import './_lists.css'; */
 
-@import './_lists.css';
-@import './_transitions.css';
-@import './_custom.css';
-@import './_animate.css';
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply dark:border-coolGray-800;
+  }
+}
+
+body {
+  @apply dark:bg-brand-900;
+}

@@ -1,27 +1,19 @@
 <script lang="ts" setup>
-defineProps({
-  isDisabled: Boolean,
+import { NuxtUiIcons } from '@shared/types'
 
-  page: {
-    type: Number,
-    required: true
-  },
-
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  rowClass: {
-    type: String,
-    default: ''
-  },
-
-  totalCount: {
-    type: Number,
-    required: true
+withDefaults(
+  defineProps<{
+    page: number
+    limit: number
+    rowClass?: string
+    totalCount: number
+    isDisabled?: boolean
+  }>(),
+  {
+    rowClass: '',
+    isDisabled: false
   }
-})
+)
 </script>
 
 <template>
@@ -54,16 +46,17 @@ defineProps({
       }"
     >
       <div
-        class="text-2xs tracking-1.5 flex items-center justify-center text-center"
+        class="text-xs tracking-1.5 flex items-center justify-center text-center"
       >
         <span
           v-if="hasPrevPage"
+          class="flex items-center"
           :class="
-            hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+            hasPrevPage ? 'cursor-pointer text-blue-500' : 'text-coolGray-600'
           "
           @click="onPrevEvent"
         >
-          <SharedIcon name="caret-thin" class="h-auto w-3" />
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-3 w-3" />
         </span>
 
         <div class="mx-3 flex items-center gap-0.5 text-sm font-semibold">
@@ -90,12 +83,13 @@ defineProps({
 
         <span
           v-if="hasNextPage"
+          class="flex items-center"
           :class="
-            hasNextPage ? 'cursor-pointer text-blue-500' : 'text-gray-600'
+            hasNextPage ? 'cursor-pointer text-blue-500' : 'text-coolGray-600'
           "
           @click="onNextEvent"
         >
-          <SharedIcon name="caret-thin" class="h-auto w-3 -rotate-180" />
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-3 w-3 -rotate-180" />
         </span>
       </div>
     </template>

@@ -11,13 +11,13 @@ import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
+  IS_MAINNET,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { tokenFactoryStatic } from '@/app/Services'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { hexToString, stringToHex } from '@/app/utils/converters'
-import perpGridMarkets from '@/app/data/derivativeGridMarkets.json'
+import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
@@ -47,6 +47,18 @@ export const getDecimalsBasedOnNumber = (
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
+  // Todo: Replace with actual endpoint once devops deploy this to production server
+  // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
+
+  if (IS_MAINNET) {
+    return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    // return `https://k8s.global.mainnet.chronos.grpc-web.injective.network/api/chronos/v1/${marketType}`
+  }
+
+  // if (IS_TESTNET) {
+  //   return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+  // }
+
   return `${ENDPOINTS.indexer}/api/chronos/v1/${marketType}`
 }
 
@@ -107,7 +119,9 @@ export const addressAndMarketSlugToSubaccountId = (
   ethAddress: string,
   slug: string
 ) => {
-  const marketHex = stringToHex(getProperSlug(slug))
+  const marketSlug = slug.replace('-perp', '-p')
+
+  const marketHex = stringToHex(getProperSlug(marketSlug))
 
   return `${ethAddress}${'0'.repeat(66 - 42 - marketHex.length)}${marketHex}`
 }
@@ -117,7 +131,7 @@ export const isSgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return spotGridMarkets.find((m) => m.slug === slug)?.slug
+  return spotGridMarkets.find((market) => market.slug === slug)?.slug
 }
 
 export const isPgtSubaccountId = (subaccountId: string) => {
@@ -125,8 +139,8 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return (perpGridMarkets as GridMarket[]).find(
-    (m) => m.slug.replace('-perp', '-p') === slug
+  return derivativeGridMarkets.find(
+    (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
 }
 
@@ -134,19 +148,20 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
       ...spotGridMarkets,
-      ...perpGridMarkets.map((m: GridMarket) => ({
-        ...m,
-        slug: m.slug.replace('-perp', '-p')
+      ...derivativeGridMarkets.map((market: GridMarket) => ({
+        ...market,
+        slug: market.slug.replace('-perp', '-p')
       }))
     ] as GridMarket[]
 
     return gridMarkets
       .find(
-        (m) =>
-          m.slug.toLowerCase() ===
+        (market) =>
+          market.slug.toLowerCase() ===
           hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
       )
       ?.slug.toUpperCase()
+      .replace('-P', '-PERP')
   }
 
   return hexToString(subaccountId.slice(42).replace(/^0+/, ''))
@@ -198,10 +213,24 @@ export const durationFormatter = (
   from: number | string,
   to: number | string
 ) => {
-  const { days, hours, minutes } = intervalToDuration({
+  const { months, days, hours, minutes } = intervalToDuration({
     start: new Date(Number(from)),
     end: new Date(Number(to))
   })
+
+  return `${months}M ${days}D ${hours}H ${minutes}M`
+}
+
+export function formatInterval(
+  startTimestamp: number,
+  endTimestamp: number
+): string {
+  const diffMs = Math.abs(endTimestamp - startTimestamp)
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
+  // const seconds = Math.floor((diffMs % (1000 * 60)) / 1000)
 
   return `${days}D ${hours}H ${minutes}M`
 }
@@ -293,9 +322,11 @@ export function calculateWorstPrice(
 ) {
   let remainingQuantity = Number(quantity || '0')
 
-  let worstPrice = '0'
   let price = 0
+  let worstPrice = '0'
   let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
 
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
@@ -312,7 +343,9 @@ export function calculateWorstPrice(
 
   return {
     totalPrice: new BigNumberInBase(price),
-    worstPrice: new BigNumberInBase(worstPrice),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
     hasEnoughLiquidity
   }
 }
@@ -426,4 +459,20 @@ export function countZerosAfterDecimal(num: string) {
   }
 
   return zeroCount
+}
+
+export async function computeSHA512(message: string) {
+  const msgBuffer = new TextEncoder().encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  return hashHex
+}
+
+export const valueSortFunction = (a: any, b: any, direction: string) => {
+  if (direction === 'asc') {
+    return new BigNumberInBase(a).comparedTo(new BigNumberInBase(b))
+  }
+
+  return new BigNumberInBase(b).comparedTo(new BigNumberInBase(a))
 }

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { formatWalletAddress } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -8,22 +9,20 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 
-defineProps({
-  wallet: {
-    required: true,
-    type: String as PropType<Wallet>
-  }
-})
+withDefaults(defineProps<{ wallet: Wallet }>(), {})
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isDropdownVisible = ref(false)
 
 const formattedInjectiveAddress = computed(() =>
-  formatWalletAddress(sharedWalletStore.injectiveAddress)
+  sharedEllipsisFormatText(
+    sharedWalletStore.injectiveAddress,
+    DEFAULT_TRUNCATE_LENGTH
+  )
 )
 const formattedAddress = computed(() =>
-  formatWalletAddress(sharedWalletStore.address)
+  sharedEllipsisFormatText(sharedWalletStore.address, DEFAULT_TRUNCATE_LENGTH)
 )
 
 function onToggleDropdown() {
@@ -50,12 +49,13 @@ function openQrCodeModal() {
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <SharedIcon :name="`wallet/${wallet}`" class="h-6 w-6" />
-        <p class="font-mono text-sm font-medium">
+        <p class="text-sm font-medium">
           {{ formattedInjectiveAddress }}
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <AssetQRCode
+        <SharedIcon
+          name="qrcode"
           class="hover:text-blue-500 h-4 w-4"
           @click="openQrCodeModal"
         />

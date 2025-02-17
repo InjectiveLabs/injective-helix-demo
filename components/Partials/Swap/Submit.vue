@@ -5,33 +5,35 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { NuxtUiIcons } from '@shared/types'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { Modal, SwapForm, SwapFormField } from '@/types'
+import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
-const appStore = useAppStore()
 const swapStore = useSwapStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const formErrors = useFormErrors()
+const sharedGeoStore = useSharedGeoStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
-const { userBalancesWithToken } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 
-defineProps({
-  isLoading: Boolean,
-  showErrorState: Boolean,
-
-  queryError: {
-    type: String,
-    default: ''
-  },
-
-  status: {
-    type: Object as PropType<Status>,
-    default: () => new Status(StatusType.Idle)
+withDefaults(
+  defineProps<{
+    status: Status
+    isLoading: boolean
+    queryError?: string
+    showErrorState: boolean
+  }>(),
+  {
+    isLoading: false,
+    showErrorState: false,
+    queryError: '',
+    status: () => new Status(StatusType.Idle)
   }
-})
+)
 
 const emit = defineEmits<{
   submit: []
@@ -45,7 +47,19 @@ const swapTimeRemaining = ref(0)
 const rateExpired = ref(false)
 const countdownInterval = ref(undefined as NodeJS.Timeout | undefined)
 
-const { inputToken, invalidInput, maximumInput } = useSwap(formValues)
+const {
+  inputToken,
+  invalidInput,
+  maximumInput,
+  isNotionalLessThanMinNotional
+} = useSwap(formValues)
+
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
+)
 
 const hasAmounts = computed(() => {
   return (
@@ -72,9 +86,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     }
 
     return isCountryRestrictedForSpotMarket({
-      country:
-        appStore.userState.geoLocation.browserCountry ||
-        appStore.userState.geoLocation.country,
+      country: sharedGeoStore.country,
       denomOrSymbol: denom
     })
   })
@@ -83,9 +95,7 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     return
   }
 
-  return userBalancesWithToken.value.find(
-    ({ denom }) => denom === disallowedDenom
-  )
+  return accountBalance.value.find(({ denom }) => denom === disallowedDenom)
 })
 
 const handlerFunction = computed(() =>
@@ -96,7 +106,8 @@ const hasErrors = computed(
   () =>
     Object.keys(formErrors.value).length > 0 ||
     (swapStore.isInputEntered && invalidInput.value) ||
-    insufficientBalance.value
+    !!insufficientBalance.value ||
+    !!isNotionalLessThanMinNotional.value
 )
 
 const formError = computed(() => {
@@ -106,12 +117,12 @@ const formError = computed(() => {
 })
 
 const selectedTokenBalance = computed(() => {
-  const balance = userBalancesWithToken.value?.find(
+  const balance = accountBalance.value?.find(
     ({ denom }) => denom === inputToken.value?.denom
   )
 
   return inputToken.value
-    ? new BigNumberInWei(balance?.availableMargin || '').toBase(
+    ? new BigNumberInWei(balance?.availableBalance || '').toBase(
         inputToken.value.token.decimals
       )
     : new BigNumberInBase(0)
@@ -193,7 +204,7 @@ watch(
   <div>
     <AppButton
       v-if="!sharedWalletStore.isUserConnected"
-      is-lg
+      size="lg"
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
     >
@@ -202,7 +213,7 @@ watch(
 
     <AppButton
       v-else-if="restrictedTokenBasedOnUserGeoIP"
-      is-lg
+      size="lg"
       is-disabled
       class="w-full"
     >
@@ -214,43 +225,43 @@ watch(
     </AppButton>
 
     <AppButton
-      v-else-if="
-        sharedWalletStore.isAuthzWalletConnected ||
-        sharedWalletStore.isAutoSignEnabled
-      "
+      v-else-if="sharedWalletStore.isAuthzWalletConnected"
       variant="danger-ghost"
       class="mb-2 w-full"
       :disabled="true"
     >
-      <span v-if="sharedWalletStore.isAuthzWalletConnected">
-        {{ $t('common.unauthorized') }}
-      </span>
-      <span v-else>
-        {{ $t('common.notAvailableinAutoSignMode') }}
-      </span>
+      {{ $t('common.unauthorized') }}
     </AppButton>
 
     <AppButton
       v-else
-      class="mb-2 w-full text-gray-525 text-opacity-100"
+      class="mb-2 w-full text-coolGray-525 text-opacity-100"
+      size="lg"
       v-bind="{
-        isXl: true,
         status: status,
         isLoading,
         disabled: (!hasAmounts && !isLoading) || hasErrors
       }"
-      :class="{
-        'pointer-events-none': isLoading
-      }"
+      :class="isLoading ? 'pointer-events-none' : ''"
       @click="handlerFunction"
     >
-      <div class="max-auto w-full">
+      <div class="max-auto w-full" :data-cy="dataCyTag(SwapCyTags.Swapbutton)">
         <Transition name="fade" mode="out-in">
-          <span v-if="!isLoading && swapStore.isInputEntered && invalidInput">
+          <span
+            v-if="
+              !isLoading &&
+              ((swapStore.isInputEntered && invalidInput) ||
+                isNotionalLessThanMinNotional)
+            "
+            :data-cy="dataCyTag(SwapCyTags.WarningAmountTooLow)"
+          >
             {{ $t('trade.swap.swapAmountTooLow') }}
           </span>
 
-          <span v-else-if="insufficientBalance">
+          <span
+            v-else-if="insufficientBalance"
+            :data-cy="dataCyTag(SwapCyTags.WarningInsufficientbalance)"
+          >
             {{ insufficientBalance }}
           </span>
 
@@ -274,18 +285,18 @@ watch(
             v-else-if="rateExpired && hasAmounts"
             class="flex items-center justify-center gap-1"
           >
-            <span>
+            <span :data-cy="dataCyTag(SwapCyTags.WarningRateExpired)">
               {{ $t('trade.swap.rateExpired') }}
             </span>
 
-            <SharedIcon
-              name="rotate"
-              class="h-3 w-3 cursor-pointer scale-x-[-1] rotate-45"
+            <UIcon
+              :name="NuxtUiIcons.Rotate"
+              class="h-3 w-3 ml-1"
               @click="getResultQuantity"
             />
           </span>
 
-          <span v-else>
+          <span v-else :data-cy="dataCyTag(SwapCyTags.EnterAmountButton)">
             {{ $t('trade.swap.enterAmount') }}
           </span>
         </Transition>

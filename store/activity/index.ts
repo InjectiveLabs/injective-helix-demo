@@ -1,42 +1,21 @@
 import { defineStore } from 'pinia'
-import {
-  TradingReward,
-  FundingPayment,
-  SpotOrderHistory,
-  DerivativeOrderHistory
-} from '@injectivelabs/sdk-ts'
-import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { TradingReward, FundingPayment } from '@injectivelabs/sdk-ts'
 import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
-import {
-  streamSpotSubaccountTrades,
-  streamSpotSubaccountOrderHistory,
-  streamDerivativeSubaccountTrades,
-  streamDerivativeSubaccountOrderHistory
-} from '@/store/activity/stream'
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
 import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
 
-// todo: Ivan clean up
 type ActivityStoreState = {
-  subaccountFundingPayments: FundingPayment[]
+  subaccountFundingHistory: FundingPayment[]
   tradingRewardsHistory: TradingReward[]
-  subaccountFundingPaymentsCount: number
-  latestDerivativeOrderHistory?: DerivativeOrderHistory
-  latestDerivativeTrade?: SharedUiDerivativeTrade
-  latestSpotOrderHistory?: SpotOrderHistory
-  latestSpotTrade?: SharedUiSpotTrade
+  subaccountFundingHistoryCount: number
   subaccountTransfers: UiSubaccountTransactionWithToken[]
   subaccountTransferTransactionsCount: number
 }
 
 const initialStateFactory = (): ActivityStoreState => ({
-  subaccountFundingPayments: [],
+  subaccountFundingHistory: [],
   tradingRewardsHistory: [],
-  subaccountFundingPaymentsCount: 0,
-  latestDerivativeOrderHistory: undefined,
-  latestDerivativeTrade: undefined,
-  latestSpotOrderHistory: undefined,
-  latestSpotTrade: undefined,
+  subaccountFundingHistoryCount: 0,
   subaccountTransfers: [],
   subaccountTransferTransactionsCount: 0
 })
@@ -44,11 +23,6 @@ const initialStateFactory = (): ActivityStoreState => ({
 export const useActivityStore = defineStore('activity', {
   state: (): ActivityStoreState => initialStateFactory(),
   actions: {
-    streamDerivativeSubaccountOrderHistory,
-    streamDerivativeSubaccountTrades,
-    streamSpotSubaccountOrderHistory,
-    streamSpotSubaccountTrades,
-
     async fetchTradingRewardsHistory() {
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
@@ -66,7 +40,7 @@ export const useActivityStore = defineStore('activity', {
       })
     },
 
-    async fetchSubaccountFundingPayments(options?: ActivityFetchOptions) {
+    async fetchSubaccountFundingHistory(options?: ActivityFetchOptions) {
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
@@ -78,7 +52,7 @@ export const useActivityStore = defineStore('activity', {
 
       const filters = options?.filters
 
-      const { fundingPayments: subaccountFundingPayments, pagination } =
+      const { fundingPayments: subaccountFundingHistory, pagination } =
         await indexerDerivativesApi.fetchFundingPayments({
           subaccountId: accountStore.subaccountId,
           marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
@@ -86,8 +60,8 @@ export const useActivityStore = defineStore('activity', {
         })
 
       activityStore.$patch({
-        subaccountFundingPayments,
-        subaccountFundingPaymentsCount: pagination.total
+        subaccountFundingHistory,
+        subaccountFundingHistoryCount: pagination.total
       })
     },
 

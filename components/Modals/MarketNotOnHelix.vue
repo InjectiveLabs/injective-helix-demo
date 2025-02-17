@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, SpotMarketCyTags } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isDoNoShowConfirmationAgain = ref(false)
 
@@ -38,19 +38,19 @@ function onSubmit() {
 <template>
   <AppModal :is-open="isModalOpen" is-sm is-hide-close-button>
     <template #title>
-      <h3>
+      <h3 :data-cy="dataCyTag(SpotMarketCyTags.ExperimentalMarketLabel)">
         {{ $t('marketNotOnHelix.title') }}
       </h3>
     </template>
 
     <div class="relative space-y-4">
-      <p class="text-center text-sm text-gray-100">
+      <p class="text-center text-sm text-coolGray-100">
         {{ $t('marketNotOnHelix.description') }}
       </p>
 
       <i18n-t
         keypath="marketNotOnHelix.description2"
-        class="text-sm text-center text-gray-100"
+        class="text-sm text-center text-coolGray-100"
         tag="p"
       >
         <template #link>
@@ -61,12 +61,19 @@ function onSubmit() {
       </i18n-t>
 
       <div class="mt-6 flex items-center justify-center">
-        <AppButton class="bg-blue-500 text-blue-900" @click="onSubmit">
+        <AppButton
+          class="bg-blue-500 text-blue-900"
+          :data-cy="dataCyTag(SpotMarketCyTags.IUnderstandButton)"
+          @click="onSubmit"
+        >
           {{ $t('marketNotOnHelix.cta') }}
         </AppButton>
       </div>
 
-      <div class="flex">
+      <div
+        class="flex"
+        :data-cy="dataCyTag(SpotMarketCyTags.DoNotShowAgainCheckbox)"
+      >
         <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
           <slot class="text-xs">
             {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}

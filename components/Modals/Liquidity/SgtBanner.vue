@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const STEPS = 3
 
@@ -28,7 +28,7 @@ function nextStep() {
 <template>
   <AppModal
     :is-open="modalStore.modals[Modal.SgtBanner]"
-    class="max-w-4xl w-full"
+    class="max-w-5xl w-full"
     @modal:closed="onCloseModal"
   >
     <div class="max-h-[70vh] md:max-h-[60vh] grid grid-rows-[1fr_auto]">
@@ -176,7 +176,7 @@ function nextStep() {
             v-for="index in STEPS"
             :key="index"
             class="w-2 h-2 rounded-full cursor-pointer"
-            :class="[step >= index ? 'bg-blue-500' : 'bg-gray-400']"
+            :class="[step >= index ? 'bg-blue-500' : 'bg-coolGray-400']"
             @click="step = index"
           />
         </div>
@@ -185,7 +185,7 @@ function nextStep() {
           class="max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 mt-4"
         >
           <AppButton
-            is-lg
+            size="lg"
             class="w-full font-semibold shadow-none select-none text-blue-500 border-blue-500"
             @click="onCloseModal"
           >
@@ -193,7 +193,7 @@ function nextStep() {
           </AppButton>
 
           <AppButton
-            is-lg
+            size="lg"
             class="w-full font-semibold shadow-none select-none bg-blue-500 text-blue-900"
             @click="nextStep"
           >

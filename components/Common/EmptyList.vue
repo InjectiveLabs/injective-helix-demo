@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-defineProps({
-  message: {
-    type: String,
-    default: ''
-  }
+withDefaults(defineProps<{ message?: string }>(), {
+  message: ''
 })
 </script>
 
@@ -17,7 +14,7 @@ defineProps({
       <img v-else src="/svg/empty-list.svg" />
     </div>
 
-    <p class="text-sm text-gray-400">
+    <p :class="['text-sm text-coolGray-400', slots.default ? 'mb-8' : '']">
       {{ message }}
     </p>
 

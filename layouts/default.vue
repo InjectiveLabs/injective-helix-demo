@@ -1,45 +1,60 @@
 <script lang="ts" setup>
+import { usdtToken } from '@shared/data/token'
+import { Wallet } from '@injectivelabs/wallet-ts'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { ROUTES } from '@/app/utils/constants'
+import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
-import { MainPage, PortfolioStatusKey } from '@/types'
+import {
+  Modal,
+  MainPage,
+  TradeSubPage,
+  InitialStatusKey,
+  PortfolioStatusKey,
+  LeaderboardSubPage,
+  LiquidityRewardsPage
+} from '@/types'
 
 const route = useRoute()
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
+const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
+
+const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
-  ROUTES.footerEnabledRoutes.includes(route.name as MainPage)
+  [
+    MainPage.Index,
+    MainPage.Markets,
+    MainPage.LpRewards,
+    MainPage.FeeDiscounts,
+    LiquidityRewardsPage.Dashboard,
+    LiquidityRewardsPage.CampaignDetails
+  ].includes(route.name as MainPage)
 )
 
-/**
- * Post only mode modal when we do chain upgrade
-watch(
-  () => appStore.blockHeight,
-  () => {
-    if (
-      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
-      appStore.blockHeight <=
-        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
-    ) {
-      modalStore.openModal(Modal.PostOnlyMode)
-    }
-  }
-)
- */
-
-onWalletConnected(() => {
+onWalletConnected(async () => {
   portfolioStatus.setLoading()
 
   mixpanelAnalytics.init()
 
-  fetchUserPortfolio()
+  await until(initialStatus).toMatch((status) => status.isIdle())
+
+  Promise.all([
+    fetchUserPortfolio(),
+    spotStore.fetchMarketsSummary(),
+    derivativeStore.fetchMarketsSummary()
+  ])
+    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
@@ -53,46 +68,134 @@ onSubaccountChange(() => {
 
 function fetchUserPortfolio() {
   return Promise.all([
-    exchangeStore.initFeeDiscounts(),
     authZStore.fetchGrants(),
+    exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
+    accountStore.fetchErc20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
-    positionStore.fetchPositions()
+    positionStore.fetchPositions(),
+    gridStrategyStore.fetchStrategies()
   ])
 }
 
 function fetchSubaccountStream() {
-  accountStore.cancelSubaccountBalanceStream()
   accountStore.cancelBankBalanceStream()
-  positionStore.cancelSubaccountPositionsStream()
+  accountStore.cancelSubaccountBalanceStream()
+  positionStore.cancelAccountPositionsStream()
 
   accountStore.streamSubaccountBalance()
-  accountStore.streamBankBalance()
-  positionStore.streamSubaccountPositions()
+  positionStore.streamAccountPositions({
+    onResetCallback: positionStore.fetchPositions
+  })
+  accountStore.streamBankBalance({
+    onResetCallback: accountStore.fetchAccountPortfolioBalances
+  })
+}
+
+function checkOnboarding() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  if (route.query.bridge === 'true') {
+    modalStore.openModal(Modal.LiteBridge)
+
+    return
+  }
+
+  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
+
+  if (
+    !accountStore.hasBalance &&
+    sharedWalletStore.isUserConnected &&
+    sharedWalletStore.wallet === Wallet.Metamask &&
+    Number(erc20UsdtBalance?.balance || 0) > 0
+  ) {
+    modalStore.closeModal(Modal.Connect)
+    modalStore.openModal(Modal.LiteBridge)
+
+    return
+  }
+
+  if (!accountStore.hasBalance) {
+    modalStore.closeModal(Modal.Connect)
+    modalStore.openModal(Modal.FiatOnboard)
+  }
 }
 
 provide(PortfolioStatusKey, portfolioStatus)
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      spotStore.fetchMarketsSummary(),
+      derivativeStore.fetchMarketsSummary()
+    ]),
+  30 * 1000
+)
 </script>
 
 <template>
-  <div class="relative">
+  <div
+    :class="[
+      'relative',
+      [TradeSubPage.Futures, TradeSubPage.Spot].includes(
+        route.name as TradeSubPage
+      )
+        ? 'min-h-vhMinusHeader'
+        : 'min-h-screen'
+    ]"
+  >
     <LayoutNavbar />
-    <main class="relative pb-6">
-      <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-      <LayoutBanner v-else />
+    <AppHocLoading
+      is-helix
+      wrapper-class="h-screen"
+      :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
+    >
+      <main class="relative mt-[56px] pb-6">
+        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
+        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+        <LayoutTeslaCompetitionBanner
+          v-if="route.name !== LeaderboardSubPage.Competition"
+        />
+        <LayoutFTMPerpBanner />
 
-      <NuxtPage v-bind="{ portfolioStatus }" />
-    </main>
+        <ModalsCompetitionWinner
+          v-if="
+            sharedWalletStore.isUserConnected &&
+            sharedWalletStore.walletConnectStatus !==
+              WalletConnectStatus.disconnecting
+          "
+        />
+
+        <slot v-bind="{ portfolioStatus }" />
+      </main>
+    </AppHocLoading>
 
     <ModalsNinjaPassWinner />
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
-    <!-- <ModalsNewFeature /> -->
+
+    <ModalsNewFeature />
     <ModalsPostOnlyMode />
     <ModalsDevMode />
+    <ModalsGeoRestricted />
     <SharedPageConfetti />
+
+    <template
+      v-if="
+        sharedWalletStore.isUserConnected &&
+        sharedWalletStore.walletConnectStatus !==
+          WalletConnectStatus.disconnecting
+      "
+    >
+      <ModalsOnboardingLiteBridge />
+      <ModalsOnboardingFiat />
+    </template>
+
+    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />
@@ -102,15 +205,18 @@ provide(PortfolioStatusKey, portfolioStatus)
     <SharedNotifications
       class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
     >
-      <template #notification="{ notification }">
+      <template #default="{ notification }">
         <SharedNotification
           :notification="notification"
           class="pointer-events-auto bg-brand-900"
           wrapper-class="bg-brand-900 border-brand-700 border"
         >
+          <template v-if="notification.isTemplateString" #custom>
+            <PartialsNotificationsCustom :title="notification.title" />
+          </template>
           <template #close="{ closeNotification }">
-            <SharedIcon
-              name="close-bold"
+            <UIcon
+              :name="NuxtUiIcons.CloseBold"
               class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
               @click="closeNotification"
             />
@@ -118,6 +224,8 @@ provide(PortfolioStatusKey, portfolioStatus)
         </SharedNotification>
       </template>
     </SharedNotifications>
+
+    <UNotifications />
 
     <CommonAutoSignExpiredToast />
   </div>

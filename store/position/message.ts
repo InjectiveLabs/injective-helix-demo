@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   DerivativeLimitOrder,
   MsgIncreasePositionMargin,
@@ -19,13 +18,12 @@ export const closePosition = async ({
   market,
   position
 }: {
+  position: PositionV2
   market: UiDerivativeMarket
-  position: Position | PositionV2
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -60,16 +58,12 @@ export const closePosition = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
-export const closeAllPosition = async (
-  positions: Array<Position | PositionV2>
-) => {
+export const closeAllPosition = async (positions: PositionV2[]) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -141,21 +135,19 @@ export const closeAllPosition = async (
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const closePositionAndReduceOnlyOrders = async ({
   market,
   position
 }: {
-  position: Position | PositionV2
+  position: PositionV2
   market?: UiDerivativeMarket
   reduceOnlyOrders: DerivativeLimitOrder[]
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const positionStore = usePositionStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const actualMarket = market as UiDerivativeMarket
@@ -192,7 +184,6 @@ export const closePositionAndReduceOnlyOrders = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-  backupPromiseCall(() => positionStore.fetchPositions())
 }
 
 export const addMarginToPosition = async ({
@@ -223,6 +214,47 @@ export const addMarginToPosition = async ({
     marketId: market.marketId,
     srcSubaccountId: accountStore.subaccountId,
     dstSubaccountId: accountStore.subaccountId,
+    amount: derivativeMarginToChainMarginToFixed({
+      value: amount.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    })
+  })
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+}
+
+export const addMarginToSubaccountPosition = async ({
+  market,
+  amount,
+  fromSubaccountId,
+  toSubaccountId
+}: {
+  market: UiDerivativeMarket
+  amount: BigNumberInBase
+  fromSubaccountId: string
+  toSubaccountId: string
+}) => {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (
+    !market ||
+    !fromSubaccountId ||
+    !toSubaccountId ||
+    !sharedWalletStore.isUserConnected
+  ) {
+    return
+  }
+
+  await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validate()
+
+  const messages = MsgIncreasePositionMargin.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: market.marketId,
+    srcSubaccountId: fromSubaccountId,
+    dstSubaccountId: toSubaccountId,
     amount: derivativeMarginToChainMarginToFixed({
       value: amount.toFixed(),
       quoteDecimals: market.quoteToken.decimals

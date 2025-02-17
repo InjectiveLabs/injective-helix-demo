@@ -1,21 +1,38 @@
 <script setup lang="ts">
-import { UiMarketWithToken } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
 
-defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 
-const isMobile = useIsMobile()
+const breakpoints = useSharedBreakpoints()
+
+const sm = breakpoints.sm
+
+const isMarketOpen = ref(false)
 </script>
 
 <template>
-  <div class="lg:h-header lg:flex relative max-lg:divide-y">
-    <PartialsTradeStatsMarketSelector v-bind="{ market }" />
+  <div
+    class="lg:flex lg:flex-col xl:flex-row relative max-lg:divide-y"
+    :data-cy="dataCyTag(SpotMarketCyTags.TradeStats)"
+  >
+    <PartialsTradeStatsMarketSelector
+      v-model:is-market-open="isMarketOpen"
+      v-bind="{ market }"
+      class="lg:h-header max-lg:max-w-none max-xl:max-w-fit"
+      :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsMarketSelector)"
+    />
 
-    <PartialsTradeStatsInfo v-if="!isMobile" v-bind="{ market }" />
-    <PartialsTradeStatsInfoMobile v-else v-bind="{ market }" />
+    <PartialsTradeStatsInfo
+      v-show="!isMarketOpen || sm"
+      v-bind="{ market }"
+      class="pl-2"
+      :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfo)"
+    />
   </div>
 </template>

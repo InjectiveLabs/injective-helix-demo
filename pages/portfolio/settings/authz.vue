@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { PortfolioSubPage } from '@/types'
+import { NuxtUiIcons } from '@shared/types'
+import { PortfolioSubPage, Modal, BusEvents } from '@/types'
+
+const modalStore = useSharedModalStore()
+const appStore = useAppStore()
 
 const linkOptions = [
   {
@@ -11,14 +15,22 @@ const linkOptions = [
     to: { name: PortfolioSubPage.SettingsAuthzGranter }
   }
 ]
+
+function openGranteeModal() {
+  useEventBus(BusEvents.ConnectMobileModalOpened).emit()
+  modalStore.openModal(Modal.ConnectMobile)
+}
 </script>
 
 <template>
   <div class="">
     <div class="p-4">
       <div class="flex items-center">
-        <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-          <SharedIcon name="chevron" />
+        <NuxtLink
+          :to="{ name: PortfolioSubPage.Settings }"
+          class="pr-4 flex items-center"
+        >
+          <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-6 w-6 min-w-6" />
         </NuxtLink>
 
         <h3 class="portfolio-title">
@@ -26,16 +38,27 @@ const linkOptions = [
         </h3>
       </div>
 
-      <div class="mt-8">
-        <NuxtLink
-          v-for="option in linkOptions"
-          :key="option.label"
-          :to="option.to"
-          class="p-4 text-gray-400 font-medium"
-          exact-active-class="text-white"
+      <div class="mt-8 flex justify-between">
+        <div>
+          <NuxtLink
+            v-for="option in linkOptions"
+            :key="option.label"
+            :to="option.to"
+            class="p-4 text-coolGray-400 font-medium"
+            exact-active-class="text-white"
+          >
+            {{ $t(option.label) }}
+          </NuxtLink>
+        </div>
+        <AppButton
+          v-if="appStore.devMode"
+          variant="primary-outline"
+          :disabled="!appStore.devMode"
+          class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
+          @click="openGranteeModal"
         >
-          {{ $t(option.label) }}
-        </NuxtLink>
+          + {{ $t('portfolio.settings.authz.connectMobile') }}
+        </AppButton>
       </div>
     </div>
 
@@ -43,4 +66,5 @@ const linkOptions = [
       <NuxtPage />
     </div>
   </div>
+  <ModalsConnectMobile />
 </template>

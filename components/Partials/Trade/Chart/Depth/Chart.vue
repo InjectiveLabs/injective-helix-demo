@@ -9,27 +9,18 @@ const TOOLTIP_OFFSET = 10
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
-const props = defineProps({
-  buys: {
-    type: Array as PropType<OrderbookFormattedRecord[]>,
-    required: true
-  },
-
-  sells: {
-    type: Array as PropType<OrderbookFormattedRecord[]>,
-    required: true
-  },
-
-  priceDecimals: {
-    type: Number as PropType<number>,
-    default: 2
-  },
-
-  symbol: {
-    type: String as PropType<string>,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    buys: OrderbookFormattedRecord[]
+    sells: OrderbookFormattedRecord[]
+    priceDecimals?: number
+    symbol?: string
+  }>(),
+  {
+    priceDecimals: 2,
+    symbol: ''
   }
-})
+)
 
 const canvasEl = ref<HTMLCanvasElement | null>(null)
 const containerEl = ref<HTMLDivElement | null>(null)
@@ -200,7 +191,7 @@ function update() {
   }
 
   // price labels at bottom
-  ctx.fillStyle = colors.gray[300]
+  ctx.fillStyle = colors.coolGray[300]
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
@@ -217,7 +208,7 @@ function update() {
     )
   }
 
-  ctx.strokeStyle = colors.gray[500]
+  ctx.strokeStyle = colors.coolGray[500]
   ctx.lineWidth = 1
   ctx.beginPath()
   ctx.moveTo(0, height * 0.9)
@@ -225,7 +216,7 @@ function update() {
   ctx.stroke()
 
   // draw y axis labels
-  ctx.fillStyle = colors.gray[500]
+  ctx.fillStyle = colors.coolGray[500]
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'right'
   ctx.textBaseline = 'middle'
@@ -306,13 +297,13 @@ function updateTooltip({ price, volume }: { price: number; volume: number }) {
 
   const innerHtml = `
     <div >Price:</div>
-    <div class="text-white font-mono text-right">${new BigNumberInBase(
-      price
-    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
+    <div class="text-white text-right">${new BigNumberInBase(price).toFormat(
+      props.priceDecimals
+    )} ${props.symbol}</div>
     <div>Volume:</div>
-    <div class="text-white font-mono text-right">${new BigNumberInBase(
-      volume
-    ).toFormat(props.priceDecimals)} ${props.symbol}</div>
+    <div class="text-white text-right">${new BigNumberInBase(volume).toFormat(
+      props.priceDecimals
+    )} ${props.symbol}</div>
   `
   tooltipEl.value!.innerHTML = innerHtml
 }
@@ -355,7 +346,7 @@ useResizeObserver(containerEl, update)
 
     <div
       ref="tooltipEl"
-      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-900/60 backdrop-blur-sm p-2 rounded-lg border-gray-700 border text-[11px] text-gray-500 gap-2 z-50"
+      class="absolute pointer-events-none grid grid-cols-[auto_auto] bg-brand-900/60 backdrop-blur-sm p-2 rounded-lg border-coolGray-700 border text-[11px] text-coolGray-500 gap-2 z-50"
     ></div>
   </div>
 </template>

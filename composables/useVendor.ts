@@ -7,6 +7,8 @@ import {
   useFormValues,
   useIsFormDirty,
   useValidateForm,
+  useSetFieldError,
+  useSetFormErrors,
   useSetFormValues,
   useSetFieldValue,
   useValidateField
@@ -21,6 +23,8 @@ export {
   useFormValues,
   useIsFormDirty,
   useValidateForm,
+  useSetFieldError,
+  useSetFormErrors,
   useSetFormValues,
   useSetFieldValue,
   useValidateField

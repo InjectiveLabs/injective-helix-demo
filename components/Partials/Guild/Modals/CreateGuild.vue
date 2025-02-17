@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { toBalanceInToken } from '@/app/utils/formatters'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
@@ -8,7 +9,7 @@ import {
 } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
@@ -26,7 +27,7 @@ const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
@@ -49,7 +50,7 @@ const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => {
-      const balance = userBalancesWithToken.value.find(
+      const balance = activeSubaccountBalancesWithToken.value.find(
         ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
       )
 
@@ -58,7 +59,7 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
       }
 
       return toBalanceInToken({
-        value: balance.accountTotalBalance,
+        value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })
     })
@@ -137,7 +138,7 @@ watch(
           <span class="font-bold">
             {{ $t('guild.createGuild.name') }}
           </span>
-          <span class="text-gray-450">
+          <span class="text-coolGray-450">
             {{ name?.length || 0 }} / {{ NAME_MAX_CHARACTERS }}
             {{ $t('guild.createGuild.characters') }}
           </span>
@@ -183,7 +184,7 @@ watch(
           <span class="font-bold">
             {{ $t('guild.createGuild.description') }}
           </span>
-          <span class="text-gray-450">
+          <span class="text-coolGray-450">
             {{ description?.length || 0 }} / {{ DESCRIPTION_MAX_CHARACTERS }}
           </span>
         </div>
@@ -208,22 +209,18 @@ watch(
         </span>
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
-          <SharedIcon
-            v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
-            name="check-circle"
-            class="text-green-500"
-            is-sm
+          <UIcon
+            :name="NuxtUiIcons.Checkmark"
+            class="text-green-500 w-4 h-4 min-w-4"
           />
-          <SharedIcon
-            v-else
-            name="warning-circle"
-            class="text-orange-400"
-            is-sm
+          <UIcon
+            :name="NuxtUiIcons.Warning"
+            class="text-orange-400 w-4 h-4 min-w-4"
           />
         </div>
       </div>
 
-      <p v-if="!hasSufficientBalance" class="text-gray-450 text-xs mt-2">
+      <p v-if="!hasSufficientBalance" class="text-coolGray-450 text-xs mt-2">
         {{
           $t('guild.createGuild.insufficientBalanceDescription', {
             amount: minAmountToString,
@@ -249,20 +246,20 @@ watch(
       <div class="mt-8">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
+          size="lg"
           v-bind="{
             status,
-            isLg: true,
             isDisabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"
         >
           <span
             v-if="hasSufficientBalance"
-            :class="{ 'text-gray-600': hasEmptyField }"
+            :class="{ 'text-coolGray-600': hasEmptyField }"
           >
             {{ $t('guild.createGuild.cta') }}
           </span>
-          <span v-else class="text-gray-600">
+          <span v-else class="text-coolGray-600">
             {{ $t('guild.createGuild.insufficientBalance') }}
           </span>
         </AppButton>

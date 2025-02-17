@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function onCloseModal() {
@@ -33,9 +33,7 @@ function onCloseModal() {
       <div class="mt-8 flex items-center gap-4">
         <AppButton
           class="w-full font-semibold bg-blue-500 text-blue-900"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onCloseModal"
         >
           <span>

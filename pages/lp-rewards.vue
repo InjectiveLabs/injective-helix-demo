@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
-const spotStore = useSpotStore()
 const campaignStore = useCampaignStore()
 const gridStrategyStore = useGridStrategyStore()
 
@@ -17,8 +16,6 @@ onWalletConnected(() => {
   const roundId = round.value ? Number(round.value) : undefined
 
   Promise.all([
-    spotStore.init(),
-    spotStore.fetchMarketsSummary(),
     campaignStore.fetchRound(roundId),
     gridStrategyStore.fetchAllStrategies()
   ])
@@ -30,9 +27,9 @@ onWalletConnected(() => {
 </script>
 
 <template>
-  <div class="mb-40">
-    <AppHocLoading v-bind="{ status }">
+  <AppHocLoading v-bind="{ status }" is-full-screen>
+    <div class="mb-40">
       <NuxtPage />
-    </AppHocLoading>
-  </div>
+    </div>
+  </AppHocLoading>
 </template>

@@ -2,11 +2,11 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOpenOrdersFilterField, SpotOpenOrdersFilterForm } from '@/types'
 
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
-const isMobile = useIsMobile()
 
 const status = reactive(new Status(StatusType.Loading))
 
@@ -42,11 +42,11 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 
 <template>
   <div class="divide-y border-y">
-    <PartialsPortfolioOrdersFuturesOpenOrdersTabs />
+    <PartialsPortfolioOrdersFuturesOpenOrdersTabs
+      :is-trading-bots="accountStore.isSgtSubaccount"
+    />
     <div class="overflow-x-auto">
       <div class="lg:min-w-[1200px] divide-y border-b">
-        <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader v-if="!isMobile" />
-
         <CommonSkeletonRow
           v-if="status.isLoading()"
           :height="57"
@@ -55,24 +55,14 @@ onSubaccountChange(fetchDerivativeOpenOrders)
         />
 
         <template v-else>
-          <div v-if="isMobile">
-            <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
-              v-for="order in filteredOrders"
-              :key="`${order.orderHash}-${order.cid}`"
-              v-bind="{ order }"
-            />
-          </div>
-
-          <template v-else>
-            <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
-              v-for="order in filteredOrders"
-              :key="`${order.orderHash}-${order.cid}`"
-              v-bind="{ order }"
-            />
-          </template>
+          <PartialsPortfolioOrdersFuturesOpenOrdersTable
+            v-if="filteredOrders.length"
+            :orders="filteredOrders"
+            :is-trading-bots="accountStore.isSgtSubaccount"
+          />
 
           <CommonEmptyList
-            v-if="filteredOrders.length === 0"
+            v-if="!filteredOrders.length"
             :message="'No Open Orders'"
           />
         </template>

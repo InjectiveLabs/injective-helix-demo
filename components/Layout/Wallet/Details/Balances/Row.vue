@@ -1,36 +1,18 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
-const props = defineProps({
-  balance: {
-    type: Object as PropType<AccountBalance>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
 
-const { valueToString: totalAmountToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalance).toBase(
-      props.balance.token.decimals
-    )
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
-
-const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    return new BigNumberInWei(props.balance.accountTotalBalanceInUsd).toBase(
-      props.balance.token.decimals
-    )
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+const totalAmount = computed(() =>
+  sharedToBalanceInToken({
+    value: props.balance.totalBalance,
+    decimalPlaces: props.balance.token.decimals
+  })
 )
 </script>
-
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-between pr-2">
     <div class="flex py-2">
       <div class="flex items-center mr-2">
         <CommonTokenIcon v-bind="{ token: balance.token }" />
@@ -38,13 +20,27 @@ const { valueToString: totalAmountInUsdToString } = useSharedBigNumberFormatter(
       <div class="text-xs flex items-center">
         <div>
           <p class="text-sm font-semibold">{{ balance.token.symbol }}</p>
-          <p class="text-gray-400">{{ totalAmountToString }}</p>
+          <p class="text-coolGray-400">
+            <AppAmount
+              v-bind="{
+                amount: totalAmount,
+                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
+          </p>
         </div>
       </div>
     </div>
-
     <div class="flex items-center">
-      <span class="text-sm"> ${{ totalAmountInUsdToString }}</span>
+      <span class="text-sm flex">
+        <span>$</span>
+        <AppUsdAmount
+          v-bind="{
+            decimalPlaces: 18,
+            amount: balance.totalBalanceInUsd
+          }"
+        />
+      </span>
     </div>
   </div>
 </template>

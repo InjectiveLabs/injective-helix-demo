@@ -4,26 +4,25 @@ import {
   GrantAuthorizationType,
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 
-const props = defineProps({
-  grantee: {
-    type: String,
-    required: true
-  },
-
-  grants: {
-    type: Array as PropType<GrantAuthorizationWithDecodedAuthorization[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grantee: string
+    grants: GrantAuthorizationWithDecodedAuthorization[]
+  }>(),
+  {}
+)
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
 
 const isOpen = ref(false)
 const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -54,23 +53,27 @@ function revokeAll() {
 <template>
   <div class="flex p-2 text-xs hover:bg-brand-875">
     <div class="flex-1 flex items-center p-2 truncate min-w-0">
-      <span class="font-mono truncate min-w-0">{{ grantee }}</span>
+      <span class="font-mono truncate min-w-0">
+        {{ sharedEllipsisFormatText(grantee, DEFAULT_TRUNCATE_LENGTH) }}
+      </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2">{{ grants.length }}</div>
+    <div class="xs:flex-1 max-xs:w-10 flex items-center p-2">
+      {{ grants.length }}
+    </div>
 
     <div
       class="flex-1 flex items-center p-2 space-x-2 hover:text-blue-500 rounded-md cursor-pointer select-none"
       @click="toggle"
     >
       <span class="transition-transform" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
       <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>
     </div>
 
-    <div class="flex-1 flex items-center p-2" @click.stop>
+    <div class="xs:flex-1 flex items-center p-2" @click.stop>
       <AppButton
         v-if="
           sharedWalletStore.isAuthzWalletConnected ||
@@ -81,6 +84,7 @@ function revokeAll() {
         :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
         size="sm"
         disabled
+        class="text-nowrap px-2"
       >
         {{ $t('portfolio.settings.authz.revokeAll') }}
       </AppButton>
@@ -90,6 +94,7 @@ function revokeAll() {
         v-bind="{ status }"
         :variant="'danger-ghost'"
         size="sm"
+        class="text-nowrap px-2"
         @click="revokeAll"
       >
         {{ $t('portfolio.settings.authz.revokeAll') }}

@@ -2,11 +2,15 @@ import { defineStore } from 'pinia'
 import {
   ErrorType,
   WalletException,
+  GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
-import blacklistedAddresses from '@/app/data/ofac.json'
+import { isCountryRestricted } from '@/app/data/geoip'
+import { Modal } from '@/types'
 
 type WalletStoreState = {}
 
@@ -15,6 +19,7 @@ const initialStateFactory = (): WalletStoreState => ({})
 export const useWalletStore = defineStore('wallet', {
   state: (): WalletStoreState => initialStateFactory(),
   getters: {},
+
   actions: {
     async init() {
       const sharedWalletStore = useSharedWalletStore()
@@ -26,7 +31,28 @@ export const useWalletStore = defineStore('wallet', {
       await sharedWalletStore.init()
     },
 
+    async connectAddressOrPrivatekey({
+      wallet,
+      addressOrPk
+    }: {
+      wallet?: Wallet
+      addressOrPk: string
+    }) {
+      const SharedWalletStore = useSharedWalletStore()
+
+      if (!wallet) {
+        await SharedWalletStore.connectAddress(addressOrPk)
+
+        return
+      }
+
+      if (wallet === Wallet.PrivateKey) {
+        await SharedWalletStore.connectPrivateKey(addressOrPk)
+      }
+    },
+
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
+      const modalStore = useSharedModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -83,6 +109,7 @@ export const useWalletStore = defineStore('wallet', {
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
+      modalStore.closeModal(Modal.Connect)
 
       if (sharedWalletStore.isUserConnected) {
         const someAddressInWalletIsBlackListed =
@@ -109,12 +136,19 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async validate() {
-      const appStore = useAppStore()
+      const sharedGeoStore = useSharedGeoStore()
       const sharedWalletStore = useSharedWalletStore()
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
-      await appStore.validateGeoIp()
+      await sharedGeoStore.fetchVpnLocation()
+
+      if (isCountryRestricted(sharedGeoStore.country)) {
+        throw new GeneralException(
+          new Error('Helix is currently not available in your region')
+        )
+      }
+
       await sharedWalletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {
@@ -122,22 +156,23 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async disconnect() {
+    disconnect() {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
+      const pointsStore = usePointsStore()
       const accountStore = useAccountStore()
       const exchangeStore = useExchangeStore()
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
       const campaignStore = useCampaignStore()
       const derivativeStore = useDerivativeStore()
+      const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      await sharedWalletStore.logout()
-
       appStore.reset()
+      pointsStore.reset()
       sharedWalletStore.logout()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
@@ -149,6 +184,29 @@ export const useWalletStore = defineStore('wallet', {
       authZStore.$reset()
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })
+      leaderboardStore.$patch({
+        pnlLeaderboard: {
+          ...leaderboardStore.pnlLeaderboard,
+          accountRow: undefined
+        },
+        competitionLeaderboard: {
+          ...leaderboardStore.competitionLeaderboard,
+          accountRow: undefined
+        }
+      })
+    },
+
+    async signArbitraryData(address: string, message: string) {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (sharedWalletStore.wallet === Wallet.Magic) {
+        return await walletStrategy.signEip712TypedData(
+          message,
+          sharedWalletStore.address
+        )
+      }
+
+      return await walletStrategy.signArbitrary(address, message)
     }
   }
 })

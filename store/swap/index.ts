@@ -17,6 +17,7 @@ import {
 import { excludedSwapDenoms } from '@/app/data/swap'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { TokenAndPriceAndDecimals } from '@/types'
+import { swapRoutes } from '~/app/json'
 
 type SwapStoreState = {
   routes: Route[]
@@ -54,6 +55,26 @@ export const useSwapStore = defineStore('swap', {
 
     async fetchRoutes() {
       const swapStore = useSwapStore()
+
+      if (swapRoutes.length) {
+        const routes = swapRoutes.map((route) => {
+          return {
+            steps: route.steps,
+            sourceDenom: route.source_denom,
+            targetDenom: route.target_denom
+          }
+        })
+
+        swapStore.$patch((state) => {
+          state.routes = routes.filter(
+            ({ sourceDenom, targetDenom }) =>
+              !excludedSwapDenoms.includes(sourceDenom) &&
+              !excludedSwapDenoms.includes(targetDenom)
+          )
+        })
+
+        return
+      }
 
       const queryAllRoutesResponse = await wasmApi.fetchSmartContractState(
         SWAP_CONTRACT_ADDRESS,

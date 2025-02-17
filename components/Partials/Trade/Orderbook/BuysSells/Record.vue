@@ -13,25 +13,20 @@ import {
   UiMarketWithToken
 } from '@/types'
 
-const props = defineProps({
-  isBuy: Boolean,
-  isActive: Boolean,
-
-  record: {
-    type: Object as PropType<OrderbookFormattedRecord>,
-    required: true
-  },
-
-  index: {
-    type: Number,
-    default: -1
-  },
-
-  highestVolume: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isBuy?: boolean
+    index?: number
+    record: OrderbookFormattedRecord
+    isActive?: boolean
+    highestVolume: string
+  }>(),
+  {
+    isBuy: false,
+    index: -1,
+    isActive: false
   }
-})
+)
 
 const aggregation = inject(AggregationKey, ref(1)) as Ref<number>
 
@@ -175,7 +170,7 @@ function handlePriceClick() {
 
 <template>
   <div
-    class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
+    class="group flex text-xs py-1 leading-4 relative text-coolGray-300 hover:text-white cursor-pointer select-none"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
@@ -183,23 +178,25 @@ function handlePriceClick() {
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div
-        class="text-2xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
+        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
       >
-        <div class="text-gray-300 font-2xs">{{ $t('trade.volume') }}:</div>
-        <div class="font-mono text-right">{{ volumeToString }}</div>
+        <div class="text-coolGray-300 font-2xs">{{ $t('trade.volume') }}:</div>
+        <div class="text-right">{{ volumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalVolume', { symbol: market.quoteToken.symbol }) }}:
         </div>
-        <div class="font-mono text-right">{{ totalVolumeToString }}</div>
+        <div class="text-right">{{ totalVolumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalQuantity', { symbol: market.baseToken.symbol }) }}:
         </div>
-        <div class="font-mono text-right">{{ totalQuantityToString }}</div>
+        <div class="text-right">{{ totalQuantityToString }}</div>
 
-        <div class="text-gray-300 font-2xs">{{ $t('trade.avgPrice') }}:</div>
-        <div class="font-mono text-right">{{ avgPriceToString }}</div>
+        <div class="text-coolGray-300 font-2xs">
+          {{ $t('trade.avgPrice') }}:
+        </div>
+        <div class="text-right">{{ avgPriceToString }}</div>
       </div>
     </div>
 
@@ -207,9 +204,9 @@ function handlePriceClick() {
       class="absolute right-px transition-all duration-500 rounded top-px bottom-px"
       :class="{
         'bg-red-700/50': isActive && !isBuy,
-        'bg-red-500/10': !isActive && !isBuy,
+        'bg-red-500/25': !isActive && !isBuy,
         'bg-green-700/60': isActive && isBuy,
-        'bg-green-500/10': !isActive && isBuy
+        'bg-green-500/25': !isActive && isBuy
       }"
       :style="{
         width: (Number(record.totalVolume) / Number(highestVolume)) * 100 + '%'
@@ -218,7 +215,7 @@ function handlePriceClick() {
 
     <div
       :key="record.price"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate pl-2 pr-1 relative"
       :class="[
         isBuy ? 'text-green-500' : 'text-red-500',
         {
@@ -243,7 +240,7 @@ function handlePriceClick() {
 
     <div
       :key="record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate px-1 relative text-center"
       :class="{
         [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
           showQuantityFlash,
@@ -257,7 +254,7 @@ function handlePriceClick() {
 
     <div
       :key="record.price + record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate pl-1 pr-2 relative text-right"
       @click="handlePriceClick"
     >
       {{ volumeToString }}

@@ -4,7 +4,7 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -166,10 +166,18 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
+    const token = supplyWithBalance.value.find(
+      (token) => token.denom === formValues[SubaccountTransferField.Denom]
+    )
+
     setFormValues({
       [SubaccountTransferField.Amount]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom
+      ...(token
+        ? {}
+        : {
+            [SubaccountTransferField.Token]: injToken,
+            [SubaccountTransferField.Denom]: injToken.denom
+          })
     })
   })
 }
@@ -189,15 +197,19 @@ function resetForm() {
 function closeModal() {
   modalStore.closeModal(Modal.SubaccountTransfer)
 }
+
+const isOpen = computed({
+  get: () => modalStore.modals[Modal.SubaccountTransfer],
+  set: (value) => {
+    if (!value) {
+      closeModal()
+    }
+  }
+})
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
-  >
+  <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
     <template #title>
       <h3>
         {{ $t('account.subaccountTransfer') }}
@@ -205,43 +217,41 @@ function closeModal() {
     </template>
 
     <div>
-      <div class="mt-6">
-        <div>
-          <ModalsSubaccountTransferSelect
-            @update:subaccount-id="onSubaccountIdChange"
-          />
-          <div v-if="supplyWithBalance.length > 0" class="mt-6">
-            <AppSelectToken
-              v-model:denom="denomValue"
-              v-bind="{
-                maxDecimals,
-                isRequired: true,
-                amountFieldName: SubaccountTransferField.Amount,
-                options: supplyWithBalance
-              }"
-              @update:max="onAmountChange"
-              @update:denom="onTokenChange"
-            >
-              <span> {{ $t('account.amount') }} </span>
-            </AppSelectToken>
-          </div>
-          <div v-else class="mt-6 text-center text-gray-300 text-sm">
-            {{ t('account.noAssetToTransfer') }}
-          </div>
+      <div>
+        <ModalsSubaccountTransferSelect
+          @update:subaccount-id="onSubaccountIdChange"
+        />
+        <div v-if="supplyWithBalance.length > 0" class="mt-6">
+          <AppSelectToken
+            v-model:denom="denomValue"
+            v-bind="{
+              maxDecimals,
+              isRequired: true,
+              amountFieldName: SubaccountTransferField.Amount,
+              options: supplyWithBalance
+            }"
+            @update:max="onAmountChange"
+            @update:denom="onTokenChange"
+          >
+            <span> {{ $t('account.amount') }} </span>
+          </AppSelectToken>
         </div>
-
-        <AppButton
-          is-lg
-          class="w-full text-blue-900 bg-blue-500 mt-6"
-          :is-loading="status.isLoading()"
-          :disabled="isDisabled"
-          @click="onSubaccountTransfer"
-        >
-          <span class="font-semibold">
-            {{ $t('account.transfer') }}
-          </span>
-        </AppButton>
+        <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
+          {{ t('account.noAssetToTransfer') }}
+        </div>
       </div>
+
+      <AppButton
+        size="lg"
+        class="w-full text-blue-900 bg-blue-500 mt-6"
+        :is-loading="status.isLoading()"
+        :disabled="isDisabled"
+        @click="onSubaccountTransfer"
+      >
+        <span class="font-semibold">
+          {{ $t('account.transfer') }}
+        </span>
+      </AppButton>
     </div>
-  </AppModal>
+  </SharedModal>
 </template>

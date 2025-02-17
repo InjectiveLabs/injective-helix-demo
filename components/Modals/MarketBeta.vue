@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.MarketBeta])
 
@@ -20,7 +20,7 @@ function onCloseModal() {
 
     <div class="relative">
       <p
-        class="text-center text-sm text-gray-100"
+        class="text-center text-sm text-coolGray-100"
         v-text="$t('marketBeta.description')"
       ></p>
 

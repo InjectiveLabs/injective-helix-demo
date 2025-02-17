@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   ssr: false,
   builder: 'vite',
   css: ['@/assets/css/tailwind.css'],
+
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
@@ -17,15 +18,9 @@ export default defineNuxtConfig({
     head
   },
 
-  vite: {
-    server: {
-      hmr: {
-        protocol: 'ws',
-        host: '0.0.0.0',
-        clientPort: 3000,
-        port: 24678
-      }
-    }
+  sourcemap: {
+    server: false,
+    client: true
   },
 
   imports: {
@@ -36,7 +31,25 @@ export default defineNuxtConfig({
     autoImports: ['defineStore']
   },
 
-  modules: ['@funken-studio/sitemap-nuxt-3'],
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
+
+  // @ts-ignore
+  i18n: {
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
+  },
+
+  // @ts-ignore
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark',
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    componentName: 'ColorScheme',
+    storage: 'localStorage',
+    storageKey: 'nuxt-color-mode'
+  },
 
   // @ts-ignore
   sitemap: {
@@ -48,18 +61,5 @@ export default defineNuxtConfig({
     gzip: true
   },
 
-  // @ts-ignore
-  bugsnag: process.env.VITE_BUGSNAG_KEY
-    ? {
-        disabled: false,
-        publishRelease: true,
-        baseUrl: process.env.VITE_BASE_URL,
-        config: {
-          releaseStage: process.env.VITE_ENV,
-          notifyReleaseStages: ['staging', 'mainnet'],
-          appVersion: process.env.npm_package_version,
-          apiKey: process.env.VITE_BUGSNAG_KEY
-        }
-      }
-    : undefined
+  compatibilityDate: '2024-09-09'
 })

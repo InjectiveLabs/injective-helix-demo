@@ -2,7 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
@@ -12,7 +12,7 @@ const { t } = useLang()
 const status = reactive(new Status(StatusType.Idle))
 
 const activeStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )

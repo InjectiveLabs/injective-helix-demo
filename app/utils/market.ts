@@ -1,11 +1,5 @@
 import {
-  SharedMarketType,
-  SharedMarketStatus,
-  SharedUiMarketHistory
-} from '@shared/types'
-import {
   PriceLevel,
-  SpotMarket,
   TokenStatic,
   ExecArgCW20Send,
   DerivativeMarket,
@@ -14,29 +8,17 @@ import {
   MsgExecuteContractCompat
 } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import {
-  newMarketsSlug,
-  upcomingMarkets,
-  deprecatedMarkets,
-  experimentalMarketsSlug,
-  slugsToIncludeInRWACategory,
-  slugsToIncludeInSolanaCategory,
-  slugsToIncludeInCosmosCategory,
-  slugsToIncludeInEthereumCategory,
-  slugsToIncludeInInjectiveCategory
-} from '@/app/data/market'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
 import {
   MarketRoute,
   UiSpotMarket,
   TradeSubPage,
   DefaultMarket,
-  MarketQuoteType,
-  MarketTypeOption,
-  UiMarketWithToken,
-  MarketCategoryType
+  UiMarketWithToken
 } from '@/types'
 
 interface PriceLevelMap {
@@ -123,126 +105,6 @@ export const getDefaultSpotMarketRouteParams = () => {
 export const getDefaultFuturesMarket = () =>
   IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
-export const marketIsPartOfCategory = (
-  activeCategory: MarketCategoryType,
-  market: UiMarketWithToken
-): boolean => {
-  if (activeCategory === MarketCategoryType.All) {
-    return market.isVerified
-  }
-
-  if (activeCategory === MarketCategoryType.Cosmos) {
-    return slugsToIncludeInCosmosCategory.includes(market.slug)
-  }
-
-  if (activeCategory === MarketCategoryType.Solana) {
-    return slugsToIncludeInSolanaCategory.includes(market.slug)
-  }
-
-  if (activeCategory === MarketCategoryType.Ethereum) {
-    return slugsToIncludeInEthereumCategory.includes(market.slug)
-  }
-
-  if (activeCategory === MarketCategoryType.Injective) {
-    return slugsToIncludeInInjectiveCategory.includes(market.slug)
-  }
-
-  if (activeCategory === MarketCategoryType.Experimental) {
-    return experimentalMarketsSlug.includes(market.slug)
-  }
-
-  if (activeCategory === MarketCategoryType.RWA) {
-    return slugsToIncludeInRWACategory.includes(market.slug)
-  }
-
-  return true
-}
-
-export const marketIsQuotePair = (
-  activeQuote: MarketQuoteType,
-  market: UiMarketWithToken
-): boolean => {
-  if (activeQuote === MarketQuoteType.All) {
-    return true
-  }
-
-  const usdtSymbolLowercased = MarketQuoteType.USDT.toLowerCase()
-  const usdcSymbolLowercased = MarketQuoteType.USDC.toLowerCase()
-  const injSymbolLowecased = MarketQuoteType.INJ.toLowerCase()
-  const marketQuoteSymbol = market.quoteToken.symbol.toLowerCase()
-
-  if (activeQuote === MarketQuoteType.USDT) {
-    return marketQuoteSymbol.includes(usdtSymbolLowercased)
-  }
-
-  if (activeQuote === MarketQuoteType.USDC) {
-    return marketQuoteSymbol.includes(usdcSymbolLowercased)
-  }
-
-  if (activeQuote === MarketQuoteType.INJ) {
-    return marketQuoteSymbol.includes(injSymbolLowecased)
-  }
-
-  return true
-}
-
-export const marketIsPartOfType = ({
-  activeType,
-  market,
-  userMarkets
-}: {
-  activeType: MarketTypeOption
-  market: UiMarketWithToken
-  userMarkets: string[]
-}): boolean => {
-  if (
-    activeType === MarketTypeOption.All
-    //  || activeType === MarketTypeOption.Themes
-  ) {
-    return true
-  }
-
-  if (
-    [MarketTypeOption.Favorites, MarketTypeOption.MyMarkets].includes(
-      activeType
-    )
-  ) {
-    return userMarkets.includes(market.marketId)
-  }
-
-  if (activeType === MarketTypeOption.NewListings) {
-    return newMarketsSlug.includes(market.slug)
-  }
-
-  if (activeType === MarketTypeOption.Permissionless) {
-    return !market.isVerified
-  }
-
-  return [market.type, market.subType].includes(
-    activeType as unknown as SharedMarketType
-  )
-}
-
-export const marketIsPartOfSearch = (
-  search: string,
-  market: UiMarketWithToken
-): boolean => {
-  const query = search.trim().toLowerCase()
-
-  if (query === '') {
-    return true
-  }
-
-  return [
-    market.ticker,
-    market.baseToken.symbol,
-    market.quoteToken.symbol,
-    market.baseToken.name
-  ]
-    .map((piece) => piece.toLowerCase())
-    .some((value) => (value || '').toLowerCase().startsWith(query))
-}
-
 export const getFormattedMarketsHistoryChartData = (
   marketsHistory: SharedUiMarketHistory
 ) => {
@@ -278,10 +140,6 @@ export const marketIsInactive = (market: DerivativeMarket) => {
   ]
 
   return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
-}
-
-export const marketIsActive = (market: DerivativeMarket | SpotMarket) => {
-  return market.marketStatus === SharedMarketStatus.Active
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {

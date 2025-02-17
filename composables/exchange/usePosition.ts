@@ -1,14 +1,15 @@
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-export function useDerivativePosition(position: Ref<Position | PositionV2>) {
+export function useDerivativePosition(position: Ref<PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
@@ -22,9 +23,10 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(position.value.margin).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInTokenInBase({
+      value: position.value.margin,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const quantity = computed(() => {
@@ -47,9 +49,10 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
       return new BigNumberInBase(markPriceFromStream.price)
     }
 
-    return new BigNumberInWei(position.value.markPrice).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInTokenInBase({
+      value: position.value.markPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const markPrice = computed(() => {
@@ -80,9 +83,10 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(position.value.entryPrice).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInTokenInBase({
+      value: position.value.entryPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const liquidationPrice = computed(() => {
@@ -90,11 +94,12 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
       return ZERO_IN_BASE
     }
 
-    const liquidationPrice = new BigNumberInWei(
-      position.value.liquidationPrice
-    ).toBase(market.value.quoteToken.decimals)
+    const liquidationPrice = sharedToBalanceInTokenInBase({
+      value: position.value.liquidationPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
 
-    return liquidationPrice.gt(0) ? liquidationPrice : new BigNumberInBase(0)
+    return liquidationPrice.gt(0) ? liquidationPrice : ZERO_IN_BASE
   })
 
   const pnl = computed(() => {
@@ -159,6 +164,7 @@ export function useDerivativePosition(position: Ref<Position | PositionV2>) {
     notionalValue,
     quantityDecimals,
     liquidationPrice,
-    effectiveLeverage
+    effectiveLeverage,
+    markPriceNotScaled
   }
 }

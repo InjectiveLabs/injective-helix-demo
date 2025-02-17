@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-defineProps({
-  round: {
-    type: Number,
-    required: true
-  }
-})
+withDefaults(defineProps<{ round: number }>(), {})
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(() => modalStore.modals[Modal.LpRewards])
 
@@ -31,7 +26,7 @@ function closeModal() {
       </template>
 
       <div
-        class="max-sm:pt-10 max-w-sm md:text-xl space-y-2 text-center text-gray-300"
+        class="max-sm:pt-10 max-w-sm md:text-xl space-y-2 text-center text-coolGray-300"
       >
         <div>
           <i18n-t keypath="campaign.roundIsLive" tag="div">

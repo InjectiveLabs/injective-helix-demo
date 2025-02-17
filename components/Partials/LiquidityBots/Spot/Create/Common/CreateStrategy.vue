@@ -20,14 +20,12 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const props = defineProps({
-  isAuto: Boolean,
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
+const props = withDefaults(
+  defineProps<{ isAuto?: boolean; market: UiSpotMarket }>(),
+  {
+    isAuto: false
   }
-})
+)
 
 const emit = defineEmits<{
   'strategy:create': []
@@ -36,7 +34,7 @@ const emit = defineEmits<{
 const router = useRouter()
 const spotStore = useSpotStore()
 const formErrors = useFormErrors()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const validate = useValidateForm()
 const setFormValues = useSetFormValues()
 const sharedWalletStore = useSharedWalletStore()
@@ -49,30 +47,38 @@ const status = reactive(new Status(StatusType.Idle))
 const { lastTradedPrice: currentPrice } = useSpotLastPrice(
   computed(() => gridStrategyStore.spotMarket!)
 )
-const { userBalancesWithToken } = useBalance()
+
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const accountBalance = computed(
+  () =>
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
+)
 
 const quoteDenomBalance = computed(() =>
-  userBalancesWithToken.value.find(
+  accountBalance.value.find(
     (balance) => balance.denom === props.market.quoteDenom
   )
 )
 
 const quoteDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: quoteDenomBalance.value?.bankBalance || 0,
+    value: quoteDenomBalance.value?.availableBalance || 0,
     decimalPlaces: quoteDenomBalance.value?.token.decimals
   })
 )
 
 const baseDenomBalance = computed(() =>
-  userBalancesWithToken.value.find(
+  accountBalance.value.find(
     (balance) => balance.denom === props.market.baseDenom
   )
 )
 
 const baseDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: baseDenomBalance.value?.bankBalance || 0,
+    value: baseDenomBalance.value?.availableBalance || 0,
     decimalPlaces: baseDenomBalance.value?.token.decimals
   })
 )
@@ -146,7 +152,7 @@ const isUpperBoundLtLastPrice = computed(() =>
 )
 
 const hasActiveLegacyStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) =>
       strategy.marketId ===
       CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP[props.market.marketId]

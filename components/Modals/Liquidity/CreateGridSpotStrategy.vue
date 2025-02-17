@@ -11,11 +11,11 @@ import {
   SpotGridTradingField
 } from '@/types'
 
-const props = defineProps({
-  isLiquidity: Boolean
+const props = withDefaults(defineProps<{ isLiquidity?: boolean }>(), {
+  isLiquidity: false
 })
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const formValues = useFormValues<SpotGridTradingForm>()
 const { t } = useLang()
@@ -198,7 +198,7 @@ function onCreateStrategy() {
 
       <div class="mt-6 space-y-1">
         <div class="flex justify-between">
-          <p class="text-gray-500">{{ $t('sgt.tradeAmount') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.tradeAmount') }}</p>
 
           <div class="flex flex-col items-end">
             <p v-if="quoteAmount" class="font-semibold">
@@ -214,14 +214,14 @@ function onCreateStrategy() {
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.market') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.market') }}</p>
           <p class="font-semibold">
             {{ gridStrategyStore.spotMarket?.ticker }}
           </p>
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.priceRange') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.priceRange') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.LowerPrice] }} -
             {{ formValues[SpotGridTradingField.UpperPrice] }}
@@ -230,19 +230,19 @@ function onCreateStrategy() {
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.gridNumber') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.gridNumber') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.Grids] }}
           </p>
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.profitGrid') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.profitGrid') }}</p>
           <p class="font-semibold">{{ profitPerGridToString }} %</p>
         </div>
 
         <div class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.gridMode') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.gridMode') }}</p>
 
           <p class="font-semibold">
             <span v-if="isGeometric">{{ $t('sgt.geometric') }}</span>
@@ -254,7 +254,7 @@ function onCreateStrategy() {
           v-if="formValues[SpotGridTradingField.StopLoss]"
           class="flex justify-between items-center"
         >
-          <p class="text-gray-500">{{ $t('sgt.stopLoss') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.stopLoss') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.StopLoss] }}
             {{ quoteToken?.symbol }}
@@ -265,7 +265,7 @@ function onCreateStrategy() {
           v-if="formValues[SpotGridTradingField.TakeProfit]"
           class="flex justify-between items-center"
         >
-          <p class="text-gray-500">{{ $t('sgt.takeProfit') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.takeProfit') }}</p>
           <p class="font-semibold">
             {{ formValues[SpotGridTradingField.TakeProfit] }}
             {{ quoteToken?.symbol }}
@@ -273,7 +273,7 @@ function onCreateStrategy() {
         </div>
 
         <div v-if="settleInToken" class="flex justify-between items-center">
-          <p class="text-gray-500">{{ $t('sgt.advanced.settleIn') }}</p>
+          <p class="text-coolGray-500">{{ $t('sgt.advanced.settleIn') }}</p>
           <div class="font-semibold flex items-center space-x-2">
             <CommonTokenIcon v-bind="{ token: settleInToken }" is-sm />
             <p>{{ settleInToken.symbol }}</p>
@@ -284,7 +284,7 @@ function onCreateStrategy() {
           v-if="formValues[SpotGridTradingField.SellBaseOnStopLoss]"
           class="flex justify-between items-center"
         >
-          <p class="text-gray-500">
+          <p class="text-coolGray-500">
             {{
               $t('sgt.advanced.sellAllOnStop', { symbol: baseToken?.symbol })
             }}
@@ -296,7 +296,7 @@ function onCreateStrategy() {
           v-if="formValues[SpotGridTradingField.BuyBaseOnTakeProfit]"
           class="flex justify-between items-center"
         >
-          <p class="text-gray-500">
+          <p class="text-coolGray-500">
             {{ $t('sgt.advanced.buyOnStop', { symbol: baseToken?.symbol }) }}
           </p>
           <p class="font-semibold">{{ $t('sgt.advanced.enabled') }}</p>
@@ -316,8 +316,8 @@ function onCreateStrategy() {
         <div>
           <AppButton
             v-bind="{ status }"
-            :is-disabled="!hasAgreedToTerms"
-            class="bg-blue-500 disabled:bg-gray-500 w-full"
+            :disabled="!hasAgreedToTerms"
+            class="bg-blue-500 disabled:bg-coolGray-500 w-full"
             @click="onCreateStrategy"
           >
             {{ $t('sgt.confirm') }}

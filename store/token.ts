@@ -5,7 +5,7 @@ import {
   TokenVerification
 } from '@injectivelabs/sdk-ts'
 import { tokenCacheApi, tokenPriceService } from '@shared/Service'
-import tokens from '@/app/data/tokens.json'
+import { tokens } from '@/app/json'
 import { getToken } from '@/app/utils/helpers'
 import { tokenFactoryStatic } from '@/app/Services'
 import { TokenUsdPriceMap } from '@/types'
@@ -13,11 +13,13 @@ import { TokenUsdPriceMap } from '@/types'
 type TokenStoreState = {
   unknownTokens: TokenStatic[]
   tokenUsdPriceMap: TokenUsdPriceMap
+  denomSupplyMap: Record<string, string>
 }
 
 const initialStateFactory = (): TokenStoreState => ({
   unknownTokens: [],
-  tokenUsdPriceMap: {}
+  tokenUsdPriceMap: {},
+  denomSupplyMap: {}
 })
 
 export const useTokenStore = defineStore('token', {
@@ -108,7 +110,7 @@ export const useTokenStore = defineStore('token', {
     }
   },
   actions: {
-    async fetchUntrackedTokens() {
+    async fetchTotalSupply() {
       const tokenStore = useTokenStore()
 
       const { supply } = await tokenCacheApi.fetchTotalSupply()
@@ -134,7 +136,16 @@ export const useTokenStore = defineStore('token', {
         unknownTokens = [...unknownTokens, token]
       }
 
+      const denomSupplyMap = supply.reduce(
+        (denomAmountMap, { denom, amount }) => ({
+          ...denomAmountMap,
+          [denom]: amount
+        }),
+        {} as Record<string, string>
+      )
+
       tokenStore.$patch({
+        denomSupplyMap,
         unknownTokens: [...tokenStore.unknownTokens, ...unknownTokens]
       })
     },

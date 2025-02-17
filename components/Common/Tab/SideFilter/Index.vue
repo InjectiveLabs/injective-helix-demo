@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  wrapperClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    modelValue: string
+    wrapperClass?: string
+  }>(),
+  {
+    isSpot: false,
+    modelValue: '',
+    wrapperClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

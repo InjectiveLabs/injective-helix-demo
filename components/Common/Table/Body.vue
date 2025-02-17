@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-defineProps({
-  isRound: Boolean,
-  isEmpty: Boolean
+withDefaults(defineProps<{ isRound?: boolean; isEmpty?: boolean }>(), {
+  isRound: false,
+  isEmpty: false
 })
 </script>
 
@@ -17,7 +17,7 @@ defineProps({
 
     <div
       v-if="isEmpty"
-      class="col-span-1 px-6 text-sm py-4 text-gray-200 items-center rounded"
+      class="col-span-1 px-6 text-sm py-4 text-coolGray-200 items-center rounded"
     >
       <slot name="empty" />
     </div>

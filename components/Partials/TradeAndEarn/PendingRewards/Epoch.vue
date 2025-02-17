@@ -20,17 +20,13 @@ const exchangeStore = useExchangeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { rewardsCampaign } = useTradeReward()
 
-const props = defineProps({
-  index: {
-    type: Number,
-    required: true
-  },
-
-  schedule: {
-    type: Object as PropType<CampaignRewardPool>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    index: number
+    schedule: CampaignRewardPool
+  }>(),
+  {}
+)
 
 const hubUrl = `${getHubUrl()}/staking`
 
@@ -209,7 +205,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
 
           <AppNumberEmp
             is-sm
-            class="text-gray-450"
+            class="text-coolGray-450"
             prefix="≈"
             :number="injMaxPendingCampaignRewardsInUsd"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
@@ -218,10 +214,12 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           </AppNumberEmp>
         </template>
         <template #title>
-          <div class="flex items-center justify-center text-gray-450 text-xs">
+          <div
+            class="flex items-center justify-center text-coolGray-450 text-xs"
+          >
             {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
             <AppTooltip
-              class="ml-2 text-gray-450"
+              class="ml-2 text-coolGray-450"
               :content="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
             />
           </div>
@@ -241,15 +239,15 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
               <span>{{ $t('tradeAndEarn.pts') }}</span>
             </AppNumberEmp>
           </div>
-          <span v-else class="text-gray-450">&mdash;</span>
+          <span v-else class="text-coolGray-450">&mdash;</span>
         </template>
         <template #title>
           <div
-            class="flex items-center justify-center text-xs text-gray-450 3xl:whitespace-nowrap -ml-2"
+            class="flex items-center justify-center text-xs text-coolGray-450 3xl:whitespace-nowrap -ml-2"
           >
             {{ $t('tradeAndEarn.myRewardPoints') }}
             <AppTooltip
-              class="ml-2 text-gray-450"
+              class="ml-2 text-coolGray-450"
               :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
             />
           </div>
@@ -268,7 +266,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <AppNumberEmp
             v-if="sharedWalletStore.isUserConnected"
             is-sm
-            class="text-gray-450"
+            class="text-coolGray-450"
             prefix="≈"
             :number="pendingEstimatedRewardsCappedInUsd"
             :decimals="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
@@ -291,7 +289,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           >
             {{ $t('tradeAndEarn.stakeMore') }}
             <AppTooltip
-              class="ml-2 text-gray-450"
+              class="ml-2 text-coolGray-450"
               :content="
                 $t('tradeAndEarn.stake_total_to_receive_full_amount', {
                   total: pendingEstimatedRewards.toFormat(2)
@@ -301,10 +299,10 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           </a>
         </template>
         <template #title>
-          <div class="flex items-center justify-center text-gray-450">
+          <div class="flex items-center justify-center text-coolGray-450">
             {{ $t('tradeAndEarn.estRewardsStake') }}
             <AppTooltip
-              class="ml-2 text-gray-450"
+              class="ml-2 text-coolGray-450"
               :content="
                 $t('tradeAndEarn.estRewardsStakeTooltip', {
                   maxRewards: DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS

@@ -4,6 +4,7 @@ import {
   BigNumberInBase,
   BigNumberInWei
 } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   calculateWorstPrice,
@@ -17,29 +18,13 @@ import {
   UiDerivativeMarket,
   DerivativesTradeForm,
   DerivativeTradeTypes,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  PerpetualMarketCyTags
 } from '@/types'
 
-const props = defineProps({
-  marginWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  minimumAmountInQuote: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
-
-const market = inject(MarketKey) as Ref<UiDerivativeMarket>
-
 const orderbookStore = useOrderbookStore()
+const positionStore = usePositionStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
   DerivativesTradeFormField.LimitPrice
@@ -47,21 +32,34 @@ const validateLimitField = useValidateField(
 const validateTriggerField = useValidateField(
   DerivativesTradeFormField.TriggerPrice
 )
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
+
+const { activeSubaccountBalancesWithToken } = useBalance()
+
+const props = withDefaults(
+  defineProps<{
+    marginWithFee: BigNumberInBase
+    quantity: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+  }>(),
+  {}
+)
 
 const options = [
   {
-    display: market.value.baseToken.symbol || '',
-    value: TradeAmountOption.Base
+    label:
+      market.value.baseToken.overrideSymbol ||
+      market.value.baseToken.symbol ||
+      '',
+    id: TradeAmountOption.Base
   },
   {
-    display: market.value.quoteToken.symbol || '',
-    value: TradeAmountOption.Quote
+    label: market.value.quoteToken.symbol || '',
+    id: TradeAmountOption.Quote
   }
 ]
-
-const positionStore = usePositionStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const { userBalancesWithToken } = useBalance()
 
 const decimals = computed(() =>
   typeValue.value === TradeAmountOption.Base
@@ -86,9 +84,9 @@ const {
   valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
@@ -349,38 +347,23 @@ onMounted(() => {
           .shiftedBy(market.quantityTensMultiplier)
           .toFixed()
       "
+      :data-cy="dataCyTag(PerpetualMarketCyTags.LimitAmountInputField)"
     >
       <template #right>
-        <AppSelect
+        <USelectMenu
           v-model="typeValue"
-          wrapper-class=" p-1 rounded select-none"
-          v-bind="{
-            options
-          }"
-        >
-          <template #default>
-            <div>
-              <span
-                v-if="typeValue === TradeAmountOption.Base"
-                class="text-sm select-none"
-              >
-                {{ market?.baseToken.symbol }}
-              </span>
-              <span v-else class="text-sm">
-                {{ market?.quoteToken.symbol }}
-              </span>
-            </div>
-          </template>
-
-          <template #option="{ option }">
-            <span class="text-sm font-semibold">{{ option.display }}</span>
-          </template>
-        </AppSelect>
+          :options="options"
+          variant="none"
+          value-attribute="id"
+        />
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
-          <div class="space-x-2">
+        <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
+          <div
+            class="space-x-2"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
+          >
             <span>{{
               $t('trade.availableAmount', {
                 amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
@@ -391,8 +374,18 @@ onMounted(() => {
       </template>
     </AppInputField>
 
-    <div v-if="amountErrorMessage" class="error-message capitalize">
-      {{ amountErrorMessage }}
+    <div
+      v-if="amountErrorMessage || isNotionalLessThanMinNotional"
+      class="error-message capitalize"
+    >
+      {{
+        amountErrorMessage
+          ? amountErrorMessage
+          : $t('trade.minNotionalError', {
+              minNotional: market.minNotionalInToken,
+              symbol: market.quoteToken.symbol
+            })
+      }}
     </div>
   </div>
 </template>

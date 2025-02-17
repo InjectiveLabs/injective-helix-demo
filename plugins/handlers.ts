@@ -11,16 +11,8 @@ import { StatusCodes } from 'http-status-codes'
 import { defineNuxtPlugin } from '#imports'
 import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 
-/**
- * As we conditionally include the nuxt-bugsnag module
- * the type of it can be undefined
- **/
-declare let useBugsnag: () => any
-
 const reportToUser = (error: ThrownException) => {
   const notificationStore = useSharedNotificationStore()
-
-  console.log(error.toJson())
 
   // Timedout requests happening in the background should not be reported to the user
   if (
@@ -54,13 +46,6 @@ const reportToUser = (error: ThrownException) => {
 }
 
 const reportToBugSnag = (error: ThrownException) => {
-  if (!IS_PRODUCTION) {
-    console.warn(error.toCompactError().message)
-    console.error(error)
-
-    return
-  }
-
   if ([ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)) {
     console.warn(error.toCompactError().message)
     console.error(error)
@@ -68,39 +53,36 @@ const reportToBugSnag = (error: ThrownException) => {
     return
   }
 
-  if (BUGSNAG_KEY) {
-    useBugsnag().notify(error, (event: any) => {
-      event.errors[0].errorClass = error.errorClass || error.name
-
-      if (useSharedWalletStore().isUserConnected) {
-        event.setUser(useSharedWalletStore().injectiveAddress)
-      }
-
-      event.addMetadata('error-context', error.toObject())
-    })
+  if (!BUGSNAG_KEY) {
+    return
   }
+
+  useBugsnagNotifyThrownException(
+    error,
+    useSharedWalletStore().injectiveAddress
+  )
 }
 
 const reportUnknownErrorToBugsnag = (error: Error) => {
-  if (!IS_PRODUCTION) {
-    console.error({ error, stack: error.stack })
-  }
-
   const newError = new Error(
     `The ${error.message} is not handled as an Exception - ${error.stack}`
   )
 
   console.warn(newError.message, newError.stack)
 
-  if (BUGSNAG_KEY) {
-    useBugsnag().notify(newError)
+  if (!BUGSNAG_KEY) {
+    return
   }
+
+  useBugsnagNotifyThrownException(
+    newError,
+    useSharedWalletStore().injectiveAddress
+  )
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.config.errorHandler = (error, context) => {
     console.log(error, context)
-
     console.warn(error, context, (error as any)?.stack)
   }
 
@@ -108,7 +90,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const error = event.reason
 
     if (!IS_PRODUCTION) {
-      return
+      return console.error(error)
     }
 
     if (!isThrownException(error)) {
@@ -116,6 +98,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     } else {
       reportToBugSnag(error)
     }
+
+    console.warn(error)
   }
 
   const errorHandler = (error: ThrownException) => {
@@ -129,6 +113,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       reportToBugSnag(error)
     }
 
+    console.error(error.toCompactError())
     console.warn(error.toObject())
   }
 

@@ -1,32 +1,32 @@
 <script setup lang="ts">
-defineProps({
-  url: {
-    type: [String, Object],
-    required: true
-  },
+import { VaultsCyTags } from '@/types'
 
-  title: {
-    type: String,
-    required: true
-  },
-
-  description: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    title: string
+    description?: string
+  }>(),
+  {
+    description: ''
   }
-})
+)
 </script>
 
 <template>
-  <NuxtLink :to="url" target="_blank" class="card-opaque px-6 py-4">
+  <div class="card-opaque px-6 py-4 cursor-pointer">
     <div class="flex items-center relative">
       <div class="relative">
         <slot />
       </div>
 
       <div class="ml-4">
-        <p class="text-lg font-semibold">{{ title }}</p>
-        <p v-if="description" class="text-gray-400 text-xs">
+        <p
+          class="text-lg font-semibold"
+          :data-cy="dataCyTag(VaultsCyTags.denoms)"
+        >
+          {{ title }}
+        </p>
+        <p v-if="description" class="text-coolGray-400 text-xs">
           {{ description }}
         </p>
       </div>
@@ -39,5 +39,5 @@ defineProps({
     <div class="grid grid-cols-2 mt-6">
       <slot name="content" />
     </div>
-  </NuxtLink>
+  </div>
 </template>

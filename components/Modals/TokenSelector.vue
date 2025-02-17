@@ -1,15 +1,11 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const props = defineProps({
-  modal: {
-    required: false,
-    default: Modal.TokenSelector,
-    type: String as PropType<Modal>
-  }
+const props = withDefaults(defineProps<{ modal?: Modal }>(), {
+  modal: Modal.TokenSelector
 })
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 function onCloseModal() {
   modalStore.closeModal(props.modal)

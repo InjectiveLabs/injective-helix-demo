@@ -6,37 +6,44 @@ import {
 } from 'pinia'
 import { Wallet } from '@injectivelabs/wallet-ts'
 import { StatusType } from '@injectivelabs/utils'
+import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
     userState: {
-      favoriteMarkets: [],
-      bannersViewed: [],
       modalsViewed: [],
-      geoLocation: {
-        continent: '',
-        country: '',
-        browserLocation: '',
-        vpnCheckTimestamp: 0
-      },
+      bannersViewed: [],
+      dontShowAgain: [],
+      favoriteMarkets: [],
+
       preferences: {
+        futuresLeverage: '1',
+        isHideBalances: false,
+        authZManagement: false,
+        thousandsSeparator: false,
+        subaccountManagement: false,
         skipTradeConfirmationModal: false,
+        tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
-        tradingLayout: TradingLayout.Left,
-        subaccountManagement: false,
-        authZManagement: false,
-        isHideBalances: false,
-        thousandsSeparator: false
+        tradingChartInterval: TradingChartInterval.D
       }
     }
   },
 
   account: {
     subaccountId: ''
+  },
+
+  sharedGeo: {
+    geoContinent: '',
+    geoCountry: '',
+    ipCountry: '',
+    ipAddress: '',
+    vpnCheckedTimestamp: 0
   },
 
   sharedWallet: {
@@ -60,7 +67,8 @@ const stateToPersist = {
       expiration: '',
       injectiveAddress: '',
       duration: ''
-    }
+    },
+    privateKey: ''
   }
 } as Record<string, Record<string, any>>
 
@@ -70,40 +78,44 @@ const actionsThatSetAppStateToBusy = [
   'account/deposit',
   'account/transfer',
   'account/withdraw',
-  'account/withdrawToMain',
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
   'campaign/claimReward',
-  'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
+  'account/withdrawToMain',
+  'swap/submitAtomicOrder',
   'derivative/cancelOrder',
   'position/closePosition',
   'spot/submitMarketOrder',
   'peggy/setTokenAllowance',
   'account/externalTransfer',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization',
   'position/closeAllPosition',
   'spot/submitStopLimitOrder',
   'spot/submitStopMarketOrder',
+  'derivative/submitTpSlOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
-  'gridStrategy/removeStrategyForSubaccount',
+  'gridStrategy/createStrategy',
+  'gridStrategy/removeStrategy',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
   'swap/submitAtomicOrderExactOutput',
+  'gridStrategy/createSpotLiquidityBot',
   'activity/batchCancelDerivativeOrders',
-  'position/closePositionAndReduceOnlyOrders',
-  'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy',
-  'authZ/grantAuthorization',
-  'authZ/revokeAuthorization'
+  'gridStrategy/removeStrategyForSubaccount',
+  'position/closePositionAndReduceOnlyOrders'
 ]
+
+const actionsThatThrowErrors = ['token/fetchTokensUsdPriceMap']
 
 const persistState = (
   mutation: SubscriptionCallbackMutationPatchObject<StateTree>,
@@ -151,6 +163,7 @@ const persistState = (
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
   const sharedWalletStore = useSharedWalletStore()
+  const { $onError } = useNuxtApp()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -168,13 +181,20 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
       }
     })
 
-    onError(() => {
+    onError((error) => {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
         sharedWalletStore.$patch({
           queueStatus: StatusType.Idle
         })
+      }
+
+      if (
+        actionsThatThrowErrors.includes(type) &&
+        isThrownException(error as Error)
+      ) {
+        $onError(error as unknown as ThrownException)
       }
     })
   }, true)

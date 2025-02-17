@@ -1,25 +1,21 @@
 <script lang="ts" setup>
 import config from '@/app/trading-view/config'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
+import { TradingChartInterval } from '@/types'
 
-const props = defineProps({
-  symbol: {
-    required: true,
-    type: String
-  },
+const props = withDefaults(
+  defineProps<{
+    symbol: string
+    interval: string
+    datafeedEndpoint: string
+  }>(),
+  {}
+)
 
-  interval: {
-    required: true,
-    type: String
-  },
-
-  datafeedEndpoint: {
-    required: true,
-    type: String
-  }
-})
-
-const emit = defineEmits<{ ready: [] }>()
+const emit = defineEmits<{
+  ready: []
+  'interval:change': [value: TradingChartInterval]
+}>()
 
 const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
@@ -41,6 +37,48 @@ onMounted(() => {
     nextTick(() => {
       tradingView.value.view = tradingWidget
       emit('ready')
+    })
+
+    tradingWidget.subscribe('series_properties_changed', () => {
+      nextTick(() => {
+        const iframes = document.querySelectorAll('iframe')
+
+        const iframe = Array.from(iframes).find((iframe) =>
+          iframe.id.startsWith('tradingview_')
+        )
+
+        if (!iframe || !iframe.contentDocument) {
+          return
+        }
+
+        const xpath =
+          "//div[contains(@class, 'isActive-9pA37sIi')]//div[contains(@class, 'value-e0RYyFXU')]"
+
+        const result = iframe.contentDocument.evaluate(
+          xpath,
+          iframe.contentDocument,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        )
+
+        const element = result.singleNodeValue
+
+        if (!element) {
+          return
+        }
+
+        const interval =
+          TradingChartInterval[
+            element.textContent as keyof typeof TradingChartInterval
+          ]
+
+        if (!interval) {
+          return
+        }
+
+        emit('interval:change', interval)
+      })
     })
   })
 })

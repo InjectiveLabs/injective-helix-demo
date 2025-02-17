@@ -2,7 +2,7 @@
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
 const { t } = useLang()
@@ -12,7 +12,7 @@ const { success } = useSharedNotificationStore()
 const status = reactive(new Status(StatusType.Idle))
 
 const hasActiveStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )

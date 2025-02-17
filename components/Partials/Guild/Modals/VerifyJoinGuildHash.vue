@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const { validate, resetForm } = useForm()
 
-const props = defineProps({
-  invitationHash: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ invitationHash: string }>(), {})
 
 const HASH_FIELD = 'hash'
 
@@ -86,17 +81,17 @@ watch(
     <div class="w-full mt-8 flex flex-col gap-1 items-center">
       <AppButton
         class="w-full bg-blue-500 text-blue-900 font-semibold"
+        size="lg"
         v-bind="{
-          isLg: true,
           disabled: !hash || !hashMatches
         }"
         @click="onSubmit"
       >
-        <span v-if="hash && !hashMatches" class="text-gray-600">
+        <span v-if="hash && !hashMatches" class="text-coolGray-600">
           {{ $t('guild.verifyJoinGuild.incorrectCode') }}
         </span>
 
-        <span v-else :class="{ 'text-gray-600': !hash }">
+        <span v-else :class="{ 'text-coolGray-600': !hash }">
           {{ $t('guild.verifyJoinGuild.cta') }}
         </span>
       </AppButton>

@@ -19,12 +19,15 @@ export const MarketKey = Symbol('Market') as InjectionKey<
 export const PortfolioStatusKey = Symbol(
   'PortfolioStatus'
 ) as InjectionKey<Status>
-export const UnknownTokenStatusKey = Symbol(
-  'unknownTokensStatus'
-) as InjectionKey<Status>
 
 export const OrderbookStatusKey = Symbol(
   'orderbookStatus'
 ) as InjectionKey<Status>
+
+export const MarkPriceStatusKey = Symbol(
+  'markPriceStatus'
+) as InjectionKey<Status>
+
 export const IsSpotKey = Symbol('isSpot') as InjectionKey<boolean>
+export const InitialStatusKey = Symbol('InitialStatus') as InjectionKey<Status>
 export const AggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>

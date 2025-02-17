@@ -5,7 +5,10 @@ import { NUMBER_REGEX } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { defineTradeRules } from '@/app/client/utils/validation/trade'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  GST_MIN_TOTAL_AMOUNT_USD,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { SpotGridTradingField } from '@/types'
 
 const formatFieldName = (value: string) => {
@@ -23,6 +26,8 @@ export const errorMessages = {
   injAddress: () => 'This field is not a valid Injective address',
   positiveNumber: () => 'This field is not a valid number',
   integer: (fieldName: string) => `${fieldName} must be > 0`,
+  fixedLength: (length: string) =>
+    `This field must be exactly ${length} characters long.`,
 
   [Network.Axelar]: () => 'This field is not a valid Cosmos address',
   [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
@@ -49,7 +54,7 @@ export const defineGlobalRules = () => {
     const validEmailPattern =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-    if (!validEmailPattern.test(String(value))) {
+    if (!validEmailPattern.test(value)) {
       return errorMessages.email()
     }
 
@@ -231,6 +236,10 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
+    if (!min) {
+      return true
+    }
+
     const valueInBigNumber = new BigNumberInBase(value)
     const minInBigNumber = new BigNumberInBase(min)
 
@@ -242,6 +251,10 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('lessThanSgt', (value: string, [max]: string[]) => {
+    if (!max) {
+      return true
+    }
+
     const valueInBigNumber = new BigNumberInBase(value)
     const maxInBigNumber = new BigNumberInBase(max)
 
@@ -295,6 +308,17 @@ export const defineGlobalRules = () => {
     }
   )
 
+  defineRule('minTotalAmountUsdSgt', (_value: string, [amount]: string[]) => {
+    const min = GST_MIN_TOTAL_AMOUNT_USD
+    const amountInBigNumber = new BigNumberInBase(amount)
+
+    if (amountInBigNumber.lt(min)) {
+      return `Total amount should be greater than $ ${min} USD`
+    }
+
+    return true
+  })
+
   defineRule('requiredIfEmpty', (value: string, [fieldValue]: string[]) => {
     if (!fieldValue && !value) {
       return 'At least one field is required'
@@ -324,7 +348,7 @@ export const defineGlobalRules = () => {
     (_: string, [lower, upper, levels, minPriceTickSize]: string[]) => {
       const upperInBigNumber = new BigNumberInBase(upper)
       const lowerInBigNumber = new BigNumberInBase(lower)
-      const levelsInBigNumber = new BigNumberInBase(levels)
+      const levelsInBigNumber = new BigNumberInBase(levels).minus(1)
 
       const deltaPrice = upperInBigNumber
         .minus(lowerInBigNumber)
@@ -337,6 +361,13 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('fixedCharacters', (value: string, [length]: string[]) => {
+    if (value.length !== Number(length)) {
+      return errorMessages.fixedLength(length)
+    }
+    return true
+  })
 
   defineRule(
     'singleSided',

@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { isSgtSubaccountId } from '@/app/utils/helpers'
+import { NuxtUiIcons } from '@shared/types'
+import { PortfolioCyTags } from '@/types'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 
-const props = defineProps({
-  search: {
-    type: String,
-    default: ''
-  },
-
-  showUnverifiedAssets: {
-    type: Boolean,
-    default: false
+const props = withDefaults(
+  defineProps<{
+    search?: string
+    showUnverifiedAssets?: boolean
+  }>(),
+  {
+    search: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:search': [value: string]
@@ -23,7 +20,7 @@ const emit = defineEmits<{
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
-const { aggregatedPortfolioBalances } = useBalance()
+const { activeSubaccountTotalBalanceInUsd } = useBalance()
 
 const search = computed({
   get: () => props.search,
@@ -35,27 +32,15 @@ const showUnverifiedAssets = computed({
   set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
 
-const isGridTradingAccount = computed(() =>
-  isSgtSubaccountId(accountStore.subaccountId)
+const isGridTradingAccount = computed(
+  () =>
+    isSgtSubaccountId(accountStore.subaccountId) ||
+    isPgtSubaccountId(accountStore.subaccountId)
 )
 
-const { valueToString: accountTotalBalanceInUsdToString } =
+const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
   useSharedBigNumberFormatter(
-    computed(
-      () =>
-        aggregatedPortfolioBalances.value[accountStore.subaccountId]?.reduce(
-          (total, balance) =>
-            total.plus(
-              new BigNumberInWei(balance.accountTotalBalanceInUsd).toBase(
-                balance.token.decimals
-              )
-            ),
-          ZERO_IN_BASE
-        ) || ZERO_IN_BASE
-    ),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
+    computed(() => activeSubaccountTotalBalanceInUsd.value)
   )
 </script>
 
@@ -64,30 +49,43 @@ const { valueToString: accountTotalBalanceInUsdToString } =
     <CommonSubaccountTabSelector
       v-bind="{
         includeBotsSubaccounts:
-          appStore.userState.preferences.showGridTradingSubaccounts
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
       }"
       wrapper-class="py-4 w-full "
     />
 
     <div class="flex items-center">
       <p
-        class="text-xs text-gray-300 px-4 max-lg:py-3 flex items-center space-x-2 font-mono"
+        class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2"
       >
         <span>{{ $t('account.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
-          <span>${{ accountTotalBalanceInUsdToString }}</span>
+          <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
+            <span>$</span>
+            <AppUsdBalanceAmount
+              v-bind="{
+                amount: accountTotalBalanceInUsdToBigNumber.toFixed()
+              }"
+              :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+            />
+          </span>
         </CommonSkeletonSubaccountAmount>
       </p>
     </div>
 
     <label class="flex px-4 flex-1 min-w-0">
       <div class="flex items-center">
-        <SharedIcon is-md name="search" class="text-gray-500" />
+        <UIcon
+          :name="NuxtUiIcons.Search"
+          class="h-4 w-4 min-w-4 text-coolGray-500"
+        />
       </div>
       <input
         v-model="search"
         class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
         placeholder="Filter by asset"
+        :data-cy="dataCyTag(PortfolioCyTags.AssetSearch)"
       />
     </label>
 

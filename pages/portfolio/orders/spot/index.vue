@@ -3,8 +3,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOpenOrdersFilterForm } from '@/types/forms'
 import { SpotOpenOrdersFilterField } from '@/types'
 
-const isMobile = useIsMobile()
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
 const { $onError } = useNuxtApp()
 const { values: formValues } = useForm<SpotOpenOrdersFilterForm>()
 
@@ -43,9 +43,7 @@ onSubaccountChange(fetchSubaccountOrders)
     <PartialsPortfolioOrdersSpotOpenOrdersTabs />
 
     <div class="overflow-x-auto">
-      <div class="lg:min-w-[900px] divide-y border-b">
-        <PartialsPortfolioOrdersSpotOpenOrdersTableHeader v-if="!isMobile" />
-
+      <div class="divide-y border-b">
         <CommonSkeletonRow
           v-if="status.isLoading()"
           :rows="10"
@@ -54,23 +52,14 @@ onSubaccountChange(fetchSubaccountOrders)
         />
 
         <template v-else>
-          <template v-if="isMobile">
-            <PartialsPortfolioOrdersSpotOpenOrdersTableMobileRow
-              v-for="order in filteredOrders"
-              v-bind="{ order }"
-              :key="order.orderHash"
-            />
-          </template>
-          <template v-else>
-            <PartialsPortfolioOrdersSpotOpenOrdersTableRow
-              v-for="order in filteredOrders"
-              v-bind="{ order }"
-              :key="order.orderHash"
-            />
-          </template>
+          <PartialsPortfolioOrdersSpotOpenOrdersTable
+            v-if="filteredOrders.length"
+            :orders="filteredOrders"
+            :is-trading-bots="accountStore.isSgtSubaccount"
+          />
 
           <CommonEmptyList
-            v-if="filteredOrders.length === 0"
+            v-if="!filteredOrders.length"
             :message="$t('trade.emptyOrders')"
           />
         </template>

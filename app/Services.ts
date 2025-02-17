@@ -1,5 +1,6 @@
 import {
   TokenStatic,
+  AbacusGrpcApi,
   ChainGrpcAuthZApi,
   TokenFactoryStatic,
   IndexerGrpcTradingApi,
@@ -10,14 +11,19 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
 import { IS_MAINNET, IS_TESTNET } from '@shared/utils/constant'
+import { tokens } from '@/app/json'
 import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
-import tokens from '@/app/data/tokens.json'
 
 export const tokenFactoryStatic = new TokenFactoryStatic(
   tokens as TokenStatic[]
 )
 
 // Services
+export const abacusGrpcApi = new AbacusGrpcApi(
+  IS_MAINNET
+    ? 'https://mainnet.abacus.injective.cooking/grpc'
+    : 'https://abacus.injective.cooking/grpc'
+)
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const tendermintApi = new ChainGrpcTendermintApi(ENDPOINTS.grpc)
 
@@ -44,5 +50,5 @@ export const indexerRestLeaderboardChronosApi =
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-helix-v3-${NETWORK}`
+  `inj-helix-v5-${NETWORK}`
 )

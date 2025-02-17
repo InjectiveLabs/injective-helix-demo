@@ -2,7 +2,7 @@ import { Modal } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
   const appStore = useAppStore()
-  const modalStore = useModalStore()
+  const modalStore = useSharedModalStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const hasDevModeQuery = to.query.devMode === 'true'

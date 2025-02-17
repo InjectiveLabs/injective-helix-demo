@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import {
   DerivativesTradeFormField,
   DerivativeTradeTypes,
-  DerivativesTradeForm
+  DerivativesTradeForm,
+  PerpetualMarketCyTags
 } from '@/types'
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -17,14 +20,15 @@ function toggle() {
 <template>
   <div class="mb-2">
     <div
-      class="flex justify-between items-center cursor-pointer py-2"
+      class="flex justify-between items-center cursor-pointer"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettings)"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">
+      <p class="text-xs font-semibold select-none text-white">
         {{ $t('trade.advancedSettings') }}
       </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 

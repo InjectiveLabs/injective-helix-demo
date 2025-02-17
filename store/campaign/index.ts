@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import {
   Guild,
+  toUtf8,
   Campaign,
   toBase64,
+  CampaignV2,
   fromBase64,
   GuildMember,
   CampaignUser,
-  GuildCampaignSummary,
-  toUtf8
+  GuildCampaignSummary
 } from '@injectivelabs/sdk-ts'
 import { awaitForAll } from '@injectivelabs/utils'
 import { wasmApi } from '@shared/Service'
@@ -19,11 +20,26 @@ import {
   fetchGuildsByVolume,
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
-import { LP_CAMPAIGNS } from '@/app/data/campaign'
+import {
+  LP_CAMPAIGNS,
+  campaignNameOverrideMap,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
 import { indexerGrpcCampaignApi } from '@/app/Services'
-import { joinGuild, createGuild, claimReward } from '@/store/campaign/message'
-import { CampaignWithScAndData } from '@/types'
+import {
+  joinGuild,
+  createGuild,
+  claimReward,
+  submitLeaderboardCompetitionClaim
+} from '@/store/campaign/message'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
+import {
+  LeaderboardType,
+  CompetitionResult,
+  CampaignWithScAndData,
+  LeaderboardCampaignStatus
+} from '@/types'
 
 type CampaignStoreState = {
   userIsOptedOutOfReward: boolean
@@ -44,6 +60,10 @@ type CampaignStoreState = {
   ownerRewards: CampaignUser[]
   guildCampaignSummary?: GuildCampaignSummary
   claimedRewards: string[]
+  pnlOrVolumeCampaigns?: CampaignV2[]
+  pastPnlOrVolumeCampaigns?: CampaignV2[]
+  activeCampaign?: CampaignV2
+  leaderboardCompetitionResult?: CompetitionResult
 }
 
 const initialStateFactory = (): CampaignStoreState => ({
@@ -64,7 +84,11 @@ const initialStateFactory = (): CampaignStoreState => ({
   ownerCampaignInfo: undefined,
   ownerRewards: [],
   guildCampaignSummary: undefined,
-  claimedRewards: []
+  claimedRewards: [],
+  pnlOrVolumeCampaigns: [],
+  pastPnlOrVolumeCampaigns: [],
+  activeCampaign: undefined,
+  leaderboardCompetitionResult: undefined
 })
 
 export const useCampaignStore = defineStore('campaign', {
@@ -84,6 +108,7 @@ export const useCampaignStore = defineStore('campaign', {
     joinGuild,
     createGuild,
     claimReward,
+    submitLeaderboardCompetitionClaim,
 
     // guild queries
     pollGuildDetails,
@@ -239,11 +264,11 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchRound(roundId?: number) {
+      const campaignStore = useCampaignStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      const campaignStore = useCampaignStore()
       const { campaigns } = await indexerGrpcCampaignApi.fetchRound({
-        accountAddress: sharedWalletStore.injectiveAddress,
+        accountAddress: sharedWalletStore.authZOrInjectiveAddress,
         contractAddress: ADMIN_UI_SMART_CONTRACT,
         toRoundId: roundId
       })
@@ -251,11 +276,142 @@ export const useCampaignStore = defineStore('campaign', {
       campaignStore.$patch({ round: campaigns })
     },
 
+    async fetchActiveCampaign() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Active
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pnlOrVolumeCampaigns = campaigns.reduce(
+        (pnlOrVolumeCampaigns, campaign) => {
+          if (
+            ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+              campaign.type as LeaderboardType
+            )
+          ) {
+            return pnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignNameOverrideMap[campaign.name] || campaign.name
+            }
+          ]
+        },
+        [] as CampaignV2[]
+      )
+
+      if (pnlOrVolumeCampaigns.length === 0) {
+        return
+      }
+
+      const [activeCampaign] = pnlOrVolumeCampaigns
+
+      campaignStore.$patch({ activeCampaign })
+    },
+
+    async fetchUpcomingCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Upcoming
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pnlOrVolumeCampaigns = campaigns.reduce(
+        (pnlOrVolumeCampaigns, campaign) => {
+          if (
+            ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
+              campaign.type as LeaderboardType
+            )
+          ) {
+            return pnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignNameOverrideMap[campaign.name] || campaign.name
+            }
+          ]
+        },
+        [] as CampaignV2[]
+      )
+
+      campaignStore.$patch({ pnlOrVolumeCampaigns })
+    },
+
+    async fetchPastCampaigns() {
+      const campaignStore = useCampaignStore()
+
+      const PNL_LEADERBOARD_TYPE = 'pnl_leaderboard'
+
+      // todo: if we want to support a volume_leaderboard type competition, we can do another fetchCampaigns with volume_leaderboard type and combine the results
+      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
+        status: LeaderboardCampaignStatus.Inactive,
+        type: PNL_LEADERBOARD_TYPE
+      })
+
+      if (campaigns.length === 0) {
+        return
+      }
+
+      const pastPnlOrVolumeCampaigns = campaigns.reduce(
+        (pastPnlOrVolumeCampaigns, campaign) => {
+          const campaignName =
+            campaignNameOverrideMap[campaign.name] || campaign.name
+
+          if (!PAST_LEADERBOARD_CAMPAIGN_NAMES.includes(campaignName)) {
+            return pastPnlOrVolumeCampaigns
+          }
+
+          return [
+            ...pastPnlOrVolumeCampaigns,
+            {
+              ...campaign,
+              name: campaignName
+            }
+          ]
+        },
+        [] as CampaignV2[]
+      )
+
+      campaignStore.$patch({ pastPnlOrVolumeCampaigns })
+    },
+
+    async fetchLeaderboardCompetitionResults(
+      campaignName: string,
+      injectiveAddress: string
+    ) {
+      const campaignStore = useCampaignStore()
+
+      campaignStore.$patch({
+        leaderboardCompetitionResult: await fetchLeaderboardCompetitionResults(
+          campaignName,
+          injectiveAddress
+        )
+      })
+    },
+
     reset() {
       const campaignStore = useCampaignStore()
 
-      campaignStore.userGuildInfo = undefined
-      campaignStore.ownerCampaignInfo = undefined
+      campaignStore.$patch({
+        round: [],
+        userGuildInfo: undefined,
+        ownerCampaignInfo: undefined
+      })
     }
   }
 })

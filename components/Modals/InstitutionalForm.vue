@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const {
@@ -88,7 +88,7 @@ async function onSubmit() {
     @modal:closed="closeModal"
   >
     <div>
-      <h3 class="text-4xl pb-4">
+      <h3 class="text-5xl pb-4">
         {{ $t('institutional.modalTitle') }}
       </h3>
       <p>

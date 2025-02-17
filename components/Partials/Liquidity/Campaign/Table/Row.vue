@@ -9,27 +9,15 @@ import {
 } from '@/app/utils/constants'
 import { UiSpotMarket } from '@/types'
 
-const props = defineProps({
-  campaignUser: {
-    type: Object as PropType<CampaignUser>,
-    required: true
-  },
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  },
-
-  totalScore: {
-    type: String,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+    campaign: Campaign
+    totalScore: string
+    campaignUser: CampaignUser
+  }>(),
+  {}
+)
 
 const tokenStore = useTokenStore()
 
@@ -88,7 +76,7 @@ const rewardsFormatted = computed(() =>
 </script>
 
 <template>
-  <tr class="border-b last:border-none hover:bg-gray-800 text-sm">
+  <tr class="border-b last:border-none hover:bg-coolGray-800 text-sm">
     <td>
       <div class="p-3">
         <NuxtLink :to="explorerLink" target="_blank">
@@ -105,10 +93,10 @@ const rewardsFormatted = computed(() =>
       <div class="p-3">
         <p>
           <span
-            v-for="({ amount, symbol }, i) in rewardsFormatted"
+            v-for="({ amount, symbol }, index) in rewardsFormatted"
             :key="symbol"
           >
-            {{ i > 0 ? ',' : '' }} {{ amount }} {{ symbol }}
+            {{ index > 0 ? ',' : '' }} {{ amount }} {{ symbol }}
           </span>
         </p>
       </div>

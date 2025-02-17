@@ -4,31 +4,24 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const route = useRoute()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isDisabled: Boolean,
-
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  guild: {
-    type: Object as PropType<Guild>,
-    required: true
-  },
-
-  guildInvitationHash: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    limit: number
+    guild: Guild
+    isDisabled?: boolean
+    guildInvitationHash: string
+  }>(),
+  {
+    isDisabled: false
   }
-})
+)
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -109,9 +102,7 @@ function onSubmit() {
       <div class="mt-8 flex items-center gap-4">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onSubmit"
         >
           <span>
@@ -121,9 +112,7 @@ function onSubmit() {
 
         <AppButton
           class="w-full font-semibold border border-white"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onSubmit"
         >
           <span>

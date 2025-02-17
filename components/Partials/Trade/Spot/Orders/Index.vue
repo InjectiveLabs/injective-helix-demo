@@ -1,15 +1,22 @@
-<script setup lang="ts">
-import { TradingInterface } from '@/types'
+<script lang="ts" setup>
+import { TradingInterface, UiSpotMarket } from '@/types'
 
-const tradingMode = useQueryRef('interface', TradingInterface.Standard)
+withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+  }>(),
+  {}
+)
+
+const tradingInterface = useQueryRef('interface', TradingInterface.Standard)
 </script>
 
 <template>
-  <div class="min-h-[360px]">
+  <div class="overflow-x-auto divide-y h-full">
     <PartialsTradeSpotOrdersStandard
-      v-if="tradingMode === TradingInterface.Standard"
+      v-if="tradingInterface === TradingInterface.Standard"
+      v-bind="{ market }"
     />
-
-    <PartialsTradeSpotOrdersTradingBots v-else />
+    <PartialsTradeSpotOrdersTradingBots v-else v-bind="{ market }" />
   </div>
 </template>

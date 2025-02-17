@@ -16,7 +16,6 @@ onWalletConnected(() => {
   Promise.all([
     campaignStore.fetchGuildsByTVL(),
     accountStore.fetchCw20Balances(),
-    accountStore.streamBankBalance(),
     campaignStore.fetchUserGuildInfo(),
     campaignStore.fetchGuildsByVolume(),
     accountStore.fetchAccountPortfolioBalances()
@@ -46,7 +45,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
 </script>
 
 <template>
-  <AppHocLoading class="h-full container" v-bind="{ status }">
+  <AppHocLoading v-bind="{ status }" is-full-screen>
     <div class="mx-auto max-w-7xl w-full px-4 pt-20 pb-12">
       <PartialsGuildHeader
         v-bind="{ now, summary: campaignStore.guildCampaignSummary }"
@@ -58,7 +57,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
             {{ $t('guild.leaderboard.title') }}
           </h2>
 
-          <p v-if="lastUpdated" class="text-gray-300 p-2 text-xs">
+          <p v-if="lastUpdated" class="text-coolGray-300 p-2 text-xs">
             {{ $t('guild.leaderboard.lastUpdated', { date: lastUpdated }) }}
           </p>
         </div>

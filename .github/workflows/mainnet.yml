@@ -8,16 +8,19 @@ on:
 
 jobs:
   mainnet:
-    if: true
+    if: false
     name: 'Deploy to mainnet'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
+      VITE_PRODUCT: helix
       VITE_BASE_URL: https://helixapp.com
-      VITE_NETWORK: mainnet
       VITE_ENV: mainnet
-      VITE_CHAIN_ID: injective-1
+      VITE_NETWORK: internal
       VITE_ETHEREUM_CHAIN_ID: 1
+      VITE_CHAIN_ID: injective-1
       SOURCE_DIR: .output/public
       DEST_DIR: www
 
@@ -25,63 +28,113 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
+      VITE_SHOW_REDEEM_VOUCHER: true
       VITE_MAINTENANCE_ENABLED: false
-      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
       VITE_BANNER_NOTICE_ENABLED: false
 
       ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
+      # VITE_INDEXER_API_ENDPOINT: ''
+      VITE_INDEXER_API_ENDPOINT: 'https://k8s.global.mainnet.exchange.grpc-web.injective.network'
       VITE_CHRONOS_API_ENDPOINT: ''
       VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
       VITE_SENTRY_REST_ENDPOINT: ''
 
+      ## Geo location & VPN checks
+      VITE_VPN_CHECKS_ENABLED: false
+      VITE_GEO_IP_RESTRICTIONS_ENABLED: true
+      VITE_GOOGLE_MAPS_KEY: ${{ secrets.VITE_GOOGLE_MAPS_KEY }}
+      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
+
       ## Secret
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
+
+      VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
-      VITE_AMPLITUDE_KEY: ${{ secrets.VITE_AMPLITUDE_KEY }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
+      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
+      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
-      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
-      VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
-      VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
-      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
-      VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
-      VITE_PROXY_DETECTION_API_KEY: ${{ secrets.VITE_PROXY_DETECTION_API_KEY }}
+      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
 
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
-      AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+      VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
+      VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
 
-      NODE_OPTIONS: '--max_old_space_size=15360'
-    runs-on: ubuntu-latest
+      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+      VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
+
+      AWS_REGION: ${{ secrets.AWS_MAINNET_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_MAINNET_BUCKET }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_MAINNET_DISTRIBUTION_ID }}
+
+      NODE_OPTIONS: '--max_old_space_size=30720'
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Using Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Setup libudev-dev
         run: |
           sudo apt-get update
           sudo apt-get install libudev-dev
 
-      - name: Remove prev build
-        run: yarn clean-up
+      - name: Get current version
+        id: get_version
+        run: |
+          git fetch --tags
+          latest_tag=$(git tag | sort -V | tail -n 1)
+          echo "current_version=$latest_tag" >> $GITHUB_ENV
 
-      - name: Install Dependencies
-        run: yarn install --force --ignore-engines
+      - name: Generate GitHub Release Notes
+        id: release_notes
+        uses: ThomasRalee/github-release-notes@main
+        with:
+          previous_tag: ${{ env.current_version }}
+          repo_url: 'https://github.com/InjectiveLabs/injective-helix'
 
-      - name: Generating the static pages
-        run: yarn generateNoSourceMap
+      - name: Create Release
+        if: steps.release_notes.outputs.release_notes != 'No new commits'
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          token: '${{ env.GH_TOKEN }}'
+          tag: ${{ steps.release_notes.outputs.new_version }}
+          name: Helix Release ${{ steps.release_notes.outputs.new_version }}
+          body: |
+            ## Changes
+            ${{ steps.release_notes.outputs.release_notes }}
+          draft: true
+
+      - name: Build app
+        run: |
+          yarn install --force
+          yarn clean-up
+          yarn generate
+        env:
+          GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
+
+      - name: Upload bugsnag release
+        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+        with:
+          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+          directory: ./.nuxt/dist/client/_nuxt
+          baseUrl: ${{ env.VITE_BASE_URL }}
+          appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
+          overwrite: true
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
@@ -95,45 +148,51 @@ jobs:
       - name: Invalidate Cloudfront CDN
         run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
-  notify-slack-on-deployment:
-    runs-on: ubuntu-latest
-    needs: [mainnet]
-    if: always() && github.event_name == 'push' && (needs.mainnet.result == 'success')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Publish release
+        if: steps.release_notes.outputs.release_notes != 'No new commits'
+        uses: StuYarrow/publish-release@v1.1.2
+        env:
+          GITHUB_TOKEN: ${{ env.GH_TOKEN }}
         with:
-          fetch-depth: 0
+          id: ${{ steps.create_release.outputs.id }}
 
-      - name: "Notify Slack"
-        run: |
-          # Get the commit hash of the second last merge-commit on master, then compare it to HEAD to list new commits that were deployed
-          last_merge_commit=$(git log --merges -n 1 --skip 1 --format="%H")
-          payload='{
-            "text": "'"<!here> Helix - Deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n$(git log $last_merge_commit..HEAD --pretty=format:'%h - %s')"'",
-            "attachments": [
-                {
-                "text": "Helix deployed to Mainnet ✅",
-                "color": "#22bb33"
-                }
-            ]
-            }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+      - name: Delete draft releases
+        if: failure()
+        uses: hugo19941994/delete-draft-releases@v1.0.0
+        with:
+          threshold: 1s
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-  notify-slack-on-redeployment:
-    runs-on: ubuntu-latest
-    needs: [mainnet]
-    if: always() && github.event_name == 'workflow_dispatch' && (needs.mainnet.result == 'success')
+    outputs:
+      release_notes: ${{ steps.release_notes.outputs.release_notes }}
+
+  notify-slack-on-deployment:
+    runs-on: ubuntu-22.04
+    needs: mainnet-release
     steps:
-      - name: "Notify Slack"
-        run: |  
-          payload='{
-            "text": "'"<!here> 🚀 Helix Redeployed on Mainnet! Good guys, close your eyes! 🛠️😄."'",
-            "attachments": [
+      - name: 'Notify Slack'
+        id: notify_slack
+        run: |
+          if [ "${{ needs.mainnet-release.outputs.release_notes }}" != "No new commits" ]; then
+            payload='{
+              "text": "'"<!here> 🚀 Helix deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n${{ needs.mainnet-release.outputs.release_notes }}"'",
+              "attachments": [
                 {
-                "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
-                "color": "#22bb33"
+                  "text": "Helix deployed to Mainnet ✅",
+                  "color": "#22bb33"
                 }
-            ]
+              ]
             }'
-            curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+          else
+            payload='{
+              "text": "'"<!here> 🚀 Helix Rebuilt on Mainnet! Good guys, close your eyes! 🛠️😄."'",
+              "attachments": [
+                {
+                  "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
+                  "color": "#22bb33"
+                }
+              ]
+            }'
+          fi
+          curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}

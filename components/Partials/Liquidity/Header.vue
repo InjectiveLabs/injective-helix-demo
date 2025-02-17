@@ -7,27 +7,15 @@ import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
-const props = defineProps({
-  endDate: {
-    type: Number,
-    required: true
-  },
-
-  lastUpdated: {
-    type: Number,
-    required: true
-  },
-
-  round: {
-    type: Number,
-    required: true
-  },
-
-  roundCampaigns: {
-    type: Array as PropType<Campaign[]>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    round: number
+    endDate: number
+    lastUpdated: number
+    roundCampaigns: Campaign[]
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -74,11 +62,6 @@ const endDate = computed(() => {
 
   return format(utcDate, 'MMM dd - HH:mm', { timeZone: 'UTC' })
 })
-
-const { valueToString: totalRewardsThisRoundToString } =
-  useSharedBigNumberFormatter(totalRewardsThisRound, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
 </script>
 
 <template>
@@ -93,7 +76,7 @@ const { valueToString: totalRewardsThisRoundToString } =
       </div>
 
       <div>
-        <p class="text-gray-300">{{ $t('campaign.description') }}</p>
+        <p class="text-coolGray-300">{{ $t('campaign.description') }}</p>
       </div>
 
       <div class="space-x-2 flex pb-6">
@@ -114,21 +97,26 @@ const { valueToString: totalRewardsThisRoundToString } =
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
-            {{ totalRewardsThisRoundToString }} USD
+            <AppUsdAmount
+              v-bind="{
+                amount: totalRewardsThisRound.toFixed()
+              }"
+            />
+            <span class="ml-1">USD</span>
           </p>
         </div>
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.totalVolume') }}
           </h3>
           <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
         </div>
         <div>
-          <h3 class="text-sm font-semibold text-gray-400">
+          <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('campaign.endTimeForRound', { round: props.round }) }}
           </h3>
           <p class="text-xl font-semibold">{{ endDate }} UTC</p>

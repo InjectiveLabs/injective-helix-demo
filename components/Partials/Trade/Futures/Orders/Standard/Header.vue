@@ -1,70 +1,76 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { SharedDropdownOption } from '@shared/types'
-import { MarketKey, UiDerivativeMarket, PerpOrdersStandardView } from '@/types'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  PerpetualMarketCyTags,
+  PerpOrdersStandardView
+} from '@/types'
 
-const breakpoints = useBreakpointsTw()
 const positionStore = usePositionStore()
+const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps({
-  modelValue: {
-    type: String as PropType<PerpOrdersStandardView>,
-    required: true
-  },
-
-  isTickerOnly: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+    modelValue: PerpOrdersStandardView
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
-  'update:modelValue': [value: PerpOrdersStandardView]
   'update:isTickerOnly': [value: boolean]
+  'update:modelValue': [value: PerpOrdersStandardView]
 }>()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const xxl = breakpoints['4xl']
+const lg = breakpoints['3xl']
+const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
-
 const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${PerpOrdersStandardView.OpenPositions}`,
-      value: PerpOrdersStandardView.OpenPositions,
-      description: `${positionStore.subaccountPositionsCount}`
+      value: PerpOrdersStandardView.Positions,
+      description: `${positionStore.subaccountPositions.length}`,
+      display: `activity.${PerpOrdersStandardView.Positions}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.OpenOrders}`,
-      value: PerpOrdersStandardView.OpenOrders,
-      description: `${derivativeStore.subaccountOrdersCount}`
+      value: PerpOrdersStandardView.Orders,
+      description: `${derivativeStore.subaccountOrdersCount}`,
+      display: `activity.${PerpOrdersStandardView.Orders}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.Triggers}`,
-      value: PerpOrdersStandardView.Triggers,
+      value: PerpOrdersStandardView.AdvancedOrders,
+      display: `activity.${PerpOrdersStandardView.AdvancedOrders}`,
       description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
       value: PerpOrdersStandardView.OrderHistory,
+      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
       description: `${derivativeStore.subaccountOrderHistoryCount}`
     },
     {
-      display: `activity.${PerpOrdersStandardView.TradeHistory}`,
       value: PerpOrdersStandardView.TradeHistory,
-      description: `${derivativeStore.subaccountTradesCount}`
+      description: `${derivativeStore.subaccountTradesCount}`,
+      display: `activity.${PerpOrdersStandardView.TradeHistory}`
+    },
+    {
+      value: PerpOrdersStandardView.FundingHistory,
+      display: `activity.${PerpOrdersStandardView.FundingHistory}`
     }
   ]
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
-      display: `activity.${PerpOrdersStandardView.Balances}`,
-      value: PerpOrdersStandardView.Balances
+      value: PerpOrdersStandardView.Balances,
+      display: `activity.${PerpOrdersStandardView.Balances}`
     })
   }
 
@@ -75,18 +81,22 @@ watch(
   () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === PerpOrdersStandardView.Balances) {
-      view.value = PerpOrdersStandardView.OpenOrders
+      view.value = PerpOrdersStandardView.Orders
     }
   }
 )
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
-    <CommonSubaccountTabSelector />
+  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
+    <CommonSubaccountTabSelector
+      v-bind="{
+        isSm: true
+      }"
+    />
 
     <AppTabSelect
-      v-if="!xxl"
+      v-if="!lg"
       v-bind="{
         options
       }"
@@ -94,7 +104,10 @@ watch(
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">
+        <button
+          class="px-2"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdown)"
+        >
           {{ $t(`activity.${selected?.value}`) }}
           {{
             Number.isInteger(Number(selected?.description))
@@ -105,7 +118,9 @@ watch(
       </template>
 
       <template #option="{ option }">
-        <button>
+        <button
+          :data-cy="`${PerpetualMarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
+        >
           {{ $t(`activity.${option.value}`) }}
           {{
             Number.isInteger(Number(option.description))
@@ -122,24 +137,40 @@ watch(
       :key="value"
       v-model="view"
       v-bind="{ value }"
-      class="flex items-center px-4 tab-field"
-      active-classes="!text-white"
+      class="flex items-center text-coolGray-450 font-medium"
+      :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
+      active-classes="text-white"
     >
       {{ $t(display) }}
-      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
+      {{
+        Number.isInteger(Number(description)) && Number(description) > 0
+          ? `(${description})`
+          : ''
+      }}
     </AppButtonSelect>
 
-    <div class="flex-1 flex items-center px-2 justify-end">
-      <AppCheckbox2 v-model="isTickerOnlyValue">
-        {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
+    <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
+      <AppCheckbox2
+        v-if="view !== PerpOrdersStandardView.Balances"
+        v-model="isTickerOnlyValue"
+        is-plain
+        class="3xl:hidden 5xl:block"
+        :class="[xl ? 'text-sm' : 'text-xs']"
+      >
+        <span class="3xl:hidden 4xl:block">
+          {{ $t('trade.tickerOnly', { ticker: derivativeMarket.ticker }) }}
+        </span>
+        <span class="hidden 3xl:block 4xl:hidden">
+          {{ derivativeMarket.ticker }}
+        </span>
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
-        v-if="view === PerpOrdersStandardView.OpenOrders"
+        v-if="view === PerpOrdersStandardView.Orders"
       />
 
-      <PartialsPortfolioOrdersFuturesTriggersCancelAllTriggers
-        v-if="view === PerpOrdersStandardView.Triggers"
+      <PartialsPortfolioOrdersFuturesAdvancedOrdersCancelAllAdvancedOrders
+        v-if="view === PerpOrdersStandardView.AdvancedOrders"
       />
     </div>
   </div>

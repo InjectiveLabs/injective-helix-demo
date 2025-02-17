@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { MarketCategoryType } from '@/types'
 
-const props = defineProps({
-  isActive: Boolean,
-
-  type: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    type: MarketCategoryType
+    isActive?: boolean
+  }>(),
+  {
+    isActive: false
   }
-})
+)
 
 const emit = defineEmits<{
   click: [state: string]
@@ -25,7 +26,7 @@ function click() {
     :class="[
       isActive
         ? 'bg-blue-500 bg-opacity-20 text-blue-500  hover:text-blue-600'
-        : 'text-gray-300  hover:text-blue-500'
+        : 'text-coolGray-300  hover:text-blue-500'
     ]"
     @click="click"
   >

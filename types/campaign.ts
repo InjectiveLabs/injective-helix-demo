@@ -40,3 +40,16 @@ export type RewardWithToken = {
 }
 
 export type CampaignWithScAndData = CampaignWithScAndRound & Campaign
+
+export type CompetitionResult = {
+  prize: string
+  hasClaimed: boolean
+}
+
+export type GridStrategyTransformed = ReturnType<
+  typeof useSpotGridStrategies
+>['formattedStrategies']['value'][number]
+
+export type DerivativeGridStrategyTransformed = ReturnType<
+  typeof useDerivativeGridStrategies
+>['formattedStrategies']['value'][number]

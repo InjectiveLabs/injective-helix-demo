@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import { Modal, MainPage, PortfolioSubPage, UiDerivativeMarket } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const router = useRouter()
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiDerivativeMarket>,
-    default: undefined
-  }
-})
+const props = withDefaults(defineProps<{ market: UiDerivativeMarket }>(), {})
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.MarketExpired] && !!props.market
@@ -58,16 +53,16 @@ function onModalClose() {
           >
             {{ market.ticker }}
           </p>
-          <span class="text-xs text-gray-500 capitalize">
+          <span class="text-xs text-coolGray-500 capitalize">
             {{ market.baseToken.name }}
           </span>
         </div>
       </div>
 
-      <p class="text-sm text-gray-100 mt-4">
+      <p class="text-sm text-coolGray-100 mt-4">
         {{ $t('marketExpired.expiredNote') }}
       </p>
-      <p class="text-sm text-gray-100 mt-2">
+      <p class="text-sm text-coolGray-100 mt-2">
         {{ $t('marketExpired.activityPageNote') }}
       </p>
 

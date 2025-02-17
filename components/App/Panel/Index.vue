@@ -1,24 +1,20 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-defineProps({
-  isDense: Boolean,
-
-  title: {
-    default: '',
-    type: String
-  },
-
-  portalName: {
-    default: '',
-    type: String
-  },
-
-  cardWrapperClass: {
-    default: '',
-    type: String
+withDefaults(
+  defineProps<{
+    title?: string
+    isDense?: boolean
+    portalName?: string
+    cardWrapperClass?: string
+  }>(),
+  {
+    title: '',
+    isDense: false,
+    portalName: '',
+    cardWrapperClass: ''
   }
-})
+)
 </script>
 
 <template>
@@ -27,7 +23,7 @@ defineProps({
       v-if="title || slots['title'] || slots['title-context']"
       class="flex justify-between items-center"
     >
-      <h3 class="text-xl font-bold text-gray-200">
+      <h3 class="text-xl font-bold text-coolGray-200">
         <slot name="title">{{ title }}</slot>
         <slot name="subtitle"></slot>
       </h3>

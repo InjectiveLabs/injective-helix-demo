@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
+import { cx } from 'class-variance-authority'
+import { twMerge } from 'tailwind-merge'
 
-  modelValue: {
-    type: String,
-    required: true
-  },
-
-  activeClasses: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    value: string
+    modelValue: string
+    class?: string | string[] | Record<string, boolean>
+    activeClasses?: string
+  }>(),
+  {
+    activeClasses: '',
+    class: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -31,11 +30,15 @@ const onClick = () => {
 
 <template>
   <button
-    v-bind="$attrs"
-    :class="[
-      isActive && activeClasses,
-      { 'cursor-not-allowed': $attrs.disabled }
-    ]"
+    :class="
+      twMerge(
+        cx([
+          props.class,
+          isActive && activeClasses,
+          { 'cursor-not-allowed': $attrs.disabled }
+        ])
+      )
+    "
     @click="onClick"
   >
     <slot v-bind="{ isActive }" />

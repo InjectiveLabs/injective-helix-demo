@@ -6,8 +6,6 @@ const router = useRouter()
 const swapStore = useSwapStore()
 const { $onError } = useNuxtApp()
 
-const isMobile = useIsMobile()
-
 const status = reactive(new Status(StatusType.Loading))
 
 const { limit, page, skip } = usePagination({
@@ -58,8 +56,6 @@ async function handleLimitChange(limit: number) {
     </div>
 
     <div class="border-y divide-y">
-      <PartialsPortfolioHistorySwapTableHeader v-if="!isMobile" />
-
       <CommonSkeletonRow
         v-if="status.isLoading()"
         :rows="10"
@@ -68,24 +64,13 @@ async function handleLimitChange(limit: number) {
       />
 
       <template v-else>
-        <div v-if="isMobile">
-          <PartialsPortfolioHistorySwapTableMobileRow
-            v-for="swap in swapStore.swapHistory"
-            :key="`${swap.txHash}-${swap.indexBySender}`"
-            v-bind="{ swap }"
-          />
-        </div>
-
-        <template v-else>
-          <PartialsPortfolioHistorySwapTableRow
-            v-for="swap in swapStore.swapHistory"
-            :key="`${swap.txHash}-${swap.indexBySender}`"
-            v-bind="{ swap }"
-          />
-        </template>
+        <PartialsPortfolioHistorySwapTable
+          v-if="swapStore.swapHistory.length"
+          v-bind="{ swaps: swapStore.swapHistory }"
+        />
 
         <AppPagination
-          v-if="swapStore.swapHistory.length > 0"
+          v-if="swapStore.swapHistory.length"
           class="p-8"
           v-bind="{
             limit,
@@ -97,7 +82,7 @@ async function handleLimitChange(limit: number) {
         />
 
         <CommonEmptyList
-          v-if="swapStore.swapHistory.length === 0"
+          v-if="!swapStore.swapHistory.length"
           :message="$t('trade.emptyTrades')"
         />
       </template>

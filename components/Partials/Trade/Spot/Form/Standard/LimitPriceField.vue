@@ -1,5 +1,19 @@
 <script setup lang="ts">
-import { MarketKey, BusEvents, UiSpotMarket, SpotTradeFormField } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import {
+  MarketKey,
+  BusEvents,
+  UiSpotMarket,
+  SpotTradeForm,
+  SpotMarketCyTags,
+  SpotTradeFormField
+} from '@/types'
+
+const appStore = useAppStore()
+const tokenStore = useTokenStore()
+const orderbookStore = useOrderbookStore()
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -9,6 +23,13 @@ const { value: limitValue, errorMessage } = useStringField({
   name: SpotTradeFormField.Price,
   initialValue: '',
   dynamicRule: computed(() => {
+    if (
+      appStore.devMode ||
+      spotFormValues.value[SpotTradeFormField.BypassPriceWarning]
+    ) {
+      return ''
+    }
+
     return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
   })
 })
@@ -22,12 +43,23 @@ const value = computed({
   }
 })
 
+const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
+  computed(() =>
+    new BigNumberInBase(limitValue.value || 0).times(
+      tokenStore.tokenUsdPrice(market.value.quoteToken)
+    )
+  )
+)
+
 function setMidLimitPrice() {
-  if (!lastTradedPrice.value) {
+  if (!orderbookStore.midPrice) {
     return
   }
 
-  value.value = lastTradedPrice.value.toFixed()
+  value.value = new BigNumberInBase(orderbookStore.midPrice).toFixed(
+    market.value.priceDecimals,
+    BigNumberInBase.ROUND_DOWN
+  )
 }
 
 onMounted(() => {
@@ -39,7 +71,18 @@ onMounted(() => {
 
 <template>
   <div v-if="market" ref="el" class="space-y-2">
-    <p class="field-label">{{ $t('trade.limitPrice') }}</p>
+    <div class="flex justify-between items-center">
+      <p class="field-label">{{ $t('trade.limitPrice') }}</p>
+
+      <div class="text-xs text-coolGray-450">
+        <span>~$</span>
+        <AppUsdAmount
+          v-bind="{
+            amount: limitPriceInUsdToFixed
+          }"
+        />
+      </div>
+    </div>
 
     <AppInputField
       v-model="value"
@@ -47,10 +90,11 @@ onMounted(() => {
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
+      :data-cy="dataCyTag(SpotMarketCyTags.LimitPriceInputField)"
     >
       <template #left>
         <div
-          class="text-xs text-gray-400 select-none hover:text-white flex font-mono cursor-pointer"
+          class="text-xs text-coolGray-400 select-none hover:text-white flex cursor-pointer"
           @click="setMidLimitPrice"
         >
           {{ $t('trade.mid') }}
@@ -58,7 +102,7 @@ onMounted(() => {
       </template>
 
       <template #right>
-        <span class="text-sm">
+        <span class="text-sm flex items-center text-white">
           {{ market.quoteToken.symbol }}
         </span>
       </template>

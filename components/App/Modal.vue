@@ -1,22 +1,37 @@
 <script lang="ts" setup>
+import { twMerge } from 'tailwind-merge'
+import { NuxtUiIcons } from '@shared/types'
+
 const slots = useSlots()
 const { width } = useWindowSize()
 
-const props = defineProps({
-  isLg: Boolean,
-  isMd: Boolean,
-  isSm: Boolean,
-  isOpen: Boolean,
-  isDense: Boolean,
-  isAlwaysOpen: Boolean,
-  isTransparent: Boolean,
-  isHideCloseButton: Boolean,
-
-  modalContentClass: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isLg?: boolean
+    isMd?: boolean
+    isSm?: boolean
+    isOpen?: boolean
+    isDense?: boolean
+    parentClass?: string
+    isAlwaysOpen?: boolean
+    isTransparent?: boolean
+    isHideCloseButton?: boolean
+    isStayOpenOnResize?: boolean
+    modalContentClass?: string
+  }>(),
+  {
+    isLg: false,
+    isMd: false,
+    isSm: false,
+    isOpen: false,
+    isDense: false,
+    parentClass: '',
+    isAlwaysOpen: false,
+    isTransparent: false,
+    isHideCloseButton: false,
+    modalContentClass: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'modal:closed': []
@@ -32,7 +47,7 @@ const classes = computed(() => {
   } else if (props.isLg) {
     result.push('max-w-lg', 'lg:max-w-3xl')
   } else {
-    result.push('max-w-lg', 'lg:max-w-4xl')
+    result.push('max-w-lg', 'lg:max-w-5xl')
   }
 
   return result.join(' ')
@@ -51,7 +66,7 @@ function onModalClose() {
 watchDebounced(
   width,
   (newWidth, oldWidth) => {
-    if (oldWidth && newWidth >= 640) {
+    if (oldWidth && newWidth >= 640 && !props.isStayOpenOnResize) {
       closeModal()
     }
   },
@@ -64,7 +79,13 @@ watchDebounced(
     <SharedModalWrapper
       v-if="isOpen"
       class="relative mx-auto sm:rounded-lg border-brand-700 border max-sm:h-full max-sm:max-w-full max-sm:w-full modalWrapper"
-      :class="[isTransparent ? 'bg-brand-900/95' : 'bg-brand-900', classes]"
+      :class="
+        twMerge(
+          parentClass,
+          isTransparent ? 'bg-brand-900/95' : 'bg-brand-900',
+          classes
+        )
+      "
       wrapper-class="backdrop-filter backdrop-blur-sm bg-black/30  max-sm:z-40"
       v-bind="$attrs"
       :ignore="['.v-popper__inner']"
@@ -77,31 +98,26 @@ watchDebounced(
           }"
         >
           <div
-            v-if="$slots.title"
-            class="flex items-center justify-between"
-            :class="{ 'mb-6 px-6 pt-6': !isDense }"
+            class="flex items-center"
+            :class="[
+              { 'px-6 pt-6': !isDense },
+              slots.title ? 'justify-between mb-6 ' : 'justify-end mb-4'
+            ]"
           >
             <div
-              class="text-sm uppercase text-gray-100 font-semibold flex-grow"
+              v-if="slots.title"
+              class="text-sm uppercase text-coolGray-100 font-semibold flex-grow"
             >
               <slot name="title" />
             </div>
 
             <div v-if="!isHideCloseButton">
-              <SharedIcon
-                name="close"
-                class="ml-auto h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
+              <UIcon
+                :name="NuxtUiIcons.Close"
+                class="h-5 w-5 min-w-5 text-coolGray-200 hover:text-blue-500"
                 @click="close"
               />
             </div>
-          </div>
-
-          <div v-else class="relative">
-            <SharedIcon
-              name="close"
-              class="top-4 right-4 absolute h-5 w-5 min-w-5 text-gray-200 hover:text-blue-500"
-              @click="close"
-            />
           </div>
 
           <div

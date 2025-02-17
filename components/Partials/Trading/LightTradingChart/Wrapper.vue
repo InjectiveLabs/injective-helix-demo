@@ -5,24 +5,17 @@ import { BigNumberInWei, Status, StatusType } from '@injectivelabs/utils'
 import { intervalOptions } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  marketId: {
-    type: String as PropType<string>,
-    required: true
-  },
-
-  interval: {
-    type: Number,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+    isSpot?: boolean
+    marketId: string
+    interval: number
+  }>(),
+  {
+    isSpot: false
   }
-})
+)
 
 const exchangeStore = useExchangeStore()
 

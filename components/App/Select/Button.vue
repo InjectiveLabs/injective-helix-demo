@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-defineProps({
-  value: {
-    type: String,
-    required: true
-  },
-
-  modelValue: {
-    type: String,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    value: string
+    modelValue: string
+  }>(),
+  {}
+)
 </script>
 
 <template>

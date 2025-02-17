@@ -1,20 +1,21 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const socialLinks = [
-  { icon: 'discord-circle', link: 'https://discord.gg/injective' },
-  { icon: 'twitter', link: 'https://twitter.com/Injective_' },
-  { icon: 'telegram', link: 'https://t.me/joininjective' }
+  { icon: NuxtUiIcons.Discord, link: 'https://discord.com/invite/helixapp' },
+  { icon: NuxtUiIcons.TwitterX, link: 'https://twitter.com/Injective_' },
+  { icon: NuxtUiIcons.Telegram, link: 'https://t.me/joininjective' }
 ]
 </script>
 
 <template>
-  <div class="bg-gray-900">
+  <div class="bg-coolGray-900">
     <div class="max-w-7xl mx-auto px-4 md:px-8">
       <div
         class="flex flex-col lg:flex-row justify-between items-center py-8 gap-8"
       >
-        <div class="text-gray-500">
+        <div class="text-coolGray-500">
           <p>
             <span class="mr-2">&copy; {{ new Date().getFullYear() }}</span>
             <span>{{ $t('institutional.allRightsReserved') }}</span>
@@ -35,11 +36,17 @@ const socialLinks = [
             <a
               v-for="link in socialLinks"
               :key="link.link"
-              class="text-gray-900 bg-gray-600 p-2.5 rounded-full hover:bg-white"
+              class="text-coolGray-900 bg-coolGray-600 p-2.5 rounded-full hover:bg-white leading-4"
               :href="link.link"
               target="_blank"
             >
-              <SharedIcon :name="link.icon" class="w-4 h-4" />
+              <UIcon
+                :name="link.icon"
+                class="w-4 h-4"
+                :class="
+                  link.icon === NuxtUiIcons.Twitter && 'w-[18px] h-[18px]'
+                "
+              />
             </a>
           </div>
         </div>

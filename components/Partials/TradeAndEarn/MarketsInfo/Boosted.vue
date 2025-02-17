@@ -1,11 +1,18 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { MARKETS_SLUGS } from '@/app/utils/constants'
+import {
+  verifiedSpotSlugs,
+  verifiedExpirySlugs,
+  verifiedSpotMarketIds,
+  verifiedExpiryMarketIds,
+  verifiedDerivativeSlugs,
+  verifiedDerivativeMarketIds
+} from '@/app/json'
 import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 const exchangeStore = useExchangeStore()
+const derivativeStore = useDerivativeStore()
 
 const {
   spotBoostedMarketIdList,
@@ -21,11 +28,12 @@ const derivativeBoostedMarkets = computed(() => {
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
 
   const derivativeMarketsTickerBasedOnIds = derivativeStore.markets
-    .filter((derivativeMarket) =>
-      derivativeMarketIds.includes(derivativeMarket.marketId)
-    )
-    .filter((derivativeMarket) =>
-      MARKETS_SLUGS.futures.includes(derivativeMarket.slug)
+    .filter(
+      (derivativeMarket) =>
+        derivativeMarketIds.includes(derivativeMarket.marketId) ||
+        [...verifiedExpiryMarketIds, ...verifiedDerivativeMarketIds].includes(
+          derivativeMarket.marketId
+        )
     )
     .sort(
       (a, b) =>
@@ -79,8 +87,8 @@ const derivativeBoostedMarkets = computed(() => {
 
   return [...derivatives, ...nonBoostedDerivatives].sort(
     (a, b) =>
-      MARKETS_SLUGS.futures.indexOf(a.slug) -
-      MARKETS_SLUGS.futures.indexOf(b.slug)
+      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(a.slug) -
+      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(b.slug)
   )
 })
 
@@ -90,8 +98,11 @@ const spotBoostedMarkets = computed(() => {
   const spotMarketsBoosts = spotBoostedMultiplierList.value
 
   const spotMarketsTickerBasedOnIds = spotStore.markets
-    .filter((spotMarket) => spotMarketIds.includes(spotMarket.marketId))
-    .filter((spot) => MARKETS_SLUGS.spot.includes(spot.slug))
+    .filter(
+      (spotMarket) =>
+        spotMarketIds.includes(spotMarket.marketId) ||
+        verifiedSpotMarketIds.includes(spotMarket.marketId)
+    )
     .sort(
       (a, b) =>
         spotMarketIds.indexOf(a.marketId) - spotMarketIds.indexOf(b.marketId)
@@ -140,7 +151,7 @@ const spotBoostedMarkets = computed(() => {
 
   return [...spot, ...nonBoostedSpot].sort(
     (a, b) =>
-      MARKETS_SLUGS.spot.indexOf(a.slug) - MARKETS_SLUGS.spot.indexOf(b.slug)
+      verifiedSpotSlugs.indexOf(a.slug) - verifiedSpotSlugs.indexOf(b.slug)
   )
 })
 </script>
@@ -149,25 +160,25 @@ const spotBoostedMarkets = computed(() => {
   <PartialsCommonStatsItem>
     <div class="flex justify-between text-xs w-full mx-auto">
       <div class="flex-1 px-4 lg:px-6">
-        <p class="text-gray-200 text-center font-semibold">
+        <p class="text-coolGray-200 text-center font-semibold">
           {{ $t('trade.derivatives') }}
         </p>
         <CommonTextInfo
           v-for="derivative in derivativeBoostedMarkets"
           :key="`derivative-${derivative.ticker}`"
           :title="derivative.ticker"
-          class="mt-1 text-gray-550"
+          class="mt-1 text-coolGray-550"
           is-sm
         >
-          <p class="text-white font-mono">
+          <p class="text-white">
             <span>
               {{ derivative.makerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ derivative.takerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
@@ -176,25 +187,25 @@ const spotBoostedMarkets = computed(() => {
       </div>
 
       <div class="flex-1 px-4 lg:px-12">
-        <p class="text-gray-200 text-center font-semibold">
+        <p class="text-coolGray-200 text-center font-semibold">
           {{ $t('trade.spot') }}
         </p>
         <CommonTextInfo
           v-for="spot in spotBoostedMarkets"
           :key="`spot-${spot.ticker}`"
           :title="spot.ticker"
-          class="mt-1 text-gray-550"
+          class="mt-1 text-coolGray-550"
           is-sm
         >
-          <p class="text-white font-mono">
+          <p class="text-white">
             <span>
               {{ spot.makerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.makerPoints') }}
               </span>
               /
               {{ spot.takerPointsMultiplier }}x
-              <span class="text-sm text-gray-350 font-sans">
+              <span class="text-sm text-coolGray-350 font-sans">
                 {{ $t('tradeAndEarn.takerPoints') }}
               </span>
             </span>
@@ -204,10 +215,10 @@ const spotBoostedMarkets = computed(() => {
     </div>
 
     <template #title>
-      <div class="flex items-center justify-center text-gray-450 text-xs">
+      <div class="flex items-center justify-center text-coolGray-450 text-xs">
         {{ $t('trade.boosted_markets') }}
         <AppTooltip
-          class="ml-2 text-gray-450"
+          class="ml-2 text-coolGray-450"
           :content="$t('trade.boosted_markets_tooltip')"
         />
       </div>

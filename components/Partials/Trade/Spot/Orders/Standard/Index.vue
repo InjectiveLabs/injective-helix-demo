@@ -1,92 +1,115 @@
-<script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
-import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
+<script lang="ts" setup>
+import { UiSpotMarket, SpotOrdersStandardView, SpotMarketCyTags } from '@/types'
 
-const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
+const props = withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
-const accountStore = useAccountStore()
+const { $onError } = useNuxtApp()
 
-const view = ref(SpotOrdersStandardView.OpenOrders)
-const status = reactive(new Status(StatusType.Loading))
 const isTickerOnly = ref(false)
+const view = ref(SpotOrdersStandardView.Orders)
 
-function fetchSpotOrders() {
-  if (!accountStore.subaccountId) {
-    return
-  }
+const filteredOrders = computed(() =>
+  spotStore.subaccountOrders.filter((order) => {
+    if (isTickerOnly.value) {
+      return order.marketId === props.market.marketId
+    }
 
-  status.setLoading()
+    return true
+  })
+)
 
-  streamSpotOrders()
+function refreshData() {
+  const marketId = isTickerOnly.value ? props.market.marketId : undefined
+  const filters = marketId ? { filters: { marketIds: [marketId] } } : undefined
+
+  spotStore.cancelSubaccountStream()
 
   Promise.all([
-    spotStore.fetchSubaccountOrders(
-      isTickerOnly.value ? [spotMarket.value.marketId] : undefined
-    ),
-    spotStore.fetchSubaccountOrderHistory({
-      subaccountId: accountStore.subaccountId,
-      filters: {
-        marketIds: isTickerOnly.value ? [spotMarket.value.marketId] : undefined
-      }
-    }),
-    spotStore.fetchSubaccountTrades({
-      subaccountId: accountStore.subaccountId,
-      filters: {
-        marketIds: isTickerOnly.value ? [spotMarket.value.marketId] : undefined
-      }
-    })
-  ])
+    spotStore.fetchSubaccountTrades(filters),
+    spotStore.fetchSubaccountOrderHistory(filters),
+    spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
+  ]).catch($onError)
+
+  spotStore.streamSubaccountOrders({
+    marketId,
+    onResetCallback: () =>
+      spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
+  })
+  spotStore.streamSubaccountTrades({
+    marketId,
+    onResetCallback: () => spotStore.fetchSubaccountTrades(filters)
+  })
+  spotStore.streamSubaccountOrderHistory({
+    marketId,
+    onResetCallback: () => spotStore.fetchSubaccountOrderHistory(filters)
+  })
 }
 
-function streamSpotOrders() {
-  cancelStreams()
-
-  spotStore.streamSubaccountOrders()
-  spotStore.streamSubaccountOrderHistory()
-  spotStore.streamSubaccountTrades()
-}
-
-function cancelStreams() {
-  spotStore.cancelSubaccountStream()
-  spotStore.cancelSubaccountOrdersHistoryStream()
-  spotStore.cancelSubaccountTradesStream()
-}
+onSubaccountChange(refreshData)
 
 onUnmounted(() => {
-  cancelStreams()
-})
-
-onSubaccountChange(() => {
-  fetchSpotOrders()
+  spotStore.cancelSubaccountStream()
+  spotStore.resetSubaccount()
 })
 </script>
 
 <template>
-  <div>
-    <PartialsTradeSpotOrdersStandardHeader
-      v-model:is-ticker-only="isTickerOnly"
-      v-model="view"
-      @update:is-ticker-only="fetchSpotOrders"
-    />
+  <PartialsTradeSpotOrdersStandardHeader
+    v-model="view"
+    v-model:is-ticker-only="isTickerOnly"
+    @update:is-ticker-only="refreshData"
+  />
 
-    <div class="overflow-x-auto border-b">
+  <div
+    class="w-full h-screenMinusHeader"
+    :data-cy="dataCyTag(SpotMarketCyTags.OrderDetailsTable)"
+  >
+    <div class="overflow-x-auto divide-y h-full">
       <PartialsTradeCommonOrdersBalances
         v-if="view === SpotOrdersStandardView.Balances"
       />
 
-      <PartialsTradeSpotOrdersStandardOpenOrders
-        v-else-if="view === SpotOrdersStandardView.OpenOrders"
-        v-bind="{ isTickerOnly }"
-      />
+      <template v-if="view === SpotOrdersStandardView.Orders">
+        <PartialsPortfolioOrdersSpotOpenOrdersTable
+          v-if="filteredOrders.length"
+          :orders="filteredOrders"
+        />
 
-      <PartialsTradeSpotOrdersStandardOrderHistory
-        v-else-if="view === SpotOrdersStandardView.OrderHistory"
-      />
+        <CommonEmptyList
+          v-if="!filteredOrders.length"
+          v-bind="{ message: $t('trade.noOrders') }"
+        />
+      </template>
 
-      <PartialsTradeSpotOrdersStandardTradeHistory
-        v-else-if="view === SpotOrdersStandardView.TradeHistory"
-      />
+      <template v-else-if="view === SpotOrdersStandardView.OrderHistory">
+        <PartialsPortfolioOrdersSpotOrderHistoryTable
+          v-if="spotStore.subaccountOrderHistory.length"
+          :orders="spotStore.subaccountOrderHistory"
+        />
+
+        <CommonEmptyList
+          v-if="!spotStore.subaccountOrderHistory.length"
+          v-bind="{ message: $t('trade.noOrders') }"
+        />
+      </template>
+
+      <template v-else-if="view === SpotOrdersStandardView.TradeHistory">
+        <PartialsPortfolioOrdersSpotTradeHistoryTable
+          v-if="spotStore.subaccountTrades.length"
+          :trades="spotStore.subaccountTrades"
+        />
+
+        <CommonEmptyList
+          v-if="!spotStore.subaccountTrades.length"
+          v-bind="{ message: $t('trade.noTrades') }"
+        />
+      </template>
     </div>
   </div>
 </template>

@@ -1,141 +1,95 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  marketIsActive,
-  marketIsQuotePair,
-  marketIsPartOfType,
-  marketIsPartOfSearch,
-  marketIsPartOfCategory
-} from '@/app/utils/market'
+import { SharedMarketType, SharedMarketStatus } from '@shared/types'
+import { marketCategoriesMap } from '@/app/json'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
+import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import {
-  upcomingMarkets,
-  deprecatedMarkets,
-  olpSlugsToIncludeInLowVolume,
-  marketTypeOptionsToHideCategory
-} from '@/app/data/market'
-import {
-  TradeSubPage,
-  MarketQuoteType,
   MarketHeaderType,
-  MarketTypeOption,
+  UiMarketWithToken,
   MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
-const route = useRoute()
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
-const accountStore = useAccountStore()
-const positionStore = usePositionStore()
 const appStore = useAppStore()
-const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isLowVolumeMarketsVisible: Boolean,
-
-  activeCategory: {
-    type: String as PropType<MarketCategoryType>,
-    required: true
-  },
-
-  activeQuote: {
-    type: String as PropType<MarketQuoteType>,
-    required: true
-  },
-
-  activeType: {
-    type: String as PropType<MarketTypeOption>,
-    required: true
-  },
-
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
-  },
-
-  search: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    search?: string
+    activeCategory: MarketCategoryType
+    isLowVolumeMarketsVisible?: boolean
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+  }>(),
+  {
+    search: '',
+    markets: () => [],
+    activeCategory: MarketCategoryType.All
   }
-})
+)
 
 const isAscending = ref(false)
 const sortBy = ref(MarketHeaderType.Volume)
 
-const userMarkets = computed(() => {
-  const openPositionMarketIds = positionStore.positions.map(
-    ({ marketId }) => marketId
-  )
-  const openSpotOrdersMarketIds = spotStore.subaccountOrders.map(
-    ({ marketId }) => marketId
-  )
-  const openDerivativeOrdersMarketIds = derivativeStore.subaccountOrders.map(
-    ({ marketId }) => marketId
+const filteredMarkets = computed(() => {
+  const formattedSearch = props.search.trim().toLowerCase()
+
+  const activeMarkets = props.markets.filter(
+    (market) => market.market.marketStatus === SharedMarketStatus.Active
   )
 
-  const spotBaseTokenDenomToMarketIdMap = spotStore.markets.reduce(
-    (denomToMarketIdMap, market) => {
-      denomToMarketIdMap[market.baseToken.denom] = market.marketId
-
-      return denomToMarketIdMap
-    },
-    {} as Record<string, string>
-  )
-
-  const userBalanceSpotMarketIds = accountStore.bankBalances.reduce(
-    (marketIds, { amount, denom }) =>
-      new BigNumberInBase(amount).gt(0) &&
-      spotBaseTokenDenomToMarketIdMap[denom]
-        ? [...marketIds, spotBaseTokenDenomToMarketIdMap[denom]]
-        : marketIds,
-    [] as string[]
-  )
-
-  return [
-    ...new Set([
-      ...openPositionMarketIds,
-      ...openSpotOrdersMarketIds,
-      ...userBalanceSpotMarketIds,
-      ...openDerivativeOrdersMarketIds
-    ])
-  ]
-})
-
-const filteredMarkets = computed(() =>
-  props.markets
-    .filter(({ market, volumeInUsd }) => {
-      const shouldIgnoreCategory = marketTypeOptionsToHideCategory.includes(
-        props.activeType
-      )
-      const isPartOfCategory =
-        shouldIgnoreCategory ||
-        marketIsPartOfCategory(props.activeCategory, market)
-      const isPartOfSearch = marketIsPartOfSearch(props.search, market)
-      const isPartOfType = marketIsPartOfType({
-        market,
-        userMarkets:
-          props.activeType === MarketTypeOption.Favorites
-            ? appStore.favoriteMarkets
-            : userMarkets.value,
-        activeType: props.activeType
-      })
-      const isQuotePair = marketIsQuotePair(props.activeQuote, market)
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
+  if (!formattedSearch) {
+    return activeMarkets.filter(({ market, volumeInUsd }) => {
+      const isPartOfCategory = verifyMarketIsPartOfType(market)
       const isLowVolumeMarket =
         props.isLowVolumeMarketsVisible ||
         volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD)
 
-      return (
-        isPartOfCategory &&
-        isPartOfType &&
-        isPartOfSearch &&
-        isQuotePair &&
-        (isLowVolumeMarket || isOLPMarket || props.search)
-      )
+      return isPartOfCategory && isLowVolumeMarket
     })
-    .filter((market) => marketIsActive(market.market))
-)
+  }
+
+  const searchWithStartWith = activeMarkets.filter(({ market }) => {
+    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
+      market.marketId
+    )
+
+    if (isDeprecatedMarket) {
+      return market.ticker.toLowerCase() === formattedSearch
+    }
+
+    return [
+      market.ticker,
+      market.baseToken.name,
+      market.baseToken.symbol,
+      market.quoteToken.symbol
+    ]
+      .map((piece) => piece.toLowerCase())
+      .some((value) => value.startsWith(formattedSearch))
+  })
+
+  if (searchWithStartWith.length) {
+    return searchWithStartWith
+  }
+
+  return activeMarkets.filter(({ market }) => {
+    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
+      market.marketId
+    )
+
+    if (isDeprecatedMarket) {
+      return market.ticker.toLowerCase() === formattedSearch
+    }
+
+    return [
+      market.ticker,
+      market.baseToken.name,
+      market.baseToken.symbol,
+      market.quoteToken.symbol
+    ]
+      .map((piece) => piece.toLowerCase())
+      .some((value) => value.includes(formattedSearch))
+  })
+})
 
 const sortedMarkets = computed(() => {
   const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
@@ -177,12 +131,85 @@ const sortedMarkets = computed(() => {
           .toNumber()
       }
 
-      return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      if (m2.volumeInUsd.toFixed() !== m1.volumeInUsd.toFixed()) {
+        return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
+      }
+
+      if (m1.market.isVerified && !m2.market.isVerified) {
+        return -1
+      }
+
+      if (!m1.market.isVerified && m2.market.isVerified) {
+        return 1
+      }
+
+      return 0
     }
   )
 
   return isAscending.value ? markets.reverse() : markets
 })
+
+function verifyMarketIsPartOfType(market: UiMarketWithToken) {
+  if (props.activeCategory === MarketCategoryType.All) {
+    return true
+  }
+
+  if (props.activeCategory === MarketCategoryType.Favorites) {
+    return appStore.favoriteMarkets.includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Perps) {
+    return [
+      SharedMarketType.Futures,
+      SharedMarketType.Perpetual,
+      SharedMarketType.Derivative
+    ].includes(market.type)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Spot) {
+    return market.type === SharedMarketType.Spot
+  }
+
+  if (props.activeCategory === MarketCategoryType.Trending) {
+    return (marketCategoriesMap.trending || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Injective) {
+    return (marketCategoriesMap.injective || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Layer1) {
+    return (marketCategoriesMap.layer1 || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Layer2) {
+    return (marketCategoriesMap.layer2 || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Experimental) {
+    return (
+      !market.isVerified &&
+      !(marketCategoriesMap.deprecated || []).includes(market.marketId)
+    )
+  }
+
+  if (props.activeCategory === MarketCategoryType.DeFi) {
+    return (marketCategoriesMap.defi || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.AI) {
+    return (marketCategoriesMap.ai || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.Meme) {
+    return (marketCategoriesMap.meme || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.RWA) {
+    return (marketCategoriesMap.rwaMarkets || []).includes(market.marketId)
+  }
+}
 
 function onAscending(value: boolean) {
   isAscending.value = value
@@ -191,43 +218,6 @@ function onAscending(value: boolean) {
 function onSortBy(value: MarketHeaderType) {
   sortBy.value = value
 }
-
-function fetchSpotPageData() {
-  Promise.all([
-    positionStore.fetchPositions(),
-    derivativeStore.fetchSubaccountOrders()
-  ]).catch($onError)
-}
-
-function fetchFuturesPageData() {
-  Promise.all([spotStore.fetchSubaccountOrders()]).catch($onError)
-}
-
-function fetchMarketsPageData() {
-  Promise.all([
-    positionStore.fetchPositions(),
-    spotStore.fetchSubaccountOrders(),
-    derivativeStore.fetchSubaccountOrders()
-  ]).catch($onError)
-}
-
-function fetchUserOrdersAndPositions() {
-  if ((route?.name as string).includes(TradeSubPage.Spot)) {
-    fetchSpotPageData()
-
-    return
-  }
-
-  if ((route?.name as string).includes(TradeSubPage.Futures)) {
-    fetchFuturesPageData()
-
-    return
-  }
-
-  fetchMarketsPageData()
-}
-
-onSubaccountChange(fetchUserOrdersAndPositions)
 </script>
 
 <template>

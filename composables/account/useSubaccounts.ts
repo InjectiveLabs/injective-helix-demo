@@ -4,9 +4,7 @@ export function useSubaccounts() {
   const subaccount = computed({
     get: (): string => accountStore.subaccountId,
     set: (value: string) => {
-      accountStore.$patch({
-        subaccountId: value
-      })
+      accountStore.updateSubaccount(value)
     }
   })
 

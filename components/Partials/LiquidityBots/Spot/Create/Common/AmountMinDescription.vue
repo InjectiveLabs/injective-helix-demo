@@ -1,29 +1,23 @@
 <script lang="ts" setup>
 import { UiSpotMarket, InvestmentTypeGst } from '@/types'
 
-defineProps({
-  threshold: {
-    type: String,
-    required: true
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    required: true
-  },
-
-  investmentType: {
-    type: String as PropType<InvestmentTypeGst>,
-    default: ''
+withDefaults(
+  defineProps<{
+    market: UiSpotMarket
+    threshold: string
+    investmentType?: InvestmentTypeGst
+  }>(),
+  {
+    investmentType: InvestmentTypeGst.Quote
   }
-})
+)
 </script>
 
 <template>
   <CommonHeaderTooltip
-    class="inline-block text-xs font-semibold"
-    text-color-class="text-gray-500"
-    border-color-class="border-gray-500"
+    class="inline-block text-xs font-semibold tracking-[0.3px]"
+    text-color-class="text-coolGray-450"
+    border-color-class="border-coolGray-450"
     :tooltip="
       $t('sgt.minInvestmentTooltip', {
         amount: threshold,

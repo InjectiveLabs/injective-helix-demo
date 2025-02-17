@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { SpotTradeForm, SpotTradeFormField, TradeTypes } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
+import {
+  SpotTradeForm,
+  SpotTradeFormField,
+  TradeTypes,
+  SpotMarketCyTags
+} from '@/types'
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
@@ -13,12 +20,15 @@ function toggle() {
 <template>
   <div>
     <div
-      class="flex justify-between items-center cursor-pointer py-2"
+      class="flex justify-between items-center cursor-pointer"
+      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettings)"
       @click="toggle"
     >
-      <p class="text-sm font-semibold select-none">Advanced Settings</p>
+      <p class="text-xs font-semibold select-none text-white">
+        {{ $t('trade.advancedSettings') }}
+      </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <SharedIcon name="chevron-down" is-sm />
+        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 

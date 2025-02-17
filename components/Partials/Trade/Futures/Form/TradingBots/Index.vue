@@ -1,19 +1,36 @@
 <script setup lang="ts">
-import { TradeSubPage } from '@/types'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  DerivativeGridTradingForm
+} from '@/types'
 
-const router = useRouter()
-const route = useRoute()
+const futuresMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-onMounted(() => {
-  router.replace({
-    name: TradeSubPage.Futures,
-    params: {
-      slug: route.params.slug
-    }
-  })
+const gridStrategyStore = useGridStrategyStore()
+
+useForm<DerivativeGridTradingForm>({
+  keepValuesOnUnmount: true
 })
+
+const activeStrategy = computed(() =>
+  gridStrategyStore.activeDerivativeStrategies.find(
+    (strategy) => strategy.marketId === futuresMarket.value?.marketId
+  )
+)
 </script>
 
 <template>
-  <div>Perp Trading Bots WIP</div>
+  <div class="p-4">
+    <PartialsTradingBotsDerivativeStrategyDetails
+      v-if="activeStrategy"
+      :active-strategy="activeStrategy"
+    />
+
+    <div v-else>
+      <div>
+        <PartialsTradeFuturesFormTradingBotsManual />
+      </div>
+    </div>
+  </div>
 </template>

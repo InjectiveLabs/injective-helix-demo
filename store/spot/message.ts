@@ -2,6 +2,7 @@ import {
   SpotLimitOrder,
   SpotOrderHistory,
   MsgCancelSpotOrder,
+  MsgBatchUpdateOrders,
   MsgCreateSpotLimitOrder,
   MsgBatchCancelSpotOrders,
   MsgCreateSpotMarketOrder,
@@ -14,6 +15,7 @@ import { orderSideToOrderType } from '@shared/transformer/trade'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { convertCw20ToBankBalance } from '@/app/utils/market'
+import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { UiSpotMarket } from '@/types'
 
 const fetchBalances = (
@@ -23,10 +25,12 @@ const fetchBalances = (
     shouldFetchCw20Balances: boolean
   } = { shouldFetchCw20Balances: false }
 ) => {
+  const spotStore = useSpotStore()
   const accountStore = useAccountStore()
 
   return backupPromiseCall(() =>
     Promise.all([
+      spotStore.fetchSubaccountOrders(),
       accountStore.fetchAccountPortfolioBalances(),
       ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
     ])
@@ -109,8 +113,11 @@ export const submitLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const priceToFixed = spotPriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -185,8 +192,11 @@ export const submitMarketOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const priceToFixed = spotPriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -259,8 +269,11 @@ export const submitStopLimitOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const messages = MsgCreateSpotLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
@@ -315,8 +328,11 @@ export const submitStopMarketOrder = async ({
     return
   }
 
-  await appStore.validateGeoIpBasedOnSpotAction(market)
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
 
   const messages = MsgCreateSpotMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
@@ -342,5 +358,46 @@ export const submitStopMarketOrder = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
+  await fetchBalances()
+}
+
+export async function submitChase({
+  order,
+  market,
+  price
+}: {
+  order: SpotLimitOrder
+  market: UiSpotMarket
+  price: BigNumberInBase
+}) {
+  const sharedWalletStore = useSharedWalletStore()
+
+  const messages = MsgBatchUpdateOrders.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    subaccountId: order.subaccountId,
+    spotOrdersToCancel: [
+      {
+        marketId: order.marketId,
+        subaccountId: order.subaccountId,
+        orderHash: order.orderHash
+      }
+    ],
+    spotOrdersToCreate: [
+      {
+        marketId: market.marketId,
+        feeRecipient: FEE_RECIPIENT,
+        price: spotPriceToChainPriceToFixed({
+          value: price.toFixed(),
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        triggerPrice: '0',
+        quantity: order.quantity,
+        orderType: orderSideToChaseOrderType(order.orderSide)
+      }
+    ]
+  })
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
   await fetchBalances()
 }

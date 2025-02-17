@@ -1,41 +1,38 @@
 <script setup lang="ts">
-import { Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import {
-  BigNumberInBase,
-  BigNumberInWei,
-  Status,
-  StatusType
-} from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   Modal,
   TakeProfitStopLossForm,
   TakeProfitStopLossFormField
 } from '@/types'
 
-const props = defineProps({
-  position: {
-    type: Object as PropType<Position | PositionV2 | undefined>,
-    default: undefined
-  }
-})
-
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
-const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
-
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
+
+const props = withDefaults(
+  defineProps<{
+    position: PositionV2
+  }>(),
+  {}
+)
+
+const {
+  liquidationPrice,
+  price: entryPrice,
+  markPriceNotScaled
+} = useDerivativePosition(computed(() => props.position))
+
+const status = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(
   () => modalStore.modals[Modal.AddTakeProfitStopLoss]
 )
-
-function closeModal() {
-  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
-}
 
 const market = computed(() =>
   derivativeStore.markets.find(
@@ -45,25 +42,13 @@ const market = computed(() =>
 
 const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
 
-const markPrice = computed(() =>
-  new BigNumberInWei(props.position?.markPrice || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
-const liquidationPrice = computed(() =>
-  new BigNumberInWei(props.position?.liquidationPrice || 0).toBase(
-    market.value?.quoteToken.decimals
-  )
-)
-
 const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
   useStringField({
     name: TakeProfitStopLossFormField.TakeProfit,
     initialValue: '',
     rule: '',
     dynamicRule: computed(() => {
-      const minValueRule = `minValue:${markPrice.value.toFixed(
+      const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
         market.value?.priceDecimals || 2
       )}`
       const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
@@ -89,7 +74,7 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
           market.value?.priceDecimals || 2
         )}`
 
-        const maxValueRule = `maxValue:${markPrice.value.toFixed(
+        const maxValueRule = `maxValue:${markPriceNotScaled.value.toFixed(
           market.value?.priceDecimals || 2
         )}`
 
@@ -99,7 +84,7 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
           market.value?.priceDecimals || 2
         )}`
 
-        const minValueRule = `minValue:${markPrice.value.toFixed(
+        const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
           market.value?.priceDecimals || 2
         )}`
 
@@ -108,14 +93,50 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
     })
   })
 
-const entryPrice = computed(() =>
-  new BigNumberInWei(props.position?.entryPrice || 0).toBase(
-    market.value?.quoteToken.decimals
+const isTpDisabled = computed(() => {
+  const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
+
+  return derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      order.orderType === orderType &&
+      order.marketId === props.position.marketId &&
+      order.subaccountId === props.position.subaccountId
   )
+})
+
+const isSlDisabled = computed(() => {
+  const orderType = isBuy.value ? OrderSide.StopSell : OrderSide.StopBuy
+
+  return derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      order.orderType === orderType &&
+      order.marketId === props.position.marketId &&
+      order.subaccountId === props.position.subaccountId
+  )
+})
+
+const tpTriggerPrice = computed(() =>
+  isTpDisabled.value?.triggerPrice
+    ? sharedToBalanceInToken({
+        value: isTpDisabled.value.triggerPrice,
+        decimalPlaces: market.value?.quoteToken.decimals || 8
+      })
+    : undefined
+)
+
+const slTriggerPrice = computed(() =>
+  isSlDisabled.value?.triggerPrice
+    ? sharedToBalanceInToken({
+        value: isSlDisabled.value.triggerPrice,
+        decimalPlaces: market.value?.quoteToken.decimals || 8
+      })
+    : undefined
 )
 
 const takeProfitPnl = computed(() => {
-  const takeProfitPrice = new BigNumberInBase(takeProfitValue.value || 0)
+  const takeProfitPrice = tpTriggerPrice.value
+    ? new BigNumberInBase(tpTriggerPrice.value)
+    : new BigNumberInBase(takeProfitValue.value || 0)
 
   const takeProfitTotal = takeProfitPrice.times(props.position?.quantity || 0)
   const entryTotal = entryPrice.value.times(props.position?.quantity || 0)
@@ -126,7 +147,9 @@ const takeProfitPnl = computed(() => {
 })
 
 const stopLossPnl = computed(() => {
-  const stopLossPrice = new BigNumberInBase(stopLossValue.value || 0)
+  const stopLossPrice = slTriggerPrice.value
+    ? new BigNumberInBase(slTriggerPrice.value)
+    : new BigNumberInBase(stopLossValue.value || 0)
 
   const stopLossTotal = stopLossPrice.times(props.position?.quantity || 0)
   const entryTotal = entryPrice.value.times(props.position?.quantity || 0)
@@ -134,29 +157,6 @@ const stopLossPnl = computed(() => {
   return isBuy.value
     ? stopLossTotal.minus(entryTotal)
     : entryTotal.minus(stopLossTotal)
-})
-
-watch(
-  () => isModalOpen.value,
-  () => {
-    resetForm()
-  }
-)
-
-const isTpDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
-  )
-})
-
-const isSlDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.StopSell : OrderSide.StopBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
-  )
 })
 
 async function submitTpSl() {
@@ -189,6 +189,56 @@ async function submitTpSl() {
       status.setIdle()
     })
 }
+
+function closeModal() {
+  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+}
+
+const cancelTpStatus = reactive(new Status(StatusType.Idle))
+const cancelSlStatus = reactive(new Status(StatusType.Idle))
+
+function cancelTp() {
+  if (!isTpDisabled.value) {
+    return
+  }
+
+  cancelTpStatus.setLoading()
+
+  derivativeStore
+    .cancelOrder(isTpDisabled.value)
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+    .finally(() => {
+      cancelTpStatus.setIdle()
+    })
+}
+
+function cancelSl() {
+  if (!isSlDisabled.value) {
+    return
+  }
+
+  cancelSlStatus.setLoading()
+
+  derivativeStore
+    .cancelOrder(isSlDisabled.value)
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+    .finally(() => {
+      cancelSlStatus.setIdle()
+    })
+}
+
+watch(
+  () => isModalOpen.value,
+  () => {
+    resetForm()
+  }
+)
 </script>
 
 <template>
@@ -204,17 +254,38 @@ async function submitTpSl() {
         <div class="font-semibold text-xs">
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.entryPrice') }}:</p>
-            <p>{{ entryPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: entryPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.markPrice') }}:</p>
-            <p>{{ markPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: markPriceNotScaled.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.estLiquidationPrice') }}:</p>
-            <p>{{ liquidationPrice.toFormat(market.priceDecimals) }}</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: liquidationPrice.toFixed(),
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
@@ -231,77 +302,133 @@ async function submitTpSl() {
         </div>
 
         <AppInputField
+          v-if="!isTpDisabled"
           v-model="takeProfitValue"
           :decimals="market.priceDecimals"
           placeholder="Take Profit"
           class="placeholder:font-sans"
-          :disabled="isTpDisabled"
+          :disabled="!!isTpDisabled"
         />
 
         <p v-if="takeProfitErrorMessage" class="error-message">
           {{ takeProfitErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
-          {{
-            $t('trade.takeProfitDetails', {
-              price: takeProfitValue ? takeProfitValue : '—'
-            })
-          }}
-        </p>
+        <i18n-t
+          keypath="trade.takeProfitDetails"
+          tag="p"
+          class="text-xs text-coolGray-400"
+        >
+          <template #price>
+            <span class="inline-flex">
+              <span v-if="!takeProfitValue && !tpTriggerPrice"> &mdash;</span>
+              <AppAmount
+                v-else
+                v-bind="{
+                  amount: tpTriggerPrice || takeProfitValue,
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </span>
+          </template>
+        </i18n-t>
 
         <p class="text-xs">
           <span>{{ $t('trade.profitLoss') }}: </span>
 
-          <span v-if="!takeProfitValue">&dash;</span>
+          <span v-if="!takeProfitValue && !tpTriggerPrice">&mdash;</span>
           <span
             v-else
             :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold"
+            class="font-bold inline-flex gap-1"
           >
-            {{ takeProfitPnl.toFormat(2) }}
-            {{ market.quoteToken.symbol }}
+            <AppAmount
+              v-bind="{
+                amount: takeProfitPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
+            <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>
+
+        <AppButton
+          v-if="tpTriggerPrice"
+          size="sm"
+          class="w-full"
+          variant="danger"
+          v-bind="{ status: cancelTpStatus }"
+          @click="cancelTp"
+        >
+          {{ $t('trade.cancelTakeProfit') }}
+        </AppButton>
 
         <div class="border-b"></div>
 
         <AppInputField
+          v-if="!isSlDisabled"
           v-model="stopLossValue"
           :decimals="market.priceDecimals"
           placeholder="Stop Loss"
           class="placeholder:font-sans"
-          :disabled="isSlDisabled"
+          :disabled="!!isSlDisabled"
         />
 
         <p v-if="stopLossErrorMessage" class="error-message">
           {{ stopLossErrorMessage }}
         </p>
 
-        <p class="text-xs text-gray-400">
-          {{
-            $t('trade.stopLossDetails', {
-              price: stopLossValue ? stopLossValue : '—'
-            })
-          }}
-        </p>
+        <i18n-t
+          keypath="trade.stopLossDetails"
+          tag="p"
+          class="text-xs text-coolGray-400"
+        >
+          <template #price>
+            <span class="inline-flex">
+              <span v-if="!stopLossValue && !slTriggerPrice"> &mdash;</span>
+              <AppAmount
+                v-else
+                v-bind="{
+                  amount: slTriggerPrice || stopLossValue,
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </span>
+          </template>
+        </i18n-t>
 
         <p class="text-xs">
           <span>{{ $t('trade.profitLoss') }}: </span>
 
-          <span v-if="!stopLossValue">&dash;</span>
+          <span v-if="!stopLossValue && !slTriggerPrice">&dash;</span>
           <span
             v-else
             :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold"
+            class="font-bold inline-flex gap-1"
           >
-            {{ stopLossPnl.toFormat(2) }}
-            {{ market.quoteToken.symbol }}
+            <AppAmount
+              v-bind="{
+                amount: stopLossPnl.toFixed(),
+                decimalPlaces: market.priceDecimals
+              }"
+            />
+            <span>{{ market.quoteToken.symbol }}</span>
           </span>
         </p>
+
+        <AppButton
+          v-if="slTriggerPrice"
+          size="sm"
+          class="w-full"
+          variant="danger"
+          v-bind="{ status: cancelSlStatus }"
+          @click="cancelSl"
+        >
+          {{ $t('trade.cancelStopLoss') }}
+        </AppButton>
       </div>
 
-      <div class="mt-4">
+      <div v-if="!(isTpDisabled && isSlDisabled)" class="mt-4 pt-4 border-t">
         <AppButton
           :disabled="Object.values(errors).length > 0"
           v-bind="{ status }"

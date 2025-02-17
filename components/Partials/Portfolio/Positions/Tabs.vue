@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { PositionsFilterField } from '@/types'
 
+const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 
 const markets = computed(() => derivativeStore.markets)
@@ -16,7 +17,11 @@ const { value: sideValue } = useStringField({
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector
+      :include-bots-subaccounts="
+        appStore.userState.preferences.showGridTradingSubaccounts
+      "
+    />
 
     <CommonTabMarketSelector v-model="marketValue" v-bind="{ markets }" />
     <CommonTabSideFilter v-model="sideValue" />

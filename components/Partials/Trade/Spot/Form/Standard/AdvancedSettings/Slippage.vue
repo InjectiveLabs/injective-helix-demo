@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { SpotTradeFormField } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { SpotTradeFormField, SpotMarketCyTags } from '@/types'
 
 const { value: isSlippageOnValue } = useBooleanField({
   name: SpotTradeFormField.IsSlippageOn,
@@ -17,15 +18,18 @@ const { value: slippageValue } = useStringField({
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
-    <AppCheckbox2 v-model="isSlippageOnValue" class="flex">
+  <div
+    class="flex items-center justify-between"
+    :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsSlippage)"
+  >
+    <AppCheckbox2 v-model="isSlippageOnValue" class="flex text-white">
       Slippage
     </AppCheckbox2>
     <AppInputField
       v-bind="{ decimals: 2, max: 100, min: 0 }"
       v-model="slippageValue"
       no-style
-      wrapper-class="border text-xs min-w-0 basis-24 px-2 rounded"
+      wrapper-class="border text-xs min-w-0 basis-24 px-2 rounded text-white"
     >
       <template #right>%</template>
     </AppInputField>

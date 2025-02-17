@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, PortfolioSubPage } from '@/types'
-import { TRADING_MESSAGES } from '~/app/data/trade'
 
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -45,8 +46,11 @@ function disconnectAutoSign() {
 <template>
   <div>
     <div class="flex items-center p-4">
-      <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-        <SharedIcon name="chevron" />
+      <NuxtLink
+        :to="{ name: PortfolioSubPage.Settings }"
+        class="pr-4 flex items-center"
+      >
+        <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-6 w-6 min-w-6" />
       </NuxtLink>
 
       <h3 class="portfolio-title">

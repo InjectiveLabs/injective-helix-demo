@@ -88,11 +88,11 @@ function onPageChange(value: number) {
 <template>
   <AppHocLoading
     :is-loading="status.isLoading() || !campaignStore.campaign"
-    class="h-full container"
+    is-full-screen
   >
     <div
       v-if="campaignStore.campaign"
-      class="mx-auto max-w-7xl w-full px-4 space-y-8 mt-6"
+      class="mx-auto pt-8 max-w-7xl w-full px-4 space-y-8 mt-6"
     >
       <PartialsLiquidityCampaignHeader
         v-if="market"

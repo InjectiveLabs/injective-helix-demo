@@ -3,23 +3,31 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  StrategyType,
+  TradingStrategy,
   MsgExecuteContractCompat,
   ExecArgRemoveGridStrategy,
   spotPriceToChainPriceToFixed,
   ExecArgCreateSpotGridStrategy,
+  ExecArgCreatePerpGridStrategy,
+  derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed,
-  getGenericAuthorizationFromMessageType
+  getGenericAuthorizationFromMessageType,
+  MsgWithdraw
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
-import spotGridMarkets from '@/app/data/spotGridMarkets.json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
   UiSpotMarket,
   SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  DerivativeGridTradingField,
+  DerivativeGridTradingForm,
+  UiDerivativeMarket
 } from '@/types'
 
 export const createStrategy = async (
@@ -30,12 +38,14 @@ export const createStrategy = async (
     [SpotGridTradingField.UpperPrice]: upperPrice,
     [SpotGridTradingField.LowerPrice]: lowerPrice,
     [SpotGridTradingField.TakeProfit]: takeProfit,
-    [SpotGridTradingField.SettleIn]: isSettleInEnabled,
     [SpotGridTradingField.QuoteInvestmentAmount]: quoteAmount,
     [SpotGridTradingField.BaseInvestmentAmount]: baseAmount,
     [SpotGridTradingField.SellBaseOnStopLoss]: isSellBaseOnStopLossEnabled,
     [SpotGridTradingField.BuyBaseOnTakeProfit]: isBuyBaseOnTakeProfitEnabled,
-    [SpotGridTradingField.StrategyType]: strategyType
+    [SpotGridTradingField.StrategyType]: strategyType,
+    [SpotGridTradingField.IsTrailingEnabled]: isTrailingEnabled,
+    [SpotGridTradingField.TrailingLower]: trailingLower,
+    [SpotGridTradingField.TrailingUpper]: trailingUpper
   }: Partial<SpotGridTradingForm>,
   market?: UiSpotMarket
 ) => {
@@ -78,6 +88,22 @@ export const createStrategy = async (
   if (!gridMarket) {
     return
   }
+
+  const trailingArgs =
+    isTrailingEnabled && trailingLower && trailingUpper
+      ? {
+          lowerTrailing: spotPriceToChainPriceToFixed({
+            value: trailingLower,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          }),
+          upperTrailing: spotPriceToChainPriceToFixed({
+            value: trailingUpper,
+            baseDecimals: actualMarket.baseToken.decimals,
+            quoteDecimals: actualMarket.quoteToken.decimals
+          })
+        }
+      : undefined
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
@@ -150,8 +176,9 @@ export const createStrategy = async (
         baseDecimals: actualMarket.baseToken.decimals,
         quoteDecimals: actualMarket.quoteToken.decimals
       }),
-      exitType: isSettleInEnabled && exitType ? exitType : ExitType.Default,
-      strategyType
+      exitType: exitType || ExitType.Default,
+      strategyType,
+      trailingArithmetic: trailingArgs
     }),
 
     funds
@@ -176,9 +203,36 @@ export const createStrategy = async (
 
   const messages: Msgs[] = []
 
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
+
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
   }
+
   // we need to add it after the authz messages
   messages.push(message)
 
@@ -214,7 +268,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = spotGridMarkets.find(
+  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
     (m) => m.slug === gridStrategyStore.spotMarket!.slug
   )
 
@@ -252,7 +306,6 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -278,6 +331,400 @@ export const removeStrategyForSubaccount = async (
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export const createPerpStrategy = async (
+  {
+    [DerivativeGridTradingField.Grids]: grids,
+    [DerivativeGridTradingField.Margin]: margin,
+    [DerivativeGridTradingField.LowerPrice]: lowerPrice,
+    [DerivativeGridTradingField.UpperPrice]: upperPrice,
+    [DerivativeGridTradingField.Leverage]: leverage,
+    [DerivativeGridTradingField.StopLoss]: stopLoss,
+    [DerivativeGridTradingField.TakeProfit]: takeProfit
+  }: Partial<DerivativeGridTradingForm>,
+  market: UiDerivativeMarket
+) => {
+  if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
+    return
+  }
+
+  const gridMarket = derivativeGridMarkets.find((m) => m.slug === market.slug)
+
+  if (!gridMarket) {
+    return
+  }
+
+  const authZStore = useAuthZStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const levels = Number(grids)
+
+  if (!sharedWalletStore.injectiveAddress) {
+    return
+  }
+
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    throw new GeneralException(new Error('AuthZ not supported for this action'))
+  }
+
+  const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.slug
+  )
+
+  const funds = [
+    {
+      denom: market.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: margin,
+        baseDecimals: market.quoteToken.decimals
+      })
+    }
+  ]
+
+  const stopLossToChain = stopLoss
+    ? derivativePriceToChainPriceToFixed({
+        value: stopLoss,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    : undefined
+
+  const takeProfitToChain = takeProfit
+    ? derivativePriceToChainPriceToFixed({
+        value: takeProfit,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    : undefined
+
+  const args = ExecArgCreatePerpGridStrategy.fromJSON({
+    levels,
+    stopLoss: stopLossToChain,
+    takeProfit: takeProfitToChain,
+    subaccountId: gridStrategySubaccountId,
+
+    lowerBound: derivativePriceToChainPriceToFixed({
+      value: lowerPrice,
+      quoteDecimals: market.quoteToken.decimals
+    }),
+
+    upperBound: derivativePriceToChainPriceToFixed({
+      value: upperPrice,
+      quoteDecimals: market.quoteToken.decimals
+    }),
+
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
+  })
+
+  const message = MsgExecuteContractCompat.fromJSON({
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: args,
+    funds
+  })
+
+  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
+    (messageType) =>
+      MsgGrant.fromJSON({
+        grantee: gridMarket.contractAddress,
+        granter: sharedWalletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
+      })
+  )
+
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants.some(
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
+    )
+  )
+
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  const messages: Msgs[] = []
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
+
+  if (!isAuthorized) {
+    messages.push(...grantAuthZMessages)
+  }
+
+  // we need to add it after the authz messages
+  messages.push(message)
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      authZStore.fetchGrants(),
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export async function createSpotLiquidityBot(params: {
+  grids: number
+  lowerBound: string
+  upperBound: string
+
+  baseAmount?: string
+  quoteAmount?: string
+
+  lowerTrailingBound: string
+  upperTrailingBound: string
+
+  market: UiSpotMarket
+}) {
+  const authZStore = useAuthZStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const {
+    grids,
+    market,
+    lowerBound,
+    upperBound,
+    baseAmount,
+    quoteAmount,
+    lowerTrailingBound,
+    upperTrailingBound
+  } = params
+
+  const subaccountId = addressAndMarketSlugToSubaccountId(
+    sharedWalletStore.address,
+    market.slug
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+
+  if (!gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: market.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: market.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: market.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: market.quoteToken.decimals
+      })
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
+    funds,
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      subaccountId,
+      levels: grids,
+      lowerBound: spotPriceToChainPriceToFixed({
+        value: lowerBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
+      upperBound: spotPriceToChainPriceToFixed({
+        value: upperBound,
+        baseDecimals: market.baseToken.decimals,
+        quoteDecimals: market.quoteToken.decimals
+      }),
+      trailingArithmetic: {
+        lowerTrailing: spotPriceToChainPriceToFixed({
+          value: lowerTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        upperTrailing: spotPriceToChainPriceToFixed({
+          value: upperTrailingBound,
+          baseDecimals: market.baseToken.decimals,
+          quoteDecimals: market.quoteToken.decimals
+        }),
+        lpMode: true
+      }
+    })
+  })
+
+  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
+    (messageType) =>
+      MsgGrant.fromJSON({
+        grantee: gridMarket.contractAddress,
+        granter: sharedWalletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
+      })
+  )
+
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants.some(
+      (grant) =>
+        grant.authorizationType.endsWith(m) &&
+        grant.grantee === gridMarket?.contractAddress
+    )
+  )
+
+  const messages: Msgs[] = []
+
+  const withdrawMsgs = (accountStore.subaccountBalancesMap[subaccountId] || [])
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
+
+  if (!isAuthorized) {
+    messages.push(...grantAuthZMessages)
+  }
+
+  messages.push(msg)
+
+  await sharedWalletStore.validateAndQueue()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export async function copySpotGridTradingStrategy({
+  baseAmount,
+  quoteAmount,
+  strategy
+}: {
+  baseAmount?: string
+  quoteAmount?: string
+  strategy: TradingStrategy
+}) {
+  const spotStore = useSpotStore()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
+  const spotMarket = spotStore.markets.find(
+    (m) => m.marketId === strategy.marketId
+  )
+
+  const gridMarket = spotGridMarkets.find((m) => m.slug === spotMarket?.slug)
+
+  if (!spotMarket || !gridMarket) {
+    return
+  }
+
+  const funds = []
+
+  if (baseAmount && !new BigNumberInBase(baseAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.baseToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: baseAmount,
+        baseDecimals: spotMarket.baseToken.decimals
+      })
+    })
+  }
+
+  if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
+    funds.push({
+      denom: spotMarket.quoteToken.denom,
+      amount: spotQuantityToChainQuantityToFixed({
+        value: quoteAmount,
+        baseDecimals: spotMarket.quoteToken.decimals
+      })
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
+    contractAddress: gridMarket.contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    execArgs: ExecArgCreateSpotGridStrategy.fromJSON({
+      levels: Number(strategy.numberOfGridLevels),
+      lowerBound: strategy.lowerBound,
+      upperBound: strategy.upperBound,
+      subaccountId: addressAndMarketSlugToSubaccountId(
+        sharedWalletStore.address,
+        spotMarket.slug
+      ),
+      trailingArithmetic:
+        strategy.trailUpPrice && strategy.trailDownPrice
+          ? {
+              lowerTrailing: strategy.trailDownPrice,
+              upperTrailing: strategy.trailUpPrice,
+              lpMode: strategy.strategyType === StrategyType.ArithmeticLP
+            }
+          : undefined
+    }),
+    funds
+  })
+
+  await sharedWalletStore.validateAndQueue()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
 
   backupPromiseCall(() =>
     Promise.all([

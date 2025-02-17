@@ -8,17 +8,19 @@ import {
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 
-const props = defineProps({
-  isLiquidity: Boolean,
-
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    strategy: TradingStrategy
+    isLiquidity?: boolean
+  }>(),
+  {
+    strategy: undefined,
+    isLiquidity: false
   }
-})
+)
 
 const spotStore = useSpotStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -36,7 +38,7 @@ const market = computed(
 
 const activeStrategy = computed(
   () =>
-    gridStrategyStore.activeStrategies.find(
+    gridStrategyStore.activeSpotStrategies.find(
       (strategy) =>
         strategy.contractAddress ===
         getSgtContractAddressFromSlug(market.value.slug)
@@ -95,7 +97,7 @@ function removeStrategy() {
         sharedWalletStore.isAutoSignEnabled
       "
       v-bind="{ status }"
-      is-lg
+      size="lg"
       variant="danger"
       class="w-full"
       @click="removeStrategy"

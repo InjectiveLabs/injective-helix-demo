@@ -1,12 +1,7 @@
 import { injToken } from '@shared/data/token'
-import marketCategorySlugs from './category.json'
+import { marketCategoriesMap } from '@/app/json'
 import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
-import {
-  NotLiquidMarket,
-  MarketPromotion,
-  MarketTypeOption,
-  UiMarketWithToken
-} from '@/types'
+import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
   slug: string
@@ -14,34 +9,19 @@ export interface UnTradableMarket {
 
 export const betaMarketSlugs = [] as string[]
 
-export const newMarketsSlug = marketCategorySlugs.newMarketsCategorySlugs || []
-
-export const experimentalMarketsSlug =
-  marketCategorySlugs.experimentalCategorySlugs || []
-
-export const slugsToIncludeInCosmosCategory =
-  marketCategorySlugs.cosmosCategorySlugs || []
-
-export const slugsToIncludeInEthereumCategory =
-  marketCategorySlugs.ethereumCategorySlugs || []
-
-export const slugsToIncludeInInjectiveCategory =
-  marketCategorySlugs.injectiveCategorySlugs || []
-
-export const slugsToIncludeInSolanaCategory =
-  marketCategorySlugs.solanaCategorySlugs || []
-
-export const olpSlugsToIncludeInLowVolume =
-  marketCategorySlugs.olpLowVolumeCategorySlugs || []
-
-export const slugsToIncludeInRWACategory =
-  marketCategorySlugs.rwaCategorySlugs || []
+export const rwaMarketIds = marketCategoriesMap.rwa || []
+export const newMarketsMarketIds = marketCategoriesMap.newMarkets || []
 
 export const excludedPriceDeviationSlugs = [] as string[]
+export const marketIdsToHide = [] as string[]
 
+// todo: refactor/re-implement this functionality when we have a use case in the future
 export const upcomingMarkets = [
   //
 ] as Array<UiMarketWithToken>
+
+export const deprecatedMarkets =
+  IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
 
 export const notLiquidMarkets = [
   {
@@ -49,9 +29,6 @@ export const notLiquidMarkets = [
     redirectionSlug: 'sol-usdt'
   }
 ] as NotLiquidMarket[]
-
-export const deprecatedMarkets =
-  IS_DEVNET || IS_TESTNET ? [] : ([] as Array<UiMarketWithToken>)
 
 export const marketPromotions = [
   {
@@ -92,27 +69,6 @@ export const SETTLED_PERP_MARKETS_LAST_PRICE = {} as {
   [key: string]: { price?: string; denom?: string } | undefined
 }
 
-export enum MarketTheme {
-  Memes = 'memes',
-  L1L2 = 'l1l2',
-  Infrastructure = 'infrastructure',
-  DefiDex = 'defi-dex',
-  NFT = 'nft',
-  LiquidStaking = 'liquid-staking',
-  Stablecoins = 'stablecoins'
-}
-
-export const MARKET_THEMES_SLUGS = {
-  [MarketTheme.Memes]: ['ninja-inj', 'nonja-inj'],
-  [MarketTheme.L1L2]: ['weth-usdt', 'btc-usdt-perp', 'inj-usdt'],
-  [MarketTheme.Infrastructure]: ['pyth-usdt-perp'],
-  [MarketTheme.DefiDex]: ['sol-usdt'],
-  [MarketTheme.NFT]: ['talis-inj'],
-  [MarketTheme.LiquidStaking]: ['hdro-inj', 'hinj/inj'],
-  [MarketTheme.Stablecoins]: ['usdc-usdt', 'usde-usdt']
-}
-
-export const marketTypeOptionsToHideCategory = [
-  MarketTypeOption.NewListings,
-  MarketTypeOption.Permissionless
+export const RWA_TRADFI_MARKET_IDS = [
+  '0x2236b4cd97300c79fca5c2fff4b647ab24a6d48c1554255ff8ec7cf29429ba74'
 ]

@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
 import {
+  SpotMarket,
+  SpotLimitOrder,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
+import {
   SharedUiSpotTrade,
   SharedUiMarketSummary,
   SharedUiOrderbookWithSequence
@@ -16,14 +21,14 @@ import {
 } from '@shared/transformer/market'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
-  SpotMarket,
-  SpotLimitOrder,
-  SpotOrderHistory
-} from '@injectivelabs/sdk-ts'
-import {
-  cancelBankBalanceStream,
-  cancelSubaccountBalanceStream
-} from '@/store/account/stream'
+  cancelOrder,
+  batchCancelOrder,
+  submitLimitOrder,
+  submitMarketOrder,
+  submitStopLimitOrder,
+  submitStopMarketOrder,
+  submitChase
+} from '@/store/spot/message'
 import {
   streamTrades,
   cancelTradesStream,
@@ -36,20 +41,11 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import {
-  cancelOrder,
-  batchCancelOrder,
-  submitLimitOrder,
-  submitMarketOrder,
-  submitStopLimitOrder,
-  submitStopMarketOrder
-} from '@/store/spot/message'
-import {
-  MARKETS_SLUGS,
-  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-} from '@/app/utils/constants'
+import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import { marketIdsToHide } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarket[]
@@ -88,8 +84,8 @@ export const useSpotStore = defineStore('spot', {
     activeMarketIds: (state) =>
       state.markets
         .filter(
-          ({ slug, marketId }) =>
-            MARKETS_SLUGS.spot.includes(slug) ||
+          ({ marketId }) =>
+            verifiedSpotMarketIds.includes(marketId) ||
             state.marketIdsFromQuery.includes(marketId)
         )
         .map((m) => m.marketId),
@@ -131,6 +127,7 @@ export const useSpotStore = defineStore('spot', {
         .filter((summary) => summary) as UiMarketAndSummary[]
   },
   actions: {
+    submitChase,
     streamTrades,
     cancelTradesStream,
     streamOrderbookUpdate,
@@ -150,39 +147,14 @@ export const useSpotStore = defineStore('spot', {
     submitStopLimitOrder,
     submitStopMarketOrder,
 
-    async init() {
+    async appendMarketId(marketIdFromQuery: string) {
       const spotStore = useSpotStore()
-
-      await spotStore.fetchMarkets()
-      await spotStore.fetchMarketsSummary()
-    },
-
-    async initIfNotInit() {
-      const spotStore = useSpotStore()
-
-      const marketsAlreadyFetched = spotStore.markets.length
-
-      if (marketsAlreadyFetched) {
-        await spotStore.fetchMarketsSummary()
-      } else {
-        await spotStore.init()
-      }
-    },
-
-    async initFromTradingPage(marketIdFromQuery?: string) {
-      const spotStore = useSpotStore()
-
-      if (!marketIdFromQuery) {
-        await spotStore.initIfNotInit()
-
-        return
-      }
 
       spotStore.$patch({
         marketIdsFromQuery: [...spotStore.marketIdsFromQuery, marketIdFromQuery]
       })
 
-      await spotStore.init()
+      await spotStore.fetchMarkets()
     },
 
     async fetchMarkets() {
@@ -219,15 +191,17 @@ export const useSpotStore = defineStore('spot', {
 
           return {
             ...formattedMarket,
-            isVerified: MARKETS_SLUGS.spot.includes(formattedMarket.slug)
+            isVerified: verifiedSpotMarketIds.includes(market.marketId)
           }
         })
-        .filter((market) => market) as UiSpotMarket[]
+        .filter(
+          (market) => market && !marketIdsToHide.includes(market.marketId)
+        ) as UiSpotMarket[]
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex = MARKETS_SLUGS.spot.indexOf(spotA.slug) || 1
-          const spotBIndex = MARKETS_SLUGS.spot.indexOf(spotB.slug) || 1
+          const spotAIndex = verifiedSpotSlugs.indexOf(spotA.slug) || 1
+          const spotBIndex = verifiedSpotSlugs.indexOf(spotB.slug) || 1
 
           return spotAIndex - spotBIndex
         })
@@ -236,10 +210,6 @@ export const useSpotStore = defineStore('spot', {
 
     async fetchMarketsSummary() {
       const spotStore = useSpotStore()
-
-      if (spotStore.marketsSummary.length > 0) {
-        return
-      }
 
       const marketsSummaries = (await spotCacheApi.fetchMarketsSummary()) || []
 
@@ -308,10 +278,7 @@ export const useSpotStore = defineStore('spot', {
 
       spotStore.$patch({
         subaccountOrders: orders,
-        subaccountOrdersCount: Math.min(
-          pagination.total,
-          TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-        )
+        subaccountOrdersCount: pagination.total
       })
     },
 
@@ -320,10 +287,7 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (
-        !sharedWalletStore.isUserConnected ||
-        !(accountStore.subaccountId || options?.subaccountId)
-      ) {
+      if (!(sharedWalletStore.isUserConnected && accountStore.subaccountId)) {
         return
       }
 
@@ -331,11 +295,35 @@ export const useSpotStore = defineStore('spot', {
 
       const { orderHistory, pagination } =
         await indexerSpotApi.fetchOrderHistory({
-          subaccountId: options?.subaccountId
-            ? options?.subaccountId
-            : accountStore.subaccountId,
+          subaccountId: options?.subaccountId || accountStore.subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
+          isConditional: filters?.isConditional,
+          marketIds: filters?.marketIds || spotStore.activeMarketIds,
+          orderTypes: filters?.orderTypes as unknown as OrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[]
+        })
+
+      spotStore.$patch({
+        subaccountOrderHistory: orderHistory,
+        subaccountOrderHistoryCount: pagination.total
+      })
+    },
+
+    async fetchOrderHistoryForSubaccount(options: ActivityFetchOptions) {
+      const spotStore = useSpotStore()
+
+      if (!options?.subaccountId) {
+        return
+      }
+
+      const filters = options.filters
+
+      const { orderHistory, pagination } =
+        await indexerSpotApi.fetchOrderHistory({
+          subaccountId: options.subaccountId,
+          direction: filters?.direction,
+          pagination: options.pagination,
           isConditional: filters?.isConditional,
           marketIds: filters?.marketIds || spotStore.activeMarketIds,
           orderTypes: filters?.orderTypes as unknown as OrderSide[],
@@ -418,14 +406,14 @@ export const useSpotStore = defineStore('spot', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
+      if (!(sharedWalletStore.isUserConnected && accountStore.subaccountId)) {
         return
       }
 
       const filters = options?.filters
 
       const { trades, pagination } = await indexerSpotApi.fetchTrades({
-        subaccountId: accountStore.subaccountId,
+        subaccountId: options?.subaccountId || accountStore.subaccountId,
         direction: filters?.direction,
         pagination: options?.pagination,
         marketIds: filters?.marketIds || spotStore.activeMarketIds,
@@ -438,9 +426,30 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    async fetchTradesForSubaccount(options: ActivityFetchOptions) {
+      const spotStore = useSpotStore()
+
+      if (!options?.subaccountId) {
+        return
+      }
+
+      const filters = options.filters
+
+      const { trades, pagination } = await indexerSpotApi.fetchTrades({
+        subaccountId: options.subaccountId,
+        direction: filters?.direction,
+        pagination: options.pagination,
+        marketIds: filters?.marketIds || spotStore.activeMarketIds,
+        executionTypes: filters?.executionTypes as TradeExecutionType[]
+      })
+
+      spotStore.$patch({
+        subaccountTrades: trades,
+        subaccountTradesCount: pagination.total
+      })
+    },
+
     cancelSubaccountStream() {
-      cancelBankBalanceStream()
-      cancelSubaccountBalanceStream()
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
       cancelSubaccountOrdersHistoryStream()

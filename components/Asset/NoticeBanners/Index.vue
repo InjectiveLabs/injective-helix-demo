@@ -6,10 +6,10 @@ const appStore = useAppStore()
 
 const banners: Banner[] = [
   {
-    key: NoticeBanner.scheduledUpgradeJanuary,
-    label: `banners.banner-${NoticeBanner.scheduledUpgradeJanuary}`,
+    key: NoticeBanner.ScheduledUpgradeAugust2024,
+    label: `banners.${NoticeBanner.ScheduledUpgradeAugust2024}`,
     viewMore: 'here.',
-    viewMoreLink: 'https://hub.injective.network/proposal/314'
+    viewMoreLink: 'https://hub.injective.network/proposal/424'
   }
 ]
 

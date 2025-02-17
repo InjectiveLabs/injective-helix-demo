@@ -1,7 +1,12 @@
 <script setup lang="ts">
-defineProps({
-  hasActiveStrategy: Boolean
-})
+withDefaults(
+  defineProps<{
+    hasActiveStrategy: boolean
+  }>(),
+  {
+    hasActiveStrategy: false
+  }
+)
 
 const emit = defineEmits<{
   'view:details': []
@@ -29,6 +34,8 @@ function onViewDetails() {
         isDisabled: hasActiveStrategy
       }"
     />
+
+    <PartialsTradeSpotFormTradingBotsManualAdvancedSettings />
 
     <div class="py-4">
       <PartialsTradeSpotFormTradingBotsCommonCreateStrategy

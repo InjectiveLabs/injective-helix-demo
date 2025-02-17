@@ -10,7 +10,8 @@ import {
   MixPanelOrderType,
   SpotGridTradingForm,
   SpotGridTradingField,
-  MixPanelStrategyPage
+  MixPanelStrategyPage,
+  BotType
 } from '@/types'
 
 const formatStatus = (error?: string) => ({
@@ -127,6 +128,12 @@ export const trackCreateStrategy = ({
     ).toNumber(),
     'Market Price': new BigNumberInBase(marketPrice).toNumber(),
     Market: market,
+    'Trailing Upper Price': formValues[SpotGridTradingField.TrailingUpper]
+      ? new BigNumberInBase(formValues[SpotGridTradingField.TrailingUpper])
+      : undefined,
+    'Trailing Lower Price': formValues[SpotGridTradingField.TrailingLower]
+      ? new BigNumberInBase(formValues[SpotGridTradingField.TrailingLower])
+      : undefined,
 
     Page: isLiquidity
       ? MixPanelStrategyPage.LiquidityPage
@@ -159,5 +166,88 @@ export const trackRemoveStrategy = (
       : MixPanelStrategyPage.TradingPage,
 
     ...formatStatus(error)
+  })
+}
+
+export const trackLiteBridgePageView = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgePageView, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackLiteBridgeBridged = ({
+  wallet,
+  amount,
+  symbol,
+  error
+}: {
+  wallet: string
+  amount: string
+  symbol: string
+  error?: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.LiteBridgeBridged, {
+    Wallet: wallet,
+    Symbol: symbol,
+    Amount: new BigNumberInBase(amount).toNumber(),
+    ...formatStatus(error)
+  })
+}
+
+export const trackQrCodePageView = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.QrCodePageView, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.QrCodeBuyFunds, {
+    Wallet: wallet,
+    ...formatStatus(error)
+  })
+}
+
+export const trackTradingBotError = ({
+  grids,
+  wallet,
+  market,
+  botType,
+  baseAmount,
+  quoteAmount,
+  lowerBound,
+  upperBound,
+  upperTrailingBound,
+  lowerTrailingBound,
+  originalMessage,
+  error
+}: {
+  wallet: string
+  market: string
+  grids: string
+  baseAmount: string
+  quoteAmount: string
+  lowerBound: string
+  upperBound: string
+  upperTrailingBound?: string
+  lowerTrailingBound?: string
+  error?: string
+  originalMessage?: string
+  botType: BotType
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.TradingBotError, {
+    type: botType,
+    Wallet: wallet,
+    Market: market,
+    Grids: grids,
+    'Base Amount': baseAmount,
+    'Quote Amount': quoteAmount,
+    'Lower Bound': lowerBound,
+    'Upper Bound': upperBound,
+    'Upper Trailing Bound': upperTrailingBound,
+    'Lower Trailing Bound': lowerTrailingBound,
+    Error: error,
+    'Original Message': originalMessage
   })
 }

@@ -1,42 +1,44 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { SharedDropdownOption } from '@shared/types'
-import { MarketKey, UiSpotMarket, SpotOrdersStandardView } from '@/types'
+import {
+  MarketKey,
+  UiSpotMarket,
+  SpotOrdersStandardView,
+  SpotMarketCyTags
+} from '@/types'
 
-const spotStore = useSpotStore()
 const isMobile = useIsMobile()
-const breakpoints = useBreakpointsTw()
+const spotStore = useSpotStore()
+const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
 
-const props = defineProps({
-  modelValue: {
-    type: String as PropType<SpotOrdersStandardView>,
-    required: true
-  },
-
-  isTickerOnly: {
-    type: Boolean as PropType<boolean>,
-    default: false
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+    modelValue: SpotOrdersStandardView
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
-  'update:modelValue': [value: SpotOrdersStandardView]
   'update:isTickerOnly': [value: boolean]
+  'update:modelValue': [value: SpotOrdersStandardView]
 }>()
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
-const xxl = breakpoints['4xl']
+const lg = breakpoints['3xl']
+const xl = breakpoints['5xl']
 
 const view = useVModel(props, 'modelValue', emit)
-
 const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.OpenOrders}`,
-      value: SpotOrdersStandardView.OpenOrders,
+      display: `activity.${SpotOrdersStandardView.Orders}`,
+      value: SpotOrdersStandardView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
@@ -65,18 +67,18 @@ watch(
   () => sharedWalletStore.isUserConnected,
   (isConnected) => {
     if (!isConnected && view.value === SpotOrdersStandardView.Balances) {
-      view.value = SpotOrdersStandardView.OpenOrders
+      view.value = SpotOrdersStandardView.Orders
     }
   }
 )
 </script>
 
 <template>
-  <div class="h-header border-b flex divide-x">
-    <CommonSubaccountTabSelector />
+  <div class="h-header border-b flex sticky top-0 bg-coolGray-975 z-10">
+    <CommonSubaccountTabSelector v-bind="{ isSm: true }" />
 
     <AppTabSelect
-      v-if="!xxl"
+      v-if="!lg"
       v-bind="{
         options
       }"
@@ -84,7 +86,10 @@ watch(
       class="border-r"
     >
       <template #default="{ selected }">
-        <button class="px-2">
+        <button
+          class="px-2"
+          :data-cy="dataCyTag(SpotMarketCyTags.OrderDetailsDropDown)"
+        >
           {{ $t(selected?.display || '') }}
           {{
             Number.isInteger(Number(selected?.description))
@@ -95,7 +100,11 @@ watch(
       </template>
 
       <template #option="{ option }">
-        <button>
+        <button
+          :data-cy="`${dataCyTag(
+            SpotMarketCyTags.OrderDetailsDropdownOptions
+          )}-${option.display}`"
+        >
           {{ $t(option.display) }}
           {{
             Number.isInteger(Number(option.description))
@@ -112,22 +121,33 @@ watch(
       :key="value"
       v-model="view"
       v-bind="{ value }"
-      class="flex items-center px-4 tab-field"
-      active-classes="!text-white"
+      class="flex items-center text-coolGray-450 font-medium"
+      :data-cy="`${dataCyTag(SpotMarketCyTags.OrderDetails)}-${value}`"
+      :class="[xl ? 'px-3 text-xs' : 'px-2 text-xs']"
+      active-classes="text-white"
     >
       {{ $t(display) }}
-      {{ Number.isInteger(Number(description)) ? `(${description})` : '' }}
+      {{
+        Number.isInteger(Number(description)) && Number(description) > 0
+          ? `(${description})`
+          : ''
+      }}
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
-      <AppCheckbox2 v-model="isTickerOnlyValue">
+      <AppCheckbox2
+        v-if="view !== SpotOrdersStandardView.Balances"
+        v-model="isTickerOnlyValue"
+        is-plain
+        :class="[xl ? 'text-sm' : 'text-xs']"
+      >
         <span>
           {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
         </span>
       </AppCheckbox2>
 
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
-        v-if="view === SpotOrdersStandardView.OpenOrders && !isMobile"
+        v-if="view === SpotOrdersStandardView.Orders && !isMobile"
         v-bind="{ isTickerOnly }"
       />
     </div>

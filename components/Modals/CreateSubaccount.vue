@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 function onOpenSubaccountTransferModal() {
   modalStore.openModal(Modal.SubaccountTransfer)
@@ -43,7 +43,7 @@ function closeModal() {
 
       <div class="mt-6">
         <AppButton
-          is-lg
+          size="lg"
           class="w-full text-blue-900 bg-blue-500"
           @click="onOpenSubaccountTransferModal"
         >

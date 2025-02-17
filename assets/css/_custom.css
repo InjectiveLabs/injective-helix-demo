@@ -91,7 +91,7 @@
   border-top-color: theme('colors.gray.200');
 }
 
-[class*='bg-gray-200'] .spinner {
+[class*='bg-coolGray-200'] .spinner {
   border-top-color: theme('colors.blue.500');
 }
 
@@ -130,7 +130,7 @@
   .trade-layout-left {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 400px 336px 1fr;
+    grid-template-columns: 330px 300px 1fr;
 
     grid-template-areas:
       'form orderbook chart'
@@ -141,7 +141,7 @@
   .trade-layout-right {
     display: grid;
     grid-template-rows: auto auto 1fr;
-    grid-template-columns: 1fr 336px 400px;
+    grid-template-columns: 1fr 300px 330px;
 
     grid-template-areas:
       'chart orderbook form'
@@ -160,8 +160,19 @@
   .input-style {
     @apply block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875;
   }
+
+  @media screen and (min-width: 1681px) {
+    .trade-layout-left {
+      grid-template-columns: 400px 336px 1fr;
+    }
+
+    .trade-layout-right {
+      grid-template-columns: 1fr 336px 400px;
+    }
+  }
 }
 
+/*
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
@@ -237,8 +248,4 @@ input[type='range']::-webkit-slider-runnable-track {
   border-radius: 2px;
 
   @apply bg-transparent;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+} */

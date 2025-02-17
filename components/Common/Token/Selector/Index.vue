@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { TokenStatic } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 
-const props = defineProps({
-  tokens: {
-    type: Array as PropType<TokenStatic[]>,
-    required: true
-  }
+const props = withDefaults(defineProps<{ tokens: TokenStatic[] }>(), {
+  tokens: () => []
 })
 
 const emit = defineEmits<{
@@ -35,7 +33,7 @@ function setToken(token: TokenStatic) {
   <div class="flex flex-1 flex-col overflow-hidden">
     <div class="flex p-2 border-b">
       <div class="flex items-center p-2">
-        <SharedIcon name="search" />
+        <UIcon :name="NuxtUiIcons.Search" class="h-6 w-6 min-w-6" />
       </div>
 
       <input

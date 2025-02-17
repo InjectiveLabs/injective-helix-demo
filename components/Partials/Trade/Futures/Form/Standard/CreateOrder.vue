@@ -2,7 +2,8 @@
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { slugsToIncludeInRWACategory } from '@/app/data/market'
+import { rwaMarketIds } from '@/app/data/market'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
@@ -17,9 +18,8 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
-const route = useRoute()
 const resetForm = useResetForm()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
@@ -30,50 +30,30 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  margin: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  totalNotional: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  worstPrice: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  feeAmount: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  marginWithFee: {
-    type: BigNumberInBase,
-    required: true
-  },
-
-  quantity: {
-    type: BigNumberInBase,
-    required: true
-  }
-})
-
-const isRWAMarket = slugsToIncludeInRWACategory.includes(
-  route.params.slug as string
-)
-
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
-
-const chartType = ref(ChartViewOption.Chart)
-const status = reactive(new Status(StatusType.Idle))
 
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
+const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
+  useDerivativeWorstPrice(derivativeMarket)
+
+const props = withDefaults(
+  defineProps<{
+    margin: BigNumberInBase
+    totalNotional: BigNumberInBase
+    worstPrice: BigNumberInBase
+    feeAmount: BigNumberInBase
+    marginWithFee: BigNumberInBase
+    quantity: BigNumberInBase
+  }>(),
+  {}
+)
+
+const isRWAMarket = rwaMarketIds.includes(derivativeMarket.value.marketId)
+
+const chartType = ref(ChartViewOption.Chart)
+const status = reactive(new Status(StatusType.Idle))
 
 const triggerPrice = computed(
   () =>
@@ -91,14 +71,6 @@ const limitPrice = computed(
 
 const isOrderTypeReduceOnly = computed(
   () => !!derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
-)
-
-const isLimitOrder = computed(() =>
-  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
 )
 
 const isAuthorized = computed(() => {
@@ -132,7 +104,7 @@ const currentFormValues = computed(
         derivativeFormValues.value[DerivativesTradeFormField.Slippage],
       [DerivativesTradeFormField.IsSlippageOn]:
         derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn],
-      [DerivativesTradeFormField.Leverage]: '1'
+      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE
     }) as DerivativesTradeForm
 )
 
@@ -170,32 +142,12 @@ const takeProfitValue = computed(() =>
     : undefined
 )
 
-const filteredFormErrors = computed(() => {
-  const isLimitOrStopLimit = [
-    DerivativeTradeTypes.Limit,
-    DerivativeTradeTypes.StopLimit
-  ].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
-
-  return Object.keys(formErrors.value).filter(
-    (key) =>
-      !isLimitOrStopLimit ||
-      (key === DerivativesTradeFormField.LimitPrice &&
-        !derivativeFormValues.value[
-          DerivativesTradeFormField.BypassPriceWarning
-        ])
-  )
-})
-
 const isDisabled = computed(() => {
   const tradeType = derivativeFormValues.value[
     DerivativesTradeFormField.Type
   ] as DerivativeTradeTypes
 
-  if (filteredFormErrors.value.length > 0) {
+  if (Object.keys(formErrors.value).length > 0) {
     return true
   }
 
@@ -204,6 +156,14 @@ const isDisabled = computed(() => {
   }
 
   if (!isAuthorized.value) {
+    return true
+  }
+
+  if (!hasEnoughLiquidity.value) {
+    return true
+  }
+
+  if (isNotionalLessThanMinNotional.value) {
     return true
   }
 
@@ -394,6 +354,7 @@ function submitStopMarketOrder() {
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
+      err = e
       $onError(e)
     })
     .finally(() => {
@@ -411,11 +372,23 @@ function submitStopMarketOrder() {
     })
 }
 
-function onSubmit() {
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
+async function onSubmit() {
+  if (!isRWAMarket) {
+    submit()
 
     return
+  }
+
+  status.setLoading()
+
+  const isMarketOpen = await derivativeStore.fetchRWAMarketIsOpen(
+    derivativeMarket.value.oracleBase
+  )
+
+  status.setIdle()
+
+  if (!isMarketOpen) {
+    return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 
   submit()
@@ -439,49 +412,38 @@ async function submit() {
       submitStopMarketOrder()
   }
 }
-
-function fetchRWAMarketIsOpen() {
-  if (!derivativeMarket.value) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-
-        return
-      }
-
-      submit()
-    })
-    .catch($onError)
-}
 </script>
 
 <template>
   <div>
     <div>
       <AppButton
-        v-bind="{ status, disabled: isDisabled }"
+        v-bind="{
+          status,
+          disabled: isDisabled
+        }"
         :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         :variant="isBuy ? 'success' : 'danger'"
         class="w-full"
         @click="onSubmit"
       >
-        <span v-if="isAuthorized">
+        <span v-if="!isAuthorized">
+          {{ $t('common.unauthorized') }}
+        </span>
+
+        <span v-else-if="!hasEnoughLiquidity">
+          {{ $t('trade.swap.insufficient_liquidity') }}
+        </span>
+
+        <span v-else>
           {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
           /
           {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
         </span>
-
-        <span v-else>{{ $t('common.unauthorized') }}</span>
       </AppButton>
     </div>
 
     <ModalsClosedRWAMarket
-      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
       v-bind="{ worstPrice: worstPrice.toString() }"
       @terms:agreed="submit"
     />

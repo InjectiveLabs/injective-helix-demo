@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { PortfolioSubPage } from '@/types'
 
+const { t } = useLang()
+
 const options = [
   {
-    label: 'Open Orders',
+    label: t('trade.open_orders'),
     to: { name: PortfolioSubPage.OrdersFutures }
   },
   {
-    label: 'Triggers',
-    to: { name: PortfolioSubPage.OrdersFuturesTriggers }
+    label: t('activity.advancedOrders'),
+
+    to: { name: PortfolioSubPage.OrdersFuturesAdvancedOrders }
   },
   {
-    label: 'Order History',
+    label: t('activity.orderHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesOrderHistory }
   },
   {
-    label: 'Trade History',
+    label: t('activity.tradeHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesTradeHistory }
   }
 ]
@@ -32,7 +35,7 @@ const options = [
         v-for="option in options"
         :key="option.label"
         :to="option.to"
-        class="px-2 py-4 max-lg:text-sm lg:p-4 text-gray-400 font-medium text-center"
+        class="px-2 py-4 max-lg:text-sm lg:p-4 text-coolGray-400 font-medium text-center"
         exact-active-class="text-white"
       >
         {{ option.label }}

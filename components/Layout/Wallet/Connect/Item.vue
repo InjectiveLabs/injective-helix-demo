@@ -3,21 +3,22 @@ import { Wallet } from '@injectivelabs/wallet-ts'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { WalletOption } from '@/types'
 
+const toast = useToast()
 const walletStore = useWalletStore()
-const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  isCompact: Boolean,
-  isBackButton: Boolean,
-
-  walletOption: {
-    type: Object as PropType<WalletOption>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isCompact?: boolean
+    isBackButton?: boolean
+    walletOption: WalletOption
+  }>(),
+  {
+    isCompact: false,
+    isBackButton: false
   }
-})
+)
 
 const emit = defineEmits<{
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
@@ -46,14 +47,11 @@ function handleConnect() {
 
   walletStore
     .connect({ wallet: props.walletOption.wallet })
-    .then(() => {
-      notificationStore.success({ title: t('connect.successfullyConnected') })
-
-      WalletTracker.trackLogin({
-        wallet: sharedWalletStore.wallet,
-        address: sharedWalletStore.injectiveAddress
+    .then(() =>
+      toast.add({
+        title: t('connect.successfullyConnected')
       })
-    })
+    )
     .catch((e) => {
       walletStore.disconnect()
       WalletTracker.trackLogout()
@@ -98,7 +96,7 @@ function handleConnect() {
         </span>
       </p>
 
-      <p class="text-xs text-gray-500">
+      <p class="text-xs text-coolGray-500">
         <span v-if="hardwareWallets.includes(walletOption.wallet)">
           {{ $t(`connect.${'connectUsingHardware'}`) }}
         </span>

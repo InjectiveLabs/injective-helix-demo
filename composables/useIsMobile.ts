@@ -1,7 +1,5 @@
-import { breakpointsTailwind } from '@vueuse/core'
-
 export default function useIsMobile() {
-  const { lg } = useBreakpoints(breakpointsTailwind)
+  const { lg } = useSharedBreakpoints()
 
   return computed(() => !lg.value)
 }

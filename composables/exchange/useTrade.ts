@@ -11,21 +11,21 @@ import {
 
 export function useTrade(
   trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
-  isSpot: Ref<boolean>
+  isSpot: boolean
 ) {
   const spotStore = useSpotStore()
   const derivativeStore = useDerivativeStore()
   const { t } = useLang()
 
   const market = computed(() =>
-    isSpot.value
+    isSpot
       ? spotStore.markets.find((m) => m.marketId === trade.value.marketId)
       : derivativeStore.markets.find((m) => m.marketId === trade.value.marketId)
   )
 
   /** Unifying both spot and derivative to spot trade type */
   const tradeToSpotTrade = computed(() => {
-    if (isSpot.value) {
+    if (isSpot) {
       return trade.value as SharedUiSpotTrade
     }
 
@@ -44,7 +44,7 @@ export function useTrade(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value
+    return isSpot
       ? new BigNumberInBase(
           new BigNumberInBase(tradeToSpotTrade.value.price).toWei(
             market.value.baseToken.decimals - market.value.quoteToken.decimals
@@ -60,7 +60,7 @@ export function useTrade(
       return ZERO_IN_BASE
     }
 
-    return isSpot.value
+    return isSpot
       ? new BigNumberInWei(tradeToSpotTrade.value.quantity).toBase(
           market.value.baseToken.decimals
         )
@@ -102,7 +102,7 @@ export function useTrade(
   const tradeExecutionType = computed<string>(() => {
     const derivativeTrade = trade.value as SharedUiDerivativeTrade
 
-    if (!isSpot.value && derivativeTrade.isLiquidation) {
+    if (!isSpot && derivativeTrade.isLiquidation) {
       return t('trade.liquidation')
     }
 
@@ -130,29 +130,5 @@ export function useTrade(
     priceDecimals,
     quantityDecimals,
     tradeExecutionType
-  }
-}
-
-export function useTradeWithUndefined(
-  trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade | undefined>,
-  isSpot: Ref<boolean>
-) {
-  if (trade.value) {
-    return useTrade(
-      trade as Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
-      isSpot
-    )
-  }
-
-  return {
-    fee: undefined,
-    time: undefined,
-    price: undefined,
-    total: undefined,
-    market: undefined,
-    quantity: undefined,
-    priceDecimals: undefined,
-    quantityDecimals: undefined,
-    tradeExecutionType: undefined
   }
 }

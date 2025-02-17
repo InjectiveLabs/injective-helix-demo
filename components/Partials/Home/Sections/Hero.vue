@@ -1,109 +1,95 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { getBridgeRedirectionUrl } from '@/app/utils/network'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { TradeSubPage } from '@/types'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { Modal, TradeSubPage } from '@/types'
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
+const appStore = useAppStore()
+const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
-const totalVolume = computed(() =>
-  [...spotStore.marketsSummary, ...derivativeStore.marketsSummary].reduce(
-    (sum, market) => {
-      return sum.plus(market.volume || 0)
-    },
-    ZERO_IN_BASE
-  )
-)
+onMounted(() => {
+  const mm = gsap.matchMedia()
 
-const totalMarkets = computed(
-  () =>
-    [...spotStore.activeMarketIds, ...derivativeStore.activeMarketIds].length
-)
+  mm.add('(min-width: 1024px)', () => {
+    gsap.from('#hero-section', {
+      opacity: 0,
+      filter: 'blur(10px)',
+      duration: 2,
+      delay: 0.2,
+      scale: 1.2
+    })
+
+    gsap.utils.toArray('.gsap-text').forEach((text, _i, arr) => {
+      gsap.to(text as HTMLElement, {
+        scrollTrigger: {
+          trigger: text as HTMLElement,
+          start: 'clamp(50px 40%)',
+          end: 'clamp(bottom 0%)',
+          scrub: 2
+        },
+        y: arr.length * -40,
+        scale: 1.2,
+        filter: 'blur(10px)',
+        opacity: 0,
+        duration: 1
+      })
+    })
+  })
+})
+
+function openDepositQrModal() {
+  if (sharedWalletStore.isUserConnected) {
+    modalStore.openModal(Modal.FiatOnboard)
+  } else {
+    onWalletConnect()
+  }
+}
+
+function onWalletConnect() {
+  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
+    modalStore.openModal(Modal.Terms)
+  } else {
+    modalStore.openModal(Modal.Connect)
+  }
+}
 </script>
 
 <template>
-  <div class="text-center mb-20 mt-10 md:mt-14">
-    <div class="flex flex-col items-center">
-      <div class="flex items-center space-x-4">
-        <AssetLogo class="h-12 w-12" />
-        <h1 class="font-light text-4xl">{{ $t('common.helix') }}</h1>
-      </div>
-
-      <div class="max-w-3xl space-y-4 my-4`">
-        <h1
-          class="text-2xl lg:text-6xl font-semibold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent py-2"
-        >
-          {{ $t('home.title') }}
-        </h1>
-
-        <p class="text-sm lg:text-xl text-gray-200 font-light">
-          {{ $t('home.subtitle') }}
+  <div
+    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section z-30"
+  >
+    <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
+      <h1 id="hero-title" class="font-semibold gsap-text mb-5">
+        <p class="text-2xl lg:text-7xl">
+          {{ $t('home.openFinance') + ' ' }}
         </p>
-
-        <div
-          class="flex max-xs:flex-col max-xs:space-y-2 justify-center xs:space-x-2 py-4"
+        <p
+          class="text-blue-500 text-2xl lg:text-[128px] font-bold leading-none"
         >
-          <NuxtLink
-            :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
-          >
-            <AppButton class="lg:py-4 w-full">
-              {{ $t('home.startTrading') }}
-            </AppButton>
-          </NuxtLink>
-
-          <NuxtLink :to="getBridgeRedirectionUrl()" target="_blank">
-            <AppButton class="lg:py-4 w-full" variant="primary-outline">
-              {{ $t('home.depositCrypto') }}
-            </AppButton>
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
-
-    <div class="relative">
-      <div
-        class="absolute bottom-0 -left-[250px] blur-[10rem] bg-blue-300/20 w-[200px] h-[200px] md:w-[500px] md:h-[500px] rounded-full"
-      ></div>
-      <div class="shadow-[0px_0px_20px_20px_#1D1E24] my-16 mx-auto">
-        <img
-          src="/images/home/hero.webp"
-          class="rounded-md border ring-[1px] relative object-cover"
-        />
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 w-full gap-4 my-4">
-      <div class="">
-        <h2>{{ $t('home.tradingVolume') }}</h2>
-        <p class="text-2xl font-semibold">
-          ${{ totalVolume.toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS) }}
+          {{ $t('home.reimagined') }}
         </p>
-      </div>
+      </h1>
 
-      <div class="">
-        <h2>{{ $t('home.markets') }}</h2>
-        <p class="text-2xl font-semibold">{{ totalMarkets }}</p>
-      </div>
+      <p id="hero-description" class="text-lg font-semibold gsap-text">
+        {{ $t('home.description') }}
+      </p>
 
-      <div class="">
-        <h2>{{ $t('home.totalVolume') }}</h2>
-        <p class="text-2xl font-semibold">32B</p>
+      <div class="flex justify-center gap-4 mt-10 gsap-text">
+        <NuxtLink
+          :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
+        >
+          <AppButton class="w-full">
+            {{ $t('home.startTrading') }}
+          </AppButton>
+        </NuxtLink>
+
+        <AppButton
+          class="w-full isolate"
+          variant="primary-outline"
+          @click="openDepositQrModal"
+        >
+          {{ $t('home.depositCrypto') }}
+        </AppButton>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.glow-border::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  box-shadow: 0 0 30px 10px rgba(0, 122, 255, 0.75); /* Adjusted glow effect */
-  pointer-events: none;
-}
-</style>

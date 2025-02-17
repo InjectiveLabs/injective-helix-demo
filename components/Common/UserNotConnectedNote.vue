@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
-defineProps({
-  cta: Boolean
-})
+withDefaults(defineProps<{ cta?: boolean }>(), { cta: false })
 
 function onConnect() {
   modalStore.openModal(Modal.Connect)
@@ -18,7 +16,7 @@ function onConnect() {
     data-cy="wallet-not-connected-modal-warning"
   >
     <div v-if="cta" class="text-center py-4">
-      <p class="text-xs text-gray-300 w-full">
+      <p class="text-xs text-coolGray-300 w-full">
         {{ $t('connect.pleaseConnectToYourWallet') }}
       </p>
       <AppButton
@@ -29,7 +27,7 @@ function onConnect() {
         {{ $t('connect.connect') }}
       </AppButton>
     </div>
-    <p v-else class="text-xs text-gray-400 py-4">
+    <p v-else class="text-xs text-coolGray-400 py-4">
       {{ $t('connect.pleaseConnectToYourWalletCta') }}
     </p>
   </div>

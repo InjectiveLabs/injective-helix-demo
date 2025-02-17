@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { countZerosAfterDecimal } from '@/app/utils/helpers'
 import {
-  AggregationKey,
   IsSpotKey,
   MarketKey,
+  AggregationKey,
   UiMarketWithToken
 } from '@/types'
-import { countZerosAfterDecimal } from '~/app/utils/helpers'
 
 const market = inject(MarketKey)
 const aggregation = inject(AggregationKey, ref(1))
@@ -58,19 +58,37 @@ const filteredOptions = computed(() =>
 </script>
 
 <template>
-  <AppSelect
-    v-model.number="value"
+  <USelectMenu
+    v-model="value"
+    class="min-w-12"
+    select-class="dark:bg-brand-875"
     v-bind="{
       options: filteredOptions
     }"
-    wrapper-class="hover:bg-brand-850 border  border-transparent hover:border-brand-700 transition-all p-1 rounded mr-2 pl-2 select-none text-gray-400 hover:text-white"
-  >
-    <template #default="{ selected }">
-      <p class="text-xs font-mono select-none">{{ selected?.display }}</p>
-    </template>
-
-    <template #option="{ option }">
-      <p class="text-xs font-mono select-none">{{ option.display }}</p>
-    </template>
-  </AppSelect>
+    size="xs"
+    value-attribute="value"
+    option-attribute="display"
+    :ui="{
+      base: 'dark:ring-0 font-semibold dark:cursor-pointer max-w-24 max-lg:max-w-full 5xl:max-w-full',
+      rounded: 'rounded',
+      trailing: {
+        padding: {
+          xs: 'pe-7'
+        }
+      },
+      icon: {
+        base: 'dark:text-white'
+      }
+    }"
+    :ui-menu="{
+      width: 'w-fit',
+      option: {
+        base: 'cursor-pointer',
+        size: 'text-xs',
+        selectedIcon: {
+          base: 'w-3 h-3'
+        }
+      }
+    }"
+  />
 </template>
