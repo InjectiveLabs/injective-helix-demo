@@ -109,7 +109,8 @@ const getProperSlug = (slug: string): string => {
   const edgeCaseSlugs = {
     'wmaticlegacy-usdt': 'wmatic-usdt',
     'arblegacy-usdt': 'arb-usdt',
-    'sollegacy-usdt': 'sol-usdt'
+    'sollegacy-usdt': 'sol-usdt',
+    'tradfi-usdt-p': 'tfi-usdt' // TODO: Slug is too long, we need to shorten it
   } as { [key: string]: string }
 
   return edgeCaseSlugs[slug] || slug
@@ -139,6 +140,11 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
+  // TODO: Remove when we query the SC for subaccount
+  if (slug === 'tfi-usdt') {
+    return 'tradfi-usdt-perp'
+  }
+
   return derivativeGridMarkets.find(
     (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
@@ -155,11 +161,21 @@ export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
     ] as GridMarket[]
 
     return gridMarkets
-      .find(
-        (market) =>
-          market.slug.toLowerCase() ===
-          hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
-      )
+      .find((market) => {
+        const slugFromSubaccount = hexToString(
+          subaccountId.slice(42).replace(/^0+/, '')
+        ).toLowerCase()
+
+        // TODO: Remove when we query the SC for subaccount
+        if (
+          slugFromSubaccount === 'tfi-usdt' &&
+          market.slug === 'tradfi-usdt-p'
+        ) {
+          return true
+        }
+
+        return market.slug.toLowerCase() === slugFromSubaccount
+      })
       ?.slug.toUpperCase()
       .replace('-P', '-PERP')
   }
