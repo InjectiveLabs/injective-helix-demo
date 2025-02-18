@@ -206,7 +206,9 @@ export const useDerivativeGridStrategies = (
       const isSpot = false
 
       const isLoadingMarkPrice =
-        !derivativeStore.marketMarkPriceMap[market.marketId]
+        isActive &&
+        (!derivativeStore.marketMarkPriceMap[market.marketId] ||
+          new BigNumberInBase(currentQuoteAccountBalanceQuantity).eq(0))
 
       return {
         pnl,
