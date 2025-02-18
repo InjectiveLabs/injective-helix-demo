@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
 const { activeSubaccountTotalBalanceInUsd } = useBalance()
 
 const search = computed({
@@ -34,8 +35,11 @@ const showUnverifiedAssets = computed({
 
 const isGridTradingAccount = computed(
   () =>
-    isSgtSubaccountId(accountStore.subaccountId) ||
-    isPgtSubaccountId(accountStore.subaccountId)
+    (isSgtSubaccountId(accountStore.subaccountId) ||
+      isPgtSubaccountId(accountStore.subaccountId)) &&
+    !gridStrategyStore.activeStrategies.find(
+      ({ subaccountId }) => subaccountId === accountStore.subaccountId
+    )
 )
 
 const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =

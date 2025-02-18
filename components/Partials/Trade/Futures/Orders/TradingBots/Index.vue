@@ -103,7 +103,7 @@ function fetchStrategies() {
       v-else-if="view === PerpOrdersTradingBotsView.RemovedStrategies"
     />
 
-    <PartialsPortfolioPositionsTable
+    <PartialsPositionsTable
       v-else-if="view === PerpOrdersTradingBotsView.Positions"
       v-bind="{ positions }"
       is-trading-bots

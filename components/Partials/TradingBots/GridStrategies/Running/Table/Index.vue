@@ -234,21 +234,23 @@ function selectStrategy(
     />
 
     <SharedModal v-model="isOpen">
-      <PartialsTradingBotsSpotStrategyDetails
-        v-if="
-          selectedStrategy &&
-          selectedStrategy.strategy.marketType === MarketType.Spot
-        "
-        :active-strategy="selectedStrategy.strategy"
-      />
+      <div class="pt-6">
+        <PartialsTradingBotsSpotStrategyDetails
+          v-if="
+            selectedStrategy &&
+            selectedStrategy.strategy.marketType === MarketType.Spot
+          "
+          :active-strategy="selectedStrategy.strategy"
+        />
 
-      <PartialsTradingBotsDerivativeStrategyDetails
-        v-else-if="
-          selectedStrategy &&
-          selectedStrategy.strategy.marketType === MarketType.Derivative
-        "
-        :active-strategy="selectedStrategy.strategy"
-      />
+        <PartialsTradingBotsDerivativeStrategyDetails
+          v-else-if="
+            selectedStrategy &&
+            selectedStrategy.strategy.marketType === MarketType.Derivative
+          "
+          :active-strategy="selectedStrategy.strategy"
+        />
+      </div>
     </SharedModal>
   </div>
 </template>

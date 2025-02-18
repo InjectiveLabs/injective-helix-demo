@@ -8,9 +8,11 @@ import {
 } from '@/types'
 import {
   GST_DEFAULT_PRICE_TICK_SIZE,
-  GST_MAXIMUM_GRIDS,
   GST_MINIMUM_GRIDS
 } from '@/app/utils/constants'
+
+// TODO: remove this and add the default GST_MAXIMUM_GRID from @/app/utils/constants when SC updates to 150 grids
+const GST_MAXIMUM_GRIDS = 100
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
