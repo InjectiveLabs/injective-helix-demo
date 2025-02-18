@@ -306,6 +306,7 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -335,6 +336,7 @@ export const removeStrategyForSubaccount = async (
   backupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -364,6 +366,7 @@ export const createPerpStrategy = async (
 
   const authZStore = useAuthZStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -491,7 +494,17 @@ export const createPerpStrategy = async (
       authZStore.fetchGrants(),
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      derivativeStore.fetchOrdersForSubaccount({
+        marketIds: [market.marketId],
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchOrderHistoryForSubaccount({
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchSubaccountTrades({
+        subaccountId: gridStrategySubaccountId
+      })
     ])
   )
 }
