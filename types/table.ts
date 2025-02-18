@@ -218,6 +218,12 @@ export enum PositionTableColumn {
   ClosePosition = 'close-position'
 }
 
+export enum ReferralTableColumn {
+  Wallets = 'wallets',
+  JoinDate = 'join-date',
+  Commission = 'commission'
+}
+
 export interface UTableColumn {
   key: string
   label?: string

@@ -19,6 +19,11 @@ export const getMoreMenu = () => [
     label: 'navigation.more.lpRewards'
   },
   {
+    isConnectedOnly: true,
+    label: 'navigation.referral',
+    to: { name: MainPage.Referral }
+  },
+  {
     to: { name: MainPage.FeeDiscounts },
     label: 'navigation.more.tradingDiscounts'
   },
@@ -29,13 +34,12 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.bridge',
-
     to: 'https://bridge.injective.network/'
   },
   {
     isExternal: true,
-    label: 'navigation.more.explorer',
-    to: getExplorerUrl()
+    to: getExplorerUrl(),
+    label: 'navigation.more.explorer'
   },
   {
     isExternal: true,
@@ -50,7 +54,6 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.olp',
-
     to: 'https://trading.injective.network/program/liquidity/'
   }
 ]
