@@ -87,30 +87,30 @@ async function validateSlippage() {
     .catch($onError)
 
   const { worstPrice } = calculateWorstPriceFromPriceLevel(
-    props.quantity.toString(),
+    props.quantity.toFixed(),
     orderbookRecords?.sells || []
   )
 
-  const formattedWorstPrice = parseFloat(
-    sharedToBalanceInToken({
-      value: worstPrice.toFixed(),
-      decimalPlaces: props.market.quoteToken.decimals
-    })
+  const formattedWorstPrice = new BigNumberInBase(
+    parseFloat(
+      sharedToBalanceInToken({
+        value: worstPrice.toFixed(),
+        decimalPlaces: props.market.quoteToken.decimals
+      })
+    )
   )
 
-  const formattedMarkPrice = parseFloat(props.markPrice.toFixed())
-
-  const slippagePercentage = Math.abs(
-    (Math.abs(formattedWorstPrice - formattedMarkPrice) /
-      ((formattedWorstPrice + formattedMarkPrice) / 2)) *
-      100
+  const formattedMarkPrice = new BigNumberInBase(
+    parseFloat(props.markPrice.toFixed())
   )
 
-  if (slippagePercentage > 5) {
-    return true
-  } else {
-    return false
-  }
+  const slippagePercentage = formattedWorstPrice
+    .minus(formattedMarkPrice)
+    .abs()
+    .dividedBy(formattedWorstPrice.plus(formattedMarkPrice).dividedBy(2))
+    .times(100)
+
+  return slippagePercentage.gt(5)
 }
 
 async function closePosition() {
