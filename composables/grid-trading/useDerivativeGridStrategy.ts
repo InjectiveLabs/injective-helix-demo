@@ -155,22 +155,6 @@ export const useDerivativeGridStrategies = (
           })
         : undefined
 
-      // PNL New
-
-      const pnl = isActive
-        ? currentUsdValue.minus(initialUsdValue).toString()
-        : strategy.pnl
-
-      const percentagePnl = isActive
-        ? currentUsdValue
-            .minus(initialUsdValue)
-            .div(initialUsdValue)
-            .times(100)
-            .toFixed(2)
-        : strategy.pnlPerc
-
-      // PNL
-
       const depositQuoteQuantity = sharedToBalanceInToken({
         value: strategy.quoteDeposit,
         decimalPlaces: market.quoteToken.decimals
@@ -179,6 +163,26 @@ export const useDerivativeGridStrategies = (
       const depositUsdValue = new BigNumberInBase(depositQuoteQuantity).times(
         tokenStore.tokenUsdPrice(market.quoteToken)
       )
+
+      // PNL New
+
+      const pnl = isActive
+        ? currentUsdValue.minus(initialUsdValue).toString()
+        : depositUsdValue.minus(initialUsdValue).toString()
+
+      const percentagePnl = isActive
+        ? currentUsdValue
+            .minus(initialUsdValue)
+            .div(initialUsdValue)
+            .times(100)
+            .toFixed(2)
+        : depositUsdValue
+            .minus(initialUsdValue)
+            .div(initialUsdValue)
+            .times(100)
+            .toFixed(2)
+
+      // PNL
 
       const totalAmount = isActive ? currentUsdValue : depositUsdValue
 
