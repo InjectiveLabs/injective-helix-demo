@@ -37,7 +37,7 @@ const isGridTradingAccount = computed(
   () =>
     (isSgtSubaccountId(accountStore.subaccountId) ||
       isPgtSubaccountId(accountStore.subaccountId)) &&
-    gridStrategyStore.activeStrategies.find(
+    !gridStrategyStore.activeStrategies.find(
       ({ subaccountId }) => subaccountId === accountStore.subaccountId
     )
 )
