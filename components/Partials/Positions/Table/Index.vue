@@ -3,7 +3,12 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
+import {
+  BusEvents,
+  PositionTableColumn,
+  PerpetualMarketCyTags,
+  PositionAndReduceOnlyOrders
+} from '@/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -34,9 +39,14 @@ const emit = defineEmits<{
   'position:share': [state: PositionV2]
 }>()
 
+const positionStore = usePositionStore()
+const notificationStore = useSharedNotificationStore()
+const { $onError } = useNuxtApp()
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
+
+const selectedPositionDetails = ref<PositionAndReduceOnlyOrders | undefined>()
 
 const columns = computed(() => {
   const baseColumns = [
@@ -125,6 +135,36 @@ function addMargin(position: PositionV2) {
 function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
+
+function setSelectedPosition(value: PositionAndReduceOnlyOrders) {
+  selectedPositionDetails.value = value
+}
+
+function onClosePosition() {
+  if (!selectedPositionDetails.value) {
+    return
+  }
+
+  const action = selectedPositionDetails.value.reduceOnlyOrders.length
+    ? positionStore.closePositionAndReduceOnlyOrders({
+        position: selectedPositionDetails.value.position,
+        reduceOnlyOrders: selectedPositionDetails.value.reduceOnlyOrders
+      })
+    : positionStore.closePosition(selectedPositionDetails.value.position)
+
+  action
+    .then(() =>
+      notificationStore.success({ title: t('trade.position_closed') })
+    )
+    .catch($onError)
+    .finally(() => {
+      setPositionStatusIdle()
+    })
+}
+
+function setPositionStatusIdle() {
+  useEventBus(BusEvents.SetPositionStatusIdle).emit()
+}
 </script>
 
 <template>
@@ -144,16 +184,19 @@ function sharePosition(position: PositionV2) {
             </p>
           </PartialsCommonMarketRedirection>
 
-          <PartialsPortfolioPositionsTableActionBtns
+          <PartialsPositionsTableClosePositionButton
             v-if="!sixXl && !isTradingBots"
-            :position="row.position"
-            :market="row.market"
             :pnl="row.pnl"
+            :market="row.market"
+            :quantity="row.quantity"
+            :position="row.position"
+            :mark-price="row.markPrice"
             :has-reduce-only-orders="row.hasReduceOnlyOrders"
             :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
             :is-market-order-authorized="row.isMarketOrderAuthorized"
             :is-limit-order-authorized="row.isLimitOrderAuthorized"
-            :quantity="row.quantity"
+            @position:close="onClosePosition"
+            @position:set="setSelectedPosition"
           />
         </div>
       </template>
@@ -345,29 +388,39 @@ function sharePosition(position: PositionV2) {
       </template>
 
       <template #close-position-data="{ row }">
-        <PartialsPortfolioPositionsTableActionBtns
+        <PartialsPositionsTableClosePositionButton
           :pnl="row.pnl"
           :market="row.market"
           :position="row.position"
           :quantity="row.quantity"
+          :mark-price="row.markPrice"
           :has-reduce-only-orders="row.hasReduceOnlyOrders"
           :is-limit-order-authorized="row.isLimitOrderAuthorized"
           :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
           :is-market-order-authorized="row.isMarketOrderAuthorized"
+          @position:close="onClosePosition"
+          @position:set="setSelectedPosition"
         />
       </template>
     </UTable>
   </template>
 
   <template v-else>
-    <PartialsPortfolioPositionsMobileTable
+    <PartialsPositionsMobileTable
       v-for="position in rows"
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
-      @margin:add="addMargin(position.position)"
+      @position:close="onClosePosition"
+      @position:set="setSelectedPosition"
       @tpsl:add="addTpSl(position.position)"
+      @margin:add="addMargin(position.position)"
       @position:share="sharePosition(position.position)"
     />
   </template>
+
+  <ModalsClosePositionWarning
+    @close="setPositionStatusIdle"
+    @position:close="onClosePosition"
+  />
 </template>

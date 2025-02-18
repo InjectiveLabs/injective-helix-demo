@@ -2,10 +2,12 @@ import { MarketCategoryType, I18nMessageFunction } from '@/types'
 
 export default {
   markets: {
-    title: 'Markets',
     vol: 'Vol',
     quote: 'Quote',
+    title: 'Markets',
+    cancel: 'Cancel',
     market: 'Market',
+    inactive: 'Inactive',
     category: 'Category',
     marketId: 'Market ID',
     whatsNew: "What's new",
@@ -14,23 +16,26 @@ export default {
     poweredBy: 'Powered by',
     settledAt: 'Settled at',
     perpetuals: 'Perpetuals',
-    showLowVol: 'Show low vol.',
+    unverified: 'Unverified',
     change24h: 'Change (24h)',
     volume24h: 'Volume (24h)',
     hotMarkets: 'Hot Markets',
+    showLowVol: 'Show low vol.',
     newMarkets: '🐤 New Markets',
     topGainers: '🚀 Top Gainers',
-    unverified: 'Unverified',
-    permisionlessWarning:
-      'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
+    proceedAnyway: 'Proceed Anyway',
     emptyHeader: 'No markets found',
     preLaunchFutures: 'Pre Launch Futures',
-    expiredOrSettledRecently: 'Recently Expired/Settled',
     emptyHeaderFavorites: 'No favorited markets yet.',
+    expiredOrSettledRecently: 'Recently Expired/Settled',
+    closePositionWarningTitle: 'High price impact detected',
+    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
+    permisionlessWarning:
+      'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
     emptyDescription:
       'No results found. Search for markets available on Injective outside of Helix.',
-    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
-    inactive: 'Inactive',
+    closePositionWarningDescription:
+      'Closing this open position with a market order may result in an unfavorable execution price. You may want to consider closing with a limit order instead.',
     themes: {
       memes: 'Memes',
       l1l2: 'L1/L2',
