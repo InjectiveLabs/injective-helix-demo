@@ -1,5 +1,11 @@
 <script lang="ts" setup>
 import {
+  Status,
+  BigNumber,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
+import {
   PositionV2,
   // TradeDirection,
   DerivativeLimitOrder
@@ -10,7 +16,6 @@ import { indexerDerivativesApi } from '@shared/Service'
 // import { NuxtUiIcons } from '@shared/types'
 // import { OrderSide } from '@injectivelabs/ts-types'
 // import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import {
   Modal,
@@ -91,23 +96,15 @@ async function validateSlippage() {
     orderbookRecords?.sells || []
   )
 
-  const formattedWorstPrice = new BigNumberInBase(
-    parseFloat(
-      sharedToBalanceInToken({
-        value: worstPrice.toFixed(),
-        decimalPlaces: props.market.quoteToken.decimals
-      })
-    )
-  )
-
-  const formattedMarkPrice = new BigNumberInBase(
-    parseFloat(props.markPrice.toFixed())
-  )
+  const formattedWorstPrice = sharedToBalanceInTokenInBase({
+    value: worstPrice.toFixed(),
+    decimalPlaces: props.market.quoteToken.decimals
+  })
 
   const slippagePercentage = formattedWorstPrice
-    .minus(formattedMarkPrice)
+    .minus(props.markPrice)
     .abs()
-    .dividedBy(formattedWorstPrice.plus(formattedMarkPrice).dividedBy(2))
+    .dividedBy(BigNumber.max(formattedWorstPrice, props.markPrice.toNumber()))
     .times(100)
 
   return slippagePercentage.gt(5)
