@@ -279,7 +279,7 @@ export default {
                 searchable
                 :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
                 :options="tokenOptions"
-                :search-attributes="['label', 'name', 'symbol']"
+                :search-attributes="['label', 'name', 'symbol', 'value']"
                 value-attribute="value"
               >
                 <template #default="{ open }">

@@ -159,6 +159,8 @@ export enum BusEvents {
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
+  OrderSideToggled = 'order-side-toggled',
+  OrderbookReplaced = 'orderbook-replaced',
   AutoSignConnected = 'auto-sign-connected',
   ShowLedgerConnect = 'show-ledger-connect',
   UpdateMarketChart = 'update-market-chart',

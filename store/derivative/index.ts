@@ -458,13 +458,13 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
-          subaccountId: accountStore.subaccountId,
           direction: filters?.direction,
+          marketIds: filters?.marketIds,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
-          executionTypes: filters?.executionTypes as TradeExecutionType[],
-          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          orderTypes: filters?.orderTypes as unknown as OrderSide[]
+          subaccountId: accountStore.subaccountId,
+          orderTypes: filters?.orderTypes as unknown as OrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[]
         })
 
       derivativeStore.$patch({
