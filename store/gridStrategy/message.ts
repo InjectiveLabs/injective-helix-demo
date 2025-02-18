@@ -364,6 +364,7 @@ export const createPerpStrategy = async (
 
   const authZStore = useAuthZStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -491,7 +492,17 @@ export const createPerpStrategy = async (
       authZStore.fetchGrants(),
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      derivativeStore.fetchOrdersForSubaccount({
+        marketIds: [market.marketId],
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchOrderHistoryForSubaccount({
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchSubaccountTrades({
+        subaccountId: gridStrategySubaccountId
+      })
     ])
   )
 }
