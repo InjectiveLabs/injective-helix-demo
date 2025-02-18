@@ -1,4 +1,4 @@
-import { ReferralTableColumn } from '@/types'
+import { I18nMessageFunction, ReferralTableColumn } from '@/types'
 
 export default {
   referral: {
@@ -12,22 +12,49 @@ export default {
     betaCtaDescription2:
       'Connect with like-minded pioneers. Your next big opportunity is just around the corner!',
     share: 'Share',
+    approve: 'Approve',
     referNow: 'Refer Now',
-    noReferrals: 'No Referrals',
+    noReferrals: 'No referrals',
     generateLink: 'Generate Link',
     referralLink: 'Referral Link',
     exploreMarkets: 'Explore Markets',
+    confirmReferral: 'Confirm Referral',
     referralDetails: 'Referral Details',
     scanToJoin: 'Scan to Join Helix or',
     yourReferralLink: 'Your Referral Link',
+    checkAvailability: 'Check Availability',
     affiliatedAddress: 'Affiliated Address',
     startEarningToday: 'Start earning today',
+    createReferralLinkPlaceholder: 'TRUMPUMP',
     referralLinkCopied: 'Referral Link Copied',
+    customReferralCode: 'Custom Referral Code',
+    chooseDifferentLink: 'Choose Different Link',
     dashboardTitle: 'Refer Traders, Earn Rewards',
+    referralLinkAvailable: 'Referral Link Available!',
+    lettersAndNumbersOnly: 'letters and numbers only',
+    confirmAndGenerateLink: 'Confirm and Generate Link',
+    createReferralLinkTitle: 'Create Your Referral Link',
     trackYourReferrals: 'Track your referrals and earned commissions',
     shareYourReferralLink: 'Share your referral link and invite friends.',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
+    createReferralLinkSubtitle:
+      'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
+    referralLinkAvailableDescription: ({
+      interpolate,
+      named
+    }: I18nMessageFunction) =>
+      interpolate([
+        'Your referral code https://helix.app/ref/',
+        named('referralCode'),
+        ' is available. Would you like to use this link?'
+      ]),
+    confirmReferralDescription: ({ interpolate, named }: I18nMessageFunction) =>
+      interpolate([
+        'You will be referred with https://helix.app/ref/',
+        named('referralCode'),
+        '. Please confirm if you would like to be affiliated with this address.'
+      ]),
     table: {
       [ReferralTableColumn.Wallets]: 'Wallets',
       [ReferralTableColumn.Commission]: 'Commission',

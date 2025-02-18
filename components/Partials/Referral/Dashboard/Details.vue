@@ -35,12 +35,15 @@ function copyReferral() {
 }
 
 function shareReferralLink() {
+  // todo fred: bind with actual function
   // console.log('shareReferralLink')
 }
 </script>
 
 <template>
-  <div class="py-7 px-9 bg-brand-825 rounded-lg mt-8 flex gap-8">
+  <div
+    class="py-7 px-9 bg-brand-825 rounded-lg mt-8 flex gap-8 max-lg:flex-col max-sm:px-6"
+  >
     <div class="flex-1">
       <h5 class="font-bold text-xl leading-none">
         {{ $t('referral.yourReferralLink') }}
@@ -52,11 +55,11 @@ function shareReferralLink() {
       <div
         class="rounded-md bg-brand-900 border border-[#181E31] px-5 py-4 flex justify-between items-center gap-2"
       >
-        <div>
+        <div class="flex-1">
           <p class="text-coolGray-450 text-xs mb-1">
             {{ $t('referral.referralLink') }}
           </p>
-          <p>
+          <p class="max-sm:text-sm break-all">
             <span>{{ helixReferralBaseUrl }}</span>
             <span class="font-bold">{{ referralPrefix }}</span>
           </p>
@@ -73,7 +76,7 @@ function shareReferralLink() {
           {{ $t('referral.myStats.title') }}
         </h6>
 
-        <div class="flex gap-4">
+        <div class="flex gap-4 max-sm:flex-col">
           <div
             v-for="(item, index) in statsList"
             :key="index"
@@ -91,7 +94,10 @@ function shareReferralLink() {
                 {{ item.title }}
               </h6>
 
-              <span v-if="item.isUsdValue" class="text-2xl font-semibold">
+              <span
+                v-if="item.isUsdValue"
+                class="text-2xl font-semibold break-all"
+              >
                 $<AppUsdAmount
                   v-bind="{
                     amount: item.value.toFixed(),
@@ -109,7 +115,10 @@ function shareReferralLink() {
       </div>
     </div>
 
-    <div class="bg-brand-900 border border-[#181E31] px-20 py-7 rounded-lg">
+    <div
+      class="bg-brand-900 border border-[#181E31] px-20 py-7 rounded-lg flex flex-col items-center max-sm:px-6"
+    >
+      <!-- todo fred: replace with actual QR code implementation once product spec is clear -->
       <img src="/images/referral/sample-qrcode.webp" class="w-40" />
       <p class="tracking-wide text-coolGray-450 text-sm text-center my-4">
         {{ $t('referral.scanToJoin') }}

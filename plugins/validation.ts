@@ -411,6 +411,14 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('alphanumeric', (value: string) => {
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return 'Only letters and numbers are allowed'
+    }
+
+    return true
+  })
 }
 
 export default defineNuxtPlugin(() => {

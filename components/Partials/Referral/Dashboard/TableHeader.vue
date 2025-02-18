@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { Modal } from '@/types'
+
+const modalStore = useSharedModalStore()
+
 withDefaults(
   defineProps<{
     hasReferralLink?: boolean
@@ -11,13 +15,15 @@ const affiliatedAddress = computed(
 )
 
 function referNow() {
-  // console.log('referNow')
+  modalStore.openModal(Modal.CreateReferralLink)
 }
 </script>
 
 <template>
-  <div class="flex justify-between items-end w-full">
-    <div>
+  <div
+    class="flex justify-between items-end w-full gap-6 max-md:flex-col max-md:items-start"
+  >
+    <div class="w-full">
       <h5 class="font-bold text-xl leading-none">
         {{
           hasReferralLink
@@ -32,7 +38,7 @@ function referNow() {
       <AppButton
         v-if="!hasReferralLink"
         size="lg"
-        class="font-semibold tracking-wide min-w-48 mt-8"
+        class="font-semibold tracking-wide min-w-48 mt-8 max-sm:mt-4 max-xs:w-full"
         @click="referNow"
       >
         {{ $t('referral.referNow') }}
@@ -43,7 +49,9 @@ function referNow() {
       <p class="tracking-wide text-xs text-coolGray-350 mb-2 uppercase">
         {{ $t('referral.affiliatedAddress') }}
       </p>
-      <p class="text-blue-600 underline text-sm font-medium leading-none">
+      <p
+        class="text-blue-600 underline text-sm font-medium leading-none max-sm:break-all"
+      >
         {{ affiliatedAddress }}
       </p>
     </div>

@@ -93,7 +93,7 @@ function onSelectVault(vaultUrl: string) {
 
 <template>
   <AppHocLoading v-bind="{ status }" is-full-screen>
-    <div class="container py-10 mx-auto">
+    <div class="container py-10 mx-auto px-4">
       <h2
         class="text-2xl font-semibold"
         :data-cy="dataCyTag(VaultsCyTags.title)"

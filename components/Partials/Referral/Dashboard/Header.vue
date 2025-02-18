@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { Modal } from '@/types'
+
+const modalStore = useSharedModalStore()
+
 withDefaults(
   defineProps<{
     hasReferralLink?: boolean
@@ -7,7 +11,7 @@ withDefaults(
 )
 
 function generateLink() {
-  // console.log('generateLink')
+  modalStore.openModal(Modal.CreateReferralLink)
 }
 </script>
 
@@ -15,19 +19,22 @@ function generateLink() {
   <div class="flex justify-between items-center gap-4">
     <div
       class="flex flex-1 flex-col"
-      :class="{ 'items-center text-center': hasReferralLink }"
+      :class="{
+        'items-center text-center max-sm:items-start max-sm:text-left':
+          hasReferralLink
+      }"
     >
-      <h5 class="font-semibold text-3xl">
+      <h5 class="font-semibold text-3xl max-sm:max-w-52 leading-tight">
         {{ $t('referral.dashboardTitle') }}
       </h5>
-      <p class="tracking-wide text-sm mt-2">
+      <p class="tracking-wide text-sm mt-3 max-sm:max-w-56 max-sm:mt-7">
         {{ $t('referral.dashboardSubtitle') }}
       </p>
 
       <AppButton
         v-if="!hasReferralLink"
         size="lg"
-        class="font-semibold tracking-wide min-w-48 mt-8"
+        class="font-semibold tracking-wide min-w-48 mt-8 max-xs:w-full"
         @click="generateLink"
       >
         {{ $t('referral.generateLink') }}
@@ -37,7 +44,7 @@ function generateLink() {
     <img
       v-if="!hasReferralLink"
       src="/images/referral/dashboard-hero.webp"
-      class="h-64 max-sm:hidden"
+      class="h-64 max-md:hidden"
     />
   </div>
 </template>

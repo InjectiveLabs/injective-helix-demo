@@ -24,21 +24,25 @@ const tutorialSteps = [
 </script>
 
 <template>
-  <div class="p-9 bg-brand-825 rounded-lg mt-20">
+  <div
+    class="p-9 bg-brand-825 rounded-lg mt-20 max-sm:mt-8 max-sm:py-8 max-sm:px-6"
+  >
     <h5 class="font-bold text-xl leading-none">
       {{ $t('referral.referFriends.title') }}
     </h5>
-    <p class="tracking-wide text-sm text-coolGray-450 mt-6 mb-4">
+    <p
+      class="tracking-wide text-sm text-coolGray-450 mt-6 mb-4 max-sm:mt-3 max-sm:mb-20"
+    >
       {{ $t('referral.referFriends.description1') }}
       <br />
       {{ $t('referral.referFriends.description2') }}
     </p>
 
-    <div class="flex gap-8">
+    <div class="flex gap-8 max-lg:flex-col">
       <div
         v-for="step in tutorialSteps"
         :key="step.num"
-        class="relative flex-1 h-32"
+        class="relative lg:flex-1 h-32"
       >
         <span
           class="block w-16 h-16 rounded-full bg-azure-blue-700 absolute z-[1] top-4 left-8"
@@ -52,7 +56,9 @@ const tutorialSteps = [
           >
             {{ step.title }}
           </h6>
-          <p class="mt-2 text-[10px] max-w-44">{{ step.description }}</p>
+          <p class="mt-2 text-[10px] max-w-44">
+            {{ step.description }}
+          </p>
 
           <p class="text-3xl font-semibold absolute left-6 bottom-3">
             {{ step.num }}

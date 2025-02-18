@@ -17,15 +17,15 @@ const socialLinks = [
 </script>
 
 <template>
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center max-sm:items-start">
     <h1 class="text-3xl font-semibold mb-5 leading-none">
       {{ $t('referral.weAreStillInBeta') }}
     </h1>
-    <p class="tracking-wide text-sm max-w-[520px] text-center">
+    <p class="tracking-wide text-sm max-w-[520px] text-center max-sm:text-left">
       {{ $t('referral.betaDescription') }}
     </p>
 
-    <div class="w-full bg-brand-825 rounded-lg p-9 pb-7 mt-8">
+    <div class="w-full bg-brand-825 rounded-lg p-9 max-sm:px-6 pb-7 mt-8">
       <h5 class="font-bold text-xl">{{ $t('referral.betaCtaTitle1') }}</h5>
       <p class="tracking-wide text-sm text-coolGray-450 mt-2 mb-6">
         {{ $t('referral.betaCtaDescription1') }}
@@ -40,7 +40,7 @@ const socialLinks = [
       </AppButton>
     </div>
 
-    <div class="w-full bg-brand-825 rounded-lg p-9 pb-7 mt-8">
+    <div class="w-full bg-brand-825 rounded-lg p-9 max-sm:px-6 pb-7 mt-8">
       <h5 class="font-bold text-xl">{{ $t('referral.betaCtaTitle2') }}</h5>
       <p class="tracking-wide text-sm text-coolGray-450 mt-2 mb-6">
         {{ $t('referral.betaCtaDescription2') }}

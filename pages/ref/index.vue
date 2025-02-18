@@ -16,7 +16,7 @@ onMounted(() => {
   if (!sharedWalletStore.isUserConnected) {
     router.push({ name: MainPage.Index })
   } else {
-    status.setIdle() // temp
+    status.setIdle()
 
     // todo fred: update with data when ready
     // referralStore
@@ -32,9 +32,11 @@ onMounted(() => {
 
 <template>
   <AppHocLoading :status="status" is-full-screen>
-    <section class="mx-auto max-w-5xl w-full px-4 py-16">
+    <section class="mx-auto max-w-5xl w-full px-4 py-16 max-sm:py-10">
       <PartialsReferralBeta v-if="!isUserWhitelisted" />
       <PartialsReferralDashboard v-else />
     </section>
+
+    <ModalsCreateReferralLink />
   </AppHocLoading>
 </template>

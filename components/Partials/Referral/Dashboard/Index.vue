@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 // todo fred: update with data when ready
-const hasReferralLink = computed(() => true)
+const hasReferralLink = computed(() => false)
 </script>
 
 <template>
-  <div :class="{ 'px-4': !hasReferralLink }">
+  <div :class="{ 'sm:px-4': !hasReferralLink }">
     <PartialsReferralDashboardHeader v-bind="{ hasReferralLink }" />
 
     <PartialsReferralDashboardTutorial v-if="!hasReferralLink" />
