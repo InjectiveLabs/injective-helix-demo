@@ -53,7 +53,7 @@ function onSharePosition(position: PositionV2) {
   <PartialsPortfolioPositionsTabs />
 
   <div class="overflow-x-auto divide-y border-b">
-    <PartialsPortfolioPositionsTable
+    <PartialsPositionsTable
       v-if="filteredPosition.length"
       :positions="filteredPosition"
       :is-trading-bots="accountStore.isSgtSubaccount"

@@ -5,7 +5,7 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
+import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
@@ -331,6 +331,40 @@ export function calculateWorstPrice(
   for (const record of records) {
     if (remainingQuantity - Number(record.quantity) <= 0) {
       worstPrice = record.avgPrice
+      price += remainingQuantity * Number(record.price)
+
+      hasEnoughLiquidity = true
+      break
+    }
+
+    remainingQuantity -= Number(record.quantity)
+    price += Number(record.quantity) * Number(record.price)
+  }
+
+  return {
+    totalPrice: new BigNumberInBase(price),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
+    hasEnoughLiquidity
+  }
+}
+
+export function calculateWorstPriceFromPriceLevel(
+  quantity: string,
+  records: PriceLevel[]
+) {
+  let remainingQuantity = Number(quantity || '0')
+
+  let price = 0
+  let worstPrice = '0'
+  let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
+
+  for (const record of records) {
+    if (remainingQuantity - Number(record.quantity) <= 0) {
+      worstPrice = record.price
       price += remainingQuantity * Number(record.price)
 
       hasEnoughLiquidity = true

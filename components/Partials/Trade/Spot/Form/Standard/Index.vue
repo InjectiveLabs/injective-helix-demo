@@ -3,6 +3,7 @@ import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,
+  BusEvents,
   MarketKey,
   TradeTypes,
   UiSpotMarket,
@@ -35,6 +36,14 @@ const {
   slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+function onOrdersideClicked() {
+  if (orderTypeValue.value !== TradeTypes.Limit) {
+    return
+  }
+
+  useEventBus(BusEvents.OrderSideToggled).emit()
+}
 </script>
 
 <template>
@@ -78,6 +87,7 @@ const {
         v-model="orderSideValue"
         class="flex-1"
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
+        @click="onOrdersideClicked"
       >
         <AppButton
           :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"

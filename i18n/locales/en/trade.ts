@@ -109,6 +109,7 @@ export default {
     cancelOrder: 'Cancel Order',
     min_received_amount: 'Mininum Received Amount',
     averagePrice: 'Average Price',
+    worstPrice: 'Worst Price',
     amount_tooltip:
       'The total value of the base asset at the time which the trade was executed (i.e. for BTC/USDT, BTC is the base asset and USDT is the quote asset).',
     filled: 'Filled',
