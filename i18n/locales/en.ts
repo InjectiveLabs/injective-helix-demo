@@ -443,7 +443,9 @@ export default {
     closeAndContinue: 'Close and continue',
     injectiveBridge: 'Injective Bridge',
     processingMessageInfo:
-      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
+      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the ',
+    onramperSuccess:
+      'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.'
   },
 
   notFound404: {

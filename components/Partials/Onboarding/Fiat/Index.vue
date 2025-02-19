@@ -13,7 +13,6 @@ const { t } = useI18n()
 const { copy } = useClipboard()
 
 const emit = defineEmits<{
-  'modal:close': []
   'funds:purchase': []
 }>()
 
@@ -24,10 +23,6 @@ const isPortfolioBalancePage = computed(
 const formattedAddress = computed(() =>
   sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
-
-function onCloseModal() {
-  emit('modal:close')
-}
 
 function onPurchaseFunds() {
   trackQrCodeBuyFunds(sharedWalletStore.wallet)
@@ -93,7 +88,6 @@ onMounted(() => {
         <AppButton
           variant="primary-outline"
           class="w-full text-white hover:text-white text-base leading-5 py-2.5 font-semibold"
-          @click="onCloseModal"
         >
           {{ $t('onboarding.qr.bridge') }}
         </AppButton>

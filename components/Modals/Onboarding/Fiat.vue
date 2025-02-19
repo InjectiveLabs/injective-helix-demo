@@ -10,7 +10,7 @@ function onPurchaseFunds() {
   isPurchaseFunds.value = true
 }
 
-function closeModal() {
+function resetState() {
   isPurchaseFunds.value = false
 }
 </script>
@@ -19,14 +19,13 @@ function closeModal() {
   <AppModal
     v-model="modalStore.modals[Modal.FiatOnboard]"
     v-bind="{ isHideCloseButton: !xs }"
-    @on:close="closeModal"
+    @on:open="resetState"
   >
     <PartialsOnboardingFiat
       v-if="!isPurchaseFunds"
       @funds:purchase="onPurchaseFunds"
-      @modal:close="closeModal"
     />
 
-    <PartialsOnboardingFiatMercuryo v-else />
+    <PartialsOnboardingFiatOnramper v-else />
   </AppModal>
 </template>

@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-base'
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
-const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
   defineProps<{
@@ -13,12 +11,6 @@ withDefaults(
 )
 
 function openDepositQRModal() {
-  if (sharedWalletStore.wallet === Wallet.Magic) {
-    modalStore.openModal(Modal.FiatOnboard)
-
-    return
-  }
-
   modalStore.openModal(Modal.FiatOnboard)
 }
 </script>
