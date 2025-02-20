@@ -39,7 +39,7 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 })
 
 const isSlippageOn = computed(
-  () => spotFormValues.value[SpotTradeFormField.IsSlippageOn]
+  () => !!spotFormValues.value[SpotTradeFormField.IsSlippageOn]
 )
 
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
@@ -79,7 +79,10 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
+        <div
+          v-if="isSlippageOn"
+          class="flex items-center text-xs border-b pb-2"
+        >
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -123,7 +126,7 @@ function toggle() {
           </p>
         </div>
 
-        <div class="flex items-center text-xs font-medium">
+        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">
             {{ spotMarket.quoteToken.symbol }} {{ $t('trade.amount') }}
           </p>
@@ -153,18 +156,18 @@ function toggle() {
             class="space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
-            <AppAmount
-              v-bind="{
-                amount: isSlippageOn
-                  ? worstPrice.toFixed()
-                  : acceptedWorstPrice.toFixed(),
-                decimalPlaces: spotMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{ spotMarket.quoteToken.symbol }}
-            </span>
+            <PartialsTradeCommonValueOrMarket :is-market="!isSlippageOn">
+              <AppAmount
+                v-bind="{
+                  amount: worstPrice.toFixed(),
+                  decimalPlaces: spotMarket.priceDecimals
+                }"
+                class="text-white"
+              />
+              <span class="text-coolGray-450">
+                {{ spotMarket.quoteToken.symbol }}
+              </span>
+            </PartialsTradeCommonValueOrMarket>
           </p>
         </div>
 
@@ -196,7 +199,10 @@ function toggle() {
             </p>
           </div>
 
-          <div class="flex items-center text-xs font-medium">
+          <div
+            v-if="isSlippageOn"
+            class="flex items-center text-xs font-medium"
+          >
             <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
             <div class="flex-1 mx-2" />
             <p

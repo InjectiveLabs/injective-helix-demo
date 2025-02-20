@@ -42,10 +42,6 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       TradeAmountOption.Base
   )
 
-  const isSlippageOn = computed(
-    () => derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
-  )
-
   const isStopOrder = computed(() =>
     [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
       derivativeFormValues.value[
@@ -227,9 +223,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       return quantity.value.times(price)
     }
 
-    return new BigNumberInBase(
-      isSlippageOn.value ? worstPrice.value : acceptedWorstPrice.value
-    ).times(quantity.value)
+    return new BigNumberInBase(worstPrice.value).times(quantity.value)
   })
 
   const feeAmount = computed(() =>

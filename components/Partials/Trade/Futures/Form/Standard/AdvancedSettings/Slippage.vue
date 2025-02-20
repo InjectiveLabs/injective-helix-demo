@@ -18,7 +18,11 @@ const { value: slippageValue } = useStringField({
 <template>
   <div>
     <div class="flex items-center justify-between">
-      <AppCheckbox2 v-model="isSlippageOnValue" class="text-white">
+      <AppCheckbox2
+        v-model="isSlippageOnValue"
+        :disabled="true"
+        class="text-white"
+      >
         {{ $t('trade.slippage') }}
       </AppCheckbox2>
       <AppInputField
