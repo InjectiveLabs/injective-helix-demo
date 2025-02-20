@@ -10,10 +10,14 @@ import {
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
-import { IS_MAINNET, IS_TESTNET } from '@shared/utils/constant'
+import {
+  NETWORK,
+  ENDPOINTS,
+  IS_MAINNET,
+  IS_TESTNET
+} from '@shared/utils/constant'
 import { tokens } from '@/app/json'
-import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
-
+import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 export const tokenFactoryStatic = new TokenFactoryStatic(
   tokens as TokenStatic[]
 )
@@ -28,7 +32,7 @@ export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const tendermintApi = new ChainGrpcTendermintApi(ENDPOINTS.grpc)
 
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
-  ENDPOINTS.campaign
+  HELIX_ENDPOINTS.campaign
 )
 /** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(

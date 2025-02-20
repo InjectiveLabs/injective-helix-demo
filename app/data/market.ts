@@ -1,6 +1,6 @@
 import { injToken } from '@shared/data/token'
+import { IS_DEVNET, IS_TESTNET } from '@shared/utils/constant'
 import { marketCategoriesMap } from '@/app/json'
-import { IS_DEVNET, IS_TESTNET } from '@/app/utils/constants'
 import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {

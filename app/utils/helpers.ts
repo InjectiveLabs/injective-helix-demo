@@ -8,17 +8,13 @@ import { sharedTokenClient } from '@shared/Service'
 import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
-import {
-  NETWORK,
-  ENDPOINTS,
-  IS_MAINNET,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { NETWORK, ENDPOINTS, IS_MAINNET } from '@shared/utils/constant'
 import { tokenFactoryStatic } from '@/app/Services'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
