@@ -49,7 +49,7 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
 )
 
 const isSlippageOn = computed(
-  () => derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
+  () => !!derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
@@ -102,7 +102,10 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
+        <div
+          v-if="isSlippageOn"
+          class="flex items-center text-xs border-b pb-2"
+        >
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -112,6 +115,7 @@ function toggle() {
           >
             <span class="flex space-x-2">
               <span>&asymp;</span>
+
               <AppAmount
                 v-bind="{
                   amount: marginWithFee.toFixed(),
@@ -126,7 +130,7 @@ function toggle() {
           </p>
         </div>
 
-        <div class="flex items-center text-xs font-medium">
+        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2">
@@ -144,7 +148,7 @@ function toggle() {
           </p>
         </div>
 
-        <div class="flex items-center text-xs font-medium">
+        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
@@ -189,24 +193,24 @@ function toggle() {
           </p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
-            <AppAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
-              v-bind="{
-                amount: isSlippageOn
-                  ? worstPrice.toFixed()
-                  : acceptedWorstPrice.toFixed(),
-                decimalPlaces: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
+            <PartialsTradeCommonValueOrMarket :is-market="!isSlippageOn">
+              <AppAmount
+                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
+                v-bind="{
+                  amount: worstPrice.toFixed(),
+                  decimalPlaces: derivativeMarket.priceDecimals
+                }"
+                class="text-white"
+              />
 
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
+              <span class="text-coolGray-450">
+                {{ derivativeMarket.quoteToken.symbol }}
+              </span>
+            </PartialsTradeCommonValueOrMarket>
           </p>
         </div>
 
-        <div class="flex items-center text-xs font-medium">
+        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
@@ -240,7 +244,10 @@ function toggle() {
             </p>
           </div>
 
-          <div class="flex items-center text-xs font-medium">
+          <div
+            v-if="isSlippageOn"
+            class="flex items-center text-xs font-medium"
+          >
             <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
             <div class="flex-1 mx-2" />
             <p class="space-x-2 flex">
