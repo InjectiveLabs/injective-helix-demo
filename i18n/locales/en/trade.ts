@@ -53,7 +53,9 @@ export default {
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
-    slippage: 'Slippage',
+    slippage: 'Max Slippage',
+    slippageOffNote:
+      'By unchecking this box, you acknowledge that your order may get filled at an unfavorable price. Proceed at your own risk.',
     allMarkets: 'All Markets',
     timestamp: 'Time stamp',
     tickSize: 'Tick Size',

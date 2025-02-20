@@ -8,7 +8,13 @@ import { sharedTokenClient } from '@shared/Service'
 import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
-import { NETWORK, ENDPOINTS, IS_MAINNET } from '@shared/utils/constant'
+import {
+  NETWORK,
+  ENDPOINTS,
+  IS_MAINNET,
+  ZERO_IN_BASE,
+  ZERO_IN_BASE
+} from '@shared/utils/constant'
 import { tokenFactoryStatic } from '@/app/Services'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import { hexToString, stringToHex } from '@/app/utils/converters'
@@ -318,6 +324,12 @@ export function quantizeNumber(
   number: number | BigNumberInBase,
   tensMultiplier: number
 ): BigNumberInBase {
+  const numberInBigNumber = new BigNumberInBase(number)
+
+  if (numberInBigNumber.isZero()) {
+    return ZERO_IN_BASE
+  }
+
   const divideBy = new BigNumberInBase(10).exponentiatedBy(tensMultiplier)
 
   return new BigNumberInBase(
@@ -420,9 +432,9 @@ export function calculateTotalQuantity(
   }
 
   return {
-    totalQuantity: new BigNumberInBase(totalQuantity),
     hasEnoughLiquidity,
-    worstPrice: new BigNumberInBase(worstPrice)
+    worstPrice: new BigNumberInBase(worstPrice),
+    totalQuantity: new BigNumberInBase(totalQuantity)
   }
 }
 

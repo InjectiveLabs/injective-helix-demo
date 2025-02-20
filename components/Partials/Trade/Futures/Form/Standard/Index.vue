@@ -12,7 +12,6 @@ import {
 } from '@/types'
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
-
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { value: orderType } = useStringField({
@@ -35,7 +34,7 @@ const {
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
 
-function onOrdersideChange() {
+function onOrderSideChange() {
   if (
     ![DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
       orderType.value as DerivativeTradeTypes
@@ -88,7 +87,7 @@ function onTradeTypeChange() {
         v-model="orderSide"
         class="flex-1"
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
-        @click="onOrdersideChange"
+        @click="onOrderSideChange"
       >
         <AppButton
           :variant="
