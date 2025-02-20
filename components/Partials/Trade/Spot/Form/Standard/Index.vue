@@ -34,10 +34,11 @@ const {
   totalWithFee,
   feePercentage,
   slippagePercentage,
+  acceptedWorstPrice,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
-function onOrdersideClicked() {
+function onOrderSideClicked() {
   if (orderTypeValue.value !== TradeTypes.Limit) {
     return
   }
@@ -87,7 +88,7 @@ function onOrdersideClicked() {
         v-model="orderSideValue"
         class="flex-1"
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
-        @click="onOrdersideClicked"
+        @click="onOrderSideClicked"
       >
         <AppButton
           :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
@@ -125,12 +126,13 @@ function onOrdersideClicked() {
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
         total,
-        totalWithFee,
         quantity,
         feeAmount,
         worstPrice,
         feePercentage,
-        slippagePercentage
+        totalWithFee,
+        slippagePercentage,
+        acceptedWorstPrice
       }"
     />
 

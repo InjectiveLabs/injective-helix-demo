@@ -27,6 +27,7 @@ const props = withDefaults(
     feeAmount: BigNumberInBase
     marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    acceptedWorstPrice: BigNumberInBase
   }>(),
   {}
 )
@@ -45,6 +46,10 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
     shouldTruncate: true
   }
+)
+
+const isSlippageOn = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
@@ -187,7 +192,9 @@ function toggle() {
             <AppAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
               v-bind="{
-                amount: worstPrice.toFixed(),
+                amount: isSlippageOn
+                  ? worstPrice.toFixed()
+                  : acceptedWorstPrice.toFixed(),
                 decimalPlaces: derivativeMarket.priceDecimals
               }"
               class="text-white"
