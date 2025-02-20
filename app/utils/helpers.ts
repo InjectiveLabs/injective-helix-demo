@@ -12,7 +12,6 @@ import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
-  ZERO_IN_BASE,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
 import { tokenFactoryStatic } from '@/app/Services'
