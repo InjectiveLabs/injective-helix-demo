@@ -133,6 +133,13 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     return calculateWorstPrice(quantity.value.toString(), records)
   })
 
+  const acceptedWorstPrice = computed(() => {
+    return quantizeNumber(
+      calculatedWorstPrice.value.worstPrice,
+      market.value.priceTensMultiplier
+    )
+  })
+
   const worstPrice = computed(() => {
     if (isLimitOrder.value) {
       return quantizeNumber(
@@ -202,6 +209,7 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     feePercentage,
     slippagePercentage,
     hasEnoughLiquidity,
+    acceptedWorstPrice,
     minimumAmountInQuote,
     isNotionalLessThanMinNotional
   }

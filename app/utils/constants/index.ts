@@ -131,7 +131,7 @@ export const MIN_COMPETITION_PNL_AMOUNT = 0.01
 
 // Slippage factors are used to calculate the worst price when slippage protection is off
 export const DEFAULT_BUY_MAX_SLIPPAGE_FACTOR = 5
-export const DEFAULT_SELL_MAX_SLIPPAGE_FACTOR = 0.1
+export const DEFAULT_SELL_MAX_SLIPPAGE_FACTOR = 0.01
 
 export const LEADERBOARD_VOLUME_PER_ENTRY = 10
 export const intervalOptions: IntervalOption[] = [

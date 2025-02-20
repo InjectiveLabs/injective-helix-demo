@@ -31,6 +31,7 @@ const {
   feePercentage,
   marginWithFee,
   totalNotional,
+  acceptedWorstPrice,
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
 
@@ -149,7 +150,8 @@ function onTradeTypeChange() {
         feeAmount,
         worstPrice,
         marginWithFee,
-        totalNotional
+        totalNotional,
+        acceptedWorstPrice
       }"
     />
 

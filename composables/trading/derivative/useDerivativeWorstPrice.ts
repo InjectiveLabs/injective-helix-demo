@@ -42,6 +42,10 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       TradeAmountOption.Base
   )
 
+  const isSlippageOn = computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
+  )
+
   const isStopOrder = computed(() =>
     [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
       derivativeFormValues.value[
@@ -171,6 +175,14 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     return calculateWorstPrice(quantity.value.toString(), records)
   })
 
+  // This is the worst price that will be used to calculate the details (when slippage protection is off)
+  const acceptedWorstPrice = computed(() => {
+    return quantizeNumber(
+      calculatedWorstPrice.value.worstPrice,
+      market.value.priceTensMultiplier
+    )
+  })
+
   const worstPrice = computed(() => {
     const price = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
@@ -215,7 +227,9 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       return quantity.value.times(price)
     }
 
-    return new BigNumberInBase(worstPrice.value).times(quantity.value)
+    return new BigNumberInBase(
+      isSlippageOn.value ? worstPrice.value : acceptedWorstPrice.value
+    ).times(quantity.value)
   })
 
   const feeAmount = computed(() =>
@@ -283,6 +297,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     feePercentage,
     totalNotional,
     marginWithFee,
+    acceptedWorstPrice,
     hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,

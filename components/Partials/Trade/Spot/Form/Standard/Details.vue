@@ -23,6 +23,7 @@ withDefaults(
     totalWithFee: BigNumberInBase
     feePercentage: BigNumberInBase
     slippagePercentage: BigNumberInBase
+    acceptedWorstPrice: BigNumberInBase
   }>(),
   {}
 )
@@ -36,6 +37,10 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: spotMarket?.value?.takerFeeRate,
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
 })
+
+const isSlippageOn = computed(
+  () => spotFormValues.value[SpotTradeFormField.IsSlippageOn]
+)
 
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
@@ -150,7 +155,9 @@ function toggle() {
           >
             <AppAmount
               v-bind="{
-                amount: worstPrice.toFixed(),
+                amount: isSlippageOn
+                  ? worstPrice.toFixed()
+                  : acceptedWorstPrice.toFixed(),
                 decimalPlaces: spotMarket.priceDecimals
               }"
               class="text-white"
