@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { DEFAULT_GAS_PRICE } from '@shared/utils/constant'
+import {
+  NETWORK,
+  CHAIN_ID,
+  DEFAULT_GAS_PRICE,
+  ETHEREUM_CHAIN_ID
+} from '@shared/utils/constant'
 import { alchemyKey } from '@shared/wallet/wallet-strategy'
 import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
@@ -10,7 +15,6 @@ import {
 } from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
 import { streamProvider } from '@/app/providers/StreamProvider'
-import { NETWORK, CHAIN_ID, ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
 import {
   Modal,
   NoticeBanner,

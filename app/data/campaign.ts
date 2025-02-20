@@ -1,4 +1,4 @@
-import { IS_TESTNET } from '@/app/utils/constants'
+import { IS_TESTNET } from '@shared/utils/constant'
 import { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
 
 export const thumbnailMap = {

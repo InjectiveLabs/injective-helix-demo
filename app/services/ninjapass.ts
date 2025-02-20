@@ -1,8 +1,8 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { NINJA_PASS_ENDPOINT } from '@/app/utils/constants'
+import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 
 export const fetchNinjaPassCodes = async (address: string) => {
-  const httpClient = new HttpClient(NINJA_PASS_ENDPOINT)
+  const httpClient = new HttpClient(HELIX_ENDPOINTS.ninjaPass)
 
   try {
     const res = (await httpClient.get(`codes?address=${address}`)) as {

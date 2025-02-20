@@ -1,6 +1,6 @@
 import Hotjar from 'vue-hotjar'
+import { HOTJAR_KEY } from '@shared/utils/constant'
 import { defineNuxtPlugin } from '#imports'
-import { HOTJAR_KEY } from '@/app/utils/constants/setup'
 
 export default defineNuxtPlugin((nuxtApp) => {
   if (HOTJAR_KEY) {

@@ -8,8 +8,8 @@ import {
   GrpcUnaryRequestException
 } from '@injectivelabs/exceptions'
 import { StatusCodes } from 'http-status-codes'
+import { IS_PRODUCTION, BUGSNAG_KEY } from '@shared/utils/constant'
 import { defineNuxtPlugin } from '#imports'
-import { IS_PRODUCTION, BUGSNAG_KEY } from '@/app/utils/constants'
 
 const reportToUser = (error: ThrownException) => {
   const notificationStore = useSharedNotificationStore()
