@@ -30,7 +30,11 @@ const { value: slippageValue } = useStringField({
       class="flex items-center justify-between"
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsSlippage)"
     >
-      <AppCheckbox2 v-model="isSlippageOnValue" class="flex text-white">
+      <AppCheckbox2
+        v-model="isSlippageOnValue"
+        :disabled="true"
+        class="flex text-white"
+      >
         {{ $t('trade.slippage') }}
       </AppCheckbox2>
       <AppInputField
