@@ -10,7 +10,7 @@ withDefaults(
   {}
 )
 
-function generateLink() {
+function referAndEarn() {
   modalStore.openModal(Modal.CreateReferralLink)
 }
 </script>
@@ -35,9 +35,9 @@ function generateLink() {
         v-if="!hasReferralLink"
         size="lg"
         class="font-semibold tracking-wide min-w-48 mt-8 max-xs:w-full"
-        @click="generateLink"
+        @click="referAndEarn"
       >
-        {{ $t('referral.generateLink') }}
+        {{ $t('referral.referAndEarn') }}
       </AppButton>
     </div>
 

@@ -5,6 +5,7 @@ const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{
+    isEmpty?: boolean
     hasReferralLink?: boolean
   }>(),
   {}
@@ -23,7 +24,10 @@ function referNow() {
   <div
     class="flex justify-between items-end w-full gap-6 max-md:flex-col max-md:items-start"
   >
-    <div class="w-full">
+    <div
+      class="w-full"
+      :class="{ 'flex flex-col items-center': isEmpty && !hasReferralLink }"
+    >
       <h5 class="font-bold text-xl leading-none">
         {{
           hasReferralLink

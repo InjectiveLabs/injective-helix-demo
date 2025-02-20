@@ -64,10 +64,12 @@ const { rows } = useReferralTransformer(computed(() => referralList.value))
 
 <template>
   <div class="py-8 px-6 bg-brand-825 rounded-lg mt-8 flex flex-col gap-4">
-    <PartialsReferralDashboardTableHeader v-bind="{ hasReferralLink }" />
+    <PartialsReferralDashboardTableHeader
+      v-bind="{ hasReferralLink, isEmpty: rows.length === 0 }"
+    />
 
     <UTable
-      v-if="rows.length"
+      v-if="hasReferralLink"
       :rows="rows"
       :columns="columns"
       :ui="{
@@ -77,6 +79,13 @@ const { rows } = useReferralTransformer(computed(() => referralList.value))
         tbody: 'bg-coolGray-950 dark:divide-brand-800'
       }"
     >
+      <template #empty-state>
+        <CommonEmptyList
+          class="pt-12 pb-12"
+          :message="$t('referral.noReferrals')"
+        />
+      </template>
+
       <template #wallets-data="{ row }">
         <span class="p-2 max-xs:px-0">
           {{ row.formattedAddress }}
@@ -99,11 +108,5 @@ const { rows } = useReferralTransformer(computed(() => referralList.value))
         </span>
       </template>
     </UTable>
-
-    <CommonEmptyList
-      v-else
-      class="max-sm:pt-16 max-sm:pb-12"
-      :message="$t('referral.noReferrals')"
-    />
   </div>
 </template>
