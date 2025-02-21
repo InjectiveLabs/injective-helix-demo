@@ -23,41 +23,33 @@ const isEndedCampaign = computed(() => {
 
 <template>
   <div
-    class="relative rounded-lg md:h-64 lg:h-80 mb-10 border-coolGray-375 border-[3px] flex justify-between"
+    class="relative rounded-lg mb-10 border-coolGray-375 border-[3px] flex justify-between overflow-hidden"
   >
-    <div
-      class="absolute inset-0 bg-[url('/images/leaderboard/tesla.webp')] bg-cover bg-no-repeat md:bg-none opacity-10 bg-center"
-    />
-
     <div
       v-if="isEndedCampaign"
       class="absolute top-2 right-2 sm:top-3 sm:right-3 py-0.5 sm:py-1 px-1 sm:px-2 bg-coolGray-650 rounded uppercase text-xs sm:text-sm font-semibold"
     >
       {{ $t('leaderboard.competition.ownYourAssetBanner.ended') }}
     </div>
+
     <div
-      class="relative px-6 xl:px-10 flex flex-col space-y-4 xl:space-y-6 items-start py-6 xl:pt-12 flex-1 tracking-[0.4px]"
+      class="relative px-6 xl:px-10 flex flex-col space-y-4 xl:space-y-6 items-start py-6 xl:py-9 flex-1 tracking-[0.4px]"
     >
-      <div
-        class="text-left text-5xl xl:text-5xl font-bold uppercase font-orbitron"
-      >
+      <div class="text-left text-4xl font-black italic max-2xl:max-w-xl">
         {{ $t('leaderboard.competition.ownYourAssetBanner.title') }}
       </div>
 
-      <div
-        class="text-left text-sm xl:text-xl max-w-lg 2xl:max-w-xl font-proximaNova opacity-90"
-      >
+      <div class="text-left text-base max-w-lg 2xl:max-w-xl opacity-90">
         <i18n-t
           tag="span"
           keypath="leaderboard.competition.ownYourAssetBanner.description"
           class="xl:leading-5"
         >
           <template #blog>
-            <!-- todo fred: update blog url -->
             <NuxtLink
-              to="https://blog.helixapp.com/en/turkey-day-tesla-giveaway/"
+              to="http://blog.helixapp.com/trade-responsibly-helixs-50k-trading-giveaway"
               target="_blank"
-              class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
+              class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500 no-underline"
             >
               {{ $t('leaderboard.competition.ownYourAssetBanner.blog') }}
             </NuxtLink>
@@ -66,17 +58,17 @@ const isEndedCampaign = computed(() => {
       </div>
 
       <NuxtLink
-        :to="{ name: MainPage.TeslaCompetitionTerms }"
+        :to="{ name: MainPage.OwnYourAssetCompetitionTerms }"
         target="_blank"
-        class="text-left text-xs xl:text-sm hover:text-blue-500 hover:border-b-blue-500 font-pingFang opacity-70"
+        class="text-left text-xs xl:text-sm hover:text-blue-500 hover:border-b-blue-500 opacity-70"
       >
         {{ $t('leaderboard.competition.termsAndConditionsApply') }}
       </NuxtLink>
     </div>
 
     <img
-      src="/images/leaderboard/tesla.webp"
-      class="hidden md:block object-contain max-md:flex-1 md:rounded-r-lg"
+      src="/images/leaderboard/own-your-asset.png"
+      class="hidden xl:block w-[450px] absolute -right-12 -bottom-7"
     />
   </div>
 </template>
