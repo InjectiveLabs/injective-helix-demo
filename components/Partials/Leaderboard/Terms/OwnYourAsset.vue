@@ -5,7 +5,7 @@ import { MainPage } from '@/types'
 <template>
   <div>
     <h1 class="text-3xl font-bold mb-4 text-center uppercase">
-      HELIX FEBRUARY 2025 TRADING COMPETITION
+      HELIX OWN YOUR ASSETS CONTROL YOUR FUTURE TRADING COMPETITION
     </h1>
 
     <h2 class="text-xl font-semibold mb-6 text-center uppercase">
@@ -18,12 +18,12 @@ import { MainPage } from '@/types'
 
     <h3 class="text-lg font-bold mb-2 uppercase">COMPETITION DESCRIPTION:</h3>
     <p class="mb-4">
-      The Helix Own Your Assets, Control Your Future Trading Competition
-      (collectively the “Competition”) begins on February 21, 2025 at 6:00 PM
-      UTC and ends on March 3, 2025 at 6:00 PM UTC (the “Competition Period”).
-      The winners of the Competition will receive prizes as described herein and
-      subject to these Rules, Terms, and Conditions (“Rules”). During the
-      Competition Period, entrants (“Entrants”) will have the opportunity to
+      The Helix <strong>Own Your Assets, Control Your Future</strong> Trading
+      Competition (collectively the “Competition”) begins on February 21, 2025
+      at 6:00 PM UTC and ends on March 3, 2025 at 6:00 PM UTC (the “Competition
+      Period”). The winners of the Competition will receive prizes as described
+      herein and subject to these Rules, Terms, and Conditions (“Rules”). During
+      the Competition Period, entrants (“Entrants”) will have the opportunity to
       compete to earn entries (“Entries”) based on their volume of trading using
       the application’s front end, with the winner(s) (“Winner” or “Winners”)
       being the Entrant or Entrants selected in a random drawing or drawings
