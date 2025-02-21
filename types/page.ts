@@ -18,6 +18,8 @@ export enum MainPage {
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
   CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
   CompetitionPrivacyPolicyGwagon = 'competition-privacy-policy-gwagon',
+  OwnYourAssetCompetitionTerms = 'own-your-assets-competition-terms',
+  CompetitionPrivacyPolicyOwnYourAsset = 'competition-privacy-policy-own-your-assets',
 
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
