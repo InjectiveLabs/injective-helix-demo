@@ -4,11 +4,9 @@ export default {
   sgt: {
     pnl: 'PnL',
     time: 'Time',
-    skip: 'Skip',
     user: 'User',
     auto: 'Auto',
     grids: 'Grids',
-    close: 'Close',
     amount: 'Amount',
     market: 'Market',
     endBot: 'End Bot',
@@ -49,7 +47,6 @@ export default {
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
     saveOnFees: 'Adjust Deposit Amounts',
-    tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
     enableTrailing: 'Enable Trailing',
     keepQuote: 'Keep {quote} Only',
@@ -58,7 +55,6 @@ export default {
     timeCreated: 'Time Created',
     learnMore: 'Learn More',
     currentPrice: 'Current Price',
-    next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
@@ -126,25 +122,6 @@ export default {
       'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
-    createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate([
-        named('quoteAmount'),
-        ' will be transferred from your main subaccount to your SGT ',
-        named('marketSlug'),
-        ' sub account.'
-      ]),
-    createStrategyModalBaseAndQuote: ({
-      named,
-      interpolate
-    }: I18nMessageFunction) =>
-      interpolate([
-        named('quoteAmount'),
-        ' and ',
-        named('baseAmount'),
-        ' will be transferred from your main subaccount to your SGT ',
-        named('marketSlug'),
-        ' sub account.'
-      ]),
     aFewClicksBeforeTheStrategyIsCreated:
       'A few clicks before the strategy is created',
     thereAre2TransactionsRequiredToCreateAndEnableSpotGridTrading:
@@ -156,7 +133,6 @@ export default {
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridStrategyRemovedSuccessfully: 'Grid Strategy Removed Successfully!',
-    gridOrderConfirmation: 'Grid Order Confirmation',
     investmentAmountTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     initialEntryTooltip:
@@ -178,45 +154,8 @@ export default {
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
     gridModeTooltip:
       'In arithmetic mode, the price between two consecutive grids has a constant difference. In geometric mode, the price between two consecutive grids has a constant ratio.',
-    bannerTitle: 'Get started with Spot Grid Trading.',
-    spotGridTradingBot: 'Spot grid trading bot ',
-    automatesBuyingAndSelling:
-      'Automate order placements to buy low, sell high.',
-    splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate([named('first'), named('second')]),
-    setUpABot: 'Set up a bot',
-    runABot: 'Run a bot',
-    endABot: 'End a bot',
     accountEndBot:
       'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
-    helixTradingBots: 'Helix Trading Bots',
-
-    step1: {
-      priceRange:
-        ' represents the upper and lower price levels of the orders that will be placed.',
-      grids: ' represents the number of limit orders the bot will place.',
-      investment:
-        ' is the amount of capital that the bot will use to run the strategy.'
-    },
-
-    step2: {
-      priceFalls:
-        'When the price falls and meet your buy order price level, your order will be filled and the bot will automatically place a sell order at a higher price.',
-      priceRises:
-        'When the price rises and meet your sell order price level, your order will be filled and the bot will automatically place a buy order at a lower price.',
-      viewOrders:
-        'You can check the open orders placed by the bot at any time.',
-      faq: ({ named, interpolate }: I18nMessageFunction) =>
-        interpolate(['Check the ', named('faq'), ' for more info.'])
-    },
-
-    step3: {
-      openOrdersCancelled: 'All open orders will be canceled.',
-      moneyTransferred:
-        'Assets used by the bot will be transferred back to your main account.',
-      review:
-        "Review the performance of your past strategies in the 'Grid Trading History' tab."
-    },
 
     advanced: {
       tpSl: 'TP/SL',
@@ -246,7 +185,6 @@ export default {
       perpetual: 'Perpetual'
     },
 
-    confirmationTitle: 'Grid Order Confirmation',
     confirmationDescription:
       'Please read the below information carefully before you confirm to proceed.',
     profitPerGrid: 'Profit/grid (fees deducted)',

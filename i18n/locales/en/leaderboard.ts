@@ -98,12 +98,17 @@ export default {
           ]),
         linkDescription: 'win a brand new Tesla!'
       },
-      share: {
-        raffleTickets: ({ named, interpolate }: I18nMessageFunction) =>
-          interpolate(["I've already got ", named('tickets'), ' entries']),
-        likeAG: 'like a G',
-        joinCompetition:
-          'Join Helix\'s "like a G" trading competition for a chance to win a Mercedes G-Wagon!'
+
+      ownYourAssetBanner: {
+        title: 'Own Your Assets, Control Your Future.',
+        blog: 'blog',
+        ended: 'Ended',
+        description: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Compete for your share of a $50K prize pool on Helix. From February 21st, 2025 at 5p UTC to March 3rd, 2025 at 5p UTC, you can trade for a chance to win $1,000 from a $50k prize pool, through a random draw. Every $1,000 in trading volume earns an entry. For more details, visit the ',
+            named('blog'),
+            '.'
+          ])
       },
 
       winnerModal: {

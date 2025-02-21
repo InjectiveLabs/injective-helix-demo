@@ -88,11 +88,6 @@ export default {
         tpSl: 'TP/SL'
       }
     },
-    assetDetails: {
-      title: 'Asset details',
-      trade: 'Trade',
-      emptyMarkets: 'No markets available for trading.'
-    },
     usdcPeggyToken: 'Injective Bridge from Ethereum',
     usdcWHEthereumToken: 'Wormhole from Ethereum',
     usdcWHSolanaToken: 'Wormhole from Solana',
@@ -110,15 +105,6 @@ export default {
     accountBalance: 'Subaccount Balance',
     staked: 'Staked',
 
-    createSubaccount: 'Create Subaccount',
-    subaccountCreation: 'Subaccount Creation',
-    createSubaccountNote: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'This is a secondary account linked to your main account for separate management and trading of digital assets. ',
-        named('split'),
-        'To activate it, you first need to transfer funds. Learn more about subaccounts in our',
-        named('faq')
-      ]),
     subaccountTransfer: 'Subaccount Transfer',
     unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
     transferToMainSubaccount: 'Transfer to Main Subaccount',

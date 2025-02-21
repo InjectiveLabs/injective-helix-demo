@@ -145,7 +145,7 @@ watch(isCampaignStarted, (isStarted) => {
 <template>
   <div>
     <div class="overflow-x-auto">
-      <PartialsLeaderboardCompetitionTeslaBanner
+      <PartialsLeaderboardCompetitionOwnYourAssetBanner
         v-if="upcomingCampaign || campaignStore.activeCampaign"
         v-bind="{
           campaign: (campaignStore.activeCampaign ||

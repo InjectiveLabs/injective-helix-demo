@@ -683,8 +683,11 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
 export const FIRST_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
 export const SECOND_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
+export const THIRD_CAMPIGN_NAME =
+  'Own Your Assets, Control Your Future Giveaway'
 
-export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = ''
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
+  'Own Your Assets, Control Your Future Giveaway'
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
@@ -773,4 +776,4 @@ export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
 ] as string[]
 
 export const checkIsCampaignWithEntries = (campaignName: string) =>
-  [FIRST_CAMPAIGN_NAME].includes(campaignName)
+  [FIRST_CAMPAIGN_NAME, THIRD_CAMPIGN_NAME].includes(campaignName)
