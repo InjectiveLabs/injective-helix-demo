@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MIN_COMPETITION_PNL_AMOUNT } from '@/app/utils/constants'
+// import { MIN_COMPETITION_PNL_AMOUNT } from '@/app/utils/constants'
 
 const leaderboardStore = useLeaderboardStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -12,8 +12,9 @@ const filteredVolumeLeaderboard = computed(() => {
     return []
   }
 
-  return leaderboardStore.competitionLeaderboard.leaders.filter((leader) =>
-    new BigNumberInBase(leader.pnl).gte(MIN_COMPETITION_PNL_AMOUNT)
+  return leaderboardStore.competitionLeaderboard.leaders.filter(
+    (leader) => new BigNumberInBase(leader.pnl)
+    // .gte(MIN_COMPETITION_PNL_AMOUNT)
   )
 })
 
