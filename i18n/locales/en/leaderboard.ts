@@ -108,7 +108,13 @@ export default {
             'Compete for your share of a $50K prize pool on Helix. From February 21st, 2025 at 6pm UTC to March 3rd, 2025 at 6pm UTC, you can trade for a chance to win $1,000 from a $50k prize pool, through a random draw. Every $1,000 in trading volume earns an entry. For more details, visit the ',
             named('blog'),
             '.'
-          ])
+          ]),
+        top: ({ named, interpolate }: I18nMessageFunction) =>
+          interpolate([
+            'Trade on Helix and compete for your share of a ',
+            named('linkDescription')
+          ]),
+        linkDescription: '$50K prize pool on Helix!'
       },
 
       winnerModal: {

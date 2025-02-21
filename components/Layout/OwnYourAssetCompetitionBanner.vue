@@ -14,7 +14,7 @@ const isShowCampaign = computed(() => {
   }
 
   const isSeenBanner = appStore?.userState?.bannersViewed.includes(
-    NoticeBanner.TeslaCampaign
+    NoticeBanner.OwnYourAssetCampaign
   )
 
   if (isSeenBanner) {
@@ -37,7 +37,7 @@ function hideBanner() {
     ...appStore.userState,
     bannersViewed: [
       ...appStore.userState.bannersViewed,
-      NoticeBanner.TeslaCampaign
+      NoticeBanner.OwnYourAssetCampaign
     ]
   })
 }
@@ -51,13 +51,15 @@ function hideBanner() {
     <div />
 
     <div class="flex items-center space-x-2">
-      <i18n-t keypath="leaderboard.competition.teslaBanner.top" tag="p">
+      <i18n-t keypath="leaderboard.competition.ownYourAssetBanner.top" tag="p">
         <template #linkDescription>
           <NuxtLink
             class="inline-flex font-semibold"
             :to="{ name: LeaderboardSubPage.Competition }"
           >
-            {{ $t('leaderboard.competition.teslaBanner.linkDescription') }}
+            {{
+              $t('leaderboard.competition.ownYourAssetBanner.linkDescription')
+            }}
           </NuxtLink>
         </template>
       </i18n-t>

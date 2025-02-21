@@ -157,7 +157,7 @@ useIntervalFn(
       <main class="relative mt-[56px] pb-6">
         <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
         <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-        <LayoutTeslaCompetitionBanner
+        <LayoutOwnYourAssetCompetitionBanner
           v-if="route.name !== LeaderboardSubPage.Competition"
         />
         <LayoutFTMPerpBanner />

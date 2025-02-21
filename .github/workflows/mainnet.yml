@@ -126,14 +126,14 @@ jobs:
         env:
           GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
 
-      - name: Upload bugsnag release
-        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
-        with:
-          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
-          directory: ./.nuxt/dist/client/_nuxt
-          baseUrl: ${{ env.VITE_BASE_URL }}
-          appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
-          overwrite: true
+      # - name: Upload bugsnag release
+      #   uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+      #   with:
+      #     apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+      #     directory: ./.nuxt/dist/client/_nuxt
+      #     baseUrl: ${{ env.VITE_BASE_URL }}
+      #     appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
+      #     overwrite: true
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
