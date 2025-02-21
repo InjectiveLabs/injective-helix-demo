@@ -84,7 +84,7 @@ watchDebounced(
     wrapper-class="backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-90 max-sm:z-60"
     @modal:closed="onCloseModal"
   >
-    <section ref="canvas" class="sm:aspect-[1.91/1] bg-black">
+    <section ref="canvas" class="sm:aspect-[1.85/1] bg-black">
       <div
         class="pt-8 px-8 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
         :style="{
