@@ -67,8 +67,7 @@ const endOfCampaignFirstHour = computed(() => {
 
   const startDate = new Date(Number(campaignStore.activeCampaign.startDate))
 
-  // return addHours(startDate, 1).getTime()
-  return addHours(startDate, 2).getTime()
+  return addHours(startDate, 1).getTime()
 })
 
 const endOfCampaignFirstHourInUTC = computed(() => {
