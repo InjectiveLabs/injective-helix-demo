@@ -194,23 +194,7 @@ export default {
     trading: 'Trading',
     staked: 'Staked',
     stakedUsd: 'Staked (USD)',
-    high_execution_price_deviation_warning_note: ({
-      named
-    }: I18nMessageFunction) =>
-      `The execution price for your order deviates at least ${named(
-        'percentage'
-      )}% from the last traded price. Click confirm if you still want to execute it.`,
-    order_price_low_warn: 'Order price is too low',
-    order_price_high_warn: 'Order price is too high',
-    max_leverage_warn: 'Please decrease leverage',
-    reduce_only_in_excess:
-      'Total size of reduce-only orders would exceed size of your position',
-    max_leverage: ({ named }: I18nMessageFunction) =>
-      `Max Leverage:  ${named('max')}`,
-    you_can_only_have_max_orders: ({ named }: I18nMessageFunction) =>
-      `You can only have ${named(
-        'number'
-      )} orders per side per market per trading account`,
+
     no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
     order_insufficient_margin:
@@ -288,7 +272,6 @@ export default {
     markets: 'Markets',
     availableMargin: 'Available Margin',
     availableMarginTooltip: 'The available margin you can add to this position',
-    confirmOrderExecution: 'Confirm order execution',
     fees_paid: 'Fees Paid',
     myMakerTakerDiscount: 'Maker/Taker Rate Discount',
     myMakerTakerDiscountTooltip:
@@ -469,11 +452,6 @@ export default {
       pleaseTopUp: 'Please top up your trading account.',
       tooltip:
         'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
-      tokenSelector: {
-        selectToken: 'Select Token',
-        selectAToken: 'Select a token',
-        searchBy: 'Search by name or symbol'
-      },
       swapTime: ({ named }: I18nMessageFunction) =>
         `Swap (${named('swapTimeRemaining')}s)`,
       insufficient_balance_verbose: ({ named }: I18nMessageFunction) =>

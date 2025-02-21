@@ -12,7 +12,6 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  Modal,
   SwapCyTags,
   TradeField,
   SwapFormField,
@@ -22,54 +21,38 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    isMaxHidden?: boolean
-    isUsdVisible?: boolean
+    denom?: string
+    debounce?: number
     isDisabled?: boolean
     isRequired?: boolean
-    isBalanceHidden?: boolean
-    shouldCheckBalance?: boolean
-    isTokenSelectorDisabled?: boolean
-
-    denom?: string
-
-    modal?: Modal
-    debounce?: number
     maxDecimals?: number
+    isMaxHidden?: boolean
+    isUsdVisible?: boolean
     tensMultiplier?: number
     additionalRules?: object
-
+    isBalanceHidden?: boolean
     amountFieldName?:
       | TradeField
       | SwapFormField
       | BankTransferField
       | SubaccountTransferField
+    shouldCheckBalance?: boolean
+    isTokenSelectorDisabled?: boolean
     options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
   }>(),
   {
-    isMaxHidden: false,
-    isUsdVisible: false,
-    isDisabled: false,
-    isRequired: false,
-    isBalanceHidden: false,
-    shouldCheckBalance: false,
-    isTokenSelectorDisabled: false,
-
     denom: '',
-
-    modal: Modal.TokenSelector,
     debounce: 0,
     maxDecimals: 6,
+    options: () => [],
     tensMultiplier: undefined,
     additionalRules: undefined,
-
-    amountFieldName: TradeField.BaseAmount,
-    options: () => []
+    amountFieldName: TradeField.BaseAmount
   }
 )
 
 const emit = defineEmits<{
   'on:update': []
-  'update:modal': []
   'update:max': [{ amount: string }]
   'update:denom': [state: string]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]

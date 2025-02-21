@@ -98,13 +98,6 @@ export default {
           ]),
         linkDescription: 'win a brand new Tesla!'
       },
-      share: {
-        raffleTickets: ({ named, interpolate }: I18nMessageFunction) =>
-          interpolate(["I've already got ", named('tickets'), ' entries']),
-        likeAG: 'like a G',
-        joinCompetition:
-          'Join Helix\'s "like a G" trading competition for a chance to win a Mercedes G-Wagon!'
-      },
 
       winnerModal: {
         getStarted: {

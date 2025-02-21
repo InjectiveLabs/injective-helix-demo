@@ -213,14 +213,6 @@ export default {
       `${named('symbol')} is not available in your region`
   },
 
-  marketBeta: {
-    title: 'Acknowledge the risk of trading on the market',
-    'I Understand': 'I Understand',
-    beta: 'beta',
-    description:
-      'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
-  },
-
   marketNotOnHelix: {
     title: 'Experimental market',
     cta: 'I Understand',
@@ -237,27 +229,6 @@ export default {
 
   geoRestricted: {
     description: 'Helix is currently not available in your region.'
-  },
-
-  marketExpired: {
-    title: 'Market Expired',
-    expiredNote:
-      'This futures contract has just expired and reached settlement.',
-    activityPageNote:
-      'If you did hold position(s) till expiry, please go to futures trade history to check the settlement record.',
-    exploreMarkets: 'Explore Markets',
-    goToFutures: 'Go To Futures trade history'
-  },
-
-  marketNotLiquid: {
-    title: ({ named }: I18nMessageFunction) =>
-      `${named('slug')} market is no longer liquid`,
-    description: ({ named }: I18nMessageFunction) => `
-      The majority of trading activities for ${named(
-        'content'
-      )}. Please proceed to ${named('slug')} for a better trading experience.`,
-    cta: ({ named }: I18nMessageFunction) => `Go to ${named('slug')}`,
-    'sol-usdcet-description': 'Solana is in the SOL/USDT market'
   },
 
   navigation: {
@@ -451,11 +422,6 @@ export default {
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
-  },
-
-  scavengerHunt: {
-    title: 'You found it! 🕵️‍♀️',
-    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
   },
 
   postOnlyMode: {
