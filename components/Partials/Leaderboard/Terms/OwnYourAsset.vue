@@ -18,21 +18,21 @@ import { MainPage } from '@/types'
 
     <h3 class="text-lg font-bold mb-2 uppercase">COMPETITION DESCRIPTION:</h3>
     <p class="mb-4">
-      The Helix February Trading Competition (collectively the “Competition”)
-      begins on February 21, 2025 at 5:00 PM UTC Time and ends on March 3, 2025
-      at 5:00 PM UTC Time (the “Competition Period”). The winners of the
-      Competition will receive prizes as described herein and subject to these
-      Rules, Terms, and Conditions (“Rules”). During the Competition Period,
-      entrants (“Entrants”) will have the opportunity to compete to earn entries
-      (“Entries”) based on their volume of trading using the application’s front
-      end, with the winner(s) (“Winner” or “Winners”) being the Entrant or
-      Entrants selected in a random drawing or drawings from the total number of
-      Entries. Entrants may also enter the Competition by completing and
-      submitting a form, or through other methods as described herein. By
-      participating in the Competition, each Entrant unconditionally accepts and
-      agrees to comply with and abide by these Rules and the decisions of the
-      Injective Foundation (“Sponsor”) which shall be final and binding in all
-      respects.
+      The Helix Own Your Assets, Control Your Future Trading Competition
+      (collectively the “Competition”) begins on February 21, 2025 at 6:00 PM
+      UTC and ends on March 3, 2025 at 6:00 PM UTC (the “Competition Period”).
+      The winners of the Competition will receive prizes as described herein and
+      subject to these Rules, Terms, and Conditions (“Rules”). During the
+      Competition Period, entrants (“Entrants”) will have the opportunity to
+      compete to earn entries (“Entries”) based on their volume of trading using
+      the application’s front end, with the winner(s) (“Winner” or “Winners”)
+      being the Entrant or Entrants selected in a random drawing or drawings
+      from the total number of Entries. Entrants may also enter the Competition
+      by completing and submitting a form, or through other methods as described
+      herein. By participating in the Competition, each Entrant unconditionally
+      accepts and agrees to comply with and abide by these Rules and the
+      decisions of the Injective Foundation (“Sponsor”) which shall be final and
+      binding in all respects.
     </p>
 
     <h3 class="text-lg font-bold mb-2 uppercase">ELIGIBILITY:</h3>
