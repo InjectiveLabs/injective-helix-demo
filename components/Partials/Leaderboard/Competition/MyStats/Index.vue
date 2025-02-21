@@ -2,12 +2,10 @@
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  MIN_LEADERBOARD_PNL_AMOUNT,
-  LEADERBOARD_VOLUME_PER_ENTRY
-} from '@/app/utils/constants'
+import { MIN_LEADERBOARD_PNL_AMOUNT } from '@/app/utils/constants'
 import {
   checkIsCampaignWithEntries,
+  competitionVolumePerEntryMap,
   CAMPAIGNS_WITH_ANNOUNCED_WINNERS
 } from '@/app/data/campaign'
 import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
@@ -33,7 +31,7 @@ const isUserWithoutRaffleTickets = computed(() => {
   const raffleTickets = new BigNumberInBase(
     leaderboardStore.competitionLeaderboard.accountRow.volume
   )
-    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+    .dividedBy(competitionVolumePerEntryMap[props.campaign.name] || 1000)
     .integerValue(BigNumberInBase.ROUND_DOWN)
 
   return raffleTickets.isZero()

@@ -777,3 +777,8 @@ export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
 
 export const checkIsCampaignWithEntries = (campaignName: string) =>
   [FIRST_CAMPAIGN_NAME, THIRD_CAMPIGN_NAME].includes(campaignName)
+
+export const competitionVolumePerEntryMap: Record<string, number> = {
+  [FIRST_CAMPAIGN_NAME]: 10,
+  [THIRD_CAMPIGN_NAME]: 1000
+}
