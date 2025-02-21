@@ -35,7 +35,9 @@ function onConfirm() {
     @modal:closed="onCancel"
   >
     <div class="relative">
-      <PartialsLeaderboardTermsTesla class="max-h-[350px] overflow-scroll" />
+      <PartialsLeaderboardTermsOwnYourAsset
+        class="max-h-[350px] overflow-scroll"
+      />
 
       <div class="mt-6 flex items-center justify-center gap-3">
         <AppButton

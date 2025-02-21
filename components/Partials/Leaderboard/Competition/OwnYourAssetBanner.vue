@@ -67,7 +67,7 @@ const isEndedCampaign = computed(() => {
     </div>
 
     <img
-      src="/images/leaderboard/own-your-asset.png"
+      src="/images/leaderboard/own-your-asset.webp"
       class="hidden xl:block w-[450px] absolute -right-12 -bottom-7"
     />
   </div>
