@@ -49,7 +49,7 @@ const isEndedCampaign = computed(() => {
             <NuxtLink
               to="http://blog.helixapp.com/trade-responsibly-helixs-50k-trading-giveaway"
               target="_blank"
-              class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500 no-underline"
+              class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
             >
               {{ $t('leaderboard.competition.ownYourAssetBanner.blog') }}
             </NuxtLink>
