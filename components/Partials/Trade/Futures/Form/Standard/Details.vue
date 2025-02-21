@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { NuxtUiIcons } from '@shared/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -22,12 +22,11 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const props = withDefaults(
   defineProps<{
     margin: BigNumberInBase
-    totalNotional: BigNumberInBase
-    worstPrice: BigNumberInBase
-    feeAmount: BigNumberInBase
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
-    acceptedWorstPrice: BigNumberInBase
+    feeAmount: BigNumberInBase
+    worstPrice: BigNumberInBase
+    totalNotional: BigNumberInBase
+    marginWithFee: BigNumberInBase
   }>(),
   {}
 )
@@ -46,10 +45,6 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
     decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
     shouldTruncate: true
   }
-)
-
-const isSlippageOn = computed(
-  () => !!derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
@@ -102,10 +97,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div
-          v-if="isSlippageOn"
-          class="flex items-center text-xs border-b pb-2"
-        >
+        <div class="flex items-center text-xs border-b pb-2">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -130,7 +122,7 @@ function toggle() {
           </p>
         </div>
 
-        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2">
@@ -148,7 +140,7 @@ function toggle() {
           </p>
         </div>
 
-        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
@@ -193,24 +185,22 @@ function toggle() {
           </p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
-            <PartialsTradeCommonValueOrMarket :is-market="!isSlippageOn">
-              <AppAmount
-                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
-                v-bind="{
-                  amount: worstPrice.toFixed(),
-                  decimalPlaces: derivativeMarket.priceDecimals
-                }"
-                class="text-white"
-              />
+            <AppAmount
+              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
+              v-bind="{
+                amount: worstPrice.toFixed(),
+                decimalPlaces: derivativeMarket.priceDecimals
+              }"
+              class="text-white"
+            />
 
-              <span class="text-coolGray-450">
-                {{ derivativeMarket.quoteToken.symbol }}
-              </span>
-            </PartialsTradeCommonValueOrMarket>
+            <span class="text-coolGray-450">
+              {{ derivativeMarket.quoteToken.symbol }}
+            </span>
           </p>
         </div>
 
-        <div v-if="isSlippageOn" class="flex items-center text-xs font-medium">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
@@ -244,10 +234,7 @@ function toggle() {
             </p>
           </div>
 
-          <div
-            v-if="isSlippageOn"
-            class="flex items-center text-xs font-medium"
-          >
+          <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
             <div class="flex-1 mx-2" />
             <p class="space-x-2 flex">

@@ -1,6 +1,6 @@
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MAX_SLIPPAGE } from '@/app/utils/constants'
+import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE } from '@/app/utils/constants'
 
 export const tradeErrorMessages = {
   enoughBalance: () => 'Insufficient balance',
@@ -41,7 +41,7 @@ export const defineTradeRules = () => {
       return tradeErrorMessages.slippageTooHigh()
     }
 
-    if (slippage.lt(0.05)) {
+    if (slippage.lt(DEFAULT_SLIPPAGE)) {
       return tradeErrorMessages.slippageTooLow()
     }
 

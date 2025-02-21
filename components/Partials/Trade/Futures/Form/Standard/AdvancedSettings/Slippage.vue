@@ -1,36 +1,56 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField, DerivativesTradeForm } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
+import {
+  MarketKey,
+  UiDerivativeMarket,
+  DerivativesTradeFormField,
+  DerivativesTradeForm
+} from '@/types'
+
+const appStore = useAppStore()
 
 const errors = useFormErrors<DerivativesTradeForm>()
 
-const { value: isSlippageOnValue } = useBooleanField({
-  name: DerivativesTradeFormField.IsSlippageOn,
-  initialValue: true,
-  rule: ''
-})
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+
 const { value: slippageValue } = useStringField({
   name: DerivativesTradeFormField.Slippage,
-  initialValue: '0.5',
   rule: 'slippage'
 })
+
+function onSlippageChange(value: string) {
+  const slippageInBigNumber = new BigNumberInBase(value)
+
+  const slippage =
+    slippageInBigNumber.gt(MAX_SLIPPAGE) ||
+    slippageInBigNumber.lt(DEFAULT_SLIPPAGE)
+      ? DEFAULT_SLIPPAGE.toFixed()
+      : value
+
+  appStore.setUserState({
+    ...appStore.userState,
+    marketSlippageIdMap: {
+      ...appStore.userState.marketSlippageIdMap,
+      [derivativeMarket.value.marketId]: slippage
+    }
+  })
+}
 </script>
 
 <template>
   <div>
     <div class="flex items-center justify-between">
-      <AppCheckbox2
-        v-model="isSlippageOnValue"
-        :disabled="true"
-        class="text-white"
-      >
+      <p class="text-white text-xs pl-2 tracking-wide">
         {{ $t('trade.slippage') }}
-      </AppCheckbox2>
+      </p>
+
       <AppInputField
         v-bind="{ decimals: 2, max: 50, min: 0 }"
         v-model="slippageValue"
         no-style
-        :disabled="!isSlippageOnValue"
         wrapper-class="border text-xs min-w-0 basis-24 px-2 rounded mb-1 text-white"
+        @update:model-value="onSlippageChange"
       >
         <template #right>%</template>
       </AppInputField>
@@ -38,9 +58,6 @@ const { value: slippageValue } = useStringField({
 
     <p v-if="errors?.slippage" class="text-orange-500 text-xs mt-1">
       {{ errors.slippage }}
-    </p>
-    <p v-if="!isSlippageOnValue" class="text-orange-500 text-xs mt-1">
-      {{ $t('trade.slippageOffNote') }}
     </p>
   </div>
 </template>

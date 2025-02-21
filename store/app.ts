@@ -14,6 +14,7 @@ import {
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
+import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import {
   Modal,
@@ -30,6 +31,7 @@ export interface UserBasedState {
   bannersViewed: NoticeBanner[]
   dontShowAgain: DontShowAgain[]
   favoriteMarkets: string[]
+  marketSlippageIdMap: Record<string, string>
 
   preferences: {
     isHideBalances: boolean
@@ -79,6 +81,7 @@ const initialStateFactory = (): AppStoreState => ({
     bannersViewed: [],
     dontShowAgain: [],
     favoriteMarkets: [],
+    marketSlippageIdMap: {},
 
     preferences: {
       futuresLeverage: '1',
@@ -99,6 +102,15 @@ const initialStateFactory = (): AppStoreState => ({
 export const useAppStore = defineStore('app', {
   state: (): AppStoreState => initialStateFactory(),
   getters: {
+    slippageByMarketId:
+      (state: AppStoreState) =>
+      (marketId: string): string => {
+        return (
+          state.userState.marketSlippageIdMap[marketId] ||
+          DEFAULT_SLIPPAGE.toFixed()
+        )
+      },
+
     favoriteMarkets: (state: AppStoreState) => {
       return state.userState.favoriteMarkets
     },

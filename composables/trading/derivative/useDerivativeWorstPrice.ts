@@ -13,10 +13,6 @@ import {
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
-import {
-  DEFAULT_BUY_MAX_SLIPPAGE_FACTOR,
-  DEFAULT_SELL_MAX_SLIPPAGE_FACTOR
-} from '@/app/utils/constants'
 
 export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -70,16 +66,8 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   })
 
   const slippagePercentage = computed(() => {
-    if (!derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]) {
-      return isBuy.value
-        ? new BigNumberInBase(1).times(DEFAULT_BUY_MAX_SLIPPAGE_FACTOR)
-        : new BigNumberInBase(1).times(DEFAULT_SELL_MAX_SLIPPAGE_FACTOR)
-    }
-
     const slippagePercentage = new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
-        ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-        : 0
+      derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
     ).div(100)
 
     const slippage = isBuy.value
@@ -169,14 +157,6 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
     return calculateWorstPrice(quantity.value.toString(), records)
-  })
-
-  // This is the worst price that will be used to calculate the details (when slippage protection is off)
-  const acceptedWorstPrice = computed(() => {
-    return quantizeNumber(
-      calculatedWorstPrice.value.worstPrice,
-      market.value.priceTensMultiplier
-    )
   })
 
   const worstPrice = computed(() => {
@@ -291,7 +271,6 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     feePercentage,
     totalNotional,
     marginWithFee,
-    acceptedWorstPrice,
     hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,
