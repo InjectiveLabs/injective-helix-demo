@@ -174,11 +174,8 @@ async function setFromPercentage(percentage: number) {
     }
   }
 
-  const slippage = derivativeFormValues.value[
-    DerivativesTradeFormField.IsSlippageOn
-  ]
-    ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-    : 0
+  const slippage =
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
     isReduceOnly &&

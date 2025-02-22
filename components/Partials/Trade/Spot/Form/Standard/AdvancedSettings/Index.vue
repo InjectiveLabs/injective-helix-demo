@@ -2,10 +2,10 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import {
-  SpotTradeForm,
-  SpotTradeFormField,
   TradeTypes,
-  SpotMarketCyTags
+  SpotTradeForm,
+  SpotMarketCyTags,
+  SpotTradeFormField
 } from '@/types'
 
 const spotFormValues = useFormValues<SpotTradeForm>()

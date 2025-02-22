@@ -442,7 +442,6 @@ export enum SpotTradeFormField {
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   AmountOption = 'amountOption',
-  IsSlippageOn = 'isSlippageOn',
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
@@ -464,7 +463,6 @@ export enum DerivativesTradeFormField {
   TakeProfit = 'takeProfit',
   AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
-  IsSlippageOn = 'isSlippageOn',
   isTpSlEnabled = 'isTpSlEnabled',
   BypassPriceWarning = 'bypassPriceWarning'
 }

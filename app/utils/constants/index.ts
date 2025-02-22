@@ -129,10 +129,6 @@ export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
 
-// Slippage factors are used to calculate the worst price when slippage protection is off
-export const DEFAULT_BUY_MAX_SLIPPAGE_FACTOR = 5
-export const DEFAULT_SELL_MAX_SLIPPAGE_FACTOR = 0.01
-
 export const intervalOptions: IntervalOption[] = [
   { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
   { label: '5m', value: { countback: 30 * 32, resolution: 5 } },

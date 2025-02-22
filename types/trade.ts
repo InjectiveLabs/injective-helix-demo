@@ -150,7 +150,6 @@ export type SpotTradeForm = {
   [SpotTradeFormField.Type]: TradeTypes
   [SpotTradeFormField.Slippage]: string
   [SpotTradeFormField.PostOnly]: boolean
-  [SpotTradeFormField.IsSlippageOn]: boolean
   [SpotTradeFormField.BypassPriceWarning]: boolean
   [SpotTradeFormField.AmountOption]: TradeAmountOption
 }
@@ -165,7 +164,6 @@ export type DerivativesTradeForm = {
   [DerivativesTradeFormField.LimitPrice]: string
   [DerivativesTradeFormField.ReduceOnly]: boolean
   [DerivativesTradeFormField.TriggerPrice]: string
-  [DerivativesTradeFormField.IsSlippageOn]: boolean
   [DerivativesTradeFormField.Type]: DerivativeTradeTypes
   [DerivativesTradeFormField.StopLoss]: string
   [DerivativesTradeFormField.TakeProfit]: string

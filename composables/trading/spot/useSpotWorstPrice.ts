@@ -47,9 +47,7 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
 
   const slippagePercentage = computed(() => {
     const slippagePercentage = new BigNumberInBase(
-      spotFormValues.value[SpotTradeFormField.IsSlippageOn]
-        ? spotFormValues.value[SpotTradeFormField.Slippage] || 0
-        : 0
+      spotFormValues.value[SpotTradeFormField.Slippage] || 0
     ).div(100)
 
     const slippage = isBuy.value
@@ -133,13 +131,6 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     return calculateWorstPrice(quantity.value.toString(), records)
   })
 
-  const acceptedWorstPrice = computed(() => {
-    return quantizeNumber(
-      calculatedWorstPrice.value.worstPrice,
-      market.value.priceTensMultiplier
-    )
-  })
-
   const worstPrice = computed(() => {
     if (isLimitOrder.value) {
       return quantizeNumber(
@@ -209,7 +200,6 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
     feePercentage,
     slippagePercentage,
     hasEnoughLiquidity,
-    acceptedWorstPrice,
     minimumAmountInQuote,
     isNotionalLessThanMinNotional
   }

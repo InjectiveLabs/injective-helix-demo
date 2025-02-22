@@ -11,7 +11,10 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
+const appStore = useAppStore()
+
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
+
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { value: orderType } = useStringField({
@@ -31,9 +34,19 @@ const {
   feePercentage,
   marginWithFee,
   totalNotional,
-  acceptedWorstPrice,
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
+
+onMounted(() => {
+  setFormValues(
+    {
+      [DerivativesTradeFormField.Slippage]: appStore.slippageByMarketId(
+        market.value.marketId
+      )
+    },
+    false
+  )
+})
 
 function onOrderSideChange() {
   if (
@@ -150,8 +163,7 @@ function onTradeTypeChange() {
         feeAmount,
         worstPrice,
         marginWithFee,
-        totalNotional,
-        acceptedWorstPrice
+        totalNotional
       }"
     />
 
