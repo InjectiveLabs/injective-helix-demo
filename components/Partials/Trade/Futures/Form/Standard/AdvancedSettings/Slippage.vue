@@ -19,6 +19,10 @@ const { value: slippageValue } = useStringField({
   rule: 'slippage'
 })
 
+const isHighSlippage = computed(() =>
+  new BigNumberInBase(slippageValue.value).gt(5)
+)
+
 function onSlippageChange(value: string) {
   const slippageInBigNumber = new BigNumberInBase(value)
 
@@ -56,8 +60,12 @@ function onSlippageChange(value: string) {
       </AppInputField>
     </div>
 
-    <p v-if="errors?.slippage" class="text-orange-500 text-xs mt-1">
+    <p v-if="errors?.slippage" class="text-red-500 text-xs mt-1">
       {{ errors.slippage }}
+    </p>
+
+    <p v-else-if="isHighSlippage" class="text-orange-500 text-xs mt-1">
+      {{ $t('trade.slippageWarnings.tooHigh') }}
     </p>
   </div>
 </template>

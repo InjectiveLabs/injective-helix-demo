@@ -37,10 +37,6 @@ export const defineTradeRules = () => {
       return tradeErrorMessages.slippageExceed()
     }
 
-    if (slippage.gt(5)) {
-      return tradeErrorMessages.slippageTooHigh()
-    }
-
     if (slippage.lt(DEFAULT_SLIPPAGE)) {
       return tradeErrorMessages.slippageTooLow()
     }
