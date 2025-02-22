@@ -144,9 +144,7 @@ async function setFromPercentage(percentage: number) {
     return
   }
 
-  const slippage = spotFormValues.value[SpotTradeFormField.IsSlippageOn]
-    ? spotFormValues.value[SpotTradeFormField.Slippage]
-    : 0
+  const slippage = spotFormValues.value[SpotTradeFormField.Slippage]
 
   if (isBuy.value && typeValue.value === TradeAmountOption.Quote) {
     const amount = quoteBalanceToBigNumber.value

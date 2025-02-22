@@ -18,6 +18,7 @@ const stateToPersist = {
       bannersViewed: [],
       dontShowAgain: [],
       favoriteMarkets: [],
+      marketSlippageIdMap: {},
 
       preferences: {
         futuresLeverage: '1',

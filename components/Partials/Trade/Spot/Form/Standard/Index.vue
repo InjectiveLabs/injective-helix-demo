@@ -12,7 +12,9 @@ import {
   SpotMarketCyTags
 } from '@/types'
 
-useForm<SpotTradeForm>()
+const appStore = useAppStore()
+
+const { setValues: setFormValues } = useForm<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -34,9 +36,19 @@ const {
   totalWithFee,
   feePercentage,
   slippagePercentage,
-  acceptedWorstPrice,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+onMounted(() => {
+  setFormValues(
+    {
+      [SpotTradeFormField.Slippage]: appStore.slippageByMarketId(
+        market.value.marketId
+      )
+    },
+    false
+  )
+})
 
 function onOrderSideClicked() {
   if (orderTypeValue.value !== TradeTypes.Limit) {
@@ -131,8 +143,7 @@ function onOrderSideClicked() {
         worstPrice,
         feePercentage,
         totalWithFee,
-        slippagePercentage,
-        acceptedWorstPrice
+        slippagePercentage
       }"
     />
 

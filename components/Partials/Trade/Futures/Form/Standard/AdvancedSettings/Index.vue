@@ -2,10 +2,10 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import {
-  DerivativesTradeFormField,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
