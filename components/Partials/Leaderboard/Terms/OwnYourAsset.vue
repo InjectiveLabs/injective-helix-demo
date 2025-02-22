@@ -136,10 +136,10 @@ import { MainPage } from '@/types'
         <span>
           Submit a form or forms at
           <NuxtLink
-            href="https://docs.google.com/forms/d/1xspfjE0Gj9X1fS1vzWlyvsyZETN3yiF1yAMmCX_K5mA/"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScsd4i_iI2eQUdca2OZi67MBdTknfH5gkF9yIdhEXh7zJ3eIg/viewform"
             class="text-blue-500 hover:text-blue-600"
           >
-            https://docs.google.com/forms/d/1xspfjE0Gj9X1fS1vzWlyvsyZETN3yiF1yAMmCX_K5mA/
+            https://docs.google.com/forms/d/e/1FAIpQLScsd4i_iI2eQUdca2OZi67MBdTknfH5gkF9yIdhEXh7zJ3eIg/viewform
           </NuxtLink>
           <span class="-ml-1.5">.</span>
           Entrants submitting forms must identify a social media post (“Post”)
