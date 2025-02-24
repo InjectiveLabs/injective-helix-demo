@@ -31,6 +31,8 @@ const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
+const isHomePage = computed(() => route.name === MainPage.Index)
+
 const showFooter = computed(() =>
   [
     MainPage.Index,
@@ -155,12 +157,21 @@ useIntervalFn(
       :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
     >
       <main class="relative mt-[56px] pb-6">
-        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-        <LayoutOwnYourAssetCompetitionBanner
-          v-if="route.name !== LeaderboardSubPage.Competition"
-        />
-        <LayoutFTMPerpBanner />
+        <div :class="{ 'w-full absolute top-0 z-[3]': isHomePage }">
+          <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
+          <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+
+          <LayoutOwnYourAssetCompetitionBanner
+            v-if="route.name !== LeaderboardSubPage.Competition"
+          />
+          <LayoutFTMPerpBanner />
+
+          <template v-if="isHomePage">
+            <AssetNoticeBanners class="relative z-[2]" />
+            <!-- hide for launch -->
+            <!-- <AssetKadoBanner /> -->
+          </template>
+        </div>
 
         <ModalsCompetitionWinner
           v-if="
