@@ -47,20 +47,22 @@ export default {
     competition: {
       winner: 'Winner',
       unranked: 'Unranked',
-      keepGoing: 'Keep going 💪',
-      currentLeader: 'Current leader',
-      currentLeaderFlame: '🔥🔥',
       currentLeaderMobile: '🔥',
-      competitionBeginning: 'The competition is about to begin...',
-      competitionMaintenance:
-        'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
+      currentLeaderFlame: '🔥🔥',
+      keepGoing: 'Keep going 💪',
+      tradingVolume: 'Trading Volume',
+      currentLeader: 'Current leader',
       noVolumeData: 'No trading competition results found',
+      termsAndConditionsApply: 'Terms and conditions apply',
+      checkBackLater: "Check back soon to see if you've won!",
+      competitionBeginning: 'The competition is about to begin...',
+      noPastCompetition: 'There are no past competitions at this time.',
       thanksForParticipating:
         'Thank you for participating! Unfortunately you didn’t win this time.',
-      checkBackLater: "Check back soon to see if you've won!",
       noCompetition:
         'There are no active competitions at this time, please check back later!',
-      noPastCompetition: 'There are no past competitions at this time.',
+      competitionMaintenance:
+        'Crunching the latest numbers for you, the leaderboard will be back up shortly ...',
       competitionDuration: ({ named, interpolate }: I18nMessageFunction) =>
         interpolate(['Time Remaining: ', named('duration')]),
       firstHourOfCampaign: ({ named }: I18nMessageFunction) =>
@@ -69,7 +71,6 @@ export default {
         )}.`,
       additionalEntriesTooltip:
         'These entries are bonus entries earned by participating in one or more bonus periods during the competition.',
-      termsAndConditionsApply: 'Terms and conditions apply',
       gwagonBanner: {
         title: 'Trade Like a G',
         blog: 'blog',

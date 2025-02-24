@@ -51,9 +51,9 @@ const isShowMyStats = computed(() => {
 })
 
 function onSharePnl() {
-  modalStore.openModal(Modal.ShareLeaderboardPnl)
+  modalStore.openModal(Modal.ShareLeaderboardStats)
 
-  useEventBus(BusEvents.ShareLeaderboardPnlOpened).emit()
+  useEventBus(BusEvents.ShareLeaderboardStatsOpened).emit()
 }
 </script>
 
@@ -118,7 +118,7 @@ function onSharePnl() {
       </template>
     </PartialsLeaderboardMyStats>
 
-    <ModalsShareLeaderboardPnl
+    <ModalsShareLeaderboardStats
       v-if="leaderboardStore.pnlLeaderboard.accountRow"
       v-bind="{
         selectedDuration,

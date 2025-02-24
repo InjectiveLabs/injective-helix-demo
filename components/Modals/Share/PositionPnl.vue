@@ -66,7 +66,7 @@ async function download() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Leaderboard-PNL-${now.value}.jpeg`
+    link.download = `Position-PNL-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
