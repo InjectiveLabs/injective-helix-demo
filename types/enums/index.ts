@@ -31,7 +31,7 @@ export enum Modal {
   MarketNotOnHelix = 'market-not-on-helix',
   SubaccountTransfer = 'subaccount-transfer',
   AlreadyJoinedGuild = 'already-joined-guild',
-  ShareLeaderboardPnl = 'share-leaderboard-pnl',
+  ShareLeaderboardStats = 'share-leaderboard-stats',
   GridStrategyDetails = 'grid-strategy-details',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
@@ -147,7 +147,7 @@ export enum BusEvents {
   SetPositionStatusIdle = 'set-position-status-idle',
   OrderbookNotionalClick = 'orderbook-notional-click',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
-  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
+  ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
   SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
   DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'

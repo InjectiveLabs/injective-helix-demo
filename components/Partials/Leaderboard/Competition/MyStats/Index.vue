@@ -8,7 +8,13 @@ import {
   competitionVolumePerEntryMap,
   CAMPAIGNS_WITH_ANNOUNCED_WINNERS
 } from '@/app/data/campaign'
-import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
+import {
+  Modal,
+  MainPage,
+  BusEvents,
+  LeaderboardType,
+  LeaderboardSubPage
+} from '@/types'
 
 const route = useRoute()
 const modalStore = useSharedModalStore()
@@ -74,9 +80,9 @@ const isShowMyStats = computed(() => {
 })
 
 function onShareCompetition() {
-  modalStore.openModal(Modal.ShareLeaderboardPnl)
+  modalStore.openModal(Modal.ShareLeaderboardStats)
 
-  useEventBus(BusEvents.ShareLeaderboardPnlOpened).emit()
+  useEventBus(BusEvents.ShareLeaderboardStatsOpened).emit()
 }
 </script>
 
@@ -177,11 +183,13 @@ function onShareCompetition() {
       </template>
     </PartialsLeaderboardMyStats>
 
-    <ModalsShareLeaderboardPnl
+    <ModalsShareLeaderboardStats
       v-if="leaderboardStore.competitionLeaderboard.accountRow"
       v-bind="{
+        isVolumeCampaign: campaign.type === LeaderboardType.Volume,
         pnl: leaderboardStore.competitionLeaderboard.accountRow.pnl,
-        rank: leaderboardStore.competitionLeaderboard.accountRow.rank
+        rank: leaderboardStore.competitionLeaderboard.accountRow.rank,
+        volume: leaderboardStore.competitionLeaderboard.accountRow.volume
       }"
     />
   </div>

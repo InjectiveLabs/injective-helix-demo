@@ -6,17 +6,22 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents, LeaderboardDuration } from '@/types'
 
 const modalStore = useSharedModalStore()
+const { t } = useLang()
 const { width } = useWindowSize()
 
 const props = withDefaults(
   defineProps<{
     pnl?: number
     rank?: number
+    volume?: number
+    isVolumeCampaign?: boolean
     selectedDuration?: LeaderboardDuration
   }>(),
   {
     pnl: 0,
     rank: 0,
+    volume: 0,
+    isVolumeCampaign: false,
     selectedDuration: undefined
   }
 )
@@ -31,16 +36,32 @@ const now = useNow({ interval: 1000 })
 const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => props.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
+    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
   )
 
-const isModalOpen = computed(() => modalStore.modals[Modal.ShareLeaderboardPnl])
+const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(
+  computed(() => props.volume),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const isModalOpen = computed(
+  () => modalStore.modals[Modal.ShareLeaderboardStats]
+)
+
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
+const statsModalTitle = computed(() =>
+  props.isVolumeCampaign
+    ? t('leaderboard.competition.tradingVolume')
+    : props.selectedDuration
+    ? t('leaderboard.pnl.currentDuration', {
+        duration: t(`leaderboard.pnl.duration.${props.selectedDuration}`)
+      })
+    : t('leaderboard.pnl.tradingPnl')
+)
+
 onMounted(() => {
-  useEventBus(BusEvents.ShareLeaderboardPnlOpened).on(
+  useEventBus(BusEvents.ShareLeaderboardStatsOpened).on(
     () => (showSelectors.value = true)
   )
 })
@@ -48,7 +69,7 @@ onMounted(() => {
 onBeforeUnmount(onCloseModal)
 
 function onCloseModal() {
-  modalStore.closeModal(Modal.ShareLeaderboardPnl)
+  modalStore.closeModal(Modal.ShareLeaderboardStats)
 }
 
 async function download() {
@@ -58,7 +79,11 @@ async function download() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Leaderboard-PNL-${now.value}.jpeg`
+
+    link.download = `Leaderboard-${props.isVolumeCampaign ? 'Volume' : 'PNL'}-${
+      now.value
+    }.jpeg`
+
     link.href = dataUrl
     link.click()
 
@@ -109,15 +134,18 @@ watchDebounced(
           class="space-y-3 md:space-y-6 flex-grow mt-6 md:mt-14 mb-28 sm:mb-16 md:mb-[56px]"
         >
           <div class="text-left">
-            {{
-              selectedDuration
-                ? $t('leaderboard.pnl.currentDuration', {
-                    duration: $t(`leaderboard.pnl.duration.${selectedDuration}`)
-                  })
-                : $t('leaderboard.pnl.tradingPnl')
-            }}
+            {{ statsModalTitle }}
           </div>
+
           <div
+            v-if="isVolumeCampaign"
+            class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl md:text-5xl leading-[3rem] truncate text-green-500"
+          >
+            ${{ volumeToFormat }}
+          </div>
+
+          <div
+            v-else
             class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl md:text-5xl leading-[3rem] truncate"
             :class="{
               'text-green-500': pnlToBigNumber.gte(0),
@@ -126,6 +154,7 @@ watchDebounced(
           >
             ${{ pnlToFormat }}
           </div>
+
           <div
             class="flex items-end gap-2 font-semibold flex-wrap text-3xl truncate text-blue-450"
           >
