@@ -18,7 +18,7 @@
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#master --ignore-scripts && yarn fetch:data && yarn github:version",
-    "analyze": "nuxi build --analyze",
+    "analyze": "NODE_OPTIONS=--max-old-space-size=30720 nuxi build --analyze",
     "preview": "nuxi preview",
     "test": "vitest --segfault-retry=3",
     "test:coverage": "vitest run --coverage --segfault-retry=3",
