@@ -8,6 +8,7 @@ import {
   getInjectiveAddress,
   NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
+import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { usdtToken } from '@shared/data/token'
 import { Coin } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
