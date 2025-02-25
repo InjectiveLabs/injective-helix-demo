@@ -139,12 +139,7 @@ function onUpdateMax({ amount }: { amount: string }) {
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.NeptuneUsdt]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
-  >
+  <SharedModal v-model="modalStore.modals[Modal.NeptuneUsdt]">
     <template #title>
       <h3 class="normal-case text-2xl font-semibold tracking-[0.4px]">
         {{
@@ -157,45 +152,47 @@ function onUpdateMax({ amount }: { amount: string }) {
       </h3>
     </template>
 
-    <AppSelectToken
-      v-bind="{
-        maxDecimals: UI_DEFAULT_DISPLAY_DECIMALS,
-        token: balance,
-        isRequired: true,
-        options: [balance],
-        denom: usdtToken.denom,
-        isTooltipDisabled: true,
-        isTokenSelectorDisabled: true,
-        amountFieldName: NeptuneUsdtField.Amount
-      }"
-      ref="tokenSelectorRef"
-      @update:max="onUpdateMax"
-    >
-      <span> {{ $t('account.amount') }} </span>
-    </AppSelectToken>
+    <div class="pt-8">
+      <AppSelectToken
+        v-bind="{
+          maxDecimals: UI_DEFAULT_DISPLAY_DECIMALS,
+          token: balance,
+          isRequired: true,
+          options: [balance],
+          denom: usdtToken.denom,
+          isTooltipDisabled: true,
+          isTokenSelectorDisabled: true,
+          amountFieldName: NeptuneUsdtField.Amount
+        }"
+        ref="tokenSelectorRef"
+        @update:max="onUpdateMax"
+      >
+        <span> {{ $t('account.amount') }} </span>
+      </AppSelectToken>
 
-    <ModalsNeptuneUsdtSubmit
-      class="mt-6"
-      v-bind="{ status }"
-      @submit="onSubmit"
-    />
+      <ModalsNeptuneUsdtSubmit
+        class="mt-6"
+        v-bind="{ status }"
+        @submit="onSubmit"
+      />
 
-    <i18n-t
-      keypath="trade.neptuneUsdt.warningText"
-      tag="div"
-      class="text-coolGray-450 text-xs leading-4 tracking-[0.4px] mt-6 max-w-[500px]"
-    >
-      <template #terms>
-        <NuxtLink
-          :to="{
-            name: MainPage.Terms
-          }"
-          target="_blank"
-          class="hover:opacity-50 underline cursor-pointer"
-        >
-          {{ $t('trade.neptuneUsdt.termsAndConditions') }}
-        </NuxtLink>
-      </template>
-    </i18n-t>
-  </AppModal>
+      <i18n-t
+        keypath="trade.neptuneUsdt.warningText"
+        tag="div"
+        class="text-coolGray-450 text-xs leading-4 tracking-[0.4px] mt-6 max-w-[500px]"
+      >
+        <template #terms>
+          <NuxtLink
+            :to="{
+              name: MainPage.Terms
+            }"
+            target="_blank"
+            class="hover:opacity-50 underline cursor-pointer"
+          >
+            {{ $t('trade.neptuneUsdt.termsAndConditions') }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
+    </div>
+  </SharedModal>
 </template>

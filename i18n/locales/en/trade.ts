@@ -501,35 +501,38 @@ export default {
     yes: 'Yes',
     no: 'No',
 
+    neptuneUsdt: {
+      apy: 'APY',
+      here: 'here',
+      submit: 'Submit',
+      deposit: 'Deposit',
+      depositToNeptune: 'Deposit to Neptune',
+      withdrawFromNeptune: 'Withdraw from Neptune',
+      withdraw: 'Withdraw',
+      available: 'Available',
+      total: 'Total/Value(USD)',
+      automatedYields: 'Helix Automated Yields',
+      disabled: 'This feature is disabled with auto-sign is activated.',
+      availableUsdt:
+        '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT (15% in reserve)',
+      success: {
+        deposit: 'Neptune Deposit Successful',
+        withdraw: 'Neptune Withdrawal Succesful'
+      },
+      termsAndConditions: 'Terms and Conditions',
+
+      warningText:
+        'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.',
+      banner:
+        'Helix has partnered with Neptune to make it easy for you to earn yield on your stablecoins without leaving the application. Click {here} to get started!'
+    },
+
+    balanceTitle: 'Available',
+
     tradeToast: {
       bought:
         "{{quantity:{quantity}-{quantityDecimals}}} {symbol} bought at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}",
-      sold: "{{quantity:{quantity}-{quantityDecimals}}} {symbol} sold at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}",
-      neptuneUsdt: {
-        apy: 'APY',
-        here: 'here',
-        submit: 'Submit',
-        deposit: 'Deposit',
-        depositToNeptune: 'Deposit to Neptune',
-        withdrawFromNeptune: 'Withdraw from Neptune',
-        withdraw: 'Withdraw',
-        available: 'Available',
-        total: 'Total/Value(USD)',
-        automatedYields: 'Helix Automated Yields',
-        disabled: 'This feature is disabled with auto-sign is activated.',
-        availableUsdt:
-          '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT (15% in reserve)',
-        success: {
-          deposit: 'Neptune Deposit Successful',
-          withdraw: 'Neptune Withdrawal Succesful'
-        },
-        termsAndConditions: 'Terms and Conditions',
-
-        warningText:
-          'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.',
-        banner:
-          'Helix has partnered with Neptune to make it easy for you to earn yield on your stablecoins without leaving the application. Click {here} to get started!'
-      }
+      sold: "{{quantity:{quantity}-{quantityDecimals}}} {symbol} sold at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}"
     }
   }
 }
