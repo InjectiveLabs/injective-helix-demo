@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  TRADING_MESSAGES,
-  CONTRACT_EXECUTION_COMPAT_AUTHZ
-} from '@/app/data/trade'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, PortfolioSubPage } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -18,7 +15,10 @@ function connectAutoSign() {
   status.setLoading()
 
   sharedWalletStore
-    .connectAutoSign(TRADING_MESSAGES, CONTRACT_EXECUTION_COMPAT_AUTHZ)
+    .connectAutoSign(
+      TRADING_MESSAGES
+      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+    )
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
