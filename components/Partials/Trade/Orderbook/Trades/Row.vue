@@ -8,12 +8,10 @@ import { UiMarketWithToken, UiTrade } from '@/types'
 const props = withDefaults(
   defineProps<{
     trade: UiTrade
-    market: UiMarketWithToken
     isSpot?: boolean
+    market: UiMarketWithToken
   }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
 
 const price = computed(() =>
