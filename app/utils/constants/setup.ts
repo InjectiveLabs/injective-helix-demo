@@ -43,10 +43,12 @@ export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
 
 export const IS_ONRAMPER_DEV_MODE =
   import.meta.env.VITE_IS_ONRAMPER_DEV_MODE === 'true'
+export const ONRAMPER_API_KEY = IS_ONRAMPER_DEV_MODE
+  ? import.meta.env.VITE_ONRAMPER_API_KEY_DEV
+  : import.meta.env.VITE_ONRAMPER_API_KEY_PROD
 export const HOTJAR_KEY = import.meta.env.VITE_HOTJAR_KEY || ''
 export const BUGSNAG_KEY = import.meta.env.VITE_BUGSNAG_KEY || ''
 export const MIXPANEL_KEY = import.meta.env.VITE_MIXPANEL_KEY || ''
 export const FEE_RECIPIENT = import.meta.env.VITE_FEE_RECIPIENT || ''
 export const NEWSLETTER_API = import.meta.env.VITE_NEWSLETTER_API || ''
-export const ONRAMPER_API_KEY = import.meta.env.VITE_ONRAMPER_API_KEY || ''
 export const SHEETDB_BEARER_TOKEN = import.meta.env.VITE_SHEETDB_BEARER || ''

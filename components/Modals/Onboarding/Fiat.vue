@@ -18,7 +18,7 @@ function resetState() {
 <template>
   <AppModal
     v-model="modalStore.modals[Modal.FiatOnboard]"
-    v-bind="{ isHideCloseButton: !xs }"
+    v-bind="{ isSm: true, isHideCloseButton: !xs }"
     @on:open="resetState"
   >
     <PartialsOnboardingFiat
