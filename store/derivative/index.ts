@@ -16,6 +16,7 @@ import {
   pythService,
   indexerOracleApi,
   derivativeCacheApi,
+  stagingPythService,
   indexerDerivativesApi
 } from '@shared/Service'
 import {
@@ -656,6 +657,11 @@ export const useDerivativeStore = defineStore('derivative', {
         subaccountTrades: trades,
         subaccountTradesCount: pagination.total
       })
+    },
+
+    // track vercel usage
+    async fetchStagingRWAMarketIsOpen(pythPriceId: string) {
+      await stagingPythService.fetchRwaMarketOpenNoThrow(pythPriceId)
     },
 
     async fetchRWAMarketIsOpen(pythPriceId: string) {

@@ -14,8 +14,8 @@ import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
-import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
+import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const fetchBalances = () => {
