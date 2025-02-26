@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-ts'
 import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES
@@ -14,9 +14,9 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const campaignStore = useCampaignStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
@@ -217,8 +217,8 @@ async function onSubmit(signature: string) {
                 {{ $t('leaderboard.competition.winnerModal.getStarted.cta') }}
               </AppButton>
 
-              <div v-else class="flex flex-col items-center">
-                <div class="mb-4">
+              <div v-else class="flex flex-col items-center w-full max-w-80">
+                <div class="mb-4 w-full">
                   <div
                     class="flex flex-col items-center py-2.5 px-2 border rounded-md"
                   >
@@ -243,7 +243,7 @@ async function onSubmit(signature: string) {
                   </span>
                 </div>
 
-                <div class="mb-6">
+                <div class="mb-6 w-full">
                   <div
                     class="flex flex-col items-center py-2.5 px-2 border rounded-md"
                   >
