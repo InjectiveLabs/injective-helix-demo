@@ -11,6 +11,7 @@ jobs:
     name: 'Deploy to mainnet'
     runs-on: ubuntu-22.04
     timeout-minutes: 45
+
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
@@ -53,7 +54,6 @@ jobs:
 
       VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
       VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
       VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
@@ -126,13 +126,11 @@ jobs:
         env:
           GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
 
-      - name: Upload bugsnag release
-        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+      - name: Upload build output as artifact
+        uses: actions/upload-artifact@v4
         with:
-          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
-          directory: ./.nuxt/dist/client/_nuxt
-          baseUrl: ${{ env.VITE_BASE_URL }}
-          appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
+          name: build-output
+          path: ./.nuxt/dist/client/_nuxt
           overwrite: true
 
       - name: Use AWS CLI
@@ -165,6 +163,7 @@ jobs:
 
     outputs:
       release_notes: ${{ steps.release_notes.outputs.release_notes }}
+      bugsnag_version: ${{ steps.release_notes.outputs.new_version }}
 
   notify-slack-on-deployment:
     runs-on: ubuntu-22.04
@@ -195,3 +194,33 @@ jobs:
             }'
           fi
           curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+
+  upload-bugsnag:
+    name: 'Upload BugSnag Release'
+    runs-on: ubuntu-22.04
+    needs: mainnet-release
+
+    env:
+      VITE_BASE_URL: https://helixapp.com
+      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+
+    steps:
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ./.nuxt/dist/client/_nuxt
+
+      - name: Upload bugsnag release
+        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+        with:
+          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+          directory: ./.nuxt/dist/client/_nuxt
+          baseUrl: ${{ env.VITE_BASE_URL }}
+          appVersion: ${{ needs.mainnet-release.outputs.bugsnag_version }}
+          overwrite: true
+
+      - name: Purge artifacts
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: build-output

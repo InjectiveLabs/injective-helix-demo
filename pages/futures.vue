@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { rwaMarketIds } from '@/app/data/market'
 import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
@@ -47,6 +48,11 @@ onWalletConnected(async () => {
       name: 'futures-slug',
       params: { slug: 'btc-usdt-perp' }
     })
+  }
+
+  // track vercel usage
+  if (rwaMarketIds.includes(market.value.marketId)) {
+    derivativeStore.fetchStagingRWAMarketIsOpen(market.value.oracleBase)
   }
 
   status.setLoading()

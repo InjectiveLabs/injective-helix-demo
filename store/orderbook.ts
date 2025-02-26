@@ -7,12 +7,12 @@ import {
 } from '@/app/client/streams/orderbook'
 
 type OrderbookStoreState = {
-  buys: OrderbookFormattedRecord[]
-  sells: OrderbookFormattedRecord[]
   isSpot: boolean
   worstPrice: string
   highestBuyPrice: string
   lowestSellPrice: string
+  buys: OrderbookFormattedRecord[]
+  sells: OrderbookFormattedRecord[]
 }
 
 const initialStateFactory = (): OrderbookStoreState => ({

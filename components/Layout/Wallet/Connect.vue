@@ -79,8 +79,8 @@ const options = computed(
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      { wallet: Wallet.Trezor }
-
+      { wallet: Wallet.Trezor },
+      { wallet: Wallet.WalletConnect }
       // Disabled for now
       // {
       //   wallet: Wallet.TrustWallet,
@@ -88,13 +88,6 @@ const options = computed(
       //     ? 'https://trustwallet.com/browser-extension/'
       //     : undefined
       // },
-
-      // Disabled for now
-      // {
-      //   wallet: Wallet.Torus
-      // },
-
-      // { wallet: Wallet.WalletConnect }
     ].filter((option) => option) as WalletOption[]
 )
 

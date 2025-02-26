@@ -14,9 +14,7 @@ const props = withDefaults(
     market: UiMarketWithToken
     orderbookLayout: OrderbookLayout
   }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
 
 const orderbookStatus = inject(OrderbookStatusKey) as Status
