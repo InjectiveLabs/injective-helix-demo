@@ -6,7 +6,6 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
-  DepositQr = 'deposit-qr',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
   LiteBridge = 'lite-bridge',

@@ -2,11 +2,6 @@ import { BalanceTableColumn } from './../../../types'
 
 export default {
   account: {
-    qrDeposit: {
-      title: 'Send INJ to this address to begin trading instantly',
-      bridge: 'Bridge',
-      cta: "Don't have INJ? Bridge from anywhere"
-    },
     table: {
       [BalanceTableColumn.Assets]: 'Assets',
       [BalanceTableColumn.Available]: 'Available',

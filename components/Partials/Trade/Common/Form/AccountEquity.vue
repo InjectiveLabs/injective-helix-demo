@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-base'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
 const tokenStore = useTokenStore()
 const modalStore = useSharedModalStore()
-const sharedWalletStore = useSharedWalletStore()
 
 const {
   activeSubaccountTotalBalanceInUsd,
@@ -55,14 +53,8 @@ const { valueToFixed: spotBalanceInUsdToFixed } = useSharedBigNumberFormatter(
   )
 )
 
-function openDepositQRModal() {
-  if (sharedWalletStore.wallet === Wallet.Magic) {
-    modalStore.openModal(Modal.FiatOnboard)
-
-    return
-  }
-
-  modalStore.openModal(Modal.DepositQr)
+function onFiatOnRamp() {
+  modalStore.openModal(Modal.FiatOnboard)
 }
 </script>
 
@@ -119,7 +111,7 @@ function openDepositQRModal() {
         variant: 'primary-outline'
       }"
       class="w-full"
-      @click="openDepositQRModal"
+      @click="onFiatOnRamp"
     >
       {{ $t('account.deposit') }}
     </AppButton>
