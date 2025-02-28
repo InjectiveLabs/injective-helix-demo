@@ -19,6 +19,7 @@ import {
   toUiMarketSummary,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
+import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
   cancelOrder,
@@ -41,11 +42,10 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
+import { combineOrderbookRecords } from '@/app/utils/market'
 import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
-import { combineOrderbookRecords } from '@/app/utils/market'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
-import { marketIdsToHide } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarket[]
@@ -195,7 +195,7 @@ export const useSpotStore = defineStore('spot', {
           }
         })
         .filter(
-          (market) => market && !marketIdsToHide.includes(market.marketId)
+          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
         ) as UiSpotMarket[]
 
       spotStore.$patch({

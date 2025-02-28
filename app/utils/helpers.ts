@@ -151,6 +151,10 @@ export const isPgtSubaccountId = (subaccountId: string) => {
   )?.slug
 }
 
+export const isTradingbotSubaccountId = (subaccountId: string) => {
+  return isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
+}
+
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
