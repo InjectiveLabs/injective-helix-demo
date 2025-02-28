@@ -166,7 +166,7 @@ export default {
       address: 'Address',
       tradingPnl: 'Trading PnL (USD)',
       weeklyROI: 'Weekly ROI',
-      allMarkestVolume: 'All Markets Trading Volume (USD)',
+      allMarketsVolume: 'All Markets Trading Volume (USD)',
       volume: 'Trading Volume (USD)',
       numberOfEntries: 'Number of Entries',
       entries: 'Entries'

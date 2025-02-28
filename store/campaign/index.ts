@@ -355,13 +355,19 @@ export const useCampaignStore = defineStore('campaign', {
     async fetchPastCampaigns() {
       const campaignStore = useCampaignStore()
 
-      const PNL_LEADERBOARD_TYPE = 'pnl_leaderboard'
+      const { campaigns: pnlCampaigns } =
+        await indexerGrpcCampaignApi.fetchCampaigns({
+          type: LeaderboardType.Pnl,
+          status: LeaderboardCampaignStatus.Inactive
+        })
 
-      // todo: if we want to support a volume_leaderboard type competition, we can do another fetchCampaigns with volume_leaderboard type and combine the results
-      const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
-        status: LeaderboardCampaignStatus.Inactive,
-        type: PNL_LEADERBOARD_TYPE
-      })
+      const { campaigns: volumeCampaigns } =
+        await indexerGrpcCampaignApi.fetchCampaigns({
+          type: LeaderboardType.Volume,
+          status: LeaderboardCampaignStatus.Inactive
+        })
+
+      const campaigns = pnlCampaigns.concat(volumeCampaigns)
 
       if (campaigns.length === 0) {
         return

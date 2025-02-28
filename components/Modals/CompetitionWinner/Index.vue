@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { isCosmosWallet, Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-ts'
 import {
   CAMPAIGN_WINNER_MESSAGE,
-  PAST_LEADERBOARD_CAMPAIGN_NAMES
+  PAST_LEADERBOARD_CAMPAIGN_NAMES,
+  CAMPAIGNS_WITH_ANNOUNCED_WINNERS
 } from '@/app/data/campaign'
 import { getEip712TypedData } from '@/app/utils/wallet'
 import {
@@ -14,16 +15,16 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const campaignStore = useCampaignStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { validate } = useForm<CompetitionWinnerForm>()
 
-const [latestCampaign] = PAST_LEADERBOARD_CAMPAIGN_NAMES
+const [latestCampaignName] = PAST_LEADERBOARD_CAMPAIGN_NAMES
 
 const isShowClaimForm = ref(false)
 const submitStatus = reactive(new Status(StatusType.Idle))
@@ -53,13 +54,20 @@ const claimMessage = computed(() =>
 )
 
 onWalletConnected(() => {
-  Promise.all([
-    campaignStore.fetchLeaderboardCompetitionResults(
-      latestCampaign,
-      sharedWalletStore.injectiveAddress
-    ),
+  const promises = [
     accountStore.fetchPubKey(sharedWalletStore.injectiveAddress)
-  ])
+  ]
+
+  if (CAMPAIGNS_WITH_ANNOUNCED_WINNERS.includes(latestCampaignName)) {
+    promises.push(
+      campaignStore.fetchLeaderboardCompetitionResults(
+        latestCampaignName,
+        sharedWalletStore.injectiveAddress
+      )
+    )
+  }
+
+  Promise.all(promises)
     .then(() => {
       if (!isShowBannerOrModal.value) {
         return
@@ -108,7 +116,7 @@ async function onSubmit(signature: string) {
       signature,
       name: name.value,
       email: email.value,
-      competitionName: latestCampaign,
+      competitionName: latestCampaignName,
       message: claimMessage.value,
       wallet: sharedWalletStore.wallet,
       injectiveAddress: sharedWalletStore.injectiveAddress,
@@ -172,7 +180,7 @@ async function onSubmit(signature: string) {
                     $t(
                       'leaderboard.competition.winnerModal.getStarted.description',
                       {
-                        competition: latestCampaign,
+                        competition: latestCampaignName,
                         prize: campaignStore.leaderboardCompetitionResult?.prize
                       }
                     )
@@ -217,8 +225,8 @@ async function onSubmit(signature: string) {
                 {{ $t('leaderboard.competition.winnerModal.getStarted.cta') }}
               </AppButton>
 
-              <div v-else class="flex flex-col items-center">
-                <div class="mb-4">
+              <div v-else class="flex flex-col items-center w-full max-w-80">
+                <div class="mb-4 w-full">
                   <div
                     class="flex flex-col items-center py-2.5 px-2 border rounded-md"
                   >
@@ -243,7 +251,7 @@ async function onSubmit(signature: string) {
                   </span>
                 </div>
 
-                <div class="mb-6">
+                <div class="mb-6 w-full">
                   <div
                     class="flex flex-col items-center py-2.5 px-2 border rounded-md"
                   >
