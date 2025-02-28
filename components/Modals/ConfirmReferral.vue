@@ -6,22 +6,17 @@ import { Modal, MainPage } from '@/types'
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 
+const hasApproved = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 
-// todo fred: implement checker whether code is exist when BE ready
 const referralCode = computed(() => route.params.ref)
-
-function approveReferral() {
-  status.setLoading()
-
-  // todo fred: implement grpc/api call to "approve" when BE ready
-  connectWallet()
-
-  status.setIdle()
-}
 
 function connectWallet() {
   if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
@@ -31,9 +26,38 @@ function connectWallet() {
   }
 }
 
-onWalletConnected(() => {
+function approveReferral() {
+  hasApproved.value = true
+
   if (sharedWalletStore.isUserConnected) {
-    router.push({ name: MainPage.Referral })
+    joinReferral()
+  } else {
+    connectWallet()
+  }
+}
+
+function joinReferral() {
+  status.setLoading()
+
+  referralStore
+    .registerInvitee(referralCode.value as string)
+    .then(async () => {
+      await referralStore.fetchUserReferrer()
+
+      notificationStore.success({
+        title: t('referral.success', { referralCode })
+      })
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+      router.push({ name: MainPage.Index })
+    })
+}
+
+onWalletConnected(() => {
+  if (sharedWalletStore.isUserConnected && hasApproved.value) {
+    joinReferral()
   }
 })
 </script>
@@ -41,7 +65,10 @@ onWalletConnected(() => {
 <template>
   <SharedModal
     v-model="modalStore.modals[Modal.ConfirmReferral]"
-    :ui="{ width: 'sm:max-w-xl' }"
+    v-bind="{
+      preventClose: true,
+      ui: { width: 'sm:max-w-xl' }
+    }"
   >
     <h2 class="my-4 font-bold text-xl text-white text-center">
       {{ $t('referral.confirmReferral') }}

@@ -1,31 +1,31 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
+const referralStore = useReferralStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 
 const helixReferralBaseUrl = 'https://helix.app/ref/'
 
-// todo fred: update with data when ready
 const statsList = computed(() => [
   {
     title: t('referral.myStats.rewardsEarned'),
-    value: new BigNumberInBase(250.5),
+    value: referralStore?.rewardsEarned || ZERO_IN_BASE,
     isUsdValue: true
   },
   {
     title: t('referral.myStats.tradersReffered'),
-    value: 3
+    value: referralStore.referralDetails?.all_invitees?.length || 0
   }
 ])
 
-const referralPrefix = computed(() => 'TRUMPUMP')
-
 function copyReferral() {
-  const referralLink = `${helixReferralBaseUrl}${referralPrefix.value}`
+  const referralLink = `${helixReferralBaseUrl}${
+    referralStore.referralDetails?.code || ''
+  }`
 
   copy(referralLink).then(() =>
     notificationStore.success({
@@ -35,7 +35,7 @@ function copyReferral() {
 }
 
 function shareReferralLink() {
-  // todo fred: bind with actual function
+  // todo fred: show share modal - KIV until design is refined/ready
   // console.log('shareReferralLink')
 }
 </script>
@@ -61,7 +61,9 @@ function shareReferralLink() {
           </p>
           <p class="max-sm:text-sm break-all">
             <span>{{ helixReferralBaseUrl }}</span>
-            <span class="font-bold">{{ referralPrefix }}</span>
+            <span class="font-bold">
+              {{ referralStore.referralDetails?.code || '' }}
+            </span>
           </p>
         </div>
         <UIcon
@@ -118,7 +120,7 @@ function shareReferralLink() {
     <div
       class="bg-brand-900 border border-[#181E31] px-20 py-7 rounded-lg flex flex-col items-center max-sm:px-6"
     >
-      <!-- todo fred: replace with actual QR code implementation once product spec is clear -->
+      <!-- todo fred: replace with actual QR code implementation once information is clear -->
       <img src="/images/referral/sample-qrcode.webp" class="w-40" />
       <p class="tracking-wide text-coolGray-450 text-sm text-center my-4">
         {{ $t('referral.scanToJoin') }}

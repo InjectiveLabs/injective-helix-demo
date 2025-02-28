@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ReferralTableColumn } from '@/types'
 
+const referralStore = useReferralStore()
 const { t } = useLang()
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     hasReferralLink?: boolean
   }>(),
@@ -27,39 +28,9 @@ const columns = [
   }
 ]
 
-const referralList = computed(() => {
-  const mockData = [
-    {
-      commission: 200,
-      timestamp: '2025-01-25',
-      address: 'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z'
-    },
-    {
-      commission: 188,
-      timestamp: '2025-01-25',
-      address: 'inj1m0ly9d7fnyhfwunhxm99s5sufak6tg77c7r743'
-    },
-    {
-      commission: 888,
-      timestamp: '2025-01-25',
-      address: 'inj1m0ly9d7fnyhfwunhxm99s5sufak6tg77c7r743'
-    },
-    {
-      commission: 588,
-      timestamp: '2025-01-25',
-      address: 'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z'
-    },
-    {
-      commission: 177,
-      timestamp: '2025-01-25',
-      address: 'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z'
-    }
-  ]
-
-  return props.hasReferralLink ? mockData : []
-})
-
-const { rows } = useReferralTransformer(computed(() => referralList.value))
+const { rows } = useReferralTransformer(
+  computed(() => referralStore.referralDetails?.all_invitees || [])
+)
 </script>
 
 <template>

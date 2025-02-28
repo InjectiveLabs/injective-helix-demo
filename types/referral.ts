@@ -1,5 +1,5 @@
-export interface Referral {
-  address: string
-  timestamp: string
-  commission: number
+export interface ReferralDetails {
+  address?: string
+  code?: string
+  all_invitees?: Record<string, string>[]
 }

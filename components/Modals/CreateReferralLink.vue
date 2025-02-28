@@ -2,7 +2,12 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+
 const {
   value: referralCode,
   errors: referralCodeErrors,
@@ -16,14 +21,45 @@ const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 
 function checkAvailability() {
-  // todo fred: implement checker when BE ready
-  // console.log('checkAvailability')
-  isLinkAvailable.value = true
+  status.setLoading()
+
+  referralStore
+    .checkCodeAvailability(referralCode.value)
+    .then((isAvailable) => {
+      if (isAvailable) {
+        isLinkAvailable.value = true
+      } else {
+        notificationStore.error({
+          title: t('referral.referralLinkIsUnavailable')
+        })
+      }
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 }
 
 function generateLink() {
-  // todo fred: implement checker when BE ready
-  // console.log('generateLink')
+  status.setLoading()
+
+  referralStore
+    .createReferralLink(referralCode.value)
+    .then(async () => {
+      await referralStore.fetchUserReferralDetails()
+
+      // todo fred: replace this "temp notification" with "showing share modal" - KIV until design is refined/ready
+      notificationStore.success({
+        title: `Successfully created "${referralCode.value}"" referral code!`
+      })
+
+      resetData()
+      modalStore.closeModal(Modal.CreateReferralLink)
+    })
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 }
 
 function resetData() {
@@ -100,13 +136,15 @@ function resetData() {
             isNoPadding: true,
             disabled: status.isLoading(),
             placeholder: $t('referral.createReferralLinkPlaceholder'),
-            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-24',
+            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28',
             wrapperClasses:
               'bg-brand-875 p-4 border border-brand-725 rounded text-sm text-coolGray-475 font-mono overflow-auto'
           }"
         >
           <template #prefix>
-            <span class="text-coolGray-650">https://helix.app.com/ref/</span>
+            <span class="text-coolGray-650 whitespace-nowrap">
+              https://helix.app.com/ref/
+            </span>
           </template>
         </AppInput>
 

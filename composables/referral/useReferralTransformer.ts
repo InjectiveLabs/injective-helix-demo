@@ -1,9 +1,10 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
-import { Referral } from '@/types'
 
-export function useReferralTransformer(referralList: ComputedRef<Referral[]>) {
+export function useReferralTransformer(
+  referralList: ComputedRef<Record<string, string>[]>
+) {
   const rows = computed(() =>
     referralList.value.map((referral) => {
       return {

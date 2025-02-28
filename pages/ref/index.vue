@@ -1,32 +1,27 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { MainPage } from '@/types'
+import whitelistedAddressesJson from '@/app/json/referralWhitelistedAddresses.json'
 
-const router = useRouter()
-// const referralStore = useReferralStore()
+const referralStore = useReferralStore()
 const sharedWalletStore = useSharedWalletStore()
-// const { $onError } = useNuxtApp()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-// todo fred: update with data when ready
-const isUserWhitelisted = computed(() => true)
+const isUserWhitelisted = computed(() =>
+  whitelistedAddressesJson.includes(sharedWalletStore.injectiveAddress)
+)
 
-onMounted(() => {
-  if (!sharedWalletStore.isUserConnected) {
-    router.push({ name: MainPage.Index })
-  } else {
-    status.setIdle()
+onWalletConnected(() => {
+  status.setLoading()
 
-    // todo fred: update with data when ready
-    // referralStore
-    //   .initReferralData()
-    //   .then(() => {})
-    //   .catch($onError)
-    //   .finally(() => {
-    //     status.setIdle()
-    //   })
-  }
+  referralStore
+    .fetchUserReferralDetails()
+    .then(() => {})
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
 })
 </script>
 

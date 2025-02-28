@@ -2847,6 +2847,7 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
+<<<<<<< HEAD
 "@keplr-wallet/types@^0.12.159":
   version "0.12.206"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.206.tgz#c468e230d03f5f529b587dde0fb7cd5d77e9b2ca"
@@ -2858,6 +2859,12 @@
   version "0.12.199"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.199.tgz#8052a3c6714246e35932a2f781371086b1c5334d"
   integrity sha512-pVrCwpKFMCgnmlf/tbPJCJNRxvDbWJhIxh8v89SzYEBG+2PGBHc/8ddXKaZ0D+SGkySv+DDvqSrLlHtaVSe+GQ==
+=======
+"@keplr-wallet/types@^0.12.159", "@keplr-wallet/types@^0.12.71":
+  version "0.12.201"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/types/-/types-0.12.201.tgz#25ada7ee92187276d6225609931b673201b39f00"
+  integrity sha512-9wwbaLOdYhD1MccKLEGw5ywXzqWdcOd+/KE46ocVEKQjOSOaBsbWWWGfbpeM1mXLZPIwEZ/vpsW7yQqrpiKJfA==
+>>>>>>> 3ac3d479a (feat: referral systems/logic integrations + handle for multiple test scenarios)
   dependencies:
     long "^4.0.0"
 
@@ -12278,13 +12285,6 @@ mixpanel-browser@^2.48.1:
   dependencies:
     rrweb "2.0.0-alpha.13"
 
-mkdirp@^0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
-  integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
-  dependencies:
-    minimist "^1.2.6"
-
 mkdirp@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
@@ -13306,13 +13306,12 @@ pony-cause@^2.1.10:
   integrity sha512-M7LhCsdNbNgiLYiP4WjsfLUuFmCfnjdF6jKe2R9NKl4WFN+HZPGHJZ9lnLP7f9ZnKe3U9nuWD0szirmj+migUg==
 
 portfinder@^1.0.26:
-  version "1.0.34"
-  resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.34.tgz#65b49b1cfa5f481208a8675ffca761d107d75fa8"
-  integrity sha512-aTyliYB9lpGRx0iUzgbLpCz3xiCEBsPOiukSp1X8fOnHalHCKNxxpv2cSc00Cc49mpWUtlyRVFHRSaRJF8ew3g==
+  version "1.0.35"
+  resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.35.tgz#6ebaf945da4d14c55d996e907b217f73e1dc06c9"
+  integrity sha512-73JaFg4NwYNAufDtS5FsFu/PdM49ahJrO1i44aCRsDWju1z5wuGDaqyFUQWR6aJoK2JPDWlaYYAGFNIGTSUHSw==
   dependencies:
     async "^3.2.6"
     debug "^4.3.6"
-    mkdirp "^0.5.6"
 
 possible-typed-array-names@^1.0.0:
   version "1.1.0"
@@ -16434,9 +16433,9 @@ vite-tsconfig-paths@4.2.0:
     tsconfck "^2.1.0"
 
 "vite@^5.0.0 || ^6.0.0", vite@^6.0.11:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.2.1.tgz#ae865d4bb93a11844be1bc647c8b2dd1856ea180"
-  integrity sha512-n2GnqDb6XPhlt9B8olZPrgMD/es/Nd1RdChF6CBD/fHW6pUyUTt2sQW2fPRX5GiD9XEa6+8A6A4f2vT6pSsE7Q==
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.2.2.tgz#8098b12a6bfd95abe39399aa7d5faa56545d7a1a"
+  integrity sha512-yW7PeMM+LkDzc7CgJuRLMW2Jz0FxMOsVJ8Lv3gpgW9WLcb9cTW+121UEr1hvmfR7w3SegR5ItvYyzVz1vxNJgQ==
   dependencies:
     esbuild "^0.25.0"
     postcss "^8.5.3"

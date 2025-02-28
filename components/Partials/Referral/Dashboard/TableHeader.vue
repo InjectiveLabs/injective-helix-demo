@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 
 withDefaults(
@@ -9,10 +10,6 @@ withDefaults(
     hasReferralLink?: boolean
   }>(),
   {}
-)
-
-const affiliatedAddress = computed(
-  () => 'inj1akxycslq8cjt0uffw4rjmfm3echchptu52a3op'
 )
 
 function referNow() {
@@ -56,7 +53,7 @@ function referNow() {
       <p
         class="text-blue-600 underline text-sm font-medium leading-none max-sm:break-all"
       >
-        {{ affiliatedAddress }}
+        {{ referralStore.referralDetails?.address || '' }}
       </p>
     </div>
   </div>

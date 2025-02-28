@@ -34,10 +34,13 @@ export default {
     lettersAndNumbersOnly: 'letters and numbers only',
     confirmAndGenerateLink: 'Confirm and Generate Link',
     createReferralLinkTitle: 'Create Your Referral Link',
+    referralLinkIsUnavailable: 'Referral Link is Unavailable',
     trackYourReferrals: 'Track your referrals and earned commissions',
     shareYourReferralLink: 'Share your referral link and invite friends.',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
+    success:
+      "You've successfully affiliated with https://helix.app/ref/{{referralCode}}.",
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
     referralLinkAvailableDescription: ({

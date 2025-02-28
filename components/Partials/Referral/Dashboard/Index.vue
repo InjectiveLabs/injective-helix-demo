@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-// todo fred: update with data when ready
-const hasReferralLink = computed(() => false)
+const referralStore = useReferralStore()
 </script>
 
 <template>
-  <div :class="{ 'sm:px-4': !hasReferralLink }">
-    <PartialsReferralDashboardHeader v-bind="{ hasReferralLink }" />
+  <div :class="{ 'sm:px-4': !referralStore.isReferrer }">
+    <PartialsReferralDashboardHeader
+      v-bind="{ hasReferralLink: referralStore.isReferrer }"
+    />
 
-    <PartialsReferralDashboardTutorial v-if="!hasReferralLink" />
+    <PartialsReferralDashboardTutorial v-if="!referralStore.isReferrer" />
     <PartialsReferralDashboardDetails v-else />
 
-    <PartialsReferralDashboardTable v-bind="{ hasReferralLink }" />
+    <PartialsReferralDashboardTable
+      v-bind="{ hasReferralLink: referralStore.isReferrer }"
+    />
   </div>
 </template>

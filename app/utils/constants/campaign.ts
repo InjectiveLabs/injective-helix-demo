@@ -4,9 +4,11 @@ import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from '@shared/utils/constant'
 export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
   ? 'spot-grid-tia-usdt'
   : 'spot-grid-tia-usdt'
+
 // we will read this from the contract later once its ready
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
+
 // Guild
 export const GUILD_CONTRACT_ADDRESS = IS_MAINNET
   ? 'inj1tej4n683z7l4wqnngjxyc5vf8p589d08mc23pa'
@@ -33,3 +35,8 @@ export const GUILD_VOLUME_REWARD_CONTRACT = IS_DEVNET
 export const GUILD_BALANCE_REWARD_CONTRACT = IS_DEVNET
   ? 'inj1f00gl2z68g5la6yfckpyfzk5gscaz6uw82qvx8'
   : 'inj1klxkep4s6fe2pltn6u2rctq8hl7fwzhmuwzvyt'
+
+// Referral
+export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
+  ? 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs' // todo fred: update to mainnet SC address when available
+  : 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs'
