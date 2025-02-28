@@ -88,7 +88,7 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectCosmosStation()
       }
 
-      if (wallet === Wallet.Trezor && address) {
+      if (wallet === Wallet.TrezorLegacy && address) {
         await sharedWalletStore.connectTrezor(address)
       }
 

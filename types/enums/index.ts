@@ -31,11 +31,11 @@ export enum Modal {
   MarketNotOnHelix = 'market-not-on-helix',
   SubaccountTransfer = 'subaccount-transfer',
   AlreadyJoinedGuild = 'already-joined-guild',
-  ShareLeaderboardStats = 'share-leaderboard-stats',
   GridStrategyDetails = 'grid-strategy-details',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   ClosePositionWarning = 'close-position-warning',
+  ShareLeaderboardStats = 'share-leaderboard-stats',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
   TransferToMainSubaccount = 'transfer-to-main-subaccount'

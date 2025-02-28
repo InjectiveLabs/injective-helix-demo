@@ -12,12 +12,12 @@ const { handleSubmit } = useForm()
 
 const options = [
   {
-    display: Wallet.Trezor,
-    value: Wallet.Trezor
+    display: Wallet.TrezorLegacy,
+    value: Wallet.TrezorLegacy
   }
 ] as SharedDropdownOption[]
 
-const wallet = ref<Wallet>(Wallet.Trezor)
+const wallet = ref<Wallet>(Wallet.TrezorLegacy)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
@@ -35,7 +35,7 @@ function fetchAddresses() {
   fetchStatus.setLoading()
 
   sharedWalletStore
-    .getHWAddresses(Wallet.Trezor)
+    .getHWAddresses(Wallet.TrezorLegacy)
     .catch($onError)
     .finally(() => {
       fetchStatus.setIdle()
@@ -47,7 +47,7 @@ const connect = handleSubmit(() => {
 
   walletStore
     .connect({
-      wallet: Wallet.Trezor,
+      wallet: Wallet.TrezorLegacy,
       address: address.value
     })
     .then(() =>

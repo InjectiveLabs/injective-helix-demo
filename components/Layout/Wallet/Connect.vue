@@ -153,12 +153,12 @@ function toggleShowMoreWallets() {
         <LayoutWalletLedger />
       </div>
 
-      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
+      <div v-else-if="selectedWallet === Wallet.TrezorLegacy" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
           v-bind="{
             walletOption: {
-              wallet: Wallet.Trezor
+              wallet: Wallet.TrezorLegacy
             }
           }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"
