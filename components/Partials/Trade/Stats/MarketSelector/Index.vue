@@ -90,7 +90,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             }"
           >
             <span
-              class="uppercase tracking-wider font-bold text-base"
+              class="tracking-wider font-bold text-base"
               :data-cy="dataCyTag(CommonCyTags.MarketPair)"
             >
               {{ market.ticker }}

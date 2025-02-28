@@ -32,7 +32,7 @@ import {
   sharedGetDerivativeSlugOverride
 } from '@shared/transformer/market'
 import { usdtToken } from '@shared/data/token'
-import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
+// import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   cancelOrder,
@@ -251,7 +251,7 @@ export const useDerivativeStore = defineStore('derivative', {
           }
         })
         .filter(
-          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
+          (market) => market // && !MARKET_IDS_TO_HIDE.includes(market.marketId)
         ) as UiDerivativeMarket[]
 
       derivativeStore.$patch({
