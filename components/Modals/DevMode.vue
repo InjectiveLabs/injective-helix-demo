@@ -35,7 +35,7 @@ const { value: privateKey, errors: privateKeyErrors } = useStringField({
   rule: '',
   dynamicRule: computed(() => {
     if (connectType.value === ConnectType.PrivateKey) {
-      return 'required|privateKey'
+      return 'required'
     }
 
     return ''
