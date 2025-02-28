@@ -322,15 +322,18 @@ export interface TransformedLiquidityDashboard {
 export interface TransformedPosition {
   pnl: BigNumberInBase
   position: PositionV2
+  subaccountId: string
   priceDecimals: number
   price: BigNumberInBase
   quantityDecimals: number
   quantity: BigNumberInBase
   markPrice: BigNumberInBase
+  hasActiveStrategy: boolean
   hasReduceOnlyOrders: boolean
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
   isLimitOrderAuthorized: boolean
+  isTradingBotSubaccount: boolean
   isMarketOrderAuthorized: boolean
   liquidationPrice: BigNumberInBase
   effectiveLeverage: BigNumberInBase
