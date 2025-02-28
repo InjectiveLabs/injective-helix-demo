@@ -139,7 +139,7 @@ function onUpdateMax({ amount }: { amount: string }) {
 </script>
 
 <template>
-  <SharedModal v-model="modalStore.modals[Modal.NeptuneUsdt]">
+  <AppModal v-model="modalStore.modals[Modal.NeptuneUsdt]">
     <template #title>
       <h3 class="normal-case text-2xl font-semibold tracking-[0.4px]">
         {{
@@ -152,7 +152,7 @@ function onUpdateMax({ amount }: { amount: string }) {
       </h3>
     </template>
 
-    <div class="pt-8">
+    <div>
       <AppSelectToken
         v-bind="{
           maxDecimals: UI_DEFAULT_DISPLAY_DECIMALS,
@@ -194,5 +194,5 @@ function onUpdateMax({ amount }: { amount: string }) {
         </template>
       </i18n-t>
     </div>
-  </SharedModal>
+  </AppModal>
 </template>

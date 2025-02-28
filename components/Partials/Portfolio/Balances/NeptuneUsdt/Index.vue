@@ -84,7 +84,7 @@ function onOpenWithdrawalModal() {
 </script>
 
 <template>
-  <div class="border border-brand-800 px-4 py-2 rounded-lg mt-10 mb-14">
+  <div class="border border-brand-800 px-6 py-4 rounded-lg mt-10 mb-14">
     <div class="mb-4">{{ $t('trade.neptuneUsdt.automatedYields') }}</div>
 
     <div v-if="!isMobile" class="flex justify-between">

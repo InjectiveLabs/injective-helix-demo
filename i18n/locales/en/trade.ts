@@ -513,8 +513,8 @@ export default {
       total: 'Total/Value(USD)',
       automatedYields: 'Helix Automated Yields',
       disabled: 'This feature is disabled with auto-sign is activated.',
-      availableUsdt:
-        '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT (15% in reserve)',
+      availableUsdt: '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT',
+      percentageInReserve: '(15% in reserve)',
       success: {
         deposit: 'Neptune Deposit Successful',
         withdraw: 'Neptune Withdrawal Succesful'

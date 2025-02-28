@@ -64,14 +64,17 @@ const isDisabled = computed(
       <span>{{ value }}</span>
     </slot>
     <template #customTooltip>
-      <span>
-        {{
-          $t('trade.neptuneUsdt.availableUsdt', {
-            peggyUsdt: peggyUsdtBalance,
-            neptuneUsdt: neptuneUsdtBalance
-          })
-        }}
-      </span>
+      <div>
+        <p>
+          {{
+            $t('trade.neptuneUsdt.availableUsdt', {
+              peggyUsdt: peggyUsdtBalance,
+              neptuneUsdt: neptuneUsdtBalance
+            })
+          }}
+        </p>
+        <p>{{ $t('trade.neptuneUsdt.percentageInReserve') }}</p>
+      </div>
     </template>
   </CommonHeaderTooltip>
 </template>

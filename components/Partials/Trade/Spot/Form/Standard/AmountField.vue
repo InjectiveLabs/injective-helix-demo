@@ -313,7 +313,7 @@ onMounted(() => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
-          <div v-if="isBuy" class="space-x-2">
+          <div v-if="isBuy" class="space-x-2 flex items-center justify-end">
             <span :data-cy="dataCyTag(SpotMarketCyTags.TokenBuyBalance)">{{
               $t('trade.availableAmount', {
                 amount: quoteBalanceToString
@@ -328,11 +328,13 @@ onMounted(() => {
           </div>
 
           <div v-else class="space-x-2">
-            <span :data-cy="dataCyTag(SpotMarketCyTags.TokenSellBalance)">{{
-              $t('trade.availableAmount', {
-                amount: `${baseBalanceToString} ${market.baseToken.symbol}`
-              })
-            }}</span>
+            <span :data-cy="dataCyTag(SpotMarketCyTags.TokenSellBalance)">
+              {{
+                $t('trade.availableAmount', {
+                  amount: `${baseBalanceToString} ${market.baseToken.symbol}`
+                })
+              }}
+            </span>
           </div>
         </div>
       </template>
