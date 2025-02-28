@@ -49,7 +49,7 @@ function onSharePosition(position: PositionV2) {
 }
 
 const hasActiveStrategy = computed(() => {
-  return gridStrategyStore.activeDerivativeStrategies.find(
+  return !!gridStrategyStore.activeDerivativeStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 })
