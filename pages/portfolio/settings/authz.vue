@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { PortfolioSubPage, Modal, BusEvents } from '@/types'
+import { BusEvents, Modal, PortfolioSubPage } from '@/types'
 
 const modalStore = useSharedModalStore()
-const appStore = useAppStore()
 
 const linkOptions = [
   {
@@ -51,9 +50,7 @@ function openGranteeModal() {
           </NuxtLink>
         </div>
         <AppButton
-          v-if="appStore.devMode"
           variant="primary-outline"
-          :disabled="!appStore.devMode"
           class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
           @click="openGranteeModal"
         >

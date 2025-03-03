@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import {
   addDesktopAddress,
   getMobileAddress
 } from '@/app/services/connectMobile'
 import { CONNECT_SERVER_URL } from '@/app/utils/constants'
-import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, Modal } from '@/types'
 
-const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -29,9 +28,7 @@ const tradingMessages = [...TRADING_MESSAGES, MsgType.MsgExecuteContractCompat]
 const status = reactive(new Status(StatusType.Idle))
 const mobileAddress = ref()
 
-const isModalOpen = computed(
-  () => modalStore.modals[Modal.ConnectMobile] && appStore.devMode
-)
+const isModalOpen = computed(() => modalStore.modals[Modal.ConnectMobile])
 
 onMounted(() => {
   useEventBus(BusEvents.ConnectMobileModalOpened).on(() => {
