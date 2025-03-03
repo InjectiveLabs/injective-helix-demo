@@ -221,7 +221,7 @@ export default {
       filterBySide: 'Filter by Side'
     },
     connectMobile: {
-      scanQRCode: 'Scan this QR code in Helix Mobile to connect your wallet!',
+      scanQRCode: 'Scan this QR code on mobile to connect your wallet',
       grantAccess: 'Grant Access',
       scanCode: 'Scan Code to Continue'
     },
