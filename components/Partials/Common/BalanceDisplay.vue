@@ -52,29 +52,31 @@ const isDisabled = computed(
 </script>
 
 <template>
-  <CommonHeaderTooltip
-    v-bind="{
-      ...$attrs,
-      isDisabled,
-      isNotStyled: isDisabled,
-      classes: isDisabled ? 'cursor-text' : ''
-    }"
-  >
-    <slot>
-      <span>{{ value }}</span>
-    </slot>
-    <template #customTooltip>
-      <div>
-        <p>
-          {{
-            $t('trade.neptuneUsdt.availableUsdt', {
-              peggyUsdt: peggyUsdtBalance,
-              neptuneUsdt: neptuneUsdtBalance
-            })
-          }}
-        </p>
-        <p>{{ $t('trade.neptuneUsdt.percentageInReserve') }}</p>
-      </div>
-    </template>
-  </CommonHeaderTooltip>
+  <div>
+    <CommonHeaderTooltip
+      v-bind="{
+        ...$attrs,
+        isDisabled,
+        isNotStyled: isDisabled,
+        classes: isDisabled ? 'cursor-text' : ''
+      }"
+    >
+      <slot>
+        <span>{{ value }}</span>
+      </slot>
+      <template #customTooltip>
+        <div>
+          <p>
+            {{
+              $t('trade.neptuneUsdt.availableUsdt', {
+                peggyUsdt: peggyUsdtBalance,
+                neptuneUsdt: neptuneUsdtBalance
+              })
+            }}
+          </p>
+          <p>{{ $t('trade.neptuneUsdt.percentageInReserve') }}</p>
+        </div>
+      </template>
+    </CommonHeaderTooltip>
+  </div>
 </template>

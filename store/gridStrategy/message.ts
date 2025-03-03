@@ -3,6 +3,7 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  MsgWithdraw,
   StrategyType,
   TradingStrategy,
   MsgExecuteContractCompat,
@@ -12,23 +13,22 @@ import {
   ExecArgCreatePerpGridStrategy,
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed,
-  getGenericAuthorizationFromMessageType,
-  MsgWithdraw
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/market'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
-import { prepareOrderMessages } from '@/app/utils/market'
 import {
   UiSpotMarket,
+  UiDerivativeMarket,
   SpotGridTradingForm,
   SpotGridTradingField,
-  DerivativeGridTradingField,
   DerivativeGridTradingForm,
-  UiDerivativeMarket
+  DerivativeGridTradingField
 } from '@/types'
 
 export const createStrategy = async (

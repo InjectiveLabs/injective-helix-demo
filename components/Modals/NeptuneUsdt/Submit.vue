@@ -3,7 +3,6 @@ import { Status, BigNumberInBase } from '@injectivelabs/utils'
 import { NeptuneUsdtForm, NeptuneUsdtField } from '@/types'
 
 const neptuneUsdtFormErrors = useFormErrors()
-const sharedWalletStore = useSharedWalletStore()
 const neptuneUsdtFormValues = useFormValues() as Ref<NeptuneUsdtForm>
 
 withDefaults(
@@ -20,13 +19,6 @@ const emit = defineEmits<{
 }>()
 
 const isValid = computed(() => {
-  if (
-    sharedWalletStore.isAuthzWalletConnected ||
-    sharedWalletStore.isAutoSignEnabled
-  ) {
-    return
-  }
-
   if (
     new BigNumberInBase(
       neptuneUsdtFormValues.value[NeptuneUsdtField.Amount] || 0

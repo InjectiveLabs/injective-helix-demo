@@ -158,7 +158,9 @@ function onFiatOnRamp() {
 
       <PartialsPortfolioBalancesNeptuneUsdt v-if="hasUsdt" />
 
-      <PartialsPortfolioBalancesSubaccount class="lg:mt-12" />
+      <PartialsPortfolioBalancesSubaccount
+        :class="[hasUsdt ? 'lg:mt-7' : 'lg:mt-12']"
+      />
     </div>
 
     <ModalsBankTransfer />
