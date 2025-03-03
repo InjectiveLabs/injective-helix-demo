@@ -367,7 +367,9 @@ export const useCampaignStore = defineStore('campaign', {
           status: LeaderboardCampaignStatus.Inactive
         })
 
-      const campaigns = pnlCampaigns.concat(volumeCampaigns)
+      const campaigns = pnlCampaigns
+        .concat(volumeCampaigns)
+        .sort((a, b) => Number(b.endDate) - Number(a.endDate))
 
       if (campaigns.length === 0) {
         return
