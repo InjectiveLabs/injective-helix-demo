@@ -101,7 +101,7 @@ const leverage = computed(() =>
                 isRwaMarket || indexMarketInfo,
               'font-bold': includeName
             }"
-            class="uppercase flex items-center gap-2"
+            class="flex items-center gap-2"
           >
             <span>{{ market.ticker }}</span>
 

@@ -48,7 +48,7 @@ const isCampaignWithEntries = computed(() =>
               $t(
                 `leaderboard.header.${
                   campaign.type === LeaderboardType.Volume
-                    ? 'allMarkestVolume'
+                    ? 'allMarketsVolume'
                     : 'tradingPnl'
                 }`
               )
@@ -90,7 +90,7 @@ const isCampaignWithEntries = computed(() =>
                 $t(
                   `leaderboard.header.${
                     campaign.type === LeaderboardType.Volume
-                      ? 'allMarkestVolume'
+                      ? 'allMarketsVolume'
                       : 'tradingPnl'
                   }`
                 )

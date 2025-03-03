@@ -27,7 +27,7 @@ function priceLevelsToMap({
   priceLevels: PriceLevel[]
   priceMap: Map<string, string>
 }) {
-  const currentPrice = priceLevels[0].price
+  const currentPrice = priceLevels[0]?.price || '0'
 
   priceLevels.forEach((priceLevel) => {
     const priceLevelInBigNumber = new BigNumberInBase(priceLevel.price)
