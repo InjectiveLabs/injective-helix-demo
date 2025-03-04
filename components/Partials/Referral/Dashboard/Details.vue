@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { APP_BASE_URL, ZERO_IN_BASE } from '@shared/utils/constant'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal } from '@/types'
 
 const referralStore = useReferralStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
-
-const helixReferralBaseUrl = 'https://helix.app/ref/'
 
 const statsList = computed(() => [
   {
@@ -22,12 +22,12 @@ const statsList = computed(() => [
   }
 ])
 
-function copyReferral() {
-  const referralLink = `${helixReferralBaseUrl}${
-    referralStore.referralDetails?.code || ''
-  }`
+const referralLink = computed(
+  () => `${APP_BASE_URL}/ref/${referralStore.referralDetails?.code || ''}`
+)
 
-  copy(referralLink).then(() =>
+function copyReferral() {
+  copy(referralLink.value).then(() =>
     notificationStore.success({
       title: t('referral.referralLinkCopied')
     })
@@ -35,8 +35,7 @@ function copyReferral() {
 }
 
 function shareReferralLink() {
-  // todo fred: show share modal - KIV until design is refined/ready
-  // console.log('shareReferralLink')
+  modalStore.openModal(Modal.ShareReferral)
 }
 </script>
 
@@ -60,7 +59,7 @@ function shareReferralLink() {
             {{ $t('referral.referralLink') }}
           </p>
           <p class="max-sm:text-sm break-all">
-            <span>{{ helixReferralBaseUrl }}</span>
+            <span>{{ APP_BASE_URL }}/ref/</span>
             <span class="font-bold">
               {{ referralStore.referralDetails?.code || '' }}
             </span>
@@ -120,8 +119,8 @@ function shareReferralLink() {
     <div
       class="bg-brand-900 border border-[#181E31] px-20 py-7 rounded-lg flex flex-col items-center max-sm:px-6"
     >
-      <!-- todo fred: replace with actual QR code implementation once information is clear -->
-      <img src="/images/referral/sample-qrcode.webp" class="w-40" />
+      <PartialsReferralQRCode :text="referralLink" class="w-40" />
+
       <p class="tracking-wide text-coolGray-450 text-sm text-center my-4">
         {{ $t('referral.scanToJoin') }}
       </p>

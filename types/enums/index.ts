@@ -20,6 +20,7 @@ export enum Modal {
   MitoRedirect = 'mito-redirect',
   PostOnlyMode = 'post-only-mode',
   GeoRestricted = 'geo-restricted',
+  ShareReferral = 'share-referral',
   ConnectMobile = 'connect-mobile',
   SgtBalancedFees = 'sgtBalancedFees',
   ConfirmReferral = 'confirm-referral',

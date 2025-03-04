@@ -1,3 +1,4 @@
+import { APP_BASE_URL } from '@shared/utils/constant'
 import { I18nMessageFunction, ReferralTableColumn } from '@/types'
 
 export default {
@@ -39,8 +40,7 @@ export default {
     shareYourReferralLink: 'Share your referral link and invite friends.',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
-    success:
-      "You've successfully affiliated with https://helix.app/ref/{{referralCode}}.",
+    success: `You've successfully affiliated with ${APP_BASE_URL}/ref/{{referralCode}}.`,
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
     referralLinkAvailableDescription: ({
@@ -48,13 +48,13 @@ export default {
       named
     }: I18nMessageFunction) =>
       interpolate([
-        'Your referral code https://helix.app/ref/',
+        `Your referral code ${APP_BASE_URL}/ref`,
         named('referralCode'),
         ' is available. Would you like to use this link?'
       ]),
     confirmReferralDescription: ({ interpolate, named }: I18nMessageFunction) =>
       interpolate([
-        'You will be referred with https://helix.app/ref/',
+        `You will be referred with ${APP_BASE_URL}/ref/`,
         named('referralCode'),
         '. Please confirm if you would like to be affiliated with this address.'
       ]),
@@ -70,14 +70,21 @@ export default {
     },
     referFriends: {
       title: 'How to Refer your Friends',
-      description1: 'Invite your network to trade on Helix',
-      description2: ' and earn 40% of their fees as commission.',
-      step1Title: 'Share your referral link',
-      step1Description: 'You can generate your unique link.',
-      step2Title: 'Invite friends earn 40%',
-      step2Description: 'Add as many friends you want.',
       step3Title: 'Auto-Receive rewards',
+      step2Title: 'Invite friends earn 40%',
+      step1Title: 'Share your referral link',
+      step2Description: 'Add as many friends you want.',
+      description1: 'Invite your network to trade on Helix',
+      step1Description: 'You can generate your unique link.',
+      description2: ' and earn 40% of their fees as commission.',
       step3Description: 'Receive your rewards instantly in your crypto wallet.'
+    },
+    shareModal: {
+      title: 'Invite Your Friends!',
+      customizeYourText: 'Customize your text',
+      description: 'Scan QR code and join me at Helix!',
+      defaultText:
+        'Track your rewards, and cash out anytime. Invite your network to trade on Helix and earn 40% of their fees as commission.'
     }
   }
 }

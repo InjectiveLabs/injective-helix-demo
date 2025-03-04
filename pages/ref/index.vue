@@ -32,6 +32,7 @@ onWalletConnected(() => {
       <PartialsReferralDashboard v-else />
     </section>
 
+    <ModalsShareReferral />
     <ModalsCreateReferralLink />
   </AppHocLoading>
 </template>

@@ -90,7 +90,7 @@ export const useReferralStore = defineStore('referral', {
           })
         )) as unknown as { data: string }
 
-        // todo fred: temp until SC add support
+        // todo fred: temp until SC/indexer add support for this data
         const formattedAllInvitees = fromBase64(response.data).map(
           (item: any) => ({
             ...item,

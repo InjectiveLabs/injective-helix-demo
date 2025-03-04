@@ -48,11 +48,7 @@ function generateLink() {
     .then(async () => {
       await referralStore.fetchUserReferralDetails()
 
-      // todo fred: replace this "temp notification" with "showing share modal" - KIV until design is refined/ready
-      notificationStore.success({
-        title: `Successfully created "${referralCode.value}"" referral code!`
-      })
-
+      modalStore.openModal(Modal.ShareReferral)
       resetData()
       modalStore.closeModal(Modal.CreateReferralLink)
     })
