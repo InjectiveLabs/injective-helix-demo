@@ -43,7 +43,7 @@ const hasActiveStrategyInSubaccount = computed(() =>
     <CommonTabFormReset />
 
     <div
-      v-if="!accountStore.isSgtSubaccount && !hasActiveStrategyInSubaccount"
+      v-if="!hasActiveStrategyInSubaccount"
       class="hidden lg:flex justify-end items-center px-2 flex-1"
     >
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders />

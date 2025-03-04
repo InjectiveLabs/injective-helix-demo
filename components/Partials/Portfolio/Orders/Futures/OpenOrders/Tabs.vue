@@ -52,7 +52,7 @@ const hasActiveStrategyInSubaccount = computed(() =>
     <CommonTabFormReset />
 
     <div
-      v-if="!isTradingBots || !hasActiveStrategyInSubaccount"
+      v-if="!hasActiveStrategyInSubaccount"
       class="hidden lg:flex flex-1 items-center justify-end px-2"
     >
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders />
