@@ -6,6 +6,7 @@ export default {
     quote: 'Quote',
     title: 'Markets',
     cancel: 'Cancel',
+    iAsset: 'iAsset',
     market: 'Market',
     inactive: 'Inactive',
     category: 'Category',
@@ -78,7 +79,8 @@ export default {
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
       [MarketCategoryType.Meme]: 'Meme',
-      [MarketCategoryType.RWA]: 'RWA'
+      [MarketCategoryType.RWA]: 'RWA',
+      [MarketCategoryType.iAssets]: 'iAssets'
     }
   },
 

@@ -31,6 +31,10 @@ export const colors = {
     975: '#141620'
   },
 
+  ocean: {
+    500: '#4D3DFF'
+  },
+
   blue: {
     50: '#E8F3FD',
     100: '#D5EAFB',

@@ -4,13 +4,12 @@ import { MarketCategoryType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 withDefaults(
   defineProps<{
     search?: string
-    markets: UiMarketAndSummaryWithVolumeInUsd[]
     activeCategory: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
   }>(),
   {
-    search: '',
-    isLowVolumeMarketsVisible: false
+    search: ''
   }
 )
 </script>
