@@ -14396,7 +14396,7 @@ shallow-clone@^3.0.0:
 
 "shared-packages@https://github.com/InjectiveLabs/shared-packages#refactor/wallet-ts":
   version "1.0.0"
-  resolved "https://github.com/InjectiveLabs/shared-packages#daea99e5985898eb1aa8f9e783eaf4e449284b83"
+  resolved "https://github.com/InjectiveLabs/shared-packages#c2800fdd7c0ea485f130aa90d9493bd62837daba"
   dependencies:
     "@bangjelkoski/ens-validation" "^0.1.1"
     "@injectivelabs/exceptions" "1.14.41-alpha.1"
@@ -14431,7 +14431,7 @@ shallow-clone@^3.0.0:
     pinia "2.2.6"
     qr-code-generator-vue3 "^1.4.21"
     vee-validate "4.15.0"
-    vue-gtag "2.1.0"
+    vue-gtag "2.0.1"
     vue-hotjar "1.4.0"
     vue-imask "7.6.1"
 
@@ -16310,10 +16310,10 @@ vue-eslint-parser@^9.0.3, vue-eslint-parser@^9.3.0, vue-eslint-parser@^9.4.3:
     lodash "^4.17.21"
     semver "^7.3.6"
 
-vue-gtag@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-2.1.0.tgz#95a99c19d53da8576f6d8ba915090044f6819754"
-  integrity sha512-lnEiHtNkw37lUug36n023uYWRaFz7s2Wk12G+hdzrTKwWwTBuq0Mcd5e0zH65aKPZRWT+51C6LUHZShpTPiMng==
+vue-gtag@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-gtag/-/vue-gtag-2.0.1.tgz#d4dc1b9cf79809c37ce844824c0f7fa97af520dd"
+  integrity sha512-aM4A58FVL0wV2ptYi+xzAjeg+pQVRyUcfBc5UkXAwQrR4t3WBhor50Izp2I+3Oo7+l+vWJ7u78DGcNzReb8S/A==
 
 vue-hotjar@1.4.0:
   version "1.4.0"

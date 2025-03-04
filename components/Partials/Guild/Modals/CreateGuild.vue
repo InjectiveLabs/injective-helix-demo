@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { toBalanceInToken } from '@/app/utils/formatters'
-import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -58,7 +58,7 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
         return 0
       }
 
-      return toBalanceInToken({
+      return sharedToBalanceInToken({
         value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })

@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   BotType,
-  LiquidityBotField,
-  LiquidityBotForm,
+  UiSpotMarket,
   LiquidityValues,
-  UiMarketWithToken,
-  UiSpotMarket
+  LiquidityBotForm,
+  LiquidityBotField,
+  UiMarketWithToken
 } from '@/types'
-import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 
 const props = withDefaults(
   defineProps<{
@@ -27,8 +26,8 @@ const gridStrategyStore = useGridStrategyStore()
 const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
 const liquidityFormValues = useFormValues<LiquidityBotForm>()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const hasConfirmed = ref(false)
 const confirmationModal = ref(false)
@@ -44,12 +43,6 @@ const totalUsd = computed(() =>
         liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0
       ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
     )
-)
-
-const isAutoSignOrAuthzEnabled = computed(
-  () =>
-    sharedWalletStore.isAuthzWalletConnected ||
-    sharedWalletStore.isAutoSignEnabled
 )
 
 async function openConfirmationModal() {
@@ -156,22 +149,19 @@ async function createLiquidityBot() {
     <AppConnectWallet
       v-if="!sharedWalletStore.isUserConnected"
       class="w-full"
-      size="xl"
       block
+      size="xl"
     />
 
     <AppButton
       v-else
       size="lg"
-      :disabled="Object.keys(formErrors).length > 0 || isAutoSignOrAuthzEnabled"
-      :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
       class="w-full"
+      :disabled="Object.keys(formErrors).length > 0"
+      :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
       @click="openConfirmationModal"
     >
-      <span v-if="isAutoSignOrAuthzEnabled">
-        {{ $t('common.unauthorized') }}
-      </span>
-      <span v-else>{{ $t('liquidityBots.createBot') }}</span>
+      <span>{{ $t('liquidityBots.createBot') }}</span>
     </AppButton>
 
     <AppModal
@@ -215,7 +205,7 @@ async function createLiquidityBot() {
 
           <div class="flex justify-between items-center">
             <span class="text-gray-400">{{ $t('sgt.gridMode') }}</span>
-            <span>Arithmetic LP</span>
+            <span>{{ $t('sgt.modes.arithmetic_lp') }}</span>
           </div>
 
           <div class="flex justify-between items-center">
@@ -249,11 +239,13 @@ async function createLiquidityBot() {
         </div>
 
         <SharedButton
-          :loading="status.isLoading()"
           class="mt-6"
-          variant="solid"
           block
-          :disabled="!hasConfirmed"
+          variant="solid"
+          v-bind="{
+            disabled: !hasConfirmed,
+            loading: status.isLoading()
+          }"
           @click="createLiquidityBot"
         >
           {{ $t('sgt.confirm') }}

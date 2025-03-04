@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { NEPTUNE_USDT_CW20_CONTRACT } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { neptuneService } from '@/app/Services'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, MainPage, NeptuneUsdtForm, NeptuneUsdtField } from '@/types'
 
@@ -113,7 +113,7 @@ function setWithdrawMax() {
     .fetchNeptuneRedemptionRatio()
     .then(() => {
       setFormValues({
-        [NeptuneUsdtField.Amount]: toBalanceInToken({
+        [NeptuneUsdtField.Amount]: sharedToBalanceInToken({
           decimalPlaces: usdtToken.decimals,
           roundingMode: BigNumberInBase.ROUND_DOWN,
           fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS,

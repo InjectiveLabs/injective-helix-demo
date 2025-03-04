@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import { usdtToken } from '@shared/data/token'
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { usdtToken } from '@shared/data/token'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import {
+  sharedToBalanceInToken,
+  sharedStripTrillingZero
+} from '@shared/utils/formatter'
 import {
   NEPTUNE_USDT_BUFFER,
   UI_DEFAULT_DISPLAY_DECIMALS
@@ -29,21 +32,25 @@ const hasNeptuneUsdtBalance = computed(
 )
 
 const peggyUsdtBalance = computed(() =>
-  toBalanceInToken({
-    value: accountStore.balancesMap[props.token.denom],
-    decimalPlaces: props.token.decimals,
-    fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
-  })
+  sharedStripTrillingZero(
+    sharedToBalanceInToken({
+      value: accountStore.balancesMap[props.token.denom],
+      decimalPlaces: props.token.decimals,
+      fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
+    })
+  )
 )
 
 const neptuneUsdtBalance = computed(() =>
-  toBalanceInToken({
-    value: new BigNumberInBase(accountStore.neptuneUsdtInBankBalance)
-      .times(1 - NEPTUNE_USDT_BUFFER)
-      .toFixed(),
-    decimalPlaces: props.token.decimals,
-    fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
-  })
+  sharedStripTrillingZero(
+    sharedToBalanceInToken({
+      value: new BigNumberInBase(accountStore.neptuneUsdtInBankBalance)
+        .times(1 - NEPTUNE_USDT_BUFFER)
+        .toFixed(),
+      decimalPlaces: props.token.decimals,
+      fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
+    })
+  )
 )
 
 const isDisabled = computed(

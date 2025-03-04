@@ -5,9 +5,9 @@ import { LiquidityValues, UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
+    status: Status
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
-    status: Status
     activeStrategy?: TradingStrategy
     lastTradedPrice: BigNumberInBase
     marketReward?: {
@@ -16,8 +16,8 @@ withDefaults(
     }
   }>(),
   {
-    activeStrategy: undefined,
-    marketReward: undefined
+    marketReward: undefined,
+    activeStrategy: undefined
   }
 )
 </script>
