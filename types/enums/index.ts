@@ -553,7 +553,8 @@ export enum MarketCategoryType {
   DeFi = 'deFi',
   AI = 'aI',
   Meme = 'meme',
-  RWA = 'rwa'
+  RWA = 'rwa',
+  iAssets = 'iAssets'
   // All = 'all',
   // Cosmos = 'cosmos',
   // Ethereum = 'ethereum',

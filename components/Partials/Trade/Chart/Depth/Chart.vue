@@ -52,7 +52,17 @@ function update() {
     containerEl.value?.getBoundingClientRect().width || 0)
   const height = isMobile ? MOBILE_HEIGHT : HEIGHT
 
-  canvasEl.value.height = height
+  const dpr = window.devicePixelRatio
+
+  canvasEl.value.width = width * dpr
+  canvasEl.value.height = height * dpr
+  canvasEl.value.style.width = `${width}px`
+  canvasEl.value.style.height = `${height}px`
+  ctx.scale(dpr, dpr)
+
+  ctx.textRendering = 'geometricPrecision'
+
+  // canvasEl.value.height = height
 
   // draw 10 grid lines in x and y
   ctx.strokeStyle = colors.brand[800]

@@ -207,7 +207,11 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   }
 
   if (props.activeCategory === MarketCategoryType.RWA) {
-    return (marketCategoriesMap.rwaMarkets || []).includes(market.marketId)
+    return (marketCategoriesMap.tradfiMarkets || []).includes(market.marketId)
+  }
+
+  if (props.activeCategory === MarketCategoryType.iAssets) {
+    return (marketCategoriesMap.iAssets || []).includes(market.marketId)
   }
 }
 
