@@ -106,7 +106,7 @@ export const useAppStore = defineStore('app', {
       (state: AppStoreState) =>
       (marketId: string): string => {
         return (
-          state.userState.marketSlippageIdMap[marketId] ||
+          state.userState?.marketSlippageIdMap?.[marketId] ||
           DEFAULT_SLIPPAGE.toFixed()
         )
       },
