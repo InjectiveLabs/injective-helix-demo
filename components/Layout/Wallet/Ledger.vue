@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
 
@@ -30,8 +31,16 @@ const { value: address, errors: addressErrors } = useStringField({
   name: 'address'
 })
 
+const walletOptions = computed(() =>
+  sharedWalletStore.hwAddresses.map((address: string) => ({
+    display: address,
+    description: getEthereumAddress(address),
+    value: address
+  }))
+)
+
 onMounted(() => {
-  walletStore.$patch({
+  sharedWalletStore.$patch({
     hwAddresses: []
   })
 })
@@ -131,13 +140,15 @@ const connect = handleSubmit(() => {
         value-attribute="value"
         option-attribute="display"
         :placeholder="$t('connect.selectAddressToConnect')"
-        :options="
-          sharedWalletStore.hwAddresses.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
-      />
+        :options="walletOptions"
+      >
+        <template #option="{ option }">
+          <div class="">
+            <p class="">{{ option.display }}</p>
+            <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
+          </div>
+        </template>
+      </USelectMenu>
 
       <p
         v-if="addressErrors.length > 0"

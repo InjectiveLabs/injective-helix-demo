@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
 import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 
 const toast = useToast()
@@ -12,7 +13,7 @@ const { handleSubmit } = useForm()
 
 const options = [
   {
-    display: Wallet.TrezorLegacy,
+    display: t('connect.trezorLegacy'),
     value: Wallet.TrezorLegacy
   }
 ] as SharedDropdownOption[]
@@ -25,8 +26,16 @@ const { value: address, errors: addressErrors } = useStringField({
   name: 'address'
 })
 
+const walletOptions = computed(() =>
+  sharedWalletStore.hwAddresses.map((address: string) => ({
+    display: address,
+    description: getEthereumAddress(address),
+    value: address
+  }))
+)
+
 onMounted(() => {
-  walletStore.$patch({
+  sharedWalletStore.$patch({
     hwAddresses: []
   })
 })
@@ -118,13 +127,15 @@ const connect = handleSubmit(() => {
         select-class="min-w-max"
         option-attribute="display"
         :placeholder="$t('connect.selectAddressToConnect')"
-        :options="
-          sharedWalletStore.hwAddresses.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
-      />
+        :options="walletOptions"
+      >
+        <template #option="{ option }">
+          <div class="">
+            <p class="">{{ option.display }}</p>
+            <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
+          </div>
+        </template>
+      </USelectMenu>
 
       <p
         v-if="addressErrors.length > 0"

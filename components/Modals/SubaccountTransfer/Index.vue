@@ -51,11 +51,28 @@ const userBalance = computed(() => {
       subaccountFormValues.value[SubaccountTransferField.SrcSubaccountId]
     ]
 
-  if (!balances) {
-    return []
+  const defaultBalance = {
+    denom: injToken.denom,
+    token: injToken,
+    balance: 0
   }
 
-  return balances
+  if (!balances) {
+    return [defaultBalance]
+  }
+
+  const hasInjBalance = balances.some(({ denom }) => denom === injToken.denom)
+  const balancesWithInjBalance = hasInjBalance
+    ? balances
+    : [
+        ...balances,
+        {
+          ...defaultBalance,
+          availableBalance: 0
+        }
+      ]
+
+  return balancesWithInjBalance
     .map(({ denom, token, availableBalance }) => ({
       denom,
       token,

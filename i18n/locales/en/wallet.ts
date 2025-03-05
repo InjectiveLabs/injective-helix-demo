@@ -1,3 +1,5 @@
+import { Wallet } from '@injectivelabs/wallet-base'
+
 export default {
   connect: {
     wallet: 'Wallet',
@@ -34,6 +36,7 @@ export default {
     ledger: 'Ledger',
     ledgerLive: 'Ledger Live',
     ledgerLegacy: 'Ledger Legacy',
+    trezorLegacy: 'Trezor Legacy',
     logout: 'Logout',
     metamask: 'Metamask',
     walletConnect: 'WalletConnect',
@@ -54,8 +57,6 @@ export default {
     highlyExperimental: 'Highly Experimental!',
 
     connectUsingTorus: 'One-click login with',
-    torus: 'Torus',
-    trezor: 'Trezor',
     Trezor: 'Trezor',
     connectUsingTrezor: 'Connect using Trezor',
     connectUsingTrezorNote:
@@ -73,22 +74,19 @@ export default {
       }
     },
 
-    leap: 'Leap',
-    cosmostation: 'Cosmostation',
-    trustWallet: 'Trust Wallet',
-    ninji: 'Ninji',
-    phantom: 'Phantom',
-    'okx-wallet': 'OKX Wallet',
-    bitGet: 'Bitget Wallet',
-    'trust-wallet': 'Trust Wallet',
-    BitGet: 'Bitget Wallet',
-    'wallet-connect': 'Wallet Connect'
-  },
-
-  memo: {
-    memo: 'Memo',
-    memoTooltip:
-      'Please check if the destination address requires a memo. If memo is required, incorrect input will result in loss of your funds.',
-    memoPlaceholder: 'Your memo'
+    option: {
+      [Wallet.Leap]: 'Leap',
+      [Wallet.Keplr]: 'Keplr',
+      [Wallet.Ninji]: 'Ninji',
+      [Wallet.Ledger]: 'Ledger',
+      [Wallet.Phantom]: 'Phantom',
+      [Wallet.Metamask]: 'Metamask',
+      [Wallet.TrezorLegacy]: 'Trezor',
+      [Wallet.OkxWallet]: 'OKX Wallet',
+      [Wallet.BitGet]: 'Bitget Wallet',
+      [Wallet.TrustWallet]: 'Trust Wallet',
+      [Wallet.Cosmostation]: 'Cosmostation',
+      [Wallet.WalletConnect]: 'Wallet Connect'
+    }
   }
 }

@@ -68,7 +68,9 @@ function handleConnect() {
     @click="handleConnect"
   >
     <SharedIcon class="w-6 h-6" :name="`wallet/${walletOption.wallet}`" />
-    <p class="text-xs mt-2">{{ $t(`connect.${walletOption.wallet}`) }}</p>
+    <p class="text-xs mt-2">
+      {{ $t(`connect.option.${walletOption.wallet}`) }}
+    </p>
   </button>
 
   <button
@@ -87,7 +89,7 @@ function handleConnect() {
 
     <div class="mx-4 text-left flex-1 pt-1">
       <p class="flex items-start">
-        <span>{{ $t(`connect.${walletOption.wallet}`) }}</span>
+        <span>{{ $t(`connect.option.${walletOption.wallet}`) }}</span>
         <span
           v-if="walletOption.beta"
           class="text-xs text-red-500 leading-6 ml-2"
