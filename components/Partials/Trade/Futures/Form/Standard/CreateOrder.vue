@@ -379,7 +379,7 @@ function onSubmit() {
     return
   }
 
-  if (isRWAMarketOpen.value) {
+  if (!isRWAMarketOpen.value) {
     return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 
