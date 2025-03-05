@@ -31,3 +31,7 @@ export const MarkPriceStatusKey = Symbol(
 export const IsSpotKey = Symbol('isSpot') as InjectionKey<boolean>
 export const InitialStatusKey = Symbol('InitialStatus') as InjectionKey<Status>
 export const AggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>
+
+export const IsRWAMarketOpenKey = Symbol('isRWAMarketOpen') as InjectionKey<
+  Ref<boolean>
+>

@@ -7,6 +7,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   IsSpotKey,
   MarketKey,
+  IsRWAMarketOpenKey,
   PortfolioStatusKey,
   UiDerivativeMarket,
   MarkPriceStatusKey
@@ -16,6 +17,8 @@ const route = useRoute()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const portfolioStatus = inject(
@@ -23,6 +26,7 @@ const portfolioStatus = inject(
   new Status(StatusType.Loading)
 )
 
+const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
@@ -38,6 +42,30 @@ useDerivativeOrderbook(computed(() => market.value))
 const { lastTradedPriceInUsd: derivativeLastTradedPriceInUsd } =
   useDerivativeLastPrice(market)
 
+onMounted(async () => {
+  if (!market.value) {
+    return
+  }
+
+  const isRWAMarket = rwaMarketIds.includes(market.value.marketId)
+
+  if (!isRWAMarket) {
+    return
+  }
+
+  const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
+    market.value.oracleBase
+  )
+
+  if (!isRWAMarketOpenStatus) {
+    notificationStore.warning({
+      title: t('trade.rwa.marketClosedToast')
+    })
+  }
+
+  isRWAMarketOpen.value = isRWAMarketOpenStatus
+})
+
 onWalletConnected(async () => {
   if (route.query.marketId) {
     await derivativeStore.appendMarketId(route.query.marketId as string)
@@ -48,11 +76,6 @@ onWalletConnected(async () => {
       name: 'futures-slug',
       params: { slug: 'btc-usdt-perp' }
     })
-  }
-
-  // track vercel usage
-  if (rwaMarketIds.includes(market.value.marketId)) {
-    derivativeStore.fetchStagingRWAMarketIsOpen(market.value.oracleBase)
   }
 
   status.setLoading()
@@ -117,9 +140,22 @@ onUnmounted(() => {
   derivativeStore.cancelMarketsMarkPrices()
 })
 
+useIntervalFn(async () => {
+  if (!market.value) {
+    return
+  }
+
+  const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
+    market.value.oracleBase
+  )
+
+  isRWAMarketOpen.value = isRWAMarketOpenStatus
+}, 10000)
+
 provide(MarketKey, market)
 provide(IsSpotKey, false)
 provide(MarkPriceStatusKey, status)
+provide(IsRWAMarketOpenKey, isRWAMarketOpen)
 </script>
 
 <template>

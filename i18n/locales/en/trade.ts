@@ -499,17 +499,19 @@ export default {
         ]),
       marketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
-          'This market follows ',
+          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
           named('marketClosedTimes'),
           '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
         ]),
       nyseMarketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
         interpolate([
-          'This market follows ',
+          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
           named('nyseClosedTimes'),
           ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.'
         ]),
 
+      marketClosedToast:
+        'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
       tradesCanBePlace:
         'Trades can be placed outside of these times, but prices will not update until the market reopens.',
       thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',

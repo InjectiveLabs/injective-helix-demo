@@ -13,10 +13,9 @@ import {
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
 import {
-  pythService,
   indexerOracleApi,
+  cachePythService,
   derivativeCacheApi,
-  stagingPythService,
   indexerDerivativesApi
 } from '@shared/Service'
 import {
@@ -655,13 +654,8 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    // track vercel usage
-    async fetchStagingRWAMarketIsOpen(pythPriceId: string) {
-      await stagingPythService.fetchRwaMarketOpenNoThrow(pythPriceId)
-    },
-
     async fetchRWAMarketIsOpen(pythPriceId: string) {
-      return await pythService.fetchRwaMarketOpenNoThrow(pythPriceId)
+      return await cachePythService.fetchRwaMarketOpenNoThrow(pythPriceId)
     },
 
     updateMarkPriceMapFromPosition(positions: PositionV2[]) {
