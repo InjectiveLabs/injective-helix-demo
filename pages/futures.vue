@@ -140,17 +140,20 @@ onUnmounted(() => {
   derivativeStore.cancelMarketsMarkPrices()
 })
 
-useIntervalFn(async () => {
-  if (!market.value) {
-    return
-  }
+useIntervalFn(
+  async () => {
+    if (!market.value) {
+      return
+    }
 
-  const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
-    market.value.oracleBase
-  )
+    const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
+      market.value.oracleBase
+    )
 
-  isRWAMarketOpen.value = isRWAMarketOpenStatus
-}, 10000)
+    isRWAMarketOpen.value = isRWAMarketOpenStatus
+  },
+  5 * 60 * 1000
+)
 
 provide(MarketKey, market)
 provide(IsSpotKey, false)
