@@ -23,7 +23,11 @@ const qrCodeText = JSON.stringify({
   postUrl: `${CONNECT_SERVER_URL}/helix-connect/mobile`
 })
 
-const tradingMessages = [...TRADING_MESSAGES, MsgType.MsgExecuteContractCompat]
+const tradingMessages = [
+  ...TRADING_MESSAGES,
+  MsgType.MsgExecuteContractCompat,
+  MsgType.MsgSend
+]
 
 const status = reactive(new Status(StatusType.Idle))
 const mobileAddress = ref()
