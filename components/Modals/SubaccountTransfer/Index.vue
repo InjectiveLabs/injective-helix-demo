@@ -54,7 +54,7 @@ const userBalance = computed(() => {
   const defaultBalance = {
     denom: injToken.denom,
     token: injToken,
-    balance: 0
+    balance: '0'
   }
 
   if (!balances) {
@@ -68,7 +68,7 @@ const userBalance = computed(() => {
         ...balances,
         {
           ...defaultBalance,
-          availableBalance: 0
+          availableBalance: '0'
         }
       ]
 
