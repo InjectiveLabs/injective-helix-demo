@@ -20,7 +20,7 @@ const lastUpdated = computed(() =>
 
     <div class="flex space-x-4 items-end mb-2">
       <p v-if="lastUpdated" class="text-coolGray-300 text-xs">
-        {{ $t('campaign.lastUpdatedAt', { date: lastUpdated }) }}
+        {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>
   </div>
