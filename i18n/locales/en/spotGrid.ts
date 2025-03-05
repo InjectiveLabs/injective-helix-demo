@@ -189,7 +189,17 @@ export default {
       'Please read the below information carefully before you confirm to proceed.',
     profitPerGrid: 'Profit/grid (fees deducted)',
     disclaimer:
-      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.'
+      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
+
+    optimization: {
+      balanceStability: 'Balance Stability',
+      balanceNeedsAdjusting: 'Balance Needs Adjusting',
+      balanceOptimized: 'Balance Optimized',
+      yourBalanceIsOffBy:
+        'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
+      yourBalanceIsOptimal:
+        'Your current balance distribution is optimal for this strategy.'
+    }
   },
 
   tradingBots: {
