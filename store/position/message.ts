@@ -10,9 +10,10 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
+import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/market'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
-import { backupPromiseCall } from '@/app/utils/async'
 
 export const closePosition = async (position: PositionV2) => {
   const appStore = useAppStore()
@@ -209,18 +210,27 @@ export const addMarginToPosition = async ({
   await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
-  const messages = MsgIncreasePositionMargin.fromJSON({
+  const amountToFixed = derivativeMarginToChainMarginToFixed({
+    value: amount.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market.quoteDenom,
+    amount: amountToFixed
+  })
+
+  const increasePositionMessage = MsgIncreasePositionMargin.fromJSON({
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
     srcSubaccountId: accountStore.subaccountId,
     dstSubaccountId: accountStore.subaccountId,
-    amount: derivativeMarginToChainMarginToFixed({
-      value: amount.toFixed(),
-      quoteDecimals: market.quoteToken.decimals
-    })
+    amount: amountToFixed
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, increasePositionMessage]
+  })
 }
 
 export const addMarginToSubaccountPosition = async ({

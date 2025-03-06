@@ -1,5 +1,3 @@
-import { I18nMessageFunction } from '@/types'
-
 export default {
   home: {
     title: 'Open Finance Reimagined',
@@ -37,7 +35,6 @@ export default {
     InstitutionalGateways: 'Institutional Gateways',
     newlyAdded: 'Newly added',
     markets: 'Markets',
-    // openInterest: 'Open interest',
     totalTradingVolume: 'Total trading volume',
     totalTrades: 'Total trades',
     sevenDaysPrice: '7 days price',
@@ -76,8 +73,7 @@ export default {
     overviewTitle: 'Better and faster.\nExperience trading like never before.',
     overview: {
       faster: 'faster',
-      title: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate(['Better and ', named('faster'), '.']),
+      title: 'Better and {faster}.',
       accountOverviewTitle: 'Account Overview',
       accountOverviewDescription:
         'View your open positions, trading history, and portfolio all in one convenient location.',
@@ -95,17 +91,12 @@ export default {
         'Never worry about gas fees on Helix. Zero gas, always.',
       experienceTrading: 'Experience trading like never before.'
     },
-
     gettingStarted: {
       title: 'Getting started on Helix',
       injectiveBridge: 'Injective Bridge',
       description: 'Deposit crypto assets to Injective ',
-      description2: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Bridge USDT and other assets into Helix via the ',
-          named('bridgeLink'),
-          '.'
-        ]),
+      description2:
+        'Bridge USDT and other assets into Helix via the {bridgeLink}.',
       gasRequirement:
         'Make sure you get at least 0.1 INJ to pay for the transaction fee.',
       steps: 'Steps',
@@ -130,7 +121,6 @@ export default {
       cta: 'Go to Injective Bridge'
     }
   },
-
   newsletter: {
     title: 'Sign Up for Helix Notifications',
     emailAddress: 'Email address',
@@ -139,16 +129,9 @@ export default {
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
     subscribeToast: "You've successfully signed up for Helix notifications!",
-    disclaimerMessage: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'By subscribing, you agree to the ',
-        named('termsAndCondition'),
-        ' and have read the ',
-        named('privacyPolicy'),
-        '.'
-      ])
+    disclaimerMessage:
+      'By subscribing, you agree to the {termsAndCondition} and have read the {privacyPolicy}.'
   },
-
   footer: {
     resources: 'Resources',
     analytics: 'Analytics',

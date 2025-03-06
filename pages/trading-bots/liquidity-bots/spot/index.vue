@@ -30,7 +30,7 @@ const gridStrategyStatus = reactive(new Status(StatusType.Loading))
 
 const market = useQueryRef('market', 'inj-usdt')
 
-const lastTradedPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
+const lastTradedPrice = ref(ZERO_IN_BASE)
 
 const marketOptions = computed(() =>
   spotStore.markets
@@ -395,11 +395,11 @@ watch(
           v-if="selectedMarket"
           v-bind="{
             status,
-            market: selectedMarket,
+            marketReward,
             activeStrategy,
             liquidityValues,
-            lastTradedPrice: new BigNumberInBase(lastTradedPrice),
-            marketReward
+            market: selectedMarket,
+            lastTradedPrice: new BigNumberInBase(lastTradedPrice)
           }"
         />
       </div>

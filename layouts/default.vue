@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
@@ -10,6 +10,7 @@ import {
   MainPage,
   TradeSubPage,
   InitialStatusKey,
+  NoticeBanner,
   PortfolioStatusKey,
   LeaderboardSubPage,
   LiquidityRewardsPage
@@ -17,6 +18,7 @@ import {
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -30,8 +32,6 @@ const { $onError } = useNuxtApp()
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
 const portfolioStatus = reactive(new Status(StatusType.Loading))
-
-const isHomePage = computed(() => route.name === MainPage.Index)
 
 const showFooter = computed(() =>
   [
@@ -107,13 +107,11 @@ function checkOnboarding() {
     return
   }
 
-  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
-
   if (
     !accountStore.hasBalance &&
     sharedWalletStore.isUserConnected &&
     sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(erc20UsdtBalance?.balance || 0) > 0
+    Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
   ) {
     modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.LiteBridge)
@@ -151,27 +149,37 @@ useIntervalFn(
     ]"
   >
     <LayoutNavbar />
+
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
       :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
     >
-      <main class="relative mt-[56px] pb-6">
-        <div :class="{ 'w-full absolute top-0 z-[3]': isHomePage }">
-          <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-          <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+      <main class="relative pb-6 pt-[56px]">
+        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
+        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
+        <LayoutOwnYourAssetCompetitionBanner
+          v-if="route.name !== LeaderboardSubPage.Competition"
+        />
+        <LayoutFTMPerpBanner />
 
-          <LayoutOwnYourAssetCompetitionBanner
-            v-if="route.name !== LeaderboardSubPage.Competition"
-          />
-          <LayoutFTMPerpBanner />
-
-          <template v-if="isHomePage">
-            <AssetNoticeBanners class="relative z-[2]" />
-            <!-- hide for launch -->
-            <!-- <AssetKadoBanner /> -->
-          </template>
-        </div>
+        <LayoutNeptuneUsdtBanner
+          v-if="
+            sharedWalletStore.isUserConnected &&
+            !sharedWalletStore.isAuthzWalletConnected &&
+            new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(
+              0
+            ) &&
+            !appStore.userState.bannersViewed.includes(NoticeBanner.neptuneUsdt)
+          "
+        />
+        <ModalsCompetitionWinner
+          v-if="
+            sharedWalletStore.isUserConnected &&
+            sharedWalletStore.walletConnectStatus !==
+              WalletConnectStatus.disconnecting
+          "
+        />
 
         <ModalsCompetitionWinner
           v-if="
@@ -205,8 +213,6 @@ useIntervalFn(
       <ModalsOnboardingLiteBridge />
       <ModalsOnboardingFiat />
     </template>
-
-    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

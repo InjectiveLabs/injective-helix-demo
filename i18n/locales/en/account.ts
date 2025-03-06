@@ -1,12 +1,7 @@
-import { BalanceTableColumn, I18nMessageFunction } from '@/types'
+import { BalanceTableColumn } from './../../../types'
 
 export default {
   account: {
-    qrDeposit: {
-      title: 'Send INJ to this address to begin trading instantly',
-      bridge: 'Bridge',
-      cta: 'Don’t have INJ? Bridge from anywhere'
-    },
     table: {
       [BalanceTableColumn.Assets]: 'Assets',
       [BalanceTableColumn.Available]: 'Available',
@@ -53,7 +48,7 @@ export default {
         availableBalance: 'Available',
         inUseReserved: 'In Use/Reserved',
         unrealized: 'Unrealized PnL',
-        value: ({ named }: I18nMessageFunction) => `Value (${named('symbol')})`
+        value: 'Value ({symbol})'
       },
       inUseReservedTooltip: 'Sum of in order amount and margin held',
       unrealizedTooltip:
@@ -105,6 +100,10 @@ export default {
     accountBalance: 'Subaccount Balance',
     staked: 'Staked',
 
+    createSubaccount: 'Create Subaccount',
+    subaccountCreation: 'Subaccount Creation',
+    createSubaccountNote:
+      'This is a secondary account linked to your main account for separate management and trading of digital assets. {split}To activate it, you first need to transfer funds. Learn more about subaccounts in our {faq}',
     subaccountTransfer: 'Subaccount Transfer',
     unrealizedPnLLoading: 'Loading your positions and unrealized PnL.',
     transferToMainSubaccount: 'Transfer to Main Subaccount',
@@ -113,8 +112,7 @@ export default {
       "You don't have any assets to transfer from this subaccount.",
     transferToSubaccountSuccess: 'Subaccount transfer successful',
     mainSubaccount: 'Main Subaccount',
-    subaccountId: ({ named }: I18nMessageFunction) =>
-      `Subaccount ${named('subaccountId')}`,
+    subaccountId: 'Subaccount {subaccountId}',
     balanceIncludesCw20Balance:
       'This balance includes the CW20 balance of the asset. The whole CW20 balance will be converted to bank balance once you make an order on this market.'
   }

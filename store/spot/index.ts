@@ -23,12 +23,10 @@ import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
   cancelOrder,
+  submitChase,
   batchCancelOrder,
   submitLimitOrder,
-  submitMarketOrder,
-  submitStopLimitOrder,
-  submitStopMarketOrder,
-  submitChase
+  submitMarketOrder
 } from '@/store/spot/message'
 import {
   streamTrades,
@@ -144,8 +142,6 @@ export const useSpotStore = defineStore('spot', {
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
-    submitStopLimitOrder,
-    submitStopMarketOrder,
 
     async appendMarketId(marketIdFromQuery: string) {
       const spotStore = useSpotStore()

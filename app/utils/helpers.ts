@@ -5,8 +5,8 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
@@ -15,11 +15,11 @@ import {
   ZERO_IN_BASE
 } from '@shared/utils/constant'
 import { tokenFactoryStatic } from '@/app/Services'
-import { OrderbookFormattedRecord } from '@/types/worker'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
-import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { OrderbookFormattedRecord } from '@/types/worker'
+import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -520,14 +520,6 @@ export function countZerosAfterDecimal(num: string) {
   }
 
   return zeroCount
-}
-
-export async function computeSHA512(message: string) {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
 }
 
 export const valueSortFunction = (a: any, b: any, direction: string) => {

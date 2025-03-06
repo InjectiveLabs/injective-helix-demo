@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
-import { ThrownException } from '@injectivelabs/exceptions'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { ThrownException } from '@injectivelabs/exceptions'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
@@ -242,7 +242,7 @@ function updateAmount() {
   if (swapStore.isInputEntered) {
     setFormValues(
       {
-        [SwapFormField.OutputAmount]: toBalanceInToken({
+        [SwapFormField.OutputAmount]: sharedToBalanceInToken({
           roundingMode: BigNumberInBase.ROUND_DOWN,
           value: swapStore.outputQuantity.resultQuantity,
           decimalPlaces: outputToken.value?.token.decimals || 0,
@@ -258,7 +258,7 @@ function updateAmount() {
 
   setFormValues(
     {
-      [SwapFormField.InputAmount]: toBalanceInToken({
+      [SwapFormField.InputAmount]: sharedToBalanceInToken({
         roundingMode: BigNumberInBase.ROUND_UP,
         value: swapStore.inputQuantity.resultQuantity,
         decimalPlaces: inputToken.value?.token.decimals || 0,

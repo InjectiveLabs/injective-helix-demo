@@ -16,7 +16,7 @@ onMounted(() => {
 <template>
   <div v-if="isLoaded" class="relative animate-fade-in">
     <video
-      class="absolute inset-0 w-full h-screen object-cover -mt-[56px]"
+      class="absolute inset-0 w-full h-screen object-cover -mt-[106px]"
       src="/helix_bg.mp4"
       autoplay
       loop

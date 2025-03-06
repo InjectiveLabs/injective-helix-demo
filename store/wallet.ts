@@ -5,7 +5,7 @@ import {
   GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
@@ -88,7 +88,7 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectCosmosStation()
       }
 
-      if (wallet === Wallet.Trezor && address) {
+      if (wallet === Wallet.TrezorLegacy && address) {
         await sharedWalletStore.connectTrezor(address)
       }
 
@@ -98,10 +98,6 @@ export const useWalletStore = defineStore('wallet', {
 
       if (wallet === Wallet.OkxWallet) {
         await sharedWalletStore.connectOkxWallet()
-      }
-
-      if (wallet === Wallet.Torus) {
-        await sharedWalletStore.connectTorus()
       }
 
       if (wallet === Wallet.WalletConnect) {

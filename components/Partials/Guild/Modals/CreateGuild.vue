@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { toBalanceInToken } from '@/app/utils/formatters'
-import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -58,7 +58,7 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
         return 0
       }
 
-      return toBalanceInToken({
+      return sharedToBalanceInToken({
         value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })
@@ -120,12 +120,7 @@ watch(
 </script>
 
 <template>
-  <AppModal
-    is-sm
-    :ignore="['.v-popper__popper']"
-    :is-open="modalStore.modals[Modal.CreateGuild]"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.CreateGuild]">
     <template #title>
       <h2 class="text-xl font-semibold normal-case">
         {{ $t('guild.createGuild.title') }}
@@ -210,10 +205,12 @@ watch(
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
           <UIcon
+            v-if="hasSufficientBalance"
             :name="NuxtUiIcons.Checkmark"
             class="text-green-500 w-4 h-4 min-w-4"
           />
           <UIcon
+            v-else
             :name="NuxtUiIcons.Warning"
             class="text-orange-400 w-4 h-4 min-w-4"
           />

@@ -58,7 +58,13 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm is-hide-close-button is-always-open>
+  <AppModal
+    v-bind="{
+      isAlwaysOpen: true,
+      isHideCloseButton: true,
+      modelValue: isModalOpen
+    }"
+  >
     <template #title>
       <h3 class="text-center">
         {{ $t('marketRestricted.title') }}

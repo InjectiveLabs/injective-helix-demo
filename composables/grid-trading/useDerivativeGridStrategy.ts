@@ -1,11 +1,11 @@
 import { format } from 'date-fns'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   ExitType,
   MarketType,
   StrategyType,
   TradingStrategy
 } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatInterval } from '@/app/utils/helpers'
 import {
   BotType,

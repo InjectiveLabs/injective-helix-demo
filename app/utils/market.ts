@@ -5,21 +5,18 @@ import {
   DerivativeMarket,
   ExpiryFuturesMarket,
   isCw20ContractAddress,
-  MsgExecuteContractCompat
+  MsgExecuteContractCompat,
+  NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
+import { usdtToken } from '@shared/data/token'
+import { NETWORK } from '@shared/utils/constant'
 import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import { IS_TESTNET, NETWORK } from '@shared/utils/constant'
+import { neptuneService } from '@/app/Services'
+import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import {
-  MarketRoute,
-  UiSpotMarket,
-  TradeSubPage,
-  DefaultMarket,
-  UiMarketWithToken
-} from '@/types'
+import { MarketRoute, TradeSubPage, UiMarketWithToken } from '@/types'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
@@ -83,27 +80,6 @@ export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
     }
   }
 }
-
-export const getDefaultPerpetualMarketRouteParams = () => {
-  return {
-    name: TradeSubPage.Futures,
-    params: {
-      futures: getDefaultFuturesMarket()
-    }
-  }
-}
-
-export const getDefaultSpotMarketRouteParams = () => {
-  return {
-    name: TradeSubPage.Spot,
-    params: {
-      spot: DefaultMarket.Spot
-    }
-  }
-}
-
-export const getDefaultFuturesMarket = () =>
-  IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const getFormattedMarketsHistoryChartData = (
   marketsHistory: SharedUiMarketHistory
@@ -217,90 +193,78 @@ export const combineOrderbookRecords = ({
   })
 }
 
-/**
- * Add a Cw20 conversion message if:
- * 1. The base token is cw20
- *  1.1 Limit/Market SELL
- *  1.2 We don't have enough base token balance in the bank balance
- *
- * 2. The quote token is cw20
- * 2.1 Limit/Market BUY
- * 2.2 We don't have enough quote token balance in the bank balance
- */
-export const convertCw20ToBankBalance = ({
-  injectiveAddress,
-  market,
-  order,
-  bankBalancesMap,
-  cw20BalancesMap
+export const prepareOrderMessages = ({
+  denom,
+  amount
 }: {
-  injectiveAddress: string
-  market: UiSpotMarket
-  order: {
-    price: string
-    orderSide: OrderSide
-    quantity: string
-    market: UiSpotMarket
-  }
-  bankBalancesMap: Record<string, string>
-  cw20BalancesMap: Record<string, string>
+  denom: string
+  amount: string
 }) => {
-  const [baseCw20Address] = market.baseDenom.split('/').reverse()
-  const [quoteCw20Address] = market.quoteDenom.split('/').reverse()
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (order.orderSide === OrderSide.Buy) {
-    if (!quoteCw20Address) {
-      return
-    }
+  const bankBalance = new BigNumberInBase(
+    accountStore.balancesMap[denom] || '0'
+  )
 
-    const hasSufficientBalanceInBank = new BigNumberInBase(
-      bankBalancesMap[market.quoteDenom] || 0
-    ).gte(new BigNumberInBase(order.price).times(order.quantity))
+  const hasSufficientBalanceInBank = new BigNumberInBase(bankBalance).gte(
+    amount
+  )
 
-    if (!hasSufficientBalanceInBank) {
-      return
-    }
-
-    if (!cw20BalancesMap[quoteCw20Address]) {
-      return
-    }
-
-    return MsgExecuteContractCompat.fromJSON({
-      contractAddress: quoteCw20Address,
-      sender: injectiveAddress,
-      execArgs: ExecArgCW20Send.fromJSON({
-        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
-        amount: cw20BalancesMap[quoteCw20Address]
-      })
-    })
+  if (hasSufficientBalanceInBank) {
+    return []
   }
 
-  if (order.orderSide === OrderSide.Sell) {
-    if (!baseCw20Address) {
-      return
+  if (denom === usdtToken.denom) {
+    const cw20Balance = accountStore.cw20BalancesMap[NEPTUNE_USDT_CW20_CONTRACT]
+
+    if (!cw20Balance) {
+      return []
     }
 
-    const hasSufficientBalanceInBank = new BigNumberInBase(
-      bankBalancesMap[market.baseDenom] || 0
-    ).gte(order.quantity)
+    const nUsdtNeededInBank = new BigNumberInBase(amount).minus(bankBalance)
 
-    if (hasSufficientBalanceInBank) {
-      return
-    }
+    const nUsdtNeededInCw20 = new BigNumberInBase(
+      neptuneService.calculateCw20Amount(
+        nUsdtNeededInBank.toNumber(),
+        accountStore.neptuneUsdtRedemptionRatio
+      )
+    )
+      .times(1 + NEPTUNE_USDT_BUFFER)
+      .integerValue(BigNumberInBase.ROUND_UP)
+      .toFixed()
 
-    if (!cw20BalancesMap[baseCw20Address]) {
-      return
-    }
+    return [
+      neptuneService.createWithdrawMsg({
+        amount: nUsdtNeededInCw20,
+        sender: sharedWalletStore.injectiveAddress,
+        cw20ContractAddress: NEPTUNE_USDT_CW20_CONTRACT
+      })
+    ]
+  }
 
-    return MsgExecuteContractCompat.fromJSON({
+  const [baseCw20Address] = denom.split('/').reverse()
+
+  if (!baseCw20Address) {
+    return []
+  }
+
+  const cw20Balance = accountStore.cw20BalancesMap[baseCw20Address]
+
+  if (!cw20Balance) {
+    return []
+  }
+
+  return [
+    MsgExecuteContractCompat.fromJSON({
       contractAddress: baseCw20Address,
-      sender: injectiveAddress,
+      sender: sharedWalletStore.injectiveAddress,
       execArgs: ExecArgCW20Send.fromJSON({
         contractAddress: getCw20AdapterContractForNetwork(NETWORK),
-        amount: cw20BalancesMap[baseCw20Address]
+        amount: cw20Balance
       })
     })
-  }
+  ]
 }
 
 /**

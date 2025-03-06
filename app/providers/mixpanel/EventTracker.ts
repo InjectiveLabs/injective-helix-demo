@@ -2,16 +2,16 @@ import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
+  BotType,
   MixPanelEvent,
-  MixPanelCounter,
   MixPanelStatus,
+  MixPanelCounter,
   ChartViewOption,
   MixPanelOrderSide,
   MixPanelOrderType,
   SpotGridTradingForm,
   SpotGridTradingField,
-  MixPanelStrategyPage,
-  BotType
+  MixPanelStrategyPage
 } from '@/types'
 
 const formatStatus = (error?: string) => ({
@@ -249,5 +249,45 @@ export const trackTradingBotError = ({
     'Lower Trailing Bound': lowerTrailingBound,
     Error: error,
     'Original Message': originalMessage
+  })
+}
+
+export const trackOnramperSeen = (walletAddress: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnramperSeen, {
+    'Wallet Address': walletAddress
+  })
+}
+
+export const trackOnramperSuccess = ({
+  network,
+  orderId,
+  fiatAmount,
+  cryptoAmount,
+  fiatCurrency,
+  walletAddress,
+  totalFeeInFiat,
+  cryptoCurrency,
+  partnerOrderId
+}: {
+  network: string
+  orderId: string
+  fiatAmount: string
+  cryptoAmount: string
+  fiatCurrency: string
+  walletAddress: string
+  totalFeeInFiat: string
+  cryptoCurrency: string
+  partnerOrderId: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnramperSuccess, {
+    Network: network,
+    'Wallet Address': walletAddress,
+    'Order Id': orderId,
+    'Partner Order Id': partnerOrderId,
+    'Fiat Amount': fiatAmount,
+    'Fiat Currency': fiatCurrency,
+    'Crypto Amount': cryptoAmount,
+    'Crypto Currency': cryptoCurrency,
+    'Total Fee In Fiat': `${totalFeeInFiat} ${fiatCurrency}`
   })
 }
