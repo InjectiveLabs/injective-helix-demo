@@ -14,7 +14,6 @@ export const TRADING_MESSAGES = [
   MsgType.MsgCreateSpotMarketOrder,
   MsgType.MsgCancelDerivativeOrder,
   MsgType.MsgBatchCancelSpotOrders,
-  MsgType.MsgExecuteContractCompat,
   MsgType.MsgIncreasePositionMargin,
   MsgType.MsgCreateDerivativeLimitOrder,
   MsgType.MsgBatchCreateSpotLimitOrders,

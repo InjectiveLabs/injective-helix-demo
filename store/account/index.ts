@@ -134,6 +134,12 @@ export const useAccountStore = defineStore('account', {
     },
 
     neptuneUsdtInBankBalance: (state) => {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (sharedWalletStore.isAuthzWalletConnected) {
+        return 0
+      }
+
       const neptuneUsdtBalance = state.cw20Balances.find(
         (balance) => balance.address === NEPTUNE_USDT_CW20_CONTRACT
       )?.amount

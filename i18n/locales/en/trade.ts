@@ -430,33 +430,12 @@ export default {
       warning: 'Warning',
       acknowledge:
         'I understand, I accept the risk, and I wish to proceed with my trade.',
-<<<<<<< HEAD
-      marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
-          named('marketClosedTimes'),
-          ' between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
-        ]),
-      marketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
-          named('marketClosedTimes'),
-          '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
-        ]),
-      nyseMarketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
-          named('nyseClosedTimes'),
-          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.'
-        ]),
-=======
       marketClosedModal:
         'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. {marketClosedTimes} between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
       marketClosedTrade:
-        'This market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+        'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
       nyseMarketClosedTrade:
-        'This market follows {nyseClosedTimes}, 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.',
->>>>>>> 153af5045 (refactor: wallet-ts)
+        'All markets on Helix can be traded 24/7. It should be noted that this market follows {nyseClosedTimes}, 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.',
 
       marketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',

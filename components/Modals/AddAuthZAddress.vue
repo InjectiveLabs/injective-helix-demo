@@ -17,7 +17,11 @@ const { validate } = useForm<{
 const msgs = ref(TRADING_MESSAGES)
 const status = reactive(new Status(StatusType.Idle))
 
-const { value: addressValue, errorMessage } = useStringField({
+const {
+  errorMessage,
+  value: addressValue,
+  resetField: resetAddressValue
+} = useStringField({
   name: 'address',
   rule: 'required|injAddress'
 })
@@ -40,12 +44,13 @@ async function grantAuthorization() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
-      closeModal()
+
+      modalStore.closeModal(Modal.AddGrantee)
     })
 }
 
-function closeModal() {
-  modalStore.closeModal(Modal.AddGrantee)
+function onOpenModal() {
+  resetAddressValue({ value: '' })
 }
 </script>
 
@@ -53,6 +58,7 @@ function closeModal() {
   <AppModal
     v-model="modalStore.modals[Modal.AddGrantee]"
     v-bind="{ isMd: true }"
+    @on:open="onOpenModal"
   >
     <template #title>
       <h3>

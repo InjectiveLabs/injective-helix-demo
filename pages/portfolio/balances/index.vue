@@ -11,9 +11,9 @@ import {
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
@@ -27,7 +27,11 @@ const accountTotalBalanceInBtc = computed(() => {
   return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
 })
 
-const hasUsdt = computed(() => {
+const shoWNeptune = computed(() => {
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    return false
+  }
+
   const hasNeptuneUsdtBalance = new BigNumberInBase(
     accountStore.neptuneUsdtInBankBalance
   ).gt(0)
@@ -156,10 +160,10 @@ function onFiatOnRamp() {
         </div>
       </div>
 
-      <PartialsPortfolioBalancesNeptuneUsdt v-if="hasUsdt" />
+      <PartialsPortfolioBalancesNeptuneUsdt v-if="shoWNeptune" />
 
       <PartialsPortfolioBalancesSubaccount
-        :class="[hasUsdt ? 'lg:mt-7' : 'lg:mt-12']"
+        :class="[shoWNeptune ? 'lg:mt-7' : 'lg:mt-12']"
       />
     </div>
 

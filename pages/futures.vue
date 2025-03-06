@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { IS_MAINNET } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { rwaMarketIds } from '@/app/data/market'
@@ -142,7 +143,7 @@ onUnmounted(() => {
 
 useIntervalFn(
   async () => {
-    if (!market.value) {
+    if (!market.value || !IS_MAINNET) {
       return
     }
 
