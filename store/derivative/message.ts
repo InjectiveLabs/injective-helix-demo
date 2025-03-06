@@ -14,18 +14,26 @@ import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/market'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
-const fetchBalances = () => {
+const fetchBalances = (
+  {
+    shouldFetchCw20Balances
+  }: {
+    shouldFetchCw20Balances: boolean
+  } = { shouldFetchCw20Balances: false }
+) => {
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
 
   return backupPromiseCall(() =>
     Promise.all([
       derivativeStore.fetchSubaccountOrders(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
     ])
   )
 }
@@ -185,31 +193,43 @@ export const submitLimitOrder = async ({
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
-  const messages = MsgCreateDerivativeLimitOrder.fromJSON({
+  const priceToFixed = derivativePriceToChainPriceToFixed({
+    value: price.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+  const quantityToFixed = derivativeQuantityToChainQuantityToFixed({
+    value: quantity.toFixed()
+  })
+
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    amount: marginToFixed,
+    denom: market.quoteDenom
+  })
+
+  const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
-    price: derivativePriceToChainPriceToFixed({
-      value: price.toFixed(),
-      quoteDecimals: market.quoteToken.decimals
-    }),
+    price: priceToFixed,
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({
-      value: quantity.toFixed()
-    }),
-    margin: reduceOnly
-      ? '0'
-      : derivativeMarginToChainMarginToFixed({
-          value: margin.toFixed(),
-          quoteDecimals: market.quoteToken.decimals
-        }),
+    quantity: quantityToFixed,
+    margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
 
-  await fetchBalances()
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitStopLimitOrder = async ({
@@ -257,14 +277,14 @@ export const submitStopLimitOrder = async ({
     value: quantity.toFixed()
   })
 
-  const msgMargin = reduceOnly
-    ? '0'
-    : derivativeMarginToChainMarginToFixed({
-        value: margin.toFixed(),
-        quoteDecimals: market.quoteToken.decimals
-      })
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
 
-  const messages = MsgCreateDerivativeLimitOrder.fromJSON({
+  const msgMargin = reduceOnly ? '0' : marginToFixed
+
+  const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
@@ -276,9 +296,18 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market.quoteDenom,
+    amount: marginToFixed
+  })
 
-  await fetchBalances()
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
+
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitMarketOrder = async ({
@@ -344,6 +373,11 @@ export const submitMarketOrder = async ({
       })
     : undefined
 
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
   const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
@@ -356,23 +390,23 @@ export const submitMarketOrder = async ({
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: quantity.toFixed()
     }),
-    margin: reduceOnly
-      ? '0'
-      : derivativeMarginToChainMarginToFixed({
-          value: margin.toFixed(),
-          quoteDecimals: market.quoteToken.decimals
-        }),
+    margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT
   })
 
-  const messages = [message]
+  const cw20ConvertMessage = prepareOrderMessages({
+    amount: marginToFixed,
+    denom: market.quoteDenom
+  })
 
   const tpSlMessages = [tpMessage, slMessage].filter(
     (msg) => msg
   ) as MsgCreateDerivativeMarketOrder[]
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
 
   if (tpSlMessages.length) {
     await sharedWalletStore.broadcastWithFeeDelegation({
@@ -380,7 +414,9 @@ export const submitMarketOrder = async ({
     })
   }
 
-  await fetchBalances()
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitStopMarketOrder = async ({
@@ -428,18 +464,16 @@ export const submitStopMarketOrder = async ({
     value: quantity.toFixed()
   })
 
-  const msgMargin = reduceOnly
-    ? '0'
-    : derivativeMarginToChainMarginToFixed({
-        value: margin.toFixed(),
-        quoteDecimals: market.quoteToken.decimals
-      })
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
 
-  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
-    margin: msgMargin,
+    margin: reduceOnly ? '0' : marginToFixed,
     quantity: msgQuantity,
     marketId: market.marketId,
     feeRecipient: FEE_RECIPIENT,
@@ -447,9 +481,18 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market.quoteDenom,
+    amount: marginToFixed
+  })
 
-  await fetchBalances()
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
+
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitTpSlOrder = async ({

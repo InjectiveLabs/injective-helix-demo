@@ -2,8 +2,8 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 
@@ -26,7 +26,7 @@ const totalRewardsThisRound = computed(() =>
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
       const token = tokenStore.tokenByDenomOrSymbol(reward.denom)!
 
-      const rewardInBase = toBalanceInToken({
+      const rewardInBase = sharedToBalanceInToken({
         value: reward.amount,
         decimalPlaces: token.decimals
       })

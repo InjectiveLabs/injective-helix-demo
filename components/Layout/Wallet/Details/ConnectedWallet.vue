@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { Modal } from '@/types'

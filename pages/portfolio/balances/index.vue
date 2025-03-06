@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { usdtToken } from '@shared/data/token'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BTC_COIN_GECKO_ID,
   UI_DEFAULT_TOKEN_ASSET_DECIMALS
@@ -9,9 +11,9 @@ import {
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
@@ -23,6 +25,24 @@ const accountTotalBalanceInBtc = computed(() => {
   }
 
   return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
+})
+
+const shoWNeptune = computed(() => {
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    return false
+  }
+
+  const hasNeptuneUsdtBalance = new BigNumberInBase(
+    accountStore.neptuneUsdtInBankBalance
+  ).gt(0)
+  const hasPeggyUsdtBalance = new BigNumberInBase(
+    accountStore.balancesMap[usdtToken.denom]
+  ).gt(0)
+
+  return (
+    accountStore.isDefaultSubaccount &&
+    (hasNeptuneUsdtBalance || hasPeggyUsdtBalance)
+  )
 })
 
 function onOpenBankTransferModal() {
@@ -40,8 +60,8 @@ function onFiatOnRamp() {
       {{ $t('navigation.balances') }}
     </h2>
 
-    <div class="lg:mt-8">
-      <div class="lg:flex justify-between p-4">
+    <div class="lg:mt-8 p-4">
+      <div class="lg:flex justify-between">
         <div>
           <p class="text-coolGray-400 text-sm">
             {{ $t('portfolio.balances.netWorth') }}
@@ -140,7 +160,11 @@ function onFiatOnRamp() {
         </div>
       </div>
 
-      <PartialsPortfolioBalancesSubaccount class="lg:mt-12" />
+      <PartialsPortfolioBalancesNeptuneUsdt v-if="shoWNeptune" />
+
+      <PartialsPortfolioBalancesSubaccount
+        :class="[shoWNeptune ? 'lg:mt-7' : 'lg:mt-12']"
+      />
     </div>
 
     <ModalsBankTransfer />

@@ -118,7 +118,9 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
       :disabled="isDisabled"
     >
       <template #right>
-        <span>{{ market.quoteToken.symbol }}</span>
+        <PartialsCommonBalanceDisplay
+          v-bind="{ token: market.quoteToken, value: market.quoteToken.symbol }"
+        />
       </template>
 
       <template #bottom>

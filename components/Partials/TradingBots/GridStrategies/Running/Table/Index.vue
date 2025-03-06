@@ -233,7 +233,7 @@ function selectStrategy(
       :message="$t('sgt.noActiveStrategies')"
     />
 
-    <SharedModal v-model="isOpen">
+    <AppModal v-model="isOpen" v-bind="{ isSm: true }">
       <div class="pt-6">
         <PartialsTradingBotsSpotStrategyDetails
           v-if="
@@ -251,6 +251,6 @@ function selectStrategy(
           :active-strategy="selectedStrategy.strategy"
         />
       </div>
-    </SharedModal>
+    </AppModal>
   </div>
 </template>

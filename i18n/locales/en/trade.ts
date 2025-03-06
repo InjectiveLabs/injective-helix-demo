@@ -1,8 +1,4 @@
-import {
-  MarketsTableColumn,
-  I18nMessageFunction,
-  MarketsSelectorTableColumn
-} from '@/types'
+import { MarketsTableColumn, MarketsSelectorTableColumn } from '@/types'
 
 export default {
   trade: {
@@ -49,7 +45,7 @@ export default {
         'Used for computing unrealised PNL and triggering liquidations'
     },
     get: 'Get',
-    asset_only: ({ named }: I18nMessageFunction) => `${named('asset')} only`,
+    asset_only: '{asset} only',
     assetTransfer: 'Asset Transfer',
     assetTransferTooltip: 'The asset you want to transfer',
     all: 'All',
@@ -63,8 +59,7 @@ export default {
     minLimitOrderSize: 'Min. Limit Order Size',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
-    minNotionalError: ({ named }: I18nMessageFunction) =>
-      `Minimum order value > ${named('minNotional')} ${named('symbol')}`,
+    minNotionalError: 'Minimum order value > {minNotional} {symbol}',
     timestamp_tooltip: 'Based on your browser time zone',
     mid: 'Mid',
     chase: 'Chase',
@@ -171,11 +166,10 @@ export default {
     long: 'Long',
     short: 'Short',
     // open_interest: 'Open interest',
-    available_asset: ({ named }: I18nMessageFunction) =>
-      `Available ${named('asset')}`,
+    available_asset: 'Available {asset}',
     availableAmount: 'Available: {amount}',
-    buy_asset: ({ named }: I18nMessageFunction) => `Buy ${named('asset')}`,
-    sell_asset: ({ named }: I18nMessageFunction) => `Sell ${named('asset')}`,
+    buy_asset: 'Buy {asset}',
+    sell_asset: 'Sell {asset}',
     not_enough_fillable_orders:
       'There are not enough orders to fill this amount',
     balance_higher_than_orderbook_liquidity:
@@ -183,8 +177,7 @@ export default {
     order_placed: 'Your order has been placed',
     orderUpdated: 'Your order has been updated',
     error_in_form: 'There are errors in your form',
-    volume_asset: ({ named }: I18nMessageFunction) =>
-      `24h Volume (${named('asset')})`,
+    volume_asset: '24h Volume ({asset})',
     perpetuals: 'Perpetuals',
     perpetual: 'Perpetual',
     spots: 'Spot',
@@ -192,7 +185,16 @@ export default {
     trading: 'Trading',
     staked: 'Staked',
     stakedUsd: 'Staked (USD)',
-
+    high_execution_price_deviation_warning_note:
+      'The execution price for your order deviates at least {percentage}% from the last traded price. Click confirm if you still want to execute it.',
+    order_price_low_warn: 'Order price is too low',
+    order_price_high_warn: 'Order price is too high',
+    max_leverage_warn: 'Please decrease leverage',
+    reduce_only_in_excess:
+      'Total size of reduce-only orders would exceed size of your position',
+    max_leverage: 'Max Leverage: {max}',
+    you_can_only_have_max_orders:
+      'You can only have {number} orders per side per market per trading account',
     no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
     order_insufficient_margin:
@@ -203,10 +205,8 @@ export default {
     add_margin: 'Add Margin',
     fee_order_details_note_negative_margin:
       "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you are not going to pay any trading fees.",
-    fee_order_details_note: ({ named }: I18nMessageFunction) =>
-      `Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay ${named(
-        'feeReturned'
-      )} in fees.`,
+    fee_order_details_note:
+      "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you will only need to pay {feeReturned} in fees.",
     buy_long: 'Buy/Long',
     sell_short: 'Sell/Short',
     mark_price: 'Mark Price',
@@ -220,8 +220,7 @@ export default {
     funding_fee: 'Funding fee',
     funding_rate: 'Funding Rate',
     expiry_time: 'Expiry Time',
-    expiry_time_with_timezone: ({ named }: I18nMessageFunction) =>
-      `Expiry Time (${named('timezone')})`,
+    expiry_time_with_timezone: 'Expiry Time ({timezone})',
     time_to_expiry: 'Time to expiry',
     derivatives: 'Derivatives',
     not_available_n_a: 'N/A',
@@ -241,26 +240,21 @@ export default {
     volume_24h: 'Volume (24h)',
     market_change_24h_tooltip: 'The change in price over the past 24 hours.',
     search_market: 'Search Market...',
-    total_volume_in_usd: ({ named }: I18nMessageFunction) =>
-      `${named('amount')} USD`,
+    total_volume_in_usd: '{amount} USD',
     marketNotFound: 'Market not found',
     favorites: 'Favorites',
     spot: 'Spot',
     asset: 'Asset',
     average_price: 'Average price',
-    total_volume_in_quote: ({ named }: I18nMessageFunction) =>
-      `Volume in ${named('symbol')}`,
-    total_volume_in_base: ({ named }: I18nMessageFunction) =>
-      `Volume in ${named('symbol')}`,
+    total_volume_in_quote: 'Volume in {symbol}',
+    total_volume_in_base: 'Volume in {symbol}',
     order_success_canceling: 'Order Cancelled',
     trade: 'Trade',
     trades: 'Trades',
     tradeHistoryDetails: 'Trade History Details',
     time: 'Time',
-    timeTooltip: ({ named }: I18nMessageFunction) =>
-      `The time at which the ${named('type')} occurred.`,
-    timeTooltipUpdated: ({ named }: I18nMessageFunction) =>
-      `The time at which the ${named('type')} was updated.`,
+    timeTooltip: 'The time at which the {type} occurred.',
+    timeTooltipUpdated: 'The time at which the {type} was updated.',
     max: 'Max',
     noTrades: 'No trades',
     noOrders: 'No orders',
@@ -276,14 +270,10 @@ export default {
       'Your current trading fee discount based on your fee tier.',
     market_total_tooltip:
       'This total is calculated based on the approximated price you are going to get when execution the trade. Please note that the Total you end up with might have a slight deviation from the value shown here, as slippage is also applied on the execution price.',
-    fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
-      `Based on your tier, you are eligible for ${named(
-        'maker'
-      )}% maker discount and ${named('taker')}% taker discount.`,
-    taker_fees_tooltip_discount: ({ named }: I18nMessageFunction) =>
-      `Based on your tier, you are eligible for ${named(
-        'taker'
-      )}% taker discount.`,
+    fees_tooltip_discount:
+      'Based on your tier, you are eligible for {maker}% maker discount and {taker}% taker discount.',
+    taker_fees_tooltip_discount:
+      'Based on your tier, you are eligible for {taker}% taker discount.',
     quote_denoms: 'Quote Denoms',
     quote_denoms_tooltip:
       'Markets involving these assets are qualified for Trade & Earn unless explicitly disqualified otherwise (check disqualified markets). Whether that be a derivatives market using these assets as margin, or a spot market using these assets as either base or quote currency.',
@@ -318,11 +308,10 @@ export default {
     positions_closed: 'Your positions have been closed',
     not_valid_number: 'Not a valid number',
     enter_your_amount: 'Enter your amount',
-    position_market_not_found: ({ named }: I18nMessageFunction) =>
-      `Market for position ${named('marketId')} cannot be found`,
+    position_market_not_found: 'Market for position {marketId} cannot be found',
     entryMark: 'Entry / Mark',
     estLiqPrice: 'EST Liq Price',
-    balance: ({ named }: I18nMessageFunction) => `Balance: ${named('balance')}`,
+    balance: 'Balance: {balance}',
     slippageWarnings: {
       exceed: 'Slippage can not be higher than 50%.',
       tooLow:
@@ -348,50 +337,10 @@ export default {
     takeProfitMarket: 'Take-Profit Market',
     generated: 'Generated',
     confirmOrderModal: {
-      descriptionLimit: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'If the mark price ',
-          named('verb'),
-          ' to or ',
-          named('preposition'),
-          ' ',
-          named('triggerPrice'),
-          ' ',
-          named('triggerPriceSymbol'),
-          ' a ',
-          named('reduceOnly'),
-          ' limit order to ',
-          named('orderType'),
-          ' ',
-          named('amount'),
-          ' ',
-          named('amountSymbol'),
-          ' at a price of ',
-          named('price'),
-          ' ',
-          named('priceSymbol'),
-          ' will be placed.'
-        ]),
-      descriptionMarket: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'If the mark price ',
-          named('verb'),
-          ' to or ',
-          named('preposition'),
-          ' ',
-          named('triggerPrice'),
-          ' ',
-          named('triggerPriceSymbol'),
-          ' a ',
-          named('tradingType'),
-          ' order to ',
-          named('orderType'),
-          ' ',
-          named('amount'),
-          ' ',
-          named('amountSymbol'),
-          ' will be placed.'
-        ]),
+      descriptionLimit:
+        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol} a {reduceOnly} limit order to {orderType} {amount} {amountSymbol} at a price of {price} {priceSymbol} will be placed.',
+      descriptionMarket:
+        'If the mark price {verb} to or {preposition} {triggerPrice} {triggerPriceSymbol} a {tradingType} order to {orderType} {amount} {amountSymbol} will be placed.',
       doNotShowThisConfirmationAgain: 'Do not show this confirmation again',
       rises: 'rises',
       drops: 'drops',
@@ -450,38 +399,28 @@ export default {
       pleaseTopUp: 'Please top up your trading account.',
       tooltip:
         'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
-      swapTime: ({ named }: I18nMessageFunction) =>
-        `Swap (${named('swapTimeRemaining')}s)`,
-      insufficient_balance_verbose: ({ named }: I18nMessageFunction) =>
-        `Insufficient ${named(
-          'symbol'
-        )} balance for this conversion. Please top up your trading account.`,
-      youHaveSwapped: ({ named }: I18nMessageFunction) =>
-        `You have swapped ${named('inputAmount')} ${named(
-          'inputTokenSymbol'
-        )} to ${named('outputAmount')} ${named('outputTokenSymbol')}`,
-      priceWarning: ({ named }: I18nMessageFunction) =>
-        `High slippage detected! Only proceed if you understand you might receive less ${named(
-          'symbol'
-        )} than anticipated.`
+      tokenSelector: {
+        selectToken: 'Select Token',
+        selectAToken: 'Select a token',
+        searchBy: 'Search by name or symbol'
+      },
+      swapTime: 'Swap ({swapTimeRemaining}s)',
+      insufficient_balance_verbose:
+        'Insufficient {symbol} balance for this conversion. Please top up your trading account.',
+      youHaveSwapped:
+        'You have swapped {inputAmount} {inputTokenSymbol} to {outputAmount} {outputTokenSymbol}',
+      priceWarning:
+        'High slippage detected! Only proceed if you understand you might receive less {symbol} than anticipated.'
     },
 
     estLiquidationPrice: 'Est. Liquidation Price',
     lastUpdated: 'Last Updated',
     profitLoss: 'Profit/Loss',
-    takeProfitDetails: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'When Mark Price reaches ',
-        named('price'),
-        ' it will trigger a Take Profit Market order.'
-      ]),
+    takeProfitDetails:
+      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
 
-    stopLossDetails: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'When Mark Price reaches ',
-        named('price'),
-        ' it will trigger a Stop Loss Market order.'
-      ]),
+    stopLossDetails:
+      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
 
     rwa: {
       statusOfThisMarket: 'Status of this market',
@@ -491,24 +430,12 @@ export default {
       warning: 'Warning',
       acknowledge:
         'I understand, I accept the risk, and I wish to proceed with my trade.',
-      marketClosedModal: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. ',
-          named('marketClosedTimes'),
-          ' between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
-        ]),
-      marketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
-          named('marketClosedTimes'),
-          '. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
-        ]),
-      nyseMarketClosedTrade: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          'All markets on Helix can be traded 24/7. It should be noted that this market follows ',
-          named('nyseClosedTimes'),
-          ', 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.'
-        ]),
+      marketClosedModal:
+        'Trades can be placed, but the mark price will not update until the market reopens, which may increase your trading risk. {marketClosedTimes} between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+      marketClosedTrade:
+        'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
+      nyseMarketClosedTrade:
+        'All markets on Helix can be traded 24/7. It should be noted that this market follows {nyseClosedTimes}, 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.',
 
       marketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
@@ -534,18 +461,8 @@ export default {
     },
 
     marketMultiplierBanner: {
-      description: ({ named, interpolate }: I18nMessageFunction) =>
-        interpolate([
-          'This market offers ',
-          named('multiplier'),
-          "x multipliers for 'Like a G' competition entries starting ",
-          named('startDate'),
-          ' for ',
-          named('duration'),
-          ' hours. Multipliers will be reflected on the leaderboard at a later time. ',
-          named('terms'),
-          ' apply.'
-        ])
+      description:
+        "This market offers {multiplier}x multipliers for 'Like a G' competition entries starting {startDate} for {duration} hours. Multipliers will be reflected on the leaderboard at a later time. {terms} apply."
     },
 
     ftmMarketBanner: {
@@ -563,19 +480,45 @@ export default {
     yes: 'Yes',
     no: 'No',
 
+    neptuneUsdt: {
+      apy: 'APY',
+      here: 'here',
+      submit: 'Submit',
+      deposit: 'Deposit',
+      neptune: 'Neptune',
+      withdraw: 'Withdraw',
+      available: 'Available',
+      deposited: 'Deposited',
+      total: 'Total/Value (USD)',
+      availableUSDT: 'Available USDT',
+      depositToNeptune: 'Deposit to Neptune',
+      automatedYields: 'Helix Automated Yields',
+      withdrawFromNeptune: 'Withdraw from Neptune',
+      disabled: 'This feature is disabled with auto-sign is activated.',
+      availableUsdt: '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT',
+      apyTooltip:
+        'This is the APY currently offered by Neptune on USDT deposits. This amount will change over time.',
+      description:
+        'Deposit stablecoins into the USDT lending pool on {link} to automatically earn yield without leaving Helix. When you’re ready to make a trade, funds are automatically withdrawn from the lending pool with no extra steps.',
+      percentageInReserve: '(15% in reserve)',
+      success: {
+        deposit: 'Neptune Deposit Successful',
+        withdraw: 'Neptune Withdrawal Succesful'
+      },
+      termsAndConditions: 'Terms and Conditions',
+
+      warningText:
+        'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.',
+      banner:
+        'Helix has partnered with Neptune to make it easy for you to earn yield on your stablecoins without leaving the application. Click {here} to get started!'
+    },
+
+    balanceTitle: 'Available',
+
     tradeToast: {
-      bought: ({ named }: I18nMessageFunction) =>
-        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
-          'symbol'
-        )} bought at average price \${{usdPrice:${named('usdPrice')}-${named(
-          'usdPriceDecimals'
-        )}}}`,
-      sold: ({ named }: I18nMessageFunction) =>
-        `{{quantity:${named('quantity')}-${named('quantityDecimals')}}} ${named(
-          'symbol'
-        )} sold at average price \${{usdPrice:${named('usdPrice')}-${named(
-          'usdPriceDecimals'
-        )}}}`
+      bought:
+        "{{quantity:{quantity}-{quantityDecimals}}} {symbol} bought at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}",
+      sold: "{{quantity:{quantity}-{quantityDecimals}}} {symbol} sold at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}"
     }
   }
 }

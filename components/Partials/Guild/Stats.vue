@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { GUILD_MAX_CAP, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const campaignStore = useCampaignStore()
@@ -12,7 +12,7 @@ withDefaults(defineProps<{ isCampaignStarted?: boolean }>(), {
 
 const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: campaignStore.guild?.totalTvl || 0,
       decimalPlaces: baseToken.value?.decimals || 18
     })
@@ -21,7 +21,7 @@ const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
 
 const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: campaignStore.guild?.volumeScore || 0,
       decimalPlaces: quoteToken.value?.decimals || 6
     })

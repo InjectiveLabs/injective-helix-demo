@@ -371,14 +371,23 @@ onMounted(() => {
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
           <div
-            class="space-x-2"
+            class="space-x-1 inline-flex"
             :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
           >
-            <span>{{
-              $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
-              })
-            }}</span>
+            <span>
+              {{
+                $t('trade.availableAmount', {
+                  amount: quoteBalanceToString
+                })
+              }}
+            </span>
+
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
         </div>
       </template>

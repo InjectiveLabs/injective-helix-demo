@@ -30,9 +30,8 @@ function onConfirm() {
 
 <template>
   <AppModal
-    is-stay-open-on-resize
-    :is-open="isModalOpen"
-    @modal:closed="onCancel"
+    v-bind="{ isXl: true, modelValue: isModalOpen }"
+    @on:close="onCancel"
   >
     <div class="relative">
       <PartialsLeaderboardTermsOwnYourAsset

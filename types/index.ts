@@ -3,12 +3,11 @@ import {
   SharedSubaccountBalanceWithToken
 } from '@shared/types'
 import { RouteLocationRaw } from 'vue-router'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PointsMultiplier } from '@injectivelabs/sdk-ts'
-import { NoticeBanner } from './enums'
-import { TradeExecutionType } from '@/types'
+import { NoticeBanner, TradeExecutionType } from '@/types'
 
 export interface DOMEvent<T extends EventTarget> extends Event {
   target: T
@@ -85,12 +84,6 @@ export interface Banner {
   key: NoticeBanner
   viewMore?: string
   viewMoreLink?: string
-}
-
-export type I18nMessageFunction = {
-  type: string
-  interpolate: Function
-  named: Function
 }
 
 export interface AmplitudeTrackerUser {

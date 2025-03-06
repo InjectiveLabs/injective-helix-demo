@@ -6,7 +6,6 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
-  DepositQr = 'deposit-qr',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
   LiteBridge = 'lite-bridge',
@@ -14,6 +13,7 @@ export enum Modal {
   FiatOnboard = 'fiat-onboard',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  NeptuneUsdt = 'neptune-usdt',
   BankTransfer = 'bank-transfer',
   UserFeedback = 'user-feedback',
   MitoRedirect = 'mito-redirect',
@@ -31,11 +31,11 @@ export enum Modal {
   MarketNotOnHelix = 'market-not-on-helix',
   SubaccountTransfer = 'subaccount-transfer',
   AlreadyJoinedGuild = 'already-joined-guild',
-  ShareLeaderboardStats = 'share-leaderboard-stats',
   GridStrategyDetails = 'grid-strategy-details',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   ClosePositionWarning = 'close-position-warning',
+  ShareLeaderboardStats = 'share-leaderboard-stats',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
   TransferToMainSubaccount = 'transfer-to-main-subaccount'
@@ -134,6 +134,11 @@ export enum BalanceHeaderType {
 }
 
 export enum BusEvents {
+  NeptuneUsdt = 'neptune-usdt',
+  FundingRefresh = 'funding-refresh',
+  NavLinkClicked = 'nav-link-clicked',
+  WalletConnected = 'wallet-connected',
+  PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
   OrderSideToggled = 'order-side-toggled',
   OrderbookReplaced = 'orderbook-replaced',
@@ -231,9 +236,11 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  neptuneUsdt = 'neptune-usdt',
+  TeslaCampaign = 'tesla-campaign',
+  OwnYourAssetCampaign = 'own-your-asset-campaign',
   ScheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024',
-  OwnYourAssetCampaign = 'own-your-asset-campaign'
+  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024'
 }
 
 export enum SubaccountBalanceStreamType {

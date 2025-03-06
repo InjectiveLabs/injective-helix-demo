@@ -1,7 +1,6 @@
 import {
   PortfolioChartType,
   PositionTableColumn,
-  I18nMessageFunction,
   PortfolioSubaccountsTableColumn,
   PortfolioSpotOpenOrdersTableColumn,
   PortfolioFuturesAdvancedOrdersTableColumn,
@@ -10,7 +9,7 @@ import {
   PortfolioFuturesOpenOrdersTableColumn,
   PortfolioFuturesOrderHistoryTableColumn,
   PortfolioFuturesTradeHistoryTableColumn
-} from '@/types'
+} from './../../../types'
 
 export default {
   portfolio: {
@@ -206,11 +205,7 @@ export default {
         expiredToast: {
           title: 'Auto sign session has expired',
           settings: 'Settings',
-          description: ({ interpolate, named }: I18nMessageFunction) =>
-            interpolate([
-              'You can start a new session from ',
-              named('settings')
-            ])
+          description: 'You can start a new session from {settings}'
         },
         disconnect: 'Disconnect Auto-Sign'
       }

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
 
 const walletStore = useWalletStore()
+const toast = useSharedNotificationStore()
 const sharedWalletStore = useSharedWalletStore()
-const toast = useToast()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -29,8 +31,16 @@ const { value: address, errors: addressErrors } = useStringField({
   name: 'address'
 })
 
+const walletOptions = computed(() =>
+  sharedWalletStore.hwAddresses.map((address: string) => ({
+    display: address,
+    description: getEthereumAddress(address),
+    value: address
+  }))
+)
+
 onMounted(() => {
-  walletStore.$patch({
+  sharedWalletStore.$patch({
     hwAddresses: []
   })
 })
@@ -65,7 +75,7 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      toast.add({
+      toast.success({
         title: t('connect.successfullyConnected')
       })
     )
@@ -130,13 +140,15 @@ const connect = handleSubmit(() => {
         value-attribute="value"
         option-attribute="display"
         :placeholder="$t('connect.selectAddressToConnect')"
-        :options="
-          sharedWalletStore.hwAddresses.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
-      />
+        :options="walletOptions"
+      >
+        <template #option="{ option }">
+          <div class="">
+            <p class="">{{ option.display }}</p>
+            <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
+          </div>
+        </template>
+      </USelectMenu>
 
       <p
         v-if="addressErrors.length > 0"

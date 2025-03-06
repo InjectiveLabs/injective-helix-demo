@@ -15,6 +15,7 @@ import {
   SwapCyTags,
   TradeField,
   SwapFormField,
+  NeptuneUsdtField,
   BankTransferField,
   SubaccountTransferField
 } from '@/types'
@@ -34,6 +35,7 @@ const props = withDefaults(
     amountFieldName?:
       | TradeField
       | SwapFormField
+      | NeptuneUsdtField
       | BankTransferField
       | SubaccountTransferField
     shouldCheckBalance?: boolean
@@ -192,6 +194,10 @@ const onAmountChangeDebounced = useDebounceFn((value) => {
 
   changeAmount(allowableValue)
 }, props.debounce)
+
+defineExpose({
+  maxBalanceToString
+})
 </script>
 
 <script lang="ts">
@@ -229,10 +235,21 @@ export default {
           >
             {{ $t('trade.max') }}
           </span>
-          <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
-            <span :data-cy="dataCyTag(SwapCyTags.BalanceString)">
-              {{ $t('trade.balance', { balance: maxBalanceToString }) }}
-            </span>
+          <p
+            v-if="!isBalanceHidden"
+            class="text-xs text-blue-500 inline-flex space-x-1"
+            :data-cy="dataCyTag(SwapCyTags.BalanceString)"
+          >
+            <span> {{ $t('trade.balanceTitle') }}: </span>
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                ...$attrs,
+                token: selectedToken.token,
+                value: maxBalanceToString,
+                textColorClass: 'text-blue-500',
+                borderColorClass: 'border-blue-500'
+              }"
+            />
           </p>
         </div>
       </slot>
@@ -260,18 +277,22 @@ export default {
               <USelectMenu
                 v-model="denomValue"
                 searchable
-                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
                 :options="tokenOptions"
+                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
                 :search-attributes="['label', 'name', 'symbol', 'value']"
                 value-attribute="value"
               >
                 <template #default="{ open }">
-                  <div class="flex items-center gap-2">
+                  <div
+                    class="flex items-center gap-2"
+                    :class="{ 'cursor-text': isTokenSelectorDisabled }"
+                  >
                     <UAvatar :src="selectedToken?.token.logo" size="xs" />
                     <span class="font-semibold">
                       {{ selectedToken?.token.symbol }}
                     </span>
                     <UIcon
+                      v-if="!isTokenSelectorDisabled"
                       :name="NuxtUiIcons.ChevronDown"
                       :class="{ 'rotate-180': open }"
                       class="transition-all"

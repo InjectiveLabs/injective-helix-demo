@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { WalletConnectStatus } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
 import { IS_DEVNET } from '@shared/utils/constant'
+import { WalletConnectStatus } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
+import { isCosmosStationWalletInstalled } from '@injectivelabs/wallet-cosmostation'
 import { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -60,7 +62,7 @@ const options = computed(
               : undefined
           },
       { wallet: Wallet.Ledger },
-      { wallet: Wallet.Trezor },
+      { wallet: Wallet.TrezorLegacy },
       {
         wallet: Wallet.Cosmostation,
         downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
@@ -80,6 +82,12 @@ const options = computed(
               ? 'https://ninji.xyz/#download'
               : undefined
           },
+      {
+        wallet: Wallet.Cosmostation,
+        downloadLink: !isCosmosStationWalletInstalled()
+          ? 'https://www.cosmostation.io/wallet'
+          : undefined
+      },
       { wallet: Wallet.WalletConnect }
       // Disabled for now
       // {
@@ -145,12 +153,12 @@ function toggleShowMoreWallets() {
         <LayoutWalletLedger />
       </div>
 
-      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
+      <div v-else-if="selectedWallet === Wallet.TrezorLegacy" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
           v-bind="{
             walletOption: {
-              wallet: Wallet.Trezor
+              wallet: Wallet.TrezorLegacy
             }
           }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"

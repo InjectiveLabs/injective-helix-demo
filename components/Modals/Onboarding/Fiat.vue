@@ -2,6 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
+const { xs } = useSharedBreakpoints()
 
 const isPurchaseFunds = ref(false)
 
@@ -9,22 +10,22 @@ function onPurchaseFunds() {
   isPurchaseFunds.value = true
 }
 
-function closeModal() {
+function resetState() {
   isPurchaseFunds.value = false
 }
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.FiatOnboard]"
-    @modal:closed="closeModal"
+    v-bind="{ isSm: true, isHideCloseButton: !xs }"
+    @on:open="resetState"
   >
     <PartialsOnboardingFiat
       v-if="!isPurchaseFunds"
       @funds:purchase="onPurchaseFunds"
-      @modal:close="closeModal"
     />
 
-    <PartialsOnboardingFiatMercuryo v-else />
-  </SharedModal>
+    <PartialsOnboardingFiatOnramper v-else />
+  </AppModal>
 </template>
