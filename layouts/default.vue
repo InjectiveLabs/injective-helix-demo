@@ -166,6 +166,7 @@ useIntervalFn(
         <LayoutNeptuneUsdtBanner
           v-if="
             sharedWalletStore.isUserConnected &&
+            !sharedWalletStore.isAuthzWalletConnected &&
             new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(
               0
             ) &&

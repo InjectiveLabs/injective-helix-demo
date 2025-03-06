@@ -139,12 +139,13 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
+  const isBuy = [OrderSide.BuyPO, OrderSide.Buy].includes(orderSide)
+
   const cw20ConvertMessage = prepareOrderMessages({
-    denom: orderSide === OrderSide.Buy ? market.quoteDenom : market.baseDenom,
-    amount:
-      orderSide === OrderSide.Buy
-        ? new BigNumberInBase(priceToFixed).times(quantityToFixed).toFixed()
-        : quantityToFixed
+    denom: isBuy ? market.quoteDenom : market.baseDenom,
+    amount: isBuy
+      ? new BigNumberInBase(priceToFixed).times(quantityToFixed).toFixed()
+      : quantityToFixed
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal } from '@/types'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import { Modal } from '@/types'
 
-const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
+const modalStore = useSharedModalStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const { validate } = useForm<{
   address: string

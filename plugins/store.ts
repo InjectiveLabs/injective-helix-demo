@@ -95,8 +95,6 @@ const actionsThatSetAppStateToBusy = [
   'authZ/grantAuthorization',
   'authZ/revokeAuthorization',
   'position/closeAllPosition',
-  'spot/submitStopLimitOrder',
-  'spot/submitStopMarketOrder',
   'derivative/submitTpSlOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
