@@ -17,7 +17,7 @@
     "start": "nuxi start",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
-    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#refactor/wallet-ts --ignore-scripts && yarn fetch:data && yarn github:version",
+    "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#master --ignore-scripts && yarn fetch:data && yarn github:version",
     "analyze": "nuxi build --analyze",
     "preview": "nuxi preview",
     "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.cache/vite && rm -rf ./node_modules/.vite && rm -rf ./node_modules/.cache/vite",
@@ -52,7 +52,7 @@
     "lightweight-charts": "^4.1.1",
     "lottie-web": "^5.12.2",
     "mixpanel-browser": "^2.48.1",
-    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#refactor/wallet-ts",
+    "shared-packages": "https://github.com/InjectiveLabs/shared-packages#master",
     "simple-git": "3.27.0",
     "tailwind-merge": "^2.5.2",
     "vue-jest": "^4.0.0-0"
@@ -99,23 +99,6 @@
     "**/libsodium": "npm:@bangjelkoski/noop",
     "**/libsodium-wrappers": "npm:@bangjelkoski/noop",
     "@ethereumjs/tx": "^4.1.1",
-    "eslint": "8.37.0",
-    "@injectivelabs/utils": "1.14.41-alpha.7",
-    "@injectivelabs/networks": "1.14.41-alpha.2",
-    "@injectivelabs/ts-types": "1.14.41-alpha.2",
-    "@injectivelabs/exceptions": "1.14.41-alpha.1",
-    "@injectivelabs/sdk-ts": "1.14.41-alpha.16",
-    "@injectivelabs/wallet-base": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-core": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-cosmos": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-cosmos-strategy": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-cosmostation": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-evm": "1.14.41-alpha.20",
-    "@injectivelabs/wallet-ledger": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-magic": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-private-key": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-strategy": "1.14.41-alpha.20",
-    "@injectivelabs/wallet-trezor": "1.14.41-alpha.18",
-    "@injectivelabs/wallet-wallet-connect": "1.14.41-alpha.18"
+    "eslint": "8.37.0"
   }
 }

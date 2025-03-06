@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#refactor/wallet-ts'
+      : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
   app: {
