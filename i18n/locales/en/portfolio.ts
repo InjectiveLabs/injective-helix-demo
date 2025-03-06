@@ -201,7 +201,7 @@ export default {
           title: 'Auto sign is disabled'
         },
         allowsYouToTrade:
-          '“Allows you to trade on Helix for 72 hours without needing to sign most transactions. Auto-Sign can be deactivated any time.',
+          'Allows you to trade on Helix for 72 hours without needing to sign most transactions. Auto-Sign can be deactivated any time.',
         expiredToast: {
           title: 'Auto sign session has expired',
           settings: 'Settings',
