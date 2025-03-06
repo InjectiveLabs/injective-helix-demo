@@ -232,11 +232,14 @@ export const prepareOrderMessages = ({
     )
       .times(1 + NEPTUNE_USDT_BUFFER)
       .integerValue(BigNumberInBase.ROUND_UP)
-      .toFixed()
+
+    if (!nUsdtNeededInCw20.isFinite() || !nUsdtNeededInBank.isFinite()) {
+      return []
+    }
 
     return [
       neptuneService.createWithdrawMsg({
-        amount: nUsdtNeededInCw20,
+        amount: nUsdtNeededInCw20.toFixed(),
         sender: sharedWalletStore.injectiveAddress,
         cw20ContractAddress: NEPTUNE_USDT_CW20_CONTRACT
       })
