@@ -70,6 +70,7 @@ export default {
     lastPrice: 'Last price',
     change24h: 'Change (24h)',
     tradingVolume: 'Trading volume',
+    somethingIsBrewing: 'Something is brewing',
     overviewTitle: 'Better and faster.\nExperience trading like never before.',
     overview: {
       faster: 'faster',
