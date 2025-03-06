@@ -197,7 +197,7 @@ useIntervalFn(
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
 
-    <ModalsNewFeature />
+    <ModalsNvidia />
     <ModalsPostOnlyMode />
     <ModalsDevMode />
     <ModalsGeoRestricted />
