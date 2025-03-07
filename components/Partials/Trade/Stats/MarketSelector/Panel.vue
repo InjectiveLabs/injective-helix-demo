@@ -53,6 +53,10 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   )
 )
 
+function resetSearch() {
+  search.value = ''
+}
+
 function resetCategory() {
   if (activeCategory.value === MarketCategoryType.All) {
     return
@@ -95,6 +99,7 @@ function resetCategory() {
                 :key="category.value"
                 v-model="activeCategory"
                 v-bind="{ value: category.value }"
+                @update:model-value="resetSearch"
               >
                 <template #default="{ isActive }">
                   <AppButton

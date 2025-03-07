@@ -94,7 +94,7 @@ const formattedNumber = computed(() => {
       }"
     >
       <div class="flex" :class="{ 'mr-1': slots.addon }">
-        <span class="">{{ prefix || '' }}{{ formattedNumber[0] }}</span>
+        <span>{{ prefix || '' }}{{ formattedNumber[0] }}</span>
         <span v-if="formattedNumber[1]" class="opacity-25">
           {{ formattedNumber[1] || '' }}
         </span>

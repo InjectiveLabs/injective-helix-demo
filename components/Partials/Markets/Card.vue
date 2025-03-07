@@ -119,7 +119,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="">{{ volumeInUsdToFormat }}</span> USD
+      <span>{{ volumeInUsdToFormat }}</span> USD
     </span>
   </NuxtLink>
 </template>
