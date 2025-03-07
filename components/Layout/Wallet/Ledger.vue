@@ -143,8 +143,8 @@ const connect = handleSubmit(() => {
         :options="walletOptions"
       >
         <template #option="{ option }">
-          <div class="">
-            <p class="">{{ option.display }}</p>
+          <div>
+            <p>{{ option.display }}</p>
             <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
           </div>
         </template>

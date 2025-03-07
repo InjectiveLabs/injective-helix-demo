@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { marketCategoriesMap } from '@/app/json'
 import { calculateLeverage } from '@/app/utils/formatters'
 import {
   IsSpotKey,
@@ -49,10 +48,6 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
 
 const isBiudlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
-)
-
-const isIAssetMarkets = computed(() =>
-  (marketCategoriesMap.iAssets || []).includes(props.market.marketId)
 )
 
 const marketPriceMap = computed(() => ({
@@ -137,12 +132,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
 
           <div class="flex items-center gap-1">
             <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
-            <span
-              v-if="isIAssetMarkets"
-              class="text-2xs bg-ocean-500 bg-opacity-20 px-1 py-0.5 font-semibold rounded text-ocean-500"
-            >
-              {{ $t('markets.iAsset') }}
-            </span>
+            <PartialsTradeStatsCategoryChip v-bind="{ market }" />
           </div>
         </div>
 
