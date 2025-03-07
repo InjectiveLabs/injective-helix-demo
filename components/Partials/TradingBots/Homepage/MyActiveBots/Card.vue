@@ -1,73 +1,16 @@
 <script setup lang="ts">
-import { SharedMarketType } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  BotType,
-  MainPage,
-  TradeSubPage,
-  TradingInterface,
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
 } from '@/types'
+import { getTradingBotLinkFromStrategy } from '~/app/utils/helpers'
 
 const props = defineProps<{
   strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
 }>()
 
-const to = computed(() => {
-  if (props.strategy.market.type === SharedMarketType.Spot) {
-    return props.strategy.market.isVerified
-      ? {
-          name:
-            props.strategy.botType === BotType.SpotGrid
-              ? TradeSubPage.Spot
-              : MainPage.TradingBotsLiquidityBotsSpot,
-          params: {
-            slug:
-              props.strategy.botType === BotType.SpotGrid
-                ? props.strategy.market.slug
-                : undefined
-          },
-          query: {
-            interface:
-              props.strategy.botType === BotType.SpotGrid
-                ? TradingInterface.TradingBots
-                : undefined,
-            market:
-              props.strategy.botType === BotType.LiquidityGrid
-                ? props.strategy.market.slug
-                : undefined
-          }
-        }
-      : {
-          name: TradeSubPage.Futures,
-          params: {
-            slug: props.strategy.market.slug
-          },
-          query: {
-            interface: TradingInterface.TradingBots
-          }
-        }
-  }
-
-  return props.strategy.market.isVerified
-    ? {
-        name: TradeSubPage.Futures,
-        params: {
-          slug: props.strategy.market.slug
-        },
-        query: {
-          interface: TradingInterface.TradingBots
-        }
-      }
-    : {
-        name: TradeSubPage.Futures,
-        query: {
-          interface: TradingInterface.TradingBots,
-          marketId: props.strategy.market.marketId
-        }
-      }
-})
+const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
 </script>
 
 <template>
