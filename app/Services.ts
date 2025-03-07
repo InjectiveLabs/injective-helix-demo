@@ -12,6 +12,7 @@ import {
   ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
   IndexerGrpcArchiverApi,
+  IndexerGrpcReferralApi,
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
@@ -39,6 +40,10 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 )
 
 export const neptuneService = new NeptuneService()
+
+export const indexerGrpcReferralApi = new IndexerGrpcReferralApi(
+  ENDPOINTS.indexer
+)
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET

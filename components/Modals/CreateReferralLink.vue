@@ -65,7 +65,7 @@ function resetData() {
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.CreateReferralLink]"
     :ui="{ width: 'sm:max-w-xl' }"
     @on:open="resetData"
@@ -168,5 +168,5 @@ function resetData() {
         </AppButton>
       </div>
     </div>
-  </SharedModal>
+  </AppModal>
 </template>

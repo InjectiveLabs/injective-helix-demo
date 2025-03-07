@@ -45,7 +45,7 @@ function joinReferral() {
       await referralStore.fetchUserReferrer()
 
       notificationStore.success({
-        title: t('referral.success', { referralCode })
+        title: t('referral.success', { referralCode: referralCode.value })
       })
     })
     .catch($onError)
@@ -63,10 +63,10 @@ onWalletConnected(() => {
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.ConfirmReferral]"
     v-bind="{
-      preventClose: true,
+      isAlwaysOpen: true,
       ui: { width: 'sm:max-w-xl' }
     }"
   >
@@ -94,5 +94,5 @@ onWalletConnected(() => {
     >
       {{ $t('referral.approve') }}
     </AppButton>
-  </SharedModal>
+  </AppModal>
 </template>

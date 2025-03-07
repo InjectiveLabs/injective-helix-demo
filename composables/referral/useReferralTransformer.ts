@@ -8,12 +8,12 @@ export function useReferralTransformer(
   const rows = computed(() =>
     referralList.value.map((referral) => {
       return {
-        timestamp: new Date(referral.timestamp).toLocaleDateString('en-GB'),
-        commission: new BigNumberInBase(referral.commission),
         formattedAddress: sharedEllipsisFormatText(
           referral.address,
           DEFAULT_TRUNCATE_LENGTH
-        )
+        ),
+        commission: new BigNumberInBase(referral.commission),
+        joinDate: new Date(referral.joinDate).toLocaleDateString('en-GB')
       }
     })
   )

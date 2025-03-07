@@ -53,7 +53,7 @@ function referNow() {
       <p
         class="text-blue-600 underline text-sm font-medium leading-none max-sm:break-all"
       >
-        {{ referralStore.referralDetails?.address || '' }}
+        {{ referralStore.referralDetails?.referrerAddress || '' }}
       </p>
     </div>
   </div>

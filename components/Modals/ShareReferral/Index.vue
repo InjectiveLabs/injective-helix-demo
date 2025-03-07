@@ -38,7 +38,8 @@ const actionButtons = computed(() => {
 })
 
 const referralLink = computed(
-  () => `${APP_BASE_URL}/ref/${referralStore.referralDetails?.code || ''}`
+  () =>
+    `${APP_BASE_URL}/ref/${referralStore.referralDetails?.referrerCode || ''}`
 )
 
 function onCopyLink() {
@@ -51,15 +52,15 @@ function onCopyLink() {
 </script>
 
 <template>
-  <SharedModal
+  <AppModal
     v-model="modalStore.modals[Modal.ShareReferral]"
     v-bind="{
       ui: { width: 'sm:w-96' },
       cardUi: { background: 'dark:bg-[#181A21]' }
     }"
   >
-    <template #header>
-      <h2 class="text-lg font-semibold leading-none">
+    <template #title>
+      <h2 class="text-lg font-semibold leading-none capitalize">
         {{ $t('referral.shareModal.title') }}
       </h2>
     </template>
@@ -101,5 +102,5 @@ function onCopyLink() {
         />
       </div>
     </div>
-  </SharedModal>
+  </AppModal>
 </template>

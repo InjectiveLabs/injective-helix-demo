@@ -29,7 +29,7 @@ const columns = [
 ]
 
 const { rows } = useReferralTransformer(
-  computed(() => referralStore.referralDetails?.all_invitees || [])
+  computed(() => referralStore.referralDetails?.invitees || [])
 )
 </script>
 
@@ -75,7 +75,7 @@ const { rows } = useReferralTransformer(
 
       <template #join-date-data="{ row }">
         <span class="p-2 max-xs:px-0 block w-full text-center font-mono">
-          {{ row.timestamp }}
+          {{ row.joinDate }}
         </span>
       </template>
     </UTable>

@@ -13,17 +13,18 @@ const { copy } = useClipboard()
 const statsList = computed(() => [
   {
     title: t('referral.myStats.rewardsEarned'),
-    value: referralStore?.rewardsEarned || ZERO_IN_BASE,
+    value: referralStore?.referralDetails?.totalCommission || ZERO_IN_BASE,
     isUsdValue: true
   },
   {
     title: t('referral.myStats.tradersReffered'),
-    value: referralStore.referralDetails?.all_invitees?.length || 0
+    value: referralStore.referralDetails?.invitees?.length || 0
   }
 ])
 
 const referralLink = computed(
-  () => `${APP_BASE_URL}/ref/${referralStore.referralDetails?.code || ''}`
+  () =>
+    `${APP_BASE_URL}/ref/${referralStore.referralDetails?.referrerCode || ''}`
 )
 
 function copyReferral() {
@@ -61,7 +62,7 @@ function shareReferralLink() {
           <p class="max-sm:text-sm break-all">
             <span>{{ APP_BASE_URL }}/ref/</span>
             <span class="font-bold">
-              {{ referralStore.referralDetails?.code || '' }}
+              {{ referralStore.referralDetails?.referrerCode || '' }}
             </span>
           </p>
         </div>
