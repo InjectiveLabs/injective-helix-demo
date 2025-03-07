@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { marketCategoriesMap } from '@/app/json'
+import { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
