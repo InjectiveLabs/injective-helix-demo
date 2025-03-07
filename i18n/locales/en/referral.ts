@@ -1,5 +1,6 @@
-import { APP_BASE_URL } from '@shared/utils/constant'
 import { ReferralTableColumn } from '@/types'
+
+const siteFullUrl = useRequestURL()
 
 export default {
   referral: {
@@ -40,11 +41,11 @@ export default {
     shareYourReferralLink: 'Share your referral link and invite friends.',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
-    success: `You've successfully affiliated with ${APP_BASE_URL}/ref/{referralCode}.`,
+    success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
-    referralLinkAvailableDescription: `Your referral code ${APP_BASE_URL}/ref/{referralCode} is available. Would you like to use this link?`,
-    confirmReferralDescription: `You will be referred with ${APP_BASE_URL}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.`,
+    referralLinkAvailableDescription: `Your referral code ${siteFullUrl.origin}/ref/{referralCode} is available. Would you like to use this link?`,
+    confirmReferralDescription: `You will be referred with ${siteFullUrl.origin}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.`,
     table: {
       [ReferralTableColumn.Wallets]: 'Wallets',
       [ReferralTableColumn.Commission]: 'Commission',

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { APP_BASE_URL } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
+const siteFullUrl = useRequestURL()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
@@ -39,7 +39,9 @@ const actionButtons = computed(() => {
 
 const referralLink = computed(
   () =>
-    `${APP_BASE_URL}/ref/${referralStore.referralDetails?.referrerCode || ''}`
+    `${siteFullUrl.origin}/ref/${
+      referralStore.referralDetails?.referrerCode || ''
+    }`
 )
 
 function onCopyLink() {

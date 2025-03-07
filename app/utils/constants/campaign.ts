@@ -38,5 +38,5 @@ export const GUILD_BALANCE_REWARD_CONTRACT = IS_DEVNET
 
 // Referral
 export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
-  ? 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs' // todo fred: update to mainnet SC address when available
+  ? 'inj1t4l7q6y7uzjjufxgcyr6hdugslphdqzqqt8u9x'
   : 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs'

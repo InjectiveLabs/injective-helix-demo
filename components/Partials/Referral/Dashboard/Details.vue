@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { APP_BASE_URL, ZERO_IN_BASE } from '@shared/utils/constant'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
+const siteFullUrl = useRequestURL()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
@@ -24,7 +25,9 @@ const statsList = computed(() => [
 
 const referralLink = computed(
   () =>
-    `${APP_BASE_URL}/ref/${referralStore.referralDetails?.referrerCode || ''}`
+    `${siteFullUrl.origin}/ref/${
+      referralStore.referralDetails?.referrerCode || ''
+    }`
 )
 
 function copyReferral() {
@@ -60,7 +63,7 @@ function shareReferralLink() {
             {{ $t('referral.referralLink') }}
           </p>
           <p class="max-sm:text-sm break-all">
-            <span>{{ APP_BASE_URL }}/ref/</span>
+            <span>{{ siteFullUrl.origin }}/ref/</span>
             <span class="font-bold">
               {{ referralStore.referralDetails?.referrerCode || '' }}
             </span>
