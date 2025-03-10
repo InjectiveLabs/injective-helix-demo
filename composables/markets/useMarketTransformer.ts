@@ -42,7 +42,7 @@ export function useMarketTransformer(
         isVerified: item.market.isVerified,
         isRwaMarket: rwaMarketIds.includes(item.market.marketId),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
-        [MarketsTableColumn.MarketChange24h]: changeInBigNumber.toFixed(),
+        [MarketsTableColumn.MarketChange24h]: changeInBigNumber.toNumber(),
         [MarketsTableColumn.LastPrice]: item.summary?.lastPrice || 0,
         [MarketsTableColumn.MarketVolume24h]: item.volumeInUsd.toNumber(),
         [MarketsTableColumn.Markets]: item.market?.ticker?.toUpperCase() || ''

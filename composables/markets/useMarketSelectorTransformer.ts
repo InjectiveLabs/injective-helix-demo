@@ -76,7 +76,7 @@ export function useMarketSelectorTransformer(
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsSelectorTableColumn.MarketChange24h]:
-          changeInBigNumber.toFixed(),
+          changeInBigNumber.toNumber(),
         [MarketsSelectorTableColumn.MarketVolume24h]:
           item.volumeInUsd.toNumber(),
         [MarketsSelectorTableColumn.Markets]:
