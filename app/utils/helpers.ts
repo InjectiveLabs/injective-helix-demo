@@ -14,12 +14,23 @@ import {
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
+import { SharedMarketType } from '@shared/types'
 import { tokenFactoryStatic } from '@/app/Services'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { OrderbookFormattedRecord } from '@/types/worker'
-import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
+import {
+  BotType,
+  MainPage,
+  GridMarket,
+  UiSpotMarket,
+  TradeSubPage,
+  UiMarketWithToken,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed,
+  TradingInterface
+} from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -528,4 +539,61 @@ export const valueSortFunction = (a: any, b: any, direction: string) => {
   }
 
   return new BigNumberInBase(b).comparedTo(new BigNumberInBase(a))
+}
+
+export const getTradingBotLinkFromStrategy = (
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
+) => {
+  if (strategy.market.type === SharedMarketType.Spot) {
+    return strategy.market.isVerified
+      ? {
+          name:
+            strategy.botType === BotType.SpotGrid
+              ? TradeSubPage.Spot
+              : MainPage.TradingBotsLiquidityBotsSpot,
+          params: {
+            slug:
+              strategy.botType === BotType.SpotGrid
+                ? strategy.market.slug
+                : undefined
+          },
+          query: {
+            interface:
+              strategy.botType === BotType.SpotGrid
+                ? TradingInterface.TradingBots
+                : undefined,
+            market:
+              strategy.botType === BotType.LiquidityGrid
+                ? strategy.market.slug
+                : undefined
+          }
+        }
+      : {
+          name: TradeSubPage.Futures,
+          params: {
+            slug: strategy.market.slug
+          },
+          query: {
+            interface: TradingInterface.TradingBots
+          }
+        }
+  }
+
+  return strategy.market.isVerified
+    ? {
+        name: TradeSubPage.Futures,
+        params: {
+          slug: strategy.market.slug
+        },
+        query: {
+          interface: TradingInterface.TradingBots
+        }
+      }
+    : {
+        name: TradeSubPage.Futures,
+        query: {
+          interface: TradingInterface.TradingBots,
+          marketId: strategy.market.marketId
+        }
+      }
 }
