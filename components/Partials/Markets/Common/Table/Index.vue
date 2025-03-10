@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { valueSortFunction } from '@/app/utils/helpers'
 import {
   MarketCyTags,
   MarketsTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
-import { valueSortFunction } from '@/app/utils/helpers'
 
-const { t } = useLang()
 const appStore = useAppStore()
+const { t } = useLang()
 const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(

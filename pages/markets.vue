@@ -2,7 +2,6 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { marketCategoriesMap } from '@/app/json'
 import { MarketCyTags, MarketCategoryType } from '@/types'
 
 const route = useRoute()
@@ -10,15 +9,6 @@ const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
 const { sm } = useSharedBreakpoints()
-
-// todo: remove after iAssets category is live
-const filteredMarketCategoriesWithMarkets = Object.values(
-  MarketCategoryType
-).filter(
-  (category) =>
-    category !== MarketCategoryType.iAssets ||
-    Object.keys(marketCategoriesMap.iAssets).length > 0
-)
 
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
@@ -90,7 +80,7 @@ function resetCategory() {
           >
             <template v-if="sm">
               <AppButtonSelect
-                v-for="value in filteredMarketCategoriesWithMarkets"
+                v-for="value in Object.values(MarketCategoryType)"
                 :key="value"
                 v-model="activeCategory"
                 v-bind="{ value }"

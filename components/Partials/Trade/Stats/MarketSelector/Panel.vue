@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { marketCategoriesMap } from '@/app/json'
 import { MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
@@ -17,16 +16,7 @@ withDefaults(
   {}
 )
 
-// todo: remove after iAssets category is live
-const filteredMarketCategoriesWithMarkets = Object.values(
-  MarketCategoryType
-).filter(
-  (category) =>
-    category !== MarketCategoryType.iAssets ||
-    Object.keys(marketCategoriesMap.iAssets).length > 0
-)
-
-const activeCategoryOptions = filteredMarketCategoriesWithMarkets.map(
+const activeCategoryOptions = Object.values(MarketCategoryType).map(
   (value) => ({
     label: t(`markets.filters.${value}`),
     value
