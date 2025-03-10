@@ -7,6 +7,8 @@ import {
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { msgBroadcaster } from '@shared/WalletService'
+import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
@@ -102,6 +104,9 @@ export const useWalletStore = defineStore('wallet', {
 
       if (wallet === Wallet.WalletConnect) {
         await sharedWalletStore.connectWalletConnect()
+        await msgBroadcaster.setOptions({
+          txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT * 5
+        })
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
@@ -152,7 +157,7 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    disconnect() {
+    async disconnect() {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
@@ -166,6 +171,12 @@ export const useWalletStore = defineStore('wallet', {
       const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
+
+      if (sharedWalletStore.wallet === Wallet.WalletConnect) {
+        await msgBroadcaster.setOptions({
+          txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT
+        })
+      }
 
       appStore.reset()
       pointsStore.reset()
