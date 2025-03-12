@@ -4,7 +4,8 @@ import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
 import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES,
-  CAMPAIGNS_WITH_ANNOUNCED_WINNERS
+  CAMPAIGNS_WITH_ANNOUNCED_WINNERS,
+  CAMPAIGNS_WITHOUT_WINNER_BANNER_OR_MODAL
 } from '@/app/data/campaign'
 import { getEip712TypedData } from '@/app/utils/wallet'
 import {
@@ -42,7 +43,8 @@ const { value: email, errors: emailErrors } = useStringField({
 const isShowBannerOrModal = computed(
   () =>
     campaignStore.leaderboardCompetitionResult &&
-    !campaignStore.leaderboardCompetitionResult.hasClaimed
+    !campaignStore.leaderboardCompetitionResult.hasClaimed &&
+    !CAMPAIGNS_WITHOUT_WINNER_BANNER_OR_MODAL.includes(latestCampaignName)
 )
 
 const claimMessage = computed(() =>
