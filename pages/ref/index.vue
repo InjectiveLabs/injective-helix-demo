@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import whitelistedAddressesJson from '@/app/json/referralWhitelistedAddresses.json'
+import { whitelistedAddresses } from '@/app/data/referral'
 
 const referralStore = useReferralStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -9,7 +9,7 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 
 const isUserWhitelisted = computed(() =>
-  whitelistedAddressesJson.includes(sharedWalletStore.injectiveAddress)
+  whitelistedAddresses.includes(sharedWalletStore.injectiveAddress)
 )
 
 onWalletConnected(() => {
