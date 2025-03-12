@@ -772,8 +772,13 @@ export const CAMPAIGN_WINNER_MESSAGE =
   'Signing this transaction verifies ownership of this wallet and will not incur any gas fees.'
 
 export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
+  THIRD_CAMPAIGN_NAME,
   SECOND_CAMPAIGN_NAME,
   FIRST_CAMPAIGN_NAME
+] as string[]
+
+export const CAMPAIGNS_WITHOUT_WINNER_BANNER_OR_MODAL = [
+  THIRD_CAMPAIGN_NAME
 ] as string[]
 
 export const checkIsCampaignWithEntries = (campaignName: string) =>

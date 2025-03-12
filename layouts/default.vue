@@ -181,14 +181,6 @@ useIntervalFn(
           "
         />
 
-        <ModalsCompetitionWinner
-          v-if="
-            sharedWalletStore.isUserConnected &&
-            sharedWalletStore.walletConnectStatus !==
-              WalletConnectStatus.disconnecting
-          "
-        />
-
         <slot v-bind="{ portfolioStatus }" />
       </main>
     </AppHocLoading>
