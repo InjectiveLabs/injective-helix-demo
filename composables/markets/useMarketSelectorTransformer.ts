@@ -36,7 +36,7 @@ export function useMarketSelectorTransformer(
 
       const lastTradedPrice =
         marketPriceMap.value[item.market.marketId]?.toFixed() ||
-        item.summary.lastPrice ||
+        item.summary?.lastPrice ||
         0
 
       const fundingRate = formatFundingRate({
