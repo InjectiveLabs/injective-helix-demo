@@ -206,10 +206,12 @@ export const submitLimitOrder = async ({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
-    amount: marginToFixed,
-    denom: market.quoteDenom
-  })
+  const cw20ConvertMessage = reduceOnly
+    ? []
+    : prepareOrderMessages({
+        amount: marginToFixed,
+        denom: market.quoteDenom
+      })
 
   const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
