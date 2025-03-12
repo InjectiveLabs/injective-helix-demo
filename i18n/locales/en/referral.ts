@@ -32,6 +32,7 @@ export default {
     customReferralCode: 'Custom Referral Code',
     chooseDifferentLink: 'Choose Different Link',
     dashboardTitle: 'Refer Traders, Earn Rewards',
+    unableToJoinReferral: 'Unable to Join Referral',
     referralLinkAvailable: 'Referral Link Available!',
     lettersAndNumbersOnly: 'letters and numbers only',
     confirmAndGenerateLink: 'Confirm and Generate Link',

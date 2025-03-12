@@ -14,7 +14,7 @@ const {
   setValue: setReferralCodeValue
 } = useStringField({
   name: 'referralCode',
-  rule: 'required|alphanumeric'
+  rule: 'required|alphanumeric|maxCharacter:32'
 })
 
 const isLinkAvailable = ref(false)
@@ -25,8 +25,8 @@ function checkAvailability() {
 
   referralStore
     .checkCodeAvailability(referralCode.value)
-    .then((isAvailable) => {
-      if (isAvailable) {
+    .then((referrerAddress) => {
+      if (!referrerAddress) {
         isLinkAvailable.value = true
       } else {
         notificationStore.error({

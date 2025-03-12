@@ -38,7 +38,7 @@ export const useReferralStore = defineStore('referral', {
 
         return response
       } catch (e: any) {
-        return true
+        return ''
       }
     },
 

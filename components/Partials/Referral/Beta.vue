@@ -10,8 +10,8 @@ function exploreMarkets() {
 
 const socialLinks = [
   { icon: NuxtUiIcons.Discord, link: 'https://discord.com/invite/helixapp' },
-  { icon: NuxtUiIcons.TwitterX, link: 'https://twitter.com/Injective_' },
-  { icon: NuxtUiIcons.Telegram, link: 'https://t.me/joininjective' },
+  { icon: NuxtUiIcons.TwitterX, link: 'https://x.com/helixapp_' },
+  { icon: NuxtUiIcons.Telegram, link: 'https://t.me/helixapp' },
   { icon: NuxtUiIcons.Youtube, link: 'https://www.youtube.com/@injective_' }
 ]
 </script>

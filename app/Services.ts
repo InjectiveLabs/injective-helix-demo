@@ -42,7 +42,7 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 export const neptuneService = new NeptuneService()
 
 export const indexerGrpcReferralApi = new IndexerGrpcReferralApi(
-  ENDPOINTS.indexer
+  'https://k8s.testnet.referrals.grpc-web.injective.network'
 )
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
