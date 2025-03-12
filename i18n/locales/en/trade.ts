@@ -445,7 +445,7 @@ export default {
       tradfiMarketClosedTrade:
         'This market follows traditional NYSE trading hours',
       marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
-      nyseClosedMarketRow: 'This market follows NSYE trading hours.',
+      nyseClosedMarketRow: 'This market follows NYSE trading hours.',
       marketClosedTimes: ' traditional RWA price feeds',
       nyseClosedTimes: 'NYSE trading hours',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
