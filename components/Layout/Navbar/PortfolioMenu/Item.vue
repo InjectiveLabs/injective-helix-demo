@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { LocationAsRelativeRaw } from 'vue-router'
 import { NuxtUiIcons } from '@shared/types'
+import { whitelistedAddresses } from '@/app/data/referral'
 import { MenuItem, NavChild, NavLink, PortfolioCyTags } from '@/types'
 
 const route = useRoute()
@@ -28,9 +29,15 @@ const isActiveLink = computed(() => {
   return routeName.startsWith(itemName.value)
 })
 
+const isUserWhitelisted = computed(() =>
+  whitelistedAddresses.includes(sharedWalletStore.injectiveAddress)
+)
+
 const isShowItem = computed(() => {
   if (props.item.isConnectedOnly) {
     return sharedWalletStore.isUserConnected
+  } else if (props.item.isReferral) {
+    return isUserWhitelisted.value
   }
 
   return true

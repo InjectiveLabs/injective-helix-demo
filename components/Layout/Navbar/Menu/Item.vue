@@ -2,6 +2,7 @@
 import { LocationAsRelativeRaw } from 'vue-router'
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { whitelistedAddresses } from '@/app/data/referral'
 import { NavBarCyTags, MenuItem, NavLink, NavChild } from '@/types'
 
 const route = useRoute()
@@ -38,6 +39,22 @@ const isActiveLink = computed(() => {
 
   return routeName.startsWith(itemName)
 })
+
+const isUserWhitelisted = computed(() =>
+  whitelistedAddresses.includes(sharedWalletStore.injectiveAddress)
+)
+
+const filteredChildItems = computed(() =>
+  (props.item as NavChild).children.filter((child) => {
+    if (child.isConnectedOnly) {
+      return sharedWalletStore.isUserConnected
+    } else if (child.isReferral) {
+      return isUserWhitelisted.value
+    }
+
+    return true
+  })
+)
 
 function closeAllMenus() {
   emit('menu:close')
@@ -92,9 +109,7 @@ function closeAllMenus() {
         <div class="bg-coolGray-875 text-white rounded-lg w-[200px] p-3">
           <ul class="space-y-1.5">
             <li
-              v-for="child in (item as NavChild).children.filter((child) =>
-                child.isConnectedOnly ? sharedWalletStore.isUserConnected : true
-              )"
+              v-for="child in filteredChildItems"
               :key="child.label"
               class="relative cursor-pointer"
             >

@@ -19,6 +19,7 @@ export const getMoreMenu = () => [
     label: 'navigation.more.lpRewards'
   },
   {
+    isReferral: true,
     label: 'navigation.referral',
     to: { name: MainPage.Referral }
   },
