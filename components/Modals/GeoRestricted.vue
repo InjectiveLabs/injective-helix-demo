@@ -5,12 +5,16 @@ const modalStore = useSharedModalStore()
 </script>
 
 <template>
-  <AppModal v-model="modalStore.modals[Modal.GeoRestricted]" is-md>
-    <div class="py-8 text-center">
+  <AppModal v-model="modalStore.modals[Modal.GeoRestricted]">
+    <AssetGeoRestriction class="mx-auto mt-2" />
+
+    <div class="text-center mt-8">
       <h2 class="font-bold text-lg">{{ $t('geoRestricted.title') }}</h2>
-      <p class="text-sm mt-4">
+      <p class="text-sm mt-4 text-coolGray-450">
         {{ $t('geoRestricted.description') }}
       </p>
+
+      <AppButton class="w-full mt-4">{{ $t('geoRestricted.cta') }}</AppButton>
     </div>
   </AppModal>
 </template>

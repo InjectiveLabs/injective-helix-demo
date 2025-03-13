@@ -190,11 +190,14 @@ export default {
   overview: 'Overview',
 
   marketRestricted: {
-    title: 'Market Unavailable',
+    title: {
+      perpetual: 'Perpetual Trading Restricted',
+      spot: '{symbol} Restricted'
+    },
     description: {
       perpetual:
-        'Some markets such as perpetual futures are not available in your region.',
-      spot: '{symbol} is not available in your region.'
+        'Perpetual contracts are not available in your region due to regulatory restrictions. However, you can still trade on the spot market.',
+      spot: '{symbol} is not available in your region due to regulatory restrictions.'
     },
     cta: 'Return to homepage',
     tradeSpot: 'Trade Spot',
@@ -212,9 +215,10 @@ export default {
   },
 
   geoRestricted: {
-    title: 'Helix is currently not available in your region.',
+    title: 'Helix not available in your region.',
     description:
-      "We're unable to offer Helix in your region due to regulatory requirements. Our team is actively working to expand our service area while ensuring full compliance with local laws. We appreciate your interest and hope to welcome you to our growing global community soon."
+      "We're unable to offer Helix in your region due to regulatory requirements. Our team is actively working to expand our service area while ensuring full compliance with local laws. We appreciate your interest and hope to welcome you to our growing global community soon.",
+    cta: 'Got it'
   },
 
   marketExpired: {
