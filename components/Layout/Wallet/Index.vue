@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
@@ -11,22 +10,18 @@ const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function onWalletConnect() {
-  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
-    modalStore.openModal(Modal.Terms)
-  } else {
-    modalStore.openModal(Modal.Connect)
-  }
-}
+  if (isCountryRestricted(sharedGeoStore.country)) {
+    modalStore.openModal(Modal.GeoRestricted)
 
-function onModalOpen() {
-  if (!GEO_IP_RESTRICTIONS_ENABLED) {
     return
   }
 
-  if (isCountryRestricted(sharedGeoStore.country)) {
-    modalStore.closeModal(Modal.Connect)
-    modalStore.openModal(Modal.GeoRestricted)
+  if (appStore.userState.hasAcceptedTerms) {
+    modalStore.openModal(Modal.Terms)
+    return
   }
+
+  modalStore.openModal(Modal.Connect)
 }
 
 function onCloseModal() {
@@ -60,7 +55,6 @@ function onCloseModal() {
   <AppModal
     v-model="modalStore.modals[Modal.Connect]"
     v-bind="{ isSm: true, isHideCloseButton: true }"
-    @on:open="onModalOpen"
   >
     <LayoutWalletConnect @modal:closed="onCloseModal" />
   </AppModal>
