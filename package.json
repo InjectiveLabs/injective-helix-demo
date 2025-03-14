@@ -20,7 +20,7 @@
     "postinstall": "yarn add https://github.com/InjectiveLabs/shared-packages#master --ignore-scripts && yarn fetch:data && yarn github:version",
     "analyze": "nuxi build --analyze",
     "preview": "nuxi preview",
-    "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.cache/vite && rm -rf ./node_modules/.vite && rm -rf ./node_modules/.cache/vite",
+    "clean-up": "rm -rf dist && rm -rf .output && rm -rf .nuxt && rm -rf ./node_modules/.c12 && rm -rf ./node_modules/.cache/vite && rm -rf ./node_modules/.vite && rm -rf ./node_modules/.cache/vite",
     "lint": "eslint --max-warnings 0 '**/*.{js,ts,vue,html}' --fix && stylelint '**/*.{css,.vue}'",
     "coverage": "yarn jest --coverage",
     "prepare": "husky",
