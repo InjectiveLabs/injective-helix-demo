@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     percentage: number
   }>(),
@@ -10,21 +10,19 @@ withDefaults(
   }
 )
 
+const offByPercentage = computed(() => (100 - props.percentage).toFixed(2))
+
 function getPercentageColor(percentage: number) {
-  if (percentage < 50) {
-    return '#0082FA'
+  if (percentage <= 80) {
+    return '#EAB308'
   }
 
   return '#00C16A'
 }
 
 function getBadgeColor(percentage: number) {
-  if (percentage < 50) {
+  if (percentage <= 80) {
     return 'blue'
-  }
-
-  if (percentage >= 50 && percentage < 90) {
-    return 'yellow'
   }
 
   return 'green'
@@ -34,9 +32,12 @@ function getBadgeColor(percentage: number) {
 <template>
   <div class="py-4">
     <div class="flex items-center justify-between gap-2">
-      <p class="text-sm font-semibold">
-        {{ $t('sgt.optimization.balanceStability') }}
-      </p>
+      <div class="flex items-center gap-2">
+        <p class="text-sm font-semibold">
+          {{ $t('sgt.optimization.balanceStability') }}
+        </p>
+        <AppTooltip :text="$t('sgt.optimization.balancedTooltip')" />
+      </div>
 
       <UBadge :color="getBadgeColor(percentage)" variant="soft">
         {{ percentage }}%
@@ -54,7 +55,10 @@ function getBadgeColor(percentage: number) {
     </div>
 
     <div class="mt-3">
-      <div v-if="percentage < 50" class="text-[#0082FA] flex items-start gap-2">
+      <div
+        v-if="percentage <= 80"
+        class="text-[#EAB308] flex items-start gap-2"
+      >
         <UIcon :name="NuxtUiIcons.WarningOutline" class="mt-px size-4" />
         <div>
           <p class="text-xs">
@@ -63,7 +67,7 @@ function getBadgeColor(percentage: number) {
           <p class="text-xs text-gray-400">
             {{
               $t('sgt.optimization.yourBalanceIsOffBy', {
-                percentage: 100 - percentage
+                percentage: offByPercentage
               })
             }}
           </p>

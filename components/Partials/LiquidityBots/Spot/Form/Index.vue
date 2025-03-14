@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import {
-  LiquidityValues,
-  LiquidityBotForm,
-  UiMarketWithToken,
-  LiquidityBotField
-} from '@/types'
+import { LiquidityValues, UiMarketWithToken } from '@/types'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
@@ -16,25 +11,12 @@ const props = withDefaults(
   }>(),
   {}
 )
-const formValues = useFormValues<LiquidityBotForm>()
-
-const optimizationValues = computed(() => ({
-  baseQuantity: Number(formValues.value[LiquidityBotField.BaseAmount] || 0),
-  quoteQuantity: Number(formValues.value[LiquidityBotField.QuoteAmount] || 0),
-  currentPrice: props.lastTradedPrice.toNumber(),
-  lowerPriceLevel: props.liquidityValues.lowerBound.toNumber(),
-  upperPriceLevel: props.liquidityValues.upperBound.toNumber()
-}))
 </script>
 
 <template>
   <div>
     <PartialsLiquidityBotsSpotFormVolatilityStrategy />
     <PartialsLiquidityBotsSpotFormDeposit v-bind="{ market }" class="mt-4" />
-
-    <PartialsTradeSpotFormTradingBotsCommonOptimization
-      v-bind="optimizationValues"
-    />
 
     <PartialsLiquidityBotsSpotFormDetails
       v-bind="{ market, liquidityValues, status, lastTradedPrice }"

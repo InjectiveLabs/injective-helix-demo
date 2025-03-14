@@ -230,7 +230,10 @@ export default {
       yourBalanceIsOffBy:
         'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
       yourBalanceIsOptimal:
-        'Your current balance distribution is optimal for this strategy.'
+        'Well-balanced for maximum grid efficiency within price range',
+      balancedTooltip:
+        'Balance Stability indicates how well your liquidity position maintains its intended ratio between tokens. A higher percentage means your position is more resistant to market volatility and requires less frequent rebalancing.',
+      balanceNeedsAdjustingTooltip: 'Balance is improving but not optimal'
     }
   },
 
