@@ -24,7 +24,7 @@ const emit = defineEmits<{
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
 }>()
 
-const hardwareWallets = [Wallet.Ledger, Wallet.TrezorLegacy]
+const hardwareWallets = [Wallet.Ledger, Wallet.TrezorBip32]
 
 function handleConnect() {
   if (props.isBackButton) {

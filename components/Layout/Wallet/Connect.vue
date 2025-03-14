@@ -62,7 +62,7 @@ const options = computed(
               : undefined
           },
       { wallet: Wallet.Ledger },
-      { wallet: Wallet.TrezorLegacy },
+      { wallet: Wallet.TrezorBip32 },
       {
         wallet: Wallet.Cosmostation,
         downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
@@ -153,12 +153,12 @@ function toggleShowMoreWallets() {
         <LayoutWalletLedger />
       </div>
 
-      <div v-else-if="selectedWallet === Wallet.TrezorLegacy" class="space-y-4">
+      <div v-else-if="selectedWallet === Wallet.TrezorBip32" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
           v-bind="{
             walletOption: {
-              wallet: Wallet.TrezorLegacy
+              wallet: Wallet.TrezorBip32
             }
           }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"

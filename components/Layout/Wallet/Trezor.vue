@@ -13,12 +13,16 @@ const { handleSubmit } = useForm()
 
 const options = [
   {
-    display: t('connect.trezorLegacy'),
-    value: Wallet.TrezorLegacy
+    display: t('connect.trezor'),
+    value: Wallet.TrezorBip32
+  },
+  {
+    display: t('connect.trezorBip44'),
+    value: Wallet.TrezorBip44
   }
 ] as SharedDropdownOption[]
 
-const wallet = ref<Wallet>(Wallet.TrezorLegacy)
+const wallet = ref<Wallet>(Wallet.TrezorBip32)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
@@ -44,7 +48,7 @@ function fetchAddresses() {
   fetchStatus.setLoading()
 
   sharedWalletStore
-    .getHWAddresses(Wallet.TrezorLegacy)
+    .getHWAddresses(wallet.value)
     .catch($onError)
     .finally(() => {
       fetchStatus.setIdle()
@@ -56,7 +60,7 @@ const connect = handleSubmit(() => {
 
   walletStore
     .connect({
-      wallet: Wallet.TrezorLegacy,
+      wallet: wallet.value,
       address: address.value
     })
     .then(() =>
@@ -78,6 +82,7 @@ const connect = handleSubmit(() => {
     <p class="text-sm font-semibold mb-2">
       {{ $t('connect.derivationPath') }}
     </p>
+
     <USelectMenu
       v-model="wallet"
       :options="options"
