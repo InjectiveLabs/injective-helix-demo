@@ -29,6 +29,7 @@ export enum Modal {
   InstitutionalForm = 'institutionalForm',
   CompetitionWinner = 'competition-winner',
   MarketNotOnHelix = 'market-not-on-helix',
+  OptimizeSgtValues = 'optimize-sgt-values',
   SubaccountTransfer = 'subaccount-transfer',
   AlreadyJoinedGuild = 'already-joined-guild',
   GridStrategyDetails = 'grid-strategy-details',

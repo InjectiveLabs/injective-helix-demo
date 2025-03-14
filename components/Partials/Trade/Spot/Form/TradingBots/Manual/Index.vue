@@ -27,6 +27,7 @@ function onViewDetails() {
 }
 
 const optimizationValues = computed(() => ({
+  market: spotMarket.value,
   baseQuantity: Number(
     formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
   ),

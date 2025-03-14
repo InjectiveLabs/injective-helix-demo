@@ -227,13 +227,20 @@ export default {
       balanceStability: 'Balance Stability',
       balanceNeedsAdjusting: 'Balance Needs Adjusting',
       balanceOptimized: 'Balance Optimized',
+      optimizeBalance: 'Optimize Balance',
       yourBalanceIsOffBy:
         'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
       yourBalanceIsOptimal:
         'Well-balanced for maximum grid efficiency within price range',
       balancedTooltip:
         'Balance Stability indicates how well your liquidity position maintains its intended ratio between tokens. A higher percentage means your position is more resistant to market volatility and requires less frequent rebalancing.',
-      balanceNeedsAdjustingTooltip: 'Balance is improving but not optimal'
+      balanceNeedsAdjustingTooltip: 'Balance is improving but not optimal',
+      optimizeBalanceTitle: 'Optimize Strategy Balance',
+      optimizeBalanceBody:
+        'To reduce trading fees and improve operational efficiency, we suggest rebalancing your assets. This technical adjustment optimizes how your strategy executes trades, but is not financial advice on asset selection or expected returns.',
+      confirmAndAdjust: 'Confirm and Adjust',
+      adjustYourAvailableBalance:
+        'Adjust your available [{base}] and [{quote}] balance'
     }
   },
 

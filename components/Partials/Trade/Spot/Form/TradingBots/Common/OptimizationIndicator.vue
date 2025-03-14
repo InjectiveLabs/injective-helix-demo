@@ -4,11 +4,16 @@ import { NuxtUiIcons } from '@shared/types'
 const props = withDefaults(
   defineProps<{
     percentage: number
+    hasEnoughFundsToRebalance?: boolean
   }>(),
   {
-    percentage: 50
+    hasEnoughFundsToRebalance: false
   }
 )
+
+const emit = defineEmits<{
+  'optimize-balance': []
+}>()
 
 const offByPercentage = computed(() => (100 - props.percentage).toFixed(2))
 
@@ -26,6 +31,10 @@ function getBadgeColor(percentage: number) {
   }
 
   return 'green'
+}
+
+function onOptimizeBalance() {
+  emit('optimize-balance')
 }
 </script>
 
@@ -85,6 +94,12 @@ function getBadgeColor(percentage: number) {
           </p>
         </div>
       </div>
+    </div>
+
+    <div v-if="percentage <= 80 && hasEnoughFundsToRebalance" class="mt-3">
+      <UButton size="xs" block variant="outline" @click="onOptimizeBalance">
+        {{ $t('sgt.optimization.optimizeBalance') }}
+      </UButton>
     </div>
   </div>
 </template>
