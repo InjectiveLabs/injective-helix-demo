@@ -72,7 +72,7 @@ function closeModal() {
       modelValue: isModalOpen
     }"
   >
-    <AssetTradingRestriction class="mx-auto" />
+    <img src="/svg/TradingRestriction.svg" class="mx-auto mt-2" />
 
     <h3 class="text-center font-semibold text-lg mt-8">
       {{

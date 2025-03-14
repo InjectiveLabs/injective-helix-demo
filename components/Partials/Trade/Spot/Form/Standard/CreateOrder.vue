@@ -4,6 +4,7 @@ import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
+  Modal,
   BusEvents,
   MarketKey,
   TradeTypes,
@@ -18,6 +19,7 @@ const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
+const modalStore = useSharedModalStore()
 const resetForm = useResetForm<SpotTradeForm>()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -153,6 +155,7 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -188,6 +191,7 @@ function submitMarketOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })

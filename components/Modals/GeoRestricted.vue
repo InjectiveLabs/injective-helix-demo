@@ -6,7 +6,7 @@ const modalStore = useSharedModalStore()
 
 <template>
   <AppModal v-model="modalStore.modals[Modal.GeoRestricted]">
-    <AssetGeoRestriction class="mx-auto mt-2" />
+    <img src="/svg/GeoRestriction.svg" class="mx-auto mt-2" />
 
     <div class="text-center mt-8">
       <h2 class="font-bold text-lg">{{ $t('geoRestricted.title') }}</h2>
