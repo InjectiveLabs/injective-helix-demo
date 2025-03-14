@@ -226,7 +226,7 @@ export default {
     optimization: {
       balanceStability: 'Balance Stability',
       balanceNeedsAdjusting: 'Balance Needs Adjusting',
-      balanceOptimized: 'Balance Optimized',
+      balanceOptimized: 'Optimal Balance',
       optimizeBalance: 'Optimize Balance',
       yourBalanceIsOffBy:
         'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
