@@ -17,5 +17,15 @@ export const whitelistedAddresses = [
   'inj1rfhcl7rf3sk880swhhqryefx6yx30m0dn7vq3j',
   'inj16kflx2t7s62wlqwxus92t4puxx3w7mkp6wxd4r',
   'inj1tm0gcmna3zq47z8md6evqc8qkp9zca8mg4wd26',
-  'inj1vgrcdgh5t87dscyq4d49aa2nfdp3zulrjrqe5s'
+  'inj1vgrcdgh5t87dscyq4d49aa2nfdp3zulrjrqe5s',
+  'inj1zwzq3jrj7qltg9fhn73jsqhhtx7fwxz5e0swnx',
+  'inj1995xnrrtnmtdgjmx0g937vf28dwefhkhy6gy5e',
+  'inj1q4fgypsqdxk2p5punfhut0stz7jchnx7tc56av',
+  'inj1fal0cxxf3qteuv8w9kvelxk3sv4flfrmjvt976',
+  'inj1dhjzd8h3dx5s4muwyq5qgk3uhfevlhf69mp84g',
+  'inj1qmcv6lachfep0gqv2hwxl2sp6k4ywwegppyl3t',
+  'inj18xg8yh445ernwxdquklwpngffqv3agfyt5uqqs',
+  'inj133xeq92ak7p87hntvamgq3047kj8jfqhry92a8',
+  'inj196g5reh26pmar32t5g3j3g6lu7gv35lehujqzz',
+  'inj1u83u3rl3u4lphzapx6mnhgd5hdq7laqc22vmtg'
 ]
