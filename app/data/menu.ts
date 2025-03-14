@@ -165,6 +165,14 @@ export const getTopNavMenu = () =>
     }
   ] as MenuItem[]
 
+export const getGeoRestrictedTopMenu = () => [
+  {
+    isConnectedOnly: true,
+    label: 'navigation.portfolio',
+    to: { name: MainPage.Portfolio }
+  }
+]
+
 export const getMobileMenuItems = () =>
   [
     {
@@ -179,5 +187,15 @@ export const getMobileMenuItems = () =>
       isExpandable: true,
       children: getMoreMenu(),
       label: 'navigation.more.title'
+    }
+  ] as MenuItem[]
+
+export const getGeoRestrictedMobileMenuItems = () =>
+  [
+    {
+      isExpandable: true,
+      isConnectedOnly: true,
+      label: 'navigation.portfolio',
+      children: PORTFOLIO_MENU_ITEMS
     }
   ] as MenuItem[]

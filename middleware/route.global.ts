@@ -1,18 +1,21 @@
-import { isCountryRestricted } from '@/app/data/geoip'
 import { trackOnramperSuccess } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, PortfolioSubPage } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
   const nuxtApp = useNuxtApp()
-  const sharedGeoStore = useSharedGeoStore()
+  const appStore = useAppStore()
   const sharedModalStore = useSharedModalStore()
   const notificationStore = useSharedNotificationStore()
 
   const { t } = nuxtApp?.$i18n || {}
 
   if (
-    to.name !== MainPage.Index &&
-    isCountryRestricted(sharedGeoStore.country)
+    ![
+      MainPage.Index,
+      MainPage.Portfolio,
+      ...Object.values(PortfolioSubPage)
+    ].includes(to.name as MainPage) &&
+    appStore.isCountryRestricted
   ) {
     sharedModalStore.openModal(Modal.GeoRestricted)
 

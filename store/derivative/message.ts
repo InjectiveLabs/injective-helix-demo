@@ -190,6 +190,7 @@ export const submitLimitOrder = async ({
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
@@ -264,6 +265,7 @@ export const submitStopLimitOrder = async ({
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
@@ -344,6 +346,7 @@ export const submitMarketOrder = async ({
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
@@ -451,6 +454,7 @@ export const submitStopMarketOrder = async ({
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
@@ -516,6 +520,7 @@ export const submitTpSlOrder = async ({
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
@@ -587,8 +592,11 @@ export async function submitChase({
   order: DerivativeLimitOrder
   price: BigNumberInBase
 }) {
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
+
+  await walletStore.validateGeo()
 
   const cancelOrderMsg = MsgCancelDerivativeOrder.fromJSON({
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,

@@ -73,6 +73,7 @@ export const convertPeggyToNeptuneUsdt = async (amountInPeggyUsdt: string) => {
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
 
   const depositMsg = neptuneService.createDepositMsg({

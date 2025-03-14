@@ -138,19 +138,22 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async validate() {
+    async validateGeo() {
       const sharedGeoStore = useSharedGeoStore()
-      const sharedWalletStore = useSharedWalletStore()
-
-      const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
       await sharedGeoStore.fetchVpnLocation()
 
       if (isCountryRestricted(sharedGeoStore.country)) {
         throw new GeneralException(
-          new Error('Helix is currently not available in your region')
+          new Error('This action is not allowed in your country')
         )
       }
+    },
+
+    async validate() {
+      const sharedWalletStore = useSharedWalletStore()
+
+      const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
       await sharedWalletStore.validateAndQueue()
 
