@@ -40,6 +40,7 @@ export default {
     referralLinkIsUnavailable: 'Referral Link is Unavailable',
     trackYourReferrals: 'Track your referrals and earned commissions',
     shareYourReferralLink: 'Share your referral link and invite friends.',
+    referralCodeMaxLengthMessage: 'Referral code can be up to 32 characters',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
     success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,

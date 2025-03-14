@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { errorMessages } from '@/plugins/validation'
 import { Modal } from '@/types'
 
 const referralStore = useReferralStore()
@@ -19,6 +20,12 @@ const {
 
 const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
+
+const instructionText = computed(() =>
+  referralCodeErrors.value?.[0] === errorMessages.maxCharacter()
+    ? t('referral.referralCodeMaxLengthMessage')
+    : t('referral.lettersAndNumbersOnly')
+)
 
 function checkAvailability() {
   status.setLoading()
@@ -152,7 +159,7 @@ function resetData() {
             'text-right font-mono text-xs my-4'
           ]"
         >
-          {{ $t('referral.lettersAndNumbersOnly') }}
+          {{ instructionText }}
         </p>
 
         <AppButton
