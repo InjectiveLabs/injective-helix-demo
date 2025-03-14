@@ -15,9 +15,7 @@ withDefaults(
   defineProps<{
     hasActiveStrategy: boolean
   }>(),
-  {
-    hasActiveStrategy: false
-  }
+  { hasActiveStrategy: false }
 )
 
 const emit = defineEmits<{
@@ -48,19 +46,13 @@ const optimizationValues = computed(() => ({
 <template>
   <div class="pt-4">
     <PartialsTradeSpotFormTradingBotsManualPriceRangeFields
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
     <PartialsTradeSpotFormTradingBotsManualGridsField
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
     <PartialsTradeSpotFormTradingBotsCommonInvestmentFields
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
 
     <PartialsTradeSpotFormTradingBotsCommonOptimization

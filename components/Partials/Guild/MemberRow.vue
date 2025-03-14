@@ -2,7 +2,7 @@
 import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@shared/utils/network'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
@@ -40,7 +40,7 @@ const { valueToString: volumeScorePercentageToString } =
 
 const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.member.tvlScore,
       decimalPlaces: baseToken.value?.decimals || 18
     })
@@ -49,7 +49,7 @@ const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
 
 const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.member.volumeScore,
       decimalPlaces: quoteToken.value?.decimals || 6
     })

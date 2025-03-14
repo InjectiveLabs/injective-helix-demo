@@ -31,10 +31,7 @@ const props = withDefaults(
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
-  if (
-    sharedWalletStore.isAutoSignEnabled ||
-    sharedWalletStore.isAuthzWalletConnected
-  ) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -75,13 +72,6 @@ async function createStrategy() {
     >
       <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
-      </span>
-
-      <span
-        v-else-if="sharedWalletStore.isAutoSignEnabled"
-        class="text-xs text-red-500"
-      >
-        {{ $t('common.notAvailableinAutoSignMode') }}
       </span>
 
       <span v-else>{{ $t('sgt.create') }}</span>

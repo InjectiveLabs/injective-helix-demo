@@ -1,5 +1,3 @@
-import { I18nMessageFunction } from '@/types'
-
 export default {
   sgt: {
     pnl: 'PnL',
@@ -64,14 +62,9 @@ export default {
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
     trailingPriceRange: 'Trailing Price Range',
-    minInvestmentDescription: ({ named }: I18nMessageFunction) =>
-      `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
-    minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
-      `Minimum Investment: Starts at $${named(
-        'amount'
-      )}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the ${named(
-        'assets'
-      )} assets.`,
+    minInvestmentDescription: "Min Investment: {symbols} ≥ {'$'}{amount}",
+    minInvestmentTooltip:
+      "Minimum Investment: Starts at {'$'}{amount}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the {assets} assets.",
     sellSymbolUponTermination: 'Sell {symbol} upon termination',
     buySymbolOnStop: 'Buy {symbol} on stop',
     sellAllSymbolOnStop: 'Sell all {symbol} on stop',
@@ -122,6 +115,10 @@ export default {
       'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
+    createStrategyModalQuote:
+      '{quoteAmount} will be transferred from your main subaccount to your SGT {marketSlug} sub account.',
+    createStrategyModalBaseAndQuote:
+      '{quoteAmount} and {baseAmount} will be transferred from your main subaccount to your SGT {marketSlug} sub account.',
     aFewClicksBeforeTheStrategyIsCreated:
       'A few clicks before the strategy is created',
     thereAre2TransactionsRequiredToCreateAndEnableSpotGridTrading:
@@ -156,6 +153,41 @@ export default {
       'In arithmetic mode, the price between two consecutive grids has a constant difference. In geometric mode, the price between two consecutive grids has a constant ratio.',
     accountEndBot:
       'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
+    bannerTitle: 'Get started with Spot Grid Trading.',
+    spotGridTradingBot: 'Spot grid trading bot ',
+    automatesBuyingAndSelling:
+      'Automate order placements to buy low, sell high.',
+    splitSentence: '{first}{second}',
+    setUpABot: 'Set up a bot',
+    runABot: 'Run a bot',
+    endABot: 'End a bot',
+    helixTradingBots: 'Helix Trading Bots',
+
+    step1: {
+      priceRange:
+        ' represents the upper and lower price levels of the orders that will be placed.',
+      grids: ' represents the number of limit orders the bot will place.',
+      investment:
+        ' is the amount of capital that the bot will use to run the strategy.'
+    },
+
+    step2: {
+      priceFalls:
+        'When the price falls and meet your buy order price level, your order will be filled and the bot will automatically place a sell order at a higher price.',
+      priceRises:
+        'When the price rises and meet your sell order price level, your order will be filled and the bot will automatically place a buy order at a lower price.',
+      viewOrders:
+        'You can check the open orders placed by the bot at any time.',
+      faq: 'Check the {faq} for more info.'
+    },
+
+    step3: {
+      openOrdersCancelled: 'All open orders will be canceled.',
+      moneyTransferred:
+        'Assets used by the bot will be transferred back to your main account.',
+      review:
+        "Review the performance of your past strategies in the 'Grid Trading History' tab."
+    },
 
     advanced: {
       tpSl: 'TP/SL',

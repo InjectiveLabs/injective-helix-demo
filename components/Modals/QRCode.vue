@@ -8,15 +8,9 @@ const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.QrCode])
-
 const formattedAddress = computed(() =>
   sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)
 )
-
-function closeModal() {
-  modalStore.closeModal(Modal.QrCode)
-}
 
 function onCopyAddress() {
   copy(sharedWalletStore.address)
@@ -25,15 +19,9 @@ function onCopyAddress() {
 </script>
 
 <template>
-  <AppModal
-    :is-open="isModalOpen"
-    is-sm
-    is-dense
-    class="p-4"
-    @modal:closed="closeModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.QrCode]">
     <section class="text-center">
-      <h3 class="-mt-4">{{ $t('connect.qrTitle') }}</h3>
+      <h3 class="mt-8">{{ $t('connect.qrTitle') }}</h3>
       <div class="max-w-[280px] mx-auto">
         <SharedQRCode
           class="w-full rounded-lg overflow-hidden mt-4"

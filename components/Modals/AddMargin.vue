@@ -28,8 +28,6 @@ const { activeSubaccountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const isModalOpen = computed(() => modalStore.modals[Modal.AddMarginToPosition])
-
 const market = computed(() => {
   if (!props.position) {
     return
@@ -127,7 +125,7 @@ const onSubmit = handleSubmit(() => {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-model="modalStore.modals[Modal.AddMarginToPosition]">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
@@ -153,9 +151,13 @@ const onSubmit = handleSubmit(() => {
                 data-cy="add-margin-modal-available-text-content"
               >
                 {{ availableMarginToString }}
-                <span class="text-coolGray-500 ml-2">{{
-                  market.quoteToken.symbol
-                }}</span>
+                <PartialsCommonBalanceDisplay
+                  v-bind="{
+                    token: market.quoteToken,
+                    value: market.quoteToken.symbol,
+                    textColorClass: 'text-cool-gray-500 ml-2'
+                  }"
+                />
               </span>
             </div>
           </div>

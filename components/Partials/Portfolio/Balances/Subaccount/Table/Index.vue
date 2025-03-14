@@ -214,11 +214,19 @@ function toggleStakingRow() {
       </template>
 
       <template #available-data="{ row }">
-        <AppBalanceAmount
+        <PartialsCommonBalanceDisplay
           v-if="!row.isStakingRow"
-          v-bind="{ amount: row[BalanceTableColumn.Available].toFixed() }"
-          :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
-        />
+          v-bind="{
+            token: row.token,
+            value: row[BalanceTableColumn.Available].toFixed()
+          }"
+        >
+          <AppBalanceAmount
+            class="text-white"
+            v-bind="{ amount: row[BalanceTableColumn.Available].toFixed() }"
+            :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
+          />
+        </PartialsCommonBalanceDisplay>
         <span v-else />
       </template>
 

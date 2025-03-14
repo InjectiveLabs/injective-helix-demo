@@ -12,6 +12,7 @@ import {
   MarketKey,
   ChartViewOption,
   MixPanelOrderType,
+  IsRWAMarketOpenKey,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
@@ -30,6 +31,7 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const isRWAMarketOpen = inject(IsRWAMarketOpenKey) as Ref<boolean>
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(
@@ -370,22 +372,14 @@ function submitStopMarketOrder() {
     })
 }
 
-async function onSubmit() {
+function onSubmit() {
   if (!isRWAMarket) {
     submit()
 
     return
   }
 
-  status.setLoading()
-
-  const isMarketOpen = await derivativeStore.fetchRWAMarketIsOpen(
-    derivativeMarket.value.oracleBase
-  )
-
-  status.setIdle()
-
-  if (!isMarketOpen) {
+  if (!isRWAMarketOpen.value) {
     return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 

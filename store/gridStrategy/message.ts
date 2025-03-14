@@ -3,6 +3,7 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  MsgWithdraw,
   StrategyType,
   TradingStrategy,
   MsgExecuteContractCompat,
@@ -12,22 +13,22 @@ import {
   ExecArgCreatePerpGridStrategy,
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed,
-  getGenericAuthorizationFromMessageType,
-  MsgWithdraw
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/market'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
   UiSpotMarket,
+  UiDerivativeMarket,
   SpotGridTradingForm,
   SpotGridTradingField,
-  DerivativeGridTradingField,
   DerivativeGridTradingForm,
-  UiDerivativeMarket
+  DerivativeGridTradingField
 } from '@/types'
 
 export const createStrategy = async (
@@ -122,13 +123,15 @@ export const createStrategy = async (
     })
   }
 
+  const quoteAmountToFixed = spotQuantityToChainQuantityToFixed({
+    value: quoteAmount || '',
+    baseDecimals: actualMarket.quoteToken.decimals
+  })
+
   if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
     funds.push({
       denom: actualMarket.quoteToken.denom,
-      amount: spotQuantityToChainQuantityToFixed({
-        value: quoteAmount,
-        baseDecimals: actualMarket.quoteToken.decimals
-      })
+      amount: quoteAmountToFixed
     })
   }
 
@@ -201,6 +204,11 @@ export const createStrategy = async (
     )
   )
 
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: actualMarket?.quoteDenom || '',
+    amount: quoteAmountToFixed
+  })
+
   const messages: Msgs[] = []
 
   const withdrawMsgs = (
@@ -231,6 +239,10 @@ export const createStrategy = async (
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
+  }
+
+  if (cw20ConvertMessage.length > 0) {
+    messages.push(...cw20ConvertMessage)
   }
 
   // we need to add it after the authz messages
@@ -385,13 +397,15 @@ export const createPerpStrategy = async (
     market.slug
   )
 
+  const marginToFixed = spotQuantityToChainQuantityToFixed({
+    value: margin,
+    baseDecimals: market.quoteToken.decimals
+  })
+
   const funds = [
     {
-      denom: market.quoteToken.denom,
-      amount: spotQuantityToChainQuantityToFixed({
-        value: margin,
-        baseDecimals: market.quoteToken.decimals
-      })
+      amount: marginToFixed,
+      denom: market.quoteToken.denom
     }
   ]
 
@@ -433,6 +447,11 @@ export const createPerpStrategy = async (
     sender: sharedWalletStore.injectiveAddress,
     execArgs: args,
     funds
+  })
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market?.quoteDenom || '',
+    amount: marginToFixed
   })
 
   const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
@@ -482,6 +501,10 @@ export const createPerpStrategy = async (
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
+  }
+
+  if (cw20ConvertMessage.length > 0) {
+    messages.push(...cw20ConvertMessage)
   }
 
   // we need to add it after the authz messages

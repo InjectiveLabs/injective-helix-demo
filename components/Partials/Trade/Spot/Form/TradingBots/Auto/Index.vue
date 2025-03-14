@@ -3,9 +3,7 @@ withDefaults(
   defineProps<{
     hasActiveStrategy: boolean
   }>(),
-  {
-    hasActiveStrategy: false
-  }
+  { hasActiveStrategy: false }
 )
 
 const emit = defineEmits<{

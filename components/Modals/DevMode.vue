@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
@@ -49,8 +49,6 @@ const isDisabled = computed(() => {
 
   return !privateKey.value || privateKeyErrors.value.length > 0
 })
-
-const isModalOpen = computed(() => modalStore.modals[Modal.DevMode])
 
 function closeModal() {
   resetForm()
@@ -124,7 +122,7 @@ function connectViaPrivateKey() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="closeModal">
+  <AppModal v-model="modalStore.modals[Modal.DevMode]">
     <template #title>
       <h3 class="text-base">
         {{ $t('devMode.connect') }}
@@ -152,7 +150,7 @@ function connectViaPrivateKey() {
       </AppButtonSelect>
 
       <div class="mt-6 flex flex-wrap items-center justify-center">
-        <div class="w-full">
+        <div class="w-full rounded border border-brand-700">
           <AppInput
             v-if="connectType === ConnectType.Address"
             v-model="address"
@@ -167,7 +165,7 @@ function connectViaPrivateKey() {
             :placeholder="$t('devMode.enterPrivateKey')"
           />
         </div>
-        <div class="w-full mt-4 text-center">
+        <div class="w-full mt-6 text-center">
           <AppButton
             is-lg
             variant="primary"

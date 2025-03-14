@@ -5,8 +5,8 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
@@ -14,12 +14,23 @@ import {
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
+import { SharedMarketType } from '@shared/types'
 import { tokenFactoryStatic } from '@/app/Services'
-import { OrderbookFormattedRecord } from '@/types/worker'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
-import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { OrderbookFormattedRecord } from '@/types/worker'
+import {
+  BotType,
+  MainPage,
+  GridMarket,
+  UiSpotMarket,
+  TradeSubPage,
+  UiMarketWithToken,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed,
+  TradingInterface
+} from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -522,18 +533,67 @@ export function countZerosAfterDecimal(num: string) {
   return zeroCount
 }
 
-export async function computeSHA512(message: string) {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
-}
-
 export const valueSortFunction = (a: any, b: any, direction: string) => {
   if (direction === 'asc') {
     return new BigNumberInBase(a).comparedTo(new BigNumberInBase(b))
   }
 
   return new BigNumberInBase(b).comparedTo(new BigNumberInBase(a))
+}
+
+export const getTradingBotLinkFromStrategy = (
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
+) => {
+  if (strategy.market.type === SharedMarketType.Spot) {
+    return strategy.market.isVerified
+      ? {
+          name:
+            strategy.botType === BotType.SpotGrid
+              ? TradeSubPage.Spot
+              : MainPage.TradingBotsLiquidityBotsSpot,
+          params: {
+            slug:
+              strategy.botType === BotType.SpotGrid
+                ? strategy.market.slug
+                : undefined
+          },
+          query: {
+            interface:
+              strategy.botType === BotType.SpotGrid
+                ? TradingInterface.TradingBots
+                : undefined,
+            market:
+              strategy.botType === BotType.LiquidityGrid
+                ? strategy.market.slug
+                : undefined
+          }
+        }
+      : {
+          name: TradeSubPage.Futures,
+          params: {
+            slug: strategy.market.slug
+          },
+          query: {
+            interface: TradingInterface.TradingBots
+          }
+        }
+  }
+
+  return strategy.market.isVerified
+    ? {
+        name: TradeSubPage.Futures,
+        params: {
+          slug: strategy.market.slug
+        },
+        query: {
+          interface: TradingInterface.TradingBots
+        }
+      }
+    : {
+        name: TradeSubPage.Futures,
+        query: {
+          interface: TradingInterface.TradingBots,
+          marketId: strategy.market.marketId
+        }
+      }
 }

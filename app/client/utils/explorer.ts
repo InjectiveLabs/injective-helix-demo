@@ -1,6 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { indexerRestExplorerApi } from '@shared/Service'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 
 type Attribute = {
   key: string
@@ -59,14 +59,14 @@ export const getSwapAmountAndTokenFromTxHash = async (
   }
 
   const inputAmountFormatted = new BigNumberInBase(
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: inputAmount,
       decimalPlaces: inputToken?.decimals || 18
     })
   ).toFormat(3)
 
   const outputAmountFormatted = new BigNumberInBase(
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: outputAmount,
       decimalPlaces: outputToken?.decimals || 18
     })

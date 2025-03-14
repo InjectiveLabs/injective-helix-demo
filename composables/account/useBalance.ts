@@ -4,6 +4,7 @@ import { injToken, usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { PositionV2, TokenStatic } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import {
   AccountBalance,
@@ -46,13 +47,25 @@ function calculateDefaultSubaccountBalance(
         subaccountBalance?.totalBalance || 0
       )
 
+      const neptuneBankBalance =
+        denom === usdtToken.denom
+          ? new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
+              1 - NEPTUNE_USDT_BUFFER
+            )
+          : 0
+
       return [
         ...list,
         {
           denom,
           inOrderBalance: inOrderBalance.toFixed(),
-          availableBalance: availableBalanceInBank.toFixed(),
-          totalBalance: availableBalanceInBank.plus(inOrderBalance).toFixed()
+          availableBalance: availableBalanceInBank
+            .plus(neptuneBankBalance)
+            .toFixed(),
+          totalBalance: availableBalanceInBank
+            .plus(inOrderBalance)
+            .plus(neptuneBankBalance)
+            .toFixed()
         }
       ]
     },

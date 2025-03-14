@@ -1,8 +1,8 @@
 import { usdtToken } from '@shared/data/token'
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP } from '@/app/utils/constants'
 import { LiquidityTableColumn, TransformedLiquidity } from '@/types'
 
@@ -32,7 +32,7 @@ export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
         const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
 
         return {
-          value: toBalanceInToken({
+          value: sharedToBalanceInToken({
             value: reward.amount,
             decimalPlaces: token?.decimals || 18
           }),

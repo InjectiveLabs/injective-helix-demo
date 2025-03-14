@@ -5,8 +5,9 @@ import {
   GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { walletStrategy } from '@shared/wallet/wallet-strategy'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
+import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
@@ -88,8 +89,11 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectCosmosStation()
       }
 
-      if (wallet === Wallet.Trezor && address) {
-        await sharedWalletStore.connectTrezor(address)
+      if (
+        [Wallet.TrezorBip32, Wallet.TrezorBip44].includes(wallet) &&
+        address
+      ) {
+        await sharedWalletStore.connectTrezor({ wallet, address })
       }
 
       if (wallet === Wallet.BitGet) {
@@ -100,12 +104,11 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectOkxWallet()
       }
 
-      if (wallet === Wallet.Torus) {
-        await sharedWalletStore.connectTorus()
-      }
-
       if (wallet === Wallet.WalletConnect) {
         await sharedWalletStore.connectWalletConnect()
+        await msgBroadcaster.setOptions({
+          txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT * 5
+        })
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
@@ -156,7 +159,7 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    disconnect() {
+    async disconnect() {
       const appStore = useAppStore()
       const spotStore = useSpotStore()
       const authZStore = useAuthZStore()
@@ -170,6 +173,12 @@ export const useWalletStore = defineStore('wallet', {
       const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
       const sharedWalletStore = useSharedWalletStore()
+
+      if (sharedWalletStore.wallet === Wallet.WalletConnect) {
+        await msgBroadcaster.setOptions({
+          txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT
+        })
+      }
 
       appStore.reset()
       pointsStore.reset()

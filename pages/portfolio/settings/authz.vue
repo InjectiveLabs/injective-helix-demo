@@ -22,7 +22,7 @@ function openGranteeModal() {
 </script>
 
 <template>
-  <div class="">
+  <div>
     <div class="p-4">
       <div class="flex items-center">
         <NuxtLink

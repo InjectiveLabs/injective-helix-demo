@@ -127,11 +127,9 @@ function confirm() {
 </script>
 
 <template>
-  <UModal
-    :ui="{
-      width: 'w-full sm:max-w-[600px]'
-    }"
-    :model-value="modalStore.modals[Modal.ClosedRWAMarket]"
+  <AppModal
+    v-model="modalStore.modals[Modal.ClosedRWAMarket]"
+    :ui="{ width: 'w-full sm:max-w-[600px]' }"
   >
     <div class="flex flex-col items-center justify-center p-4 lg:p-10">
       <img
@@ -238,5 +236,5 @@ function confirm() {
         </div>
       </div>
     </div>
-  </UModal>
+  </AppModal>
 </template>
