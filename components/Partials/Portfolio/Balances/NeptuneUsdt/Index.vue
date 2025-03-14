@@ -7,6 +7,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 
 const route = useRoute()
+const appStore = useAppStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
 const { $onError } = useNuxtApp()
@@ -149,6 +150,7 @@ function onOpenWithdrawalModal() {
         class="w-full"
         is-full-width
         variant="primary-outline"
+        :disabled="appStore.isCountryRestricted"
         @click="onOpenDepositModal"
       >
         {{ $t('trade.neptuneUsdt.deposit') }}
