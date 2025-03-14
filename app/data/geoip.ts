@@ -12,6 +12,9 @@ export const disallowedSpotMarketDenomOrSymbol = [
   'peggy0x96F6eF951840721AdBF46Ac996b59E0235CB985C' // USDY denom
 ]
 
+export const isCountryRestrictedFullAccess = (country: string) =>
+  GEO_IP_RESTRICTIONS_ENABLED && restrictedCountries.includes(country)
+
 export const isCountryRestricted = (country: string) =>
   GEO_IP_RESTRICTIONS_ENABLED &&
   [...restrictedCountries, ...restrictedHelixCountries].includes(country)

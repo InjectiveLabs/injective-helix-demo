@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
+import { isCountryRestrictedFullAccess } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
 function onWalletConnect() {
-  if (appStore.isCountryRestricted) {
+  if (isCountryRestrictedFullAccess(sharedGeoStore.country)) {
     modalStore.openModal(Modal.GeoRestricted)
 
     return
