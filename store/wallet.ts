@@ -6,8 +6,7 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { walletStrategy } from '@shared/wallet/wallet-strategy'
-import { msgBroadcaster } from '@shared/WalletService'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
 import { blacklistedAddresses } from '@/app/json'
 import { TRADING_MESSAGES } from '@/app/data/trade'
@@ -90,8 +89,11 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectCosmosStation()
       }
 
-      if (wallet === Wallet.TrezorLegacy && address) {
-        await sharedWalletStore.connectTrezor(address)
+      if (
+        [Wallet.TrezorBip32, Wallet.TrezorBip44].includes(wallet) &&
+        address
+      ) {
+        await sharedWalletStore.connectTrezor({ wallet, address })
       }
 
       if (wallet === Wallet.BitGet) {

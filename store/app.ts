@@ -5,7 +5,7 @@ import {
   DEFAULT_GAS_PRICE,
   ETHEREUM_CHAIN_ID
 } from '@shared/utils/constant'
-import { alchemyKey } from '@shared/wallet/wallet-strategy'
+import { alchemyKey } from '@shared/wallet/alchemy'
 import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
