@@ -524,7 +524,7 @@ export default {
     iAssetModal: {
       title: 'Unlock the Power of iAssets!',
       description:
-        "Be one of the first to trade iAssets with 25x leverage, only on the world's premier decentralized exchange.",
+        "Be one of the first to trade onchain stock futures with 25x leverage, only on the world's premier decentralized exchange.",
       cta: 'Start Trading'
     }
   }
