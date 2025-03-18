@@ -25,6 +25,7 @@ export default {
     topGainers: '🚀 Top Gainers',
     unverified: 'Unverified',
     emptyHeader: 'No markets found',
+    proceedAnyway: 'Proceed Anyway',
     preLaunchFutures: 'Pre Launch Futures',
     emptyHeaderFavorites: 'No favorited markets yet.',
     expiredOrSettledRecently: 'Recently Expired/Settled',
