@@ -13,11 +13,11 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const referralCode = computed(() => route.params.ref)
+const referralCode = computed(() =>
+  typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
+)
 
 function checkReferralCode() {
-  status.setLoading()
-
   referralStore
     .checkCodeAvailability(referralCode.value as string)
     .then((referrerAddress) => {
@@ -38,9 +38,6 @@ function checkReferralCode() {
       }
     })
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
 }
 
 onMounted(() => {

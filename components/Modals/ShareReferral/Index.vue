@@ -92,7 +92,7 @@ function onCopyLink() {
         <p class="mb-0.5 text-coolGray-450 text-xs">
           {{ $t('referral.referralLink') }}
         </p>
-        <p class="text-sm">{{ referralLink }}</p>
+        <p class="text-sm break-words">{{ referralLink }}</p>
       </div>
 
       <div class="flex gap-2">

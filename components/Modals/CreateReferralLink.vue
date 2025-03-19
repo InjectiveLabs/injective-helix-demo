@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { errorMessages } from '@/plugins/validation'
+import { trackReferralCodeCreated } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -20,6 +22,11 @@ const {
 
 const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
+
+const uppercaseReferralCode = computed({
+  get: () => referralCode.value,
+  set: (value) => setReferralCodeValue(value.toUpperCase())
+})
 
 const instructionText = computed(() =>
   referralCodeErrors.value?.[0] === errorMessages.maxCharacter()
@@ -55,11 +62,25 @@ function generateLink() {
     .then(async () => {
       await referralStore.fetchUserReferralDetails()
 
+      trackReferralCodeCreated({
+        isSuccess: true,
+        referralCode: referralCode.value,
+        refereeAddress: sharedWalletStore.injectiveAddress
+      })
+
       modalStore.openModal(Modal.ShareReferral)
       resetData()
       modalStore.closeModal(Modal.CreateReferralLink)
     })
-    .catch($onError)
+    .catch((e) => {
+      trackReferralCodeCreated({
+        isSuccess: false,
+        referralCode: referralCode.value,
+        refereeAddress: sharedWalletStore.injectiveAddress
+      })
+
+      $onError(e)
+    })
     .finally(() => {
       status.setIdle()
     })
@@ -134,7 +155,7 @@ function resetData() {
         </p>
 
         <AppInput
-          v-model="referralCode"
+          v-model="uppercaseReferralCode"
           v-bind="{
             isNoPadding: true,
             disabled: status.isLoading(),

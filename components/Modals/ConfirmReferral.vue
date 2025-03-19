@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { trackRefereeLoggedIn } from '@/app/providers/mixpanel/EventTracker'
 import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
@@ -16,9 +17,13 @@ const { $onError } = useNuxtApp()
 const hasApproved = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 
-const referralCode = computed(() => route.params.ref)
+const referralCode = computed(() =>
+  typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
+)
 
 function connectWallet() {
+  modalStore.closeModal(Modal.ConfirmReferral)
+
   if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
     modalStore.openModal(Modal.Terms)
   } else {
@@ -47,8 +52,22 @@ function joinReferral() {
       notificationStore.success({
         title: t('referral.success', { referralCode: referralCode.value })
       })
+
+      trackRefereeLoggedIn({
+        isSuccess: true,
+        referralCode: referralCode.value as string,
+        refereeAddress: sharedWalletStore.injectiveAddress
+      })
     })
-    .catch($onError)
+    .catch((e) => {
+      trackRefereeLoggedIn({
+        isSuccess: false,
+        referralCode: referralCode.value as string,
+        refereeAddress: sharedWalletStore.injectiveAddress
+      })
+
+      $onError(e)
+    })
     .finally(() => {
       status.setIdle()
       router.push({ name: MainPage.Index })

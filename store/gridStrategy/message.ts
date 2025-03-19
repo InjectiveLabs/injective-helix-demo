@@ -53,6 +53,7 @@ export const createStrategy = async (
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -182,7 +183,8 @@ export const createStrategy = async (
       }),
       exitType: exitType || ExitType.Default,
       strategyType,
-      trailingArithmetic: trailingArgs
+      trailingArithmetic: trailingArgs,
+      feeRecipient: referralStore.feeRecipient
     }),
 
     funds
@@ -373,6 +375,7 @@ export const createPerpStrategy = async (
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -446,7 +449,8 @@ export const createPerpStrategy = async (
       quoteDecimals: market.quoteToken.decimals
     }),
 
-    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2),
+    feeRecipient: referralStore.feeRecipient
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
@@ -559,6 +563,7 @@ export async function createSpotLiquidityBot(params: {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -637,7 +642,8 @@ export async function createSpotLiquidityBot(params: {
           quoteDecimals: market.quoteToken.decimals
         }),
         lpMode: true
-      }
+      },
+      feeRecipient: referralStore.feeRecipient
     })
   })
 
@@ -717,6 +723,7 @@ export async function copySpotGridTradingStrategy({
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -772,7 +779,8 @@ export async function copySpotGridTradingStrategy({
               upperTrailing: strategy.trailUpPrice,
               lpMode: strategy.strategyType === StrategyType.ArithmeticLP
             }
-          : undefined
+          : undefined,
+      feeRecipient: referralStore.feeRecipient
     }),
     funds
   })

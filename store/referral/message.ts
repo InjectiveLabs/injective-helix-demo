@@ -1,6 +1,6 @@
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
+import { fundReferee } from '@/app/services/referral'
 import { REFERRAL_CONTRACT_ADDRESS } from '@/app/utils/constants'
-import { fundReferee } from '~/app/services/referral'
 
 export const registerInvitee = async (referralCode: string) => {
   const walletStore = useWalletStore()
