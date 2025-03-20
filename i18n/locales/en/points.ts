@@ -1,4 +1,4 @@
-import { PointsLeague, I18nMessageFunction } from '@/types'
+import { PointsLeague } from './../../../types'
 
 export default {
   points: {
@@ -19,8 +19,7 @@ export default {
       [PointsLeague.Orange]: 'Orange Belt',
       [PointsLeague.Purple]: 'Purple Belt'
     },
-    paginationDetails: ({ named }: I18nMessageFunction) =>
-      `${named('from')}-${named('to')} of ${named('total')}`,
+    paginationDetails: '{from}-{to} of {total}',
     description:
       'Trade on Helix and earn points. Points are distributed every single day. For more information, see'
   }

@@ -1,12 +1,8 @@
 import keccak256 from 'keccak256'
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/sdk-ts'
-import { SharedBalanceWithToken } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { SharedBalanceWithToken } from '@shared/types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { TimeDuration } from '@/types'
 
 BigNumber.config({
@@ -67,26 +63,6 @@ export function formatPercent({
   const suffix = '%'
 
   return `${prefix}${String(numberInBigNumber.toFixed(precision))}${suffix}`
-}
-
-export const toBalanceInToken = ({
-  value,
-  decimalPlaces,
-  fixedDecimals,
-  roundingMode
-}: {
-  value: string | number
-  decimalPlaces: number
-  fixedDecimals?: number
-  roundingMode?: BigNumber.RoundingMode
-}): string => {
-  const balanceInToken = new BigNumberInWei(value).toBase(decimalPlaces)
-
-  if (fixedDecimals) {
-    return balanceInToken.toFixed(fixedDecimals, roundingMode)
-  }
-
-  return balanceInToken.toFixed()
 }
 
 export const convertCoinToBalancesWithToken = (

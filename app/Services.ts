@@ -1,6 +1,7 @@
 import {
   TokenStatic,
   AbacusGrpcApi,
+  NeptuneService,
   ChainGrpcAuthZApi,
   TokenFactoryStatic,
   IndexerGrpcTradingApi,
@@ -10,9 +11,14 @@ import {
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
-import { IS_MAINNET, IS_TESTNET } from '@shared/utils/constant'
+import {
+  NETWORK,
+  ENDPOINTS,
+  IS_MAINNET,
+  IS_TESTNET
+} from '@shared/utils/constant'
 import { tokens } from '@/app/json'
-import { NETWORK, ENDPOINTS } from '@/app/utils/constants'
+import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 
 export const tokenFactoryStatic = new TokenFactoryStatic(
   tokens as TokenStatic[]
@@ -21,19 +27,21 @@ export const tokenFactoryStatic = new TokenFactoryStatic(
 // Services
 export const abacusGrpcApi = new AbacusGrpcApi(
   IS_MAINNET
-    ? 'https://mainnet.abacus.injective.cooking/grpc'
+    ? 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
     : 'https://abacus.injective.cooking/grpc'
 )
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
 export const tendermintApi = new ChainGrpcTendermintApi(ENDPOINTS.grpc)
 
 export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
-  ENDPOINTS.campaign
+  HELIX_ENDPOINTS.campaign
 )
 /** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
   ENDPOINTS.indexer
 )
+
+export const neptuneService = new NeptuneService()
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET
@@ -50,5 +58,5 @@ export const indexerRestLeaderboardChronosApi =
 
 // Singletons
 export const localStorage: LocalStorage = new LocalStorage(
-  `inj-helix-v4-${NETWORK}`
+  `inj-helix-v5-${NETWORK}`
 )

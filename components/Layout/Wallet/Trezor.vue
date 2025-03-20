@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { getEthereumAddress } from '@injectivelabs/sdk-ts'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 
 const toast = useToast()
 const walletStore = useWalletStore()
@@ -12,12 +13,16 @@ const { handleSubmit } = useForm()
 
 const options = [
   {
-    display: Wallet.Trezor,
-    value: Wallet.Trezor
+    display: t('connect.trezor'),
+    value: Wallet.TrezorBip32
+  },
+  {
+    display: t('connect.trezorBip44'),
+    value: Wallet.TrezorBip44
   }
 ] as SharedDropdownOption[]
 
-const wallet = ref<Wallet>(Wallet.Trezor)
+const wallet = ref<Wallet>(Wallet.TrezorBip32)
 const status = reactive(new Status(StatusType.Idle))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
@@ -25,8 +30,16 @@ const { value: address, errors: addressErrors } = useStringField({
   name: 'address'
 })
 
+const walletOptions = computed(() =>
+  sharedWalletStore.hwAddresses.map((address: string) => ({
+    display: address,
+    description: getEthereumAddress(address),
+    value: address
+  }))
+)
+
 onMounted(() => {
-  walletStore.$patch({
+  sharedWalletStore.$patch({
     hwAddresses: []
   })
 })
@@ -35,7 +48,7 @@ function fetchAddresses() {
   fetchStatus.setLoading()
 
   sharedWalletStore
-    .getHWAddresses(Wallet.Trezor)
+    .getHWAddresses(wallet.value)
     .catch($onError)
     .finally(() => {
       fetchStatus.setIdle()
@@ -47,7 +60,7 @@ const connect = handleSubmit(() => {
 
   walletStore
     .connect({
-      wallet: Wallet.Trezor,
+      wallet: wallet.value,
       address: address.value
     })
     .then(() =>
@@ -69,6 +82,7 @@ const connect = handleSubmit(() => {
     <p class="text-sm font-semibold mb-2">
       {{ $t('connect.derivationPath') }}
     </p>
+
     <USelectMenu
       v-model="wallet"
       :options="options"
@@ -118,13 +132,15 @@ const connect = handleSubmit(() => {
         select-class="min-w-max"
         option-attribute="display"
         :placeholder="$t('connect.selectAddressToConnect')"
-        :options="
-          sharedWalletStore.hwAddresses.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
-      />
+        :options="walletOptions"
+      >
+        <template #option="{ option }">
+          <div>
+            <p>{{ option.display }}</p>
+            <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
+          </div>
+        </template>
+      </USelectMenu>
 
       <p
         v-if="addressErrors.length > 0"

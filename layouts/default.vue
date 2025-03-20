@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
 import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
@@ -10,6 +10,7 @@ import {
   MainPage,
   TradeSubPage,
   InitialStatusKey,
+  NoticeBanner,
   PortfolioStatusKey,
   LeaderboardSubPage,
   LiquidityRewardsPage
@@ -17,12 +18,14 @@ import {
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const appStore = useAppStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
+const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
@@ -74,7 +77,8 @@ function fetchUserPortfolio() {
     accountStore.fetchErc20Balances(),
     accountStore.fetchAccountPortfolioBalances(),
 
-    positionStore.fetchPositions()
+    positionStore.fetchPositions(),
+    gridStrategyStore.fetchStrategies()
   ])
 }
 
@@ -103,13 +107,11 @@ function checkOnboarding() {
     return
   }
 
-  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
-
   if (
     !accountStore.hasBalance &&
     sharedWalletStore.isUserConnected &&
     sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(erc20UsdtBalance?.balance || 0) > 0
+    Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
   ) {
     modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.LiteBridge)
@@ -147,19 +149,30 @@ useIntervalFn(
     ]"
   >
     <LayoutNavbar />
+
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
       :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
     >
-      <main class="relative mt-[56px] pb-6">
+      <main class="relative pb-6 pt-[56px]">
         <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
         <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-        <LayoutTeslaCompetitionBanner
+        <LayoutOwnYourAssetCompetitionBanner
           v-if="route.name !== LeaderboardSubPage.Competition"
         />
         <LayoutFTMPerpBanner />
 
+        <LayoutNeptuneUsdtBanner
+          v-if="
+            sharedWalletStore.isUserConnected &&
+            !sharedWalletStore.isAuthzWalletConnected &&
+            new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(
+              0
+            ) &&
+            !appStore.userState.bannersViewed.includes(NoticeBanner.neptuneUsdt)
+          "
+        />
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&
@@ -175,10 +188,9 @@ useIntervalFn(
     <ModalsNinjaPassWinner />
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
-    <!-- <ModalsNewFeature /> -->
 
+    <ModalsNvidia />
     <ModalsPostOnlyMode />
-
     <ModalsDevMode />
     <ModalsGeoRestricted />
     <SharedPageConfetti />
@@ -193,8 +205,6 @@ useIntervalFn(
       <ModalsOnboardingLiteBridge />
       <ModalsOnboardingFiat />
     </template>
-
-    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />

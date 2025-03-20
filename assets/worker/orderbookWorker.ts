@@ -1,9 +1,9 @@
-import { PriceLevel } from '@injectivelabs/sdk-ts'
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   sharedToBalanceInWei,
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
+import { PriceLevel } from '@injectivelabs/sdk-ts'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   WorkerMessageType,
   OrderbookWorkerResult,
@@ -13,19 +13,33 @@ import {
 } from '@/types/worker'
 
 function priceLevelsToMap({
-  priceLevels,
+  isBuy,
+  isSpot,
   priceMap,
+  priceLevels,
   baseDecimals,
-  quoteDecimals,
-  isSpot
+  quoteDecimals
 }: {
-  priceLevels: PriceLevel[]
-  priceMap: Map<string, string>
+  isBuy: boolean
+  isSpot: boolean
   baseDecimals: number
   quoteDecimals: number
-  isSpot: boolean
+  priceLevels: PriceLevel[]
+  priceMap: Map<string, string>
 }) {
+  const currentPrice = priceLevels[0]?.price || '0'
+
   priceLevels.forEach((priceLevel) => {
+    const priceLevelInBigNumber = new BigNumberInBase(priceLevel.price)
+    if (
+      (isBuy &&
+        priceLevelInBigNumber.isLessThan(Number(currentPrice) * 0.01)) ||
+      (!isBuy &&
+        priceLevelInBigNumber.isGreaterThan(Number(currentPrice) * 1.99))
+    ) {
+      return
+    }
+
     const price = sharedToBalanceInTokenInBase({
       value: priceLevel.price,
       decimalPlaces: isSpot ? quoteDecimals - baseDecimals : quoteDecimals
@@ -44,45 +58,41 @@ function priceLevelsToMap({
   })
 }
 
-function getMidPrice({
-  buys,
-  sells
-}: {
-  buys: Map<string, string>
-  sells: Map<string, string>
-}): string {
+function getHighestBuyPrice(buys: Map<string, string>) {
   const buyPrices = [...buys.keys()].map((price) => price)
-  const sellPrices = [...sells.keys()].map((price) => price)
 
-  if (buyPrices.length === 0 || sellPrices.length === 0) {
+  if (buyPrices.length === 0) {
     return ''
   }
 
-  const maxBuyPrice = buyPrices.reduce(
+  return buyPrices.reduce(
     (max, price) =>
       new BigNumberInBase(price).isGreaterThan(max) ? price : max,
     buyPrices[0]
   )
+}
 
-  const minSellPrice = sellPrices.reduce(
+function getLowestSellPrice(sells: Map<string, string>) {
+  const sellPrices = [...sells.keys()].map((price) => price)
+
+  if (sellPrices.length === 0) {
+    return ''
+  }
+
+  return sellPrices.reduce(
     (min, price) => (new BigNumberInBase(price).isLessThan(min) ? price : min),
     sellPrices[0]
   )
-
-  return new BigNumberInBase(maxBuyPrice)
-    .plus(minSellPrice)
-    .dividedBy(2)
-    .toFixed()
 }
 
 function priceMapToAggregatedArray({
+  isBuy,
   priceMap,
-  aggregation,
-  isBuy
+  aggregation
 }: {
-  priceMap: Map<string, string>
-  aggregation: number
   isBuy: boolean
+  aggregation: number
+  priceMap: Map<string, string>
 }): OrderbookFormattedRecord[] {
   const aggregatedMap = new Map<
     string,
@@ -102,8 +112,8 @@ function priceMapToAggregatedArray({
 
     if (!aggregatedMap.has(aggregatedPrice)) {
       aggregatedMap.set(aggregatedPrice, {
-        priceSum: [priceInBigNumber.toNumber()],
-        totalQuantity: quantity
+        totalQuantity: quantity,
+        priceSum: [priceInBigNumber.toNumber()]
       })
     } else {
       const { priceSum, totalQuantity } = aggregatedMap.get(aggregatedPrice)!
@@ -161,14 +171,14 @@ function priceMapToAggregatedArray({
       acc.push({
         price,
         volume,
+        quantity: totalQuantity,
+        avgPrice: avgPrice.toFixed(),
         totalQuantity: new BigNumberInBase(totalQuantity)
           .plus(prevRecord.totalQuantity)
           .toFixed(),
         totalVolume: new BigNumberInBase(prevRecord.totalVolume)
           .plus(volume)
-          .toFixed(),
-        quantity: totalQuantity,
-        avgPrice: avgPrice.toFixed()
+          .toFixed()
       })
 
       return acc
@@ -186,13 +196,13 @@ let preFetchBuyRecords: { sequence: number; records: PriceLevel[] }[] = []
 let preFetchSellRecords: { sequence: number; records: PriceLevel[] }[] = []
 
 function aggregatePrice({
+  isBuy,
   price,
-  aggregation,
-  isBuy
+  aggregation
 }: {
-  price: BigNumberInBase
-  aggregation: number
   isBuy: boolean
+  aggregation: number
+  price: BigNumberInBase
 }): string {
   if (aggregation >= 0) {
     if (isBuy) {
@@ -233,7 +243,8 @@ self.addEventListener(
               isBuy: false,
               priceMap: sells
             }).slice(0, 2000),
-            midPrice: getMidPrice({ buys, sells })
+            highestBuyPrice: getHighestBuyPrice(buys),
+            lowestSellPrice: getLowestSellPrice(sells)
           }
         } as OrderbookWorkerResult)
       }
@@ -262,17 +273,19 @@ self.addEventListener(
         sells.clear()
 
         priceLevelsToMap({
+          isBuy: true,
           priceMap: buys,
+          isSpot: data.isSpot,
           priceLevels: data.orderbook.buys,
           baseDecimals: data.baseDecimals,
-          isSpot: data.isSpot,
           quoteDecimals: data.quoteDecimals
         })
         priceLevelsToMap({
+          isBuy: false,
           priceMap: sells,
+          isSpot: data.isSpot,
           priceLevels: data.orderbook.sells,
           baseDecimals: data.baseDecimals,
-          isSpot: data.isSpot,
           quoteDecimals: data.quoteDecimals
         })
 
@@ -283,10 +296,11 @@ self.addEventListener(
             }
 
             priceLevelsToMap({
+              isBuy: true,
               priceMap: buys,
+              isSpot: data.isSpot,
               priceLevels: item.records,
               baseDecimals: data.baseDecimals,
-              isSpot: data.isSpot,
               quoteDecimals: data.quoteDecimals
             })
           })
@@ -303,10 +317,11 @@ self.addEventListener(
             }
 
             priceLevelsToMap({
+              isBuy: false,
               priceMap: sells,
+              isSpot: data.isSpot,
               priceLevels: item.records,
               baseDecimals: data.baseDecimals,
-              isSpot: data.isSpot,
               quoteDecimals: data.quoteDecimals
             })
           })
@@ -321,26 +336,28 @@ self.addEventListener(
 
       case WorkerMessageType.Stream:
         preFetchBuyRecords.push({
-          records: data.orderbook.buys,
-          sequence: data.sequence
+          sequence: data.sequence,
+          records: data.orderbook.buys
         })
         preFetchSellRecords.push({
-          records: data.orderbook.sells,
-          sequence: data.sequence
+          sequence: data.sequence,
+          records: data.orderbook.sells
         })
 
         priceLevelsToMap({
+          isBuy: true,
           priceMap: buys,
+          isSpot: data.isSpot,
           priceLevels: data.orderbook.buys,
           baseDecimals: data.baseDecimals,
-          isSpot: data.isSpot,
           quoteDecimals: data.quoteDecimals
         })
         priceLevelsToMap({
+          isBuy: false,
           priceMap: sells,
+          isSpot: data.isSpot,
           priceLevels: data.orderbook.sells,
           baseDecimals: data.baseDecimals,
-          isSpot: data.isSpot,
           quoteDecimals: data.quoteDecimals
         })
 

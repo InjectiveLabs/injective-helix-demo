@@ -18,12 +18,12 @@ import {
   UiDerivativeMarket,
   DerivativesTradeForm,
   DerivativeTradeTypes,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
-const orderbookStore = useOrderbookStore()
 const positionStore = usePositionStore()
+const orderbookStore = useOrderbookStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
@@ -34,14 +34,15 @@ const validateTriggerField = useValidateField(
 )
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
-
+const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+    marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
   }>(),
   {}
@@ -94,6 +95,16 @@ const {
   })
 )
 
+const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
+  isBuy,
+  market,
+  markPrice,
+  formValues: derivativeFormValues,
+  price: computed(() => props.worstPrice),
+  quantity: computed(() => props.quantity),
+  marginWithFee: computed(() => props.marginWithFee)
+})
+
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
   initialValue: TradeAmountOption.Base
@@ -107,11 +118,13 @@ const {
   name: DerivativesTradeFormField.Amount,
   initialValue: '',
   dynamicRule: computed(() => {
+    const markPriceThresholdError = `markPriceThresholdError:${isMarkPriceThresholdError.value}`
+
     if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
       const maxAmount = activePosition.value?.quantity
       const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule, markPriceThresholdError]
 
       return rules.join('|')
     } else {
@@ -120,7 +133,7 @@ const {
 
       const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
 
-      const rules = [insufficientBalanceRule]
+      const rules = [insufficientBalanceRule, markPriceThresholdError]
 
       if (typeValue.value === TradeAmountOption.Quote) {
         rules.push(minAmountRule)
@@ -161,11 +174,8 @@ async function setFromPercentage(percentage: number) {
     }
   }
 
-  const slippage = derivativeFormValues.value[
-    DerivativesTradeFormField.IsSlippageOn
-  ]
-    ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-    : 0
+  const slippage =
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
     isReduceOnly &&
@@ -361,14 +371,23 @@ onMounted(() => {
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
           <div
-            class="space-x-2"
+            class="space-x-1 inline-flex"
             :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
           >
-            <span>{{
-              $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
-              })
-            }}</span>
+            <span>
+              {{
+                $t('trade.availableAmount', {
+                  amount: quoteBalanceToString
+                })
+              }}
+            </span>
+
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
         </div>
       </template>

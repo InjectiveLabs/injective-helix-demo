@@ -2,7 +2,7 @@ import {
   HistorySwapTableColumn,
   HistoryWalletTableColumn,
   FundingHistoryTableColumn
-} from '@/types'
+} from './../../../types'
 
 export default {
   activity: {
@@ -33,6 +33,7 @@ export default {
     funds: 'Funds',
     orders: 'Orders',
     activity: 'Activity',
+    openOrders: 'Open Orders',
     advancedOrders: 'Advanced Orders',
     balances: 'Balances',
     spotGrid: 'Spot Grid',

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { isCosmosWallet } from '@injectivelabs/wallet-ts'
+import { isCosmosWallet } from '@injectivelabs/wallet-base'
 import { CompetitionWinnerField } from '@/types'
 
 const formErrors = useFormErrors()

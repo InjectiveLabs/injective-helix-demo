@@ -93,12 +93,12 @@ export enum PortfolioSpotOrderHistoryTableColumn {
 export enum PortfolioSpotTradingBotsRunningTableColumn {
   Time = 'time',
   Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
   LowerBound = 'lowerBound',
   UpperBound = 'upperBound',
   TotalAmount = 'totalAmount',
   TotalProfit = 'totalProfit',
-  Duration = 'duration',
-  Details = 'details',
   RemoveStrategy = 'removeStrategy'
 }
 
@@ -322,15 +322,18 @@ export interface TransformedLiquidityDashboard {
 export interface TransformedPosition {
   pnl: BigNumberInBase
   position: PositionV2
+  subaccountId: string
   priceDecimals: number
   price: BigNumberInBase
   quantityDecimals: number
   quantity: BigNumberInBase
   markPrice: BigNumberInBase
+  hasActiveStrategy: boolean
   hasReduceOnlyOrders: boolean
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
   isLimitOrderAuthorized: boolean
+  isTradingBotSubaccount: boolean
   isMarketOrderAuthorized: boolean
   liquidationPrice: BigNumberInBase
   effectiveLeverage: BigNumberInBase
@@ -468,4 +471,28 @@ export interface TransformedPointsHistory {
   period: string
   pointsInBigNumber: BigNumberInBase
   volumeInBigNumber: BigNumberInBase
+}
+
+export enum PortfolioTradingBotsRunningTableColumn {
+  Time = 'time',
+  Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  RemoveStrategy = 'removeStrategy'
+}
+
+export enum PortfolioTradingBotsHistoryTableColumn {
+  Time = 'time',
+  Market = 'market',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  Duration = 'duration',
+  Details = 'details',
+  StopReason = 'stopReason'
 }

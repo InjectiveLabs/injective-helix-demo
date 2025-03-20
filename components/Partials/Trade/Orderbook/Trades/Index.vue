@@ -45,7 +45,7 @@ const trades = computed(() => {
 
       <p class="text-xs space-x-1.5 flex-1 text-center">
         <span class="text-coolGray-500">{{ $t('trade.amount') }}</span>
-        <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
+        <span class="font-bold">{{ market.baseToken.symbol }}</span>
       </p>
 
       <p class="text-xs space-x-1.5 flex-1 text-right">

@@ -1,4 +1,4 @@
-import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from './setup'
+import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from '@shared/utils/constant'
 
 // Campaign
 export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet

@@ -1,16 +1,22 @@
 import { defineStore } from 'pinia'
-import { DEFAULT_GAS_PRICE } from '@shared/utils/constant'
-import { alchemyKey } from '@shared/wallet/wallet-strategy'
+import {
+  NETWORK,
+  CHAIN_ID,
+  DEFAULT_GAS_PRICE,
+  ETHEREUM_CHAIN_ID
+} from '@shared/utils/constant'
+import { alchemyKey } from '@shared/wallet/alchemy'
 import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import {
   isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets
+  isCountryRestrictedForPerpetualMarkets,
+  isCountryRestricted
 } from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
+import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
-import { NETWORK, CHAIN_ID, ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
 import {
   Modal,
   NoticeBanner,
@@ -26,6 +32,7 @@ export interface UserBasedState {
   bannersViewed: NoticeBanner[]
   dontShowAgain: DontShowAgain[]
   favoriteMarkets: string[]
+  marketSlippageIdMap: Record<string, string>
 
   preferences: {
     isHideBalances: boolean
@@ -75,6 +82,7 @@ const initialStateFactory = (): AppStoreState => ({
     bannersViewed: [],
     dontShowAgain: [],
     favoriteMarkets: [],
+    marketSlippageIdMap: {},
 
     preferences: {
       futuresLeverage: '1',
@@ -95,6 +103,21 @@ const initialStateFactory = (): AppStoreState => ({
 export const useAppStore = defineStore('app', {
   state: (): AppStoreState => initialStateFactory(),
   getters: {
+    isCountryRestricted: (_) => {
+      const sharedGeoStore = useSharedGeoStore()
+
+      return isCountryRestricted(sharedGeoStore.country)
+    },
+
+    slippageByMarketId:
+      (state: AppStoreState) =>
+      (marketId: string): string => {
+        return (
+          state.userState?.marketSlippageIdMap?.[marketId] ||
+          DEFAULT_SLIPPAGE.toFixed()
+        )
+      },
+
     favoriteMarkets: (state: AppStoreState) => {
       return state.userState.favoriteMarkets
     },

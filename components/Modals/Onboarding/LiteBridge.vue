@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
+
 enum View {
   Widget = 'widget',
   Processing = 'processing',
   Success = 'success'
 }
 
-const view = ref<View>(View.Widget)
-const isAlwaysOpen = ref<boolean>(false)
-
 const modalStore = useSharedModalStore()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.LiteBridge])
-
-function closeModal() {
-  modalStore.closeModal(Modal.LiteBridge)
-}
+const view = ref<View>(View.Widget)
+const isAlwaysOpen = ref<boolean>(false)
 
 function onSuccess() {
   view.value = View.Processing
@@ -30,18 +25,14 @@ function onTransferSuccess() {
 function onCloseAlwaysOpen() {
   view.value = View.Widget
   isAlwaysOpen.value = false
-  closeModal()
+  modalStore.closeModal(Modal.LiteBridge)
 }
 </script>
 
 <template>
   <AppModal
-    v-bind="{
-      isSm: true,
-      isOpen: isModalOpen,
-      isAlwaysOpen: isAlwaysOpen
-    }"
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.LiteBridge]"
+    v-bind="{ isAlwaysOpen }"
   >
     <PartialsOnboardingLiteBridgeWidget
       v-if="view === View.Widget"

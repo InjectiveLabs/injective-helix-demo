@@ -10,12 +10,11 @@ import { Modal } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    strategy: TradingStrategy
     isLiquidity?: boolean
+    strategy: TradingStrategy
   }>(),
   {
-    strategy: undefined,
-    isLiquidity: false
+    strategy: undefined
   }
 )
 
@@ -38,7 +37,7 @@ const market = computed(
 
 const activeStrategy = computed(
   () =>
-    gridStrategyStore.activeStrategies.find(
+    gridStrategyStore.activeSpotStrategies.find(
       (strategy) =>
         strategy.contractAddress ===
         getSgtContractAddressFromSlug(market.value.slug)

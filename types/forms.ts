@@ -33,6 +33,10 @@ export enum BankTransferField {
   Amount = 'bank-transfer-amount'
 }
 
+export enum NeptuneUsdtField {
+  Amount = 'neptune-usdt-amount'
+}
+
 export type BankTransferForm = {
   [BankTransferField.Denom]: string
   [BankTransferField.Amount]: string
@@ -42,6 +46,10 @@ export type BankTransferForm = {
   [BankTransferField.Required]: boolean
   [BankTransferField.MemoRequired]: string
   [BankTransferField.DoubleCheck]: boolean
+}
+
+export type NeptuneUsdtForm = {
+  [NeptuneUsdtField.Amount]: string
 }
 
 export enum CompetitionWinnerField {
@@ -58,4 +66,8 @@ export type LiquidityBotForm = {
   [LiquidityBotField.Volatility]: VolatilityStrategyType
   [LiquidityBotField.BaseAmount]: string
   [LiquidityBotField.QuoteAmount]: string
+}
+
+export enum RwaMarketField {
+  TermsAccepted = 'terms-accepted'
 }

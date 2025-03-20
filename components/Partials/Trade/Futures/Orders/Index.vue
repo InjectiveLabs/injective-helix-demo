@@ -3,9 +3,9 @@ import {
   BusEvents,
   MarketKey,
   TradingInterface,
-  UiDerivativeMarket,
-  PerpOrdersStandardView
+  UiDerivativeMarket
 } from '@/types'
+import { PartialsTradeFuturesOrdersStandard } from '#components'
 
 const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
@@ -16,7 +16,6 @@ const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const isTickerOnly = ref(false)
-const view = ref(PerpOrdersStandardView.Positions)
 
 onSubaccountChange(refreshData)
 onUnmounted(() => derivativeStore.cancelSubaccountStream())
@@ -57,49 +56,13 @@ function refreshData() {
 
 <template>
   <div class="h-full">
-    <PartialsTradeFuturesOrdersStandardHeader
-      v-model="view"
-      v-model:is-ticker-only="isTickerOnly"
-      @update:is-ticker-only="refreshData"
+    <PartialsTradeFuturesOrdersStandard
+      v-if="tradingMode === TradingInterface.Standard"
     />
 
-    <div class="w-full h-screenMinusHeader">
-      <div
-        v-if="tradingMode === TradingInterface.Standard"
-        class="divide-y h-full"
-      >
-        <PartialsTradeCommonOrdersBalances
-          v-if="view === PerpOrdersStandardView.Balances"
-        />
-
-        <PartialsTradeFuturesOrdersStandardPositions
-          v-else-if="view === PerpOrdersStandardView.Positions"
-          v-bind="{ isTickerOnly }"
-        />
-
-        <PartialsTradeFuturesOrdersStandardOpenOrders
-          v-else-if="view === PerpOrdersStandardView.Orders"
-          v-bind="{ isTickerOnly }"
-        />
-
-        <PartialsTradeFuturesOrdersStandardAdvancedOrders
-          v-else-if="view === PerpOrdersStandardView.AdvancedOrders"
-        />
-
-        <PartialsTradeFuturesOrdersStandardOrderHistory
-          v-else-if="view === PerpOrdersStandardView.OrderHistory"
-        />
-
-        <PartialsTradeFuturesOrdersStandardTradeHistory
-          v-else-if="view === PerpOrdersStandardView.TradeHistory"
-        />
-
-        <PartialsTradeFuturesOrdersStandardFundingHistory
-          v-else-if="view === PerpOrdersStandardView.FundingHistory"
-        />
-      </div>
-
-      <PartialsTradeFuturesOrdersTradingBots v-else />
-    </div>
+    <PartialsTradeFuturesOrdersTradingBots
+      v-else-if="tradingMode === TradingInterface.TradingBots"
+      v-bind="{ market }"
+    />
   </div>
 </template>

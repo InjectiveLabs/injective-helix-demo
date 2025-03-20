@@ -1,4 +1,4 @@
-import { IS_PRODUCTION } from '@/app/utils/constants'
+import { IS_PRODUCTION } from '@shared/utils/constant'
 
 export default defineNuxtPlugin((context) => {
   const router = useRouter()

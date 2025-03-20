@@ -20,11 +20,11 @@ useForm<SpotGridTradingForm>({
   keepValuesOnUnmount: true
 })
 
-const activeStrategy = computed(() => {
-  return gridStrategyStore.activeStrategies.find((strategy) => {
+const activeStrategy = computed(() =>
+  gridStrategyStore.activeSpotStrategies.find((strategy) => {
     return strategy.marketId === spotMarket.value?.marketId
   })
-})
+)
 
 function updateType(type: GridStrategyType) {
   strategyType.value = type

@@ -9,7 +9,7 @@ import {
   DerivativeOrderHistoryStreamCallback,
   DerivativeOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { ENDPOINTS } from '@/app/utils/constants'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 

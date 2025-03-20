@@ -6,6 +6,7 @@ import { MarketCategoryType } from '@/types'
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const { t } = useLang()
 const { sm } = useSharedBreakpoints()
 
 withDefaults(
@@ -16,11 +17,10 @@ withDefaults(
 )
 
 const activeCategoryOptions = Object.values(MarketCategoryType).map(
-  (value) => ({ label: `markets.${value}`, value })
-)
-
-const mobileMarketCategoryType = Object.entries(MarketCategoryType).map(
-  ([key, value]) => ({ label: key, value })
+  (value) => ({
+    label: t(`markets.filters.${value}`),
+    value
+  })
 )
 
 const search = ref('')
@@ -42,6 +42,10 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     }
   )
 )
+
+function resetSearch() {
+  search.value = ''
+}
 
 function resetCategory() {
   if (activeCategory.value === MarketCategoryType.All) {
@@ -85,6 +89,7 @@ function resetCategory() {
                 :key="category.value"
                 v-model="activeCategory"
                 v-bind="{ value: category.value }"
+                @update:model-value="resetSearch"
               >
                 <template #default="{ isActive }">
                   <AppButton
@@ -101,17 +106,6 @@ function resetCategory() {
               </AppButtonSelect>
               <div class="flex-grow"></div>
             </template>
-
-            <div v-else>
-              <p class="text-xs text-gray-500 mb-2">
-                {{ $t('common.marketCategory') }}
-              </p>
-              <USelectMenu
-                v-model="activeCategory"
-                value-attribute="value"
-                :options="mobileMarketCategoryType"
-              />
-            </div>
           </div>
 
           <AppCheckbox2 v-model="isLowVolumeMarketsVisible" no-wrap>

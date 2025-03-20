@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import {
+  sharedToBalanceInToken,
+  sharedEllipsisFormatText
+} from '@shared/utils/formatter'
 import { format } from 'date-fns'
 import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
@@ -13,7 +16,7 @@ import {
   DEFAULT_TRUNCATE_LENGTH
 } from '@/app/utils/constants'
 import { guildDescriptionMap } from '@/app/data/campaign'
-import { toBalanceInToken, generateUniqueHash } from '@/app/utils/formatters'
+import { generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
@@ -107,7 +110,7 @@ const guildInvitationHash = computed(() =>
 
 const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: campaignStore.guild?.masterBalance || 0,
       decimalPlaces: baseToken.value?.decimals || 18
     })

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Modal, MainPage, UiMarketWithToken, MarketCategoryType } from '@/types'
 import {
+  isCountryRestricted,
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
@@ -40,6 +41,12 @@ onMounted(() => {
 })
 
 function checkUserIsDisallowed() {
+  if (isCountryRestricted(sharedGeoStore.country)) {
+    modalStore.openModal(Modal.GeoRestricted)
+
+    return
+  }
+
   const isRestricted = props.isSpot
     ? isCountryRestrictedForSpotMarket({
         country: sharedGeoStore.country,
@@ -58,15 +65,25 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm is-hide-close-button is-always-open>
-    <template #title>
-      <h3 class="text-center">
-        {{ $t('marketRestricted.title') }}
-      </h3>
-    </template>
+  <AppModal
+    v-bind="{
+      isAlwaysOpen: true,
+      isHideCloseButton: true,
+      modelValue: isModalOpen
+    }"
+  >
+    <img src="/svg/TradingRestriction.svg" class="mx-auto mt-2" />
 
-    <div class="relative">
-      <p class="text-center text-sm text-coolGray-100">
+    <h3 class="text-center font-semibold text-lg mt-8">
+      {{
+        $t(`marketRestricted.title.${isSpot ? 'spot' : 'perpetual'}`, {
+          symbol: market.baseToken.symbol
+        })
+      }}
+    </h3>
+
+    <div class="relative mt-2">
+      <p class="text-center text-sm text-coolGray-450">
         {{
           $t(`marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
             symbol: market.baseToken.symbol
@@ -74,8 +91,22 @@ function closeModal() {
         }}
       </p>
 
-      <div class="mt-6 flex items-center justify-center">
+      <div class="mt-4 flex items-center justify-center w-full">
         <NuxtLink
+          v-if="isSpot"
+          class="w-full"
+          :to="{
+            name: MainPage.Index
+          }"
+        >
+          <AppButton class="w-full" @click="closeModal">
+            {{ $t('marketRestricted.cta') }}
+          </AppButton>
+        </NuxtLink>
+
+        <NuxtLink
+          v-else
+          class="w-full"
           :to="{
             name: MainPage.Markets,
             query: {
@@ -83,7 +114,7 @@ function closeModal() {
             }
           }"
         >
-          <AppButton class="bg-blue-500 text-blue-900" @click="closeModal">
+          <AppButton class="w-full" @click="closeModal">
             {{ $t('marketRestricted.tradeSpot') }}
           </AppButton>
         </NuxtLink>

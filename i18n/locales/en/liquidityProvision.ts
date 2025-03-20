@@ -1,4 +1,4 @@
-import { LiquidityProvisionType } from '@/types'
+import { LiquidityProvisionType } from './../../../types'
 
 export default {
   liquidityProvision: {

@@ -2,7 +2,7 @@
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { rwaSlugs } from '@/app/json'
+import { rwaMarketIds } from '@/app/data/market'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
@@ -12,18 +12,18 @@ import {
   MarketKey,
   ChartViewOption,
   MixPanelOrderType,
+  IsRWAMarketOpenKey,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
 
-const route = useRoute()
 const resetForm = useResetForm()
-const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -31,6 +31,7 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const isRWAMarketOpen = inject(IsRWAMarketOpenKey) as Ref<boolean>
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(
@@ -51,7 +52,7 @@ const props = withDefaults(
   {}
 )
 
-const isRWAMarket = rwaSlugs.includes(route.params.slug as string)
+const isRWAMarket = rwaMarketIds.includes(derivativeMarket.value.marketId)
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
@@ -103,8 +104,6 @@ const currentFormValues = computed(
         derivativeFormValues.value[DerivativesTradeFormField.AmountOption],
       [DerivativesTradeFormField.Slippage]:
         derivativeFormValues.value[DerivativesTradeFormField.Slippage],
-      [DerivativesTradeFormField.IsSlippageOn]:
-        derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn],
       [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE
     }) as DerivativesTradeForm
 )
@@ -229,6 +228,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -270,6 +270,7 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -309,6 +310,7 @@ function submitMarketOrder() {
       takeProfit: takeProfitValue.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -351,10 +353,12 @@ function submitStopMarketOrder() {
       margin: props.margin
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
+      err = e
       $onError(e)
     })
     .finally(() => {
@@ -373,10 +377,14 @@ function submitStopMarketOrder() {
 }
 
 function onSubmit() {
-  if (isRWAMarket) {
-    fetchRWAMarketIsOpen()
+  if (!isRWAMarket) {
+    submit()
 
     return
+  }
+
+  if (!isRWAMarketOpen.value) {
+    return modalStore.openModal(Modal.ClosedRWAMarket)
   }
 
   submit()
@@ -399,25 +407,6 @@ async function submit() {
     case DerivativeTradeTypes.StopMarket:
       submitStopMarketOrder()
   }
-}
-
-function fetchRWAMarketIsOpen() {
-  if (!derivativeMarket.value) {
-    return
-  }
-
-  derivativeStore
-    .fetchRWAMarketIsOpen(derivativeMarket.value.oracleBase)
-    .then((isMarketOpen) => {
-      if (!isMarketOpen) {
-        modalStore.openModal(Modal.ClosedRWAMarket)
-
-        return
-      }
-
-      submit()
-    })
-    .catch($onError)
 }
 </script>
 
@@ -451,7 +440,6 @@ function fetchRWAMarketIsOpen() {
     </div>
 
     <ModalsClosedRWAMarket
-      v-if="modalStore.modals[Modal.ClosedRWAMarket]"
       v-bind="{ worstPrice: worstPrice.toString() }"
       @terms:agreed="submit"
     />

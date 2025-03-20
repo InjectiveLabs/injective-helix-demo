@@ -14,10 +14,6 @@ const { value: hash, errors: hashErrors } = useStringField({
 
 const hashMatches = computed(() => props.invitationHash === hash.value)
 
-function onCloseModal() {
-  modalStore.closeModal(Modal.VerifyJoinGuildHash)
-}
-
 async function onSubmit() {
   const { valid } = await validate()
 
@@ -44,18 +40,14 @@ watch(
 </script>
 
 <template>
-  <AppModal
-    is-sm
-    :is-open="modalStore.modals[Modal.VerifyJoinGuildHash]"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.VerifyJoinGuildHash]">
     <template #title>
       <h2 class="text-xl font-semibold normal-case text-center">
         {{ $t('guild.verifyJoinGuild.title') }}
       </h2>
     </template>
 
-    <p class="font-semibold my-6">
+    <p class="font-semibold mb-6">
       {{ $t('guild.verifyJoinGuild.description') }}
     </p>
 
@@ -78,7 +70,7 @@ watch(
       {{ hashErrors[0] }}
     </p>
 
-    <div class="w-full mt-8 flex flex-col gap-1 items-center">
+    <div class="w-full mt-8 flex flex-col gap-4 items-center">
       <AppButton
         class="w-full bg-blue-500 text-blue-900 font-semibold"
         size="lg"

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { UiSpotMarket } from '@/types'
+import { UiMarketWithToken } from '@/types'
 
 const { quote, base } = useSlots()
 
 withDefaults(
   defineProps<{
-    market?: UiSpotMarket
     baseSymbol?: string
     quoteSymbol?: string
+    market?: UiMarketWithToken
   }>(),
   {
     market: undefined,

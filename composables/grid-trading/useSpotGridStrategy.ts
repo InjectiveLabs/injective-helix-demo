@@ -250,19 +250,27 @@ export const useSpotGridStrategies = (
         botType = BotType.FuturesGrid
       }
 
+      const isPositivePnl = pnl.gt(0)
+
+      const isZeroPnl = pnl.isZero()
+
+      const isSpot = true
+
       return {
         pnl: pnl.toFixed(),
+        isSpot,
         market,
         botType,
         strategy,
         isActive,
         settleIn,
         stopLoss,
+        isZeroPnl,
         takeProfit,
         upperBound,
         lowerBound,
         totalAmount,
-        isPositivePnl: pnl.gt(0),
+        isPositivePnl,
         trailingUpper,
         trailingLower,
         percentagePnl,

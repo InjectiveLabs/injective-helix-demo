@@ -4,8 +4,6 @@ import { Modal, MainPage } from '@/types'
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
-const isModalOpen = computed(() => modalStore.modals[Modal.Terms])
-
 function onConfirm() {
   closeModal()
 
@@ -27,7 +25,7 @@ function closeModal() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" @modal:closed="closeModal">
+  <AppModal v-model="modalStore.modals[Modal.Terms]" v-bind="{ isXl: true }">
     <template #title>
       <h3>
         {{ $t('Acknowledge Terms') }}

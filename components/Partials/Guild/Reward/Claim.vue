@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Coin } from '@injectivelabs/sdk-ts'
 import {
-  BigNumber,
   Status,
+  BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { Coin } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_VOLUME_REWARD_CONTRACT,
   GUILD_BALANCE_REWARD_CONTRACT
@@ -50,7 +50,7 @@ const hasReward = computed(() =>
 
 const { valueToString: scoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.score,
       decimalPlaces: props.decimals
     })

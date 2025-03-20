@@ -4,8 +4,8 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
-const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
@@ -28,6 +28,8 @@ const {
   keepValuesOnUnmount: true
 })
 
+const subaccountFormValues = computed(() => formValues)
+
 const { value: denomValue } = useStringField({
   name: SubaccountTransferField.Denom,
   rule: ''
@@ -41,9 +43,48 @@ const isDisabled = computed(
 
 const status = reactive(new Status())
 
-const { supplyWithBalance } = useSubaccountTransferBalance(
-  computed(() => formValues)
-)
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const userBalance = computed(() => {
+  const balances =
+    subaccountPortfolioBalanceMap.value[
+      subaccountFormValues.value[SubaccountTransferField.SrcSubaccountId]
+    ]
+
+  const defaultBalance = {
+    denom: injToken.denom,
+    token: injToken,
+    balance: '0'
+  }
+
+  if (!balances) {
+    return [defaultBalance]
+  }
+
+  const hasInjBalance = balances.some(({ denom }) => denom === injToken.denom)
+  const balancesWithInjBalance = hasInjBalance
+    ? balances
+    : [
+        ...balances,
+        {
+          ...defaultBalance,
+          availableBalance: '0'
+        }
+      ]
+
+  return balancesWithInjBalance
+    .map(({ denom, token, availableBalance }) => ({
+      denom,
+      token,
+      balance: availableBalance
+    }))
+    .filter((balance) => {
+      const hasBalance = new BigNumberInBase(balance.balance).gt(0)
+      const isInjToken = balance.denom === injToken.denom
+
+      return hasBalance || isInjToken
+    })
+})
 
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
@@ -145,7 +186,7 @@ function defaultSubaccountWithdraw() {
 
 function onTokenChange() {
   nextTick(() => {
-    const token = supplyWithBalance.value.find(
+    const token = userBalance.value?.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
     )
 
@@ -166,7 +207,7 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
-    const token = supplyWithBalance.value.find(
+    const token = userBalance.value?.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
     )
 
@@ -197,38 +238,26 @@ function resetForm() {
 function closeModal() {
   modalStore.closeModal(Modal.SubaccountTransfer)
 }
-
-const isOpen = computed({
-  get: () => modalStore.modals[Modal.SubaccountTransfer],
-  set: (value) => {
-    if (!value) {
-      closeModal()
-    }
-  }
-})
 </script>
 
 <template>
-  <SharedModal v-model="isOpen" v-bind="{ isHideCloseButton: true }">
-    <template #title>
-      <h3>
-        {{ $t('account.subaccountTransfer') }}
-      </h3>
-    </template>
-
+  <AppModal
+    v-model="modalStore.modals[Modal.SubaccountTransfer]"
+    v-bind="{ isMd: true, isHideCloseButton: true }"
+  >
     <div>
       <div>
         <ModalsSubaccountTransferSelect
           @update:subaccount-id="onSubaccountIdChange"
         />
-        <div v-if="supplyWithBalance.length > 0" class="mt-6">
+        <div v-if="userBalance.length > 0" class="mt-6">
           <AppSelectToken
             v-model:denom="denomValue"
             v-bind="{
               maxDecimals,
               isRequired: true,
               amountFieldName: SubaccountTransferField.Amount,
-              options: supplyWithBalance
+              options: userBalance
             }"
             @update:max="onAmountChange"
             @update:denom="onTokenChange"
@@ -236,6 +265,7 @@ const isOpen = computed({
             <span> {{ $t('account.amount') }} </span>
           </AppSelectToken>
         </div>
+
         <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
           {{ t('account.noAssetToTransfer') }}
         </div>
@@ -253,5 +283,5 @@ const isOpen = computed({
         </span>
       </AppButton>
     </div>
-  </SharedModal>
+  </AppModal>
 </template>

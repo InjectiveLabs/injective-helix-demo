@@ -96,10 +96,6 @@ function checkForInvalidSlippageValue() {
                   />
                 </div>
               </template>
-
-              <template #addon>
-                <span class="text-coolGray-500">%sdasdasdas</span>
-              </template>
             </AppInputNumeric>
           </div>
         </div>

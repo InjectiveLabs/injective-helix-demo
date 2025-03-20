@@ -25,7 +25,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-bind="{ modelValue: isModalOpen }" @on:close="onModalClose">
     <template #title>
       <h3>
         {{ $t('postOnlyMode.title') }}

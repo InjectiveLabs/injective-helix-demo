@@ -42,6 +42,10 @@ function setCategoryFromQuery() {
   return MarketCategoryType.All
 }
 
+function resetSearch() {
+  search.value = ''
+}
+
 function resetCategory() {
   if (activeCategory.value === MarketCategoryType.All) {
     return
@@ -81,6 +85,7 @@ function resetCategory() {
                 v-model="activeCategory"
                 v-bind="{ value }"
                 :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
+                @update:model-value="resetSearch"
               >
                 <template #default="{ isActive }">
                   <AppButton

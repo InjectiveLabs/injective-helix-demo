@@ -1,5 +1,5 @@
 import { LocalStorage } from '@injectivelabs/utils'
-import { NETWORK } from '@/app/utils/constants'
+import { NETWORK } from '@shared/utils/constant'
 import { localStorage } from '@/app/Services'
 
 // Clear up old local storage keys

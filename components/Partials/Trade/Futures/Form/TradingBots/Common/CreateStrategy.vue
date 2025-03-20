@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+
 import {
-  DerivativeGridTradingField,
-  DerivativeGridTradingForm,
   MarketKey,
+  DerivativeGridTradingForm,
+  DerivativeGridTradingField,
   UiDerivativeMarket
 } from '@/types'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { derivativeGridMarkets } from '~/app/json'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -20,17 +19,23 @@ const derivativeFormValues = useFormValues<DerivativeGridTradingForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
+const props = withDefaults(
+  defineProps<{
+    error: boolean
+  }>(),
+  {
+    error: false
+  }
+)
+
 const status = reactive(new Status(StatusType.Idle))
 
 const isDisabled = computed(() => {
-  if (
-    sharedWalletStore.isAutoSignEnabled ||
-    sharedWalletStore.isAuthzWalletConnected
-  ) {
+  if (sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
-  if (Object.keys(formErrors.value).length > 0) {
+  if (Object.keys(formErrors.value).length > 0 || props.error) {
     return true
   }
 
@@ -56,29 +61,6 @@ async function createStrategy() {
       status.setIdle()
     })
 }
-
-function removeStrategy() {
-  status.setLoading()
-
-  const subaccountId = addressAndMarketSlugToSubaccountId(
-    sharedWalletStore.address,
-    market.value.slug
-  )
-
-  const perpMarket = derivativeGridMarkets.find(
-    (m) => m.slug === market.value.slug
-  )
-
-  gridStrategyStore
-    .removeStrategyForSubaccount(perpMarket?.contractAddress, subaccountId)
-    .then(() => {
-      notificationStore.success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -91,18 +73,8 @@ function removeStrategy() {
       <span v-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
+
       <span v-else>{{ $t('sgt.create') }}</span>
     </AppButton>
-
-    <AppButton class="w-full mt-4" variant="danger" @click="removeStrategy">
-      {{ $t('sgt.removeStrategy') }}
-    </AppButton>
-
-    <span
-      v-if="sharedWalletStore.isAutoSignEnabled"
-      class="text-xs text-red-500"
-    >
-      {{ $t('common.notAvailableinAutoSignMode') }}
-    </span>
   </div>
 </template>

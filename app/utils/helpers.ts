@@ -5,20 +5,32 @@ import {
 } from '@injectivelabs/utils'
 import { intervalToDuration } from 'date-fns'
 import { sharedTokenClient } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+  ZERO_IN_BASE
+} from '@shared/utils/constant'
+import { SharedMarketType } from '@shared/types'
 import { tokenFactoryStatic } from '@/app/Services'
-import { OrderbookFormattedRecord } from '@/types/worker'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
-import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { OrderbookFormattedRecord } from '@/types/worker'
+import {
+  BotType,
+  MainPage,
+  GridMarket,
+  UiSpotMarket,
+  TradeSubPage,
+  UiMarketWithToken,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed,
+  TradingInterface
+} from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -109,7 +121,8 @@ const getProperSlug = (slug: string): string => {
   const edgeCaseSlugs = {
     'wmaticlegacy-usdt': 'wmatic-usdt',
     'arblegacy-usdt': 'arb-usdt',
-    'sollegacy-usdt': 'sol-usdt'
+    'sollegacy-usdt': 'sol-usdt',
+    'tradfi-usdt-p': 'tfi-usdt' // TODO: Slug is too long, we need to shorten it
   } as { [key: string]: string }
 
   return edgeCaseSlugs[slug] || slug
@@ -131,7 +144,7 @@ export const isSgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return spotGridMarkets.find((m) => m.slug === slug)?.slug
+  return spotGridMarkets.find((market) => market.slug === slug)?.slug
 }
 
 export const isPgtSubaccountId = (subaccountId: string) => {
@@ -139,27 +152,46 @@ export const isPgtSubaccountId = (subaccountId: string) => {
 
   const slug = hexToString(subaccountHex)
 
-  return (derivativeGridMarkets as GridMarket[]).find(
-    (m) => m.slug.replace('-perp', '-p') === slug
+  // TODO: Remove when we query the SC for subaccount
+  if (slug === 'tfi-usdt') {
+    return 'tradfi-usdt-perp'
+  }
+
+  return derivativeGridMarkets.find(
+    (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
+}
+
+export const isTradingbotSubaccountId = (subaccountId: string) => {
+  return isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
 }
 
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
       ...spotGridMarkets,
-      ...derivativeGridMarkets.map((m: GridMarket) => ({
-        ...m,
-        slug: m.slug.replace('-perp', '-p')
+      ...derivativeGridMarkets.map((market: GridMarket) => ({
+        ...market,
+        slug: market.slug.replace('-perp', '-p')
       }))
     ] as GridMarket[]
 
     return gridMarkets
-      .find(
-        (m) =>
-          m.slug.toLowerCase() ===
-          hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
-      )
+      .find((market) => {
+        const slugFromSubaccount = hexToString(
+          subaccountId.slice(42).replace(/^0+/, '')
+        ).toLowerCase()
+
+        // TODO: Remove when we query the SC for subaccount
+        if (
+          slugFromSubaccount === 'tfi-usdt' &&
+          market.slug === 'tradfi-usdt-p'
+        ) {
+          return true
+        }
+
+        return market.slug.toLowerCase() === slugFromSubaccount
+      })
       ?.slug.toUpperCase()
       .replace('-P', '-PERP')
   }
@@ -306,6 +338,12 @@ export function quantizeNumber(
   number: number | BigNumberInBase,
   tensMultiplier: number
 ): BigNumberInBase {
+  const numberInBigNumber = new BigNumberInBase(number)
+
+  if (numberInBigNumber.isZero()) {
+    return ZERO_IN_BASE
+  }
+
   const divideBy = new BigNumberInBase(10).exponentiatedBy(tensMultiplier)
 
   return new BigNumberInBase(
@@ -350,6 +388,40 @@ export function calculateWorstPrice(
   }
 }
 
+export function calculateWorstPriceFromPriceLevel(
+  quantity: string,
+  records: PriceLevel[]
+) {
+  let remainingQuantity = Number(quantity || '0')
+
+  let price = 0
+  let worstPrice = '0'
+  let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
+
+  for (const record of records) {
+    if (remainingQuantity - Number(record.quantity) <= 0) {
+      worstPrice = record.price
+      price += remainingQuantity * Number(record.price)
+
+      hasEnoughLiquidity = true
+      break
+    }
+
+    remainingQuantity -= Number(record.quantity)
+    price += Number(record.quantity) * Number(record.price)
+  }
+
+  return {
+    totalPrice: new BigNumberInBase(price),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
+    hasEnoughLiquidity
+  }
+}
+
 export function calculateTotalQuantity(
   total: string,
   records: OrderbookFormattedRecord[]
@@ -374,9 +446,9 @@ export function calculateTotalQuantity(
   }
 
   return {
-    totalQuantity: new BigNumberInBase(totalQuantity),
     hasEnoughLiquidity,
-    worstPrice: new BigNumberInBase(worstPrice)
+    worstPrice: new BigNumberInBase(worstPrice),
+    totalQuantity: new BigNumberInBase(totalQuantity)
   }
 }
 
@@ -461,18 +533,67 @@ export function countZerosAfterDecimal(num: string) {
   return zeroCount
 }
 
-export async function computeSHA512(message: string) {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
-}
-
 export const valueSortFunction = (a: any, b: any, direction: string) => {
   if (direction === 'asc') {
     return new BigNumberInBase(a).comparedTo(new BigNumberInBase(b))
   }
 
   return new BigNumberInBase(b).comparedTo(new BigNumberInBase(a))
+}
+
+export const getTradingBotLinkFromStrategy = (
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
+) => {
+  if (strategy.market.type === SharedMarketType.Spot) {
+    return strategy.market.isVerified
+      ? {
+          name:
+            strategy.botType === BotType.SpotGrid
+              ? TradeSubPage.Spot
+              : MainPage.TradingBotsLiquidityBotsSpot,
+          params: {
+            slug:
+              strategy.botType === BotType.SpotGrid
+                ? strategy.market.slug
+                : undefined
+          },
+          query: {
+            interface:
+              strategy.botType === BotType.SpotGrid
+                ? TradingInterface.TradingBots
+                : undefined,
+            market:
+              strategy.botType === BotType.LiquidityGrid
+                ? strategy.market.slug
+                : undefined
+          }
+        }
+      : {
+          name: TradeSubPage.Futures,
+          params: {
+            slug: strategy.market.slug
+          },
+          query: {
+            interface: TradingInterface.TradingBots
+          }
+        }
+  }
+
+  return strategy.market.isVerified
+    ? {
+        name: TradeSubPage.Futures,
+        params: {
+          slug: strategy.market.slug
+        },
+        query: {
+          interface: TradingInterface.TradingBots
+        }
+      }
+    : {
+        name: TradeSubPage.Futures,
+        query: {
+          interface: TradingInterface.TradingBots,
+          marketId: strategy.market.marketId
+        }
+      }
 }

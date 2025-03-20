@@ -47,9 +47,7 @@ export function useSpotWorstPrice(market: Ref<UiSpotMarket>) {
 
   const slippagePercentage = computed(() => {
     const slippagePercentage = new BigNumberInBase(
-      spotFormValues.value[SpotTradeFormField.IsSlippageOn]
-        ? spotFormValues.value[SpotTradeFormField.Slippage] || 0
-        : 0
+      spotFormValues.value[SpotTradeFormField.Slippage] || 0
     ).div(100)
 
     const slippage = isBuy.value

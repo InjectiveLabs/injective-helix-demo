@@ -51,11 +51,7 @@ function onChangeInvestmentType() {
 </script>
 
 <template>
-  <AppModal
-    :is-open="modalStore.modals[Modal.SgtBalancedFees]"
-    is-sm
-    @modal:closed="onModalClose"
-  >
+  <AppModal v-model="modalStore.modals[Modal.SgtBalancedFees]">
     <template #title>
       <h3 class="text-white">{{ $t('sgt.saveOnFees') }}</h3>
     </template>

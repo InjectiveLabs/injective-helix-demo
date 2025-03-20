@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
+
 import {
   MarketKey,
   BusEvents,
@@ -19,7 +21,11 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
 
-const { value: limitValue, errorMessage } = useStringField({
+const {
+  errorMessage,
+  value: limitValue,
+  resetField: resetLimitValue
+} = useStringField({
   name: SpotTradeFormField.Price,
   initialValue: '',
   dynamicRule: computed(() => {
@@ -30,18 +36,16 @@ const { value: limitValue, errorMessage } = useStringField({
       return ''
     }
 
-    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value?.toFixed()}`
+    if (lastTradedPrice.value.isZero()) {
+      return ''
+    }
+
+    return `priceTooFarFromLastTradePrice:${lastTradedPrice.value.toFixed()}`
   })
 })
 
 const el = ref(null)
-
-const value = computed({
-  get: () => limitValue.value,
-  set: (value: string) => {
-    limitValue.value = value
-  }
-})
+const hasClickedLimitField = ref(false)
 
 const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
@@ -51,22 +55,44 @@ const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
   )
 )
 
-function setMidLimitPrice() {
-  if (!orderbookStore.midPrice) {
+onMounted(() => {
+  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
+    limitValue.value = price
+  })
+
+  useEventBus(BusEvents.OrderSideToggled).on(() => {
+    hasClickedLimitField.value = false
+    setLimitPriceToTopOfOrderbook()
+  })
+
+  useEventBus(BusEvents.OrderbookReplaced).on(() => {
+    if (limitValue.value || hasClickedLimitField.value) {
+      return
+    }
+
+    setLimitPriceToTopOfOrderbook()
+  })
+})
+
+function setLimitPriceToTopOfOrderbook() {
+  if (!orderbookStore.highestBuyPrice || !orderbookStore.lowestSellPrice) {
     return
   }
 
-  value.value = new BigNumberInBase(orderbookStore.midPrice).toFixed(
-    market.value.priceDecimals,
-    BigNumberInBase.ROUND_DOWN
-  )
+  limitValue.value =
+    spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+      ? orderbookStore.highestBuyPrice
+      : orderbookStore.lowestSellPrice
 }
 
-onMounted(() => {
-  useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
-    value.value = price
-  })
-})
+function onResetLimitField() {
+  if (hasClickedLimitField.value) {
+    return
+  }
+
+  resetLimitValue()
+  hasClickedLimitField.value = true
+}
 </script>
 
 <template>
@@ -85,22 +111,14 @@ onMounted(() => {
     </div>
 
     <AppInputField
-      v-model="value"
+      v-model="limitValue"
       v-bind="{
         placeholder: '0.00',
         decimals: market.priceDecimals
       }"
       :data-cy="dataCyTag(SpotMarketCyTags.LimitPriceInputField)"
+      @click="onResetLimitField"
     >
-      <template #left>
-        <div
-          class="text-xs text-coolGray-400 select-none hover:text-white flex cursor-pointer"
-          @click="setMidLimitPrice"
-        >
-          {{ $t('trade.mid') }}
-        </div>
-      </template>
-
       <template #right>
         <span class="text-sm flex items-center text-white">
           {{ market.quoteToken.symbol }}

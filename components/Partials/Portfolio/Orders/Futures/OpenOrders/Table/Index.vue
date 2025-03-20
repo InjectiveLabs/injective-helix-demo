@@ -14,8 +14,10 @@ const { lg } = useSharedBreakpoints()
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
-  defineProps<{ orders: DerivativeLimitOrder[] }>(),
-  {}
+  defineProps<{ orders: DerivativeLimitOrder[]; isTradingBots?: boolean }>(),
+  {
+    isTradingBots: false
+  }
 )
 
 const { rows } = useFuturesOpenOrdersTransformer(
@@ -80,17 +82,20 @@ const columns = computed(() => {
         `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Total}`
       ),
       class: 'text-right'
-    },
-    {
+    }
+  ]
+
+  if (!props.isTradingBots) {
+    baseColumns.push({
       key: PortfolioFuturesOpenOrdersTableColumn.Chase,
       label: t(
         `portfolio.table.futuresOpenOrder.${PortfolioFuturesOpenOrdersTableColumn.Chase}`
       ),
       class: 'text-center'
-    }
-  ]
+    })
+  }
 
-  if (fourXl.value) {
+  if (fourXl.value && !props.isTradingBots) {
     baseColumns.push({
       key: PortfolioFuturesOpenOrdersTableColumn.Action,
       label: t(
@@ -141,7 +146,7 @@ const columns = computed(() => {
           </PartialsCommonMarketRedirection>
 
           <PartialsPortfolioOrdersFuturesOpenOrdersTableCancelOrder
-            v-if="!fourXl"
+            v-if="!fourXl && !props.isTradingBots"
             v-bind="{
               order: row.order,
               isAuthorized: row.isAuthorized

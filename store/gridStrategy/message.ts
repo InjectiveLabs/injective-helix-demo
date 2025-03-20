@@ -3,6 +3,7 @@ import {
   ExitType,
   MsgGrant,
   ExitConfig,
+  MsgWithdraw,
   StrategyType,
   TradingStrategy,
   MsgExecuteContractCompat,
@@ -16,17 +17,18 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/market'
+import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
   UiSpotMarket,
+  UiDerivativeMarket,
   SpotGridTradingForm,
   SpotGridTradingField,
-  DerivativeGridTradingField,
   DerivativeGridTradingForm,
-  UiDerivativeMarket
+  DerivativeGridTradingField
 } from '@/types'
 
 export const createStrategy = async (
@@ -68,6 +70,7 @@ export const createStrategy = async (
     return
   }
 
+  await walletStore.validateGeo()
   await walletStore.validate()
 
   if (sharedWalletStore.isAuthzWalletConnected) {
@@ -121,13 +124,15 @@ export const createStrategy = async (
     })
   }
 
+  const quoteAmountToFixed = spotQuantityToChainQuantityToFixed({
+    value: quoteAmount || '',
+    baseDecimals: actualMarket.quoteToken.decimals
+  })
+
   if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
     funds.push({
       denom: actualMarket.quoteToken.denom,
-      amount: spotQuantityToChainQuantityToFixed({
-        value: quoteAmount,
-        baseDecimals: actualMarket.quoteToken.decimals
-      })
+      amount: quoteAmountToFixed
     })
   }
 
@@ -200,10 +205,45 @@ export const createStrategy = async (
     )
   )
 
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: actualMarket?.quoteDenom || '',
+    amount: quoteAmountToFixed
+  })
+
   const messages: Msgs[] = []
+
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
+  }
+
+  if (cw20ConvertMessage.length > 0) {
+    messages.push(...cw20ConvertMessage)
   }
 
   // we need to add it after the authz messages
@@ -241,7 +281,7 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = spotGridMarkets.find(
+  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
     (m) => m.slug === gridStrategyStore.spotMarket!.slug
   )
 
@@ -279,6 +319,7 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -308,6 +349,7 @@ export const removeStrategyForSubaccount = async (
   backupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -336,7 +378,9 @@ export const createPerpStrategy = async (
   }
 
   const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -355,13 +399,15 @@ export const createPerpStrategy = async (
     market.slug
   )
 
+  const marginToFixed = spotQuantityToChainQuantityToFixed({
+    value: margin,
+    baseDecimals: market.quoteToken.decimals
+  })
+
   const funds = [
     {
-      denom: market.quoteToken.denom,
-      amount: spotQuantityToChainQuantityToFixed({
-        value: margin,
-        baseDecimals: market.quoteToken.decimals
-      })
+      amount: marginToFixed,
+      denom: market.quoteToken.denom
     }
   ]
 
@@ -395,7 +441,7 @@ export const createPerpStrategy = async (
       quoteDecimals: market.quoteToken.decimals
     }),
 
-    marginRatio: leverage
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
@@ -403,6 +449,11 @@ export const createPerpStrategy = async (
     sender: sharedWalletStore.injectiveAddress,
     execArgs: args,
     funds
+  })
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market?.quoteDenom || '',
+    amount: marginToFixed
   })
 
   const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
@@ -422,14 +473,47 @@ export const createPerpStrategy = async (
     )
   )
 
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
   const messages: Msgs[] = []
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
 
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
   }
 
+  if (cw20ConvertMessage.length > 0) {
+    messages.push(...cw20ConvertMessage)
+  }
+
   // we need to add it after the authz messages
   messages.push(message)
+
+  await walletStore.validateGeo()
+  await walletStore.validate()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
@@ -438,7 +522,17 @@ export const createPerpStrategy = async (
       authZStore.fetchGrants(),
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      derivativeStore.fetchOrdersForSubaccount({
+        marketIds: [market.marketId],
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchOrderHistoryForSubaccount({
+        subaccountId: gridStrategySubaccountId
+      }),
+      derivativeStore.fetchSubaccountTrades({
+        subaccountId: gridStrategySubaccountId
+      })
     ])
   )
 }
@@ -457,6 +551,7 @@ export async function createSpotLiquidityBot(params: {
   market: UiSpotMarket
 }) {
   const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -557,13 +652,38 @@ export async function createSpotLiquidityBot(params: {
 
   const messages: Msgs[] = []
 
+  const withdrawMsgs = (accountStore.subaccountBalancesMap[subaccountId] || [])
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  if (withdrawMsgs.length) {
+    messages.push(...withdrawMsgs)
+  }
+
   if (!isAuthorized) {
     messages.push(...grantAuthZMessages)
   }
 
   messages.push(msg)
 
-  await sharedWalletStore.validateAndQueue()
+  await walletStore.validateGeo()
+  await walletStore.validate()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
@@ -586,6 +706,7 @@ export async function copySpotGridTradingStrategy({
   strategy: TradingStrategy
 }) {
   const spotStore = useSpotStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -645,7 +766,8 @@ export async function copySpotGridTradingStrategy({
     funds
   })
 
-  await sharedWalletStore.validateAndQueue()
+  await walletStore.validateGeo()
+  await walletStore.validate()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: [msg] })
 

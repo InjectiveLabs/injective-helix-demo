@@ -3,6 +3,7 @@ import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
 // eslint-disable-next-line
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import {
+  BusEvents,
   AggregationKey,
   UiMarketWithToken,
   OrderbookWorkerKey,
@@ -55,8 +56,11 @@ export function useOrderbook(
           orderbookStore.$patch({
             buys: data.data.buys,
             sells: data.data.sells,
-            midPrice: data.data.midPrice
+            highestBuyPrice: data.data.highestBuyPrice,
+            lowestSellPrice: data.data.lowestSellPrice
           })
+
+          useEventBus(BusEvents.OrderbookReplaced).emit()
         }
 
         if (data.messageType === WorkerMessageResponseType.WorstPrice) {

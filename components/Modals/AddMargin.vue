@@ -9,13 +9,17 @@ import { Modal } from '@/types'
 const props = withDefaults(
   defineProps<{
     position: PositionV2
+    isPgt?: boolean
   }>(),
-  {}
+  {
+    isPgt: false
+  }
 )
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
@@ -23,8 +27,6 @@ const { handleSubmit, resetForm } = useForm()
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
-
-const isModalOpen = computed(() => modalStore.modals[Modal.AddMarginToPosition])
 
 const market = computed(() => {
   if (!props.position) {
@@ -81,6 +83,28 @@ const onSubmit = handleSubmit(() => {
     return
   }
 
+  if (props.isPgt && sharedWalletStore.defaultSubaccountId) {
+    status.setLoading()
+
+    positionStore
+      .addMarginToSubaccountPosition({
+        market: market.value,
+        amount: new BigNumberInBase(amountValue.value),
+        fromSubaccountId: sharedWalletStore.defaultSubaccountId,
+        toSubaccountId: props.position.subaccountId
+      })
+      .then(() => {
+        resetForm()
+        notificationStore.success({ title: t('trade.success_added_margin') })
+        onModalClose()
+      })
+      .catch($onError)
+      .finally(() => {
+        status.setIdle()
+      })
+    return
+  }
+
   status.setLoading()
 
   positionStore
@@ -101,7 +125,7 @@ const onSubmit = handleSubmit(() => {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-model="modalStore.modals[Modal.AddMarginToPosition]">
     <template #title>
       <h3>
         {{ $t('trade.add_margin_to_position_title') }}
@@ -127,9 +151,13 @@ const onSubmit = handleSubmit(() => {
                 data-cy="add-margin-modal-available-text-content"
               >
                 {{ availableMarginToString }}
-                <span class="text-coolGray-500 ml-2">{{
-                  market.quoteToken.symbol
-                }}</span>
+                <PartialsCommonBalanceDisplay
+                  v-bind="{
+                    token: market.quoteToken,
+                    value: market.quoteToken.symbol,
+                    textColorClass: 'text-cool-gray-500 ml-2'
+                  }"
+                />
               </span>
             </div>
           </div>

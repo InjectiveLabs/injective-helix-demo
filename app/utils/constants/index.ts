@@ -120,6 +120,7 @@ export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 
 export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
+export const NEPTUNE_USDT_BUFFER = 0.15
 
 export const ORDERBOOK_ROW_HEIGHT = 24
 export const ORDERBOOK_ROWS = 10
@@ -129,7 +130,6 @@ export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
 
-export const LEADERBOARD_VOLUME_PER_ENTRY = 10
 export const intervalOptions: IntervalOption[] = [
   { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
   { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
@@ -183,10 +183,6 @@ export const STOP_REASON_MAP = {
 }
 
 export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
-
-export const MARKET_IDS_TO_HIDE = [
-  '0x0314518c986964f6ae97695330b4ba4377313a11778b0dfd69525b57d66bf006'
-]
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP

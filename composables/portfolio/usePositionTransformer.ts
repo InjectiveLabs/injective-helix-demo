@@ -4,6 +4,7 @@ import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { PositionTableColumn, TransformedPosition } from '@/types'
+import { isTradingbotSubaccountId } from '@/app/utils/helpers'
 
 export function usePositionTransformer(
   positionList: ComputedRef<PositionV2[]>
@@ -11,6 +12,7 @@ export function usePositionTransformer(
   const authZStore = useAuthZStore()
   const tokenStore = useTokenStore()
   const derivativeStore = useDerivativeStore()
+  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const rows = computed(() =>
@@ -81,6 +83,11 @@ export function usePositionTransformer(
         (order) => order.isReduceOnly && order.marketId === position.marketId
       )
 
+      const hasActiveStrategy =
+        !!gridStrategyStore.activeDerivativeStrategies.find(
+          (strategy) => strategy.subaccountId === position.subaccountId
+        )
+
       const quantityInUsd = quantity
         .times(markPrice)
         .times(tokenStore.tokenUsdPrice(market.quoteToken) || 0)
@@ -95,12 +102,17 @@ export function usePositionTransformer(
         quantityInUsd,
         liquidationPrice,
         effectiveLeverage,
+        hasActiveStrategy,
         isLimitOrderAuthorized,
         reduceOnlyCurrentOrders,
         isMarketOrderAuthorized,
+        subaccountId: position.subaccountId,
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
         hasReduceOnlyOrders: !!reduceOnlyCurrentOrders.length,
+        isTradingBotSubaccount: !!isTradingbotSubaccountId(
+          position.subaccountId
+        ),
         [PositionTableColumn.Market]: market,
         [PositionTableColumn.Margin]: margin
       })

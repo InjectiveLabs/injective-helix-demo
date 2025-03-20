@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJ_DENOM } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 const { subaccount } = useSubaccounts()
@@ -32,11 +32,15 @@ const balancesSorted = computed(() => {
       decimalPlaces: b.token.decimals
     })
 
-    if (b.denom === INJ_DENOM) {
+    if (a.denom === injToken.denom) {
+      return -1
+    }
+
+    if (b.denom === injToken.denom) {
       return 1
     }
 
-    return aBalanceInToken.gt(bBalanceInToken) ? -1 : 1
+    return bBalanceInToken.minus(aBalanceInToken).toNumber()
   })
 })
 </script>

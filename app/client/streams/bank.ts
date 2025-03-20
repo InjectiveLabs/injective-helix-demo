@@ -2,8 +2,8 @@ import {
   AccountPortfolioStreamCallback,
   IndexerGrpcAccountPortfolioStream
 } from '@injectivelabs/sdk-ts'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '../../providers/StreamProvider'
-import { ENDPOINTS } from '@/app/utils/constants'
 import { StreamType } from '@/types/enums'
 
 export const portfolioStream = new IndexerGrpcAccountPortfolioStream(

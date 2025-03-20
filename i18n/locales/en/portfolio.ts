@@ -1,7 +1,6 @@
 import {
   PortfolioChartType,
   PositionTableColumn,
-  I18nMessageFunction,
   PortfolioSubaccountsTableColumn,
   PortfolioSpotOpenOrdersTableColumn,
   PortfolioFuturesAdvancedOrdersTableColumn,
@@ -10,7 +9,7 @@ import {
   PortfolioFuturesOpenOrdersTableColumn,
   PortfolioFuturesOrderHistoryTableColumn,
   PortfolioFuturesTradeHistoryTableColumn
-} from '@/types'
+} from './../../../types'
 
 export default {
   portfolio: {
@@ -202,15 +201,11 @@ export default {
           title: 'Auto sign is disabled'
         },
         allowsYouToTrade:
-          'Allows you to trade for 72 hours without needing to sign each transaction',
+          'Allows you to trade on Helix for 72 hours without needing to sign most transactions. Auto-Sign can be deactivated any time.',
         expiredToast: {
           title: 'Auto sign session has expired',
           settings: 'Settings',
-          description: ({ interpolate, named }: I18nMessageFunction) =>
-            interpolate([
-              'You can start a new session from ',
-              named('settings')
-            ])
+          description: 'You can start a new session from {settings}'
         },
         disconnect: 'Disconnect Auto-Sign'
       }
@@ -221,7 +216,7 @@ export default {
       filterBySide: 'Filter by Side'
     },
     connectMobile: {
-      scanQRCode: 'Scan this QR code in Helix Mobile to connect your wallet!',
+      scanQRCode: 'Scan this QR code on mobile to connect your wallet',
       grantAccess: 'Grant Access',
       scanCode: 'Scan Code to Continue'
     },

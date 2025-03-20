@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -8,22 +7,12 @@ withDefaults(
   defineProps<{
     url?: string
   }>(),
-  {
-    url: ''
-  }
+  { url: '' }
 )
-
-const status = reactive(new Status(StatusType.Idle))
-
-const isModalOpen = computed(() => modalStore.modals[Modal.MitoRedirect])
-
-function closeModal() {
-  modalStore.closeModal(Modal.MitoRedirect)
-}
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm class="p-4" @modal:closed="closeModal">
+  <AppModal v-model="modalStore.modals[Modal.MitoRedirect]">
     <section class="text-center">
       <div
         class="flex items-center gap-2 max-w-[300px] mt-6 mx-auto text-white"
@@ -39,7 +28,6 @@ function closeModal() {
       />
       <NuxtLink :to="url">
         <AppButton
-          v-bind="{ status }"
           class="w-full text-base leading-5 font-semibold text-black"
           variant="primary"
         >

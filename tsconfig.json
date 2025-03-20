@@ -15,7 +15,11 @@
       "@injectivelabs/sdk-ts",
       "@injectivelabs/exceptions",
       "@injectivelabs/ts-types",
-      "@injectivelabs/wallet-ts"
+      "@injectivelabs/wallet-evm",
+      "@injectivelabs/wallet-base",
+      "@injectivelabs/wallet-core",
+      "@injectivelabs/wallet-cosmos",
+      "@injectivelabs/wallet-strategy"
     ]
   },
   "exclude": [

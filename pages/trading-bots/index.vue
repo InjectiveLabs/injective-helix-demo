@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const appStore = useAppStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -25,7 +26,9 @@ onMounted(() => {
 
     <PartialsTradingBotsHomepageMyLpRewards class="mt-10" />
 
-    <!-- Add when API is ready -->
-    <!-- <PartialsTradingBotsHomepageShowcase class="mt-10" /> -->
+    <PartialsTradingBotsHomepageShowcase
+      v-if="appStore.devMode"
+      class="mt-10"
+    />
   </UContainer>
 </template>

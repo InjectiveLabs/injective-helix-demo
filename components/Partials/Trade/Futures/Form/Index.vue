@@ -4,7 +4,6 @@ import { derivativeGridMarkets } from '~/app/json'
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const appStore = useAppStore()
 const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const options = computed(() => [
@@ -34,7 +33,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div v-if="appStore.devMode" class="h-header flex border-b">
+    <div class="h-header flex border-b">
       <AppButtonSelect
         v-for="{ value, disabled } in options"
         :key="value"

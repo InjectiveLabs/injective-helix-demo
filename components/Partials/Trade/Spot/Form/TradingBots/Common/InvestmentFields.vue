@@ -277,7 +277,9 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       :disabled="isLowerBoundGtLastPrice || isDisabled"
     >
       <template #right>
-        <span class="text-sm text-white">{{ market.quoteToken.symbol }}</span>
+        <PartialsCommonBalanceDisplay
+          v-bind="{ token: market.quoteToken, value: market.quoteToken.symbol }"
+        />
       </template>
 
       <template #bottom>

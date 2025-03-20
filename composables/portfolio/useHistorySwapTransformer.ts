@@ -1,10 +1,8 @@
 import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@shared/utils/network'
-import {
-  toBalanceInToken,
-  convertCoinToBalancesWithToken
-} from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { convertCoinToBalancesWithToken } from '@/app/utils/formatters'
 import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { HistorySwapTableColumn } from '@/types'
 
@@ -28,7 +26,7 @@ export function useHistorySwapTransformer(swapList: ComputedRef<AtomicSwap[]>) {
       const formattedFees = swap.fees.map(({ denom, amount }) => {
         const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-        const amountInToken = toBalanceInToken({
+        const amountInToken = sharedToBalanceInToken({
           value: amount,
           decimalPlaces: token?.decimals || 18,
           fixedDecimals: MAX_QUOTE_DECIMALS
@@ -47,7 +45,7 @@ export function useHistorySwapTransformer(swapList: ComputedRef<AtomicSwap[]>) {
 
       const sourceBalanceFormatted = !sourceTokenWithBalance
         ? '0'
-        : toBalanceInToken({
+        : sharedToBalanceInToken({
             value: sourceTokenWithBalance.balance,
             decimalPlaces: sourceTokenWithBalance.token.decimals,
             fixedDecimals: 3
@@ -55,7 +53,7 @@ export function useHistorySwapTransformer(swapList: ComputedRef<AtomicSwap[]>) {
 
       const destinationBalanceFormatted = !destinationTokenWithBalance
         ? '0'
-        : toBalanceInToken({
+        : sharedToBalanceInToken({
             value: destinationTokenWithBalance.balance,
             decimalPlaces: destinationTokenWithBalance.token.decimals,
             fixedDecimals: 3

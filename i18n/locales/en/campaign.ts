@@ -1,8 +1,7 @@
 import {
-  I18nMessageFunction,
   LiquidityTableColumn,
   LiquidityDashboardTableColumn
-} from '@/types'
+} from './../../../types'
 
 export default {
   campaign: {
@@ -73,18 +72,8 @@ export default {
     eligibleMarkets: 'Eligible Market for Rewards ',
     rewardsPending:
       'LP Rewards Pending: Rewards for this pair are currently being processed. Funding may take up to a week after the round ends.',
-    lastUpdatedAt: 'Last updated at {date}',
-    lastUpdated: ({ named }: I18nMessageFunction) =>
-      `Last updated at ${named('date')}`,
-    roundIsLive: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate([
-        named('round1'),
-        ' is now live! Check out the new markets added to this round! ',
-        'To claim your rewards from ',
-        named('round2'),
-        ' go to ',
-        named('myRewards'),
-        ' on the page.'
-      ])
+    lastUpdated: 'Last updated at {date}',
+    roundIsLive:
+      '{round1} is now live! Check out the new markets added to this round! To claim your rewards from {round2} go to {myRewards} on the page.'
   }
 }

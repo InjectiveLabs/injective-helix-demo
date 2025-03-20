@@ -4,8 +4,8 @@ import {
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { Wallet } from '@injectivelabs/wallet-ts'
 import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
@@ -18,6 +18,7 @@ const stateToPersist = {
       bannersViewed: [],
       dontShowAgain: [],
       favoriteMarkets: [],
+      marketSlippageIdMap: {},
 
       preferences: {
         futuresLeverage: '1',
@@ -82,6 +83,7 @@ const actionsThatSetAppStateToBusy = [
   'campaign/joinGuild',
   'campaign/createGuild',
   'campaign/claimReward',
+  'spot/submitChase',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'account/withdrawToMain',
@@ -94,8 +96,7 @@ const actionsThatSetAppStateToBusy = [
   'authZ/grantAuthorization',
   'authZ/revokeAuthorization',
   'position/closeAllPosition',
-  'spot/submitStopLimitOrder',
-  'spot/submitStopMarketOrder',
+  'derivative/submitChase',
   'derivative/submitTpSlOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
@@ -108,6 +109,8 @@ const actionsThatSetAppStateToBusy = [
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
+  'account/convertNeptuneToPeggyUsdt',
+  'account/convertPeggyToNeptuneUsdt',
   'swap/submitAtomicOrderExactOutput',
   'gridStrategy/createSpotLiquidityBot',
   'activity/batchCancelDerivativeOrders',

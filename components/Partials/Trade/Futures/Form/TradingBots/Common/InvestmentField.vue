@@ -107,9 +107,6 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
       <div
         class="flex p-2 items-center space-x-2 text-xs bg-brand-875 rounded-md"
       >
-        <CommonTokenIcon is-sm v-bind="{ token: market.baseToken }" />
-        <p>{{ market.baseToken.symbol }}</p>
-        <span>+</span>
         <CommonTokenIcon is-sm v-bind="{ token: market.quoteToken }" />
         <p>{{ market.quoteToken.symbol }}</p>
       </div>
@@ -121,7 +118,9 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
       :disabled="isDisabled"
     >
       <template #right>
-        <span>{{ market.quoteToken.symbol }}</span>
+        <PartialsCommonBalanceDisplay
+          v-bind="{ token: market.quoteToken, value: market.quoteToken.symbol }"
+        />
       </template>
 
       <template #bottom>

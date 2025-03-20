@@ -1,4 +1,4 @@
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import { MixPanelEvent } from '@/types'
 

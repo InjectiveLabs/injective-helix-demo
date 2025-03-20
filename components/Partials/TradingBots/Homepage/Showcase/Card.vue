@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { GridStrategyTransformed, MainPage } from '@/types'
+import {
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
+} from '@/types'
+import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
 
 const props = withDefaults(
   defineProps<{
-    strategy: GridStrategyTransformed
+    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
   }>(),
   {}
 )
@@ -21,19 +25,23 @@ const totalUsers = computed(
 const isPositivePnl = computed(() =>
   new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
 )
+
+const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
 </script>
 
 <template>
   <UCard
     :ui="{
+      base: 'h-full flex flex-col',
       background: 'dark:bg-brand-875',
       ring: 'dark:hover:ring-primary-500',
       body: {
+        base: 'flex-1',
         padding: 'px-2 sm:px-4 py-2 sm:py-4'
       }
     }"
   >
-    <div class="flex">
+    <div class="flex flex-1">
       <UAvatar
         :src="strategy.market.baseToken.logo"
         :alt="strategy.market.baseToken.symbol"
@@ -64,7 +72,7 @@ const isPositivePnl = computed(() =>
         class="text-2xl font-semibold"
       >
         <span v-if="isPositivePnl"> + </span>
-        {{ strategy.strategy.pnlPerc }}
+        {{ props.strategy.strategy.pnlPerc }}
         %
       </p>
     </div>
@@ -104,13 +112,7 @@ const isPositivePnl = computed(() =>
     </div>
 
     <template #footer>
-      <UButton
-        block
-        :to="{
-          name: MainPage.TradingBotsLiquidityBotsSpot,
-          query: { market: strategy.market.slug }
-        }"
-      >
+      <UButton block :to="to">
         {{ $t('common.create') }}
       </UButton>
     </template>

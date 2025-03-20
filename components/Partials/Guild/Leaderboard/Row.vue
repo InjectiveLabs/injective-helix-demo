@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { Guild, GuildCampaignSummary } from '@injectivelabs/sdk-ts'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 import { CampaignSubPage } from '@/types'
 
@@ -34,7 +34,7 @@ const startDate = computed(() => {
 
 const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.guild.tvlScore,
       decimalPlaces: baseToken.value?.decimals || 18
     })
@@ -43,7 +43,7 @@ const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
 
 const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.guild.volumeScore,
       decimalPlaces: quoteToken.value?.decimals || 6
     })

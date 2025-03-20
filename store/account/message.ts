@@ -7,6 +7,7 @@ import {
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { prepareOrderMessages } from '@/app/utils/market'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({
@@ -28,7 +29,15 @@ export const deposit = async ({
 
   await walletStore.validate()
 
-  const messages = MsgDeposit.fromJSON({
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: token.denom,
+    amount: denomAmountToChainDenomAmountToFixed({
+      value: amount.toFixed(),
+      decimals: token.decimals
+    })
+  })
+
+  const message = MsgDeposit.fromJSON({
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     subaccountId: subaccountId || accountStore.subaccountId,
     amount: {
@@ -40,9 +49,16 @@ export const deposit = async ({
     }
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }
 
 export const withdraw = async ({
@@ -105,7 +121,12 @@ export const transfer = async ({
 
   await walletStore.validate()
 
-  const messages = MsgSend.fromJSON({
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: token.denom,
+    amount: new BigNumberInBase(amount).toWei(token.decimals).toFixed()
+  })
+
+  const message = MsgSend.fromJSON({
     srcInjectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     dstInjectiveAddress: destination,
     amount: {
@@ -114,9 +135,17 @@ export const transfer = async ({
     }
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages, memo })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message],
+    memo
+  })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
 }
 
 export const externalTransfer = async ({

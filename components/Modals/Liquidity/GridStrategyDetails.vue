@@ -16,6 +16,7 @@ function onCloseModal() {
   modalStore.closeModal(Modal.GridStrategyDetails)
 }
 </script>
+
 <template>
   <AppModal
     is-md

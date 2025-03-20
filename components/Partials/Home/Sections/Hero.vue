@@ -36,7 +36,7 @@ onMounted(() => {
   })
 })
 
-function openDepositQrModal() {
+function onFiatOnRamp() {
   if (sharedWalletStore.isUserConnected) {
     modalStore.openModal(Modal.FiatOnboard)
   } else {
@@ -85,7 +85,7 @@ function onWalletConnect() {
         <AppButton
           class="w-full isolate"
           variant="primary-outline"
-          @click="openDepositQrModal"
+          @click="onFiatOnRamp"
         >
           {{ $t('home.depositCrypto') }}
         </AppButton>

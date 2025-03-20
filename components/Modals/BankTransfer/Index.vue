@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 import { injToken } from '@shared/data/token'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { BusEvents, Modal, BankTransferField } from '@/types'
 
 const accountStore = useAccountStore()
@@ -79,10 +79,9 @@ function closeModal() {
 
 <template>
   <AppModal
-    :is-open="modalStore.modals[Modal.BankTransfer]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.BankTransfer]"
+    v-bind="{ isMd: true }"
+    @on:open="resetForm"
   >
     <template #title>
       <h3>

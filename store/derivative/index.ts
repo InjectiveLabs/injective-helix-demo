@@ -13,8 +13,8 @@ import {
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
 import {
-  pythService,
   indexerOracleApi,
+  cachePythService,
   derivativeCacheApi,
   indexerDerivativesApi
 } from '@shared/Service'
@@ -27,9 +27,11 @@ import {
 import {
   toUiMarketSummary,
   toUiDerivativeMarket,
-  toZeroUiMarketSummary
+  toZeroUiMarketSummary,
+  sharedGetDerivativeSlugOverride
 } from '@shared/transformer/market'
 import { usdtToken } from '@shared/data/token'
+import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   cancelOrder,
@@ -61,12 +63,8 @@ import {
   verifiedExpiryMarketIds,
   verifiedDerivativeMarketIds
 } from '@/app/json'
-import { marketIdsToHide } from '@/app/data/market'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
-import {
-  MARKET_IDS_TO_HIDE,
-  TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-} from '@/app/utils/constants'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
   UiDerivativeMarket,
@@ -220,15 +218,16 @@ export const useDerivativeStore = defineStore('derivative', {
       const slugs = [...verifiedExpirySlugs, ...verifiedDerivativeSlugs]
 
       const uiMarkets = markets
-        .filter((market) => !MARKET_IDS_TO_HIDE.includes(market.marketId))
         .map((market) => {
-          const slug = market.ticker
-            .replaceAll('/', '-')
-            .replaceAll(' ', '-')
-            .toLowerCase()
+          const slug = sharedGetDerivativeSlugOverride({
+            ticker: market.ticker,
+            marketId: market.marketId
+          })
 
           const [baseTokenSymbol] = slug.split('-')
-          const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
+          const baseToken = tokenStore.tokenBySymbol(
+            baseTokenSymbol.toUpperCase()
+          )
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
           if (!baseToken || !quoteToken) {
@@ -251,7 +250,7 @@ export const useDerivativeStore = defineStore('derivative', {
           }
         })
         .filter(
-          (market) => market && !marketIdsToHide.includes(market.marketId)
+          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
         ) as UiDerivativeMarket[]
 
       derivativeStore.$patch({
@@ -416,6 +415,30 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
+    async fetchOrdersForSubaccount({
+      marketIds,
+      subaccountId
+    }: {
+      marketIds: string[]
+      subaccountId: string
+    }) {
+      const derivativeStore = useDerivativeStore()
+
+      const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
+        subaccountId,
+        isConditional: false,
+        marketIds: marketIds || derivativeStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
+      })
+
+      derivativeStore.$patch({
+        subaccountOrders: orders,
+        subaccountOrdersCount: pagination.total
+      })
+    },
+
     async fetchSubaccountOrderHistory(
       options: ActivityFetchOptions | undefined
     ) {
@@ -431,7 +454,35 @@ export const useDerivativeStore = defineStore('derivative', {
 
       const { orderHistory, pagination } =
         await indexerDerivativesApi.fetchOrderHistory({
+          direction: filters?.direction,
+          marketIds: filters?.marketIds,
+          pagination: options?.pagination,
+          isConditional: filters?.isConditional,
           subaccountId: accountStore.subaccountId,
+          orderTypes: filters?.orderTypes as unknown as OrderSide[],
+          executionTypes: filters?.executionTypes as TradeExecutionType[]
+        })
+
+      derivativeStore.$patch({
+        subaccountOrderHistory: orderHistory,
+        subaccountOrderHistoryCount: pagination.total
+      })
+    },
+
+    async fetchOrderHistoryForSubaccount({
+      options,
+      subaccountId
+    }: {
+      options?: ActivityFetchOptions
+      subaccountId: string
+    }) {
+      const derivativeStore = useDerivativeStore()
+
+      const filters = options?.filters
+
+      const { orderHistory, pagination } =
+        await indexerDerivativesApi.fetchOrderHistory({
+          subaccountId,
           direction: filters?.direction,
           pagination: options?.pagination,
           isConditional: filters?.isConditional,
@@ -578,8 +629,33 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
+    async fetchTradesForSubaccount({
+      subaccountId,
+      options
+    }: {
+      options?: ActivityFetchOptions
+      subaccountId: string
+    }) {
+      const derivativeStore = useDerivativeStore()
+
+      const filters = options?.filters
+
+      const { trades, pagination } = await indexerDerivativesApi.fetchTrades({
+        subaccountId,
+        direction: filters?.direction,
+        pagination: options?.pagination,
+        executionTypes: filters?.executionTypes as TradeExecutionType[],
+        marketIds: filters?.marketIds || derivativeStore.activeMarketIds
+      })
+
+      derivativeStore.$patch({
+        subaccountTrades: trades,
+        subaccountTradesCount: pagination.total
+      })
+    },
+
     async fetchRWAMarketIsOpen(pythPriceId: string) {
-      return await pythService.fetchRwaMarketOpenNoThrow(pythPriceId)
+      return await cachePythService.fetchRwaMarketOpenNoThrow(pythPriceId)
     },
 
     updateMarkPriceMapFromPosition(positions: PositionV2[]) {

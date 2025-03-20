@@ -3,9 +3,7 @@ withDefaults(
   defineProps<{
     hasActiveStrategy: boolean
   }>(),
-  {
-    hasActiveStrategy: false
-  }
+  { hasActiveStrategy: false }
 )
 
 const emit = defineEmits<{
@@ -20,19 +18,13 @@ function onViewDetails() {
 <template>
   <div class="pt-4">
     <PartialsTradeSpotFormTradingBotsManualPriceRangeFields
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
     <PartialsTradeSpotFormTradingBotsManualGridsField
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
     <PartialsTradeSpotFormTradingBotsCommonInvestmentFields
-      v-bind="{
-        isDisabled: hasActiveStrategy
-      }"
+      v-bind="{ isDisabled: hasActiveStrategy }"
     />
 
     <PartialsTradeSpotFormTradingBotsManualAdvancedSettings />

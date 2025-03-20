@@ -6,58 +6,40 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
-  DepositQr = 'deposit-qr',
-  SgtBanner = 'sgt-banner',
+  IAsset = 'iasset-modal',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
   LiteBridge = 'lite-bridge',
   AddGrantee = 'add-grantee',
-  BidConfirm = 'bid-confirm',
-  MarketBeta = 'market-beta',
   FiatOnboard = 'fiat-onboard',
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
+  NeptuneUsdt = 'neptune-usdt',
   BankTransfer = 'bank-transfer',
-  AssetDetails = 'asset-details',
-  OrderConfirm = 'order-confirm',
   UserFeedback = 'user-feedback',
   MitoRedirect = 'mito-redirect',
   PostOnlyMode = 'post-only-mode',
-  GasFeeRebate = 'gas-fee-rebate',
   GeoRestricted = 'geo-restricted',
-  MarketExpired = 'market-expired',
-  TokenSelector = 'token-selector',
-  ScavengerHunt = 'scavenger-hunt',
   ConnectMobile = 'connect-mobile',
-  PriceDeviation = 'price-deviation',
   SgtBalancedFees = 'sgtBalancedFees',
   ClosedRWAMarket = 'closed-rwa-market',
   NinjaPassWinner = 'ninja-pass-winner',
-  TokenSelectorTo = 'token-selector-to',
-  MarketNotLiquid = 'market-not-liquid',
-  CreateSubaccount = 'create-subaccount',
   MarketRestricted = 'market-restricted',
   LeaderboardTerms = 'leaderboard-terms',
   SharePositionPnl = 'share-position-pnl',
   InstitutionalForm = 'institutionalForm',
   CompetitionWinner = 'competition-winner',
   MarketNotOnHelix = 'market-not-on-helix',
-  TokenSelectorFrom = 'token-selector-from',
   SubaccountTransfer = 'subaccount-transfer',
-  CheckSpotGridAuth = 'check-spot-grid-auth',
   AlreadyJoinedGuild = 'already-joined-guild',
-  MobileTradeDetails = 'mobile-trade-details',
-  ShareLeaderboardPnl = 'share-leaderboard-pnl',
   GridStrategyDetails = 'grid-strategy-details',
-  DelegateToValidator = 'delegate-to-validator',
-  MarketRewardFactors = 'market-reward-factors',
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
-  NewFeatureTalisLaunch = 'new-feature-talis-launch',
+  ClosePositionWarning = 'close-position-warning',
+  ShareLeaderboardStats = 'share-leaderboard-stats',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
-  CreateSpotGridStrategy = 'create-spot-grid-strategy',
-  TransferToMainSubaccount = 'transfer-to-main-subaccount',
-  ShareLeaderboardCompetition = 'share-leaderboard-competition'
+  NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
+  TransferToMainSubaccount = 'transfer-to-main-subaccount'
 }
 
 export enum Breakpoint {
@@ -153,29 +135,29 @@ export enum BalanceHeaderType {
 }
 
 export enum BusEvents {
+  NeptuneUsdt = 'neptune-usdt',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
   WalletConnected = 'wallet-connected',
   PostOnlyToggled = 'post-only-toggled',
   SubaccountChange = 'subaccount-change',
+  OrderSideToggled = 'order-side-toggled',
+  OrderbookReplaced = 'orderbook-replaced',
   AutoSignConnected = 'auto-sign-connected',
-  ShowLedgerConnect = 'show-ledger-connect',
   UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
   SharePositionOpened = 'share-position-opened',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',
-  ActivityFilterUpdate = 'activity-filter-update',
   OpenTradingBotDetails = 'open-trading-bot-details',
+  SetPositionStatusIdle = 'set-position-status-idle',
   OrderbookNotionalClick = 'orderbook-notional-click',
-  AssetDetailsModalPayload = 'asset-details-modal-payload',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
   LimitOrdersModifyOnChart = 'limit-orders-modify-on-chart',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
+  ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
   SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
   DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
 }
 
@@ -257,9 +239,11 @@ export enum AggregatedBalanceType {
 }
 
 export enum NoticeBanner {
-  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
+  neptuneUsdt = 'neptune-usdt',
+  TeslaCampaign = 'tesla-campaign',
+  OwnYourAssetCampaign = 'own-your-asset-campaign',
   ScheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024',
-  TeslaCampaign = 'tesla-campaign'
+  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024'
 }
 
 export enum SubaccountBalanceStreamType {
@@ -428,12 +412,11 @@ export enum PerpOrdersStandardView {
 
 export enum PerpOrdersTradingBotsView {
   ActiveStrategies = 'activeStrategies',
-  RemovedStrategies = 'removedStrategies'
-  // OpenPositions = 'openPositions',
-  // OpenOrders = 'openOrders',
-  // Triggers = 'triggers',
-  // OrderHistory = 'orderHistory',
-  // TradeHistory = 'tradeHistory'
+  RemovedStrategies = 'removedStrategies',
+  Positions = 'positions',
+  OpenOrders = 'openOrders',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory'
 }
 
 export enum PositionsFilterField {
@@ -469,7 +452,6 @@ export enum SpotTradeFormField {
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   AmountOption = 'amountOption',
-  IsSlippageOn = 'isSlippageOn',
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
@@ -491,7 +473,6 @@ export enum DerivativesTradeFormField {
   TakeProfit = 'takeProfit',
   AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
-  IsSlippageOn = 'isSlippageOn',
   isTpSlEnabled = 'isTpSlEnabled',
   BypassPriceWarning = 'bypassPriceWarning'
 }
@@ -582,7 +563,8 @@ export enum MarketCategoryType {
   DeFi = 'deFi',
   AI = 'aI',
   Meme = 'meme',
-  RWA = 'rwa'
+  RWA = 'rwa',
+  iAssets = 'iAssets'
   // All = 'all',
   // Cosmos = 'cosmos',
   // Ethereum = 'ethereum',

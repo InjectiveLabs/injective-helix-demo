@@ -45,62 +45,12 @@ const toggleFavorite = () => {
   <AppMobileTable :columns="filteredColumns" extra-class="py-6">
     <template #header>
       <div class="flex items-start flex-wrap gap-2 mb-6 justify-between">
-        <PartialsCommonMarketRedirection
-          :market="market.market"
-          class="flex items-center"
-        >
-          <div class="w-full flex items-center truncate">
-            <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
-
-            <div class="ml-3">
-              <CommonHeaderTooltip
-                :tooltip="$t('trade.rwa.marketClosedMarketRow')"
-                :is-disabled="!market.isRwaMarket"
-                is-not-styled
-                text-color-class="text-white"
-                :classes="
-                  market.isRwaMarket
-                    ? 'border-dashed border-b cursor-pointer'
-                    : ''
-                "
-                tooltip-class="text-xs"
-                :ui="{
-                  base: 'translate-y-2'
-                }"
-              >
-                <span
-                  class="text-sm font-bold block"
-                  :data-cy="dataCyTag(MarketCyTags.MarketTicker)"
-                >
-                  {{ market.market.ticker }}
-                </span>
-              </CommonHeaderTooltip>
-
-              <div class="flex items-center gap-1">
-                <div
-                  class="text-xs font-normal text-[#8E919A]"
-                  :data-cy="`${dataCyTag(MarketCyTags.MarketBaseToken)}-${
-                    market.market.baseToken.name
-                  }`"
-                >
-                  {{ market.market.baseToken.name }}
-                </div>
-
-                <div v-if="!market.isVerified">
-                  <UTooltip
-                    :text="$t('markets.permisionlessWarning')"
-                    class="flex"
-                  >
-                    <UIcon
-                      name="clarity:shield-line"
-                      class="text-gray-400 size-3"
-                    />
-                  </UTooltip>
-                </div>
-              </div>
-            </div>
-          </div>
-        </PartialsCommonMarketRedirection>
+        <div class="w-full flex items-center truncate">
+          <PartialsMarketsCommonMarketInfo
+            include-name
+            :market="market.market"
+          />
+        </div>
 
         <PartialsCommonMarketRedirection
           :market="market.market"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { MagicProvider } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { MagicProvider } from '@injectivelabs/wallet-ts'
 
 const sharedWalletStore = useSharedWalletStore()
 

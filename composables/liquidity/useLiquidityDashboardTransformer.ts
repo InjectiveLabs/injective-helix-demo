@@ -1,7 +1,7 @@
 import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   LiquidityDashboardTableColumn,
@@ -25,7 +25,7 @@ export function useLiquidityDashboardTransformer(
       }
 
       const marketVolumeInUsd = new BigNumberInBase(
-        toBalanceInToken({
+        sharedToBalanceInToken({
           value: campaign.userScore || 0,
           decimalPlaces:
             market.quoteToken?.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS

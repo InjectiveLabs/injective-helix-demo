@@ -17,8 +17,6 @@ const status = reactive(new Status(StatusType.Idle))
 
 const classes = 'border border-white p-4 rounded-md bg-transparent'
 
-const isModalOpen = computed(() => modalStore.modals[Modal.InstitutionalForm])
-
 const { value: firstNameValue } = useStringField({
   name: InstitutionalFormField.FirstName,
   rule: 'required'
@@ -35,14 +33,6 @@ const { value: emailValue } = useStringField({
 const { value: companyValue } = useStringField({
   name: InstitutionalFormField.Company
 })
-
-watch(isModalOpen, () => {
-  resetForm()
-})
-
-function closeModal() {
-  modalStore.closeModal(Modal.InstitutionalForm)
-}
 
 async function onSubmit() {
   const { valid } = await validate()
@@ -83,9 +73,9 @@ async function onSubmit() {
 
 <template>
   <AppModal
-    class="w-full"
-    v-bind="{ isOpen: isModalOpen }"
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.InstitutionalForm]"
+    :ui="{ width: 'lg:max-w-5xl' }"
+    @on:open="resetForm"
   >
     <div>
       <h3 class="text-5xl pb-4">

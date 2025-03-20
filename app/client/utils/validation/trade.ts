@@ -1,6 +1,6 @@
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MAX_SLIPPAGE } from '@/app/utils/constants'
+import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE } from '@/app/utils/constants'
 
 export const tradeErrorMessages = {
   enoughBalance: () => 'Insufficient balance',
@@ -24,7 +24,9 @@ export const tradeErrorMessages = {
     `Base amount must be >= ${minBaseAmount}`,
   minAmount: (minBaseAmount: string) => `Amount must be > ${minBaseAmount}`,
   quantityTensMultiplier: (tensMultiplier: string) =>
-    `Quantity must be a multiple of ${tensMultiplier}`
+    `Quantity must be a multiple of ${tensMultiplier}`,
+  markPriceThresholdError: () =>
+    'Please modify price, amount, or leverage to meet mark price requirement'
 } as Record<string, any>
 
 export const defineTradeRules = () => {
@@ -35,11 +37,7 @@ export const defineTradeRules = () => {
       return tradeErrorMessages.slippageExceed()
     }
 
-    if (slippage.gt(5)) {
-      return tradeErrorMessages.slippageTooHigh()
-    }
-
-    if (slippage.lt(0.05)) {
+    if (slippage.lt(DEFAULT_SLIPPAGE)) {
       return tradeErrorMessages.slippageTooLow()
     }
 
@@ -142,14 +140,6 @@ export const defineTradeRules = () => {
   defineRule('maxLeverage', (value: string | number, [max]: [string]) => {
     const leverage = new BigNumberInBase(value)
 
-    // if (new BigNumberInBase(max).gte(1) && leverage.gt(max)) {
-    //   return leverage.eq(1)
-    //     ? isBuy
-    //       ? tradeErrorMessages.orderPriceHigh()
-    //       : tradeErrorMessages.orderPriceLow()
-    //     : tradeErrorMessages.maxLeverage()
-    // }
-
     if (leverage.gt(max)) {
       return tradeErrorMessages.maxLeverage()
     }
@@ -223,4 +213,13 @@ export const defineTradeRules = () => {
       return true
     }
   )
+
+  defineRule('markPriceThresholdError', (_: string, [isError]: string[]) => {
+    const isMarkPriceThresholdError = isError === 'true'
+
+    if (isMarkPriceThresholdError) {
+      return tradeErrorMessages.markPriceThresholdError()
+    }
+    return true
+  })
 }

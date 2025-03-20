@@ -186,7 +186,7 @@ export const getCategoryMap = () => {
   return formattedList
 }
 
-export const getRawCategorySlugs = () => {
+export const getRwaCategorySlugs = () => {
   let listMap: Record<string, { slug: string }[]> = mainnetCategoryMap
 
   if (IS_DEVNET) {
@@ -217,7 +217,7 @@ export const blacklistedAddresses = blacklistedAddressesJson
 export const tokens = getTokens()
 export const verifiedDenoms = getDenoms()
 export const swapRoutes = getSwapRoutes()
-export const rwaSlugs = getRawCategorySlugs()
+export const rwaSlugs = getRwaCategorySlugs()
 export const marketCategoriesMap = getCategoryMap()
 
 export const spotGridMarkets = getSpotGridMarkets()

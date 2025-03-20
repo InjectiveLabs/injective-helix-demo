@@ -6,8 +6,6 @@ const modalStore = useSharedModalStore()
 
 const isDoNoShowConfirmationAgain = ref(false)
 
-const isModalOpen = computed(() => modalStore.modals[Modal.MarketNotOnHelix])
-
 onMounted(() => {
   if (appStore.userState.preferences.skipExperimentalConfirmationModal) {
     return
@@ -36,7 +34,10 @@ function onSubmit() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm is-hide-close-button>
+  <AppModal
+    v-model="modalStore.modals[Modal.MarketNotOnHelix]"
+    v-bind="{ isHideCloseButton: true }"
+  >
     <template #title>
       <h3 :data-cy="dataCyTag(SpotMarketCyTags.ExperimentalMarketLabel)">
         {{ $t('marketNotOnHelix.title') }}

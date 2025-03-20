@@ -71,6 +71,7 @@ const props = withDefaults(
     tooltip?: string
     disabled?: boolean
     isLoading?: boolean
+    isFullWidth?: boolean
     size?: ButtonProps['size']
     variant?: ButtonProps['variant']
     class?: ClassValue | ClassValue[]
@@ -79,8 +80,6 @@ const props = withDefaults(
     size: 'md',
     tooltip: '',
     class: () => [],
-    disabled: false,
-    isLoading: false,
     variant: 'primary',
     status: () => new Status(StatusType.Idle)
   }
@@ -92,9 +91,9 @@ const props = withDefaults(
     :prevent="!tooltip && !$slots.content"
     :ui="{
       base: 'text-sm',
-      wrapper: 'relative block',
-      width: 'w-fit',
-      background: 'dark:bg-black/80'
+      wrapper: isFullWidth ? 'relative block w-full' : 'relative block',
+      background: 'dark:bg-black/80',
+      width: 'w-fit'
     }"
     :popper="{ placement: 'top', offsetDistance: 5 }"
   >

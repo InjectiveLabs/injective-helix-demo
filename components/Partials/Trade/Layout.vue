@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
 
@@ -22,7 +22,10 @@ withDefaults(
 
 function connectAutoSign() {
   sharedWalletStore
-    .connectAutoSign(TRADING_MESSAGES)
+    .connectAutoSign(
+      TRADING_MESSAGES
+      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+    )
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 

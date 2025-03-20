@@ -19,7 +19,7 @@ const date = format(latestRoundData.startDate * 1000, 'MMM dd yyyy')
 
     <div>
       <p class="text-xs p-2">
-        {{ $t('campaign.lastUpdatedAt', { date }) }}
+        {{ $t('campaign.lastUpdated', { date }) }}
       </p>
     </div>
   </div>

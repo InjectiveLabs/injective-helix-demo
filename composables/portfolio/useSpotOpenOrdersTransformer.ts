@@ -1,8 +1,11 @@
+import {
+  sharedToBalanceInToken,
+  sharedToBalanceInTokenInBase
+} from '@shared/utils/formatter'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   UiSpotMarket,
   AccountBalance,
@@ -35,17 +38,22 @@ export function useSpotOpenOrdersTransformer(
             decimalPlaces:
               market.baseToken.decimals - market.quoteToken.decimals
           })
-        : new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+        : sharedToBalanceInTokenInBase({
+            value: order.price,
+            decimalPlaces: market.quoteToken.decimals
+          })
 
-      const quantity = new BigNumberInWei(order.quantity).toBase(
-        (market as UiSpotMarket).baseToken.decimals
-      )
+      const quantity = sharedToBalanceInTokenInBase({
+        value: order.quantity,
+        decimalPlaces: (market as UiSpotMarket).baseToken.decimals
+      })
 
       const isBuy = (order as SpotLimitOrder).orderSide === OrderSide.Buy
 
-      const unfilledQuantity = new BigNumberInWei(
-        order.unfilledQuantity
-      ).toBase((market as UiSpotMarket).baseToken.decimals)
+      const unfilledQuantity = sharedToBalanceInTokenInBase({
+        value: order.unfilledQuantity,
+        decimalPlaces: (market as UiSpotMarket).baseToken.decimals
+      })
 
       const filledQuantity = quantity.minus(unfilledQuantity)
 
@@ -61,7 +69,7 @@ export function useSpotOpenOrdersTransformer(
         (balance) => balance.denom === market.quoteDenom
       )
 
-      const accountQuoteBalance = toBalanceInToken({
+      const accountQuoteBalance = sharedToBalanceInToken({
         value: balance?.availableBalance || 0,
         decimalPlaces: market.quoteToken.decimals
       })
@@ -90,10 +98,10 @@ export function useSpotOpenOrdersTransformer(
         total: quantity.multipliedBy(price),
         quantityDecimals: market.quantityDecimals,
         orderFillable: unfilledQuantity.lte(quantity),
-        insufficientBalance: chaseBalanceNeeded.gt(accountQuoteBalance),
-        filledQuantityPercentageToFormat: filledQuantityPercentage.toFormat(2),
         [PortfolioSpotOpenOrdersTableColumn.Price]: price,
-        [PortfolioSpotOpenOrdersTableColumn.Market]: market
+        [PortfolioSpotOpenOrdersTableColumn.Market]: market,
+        insufficientBalance: chaseBalanceNeeded.gt(accountQuoteBalance),
+        filledQuantityPercentageToFormat: filledQuantityPercentage.toFormat(2)
       })
 
       return list

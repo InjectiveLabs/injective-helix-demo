@@ -6,7 +6,7 @@ import {
   SpotOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { ENDPOINTS } from '@/app/utils/constants'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 

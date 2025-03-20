@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { TokenStatic } from '@injectivelabs/sdk-ts'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
 
 const accountStore = useAccountStore()

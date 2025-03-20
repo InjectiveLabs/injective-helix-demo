@@ -4,15 +4,14 @@ import { NuxtUiIcons } from '@shared/types'
 import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
-const slots = useSlots()
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
 const props = withDefaults(
   defineProps<{
+    modal: Modal
     route1?: RouteLocationNamedRaw
     route2?: RouteLocationNamedRaw
-    modal: Modal
   }>(),
   {
     route1: () => ({
@@ -31,7 +30,10 @@ const isModalOpen = computed(
 )
 
 onMounted(() => {
-  if (route.name === MainPage.Index) {
+  if (
+    route.name === MainPage.Index &&
+    !appStore.userState.modalsViewed.includes(props.modal)
+  ) {
     init()
   }
 })
@@ -40,6 +42,11 @@ function init() {
   const DELAY_MODAL_DISPLAY_TIME = 3 * 1000
 
   setTimeout(() => {
+    appStore.setUserState({
+      ...appStore.userState,
+      modalsViewed: [...appStore.userState.modalsViewed, Modal.LeaderboardTerms]
+    })
+
     modalStore.openModal(props.modal)
   }, DELAY_MODAL_DISPLAY_TIME)
 }
@@ -55,28 +62,13 @@ function onCloseModal() {
 </script>
 
 <template>
-  <AppModal
-    v-bind="{
-      isSm: true,
-      isDense: true,
-      isOpen: isModalOpen,
-      isHideCloseButton: true
-    }"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-bind="{ modelValue: isModalOpen }" @on:close="onCloseModal">
     <div class="flex flex-col justify-center items-center max-h-modal">
       <div class="w-full h-auto">
         <slot name="image" />
-        <div class="absolute right-0 top-0 mt-2 mr-2">
-          <UIcon
-            :name="NuxtUiIcons.Close"
-            class="ml-auto h-5 w-5 min-w-5 text-coolGray-200 hover:text-blue-500"
-            @click="onCloseModal"
-          />
-        </div>
       </div>
 
-      <div class="p-6 w-full text-center overflow-y-auto">
+      <div class="pt-6 w-full text-center overflow-y-auto">
         <div class="mb-4 text-xl font-semibold leading-5">
           <slot name="title" />
         </div>
@@ -86,7 +78,7 @@ function onCloseModal() {
         </div>
 
         <div
-          v-if="slots.countdown"
+          v-if="$slots.countdown"
           class="flex items-center justify-center gap-4 leading-5 text-xl font-semibold"
         >
           <UIcon
@@ -98,7 +90,7 @@ function onCloseModal() {
         </div>
 
         <NuxtLink
-          v-if="slots.cta1"
+          v-if="$slots.cta1"
           class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route1"
           @click="onCloseModal"
@@ -107,7 +99,7 @@ function onCloseModal() {
         </NuxtLink>
 
         <NuxtLink
-          v-if="slots.cta2"
+          v-if="$slots.cta2"
           class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
           :to="route2"
           @click="onCloseModal"
@@ -116,7 +108,7 @@ function onCloseModal() {
         </NuxtLink>
 
         <AppButton
-          v-if="!(slots.cta1 || slots.cta2)"
+          v-if="!($slots.cta1 || $slots.cta2)"
           class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >

@@ -2,17 +2,12 @@
 import { getMarketRoute } from '@/app/utils/market'
 import { Modal, MainPage } from '@/types'
 
-const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
-// const TWITTER_URL = 'https://twitter.com/search?q=%24TIA&src=cashtag_click'
-// const BLOG_POST_URL =
-//   'https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-'
-
-const now = ref(Date.now())
 const market = computed(() => {
-  const MARKET_SLUG = 'talis-usdt'
+  const MARKET_SLUG = 'tradfi-usdt-perp'
 
-  return spotStore.markets.find(({ slug }) => slug === MARKET_SLUG)
+  return derivativeStore.markets.find(({ slug }) => slug === MARKET_SLUG)
 })
 
 const marketRoute = computed(() => {
@@ -24,30 +19,15 @@ const marketRoute = computed(() => {
 
   return getMarketRoute(market.value)
 })
-
-const swapRoute = computed(() => {
-  return {
-    name: MainPage.Swap,
-    query: {
-      from: market.value?.quoteDenom,
-      to: market.value?.baseDenom,
-      toAmount: '100'
-    }
-  }
-})
-
-useIntervalFn(() => {
-  now.value = Date.now()
-}, 1000)
 </script>
 
 <template>
   <ModalsNewFeatureWrapper
-    v-bind="{ route1: marketRoute, route2: swapRoute, launchAt: '' }"
-    :modal="Modal.NewFeatureTalisLaunch"
+    v-bind="{ route1: marketRoute }"
+    :modal="Modal.NewFeatureTradFiLaunch"
   >
     <template #image>
-      <img src="/newFeatures/talis-launch.webp" alt="Talis Launch" />
+      <img src="/svg/tradfihelix.svg" alt="TradFi Launch" class="mx-auto" />
     </template>
 
     <template #title>
@@ -60,10 +40,6 @@ useIntervalFn(() => {
 
     <template #cta1>
       <span>{{ $t('banners.newFeature.cta1') }}</span>
-    </template>
-
-    <template #cta2>
-      <span>{{ $t('banners.newFeature.cta2') }}</span>
     </template>
   </ModalsNewFeatureWrapper>
 </template>

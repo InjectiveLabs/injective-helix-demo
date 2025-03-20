@@ -1,5 +1,5 @@
 import { injToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { INJ_DENOM, BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
