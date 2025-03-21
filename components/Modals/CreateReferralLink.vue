@@ -20,6 +20,7 @@ const {
   rule: 'required|alphanumeric|maxCharacter:32'
 })
 
+const referralInputRef = ref()
 const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
 
@@ -90,6 +91,20 @@ function resetData() {
   isLinkAvailable.value = false
   setReferralCodeValue('')
 }
+
+function focusInput() {
+  referralInputRef.value?.$el?.querySelector('.input-base')?.focus()
+}
+
+watch(
+  () => modalStore.modals[Modal.CreateReferralLink],
+  async () => {
+    if (modalStore.modals[Modal.CreateReferralLink]) {
+      await nextTick()
+      focusInput()
+    }
+  }
+)
 </script>
 
 <template>
@@ -155,19 +170,23 @@ function resetData() {
         </p>
 
         <AppInput
+          ref="referralInputRef"
           v-model="uppercaseReferralCode"
           v-bind="{
             isNoPadding: true,
             disabled: status.isLoading(),
             placeholder: $t('referral.createReferralLinkPlaceholder'),
-            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28',
+            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28 ',
             wrapperClasses:
               'bg-brand-875 p-4 border border-brand-725 rounded text-sm text-coolGray-475 font-mono overflow-auto'
           }"
         >
           <template #prefix>
-            <span class="text-coolGray-650 whitespace-nowrap">
-              https://helix.app.com/ref/
+            <span
+              class="text-coolGray-650 whitespace-nowrap"
+              @click="focusInput"
+            >
+              https://helixapp.com/ref/
             </span>
           </template>
         </AppInput>

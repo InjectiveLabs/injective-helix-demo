@@ -18,6 +18,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { backupPromiseCall } from '@/app/utils/async'
+import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
@@ -184,7 +185,9 @@ export const createStrategy = async (
       exitType: exitType || ExitType.Default,
       strategyType,
       trailingArithmetic: trailingArgs,
-      feeRecipient: referralStore.feeRecipient
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     }),
 
     funds
@@ -450,7 +453,9 @@ export const createPerpStrategy = async (
     }),
 
     marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2),
-    feeRecipient: referralStore.feeRecipient
+    ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+      feeRecipient: referralStore.feeRecipient
+    })
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
@@ -643,7 +648,9 @@ export async function createSpotLiquidityBot(params: {
         }),
         lpMode: true
       },
-      feeRecipient: referralStore.feeRecipient
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     })
   })
 
@@ -780,7 +787,9 @@ export async function copySpotGridTradingStrategy({
               lpMode: strategy.strategyType === StrategyType.ArithmeticLP
             }
           : undefined,
-      feeRecipient: referralStore.feeRecipient
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     }),
     funds
   })

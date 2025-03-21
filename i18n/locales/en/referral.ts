@@ -27,7 +27,7 @@ export default {
     checkAvailability: 'Check Availability',
     affiliatedAddress: 'Affiliated Address',
     startEarningToday: 'Start earning today',
-    createReferralLinkPlaceholder: 'TRUMPUMP',
+    createReferralLinkPlaceholder: 'BULLISH',
     referralLinkCopied: 'Referral Link Copied',
     customReferralCode: 'Custom Referral Code',
     chooseDifferentLink: 'Choose Different Link',
