@@ -2,7 +2,6 @@
 import { IS_MAINNET } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { rwaMarketIds } from '@/app/data/market'
 import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
@@ -15,6 +14,7 @@ import {
 } from '@/types'
 
 const route = useRoute()
+const jsonStore = useSharedJsonStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -48,7 +48,9 @@ onMounted(async () => {
     return
   }
 
-  const isRWAMarket = rwaMarketIds.includes(market.value.marketId)
+  const isRWAMarket = jsonStore.helixMarketCategoriesMap.rwa.includes(
+    market.value.marketId
+  )
 
   if (!isRWAMarket) {
     return

@@ -1,6 +1,5 @@
 import { injToken } from '@shared/data/token'
 import { IS_DEVNET, IS_TESTNET } from '@shared/utils/constant'
-import { marketCategoriesMap } from '@/app/json'
 import { NotLiquidMarket, MarketPromotion, UiMarketWithToken } from '@/types'
 
 export interface UnTradableMarket {
@@ -8,12 +7,7 @@ export interface UnTradableMarket {
 }
 
 export const betaMarketSlugs = [] as string[]
-
-export const rwaMarketIds = marketCategoriesMap.rwa || []
-export const newMarketsMarketIds = marketCategoriesMap.newMarkets || []
-
 export const excludedPriceDeviationSlugs = [] as string[]
-export const marketIdsToHide = [] as string[]
 
 // todo: refactor/re-implement this functionality when we have a use case in the future
 export const upcomingMarkets = [

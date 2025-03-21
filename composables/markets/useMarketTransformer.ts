@@ -4,12 +4,13 @@ import {
   INDEX_MARKETS_INFO,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { rwaMarketIds } from '@/app/data/market'
 import { MarketsTableColumn, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 export function useMarketTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>
 ) {
+  const jsonStore = useSharedJsonStore()
+
   const priceChangeClassesMap: Partial<Record<SharedMarketChange, string>> = {
     [SharedMarketChange.Decrease]: 'text-red-500',
     [SharedMarketChange.Increase]: 'text-green-500',
@@ -40,7 +41,9 @@ export function useMarketTransformer(
         summary: item.summary,
         volumeInUsd: item.volumeInUsd,
         isVerified: item.market.isVerified,
-        isRwaMarket: rwaMarketIds.includes(item.market.marketId),
+        isRwaMarket: jsonStore.helixMarketCategoriesMap.rwa.includes(
+          item.market.marketId
+        ),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsTableColumn.MarketChange24h]: changeInBigNumber.toNumber(),
         [MarketsTableColumn.LastPrice]: item.summary?.lastPrice || 0,

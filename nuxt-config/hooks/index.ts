@@ -1,9 +1,9 @@
 import { NuxtHooks } from 'nuxt/schema'
 import { NitroConfig } from 'nitropack'
 import {
-  verifiedSpotSlugs,
-  verifiedExpirySlugs,
-  verifiedDerivativeSlugs
+  expiryMarketIdMap,
+  verifiedSpotMarketIdMap,
+  verifiedDerivateMarketIdMap
 } from './../../app/json'
 import { TradePage, TradeSubPage } from './../../types/page'
 
@@ -44,10 +44,11 @@ export default {
       ...nitroConfig.prerender.routes,
       ...customStaticRoutes,
       ...upcomingMarketsRoutes,
-      ...verifiedSpotSlugs.map((s) => `/spot/${s}`),
-      ...[...verifiedDerivativeSlugs, ...verifiedExpirySlugs].map(
-        (s) => `/futures/${s}`
-      ),
+      ...Object.values(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
+      ...[
+        ...Object.values(verifiedDerivateMarketIdMap),
+        ...Object.values(expiryMarketIdMap)
+      ].map((s) => `/futures/${s}`),
       ...['ef3bc2', '25269b', '5f90cb', '50be68'].map(
         (guildId) => `/guild/${guildId}`
       )

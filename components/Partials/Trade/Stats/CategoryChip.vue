@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { marketCategoriesMap } from '@/app/json'
 import { UiMarketWithToken } from '@/types'
+
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +11,9 @@ const props = withDefaults(
 )
 
 const isIAssetMarkets = computed(() =>
-  (marketCategoriesMap.iAssets || []).includes(props.market.marketId)
+  (jsonStore.helixMarketCategoriesMap.iAssets || []).includes(
+    props.market.marketId
+  )
 )
 </script>
 
