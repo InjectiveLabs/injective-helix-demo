@@ -1,6 +1,6 @@
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 
-export const restrictedHelixCountries = ['CA', 'GB', 'SG']
+export const restrictedHelixCountries = ['CA', 'GB']
 export const restrictedSpotMarketsCountries = ['US']
 export const restrictedPerpetualMarketsCountries = ['US']
 export const restrictedLeaderboardCountries = [
