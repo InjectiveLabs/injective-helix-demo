@@ -6,9 +6,8 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
-import { blacklistedAddresses } from '@/app/json'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal } from '@/types'
@@ -53,9 +52,10 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
-      const modalStore = useSharedModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
+      const jsonStore = useSharedJsonStore()
+      const modalStore = useSharedModalStore()
       const sharedWalletStore = useSharedWalletStore()
 
       if (wallet === Wallet.Metamask) {
@@ -118,7 +118,7 @@ export const useWalletStore = defineStore('wallet', {
         const someAddressInWalletIsBlackListed =
           sharedWalletStore.addresses.some(
             (address) =>
-              blacklistedAddresses.find(
+              jsonStore.blacklistedAddresses.find(
                 (blacklistedAddress) =>
                   blacklistedAddress.toLowerCase() === address.toLowerCase()
               ) !== undefined

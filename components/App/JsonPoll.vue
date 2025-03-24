@@ -6,6 +6,8 @@ import {
   spotGridMarkets,
   expiryMarketIdMap,
   marketCategoriesMap,
+  restrictedCountries,
+  blacklistedAddresses,
   derivativeGridMarkets,
   verifiedSpotMarketIdMap,
   verifiedDerivateMarketIdMap
@@ -29,7 +31,9 @@ function mountCachedJson() {
   jsonStore.verifiedDenoms = verifiedDenoms
   jsonStore.spotGridMarkets = spotGridMarkets
   jsonStore.expiryMarketMap = expiryMarketIdMap
+  jsonStore.restrictedCountries = restrictedCountries
   jsonStore.helixMarketCategory = marketCategoriesMap
+  jsonStore.blacklistedAddresses = blacklistedAddresses
   jsonStore.derivativeGridMarkets = derivativeGridMarkets
   jsonStore.verifiedSpotMarketMap = verifiedSpotMarketIdMap
   jsonStore.verifiedDerivativeMarketMap = verifiedDerivateMarketIdMap
@@ -42,6 +46,8 @@ function pollJson() {
     jsonStore.fetchSpotGridMarkets(),
     jsonStore.fetchExpiryMarketMap(),
     jsonStore.fetchMarketCategoryMap(),
+    jsonStore.fetchRestrictedCountries(),
+    jsonStore.fetchBlacklistedAddresses(),
     jsonStore.fetchVerifiedSpotMarketMap(),
     jsonStore.fetchDerivativeGridMarkets(),
     jsonStore.fetchVerifiedDerivativeMarketMap()

@@ -381,7 +381,7 @@ function submitStopMarketOrder() {
 }
 
 function onSubmit() {
-  if (!isRWAMarket) {
+  if (!isRWAMarket.value) {
     submit()
 
     return
