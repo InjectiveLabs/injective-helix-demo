@@ -44,6 +44,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "core-js": "^3.10.1",
+    "crypto": "^1.0.1",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
     "deepmerge": "^4.2.2",

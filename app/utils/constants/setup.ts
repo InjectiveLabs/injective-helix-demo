@@ -41,6 +41,8 @@ export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
   ? 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
   : 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
 
+export const ONRAMPER_SIGNING_KEY =
+  import.meta.env.VITE_ONRAMPER_SIGNING_KEY || ''
 export const IS_ONRAMPER_DEV_MODE =
   import.meta.env.VITE_IS_ONRAMPER_DEV_MODE === 'true'
 export const ONRAMPER_API_KEY = IS_ONRAMPER_DEV_MODE
