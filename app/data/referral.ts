@@ -32,5 +32,7 @@ export const whitelistedAddresses = [
   'inj1lz9a8l8eprvkarcw838xgt8h0wrtmn92qpwyhp',
   'inj130htph6huahen660wnyxrw664tay0v3ex4980x',
   'inj14nmruwptduz8ngn9k52vwjll05qrgxhan88r7h',
-  'inj1aj8cjrfut4hsdm2nhwg4nn66tghutwvyt5ch9v'
+  'inj1aj8cjrfut4hsdm2nhwg4nn66tghutwvyt5ch9v',
+  'inj1nedmtl9mhzxdlqd3ne270craw9552ap7stgcz0',
+  'inj1xpc7l2k9l7mqyctdqjpt37wwfc7gqj7nt3vhy4'
 ]
