@@ -61,6 +61,7 @@ export const createSpotGridStrategy = async ({
   }
 }) => {
   const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -70,6 +71,17 @@ export const createSpotGridStrategy = async ({
   if (!sharedWalletStore.injectiveAddress || !gridMarket) {
     return
   }
+
+  if (!baseAmount && !quoteAmount) {
+    return
+  }
+
+  if (!lowerPrice || !upperPrice) {
+    return
+  }
+
+  await walletStore.validateGeo()
+  await walletStore.validate()
 
   if (sharedWalletStore.isAuthzWalletConnected) {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
@@ -388,6 +400,7 @@ export const createPerpStrategy = async (
   }
 
   const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
@@ -523,6 +536,9 @@ export const createPerpStrategy = async (
   // we need to add it after the authz messages
   messages.push(message)
 
+  await walletStore.validateGeo()
+  await walletStore.validate()
+
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   backupPromiseCall(() =>
@@ -559,6 +575,7 @@ export async function createSpotLiquidityBot(params: {
   market: UiSpotMarket
 }) {
   const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -689,7 +706,8 @@ export async function createSpotLiquidityBot(params: {
 
   messages.push(msg)
 
-  await sharedWalletStore.validateAndQueue()
+  await walletStore.validateGeo()
+  await walletStore.validate()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 

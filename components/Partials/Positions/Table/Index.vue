@@ -39,6 +39,7 @@ const emit = defineEmits<{
   'position:share': [state: PositionV2]
 }>()
 
+const appStore = useAppStore()
 const positionStore = usePositionStore()
 const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
@@ -336,6 +337,7 @@ function setPositionStatusIdle() {
             />
           </span>
           <button
+            v-if="!appStore.isCountryRestricted"
             class="flex p-2 rounded-full bg-coolGray-800"
             @click="addMargin(row.position)"
           >
@@ -377,11 +379,21 @@ function setPositionStatusIdle() {
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
           <button
+            :disabled="appStore.isCountryRestricted"
             class="flex p-2 focus-visible:outline-none"
             @click="addTpSl(row.position)"
           >
-            <div class="flex hover:bg-coolGray-600 rounded-full transition">
-              <UIcon :name="NuxtUiIcons.CirclePlus" class="h-6 w-6 min-w-6" />
+            <div
+              class="flex rounded-full transition"
+              :class="{
+                'hover:bg-coolGray-600': !appStore.isCountryRestricted
+              }"
+            >
+              <UIcon
+                :name="NuxtUiIcons.CirclePlus"
+                class="h-6 w-6 min-w-6"
+                :class="{ 'text-coolGray-700': appStore.isCountryRestricted }"
+              />
             </div>
           </button>
         </div>

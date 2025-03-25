@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { getMobileMenuItems } from '@/app/data/menu'
+import {
+  getMobileMenuItems,
+  getGeoRestrictedMobileMenuItems
+} from '@/app/data/menu'
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -8,17 +11,19 @@ const sharedWalletStore = useSharedWalletStore()
 const isOpen = ref(false)
 
 const filteredMenuItems = computed(() =>
-  getMobileMenuItems().filter((item) => {
-    if (item.isDevOnly) {
-      return appStore.devMode
-    }
+  appStore.isCountryRestricted
+    ? getGeoRestrictedMobileMenuItems()
+    : getMobileMenuItems().filter((item) => {
+        if (item.isDevOnly) {
+          return appStore.devMode
+        }
 
-    if (item.isConnectedOnly) {
-      return sharedWalletStore.isUserConnected
-    }
+        if (item.isConnectedOnly) {
+          return sharedWalletStore.isUserConnected
+        }
 
-    return true
-  })
+        return true
+      })
 )
 
 function close() {

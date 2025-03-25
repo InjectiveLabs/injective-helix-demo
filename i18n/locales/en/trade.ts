@@ -519,6 +519,13 @@ export default {
       bought:
         "{{quantity:{quantity}-{quantityDecimals}}} {symbol} bought at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}",
       sold: "{{quantity:{quantity}-{quantityDecimals}}} {symbol} sold at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}"
+    },
+
+    iAssetModal: {
+      title: 'Unlock the Power of iAssets!',
+      description:
+        "Be one of the first to trade onchain stock futures with 25x leverage, only on the world's premier decentralized exchange.",
+      cta: 'Start Trading'
     }
   }
 }

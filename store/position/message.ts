@@ -16,7 +16,6 @@ import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
 
 export const closePosition = async (position: PositionV2) => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
@@ -34,7 +33,6 @@ export const closePosition = async (position: PositionV2) => {
     return
   }
 
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const orderType =
@@ -61,7 +59,6 @@ export const closePosition = async (position: PositionV2) => {
 }
 
 export const closeAllPosition = async (positions: PositionV2[]) => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
@@ -75,7 +72,6 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
     return
   }
 
-  await appStore.validateGeoIpBasedOnDerivativesAction()
   await walletStore.validate()
 
   const formattedPositions = positions

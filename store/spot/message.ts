@@ -354,6 +354,8 @@ export async function submitChase({
   market: UiSpotMarket
   price: BigNumberInBase
 }) {
+  const appStore = useAppStore()
+  const walletStore = useWalletStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
@@ -393,6 +395,12 @@ export async function submitChase({
       }
     ]
   })
+
+  await appStore.validateGeoIpBasedOnSpotAction({
+    baseDenom: market.baseToken.denom,
+    quoteDenom: market.quoteToken.denom
+  })
+  await walletStore.validate()
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
   await fetchBalances({

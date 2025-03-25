@@ -173,5 +173,6 @@ provide(IsRWAMarketOpenKey, isRWAMarketOpen)
     </template>
   </PartialsTradeLayout>
 
+  <ModalsIAssets />
   <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
 </template>

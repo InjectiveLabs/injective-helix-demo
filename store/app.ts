@@ -11,7 +11,8 @@ import { GeneralException } from '@injectivelabs/exceptions'
 import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 import {
   isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets
+  isCountryRestrictedForPerpetualMarkets,
+  isCountryRestricted
 } from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
 import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
@@ -102,6 +103,12 @@ const initialStateFactory = (): AppStoreState => ({
 export const useAppStore = defineStore('app', {
   state: (): AppStoreState => initialStateFactory(),
   getters: {
+    isCountryRestricted: (_) => {
+      const sharedGeoStore = useSharedGeoStore()
+
+      return isCountryRestricted(sharedGeoStore.country)
+    },
+
     slippageByMarketId:
       (state: AppStoreState) =>
       (marketId: string): string => {

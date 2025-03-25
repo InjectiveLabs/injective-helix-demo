@@ -20,10 +20,10 @@ import {
 } from '@/types'
 
 const resetForm = useResetForm()
-const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -228,6 +228,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -269,6 +270,7 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -308,6 +310,7 @@ function submitMarketOrder() {
       takeProfit: takeProfitValue.value
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -350,6 +353,7 @@ function submitStopMarketOrder() {
       margin: props.margin
     })
     .then(() => {
+      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
