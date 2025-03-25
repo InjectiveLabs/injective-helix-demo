@@ -3,21 +3,18 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { intervalToDuration } from 'date-fns'
-import { sharedTokenClient } from '@shared/Service'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { PriceLevel, TokenStatic } from '@injectivelabs/sdk-ts'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
+import { intervalToDuration } from 'date-fns'
 import { SharedMarketType } from '@shared/types'
-import { tokenFactoryStatic } from '@/app/Services'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { PriceLevel } from '@injectivelabs/sdk-ts'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { hexToString, stringToHex } from '@/app/utils/converters'
-import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import {
@@ -26,10 +23,10 @@ import {
   GridMarket,
   UiSpotMarket,
   TradeSubPage,
+  TradingInterface,
   UiMarketWithToken,
   GridStrategyTransformed,
-  DerivativeGridStrategyTransformed,
-  TradingInterface
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
 export const getDecimalsBasedOnNumber = (
@@ -140,14 +137,18 @@ export const addressAndMarketSlugToSubaccountId = (
 }
 
 export const isSgtSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
 
   const slug = hexToString(subaccountHex)
 
-  return spotGridMarkets.find((market) => market.slug === slug)?.slug
+  return jsonStore.spotGridMarkets.find((market) => market.slug === slug)?.slug
 }
 
 export const isPgtSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
 
   const slug = hexToString(subaccountHex)
@@ -157,7 +158,7 @@ export const isPgtSubaccountId = (subaccountId: string) => {
     return 'tradfi-usdt-perp'
   }
 
-  return derivativeGridMarkets.find(
+  return jsonStore.derivativeGridMarkets.find(
     (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
 }
@@ -167,10 +168,12 @@ export const isTradingbotSubaccountId = (subaccountId: string) => {
 }
 
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
-      ...spotGridMarkets,
-      ...derivativeGridMarkets.map((market: GridMarket) => ({
+      ...jsonStore.spotGridMarkets,
+      ...jsonStore.derivativeGridMarkets.map((market: GridMarket) => ({
         ...market,
         slug: market.slug.replace('-perp', '-p')
       }))
@@ -219,8 +222,12 @@ export const getSubaccountLabel = (subaccountId: string): string => {
   return subaccountIndex.toString()
 }
 
-export const getSgtContractAddressFromSlug = (slug: string = '') =>
-  spotGridMarkets.find((sgt) => sgt.slug === slug)?.contractAddress
+export const getSgtContractAddressFromSlug = (slug: string = '') => {
+  const jsonStore = useSharedJsonStore()
+
+  return jsonStore.spotGridMarkets.find((sgt) => sgt.slug === slug)
+    ?.contractAddress
+}
 
 export function getMinPriceTickSize(
   isSpot: boolean,
@@ -450,20 +457,6 @@ export function calculateTotalQuantity(
     worstPrice: new BigNumberInBase(worstPrice),
     totalQuantity: new BigNumberInBase(totalQuantity)
   }
-}
-
-export const getToken = async (
-  denomOrSymbol: string
-): Promise<TokenStatic | undefined> => {
-  const token = tokenFactoryStatic.toToken(denomOrSymbol)
-
-  if (token) {
-    return token
-  }
-
-  const asyncToken = await sharedTokenClient.queryToken(denomOrSymbol)
-
-  return asyncToken
 }
 
 export const getCw20AddressFromDenom = (denom: string) => {

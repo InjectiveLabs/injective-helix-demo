@@ -19,7 +19,6 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
@@ -53,6 +52,7 @@ export const createStrategy = async (
   const authZStore = useAuthZStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -83,7 +83,7 @@ export const createStrategy = async (
     return
   }
 
-  const gridMarket = spotGridMarkets.find(
+  const gridMarket = jsonStore.spotGridMarkets.find(
     (market) => market.slug === actualMarket.slug
   )
 
@@ -264,6 +264,7 @@ export const createStrategy = async (
 export const removeStrategy = async (contractAddress?: string) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -281,9 +282,10 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
-    (m) => m.slug === gridStrategyStore.spotMarket!.slug
-  )
+  const gridMarket = [
+    ...jsonStore.spotGridMarkets,
+    ...jsonStore.derivativeGridMarkets
+  ].find((m) => m.slug === gridStrategyStore.spotMarket!.slug)
 
   if (!gridMarket) {
     return
@@ -367,22 +369,25 @@ export const createPerpStrategy = async (
   }: Partial<DerivativeGridTradingForm>,
   market: UiDerivativeMarket
 ) => {
+  const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
   if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
     return
   }
 
-  const gridMarket = derivativeGridMarkets.find((m) => m.slug === market.slug)
+  const gridMarket = jsonStore.derivativeGridMarkets.find(
+    (m) => m.slug === market.slug
+  )
 
   if (!gridMarket) {
     return
   }
-
-  const authZStore = useAuthZStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-  const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const levels = Number(grids)
 
@@ -553,6 +558,7 @@ export async function createSpotLiquidityBot(params: {
   const authZStore = useAuthZStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -572,7 +578,9 @@ export async function createSpotLiquidityBot(params: {
     market.slug
   )
 
-  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+  const gridMarket = jsonStore.spotGridMarkets.find(
+    (m) => m.slug === market.slug
+  )
 
   if (!gridMarket) {
     return
@@ -708,6 +716,7 @@ export async function copySpotGridTradingStrategy({
   const spotStore = useSpotStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -715,7 +724,9 @@ export async function copySpotGridTradingStrategy({
     (m) => m.marketId === strategy.marketId
   )
 
-  const gridMarket = spotGridMarkets.find((m) => m.slug === spotMarket?.slug)
+  const gridMarket = jsonStore.spotGridMarkets.find(
+    (m) => m.slug === spotMarket?.slug
+  )
 
   if (!spotMarket || !gridMarket) {
     return

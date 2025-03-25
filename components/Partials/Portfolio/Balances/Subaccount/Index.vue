@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const { showUnverifiedAssets } = useBalance()
-
 const search = ref('')
+const showUnverifiedAssets = ref(false)
 </script>
 
 <template>
@@ -13,7 +12,9 @@ const search = ref('')
 
     <div class="overflow-x-auto">
       <div class="lg:min-w-[1100px] divide-y border-b">
-        <PartialsPortfolioBalancesSubaccountTable v-bind="{ search }" />
+        <PartialsPortfolioBalancesSubaccountTable
+          v-bind="{ search, showUnverifiedAssets }"
+        />
       </div>
     </div>
   </div>

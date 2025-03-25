@@ -40,17 +40,25 @@ const filteredColumns = computed(() =>
         <div class="flex items-center space-x-2 font-sans">
           <CommonTokenIcon v-bind="{ token: balance.token }" :is-sm="true" />
           <div class="ml-2">
-            <p class="font-medium text-coolGray-200 text-sm">
+            <p class="font-medium text-coolGray-200 text-sm max-w-52 truncate">
               {{ balance.token.symbol }}
             </p>
-            <p class="text-xs text-coolGray-500">{{ balance.token.name }}</p>
+            <p class="text-xs text-coolGray-500 max-w-52 truncate">
+              {{ balance.token.name }}
+            </p>
           </div>
+
+          <SharedIcon
+            v-if="balance.isVerified"
+            name="check-shield"
+            is-md
+            class="text-green-500 ml-2"
+          />
         </div>
 
         <PartialsPortfolioBalancesSubaccountTableActionBtns
           v-bind="{
             token: balance.token,
-            isVerified: balance.isVerified,
             isBridgable: balance.isBridgable
           }"
         />
@@ -90,7 +98,7 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #total-usd-data>
-      <div>
+      <div v-if="balance.isVerified">
         <span>$</span>
         <AppUsdBalanceAmount
           v-bind="{
@@ -98,6 +106,7 @@ const filteredColumns = computed(() =>
           }"
         />
       </div>
+      <span v-else>&mdash;</span>
     </template>
 
     <template #staked-data>

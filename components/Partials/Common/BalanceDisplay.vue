@@ -17,6 +17,7 @@ const props = withDefaults(
   defineProps<{
     token: TokenStatic
     value: string | number
+    isAlignRight?: boolean
     isTooltipDisabled?: boolean
   }>(),
   {}
@@ -65,6 +66,10 @@ const isDisabled = computed(
         ...$attrs,
         isDisabled,
         isNotStyled: isDisabled,
+        ui: {
+          width: 'max-w-96',
+          trigger: isAlignRight ? '' : 'inline-flex w-full'
+        },
         classes: isDisabled ? 'cursor-text' : ''
       }"
     >
