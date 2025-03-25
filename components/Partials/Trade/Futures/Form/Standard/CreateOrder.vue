@@ -2,7 +2,6 @@
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { rwaMarketIds } from '@/app/data/market'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
@@ -23,6 +22,7 @@ const resetForm = useResetForm()
 const authZStore = useAuthZStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
+const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -52,7 +52,11 @@ const props = withDefaults(
   {}
 )
 
-const isRWAMarket = rwaMarketIds.includes(derivativeMarket.value.marketId)
+const isRWAMarket = computed(() =>
+  jsonStore.helixMarketCategoriesMap.rwa.includes(
+    derivativeMarket.value.marketId
+  )
+)
 
 const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
@@ -377,7 +381,7 @@ function submitStopMarketOrder() {
 }
 
 function onSubmit() {
-  if (!isRWAMarket) {
+  if (!isRWAMarket.value) {
     submit()
 
     return

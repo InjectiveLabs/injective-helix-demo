@@ -1,19 +1,12 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 const { subaccount } = useSubaccounts()
-const {
-  showUnverifiedAssets,
-  activeSubaccountBalancesWithToken,
-  activeSubaccountTradableBalancesWithToken
-} = useBalance()
+const { activeSubaccountTradableBalancesWithToken } = useBalance()
 
 const balancesSorted = computed(() => {
-  const balances = showUnverifiedAssets.value
-    ? activeSubaccountBalancesWithToken.value
-    : activeSubaccountTradableBalancesWithToken.value
+  const balances = activeSubaccountTradableBalancesWithToken.value
 
   const filteredBalances = balances.filter((balance) => {
     const hasBalance = new BigNumberInBase(balance.totalBalance).gte(1)
@@ -22,15 +15,8 @@ const balancesSorted = computed(() => {
   })
 
   return filteredBalances.sort((a, b) => {
-    const aBalanceInToken = sharedToBalanceInTokenInBase({
-      value: a.totalBalanceInUsd,
-      decimalPlaces: a.token.decimals
-    })
-
-    const bBalanceInToken = sharedToBalanceInTokenInBase({
-      value: b.totalBalanceInUsd,
-      decimalPlaces: b.token.decimals
-    })
+    const aBalanceInToken = new BigNumberInBase(a.totalBalanceInUsd)
+    const bBalanceInToken = new BigNumberInBase(b.totalBalanceInUsd)
 
     if (a.denom === injToken.denom) {
       return -1

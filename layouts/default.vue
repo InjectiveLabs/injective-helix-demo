@@ -9,16 +9,16 @@ import {
   Modal,
   MainPage,
   TradeSubPage,
-  InitialStatusKey,
   NoticeBanner,
+  InitialStatusKey,
   PortfolioStatusKey,
   LeaderboardSubPage,
   LiquidityRewardsPage
 } from '@/types'
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const appStore = useAppStore()
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -31,6 +31,7 @@ const { $onError } = useNuxtApp()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
+const jsonStatus = reactive(new Status(StatusType.Loading))
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
@@ -125,6 +126,10 @@ function checkOnboarding() {
   }
 }
 
+function onJsonLoaded() {
+  jsonStatus.setIdle()
+}
+
 provide(PortfolioStatusKey, portfolioStatus)
 
 useIntervalFn(
@@ -153,7 +158,10 @@ useIntervalFn(
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
-      :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
+      :is-loading="
+        route.name !== MainPage.Index &&
+        (initialStatus.isLoading() || jsonStatus.isLoading())
+      "
     >
       <main class="relative pb-6 pt-[56px]">
         <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
@@ -237,5 +245,6 @@ useIntervalFn(
     <UNotifications />
 
     <CommonAutoSignExpiredToast />
+    <AppJsonPoll @on:loaded="onJsonLoaded" />
   </div>
 </template>

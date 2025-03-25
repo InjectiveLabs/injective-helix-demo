@@ -1,9 +1,13 @@
 import {
-  TokenStatic,
+  NETWORK,
+  ENDPOINTS,
+  IS_MAINNET,
+  IS_TESTNET
+} from '@shared/utils/constant'
+import {
   AbacusGrpcApi,
   NeptuneService,
   ChainGrpcAuthZApi,
-  TokenFactoryStatic,
   IndexerGrpcTradingApi,
   ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
@@ -11,18 +15,11 @@ import {
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
-import {
-  NETWORK,
-  ENDPOINTS,
-  IS_MAINNET,
-  IS_TESTNET
-} from '@shared/utils/constant'
+import { tokenStaticFactory } from '@shared/Service'
 import { tokens } from '@/app/json'
 import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 
-export const tokenFactoryStatic = new TokenFactoryStatic(
-  tokens as TokenStatic[]
-)
+tokenStaticFactory.mapRegistry(tokens)
 
 // Services
 export const abacusGrpcApi = new AbacusGrpcApi(

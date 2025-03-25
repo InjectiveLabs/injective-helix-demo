@@ -6,7 +6,6 @@ import {
   INDEX_MARKETS_INFO,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { rwaMarketIds } from '@/app/data/market'
 import { calculateLeverage } from '@/app/utils/formatters'
 import {
   UiDerivativeMarket,
@@ -18,6 +17,7 @@ export function useMarketSelectorTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>,
   marketPriceMap: ComputedRef<Record<string, BigNumberInBase>>
 ) {
+  const jsonStore = useSharedJsonStore()
   // const derivativeStore = useDerivativeStore()
 
   const priceChangeClassesMap: Partial<Record<SharedMarketChange, string>> = {
@@ -72,7 +72,9 @@ export function useMarketSelectorTransformer(
           BigNumberInBase.ROUND_DOWN
         ),
         indexMarketInfo,
-        isRWAMarket: rwaMarketIds.includes(item.market.marketId),
+        isRWAMarket: jsonStore.helixMarketCategoriesMap.rwa.includes(
+          item.market.marketId
+        ),
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsSelectorTableColumn.MarketChange24h]:

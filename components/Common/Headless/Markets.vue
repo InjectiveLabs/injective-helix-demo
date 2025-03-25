@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketStatus } from '@shared/types'
-import { marketCategoriesMap } from '@/app/json'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
 import {
@@ -12,6 +11,7 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
@@ -49,9 +49,9 @@ const filteredMarkets = computed(() => {
   }
 
   const searchWithStartWith = activeMarkets.filter(({ market }) => {
-    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
-      market.marketId
-    )
+    const isDeprecatedMarket = (
+      jsonStore.helixMarketCategoriesMap.deprecated || []
+    ).includes(market.marketId)
 
     if (isDeprecatedMarket) {
       return market.ticker.toLowerCase() === formattedSearch
@@ -72,9 +72,9 @@ const filteredMarkets = computed(() => {
   }
 
   return activeMarkets.filter(({ market }) => {
-    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
-      market.marketId
-    )
+    const isDeprecatedMarket = (
+      jsonStore.helixMarketCategoriesMap.deprecated || []
+    ).includes(market.marketId)
 
     if (isDeprecatedMarket) {
       return market.ticker.toLowerCase() === formattedSearch
@@ -172,46 +172,66 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   }
 
   if (props.activeCategory === MarketCategoryType.Trending) {
-    return (marketCategoriesMap.trending || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.trending || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Injective) {
-    return (marketCategoriesMap.injective || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.injective || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Layer1) {
-    return (marketCategoriesMap.layer1 || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.layer1 || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Layer2) {
-    return (marketCategoriesMap.layer2 || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.layer2 || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Experimental) {
     return (
       !market.isVerified &&
-      !(marketCategoriesMap.deprecated || []).includes(market.marketId)
+      !(jsonStore.helixMarketCategoriesMap.deprecated || []).includes(
+        market.marketId
+      )
     )
   }
 
   if (props.activeCategory === MarketCategoryType.DeFi) {
-    return (marketCategoriesMap.defi || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.defi || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.AI) {
-    return (marketCategoriesMap.ai || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.ai || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Meme) {
-    return (marketCategoriesMap.meme || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.meme || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.RWA) {
-    return (marketCategoriesMap.tradfiMarkets || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.tradfiMarkets || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.iAssets) {
-    return (marketCategoriesMap.iAssets || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.iAssets || []).includes(
+      market.marketId
+    )
   }
 }
 
