@@ -144,8 +144,28 @@ export const getDerivativeGridMarkets = () => {
   }
 
   if (IS_MAINNET && IS_STAGING) {
+    const gridMarkets = [
+      ...stagingDerivativeGridMarkets,
+      {
+        slug: 'itsla-usdt-perp',
+        contractAddress: 'inj12l7llh5am4w4ecx87an6wsq97eyd0auj5cefcq'
+      }
+    ]
+
+    return gridMarkets
+
     return stagingDerivativeGridMarkets
   }
+
+  const gridMarkets = [
+    ...stagingDerivativeGridMarkets,
+    {
+      slug: 'itsla-usdt-perp',
+      contractAddress: 'inj12l7llh5am4w4ecx87an6wsq97eyd0auj5cefcq'
+    }
+  ]
+
+  return gridMarkets
 
   return mainnetDerivativeGridMarkets
 }

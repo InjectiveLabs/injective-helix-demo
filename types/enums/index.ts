@@ -315,6 +315,7 @@ export enum InvestmentTypeGst {
 
 export enum StrategyStatus {
   Active = 'active',
+  Pending = 'pending',
   Removed = 'removed'
 }
 

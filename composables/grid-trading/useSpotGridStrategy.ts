@@ -275,6 +275,7 @@ export const useSpotGridStrategies = (
         trailingUpper,
         trailingLower,
         percentagePnl,
+        strategyStatus: strategy.state as StrategyStatus,
         currentMidPrice,
         currentUsdValue,
         initialUsdValue,

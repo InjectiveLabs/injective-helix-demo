@@ -3,9 +3,13 @@ import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
 
 import { Status, StatusType } from '@injectivelabs/utils'
+import { StrategyStatus } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 
 const props = defineProps<{
   strategy: TradingStrategy
+  pnl: string
+  pnlPercentage: string
 }>()
 
 const toast = useToast()
@@ -15,7 +19,22 @@ const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
+const isOpen = ref(false)
+const currentPnl = ref('')
+const currentPnlPercentage = ref('')
 const status = reactive(new Status(StatusType.Idle))
+
+const colorClass = computed(() => {
+  if (Number(currentPnlPercentage.value) > 0) {
+    return 'text-green-500'
+  }
+
+  if (Number(currentPnlPercentage.value) < 0) {
+    return 'text-red-500'
+  }
+
+  return 'text-coolGray-400'
+})
 
 function removeStrategy() {
   status.setLoading()
@@ -24,6 +43,9 @@ function removeStrategy() {
 
   const subaccountId = props.strategy.subaccountId
   const marketId = props.strategy.marketId
+
+  currentPnl.value = props.pnl
+  currentPnlPercentage.value = props.pnlPercentage
 
   gridStrategyStore
     .removeStrategyForSubaccount(
@@ -69,13 +91,23 @@ function removeStrategy() {
         icon: NuxtUiIcons.Checkmark
       })
 
-      // Optimistically remove the strategy from the state
+      isOpen.value = true
+
+      // Optimistically update state to pending
       gridStrategyStore.$patch((state) => {
-        state.strategies = state.strategies.filter(
-          (strategy) =>
+        state.strategies = state.strategies.map((strategy) => {
+          if (
             strategy.contractAddress !== props.strategy.contractAddress &&
             strategy.subaccountId !== props.strategy.subaccountId
-        )
+          ) {
+            return {
+              ...strategy,
+              state: StrategyStatus.Pending
+            }
+          }
+
+          return strategy
+        })
       })
     })
     .catch($onError)
@@ -91,4 +123,51 @@ function removeStrategy() {
       {{ $t('sgt.removeStrategy') }}
     </SharedButton>
   </slot>
+
+  <AppModal v-model="isOpen">
+    <div class="text-center">
+      <img
+        src="/svg/loading-dots-circle.svg"
+        alt="loading-dots-circle"
+        class="w-6 h-6 mx-auto mb-4"
+      />
+
+      <h3 class="text-xl font-bold">Strategy Removal Initiated</h3>
+
+      <div class="text-sm text-coolGray-400 space-y-4 mt-4">
+        <p>
+          {{ $t('sgt.yourTradingStrategyIsBeingRemoved') }}
+        </p>
+
+        <div>
+          <span>{{ $t('sgt.aproximateProfit') }}:</span>
+
+          <div :class="colorClass">
+            {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
+
+            <SharedAmountFormatter
+              :max-decimal-places="3"
+              :amount="currentPnl"
+              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            />
+            <span>
+              (
+              {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
+              {{ currentPnlPercentage }}% )
+            </span>
+          </div>
+        </div>
+
+        <p>{{ $t('sgt.youCanCloseThisNotification') }}</p>
+      </div>
+    </div>
+
+    <AppButton
+      variant="primary-outline"
+      class="w-full mt-4"
+      @click="isOpen = false"
+    >
+      Close
+    </AppButton>
+  </AppModal>
 </template>

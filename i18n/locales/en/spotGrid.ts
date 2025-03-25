@@ -22,6 +22,7 @@ export default {
     history: 'History',
     enabled: 'Enabled',
     removed: 'Removed',
+    pending: 'Pending',
     lowerPrice: 'Lower Price',
     upperPrice: 'Upper Price',
     disabled: 'Disabled',
@@ -244,7 +245,13 @@ export default {
       confirmAndAdjust: 'Confirm and Adjust',
       adjustYourAvailableBalance:
         'Adjust your available [{base}] and [{quote}] balance'
-    }
+    },
+
+    aproximateProfit: 'Approximate Profit',
+    yourTradingStrategyIsBeingRemoved:
+      'Your trading strategy is being removed and will be completed automatically. This process can take up to a few minutes.',
+    youCanCloseThisNotification:
+      'You can close this notification and continue using the platform.'
   },
 
   tradingBots: {
@@ -273,11 +280,13 @@ export default {
     volumeBoost: 'Volume Boost',
     description:
       'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
+
     botType: {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Volume Boost',
       futuresGrid: 'Futures Grid'
     },
+
     myLpRewards: {
       viewAll: 'View All',
       title: 'My LP Rewards',

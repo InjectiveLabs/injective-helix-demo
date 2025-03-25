@@ -228,6 +228,7 @@ export const useDerivativeGridStrategies = (
         trailingUpper,
         trailingLower,
         percentagePnl,
+        strategyStatus: strategy.state as StrategyStatus,
         currentUsdValue,
         initialUsdValue,
         durationFormatted,
