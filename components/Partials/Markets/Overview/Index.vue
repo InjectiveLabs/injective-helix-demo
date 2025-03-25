@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { newMarketsMarketIds } from '@/app/data/market'
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
 import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
 
 const HOT_MARKETS_SLUGS = ['inj-usdt', 'btc-usdt-perp', 'weth-usdt', 'sol-usdt']
@@ -22,7 +22,7 @@ const hotMarkets = computed(() =>
 
 const newMarkets = computed(
   () =>
-    newMarketsMarketIds
+    jsonStore.helixMarketCategoriesMap.newMarkets
       .map((marketId) =>
         props.markets.find((market) => market.market.marketId === marketId)
       )

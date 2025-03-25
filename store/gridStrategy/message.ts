@@ -17,7 +17,6 @@ import {
 } from '@/app/grid-trading'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
@@ -63,10 +62,13 @@ export const createSpotGridStrategy = async ({
   const authZStore = useAuthZStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
-  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+  const gridMarket = jsonStore.spotGridMarkets.find(
+    (m) => m.slug === market.slug
+  )
 
   if (!sharedWalletStore.injectiveAddress || !gridMarket) {
     return
@@ -282,6 +284,7 @@ export const createSpotGridStrategy = async ({
 export const removeStrategy = async (contractAddress?: string) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -299,9 +302,10 @@ export const removeStrategy = async (contractAddress?: string) => {
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const gridMarket = [...spotGridMarkets, ...derivativeGridMarkets].find(
-    (m) => m.slug === gridStrategyStore.spotMarket!.slug
-  )
+  const gridMarket = [
+    ...jsonStore.spotGridMarkets,
+    ...jsonStore.derivativeGridMarkets
+  ].find((m) => m.slug === gridStrategyStore.spotMarket!.slug)
 
   if (!gridMarket) {
     return
@@ -389,22 +393,25 @@ export const createPerpStrategy = async (
   }: Partial<DerivativeGridTradingForm>,
   market: UiDerivativeMarket
 ) => {
+  const authZStore = useAuthZStore()
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const gridStrategyStore = useGridStrategyStore()
+
   if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
     return
   }
 
-  const gridMarket = derivativeGridMarkets.find((m) => m.slug === market.slug)
+  const gridMarket = jsonStore.derivativeGridMarkets.find(
+    (m) => m.slug === market.slug
+  )
 
   if (!gridMarket) {
     return
   }
-
-  const authZStore = useAuthZStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
-  const derivativeStore = useDerivativeStore()
-  const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const levels = Number(grids)
 
@@ -577,6 +584,7 @@ export async function createSpotLiquidityBot(params: {
   const authZStore = useAuthZStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const jsonStore = useSharedJsonStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -596,7 +604,9 @@ export async function createSpotLiquidityBot(params: {
     market.slug
   )
 
-  const gridMarket = spotGridMarkets.find((m) => m.slug === market.slug)
+  const gridMarket = jsonStore.spotGridMarkets.find(
+    (m) => m.slug === market.slug
+  )
 
   if (!gridMarket) {
     return

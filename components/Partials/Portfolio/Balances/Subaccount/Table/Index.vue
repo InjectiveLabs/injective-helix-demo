@@ -3,6 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { TokenVerification } from '@injectivelabs/sdk-ts'
 import {
   PortfolioCyTags,
   BalanceTableColumn,
@@ -15,7 +16,6 @@ const { lg } = useSharedBreakpoints()
 const {
   stakedAmount,
   stakedAmountInUsd,
-  showUnverifiedAssets,
   activeSubaccountBalancesWithToken,
   activeSubaccountTradableBalancesWithToken
 } = useBalance()
@@ -24,6 +24,7 @@ const props = withDefaults(
   defineProps<{
     search?: string
     tableHeaderClass?: string
+    showUnverifiedAssets?: boolean
   }>(),
   {
     search: '',
@@ -33,7 +34,7 @@ const props = withDefaults(
 
 const { rows } = useBalanceTransformer(
   computed(() =>
-    showUnverifiedAssets.value
+    props.showUnverifiedAssets
       ? activeSubaccountBalancesWithToken.value
       : activeSubaccountTradableBalancesWithToken.value
   )
@@ -103,8 +104,43 @@ const columns = computed(() => {
   return columnArray
 })
 
+const sortedRows = computed(() => {
+  return rows.value.sort((balance1, balance2) => {
+    if (balance1.token.denom === injToken.denom) {
+      return -1
+    }
+
+    if (balance2.token.denom === injToken.denom) {
+      return 1
+    }
+
+    const balance1IsVerified =
+      balance1.token.tokenVerification === TokenVerification.Verified
+    const balance2IsVerified =
+      balance2.token.tokenVerification === TokenVerification.Verified
+
+    if (balance1IsVerified && balance2IsVerified) {
+      return balance2[BalanceTableColumn.TotalUsd]
+        .minus(balance1[BalanceTableColumn.TotalUsd])
+        .toNumber()
+    }
+
+    if (balance1IsVerified) {
+      return -1
+    }
+
+    if (balance2IsVerified) {
+      return 1
+    }
+
+    return balance2[BalanceTableColumn.Total]
+      .minus(balance1[BalanceTableColumn.Total])
+      .toNumber()
+  })
+})
+
 const rowsData = computed(() => {
-  const data = [...rows.value]
+  const data = [...sortedRows.value]
 
   if (showStakingRow.value) {
     return [
@@ -171,13 +207,22 @@ function toggleStakingRow() {
             <UAvatar size="xs" :src="row.token.logo" />
             <div class="ml-2">
               <p
-                class="font-medium text-sm mb-1 leading-none"
+                class="font-medium text-sm mb-1 leading-none max-w-52 truncate"
                 :data-cy="`${dataCyTag(PortfolioCyTags.BalanceTokenSymbol)}`"
               >
                 {{ row.token.symbol }}
               </p>
-              <p class="text-xs text-coolGray-500">{{ row.token.name }}</p>
+              <p class="text-xs text-coolGray-500 truncate max-w-52">
+                {{ row.token.name }}
+              </p>
             </div>
+
+            <SharedIcon
+              v-if="row.isVerified"
+              name="check-shield"
+              is-md
+              class="text-green-500 ml-2"
+            />
 
             <AppButton
               v-if="row.token.denom === injToken.denom"
@@ -218,6 +263,7 @@ function toggleStakingRow() {
           v-if="!row.isStakingRow"
           v-bind="{
             token: row.token,
+            isAlignRight: true,
             value: row[BalanceTableColumn.Available].toFixed()
           }"
         >
@@ -269,13 +315,16 @@ function toggleStakingRow() {
 
       <template #total-usd-data="{ row }">
         <div :class="{ 'text-coolGray-400': row.isStakingRow }">
-          <span>$</span>
-          <AppUsdBalanceAmount
-            v-bind="{
-              amount: row[BalanceTableColumn.TotalUsd].toFixed()
-            }"
-            :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-          />
+          <span v-if="!row.isVerified">&mdash;</span>
+          <template v-else>
+            <span>$</span>
+            <AppUsdBalanceAmount
+              v-bind="{
+                amount: row[BalanceTableColumn.TotalUsd].toFixed()
+              }"
+              :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
+            />
+          </template>
         </div>
       </template>
 
@@ -285,7 +334,6 @@ function toggleStakingRow() {
             v-if="!row.isStakingRow"
             v-bind="{
               token: row.token,
-              isVerified: row.isVerified,
               isBridgable: row.isBridgable
             }"
           />

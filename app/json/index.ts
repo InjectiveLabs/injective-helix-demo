@@ -1,9 +1,4 @@
-import {
-  Network,
-  isDevnet,
-  isTestnet,
-  isMainnet
-} from '@injectivelabs/networks'
+import { Network, isDevnet, isTestnet } from '@injectivelabs/networks'
 import gitVersion from './gitVersion.json'
 import devnetTokens from './tokens/devnet.json'
 import testnetTokens from './tokens/testnet.json'
@@ -19,23 +14,18 @@ import testnetCategoryMap from './marketMap/category/testnet.json'
 import mainnetCategoryMap from './marketMap/category/mainnet.json'
 import devnetSpotMarketIdMap from './marketMap/spot/devnet.json'
 import testnetSpotMarketIdMap from './marketMap/spot/testnet.json'
-import stagingSpotMarketIdMap from './marketMap/spot/staging.json'
 import mainnetSpotMarketIdMap from './marketMap/spot/mainnet.json'
 import devnetExpiryMarketIdMap from './marketMap/expiry/devnet.json'
 import testnetExpiryMarketIdMap from './marketMap/expiry/testnet.json'
-import stagingExpiryMarketIdMap from './marketMap/expiry/staging.json'
 import mainnetExpiryMarketIdMap from './marketMap/expiry/mainnet.json'
 import devnetDerivativeMarketIdMap from './marketMap/derivative/devnet.json'
 import testnetDerivativeMarketIdMap from './marketMap/derivative/testnet.json'
-import stagingDerivativeMarketIdMap from './marketMap/derivative/staging.json'
 import mainnetDerivativeMarketIdMap from './marketMap/derivative/mainnet.json'
 import devnetSpotGridMarkets from './grid/spot/devnet.json'
 import testnetSpotGridMarkets from './grid/spot/testnet.json'
-import stagingSpotGridMarkets from './grid/spot/staging.json'
 import mainnetSpotGridMarkets from './grid/spot/mainnet.json'
 import devnetDerivativeGridMarkets from './grid/derivative/devnet.json'
 import testnetDerivativeGridMarkets from './grid/derivative/testnet.json'
-import stagingDerivativeGridMarkets from './grid/derivative/staging.json'
 import mainnetDerivativeGridMarkets from './grid/derivative/mainnet.json'
 import restrictedCountriesJson from './restrictedCountries.json'
 import blacklistedAddressesJson from './blacklistedAddresses.json'
@@ -43,8 +33,6 @@ import blacklistedAddressesJson from './blacklistedAddresses.json'
 const NETWORK: Network = import.meta.env.VITE_NETWORK as Network
 const IS_DEVNET: boolean = isDevnet(NETWORK)
 const IS_TESTNET: boolean = isTestnet(NETWORK)
-const IS_MAINNET: boolean = isMainnet(NETWORK)
-const IS_STAGING = import.meta.env.VITE_ENV === 'staging'
 
 export const getTokens = () => {
   if (IS_DEVNET) {
@@ -79,10 +67,6 @@ export const getVerifiedSpotMarketIdMap = () => {
     return testnetSpotMarketIdMap
   }
 
-  if (IS_MAINNET && IS_STAGING) {
-    return stagingSpotMarketIdMap
-  }
-
   return mainnetSpotMarketIdMap
 }
 
@@ -95,24 +79,16 @@ export const getVerifiedDerivativeMarketIdMap = () => {
     return testnetDerivativeMarketIdMap
   }
 
-  if (IS_MAINNET && IS_STAGING) {
-    return stagingDerivativeMarketIdMap
-  }
-
   return mainnetDerivativeMarketIdMap
 }
 
-export const getVerifiedExpiryMarketIdMap = () => {
+export const getExpiryMarketIdMap = () => {
   if (IS_DEVNET) {
     return devnetExpiryMarketIdMap
   }
 
   if (IS_TESTNET) {
     return testnetExpiryMarketIdMap
-  }
-
-  if (IS_MAINNET && IS_STAGING) {
-    return stagingExpiryMarketIdMap
   }
 
   return mainnetExpiryMarketIdMap
@@ -127,10 +103,6 @@ export const getSpotGridMarkets = () => {
     return testnetSpotGridMarkets
   }
 
-  if (IS_MAINNET && IS_STAGING) {
-    return stagingSpotGridMarkets
-  }
-
   return mainnetSpotGridMarkets
 }
 
@@ -142,30 +114,6 @@ export const getDerivativeGridMarkets = () => {
   if (IS_TESTNET) {
     return testnetDerivativeGridMarkets
   }
-
-  if (IS_MAINNET && IS_STAGING) {
-    const gridMarkets = [
-      ...stagingDerivativeGridMarkets,
-      {
-        slug: 'itsla-usdt-perp',
-        contractAddress: 'inj12l7llh5am4w4ecx87an6wsq97eyd0auj5cefcq'
-      }
-    ]
-
-    return gridMarkets
-
-    return stagingDerivativeGridMarkets
-  }
-
-  const gridMarkets = [
-    ...stagingDerivativeGridMarkets,
-    {
-      slug: 'itsla-usdt-perp',
-      contractAddress: 'inj12l7llh5am4w4ecx87an6wsq97eyd0auj5cefcq'
-    }
-  ]
-
-  return gridMarkets
 
   return mainnetDerivativeGridMarkets
 }
@@ -183,41 +131,15 @@ export const getSwapRoutes = () => {
 }
 
 export const getCategoryMap = () => {
-  let listMap: Record<string, { marketId: string }[]> = mainnetCategoryMap
-
   if (IS_DEVNET) {
-    listMap = devnetCategoryMap
+    return devnetCategoryMap
   }
 
   if (IS_TESTNET) {
-    listMap = testnetCategoryMap
+    return testnetCategoryMap
   }
 
-  const formattedList = Object.entries(listMap).reduce(
-    (list, [key, marketIdMap]: [string, { marketId: string }[]]) => {
-      return {
-        ...list,
-        [key]: marketIdMap.map((item) => item.marketId)
-      }
-    },
-    {} as Record<string, string[]>
-  )
-
-  return formattedList
-}
-
-export const getRwaCategorySlugs = () => {
-  let listMap: Record<string, { slug: string }[]> = mainnetCategoryMap
-
-  if (IS_DEVNET) {
-    listMap = devnetCategoryMap
-  }
-
-  if (IS_TESTNET) {
-    listMap = testnetCategoryMap
-  }
-
-  return listMap.rwa.map((item) => item.slug)
+  return mainnetCategoryMap
 }
 
 export const gitBuild = () => {
@@ -237,21 +159,11 @@ export const blacklistedAddresses = blacklistedAddressesJson
 export const tokens = getTokens()
 export const verifiedDenoms = getDenoms()
 export const swapRoutes = getSwapRoutes()
-export const rwaSlugs = getRwaCategorySlugs()
 export const marketCategoriesMap = getCategoryMap()
 
 export const spotGridMarkets = getSpotGridMarkets()
 export const derivativeGridMarkets = getDerivativeGridMarkets()
 
-export const verifiedDerivativeSlugs = Object.keys(
-  getVerifiedDerivativeMarketIdMap()
-)
-export const verifiedExpiryMarketIds = Object.values(
-  getVerifiedExpiryMarketIdMap()
-)
-export const verifiedDerivativeMarketIds = Object.values(
-  getVerifiedDerivativeMarketIdMap()
-)
-export const verifiedSpotSlugs = Object.keys(getVerifiedSpotMarketIdMap())
-export const verifiedExpirySlugs = Object.keys(getVerifiedExpiryMarketIdMap())
-export const verifiedSpotMarketIds = Object.values(getVerifiedSpotMarketIdMap())
+export const expiryMarketIdMap = getExpiryMarketIdMap()
+export const verifiedSpotMarketIdMap = getVerifiedSpotMarketIdMap()
+export const verifiedDerivateMarketIdMap = getVerifiedDerivativeMarketIdMap()
