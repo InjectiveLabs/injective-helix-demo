@@ -2,7 +2,7 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { ExitType, StrategyType, TradingStrategy } from '@injectivelabs/sdk-ts'
+import { ExitType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import {
   GST_AUTO_PRICE_THRESHOLD,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS,
@@ -10,6 +10,7 @@ import {
 } from '@/app/utils/constants'
 import { durationFormatter } from '@/app/utils/helpers'
 import { StopReason, StrategyStatus, UiSpotMarket } from '@/types'
+import { IndexerGridStrategyType } from '@/types/grid'
 
 const { subaccountPortfolioBalanceMap } = useBalance()
 
@@ -67,7 +68,7 @@ const durationFormatted = computed(() =>
 )
 
 const isGeometric = computed(
-  () => props.activeStrategy.strategyType === StrategyType.Geometric
+  () => props.activeStrategy.strategyType === IndexerGridStrategyType.Geometric
 )
 
 const totalAmount = computed(() => {

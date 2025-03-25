@@ -3,7 +3,7 @@ import { indexerSpotApi } from '@shared/Service'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { TradingStrategy, ExitType, StrategyType } from '@injectivelabs/sdk-ts'
+import { TradingStrategy, ExitType } from '@injectivelabs/sdk-ts'
 import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
@@ -13,7 +13,8 @@ import {
   StopReason,
   SgtMarketType,
   AccountBalance,
-  StrategyStatus
+  StrategyStatus,
+  IndexerGridStrategyType
 } from '@/types'
 
 export const useSpotGridStrategies = (
@@ -243,7 +244,7 @@ export const useSpotGridStrategies = (
 
       if (
         strategy.marketType === 'spot' &&
-        strategy.strategyType === StrategyType.ArithmeticLP
+        strategy.strategyType === IndexerGridStrategyType.ArithmeticLP
       ) {
         botType = BotType.LiquidityGrid
       } else if (strategy.marketType === 'futures') {
@@ -290,7 +291,6 @@ export const useSpotGridStrategies = (
         createdAt: strategy.createdAt,
         stopReason: strategy.stopReason as StopReason,
         strategyType: strategy.strategyType,
-        gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
         subaccountId: strategy.subaccountId,
         executionPrice: executionPrice.toFixed(),

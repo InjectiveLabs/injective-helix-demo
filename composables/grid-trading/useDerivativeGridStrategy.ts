@@ -1,10 +1,5 @@
 import { format } from 'date-fns'
-import {
-  ExitType,
-  MarketType,
-  StrategyType,
-  TradingStrategy
-} from '@injectivelabs/sdk-ts'
+import { ExitType, MarketType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatInterval } from '@/app/utils/helpers'
 import {
@@ -13,7 +8,8 @@ import {
   SgtMarketType,
   AccountBalance,
   StrategyStatus,
-  UiDerivativeMarket
+  UiDerivativeMarket,
+  IndexerGridStrategyType
 } from '@/types'
 
 export const useDerivativeGridStrategies = (
@@ -196,7 +192,7 @@ export const useDerivativeGridStrategies = (
 
       if (
         strategy.marketType === MarketType.Spot &&
-        strategy.strategyType === StrategyType.ArithmeticLP
+        strategy.strategyType === IndexerGridStrategyType.ArithmeticLP
       ) {
         botType = BotType.LiquidityGrid
       } else if (strategy.marketType === MarketType.Derivative) {
@@ -242,7 +238,6 @@ export const useDerivativeGridStrategies = (
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
         stopReason: strategy.stopReason as StopReason,
-        gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
         currentQuoteAccountBalanceQuantity,
         strategyType: strategy.strategyType,

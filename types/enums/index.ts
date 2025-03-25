@@ -280,7 +280,8 @@ export enum SpotGridTradingField {
   IsAssetRebalanceOn = 'isAssetRebalanceOn',
   IsTrailingEnabled = 'isTrailingEnabled',
   TrailingUpper = 'trailingUpper',
-  TrailingLower = 'trailingLower'
+  TrailingLower = 'trailingLower',
+  IsLpMode = 'isLpMode'
 }
 
 export enum DerivativeGridTradingField {

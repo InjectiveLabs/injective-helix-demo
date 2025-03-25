@@ -1,10 +1,9 @@
 import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import {
-  createStrategy,
   removeStrategy,
   createPerpStrategy,
   createSpotLiquidityBot,
-  copySpotGridTradingStrategy,
+  createSpotGridStrategy,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
@@ -114,11 +113,10 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     }
   },
   actions: {
-    createStrategy,
     removeStrategy,
     createPerpStrategy,
+    createSpotGridStrategy,
     createSpotLiquidityBot,
-    copySpotGridTradingStrategy,
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {

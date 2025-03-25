@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { StrategyType } from '@injectivelabs/sdk-ts'
-import { SpotGridTradingField } from '@/types'
+import { SpotGridStrategyType, SpotGridTradingField } from '@/types'
 
 const { value: strategyTypeValue } = useStringField({
   name: SpotGridTradingField.StrategyType,
-  initialValue: StrategyType.Arithmetic,
+  initialValue: SpotGridStrategyType.Arithmetic,
   rule: ''
 })
 
 const strategyType = computed({
-  get: () => strategyTypeValue.value === StrategyType.Geometric,
+  get: () => strategyTypeValue.value === SpotGridStrategyType.Geometric,
   set: (isTrue: boolean) => {
     strategyTypeValue.value = isTrue
-      ? StrategyType.Geometric
-      : StrategyType.Arithmetic
+      ? SpotGridStrategyType.Geometric
+      : SpotGridStrategyType.Arithmetic
   }
 })
 </script>
