@@ -56,10 +56,11 @@ export const useReferralStore = defineStore('referral', {
         )
 
         referralStore.$patch({
-          feeRecipient: response.referrer || FEE_RECIPIENT
+          feeRecipient: response?.active ? response.referrer : FEE_RECIPIENT
         })
       } catch (e: any) {
-        // silent error handling if user is not a referrer
+        // silent error handling if user has no referrer
+        referralStore.$patch({ feeRecipient: FEE_RECIPIENT })
       }
     },
 
@@ -79,6 +80,7 @@ export const useReferralStore = defineStore('referral', {
         referralStore.$patch({ referralDetails: response || {} })
       } catch (e: any) {
         // silent error handling if user is not an invitee
+        referralStore.$patch({ referralDetails: {} })
       }
     }
   }
