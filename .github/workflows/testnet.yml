@@ -10,7 +10,7 @@ on:
 jobs:
   testnet-release:
     name: 'Deploy to testnet'
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     env:
       ## Public
