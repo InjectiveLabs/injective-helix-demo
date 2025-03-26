@@ -16,7 +16,7 @@ const resourcesList = [
   },
   {
     text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy'
+    link: MainPage.PrivacyPolicy
   }
 ]
 
