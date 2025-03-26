@@ -21,7 +21,10 @@ function checkReferralCode() {
   referralStore
     .checkCodeAvailability(referralCode.value as string)
     .then((referrerAddress) => {
-      if (referrerAddress === sharedWalletStore.injectiveAddress) {
+      if (
+        referrerAddress &&
+        referrerAddress === sharedWalletStore.injectiveAddress
+      ) {
         notificationStore.error({
           title: t('referral.joinSelfReferralMessage')
         })
