@@ -9,7 +9,7 @@ on:
 jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-22.04
     timeout-minutes: 45
 
     env:
