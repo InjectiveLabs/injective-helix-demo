@@ -32,7 +32,6 @@ export default {
     customReferralCode: 'Custom Referral Code',
     chooseDifferentLink: 'Choose Different Link',
     dashboardTitle: 'Refer Traders, Earn Rewards',
-    unableToJoinReferral: 'Unable to Join Referral',
     referralLinkAvailable: 'Referral Link Available!',
     lettersAndNumbersOnly: 'letters and numbers only',
     confirmAndGenerateLink: 'Confirm and Generate Link',
@@ -44,6 +43,8 @@ export default {
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
     success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,
+    joinSelfReferralMessage:
+      "Your referral code is valid, but you can't refer yourself. Share it with someone else!",
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
     referralLinkAvailableDescription: `Your referral code ${siteFullUrl.origin}/ref/{referralCode} is available. Would you like to use this link?`,

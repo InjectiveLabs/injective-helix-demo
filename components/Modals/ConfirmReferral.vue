@@ -74,9 +74,20 @@ function joinReferral() {
     })
 }
 
+function checkJoinReferralEligibility() {
+  referralStore
+    .checkCodeAvailability(referralCode.value as string)
+    .then((referrerAddress) => {
+      if (referrerAddress !== sharedWalletStore.injectiveAddress) {
+        joinReferral()
+      }
+    })
+    .catch($onError)
+}
+
 onWalletConnected(() => {
   if (sharedWalletStore.isUserConnected && hasApproved.value) {
-    joinReferral()
+    checkJoinReferralEligibility()
   }
 })
 </script>

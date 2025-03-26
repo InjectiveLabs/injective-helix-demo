@@ -23,7 +23,7 @@ function checkReferralCode() {
     .then((referrerAddress) => {
       if (referrerAddress === sharedWalletStore.injectiveAddress) {
         notificationStore.error({
-          title: t('referral.unableToJoinReferral')
+          title: t('referral.joinSelfReferralMessage')
         })
 
         router.push({ name: MainPage.Index })
@@ -40,7 +40,7 @@ function checkReferralCode() {
     .catch($onError)
 }
 
-onMounted(() => {
+onWalletConnected(() => {
   if (referralCode.value) {
     checkReferralCode()
   }
