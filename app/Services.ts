@@ -22,9 +22,10 @@ import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 tokenStaticFactory.mapRegistry(tokens)
 
 // Services
+// https://k8s.mainnet.eu.abacus.injective.network/grpc
 export const abacusGrpcApi = new AbacusGrpcApi(
   IS_MAINNET
-    ? 'https://k8s.mainnet.eu.abacus.injective.network' // 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
+    ? 'https://k8s.mainnet.eu.abacus.injective.network/grpc' // 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
     : 'https://abacus.injective.cooking/grpc'
 )
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
