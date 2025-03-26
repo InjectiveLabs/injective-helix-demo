@@ -109,10 +109,7 @@ export const useTokenStore = defineStore('token', {
         {} as Record<string, string>
       )
 
-      const unknownTokens = await sharedTokenClient.queryTokens(unKnownDenoms)
-
       tokenStore.supplyMap = supplyMap
-      tokenStore.unknownTokens = [...tokenStore.unknownTokens, ...unknownTokens]
     },
 
     async fetchTokensUsdPriceMap(coinGeckoIdList: string[] = []) {
