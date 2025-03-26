@@ -11,6 +11,7 @@ import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal } from '@/types'
+import { traceUserDetails } from '@/app/services/tracer'
 
 type WalletStoreState = {}
 
@@ -23,12 +24,24 @@ export const useWalletStore = defineStore('wallet', {
   actions: {
     async init() {
       const sharedWalletStore = useSharedWalletStore()
+      const sharedGeoStore = useSharedGeoStore()
 
       if (!sharedWalletStore.wallet) {
         return
       }
 
       await sharedWalletStore.init()
+
+      await traceUserDetails({
+        address: sharedWalletStore.address,
+        wallet: sharedWalletStore.wallet,
+        geoContinent: sharedGeoStore.geoContinent,
+        geoCountry: sharedGeoStore.geoCountry,
+        ipAddress: sharedGeoStore.ipAddress,
+        browserCountry: sharedGeoStore.browserCountry,
+        vpnDetected: sharedGeoStore.vpnDetected,
+        vpnCheckedTimestamp: sharedGeoStore.vpnCheckedTimestamp
+      })
     },
 
     async connectAddressOrPrivatekey({
