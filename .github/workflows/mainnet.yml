@@ -5,11 +5,12 @@ on:
   push:
     branches:
       - master
+      - feat/self-hosted-runner
 
 jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 45
 
     env:
@@ -107,18 +108,18 @@ jobs:
           previous_tag: ${{ env.current_version }}
           repo_url: 'https://github.com/InjectiveLabs/injective-helix'
 
-      - name: Create Release
-        if: steps.release_notes.outputs.release_notes != 'No new commits'
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          token: '${{ env.GH_TOKEN }}'
-          tag: ${{ steps.release_notes.outputs.new_version }}
-          name: Helix Release ${{ steps.release_notes.outputs.new_version }}
-          body: |
-            ## Changes
-            ${{ steps.release_notes.outputs.release_notes }}
-          draft: true
+      # - name: Create Release
+      #   if: steps.release_notes.outputs.release_notes != 'No new commits'
+      #   id: create_release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     token: '${{ env.GH_TOKEN }}'
+      #     tag: ${{ steps.release_notes.outputs.new_version }}
+      #     name: Helix Release ${{ steps.release_notes.outputs.new_version }}
+      #     body: |
+      #       ## Changes
+      #       ${{ steps.release_notes.outputs.release_notes }}
+      #     draft: true
 
       - name: Build app
         run: |
@@ -128,101 +129,101 @@ jobs:
         env:
           GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
 
-      - name: Upload build output as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: ./.nuxt/dist/client/_nuxt
-          overwrite: true
+      # - name: Upload build output as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: build-output
+      #     path: ./.nuxt/dist/client/_nuxt
+      #     overwrite: true
 
-      - name: Use AWS CLI
-        uses: chrislennon/action-aws-cli@v1.1
+      # - name: Use AWS CLI
+      #   uses: chrislennon/action-aws-cli@v1.1
 
-      - name: Sync to S3 bucket
-        run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
+      # - name: Sync to S3 bucket
+      #   run: aws s3 sync dist/ s3://$AWS_S3_BUCKET/www --follow-symlinks --delete
 
-      - name: Set Cache Headers
-        run: aws s3 cp s3://$AWS_S3_BUCKET/www s3://$AWS_S3_BUCKET/www --exclude "*" --include "*.js" --include "*.css" --include "*.svg" --include "*.woff2" --include "*.woff" --include "*.ttf" --recursive --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --cache-control max-age=2592000,public
+      # - name: Set Cache Headers
+      #   run: aws s3 cp s3://$AWS_S3_BUCKET/www s3://$AWS_S3_BUCKET/www --exclude "*" --include "*.js" --include "*.css" --include "*.svg" --include "*.woff2" --include "*.woff" --include "*.ttf" --recursive --metadata-directive REPLACE --expires 2034-01-01T00:00:00Z --cache-control max-age=2592000,public
 
-      - name: Invalidate Cloudfront CDN
-        run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+      # - name: Invalidate Cloudfront CDN
+      #   run: aws cloudfront create-invalidation --distribution-id=$CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
-      - name: Publish release
-        if: steps.release_notes.outputs.release_notes != 'No new commits'
-        uses: StuYarrow/publish-release@v1.1.2
-        env:
-          GITHUB_TOKEN: ${{ env.GH_TOKEN }}
-        with:
-          id: ${{ steps.create_release.outputs.id }}
+      # - name: Publish release
+      #   if: steps.release_notes.outputs.release_notes != 'No new commits'
+      #   uses: StuYarrow/publish-release@v1.1.2
+      #   env:
+      #     GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+      #   with:
+      #     id: ${{ steps.create_release.outputs.id }}
 
-      - name: Delete draft releases
-        if: failure()
-        uses: hugo19941994/delete-draft-releases@v1.0.0
-        with:
-          threshold: 1s
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      # - name: Delete draft releases
+      #   if: failure()
+      #   uses: hugo19941994/delete-draft-releases@v1.0.0
+      #   with:
+      #     threshold: 1s
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     outputs:
       release_notes: ${{ steps.release_notes.outputs.release_notes }}
       bugsnag_version: ${{ steps.release_notes.outputs.new_version }}
 
-  notify-slack-on-deployment:
-    runs-on: ubuntu-22.04
-    needs: mainnet-release
-    steps:
-      - name: 'Notify Slack'
-        id: notify_slack
-        run: |
-          if [ "${{ needs.mainnet-release.outputs.release_notes }}" != "No new commits" ]; then
-            payload='{
-              "text": "'"<!here> 🚀 Helix deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n${{ needs.mainnet-release.outputs.release_notes }}"'",
-              "attachments": [
-                {
-                  "text": "Helix deployed to Mainnet ✅",
-                  "color": "#22bb33"
-                }
-              ]
-            }'
-          else
-            payload='{
-              "text": "'"<!here> 🚀 Helix Rebuilt on Mainnet! Good guys, close your eyes! 🛠️😄."'",
-              "attachments": [
-                {
-                  "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
-                  "color": "#22bb33"
-                }
-              ]
-            }'
-          fi
-          curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+  # notify-slack-on-deployment:
+  #   runs-on: ubuntu-22.04
+  #   needs: mainnet-release
+  #   steps:
+  #     - name: 'Notify Slack'
+  #       id: notify_slack
+  #       run: |
+  #         if [ "${{ needs.mainnet-release.outputs.release_notes }}" != "No new commits" ]; then
+  #           payload='{
+  #             "text": "'"<!here> 🚀 Helix deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n${{ needs.mainnet-release.outputs.release_notes }}"'",
+  #             "attachments": [
+  #               {
+  #                 "text": "Helix deployed to Mainnet ✅",
+  #                 "color": "#22bb33"
+  #               }
+  #             ]
+  #           }'
+  #         else
+  #           payload='{
+  #             "text": "'"<!here> 🚀 Helix Rebuilt on Mainnet! Good guys, close your eyes! 🛠️😄."'",
+  #             "attachments": [
+  #               {
+  #                 "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
+  #                 "color": "#22bb33"
+  #               }
+  #             ]
+  #           }'
+  #         fi
+  #         curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
 
-  upload-bugsnag:
-    name: 'Upload BugSnag Release'
-    runs-on: ubuntu-22.04
-    needs: mainnet-release
+  # upload-bugsnag:
+  #   name: 'Upload BugSnag Release'
+  #   runs-on: ubuntu-22.04
+  #   needs: mainnet-release
 
-    env:
-      VITE_BASE_URL: https://helixapp.com
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+  #   env:
+  #     VITE_BASE_URL: https://helixapp.com
+  #     VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
 
-    steps:
-      - name: Download build output
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: ./.nuxt/dist/client/_nuxt
+  #   steps:
+  #     - name: Download build output
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: build-output
+  #         path: ./.nuxt/dist/client/_nuxt
 
-      - name: Upload bugsnag release
-        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
-        with:
-          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
-          directory: ./.nuxt/dist/client/_nuxt
-          baseUrl: ${{ env.VITE_BASE_URL }}
-          appVersion: ${{ needs.mainnet-release.outputs.bugsnag_version }}
-          overwrite: true
+  #     - name: Upload bugsnag release
+  #       uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+  #       with:
+  #         apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+  #         directory: ./.nuxt/dist/client/_nuxt
+  #         baseUrl: ${{ env.VITE_BASE_URL }}
+  #         appVersion: ${{ needs.mainnet-release.outputs.bugsnag_version }}
+  #         overwrite: true
 
-      - name: Purge artifacts
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: build-output
+  #     - name: Purge artifacts
+  #       uses: geekyeggo/delete-artifact@v5
+  #       with:
+  #         name: build-output
