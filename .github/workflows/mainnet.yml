@@ -9,7 +9,7 @@ on:
 jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
-    runs-on: ubuntu-22.04
+    runs-on: helix-runner
     timeout-minutes: 45
 
     env:
