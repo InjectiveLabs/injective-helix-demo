@@ -9,7 +9,7 @@ on:
 jobs:
   mainnet-release:
     name: 'Deploy to mainnet'
-    runs-on: helix-runner
+    runs-on: [self-hosted, linux, ARM64]
     timeout-minutes: 45
 
     env:
