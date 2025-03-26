@@ -4,7 +4,7 @@
       <h1 class="font-bold text-3xl">
         <span>Terms and Conditions</span>
       </h1>
-      <p class="font-semibold mt-2">
+      <p class="font-semibold my-4">
         <span>Last updated: 3.25.2025</span>
       </p>
 
