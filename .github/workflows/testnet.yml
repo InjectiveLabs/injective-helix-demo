@@ -10,7 +10,7 @@ on:
 jobs:
   testnet-release:
     name: 'Deploy to testnet'
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, linux, x64]
     timeout-minutes: 30
     env:
       ## Public
@@ -54,6 +54,12 @@ jobs:
       NODE_OPTIONS: '--max_old_space_size=15360'
 
     steps:
+      - name: Sleep for 10s
+        if: ${{ env.SKIP_DEPLOYMENTS != 'true' }}
+        uses: juliangruber/sleep-action@v2.0.0
+        with:
+          time: 10s
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
