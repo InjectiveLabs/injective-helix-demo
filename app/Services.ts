@@ -24,7 +24,7 @@ tokenStaticFactory.mapRegistry(tokens)
 // Services
 export const abacusGrpcApi = new AbacusGrpcApi(
   IS_MAINNET
-    ? 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
+    ? 'https://k8s.mainnet.eu.abacus.injective.network' // 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
     : 'https://abacus.injective.cooking/grpc'
 )
 export const authZApi = new ChainGrpcAuthZApi(ENDPOINTS.grpc)
