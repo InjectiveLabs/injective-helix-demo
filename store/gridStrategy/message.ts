@@ -373,13 +373,13 @@ export const removeStrategyForSubaccount = async (
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() => {
+  backupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
-  })
+  )
 }
 
 export const createPerpStrategy = async (
