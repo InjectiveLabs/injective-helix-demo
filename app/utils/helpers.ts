@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import {
   BigNumber,
   BigNumberInWei,
@@ -589,4 +590,14 @@ export const getTradingBotLinkFromStrategy = (
           marketId: strategy.market.marketId
         }
       }
+}
+
+export function generateOnramperSignature(
+  secretKey: string,
+  data: string
+): string {
+  const hmac = crypto.createHmac('sha256', secretKey)
+  hmac.update(data)
+
+  return hmac.digest('hex')
 }
