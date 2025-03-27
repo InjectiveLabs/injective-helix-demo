@@ -48,7 +48,9 @@ const showFooter = computed(() =>
 onWalletConnected(async () => {
   portfolioStatus.setLoading()
 
-  mixpanelAnalytics.init()
+  if (!sharedWalletStore.isDev) {
+    mixpanelAnalytics.init()
+  }
 
   await until(initialStatus).toMatch((status) => status.isIdle())
 
