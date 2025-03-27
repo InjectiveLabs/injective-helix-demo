@@ -4,6 +4,7 @@ export default {
     time: 'Time',
     user: 'User',
     auto: 'Auto',
+    close: 'Close',
     grids: 'Grids',
     amount: 'Amount',
     market: 'Market',

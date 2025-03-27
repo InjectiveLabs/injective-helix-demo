@@ -167,7 +167,7 @@ function removeStrategy() {
       class="w-full mt-4"
       @click="isOpen = false"
     >
-      Close
+      {{ $t('sgt.close') }}
     </AppButton>
   </AppModal>
 </template>

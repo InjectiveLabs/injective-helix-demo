@@ -203,6 +203,7 @@ export const createSpotGridStrategy = async ({
     sender: sharedWalletStore.injectiveAddress,
     msg: ExecArgCreateSpotGridStrategy.fromJSON({
       ...baseArgs,
+      slippage: '0.1',
       ...getTrailingAndStrategyType({ strategyType, trailingParams })
     }).toExecData(),
     funds
@@ -372,13 +373,13 @@ export const removeStrategyForSubaccount = async (
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() =>
+  backupPromiseCall(() => {
     Promise.all([
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
-  )
+  })
 }
 
 export const createPerpStrategy = async (
