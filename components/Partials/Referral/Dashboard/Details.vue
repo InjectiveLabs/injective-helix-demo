@@ -109,7 +109,6 @@ function shareReferralLink() {
 
                 <AppTooltip
                   v-if="item.isUsdValue"
-                  class=""
                   v-bind="{
                     isLg: true,
                     icon: NuxtUiIcons.Info3,

@@ -26,7 +26,7 @@ onWalletConnected(() => {
 </script>
 
 <template>
-  <AppHocLoading :status="status" is-full-screen>
+  <AppHocLoading v-bind="{ status, isFullScreen: true }">
     <section class="mx-auto max-w-5xl w-full px-4 py-16 max-sm:py-10">
       <PartialsReferralBeta v-if="!isUserWhitelisted" />
       <PartialsReferralDashboard v-else />

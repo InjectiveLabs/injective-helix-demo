@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { errorMessages } from '@/plugins/validation'
 import { trackReferralCodeCreated } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
+import { errorMessages } from '@/plugins/validation'
 
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()

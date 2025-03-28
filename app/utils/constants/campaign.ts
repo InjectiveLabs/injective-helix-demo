@@ -35,8 +35,3 @@ export const GUILD_VOLUME_REWARD_CONTRACT = IS_DEVNET
 export const GUILD_BALANCE_REWARD_CONTRACT = IS_DEVNET
   ? 'inj1f00gl2z68g5la6yfckpyfzk5gscaz6uw82qvx8'
   : 'inj1klxkep4s6fe2pltn6u2rctq8hl7fwzhmuwzvyt'
-
-// Referral
-export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
-  ? 'inj1t4l7q6y7uzjjufxgcyr6hdugslphdqzqqt8u9x'
-  : 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs'

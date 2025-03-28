@@ -1,3 +1,5 @@
+import { IS_MAINNET } from '@shared/utils/constant'
+
 export const whitelistedAddresses = [
   'inj17gkuet8f6pssxd8nycm3qr9d9y699rupv6397z',
   'inj1hkhdaj2a2clmq5jq6mspsggqs32vynpk228q3r',
@@ -36,3 +38,7 @@ export const whitelistedAddresses = [
   'inj1nedmtl9mhzxdlqd3ne270craw9552ap7stgcz0',
   'inj1xpc7l2k9l7mqyctdqjpt37wwfc7gqj7nt3vhy4'
 ]
+
+export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
+  ? 'inj1t4l7q6y7uzjjufxgcyr6hdugslphdqzqqt8u9x'
+  : 'inj1t474vynqdjqzwzyq9clsenjqffatjqurfx95fs'

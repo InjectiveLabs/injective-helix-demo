@@ -52,7 +52,7 @@ onWalletConnected(() => {
 
 <template>
   <div>
-    <AppHocLoading :status="status" is-full-screen />
+    <AppHocLoading v-bind="{ status, isFullScreen: true }" />
     <ModalsConfirmReferral />
   </div>
 </template>
