@@ -61,8 +61,9 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
   // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
 
   if (IS_MAINNET) {
-    return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-    // return `https://k8s.global.mainnet.chronos.grpc-web.injective.network/api/chronos/v1/${marketType}`
+    // [US region] chart service - EU service is temp down
+    return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    // return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
   // if (IS_TESTNET) {
