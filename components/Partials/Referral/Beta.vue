@@ -1,12 +1,5 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { MainPage } from '@/types'
-
-const router = useRouter()
-
-function exploreMarkets() {
-  router.push({ name: MainPage.Markets })
-}
 
 const socialLinks = [
   { icon: NuxtUiIcons.Discord, link: 'https://discord.com/invite/helixapp' },
@@ -19,31 +12,32 @@ const socialLinks = [
 <template>
   <div class="flex flex-col items-center max-sm:items-start">
     <h1 class="text-3xl font-semibold mb-5 leading-none">
-      {{ $t('referral.weAreStillInBeta') }}
+      {{ $t('referral.beta.title') }}
     </h1>
     <p class="tracking-wide text-sm max-w-[520px] text-center max-sm:text-left">
-      {{ $t('referral.betaDescription') }}
+      {{ $t('referral.beta.description') }}
     </p>
 
     <div class="w-full bg-brand-825 rounded-lg p-9 max-sm:px-6 pb-7 mt-8">
-      <h5 class="font-bold text-xl">{{ $t('referral.betaCtaTitle1') }}</h5>
+      <h5 class="font-bold text-xl">{{ $t('referral.beta.ctaTitle1') }}</h5>
       <p class="tracking-wide text-sm text-coolGray-450 mt-2 mb-6">
-        {{ $t('referral.betaCtaDescription1') }}
+        {{ $t('referral.beta.ctaDescription1') }}
       </p>
 
-      <AppButton
-        size="lg"
-        class="font-semibold tracking-wide min-w-48"
-        @click="exploreMarkets"
+      <UButton
+        class="font-semibold tracking-wide min-w-48 min-h-10 justify-center dark:bg-blue-500 dark:hover:bg-blue-500/70 transition-colors"
+        color="primary"
+        target="_blank"
+        to="https://form.typeform.com/to/pvG1ySYo"
       >
-        {{ $t('referral.exploreMarkets') }}
-      </AppButton>
+        {{ $t('referral.joinTheWaitlist') }}
+      </UButton>
     </div>
 
     <div class="w-full bg-brand-825 rounded-lg p-9 max-sm:px-6 pb-7 mt-8">
-      <h5 class="font-bold text-xl">{{ $t('referral.betaCtaTitle2') }}</h5>
+      <h5 class="font-bold text-xl">{{ $t('referral.beta.ctaTitle2') }}</h5>
       <p class="tracking-wide text-sm text-coolGray-450 mt-2 mb-6">
-        {{ $t('referral.betaCtaDescription2') }}
+        {{ $t('referral.beta.ctaDescription2') }}
       </p>
 
       <div class="flex items-center gap-4">

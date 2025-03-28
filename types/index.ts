@@ -98,7 +98,6 @@ type MenuItemBase = {
   isDevOnly?: boolean
   isExternal?: boolean
   description?: string
-  isReferral?: boolean
   isExpandable?: boolean
   isConnectedOnly?: boolean
   isOpenDepositModal?: boolean

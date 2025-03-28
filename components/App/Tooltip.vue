@@ -4,6 +4,7 @@ import { NuxtUiIcons } from '@shared/types'
 withDefaults(
   defineProps<{
     ui?: object
+    icon?: string
     isLg?: boolean
     content?: string
     isWarning?: boolean
@@ -16,7 +17,8 @@ withDefaults(
     ui: () => ({}),
     isWarning: false,
     contentClass: '',
-    isDisabled: false
+    isDisabled: false,
+    icon: NuxtUiIcons.Info
   }
 )
 </script>
@@ -34,7 +36,7 @@ withDefaults(
   >
     <slot>
       <UIcon
-        :name="NuxtUiIcons.Info"
+        :name="icon || NuxtUiIcons.Info"
         :class="{
           'w-4 h-4 min-w-4': isLg,
           'w-3 h-3 min-w-3': !isLg,

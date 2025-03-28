@@ -85,23 +85,42 @@ function shareReferralLink() {
           <div
             v-for="(item, index) in statsList"
             :key="index"
-            class="relative flex-1 h-32"
+            :class="[
+              item.isUsdValue ? 'z-[2]' : 'z-[1]',
+              'relative flex-1 h-32 '
+            ]"
           >
             <span
               class="block w-16 h-16 rounded-full bg-azure-blue-700 absolute z-[1] top-4 left-8"
             />
+
             <div
-              class="relative z-[2] backdrop-blur-[50px] shadow-[0_4px_16px_rgba(0,0,0,0.1)] bg-coolGray-500/5 p-6 h-full rounded-lg"
+              class="relative z-[2] shadow-[0_4px_16px_rgba(0,0,0,0.1)] bg-coolGray-500/5 p-6 h-full rounded-lg"
             >
-              <h6
-                class="text-xs font-semibold uppercase tracking-wider leading-none mb-3"
-              >
-                {{ item.title }}
-              </h6>
+              <span
+                class="absolute w-full h-full z-[1] backdrop-blur-[50px] top-0 left-0 rounded-lg overflow-hidden"
+              />
+              <div class="flex gap-2 items-center mb-3 relative z-[2]">
+                <h6
+                  class="text-xs font-semibold uppercase tracking-wider leading-none"
+                >
+                  {{ item.title }}
+                </h6>
+
+                <AppTooltip
+                  v-if="item.isUsdValue"
+                  class=""
+                  v-bind="{
+                    isLg: true,
+                    icon: NuxtUiIcons.Info3,
+                    content: $t('referral.rewardsTooltipContent')
+                  }"
+                />
+              </div>
 
               <span
                 v-if="item.isUsdValue"
-                class="text-2xl font-semibold break-all"
+                class="text-2xl font-semibold break-all relative z-[3]"
               >
                 $<AppUsdAmount
                   v-bind="{
@@ -111,7 +130,7 @@ function shareReferralLink() {
                 />
                 USD
               </span>
-              <p v-else class="text-2xl font-semibold">
+              <p v-else class="text-2xl font-semibold relative z-[3]">
                 {{ item.value }}
               </p>
             </div>

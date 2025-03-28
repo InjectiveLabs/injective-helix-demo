@@ -4,25 +4,16 @@ const siteFullUrl = useRequestURL()
 
 export default {
   referral: {
-    weAreStillInBeta: 'We are still in Beta',
-    betaDescription:
-      'This feature is still in beta, and it looks like you don’t have access just yet. But great things are worth the wait!',
-    betaCtaTitle1: 'Gain real-time insights',
-    betaCtaDescription1:
-      'Don’t miss out—explore the markets, track trends, and stay ahead of the game.',
-    betaCtaTitle2: 'Explore Our Community',
-    betaCtaDescription2:
-      'Connect with like-minded pioneers. Your next big opportunity is just around the corner!',
     share: 'Share',
     approve: 'Approve',
     referNow: 'Refer Now',
     noReferrals: 'No referrals',
     referralLink: 'Referral Link',
     referAndEarn: 'Refer and Earn',
-    exploreMarkets: 'Explore Markets',
     confirmReferral: 'Confirm Referral',
     referralDetails: 'Referral Details',
     scanToJoin: 'Scan to Join Helix or',
+    joinTheWaitlist: 'Join the Waitlist',
     yourReferralLink: 'Your Referral Link',
     checkAvailability: 'Check Availability',
     affiliatedAddress: 'Affiliated Address',
@@ -47,8 +38,21 @@ export default {
       "Your referral code is valid, but you can't refer yourself. Share it with someone else!",
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
+    rewardsTooltipContent:
+      "The total commission you’ve earned from successful referrals. Rewards are credited based on your referrals' trading activity.",
     referralLinkAvailableDescription: `Your referral code ${siteFullUrl.origin}/ref/{referralCode} is available. Would you like to use this link?`,
     confirmReferralDescription: `You will be referred with ${siteFullUrl.origin}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.`,
+    beta: {
+      title: 'This Feature is in Closed Beta',
+      description:
+        'This feature is still in beta, and it looks like you don’t have access just yet. But great things are worth the wait!',
+      ctaTitle1: 'Unlock Exclusive Referrals Access',
+      ctaDescription1:
+        'Sign up now for exclusive access to our referral feature and start earning on every trade.',
+      ctaTitle2: 'Explore Our Community',
+      ctaDescription2:
+        'Connect with like-minded pioneers. Your next big opportunity is just around the corner!'
+    },
     table: {
       [ReferralTableColumn.Wallets]: 'Wallets',
       [ReferralTableColumn.Commission]: 'Commission',

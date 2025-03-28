@@ -2,7 +2,6 @@
 import { LocationAsRelativeRaw } from 'vue-router'
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { whitelistedAddresses } from '@/app/data/referral'
 import { NavBarCyTags, MenuItem, NavLink, NavChild } from '@/types'
 
 const route = useRoute()
@@ -40,16 +39,10 @@ const isActiveLink = computed(() => {
   return routeName.startsWith(itemName)
 })
 
-const isUserWhitelisted = computed(() =>
-  whitelistedAddresses.includes(sharedWalletStore.injectiveAddress)
-)
-
 const filteredChildItems = computed(() =>
   (props.item as NavChild).children.filter((child) => {
     if (child.isConnectedOnly) {
       return sharedWalletStore.isUserConnected
-    } else if (child.isReferral) {
-      return isUserWhitelisted.value
     }
 
     return true
