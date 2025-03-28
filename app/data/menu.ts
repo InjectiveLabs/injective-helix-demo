@@ -50,8 +50,12 @@ export const getMoreMenu = () => [
   {
     isExternal: true,
     label: 'navigation.more.olp',
-
     to: 'https://trading.injective.network/program/liquidity/'
+  },
+  {
+    isExternal: true,
+    label: 'footer.blog',
+    to: 'https://blog.helixapp.com/'
   }
 ]
 

@@ -16,7 +16,7 @@ const resourcesList = [
   },
   {
     text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy'
+    link: MainPage.PrivacyPolicy
   }
 ]
 
@@ -32,6 +32,13 @@ const supportList = [
   {
     text: t('footer.termsAndConditions'),
     link: MainPage.Terms
+  }
+]
+
+const communityList = [
+  {
+    text: t('footer.blog'),
+    link: 'https://blog.helixapp.com/'
   }
 ]
 </script>
@@ -69,17 +76,9 @@ const supportList = [
           :key="`resource-list-${index}`"
           class="mt-4 text-sm"
         >
-          <a
-            v-if="item.link.startsWith('http')"
-            :href="item.link"
-            class="opacity-75 cursor-pointer hover:text-blue-500"
-            target="_blank"
-          >
-            {{ item.text }}
-          </a>
           <NuxtLink
-            v-else-if="item.link"
-            :to="{ name: item.link }"
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
             class="opacity-75 cursor-pointer hover:text-blue-500"
           >
             {{ item.text }}
@@ -95,17 +94,9 @@ const supportList = [
           :key="`support-list-${index}`"
           class="mt-4 text-sm"
         >
-          <a
-            v-if="item.link.startsWith('http')"
-            :href="item.link"
-            class="opacity-75 cursor-pointer hover:text-blue-500"
-            target="_blank"
-          >
-            {{ item.text }}
-          </a>
           <NuxtLink
-            v-else-if="item.link"
-            :to="{ name: item.link }"
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
             class="opacity-75 cursor-pointer hover:text-blue-500"
           >
             {{ item.text }}
@@ -114,11 +105,25 @@ const supportList = [
       </div>
 
       <div class="md:col-span-3">
-        <h3 class="font-bold text-lg mb-4 md:mb-6">
+        <h3 class="font-bold text-lg mb-4">
           {{ $t('footer.community') }}
         </h3>
 
-        <div class="flex items-center">
+        <div
+          v-for="(item, index) in communityList"
+          :key="`support-list-${index}`"
+          class="text-sm mt-4"
+        >
+          <NuxtLink
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
+            class="opacity-75 cursor-pointer hover:text-blue-500"
+          >
+            {{ item.text }}
+          </NuxtLink>
+        </div>
+
+        <div class="flex items-center mt-4">
           <a
             class="w-6 h-6 text-coolGray-500 rounded-full hover:text-blue-500 mr-4"
             href="https://x.com/helixapp_"
