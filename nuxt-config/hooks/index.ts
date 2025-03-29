@@ -44,10 +44,10 @@ export default {
       ...nitroConfig.prerender.routes,
       ...customStaticRoutes,
       ...upcomingMarketsRoutes,
-      ...Object.values(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
+      ...Object.keys(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
       ...[
-        ...Object.values(verifiedDerivateMarketIdMap),
-        ...Object.values(expiryMarketIdMap)
+        ...Object.keys(verifiedDerivateMarketIdMap),
+        ...Object.keys(expiryMarketIdMap)
       ].map((s) => `/futures/${s}`),
       ...['ef3bc2', '25269b', '5f90cb', '50be68'].map(
         (guildId) => `/guild/${guildId}`
