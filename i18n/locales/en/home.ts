@@ -134,6 +134,7 @@ export default {
       'By subscribing, you agree to the {termsAndCondition} and have read the {privacyPolicy}.'
   },
   footer: {
+    blog: 'Blog',
     resources: 'Resources',
     analytics: 'Analytics',
     termsAndConditions: 'Terms & Conditions',
