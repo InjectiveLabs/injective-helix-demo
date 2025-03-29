@@ -129,12 +129,12 @@ jobs:
         env:
           GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
 
-      - name: Upload build output as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: ./.nuxt/dist/client/_nuxt
-          overwrite: true
+      # - name: Upload build output as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: build-output
+      #     path: ./.nuxt/dist/client/_nuxt
+      #     overwrite: true
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
@@ -198,32 +198,32 @@ jobs:
           fi
           curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
 
-  upload-bugsnag:
-    name: 'Upload BugSnag Release'
-    runs-on: ubuntu-22.04
-    needs: mainnet-release
+  # upload-bugsnag:
+  #   name: 'Upload BugSnag Release'
+  #   runs-on: ubuntu-22.04
+  #   needs: mainnet-release
 
-    env:
-      VITE_BASE_URL: https://helixapp.com
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
+  #   env:
+  #     VITE_BASE_URL: https://helixapp.com
+  #     VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
 
-    steps:
-      - name: Download build output
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: ./.nuxt/dist/client/_nuxt
+  #   steps:
+  #     - name: Download build output
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: build-output
+  #         path: ./.nuxt/dist/client/_nuxt
 
-      - name: Upload bugsnag release
-        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
-        with:
-          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
-          directory: ./.nuxt/dist/client/_nuxt
-          baseUrl: ${{ env.VITE_BASE_URL }}
-          appVersion: ${{ needs.mainnet-release.outputs.bugsnag_version }}
-          overwrite: true
+  #     - name: Upload bugsnag release
+  #       uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+  #       with:
+  #         apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+  #         directory: ./.nuxt/dist/client/_nuxt
+  #         baseUrl: ${{ env.VITE_BASE_URL }}
+  #         appVersion: ${{ needs.mainnet-release.outputs.bugsnag_version }}
+  #         overwrite: true
 
-      - name: Purge artifacts
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: build-output
+  #     - name: Purge artifacts
+  #       uses: geekyeggo/delete-artifact@v5
+  #       with:
+  #         name: build-output
