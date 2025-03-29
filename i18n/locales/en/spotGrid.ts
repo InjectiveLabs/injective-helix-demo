@@ -22,6 +22,7 @@ export default {
       'When LP Mode is enabled, the strategy avoids rebalancing during setup and creates asymmetric buy and sell orders, replicating the behavior of a liquidity provider.',
     history: 'History',
     enabled: 'Enabled',
+    active: 'Active',
     removed: 'Removed',
     pending: 'Pending',
     lowerPrice: 'Lower Price',

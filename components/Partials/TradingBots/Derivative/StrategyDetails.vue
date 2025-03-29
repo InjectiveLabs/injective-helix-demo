@@ -195,16 +195,6 @@ const percentagePnl = computed(() =>
 
     <!-- TODO: Uncomment When we have the data from indexer -->
 
-    <!-- <div class="flex justify-between mb-4 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.advanced.settleIn') }}</span>
-      </span>
-
-      <span>
-        {{ strategy.settleIn ? strategy.settleIn : $t('sgt.disabled') }}
-      </span>
-    </div>
-
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
@@ -213,8 +203,7 @@ const percentagePnl = computed(() =>
       <div>
         <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
         <span v-else>
-          {{ strategy.takeProfit.exitPrice }} /
-          {{ strategy.takeProfit.exitType }}
+          {{ strategy.takeProfit.exitPrice }}
         </span>
       </div>
     </div>
@@ -227,13 +216,12 @@ const percentagePnl = computed(() =>
       <div>
         <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
         <span v-else>
-          {{ strategy.stopLoss.exitPrice }} /
-          {{ strategy.stopLoss.exitType }}
+          {{ strategy.stopLoss.exitPrice }}
         </span>
       </div>
     </div>
 
-    <div
+    <!-- <div
       v-if="strategy.trailingUpper"
       class="flex justify-between mb-2 text-sm"
     >
