@@ -111,8 +111,7 @@ export const useDerivativeGridStrategies = (
             exitType: strategy.stopLossConfig.exitType,
             exitPrice: sharedToBalanceInToken({
               value: strategy.stopLossConfig.exitPrice,
-              decimalPlaces:
-                market.quoteToken.decimals - market.baseToken.decimals
+              decimalPlaces: market.quoteToken.decimals
             })
           }
         : undefined
@@ -122,8 +121,7 @@ export const useDerivativeGridStrategies = (
             exitType: strategy.takeProfitConfig.exitType,
             exitPrice: sharedToBalanceInToken({
               value: strategy.takeProfitConfig.exitPrice,
-              decimalPlaces:
-                market.quoteToken.decimals - market.baseToken.decimals
+              decimalPlaces: market.quoteToken.decimals
             })
           }
         : undefined
