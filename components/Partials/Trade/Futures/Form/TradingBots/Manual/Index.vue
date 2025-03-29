@@ -8,6 +8,7 @@ const error = ref(false)
     <PartialsTradeFuturesFormTradingBotsManualGridsField />
     <PartialsTradeFuturesFormTradingBotsCommonInvestmentField />
     <PartialsTradeFuturesFormTradingBotsCommonLeverage />
+    <PartialsTradeFuturesFormTradingBotsManualAdvancedSettings />
     <PartialsTradeFuturesFormTradingBotsManualErrors v-model:error="error" />
     <PartialsTradeFuturesFormTradingBotsCommonCreateStrategy
       v-bind="{ error }"
