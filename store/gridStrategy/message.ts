@@ -18,6 +18,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { backupPromiseCall } from '@/app/utils/async'
+import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
@@ -53,6 +54,7 @@ export const createStrategy = async (
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -182,7 +184,10 @@ export const createStrategy = async (
       }),
       exitType: exitType || ExitType.Default,
       strategyType,
-      trailingArithmetic: trailingArgs
+      trailingArithmetic: trailingArgs,
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     }),
 
     funds
@@ -373,6 +378,7 @@ export const createPerpStrategy = async (
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -446,7 +452,10 @@ export const createPerpStrategy = async (
       quoteDecimals: market.quoteToken.decimals
     }),
 
-    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2),
+    ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+      feeRecipient: referralStore.feeRecipient
+    })
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
@@ -559,6 +568,7 @@ export async function createSpotLiquidityBot(params: {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -637,7 +647,10 @@ export async function createSpotLiquidityBot(params: {
           quoteDecimals: market.quoteToken.decimals
         }),
         lpMode: true
-      }
+      },
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     })
   })
 
@@ -717,6 +730,7 @@ export async function copySpotGridTradingStrategy({
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -772,7 +786,10 @@ export async function copySpotGridTradingStrategy({
               upperTrailing: strategy.trailUpPrice,
               lpMode: strategy.strategyType === StrategyType.ArithmeticLP
             }
-          : undefined
+          : undefined,
+      ...(referralStore.feeRecipient !== FEE_RECIPIENT && {
+        feeRecipient: referralStore.feeRecipient
+      })
     }),
     funds
   })

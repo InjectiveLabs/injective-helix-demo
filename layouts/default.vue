@@ -21,6 +21,7 @@ const appStore = useAppStore()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -57,6 +58,7 @@ onWalletConnected(async () => {
   Promise.all([
     fetchUserPortfolio(),
     spotStore.fetchMarketsSummary(),
+    referralStore.fetchUserReferrer(),
     derivativeStore.fetchMarketsSummary()
   ])
     .then(checkOnboarding)

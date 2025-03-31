@@ -44,10 +44,6 @@ const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(
   { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
 )
 
-const isModalOpen = computed(
-  () => modalStore.modals[Modal.ShareLeaderboardStats]
-)
-
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
 const statsModalTitle = computed(() =>
@@ -103,13 +99,20 @@ watchDebounced(
 </script>
 
 <template>
-  <SharedModalWrapper
-    v-if="isModalOpen"
-    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-5xl max-md:w-[90%] md:w-[700px] font-pingFang"
-    wrapper-class="backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-90 max-sm:z-60"
-    @modal:closed="onCloseModal"
+  <AppModal
+    v-model="modalStore.modals[Modal.ShareLeaderboardStats]"
+    v-bind="{
+      isAlwaysOpen: !showSelectors,
+      cardUi: { body: { padding: 'p-0 sm:p-0' } },
+      ui: {
+        padding: 'p-0',
+        overlay: { base: 'backdrop-filter backdrop-blur' },
+        width:
+          'max-sm:w-full max-md:w-[90%] md:w-[700px] sm:max-w-full max-sm:h-full'
+      }
+    }"
   >
-    <section ref="canvas" class="sm:aspect-[1.85/1] bg-black">
+    <section ref="canvas" class="sm:aspect-[1.83/1] bg-black">
       <div
         class="pt-8 px-8 bg-no-repeat bg-right bg-cover h-full w-full flex flex-col"
         :style="{
@@ -121,13 +124,6 @@ watchDebounced(
             <AssetLogo class="w-auto h-6" alt="Helix" />
             <AssetLogoText class="block ml-2 h-6 text-white" />
           </div>
-
-          <UIcon
-            v-if="showSelectors"
-            :name="NuxtUiIcons.Close"
-            class="w-6 h-6 min-w-6 text-white hover:text-coolGray-500"
-            @click="onCloseModal"
-          />
         </div>
 
         <div
@@ -196,5 +192,5 @@ watchDebounced(
         </div>
       </div>
     </section>
-  </SharedModalWrapper>
+  </AppModal>
 </template>

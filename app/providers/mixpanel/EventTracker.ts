@@ -291,3 +291,35 @@ export const trackOnramperSuccess = ({
     'Total Fee In Fiat': `${totalFeeInFiat} ${fiatCurrency}`
   })
 }
+
+export const trackRefereeLoggedIn = ({
+  isSuccess,
+  referralCode,
+  refereeAddress
+}: {
+  isSuccess: boolean
+  referralCode: string
+  refereeAddress: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.RefereeLoggedIn, {
+    'Referee Address': refereeAddress,
+    'Referral Code': referralCode,
+    'Is Success': isSuccess
+  })
+}
+
+export const trackReferralCodeCreated = ({
+  isSuccess,
+  referralCode,
+  refereeAddress
+}: {
+  isSuccess: boolean
+  referralCode: string
+  refereeAddress: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.ReferralCodeCreated, {
+    'Referral Code': referralCode,
+    'Referee Address': refereeAddress,
+    'Is Success': isSuccess
+  })
+}

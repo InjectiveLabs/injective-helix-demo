@@ -9,7 +9,6 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
@@ -18,6 +17,7 @@ import { UiDerivativeMarket } from '@/types'
 export const closePosition = async (position: PositionV2) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -44,7 +44,7 @@ export const closePosition = async (position: PositionV2) => {
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     price: liquidationPrice.toFixed(),
     subaccountId: accountStore.subaccountId,
     orderType: orderSideToOrderType(orderType),
@@ -61,6 +61,7 @@ export const closePosition = async (position: PositionV2) => {
 export const closeAllPosition = async (positions: PositionV2[]) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -122,8 +123,8 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
       price: position.price,
       quantity: position.quantity,
       marketId: position.marketId,
-      feeRecipient: FEE_RECIPIENT,
       subaccountId: accountStore.subaccountId,
+      feeRecipient: referralStore.feeRecipient,
       orderType: orderSideToOrderType(position.orderType)
     })
   )
@@ -142,6 +143,7 @@ export const closePositionAndReduceOnlyOrders = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -166,12 +168,12 @@ export const closePositionAndReduceOnlyOrders = async ({
 
   const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
-    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
-    feeRecipient: FEE_RECIPIENT,
     marketId: market.marketId,
     price: liquidationPrice.toFixed(),
     subaccountId: accountStore.subaccountId,
+    feeRecipient: referralStore.feeRecipient,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: position.quantity
     }),
