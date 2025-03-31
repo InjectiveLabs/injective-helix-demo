@@ -92,6 +92,8 @@ const actionsThatSetAppStateToBusy = [
   'spot/submitMarketOrder',
   'peggy/setTokenAllowance',
   'account/externalTransfer',
+  'referral/registerInvitee',
+  'referral/createReferralLink',
   'authZ/grantAuthorization',
   'authZ/revokeAuthorization',
   'position/closeAllPosition',

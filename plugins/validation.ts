@@ -28,6 +28,7 @@ export const errorMessages = {
   integer: (fieldName: string) => `${fieldName} must be > 0`,
   fixedLength: (length: string) =>
     `This field must be exactly ${length} characters long.`,
+  maxCharacter: () => `Exceeds max characters`,
 
   [Network.Axelar]: () => 'This field is not a valid Cosmos address',
   [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
@@ -113,7 +114,7 @@ export const defineGlobalRules = () => {
 
   defineRule('maxCharacter', (value: string, [max]: number[]) => {
     if (value.length > max) {
-      return 'Exceeds max characters'
+      return errorMessages.maxCharacter()
     }
 
     return true
@@ -411,6 +412,14 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('alphanumeric', (value: string) => {
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return 'Only letters and numbers are allowed'
+    }
+
+    return true
+  })
 }
 
 export default defineNuxtPlugin(() => {

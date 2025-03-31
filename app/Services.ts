@@ -12,6 +12,7 @@ import {
   ChainGrpcTendermintApi,
   IndexerGrpcCampaignApi,
   IndexerGrpcArchiverApi,
+  IndexerGrpcReferralApi,
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { LocalStorage } from '@injectivelabs/utils'
@@ -40,6 +41,12 @@ export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
 )
 
 export const neptuneService = new NeptuneService()
+
+export const indexerGrpcReferralApi = new IndexerGrpcReferralApi(
+  IS_MAINNET
+    ? 'https://k8s.mainnet.referrals.grpc-web.injective.network'
+    : 'https://k8s.testnet.referrals.grpc-web.injective.network'
+)
 
 export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET

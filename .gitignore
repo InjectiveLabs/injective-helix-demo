@@ -117,3 +117,6 @@ pages/whiteboard2.vue
 
 # Cursor IDE
 .cursorrules
+
+# Local Netlify folder
+.netlify
