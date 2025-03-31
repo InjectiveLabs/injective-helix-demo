@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { SpotOrderHistoryFilterField } from '@/types'
 
+const appStore = useAppStore()
 const derivativeStore = useDerivativeStore()
 
 const { value: marketValue } = useStringField({
@@ -41,7 +42,13 @@ function onFormReset() {
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector wrapper-class="w-full py-4" />
+    <CommonSubaccountTabSelector
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts
+      }"
+      wrapper-class="w-full py-4"
+    />
 
     <CommonTabMarketSelector
       v-model="marketValue"
