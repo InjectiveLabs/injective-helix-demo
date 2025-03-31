@@ -1,12 +1,9 @@
 import {
   Msgs,
-  MsgGrant,
-  MsgWithdraw,
   MsgExecuteContractCompat,
   spotPriceToChainPriceToFixed,
   derivativePriceToChainPriceToFixed,
-  spotQuantityToChainQuantityToFixed,
-  getGenericAuthorizationFromMessageType
+  spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 
 import { BigNumberInBase } from '@injectivelabs/utils'
@@ -18,7 +15,6 @@ import {
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { gridStrategyAuthorizationMessageTypes } from '@/app/data/grid-strategy'
 import {
   ExitType,
   ExitConfig,
@@ -29,7 +25,8 @@ import {
   DerivativeGridTradingForm,
   DerivativeGridTradingField
 } from '@/types'
-import ExecArgCloseGridStrategy from '~/app/grid-trading/ExecArgCloseGridStrategy'
+import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
+import { prepareAuthZMsg, prepareWithdrawMsg } from '@/app/utils/msg'
 
 export const createSpotGridStrategy = async ({
   grids,
@@ -209,22 +206,7 @@ export const createSpotGridStrategy = async ({
     funds
   })
 
-  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
-    (messageType) =>
-      MsgGrant.fromJSON({
-        grantee: gridMarket.contractAddress,
-        granter: sharedWalletStore.injectiveAddress,
-        authorization: getGenericAuthorizationFromMessageType(messageType)
-      })
-  )
-
-  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
-    authZStore.granterGrants.some(
-      (grant) =>
-        grant.authorizationType.endsWith(m) &&
-        grant.grantee === gridMarket?.contractAddress
-    )
-  )
+  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
 
   const cw20ConvertMessage = prepareOrderMessages({
     denom: market.quoteDenom || '',
@@ -233,42 +215,14 @@ export const createSpotGridStrategy = async ({
 
   const messages: Msgs[] = []
 
-  const withdrawMsgs = (
-    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
+
+  messages.push(
+    ...withdrawMsgs,
+    ...grantAuthZMessages,
+    ...cw20ConvertMessage,
+    message
   )
-    .filter((balance) =>
-      new BigNumberInBase(balance.availableBalance)
-        .dp(0, BigNumberInBase.ROUND_DOWN)
-        .gt(0)
-    )
-    .map((balance) =>
-      MsgWithdraw.fromJSON({
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId: gridStrategySubaccountId,
-        amount: {
-          amount: new BigNumberInBase(balance.availableBalance).toFixed(
-            0,
-            BigNumberInBase.ROUND_DOWN
-          ),
-          denom: balance.denom
-        }
-      })
-    )
-
-  if (withdrawMsgs.length) {
-    messages.push(...withdrawMsgs)
-  }
-
-  if (!isAuthorized) {
-    messages.push(...grantAuthZMessages)
-  }
-
-  if (cw20ConvertMessage.length > 0) {
-    messages.push(...cw20ConvertMessage)
-  }
-
-  // we need to add it after the authz messages
-  messages.push(message)
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
@@ -482,67 +436,24 @@ export const createPerpStrategy = async (
     funds
   })
 
-  // TODO: Move prepareOrderMessages to app/utils/msg.ts
   const cw20ConvertMessage = prepareOrderMessages({
     denom: market?.quoteDenom || '',
     amount: marginToFixed
   })
 
-  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
-    (messageType) =>
-      MsgGrant.fromJSON({
-        grantee: gridMarket.contractAddress,
-        granter: sharedWalletStore.injectiveAddress,
-        authorization: getGenericAuthorizationFromMessageType(messageType)
-      })
-  )
+  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
 
-  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
-    authZStore.granterGrants.some(
-      (grant) =>
-        grant.authorizationType.endsWith(m) &&
-        grant.grantee === gridMarket?.contractAddress
-    )
-  )
-
-  const withdrawMsgs = (
-    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
-  )
-    .filter((balance) =>
-      new BigNumberInBase(balance.availableBalance)
-        .dp(0, BigNumberInBase.ROUND_DOWN)
-        .gt(0)
-    )
-    .map((balance) =>
-      MsgWithdraw.fromJSON({
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId: gridStrategySubaccountId,
-        amount: {
-          amount: new BigNumberInBase(balance.availableBalance).toFixed(
-            0,
-            BigNumberInBase.ROUND_DOWN
-          ),
-          denom: balance.denom
-        }
-      })
-    )
+  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
 
   const messages: Msgs[] = []
 
-  if (withdrawMsgs.length) {
-    messages.push(...withdrawMsgs)
-  }
-
-  if (!isAuthorized) {
-    messages.push(...grantAuthZMessages)
-  }
-
-  if (cw20ConvertMessage.length > 0) {
-    messages.push(...cw20ConvertMessage)
-  }
-
-  // we need to add it after the authz messages
-  messages.push(message)
+  // The messages must be in this order
+  messages.push(
+    ...withdrawMsgs,
+    ...grantAuthZMessages,
+    ...cw20ConvertMessage,
+    message
+  )
 
   await walletStore.validateGeo()
   await walletStore.validate()
@@ -582,7 +493,6 @@ export async function createSpotLiquidityBot(params: {
 
   market: UiSpotMarket
 }) {
-  const authZStore = useAuthZStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
@@ -600,7 +510,7 @@ export async function createSpotLiquidityBot(params: {
     upperTrailingBound
   } = params
 
-  const subaccountId = addressAndMarketSlugToSubaccountId(
+  const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
     sharedWalletStore.address,
     market.slug
   )
@@ -640,7 +550,7 @@ export async function createSpotLiquidityBot(params: {
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
     msg: ExecArgCreateSpotGridStrategy.fromJSON({
-      subaccountId,
+      subaccountId: gridStrategySubaccountId,
       levels: grids,
       lowerBound: spotPriceToChainPriceToFixed({
         value: lowerBound,
@@ -668,54 +578,12 @@ export async function createSpotLiquidityBot(params: {
     }).toExecData()
   })
 
-  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
-    (messageType) =>
-      MsgGrant.fromJSON({
-        grantee: gridMarket.contractAddress,
-        granter: sharedWalletStore.injectiveAddress,
-        authorization: getGenericAuthorizationFromMessageType(messageType)
-      })
-  )
-
-  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
-    authZStore.granterGrants.some(
-      (grant) =>
-        grant.authorizationType.endsWith(m) &&
-        grant.grantee === gridMarket?.contractAddress
-    )
-  )
+  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
+  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
 
   const messages: Msgs[] = []
 
-  const withdrawMsgs = (accountStore.subaccountBalancesMap[subaccountId] || [])
-    .filter((balance) =>
-      new BigNumberInBase(balance.availableBalance)
-        .dp(0, BigNumberInBase.ROUND_DOWN)
-        .gt(0)
-    )
-    .map((balance) =>
-      MsgWithdraw.fromJSON({
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        subaccountId,
-        amount: {
-          amount: new BigNumberInBase(balance.availableBalance).toFixed(
-            0,
-            BigNumberInBase.ROUND_DOWN
-          ),
-          denom: balance.denom
-        }
-      })
-    )
-
-  if (withdrawMsgs.length) {
-    messages.push(...withdrawMsgs)
-  }
-
-  if (!isAuthorized) {
-    messages.push(...grantAuthZMessages)
-  }
-
-  messages.push(msg)
+  messages.push(...withdrawMsgs, ...grantAuthZMessages, msg)
 
   await walletStore.validateGeo()
   await walletStore.validate()
