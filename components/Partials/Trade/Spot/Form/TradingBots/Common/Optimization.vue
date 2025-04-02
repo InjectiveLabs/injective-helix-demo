@@ -129,7 +129,8 @@ const isShown = computed(() => {
   if (
     (props.baseQuantity === 0 && props.quoteQuantity === 0) ||
     props.lowerPriceLevel === 0 ||
-    props.upperPriceLevel === 0
+    props.upperPriceLevel === 0 ||
+    !hasEnoughFundsToRebalance.value
   ) {
     return false
   }
