@@ -182,7 +182,8 @@ export const STOP_REASON_MAP = {
   [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
 }
 
-export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
+export const CONNECT_SERVER_URL =
+  'https://k8s.mainnet.eu.helix-server.injective.network/api'
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
