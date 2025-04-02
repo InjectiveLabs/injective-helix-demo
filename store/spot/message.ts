@@ -12,7 +12,6 @@ import {
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
-import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
@@ -103,6 +102,7 @@ export const submitLimitOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -133,7 +133,7 @@ export const submitLimitOrder = async ({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     price: priceToFixed,
     quantity: quantityToFixed,
     orderType: orderSideToOrderType(orderSide)
@@ -171,6 +171,7 @@ export const submitMarketOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -214,7 +215,7 @@ export const submitMarketOrder = async ({
         ? sharedWalletStore.injectiveAddress
         : sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     orderType: orderSideToOrderType(orderSide)
   })
 
@@ -243,6 +244,7 @@ export const submitStopLimitOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -263,7 +265,7 @@ export const submitStopLimitOrder = async ({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     price: spotPriceToChainPriceToFixed({
       value: price.toFixed(),
       baseDecimals: market.baseToken.decimals,
@@ -302,6 +304,7 @@ export const submitStopMarketOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -322,7 +325,7 @@ export const submitStopMarketOrder = async ({
     subaccountId: accountStore.subaccountId,
     injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     price: spotPriceToChainPriceToFixed({
       value: price.toFixed(),
       baseDecimals: market.baseToken.decimals,
@@ -356,6 +359,7 @@ export async function submitChase({
 }) {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const priceToFixed = spotPriceToChainPriceToFixed({
@@ -387,7 +391,7 @@ export async function submitChase({
     spotOrdersToCreate: [
       {
         marketId: market.marketId,
-        feeRecipient: FEE_RECIPIENT,
+        feeRecipient: referralStore.feeRecipient,
         price: priceToFixed,
         triggerPrice: '0',
         quantity: order.quantity,

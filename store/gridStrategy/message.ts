@@ -13,6 +13,7 @@ import {
   ExecArgCreatePerpGridStrategy
 } from '@/app/grid-trading'
 import { backupPromiseCall } from '@/app/utils/async'
+
 import { prepareOrderMessages } from '@/app/utils/market'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
@@ -60,6 +61,7 @@ export const createSpotGridStrategy = async ({
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -152,7 +154,8 @@ export const createSpotGridStrategy = async ({
       baseDecimals: market.baseToken.decimals,
       quoteDecimals: market.quoteToken.decimals
     }),
-    exitType
+    exitType,
+    feeRecipient: referralStore.feeRecipient
   }
 
   function getTrailingAndStrategyType(params: {
@@ -352,6 +355,7 @@ export const createPerpStrategy = async (
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
@@ -426,7 +430,8 @@ export const createPerpStrategy = async (
     }),
 
     strategyType: PerpetualGridStrategyType.Perpetual,
-    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2)
+    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2),
+    feeRecipient: referralStore.feeRecipient
   })
 
   const message = MsgExecuteContractCompat.fromJSON({
@@ -496,6 +501,7 @@ export async function createSpotLiquidityBot(params: {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const jsonStore = useSharedJsonStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
   const gridStrategyStore = useGridStrategyStore()
 
@@ -574,7 +580,8 @@ export async function createSpotLiquidityBot(params: {
           baseDecimals: market.baseToken.decimals,
           quoteDecimals: market.quoteToken.decimals
         })
-      }
+      },
+      feeRecipient: referralStore.feeRecipient
     }).toExecData()
   })
 

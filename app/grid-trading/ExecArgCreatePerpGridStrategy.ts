@@ -1,3 +1,4 @@
+import { FEE_RECIPIENT } from '../utils/constants'
 import {
   ExitType,
   PerpetualGridStrategyContractTypeParams,
@@ -13,6 +14,7 @@ export type Params = PerpetualGridStrategyTypeParams & {
   slippage?: string
   stopLoss?: string
   takeProfit?: string
+  feeRecipient?: string
 }
 
 export interface Data {
@@ -29,6 +31,7 @@ export interface Data {
   }
   levels: number
   strategy_type: PerpetualGridStrategyContractTypeParams[keyof PerpetualGridStrategyContractTypeParams]
+  fee_recipient?: string
 }
 
 /**
@@ -88,7 +91,8 @@ export default class ExecArgCreatePerpGridStrategy {
             exit_type: ExitType.Default,
             exit_price: params.takeProfit
           }
-        : undefined
+        : undefined,
+      fee_recipient: params.feeRecipient ?? FEE_RECIPIENT
     }
   }
 

@@ -12,7 +12,6 @@ import {
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/market'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
@@ -57,6 +56,8 @@ const createTpSlMessage = ({
   isBuy: boolean
   market: UiDerivativeMarket
 }) => {
+  const referralStore = useReferralStore()
+
   const orderType = getDerivativeOrderTypeToSubmit({
     isBuy,
     isPostOnly: true,
@@ -86,7 +87,7 @@ const createTpSlMessage = ({
       value: quantity.toFixed()
     }),
     marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderType)
   })
@@ -179,8 +180,9 @@ export const submitLimitOrder = async ({
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
-  const sharedWalletStore = useSharedWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
     !market ||
@@ -223,7 +225,7 @@ export const submitLimitOrder = async ({
     quantity: quantityToFixed,
     margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT
+    feeRecipient: referralStore.feeRecipient
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
@@ -253,8 +255,9 @@ export const submitStopLimitOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -295,7 +298,7 @@ export const submitStopLimitOrder = async ({
     margin: msgMargin,
     quantity: msgQuantity,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderSide)
   })
@@ -336,6 +339,7 @@ export const submitMarketOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -397,7 +401,7 @@ export const submitMarketOrder = async ({
     }),
     margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT
+    feeRecipient: referralStore.feeRecipient
   })
 
   const cw20ConvertMessage = prepareOrderMessages({
@@ -444,6 +448,7 @@ export const submitStopMarketOrder = async ({
   const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (
@@ -482,7 +487,7 @@ export const submitStopMarketOrder = async ({
     margin: reduceOnly ? '0' : marginToFixed,
     quantity: msgQuantity,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderSide)
   })
@@ -594,6 +599,7 @@ export async function submitChase({
 }) {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
 
   await walletStore.validateGeo()
@@ -617,7 +623,7 @@ export async function submitChase({
     quantity: order.quantity,
     margin: order.margin,
     marketId: order.marketId,
-    feeRecipient: FEE_RECIPIENT
+    feeRecipient: referralStore.feeRecipient
   })
 
   const messages = [cancelOrderMsg, createDerivativeLimitOrderMsg]

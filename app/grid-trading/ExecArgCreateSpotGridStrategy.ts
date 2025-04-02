@@ -1,3 +1,4 @@
+import { FEE_RECIPIENT } from '../utils/constants'
 import {
   ExitType,
   ExitConfig,
@@ -15,6 +16,7 @@ export type Params = SpotGridStrategyTypeParams & {
   stopLoss?: ExitConfig
   takeProfit?: ExitConfig
   exitType?: ExitType
+  feeRecipient?: string
 }
 
 export interface Data {
@@ -32,6 +34,7 @@ export interface Data {
   }
   exit_type?: ExitType
   strategy_type?: SpotGridStrategyContractTypeParams[keyof SpotGridStrategyContractTypeParams]
+  fee_recipient?: string
 }
 
 /**
@@ -98,7 +101,8 @@ export default class ExecArgCreateSpotGridStrategy {
             exit_price: params.takeProfit.exitPrice
           }
         : undefined,
-      strategy_type: strategyType
+      strategy_type: strategyType,
+      fee_recipient: params.feeRecipient ?? FEE_RECIPIENT
     }
   }
 
