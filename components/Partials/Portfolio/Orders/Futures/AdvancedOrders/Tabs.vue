@@ -45,7 +45,8 @@ function onFormReset() {
     <CommonSubaccountTabSelector
       v-bind="{
         includeBotsSubaccounts:
-          appStore.userState.preferences.showGridTradingSubaccounts
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
       }"
       wrapper-class="w-full"
     />
