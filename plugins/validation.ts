@@ -101,6 +101,10 @@ export const defineGlobalRules = () => {
           return 'amount is required'
         }
 
+        if (field.toLowerCase().includes('positionquantity')) {
+          return 'Invalid amount: Please enter a valid quantity greater than zero.'
+        }
+
         if (field.includes('-')) {
           return `${field.replaceAll('-', ' ')} is required.`
         }
@@ -430,6 +434,27 @@ export const defineGlobalRules = () => {
 
     return true
   })
+
+  defineRule(
+    'maxValuePositionQuantity',
+    (value: string, [max]: string[], { field }: { field: string }) => {
+      if (new BigNumberInBase(max).lt(value)) {
+        if (field.toLowerCase() === 'positionquantity') {
+          return 'Invalid amount: You cannot set an amount for more than your total position size.'
+        }
+
+        if (field.toLowerCase() === 'tppositionquantity') {
+          return 'Invalid amount: You cannot set a TP for more than your total position size.'
+        }
+
+        if (field.toLowerCase() === 'slpositionquantity') {
+          return 'Invalid amount: You cannot set a SL for more than your total position size.'
+        }
+      }
+
+      return true
+    }
+  )
 }
 
 export default defineNuxtPlugin(() => {

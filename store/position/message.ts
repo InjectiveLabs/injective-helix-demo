@@ -1,6 +1,6 @@
 import {
   PositionV2,
-  DerivativeLimitOrder,
+  MsgCancelDerivativeOrder,
   MsgIncreasePositionMargin,
   MsgCreateDerivativeMarketOrder,
   derivativeMarginToChainMarginToFixed,
@@ -12,9 +12,17 @@ import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
-import { UiDerivativeMarket } from '@/types'
+import { UiDerivativeMarket, ConditionalOrderSide } from '@/types'
 
-export const closePosition = async (position: PositionV2) => {
+export const closePosition = async ({
+  quantity,
+  position,
+  availablePositionQuantity
+}: {
+  quantity: string
+  position: PositionV2
+  availablePositionQuantity: BigNumberInBase
+}) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const referralStore = useReferralStore()
@@ -35,25 +43,85 @@ export const closePosition = async (position: PositionV2) => {
 
   await walletStore.validate()
 
-  const orderType =
+  const orderType = orderSideToOrderType(
     position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
-  const liquidationPrice = getRoundedLiquidationPrice(position, market)
+  )
+
+  const liquidationPrice = getRoundedLiquidationPrice(
+    { ...position, quantity },
+    market
+  )
+
+  const remainingQuantity = availablePositionQuantity.minus(quantity)
+
+  const selectedPositionConditionalOrders =
+    derivativeStore.subaccountConditionalOrders.filter(
+      (order) =>
+        order.marketId === market.marketId &&
+        order.subaccountId === accountStore.subaccountId
+    )
+
+  const tpOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.TakeBuy ||
+      item.orderType === ConditionalOrderSide.TakeSell
+  )
+
+  const slOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.StopBuy ||
+      item.orderType === ConditionalOrderSide.StopSell
+  )
+
+  const tpOrderQuantity = tpOrder?.quantity
+  const slOrderQuantity = slOrder?.quantity
 
   const messages = MsgCreateDerivativeMarketOrder.fromJSON({
     margin: '0',
-    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     triggerPrice: '0',
     marketId: position.marketId,
     feeRecipient: referralStore.feeRecipient,
     price: liquidationPrice.toFixed(),
     subaccountId: accountStore.subaccountId,
-    orderType: orderSideToOrderType(orderType),
+    orderType,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     quantity: derivativeQuantityToChainQuantityToFixed({
-      value: position.quantity
+      value: quantity
     })
   })
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  const msgs = []
+  msgs.push(messages)
+
+  if (
+    tpOrder &&
+    new BigNumberInBase(remainingQuantity).lt(tpOrderQuantity || 0)
+  ) {
+    const cancelTpMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+      marketId: tpOrder.marketId,
+      orderHash: tpOrder.orderHash,
+      subaccountId: tpOrder.subaccountId
+    })
+
+    msgs.push(cancelTpMessage)
+  }
+
+  if (
+    slOrder &&
+    new BigNumberInBase(remainingQuantity).lt(slOrderQuantity || 0)
+  ) {
+    const cancelSlMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+      marketId: slOrder.marketId,
+      orderHash: slOrder.orderHash,
+      subaccountId: slOrder.subaccountId
+    })
+
+    msgs.push(cancelSlMessage)
+  }
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: msgs })
 
   backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
@@ -128,57 +196,6 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
       orderType: orderSideToOrderType(position.orderType)
     })
   )
-
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
-
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
-}
-
-export const closePositionAndReduceOnlyOrders = async ({
-  position
-}: {
-  position: PositionV2
-  reduceOnlyOrders: DerivativeLimitOrder[]
-}) => {
-  const appStore = useAppStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
-  const referralStore = useReferralStore()
-  const derivativeStore = useDerivativeStore()
-  const sharedWalletStore = useSharedWalletStore()
-
-  const market = derivativeStore.markets.find(
-    (m) => m.marketId === position.marketId
-  )
-
-  if (
-    !market ||
-    !accountStore.subaccountId ||
-    !sharedWalletStore.isUserConnected
-  ) {
-    return
-  }
-
-  await appStore.validateGeoIpBasedOnDerivativesAction()
-  await walletStore.validate()
-
-  const orderType =
-    position.direction === TradeDirection.Long ? OrderSide.Sell : OrderSide.Buy
-  const liquidationPrice = getRoundedLiquidationPrice(position, market)
-
-  const messages = MsgCreateDerivativeMarketOrder.fromJSON({
-    margin: '0',
-    triggerPrice: '0',
-    marketId: market.marketId,
-    price: liquidationPrice.toFixed(),
-    subaccountId: accountStore.subaccountId,
-    feeRecipient: referralStore.feeRecipient,
-    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-    quantity: derivativeQuantityToChainQuantityToFixed({
-      value: position.quantity
-    }),
-    orderType: orderSideToOrderType(orderType)
-  })
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 

@@ -2,6 +2,7 @@
 import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
   TakeProfitStopLossForm,
@@ -29,6 +30,7 @@ const {
   markPriceNotScaled
 } = useDerivativePosition(computed(() => props.position))
 
+const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
 
 const isModalOpen = computed(
@@ -42,6 +44,38 @@ const market = computed(() =>
 )
 
 const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
+
+const {
+  valueToFixed: availableQuantityToFixed,
+  valueToBigNumber: availableQuantityToBigNumber
+} = useSharedBigNumberFormatter(
+  computed(() => new BigNumberInBase(availableQuantity.value)),
+  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+)
+
+const {
+  value: tpQuantity,
+  errorMessage: tpQuantityErrorMessage,
+  setValue: setTpQuantity
+} = useStringField({
+  name: 'tpPositionQuantity',
+  rule: '',
+  dynamicRule: computed(
+    () => `maxValuePositionQuantity:${availableQuantityToFixed.value}`
+  )
+})
+
+const {
+  value: slQuantity,
+  errorMessage: slQuantityErrorMessage,
+  setValue: setSlQuantity
+} = useStringField({
+  name: 'slPositionQuantity',
+  rule: '',
+  dynamicRule: computed(
+    () => `maxValuePositionQuantity:${availableQuantityToFixed.value}`
+  )
+})
 
 const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
   useStringField({
@@ -176,14 +210,42 @@ async function submitTpSl() {
   derivativeStore
     .submitTpSlOrder({
       position: props.position,
-      stopLoss: stopLossValue.value
+      stopLossPrice: stopLossValue.value
         ? new BigNumberInBase(stopLossValue.value)
         : undefined,
-      takeProfit: takeProfitValue.value
+      takeProfitPrice: takeProfitValue.value
         ? new BigNumberInBase(takeProfitValue.value)
-        : undefined
+        : undefined,
+      stopLossQuantity: new BigNumberInBase(slQuantity.value),
+      takeProfitQuantity: new BigNumberInBase(tpQuantity.value)
     })
-    .then(() => notificationStore.success({ title: t('common.success') }))
+    .then(() => {
+      const tpSuccessMessage = t('trade.tpSuccessMessage', {
+        quantity: `${tpQuantity.value} ${market.value?.baseToken?.symbol}`,
+        price: `${takeProfitValue.value} ${market.value?.quoteToken?.symbol}`
+      })
+
+      const slSuccessMessage = t('trade.slSuccessMessage', {
+        quantity: `${slQuantity.value} ${market.value?.baseToken?.symbol}`,
+        price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
+      })
+
+      let notifMessage = `${tpSuccessMessage},
+      ${t('common.and')} ${slSuccessMessage}`
+
+      if (!takeProfitValue.value) {
+        notifMessage = slSuccessMessage
+      } else if (!stopLossValue.value) {
+        notifMessage = tpSuccessMessage
+      }
+
+      notifMessage =
+        notifMessage.charAt(0).toUpperCase() + String(notifMessage).slice(1)
+
+      notificationStore.success({
+        title: notifMessage
+      })
+    })
     .catch($onError)
     .finally(() => {
       closeModal()
@@ -234,27 +296,58 @@ function cancelSl() {
     })
 }
 
+function selectTpPartialOption(value: number) {
+  const quantityPartialAmount = value
+  const quantityPercentage = quantityPartialAmount / 100
+
+  setTpQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  )
+}
+
+function selectSlPartialOption(value: number) {
+  const quantityPartialAmount = value
+  const quantityPercentage = quantityPartialAmount / 100
+
+  setSlQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+  )
+}
+
 watch(
   () => isModalOpen.value,
   () => {
     resetForm()
+    availableQuantity.value = props.position.quantity || '0'
   }
 )
+
+onMounted(() => {
+  availableQuantity.value = props.position.quantity || '0'
+})
 </script>
 
 <template>
   <AppModal
     v-model="modalStore.modals[Modal.AddTakeProfitStopLoss]"
-    v-bind="{ isHideCloseButton: !sm }"
+    v-bind="{
+      isHideCloseButton: !sm,
+      isAlwaysOpen: status.isLoading(),
+      ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
+    }"
   >
     <template #title>
       <p class="text-center font-bold">
-        {{ $t('trade.takeProfitStopLossForEntirePosition') }}
+        {{ $t('trade.takeProfitStopLossForPosition') }}
       </p>
     </template>
 
     <div v-if="market && position">
-      <div class="space-y-4 lg:max-w-sm">
+      <div class="space-y-8">
         <div class="font-semibold text-xs">
           <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.entryPrice') }}:</p>
@@ -293,6 +386,18 @@ watch(
           </div>
 
           <div class="flex justify-between items-center border-b py-2">
+            <p>{{ $t('trade.totalQuantitySize') }}:</p>
+            <p>
+              <AppAmount
+                v-bind="{
+                  amount: availableQuantityToFixed,
+                  decimalPlaces: market.priceDecimals
+                }"
+              />
+            </p>
+          </div>
+
+          <div class="flex justify-between items-center border-b py-2">
             <p>{{ $t('trade.direction') }}:</p>
             <p
               :class="{
@@ -305,142 +410,235 @@ watch(
           </div>
         </div>
 
-        <AppInputField
-          v-if="!isTpDisabled"
-          v-model="takeProfitValue"
-          :decimals="market.priceDecimals"
-          placeholder="Take Profit"
-          class="placeholder:font-sans"
-          :disabled="!!isTpDisabled"
-        />
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+            <div class="flex flex-col flex-1 gap-2">
+              <h5 class="font-semibold text-xs">
+                {{ $t('trade.takeProfitTriggerPrice') }}
+              </h5>
 
-        <p v-if="takeProfitErrorMessage" class="error-message">
-          {{ takeProfitErrorMessage }}
-        </p>
-
-        <i18n-t
-          keypath="trade.takeProfitDetails"
-          tag="p"
-          class="text-xs text-coolGray-400"
-        >
-          <template #price>
-            <span class="inline-flex">
-              <span v-if="!takeProfitValue && !tpTriggerPrice"> &mdash;</span>
-              <AppAmount
-                v-else
+              <AppInputField
+                v-if="!isTpDisabled"
+                v-model="takeProfitValue"
                 v-bind="{
-                  amount: tpTriggerPrice || takeProfitValue,
+                  noStyle: true,
+                  alignLeft: true,
+                  placeholder: '0.00',
+                  decimals: market.priceDecimals,
+                  inputClasses:
+                    'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+                }"
+              />
+
+              <p v-if="takeProfitErrorMessage" class="error-message">
+                {{ takeProfitErrorMessage }}
+              </p>
+            </div>
+
+            <div v-if="!isTpDisabled" class="flex flex-col flex-1 gap-2">
+              <h5 class="font-semibold text-xs">
+                {{ $t('trade.takeProfitQuantity') }}
+              </h5>
+
+              <div class="relative">
+                <AppInputField
+                  v-model="tpQuantity"
+                  v-bind="{
+                    noStyle: true,
+                    alignLeft: true,
+                    placeholder: '0.00',
+                    decimals: market.priceDecimals,
+                    inputClasses:
+                      'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+                  }"
+                />
+
+                <div
+                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
+                >
+                  <ModalsPartialClosePositionOption
+                    v-bind="{ label: 'Max', value: 100 }"
+                    @option:update="selectTpPartialOption"
+                  />
+                </div>
+              </div>
+
+              <p v-if="tpQuantityErrorMessage" class="error-message">
+                {{ tpQuantityErrorMessage }}
+              </p>
+            </div>
+          </div>
+
+          <i18n-t
+            keypath="trade.takeProfitDetails"
+            tag="p"
+            class="text-xs text-coolGray-400"
+          >
+            <template #price>
+              <span class="inline-flex">
+                <span v-if="!takeProfitValue && !tpTriggerPrice"> &mdash;</span>
+                <AppAmount
+                  v-else
+                  v-bind="{
+                    amount: tpTriggerPrice || takeProfitValue,
+                    decimalPlaces: market.priceDecimals
+                  }"
+                />
+              </span>
+            </template>
+          </i18n-t>
+
+          <p class="text-xs">
+            <span>{{ $t('trade.profitLoss') }}: </span>
+
+            <span v-if="!takeProfitValue && !tpTriggerPrice">&mdash;</span>
+            <span
+              v-else
+              :class="[
+                takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500'
+              ]"
+              class="font-bold inline-flex gap-1"
+            >
+              <AppAmount
+                v-bind="{
+                  amount: takeProfitPnl.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
               />
+              <span>{{ market.quoteToken.symbol }}</span>
             </span>
-          </template>
-        </i18n-t>
+          </p>
 
-        <p class="text-xs">
-          <span>{{ $t('trade.profitLoss') }}: </span>
-
-          <span v-if="!takeProfitValue && !tpTriggerPrice">&mdash;</span>
-          <span
-            v-else
-            :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold inline-flex gap-1"
+          <AppButton
+            v-if="tpTriggerPrice"
+            class="w-full py-1.5 mt-2 text-blue-500"
+            size="sm"
+            variant="primary-outline"
+            v-bind="{ status: cancelTpStatus }"
+            @click="cancelTp"
           >
-            <AppAmount
-              v-bind="{
-                amount: takeProfitPnl.toFixed(),
-                decimalPlaces: market.priceDecimals
-              }"
-            />
-            <span>{{ market.quoteToken.symbol }}</span>
-          </span>
-        </p>
+            {{ $t('trade.cancelTakeProfit') }}
+          </AppButton>
+        </div>
 
-        <AppButton
-          v-if="tpTriggerPrice"
-          size="sm"
-          class="w-full"
-          variant="danger"
-          v-bind="{ status: cancelTpStatus }"
-          @click="cancelTp"
-        >
-          {{ $t('trade.cancelTakeProfit') }}
-        </AppButton>
-
-        <div class="border-b"></div>
-
-        <AppInputField
-          v-if="!isSlDisabled"
-          v-model="stopLossValue"
-          :decimals="market.priceDecimals"
-          placeholder="Stop Loss"
-          class="placeholder:font-sans"
-          :disabled="!!isSlDisabled"
-        />
-
-        <p v-if="stopLossErrorMessage" class="error-message">
-          {{ stopLossErrorMessage }}
-        </p>
-
-        <i18n-t
-          keypath="trade.stopLossDetails"
-          tag="p"
-          class="text-xs text-coolGray-400"
-        >
-          <template #price>
-            <span class="inline-flex">
-              <span v-if="!stopLossValue && !slTriggerPrice"> &mdash;</span>
-              <AppAmount
-                v-else
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+            <div class="flex flex-col flex-1 gap-2">
+              <h5 class="font-semibold text-xs">
+                {{ $t('trade.stopLossTriggerPrice') }}
+              </h5>
+              <AppInputField
+                v-if="!isSlDisabled"
+                v-model="stopLossValue"
                 v-bind="{
-                  amount: slTriggerPrice || stopLossValue,
+                  noStyle: true,
+                  alignLeft: true,
+                  placeholder: '0.00',
+                  decimals: market.priceDecimals,
+                  inputClasses:
+                    'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+                }"
+              />
+
+              <p v-if="stopLossErrorMessage" class="error-message">
+                {{ stopLossErrorMessage }}
+              </p>
+            </div>
+
+            <div v-if="!isSlDisabled" class="flex flex-col flex-1 gap-2">
+              <h5 class="font-semibold text-xs">
+                {{ $t('trade.stopLossQuantity') }}
+              </h5>
+
+              <div class="relative text-sm">
+                <AppInputField
+                  v-model="slQuantity"
+                  v-bind="{
+                    noStyle: true,
+                    alignLeft: true,
+                    placeholder: '0.00',
+                    decimals: market.priceDecimals,
+                    inputClasses:
+                      'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+                  }"
+                />
+
+                <div
+                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
+                >
+                  <ModalsPartialClosePositionOption
+                    v-bind="{ label: 'Max', value: 100 }"
+                    @option:update="selectSlPartialOption"
+                  />
+                </div>
+              </div>
+
+              <p v-if="slQuantityErrorMessage" class="error-message">
+                {{ slQuantityErrorMessage }}
+              </p>
+            </div>
+          </div>
+
+          <i18n-t
+            keypath="trade.stopLossDetails"
+            tag="p"
+            class="text-xs text-coolGray-400"
+          >
+            <template #price>
+              <span class="inline-flex">
+                <span v-if="!stopLossValue && !slTriggerPrice"> &mdash;</span>
+                <AppAmount
+                  v-else
+                  v-bind="{
+                    amount: slTriggerPrice || stopLossValue,
+                    decimalPlaces: market.priceDecimals
+                  }"
+                />
+              </span>
+            </template>
+          </i18n-t>
+
+          <p class="text-xs">
+            <span>{{ $t('trade.profitLoss') }}: </span>
+
+            <span v-if="!stopLossValue && !slTriggerPrice">&dash;</span>
+            <span
+              v-else
+              :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
+              class="font-bold inline-flex gap-1"
+            >
+              <AppAmount
+                v-bind="{
+                  amount: stopLossPnl.toFixed(),
                   decimalPlaces: market.priceDecimals
                 }"
               />
+              <span>{{ market.quoteToken.symbol }}</span>
             </span>
-          </template>
-        </i18n-t>
+          </p>
 
-        <p class="text-xs">
-          <span>{{ $t('trade.profitLoss') }}: </span>
-
-          <span v-if="!stopLossValue && !slTriggerPrice">&dash;</span>
-          <span
-            v-else
-            :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-            class="font-bold inline-flex gap-1"
+          <AppButton
+            v-if="slTriggerPrice"
+            class="w-full py-1.5 mt-2 text-blue-500"
+            size="sm"
+            variant="primary-outline"
+            v-bind="{ status: cancelSlStatus }"
+            @click="cancelSl"
           >
-            <AppAmount
-              v-bind="{
-                amount: stopLossPnl.toFixed(),
-                decimalPlaces: market.priceDecimals
-              }"
-            />
-            <span>{{ market.quoteToken.symbol }}</span>
-          </span>
-        </p>
+            {{ $t('trade.cancelStopLoss') }}
+          </AppButton>
+        </div>
 
-        <AppButton
-          v-if="slTriggerPrice"
-          size="sm"
-          class="w-full"
-          variant="danger"
-          v-bind="{ status: cancelSlStatus }"
-          @click="cancelSl"
-        >
-          {{ $t('trade.cancelStopLoss') }}
-        </AppButton>
-      </div>
-
-      <div v-if="!(isTpDisabled && isSlDisabled)" class="mt-4 pt-4 border-t">
-        <AppButton
-          :disabled="Object.values(errors).length > 0"
-          v-bind="{ status }"
-          class="w-full"
-          @click="submitTpSl"
-        >
-          {{ $t('common.submit') }}
-        </AppButton>
+        <div v-if="!(isTpDisabled && isSlDisabled)">
+          <AppButton
+            :disabled="Object.values(errors).length > 0"
+            v-bind="{ status }"
+            class="w-full"
+            @click="submitTpSl"
+          >
+            {{ $t('common.submit') }}
+          </AppButton>
+        </div>
       </div>
     </div>
   </AppModal>
