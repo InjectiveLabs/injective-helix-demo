@@ -67,6 +67,7 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    replicateStrategy: 'Replicate Strategy',
     trailingPriceRange: 'Trailing Price Range',
     minInvestmentDescription: "Min Investment: {symbols} ≥ {'$'}{amount}",
     minInvestmentTooltip:
@@ -279,9 +280,11 @@ export default {
     copyStrategy: 'Copy Strategy',
     createYourStrategy: 'Create Your Strategy',
     topPerformers: 'Top Performers',
+    topPerformersDescription:
+      'Learn from real-time success. See which strategies and parameters are currently yielding the best results on Helix. Use this data to refine your approach or launch a new bot based on proven performance.',
     volumeBoost: 'Volume Boost',
     description:
-      'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
+      'Your command center for automated trading on Helix. Monitor your active bots, track your LP rewards, and discover high-performing community strategies to inform your next move.',
 
     botType: {
       spotGrid: 'Spot Grid',
