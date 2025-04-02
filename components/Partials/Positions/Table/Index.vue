@@ -417,7 +417,7 @@ function setPositionStatusIdle() {
   </template>
 
   <ModalsClosePositionWarning
-    @close="setPositionStatusIdle"
+    @on:close="setPositionStatusIdle"
     @position:close="onClosePartialPosition"
   />
 

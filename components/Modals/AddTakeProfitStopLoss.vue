@@ -230,20 +230,24 @@ async function submitTpSl() {
         price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
       })
 
-      let notifMessage = `${tpSuccessMessage},
-      ${t('common.and')} ${slSuccessMessage}`
-
       if (!takeProfitValue.value) {
-        notifMessage = slSuccessMessage
-      } else if (!stopLossValue.value) {
-        notifMessage = tpSuccessMessage
+        notificationStore.success({
+          title: slSuccessMessage
+        })
+
+        return
       }
 
-      notifMessage =
-        notifMessage.charAt(0).toUpperCase() + String(notifMessage).slice(1)
+      if (!stopLossValue.value) {
+        notificationStore.success({
+          title: tpSuccessMessage
+        })
+
+        return
+      }
 
       notificationStore.success({
-        title: notifMessage
+        title: `${tpSuccessMessage}, ${t('common.and')} ${slSuccessMessage}`
       })
     })
     .catch($onError)

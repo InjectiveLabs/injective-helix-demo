@@ -234,17 +234,14 @@ export const submitLimitOrder = async ({
     feeRecipient: referralStore.feeRecipient
   })
 
-  const msgs = [...cw20ConvertMessage, message] as any[]
-
-  const messageList = derivativeStore.buildMsgsWithAutoTpSlCancel({
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
     market,
     quantity,
-    orderSide,
-    baseMessageList: msgs
+    orderSide
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: messageList
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
   })
 
   await fetchBalances({
@@ -326,17 +323,14 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const msgs = [...cw20ConvertMessage, message] as any[]
-
-  const messageList = derivativeStore.buildMsgsWithAutoTpSlCancel({
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
     market,
     quantity,
-    orderSide,
-    baseMessageList: msgs
+    orderSide
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: messageList
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
   })
 
   await fetchBalances({
@@ -441,17 +435,14 @@ export const submitMarketOrder = async ({
     feeRecipient: referralStore.feeRecipient
   })
 
-  const msgs = [...cw20ConvertMessage, message] as any[]
-
-  const messageList = derivativeStore.buildMsgsWithAutoTpSlCancel({
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
     market,
     quantity,
-    orderSide,
-    baseMessageList: msgs
+    orderSide
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: messageList
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
   })
 
   if (tpSlMessages.length) {
@@ -675,14 +666,12 @@ export async function submitChase({
   return await true
 }
 
-export const buildMsgsWithAutoTpSlCancel = ({
+export const prepareCancelTpSlOrderMsgs = ({
   market,
   quantity,
-  orderSide,
-  baseMessageList
+  orderSide
 }: {
   orderSide: OrderSide
-  baseMessageList: any[]
   quantity: BigNumberInBase
   market: UiDerivativeMarket
 }) => {
@@ -718,7 +707,7 @@ export const buildMsgsWithAutoTpSlCancel = ({
   const shouldAutoCancelTpSl =
     shouldAutoCancelTpSlOnLong || shouldAutoCancelTpSlOnShort
 
-  const msgs = baseMessageList as any[]
+  const msgs = [] as any[]
 
   if (!shouldAutoCancelTpSl) {
     return msgs
