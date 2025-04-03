@@ -244,7 +244,7 @@ export const useSpotGridStrategies = (
 
       if (
         strategy.marketType === 'spot' &&
-        strategy.strategyType === IndexerGridStrategyType.ArithmeticLP
+        strategy.strategyType === IndexerGridStrategyType.TrailingArithmeticLP
       ) {
         botType = BotType.LiquidityGrid
       } else if (strategy.marketType === 'futures') {
