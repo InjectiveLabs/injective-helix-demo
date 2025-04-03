@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { StrategyType, ExitType } from '@injectivelabs/sdk-ts'
+import { ExitType } from '@injectivelabs/sdk-ts'
 import { MarketKey, SpotGridTradingField, UiSpotMarket } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const { value: strategyTypeValue } = useStringField({
+const { value: exitTypeValue } = useStringField({
   name: SpotGridTradingField.ExitType,
   initialValue: ExitType.Default,
   rule: ''
 })
 
-const strategyType = computed({
-  get: () => strategyTypeValue.value === StrategyType.Geometric,
+const exitType = computed({
+  get: () => exitTypeValue.value === ExitType.Quote,
   set: (isTrue: boolean) => {
-    strategyTypeValue.value = isTrue ? ExitType.Quote : ExitType.Default
+    exitTypeValue.value = isTrue ? ExitType.Quote : ExitType.Default
   }
 })
 </script>
 
 <template>
   <div class="flex items-center text-coolGray-450 font-medium">
-    <AppCheckbox2 v-model="strategyType">
+    <AppCheckbox2 v-model="exitType">
       {{
         $t('sgt.sellSymbolUponTermination', { symbol: market.baseToken.symbol })
       }}

@@ -6,6 +6,7 @@ import {
   DerivativeGridStrategyTransformed,
   GridStrategyTransformed,
   PortfolioTradingBotsRunningTableColumn,
+  StrategyStatus,
   TradeSubPage,
   TradingInterface
 } from '@/types'
@@ -150,17 +151,25 @@ function selectStrategy(
       </template>
 
       <template #totalAmount-data="{ row }">
-        <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :decimal-places="2"
-            :max-decimal-places="3"
-            :amount="row.totalAmount.toFixed()"
-          />
+        <div v-if="row.strategyStatus === StrategyStatus.Pending">&mdash;</div>
+        <div v-else>
+          <div class="flex items-center gap-1">
+            <SharedAmountFormatter
+              :decimal-places="2"
+              :max-decimal-places="3"
+              :amount="row.totalAmount.toFixed()"
+            />
+          </div>
         </div>
       </template>
 
       <template #totalProfit-data="{ row }">
-        <AppSpinner v-if="!row.isSpot && row.isLoadingMarkPrice" />
+        <AppSpinner
+          v-if="
+            (!row.isSpot && row.isLoadingMarkPrice) ||
+            row.strategyStatus === StrategyStatus.Pending
+          "
+        />
         <div
           v-else
           class="flex flex-col font-mono"
@@ -199,10 +208,19 @@ function selectStrategy(
       </template>
 
       <template #removeStrategy-data="{ row }">
-        <PartialsLiquidityBotsSpotCommonRemoveStrategy :strategy="row.strategy">
+        <PartialsLiquidityBotsSpotCommonRemoveStrategy
+          v-bind="{
+            strategy: row.strategy,
+            pnl: row.pnl,
+            pnlPercentage: row.percentagePnl
+          }"
+        >
           <template #default="{ removeStrategy, status }">
             <AppButton
-              :is-loading="status.isLoading()"
+              :is-loading="
+                status.isLoading() ||
+                row.strategyStatus === StrategyStatus.Pending
+              "
               variant="danger-ghost"
               class="p-1"
               @click="removeStrategy"

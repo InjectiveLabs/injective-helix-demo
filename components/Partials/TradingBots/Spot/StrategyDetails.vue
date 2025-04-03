@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, StatusType, Status } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { StrategyStatus } from '@/types'
 
-const gridStrategyStore = useGridStrategyStore()
 const { subaccountPortfolioBalanceMap } = useBalance()
-const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
@@ -17,8 +16,6 @@ const props = withDefaults(
   }>(),
   {}
 )
-
-const status = reactive(new Status(StatusType.Idle))
 
 const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
   useSpotGridStrategies(
@@ -35,20 +32,6 @@ const isPositivePnl = computed(() =>
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
 )
-
-function removeStrategy() {
-  status.setLoading()
-
-  gridStrategyStore
-    .removeStrategyForSubaccount(
-      strategy.value.contractAddress,
-      strategy.value.subaccountId
-    )
-    .catch($onError)
-    .finally(() => {
-      status.setIdle()
-    })
-}
 </script>
 
 <template>
@@ -62,7 +45,7 @@ function removeStrategy() {
           class="w-2 h-2 rounded-full"
           :class="strategy.isActive ? 'bg-green-500' : 'bg-red-500'"
         />
-        <p>{{ strategy.isActive ? $t('sgt.running') : $t('sgt.removed') }}</p>
+        <p>{{ $t(`sgt.${strategy.strategyStatus}`) }}</p>
       </div>
     </div>
 
@@ -72,7 +55,8 @@ function removeStrategy() {
       <div
         v-if="
           new BigNumberInBase(strategy.pnl).isZero() ||
-          lastTradedPriceStatus.isLoading()
+          lastTradedPriceStatus.isLoading() ||
+          strategy.strategyStatus === StrategyStatus.Pending
         "
         class="text-coolGray-400"
       >
@@ -104,7 +88,13 @@ function removeStrategy() {
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div v-if="lastTradedPriceStatus.isLoading()" class="text-coolGray-400">
+      <div
+        v-if="
+          lastTradedPriceStatus.isLoading() ||
+          strategy.strategyStatus === StrategyStatus.Pending
+        "
+        class="text-coolGray-400"
+      >
         &mdash;
       </div>
       <div v-else>
@@ -126,7 +116,16 @@ function removeStrategy() {
         <span v-else>{{ $t('liquidityBots.finalBalance') }}</span>
       </p>
 
-      <div>
+      <div
+        v-if="
+          lastTradedPriceStatus.isLoading() ||
+          strategy.strategyStatus === StrategyStatus.Pending
+        "
+        class="text-coolGray-400"
+      >
+        &mdash;
+      </div>
+      <div v-else>
         <PartialsLiquidityCommonDetailsPair
           v-bind="{ market: strategy.market }"
         >
@@ -298,16 +297,28 @@ function removeStrategy() {
       </div>
     </div>
 
-    <div v-if="strategy.isActive" class="pt-4">
-      <AppButton
-        variant="danger"
-        :is-loading="status.isLoading()"
-        size="lg"
-        class="w-full"
-        @click="removeStrategy"
+    <div v-if="strategy.strategyStatus !== StrategyStatus.Removed" class="pt-4">
+      <PartialsLiquidityBotsSpotCommonRemoveStrategy
+        v-slot="{ removeStrategy, status: removeStatus }"
+        v-bind="{
+          strategy: strategy.strategy,
+          pnl: strategy.pnl,
+          pnlPercentage: strategy.percentagePnl
+        }"
       >
-        {{ $t('sgt.removeStrategy') }}
-      </AppButton>
+        <AppButton
+          variant="danger"
+          :is-loading="
+            removeStatus.isLoading() ||
+            strategy.strategyStatus === StrategyStatus.Pending
+          "
+          size="lg"
+          class="w-full"
+          @click="removeStrategy"
+        >
+          {{ $t('sgt.removeStrategy') }}
+        </AppButton>
+      </PartialsLiquidityBotsSpotCommonRemoveStrategy>
     </div>
   </div>
 </template>

@@ -75,7 +75,7 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
     dynamicRule: computed(() => {
       const insufficientRule = `insufficientSgt:${quoteDenomAmount.value.toFixed()}`
 
-      const minValueRule = `minValueSgt:${gridThreshold.value.toFixed()}`
+      const minValueRule = `minValuePgt:${gridThreshold.value.toFixed()}`
 
       const rules = [insufficientRule, minValueRule]
 

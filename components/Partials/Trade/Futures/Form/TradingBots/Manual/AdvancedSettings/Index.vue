@@ -24,11 +24,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="space-y-2 py-2">
-        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsExitType />
-        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsLpMode />
-        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsStrategyType />
-        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsTpSl />
-        <PartialsTradeSpotFormTradingBotsManualAdvancedSettingsTrailing />
+        <PartialsTradeFuturesFormTradingBotsManualAdvancedSettingsTpSl />
       </div>
     </AppCollapse>
   </div>

@@ -5,7 +5,7 @@ const gridStrategyStore = useGridStrategyStore()
 </script>
 
 <template>
-  <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
+  <div class="flex flex-col items-center text-center max-w-4xl mx-auto">
     <h1 class="font-bold text-6xl">
       <span>{{ $t('tradingBots.title') }}</span>
     </h1>

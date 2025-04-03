@@ -32,6 +32,7 @@ export enum Modal {
   InstitutionalForm = 'institutionalForm',
   CompetitionWinner = 'competition-winner',
   MarketNotOnHelix = 'market-not-on-helix',
+  OptimizeSgtValues = 'optimize-sgt-values',
   SubaccountTransfer = 'subaccount-transfer',
   CreateReferralLink = 'create-referral-link',
   AlreadyJoinedGuild = 'already-joined-guild',
@@ -283,7 +284,8 @@ export enum SpotGridTradingField {
   IsAssetRebalanceOn = 'isAssetRebalanceOn',
   IsTrailingEnabled = 'isTrailingEnabled',
   TrailingUpper = 'trailingUpper',
-  TrailingLower = 'trailingLower'
+  TrailingLower = 'trailingLower',
+  IsLpMode = 'isLpMode'
 }
 
 export enum DerivativeGridTradingField {
@@ -316,6 +318,7 @@ export enum InvestmentTypeGst {
 
 export enum StrategyStatus {
   Active = 'active',
+  Pending = 'pending',
   Removed = 'removed'
 }
 

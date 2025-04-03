@@ -236,6 +236,16 @@ export const defineGlobalRules = () => {
     return true
   })
 
+  defineRule('minValuePgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Amount must equal or exceed grid count`
+    }
+
+    return true
+  })
+
   defineRule('greaterThanSgt', (value: string, [min]: string[]) => {
     if (!min) {
       return true
