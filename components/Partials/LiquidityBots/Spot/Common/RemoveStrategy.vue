@@ -79,7 +79,7 @@ function removeStrategy() {
         icon: NuxtUiIcons.Checkmark
       })
 
-      isOpen.value = true
+      // isOpen.value = true // TODO: Bring this back when Indexer is Fixed
 
       // Optimistically update state to pending
       gridStrategyStore.$patch((state) => {
@@ -90,7 +90,8 @@ function removeStrategy() {
           ) {
             return {
               ...strategy,
-              state: StrategyStatus.Pending
+              // state: StrategyStatus.Pending // TODO: Bring this back when Indexer is Fixed
+              state: StrategyStatus.Removed
             }
           }
 
