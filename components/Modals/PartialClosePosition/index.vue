@@ -59,13 +59,11 @@ const {
   )
 })
 
-function selectPartialOption(value: number) {
-  const quantityPartialAmount = value
-  const quantityPercentage = quantityPartialAmount / 100
-
+function selectPartialOption(quantityPercentage: number) {
   setQuantityValue(
     availableQuantityToBigNumber.value
       .times(quantityPercentage)
+      .dividedBy(100)
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   )
 }
@@ -163,7 +161,7 @@ onMounted(() => {
         <h5 class="text-coolGray-450 font-semibold">
           {{ $t('partialPositionClose.marketPrice') }}:
         </h5>
-        <span>Market</span>
+        <span>{{ $t('home.market') }}</span>
       </div>
 
       <div class="flex flex-col gap-2 mt-4">

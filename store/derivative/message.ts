@@ -1,4 +1,5 @@
 import {
+  Msgs,
   PositionV2,
   DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
@@ -707,7 +708,7 @@ export const prepareCancelTpSlOrderMsgs = ({
   const shouldAutoCancelTpSl =
     shouldAutoCancelTpSlOnLong || shouldAutoCancelTpSlOnShort
 
-  const msgs = [] as any[]
+  const msgs = [] as Msgs[]
 
   if (!shouldAutoCancelTpSl) {
     return msgs

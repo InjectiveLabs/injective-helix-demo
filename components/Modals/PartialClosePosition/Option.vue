@@ -8,7 +8,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'option:update': [value: number]
+  'option:update': [percentage: number]
 }>()
 
 const selectOption = () => {

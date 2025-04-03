@@ -33,10 +33,6 @@ const {
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
 
-const isModalOpen = computed(
-  () => modalStore.modals[Modal.AddTakeProfitStopLoss]
-)
-
 const market = computed(() =>
   derivativeStore.markets.find(
     ({ marketId }) => marketId === props.position?.marketId
@@ -300,39 +296,28 @@ function cancelSl() {
     })
 }
 
-function selectTpPartialOption(value: number) {
-  const quantityPartialAmount = value
-  const quantityPercentage = quantityPartialAmount / 100
-
+function selectTpPartialOption(quantityPercentage: number) {
   setTpQuantity(
     availableQuantityToBigNumber.value
       .times(quantityPercentage)
+      .dividedBy(100)
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   )
 }
 
-function selectSlPartialOption(value: number) {
-  const quantityPartialAmount = value
-  const quantityPercentage = quantityPartialAmount / 100
-
+function selectSlPartialOption(quantityPercentage: number) {
   setSlQuantity(
     availableQuantityToBigNumber.value
       .times(quantityPercentage)
+      .dividedBy(100)
       .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
   )
 }
 
-watch(
-  () => isModalOpen.value,
-  () => {
-    resetForm()
-    availableQuantity.value = props.position.quantity || '0'
-  }
-)
-
-onMounted(() => {
+function resetTakeProfitStopLossForm() {
+  resetForm()
   availableQuantity.value = props.position.quantity || '0'
-})
+}
 </script>
 
 <template>
@@ -343,6 +328,7 @@ onMounted(() => {
       isAlwaysOpen: status.isLoading(),
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
+    @on:open="resetTakeProfitStopLossForm"
   >
     <template #title>
       <p class="text-center font-bold">
