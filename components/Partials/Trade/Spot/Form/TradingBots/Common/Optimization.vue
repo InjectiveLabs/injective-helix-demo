@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { calculateOptimalInvestment } from '@/app/utils/sgt-optimization'
-import { UiSpotMarket, Modal, SpotGridTradingField } from '@/types'
+import {
+  UiSpotMarket,
+  Modal,
+  SpotGridTradingField,
+  SpotGridTradingForm
+} from '@/types'
+import {
+  GST_GRID_THRESHOLD,
+  GST_MIN_TOTAL_AMOUNT_USD,
+  GST_MIN_TRADING_SIZE,
+  GST_MIN_TRADING_SIZE_LOW
+} from '~/app/utils/constants'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
 
 const props = withDefaults(
   defineProps<{
@@ -15,8 +27,10 @@ const props = withDefaults(
   {}
 )
 
+const tokenStore = useTokenStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const setBaseInvestmentAmount = useSetFieldValue(
@@ -125,12 +139,48 @@ const hasEnoughFundsToRebalance = computed(() => {
   )
 })
 
+const gridThreshold = computed(() => {
+  const isLowTradingSize = MARKETS_WITH_LOW_TRADING_SIZE.includes(
+    props.market.slug
+  )
+
+  const tradingSize = isLowTradingSize
+    ? GST_MIN_TRADING_SIZE_LOW
+    : GST_MIN_TRADING_SIZE
+
+  const isGridHigherThanGridThreshold =
+    !!spotFormValues.value[SpotGridTradingField.Grids] &&
+    Number(spotFormValues.value[SpotGridTradingField.Grids]) >
+      GST_GRID_THRESHOLD
+
+  if (!isGridHigherThanGridThreshold) {
+    return new BigNumberInBase(GST_MIN_TOTAL_AMOUNT_USD)
+  }
+
+  return new BigNumberInBase(
+    spotFormValues.value[SpotGridTradingField.Grids] || GST_GRID_THRESHOLD
+  ).times(tradingSize)
+})
+
+const isMinimumInvestmentAmount = computed(() => {
+  const baseAmount = new BigNumberInBase(props.baseQuantity).times(
+    tokenStore.tokenUsdPrice(props.market.baseToken)
+  )
+
+  const quoteAmount = new BigNumberInBase(props.quoteQuantity).times(
+    tokenStore.tokenUsdPrice(props.market.quoteToken)
+  )
+
+  return baseAmount.plus(quoteAmount).gte(gridThreshold.value)
+})
+
 const isShown = computed(() => {
   if (
     (props.baseQuantity === 0 && props.quoteQuantity === 0) ||
     props.lowerPriceLevel === 0 ||
     props.upperPriceLevel === 0 ||
-    !hasEnoughFundsToRebalance.value
+    !hasEnoughFundsToRebalance.value ||
+    !isMinimumInvestmentAmount.value
   ) {
     return false
   }
@@ -168,6 +218,6 @@ function onAdjust() {
       optimizedBaseAmount: result.optimizedBaseAmount,
       optimizedQuoteAmount: result.optimizedQuoteAmount
     }"
-    @adjust-strategy="onAdjust"
+    @adjust:strategy="onAdjust"
   />
 </template>
