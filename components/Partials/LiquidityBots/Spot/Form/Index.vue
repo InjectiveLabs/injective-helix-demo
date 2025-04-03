@@ -17,6 +17,7 @@ withDefaults(
   <div>
     <PartialsLiquidityBotsSpotFormVolatilityStrategy />
     <PartialsLiquidityBotsSpotFormDeposit v-bind="{ market }" class="mt-4" />
+
     <PartialsLiquidityBotsSpotFormDetails
       v-bind="{ market, liquidityValues, status, lastTradedPrice }"
       class="mt-4"

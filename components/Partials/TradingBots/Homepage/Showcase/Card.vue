@@ -113,7 +113,7 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
 
     <template #footer>
       <UButton block :to="to">
-        {{ $t('common.create') }}
+        {{ $t('sgt.replicateStrategy') }}
       </UButton>
     </template>
   </UCard>
