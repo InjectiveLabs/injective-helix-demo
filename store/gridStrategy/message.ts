@@ -468,23 +468,25 @@ export const createPerpStrategy = async (
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() =>
-    Promise.all([
-      authZStore.fetchGrants(),
-      accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances(),
-      derivativeStore.fetchOrdersForSubaccount({
-        marketIds: [market.marketId],
-        subaccountId: gridStrategySubaccountId
-      }),
-      derivativeStore.fetchOrderHistoryForSubaccount({
-        subaccountId: gridStrategySubaccountId
-      }),
-      derivativeStore.fetchSubaccountTrades({
-        subaccountId: gridStrategySubaccountId
-      })
-    ])
+  setTimeout(
+    () =>
+      Promise.all([
+        authZStore.fetchGrants(),
+        accountStore.fetchCw20Balances(),
+        gridStrategyStore.fetchAllStrategies(),
+        accountStore.fetchAccountPortfolioBalances(),
+        derivativeStore.fetchOrdersForSubaccount({
+          marketIds: [market.marketId],
+          subaccountId: gridStrategySubaccountId
+        }),
+        derivativeStore.fetchOrderHistoryForSubaccount({
+          subaccountId: gridStrategySubaccountId
+        }),
+        derivativeStore.fetchSubaccountTrades({
+          subaccountId: gridStrategySubaccountId
+        })
+      ]),
+    5000
   )
 }
 
