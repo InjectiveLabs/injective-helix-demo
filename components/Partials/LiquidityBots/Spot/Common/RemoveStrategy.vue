@@ -24,18 +24,6 @@ const currentPnl = ref('')
 const currentPnlPercentage = ref('')
 const status = reactive(new Status(StatusType.Idle))
 
-const colorClass = computed(() => {
-  if (Number(currentPnlPercentage.value) > 0) {
-    return 'text-green-500'
-  }
-
-  if (Number(currentPnlPercentage.value) < 0) {
-    return 'text-red-500'
-  }
-
-  return 'text-coolGray-400'
-})
-
 function removeStrategy() {
   status.setLoading()
 
@@ -142,7 +130,13 @@ function removeStrategy() {
         <div>
           <span>{{ $t('sgt.aproximateProfit') }}:</span>
 
-          <div :class="colorClass">
+          <div
+            :class="{
+              'text-green-500': Number(currentPnlPercentage) > 0,
+              'text-red-500': Number(currentPnlPercentage) < 0,
+              'text-coolGray-400': Number(currentPnlPercentage) === 0
+            }"
+          >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 
             <SharedAmountFormatter

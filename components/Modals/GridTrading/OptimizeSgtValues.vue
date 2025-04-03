@@ -13,15 +13,15 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'confirm-and-adjust': []
+  'adjust:strategy': []
 }>()
 
 function handleClose() {
   modalStore.closeModal(Modal.OptimizeSgtValues)
 }
 
-function handleConfirmAndAdjust() {
-  emit('confirm-and-adjust')
+function handleAdjust() {
+  emit('adjust:strategy')
   handleClose()
 }
 
@@ -67,7 +67,7 @@ const { valueToString: optimizedQuoteAmountToString } =
 
     <template #footer>
       <div class="flex flex-col gap-2">
-        <UButton size="sm" block @click="handleConfirmAndAdjust">
+        <UButton size="sm" block @click="handleAdjust">
           {{ $t('sgt.optimization.confirmAndAdjust') }}
         </UButton>
         <UButton

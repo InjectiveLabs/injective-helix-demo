@@ -6,7 +6,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { StrategyStatus } from '~/types'
+import { StrategyStatus } from '@/types'
 
 const { subaccountPortfolioBalanceMap } = useBalance()
 

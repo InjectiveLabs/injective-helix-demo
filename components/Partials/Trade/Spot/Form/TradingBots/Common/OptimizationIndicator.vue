@@ -17,22 +17,6 @@ const emit = defineEmits<{
 
 const offByPercentage = computed(() => (100 - props.percentage).toFixed(2))
 
-function getPercentageColor(percentage: number) {
-  if (percentage <= 80) {
-    return '#EAB308'
-  }
-
-  return '#00C16A'
-}
-
-function getBadgeColor(percentage: number) {
-  if (percentage <= 80) {
-    return 'blue'
-  }
-
-  return 'green'
-}
-
 function onOptimizeBalance() {
   emit('optimize-balance')
 }
@@ -48,7 +32,7 @@ function onOptimizeBalance() {
         <AppTooltip :text="$t('sgt.optimization.balancedTooltip')" />
       </div>
 
-      <UBadge :color="getBadgeColor(percentage)" variant="soft">
+      <UBadge :color="percentage <= 80 ? 'blue' : 'green'" variant="soft">
         {{ percentage }}%
       </UBadge>
     </div>
@@ -57,7 +41,7 @@ function onOptimizeBalance() {
       <div
         :style="{
           width: `${percentage}%`,
-          backgroundColor: getPercentageColor(percentage)
+          backgroundColor: percentage <= 80 ? '#EAB308' : '#00C16A'
         }"
         class="h-px transition-all duration-300"
       ></div>

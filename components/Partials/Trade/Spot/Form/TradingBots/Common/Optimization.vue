@@ -146,7 +146,7 @@ function onOptimizeBalance() {
   modalStore.openModal(Modal.OptimizeSgtValues)
 }
 
-function onConfirmAndAdjust() {
+function onAdjust() {
   setBaseInvestmentAmount(result.value.optimizedBaseAmount)
   setQuoteInvestmentAmount(result.value.optimizedQuoteAmount)
 }
@@ -168,6 +168,6 @@ function onConfirmAndAdjust() {
       optimizedBaseAmount: result.optimizedBaseAmount,
       optimizedQuoteAmount: result.optimizedQuoteAmount
     }"
-    @confirm-and-adjust="onConfirmAndAdjust"
+    @adjust-strategy="onAdjust"
   />
 </template>

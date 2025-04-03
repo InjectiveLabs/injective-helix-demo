@@ -6,13 +6,17 @@ import {
   ExpiryFuturesMarket,
   isCw20ContractAddress,
   MsgExecuteContractCompat,
-  NEPTUNE_USDT_CW20_CONTRACT
+  NEPTUNE_USDT_CW20_CONTRACT,
+  getGenericAuthorizationFromMessageType,
+  MsgGrant,
+  MsgWithdraw
 } from '@injectivelabs/sdk-ts'
 import { usdtToken } from '@shared/data/token'
 import { NETWORK } from '@shared/utils/constant'
 import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
+import { gridStrategyAuthorizationMessageTypes } from '../data/grid-strategy'
 import { neptuneService } from '@/app/Services'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
@@ -314,4 +318,59 @@ export const convertCw20ToBankBalanceForSwap = ({
       amount: cw20BalancesMap[cw20Address]
     })
   })
+}
+
+export const prepareWithdrawMsg = (gridStrategySubaccountId: string) => {
+  const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  const withdrawMsgs = (
+    accountStore.subaccountBalancesMap[gridStrategySubaccountId] || []
+  )
+    .filter((balance) =>
+      new BigNumberInBase(balance.availableBalance)
+        .dp(0, BigNumberInBase.ROUND_DOWN)
+        .gt(0)
+    )
+    .map((balance) =>
+      MsgWithdraw.fromJSON({
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+        subaccountId: gridStrategySubaccountId,
+        amount: {
+          amount: new BigNumberInBase(balance.availableBalance).toFixed(
+            0,
+            BigNumberInBase.ROUND_DOWN
+          ),
+          denom: balance.denom
+        }
+      })
+    )
+
+  return withdrawMsgs
+}
+export const prepareAuthZMsg = (contractAddress: string) => {
+  const authZStore = useAuthZStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  const grantAuthZMessages = gridStrategyAuthorizationMessageTypes.map(
+    (messageType) =>
+      MsgGrant.fromJSON({
+        grantee: contractAddress,
+        granter: sharedWalletStore.injectiveAddress,
+        authorization: getGenericAuthorizationFromMessageType(messageType)
+      })
+  )
+
+  const isAuthorized = gridStrategyAuthorizationMessageTypes.every((m) =>
+    authZStore.granterGrants.some(
+      (grant) =>
+        grant.authorizationType.endsWith(m) && grant.grantee === contractAddress
+    )
+  )
+
+  if (!isAuthorized) {
+    return grantAuthZMessages
+  }
+
+  return []
 }

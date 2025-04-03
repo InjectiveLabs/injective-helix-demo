@@ -14,7 +14,11 @@ import {
 } from '@/app/grid-trading'
 import { backupPromiseCall } from '@/app/utils/async'
 
-import { prepareOrderMessages } from '@/app/utils/market'
+import {
+  prepareOrderMessages,
+  prepareAuthZMsg,
+  prepareWithdrawMsg
+} from '@/app/utils/market'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   ExitType,
@@ -27,7 +31,6 @@ import {
   DerivativeGridTradingField
 } from '@/types'
 import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
-import { prepareAuthZMsg, prepareWithdrawMsg } from '@/app/utils/msg'
 
 export const createSpotGridStrategy = async ({
   grids,
