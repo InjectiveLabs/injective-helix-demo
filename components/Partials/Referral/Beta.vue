@@ -28,7 +28,7 @@ const socialLinks = [
         class="font-semibold tracking-wide min-w-48 min-h-10 justify-center dark:bg-blue-500 dark:hover:bg-blue-500/70 transition-colors"
         color="primary"
         target="_blank"
-        to="https://form.typeform.com/to/pvG1ySYo"
+        to="https://form.typeform.com/to/z55hclVp"
       >
         {{ $t('referral.joinTheWaitlist') }}
       </UButton>
