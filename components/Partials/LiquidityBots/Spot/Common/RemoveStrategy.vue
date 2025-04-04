@@ -132,11 +132,7 @@ function removeStrategy() {
           <span>{{ $t('sgt.aproximateProfit') }}:</span>
 
           <div
-            :class="{
-              'text-green-500': Number(currentPnlPercentage) > 0,
-              'text-red-500': Number(currentPnlPercentage) < 0,
-              'text-coolGray-400': Number(currentPnlPercentage) === 0
-            }"
+            :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 

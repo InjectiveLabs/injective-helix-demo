@@ -7,7 +7,7 @@ import {
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { prepareOrderMessages } from '@/app/utils/market'
+import { prepareOrderMessages } from '@/app/utils/msgs'
 import { backupPromiseCall } from '@/app/utils/async'
 
 export const deposit = async ({

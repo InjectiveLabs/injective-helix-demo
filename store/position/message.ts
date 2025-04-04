@@ -10,7 +10,7 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/market'
+import { prepareOrderMessages } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { UiDerivativeMarket } from '@/types'
 

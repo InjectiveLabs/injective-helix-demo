@@ -18,7 +18,7 @@ import {
   prepareOrderMessages,
   prepareAuthZMsg,
   prepareWithdrawMsg
-} from '@/app/utils/market'
+} from '@/app/utils/msgs'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   ExitType,
@@ -31,6 +31,7 @@ import {
   DerivativeGridTradingField
 } from '@/types'
 import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
+import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
 
 export const createSpotGridStrategy = async ({
   grids,
@@ -161,53 +162,13 @@ export const createSpotGridStrategy = async ({
     feeRecipient: referralStore.feeRecipient
   }
 
-  function getTrailingAndStrategyType(params: {
-    trailingParams?: {
-      lowerTrailingBound: string
-      upperTrailingBound: string
-    }
-    strategyType: SpotGridStrategyType
-  }) {
-    const { trailingParams, strategyType } = params
-    if (
-      [
-        SpotGridStrategyType.TrailingArithmeticLP,
-        SpotGridStrategyType.TrailingArithmetic
-      ].includes(strategyType) &&
-      trailingParams
-    ) {
-      return {
-        strategyType,
-        trailingParams: {
-          lowerTrailingBound: spotPriceToChainPriceToFixed({
-            value: trailingParams.lowerTrailingBound,
-            baseDecimals: market.baseToken.decimals,
-            quoteDecimals: market.quoteToken.decimals
-          }),
-          upperTrailingBound: spotPriceToChainPriceToFixed({
-            value: trailingParams.upperTrailingBound,
-            baseDecimals: market.baseToken.decimals,
-            quoteDecimals: market.quoteToken.decimals
-          })
-        }
-      }
-    }
-
-    return {
-      strategyType: strategyType as
-        | SpotGridStrategyType.Arithmetic
-        | SpotGridStrategyType.ArithmeticLP
-        | SpotGridStrategyType.Geometric
-    }
-  }
-
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
     msg: ExecArgCreateSpotGridStrategy.fromJSON({
       ...baseArgs,
       slippage: '0.1',
-      ...getTrailingAndStrategyType({ strategyType, trailingParams })
+      ...getTrailingAndStrategyType({ strategyType, trailingParams, market })
     }).toExecData(),
     funds
   })
