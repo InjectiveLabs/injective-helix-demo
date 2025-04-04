@@ -444,10 +444,10 @@ function resetTakeProfitStopLossForm() {
                 />
 
                 <div
-                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
+                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1 text-sm"
                 >
                   <ModalsPartialClosePositionOption
-                    v-bind="{ label: 'Max', value: 100 }"
+                    v-bind="{ label: $t('common.max'), value: 100 }"
                     @option:update="selectTpPartialOption"
                   />
                 </div>
@@ -554,10 +554,10 @@ function resetTakeProfitStopLossForm() {
                 />
 
                 <div
-                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
+                  class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1 text-sm"
                 >
                   <ModalsPartialClosePositionOption
-                    v-bind="{ label: 'Max', value: 100 }"
+                    v-bind="{ label: $t('common.max'), value: 100 }"
                     @option:update="selectSlPartialOption"
                   />
                 </div>

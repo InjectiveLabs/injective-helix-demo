@@ -29,10 +29,10 @@ const emit = defineEmits<{
 }>()
 
 const partialOptions = [
-  { label: 'Min', value: 0 },
+  { label: '25%', value: 25 },
   { label: '50%', value: 50 },
   { label: '75%', value: 75 },
-  { label: 'Max', value: 100 }
+  { label: t('common.max'), value: 100 }
 ]
 
 const availableQuantity = ref('0')
