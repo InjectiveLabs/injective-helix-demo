@@ -74,6 +74,7 @@ const percentagePnl = computed(() =>
         <span>{{ isPositivePnl ? '+' : '' }}</span>
         <SharedAmountFormatter
           :max-decimal-places="3"
+          class="text-nowrap whitespace-nowrap"
           :amount="strategy.pnl"
           :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
         />
