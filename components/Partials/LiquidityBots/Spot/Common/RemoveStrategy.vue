@@ -79,7 +79,7 @@ function removeStrategy() {
         icon: NuxtUiIcons.Checkmark
       })
 
-      // isOpen.value = true // TODO: Bring this back when Indexer is Fixed
+      isOpen.value = true
 
       // Optimistically update state to pending
       gridStrategyStore.$patch((state) => {
@@ -90,8 +90,7 @@ function removeStrategy() {
           ) {
             return {
               ...strategy,
-              // state: StrategyStatus.Pending // TODO: Bring this back when Indexer is Fixed
-              state: StrategyStatus.Removed
+              state: StrategyStatus.Pending
             }
           }
 
@@ -132,15 +131,12 @@ function removeStrategy() {
           <span>{{ $t('sgt.aproximateProfit') }}:</span>
 
           <div
-            :class="{
-              'text-green-500': Number(currentPnlPercentage) > 0,
-              'text-red-500': Number(currentPnlPercentage) < 0,
-              'text-coolGray-400': Number(currentPnlPercentage) === 0
-            }"
+            :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 
             <SharedAmountFormatter
+              class="text-nowrap whitespace-nowrap"
               :max-decimal-places="3"
               :amount="currentPnl"
               :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"

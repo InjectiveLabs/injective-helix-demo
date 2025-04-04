@@ -13,7 +13,7 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/market'
+import { prepareOrderMessages } from '@/app/utils/msgs'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { UiSpotMarket } from '@/types'
 

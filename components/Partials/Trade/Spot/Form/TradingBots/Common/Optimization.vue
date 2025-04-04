@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { calculateOptimalInvestment } from '@/app/utils/sgt-optimization'
+import { calculateOptimalInvestment } from '~/app/utils/grid-strategy'
 import {
   UiSpotMarket,
   Modal,

@@ -30,8 +30,7 @@ export default class ExecArgCloseGridStrategy {
 
   toExecData(): Record<string, Data> {
     return {
-      // close_strategy: this.toData()
-      remove_strategy: this.toData()
+      close_strategy: this.toData()
     }
   }
 }

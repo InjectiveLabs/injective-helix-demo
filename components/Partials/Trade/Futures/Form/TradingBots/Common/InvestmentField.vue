@@ -8,7 +8,8 @@ import {
 } from '@/types'
 import {
   GST_GRID_THRESHOLD,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  PGT_MIN_TRADING_SIZE_LOW
 } from '@/app/utils/constants'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -50,7 +51,9 @@ const gridThreshold = computed(() => {
 
   return new BigNumberInBase(
     isGridHigherThanGridThreshold
-      ? Number(derivativeGridFormValues.value[DerivativeGridTradingField.Grids])
+      ? new BigNumberInBase(
+          derivativeGridFormValues.value[DerivativeGridTradingField.Grids] || 10
+        ).times(PGT_MIN_TRADING_SIZE_LOW)
       : GST_GRID_THRESHOLD
   ).times(GST_MIN_TRADING_SIZE_LOW)
 })

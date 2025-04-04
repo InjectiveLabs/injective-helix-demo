@@ -111,6 +111,8 @@ export const GST_STABLE_GRIDS = 3
 export const GST_AUTO_PRICE_THRESHOLD = 2
 export const GST_MIN_TOTAL_AMOUNT_USD = 50
 
+export const PGT_MIN_TRADING_SIZE_LOW = 2
+
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'

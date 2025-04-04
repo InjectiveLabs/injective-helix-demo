@@ -240,7 +240,7 @@ export const defineGlobalRules = () => {
     const valueInBigNumber = new BigNumberInBase(value)
 
     if (valueInBigNumber.lt(min)) {
-      return `Amount must equal or exceed grid count`
+      return `Minimum amount should be ${min}`
     }
 
     return true
