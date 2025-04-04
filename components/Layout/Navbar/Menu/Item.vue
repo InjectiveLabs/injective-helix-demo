@@ -2,7 +2,8 @@
 import { LocationAsRelativeRaw } from 'vue-router'
 import { commonCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { NavBarCyTags, MenuItem, NavLink, NavChild } from '@/types'
+import { NavBarCyTags } from '@/types'
+import type { NavLink, MenuItem, NavChild } from '@/types'
 
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
@@ -36,7 +37,7 @@ const isActiveLink = computed(() => {
     return routeName === itemName
   }
 
-  return routeName.startsWith(itemName)
+  return routeName?.startsWith(itemName)
 })
 
 const filteredChildItems = computed(() =>

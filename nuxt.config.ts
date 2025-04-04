@@ -29,18 +29,18 @@ export default defineNuxtConfig({
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
 
-  extends: [
-    isLocalLayer
-      ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
-  ],
-
   // @ts-ignore
   i18n: {
     defaultLocale: 'en',
     strategy: 'no_prefix',
     locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
   },
+
+  extends: [
+    isLocalLayer
+      ? '../injective-ui/layer'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/cloudfront-chain-upgrade'
+  ],
 
   // @ts-ignore
   sitemap: {

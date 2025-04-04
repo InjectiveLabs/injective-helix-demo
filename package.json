@@ -111,6 +111,7 @@
     "autoprefixer": "latest",
     "eslint": "9.23.0",
     "eslint-plugin-perfectionist": "4.10.1",
+    "floating-vue": "2.0.0-beta.24",
     "husky": "9.1.6",
     "jest": "^29.4.3",
     "lint-staged": "15.4.3",

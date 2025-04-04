@@ -3,14 +3,21 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import {
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { DerivativesTradeForm } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const isOpen = ref(false)
+
+const isLimit = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+    DerivativeTradeTypes.Limit
+)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -32,14 +39,22 @@ function toggle() {
       </div>
     </div>
 
-    <AppCollapse v-bind="{ isOpen }">
+    <AppCollapse
+      v-bind="{
+        isOpen: isLimit && jsonStore.isPostUpgradeMode ? true : isOpen
+      }"
+    >
       <div class="py-2">
         <PartialsTradeFuturesFormStandardAdvancedSettingsPostOnly
-          v-if="
-            derivativeFormValues[DerivativesTradeFormField.Type] ===
-            DerivativeTradeTypes.Limit
-          "
+          v-if="isLimit"
         />
+
+        <p
+          v-if="isLimit && jsonStore.isPostUpgradeMode"
+          class="text-orange-500 text-xs ml-1"
+        >
+          {{ $t('trade.postOnlyWarning') }}
+        </p>
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsReduceOnly />
 
