@@ -9,6 +9,7 @@ import { Wallet } from '@injectivelabs/wallet-base'
 import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
+import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
 import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
@@ -30,7 +31,8 @@ const stateToPersist = {
         tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
-        tradingChartInterval: TradingChartInterval.D
+        tradingChartInterval: TradingChartInterval.D,
+        chartCandleBarSpacing: DEFAULT_100_CHART_CANDLE_BAR_SPACING
       }
     }
   },
