@@ -306,7 +306,7 @@ export default {
   liquidityBots: {
     title: 'Volume Boost Bot',
     description:
-      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
+      'Boost trading volume effortlessly. Volume Boost Bot automates liquidity provision, executing trades within your specified range to capture opportunities and maintain market presence.',
     selectPair: 'Select Pair',
     setLiquidityBot: 'Set Up a Liquidity Bot',
     volatilityStrategy: 'Volatility Strategy',
