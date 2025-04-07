@@ -65,7 +65,7 @@ export default withNuxt({
     ...perfectionist.configs['recommended-line-length'].rules,
 
     'perfectionist/sort-enums': ['warn', orderParams],
-    'perfectionist/sort-objects': ['warn', orderParams],
+    'perfectionist/sort-objects': ['off', orderParams],
     'perfectionist/sort-exports': ['warn', orderParams],
     'perfectionist/sort-modules': ['warn', orderParams],
     'perfectionist/sort-interfaces': ['warn', orderParams],

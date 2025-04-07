@@ -76,6 +76,7 @@ export default {
     filters: 'Filters',
     confirm: 'Confirm',
     popular: 'Popular',
+    disabled: 'Disabled',
     inactive: 'inactive',
     transfer: 'Transfer',
     withdraw: 'Withdraw',

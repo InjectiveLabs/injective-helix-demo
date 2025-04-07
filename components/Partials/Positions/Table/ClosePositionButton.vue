@@ -1,20 +1,21 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
 // import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-// import { NuxtUiIcons } from '@shared/types'
-// import { OrderSide } from '@injectivelabs/ts-types'
-// import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { Status, StatusType } from '@injectivelabs/utils'
 import {
   Modal,
   BusEvents,
-  TransformedPosition,
   PerpetualMarketCyTags
   // ClosePositionLimitForm,
   // ClosePositionLimitFormField
 } from '@/types'
+// import { NuxtUiIcons } from '@shared/types'
+// import { OrderSide } from '@injectivelabs/ts-types'
+// import { ZERO_IN_BASE } from '@shared/utils/constant'
+import type { TransformedPosition } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const breakpoints = useSharedBreakpoints()
 // const derivativeStore = useDerivativeStore()
@@ -64,7 +65,7 @@ function openPartialClosePositionModal() {
 
     marketCloseStatus.setLoading()
     modalStore.openModal(Modal.PartialClosePosition)
-  } catch (error) {
+  } catch {
     marketCloseStatus.setIdle()
   }
 }
@@ -101,25 +102,31 @@ function openPartialClosePositionModal() {
 
 <template>
   <div class="flex items-center justify-center overflow-hidden space-x-2">
-    <AppButton
-      v-bind="{
-        status: marketCloseStatus,
-        disabled: !row.isMarketOrderAuthorized,
-        tooltip: row.isMarketOrderAuthorized ? '' : $t('common.unauthorized')
-      }"
-      size="sm"
-      :variant="'danger-shade'"
-      :title="$t('trade.closePosition')"
-      :class="[
-        sixXl ? 'min-w-16' : lg ? 'p-1 outline-none rounded-full' : 'py-2'
-      ]"
-      :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
-      @click="openPartialClosePositionModal"
+    <AppTooltip
+      :ui="{ width: 'w-auto' }"
+      :content="$t('trade.postOnlyWarning')"
+      :is-disabled="!jsonStore.isPostUpgradeMode"
     >
-      <span v-if="sixXl">{{ $t('common.close') }}</span>
-      <UIcon v-else-if="lg" :name="NuxtUiIcons.Trash" class="size-4" />
-      <span v-else>{{ $t('trade.closePosition') }}</span>
-    </AppButton>
+      <AppButton
+        v-bind="{
+          status: marketCloseStatus,
+          disabled: !row.isMarketOrderAuthorized || jsonStore.isPostUpgradeMode,
+          tooltip: row.isMarketOrderAuthorized ? '' : $t('common.unauthorized')
+        }"
+        size="sm"
+        :variant="'danger-shade'"
+        :title="$t('trade.closePosition')"
+        :class="[
+          sixXl ? 'min-w-16' : lg ? 'p-1 outline-none rounded-full' : 'py-2'
+        ]"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosClosePosition)"
+        @click="openPartialClosePositionModal"
+      >
+        <span v-if="sixXl">{{ $t('common.close') }}</span>
+        <UIcon v-else-if="lg" :name="NuxtUiIcons.Trash" class="size-4" />
+        <span v-else>{{ $t('trade.closePosition') }}</span>
+      </AppButton>
+    </AppTooltip>
 
     <!-- todo: resurrect when limit orders reimplemented -->
     <!-- <UPopover :popper="{ placement: 'top' }">
