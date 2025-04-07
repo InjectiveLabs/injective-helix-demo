@@ -121,7 +121,7 @@ export default {
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
-      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
+      'Higher grid count places more orders, better capturing price movements but requiring more initial capital.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
     createStrategyModalQuote:
