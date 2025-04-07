@@ -134,16 +134,6 @@ function resetCategory() {
               </AppCheckbox2>
             </div>
           </div>
-
-          <div
-            v-if="activeCategory === MarketCategoryType.Experimental"
-            class="flex items-center gap-x-2 text-coolGray-500"
-          >
-            <UIcon :name="NuxtUiIcons.WarningOutline" class="w-5 h-5 min-w-5" />
-            <span class="text-sm">{{
-              $t('markets.permisionlessWarning')
-            }}</span>
-          </div>
         </div>
       </div>
 

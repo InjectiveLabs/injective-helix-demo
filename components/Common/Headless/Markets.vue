@@ -195,15 +195,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
     )
   }
 
-  if (props.activeCategory === MarketCategoryType.Experimental) {
-    return (
-      !market.isVerified &&
-      !(jsonStore.helixMarketCategoriesMap.deprecated || []).includes(
-        market.marketId
-      )
-    )
-  }
-
   if (props.activeCategory === MarketCategoryType.DeFi) {
     return (jsonStore.helixMarketCategoriesMap.defi || []).includes(
       market.marketId

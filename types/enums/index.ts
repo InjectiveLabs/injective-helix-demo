@@ -563,19 +563,11 @@ export enum MarketCategoryType {
   Injective = 'injective',
   Layer1 = 'layer-1',
   Layer2 = 'layer-2',
-  Experimental = 'experimental',
   DeFi = 'deFi',
   AI = 'aI',
   Meme = 'meme',
   RWA = 'rwa',
   iAssets = 'iAssets'
-  // All = 'all',
-  // Cosmos = 'cosmos',
-  // Ethereum = 'ethereum',
-  // Injective = 'injective',
-  // Solana = 'solana',
-  // Experimental = 'experimental',
-  // RWA = 'RWA',
 }
 
 export enum MarketQuoteType {
