@@ -4,7 +4,7 @@ import {
   fetchCompetitionLeaderboard
 } from '@/store/leaderboard/pnlLeaderboard'
 import { indexerGrpcArchiverApi } from '@/app/Services'
-import { LeaderboardDuration } from '@/types'
+import { LeaderboardDuration, HistoricalPortfolioDuration } from '@/types'
 
 type LeaderboardStoreState = {
   pnlLeaderboard?: PnlLeaderboard
@@ -40,7 +40,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     fetchCompetitionLeaderboard,
 
     async fetchHistoricalBalance(
-      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
+      resolution: HistoricalPortfolioDuration = HistoricalPortfolioDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()

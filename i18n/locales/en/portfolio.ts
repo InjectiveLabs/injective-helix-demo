@@ -1,6 +1,7 @@
 import {
   PortfolioChartType,
   PositionTableColumn,
+  HistoricalPortfolioDuration,
   PortfolioSubaccountsTableColumn,
   PortfolioSpotOpenOrdersTableColumn,
   PortfolioFuturesAdvancedOrdersTableColumn,
@@ -232,6 +233,12 @@ export default {
       },
       doubleCheck:
         'Please check the address. Tokens sent to a wrong address cannot be recovered.'
+    },
+
+    duration: {
+      [HistoricalPortfolioDuration.OneDay]: '1D',
+      [HistoricalPortfolioDuration.OneWeek]: '1W',
+      [HistoricalPortfolioDuration.OneMonth]: '1M'
     }
   }
 }

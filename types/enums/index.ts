@@ -311,6 +311,12 @@ export enum TradingChartInterval {
   '6h' = '360'
 }
 
+export enum HistoricalPortfolioDuration {
+  OneDay = '1D',
+  OneWeek = '1W',
+  OneMonth = '1M'
+}
+
 export enum SpotOrdersTradingBotsView {
   Orders = 'orders',
   TradeHistory = 'tradeHistory',
