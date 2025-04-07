@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { abbreviateNumber } from '@/app/utils/formatters'
-import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   MarketCyTags,
   UTableColumn,
@@ -10,6 +9,7 @@ import {
 } from '@/types'
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
@@ -64,8 +64,10 @@ const toggleFavorite = () => {
                   :tooltip="
                     $t(
                       `trade.rwa.${
-                        !RWA_TRADFI_MARKET_IDS.includes(market.market.marketId)
-                          ? 'marketClosedMarketRow'
+                        jsonStore.helixMarketCategoriesMap.rwa.includes(
+                          market.market.marketId
+                        )
+                          ? 'rwaClosedMarketRow'
                           : 'nyseClosedMarketRow'
                       }`
                     )

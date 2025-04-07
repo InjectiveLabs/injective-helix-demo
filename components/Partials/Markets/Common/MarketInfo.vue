@@ -2,7 +2,6 @@
 import { SharedMarketType } from '@shared/types'
 import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
-import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   TradePage,
   TradeSubPage,
@@ -62,7 +61,7 @@ const marketRoute = computed(() =>
 )
 
 const isRwaMarket = computed(() =>
-  jsonStore.helixMarketCategoriesMap.rwa.includes(props.market.marketId)
+  jsonStore.isTradeFiMarket(props.market.marketId)
 )
 
 const indexMarketInfo = computed(() =>
@@ -129,8 +128,10 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  !RWA_TRADFI_MARKET_IDS.includes(market.marketId)
-                    ? 'marketClosedMarketRow'
+                  jsonStore.helixMarketCategoriesMap.rwa.includes(
+                    market.marketId
+                  )
+                    ? 'rwaClosedMarketRow'
                     : 'nyseClosedMarketRow'
                 }`
               )

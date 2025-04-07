@@ -214,7 +214,7 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   }
 
   if (props.activeCategory === MarketCategoryType.RWA) {
-    return (jsonStore.helixMarketCategoriesMap.tradfiMarkets || []).includes(
+    return (jsonStore.helixMarketCategoriesMap.rwa || []).includes(
       market.marketId
     )
   }

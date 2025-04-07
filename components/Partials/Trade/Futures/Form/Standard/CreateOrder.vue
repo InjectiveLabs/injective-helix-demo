@@ -53,9 +53,7 @@ const props = withDefaults(
 )
 
 const isRWAMarket = computed(() =>
-  jsonStore.helixMarketCategoriesMap.rwa.includes(
-    derivativeMarket.value.marketId
-  )
+  jsonStore.isTradeFiMarket(derivativeMarket.value.marketId)
 )
 
 const chartType = ref(ChartViewOption.Chart)
