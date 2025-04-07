@@ -153,6 +153,7 @@ function selectStrategy(
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
+          <span>$</span>
           <AppUsdAmount
             :decimal-places="4"
             :amount="row.totalAmount.toFixed()"
