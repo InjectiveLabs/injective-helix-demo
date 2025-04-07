@@ -47,14 +47,6 @@ withDefaults(
           }}
         </span>
       </div>
-      <p class="text-sm text-coolGray-500">
-        {{
-          $t('liquidityBots.currentPriceQuotePerBase', {
-            quote: market.quoteToken.symbol,
-            base: market.baseToken.symbol
-          })
-        }}
-      </p>
     </div>
 
     <USkeleton v-if="status.isLoading()" class="h-[500px] mt-4" />

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   DerivativeGridStrategyTransformed,
   GridStrategyTransformed,
@@ -42,7 +45,7 @@ const formattedStrategies = computed(() =>
 const columns = computed(() => [
   {
     key: PortfolioTradingBotsRunningTableColumn.Time,
-    label: t('sgt.time'),
+    label: t('sgt.startTime'),
     class: 'w-32'
   },
   {
@@ -72,11 +75,11 @@ const columns = computed(() => [
   {
     key: PortfolioTradingBotsRunningTableColumn.Details,
     label: t('sgt.details')
-  },
-  {
-    key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
-    label: t('sgt.removeStrategy')
   }
+  // {
+  //   key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
+  //   label: t('sgt.removeStrategy')
+  // }
 ])
 
 function selectStrategy(
@@ -125,6 +128,27 @@ function selectStrategy(
         >
           <UAvatar size="xs" :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
+          <PartialsLiquidityBotsSpotCommonRemoveStrategy
+            v-bind="{
+              strategy: row.strategy,
+              pnl: row.pnl,
+              pnlPercentage: row.percentagePnl
+            }"
+          >
+            <template #default="{ removeStrategy, status }">
+              <AppButton
+                :is-loading="
+                  status.isLoading() ||
+                  row.strategyStatus === StrategyStatus.Pending
+                "
+                variant="danger-ghost"
+                class="p-1"
+                @click="removeStrategy"
+              >
+                <UIcon :name="NuxtUiIcons.Trash" class="size-4 text-red-500" />
+              </AppButton>
+            </template>
+          </PartialsLiquidityBotsSpotCommonRemoveStrategy>
         </NuxtLink>
       </template>
 
@@ -154,9 +178,9 @@ function selectStrategy(
         <div v-if="row.strategyStatus === StrategyStatus.Pending">&mdash;</div>
         <div v-else>
           <div class="flex items-center gap-1">
-            <SharedAmountFormatter
-              :decimal-places="2"
-              :max-decimal-places="3"
+            $
+            <AppUsdAmount
+              :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
               :amount="row.totalAmount.toFixed()"
             />
           </div>
@@ -203,11 +227,11 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.details') }}
+          {{ t('sgt.moreInfo') }}
         </AppButton>
       </template>
 
-      <template #removeStrategy-data="{ row }">
+      <!-- <template #removeStrategy-data="{ row }">
         <PartialsLiquidityBotsSpotCommonRemoveStrategy
           v-bind="{
             strategy: row.strategy,
@@ -229,7 +253,7 @@ function selectStrategy(
             </AppButton>
           </template>
         </PartialsLiquidityBotsSpotCommonRemoveStrategy>
-      </template>
+      </template> -->
 
       <template #empty-state>
         <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
