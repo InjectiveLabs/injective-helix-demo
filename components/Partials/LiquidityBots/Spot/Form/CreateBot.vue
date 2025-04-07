@@ -168,32 +168,35 @@ async function createLiquidityBot() {
       v-model="confirmationModal"
       v-bind="{ isSm: true, isHideCloseButton: true }"
     >
-      <template #title>
+      <!-- <template #title>
         <div class="text-xl font-bold">
           {{ $t('tradingBots.botCreationConfirmation') }}
         </div>
-      </template>
+      </template> -->
 
       <div class="space-y-4 text-sm">
-        <p class="text-gray-300 mb-6">
+        <!-- <p class="text-gray-300 mb-6">
           {{ $t('sgt.confirmationDescription') }}
-        </p>
+        </p> -->
 
         <div class="space-y-4">
           <div class="flex justify-between items-start">
             <span class="text-gray-400">{{ $t('sgt.investment') }}</span>
             <div class="text-right">
               <div class="text-lg">
+                <span>$ </span>
                 <SharedUsdAmount :amount="totalUsd.toFixed()" />
-                <span> $</span>
               </div>
-              <div v-if="liquidityFormValues.baseAmount" class="text-gray-500">
-                {{ liquidityFormValues.baseAmount }}
-                {{ market.baseToken.symbol }}
-              </div>
-              <div v-if="liquidityFormValues.quoteAmount" class="text-gray-500">
-                {{ liquidityFormValues.quoteAmount }}
-                {{ market.quoteToken.symbol }}
+              <div class="flex items-center gap-1 text-coolGray-500">
+                <div v-if="liquidityFormValues.baseAmount">
+                  {{ liquidityFormValues.baseAmount }}
+                  {{ market.baseToken.symbol }}
+                </div>
+                /
+                <div v-if="liquidityFormValues.quoteAmount">
+                  {{ liquidityFormValues.quoteAmount }}
+                  {{ market.quoteToken.symbol }}
+                </div>
               </div>
             </div>
           </div>

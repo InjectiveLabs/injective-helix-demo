@@ -17,6 +17,8 @@ export default {
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
+    moreInfo: 'More Info',
+    startTime: 'Start Time',
     enableLpMode: 'Enable LP Mode',
     lpModeTooltip:
       'When LP Mode is enabled, the strategy avoids rebalancing during setup and creates asymmetric buy and sell orders, replicating the behavior of a liquidity provider.',
@@ -119,7 +121,7 @@ export default {
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
-      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
+      'Higher grid count places more orders, better capturing price movements but requiring more initial capital.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
     createStrategyModalQuote:
@@ -306,7 +308,7 @@ export default {
   liquidityBots: {
     title: 'Volume Boost Bot',
     description:
-      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
+      'Boost trading volume effortlessly. Volume Boost Bot automates liquidity provision, executing trades within your specified range to capture opportunities and maintain market presence.',
     selectPair: 'Select Pair',
     setLiquidityBot: 'Set Up a Liquidity Bot',
     volatilityStrategy: 'Volatility Strategy',

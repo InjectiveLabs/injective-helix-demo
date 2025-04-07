@@ -41,9 +41,7 @@ export function useMarketTransformer(
         summary: item.summary,
         volumeInUsd: item.volumeInUsd,
         isVerified: item.market.isVerified,
-        isRwaMarket: jsonStore.helixMarketCategoriesMap.rwa.includes(
-          item.market.marketId
-        ),
+        isRwaMarket: jsonStore.isTradeFiMarket(item.market.marketId),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsTableColumn.MarketChange24h]: changeInBigNumber.toNumber(),
         [MarketsTableColumn.LastPrice]: item.summary?.lastPrice || 0,

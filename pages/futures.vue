@@ -48,9 +48,7 @@ onMounted(async () => {
     return
   }
 
-  const isRWAMarket = jsonStore.helixMarketCategoriesMap.rwa.includes(
-    market.value.marketId
-  )
+  const isRWAMarket = jsonStore.isTradeFiMarket(market.value.marketId)
 
   if (!isRWAMarket) {
     return
@@ -146,6 +144,12 @@ onUnmounted(() => {
 useIntervalFn(
   async () => {
     if (!market.value || !IS_MAINNET) {
+      return
+    }
+
+    const isRWAMarket = jsonStore.isTradeFiMarket(market.value.marketId)
+
+    if (!isRWAMarket) {
       return
     }
 

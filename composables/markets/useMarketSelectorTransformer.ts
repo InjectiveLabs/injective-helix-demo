@@ -72,9 +72,7 @@ export function useMarketSelectorTransformer(
           BigNumberInBase.ROUND_DOWN
         ),
         indexMarketInfo,
-        isRWAMarket: jsonStore.helixMarketCategoriesMap.rwa.includes(
-          item.market.marketId
-        ),
+        isRWAMarket: jsonStore.isTradeFiMarket(item.market.marketId),
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsSelectorTableColumn.MarketChange24h]:

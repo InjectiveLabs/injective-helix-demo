@@ -444,10 +444,10 @@ export default {
       thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',
       tradfiMarketClosedTrade:
         'This market follows traditional NYSE trading hours',
-      marketClosedMarketRow: 'This market follows traditional RWA price feeds.',
-      nyseClosedMarketRow: 'This market follows NYSE trading hours.',
-      marketClosedTimes: ' traditional RWA price feeds',
+      rwaClosedTimes: ' traditional RWA price feeds',
+      rwaClosedMarketRow: 'This market follows traditional RWA price feeds.',
       nyseClosedTimes: 'NYSE trading hours',
+      nyseClosedMarketRow: 'This market follows NYSE trading hours.',
       acceptRisk: 'By proceeding, you acknowledge and accept this risk.',
       marketIsClosed: 'This market is currently closed.',
       submit: 'Submit Trade'
