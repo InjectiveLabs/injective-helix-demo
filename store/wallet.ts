@@ -6,12 +6,12 @@ import {
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
-import { blacklistedAddresses } from '@/app/json'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { Modal } from '@/types'
+import { traceUserDetails } from '@/app/services/tracer'
 
 type WalletStoreState = {}
 
@@ -24,12 +24,24 @@ export const useWalletStore = defineStore('wallet', {
   actions: {
     async init() {
       const sharedWalletStore = useSharedWalletStore()
+      const sharedGeoStore = useSharedGeoStore()
 
       if (!sharedWalletStore.wallet) {
         return
       }
 
       await sharedWalletStore.init()
+
+      await traceUserDetails({
+        address: sharedWalletStore.address,
+        wallet: sharedWalletStore.wallet,
+        geoContinent: sharedGeoStore.geoContinent,
+        geoCountry: sharedGeoStore.geoCountry,
+        ipAddress: sharedGeoStore.ipAddress,
+        browserCountry: sharedGeoStore.browserCountry,
+        vpnDetected: sharedGeoStore.vpnDetected,
+        vpnCheckedTimestamp: sharedGeoStore.vpnCheckedTimestamp
+      })
     },
 
     async connectAddressOrPrivatekey({
@@ -53,9 +65,10 @@ export const useWalletStore = defineStore('wallet', {
     },
 
     async connect({ wallet, address }: { wallet: Wallet; address?: string }) {
-      const modalStore = useSharedModalStore()
       const walletStore = useWalletStore()
       const accountStore = useAccountStore()
+      const jsonStore = useSharedJsonStore()
+      const modalStore = useSharedModalStore()
       const sharedWalletStore = useSharedWalletStore()
 
       if (wallet === Wallet.Metamask) {
@@ -118,7 +131,7 @@ export const useWalletStore = defineStore('wallet', {
         const someAddressInWalletIsBlackListed =
           sharedWalletStore.addresses.some(
             (address) =>
-              blacklistedAddresses.find(
+              jsonStore.blacklistedAddresses.find(
                 (blacklistedAddress) =>
                   blacklistedAddress.toLowerCase() === address.toLowerCase()
               ) !== undefined
@@ -172,6 +185,7 @@ export const useWalletStore = defineStore('wallet', {
       const activityStore = useActivityStore()
       const positionStore = usePositionStore()
       const campaignStore = useCampaignStore()
+      const referralStore = useReferralStore()
       const derivativeStore = useDerivativeStore()
       const leaderboardStore = useLeaderboardStore()
       const gridStrategyStore = useGridStrategyStore()
@@ -193,6 +207,7 @@ export const useWalletStore = defineStore('wallet', {
       accountStore.$reset()
       activityStore.$reset()
       positionStore.$reset()
+      referralStore.$reset()
       authZStore.$reset()
       campaignStore.reset()
       gridStrategyStore.$patch({ strategies: [] })

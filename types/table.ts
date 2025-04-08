@@ -22,72 +22,72 @@ import {
 } from '@/types'
 
 export enum BalanceTableColumn {
-  Assets = 'assets',
-  Available = 'available',
-  UsedOrReserved = 'used-or-reserved',
-  UnrealizedPnl = 'unrealized-pnl',
   Total = 'total',
-  TotalUsd = 'total-usd',
+  Action = 'action',
+  Assets = 'assets',
   Staked = 'staked',
+  TotalUsd = 'total-usd',
+  Available = 'available',
   StakedUsd = 'staked-usd',
-  Action = 'action'
+  UnrealizedPnl = 'unrealized-pnl',
+  UsedOrReserved = 'used-or-reserved'
 }
 
 export enum MarketsTableColumn {
+  Action = 'action',
   Markets = 'markets',
   LastPrice = 'last-price',
   MarketChange24h = 'market-change-24h',
-  MarketVolume24h = 'market-volume-24h',
-  Action = 'action'
+  MarketVolume24h = 'market-volume-24h'
 }
 
 export enum MarketsSelectorTableColumn {
   Markets = 'markets',
   LastPrice = 'last-price',
-  MarketChange24h = 'market-change-24h',
   FundingRate = 'funding-rate',
-  MarketVolume24h = 'market-volume-24h'
-  // OpenInterest = 'open-interest'
+  // OpenInterest = 'open-interest',
+  MarketVolume24h = 'market-volume-24h',
+  MarketChange24h = 'market-change-24h'
 }
 
 export enum LiquidityTableColumn {
+  Action = 'action',
   Market = 'market',
-  Rewards = 'rewards',
-  ActiveBots = 'active-bots',
   Volume = 'volume',
-  Action = 'action'
+  Rewards = 'rewards',
+  ActiveBots = 'active-bots'
 }
 
 export enum LiquidityDashboardTableColumn {
+  Action = 'action',
   Market = 'market',
   Volume = 'volume',
   Rewards = 'rewards',
-  EstRewards = 'est-rewards',
-  Action = 'action'
+  EstRewards = 'est-rewards'
 }
 
 export enum PortfolioSpotOpenOrdersTableColumn {
-  Market = 'market',
   Side = 'side',
   Price = 'price',
-  Amount = 'amount',
-  Unfilled = 'unfilled',
-  Filled = 'filled',
-  TotalAmount = 'total-amount',
   Chase = 'chase',
-  Action = 'action'
+  Action = 'action',
+  Market = 'market',
+  Amount = 'amount',
+  Filled = 'filled',
+  Unfilled = 'unfilled',
+  TotalAmount = 'total-amount'
 }
 
 export enum PortfolioSpotOrderHistoryTableColumn {
-  LastUpdated = 'last-updated',
-  Market = 'market',
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  Amount = 'amount',
   Total = 'total',
-  TriggerCondition = 'trigger-condition',
-  Status = 'status'
+  Status = 'status',
+  Market = 'market',
+  Amount = 'amount',
+  LastUpdated = 'last-updated',
+  TriggerCondition = 'trigger-condition'
 }
 
 export enum PortfolioSpotTradingBotsRunningTableColumn {
@@ -105,72 +105,72 @@ export enum PortfolioSpotTradingBotsRunningTableColumn {
 export enum PortfolioSpotTradingBotsHistoryTableColumn {
   Time = 'time',
   Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
+  StopReason = 'stopReason',
   LowerBound = 'lowerBound',
   UpperBound = 'upperBound',
   TotalAmount = 'totalAmount',
-  TotalProfit = 'totalProfit',
-  Duration = 'duration',
-  Details = 'details',
-  StopReason = 'stopReason'
+  TotalProfit = 'totalProfit'
 }
 
 export enum PortfolioSpotTradeHistoryTableColumn {
+  Fee = 'fee',
   Time = 'time',
   Pair = 'pair',
   Type = 'type',
   Side = 'side',
+  Total = 'total',
   Price = 'price',
-  Amount = 'amount',
-  Fee = 'fee',
-  Total = 'total'
+  Amount = 'amount'
 }
 
 export enum PortfolioFuturesOpenOrdersTableColumn {
-  Market = 'market',
   Side = 'side',
   Price = 'price',
-  Amount = 'amount',
-  Unfilled = 'unfilled',
-  Filled = 'filled',
-  Leverage = 'leverage',
   Total = 'total',
   Chase = 'chase',
-  Action = 'action'
+  Action = 'action',
+  Market = 'market',
+  Amount = 'amount',
+  Filled = 'filled',
+  Unfilled = 'unfilled',
+  Leverage = 'leverage'
 }
 
 export enum PortfolioFuturesAdvancedOrdersTableColumn {
-  Market = 'market',
   Type = 'type',
   Side = 'side',
   Price = 'price',
+  Total = 'total',
+  Action = 'action',
+  Market = 'market',
   Amount = 'amount',
   Leverage = 'leverage',
-  Total = 'total',
-  TriggerCondition = 'trigger-condition',
-  Action = 'action'
+  TriggerCondition = 'trigger-condition'
 }
 
 export enum PortfolioFuturesOrderHistoryTableColumn {
-  LastUpdated = 'last-updated',
-  Market = 'market',
   Type = 'type',
   Side = 'side',
   Price = 'price',
-  Amount = 'amount',
   Total = 'total',
-  TriggerCondition = 'trigger-condition',
-  Status = 'status'
+  Status = 'status',
+  Market = 'market',
+  Amount = 'amount',
+  LastUpdated = 'last-updated',
+  TriggerCondition = 'trigger-condition'
 }
 
 export enum PortfolioFuturesTradeHistoryTableColumn {
+  Fee = 'fee',
   Time = 'time',
-  Market = 'market',
   Type = 'type',
   Side = 'side',
+  Total = 'total',
   Price = 'price',
-  Amount = 'amount',
-  Fee = 'fee',
-  Total = 'total'
+  Market = 'market',
+  Amount = 'amount'
 }
 
 export enum PortfolioSubaccountsTableColumn {
@@ -195,27 +195,57 @@ export enum HistoryWalletTableColumn {
 }
 
 export enum HistorySwapTableColumn {
-  Time = 'time',
-  Outgoing = 'outgoing',
-  Incoming = 'incoming',
-  Route = 'route',
   Fee = 'fee',
-  Action = 'action'
+  Time = 'time',
+  Route = 'route',
+  Action = 'action',
+  Outgoing = 'outgoing',
+  Incoming = 'incoming'
 }
 
 export enum PositionTableColumn {
-  Market = 'market',
   Side = 'side',
-  Contracts = 'contracts',
-  Entry = 'entry',
   Mark = 'mark',
-  UnrealizedPnl = 'unrealized-pnl',
-  TotalUsd = 'total-usd',
+  Entry = 'entry',
+  Market = 'market',
   Margin = 'margin',
-  LiquidationPrice = 'liquidation-price',
-  Leverage = 'leverage',
   TpOrSl = 'tp-or-sl',
-  ClosePosition = 'close-position'
+  Leverage = 'leverage',
+  TotalUsd = 'total-usd',
+  Contracts = 'contracts',
+  ClosePosition = 'close-position',
+  UnrealizedPnl = 'unrealized-pnl',
+  LiquidationPrice = 'liquidation-price'
+}
+
+export enum ReferralTableColumn {
+  Wallets = 'wallets',
+  JoinDate = 'join-date',
+  Commission = 'commission'
+}
+
+export enum PortfolioTradingBotsRunningTableColumn {
+  Time = 'time',
+  Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit',
+  RemoveStrategy = 'removeStrategy'
+}
+
+export enum PortfolioTradingBotsHistoryTableColumn {
+  Time = 'time',
+  Market = 'market',
+  Details = 'details',
+  Duration = 'duration',
+  StopReason = 'stopReason',
+  LowerBound = 'lowerBound',
+  UpperBound = 'upperBound',
+  TotalAmount = 'totalAmount',
+  TotalProfit = 'totalProfit'
 }
 
 export interface UTableColumn {
@@ -471,28 +501,4 @@ export interface TransformedPointsHistory {
   period: string
   pointsInBigNumber: BigNumberInBase
   volumeInBigNumber: BigNumberInBase
-}
-
-export enum PortfolioTradingBotsRunningTableColumn {
-  Time = 'time',
-  Market = 'market',
-  Details = 'details',
-  Duration = 'duration',
-  LowerBound = 'lowerBound',
-  UpperBound = 'upperBound',
-  TotalAmount = 'totalAmount',
-  TotalProfit = 'totalProfit',
-  RemoveStrategy = 'removeStrategy'
-}
-
-export enum PortfolioTradingBotsHistoryTableColumn {
-  Time = 'time',
-  Market = 'market',
-  LowerBound = 'lowerBound',
-  UpperBound = 'upperBound',
-  TotalAmount = 'totalAmount',
-  TotalProfit = 'totalProfit',
-  Duration = 'duration',
-  Details = 'details',
-  StopReason = 'stopReason'
 }

@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import {
-  verifiedSpotSlugs,
-  verifiedExpirySlugs,
-  verifiedSpotMarketIds,
-  verifiedExpiryMarketIds,
-  verifiedDerivativeSlugs,
-  verifiedDerivativeMarketIds
-} from '@/app/json'
 import { PointsMultiplierWithMarketTicker } from '@/types'
 
 const spotStore = useSpotStore()
+const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 
@@ -31,9 +24,10 @@ const derivativeBoostedMarkets = computed(() => {
     .filter(
       (derivativeMarket) =>
         derivativeMarketIds.includes(derivativeMarket.marketId) ||
-        [...verifiedExpiryMarketIds, ...verifiedDerivativeMarketIds].includes(
-          derivativeMarket.marketId
-        )
+        [
+          ...jsonStore.expiryMarketIds,
+          ...jsonStore.verifiedDerivativeMarketIds
+        ].includes(derivativeMarket.marketId)
     )
     .sort(
       (a, b) =>
@@ -87,8 +81,12 @@ const derivativeBoostedMarkets = computed(() => {
 
   return [...derivatives, ...nonBoostedDerivatives].sort(
     (a, b) =>
-      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(a.slug) -
-      [...verifiedExpirySlugs, ...verifiedDerivativeSlugs].indexOf(b.slug)
+      [...jsonStore.expirySlugs, ...jsonStore.verifiedDerivativeSlugs].indexOf(
+        a.slug
+      ) -
+      [...jsonStore.expirySlugs, ...jsonStore.verifiedDerivativeSlugs].indexOf(
+        b.slug
+      )
   )
 })
 
@@ -101,7 +99,7 @@ const spotBoostedMarkets = computed(() => {
     .filter(
       (spotMarket) =>
         spotMarketIds.includes(spotMarket.marketId) ||
-        verifiedSpotMarketIds.includes(spotMarket.marketId)
+        jsonStore.verifiedSpotMarketIds.includes(spotMarket.marketId)
     )
     .sort(
       (a, b) =>
@@ -151,7 +149,8 @@ const spotBoostedMarkets = computed(() => {
 
   return [...spot, ...nonBoostedSpot].sort(
     (a, b) =>
-      verifiedSpotSlugs.indexOf(a.slug) - verifiedSpotSlugs.indexOf(b.slug)
+      jsonStore.verifiedSpotSlugs.indexOf(a.slug) -
+      jsonStore.verifiedSpotSlugs.indexOf(b.slug)
   )
 })
 </script>

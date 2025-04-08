@@ -273,7 +273,11 @@ const percentagePnl = computed(() =>
     <div v-if="strategy.isActive" class="pt-4">
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
         v-slot="{ removeStrategy, status }"
-        :strategy="strategy.strategy"
+        v-bind="{
+          strategy: strategy.strategy,
+          pnl: strategy.pnl,
+          pnlPercentage: strategy.percentagePnl
+        }"
       >
         <AppButton
           variant="danger"

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   Modal,
   MarketKey,
@@ -11,6 +10,7 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const derivativeFormValues = useFormValues()
 const { t } = useI18n()
@@ -34,8 +34,10 @@ const { marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
-const isTradFiMarket = computed(() =>
-  RWA_TRADFI_MARKET_IDS.includes(derivativeMarket.value.marketId)
+const isNyseMarket = computed(() =>
+  jsonStore.helixMarketCategoriesMap.iAssets.includes(
+    derivativeMarket.value.marketId
+  )
 )
 
 const executionPrice = computed(() => {
@@ -148,21 +150,10 @@ function confirm() {
 
       <div class="mt-6 text-sm lg:text-base">
         <i18n-t
-          v-if="!isTradFiMarket"
-          keypath="trade.rwa.marketClosedTrade"
+          v-if="isNyseMarket"
+          keypath="trade.rwa.nyseMarketClosedTrade"
           tag="p"
         >
-          <template #marketClosedTimes>
-            <NuxtLink
-              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
-              to="https://docs.pyth.network/price-feeds/market-hours"
-              target="_blank"
-            >
-              <strong>{{ $t('trade.rwa.marketClosedTimes') }}</strong>
-            </NuxtLink>
-          </template>
-        </i18n-t>
-        <i18n-t v-else keypath="trade.rwa.nyseMarketClosedTrade" tag="p">
           <template #nyseClosedTimes>
             <NuxtLink
               class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
@@ -170,6 +161,18 @@ function confirm() {
               target="_blank"
             >
               <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
+            </NuxtLink>
+          </template>
+        </i18n-t>
+
+        <i18n-t v-else keypath="trade.rwa.marketClosedTrade" tag="p">
+          <template #marketClosedTimes>
+            <NuxtLink
+              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
+              to="https://docs.pyth.network/price-feeds/market-hours"
+              target="_blank"
+            >
+              <strong>{{ $t('trade.rwa.rwaClosedTimes') }}</strong>
             </NuxtLink>
           </template>
         </i18n-t>

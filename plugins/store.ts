@@ -93,6 +93,8 @@ const actionsThatSetAppStateToBusy = [
   'spot/submitMarketOrder',
   'peggy/setTokenAllowance',
   'account/externalTransfer',
+  'referral/registerInvitee',
+  'referral/createReferralLink',
   'authZ/grantAuthorization',
   'authZ/revokeAuthorization',
   'position/closeAllPosition',
@@ -102,8 +104,10 @@ const actionsThatSetAppStateToBusy = [
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
-  'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy',
+  'gridStrategy/createPerpStrategy',
+  'gridStrategy/createSpotLiquidityBot',
+  'gridStrategy/createSpotGridStrategy',
+  'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
@@ -112,9 +116,7 @@ const actionsThatSetAppStateToBusy = [
   'account/convertNeptuneToPeggyUsdt',
   'account/convertPeggyToNeptuneUsdt',
   'swap/submitAtomicOrderExactOutput',
-  'gridStrategy/createSpotLiquidityBot',
   'activity/batchCancelDerivativeOrders',
-  'gridStrategy/removeStrategyForSubaccount',
   'position/closePositionAndReduceOnlyOrders'
 ]
 

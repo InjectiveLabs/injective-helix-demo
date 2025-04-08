@@ -11,7 +11,6 @@ const { lg } = useSharedBreakpoints()
 const props = withDefaults(
   defineProps<{
     token: TokenStatic
-    isVerified?: boolean
     isBridgable?: boolean
     isTablePopover?: boolean
   }>(),

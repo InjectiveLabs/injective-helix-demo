@@ -10,7 +10,10 @@ import {
   InvestmentTypeGst,
   SpotGridTradingForm,
   SpotGridTradingField,
-  BotType
+  BotType,
+  SpotGridStrategyType,
+  ExitConfig,
+  ExitType
 } from '@/types'
 import {
   GST_GRID_THRESHOLD,
@@ -168,6 +171,86 @@ const initialInvestment = computed(() =>
   )
 )
 
+const trailingParams = computed(() => {
+  if (
+    !spotFormValues.value[SpotGridTradingField.TrailingLower] ||
+    !spotFormValues.value[SpotGridTradingField.TrailingUpper] ||
+    !spotFormValues.value[SpotGridTradingField.IsTrailingEnabled]
+  ) {
+    return undefined
+  }
+
+  return {
+    upperTrailingBound:
+      spotFormValues.value[SpotGridTradingField.TrailingUpper],
+    lowerTrailingBound: spotFormValues.value[SpotGridTradingField.TrailingLower]
+  }
+})
+
+const stopLoss = computed(() => {
+  if (!spotFormValues.value[SpotGridTradingField.StopLoss]) {
+    return undefined
+  }
+
+  return {
+    exitPrice: spotFormValues.value[SpotGridTradingField.StopLoss],
+    exitType: spotFormValues.value[SpotGridTradingField.SellBaseOnStopLoss]
+      ? ExitType.Quote
+      : ExitType.Default
+  } as ExitConfig
+})
+
+const takeProfit = computed(() => {
+  if (!spotFormValues.value[SpotGridTradingField.TakeProfit]) {
+    return undefined
+  }
+
+  return {
+    exitPrice: spotFormValues.value[SpotGridTradingField.TakeProfit],
+    exitType: spotFormValues.value[SpotGridTradingField.BuyBaseOnTakeProfit]
+      ? ExitType.Base
+      : ExitType.Default
+  } as ExitConfig
+})
+
+const strategyType = computed(() => {
+  const isLpMode = spotFormValues.value[SpotGridTradingField.IsLpMode]
+
+  if (
+    spotFormValues.value[SpotGridTradingField.StrategyType] ===
+      SpotGridStrategyType.Arithmetic &&
+    trailingParams.value &&
+    isLpMode
+  ) {
+    return SpotGridStrategyType.TrailingArithmeticLP
+  }
+
+  if (
+    spotFormValues.value[SpotGridTradingField.StrategyType] ===
+      SpotGridStrategyType.Arithmetic &&
+    trailingParams.value
+  ) {
+    return SpotGridStrategyType.TrailingArithmetic
+  }
+
+  if (
+    isLpMode &&
+    spotFormValues.value[SpotGridTradingField.StrategyType] ===
+      SpotGridStrategyType.Arithmetic
+  ) {
+    return SpotGridStrategyType.ArithmeticLP
+  }
+
+  if (
+    spotFormValues.value[SpotGridTradingField.StrategyType] ===
+    SpotGridStrategyType.Geometric
+  ) {
+    return SpotGridStrategyType.Geometric
+  }
+
+  return SpotGridStrategyType.Arithmetic
+})
+
 async function onCheckBalanceFees() {
   const { valid } = await validate()
 
@@ -228,7 +311,15 @@ function onInvestmentTypeSet() {
 async function createStrategy() {
   const { valid } = await validate()
 
-  if (!valid || !market.value) {
+  if (
+    !valid ||
+    !market.value ||
+    !spotFormValues.value[SpotGridTradingField.LowerPrice] ||
+    !spotFormValues.value[SpotGridTradingField.UpperPrice] ||
+    !spotFormValues.value[SpotGridTradingField.Grids] ||
+    (!spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount] &&
+      !spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount])
+  ) {
     return
   }
 
@@ -237,7 +328,21 @@ async function createStrategy() {
   let err: Error
 
   gridStrategyStore
-    .createStrategy(spotFormValues.value, market.value)
+    .createSpotGridStrategy({
+      grids: Number(spotFormValues.value[SpotGridTradingField.Grids]),
+      lowerPrice: spotFormValues.value[SpotGridTradingField.LowerPrice],
+      upperPrice: spotFormValues.value[SpotGridTradingField.UpperPrice],
+      quoteAmount:
+        spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount],
+      baseAmount:
+        spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount],
+      market: market.value,
+      strategyType: strategyType.value,
+      trailingParams: trailingParams.value,
+      stopLoss: stopLoss.value,
+      takeProfit: takeProfit.value,
+      exitType: spotFormValues.value[SpotGridTradingField.ExitType]
+    })
     .then(() => {
       notificationStore.success({ title: t('common.success') })
     })

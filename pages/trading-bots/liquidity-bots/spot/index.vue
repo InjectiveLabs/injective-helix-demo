@@ -12,12 +12,12 @@ import {
   MARKETS_HISTORY_CHART_ONE_HOUR,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { spotGridMarkets } from '@/app/json'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { LiquidityBotField, LiquidityBotForm } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
+const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
 const campaignStore = useCampaignStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -35,7 +35,7 @@ const lastTradedPrice = ref(ZERO_IN_BASE)
 const marketOptions = computed(() =>
   spotStore.markets
     .filter(({ slug }) =>
-      spotGridMarkets.some((market) => market.slug === slug)
+      jsonStore.spotGridMarkets.some((market) => market.slug === slug)
     )
     .map((market) => ({
       label: market.ticker,

@@ -2,8 +2,6 @@
 import { SharedMarketType } from '@shared/types'
 import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
-import { rwaMarketIds, RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
 import {
   TradePage,
   TradeSubPage,
@@ -13,6 +11,7 @@ import {
 } from '@/types'
 
 const route = useRoute()
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
@@ -25,7 +24,7 @@ const props = withDefaults(
 )
 
 const hasGridStrategyEnabled = computed(() =>
-  [...spotGridMarkets, ...derivativeGridMarkets]
+  [...jsonStore.spotGridMarkets, ...jsonStore.derivativeGridMarkets]
     .map(({ slug }) => slug)
     .includes(props.market.slug)
 )
@@ -61,7 +60,9 @@ const marketRoute = computed(() =>
       }
 )
 
-const isRwaMarket = computed(() => rwaMarketIds.includes(props.market.marketId))
+const isRwaMarket = computed(() =>
+  jsonStore.isTradeFiMarket(props.market.marketId)
+)
 
 const indexMarketInfo = computed(() =>
   INDEX_MARKETS_INFO.find((market) => market.marketId === props.market.marketId)
@@ -127,8 +128,10 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  !RWA_TRADFI_MARKET_IDS.includes(market.marketId)
-                    ? 'marketClosedMarketRow'
+                  jsonStore.helixMarketCategoriesMap.rwa.includes(
+                    market.marketId
+                  )
+                    ? 'rwaClosedMarketRow'
                     : 'nyseClosedMarketRow'
                 }`
               )

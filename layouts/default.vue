@@ -9,18 +9,19 @@ import {
   Modal,
   MainPage,
   TradeSubPage,
-  InitialStatusKey,
   NoticeBanner,
+  InitialStatusKey,
   PortfolioStatusKey,
   LeaderboardSubPage,
   LiquidityRewardsPage
 } from '@/types'
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const appStore = useAppStore()
+const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const accountStore = useAccountStore()
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -31,6 +32,7 @@ const { $onError } = useNuxtApp()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
+const jsonStatus = reactive(new Status(StatusType.Loading))
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
@@ -47,13 +49,16 @@ const showFooter = computed(() =>
 onWalletConnected(async () => {
   portfolioStatus.setLoading()
 
-  mixpanelAnalytics.init()
+  if (!sharedWalletStore.isDev) {
+    mixpanelAnalytics.init()
+  }
 
   await until(initialStatus).toMatch((status) => status.isIdle())
 
   Promise.all([
     fetchUserPortfolio(),
     spotStore.fetchMarketsSummary(),
+    referralStore.fetchUserReferrer(),
     derivativeStore.fetchMarketsSummary()
   ])
     .then(checkOnboarding)
@@ -125,6 +130,10 @@ function checkOnboarding() {
   }
 }
 
+function onJsonLoaded() {
+  jsonStatus.setIdle()
+}
+
 provide(PortfolioStatusKey, portfolioStatus)
 
 useIntervalFn(
@@ -153,7 +162,10 @@ useIntervalFn(
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
-      :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
+      :is-loading="
+        route.name !== MainPage.Index &&
+        (initialStatus.isLoading() || jsonStatus.isLoading())
+      "
     >
       <main class="relative pb-6 pt-[56px]">
         <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
@@ -237,5 +249,6 @@ useIntervalFn(
     <UNotifications />
 
     <CommonAutoSignExpiredToast />
+    <AppJsonPoll @on:loaded="onJsonLoaded" />
   </div>
 </template>

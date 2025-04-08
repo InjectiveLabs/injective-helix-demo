@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MarketKey, TradingInterface, UiDerivativeMarket } from '@/types'
-import { derivativeGridMarkets } from '~/app/json'
+
+const jsonStore = useSharedJsonStore()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -14,7 +15,7 @@ const options = computed(() => [
   {
     value: TradingInterface.TradingBots,
     disabled:
-      derivativeGridMarkets.find(
+      jsonStore.derivativeGridMarkets.find(
         ({ slug }) => slug === derivativeMarket.value.slug
       ) === undefined
   }

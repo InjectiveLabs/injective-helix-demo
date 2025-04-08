@@ -7,7 +7,6 @@ import {
 } from '@shared/types'
 import {
   ExitType,
-  StrategyType,
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
@@ -24,7 +23,8 @@ import {
   DerivativesTradeFormField,
   ClosePositionLimitFormField,
   TakeProfitStopLossFormField,
-  DerivativeGridTradingField
+  DerivativeGridTradingField,
+  SpotGridStrategyType
 } from '../types'
 
 export type TradeForm = Record<TradeField, any>
@@ -116,11 +116,12 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.ExitType]: ExitType
   [SpotGridTradingField.StopLoss]: string
   [SpotGridTradingField.TakeProfit]: string
-  [SpotGridTradingField.StrategyType]: StrategyType
+  [SpotGridTradingField.StrategyType]: SpotGridStrategyType
   [SpotGridTradingField.IsAssetRebalanceOn]: boolean
   [SpotGridTradingField.IsTrailingEnabled]: boolean
   [SpotGridTradingField.TrailingUpper]: string
   [SpotGridTradingField.TrailingLower]: string
+  [SpotGridTradingField.IsLpMode]: boolean
 }
 
 export type DerivativeGridTradingForm = {

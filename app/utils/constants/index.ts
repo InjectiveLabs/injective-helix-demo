@@ -111,6 +111,8 @@ export const GST_STABLE_GRIDS = 3
 export const GST_AUTO_PRICE_THRESHOLD = 2
 export const GST_MIN_TOTAL_AMOUNT_USD = 50
 
+export const PGT_MIN_TRADING_SIZE_LOW = 2
+
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'
@@ -182,7 +184,8 @@ export const STOP_REASON_MAP = {
   [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
 }
 
-export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
+export const CONNECT_SERVER_URL =
+  'https://k8s.mainnet.eu.helix-server.injective.network/api'
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP

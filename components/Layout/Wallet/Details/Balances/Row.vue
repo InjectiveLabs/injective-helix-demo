@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { AccountBalance } from '@/types'
 
@@ -30,6 +31,13 @@ const totalAmount = computed(() =>
           </p>
         </div>
       </div>
+
+      <SharedIcon
+        v-if="balance.token.tokenVerification === TokenVerification.Verified"
+        name="check-shield"
+        is-md
+        class="text-green-500 ml-2"
+      />
     </div>
     <div class="flex items-center">
       <span class="text-sm flex">

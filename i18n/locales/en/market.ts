@@ -61,7 +61,6 @@ export default {
       [MarketCategoryType.Injective]: 'Injective',
       [MarketCategoryType.Layer1]: 'L1',
       [MarketCategoryType.Layer2]: 'L2',
-      [MarketCategoryType.Experimental]: 'Experimental',
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
       [MarketCategoryType.Meme]: 'Meme',

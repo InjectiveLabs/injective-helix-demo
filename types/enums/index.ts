@@ -20,8 +20,10 @@ export enum Modal {
   MitoRedirect = 'mito-redirect',
   PostOnlyMode = 'post-only-mode',
   GeoRestricted = 'geo-restricted',
+  ShareReferral = 'share-referral',
   ConnectMobile = 'connect-mobile',
   SgtBalancedFees = 'sgtBalancedFees',
+  ConfirmReferral = 'confirm-referral',
   ClosedRWAMarket = 'closed-rwa-market',
   NinjaPassWinner = 'ninja-pass-winner',
   MarketRestricted = 'market-restricted',
@@ -30,7 +32,9 @@ export enum Modal {
   InstitutionalForm = 'institutionalForm',
   CompetitionWinner = 'competition-winner',
   MarketNotOnHelix = 'market-not-on-helix',
+  OptimizeSgtValues = 'optimize-sgt-values',
   SubaccountTransfer = 'subaccount-transfer',
+  CreateReferralLink = 'create-referral-link',
   AlreadyJoinedGuild = 'already-joined-guild',
   GridStrategyDetails = 'grid-strategy-details',
   AddMarginToPosition = 'add-margin-to-position',
@@ -282,7 +286,8 @@ export enum SpotGridTradingField {
   IsAssetRebalanceOn = 'isAssetRebalanceOn',
   IsTrailingEnabled = 'isTrailingEnabled',
   TrailingUpper = 'trailingUpper',
-  TrailingLower = 'trailingLower'
+  TrailingLower = 'trailingLower',
+  IsLpMode = 'isLpMode'
 }
 
 export enum DerivativeGridTradingField {
@@ -315,6 +320,7 @@ export enum InvestmentTypeGst {
 
 export enum StrategyStatus {
   Active = 'active',
+  Pending = 'pending',
   Removed = 'removed'
 }
 
@@ -559,19 +565,11 @@ export enum MarketCategoryType {
   Injective = 'injective',
   Layer1 = 'layer-1',
   Layer2 = 'layer-2',
-  Experimental = 'experimental',
   DeFi = 'deFi',
   AI = 'aI',
   Meme = 'meme',
   RWA = 'rwa',
   iAssets = 'iAssets'
-  // All = 'all',
-  // Cosmos = 'cosmos',
-  // Ethereum = 'ethereum',
-  // Injective = 'injective',
-  // Solana = 'solana',
-  // Experimental = 'experimental',
-  // RWA = 'RWA',
 }
 
 export enum MarketQuoteType {

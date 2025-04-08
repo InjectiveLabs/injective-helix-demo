@@ -2,6 +2,7 @@ export enum MainPage {
   Swap = 'swap',
   Terms = 'terms',
   Index = 'index',
+  Referral = 'ref',
   Points = 'points',
   Guilds = 'guilds',
   Vaults = 'vaults',
@@ -13,6 +14,7 @@ export enum MainPage {
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
+  PrivacyPolicy = 'privacy-policy',
   LiquidityProvision = 'liquidity-provision',
   TeslaCompetitionTerms = 'tesla-competition-terms',
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
@@ -20,7 +22,6 @@ export enum MainPage {
   CompetitionPrivacyPolicyGwagon = 'competition-privacy-policy-gwagon',
   OwnYourAssetCompetitionTerms = 'own-your-assets-competition-terms',
   CompetitionPrivacyPolicyOwnYourAsset = 'competition-privacy-policy-own-your-assets',
-
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'

@@ -6,6 +6,7 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { StrategyStatus } from '@/types'
 
 const { subaccountPortfolioBalanceMap } = useBalance()
 
@@ -47,7 +48,7 @@ const percentagePnl = computed(() =>
           class="w-2 h-2 rounded-full"
           :class="strategy.isActive ? 'bg-green-500' : 'bg-red-500'"
         />
-        <p>{{ strategy.isActive ? $t('sgt.running') : $t('sgt.removed') }}</p>
+        <p>{{ $t(`sgt.${strategy.strategyStatus}`) }}</p>
       </div>
     </div>
 
@@ -62,15 +63,26 @@ const percentagePnl = computed(() =>
           'text-coolGray-500': isZeroPnl
         }"
       >
-        <span>{{ isPositivePnl ? '+' : '' }}</span>
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :amount="strategy.pnl"
-          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-        />
-        <span>
-          {{ ' ' + strategy.market.quoteToken.symbol }} / ({{ percentagePnl }}%)
+        <span
+          v-if="strategy.strategyStatus === StrategyStatus.Pending"
+          class="text-coolGray-400"
+        >
+          &mdash;
         </span>
+
+        <template v-else>
+          <span>{{ isPositivePnl ? '+' : '' }}</span>
+          <SharedAmountFormatter
+            :max-decimal-places="3"
+            :amount="strategy.pnl"
+            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          />
+          <span>
+            {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
+              percentagePnl
+            }}%)
+          </span>
+        </template>
       </div>
     </div>
 
@@ -79,7 +91,10 @@ const percentagePnl = computed(() =>
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div>
+      <div v-if="strategy.strategyStatus === StrategyStatus.Pending">
+        &mdash;
+      </div>
+      <div v-else>
         $
         <SharedAmountFormatter
           :max-decimal-places="3"
@@ -99,12 +114,17 @@ const percentagePnl = computed(() =>
       </p>
 
       <div>
-        <SharedAmountFormatter
-          :amount="strategy.finalQuoteBalanceQuantity"
-          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          :max-decimal-places="3"
-        />
-        {{ strategy.market.quoteToken.symbol }}
+        <span v-if="strategy.strategyStatus === StrategyStatus.Pending">
+          &mdash;
+        </span>
+        <span v-else>
+          <SharedAmountFormatter
+            :amount="strategy.finalQuoteBalanceQuantity"
+            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            :max-decimal-places="3"
+          />
+          {{ strategy.market.quoteToken.symbol }}
+        </span>
       </div>
     </div>
 
@@ -175,16 +195,6 @@ const percentagePnl = computed(() =>
 
     <!-- TODO: Uncomment When we have the data from indexer -->
 
-    <!-- <div class="flex justify-between mb-4 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.advanced.settleIn') }}</span>
-      </span>
-
-      <span>
-        {{ strategy.settleIn ? strategy.settleIn : $t('sgt.disabled') }}
-      </span>
-    </div>
-
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
@@ -193,8 +203,7 @@ const percentagePnl = computed(() =>
       <div>
         <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
         <span v-else>
-          {{ strategy.takeProfit.exitPrice }} /
-          {{ strategy.takeProfit.exitType }}
+          {{ strategy.takeProfit.exitPrice }}
         </span>
       </div>
     </div>
@@ -207,13 +216,12 @@ const percentagePnl = computed(() =>
       <div>
         <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
         <span v-else>
-          {{ strategy.stopLoss.exitPrice }} /
-          {{ strategy.stopLoss.exitType }}
+          {{ strategy.stopLoss.exitPrice }}
         </span>
       </div>
     </div>
 
-    <div
+    <!-- <div
       v-if="strategy.trailingUpper"
       class="flex justify-between mb-2 text-sm"
     >
@@ -255,14 +263,25 @@ const percentagePnl = computed(() =>
       </div>
     </div>
 
-    <div v-if="strategy.isActive" class="pt-4">
+    <div v-if="strategy.strategyStatus !== StrategyStatus.Removed" class="pt-4">
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
         v-slot="{ removeStrategy, status }"
-        :strategy="activeStrategy"
+        v-bind="{
+          strategy: strategy.strategy,
+          pnl: strategy.pnl,
+          pnlPercentage: strategy.percentagePnl
+        }"
       >
         <AppButton
           variant="danger"
-          :is-loading="status.isLoading()"
+          :is-loading="
+            status.isLoading() ||
+            strategy.strategyStatus === StrategyStatus.Pending
+          "
+          :disabled="
+            status.isLoading() ||
+            strategy.strategyStatus === StrategyStatus.Pending
+          "
           size="lg"
           class="w-full"
           @click="removeStrategy"

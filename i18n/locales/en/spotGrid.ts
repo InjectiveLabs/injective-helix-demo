@@ -4,6 +4,7 @@ export default {
     time: 'Time',
     user: 'User',
     auto: 'Auto',
+    close: 'Close',
     grids: 'Grids',
     amount: 'Amount',
     market: 'Market',
@@ -16,9 +17,16 @@ export default {
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
+    moreInfo: 'More Info',
+    startTime: 'Start Time',
+    enableLpMode: 'Enable LP Mode',
+    lpModeTooltip:
+      'When LP Mode is enabled, the strategy avoids rebalancing during setup and creates asymmetric buy and sell orders, replicating the behavior of a liquidity provider.',
     history: 'History',
     enabled: 'Enabled',
+    active: 'Active',
     removed: 'Removed',
+    pending: 'Pending',
     lowerPrice: 'Lower Price',
     upperPrice: 'Upper Price',
     disabled: 'Disabled',
@@ -61,6 +69,7 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    replicateStrategy: 'Replicate Strategy',
     trailingPriceRange: 'Trailing Price Range',
     minInvestmentDescription: "Min Investment: {symbols} ≥ {'$'}{amount}",
     minInvestmentTooltip:
@@ -112,7 +121,7 @@ export default {
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
-      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
+      'Higher grid count places more orders, better capturing price movements but requiring more initial capital.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
     createStrategyModalQuote:
@@ -221,7 +230,33 @@ export default {
       'Please read the below information carefully before you confirm to proceed.',
     profitPerGrid: 'Profit/grid (fees deducted)',
     disclaimer:
-      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.'
+      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
+
+    optimization: {
+      balanceStability: 'Balance Stability',
+      balanceNeedsAdjusting: 'Balance Needs Adjusting',
+      balanceOptimized: 'Optimal Balance',
+      optimizeBalance: 'Optimize Balance',
+      yourBalanceIsOffBy:
+        'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
+      yourBalanceIsOptimal:
+        'Well-balanced for maximum grid efficiency within price range',
+      balancedTooltip:
+        'Balance Stability indicates how well your liquidity position maintains its intended ratio between tokens. A higher percentage means your position is more resistant to market volatility and requires less frequent rebalancing.',
+      balanceNeedsAdjustingTooltip: 'Balance is improving but not optimal',
+      optimizeBalanceTitle: 'Optimize Strategy Balance',
+      optimizeBalanceBody:
+        'To reduce trading fees and improve operational efficiency, we suggest rebalancing your assets. This technical adjustment optimizes how your strategy executes trades, but is not financial advice on asset selection or expected returns.',
+      confirmAndAdjust: 'Confirm and Adjust',
+      adjustYourAvailableBalance:
+        'Adjust your available [{base}] and [{quote}] balance'
+    },
+
+    aproximateProfit: 'Approximate Profit',
+    yourTradingStrategyIsBeingRemoved:
+      'Your trading strategy is being removed and will be completed automatically. This process can take up to a few minutes.',
+    youCanCloseThisNotification:
+      'You can close this notification and continue using the platform.'
   },
 
   tradingBots: {
@@ -247,14 +282,18 @@ export default {
     copyStrategy: 'Copy Strategy',
     createYourStrategy: 'Create Your Strategy',
     topPerformers: 'Top Performers',
+    topPerformersDescription:
+      'Learn from real-time success. See which strategies and parameters are currently yielding the best results on Helix. Use this data to refine your approach or launch a new bot based on proven performance.',
     volumeBoost: 'Volume Boost',
     description:
-      'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
+      'Your command center for automated trading on Helix. Monitor your active bots, track your LP rewards, and discover high-performing community strategies to inform your next move.',
+
     botType: {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Volume Boost',
       futuresGrid: 'Futures Grid'
     },
+
     myLpRewards: {
       viewAll: 'View All',
       title: 'My LP Rewards',
@@ -269,7 +308,7 @@ export default {
   liquidityBots: {
     title: 'Volume Boost Bot',
     description:
-      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
+      'Boost trading volume effortlessly. Volume Boost Bot automates liquidity provision, executing trades within your specified range to capture opportunities and maintain market presence.',
     selectPair: 'Select Pair',
     setLiquidityBot: 'Set Up a Liquidity Bot',
     volatilityStrategy: 'Volatility Strategy',

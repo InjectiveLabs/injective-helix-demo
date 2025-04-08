@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityBotField, LiquidityBotForm, UiMarketWithToken } from '@/types'
-import {
-  GST_MIN_TOTAL_AMOUNT_USD,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const tokenStore = useTokenStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -210,25 +207,6 @@ function setQuoteMax() {
           {{ quoteErrorMessage }}
         </p>
       </div>
-    </div>
-
-    <div class="mt-4 text-xs text-coolGray-500">
-      <p>
-        {{
-          $t('sgt.minInvestmentDescription', {
-            symbols: market.baseToken.symbol,
-            amount: GST_MIN_TOTAL_AMOUNT_USD
-          })
-        }}
-      </p>
-      <p>
-        {{
-          $t('sgt.totalBaseAndQuote', {
-            base: props.market.baseToken.symbol,
-            quote: props.market.quoteToken.symbol
-          })
-        }}:{{ GST_MIN_TOTAL_AMOUNT_USD }}$
-      </p>
     </div>
   </div>
 </template>

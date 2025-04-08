@@ -7,7 +7,7 @@ import {
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
-import { prepareOrderMessages } from '@/app/utils/market'
+import { prepareOrderMessages } from '@/app/utils/msgs'
 import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
 
 const fetchBalances = (

@@ -73,7 +73,6 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         hasNoActionButtons,
         isStakingRow: false,
         token: balance.token,
-        isVerified: balance.isVerified,
         [BalanceTableColumn.Total]: totalAmount,
         [BalanceTableColumn.Available]: availableAmount.eq(0)
           ? ZERO_IN_BASE
@@ -84,6 +83,8 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         [BalanceTableColumn.UsedOrReserved]: usedOrReserved.eq(0)
           ? ZERO_IN_BASE
           : usedOrReserved,
+        isVerified:
+          balance.token.tokenVerification === TokenVerification.Verified,
         [BalanceTableColumn.TotalUsd]: new BigNumberInBase(totalAmountInUsd)
       }
     })

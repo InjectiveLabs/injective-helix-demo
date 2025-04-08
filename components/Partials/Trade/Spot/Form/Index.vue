@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { spotGridMarkets } from '@/app/json'
 import {
   MarketKey,
   UiSpotMarket,
   TradingInterface,
   SpotMarketCyTags
 } from '@/types'
+
+const jsonStore = useSharedJsonStore()
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -20,8 +21,9 @@ const options = computed(() => [
   {
     value: TradingInterface.TradingBots,
     disabled:
-      spotGridMarkets.find(({ slug }) => slug === spotMarket.value.slug) ===
-      undefined
+      jsonStore.spotGridMarkets.find(
+        ({ slug }) => slug === spotMarket.value.slug
+      ) === undefined
   }
 ])
 

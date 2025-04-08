@@ -11,9 +11,11 @@ export enum MixPanelEvent {
   QrCodeBuyFunds = 'QR Code Buy Funds',
   OnramperSuccess = 'OnRamper Success',
   TradingBotError = 'Trading Bot Error',
+  RefereeLoggedIn = 'Referee Logged In',
   PlaceOrderClicked = 'Place Order Clicked',
   LiteBridgeBridged = 'Lite Bridge Bridged',
   LiteBridgePageView = 'Lite Bridge Page View',
+  ReferralCodeCreated = 'Referral Code Created',
   EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
   CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked'
 }

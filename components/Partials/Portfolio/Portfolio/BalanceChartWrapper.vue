@@ -6,9 +6,8 @@ const isMobile = useIsMobile()
 const appStore = useAppStore()
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
-const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } = useBalance(
-  { showUnverifiedAssetsOverride: true }
-)
+const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
+  useBalance()
 
 const status = reactive(new Status(StatusType.Loading))
 

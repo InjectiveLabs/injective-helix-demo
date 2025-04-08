@@ -17,7 +17,6 @@ import {
 import { excludedSwapDenoms } from '@/app/data/swap'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { TokenAndPriceAndDecimals } from '@/types'
-import { swapRoutes } from '~/app/json'
 
 type SwapStoreState = {
   routes: Route[]
@@ -55,9 +54,10 @@ export const useSwapStore = defineStore('swap', {
 
     async fetchRoutes() {
       const swapStore = useSwapStore()
+      const jsonStore = useSharedJsonStore()
 
-      if (swapRoutes.length) {
-        const routes = swapRoutes.map((route) => {
+      if (jsonStore.swapRoutes.length) {
+        const routes = jsonStore.swapRoutes.map((route) => {
           return {
             steps: route.steps,
             sourceDenom: route.source_denom,

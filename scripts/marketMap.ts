@@ -11,15 +11,7 @@ export const fetchMarketCategoryMap = async (
 
   try {
     const { data: slugs } = (await client.get(fileName)) as {
-      data: {
-        cosmosCategoryMap: Record<string, string>
-        solanaCategoryMap: Record<string, string>
-        ethereumCategoryMap: Record<string, string>
-        injectiveCategoryMap: Record<string, string>
-        newMarketsCategoryMap: Record<string, string>
-        olpLowVolumeCategoryMap: Record<string, string>
-        experimentalCategoryMap: Record<string, string>
-      }
+      data: any
     }
 
     storeJsonFile(`app/json/marketMap/category/${fileName}`, slugs)
@@ -102,7 +94,7 @@ export const fetchSpotGridMarkets = async (fileName: string): Promise<any> => {
 
   try {
     const { data: gridContracts } = (await client.get(fileName)) as {
-      data: string[]
+      data: any
     }
 
     storeJsonFile(`app/json/grid/spot/${fileName}`, gridContracts)
@@ -124,7 +116,7 @@ export const fetchDerivativeGridMarkets = async (
 
   try {
     const { data: gridContracts } = (await client.get(fileName)) as {
-      data: string[]
+      data: any
     }
 
     storeJsonFile(`app/json/grid/derivative/${fileName}`, gridContracts)
@@ -143,25 +135,20 @@ fetchMarketCategoryMap('mainnet.json')
 
 fetchSpotMarketMap('devnet.json')
 fetchSpotMarketMap('testnet.json')
-fetchSpotMarketMap('staging.json')
 fetchSpotMarketMap('mainnet.json')
 
 fetchDerivativeMarketMap('devnet.json')
 fetchDerivativeMarketMap('testnet.json')
-fetchDerivativeMarketMap('staging.json')
 fetchDerivativeMarketMap('mainnet.json')
 
 fetchExpiryFuturesMarketIds('devnet.json')
 fetchExpiryFuturesMarketIds('testnet.json')
-fetchExpiryFuturesMarketIds('staging.json')
 fetchExpiryFuturesMarketIds('mainnet.json')
 
 fetchSpotGridMarkets('devnet.json')
 fetchSpotGridMarkets('testnet.json')
-fetchSpotGridMarkets('staging.json')
 fetchSpotGridMarkets('mainnet.json')
 
 fetchDerivativeGridMarkets('devnet.json')
 fetchDerivativeGridMarkets('testnet.json')
-fetchDerivativeGridMarkets('staging.json')
 fetchDerivativeGridMarkets('mainnet.json')

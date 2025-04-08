@@ -7,6 +7,7 @@ const toast = useToast()
 const appStore = useAppStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
+const gridStrategyStore = useGridStrategyStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -94,6 +95,10 @@ onUnmounted(() => {
     clearTimeout(timeout)
   }
 })
+
+useIntervalFn(() => {
+  gridStrategyStore.fetchAllStrategies()
+}, 10000)
 </script>
 
 <template>

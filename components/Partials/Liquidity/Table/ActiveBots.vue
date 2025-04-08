@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { spotGridMarkets } from '@/app/json'
 import { UiSpotMarket } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const campaignStore = useCampaignStore()
 const { $onError } = useNuxtApp()
 
@@ -13,7 +13,7 @@ const status = reactive(new Status(StatusType.Loading))
 
 const sgtScAddress = computed(() => {
   const scAddress =
-    spotGridMarkets.find((sgt) => sgt.slug === props.market.slug)
+    jsonStore.spotGridMarkets.find((sgt) => sgt.slug === props.market.slug)
       ?.contractAddress || ''
 
   return scAddress

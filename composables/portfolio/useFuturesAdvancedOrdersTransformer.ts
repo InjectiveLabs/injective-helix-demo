@@ -14,10 +14,10 @@ import {
 export function useFuturesAdvancedOrdersTransformer(
   triggerList: ComputedRef<DerivativeOrderHistory[]>
 ) {
-  const { t } = useLang()
   const authZStore = useAuthZStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
+  const { t } = useLang()
 
   const orderSideList = [
     OrderSide.Buy,

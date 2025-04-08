@@ -41,7 +41,6 @@ import {
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
 import { combineOrderbookRecords } from '@/app/utils/market'
-import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
@@ -79,14 +78,17 @@ export const useSpotStore = defineStore('spot', {
     buys: (state) => state.orderbook?.buys || [],
     sells: (state) => state.orderbook?.sells || [],
 
-    activeMarketIds: (state) =>
-      state.markets
+    activeMarketIds: (state) => {
+      const jsonStore = useSharedJsonStore()
+
+      return state.markets
         .filter(
           ({ marketId }) =>
-            verifiedSpotMarketIds.includes(marketId) ||
-            state.marketIdsFromQuery.includes(marketId)
+            state.marketIdsFromQuery.includes(marketId) ||
+            jsonStore.verifiedSpotMarketIds.includes(marketId)
         )
-        .map((m) => m.marketId),
+        .map((m) => m.marketId)
+    },
 
     tradeableDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
@@ -156,6 +158,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchMarkets() {
       const spotStore = useSpotStore()
       const tokenStore = useTokenStore()
+      const jsonStore = useSharedJsonStore()
 
       const markets = await spotCacheApi.fetchMarkets()
 
@@ -187,7 +190,9 @@ export const useSpotStore = defineStore('spot', {
 
           return {
             ...formattedMarket,
-            isVerified: verifiedSpotMarketIds.includes(market.marketId)
+            isVerified: jsonStore.verifiedSpotMarketIds.includes(
+              market.marketId
+            )
           }
         })
         .filter(
@@ -196,8 +201,10 @@ export const useSpotStore = defineStore('spot', {
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex = verifiedSpotSlugs.indexOf(spotA.slug) || 1
-          const spotBIndex = verifiedSpotSlugs.indexOf(spotB.slug) || 1
+          const spotAIndex =
+            jsonStore.verifiedSpotSlugs.indexOf(spotA.slug) || 1
+          const spotBIndex =
+            jsonStore.verifiedSpotSlugs.indexOf(spotB.slug) || 1
 
           return spotAIndex - spotBIndex
         })

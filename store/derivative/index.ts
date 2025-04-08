@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import {
-  OrderSide,
-  OrderState,
-  TradeExecutionSide,
-  TradeExecutionType
-} from '@injectivelabs/ts-types'
+  indexerOracleApi,
+  cachePythService,
+  derivativeCacheApi,
+  indexerDerivativesApi
+} from '@shared/Service'
 import {
   PositionV2,
   PerpetualMarket,
@@ -13,17 +13,17 @@ import {
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
 import {
-  indexerOracleApi,
-  cachePythService,
-  derivativeCacheApi,
-  indexerDerivativesApi
-} from '@shared/Service'
-import {
   SharedMarketType,
   SharedUiMarketSummary,
   SharedUiDerivativeTrade,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
+import {
+  OrderSide,
+  OrderState,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import {
   toUiMarketSummary,
   toUiDerivativeMarket,
@@ -57,12 +57,6 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-import {
-  verifiedExpirySlugs,
-  verifiedDerivativeSlugs,
-  verifiedExpiryMarketIds,
-  verifiedDerivativeMarketIds
-} from '@/app/json'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
@@ -127,16 +121,19 @@ export const useDerivativeStore = defineStore('derivative', {
         (market) => market.subType === SharedMarketType.Futures
       ),
 
-    activeMarketIds: (state) =>
-      state.markets
+    activeMarketIds: (state) => {
+      const jsonStore = useSharedJsonStore()
+
+      return state.markets
         .filter(
           ({ marketId }) =>
             [
-              ...verifiedExpiryMarketIds,
-              ...verifiedDerivativeMarketIds
+              ...jsonStore.expiryMarketIds,
+              ...jsonStore.verifiedDerivativeMarketIds
             ].includes(marketId) || state.marketIdsFromQuery.includes(marketId)
         )
-        .map((m) => m.marketId),
+        .map((m) => m.marketId)
+    },
 
     tradeableDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
@@ -210,12 +207,16 @@ export const useDerivativeStore = defineStore('derivative', {
 
     async fetchMarkets() {
       const tokenStore = useTokenStore()
+      const jsonStore = useSharedJsonStore()
       const derivativeStore = useDerivativeStore()
 
       const markets =
         (await derivativeCacheApi.fetchMarkets()) as PerpetualMarket[]
 
-      const slugs = [...verifiedExpirySlugs, ...verifiedDerivativeSlugs]
+      const slugs = [
+        ...jsonStore.expirySlugs,
+        ...jsonStore.verifiedDerivativeSlugs
+      ]
 
       const uiMarkets = markets
         .map((market) => {
@@ -225,7 +226,7 @@ export const useDerivativeStore = defineStore('derivative', {
           })
 
           const [baseTokenSymbol] = slug.split('-')
-          const baseToken = tokenStore.tokenBySymbol(
+          const baseToken = tokenStore.tokenByDenomOrSymbol(
             baseTokenSymbol.toUpperCase()
           )
           const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
@@ -244,8 +245,8 @@ export const useDerivativeStore = defineStore('derivative', {
           return {
             ...formattedMarket,
             isVerified: [
-              ...verifiedExpiryMarketIds,
-              ...verifiedDerivativeMarketIds
+              ...jsonStore.expiryMarketIds,
+              ...jsonStore.verifiedDerivativeMarketIds
             ].includes(market.marketId)
           }
         })
@@ -279,7 +280,7 @@ export const useDerivativeStore = defineStore('derivative', {
           .replaceAll(' ', '-')
           .toLowerCase()
         const [baseTokenSymbol] = slug.split('-')
-        const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
+        const baseToken = tokenStore.tokenByDenomOrSymbol(baseTokenSymbol)
         const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
 
         if (!baseToken || !quoteToken) {
@@ -571,7 +572,7 @@ export const useDerivativeStore = defineStore('derivative', {
         .replaceAll(' ', '-')
         .toLowerCase()
       const [baseTokenSymbol] = slug.split('-')
-      const baseToken = tokenStore.tokenBySymbol(baseTokenSymbol)
+      const baseToken = tokenStore.tokenByDenomOrSymbol(baseTokenSymbol)
       const quoteToken = tokenStore.tokenByDenomOrSymbol(
         updatedMarket.quoteDenom
       )
