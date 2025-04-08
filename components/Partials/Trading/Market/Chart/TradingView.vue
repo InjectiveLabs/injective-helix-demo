@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { OrderSide } from '@injectivelabs/ts-types'
 import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import config from '@/app/trading-view/config'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
 import {
   BusEvents,
@@ -11,6 +13,7 @@ import {
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
@@ -21,7 +24,7 @@ const props = withDefaults(
     market: UiSpotMarket | UiDerivativeMarket
     orders?: {
       formattedPrice: string
-      formattedQuantity: string
+      formattedUnfilledQuantity: string
       order: SpotLimitOrder | DerivativeLimitOrder
     }[]
   }>(),
@@ -32,8 +35,11 @@ const emit = defineEmits<{
   ready: []
   'interval:change': [value: TradingChartInterval]
   'order:close': [order: SpotLimitOrder | DerivativeLimitOrder]
-  'limit-price:change': [
-    { order: SpotLimitOrder | DerivativeLimitOrder; newPrice: number }
+  'order:change': [
+    {
+      newPrice: number
+      order: SpotLimitOrder | DerivativeLimitOrder
+    }
   ]
 }>()
 
@@ -55,7 +61,9 @@ onMounted(() => {
     interval: props.interval,
     datafeedEndpoint: props.datafeedEndpoint
   })
+
   const tradingWidget = new TradingViewWidget(widgetOptions as any)
+
   tradingWidget.onChartReady(() => {
     tradingWidget.applyOverrides(widgetOptions.overrides)
 
@@ -125,30 +133,56 @@ function modifyLimitOrderLines() {
       return
     }
 
-    props.orders?.forEach(({ order, formattedPrice, formattedQuantity }) => {
-      const orderLine = chart.createOrderLine({ disableUndo: true })
+    props.orders?.forEach(
+      ({ order, formattedPrice, formattedUnfilledQuantity }) => {
+        const orderLine = chart.createOrderLine({ disableUndo: true })
 
-      orderLine.setLineStyle(2)
-      orderLine.setLineColor('#F16969')
-      orderLine.setBodyBackgroundColor('#FFF')
-      orderLine.setQuantityBackgroundColor('#000')
-      orderLine.setPrice(formattedPrice)
-      orderLine.setQuantity(formattedQuantity)
-      orderLine.setText(`Limit @ ${formattedPrice}`)
+        const themeColor = [OrderSide.Buy, OrderSide.BuyPO].includes(
+          order.orderSide
+        )
+          ? '#0EE29B'
+          : '#F3164D'
 
-      orderLine.onMove?.(() => {
-        const newPrice = orderLine.getPrice()
-        orderLine.setText(`Limit @ ${newPrice.toFixed(4)}`)
-        emit('limit-price:change', { order, newPrice })
-      })
+        orderLine.setLineStyle(2)
+        orderLine.setPrice(formattedPrice)
+        orderLine.setBodyTextColor(themeColor)
+        orderLine.setLineColor(themeColor)
+        orderLine.setBodyBackgroundColor('#000')
+        orderLine.setBodyBorderColor(themeColor)
+        orderLine.setQuantityBackgroundColor('#000')
+        orderLine.setQuantityBorderColor(themeColor)
+        orderLine.setCancelButtonBackgroundColor('#000')
+        orderLine.setCancelButtonIconColor(themeColor)
+        orderLine.setCancelButtonBorderColor(themeColor)
+        orderLine.setQuantity(
+          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+        )
+        orderLine.setText(
+          `${t('trade.limit')} ${t(
+            `trade.${order.orderSide}`
+          ).toUpperCase()} @ ${formattedPrice}`
+        )
 
-      orderLine.setCancellable(true)
-      orderLine.onCancel?.(() => {
-        emit('order:close', order)
-      })
+        orderLine.onMove?.(() => {
+          const newPrice = orderLine.getPrice()
+          orderLine.setText(
+            `${t('trade.limit')} ${t(
+              `trade.${order.orderSide}`
+            ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
+          )
 
-      orderLines.value[order.orderHash] = orderLine
-    })
+          emit('order:change', { order, newPrice })
+        })
+
+        orderLine.setCancellable(true)
+
+        orderLine.onCancel?.(() => {
+          emit('order:close', order)
+        })
+
+        orderLines.value[order.orderHash] = orderLine
+      }
+    )
   })
 }
 

@@ -584,13 +584,13 @@ export const submitTpSlOrder = async ({
 }
 
 export async function submitChase({
-  market,
+  price,
   order,
-  price
+  market
 }: {
+  price: BigNumberInBase
   market: UiDerivativeMarket
   order: DerivativeLimitOrder
-  price: BigNumberInBase
 }) {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -614,7 +614,7 @@ export async function submitChase({
       quoteDecimals: market.quoteToken.decimals
     }),
     triggerPrice: '0',
-    quantity: order.quantity,
+    quantity: order.unfilledQuantity,
     margin: order.margin,
     marketId: order.marketId,
     feeRecipient: FEE_RECIPIENT

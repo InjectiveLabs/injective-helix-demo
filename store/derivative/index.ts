@@ -175,12 +175,12 @@ export const useDerivativeStore = defineStore('derivative', {
   actions: {
     submitChase,
     cancelOrder,
+    submitTpSlOrder,
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
     submitStopLimitOrder,
     submitStopMarketOrder,
-    submitTpSlOrder,
 
     streamTrades,
     cancelTradesStream,

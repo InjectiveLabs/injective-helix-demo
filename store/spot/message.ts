@@ -390,7 +390,7 @@ export async function submitChase({
         feeRecipient: FEE_RECIPIENT,
         price: priceToFixed,
         triggerPrice: '0',
-        quantity: order.quantity,
+        quantity: order.unfilledQuantity,
         orderType: orderSideToChaseOrderType(order.orderSide)
       }
     ]

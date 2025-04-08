@@ -51,8 +51,12 @@ const datafeedEndpoint = computed(() =>
   )
 )
 
-const limitOrders = computed(() =>
-  (isSpot ? spotStore.subaccountOrders : derivativeStore.subaccountOrders)
+const limitOrders = computed(() => {
+  const ordersData = isSpot
+    ? spotStore.subaccountOrders
+    : derivativeStore.subaccountOrders
+
+  return ordersData
     .filter((order) => order.marketId === props.market.marketId)
     .map((order) => {
       const formattedPrice = (
@@ -69,21 +73,21 @@ const limitOrders = computed(() =>
             })
       ).toFixed(props.market.priceDecimals)
 
-      const formattedQuantity = (
+      const formattedUnfilledQuantity = (
         isSpot
-          ? new BigNumberInWei(order.quantity).toBase(
+          ? new BigNumberInWei(order.unfilledQuantity).toBase(
               (props.market as UiSpotMarket).baseToken.decimals
             )
-          : new BigNumberInBase(order.quantity)
+          : new BigNumberInBase(order.unfilledQuantity)
       ).toFixed(props.market.quantityDecimals)
 
       return {
         order,
         formattedPrice,
-        formattedQuantity
+        formattedUnfilledQuantity
       }
     })
-)
+})
 
 function onReady() {
   status.setIdle()
@@ -99,7 +103,7 @@ function onIntervalChange(value: TradingChartInterval) {
   })
 }
 
-function onLimitPriceChange({
+function onOrderChange({
   order,
   newPrice
 }: {
@@ -118,22 +122,20 @@ function onLimitPriceChange({
       .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
       .catch($onError)
       .finally(() => orderStatus.setIdle())
-
-    return
+  } else {
+    derivativeStore
+      .submitChase({
+        order: order as DerivativeLimitOrder,
+        price: new BigNumberInBase(newPrice),
+        market: props.market as UiDerivativeMarket
+      })
+      .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
+      .catch($onError)
+      .finally(() => orderStatus.setIdle())
   }
-
-  derivativeStore
-    .submitChase({
-      order: order as DerivativeLimitOrder,
-      price: new BigNumberInBase(newPrice),
-      market: props.market as UiDerivativeMarket
-    })
-    .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
-    .catch($onError)
-    .finally(() => orderStatus.setIdle())
 }
 
-function onLimitOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
+function onOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
   orderStatus.setLoading()
 
   if (props.isSpot) {
@@ -144,23 +146,20 @@ function onLimitOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
       })
       .catch($onError)
       .finally(() => orderStatus.setIdle())
-
-    return
+  } else {
+    derivativeStore
+      .cancelOrder(order as DerivativeLimitOrder)
+      .then(() =>
+        notificationStore.success({ title: t('trade.order_success_canceling') })
+      )
+      .catch($onError)
+      .finally(() => orderStatus.setIdle())
   }
-
-  derivativeStore
-    .cancelOrder(order as DerivativeLimitOrder)
-    .then(() =>
-      notificationStore.success({ title: t('trade.order_success_canceling') })
-    )
-    .catch($onError)
-    .finally(() => orderStatus.setIdle())
 }
 </script>
 
 <template>
   <div class="h-full relative">
-    <AppHocLoading v-bind="{ status }" is-helix />
     <ClientOnly>
       <AppHocLoading v-bind="{ status: orderStatus }" is-helix>
         <PartialsTradingMarketChartTradingView
@@ -176,9 +175,9 @@ function onLimitOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
               TradingChartInterval.D
           }"
           @ready="onReady"
+          @order:close="onOrderClose"
+          @order:change="onOrderChange"
           @interval:change="onIntervalChange"
-          @limit-price:change="onLimitPriceChange"
-          @order:close="onLimitOrderClose"
         />
       </AppHocLoading>
     </ClientOnly>
