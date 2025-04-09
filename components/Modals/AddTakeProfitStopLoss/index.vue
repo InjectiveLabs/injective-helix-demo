@@ -227,7 +227,7 @@ const tpWorstPrice = computed(() => {
   }
 
   return quantizeNumber(
-    new BigNumberInBase(tpTriggerPrice.value || 0),
+    new BigNumberInBase(takeProfitValue.value || 0),
     market.value.priceTensMultiplier
   )
 })
@@ -238,7 +238,7 @@ const slWorstPrice = computed(() => {
   }
 
   return quantizeNumber(
-    new BigNumberInBase(slTriggerPrice.value || 0),
+    new BigNumberInBase(stopLossValue.value || 0),
     market.value.priceTensMultiplier
   )
 })
