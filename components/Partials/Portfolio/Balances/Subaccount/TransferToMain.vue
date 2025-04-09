@@ -30,7 +30,7 @@ function transferToMain() {
   // the deposits instead of the executioner
 
   const action =
-    strategy.state === StrategyStatus.Active
+    strategy.state === StrategyStatus.Removed
       ? accountStore.withdrawToMain.bind(accountStore)
       : gridStrategyStore.removeSubaccountDeposits.bind(gridStrategyStore, {
           subaccountIds: [accountStore.subaccountId],
@@ -62,7 +62,10 @@ function handleClick() {
     return
   }
 
-  if (hasActiveStrategy.value) {
+  if (
+    hasActiveStrategy.value &&
+    hasActiveStrategy.value.state === StrategyStatus.Active
+  ) {
     modalStore.openModal(Modal.TransferToMainSubaccount)
   } else {
     transferToMain()
