@@ -32,6 +32,7 @@ import {
 } from '@/types'
 import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
 import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
+import ExecArgRemoveSubaccountDeposits from '~/app/grid-trading/ExecArgRemoveSubaccountDeposits'
 
 export const createSpotGridStrategy = async ({
   grids,
@@ -560,6 +561,49 @@ export async function createSpotLiquidityBot(params: {
 
   await walletStore.validateGeo()
   await walletStore.validate()
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+
+  backupPromiseCall(() =>
+    Promise.all([
+      accountStore.fetchCw20Balances(),
+      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
+    ])
+  )
+}
+
+export const removeSubaccountDeposits = async ({
+  subaccountIds,
+  contractAddress
+}: {
+  subaccountIds: string[]
+  contractAddress: string
+}) => {
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const gridStrategyStore = useGridStrategyStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  await walletStore.validate()
+
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    throw new GeneralException(new Error('AuthZ not supported for this action'))
+  }
+
+  const msg = ExecArgRemoveSubaccountDeposits.fromJSON({
+    subaccountIds
+  }).toExecData()
+
+  const messages = MsgExecuteContractCompat.fromJSON({
+    contractAddress,
+    sender: sharedWalletStore.injectiveAddress,
+    msg
+  })
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
