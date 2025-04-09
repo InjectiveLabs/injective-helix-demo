@@ -541,9 +541,11 @@ function resetTakeProfitStopLossForm() {
           <AppButton
             v-if="tpTriggerPrice"
             class="w-full py-1.5 mt-2 text-blue-500"
-            size="sm"
-            variant="primary-outline"
-            v-bind="{ status: cancelTpStatus }"
+            v-bind="{
+              size: 'sm',
+              status: cancelTpStatus,
+              variant: 'primary-outline'
+            }"
             @click="cancelTp"
           >
             {{ $t('trade.cancelTakeProfit') }}
@@ -589,9 +591,11 @@ function resetTakeProfitStopLossForm() {
           <AppButton
             v-if="slTriggerPrice"
             class="w-full py-1.5 mt-2 text-blue-500"
-            size="sm"
-            variant="primary-outline"
-            v-bind="{ status: cancelSlStatus }"
+            v-bind="{
+              size: 'sm',
+              status: cancelTpStatus,
+              variant: 'primary-outline'
+            }"
             @click="cancelSl"
           >
             {{ $t('trade.cancelStopLoss') }}

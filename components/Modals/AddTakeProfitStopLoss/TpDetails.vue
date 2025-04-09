@@ -22,9 +22,9 @@ const getTpQuantity = computed(() => {
   const tpOrderQuantity =
     derivativeStore.subaccountConditionalOrders.find(
       (order) =>
-        (order.marketId === props.position.marketId &&
-          order.orderType === ConditionalOrderSide.TakeBuy) ||
-        order.orderType === ConditionalOrderSide.TakeSell
+        order.marketId === props.position.marketId &&
+        (order.orderType === ConditionalOrderSide.TakeBuy ||
+          order.orderType === ConditionalOrderSide.TakeSell)
     )?.quantity || 0
 
   return props.tpTriggerPrice ? tpOrderQuantity : props.tpQuantity

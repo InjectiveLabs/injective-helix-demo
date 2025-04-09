@@ -22,9 +22,9 @@ const getSlQuantity = computed(() => {
   const slOrderQuantity =
     derivativeStore.subaccountConditionalOrders.find(
       (order) =>
-        (order.marketId === props.position.marketId &&
-          order.orderType === ConditionalOrderSide.StopBuy) ||
-        order.orderType === ConditionalOrderSide.StopSell
+        order.marketId === props.position.marketId &&
+        (order.orderType === ConditionalOrderSide.StopBuy ||
+          order.orderType === ConditionalOrderSide.StopSell)
     )?.quantity || 0
 
   return props.slTriggerPrice ? slOrderQuantity : props.slQuantity
