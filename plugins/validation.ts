@@ -435,6 +435,14 @@ export const defineGlobalRules = () => {
     return true
   })
 
+  defineRule('nonZeroPositionQuantity', (value: string | number) => {
+    if (new BigNumberInBase(value).isZero()) {
+      return 'Invalid amount: Please enter a valid quantity greater than zero.'
+    }
+
+    return true
+  })
+
   defineRule(
     'maxValuePositionQuantity',
     (value: string, [max]: string[], { field }: { field: string }) => {

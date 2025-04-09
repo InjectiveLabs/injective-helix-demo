@@ -722,9 +722,7 @@ export const prepareCancelTpSlOrderMsgs = ({
 
   const selectedPositionConditionalOrders =
     derivativeStore.subaccountConditionalOrders.filter(
-      (order) =>
-        order.marketId === market.marketId &&
-        order.subaccountId === accountStore.subaccountId
+      (order) => order.marketId === market.marketId
     )
 
   const tpOrder = selectedPositionConditionalOrders.find(

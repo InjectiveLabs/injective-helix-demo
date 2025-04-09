@@ -425,9 +425,9 @@ export default {
     slSuccessMessage:
       'your stop loss order has been set for {quantity} quantity at {price} price',
     takeProfitDetails:
-      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
+      'When Mark Price reaches {price}, it will trigger a Take Profit Market order for {quantity}.',
     stopLossDetails:
-      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
+      'When Mark Price reaches {price}, it will trigger a Stop Loss Market order for {quantity}.',
 
     rwa: {
       statusOfThisMarket: 'Status of this market',
