@@ -34,7 +34,6 @@ const validateTriggerField = useValidateField(
 )
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const { t } = useLang()
 const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
 const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
@@ -80,21 +79,6 @@ const activePosition = computed(() =>
     (position) => position.marketId === market.value.marketId
   )
 )
-
-const errorMessage = computed(() => {
-  if (isMarkPriceThresholdError.value) {
-    return t('trade.mark_price_invalid')
-  } else if (amountErrorMessage.value) {
-    return amountErrorMessage.value
-  } else if (isNotionalLessThanMinNotional.value) {
-    return t('trade.minNotionalError', {
-      minNotional: market.value.minNotionalInToken,
-      symbol: market.value.quoteToken.symbol
-    })
-  }
-
-  return ''
-})
 
 const {
   valueToString: quoteBalanceToString,
@@ -405,8 +389,30 @@ onMounted(() => {
       </template>
     </AppInputField>
 
-    <div v-if="errorMessage" class="error-message capitalize">
-      {{ errorMessage }}
-    </div>
+    <p
+      v-if="isMarkPriceThresholdError"
+      class="error-message first-letter:capitalize"
+    >
+      {{ $t('trade.mark_price_invalid') }}
+    </p>
+
+    <p
+      v-else-if="amountErrorMessage"
+      class="error-message first-letter:capitalize"
+    >
+      {{ amountErrorMessage }}
+    </p>
+
+    <p
+      v-else-if="isNotionalLessThanMinNotional"
+      class="error-message first-letter:capitalize"
+    >
+      {{
+        $t('trade.minNotionalError', {
+          symbol: market.quoteToken.symbol,
+          minNotional: market.minNotionalInToken
+        })
+      }}
+    </p>
   </div>
 </template>

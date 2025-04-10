@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { UiDerivativeMarket } from '@/types'
 
-const { t } = useLang()
-
 const props = withDefaults(
   defineProps<{
     modelValue?: string
@@ -22,25 +20,6 @@ const emit = defineEmits<{
 const slQuantity = computed({
   get: (): string | undefined => props.modelValue,
   set: (value: string) => emit('update:modelValue', value)
-})
-
-const getSlQuantityErrorMessage = computed(() => {
-  if (!props.market) {
-    return ''
-  }
-
-  if (props.isSlMarkPriceThresholdError) {
-    return t('trade.mark_price_invalid')
-  } else if (props.slQuantityErrorMessage) {
-    return props.slQuantityErrorMessage
-  } else if (props.isSlNotionalLessThanMinNotional) {
-    return t('trade.minNotionalError', {
-      minNotional: props.market.minNotionalInToken,
-      symbol: props.market.quoteToken.symbol
-    })
-  }
-
-  return ''
 })
 
 function onOptionUpdate(percentage: number) {
@@ -77,8 +56,30 @@ function onOptionUpdate(percentage: number) {
       </div>
     </div>
 
-    <p v-if="getSlQuantityErrorMessage" class="error-message">
-      {{ getSlQuantityErrorMessage }}
+    <p
+      v-if="isSlMarkPriceThresholdError"
+      class="error-message first-letter:capitalize"
+    >
+      {{ $t('trade.mark_price_invalid') }}
+    </p>
+
+    <p
+      v-else-if="slQuantityErrorMessage"
+      class="error-message first-letter:capitalize"
+    >
+      {{ slQuantityErrorMessage }}
+    </p>
+
+    <p
+      v-else-if="isSlNotionalLessThanMinNotional"
+      class="error-message first-letter:capitalize"
+    >
+      {{
+        $t('trade.minNotionalError', {
+          symbol: market.quoteToken.symbol,
+          minNotional: market.minNotionalInToken
+        })
+      }}
     </p>
   </div>
 </template>

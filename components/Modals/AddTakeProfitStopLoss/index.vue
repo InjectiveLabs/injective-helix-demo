@@ -4,7 +4,10 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_TOKEN_ASSET_DECIMALS
+} from '@/app/utils/constants'
 import {
   Modal,
   DerivativeTradeTypes,
@@ -20,23 +23,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { sm } = useSharedBreakpoints()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
-
-const props = withDefaults(
-  defineProps<{
-    position: PositionV2
-  }>(),
-  {}
-)
-
-const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
-
-const market = computed(() =>
-  derivativeStore.markets.find(
-    ({ marketId }) => marketId === props.position?.marketId
-  )
-)
-
-const { markPrice } = useDerivativeLastPrice(market)
+const { markPrice } = useDerivativeLastPrice(computed(() => market.value))
 
 const {
   liquidationPrice,
@@ -46,32 +33,47 @@ const {
 
 const { isMarkPriceThresholdError: isTpMarkPriceThresholdError } =
   useMarkPriceThresholdError({
-    isBuy,
-    market,
     markPrice,
+    isBuy: computed(() => isBuy.value),
+    market: computed(() => market.value),
     price: computed(() => tpWorstPrice.value),
+    triggerPrice: computed(() => tpTriggerPrice.value),
     quantity: computed(() => tpQuantizedQuantity.value),
     marginWithFee: computed(() => tpMarginWithFee.value),
-    type: computed(() => DerivativeTradeTypes.StopMarket),
-    triggerPrice: computed(() => tpTriggerPrice.value)
+    type: computed(() => DerivativeTradeTypes.StopMarket)
   })
 
 const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
   useMarkPriceThresholdError({
-    isBuy,
-    market,
     markPrice,
+    isBuy: computed(() => isBuy.value),
+    market: computed(() => market.value),
     price: computed(() => slWorstPrice.value),
+    triggerPrice: computed(() => slTriggerPrice.value),
     quantity: computed(() => slQuantizedQuantity.value),
     marginWithFee: computed(() => slMarginWithFee.value),
-    type: computed(() => DerivativeTradeTypes.StopMarket),
-    triggerPrice: computed(() => slTriggerPrice.value)
+    type: computed(() => DerivativeTradeTypes.StopMarket)
   })
+
+const props = withDefaults(
+  defineProps<{
+    position: PositionV2
+  }>(),
+  {}
+)
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
 const cancelTpStatus = reactive(new Status(StatusType.Idle))
 const cancelSlStatus = reactive(new Status(StatusType.Idle))
+
+const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
+
+const market = computed(() =>
+  derivativeStore.markets.find(
+    ({ marketId }) => marketId === props.position?.marketId
+  )
+)
 
 const isTpDisabled = computed(() => {
   const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
@@ -107,7 +109,8 @@ const tpOrderTriggerPrice = computed(() =>
   isTpDisabled.value?.triggerPrice
     ? sharedToBalanceInToken({
         value: isTpDisabled.value.triggerPrice,
-        decimalPlaces: market.value?.quoteToken.decimals || 8
+        decimalPlaces:
+          market.value?.quoteToken.decimals || UI_DEFAULT_TOKEN_ASSET_DECIMALS
       })
     : undefined
 )
@@ -116,7 +119,8 @@ const slOrderTriggerPrice = computed(() =>
   isSlDisabled.value?.triggerPrice
     ? sharedToBalanceInToken({
         value: isSlDisabled.value.triggerPrice,
-        decimalPlaces: market.value?.quoteToken.decimals || 8
+        decimalPlaces:
+          market.value?.quoteToken.decimals || UI_DEFAULT_TOKEN_ASSET_DECIMALS
       })
     : undefined
 )
@@ -128,11 +132,11 @@ const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
     rule: '',
     dynamicRule: computed(() => {
       const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
-        market.value?.priceDecimals || 2
+        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )}`
 
       const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
-        market.value?.priceDecimals || 2
+        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
       )}`
 
       if (isBuy.value) {
@@ -151,21 +155,21 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
     dynamicRule: computed(() => {
       if (isBuy.value) {
         const minValueRule = `minValue:${liquidationPrice.value.toFixed(
-          market.value?.priceDecimals || 2
+          market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
 
         const maxValueRule = `maxValue:${markPriceNotScaled.value.toFixed(
-          market.value?.priceDecimals || 2
+          market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
 
         return [minValueRule, maxValueRule].join('|')
       } else {
         const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
-          market.value?.priceDecimals || 2
+          market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
 
         const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
-          market.value?.priceDecimals || 2
+          market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
 
         return [minValueRule, maxValueRule].join('|')
@@ -601,7 +605,7 @@ function resetTakeProfitStopLossForm() {
             class="w-full py-1.5 mt-2 text-blue-500"
             v-bind="{
               size: 'sm',
-              status: cancelTpStatus,
+              status: cancelSlStatus,
               variant: 'primary-outline'
             }"
             @click="cancelSl"
