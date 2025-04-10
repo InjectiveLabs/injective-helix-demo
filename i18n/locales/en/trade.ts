@@ -112,6 +112,10 @@ export default {
     entryPrice: 'Entry Price',
     markPrice: 'Mark Price',
     previousMarkPrice: 'Previous Mark Price',
+    takeProfitTriggerPrice: 'Take Profit Trigger Price',
+    takeProfitQuantity: 'Take Profit Quantity',
+    stopLossTriggerPrice: 'Stop Loss Trigger Price',
+    stopLossQuantity: 'Stop Loss Quantity',
     direction: 'Direction',
     reduceOnly: 'Reduce Only',
     total_tooltip:
@@ -144,8 +148,7 @@ export default {
     margin: 'Margin',
     addTpSl: 'Add TP/SL',
     takeProfitStopLoss: 'Take Profit / Stop Loss',
-    takeProfitStopLossForEntirePosition:
-      'Take Profit / Stop Loss For Entire Position',
+    takeProfitStopLossForPosition: 'Take Profit / Stop Loss For Position',
     cancelTakeProfit: 'Cancel Take Profit',
     cancelStopLoss: 'Cancel Stop Loss',
     lastPrice: 'Last Price',
@@ -413,14 +416,18 @@ export default {
         'High slippage detected! Only proceed if you understand you might receive less {symbol} than anticipated.'
     },
 
-    estLiquidationPrice: 'Est. Liquidation Price',
-    lastUpdated: 'Last Updated',
     profitLoss: 'Profit/Loss',
+    lastUpdated: 'Last Updated',
+    totalQuantitySize: 'Total Quantity Size',
+    estLiquidationPrice: 'Est. Liquidation Price',
+    tpSuccessMessage:
+      'your take profit order has been set for {quantity} quantity at {price} price',
+    slSuccessMessage:
+      'your stop loss order has been set for {quantity} quantity at {price} price',
     takeProfitDetails:
-      'When Mark Price reaches {price} it will trigger a Take Profit Market order.',
-
+      'When Mark Price reaches {price}, it will trigger a Take Profit Market order for {quantity}.',
     stopLossDetails:
-      'When Mark Price reaches {price} it will trigger a Stop Loss Market order.',
+      'When Mark Price reaches {price}, it will trigger a Stop Loss Market order for {quantity}.',
 
     rwa: {
       statusOfThisMarket: 'Status of this market',

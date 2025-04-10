@@ -6,13 +6,13 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BusEvents,
   PositionTableColumn,
-  PerpetualMarketCyTags,
-  PositionAndReduceOnlyOrders
+  TransformedPosition,
+  PerpetualMarketCyTags
 } from '@/types'
 
+const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
-const breakpoints = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
@@ -47,7 +47,8 @@ const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
 
-const selectedPositionDetails = ref<PositionAndReduceOnlyOrders | undefined>()
+const selectedPositionQuantity = ref('0')
+const selectedPositionDetails = ref<TransformedPosition | undefined>()
 
 const columns = computed(() => {
   const baseColumns = [
@@ -137,23 +138,25 @@ function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
 
-function setSelectedPosition(value: PositionAndReduceOnlyOrders) {
+function setSelectedPosition(value: TransformedPosition | undefined) {
   selectedPositionDetails.value = value
 }
 
-function onClosePosition() {
+function setSelectedPositionQuantity(quantity: string) {
+  selectedPositionQuantity.value = quantity
+}
+
+function onClosePartialPosition() {
   if (!selectedPositionDetails.value) {
     return
   }
 
-  const action = selectedPositionDetails.value.reduceOnlyOrders.length
-    ? positionStore.closePositionAndReduceOnlyOrders({
-        position: selectedPositionDetails.value.position,
-        reduceOnlyOrders: selectedPositionDetails.value.reduceOnlyOrders
-      })
-    : positionStore.closePosition(selectedPositionDetails.value.position)
-
-  action
+  positionStore
+    .closePosition({
+      quantity: selectedPositionQuantity.value,
+      position: selectedPositionDetails.value.position,
+      availablePositionQuantity: selectedPositionDetails.value.quantity
+    })
     .then(() =>
       notificationStore.success({ title: t('trade.position_closed') })
     )
@@ -165,6 +168,7 @@ function onClosePosition() {
 
 function setPositionStatusIdle() {
   useEventBus(BusEvents.SetPositionStatusIdle).emit()
+  setSelectedPosition(undefined)
 }
 </script>
 
@@ -187,16 +191,7 @@ function setPositionStatusIdle() {
 
           <PartialsPositionsTableClosePositionButton
             v-if="!sixXl && !isTradingBots"
-            :pnl="row.pnl"
-            :market="row.market"
-            :quantity="row.quantity"
-            :position="row.position"
-            :mark-price="row.markPrice"
-            :has-reduce-only-orders="row.hasReduceOnlyOrders"
-            :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
-            :is-market-order-authorized="row.isMarketOrderAuthorized"
-            :is-limit-order-authorized="row.isLimitOrderAuthorized"
-            @position:close="onClosePosition"
+            v-bind="{ row }"
             @position:set="setSelectedPosition"
           />
         </div>
@@ -401,16 +396,7 @@ function setPositionStatusIdle() {
 
       <template #close-position-data="{ row }">
         <PartialsPositionsTableClosePositionButton
-          :pnl="row.pnl"
-          :market="row.market"
-          :position="row.position"
-          :quantity="row.quantity"
-          :mark-price="row.markPrice"
-          :has-reduce-only-orders="row.hasReduceOnlyOrders"
-          :is-limit-order-authorized="row.isLimitOrderAuthorized"
-          :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
-          :is-market-order-authorized="row.isMarketOrderAuthorized"
-          @position:close="onClosePosition"
+          v-bind="{ row }"
           @position:set="setSelectedPosition"
         />
       </template>
@@ -423,7 +409,6 @@ function setPositionStatusIdle() {
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
-      @position:close="onClosePosition"
       @position:set="setSelectedPosition"
       @tpsl:add="addTpSl(position.position)"
       @margin:add="addMargin(position.position)"
@@ -432,7 +417,15 @@ function setPositionStatusIdle() {
   </template>
 
   <ModalsClosePositionWarning
-    @close="setPositionStatusIdle"
-    @position:close="onClosePosition"
+    @on:close="setPositionStatusIdle"
+    @position:close="onClosePartialPosition"
+  />
+
+  <ModalsPartialClosePosition
+    v-if="selectedPositionDetails"
+    v-bind="{ row: selectedPositionDetails }"
+    @position:set="setSelectedPosition"
+    @position:close="onClosePartialPosition"
+    @position:setQuantity="setSelectedPositionQuantity"
   />
 </template>

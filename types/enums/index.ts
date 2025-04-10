@@ -40,6 +40,7 @@ export enum Modal {
   AddMarginToPosition = 'add-margin-to-position',
   VerifyJoinGuildHash = 'verify-join-guild-hash',
   ClosePositionWarning = 'close-position-warning',
+  PartialClosePosition = 'partial-close-position',
   ShareLeaderboardStats = 'share-leaderboard-stats',
   AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
   NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',

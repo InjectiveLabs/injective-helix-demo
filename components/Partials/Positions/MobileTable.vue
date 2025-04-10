@@ -7,8 +7,7 @@ import {
   UTableColumn,
   PositionTableColumn,
   TransformedPosition,
-  PerpetualMarketCyTags,
-  PositionAndReduceOnlyOrders
+  PerpetualMarketCyTags
 } from '@/types'
 
 const props = withDefaults(
@@ -26,8 +25,7 @@ const emit = defineEmits<{
   'tpsl:add': []
   'margin:add': []
   'position:share': []
-  'position:close': []
-  'position:set': [PositionAndReduceOnlyOrders]
+  'position:set': [TransformedPosition]
 }>()
 
 const filteredColumns = computed(() =>
@@ -60,11 +58,7 @@ function sharePosition() {
   emit('position:share')
 }
 
-function onClosePosition() {
-  emit('position:close')
-}
-
-function onSetPosition(value: PositionAndReduceOnlyOrders) {
+function onSetPosition(value: TransformedPosition) {
   emit('position:set', value)
 }
 </script>
@@ -97,16 +91,7 @@ function onSetPosition(value: PositionAndReduceOnlyOrders) {
           </AppButton>
 
           <PartialsPositionsTableClosePositionButton
-            :pnl="position.pnl"
-            :market="position.market"
-            :position="position.position"
-            :quantity="position.quantity"
-            :mark-price="position.markPrice"
-            :has-reduce-only-orders="position.hasReduceOnlyOrders"
-            :is-limit-order-authorized="position.isLimitOrderAuthorized"
-            :reduce-only-current-orders="position.reduceOnlyCurrentOrders"
-            :is-market-order-authorized="position.isMarketOrderAuthorized"
-            @position:close="onClosePosition"
+            v-bind="{ row: position }"
             @position:set="onSetPosition"
           />
         </div>
