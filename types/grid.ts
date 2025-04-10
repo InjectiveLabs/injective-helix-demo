@@ -121,3 +121,50 @@ export enum IndexerGridStrategyType {
   TrailingArithmetic = 'trailing_arithmetic',
   TrailingArithmeticLP = 'trailing_arithmetic_lp'
 }
+
+export type CloseGridStrategyData = {
+  close_strategy: {
+    subaccount_id: string
+  }
+}
+
+export type RemoveSubaccountDepositsData = {
+  remove_subaccount_deposits: {
+    subaccounts: string[]
+  }
+}
+
+export type CreateSpotGridStrategyData = {
+  subaccount_id: string
+  bounds: [string, string]
+  levels: number
+  slippage?: string
+  stop_loss?: {
+    exit_type: ExitType
+    exit_price: string
+  }
+  take_profit?: {
+    exit_type: ExitType
+    exit_price: string
+  }
+  exit_type?: ExitType
+  strategy_type?: SpotGridStrategyContractTypeParams[keyof SpotGridStrategyContractTypeParams]
+  fee_recipient?: string
+}
+
+export type CreatePerpGridStrategyData = {
+  subaccount_id: string
+  bounds: [string, string]
+  slippage?: string
+  stop_loss?: {
+    exit_type: ExitType
+    exit_price: string
+  }
+  take_profit?: {
+    exit_type: ExitType
+    exit_price: string
+  }
+  levels: number
+  strategy_type: PerpetualGridStrategyContractTypeParams[keyof PerpetualGridStrategyContractTypeParams]
+  fee_recipient?: string
+}
