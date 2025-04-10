@@ -53,6 +53,7 @@
     "@injectivelabs/wallet-strategy": "1.14.50",
     "@injectivelabs/wallet-trezor": "1.14.50",
     "@injectivelabs/wallet-wallet-connect": "1.14.50",
+    "@nuxt/eslint": "^1.2.0",
     "@nuxt/kit": "3.15.4",
     "@nuxt/ui": "^2.18.7",
     "@nuxtjs/dotenv": "^1.4.1",
