@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
@@ -9,10 +8,11 @@ import {
 import {
   MarketKey,
   TradeTypes,
-  SpotTradeForm,
-  SpotTradeFormField,
-  SpotMarketCyTags
+  SpotMarketCyTags,
+  SpotTradeFormField
 } from '@/types'
+import type { SpotTradeForm } from '@/types'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
@@ -40,16 +40,16 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
   }
 )
 

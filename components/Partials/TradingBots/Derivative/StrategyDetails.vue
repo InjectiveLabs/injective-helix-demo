@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
@@ -7,6 +6,9 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+
+const jsonStore = useSharedJsonStore()
 
 const { subaccountPortfolioBalanceMap } = useBalance()
 
@@ -264,7 +266,12 @@ const percentagePnl = computed(() =>
     </div>
 
     <div v-if="strategy.strategyStatus !== StrategyStatus.Removed" class="pt-4">
+      <AppButton v-if="jsonStore.isPostUpgradeMode" disabled class="w-full">
+        {{ $t('trade.postOnlyWarning') }}
+      </AppButton>
+
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
+        v-else
         v-slot="{ removeStrategy, status }"
         v-bind="{
           strategy: strategy.strategy,

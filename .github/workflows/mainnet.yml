@@ -29,8 +29,7 @@ jobs:
 
       ## Flags
       VITE_SHOW_REDEEM_VOUCHER: true
-      VITE_MAINTENANCE_ENABLED: false
-      VITE_BANNER_NOTICE_ENABLED: false
+      VITE_MAINTENANCE_DISABLED: false
       VITE_IS_ONRAMPER_DEV_MODE: false
 
       ## Endpoints

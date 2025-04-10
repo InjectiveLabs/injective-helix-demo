@@ -3,19 +3,16 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  UTableColumn,
-  PositionTableColumn,
-  TransformedPosition,
-  PerpetualMarketCyTags,
-  PositionAndReduceOnlyOrders
-} from '@/types'
+import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
+import type { UTableColumn, TransformedPosition } from '@/types'
+
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
-    position: TransformedPosition
     isTradingBots?: boolean
+    position: TransformedPosition
   }>(),
   {
     isTradingBots: false
@@ -26,8 +23,7 @@ const emit = defineEmits<{
   'tpsl:add': []
   'margin:add': []
   'position:share': []
-  'position:close': []
-  'position:set': [PositionAndReduceOnlyOrders]
+  'position:set': [TransformedPosition]
 }>()
 
 const filteredColumns = computed(() =>
@@ -60,11 +56,7 @@ function sharePosition() {
   emit('position:share')
 }
 
-function onClosePosition() {
-  emit('position:close')
-}
-
-function onSetPosition(value: PositionAndReduceOnlyOrders) {
+function onSetPosition(value: TransformedPosition) {
   emit('position:set', value)
 }
 </script>
@@ -90,23 +82,19 @@ function onSetPosition(value: PositionAndReduceOnlyOrders) {
         </PartialsCommonMarketRedirection>
 
         <div v-if="!isTradingBots" class="flex space-x-2">
-          <AppButton size="sm" class="py-2" @click="addTpSl">
+          <AppButton
+            size="sm"
+            class="py-2"
+            :disabled="jsonStore.isPostUpgradeMode"
+            @click="addTpSl"
+          >
             <span>
               {{ $t('trade.addTpSl') }}
             </span>
           </AppButton>
 
           <PartialsPositionsTableClosePositionButton
-            :pnl="position.pnl"
-            :market="position.market"
-            :position="position.position"
-            :quantity="position.quantity"
-            :mark-price="position.markPrice"
-            :has-reduce-only-orders="position.hasReduceOnlyOrders"
-            :is-limit-order-authorized="position.isLimitOrderAuthorized"
-            :reduce-only-current-orders="position.reduceOnlyCurrentOrders"
-            :is-market-order-authorized="position.isMarketOrderAuthorized"
-            @position:close="onClosePosition"
+            v-bind="{ row: position }"
             @position:set="onSetPosition"
           />
         </div>

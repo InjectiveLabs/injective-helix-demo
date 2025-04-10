@@ -2,13 +2,8 @@
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
-import {
-  MarketKey,
-  UiSpotMarket,
-  SpotTradeForm,
-  SpotMarketCyTags,
-  SpotTradeFormField
-} from '@/types'
+import { MarketKey, SpotMarketCyTags, SpotTradeFormField } from '@/types'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
 
@@ -17,8 +12,8 @@ const errors = useFormErrors<SpotTradeForm>()
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const { value: slippageValue } = useStringField({
-  name: SpotTradeFormField.Slippage,
-  rule: 'slippage'
+  rule: 'slippage',
+  name: SpotTradeFormField.Slippage
 })
 
 const isHighSlippage = computed(() =>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { dataCyTag } from '@shared/utils'
+import { commonCyTag } from '@shared/utils'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { isCountryRestrictedFullAccess } from '@/app/data/geoip'
 import { Modal, NavBarCyTags } from '@/types'
@@ -42,7 +42,7 @@ function onCloseModal() {
     <AppButton
       class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
       variant="primary"
-      :data-cy="dataCyTag(NavBarCyTags.WalletLoginButton)"
+      :data-cy="commonCyTag(NavBarCyTags.WalletLoginButton)"
       :is-loading="
         sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
       "

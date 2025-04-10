@@ -99,10 +99,15 @@ const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
   isBuy,
   market,
   markPrice,
-  formValues: derivativeFormValues,
   price: computed(() => props.worstPrice),
   quantity: computed(() => props.quantity),
-  marginWithFee: computed(() => props.marginWithFee)
+  marginWithFee: computed(() => props.marginWithFee),
+  type: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Type]
+  ),
+  triggerPrice: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+  )
 })
 
 const { value: typeValue } = useStringField({
@@ -118,28 +123,19 @@ const {
   name: DerivativesTradeFormField.Amount,
   initialValue: '',
   dynamicRule: computed(() => {
-    const markPriceThresholdError = `markPriceThresholdError:${isMarkPriceThresholdError.value}`
-
     if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
       const maxAmount = activePosition.value?.quantity
-      const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule, markPriceThresholdError]
-
-      return rules.join('|')
+      return `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
     } else {
       const maxAmount = quoteBalanceToBigNumber.value.toFixed()
       const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
 
-      const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
-
-      const rules = [insufficientBalanceRule, markPriceThresholdError]
-
       if (typeValue.value === TradeAmountOption.Quote) {
-        rules.push(minAmountRule)
+        return `${insufficientBalanceRule}|minAmount:${props.minimumAmountInQuote.toFixed()}`
       }
 
-      return rules.join('|')
+      return insufficientBalanceRule
     }
   })
 })
@@ -393,18 +389,30 @@ onMounted(() => {
       </template>
     </AppInputField>
 
-    <div
-      v-if="amountErrorMessage || isNotionalLessThanMinNotional"
-      class="error-message capitalize"
+    <p
+      v-if="isMarkPriceThresholdError"
+      class="error-message first-letter:capitalize"
+    >
+      {{ $t('trade.mark_price_invalid') }}
+    </p>
+
+    <p
+      v-else-if="amountErrorMessage"
+      class="error-message first-letter:capitalize"
+    >
+      {{ amountErrorMessage }}
+    </p>
+
+    <p
+      v-else-if="isNotionalLessThanMinNotional"
+      class="error-message first-letter:capitalize"
     >
       {{
-        amountErrorMessage
-          ? amountErrorMessage
-          : $t('trade.minNotionalError', {
-              minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.symbol
-            })
+        $t('trade.minNotionalError', {
+          symbol: market.quoteToken.symbol,
+          minNotional: market.minNotionalInToken
+        })
       }}
-    </div>
+    </p>
   </div>
 </template>

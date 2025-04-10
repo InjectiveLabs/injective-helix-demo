@@ -1,33 +1,31 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { PositionV2, TradeDirection } from '@injectivelabs/sdk-ts'
+import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  BusEvents,
-  PositionTableColumn,
-  PerpetualMarketCyTags,
-  PositionAndReduceOnlyOrders
-} from '@/types'
+import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
+import type { TransformedPosition } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
+const jsonStore = useSharedJsonStore()
+const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
-const breakpoints = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
-    ui?: Record<string, any>
     isTradingBots?: boolean
+    ui?: Record<string, any>
   }>(),
   {
     isTradingBots: false,
     ui: () => ({
-      th: {
-        base: 'whitespace-nowrap'
-      },
       td: {
         font: 'font-sans'
+      },
+      th: {
+        base: 'whitespace-nowrap'
       }
     })
   }
@@ -47,87 +45,84 @@ const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
 
-const selectedPositionDetails = ref<PositionAndReduceOnlyOrders | undefined>()
+const selectedPositionQuantity = ref('0')
+const selectedPositionDetails = ref<undefined | TransformedPosition>()
 
 const columns = computed(() => {
   const baseColumns = [
     {
+      class: 'w-[8%]',
       key: PositionTableColumn.Market,
-      label: t(`portfolio.table.position.${PositionTableColumn.Market}`),
-      class: 'w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Market}`)
     },
     {
+      class: 'w-[4%]',
       key: PositionTableColumn.Side,
-      label: t(`portfolio.table.position.${PositionTableColumn.Side}`),
-      class: 'w-[4%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Side}`)
     },
     {
+      class: 'text-right w-[6%]',
       key: PositionTableColumn.Contracts,
-      label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`),
-      class: 'text-right w-[6%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Contracts}`)
     },
     {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.Entry,
-      label: t(`portfolio.table.position.${PositionTableColumn.Entry}`),
-      class: 'text-right w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Entry}`)
     },
     {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.Mark,
-      label: t(`portfolio.table.position.${PositionTableColumn.Mark}`),
-      class: 'text-right w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Mark}`)
     },
     {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.UnrealizedPnl,
-      label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`),
-      class: 'text-right w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.UnrealizedPnl}`)
     },
     {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.TotalUsd,
-      label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`),
-      class: 'text-right w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.TotalUsd}`)
     },
     {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.LiquidationPrice,
       label: t(
         `portfolio.table.position.${PositionTableColumn.LiquidationPrice}`
-      ),
-      class: 'text-right w-[8%]'
+      )
     },
     {
+      class: 'text-right w-[7%]',
       key: PositionTableColumn.Leverage,
-      label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`),
-      class: 'text-right w-[7%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Leverage}`)
     }
   ]
 
   if (!props.isTradingBots) {
     baseColumns.splice(8, 0, {
+      class: 'text-right w-[8%]',
       key: PositionTableColumn.Margin,
-      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`),
-      class: 'text-right w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.Margin}`)
     })
 
     baseColumns.push({
+      class: 'text-center w-[8%]',
       key: PositionTableColumn.TpOrSl,
-      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`),
-      class: 'text-center w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.TpOrSl}`)
     })
   }
 
   if (sixXl.value && !props.isTradingBots) {
     baseColumns.push({
+      class: 'text-center w-[8%]',
       key: PositionTableColumn.ClosePosition,
-      label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`),
-      class: 'text-center w-[8%]'
+      label: t(`portfolio.table.position.${PositionTableColumn.ClosePosition}`)
     })
   }
 
   return baseColumns
 })
-
-function addTpSl(position: PositionV2) {
-  emit('tpsl:add', position)
-}
 
 function addMargin(position: PositionV2) {
   emit('margin:add', position)
@@ -137,23 +132,38 @@ function sharePosition(position: PositionV2) {
   emit('position:share', position)
 }
 
-function setSelectedPosition(value: PositionAndReduceOnlyOrders) {
+function setSelectedPositionQuantity(quantity: string) {
+  selectedPositionQuantity.value = quantity
+}
+
+function setSelectedPosition(value: undefined | TransformedPosition) {
   selectedPositionDetails.value = value
 }
 
-function onClosePosition() {
-  if (!selectedPositionDetails.value) {
+function setPositionStatusIdle() {
+  useEventBus(BusEvents.SetPositionStatusIdle).emit()
+  setSelectedPosition(undefined)
+}
+
+function addTpSl(position: PositionV2) {
+  if (jsonStore.isPostUpgradeMode) {
     return
   }
 
-  const action = selectedPositionDetails.value.reduceOnlyOrders.length
-    ? positionStore.closePositionAndReduceOnlyOrders({
-        position: selectedPositionDetails.value.position,
-        reduceOnlyOrders: selectedPositionDetails.value.reduceOnlyOrders
-      })
-    : positionStore.closePosition(selectedPositionDetails.value.position)
+  emit('tpsl:add', position)
+}
 
-  action
+function onClosePartialPosition() {
+  if (!selectedPositionDetails.value || jsonStore.isPostUpgradeMode) {
+    return
+  }
+
+  positionStore
+    .closePosition({
+      quantity: selectedPositionQuantity.value,
+      position: selectedPositionDetails.value.position,
+      availablePositionQuantity: selectedPositionDetails.value.quantity
+    })
     .then(() =>
       notificationStore.success({ title: t('trade.position_closed') })
     )
@@ -161,10 +171,6 @@ function onClosePosition() {
     .finally(() => {
       setPositionStatusIdle()
     })
-}
-
-function setPositionStatusIdle() {
-  useEventBus(BusEvents.SetPositionStatusIdle).emit()
 }
 </script>
 
@@ -187,16 +193,7 @@ function setPositionStatusIdle() {
 
           <PartialsPositionsTableClosePositionButton
             v-if="!sixXl && !isTradingBots"
-            :pnl="row.pnl"
-            :market="row.market"
-            :quantity="row.quantity"
-            :position="row.position"
-            :mark-price="row.markPrice"
-            :has-reduce-only-orders="row.hasReduceOnlyOrders"
-            :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
-            :is-market-order-authorized="row.isMarketOrderAuthorized"
-            :is-limit-order-authorized="row.isLimitOrderAuthorized"
-            @position:close="onClosePosition"
+            v-bind="{ row }"
             @position:set="setSelectedPosition"
           />
         </div>
@@ -378,39 +375,42 @@ function setPositionStatusIdle() {
 
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
-          <button
-            :disabled="appStore.isCountryRestricted"
-            class="flex p-2 focus-visible:outline-none"
-            @click="addTpSl(row.position)"
+          <AppTooltip
+            :ui="{ width: 'w-auto' }"
+            :content="$t('trade.postOnlyWarning')"
+            :is-disabled="!jsonStore.isPostUpgradeMode"
           >
-            <div
-              class="flex rounded-full transition"
-              :class="{
-                'hover:bg-coolGray-600': !appStore.isCountryRestricted
-              }"
+            <button
+              :disabled="
+                appStore.isCountryRestricted || jsonStore.isPostUpgradeMode
+              "
+              class="flex p-2 focus-visible:outline-none"
+              @click="addTpSl(row.position)"
             >
-              <UIcon
-                :name="NuxtUiIcons.CirclePlus"
-                class="h-6 w-6 min-w-6"
-                :class="{ 'text-coolGray-700': appStore.isCountryRestricted }"
-              />
-            </div>
-          </button>
+              <div
+                class="flex rounded-full transition"
+                :class="{
+                  'hover:bg-coolGray-600': !appStore.isCountryRestricted
+                }"
+              >
+                <UIcon
+                  :name="NuxtUiIcons.CirclePlus"
+                  class="h-6 w-6 min-w-6"
+                  :class="{
+                    'text-coolGray-700':
+                      appStore.isCountryRestricted ||
+                      jsonStore.isPostUpgradeMode
+                  }"
+                />
+              </div>
+            </button>
+          </AppTooltip>
         </div>
       </template>
 
       <template #close-position-data="{ row }">
         <PartialsPositionsTableClosePositionButton
-          :pnl="row.pnl"
-          :market="row.market"
-          :position="row.position"
-          :quantity="row.quantity"
-          :mark-price="row.markPrice"
-          :has-reduce-only-orders="row.hasReduceOnlyOrders"
-          :is-limit-order-authorized="row.isLimitOrderAuthorized"
-          :reduce-only-current-orders="row.reduceOnlyCurrentOrders"
-          :is-market-order-authorized="row.isMarketOrderAuthorized"
-          @position:close="onClosePosition"
+          v-bind="{ row }"
           @position:set="setSelectedPosition"
         />
       </template>
@@ -423,7 +423,6 @@ function setPositionStatusIdle() {
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
-      @position:close="onClosePosition"
       @position:set="setSelectedPosition"
       @tpsl:add="addTpSl(position.position)"
       @margin:add="addMargin(position.position)"
@@ -432,7 +431,15 @@ function setPositionStatusIdle() {
   </template>
 
   <ModalsClosePositionWarning
-    @close="setPositionStatusIdle"
-    @position:close="onClosePosition"
+    @on:close="setPositionStatusIdle"
+    @position:close="onClosePartialPosition"
+  />
+
+  <ModalsPartialClosePosition
+    v-if="selectedPositionDetails"
+    v-bind="{ row: selectedPositionDetails }"
+    @position:set="setSelectedPosition"
+    @position:close="onClosePartialPosition"
+    @position:set-quantity="setSelectedPositionQuantity"
   />
 </template>

@@ -6,7 +6,34 @@ export default defineNuxtConfig({
   hooks,
   ssr: false,
   builder: 'vite',
+  app: {
+    head
+  },
+
+  compatibilityDate: '2024-09-09',
+
   css: ['@/assets/css/tailwind.css'],
+
+  pinia: {
+    autoImports: ['defineStore']
+  },
+
+  sourcemap: {
+    client: true,
+    server: false
+  },
+
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui', '@nuxt/eslint'],
+
+  imports: {
+    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
+  },
+
+  i18n: {
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
+  },
 
   extends: [
     isLocalLayer
@@ -14,52 +41,23 @@ export default defineNuxtConfig({
       : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
-  app: {
-    head
-  },
-
-  sourcemap: {
-    server: false,
-    client: true
-  },
-
-  imports: {
-    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
-  },
-
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
-
-  pinia: {
-    autoImports: ['defineStore']
-  },
-
-  // @ts-ignore
-  i18n: {
-    defaultLocale: 'en',
-    strategy: 'no_prefix',
-    locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
-  },
-
-  // @ts-ignore
-  colorMode: {
-    preference: 'dark',
-    fallback: 'dark',
-    hid: 'nuxt-color-mode-script',
-    globalName: '__NUXT_COLOR_MODE__',
-    componentName: 'ColorScheme',
-    storage: 'localStorage',
-    storageKey: 'nuxt-color-mode'
-  },
-
-  // @ts-ignore
+  // @ts-expect-error - typing issue
   sitemap: {
+    gzip: true,
     hostname:
       process.env.VITE_BASE_URL &&
       !process.env.VITE_BASE_URL.includes('localhost')
         ? process.env.VITE_BASE_URL
-        : 'https://helixapp.com',
-    gzip: true
+        : 'https://helixapp.com'
   },
 
-  compatibilityDate: '2024-09-09'
+  colorMode: {
+    fallback: 'dark',
+    preference: 'dark',
+    storage: 'localStorage',
+    componentName: 'ColorScheme',
+    hid: 'nuxt-color-mode-script',
+    storageKey: 'nuxt-color-mode',
+    globalName: '__NUXT_COLOR_MODE__'
+  }
 })
