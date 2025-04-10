@@ -6,7 +6,6 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { indexerDerivativesApi } from '@shared/Service'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import { Modal, BusEvents, TransformedPosition } from '@/types'
 
@@ -44,7 +43,7 @@ const {
   valueToBigNumber: availableQuantityToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(availableQuantity.value)),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  { decimalPlaces: props.row.quantityDecimals }
 )
 
 const {
@@ -64,7 +63,7 @@ function selectPartialOption(quantityPercentage: number) {
     availableQuantityToBigNumber.value
       .times(quantityPercentage)
       .dividedBy(100)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+      .toFixed(props.row.quantityDecimals)
   )
 }
 
@@ -174,6 +173,7 @@ onMounted(() => {
               noStyle: true,
               alignLeft: true,
               placeholder: '0.00',
+              decimals: row.quantityDecimals,
               inputClasses:
                 'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
             }"

@@ -10,12 +10,12 @@ const props = withDefaults(
     isBuy: boolean
     tpQuantity?: string
     position: PositionV2
-    tpTriggerPrice?: string
     takeProfitValue: string
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
+    tpOrderTriggerPrice?: string
   }>(),
-  { tpQuantity: '', tpTriggerPrice: '' }
+  { tpQuantity: '', tpOrderTriggerPrice: '' }
 )
 
 const getTpQuantity = computed(() => {
@@ -27,7 +27,7 @@ const getTpQuantity = computed(() => {
           order.orderType === ConditionalOrderSide.TakeSell)
     )?.quantity || 0
 
-  return props.tpTriggerPrice ? tpOrderQuantity : props.tpQuantity
+  return props.tpOrderTriggerPrice ? tpOrderQuantity : props.tpQuantity
 })
 
 const hasNoTpQuantity = computed(() =>
@@ -35,8 +35,8 @@ const hasNoTpQuantity = computed(() =>
 )
 
 const takeProfitPnl = computed(() => {
-  const takeProfitPrice = props.tpTriggerPrice
-    ? new BigNumberInBase(props.tpTriggerPrice)
+  const takeProfitPrice = props.tpOrderTriggerPrice
+    ? new BigNumberInBase(props.tpOrderTriggerPrice)
     : new BigNumberInBase(props.takeProfitValue || 0)
 
   const takeProfitTotal = takeProfitPrice.times(getTpQuantity.value || 0)
@@ -56,11 +56,11 @@ const takeProfitPnl = computed(() => {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!takeProfitValue && !tpTriggerPrice"> &mdash;</span>
+        <span v-if="!takeProfitValue && !tpOrderTriggerPrice"> &mdash;</span>
         <AppAmount
           v-else
           v-bind="{
-            amount: tpTriggerPrice || takeProfitValue,
+            amount: tpOrderTriggerPrice || takeProfitValue,
             decimalPlaces: market.priceDecimals
           }"
         />
@@ -83,7 +83,7 @@ const takeProfitPnl = computed(() => {
   <p class="text-xs">
     <span>{{ $t('trade.profitLoss') }}: </span>
 
-    <span v-if="(!takeProfitValue && !tpTriggerPrice) || hasNoTpQuantity">
+    <span v-if="(!takeProfitValue && !tpOrderTriggerPrice) || hasNoTpQuantity">
       &mdash;
     </span>
     <span

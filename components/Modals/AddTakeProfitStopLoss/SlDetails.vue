@@ -11,11 +11,11 @@ const props = withDefaults(
     slQuantity: string
     position: PositionV2
     stopLossValue: string
-    slTriggerPrice?: string
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
+    slOrderTriggerPrice?: string
   }>(),
-  { slQuantity: '', slTriggerPrice: '' }
+  { slQuantity: '', slOrderTriggerPrice: '' }
 )
 
 const getSlQuantity = computed(() => {
@@ -27,7 +27,7 @@ const getSlQuantity = computed(() => {
           order.orderType === ConditionalOrderSide.StopSell)
     )?.quantity || 0
 
-  return props.slTriggerPrice ? slOrderQuantity : props.slQuantity
+  return props.slOrderTriggerPrice ? slOrderQuantity : props.slQuantity
 })
 
 const hasNoSlQuantity = computed(() =>
@@ -35,8 +35,8 @@ const hasNoSlQuantity = computed(() =>
 )
 
 const stopLossPnl = computed(() => {
-  const stopLossPrice = props.slTriggerPrice
-    ? new BigNumberInBase(props.slTriggerPrice)
+  const stopLossPrice = props.slOrderTriggerPrice
+    ? new BigNumberInBase(props.slOrderTriggerPrice)
     : new BigNumberInBase(props.stopLossValue || 0)
 
   const stopLossTotal = stopLossPrice.times(getSlQuantity.value || 0)
@@ -56,11 +56,11 @@ const stopLossPnl = computed(() => {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!stopLossValue && !slTriggerPrice"> &mdash;</span>
+        <span v-if="!stopLossValue && !slOrderTriggerPrice"> &mdash;</span>
         <AppAmount
           v-else
           v-bind="{
-            amount: slTriggerPrice || stopLossValue,
+            amount: slOrderTriggerPrice || stopLossValue,
             decimalPlaces: market.priceDecimals
           }"
         />
@@ -83,7 +83,7 @@ const stopLossPnl = computed(() => {
   <p class="text-xs">
     <span>{{ $t('trade.profitLoss') }}: </span>
 
-    <span v-if="(!stopLossValue && !slTriggerPrice) || hasNoSlQuantity">
+    <span v-if="(!stopLossValue && !slOrderTriggerPrice) || hasNoSlQuantity">
       &dash;
     </span>
     <span

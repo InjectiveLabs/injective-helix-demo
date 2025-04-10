@@ -53,7 +53,7 @@ const { isMarkPriceThresholdError: isTpMarkPriceThresholdError } =
     quantity: computed(() => tpQuantizedQuantity.value),
     marginWithFee: computed(() => tpMarginWithFee.value),
     type: computed(() => DerivativeTradeTypes.StopMarket),
-    triggerPrice: computed(() => tpTriggerPrice.value || '0')
+    triggerPrice: computed(() => tpTriggerPrice.value)
   })
 
 const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
@@ -65,7 +65,7 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
     quantity: computed(() => slQuantizedQuantity.value),
     marginWithFee: computed(() => slMarginWithFee.value),
     type: computed(() => DerivativeTradeTypes.StopMarket),
-    triggerPrice: computed(() => slTriggerPrice.value || '0')
+    triggerPrice: computed(() => slTriggerPrice.value)
   })
 
 const availableQuantity = ref('0')
@@ -95,7 +95,15 @@ const isSlDisabled = computed(() => {
   )
 })
 
-const tpTriggerPrice = computed(() =>
+const tpTriggerPrice = computed(
+  () => tpOrderTriggerPrice.value || takeProfitValue.value || '0'
+)
+
+const slTriggerPrice = computed(
+  () => slOrderTriggerPrice.value || stopLossValue.value || '0'
+)
+
+const tpOrderTriggerPrice = computed(() =>
   isTpDisabled.value?.triggerPrice
     ? sharedToBalanceInToken({
         value: isTpDisabled.value.triggerPrice,
@@ -104,7 +112,7 @@ const tpTriggerPrice = computed(() =>
     : undefined
 )
 
-const slTriggerPrice = computed(() =>
+const slOrderTriggerPrice = computed(() =>
   isSlDisabled.value?.triggerPrice
     ? sharedToBalanceInToken({
         value: isSlDisabled.value.triggerPrice,
@@ -286,7 +294,7 @@ const isTpNotionalLessThanMinNotional = computed(() => {
     return false
   }
 
-  const priceForNotional = new BigNumberInBase(tpTriggerPrice.value || 0)
+  const priceForNotional = new BigNumberInBase(tpTriggerPrice.value)
 
   if (
     !priceForNotional ||
@@ -306,7 +314,7 @@ const isSlNotionalLessThanMinNotional = computed(() => {
     return false
   }
 
-  const priceForNotional = new BigNumberInBase(slTriggerPrice.value || 0)
+  const priceForNotional = new BigNumberInBase(slTriggerPrice.value)
 
   if (
     !priceForNotional ||
@@ -533,13 +541,13 @@ function resetTakeProfitStopLossForm() {
               position,
               tpQuantity,
               entryPrice,
-              tpTriggerPrice,
+              tpOrderTriggerPrice,
               takeProfitValue
             }"
           />
 
           <AppButton
-            v-if="tpTriggerPrice"
+            v-if="tpOrderTriggerPrice"
             class="w-full py-1.5 mt-2 text-blue-500"
             v-bind="{
               size: 'sm',
@@ -584,12 +592,12 @@ function resetTakeProfitStopLossForm() {
               slQuantity,
               entryPrice,
               stopLossValue,
-              slTriggerPrice
+              slOrderTriggerPrice
             }"
           />
 
           <AppButton
-            v-if="slTriggerPrice"
+            v-if="slOrderTriggerPrice"
             class="w-full py-1.5 mt-2 text-blue-500"
             v-bind="{
               size: 'sm',
