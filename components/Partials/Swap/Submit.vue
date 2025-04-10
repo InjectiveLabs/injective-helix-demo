@@ -1,20 +1,18 @@
 <script lang="ts" setup>
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
 import { dataCyTag } from '@shared/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { NuxtUiIcons } from '@shared/types'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { isCountryRestrictedForSpotMarket } from '@/app/data/geoip'
 import { tradeErrorMessages } from '@/app/client/utils/validation/trade'
-import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
+import { Modal, SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
+import type { Status } from '@injectivelabs/utils'
 
 const swapStore = useSwapStore()
-const modalStore = useSharedModalStore()
 const formErrors = useFormErrors()
+const jsonStore = useSharedJsonStore()
+const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
@@ -28,10 +26,7 @@ withDefaults(
     showErrorState: boolean
   }>(),
   {
-    isLoading: false,
-    showErrorState: false,
-    queryError: '',
-    status: () => new Status(StatusType.Idle)
+    queryError: ''
   }
 )
 
@@ -45,7 +40,7 @@ const END_OF_COUNTDOWN = 0
 
 const swapTimeRemaining = ref(0)
 const rateExpired = ref(false)
-const countdownInterval = ref(undefined as NodeJS.Timeout | undefined)
+const countdownInterval = ref(undefined as undefined | NodeJS.Timeout)
 
 const {
   inputToken,
@@ -86,8 +81,8 @@ const restrictedTokenBasedOnUserGeoIP = computed(() => {
     }
 
     return isCountryRestrictedForSpotMarket({
-      country: sharedGeoStore.country,
-      denomOrSymbol: denom
+      denomOrSymbol: denom,
+      country: sharedGeoStore.country
     })
   })
 
@@ -140,6 +135,22 @@ const insufficientBalance = computed(() => {
   return tradeErrorMessages.enoughBalance()
 })
 
+function submit() {
+  emit('submit')
+}
+
+function onConnect() {
+  modalStore.openModal(Modal.Connect)
+}
+
+function getResultQuantity() {
+  if (swapStore.isInputEntered) {
+    return emit('update:outputQuantity')
+  }
+
+  emit('update:inputQuantity')
+}
+
 function resetCountdownValues() {
   clearInterval(countdownInterval.value)
   rateExpired.value = false
@@ -160,22 +171,6 @@ function startSwapCountdown() {
       rateExpired.value = true
     }
   }, 1000)
-}
-
-function submit() {
-  emit('submit')
-}
-
-function getResultQuantity() {
-  if (swapStore.isInputEntered) {
-    return emit('update:outputQuantity')
-  }
-
-  emit('update:inputQuantity')
-}
-
-function onConnect() {
-  modalStore.openModal(Modal.Connect)
 }
 
 watch(
@@ -231,6 +226,14 @@ watch(
       :disabled="true"
     >
       {{ $t('common.unauthorized') }}
+    </AppButton>
+
+    <AppButton
+      v-if="jsonStore.isPostUpgradeMode"
+      disabled
+      class="mb-2 w-full text-coolGray-525 text-opacity-100"
+    >
+      {{ $t('trade.postOnlyWarning') }}
     </AppButton>
 
     <AppButton

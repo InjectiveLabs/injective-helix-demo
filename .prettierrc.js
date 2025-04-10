@@ -1,3 +1,7 @@
 module.exports = {
-  ...require('@injectivelabs/prettier-config')
+  semi: false,
+  printWidth: 80,
+  singleQuote: true,
+  endOfLine: 'auto',
+  trailingComma: 'none'
 }

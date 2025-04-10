@@ -29,7 +29,7 @@ jobs:
 
       ## Flags
       VITE_VPN_CHECKS_ENABLED: false
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_MAINTENANCE_DISABLED: false
       VITE_IS_ONRAMPER_DEV_MODE: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 

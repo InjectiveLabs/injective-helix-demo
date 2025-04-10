@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { MarketType } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { MarketType } from '@injectivelabs/sdk-ts'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  DerivativeGridStrategyTransformed,
-  GridStrategyTransformed,
-  PortfolioTradingBotsRunningTableColumn,
-  StrategyStatus,
   TradeSubPage,
-  TradingInterface
+  StrategyStatus,
+  TradingInterface,
+  PortfolioTradingBotsRunningTableColumn
+} from '@/types'
+import type {
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const gridStrategyStore = useGridStrategyStore()
-const { lg } = useSharedBreakpoints()
 const { t } = useLang()
+const { lg } = useSharedBreakpoints()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<
-  GridStrategyTransformed | DerivativeGridStrategyTransformed | null
+  null | GridStrategyTransformed | DerivativeGridStrategyTransformed
 >(null)
 
 const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
@@ -44,37 +47,37 @@ const formattedStrategies = computed(() =>
 
 const columns = computed(() => [
   {
-    key: PortfolioTradingBotsRunningTableColumn.Time,
+    class: 'w-32',
     label: t('sgt.startTime'),
-    class: 'w-32'
+    key: PortfolioTradingBotsRunningTableColumn.Time
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Market,
-    label: t('sgt.market')
+    label: t('sgt.market'),
+    key: PortfolioTradingBotsRunningTableColumn.Market
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.LowerBound,
-    label: t('sgt.lowerBound')
+    label: t('sgt.lowerBound'),
+    key: PortfolioTradingBotsRunningTableColumn.LowerBound
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.UpperBound,
-    label: t('sgt.upperBound')
+    label: t('sgt.upperBound'),
+    key: PortfolioTradingBotsRunningTableColumn.UpperBound
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.TotalAmount,
-    label: t('sgt.totalAmount')
+    label: t('sgt.totalAmount'),
+    key: PortfolioTradingBotsRunningTableColumn.TotalAmount
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.TotalProfit,
-    label: t('sgt.totalProfit')
+    label: t('sgt.totalProfit'),
+    key: PortfolioTradingBotsRunningTableColumn.TotalProfit
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Duration,
-    label: t('sgt.duration')
+    label: t('sgt.duration'),
+    key: PortfolioTradingBotsRunningTableColumn.Duration
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Details,
-    label: t('sgt.details')
+    label: t('sgt.details'),
+    key: PortfolioTradingBotsRunningTableColumn.Details
   }
   // {
   //   key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
@@ -128,6 +131,7 @@ function selectStrategy(
         >
           <UAvatar size="xs" :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
+
           <PartialsLiquidityBotsSpotCommonRemoveStrategy
             v-bind="{
               strategy: row.strategy,
@@ -136,17 +140,27 @@ function selectStrategy(
             }"
           >
             <template #default="{ removeStrategy, status }">
-              <AppButton
-                :is-loading="
-                  status.isLoading() ||
-                  row.strategyStatus === StrategyStatus.Pending
-                "
-                variant="danger-ghost"
-                class="p-1"
-                @click="removeStrategy"
+              <AppTooltip
+                :ui="{ width: 'w-auto' }"
+                :is-disabled="!jsonStore.isPostUpgradeMode"
+                :content="t('trade.postOnlyWarning')"
               >
-                <UIcon :name="NuxtUiIcons.Trash" class="size-4 text-red-500" />
-              </AppButton>
+                <AppButton
+                  :is-loading="
+                    status.isLoading() ||
+                    row.strategyStatus === StrategyStatus.Pending
+                  "
+                  class="p-1"
+                  variant="danger-ghost"
+                  :disabled="jsonStore.isPostUpgradeMode"
+                  @click="removeStrategy"
+                >
+                  <UIcon
+                    :name="NuxtUiIcons.Trash"
+                    class="size-4 text-red-500"
+                  />
+                </AppButton>
+              </AppTooltip>
             </template>
           </PartialsLiquidityBotsSpotCommonRemoveStrategy>
         </NuxtLink>

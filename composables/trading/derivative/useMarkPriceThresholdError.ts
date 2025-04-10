@@ -1,29 +1,26 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { excludedPriceDeviationSlugs } from '@/app/data/market'
-import {
-  UiDerivativeMarket,
-  DerivativesTradeForm,
-  DerivativeTradeTypes,
-  DerivativesTradeFormField
-} from '@/types'
+import { UiDerivativeMarket, DerivativeTradeTypes } from '@/types'
 
 export function useMarkPriceThresholdError({
+  type,
   price,
   isBuy,
   market,
   quantity,
   markPrice,
-  formValues,
+  triggerPrice,
   marginWithFee
 }: {
   isBuy: Ref<boolean>
   markPrice: Ref<string>
   price: Ref<BigNumberInBase>
   quantity: Ref<BigNumberInBase>
-  market: Ref<UiDerivativeMarket>
   marginWithFee: Ref<BigNumberInBase>
-  formValues: ComputedRef<Partial<DerivativesTradeForm>>
+  triggerPrice: Ref<string | undefined>
+  market: Ref<UiDerivativeMarket | undefined>
+  type: Ref<DerivativeTradeTypes | undefined>
 }) {
   /**
    * Computes whether the current Mark Price violates margin requirements.
@@ -39,15 +36,20 @@ export function useMarkPriceThresholdError({
    */
 
   const isMarkPriceThresholdError = computed(() => {
-    if (!market.value || !quantity.value || !markPrice.value || !price.value) {
-      return undefined
+    const markPriceInBigNumber = new BigNumberInBase(markPrice.value || 0)
+
+    if (
+      !price.value ||
+      !market.value ||
+      !quantity.value ||
+      markPriceInBigNumber.isZero()
+    ) {
+      return false
     }
 
     if (excludedPriceDeviationSlugs.includes(market.value.ticker)) {
-      return undefined
+      return false
     }
-
-    const markPriceInBigNumber = new BigNumberInBase(markPrice.value)
 
     if (markPriceInBigNumber.lte(0)) {
       return true
@@ -79,22 +81,21 @@ export function useMarkPriceThresholdError({
     )
 
     const isConditionalMarketOrder =
-      DerivativeTradeTypes.StopMarket ===
-      formValues.value[DerivativesTradeFormField.Type]
+      type.value === DerivativeTradeTypes.StopMarket
 
-    const triggerPrice = new BigNumberInBase(
-      formValues.value[DerivativesTradeFormField.TriggerPrice] || 0
+    const triggerPriceToBigNumber = new BigNumberInBase(
+      triggerPrice.value || '0'
     )
 
     // validate mark price against markPriceThreshold
     const isMarkPriceBelowThreshold = isConditionalMarketOrder
       ? markPriceInBigNumber.lt(thresholdMarkPrice) ||
-        triggerPrice.lt(thresholdMarkPrice)
+        triggerPriceToBigNumber.lt(thresholdMarkPrice)
       : markPriceInBigNumber.lt(thresholdMarkPrice)
 
     const isMarkPriceAboveThreshold = isConditionalMarketOrder
       ? markPriceInBigNumber.gt(thresholdMarkPrice) ||
-        triggerPrice.gt(thresholdMarkPrice)
+        triggerPriceToBigNumber.gt(thresholdMarkPrice)
       : markPriceInBigNumber.gt(thresholdMarkPrice)
 
     // Buys: mark price should not be below thresholdMarkPrice

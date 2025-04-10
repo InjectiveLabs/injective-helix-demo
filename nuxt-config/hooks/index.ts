@@ -1,14 +1,13 @@
-import { NuxtHooks } from 'nuxt/schema'
-import { NitroConfig } from 'nitropack'
+import { TradePage, TradeSubPage } from './../../types/page'
 import {
   expiryMarketIdMap,
   verifiedSpotMarketIdMap,
   verifiedDerivateMarketIdMap
 } from './../../app/json'
-import { TradePage, TradeSubPage } from './../../types/page'
+import type { NitroConfig } from 'nitropack'
+import type { NuxtHooks } from 'nuxt/schema'
 
 const customStaticRoutes: string[] = []
-const upcomingMarketsRoutes: string[] = []
 
 export default {
   'pages:extend'(pages) {
@@ -18,16 +17,16 @@ export default {
     if (futuresPage) {
       pages.push({
         ...futuresPage,
-        name: TradeSubPage.Futures,
-        path: '/futures/:slug()'
+        path: '/futures/:slug()',
+        name: TradeSubPage.Futures
       })
     }
 
     if (spotPage) {
       pages.push({
         ...spotPage,
-        name: TradeSubPage.Spot,
-        path: '/spot/:slug()'
+        path: '/spot/:slug()',
+        name: TradeSubPage.Spot
       })
     }
   },
@@ -43,8 +42,8 @@ export default {
     nitroConfig.prerender.routes = [
       ...nitroConfig.prerender.routes,
       ...customStaticRoutes,
-      ...upcomingMarketsRoutes,
       ...Object.keys(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
+      ...Object.values(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
       ...[
         ...Object.keys(verifiedDerivateMarketIdMap),
         ...Object.keys(expiryMarketIdMap)

@@ -89,9 +89,9 @@ function disconnect() {
             <div class="flex flex-col py-3 px-4 border-b">
               <div class="flex justify-between pb-2">
                 <div class="flex items-center gap-2">
-                  <span class="text-sm font-semibold text-coolGray-200">
+                  <p class="text-sm font-semibold text-coolGray-200 mb-1">
                     {{ $t('navigation.myAccount') }}
-                  </span>
+                  </p>
 
                   <NuxtLink :to="{ name: PortfolioSubPage.Settings }">
                     <UIcon

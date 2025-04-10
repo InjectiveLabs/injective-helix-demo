@@ -1,12 +1,16 @@
-import { MAINTENANCE_ENABLED } from '@shared/utils/constant'
+import { MAINTENANCE_DISABLED } from '@shared/utils/constant'
 import { MainPage } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
-  if (to.name !== MainPage.Maintenance && MAINTENANCE_ENABLED) {
+  const jsonStore = useSharedJsonStore()
+
+  const isMaintenanceMode = !MAINTENANCE_DISABLED && jsonStore.isMaintenanceMode
+
+  if (to.name !== MainPage.Maintenance && isMaintenanceMode) {
     return navigateTo({ name: MainPage.Maintenance })
   }
 
-  if (to.name === MainPage.Maintenance && !MAINTENANCE_ENABLED) {
+  if (to.name === MainPage.Maintenance && !isMaintenanceMode) {
     return navigateTo({ name: MainPage.Index })
   }
 })

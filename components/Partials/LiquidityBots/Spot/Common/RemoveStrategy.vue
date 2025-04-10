@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
-
+import { MarketType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { StrategyStatus } from '@/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { StrategyStatus } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 const props = defineProps<{
-  strategy: TradingStrategy
   pnl: string
   pnlPercentage: string
+  strategy: TradingStrategy
 }>()
 
 const toast = useToast()
@@ -61,8 +61,8 @@ function removeStrategy() {
       } else {
         Promise.all([
           derivativeStore.fetchOrdersForSubaccount({
-            marketIds: [marketId],
-            subaccountId
+            subaccountId,
+            marketIds: [marketId]
           }),
           derivativeStore.fetchOrderHistoryForSubaccount({
             subaccountId
@@ -75,8 +75,8 @@ function removeStrategy() {
 
       toast.add({
         title: t('sgt.success'),
-        description: t('sgt.gridStrategyRemovedSuccessfully'),
-        icon: NuxtUiIcons.Checkmark
+        icon: NuxtUiIcons.Checkmark,
+        description: t('sgt.gridStrategyRemovedSuccessfully')
       })
 
       isOpen.value = true

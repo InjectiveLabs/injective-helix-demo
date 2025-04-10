@@ -4,6 +4,7 @@ import {
   createPerpStrategy,
   createSpotLiquidityBot,
   createSpotGridStrategy,
+  removeSubaccountDeposits,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
@@ -133,8 +134,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     createPerpStrategy,
     createSpotGridStrategy,
     createSpotLiquidityBot,
+    removeSubaccountDeposits,
     removeStrategyForSubaccount,
-
     async fetchStrategies(marketId?: string) {
       const sharedWalletStore = useSharedWalletStore()
 

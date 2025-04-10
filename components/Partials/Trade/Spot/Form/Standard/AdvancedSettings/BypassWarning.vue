@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotTradeFormField, SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags, SpotTradeFormField } from '@/types'
 
 const { value: bypassPriceWarningValue } = useBooleanField({
-  name: SpotTradeFormField.BypassPriceWarning,
-  rule: ''
+  rule: '',
+  name: SpotTradeFormField.BypassPriceWarning
 })
 </script>
 

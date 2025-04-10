@@ -116,8 +116,7 @@ const actionsThatSetAppStateToBusy = [
   'account/convertNeptuneToPeggyUsdt',
   'account/convertPeggyToNeptuneUsdt',
   'swap/submitAtomicOrderExactOutput',
-  'activity/batchCancelDerivativeOrders',
-  'position/closePositionAndReduceOnlyOrders'
+  'activity/batchCancelDerivativeOrders'
 ]
 
 const actionsThatThrowErrors = ['token/fetchTokensUsdPriceMap']

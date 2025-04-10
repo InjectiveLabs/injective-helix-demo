@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
@@ -12,11 +12,10 @@ import {
   ChartViewOption,
   MixPanelOrderType,
   IsRWAMarketOpenKey,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const resetForm = useResetForm()
 const authZStore = useAuthZStore()
@@ -43,21 +42,27 @@ const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
 const props = withDefaults(
   defineProps<{
     margin: BigNumberInBase
-    totalNotional: BigNumberInBase
-    worstPrice: BigNumberInBase
-    feeAmount: BigNumberInBase
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    feeAmount: BigNumberInBase
+    worstPrice: BigNumberInBase
+    totalNotional: BigNumberInBase
+    marginWithFee: BigNumberInBase
   }>(),
   {}
 )
+
+const chartType = ref(ChartViewOption.Chart)
+const status = reactive(new Status(StatusType.Idle))
 
 const isRWAMarket = computed(() =>
   jsonStore.isTradeFiMarket(derivativeMarket.value.marketId)
 )
 
-const chartType = ref(ChartViewOption.Chart)
-const status = reactive(new Status(StatusType.Idle))
+const isPostOnlyEnable = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+    DerivativeTradeTypes.Limit
+)
 
 const triggerPrice = computed(
   () =>
@@ -98,20 +103,25 @@ const isBuy = computed(
 const currentFormValues = computed(
   () =>
     ({
+      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE,
       [DerivativesTradeFormField.Type]:
         derivativeFormValues.value[DerivativesTradeFormField.Type],
       [DerivativesTradeFormField.Side]:
         derivativeFormValues.value[DerivativesTradeFormField.Side],
-      [DerivativesTradeFormField.AmountOption]:
-        derivativeFormValues.value[DerivativesTradeFormField.AmountOption],
       [DerivativesTradeFormField.Slippage]:
         derivativeFormValues.value[DerivativesTradeFormField.Slippage],
-      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE
+      [DerivativesTradeFormField.AmountOption]:
+        derivativeFormValues.value[DerivativesTradeFormField.AmountOption]
     }) as DerivativesTradeForm
 )
 
 const orderTypeToSubmit = computed(() =>
   getDerivativeOrderTypeToSubmit({
+    isBuy: isBuy.value,
+    markPrice: markPrice.value,
+    triggerPrice: triggerPrice.value.toFixed(),
+    isPostOnly:
+      !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
     isStopOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
@@ -119,12 +129,7 @@ const orderTypeToSubmit = computed(() =>
       derivativeFormValues.value[
         DerivativesTradeFormField.Type
       ] as DerivativeTradeTypes
-    ),
-    isBuy: isBuy.value,
-    isPostOnly:
-      !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    markPrice: markPrice.value,
-    triggerPrice: triggerPrice.value.toFixed()
+    )
   })
 )
 
@@ -148,6 +153,10 @@ const isDisabled = computed(() => {
   const tradeType = derivativeFormValues.value[
     DerivativesTradeFormField.Type
   ] as DerivativeTradeTypes
+
+  if (!isPostOnlyEnable.value && jsonStore.isPostUpgradeMode) {
+    return true
+  }
 
   if (Object.keys(formErrors.value).length > 0) {
     return true
@@ -186,21 +195,23 @@ const isDisabled = computed(() => {
   ) {
     return true
   }
+
+  return false
 })
 
 const mixPanelFields = computed(() => ({
-  isAutoSign: sharedWalletStore.isAutoSignEnabled,
   isBuy: isBuy.value,
+  chartType: chartType.value,
+  amount: props.quantity.toFixed(),
   market: derivativeMarket.value.slug,
   marketType: SharedMarketType.Derivative,
-  amount: props.quantity.toFixed(),
+  reduceOnly: isOrderTypeReduceOnly.value,
+  isAutoSign: sharedWalletStore.isAutoSignEnabled,
+  postOnly: !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
   leverage:
     derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '',
   slippageTolerance:
-    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '',
-  reduceOnly: isOrderTypeReduceOnly.value,
-  postOnly: !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-  chartType: chartType.value
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || ''
 }))
 
 onMounted(() => {
@@ -208,6 +219,39 @@ onMounted(() => {
     chartType.value = chart
   })
 })
+
+function onSubmit() {
+  if (!isRWAMarket.value) {
+    submit()
+
+    return
+  }
+
+  if (!isRWAMarketOpen.value) {
+    return modalStore.openModal(Modal.ClosedRWAMarket)
+  }
+
+  submit()
+}
+
+async function submit() {
+  const { valid } = await validate()
+
+  if (!valid) {
+    return
+  }
+
+  switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
+    case DerivativeTradeTypes.StopLimit:
+      return submitStopLimitOrder()
+    case DerivativeTradeTypes.Market:
+      return submitMarketOrder()
+    case DerivativeTradeTypes.Limit:
+      return submitLimitOrder()
+    case DerivativeTradeTypes.StopMarket:
+      submitStopMarketOrder()
+  }
+}
 
 async function submitLimitOrder() {
   const { valid } = await validate()
@@ -222,10 +266,10 @@ async function submitLimitOrder() {
 
   derivativeStore
     .submitLimitOrder({
-      market: derivativeMarket?.value,
+      margin: props.margin,
       price: limitPrice.value,
       quantity: props.quantity,
-      margin: props.margin,
+      market: derivativeMarket?.value,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })
@@ -242,12 +286,52 @@ async function submitLimitOrder() {
       EventTracker.trackCreateOrder(
         {
           ...mixPanelFields.value,
+          triggerPrice: '',
           orderType: MixPanelOrderType.Limit,
-          limitPrice: limitPrice.value.toFixed(),
-          triggerPrice: ''
+          limitPrice: limitPrice.value.toFixed()
         },
         err?.message
       )
+      status.setIdle()
+    })
+}
+
+function submitMarketOrder() {
+  status.setLoading()
+
+  let err: Error
+
+  derivativeStore
+    .submitMarketOrder({
+      margin: props.margin,
+      quantity: props.quantity,
+      stopLoss: stopLossValue.value,
+      market: derivativeMarket?.value,
+      takeProfit: takeProfitValue.value,
+      orderSide: orderTypeToSubmit.value,
+      reduceOnly: isOrderTypeReduceOnly.value,
+      price: new BigNumberInBase(props.worstPrice)
+    })
+    .then(() => {
+      modalStore.openModal(Modal.IAsset)
+      notificationStore.success({ title: t('trade.order_placed') })
+      resetForm({ values: currentFormValues.value })
+    })
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
+    .finally(() => {
+      EventTracker.trackCreateOrder(
+        {
+          ...mixPanelFields.value,
+          limitPrice: '',
+          triggerPrice: '',
+          orderType: MixPanelOrderType.Market
+        },
+        err?.message
+      )
+
       status.setIdle()
     })
 }
@@ -263,11 +347,11 @@ function submitStopLimitOrder() {
 
   derivativeStore
     .submitStopLimitOrder({
-      market: derivativeMarket?.value,
+      margin: props.margin,
       price: limitPrice.value,
       quantity: props.quantity,
+      market: derivativeMarket?.value,
       triggerPrice: triggerPrice.value,
-      margin: props.margin,
       orderSide: orderTypeToSubmit.value,
       reduceOnly: isOrderTypeReduceOnly.value
     })
@@ -295,46 +379,6 @@ function submitStopLimitOrder() {
     })
 }
 
-function submitMarketOrder() {
-  status.setLoading()
-
-  let err: Error
-
-  derivativeStore
-    .submitMarketOrder({
-      market: derivativeMarket?.value,
-      quantity: props.quantity,
-      price: new BigNumberInBase(props.worstPrice),
-      reduceOnly: isOrderTypeReduceOnly.value,
-      orderSide: orderTypeToSubmit.value,
-      margin: props.margin,
-      stopLoss: stopLossValue.value,
-      takeProfit: takeProfitValue.value
-    })
-    .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
-      resetForm({ values: currentFormValues.value })
-    })
-    .catch((e) => {
-      err = e
-      $onError(e)
-    })
-    .finally(() => {
-      EventTracker.trackCreateOrder(
-        {
-          ...mixPanelFields.value,
-          orderType: MixPanelOrderType.Market,
-          limitPrice: '',
-          triggerPrice: ''
-        },
-        err?.message
-      )
-
-      status.setIdle()
-    })
-}
-
 function submitStopMarketOrder() {
   if (!triggerPrice.value) {
     return
@@ -346,13 +390,13 @@ function submitStopMarketOrder() {
 
   derivativeStore
     .submitStopMarketOrder({
-      market: derivativeMarket?.value,
+      margin: props.margin,
       quantity: props.quantity,
+      market: derivativeMarket?.value,
       triggerPrice: triggerPrice.value,
       orderSide: orderTypeToSubmit.value,
-      price: new BigNumberInBase(props.worstPrice),
       reduceOnly: isOrderTypeReduceOnly.value,
-      margin: props.margin
+      price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
       modalStore.openModal(Modal.IAsset)
@@ -367,48 +411,15 @@ function submitStopMarketOrder() {
       EventTracker.trackCreateOrder(
         {
           ...mixPanelFields.value,
+          limitPrice: '',
           orderType: MixPanelOrderType.StopMarket,
-          triggerPrice: triggerPrice.value.toFixed(),
-          limitPrice: ''
+          triggerPrice: triggerPrice.value.toFixed()
         },
         err?.message
       )
 
       status.setIdle()
     })
-}
-
-function onSubmit() {
-  if (!isRWAMarket.value) {
-    submit()
-
-    return
-  }
-
-  if (!isRWAMarketOpen.value) {
-    return modalStore.openModal(Modal.ClosedRWAMarket)
-  }
-
-  submit()
-}
-
-async function submit() {
-  const { valid } = await validate()
-
-  if (!valid) {
-    return
-  }
-
-  switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
-    case DerivativeTradeTypes.Limit:
-      return submitLimitOrder()
-    case DerivativeTradeTypes.Market:
-      return submitMarketOrder()
-    case DerivativeTradeTypes.StopLimit:
-      return submitStopLimitOrder()
-    case DerivativeTradeTypes.StopMarket:
-      submitStopMarketOrder()
-  }
 }
 </script>
 
@@ -439,6 +450,13 @@ async function submit() {
           {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
         </span>
       </AppButton>
+
+      <p
+        v-if="!isPostOnlyEnable && jsonStore.isPostUpgradeMode"
+        class="text-orange-500 text-xs mt-2"
+      >
+        {{ $t('trade.postOnlyWarning') }}
+      </p>
     </div>
 
     <ModalsClosedRWAMarket

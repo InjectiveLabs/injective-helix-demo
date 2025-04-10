@@ -2,12 +2,11 @@
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
-import {
-  BotType,
+import { BotType, LiquidityBotField } from '@/types'
+import type {
   UiSpotMarket,
   LiquidityValues,
   LiquidityBotForm,
-  LiquidityBotField,
   UiMarketWithToken
 } from '@/types'
 
@@ -21,6 +20,7 @@ const props = withDefaults(
 
 const toast = useToast()
 const tokenStore = useTokenStore()
+const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const validate = useValidateForm<LiquidityBotForm>()
@@ -78,10 +78,10 @@ async function createLiquidityBot() {
 
   gridStrategyStore
     .createSpotLiquidityBot({
-      market: props.market as UiSpotMarket,
       grids,
       lowerBound: lowerBound.toFixed(),
       upperBound: upperBound.toFixed(),
+      market: props.market as UiSpotMarket,
       upperTrailingBound: trailingUpperBound.toFixed(),
       lowerTrailingBound: trailingLowerBound.toFixed(),
       baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount],
@@ -89,28 +89,28 @@ async function createLiquidityBot() {
     })
     .then(() => {
       EventTracker.trackCreateStrategy({
-        market: props.market.slug,
         isLiquidity: true,
+        market: props.market.slug,
+        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed(),
         formValues: {
-          baseInvestmentAmount:
-            liquidityFormValues.value[LiquidityBotField.BaseAmount],
-          quoteInvestmentAmount:
-            liquidityFormValues.value[LiquidityBotField.QuoteAmount],
+          grids: String(props.liquidityValues.grids),
           lowerPrice: props.liquidityValues.lowerBound.toFixed(),
           upperPrice: props.liquidityValues.upperBound.toFixed(),
           trailingLower: props.liquidityValues.trailingLowerBound.toFixed(),
           trailingUpper: props.liquidityValues.trailingUpperBound.toFixed(),
-          grids: String(props.liquidityValues.grids)
-        },
-        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed()
+          baseInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.BaseAmount],
+          quoteInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount]
+        }
       })
 
       confirmationModal.value = false
 
       toast.add({
         title: t('sgt.success'),
-        description: t('sgt.gridStrategyCreatedSuccessfully'),
-        icon: NuxtUiIcons.Checkmark
+        icon: NuxtUiIcons.Checkmark,
+        description: t('sgt.gridStrategyCreatedSuccessfully')
       })
 
       status.setIdle()
@@ -118,21 +118,20 @@ async function createLiquidityBot() {
     .catch((e) => {
       if (e.message && e.originalMessage) {
         EventTracker.trackTradingBotError({
-          wallet: sharedWalletStore.injectiveAddress,
+          error: e.message || '',
           market: props.market.slug,
-          baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
-          quoteAmount:
-            liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
+          botType: BotType.LiquidityGrid,
+          originalMessage: e.originalMessage || '',
+          wallet: sharedWalletStore.injectiveAddress,
+          grids: String(props.liquidityValues.grids),
           lowerBound: props.liquidityValues.lowerBound.toFixed(),
           upperBound: props.liquidityValues.upperBound.toFixed(),
+          baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
+          quoteAmount: liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
           upperTrailingBound:
             props.liquidityValues.trailingUpperBound.toFixed(),
           lowerTrailingBound:
-            props.liquidityValues.trailingLowerBound.toFixed(),
-          error: e.message || '',
-          originalMessage: e.originalMessage || '',
-          botType: BotType.LiquidityGrid,
-          grids: String(props.liquidityValues.grids)
+            props.liquidityValues.trailingLowerBound.toFixed()
         })
       }
 
@@ -157,11 +156,16 @@ async function createLiquidityBot() {
       v-else
       size="lg"
       class="w-full"
-      :disabled="Object.keys(formErrors).length > 0"
+      :disabled="
+        Object.keys(formErrors).length > 0 || jsonStore.isPostUpgradeMode
+      "
       :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
       @click="openConfirmationModal"
     >
-      <span>{{ $t('liquidityBots.createBot') }}</span>
+      <span v-if="jsonStore.isPostUpgradeMode">
+        {{ $t('trade.postOnlyWarning') }}
+      </span>
+      <span v-else>{{ $t('liquidityBots.createBot') }}</span>
     </AppButton>
 
     <AppModal

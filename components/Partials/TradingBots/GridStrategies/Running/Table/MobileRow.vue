@@ -2,17 +2,21 @@
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  StrategyStatus,
+  PortfolioSpotTradingBotsRunningTableColumn
+} from '@/types'
+import type {
   UTableColumn,
   GridStrategyTransformed,
-  PortfolioSpotTradingBotsRunningTableColumn,
-  DerivativeGridStrategyTransformed,
-  StrategyStatus
+  DerivativeGridStrategyTransformed
 } from '@/types'
+
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
-    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
     columns: UTableColumn[]
+    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
   }>(),
   {}
 )
@@ -88,6 +92,7 @@ function selectStrategy() {
             <template #default="{ removeStrategy, status }">
               <AppButton
                 size="xs"
+                :disabled="jsonStore.isPostUpgradeMode"
                 :is-loading="
                   status.isLoading() ||
                   strategy.strategyStatus === StrategyStatus.Pending
@@ -188,8 +193,8 @@ function selectStrategy() {
     <template #removeStrategy-data>
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
         v-bind="{
-          strategy: strategy.strategy,
           pnl: strategy.pnl,
+          strategy: strategy.strategy,
           pnlPercentage: strategy.percentagePnl
         }"
       >

@@ -2,6 +2,7 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   calculateOrderLevels,
   volatilityStrategyBounds
@@ -12,8 +13,8 @@ import {
   MARKETS_HISTORY_CHART_ONE_HOUR,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { LiquidityBotField, LiquidityBotForm } from '@/types'
+import { LiquidityBotField } from '@/types'
+import type { LiquidityBotForm } from '@/types'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -38,8 +39,8 @@ const marketOptions = computed(() =>
       jsonStore.spotGridMarkets.some((market) => market.slug === slug)
     )
     .map((market) => ({
-      label: market.ticker,
       value: market.slug,
+      label: market.ticker,
       marketReward: marketRewards.value[market.marketId],
       avatar: {
         src: market.baseToken.logo
@@ -89,8 +90,8 @@ const marketRewards = computed(() =>
       })
 
       acc[market.marketId] = {
-        symbol: token.symbol,
-        amount
+        amount,
+        symbol: token.symbol
       }
 
       return acc
@@ -213,8 +214,8 @@ watch(
       spotStore.fetchLastTrade({ marketId: market.marketId }),
 
       exchangeStore.fetchMarketHistory({
-        marketIds: [market.marketId],
         countback: 7 * 24,
+        marketIds: [market.marketId],
         resolution: MARKETS_HISTORY_CHART_ONE_HOUR
       })
     ])
@@ -257,19 +258,19 @@ onMounted(() => {
 
 watch(
   () => ({
-    marketId: selectedMarket.value?.marketId,
     slug: selectedMarket.value?.slug,
-    address: sharedWalletStore.authZOrAddress,
-    activeStrategy: activeStrategy.value
+    activeStrategy: activeStrategy.value,
+    marketId: selectedMarket.value?.marketId,
+    address: sharedWalletStore.authZOrAddress
   }),
-  ({ marketId, slug, address, activeStrategy }) => {
+  ({ slug, address, marketId, activeStrategy }) => {
     if (!marketId || !slug || !address || !activeStrategy) {
       return
     }
 
     spotStore.fetchOrdersBySubaccount({
-      subaccountId: sgtSubaccountId.value,
-      marketIds: [marketId]
+      marketIds: [marketId],
+      subaccountId: sgtSubaccountId.value
     })
   }
 )

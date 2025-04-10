@@ -26,6 +26,22 @@ onMounted(() => {
   })
 })
 
+function pollJson() {
+  return Promise.all([
+    jsonStore.fetchToken(),
+    jsonStore.fetchSwapRoutes(),
+    jsonStore.fetchSpotGridMarkets(),
+    jsonStore.fetchExpiryMarketMap(),
+    jsonStore.fetchChainUpgradeConfig(),
+    jsonStore.fetchMarketCategoryMap(),
+    jsonStore.fetchRestrictedCountries(),
+    jsonStore.fetchBlacklistedAddresses(),
+    jsonStore.fetchVerifiedSpotMarketMap(),
+    jsonStore.fetchDerivativeGridMarkets(),
+    jsonStore.fetchVerifiedDerivativeMarketMap()
+  ])
+}
+
 function mountCachedJson() {
   jsonStore.swapRoutes = swapRoutes
   jsonStore.verifiedDenoms = verifiedDenoms
@@ -37,21 +53,6 @@ function mountCachedJson() {
   jsonStore.derivativeGridMarkets = derivativeGridMarkets
   jsonStore.verifiedSpotMarketMap = verifiedSpotMarketIdMap
   jsonStore.verifiedDerivativeMarketMap = verifiedDerivateMarketIdMap
-}
-
-function pollJson() {
-  return Promise.all([
-    jsonStore.fetchToken(),
-    jsonStore.fetchSwapRoutes(),
-    jsonStore.fetchSpotGridMarkets(),
-    jsonStore.fetchExpiryMarketMap(),
-    jsonStore.fetchMarketCategoryMap(),
-    jsonStore.fetchRestrictedCountries(),
-    jsonStore.fetchBlacklistedAddresses(),
-    jsonStore.fetchVerifiedSpotMarketMap(),
-    jsonStore.fetchDerivativeGridMarkets(),
-    jsonStore.fetchVerifiedDerivativeMarketMap()
-  ])
 }
 
 useIntervalFn(pollJson, JSON_POLL_INTERVAL)

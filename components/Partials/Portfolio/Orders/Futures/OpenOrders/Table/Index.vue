@@ -156,20 +156,22 @@ const columns = computed(() => {
       </template>
 
       <template #side-data="{ row }">
-        <div class="flex items-center p-2">
-          <span
-            class="font-sans"
-            :class="{
-              'text-green-500': row.isBuy,
-              'text-red-500': !row.isBuy
-            }"
-            :data-cy="`${dataCyTag(PerpetualMarketCyTags.OpenOrdersSide)}-${
-              row.order.orderSide
-            }`"
-          >
-            {{ $t(`trade.${row.order.orderSide}`) }}
-          </span>
-        </div>
+        <span
+          class="font-sans"
+          :class="{
+            'text-green-500': row.isBuy,
+            'text-red-500': !row.isBuy
+          }"
+          :data-cy="`${dataCyTag(PerpetualMarketCyTags.OpenOrdersSide)}-${
+            row.order.orderSide
+          }`"
+        >
+          {{ $t(`trade.${row.order.orderSide}`) }}
+        </span>
+
+        <p v-if="row.isReduceOnly" class="text-coolGray-400">
+          {{ $t('trade.reduce_only') }}
+        </p>
       </template>
 
       <template #price-data="{ row }">

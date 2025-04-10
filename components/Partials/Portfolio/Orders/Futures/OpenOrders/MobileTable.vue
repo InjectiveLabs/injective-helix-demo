@@ -89,6 +89,10 @@ const filteredColumns = computed(() =>
       >
         {{ $t(`trade.${order.order.orderSide}`) }}
       </span>
+
+      <p v-if="order.isReduceOnly" class="text-coolGray-400">
+        {{ $t('trade.reduce_only') }}
+      </p>
     </template>
 
     <template #price-data>

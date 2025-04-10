@@ -85,5 +85,11 @@ export default {
     availableBalance: 'Available {asset}',
     transferToTrade: 'Transfer to trade',
     wallet: 'Wallet'
+  },
+
+  partialPositionClose: {
+    marketTitle: 'Partial market close',
+    totalPositionSize: 'Total position size',
+    marketPrice: 'Market price'
   }
 }

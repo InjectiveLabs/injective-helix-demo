@@ -42,6 +42,7 @@ export default {
   common: {
     or: 'or',
     ok: 'OK',
+    and: 'and',
     BTC: 'BTC',
     roi: 'ROI',
     pnl: 'PnL',
@@ -75,6 +76,7 @@ export default {
     filters: 'Filters',
     confirm: 'Confirm',
     popular: 'Popular',
+    disabled: 'Disabled',
     inactive: 'inactive',
     transfer: 'Transfer',
     withdraw: 'Withdraw',
@@ -463,5 +465,17 @@ export default {
     backToHome: 'Back to home page'
   },
 
-  helix: 'Helix'
+  helix: 'Helix',
+
+  maintenance: {
+    title: 'Scheduled Maintenance',
+    description:
+      "We're carrying out a few updates. During this time, some features will be unavailable for a little while.",
+    governance: 'Governance Proposal',
+    governanceDescription: 'Check details on the latest chain upgrade',
+    subscribe: 'Subscribe for Alerts',
+    subscribeDescription: 'Get real-time notifications via Notifi',
+    footer:
+      "We're making Helix better. We appreciate your patience and will be back soon!"
+  }
 }

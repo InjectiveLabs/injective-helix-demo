@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { LocationAsRelativeRaw } from 'vue-router'
-import { dataCyTag } from '@shared/utils'
+import { commonCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { NavBarCyTags, MenuItem, NavLink, NavChild } from '@/types'
+import { NavBarCyTags } from '@/types'
+import type { NavLink, MenuItem, NavChild } from '@/types'
 
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
@@ -36,7 +37,7 @@ const isActiveLink = computed(() => {
     return routeName === itemName
   }
 
-  return routeName.startsWith(itemName)
+  return routeName?.startsWith(itemName)
 })
 
 const filteredChildItems = computed(() =>
@@ -64,7 +65,7 @@ function closeAllMenus() {
         'text-blue-550': isActiveLink
       }"
       :target="item.isExternal ? '_blank' : '_self'"
-      :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
+      :data-cy="`${commonCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
       @click="closeAllMenus"
     >
       <p class="font-medium">{{ $t(item.label) }}</p>
@@ -80,7 +81,7 @@ function closeAllMenus() {
         <div tabindex="0" :class="{ 'text-blue-550': open }">
           <div
             class="flex w-full h-full items-center space-x-1"
-            :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+            :data-cy="`${commonCyTag(NavBarCyTags.NavbarMenuItems)}-${
               item.label
             }`"
           >
@@ -116,7 +117,7 @@ function closeAllMenus() {
                   v-else
                   :to="(child as NavLink).to"
                   :target="child.isExternal ? '_blank' : '_self'"
-                  :data-cy="`${dataCyTag(NavBarCyTags.NavbarMenuItems)}-${
+                  :data-cy="`${commonCyTag(NavBarCyTags.NavbarMenuItems)}-${
                     child.label
                   }`"
                   @click="closeAllMenus"

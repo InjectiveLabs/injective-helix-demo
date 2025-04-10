@@ -1,25 +1,22 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
   MainPage,
   TradeSubPage,
-  NoticeBanner,
   InitialStatusKey,
   PortfolioStatusKey,
-  LeaderboardSubPage,
   LiquidityRewardsPage
 } from '@/types'
 
 const route = useRoute()
-const appStore = useAppStore()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const jsonStore = useSharedJsonStore()
 const accountStore = useAccountStore()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
@@ -72,6 +69,10 @@ onWalletConnected(async () => {
 onSubaccountChange(() => {
   fetchSubaccountStream()
 })
+
+function onJsonLoaded() {
+  jsonStatus.setIdle()
+}
 
 function fetchUserPortfolio() {
   return Promise.all([
@@ -130,10 +131,6 @@ function checkOnboarding() {
   }
 }
 
-function onJsonLoaded() {
-  jsonStatus.setIdle()
-}
-
 provide(PortfolioStatusKey, portfolioStatus)
 
 useIntervalFn(
@@ -143,6 +140,16 @@ useIntervalFn(
       derivativeStore.fetchMarketsSummary()
     ]),
   30 * 1000
+)
+
+watch(
+  () => jsonStore.isMaintenanceMode,
+  (status) => {
+    if (status && route.name !== MainPage.Maintenance) {
+      return navigateTo({ name: MainPage.Maintenance })
+    }
+  },
+  { immediate: true }
 )
 </script>
 
@@ -168,23 +175,8 @@ useIntervalFn(
       "
     >
       <main class="relative pb-6 pt-[56px]">
-        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-        <LayoutOwnYourAssetCompetitionBanner
-          v-if="route.name !== LeaderboardSubPage.Competition"
-        />
-        <LayoutFTMPerpBanner />
+        <LayoutBanner />
 
-        <LayoutNeptuneUsdtBanner
-          v-if="
-            sharedWalletStore.isUserConnected &&
-            !sharedWalletStore.isAuthzWalletConnected &&
-            new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(
-              0
-            ) &&
-            !appStore.userState.bannersViewed.includes(NoticeBanner.neptuneUsdt)
-          "
-        />
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&

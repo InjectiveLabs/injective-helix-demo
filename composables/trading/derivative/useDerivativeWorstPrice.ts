@@ -8,11 +8,10 @@ import {
 } from '@/app/utils/helpers'
 import {
   TradeAmountOption,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -25,7 +24,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   )
 
   const isLimitOrder = computed(() =>
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
+    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
       derivativeFormValues.value[
         DerivativesTradeFormField.Type
       ] as DerivativeTradeTypes
@@ -227,20 +226,20 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
   const priceForNotional = computed(() => {
     switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
-      case DerivativeTradeTypes.Limit:
+      case DerivativeTradeTypes.StopMarket:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
+            0
+        )
+      case DerivativeTradeTypes.StopLimit:
         return new BigNumberInBase(
           derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
         )
       case DerivativeTradeTypes.Market:
         return worstPrice.value
-      case DerivativeTradeTypes.StopLimit:
+      case DerivativeTradeTypes.Limit:
         return new BigNumberInBase(
           derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
-        )
-      case DerivativeTradeTypes.StopMarket:
-        return new BigNumberInBase(
-          derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
-            0
         )
     }
   })

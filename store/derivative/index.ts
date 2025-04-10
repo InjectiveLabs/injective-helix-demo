@@ -5,25 +5,25 @@ import {
   derivativeCacheApi,
   indexerDerivativesApi
 } from '@shared/Service'
-import {
+import type {
   PositionV2,
   PerpetualMarket,
   ExpiryFuturesMarket,
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
-import {
-  SharedMarketType,
+import type {
   SharedUiMarketSummary,
   SharedUiDerivativeTrade,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
-import {
+import { SharedMarketType } from '@shared/types'
+import type {
   OrderSide,
-  OrderState,
   TradeExecutionSide,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
+import { OrderState } from '@injectivelabs/ts-types'
 import {
   toUiMarketSummary,
   toUiDerivativeMarket,
@@ -41,7 +41,8 @@ import {
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
-  submitStopMarketOrder
+  submitStopMarketOrder,
+  prepareCancelTpSlOrderMsgs
 } from '@/store/derivative/message'
 import {
   streamTrades,
@@ -60,7 +61,7 @@ import {
 // import { fetchDerivativeStats } from '@/app/services/derivative'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
-import {
+import type {
   UiDerivativeMarket,
   UiMarketAndSummary,
   MarketMarkPriceMap,
@@ -178,6 +179,7 @@ export const useDerivativeStore = defineStore('derivative', {
     submitMarketOrder,
     submitStopLimitOrder,
     submitStopMarketOrder,
+    prepareCancelTpSlOrderMsgs,
 
     streamTrades,
     cancelTradesStream,
@@ -342,9 +344,8 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
 
       const currentOrderbookSequence = derivativeStore.orderbook?.sequence || 0
-      const latestOrderbook = await indexerDerivativesApi.fetchOrderbookV2(
-        marketId
-      )
+      const latestOrderbook =
+        await indexerDerivativesApi.fetchOrderbookV2(marketId)
       const latestOrderbookIsMostRecent =
         latestOrderbook.sequence >= currentOrderbookSequence
 

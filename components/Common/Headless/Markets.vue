@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketStatus } from '@shared/types'
+import { deprecatedMarkets } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import {
-  MarketHeaderType,
+import { MarketHeaderType, MarketCategoryType } from '@/types'
+import type {
   UiMarketWithToken,
-  MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
@@ -16,13 +15,12 @@ const jsonStore = useSharedJsonStore()
 const props = withDefaults(
   defineProps<{
     search?: string
-    activeCategory: MarketCategoryType
+    activeCategory?: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
     markets: UiMarketAndSummaryWithVolumeInUsd[]
   }>(),
   {
     search: '',
-    markets: () => [],
     activeCategory: MarketCategoryType.All
   }
 )
@@ -92,7 +90,6 @@ const filteredMarkets = computed(() => {
 })
 
 const sortedMarkets = computed(() => {
-  const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
   const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
 
   if (sortBy.value.trim() === '') {
@@ -104,10 +101,7 @@ const sortedMarkets = computed(() => {
       m1: UiMarketAndSummaryWithVolumeInUsd,
       m2: UiMarketAndSummaryWithVolumeInUsd
     ) => {
-      if (
-        upcomingMarketsSlugs.includes(m1.market.slug) ||
-        deprecatedMarketsSlugs.includes(m1.market.slug)
-      ) {
+      if (deprecatedMarketsSlugs.includes(m1.market.slug)) {
         return 1
       }
 
@@ -149,6 +143,14 @@ const sortedMarkets = computed(() => {
 
   return isAscending.value ? markets.reverse() : markets
 })
+
+function onAscending(value: boolean) {
+  isAscending.value = value
+}
+
+function onSortBy(value: MarketHeaderType) {
+  sortBy.value = value
+}
 
 function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   if (props.activeCategory === MarketCategoryType.All) {
@@ -224,14 +226,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
       market.marketId
     )
   }
-}
-
-function onAscending(value: boolean) {
-  isAscending.value = value
-}
-
-function onSortBy(value: MarketHeaderType) {
-  sortBy.value = value
 }
 </script>
 

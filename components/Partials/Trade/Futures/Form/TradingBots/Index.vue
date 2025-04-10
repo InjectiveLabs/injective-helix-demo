@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import {
-  MarketKey,
-  UiDerivativeMarket,
-  DerivativeGridTradingForm
-} from '@/types'
+import { MarketKey } from '@/types'
+import type { UiDerivativeMarket, DerivativeGridTradingForm } from '@/types'
 
 const futuresMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
