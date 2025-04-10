@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-
-import {
-  MarketKey,
-  DerivativeGridTradingForm,
-  DerivativeGridTradingField,
-  UiDerivativeMarket
-} from '@/types'
+import { MarketKey, DerivativeGridTradingField } from '@/types'
+import type { UiDerivativeMarket, DerivativeGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const formErrors = useFormErrors()
 const validate = useValidateForm()
+const formErrors = useFormErrors()
+const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const notificationStore = useSharedNotificationStore()
@@ -23,9 +19,7 @@ const props = withDefaults(
   defineProps<{
     error: boolean
   }>(),
-  {
-    error: false
-  }
+  {}
 )
 
 const status = reactive(new Status(StatusType.Idle))
@@ -67,10 +61,14 @@ async function createStrategy() {
   <div class="py-4">
     <AppButton
       class="w-full"
-      v-bind="{ status, disabled: isDisabled }"
+      v-bind="{ status, disabled: isDisabled || jsonStore.isPostUpgradeMode }"
       @click="createStrategy"
     >
-      <span v-if="sharedWalletStore.isAuthzWalletConnected">
+      <span v-if="jsonStore.isPostUpgradeMode">
+        {{ $t('trade.postOnlyWarning') }}
+      </span>
+
+      <span v-else-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
 

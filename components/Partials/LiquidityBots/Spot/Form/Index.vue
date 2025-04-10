@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
-import { LiquidityValues, UiMarketWithToken } from '@/types'
+import type { LiquidityValues, UiMarketWithToken } from '@/types'
+import type { Status, BigNumberInBase } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
+    status: Status
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
-    status: Status
     lastTradedPrice: BigNumberInBase
   }>(),
   {}

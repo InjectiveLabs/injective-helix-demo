@@ -6,31 +6,27 @@ export default defineNuxtConfig({
   hooks,
   ssr: false,
   builder: 'vite',
-  css: ['@/assets/css/tailwind.css'],
-
-  extends: [
-    isLocalLayer
-      ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
-  ],
-
   app: {
     head
   },
 
-  sourcemap: {
-    server: false,
-    client: true
-  },
+  compatibilityDate: '2024-09-09',
 
-  imports: {
-    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
-  },
-
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui'],
+  css: ['@/assets/css/tailwind.css'],
 
   pinia: {
     autoImports: ['defineStore']
+  },
+
+  sourcemap: {
+    client: true,
+    server: false
+  },
+
+  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui', '@nuxt/eslint'],
+
+  imports: {
+    dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
 
   // @ts-ignore
@@ -40,26 +36,30 @@ export default defineNuxtConfig({
     locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
   },
 
-  // @ts-ignore
-  colorMode: {
-    preference: 'dark',
-    fallback: 'dark',
-    hid: 'nuxt-color-mode-script',
-    globalName: '__NUXT_COLOR_MODE__',
-    componentName: 'ColorScheme',
-    storage: 'localStorage',
-    storageKey: 'nuxt-color-mode'
-  },
+  extends: [
+    isLocalLayer
+      ? '../injective-ui/layer'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/cloudfront-chain-upgrade'
+  ],
 
   // @ts-ignore
   sitemap: {
+    gzip: true,
     hostname:
       process.env.VITE_BASE_URL &&
       !process.env.VITE_BASE_URL.includes('localhost')
         ? process.env.VITE_BASE_URL
-        : 'https://helixapp.com',
-    gzip: true
+        : 'https://helixapp.com'
   },
 
-  compatibilityDate: '2024-09-09'
+  // @ts-ignore
+  colorMode: {
+    fallback: 'dark',
+    preference: 'dark',
+    storage: 'localStorage',
+    componentName: 'ColorScheme',
+    hid: 'nuxt-color-mode-script',
+    storageKey: 'nuxt-color-mode',
+    globalName: '__NUXT_COLOR_MODE__'
+  }
 })

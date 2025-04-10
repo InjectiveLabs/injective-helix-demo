@@ -4,29 +4,28 @@ import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
-  Modal,
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField,
-  BotType,
-  SpotGridStrategyType,
-  ExitConfig,
-  ExitType
-} from '@/types'
-import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import {
+  Modal,
+  BotType,
+  ExitType,
+  MarketKey,
+  InvestmentTypeGst,
+  SpotGridTradingField,
+  SpotGridStrategyType
+} from '@/types'
+import type { ExitConfig, UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const validate = useValidateForm()
 const formErrors = useFormErrors()
+const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const setFormValues = useSetFormValues()
 const sharedWalletStore = useSharedWalletStore()
@@ -63,8 +62,8 @@ const quoteDenomBalance = computed(() =>
 
 const quoteDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: quoteDenomBalance.value?.availableBalance || 0,
-    decimalPlaces: quoteDenomBalance.value?.token.decimals
+    decimalPlaces: quoteDenomBalance.value?.token.decimals,
+    value: quoteDenomBalance.value?.availableBalance || 0
   })
 )
 
@@ -76,8 +75,8 @@ const baseDenomBalance = computed(() =>
 
 const baseDenomAmount = computed(() =>
   sharedToBalanceInTokenInBase({
-    value: baseDenomBalance.value?.availableBalance || 0,
-    decimalPlaces: baseDenomBalance.value?.token.decimals
+    decimalPlaces: baseDenomBalance.value?.token.decimals,
+    value: baseDenomBalance.value?.availableBalance || 0
   })
 )
 
@@ -137,7 +136,7 @@ const calculatedAmount = computed(() => {
     Number(spotFormValues.value[SpotGridTradingField.UpperPrice]) <=
       Number(spotFormValues.value[SpotGridTradingField.LowerPrice])
   ) {
-    return { baseAmount: ZERO_IN_BASE, quoteAmount: ZERO_IN_BASE }
+    return { quoteAmount: ZERO_IN_BASE, baseAmount: ZERO_IN_BASE }
   }
 
   const lowerBoundary = new BigNumberInBase(
@@ -158,7 +157,7 @@ const calculatedAmount = computed(() => {
 
   const quoteAmount = initialInvestment.value.times(ratio)
 
-  return { baseAmount, quoteAmount }
+  return { quoteAmount, baseAmount }
 })
 
 const initialInvestment = computed(() =>
@@ -193,10 +192,10 @@ const stopLoss = computed(() => {
   }
 
   return {
-    exitPrice: spotFormValues.value[SpotGridTradingField.StopLoss],
     exitType: spotFormValues.value[SpotGridTradingField.SellBaseOnStopLoss]
       ? ExitType.Quote
-      : ExitType.Default
+      : ExitType.Default,
+    exitPrice: spotFormValues.value[SpotGridTradingField.StopLoss]
   } as ExitConfig
 })
 
@@ -206,10 +205,10 @@ const takeProfit = computed(() => {
   }
 
   return {
-    exitPrice: spotFormValues.value[SpotGridTradingField.TakeProfit],
     exitType: spotFormValues.value[SpotGridTradingField.BuyBaseOnTakeProfit]
       ? ExitType.Base
-      : ExitType.Default
+      : ExitType.Default,
+    exitPrice: spotFormValues.value[SpotGridTradingField.TakeProfit]
   } as ExitConfig
 })
 
@@ -250,6 +249,22 @@ const strategyType = computed(() => {
 
   return SpotGridStrategyType.Arithmetic
 })
+
+function onInvestmentTypeSet() {
+  setFormValues({
+    [SpotGridTradingField.QuoteInvestmentAmount]:
+      calculatedAmount.value.quoteAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.BaseInvestmentAmount]:
+      calculatedAmount.value.baseAmount.toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      ),
+    [SpotGridTradingField.InvestmentType]: InvestmentTypeGst.BaseAndQuote
+  })
+
+  createStrategy()
+}
 
 async function onCheckBalanceFees() {
   const { valid } = await validate()
@@ -292,22 +307,6 @@ async function onCheckBalanceFees() {
   }
 }
 
-function onInvestmentTypeSet() {
-  setFormValues({
-    [SpotGridTradingField.QuoteInvestmentAmount]:
-      calculatedAmount.value.quoteAmount.toFixed(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      ),
-    [SpotGridTradingField.BaseInvestmentAmount]:
-      calculatedAmount.value.baseAmount.toFixed(
-        UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      ),
-    [SpotGridTradingField.InvestmentType]: InvestmentTypeGst.BaseAndQuote
-  })
-
-  createStrategy()
-}
-
 async function createStrategy() {
   const { valid } = await validate()
 
@@ -329,19 +328,19 @@ async function createStrategy() {
 
   gridStrategyStore
     .createSpotGridStrategy({
-      grids: Number(spotFormValues.value[SpotGridTradingField.Grids]),
-      lowerPrice: spotFormValues.value[SpotGridTradingField.LowerPrice],
-      upperPrice: spotFormValues.value[SpotGridTradingField.UpperPrice],
       quoteAmount:
         spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount],
       baseAmount:
         spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount],
-      market: market.value,
-      strategyType: strategyType.value,
+      lowerPrice: spotFormValues.value[SpotGridTradingField.LowerPrice],
+      upperPrice: spotFormValues.value[SpotGridTradingField.UpperPrice],
+      grids: Number(spotFormValues.value[SpotGridTradingField.Grids]),
+      exitType: spotFormValues.value[SpotGridTradingField.ExitType],
       trailingParams: trailingParams.value,
-      stopLoss: stopLoss.value,
+      strategyType: strategyType.value,
       takeProfit: takeProfit.value,
-      exitType: spotFormValues.value[SpotGridTradingField.ExitType]
+      stopLoss: stopLoss.value,
+      market: market.value
     })
     .then(() => {
       notificationStore.success({ title: t('common.success') })
@@ -351,18 +350,18 @@ async function createStrategy() {
 
       if (e.message && e.originalMessage) {
         EventTracker.trackTradingBotError({
-          wallet: sharedWalletStore.injectiveAddress,
-          market: market.value.slug,
-          grids: spotFormValues.value[SpotGridTradingField.Grids]!,
-          baseAmount:
-            spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount]!,
           quoteAmount:
             spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount]!,
+          baseAmount:
+            spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount]!,
           lowerBound: spotFormValues.value[SpotGridTradingField.LowerPrice]!,
           upperBound: spotFormValues.value[SpotGridTradingField.UpperPrice]!,
-          error: e.message || '',
+          grids: spotFormValues.value[SpotGridTradingField.Grids]!,
+          wallet: sharedWalletStore.injectiveAddress,
           originalMessage: e.originalMessage || '',
-          botType: BotType.SpotGrid
+          market: market.value.slug,
+          botType: BotType.SpotGrid,
+          error: e.message || ''
         })
       }
       $onError(e)
@@ -373,16 +372,16 @@ async function createStrategy() {
       })
 
       const lastTradedPrice = sharedToBalanceInTokenInBase({
-        value: lastTrade.price,
         decimalPlaces:
-          market.value.quoteToken.decimals - market.value.baseToken.decimals
+          market.value.quoteToken.decimals - market.value.baseToken.decimals,
+        value: lastTrade.price
       })
 
       EventTracker.trackCreateStrategy({
-        error: err?.message,
+        marketPrice: lastTradedPrice.toFixed(market.value.priceDecimals),
         formValues: spotFormValues.value,
         market: market.value.slug || '',
-        marketPrice: lastTradedPrice.toFixed(market.value.priceDecimals),
+        error: err?.message,
         isLiquidity: false
       })
 
@@ -395,10 +394,13 @@ async function createStrategy() {
   <div class="py-4">
     <AppButton
       class="w-full"
-      v-bind="{ status, disabled: isDisabled }"
+      v-bind="{ status, disabled: isDisabled || jsonStore.isPostUpgradeMode }"
       @click="onCheckBalanceFees"
     >
-      <span v-if="sharedWalletStore.isAuthzWalletConnected">
+      <span v-if="jsonStore.isPostUpgradeMode">
+        {{ $t('trade.postOnlyWarning') }}
+      </span>
+      <span v-else-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
       <span v-else>{{ $t('sgt.create') }}</span>

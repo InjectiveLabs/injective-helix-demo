@@ -315,6 +315,7 @@ export default {
     entryMark: 'Entry / Mark',
     estLiqPrice: 'EST Liq Price',
     balance: 'Balance: {balance}',
+    postOnlyWarning: 'Temporarily post-only due to chain upgrade',
     slippageWarnings: {
       exceed: 'Slippage can not be higher than 50%.',
       tooLow:

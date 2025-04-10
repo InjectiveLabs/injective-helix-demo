@@ -3,18 +3,16 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  UTableColumn,
-  PositionTableColumn,
-  TransformedPosition,
-  PerpetualMarketCyTags
-} from '@/types'
+import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
+import type { UTableColumn, TransformedPosition } from '@/types'
+
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
     columns: UTableColumn[]
-    position: TransformedPosition
     isTradingBots?: boolean
+    position: TransformedPosition
   }>(),
   {
     isTradingBots: false
@@ -84,7 +82,12 @@ function onSetPosition(value: TransformedPosition) {
         </PartialsCommonMarketRedirection>
 
         <div v-if="!isTradingBots" class="flex space-x-2">
-          <AppButton size="sm" class="py-2" @click="addTpSl">
+          <AppButton
+            size="sm"
+            class="py-2"
+            :disabled="jsonStore.isPostUpgradeMode"
+            @click="addTpSl"
+          >
             <span>
               {{ $t('trade.addTpSl') }}
             </span>

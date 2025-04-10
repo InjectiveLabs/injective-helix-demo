@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-  MarketKey,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  UiSpotMarket
-} from '@/types'
+import { MarketKey, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -15,7 +11,7 @@ withDefaults(
   defineProps<{
     hasActiveStrategy: boolean
   }>(),
-  { hasActiveStrategy: false }
+  {}
 )
 
 const emit = defineEmits<{
@@ -28,18 +24,18 @@ function onViewDetails() {
 
 const optimizationValues = computed(() => ({
   market: spotMarket.value,
-  baseQuantity: Number(
-    formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-  ),
-  quoteQuantity: Number(
-    formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
-  ),
   currentPrice: lastTradedPrice.value.toNumber(),
   lowerPriceLevel: Number(
     formValues.value[SpotGridTradingField.LowerPrice] || 0
   ),
   upperPriceLevel: Number(
     formValues.value[SpotGridTradingField.UpperPrice] || 0
+  ),
+  baseQuantity: Number(
+    formValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
+  ),
+  quoteQuantity: Number(
+    formValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
   )
 }))
 </script>

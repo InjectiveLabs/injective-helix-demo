@@ -1,27 +1,20 @@
-import {
+import { SharedMarketType } from '@shared/types'
+import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { deprecatedMarkets } from '@/app/data/market'
+import { TradeSubPage } from '@/types'
+import type { SharedUiMarketHistory } from '@shared/types'
+import type { MarketRoute, UiMarketWithToken } from '@/types'
+import type {
   PriceLevel,
   DerivativeMarket,
   ExpiryFuturesMarket
 } from '@injectivelabs/sdk-ts'
-import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import { MarketRoute, TradeSubPage, UiMarketWithToken } from '@/types'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
 }
 
 export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
-  if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
-    return {
-      name: TradeSubPage.Market,
-      params: {
-        market: market.slug
-      }
-    }
-  }
-
   if (deprecatedMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: TradeSubPage.Market,
@@ -33,7 +26,7 @@ export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
 
   if (market.type === SharedMarketType.Derivative) {
     if (
-      [SharedMarketType.Perpetual, SharedMarketType.Futures].includes(
+      [SharedMarketType.Futures, SharedMarketType.Perpetual].includes(
         market.subType
       )
     ) {
