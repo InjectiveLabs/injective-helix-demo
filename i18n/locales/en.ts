@@ -477,5 +477,10 @@ export default {
     subscribeDescription: 'Get real-time notifications via Notifi',
     footer:
       "We're making Helix better. We appreciate your patience and will be back soon!"
+  },
+
+  footer: {
+    operational: 'Operational',
+    v2: ' Version 2.0'
   }
 }
