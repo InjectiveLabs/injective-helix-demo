@@ -29,7 +29,6 @@ export default defineNuxtConfig({
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
   },
 
-  // @ts-ignore
   i18n: {
     defaultLocale: 'en',
     strategy: 'no_prefix',
@@ -39,10 +38,10 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#feat/cloudfront-chain-upgrade'
+      : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
-  // @ts-ignore
+  // @ts-expect-error - typing issue
   sitemap: {
     gzip: true,
     hostname:
@@ -52,7 +51,6 @@ export default defineNuxtConfig({
         : 'https://helixapp.com'
   },
 
-  // @ts-ignore
   colorMode: {
     fallback: 'dark',
     preference: 'dark',
