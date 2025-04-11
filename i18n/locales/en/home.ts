@@ -135,8 +135,10 @@ export default {
   },
   footer: {
     blog: 'Blog',
+    v2: ' Version 2.0',
     resources: 'Resources',
     analytics: 'Analytics',
+    operational: 'Operational',
     termsAndConditions: 'Terms & Conditions',
     privacyPolicy: 'Privacy Policy',
     support: 'Support',
