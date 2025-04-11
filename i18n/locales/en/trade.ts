@@ -525,8 +525,8 @@ export default {
 
     tradeToast: {
       bought:
-        "{{quantity:{quantity}-{quantityDecimals}}} {symbol} bought at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}",
-      sold: "{{quantity:{quantity}-{quantityDecimals}}} {symbol} sold at average price {'$'}{{usdPrice:{usdPrice}-{usdPriceDecimals}}}"
+        "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} bought at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}",
+      sold: "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} sold at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}"
     },
 
     iAssetModal: {
