@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import {
-  Status,
-  StatusType,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import type {
+  SpotLimitOrder,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import {
+import type {
   UiSpotMarket,
   UiMarketWithToken,
-  UiDerivativeMarket,
-  TradingChartInterval
+  UiDerivativeMarket
 } from '@/types'
+import { TradingChartInterval } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
@@ -32,6 +30,7 @@ const props = withDefaults(
 
 const isSpot = props.market.type === SharedMarketType.Spot
 
+const tradingChartComponent = ref()
 const status = reactive(new Status(StatusType.Loading))
 const orderStatus = reactive(new Status(StatusType.Idle))
 
@@ -56,37 +55,7 @@ const limitOrders = computed(() => {
     ? spotStore.subaccountOrders
     : derivativeStore.subaccountOrders
 
-  return ordersData
-    .filter((order) => order.marketId === props.market.marketId)
-    .map((order) => {
-      const formattedPrice = (
-        isSpot
-          ? sharedToBalanceInWei({
-              value: order.price,
-              decimalPlaces:
-                props.market.baseToken.decimals -
-                props.market.quoteToken.decimals
-            })
-          : sharedToBalanceInTokenInBase({
-              value: order.price,
-              decimalPlaces: props.market.quoteToken.decimals
-            })
-      ).toFixed(props.market.priceDecimals)
-
-      const formattedUnfilledQuantity = (
-        isSpot
-          ? new BigNumberInWei(order.unfilledQuantity).toBase(
-              (props.market as UiSpotMarket).baseToken.decimals
-            )
-          : new BigNumberInBase(order.unfilledQuantity)
-      ).toFixed(props.market.quantityDecimals)
-
-      return {
-        order,
-        formattedPrice,
-        formattedUnfilledQuantity
-      }
-    })
+  return ordersData.filter((order) => order.marketId === props.market.marketId)
 })
 
 function onReady() {
@@ -104,13 +73,29 @@ function onIntervalChange(value: TradingChartInterval) {
 }
 
 function onOrderChange({
-  order,
+  price,
+  quantity,
   newPrice
 }: {
-  newPrice: number
-  order: SpotLimitOrder | DerivativeLimitOrder
+  price: string
+  quantity: string
+  newPrice: string
 }) {
   orderStatus.setLoading()
+
+  const orders = isSpot
+    ? spotStore.subaccountOrders
+    : derivativeStore.subaccountOrders
+
+  const order = orders.find(
+    (order) => order.price === price && order.quantity === quantity
+  )
+
+  if (!order) {
+    console.log('order not found!')
+
+    return
+  }
 
   if (props.isSpot) {
     spotStore
@@ -120,8 +105,13 @@ function onOrderChange({
         market: props.market as UiSpotMarket
       })
       .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
-      .catch($onError)
-      .finally(() => orderStatus.setIdle())
+      .catch((e) => {
+        $onError(e)
+      })
+      .finally(() => {
+        orderStatus.setIdle()
+        tradingChartComponent.value?.modifyLimitOrderLines()
+      })
   } else {
     derivativeStore
       .submitChase({
@@ -130,13 +120,38 @@ function onOrderChange({
         market: props.market as UiDerivativeMarket
       })
       .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
-      .catch($onError)
-      .finally(() => orderStatus.setIdle())
+      .catch((e) => {
+        $onError(e)
+      })
+      .finally(() => {
+        orderStatus.setIdle()
+        tradingChartComponent.value?.modifyLimitOrderLines()
+      })
   }
 }
 
-function onOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
+function onOrderClose({
+  price,
+  quantity
+}: {
+  price: string
+  quantity: string
+}) {
   orderStatus.setLoading()
+
+  const orders = isSpot
+    ? spotStore.subaccountOrders
+    : derivativeStore.subaccountOrders
+
+  const order = orders.find(
+    (order) => order.price === price && order.quantity === quantity
+  )
+
+  if (!order) {
+    console.log('order not found!')
+
+    return
+  }
 
   if (props.isSpot) {
     spotStore
@@ -144,7 +159,11 @@ function onOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
       .then(() => {
         notificationStore.success({ title: t('trade.order_success_canceling') })
       })
-      .catch($onError)
+      .catch((e) => {
+        $onError(e)
+
+        tradingChartComponent.value?.modifyLimitOrderLines()
+      })
       .finally(() => orderStatus.setIdle())
   } else {
     derivativeStore
@@ -152,7 +171,11 @@ function onOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
       .then(() =>
         notificationStore.success({ title: t('trade.order_success_canceling') })
       )
-      .catch($onError)
+      .catch((e) => {
+        $onError(e)
+
+        tradingChartComponent.value?.modifyLimitOrderLines()
+      })
       .finally(() => orderStatus.setIdle())
   }
 }
@@ -161,25 +184,24 @@ function onOrderClose(order: SpotLimitOrder | DerivativeLimitOrder) {
 <template>
   <div class="h-full relative">
     <ClientOnly>
-      <AppHocLoading v-bind="{ status: orderStatus }" is-helix>
-        <PartialsTradingMarketChartTradingView
-          v-show="status.isNotLoading()"
-          v-bind="{
-            symbol: symbol,
-            isSpot: isSpot,
-            market: market,
-            datafeedEndpoint,
-            orders: limitOrders,
-            interval:
-              appStore.userState.preferences.tradingChartInterval ||
-              TradingChartInterval.D
-          }"
-          @ready="onReady"
-          @order:close="onOrderClose"
-          @order:change="onOrderChange"
-          @interval:change="onIntervalChange"
-        />
-      </AppHocLoading>
+      <PartialsTradingMarketChartTradingView
+        v-show="status.isNotLoading()"
+        ref="tradingChartComponent"
+        v-bind="{
+          symbol: symbol,
+          isSpot: isSpot,
+          market: market,
+          datafeedEndpoint,
+          orders: limitOrders,
+          interval:
+            appStore.userState.preferences.tradingChartInterval ||
+            TradingChartInterval.D
+        }"
+        @ready="onReady"
+        @order:close="onOrderClose"
+        @order:change="onOrderChange"
+        @interval:change="onIntervalChange"
+      />
     </ClientOnly>
   </div>
 </template>
