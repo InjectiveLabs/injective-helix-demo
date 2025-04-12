@@ -193,15 +193,31 @@ function modifyLimitOrderLines() {
           ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
         )
 
+         // Remove the old reference
+        delete orderLines.value[uid];
+
+        // Update the order line's UID
         orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
+
+        orderLine.onCancel = undefined; // Clear previous handler
+
+        // Rebind onCancel with the new UID
+        orderLine.onCancel?.(() => {
+          emit('order:close', { quantity: order.quantity, price: newPrice })
+
+          nextTick(() => {
+            // this breaks the app
+            orderLine.remove()
+
+            delete orderLines.value[uid]
+          })
+        });
 
         emit('order:change', {
           quantity: order.quantity,
           price: order.price,
           newPrice
         })
-
-        orderLines.value[uid] = orderLine
       })
 
       orderLine.setCancellable(true)
