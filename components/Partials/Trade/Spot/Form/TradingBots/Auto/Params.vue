@@ -204,11 +204,11 @@ onMounted(() => {
 
 <template>
   <div class="border-b pb-4 mb-6">
-    <div class="text-xs space-y-2 pt-4 pb-2">
-      <p class="text-gray-300">{{ $t('sgt.autoModeHeader') }}</p>
+    <div class="text-xs space-y-2 pt-4 pb-2 leading-4">
+      <p class="text-white">{{ $t('sgt.autoModeHeader') }}</p>
       <div>
         <a
-          class="text-blue-500"
+          class="text-blue-500 border border-b border-b-blue-500"
           href="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix"
           target="_blank"
         >
@@ -217,15 +217,19 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="text-xs text-gray-500 space-y-4 py-4">
+    <div class="text-xs text-coolGray-450 space-y-4 py-4">
       <div class="flex justify-between">
         <p>{{ $t('sgt.lowerPrice') }}</p>
-        <p class="text-white">{{ lowerPrice }} USDT</p>
+        <p class="text-coolGray-450">
+          <span class="text-white">{{ lowerPrice }}</span> USDT
+        </p>
       </div>
 
       <div class="flex justify-between">
         <p>{{ $t('sgt.upperPrice') }}</p>
-        <p class="text-white">{{ upperPrice }} USDT</p>
+        <p class="text-coolGray-450">
+          <span class="text-white">{{ upperPrice }}</span> USDT
+        </p>
       </div>
 
       <div class="flex justify-between">
@@ -239,7 +243,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <button class="text-blue-500" @click="copyToManual">
+    <button class="text-blue-550 text-xs" @click="copyToManual">
       {{ $t('sgt.copyParametersToManual') }}
     </button>
   </div>

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
 const derivativeStore = useDerivativeStore()
-const status = reactive(new Status(StatusType.Idle))
-const { $onError } = useNuxtApp()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -39,10 +39,6 @@ function cancelAllOrders() {
     })
     .finally(() => {
       status.setIdle()
-
-      backupPromiseCall(async () => {
-        await derivativeStore.fetchSubaccountOrders()
-      })
     })
 }
 </script>
@@ -52,10 +48,15 @@ function cancelAllOrders() {
     v-if="derivativeStore.subaccountOrders.length > 0"
     v-bind="{ status, tooltip: isAuthorized ? '' : $t('common.unauthorized') }"
     :disabled="!isAuthorized"
-    variant="danger-ghost"
+    variant="danger-shade"
     size="xs"
     @click="cancelAllOrders"
   >
-    {{ $t('trade.cancelAllOrders') }}
+    <span class="hidden 3xl:block 4xl:hidden">
+      {{ $t('trade.cancelAll') }}
+    </span>
+    <span class="3xl:hidden 4xl:block">
+      {{ $t('trade.cancelAllOrders') }}
+    </span>
   </AppButton>
 </template>

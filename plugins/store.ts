@@ -1,35 +1,36 @@
 import {
-  PiniaPluginContext,
   StateTree,
+  PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
 import { defineNuxtPlugin } from '#imports'
 import { localStorage } from '@/app/Services'
-import { AppState, OrderbookLayout, TradingLayout } from '@/types'
+import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
     userState: {
-      favoriteMarkets: [],
-      bannersViewed: [],
       modalsViewed: [],
-      geoLocation: {
-        continent: '',
-        country: '',
-        browserLocation: '',
-        vpnCheckTimestamp: 0
-      },
+      bannersViewed: [],
+      dontShowAgain: [],
+      favoriteMarkets: [],
+      marketSlippageIdMap: {},
+
       preferences: {
+        futuresLeverage: '1',
+        isHideBalances: false,
+        authZManagement: false,
+        thousandsSeparator: false,
+        subaccountManagement: false,
         skipTradeConfirmationModal: false,
+        tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
-        tradingLayout: TradingLayout.Left,
-        subaccountManagement: false,
-        authZManagement: false,
-        isHideBalances: false,
-        thousandsSeparator: false
+        tradingChartInterval: TradingChartInterval.D
       }
     }
   },
@@ -38,13 +39,23 @@ const stateToPersist = {
     subaccountId: ''
   },
 
-  wallet: {
+  sharedGeo: {
+    geoContinent: '',
+    geoCountry: '',
+    ipCountry: '',
+    ipAddress: '',
+    vpnCheckedTimestamp: 0
+  },
+
+  sharedWallet: {
+    walletConnectStatus: '',
+    hwAddresses: '',
     wallet: Wallet.Metamask,
     address: '',
     addresses: '',
     injectiveAddress: '',
-    defaultSubaccountId: '',
     addressConfirmation: '',
+    session: '',
 
     authZ: {
       address: '',
@@ -52,13 +63,13 @@ const stateToPersist = {
       injectiveAddress: '',
       defaultSubaccountId: ''
     },
-
     autoSign: {
       privateKey: '',
       expiration: '',
       injectiveAddress: '',
       duration: ''
-    }
+    },
+    privateKey: ''
   }
 } as Record<string, Record<string, any>>
 
@@ -68,40 +79,45 @@ const actionsThatSetAppStateToBusy = [
   'account/deposit',
   'account/transfer',
   'account/withdraw',
-  'account/withdrawToMain',
   'spot/cancelOrder',
   'campaign/joinGuild',
   'campaign/createGuild',
   'campaign/claimReward',
-  'swap/submitAtomicOrder',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
+  'account/withdrawToMain',
+  'swap/submitAtomicOrder',
   'derivative/cancelOrder',
   'position/closePosition',
   'spot/submitMarketOrder',
   'peggy/setTokenAllowance',
   'account/externalTransfer',
+  'referral/registerInvitee',
+  'referral/createReferralLink',
+  'authZ/grantAuthorization',
+  'authZ/revokeAuthorization',
   'position/closeAllPosition',
-  'spot/submitStopLimitOrder',
-  'spot/submitStopMarketOrder',
+  'derivative/submitTpSlOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
   'gridStrategy/createStrategy',
   'gridStrategy/removeStrategy',
+  'gridStrategy/createPerpStrategy',
+  'gridStrategy/createSpotLiquidityBot',
+  'gridStrategy/createSpotGridStrategy',
   'gridStrategy/removeStrategyForSubaccount',
   'derivative/submitMarketOrder',
   'position/addMarginToPosition',
   'activity/batchCancelSpotOrders',
   'derivative/submitStopLimitOrder',
   'derivative/submitStopMarketOrder',
+  'account/convertNeptuneToPeggyUsdt',
+  'account/convertPeggyToNeptuneUsdt',
   'swap/submitAtomicOrderExactOutput',
-  'activity/batchCancelDerivativeOrders',
-  'position/closePositionAndReduceOnlyOrders',
-  'gridStrategy/createStrategy',
-  'gridStrategy/removeStrategy',
-  'authZ/grantAuthorization',
-  'authZ/revokeAuthorization'
+  'activity/batchCancelDerivativeOrders'
 ]
+
+const actionsThatThrowErrors = ['token/fetchTokensUsdPriceMap']
 
 const persistState = (
   mutation: SubscriptionCallbackMutationPatchObject<StateTree>,
@@ -148,7 +164,8 @@ const persistState = (
 
 function piniaStoreSubscriber({ store }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const appStore = useAppStore()
+  const sharedWalletStore = useSharedWalletStore()
+  const { $onError } = useNuxtApp()
 
   if (localState[store.$id]) {
     store.$state = { ...store.$state, ...localState[store.$id] }
@@ -160,19 +177,26 @@ function piniaStoreSubscriber({ store }: PiniaPluginContext) {
     after(() => {
       const type = `${$id}/${name}`
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
       }
     })
 
-    onError(() => {
+    onError((error) => {
       const type = `${$id}/${name}`
 
       if (actionsThatSetAppStateToBusy.includes(type)) {
-        appStore.$patch({
-          state: AppState.Idle
+        sharedWalletStore.$patch({
+          queueStatus: StatusType.Idle
         })
+      }
+
+      if (
+        actionsThatThrowErrors.includes(type) &&
+        isThrownException(error as Error)
+      ) {
+        $onError(error as unknown as ThrownException)
       }
     })
   }, true)

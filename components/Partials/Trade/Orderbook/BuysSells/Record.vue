@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import {
@@ -13,25 +13,18 @@ import {
   UiMarketWithToken
 } from '@/types'
 
-const props = defineProps({
-  isBuy: Boolean,
-  isActive: Boolean,
-
-  record: {
-    type: Object as PropType<OrderbookFormattedRecord>,
-    required: true
-  },
-
-  index: {
-    type: Number,
-    default: -1
-  },
-
-  highestVolume: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    isBuy?: boolean
+    index?: number
+    isActive?: boolean
+    highestVolume: string
+    record: OrderbookFormattedRecord
+  }>(),
+  {
+    index: -1
   }
-})
+)
 
 const aggregation = inject(AggregationKey, ref(1)) as Ref<number>
 
@@ -72,25 +65,26 @@ const { valueToString: volumeToString } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (aggregation.value < 0) {
-      return new BigNumberInBase(props.record.price).times(
-        new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
-      )
-    } else {
-      return props.record.price
+const { valueToString: priceToString, valueToFixed: priceToFixed } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (aggregation.value < 0) {
+        return new BigNumberInBase(props.record.price).times(
+          new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
+        )
+      } else {
+        return props.record.price
+      }
+    }),
+    {
+      decimalPlaces: computed(() =>
+        props.record.price.split('.')[1]?.length
+          ? props.record.price.split('.')[1].length
+          : 0
+      ),
+      displayAbsoluteDecimalPlace: true
     }
-  }),
-  {
-    decimalPlaces: computed(() =>
-      props.record.price.split('.')[1]?.length
-        ? props.record.price.split('.')[1].length
-        : 0
-    ),
-    displayAbsoluteDecimalPlace: true
-  }
-)
+  )
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   computed(() => props.record.quantity),
@@ -155,7 +149,7 @@ const hasOrders = computed(() => {
       isSameSide &&
       priceInBase
         .dp(getDecimals(props.record.price), BigNumber.ROUND_CEIL)
-        .isEqualTo(props.record.price)
+        .isEqualTo(priceToFixed.value)
     )
   })
 })
@@ -169,18 +163,20 @@ function setQuantityFlashOff() {
 }
 
 function handlePriceClick() {
-  useEventBus(BusEvents.OrderbookPriceClick).emit(props.record.price)
-}
+  const formattedPrice =
+    aggregation.value < 0
+      ? new BigNumberInBase(props.record.price)
+          .times(new BigNumberInBase(10).exponentiatedBy(-aggregation.value))
+          .toFixed()
+      : props.record.price
 
-function handleQuantityOrNotionalClick() {
-  useEventBus(BusEvents.OrderbookSizeClick).emit(props.record.totalQuantity)
-  useEventBus(BusEvents.OrderbookNotionalClick).emit(props.record.totalVolume)
+  useEventBus(BusEvents.OrderbookPriceClick).emit(formattedPrice)
 }
 </script>
 
 <template>
   <div
-    class="group flex text-[11px] leading-4 text-right relative text-gray-300 hover:text-white cursor-pointer select-none font-mono"
+    class="group flex text-xs py-1 leading-4 relative text-coolGray-300 hover:text-white cursor-pointer select-none"
     :class="{ 'bg-brand-800': isActive }"
     @mouseenter="setIndex"
   >
@@ -188,23 +184,25 @@ function handleQuantityOrNotionalClick() {
       class="absolute hidden lg:group-hover:block left-[calc(100%+0.5rem)] top-1/2 -translate-y-1/2 p-2 rounded-md bg-brand-900 border z-20 text-white"
     >
       <div
-        class="text-2xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
+        class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
       >
-        <div class="text-gray-300 font-2xs">{{ $t('trade.volume') }}:</div>
-        <div class="font-mono text-right">{{ volumeToString }}</div>
+        <div class="text-coolGray-300 font-2xs">{{ $t('trade.volume') }}:</div>
+        <div class="text-right">{{ volumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalVolume', { symbol: market.quoteToken.symbol }) }}:
         </div>
-        <div class="font-mono text-right">{{ totalVolumeToString }}</div>
+        <div class="text-right">{{ totalVolumeToString }}</div>
 
-        <div class="text-gray-300 font-2xs">
+        <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalQuantity', { symbol: market.baseToken.symbol }) }}:
         </div>
-        <div class="font-mono text-right">{{ totalQuantityToString }}</div>
+        <div class="text-right">{{ totalQuantityToString }}</div>
 
-        <div class="text-gray-300 font-2xs">{{ $t('trade.avgPrice') }}:</div>
-        <div class="font-mono text-right">{{ avgPriceToString }}</div>
+        <div class="text-coolGray-300 font-2xs">
+          {{ $t('trade.avgPrice') }}:
+        </div>
+        <div class="text-right">{{ avgPriceToString }}</div>
       </div>
     </div>
 
@@ -212,9 +210,9 @@ function handleQuantityOrNotionalClick() {
       class="absolute right-px transition-all duration-500 rounded top-px bottom-px"
       :class="{
         'bg-red-700/50': isActive && !isBuy,
-        'bg-red-500/10': !isActive && !isBuy,
+        'bg-red-500/25': !isActive && !isBuy,
         'bg-green-700/60': isActive && isBuy,
-        'bg-green-500/10': !isActive && isBuy
+        'bg-green-500/25': !isActive && isBuy
       }"
       :style="{
         width: (Number(record.totalVolume) / Number(highestVolume)) * 100 + '%'
@@ -223,7 +221,7 @@ function handleQuantityOrNotionalClick() {
 
     <div
       :key="record.price"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate pl-2 pr-1 relative"
       :class="[
         isBuy ? 'text-green-500' : 'text-red-500',
         {
@@ -248,22 +246,22 @@ function handleQuantityOrNotionalClick() {
 
     <div
       :key="record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
+      class="flex-1 min-w-0 truncate px-1 relative text-center"
       :class="{
         [isBuy ? 'flash-animation-green' : 'flash-animation-red']:
           showQuantityFlash,
         'font-bold': showQuantityFlash
       }"
       @animationend="setQuantityFlashOff"
-      @click="handleQuantityOrNotionalClick"
+      @click="handlePriceClick"
     >
       {{ quantityToString }}
     </div>
 
     <div
       :key="record.price + record.quantity"
-      class="flex-1 min-w-0 truncate px-1 relative"
-      @click="handleQuantityOrNotionalClick"
+      class="flex-1 min-w-0 truncate pl-1 pr-2 relative text-right"
+      @click="handlePriceClick"
     >
       {{ volumeToString }}
     </div>

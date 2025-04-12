@@ -1,11 +1,11 @@
 import { LocalStorage } from '@injectivelabs/utils'
-import { NETWORK } from '@/app/utils/constants'
+import { NETWORK } from '@shared/utils/constant'
 import { localStorage } from '@/app/Services'
 
 // Clear up old local storage keys
 export default defineNuxtPlugin(() => {
   const MAX_LIMIT_OLD = 15
-  const MAX_LIMIT = 1
+  const MAX_LIMIT = 10
 
   if (localStorage.has('storageCleaned')) {
     return

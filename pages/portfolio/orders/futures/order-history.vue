@@ -14,7 +14,6 @@ const route = useRoute()
 const router = useRouter()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
-const isMobile = useIsMobile()
 
 const { limit, page, skip } = usePagination({
   totalCount: toRef(derivativeStore, 'subaccountOrderHistoryCount')
@@ -106,7 +105,6 @@ onSubaccountChange(fetchData)
       @side:update="fetchData"
       @type:update="fetchData"
     />
-    <PartialsPortfolioOrdersFuturesOrderHistoryTableHeader v-if="!isMobile" />
 
     <CommonSkeletonRow
       v-if="status.isLoading()"
@@ -116,24 +114,13 @@ onSubaccountChange(fetchData)
     />
 
     <template v-else>
-      <div v-if="isMobile">
-        <PartialsPortfolioOrdersFuturesOrderHistoryTableMobileRow
-          v-for="order in derivativeStore.subaccountOrderHistory"
-          :key="`${order.orderHash}-${order.cid}`"
-          v-bind="{ order }"
-        />
-      </div>
-
-      <template v-else>
-        <PartialsPortfolioOrdersFuturesOrderHistoryTableRow
-          v-for="order in derivativeStore.subaccountOrderHistory"
-          :key="`${order.orderHash}-${order.cid}`"
-          v-bind="{ order }"
-        />
-      </template>
+      <PartialsPortfolioOrdersFuturesOrderHistoryTable
+        v-if="derivativeStore.subaccountOrderHistory.length"
+        :orders="derivativeStore.subaccountOrderHistory"
+      />
 
       <AppPagination
-        v-if="derivativeStore.subaccountOrderHistory.length > 0"
+        v-if="derivativeStore.subaccountOrderHistory.length"
         class="p-8"
         v-bind="{
           limit,
@@ -145,7 +132,7 @@ onSubaccountChange(fetchData)
       />
 
       <CommonEmptyList
-        v-if="derivativeStore.subaccountOrderHistory.length === 0"
+        v-if="!derivativeStore.subaccountOrderHistory.length"
         :message="$t('trade.emptyOrders')"
       />
     </template>

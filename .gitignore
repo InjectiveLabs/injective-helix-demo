@@ -87,7 +87,7 @@ debug
 
 # IDE / Editor
 .idea
-.vscode
+
 
 # Service worker
 sw.*
@@ -110,3 +110,13 @@ auto-imports.d.ts
 
 # json files
 app/data/*.json
+app/json/*
+!app/json/index.ts
+pages/whiteboard.vue
+pages/whiteboard2.vue
+
+# Cursor IDE
+.cursorrules
+
+# Local Netlify folder
+.netlify

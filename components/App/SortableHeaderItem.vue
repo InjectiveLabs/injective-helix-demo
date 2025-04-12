@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-defineProps({
-  isAscending: Boolean,
+import { NuxtUiIcons } from '@shared/types'
 
-  value: {
-    type: String,
-    required: true
-  },
-
-  sortBy: {
-    type: String,
-    required: true
+withDefaults(
+  defineProps<{
+    value: string
+    sortBy: string
+    isAscending?: boolean
+  }>(),
+  {
+    isAscending: false
   }
-})
+)
 </script>
 
 <template>
@@ -22,22 +21,28 @@ defineProps({
     v-bind="$attrs"
   >
     <template #default="{ isActive }">
-      <div class="flex cursor-pointer items-center gap-1" :class="$attrs.class">
-        <div>
-          <SharedIcon
-            name="triangle"
-            is-xs
-            class="transition-all rotate-180"
+      <div
+        class="flex cursor-pointer items-center gap-1 text-white"
+        :class="$attrs.class"
+      >
+        <div class="flex flex-col">
+          <UIcon
+            :name="NuxtUiIcons.Triangle"
+            class="transition-all rotate-180 -mb-0.5"
             :class="[
-              isActive && isAscending ? 'text-gray-200' : 'text-gray-600'
+              isActive && isAscending
+                ? 'text-coolGray-200'
+                : 'text-coolGray-600'
             ]"
           />
-          <SharedIcon
-            name="triangle"
+          <UIcon
+            :name="NuxtUiIcons.Triangle"
+            class="-mt-0.5"
             :class="[
-              isActive && !isAscending ? 'text-gray-200' : 'text-gray-600'
+              isActive && !isAscending
+                ? 'text-coolGray-200'
+                : 'text-coolGray-600'
             ]"
-            is-xs
           />
         </div>
 

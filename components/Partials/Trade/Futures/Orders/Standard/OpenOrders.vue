@@ -2,11 +2,13 @@
 import { MarketKey, UiDerivativeMarket } from '@/types'
 
 const derivativeStore = useDerivativeStore()
-const isMobile = useIsMobile()
 
-const props = defineProps({
-  isTickerOnly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {}
+)
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -22,28 +24,10 @@ const filteredOrders = computed(() =>
 </script>
 
 <template>
-  <div class="divide-y">
-    <PartialsPortfolioOrdersFuturesOpenOrdersTableHeader v-if="!isMobile" />
+  <PartialsPortfolioOrdersFuturesOpenOrdersTable
+    v-if="filteredOrders.length"
+    :orders="filteredOrders"
+  />
 
-    <div v-if="isMobile">
-      <PartialsPortfolioOrdersFuturesOpenOrdersTableMobileRow
-        v-for="order in filteredOrders"
-        :key="`${order.orderHash}-${order.cid}`"
-        v-bind="{ order }"
-      />
-    </div>
-
-    <template v-else>
-      <PartialsPortfolioOrdersFuturesOpenOrdersTableRow
-        v-for="order in filteredOrders"
-        :key="`${order.orderHash}-${order.cid}`"
-        v-bind="{ order }"
-      />
-    </template>
-
-    <CommonEmptyList
-      v-if="filteredOrders.length === 0"
-      :message="'No Open Orders'"
-    />
-  </div>
+  <CommonEmptyList v-if="!filteredOrders.length" :message="'No Open Orders'" />
 </template>

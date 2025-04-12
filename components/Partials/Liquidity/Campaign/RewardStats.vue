@@ -9,27 +9,19 @@ import {
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 
-const props = defineProps({
-  totalScore: {
-    type: String,
-    required: true
-  },
-
-  quoteDecimals: {
-    type: Number,
-    required: true
-  },
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    totalScore: string
+    quoteDecimals: number
+    campaign: Campaign
+  }>(),
+  {}
+)
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const campaignWithReward = computed(() =>
   campaignStore.campaignsWithUserRewards.find(
@@ -42,11 +34,11 @@ const market = computed(() =>
 )
 
 const explorerLink = computed(() => {
-  if (!walletStore.address) {
+  if (!sharedWalletStore.address) {
     return
   }
 
-  return `${getExplorerUrl()}/account/${walletStore.address}`
+  return `${getExplorerUrl()}/account/${sharedWalletStore.address}`
 })
 
 const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
@@ -112,7 +104,7 @@ const rewardsFormatted = computed(() =>
 </script>
 
 <template>
-  <div v-if="campaignWithReward" class="bg-gray-850 rounded-md p-8">
+  <div v-if="campaignWithReward" class="bg-coolGray-850 rounded-md p-8">
     <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
 
     <div class="flex">
@@ -123,7 +115,7 @@ const rewardsFormatted = computed(() =>
           <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
           <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
             <p class="text-blue-500 truncate">
-              {{ walletStore.address }}
+              {{ sharedWalletStore.address }}
             </p>
           </NuxtLink>
         </div>

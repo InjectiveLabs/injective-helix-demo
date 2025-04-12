@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-defineProps({
-  round: {
-    type: Number,
-    required: true
-  }
-})
+withDefaults(defineProps<{ round: number }>(), {})
 
-const modalStore = useModalStore()
-
-const isModalOpen = computed(() => modalStore.modals[Modal.LpRewards])
+const modalStore = useSharedModalStore()
 
 function closeModal() {
   modalStore.closeModal(Modal.LpRewards)
@@ -20,9 +13,8 @@ function closeModal() {
 <template>
   <Teleport to="body">
     <AppModal
-      :is-open="isModalOpen"
-      is-hide-close-button
-      @modal:closed="closeModal"
+      v-model="modalStore.modals[Modal.LpRewards]"
+      v-bind="{ isHideCloseButton: true }"
     >
       <template #title>
         <p class="text-center font-bold">
@@ -30,9 +22,7 @@ function closeModal() {
         </p>
       </template>
 
-      <div
-        class="max-sm:pt-10 max-w-sm md:text-xl space-y-2 text-center text-gray-300"
-      >
+      <div class="md:text-xl space-y-2 text-center text-coolGray-300">
         <div>
           <i18n-t keypath="campaign.roundIsLive" tag="div">
             <template #round1>

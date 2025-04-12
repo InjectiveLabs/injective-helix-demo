@@ -1,5 +1,5 @@
+import { ShallowRef } from 'vue'
 import { Status } from '@injectivelabs/utils'
-import { ShallowRef } from 'nuxt/dist/app/compat/capi'
 import { UiMarketWithToken } from './trade'
 import { OrderbookWorkerMessage } from './worker'
 
@@ -19,12 +19,19 @@ export const MarketKey = Symbol('Market') as InjectionKey<
 export const PortfolioStatusKey = Symbol(
   'PortfolioStatus'
 ) as InjectionKey<Status>
-export const UnknownTokenStatusKey = Symbol(
-  'unknownTokensStatus'
-) as InjectionKey<Status>
 
 export const OrderbookStatusKey = Symbol(
   'orderbookStatus'
 ) as InjectionKey<Status>
+
+export const MarkPriceStatusKey = Symbol(
+  'markPriceStatus'
+) as InjectionKey<Status>
+
 export const IsSpotKey = Symbol('isSpot') as InjectionKey<boolean>
+export const InitialStatusKey = Symbol('InitialStatus') as InjectionKey<Status>
 export const AggregationKey = Symbol('aggregation') as InjectionKey<Ref<number>>
+
+export const IsRWAMarketOpenKey = Symbol('isRWAMarketOpen') as InjectionKey<
+  Ref<boolean>
+>

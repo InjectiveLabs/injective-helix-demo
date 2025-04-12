@@ -6,7 +6,7 @@ import {
   SpotOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { ENDPOINTS } from '@/app/utils/constants'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 
@@ -34,16 +34,19 @@ export const cancelSubaccountTradesStream = () => {
 
 export const streamOrderbookUpdate = ({
   marketId,
-  callback
+  callback,
+  onResetCallback
 }: {
   marketId: string
+  onResetCallback?: Function
   callback: SpotOrderbookUpdateStreamCallback
 }) => {
   const streamFn =
     spotMarketStream.streamSpotOrderbookUpdate.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     marketIds: [marketId],
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -55,16 +58,19 @@ export const streamOrderbookUpdate = ({
 
 export const streamTrades = ({
   marketId,
-  callback
+  callback,
+  onResetCallback
 }: {
   marketId: string
+  onResetCallback?: Function
   callback: SpotTradesStreamCallback
 }) => {
   const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
-    marketId,
     callback,
-    executionSide: TradeExecutionSide.Taker
+    marketId,
+    executionSide: TradeExecutionSide.Taker,
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -77,17 +83,20 @@ export const streamTrades = ({
 export const streamSubaccountTrades = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: SpotTradesStreamCallback
 }) => {
   const streamFn = spotMarketStream.streamSpotTrades.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -100,17 +109,20 @@ export const streamSubaccountTrades = ({
 export const streamSubaccountOrders = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: SpotOrdersStreamCallback
 }) => {
   const streamFn = spotMarketStream.streamSpotOrders.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -123,18 +135,21 @@ export const streamSubaccountOrders = ({
 export const streamSubaccountOrderHistory = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: SpotOrderHistoryStreamCallback
 }) => {
   const streamFn =
     spotMarketStream.streamSpotOrderHistory.bind(spotMarketStream)
   const streamFnArgs = {
+    callback,
     ...(subaccountId && { subaccountId }),
     ...(marketId && { marketId }),
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({

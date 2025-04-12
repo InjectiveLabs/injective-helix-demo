@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Coin } from '@injectivelabs/sdk-ts'
 import {
-  BigNumber,
   Status,
+  BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { Coin } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_VOLUME_REWARD_CONTRACT,
   GUILD_BALANCE_REWARD_CONTRACT
@@ -19,35 +19,22 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 
-const props = defineProps({
-  isVolume: Boolean,
-  isReadyToClaim: Boolean,
-
-  now: {
-    type: Number,
-    required: true
-  },
-
-  decimals: {
-    type: Number,
-    required: true
-  },
-
-  score: {
-    type: String,
-    required: true
-  },
-
-  percentage: {
-    type: Number,
-    required: true
-  },
-
-  rewards: {
-    type: Array as PropType<Coin[]>,
-    default: () => []
+const props = withDefaults(
+  defineProps<{
+    now: number
+    score: string
+    rewards?: Coin[]
+    decimals: number
+    isVolume?: boolean
+    percentage: number
+    isReadyToClaim?: boolean
+  }>(),
+  {
+    rewards: () => [],
+    isVolume: false,
+    isReadyToClaim: false
   }
-})
+)
 
 const contractAddress = props.isVolume
   ? GUILD_VOLUME_REWARD_CONTRACT
@@ -63,7 +50,7 @@ const hasReward = computed(() =>
 
 const { valueToString: scoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.score,
       decimalPlaces: props.decimals
     })
@@ -193,10 +180,10 @@ function onClaimRewards() {
     >
       <AppButton
         class="border border-blue-500"
+        size="sm"
         v-bind="{
-          isSm: true,
           isLoading: status.isLoading() || fetchClaimStatus.isLoading(),
-          isDisabled: hasUserClaimed || !isReadyToClaim || !hasReward
+          disabled: hasUserClaimed || !isReadyToClaim || !hasReward
         }"
         @click="onClaimRewards"
       >

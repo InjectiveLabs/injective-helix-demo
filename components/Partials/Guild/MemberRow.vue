@@ -2,24 +2,21 @@
 import { BigNumber } from '@injectivelabs/utils'
 import { GuildMember } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@shared/utils/network'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
 
 const { baseToken, quoteToken } = useGuild()
 
-const props = defineProps({
-  isCampaignStarted: Boolean,
-
-  rank: {
-    type: Number,
-    required: true
-  },
-
-  member: {
-    type: Object as PropType<GuildMember>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    rank: number
+    member: GuildMember
+    isCampaignStarted?: boolean
+  }>(),
+  {
+    isCampaignStarted: false
   }
-})
+)
 
 const explorerLink = computed(
   () => `${getExplorerUrl()}/account/${props.member.address}`
@@ -43,7 +40,7 @@ const { valueToString: volumeScorePercentageToString } =
 
 const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.member.tvlScore,
       decimalPlaces: baseToken.value?.decimals || 18
     })
@@ -52,7 +49,7 @@ const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
 
 const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.member.volumeScore,
       decimalPlaces: quoteToken.value?.decimals || 6
     })
@@ -61,7 +58,7 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <tr class="border-b hover:bg-gray-800 text-sm">
+  <tr class="border-b hover:bg-coolGray-800 text-sm">
     <td class="p-3">{{ rank }}</td>
     <td>
       <NuxtLink

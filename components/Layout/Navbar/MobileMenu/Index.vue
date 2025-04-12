@@ -1,16 +1,30 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import {
-  MENU_ITEMS,
-  USER_MENU_ITEMS,
-  getDepositMenuItem
+  getMobileMenuItems,
+  getGeoRestrictedMobileMenuItems
 } from '@/app/data/menu'
-import { MenuItemType } from '@/types'
 
-const walletStore = useWalletStore()
+const appStore = useAppStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isOpen = ref(false)
 
-const depositMenuItem = getDepositMenuItem()
+const filteredMenuItems = computed(() =>
+  appStore.isCountryRestricted
+    ? getGeoRestrictedMobileMenuItems()
+    : getMobileMenuItems().filter((item) => {
+        if (item.isDevOnly) {
+          return appStore.devMode
+        }
+
+        if (item.isConnectedOnly) {
+          return sharedWalletStore.isUserConnected
+        }
+
+        return true
+      })
+)
 
 function close() {
   isOpen.value = false
@@ -29,12 +43,15 @@ const isLockedDoc = useScrollLock(document.documentElement)
 </script>
 
 <template>
-  <div class="flex items-center pr-2 lg:hidden">
+  <div
+    class="flex items-center pr-2 lg:hidden"
+    :class="{ 'ml-2': sharedWalletStore.isAuthzWalletConnected }"
+  >
     <button
-      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none"
+      class="hover:bg-brand-800 p-1 transition-all rounded-md select-none flex items-center justify-center"
       @click="open"
     >
-      <SharedIcon name="menu" />
+      <UIcon :name="NuxtUiIcons.Menu" class="h-6 w-6 min-w-6" />
     </button>
   </div>
 
@@ -52,32 +69,19 @@ const isLockedDoc = useScrollLock(document.documentElement)
           <div class="h-[100dvh] max-w-sm overflow-y-auto">
             <div class="p-4 border-b flex justify-between items-center">
               <AssetLogo class="mx-3" />
-              <SharedIcon name="close" @click="close" />
+              <UIcon
+                :name="NuxtUiIcons.Close"
+                class="h-4 w-4 min-w-4"
+                @click="close"
+              />
             </div>
 
             <div>
               <div class="p-4 font-semibold border-b">
                 <LayoutNavbarPortfolioMenuItem
-                  v-if="walletStore.isUserWalletConnected"
-                  v-bind="{
-                    item: {
-                      label: 'navigation.portfolio',
-                      type: MenuItemType.Dropdown,
-                      items: USER_MENU_ITEMS
-                    }
-                  }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
-                  v-for="item in MENU_ITEMS"
+                  v-for="item in filteredMenuItems"
                   :key="item.label"
                   v-bind="{ item }"
-                  @menu:close="close"
-                />
-
-                <LayoutNavbarPortfolioMenuItem
-                  v-bind="{ item: depositMenuItem }"
                   @menu:close="close"
                 />
               </div>

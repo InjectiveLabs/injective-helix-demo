@@ -1,38 +1,27 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { Modal } from '@/types'
 
-const tradingMessages = [
-  MsgType.MsgCreateSpotLimitOrder,
-  MsgType.MsgCreateSpotMarketOrder,
-  MsgType.MsgCreateDerivativeLimitOrder,
-  MsgType.MsgCreateDerivativeMarketOrder,
-  MsgType.MsgCancelSpotOrder,
-  MsgType.MsgCancelDerivativeOrder,
-  MsgType.MsgBatchCancelDerivativeOrders,
-  MsgType.MsgBatchCancelSpotOrders,
-  MsgType.MsgBatchCreateDerivativeLimitOrders,
-  MsgType.MsgBatchCreateSpotLimitOrders,
-  MsgType.MsgBatchUpdateOrders
-]
-
-const modalStore = useModalStore()
 const authZStore = useAuthZStore()
+const modalStore = useSharedModalStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const { validate } = useForm<{
   address: string
 }>()
 
-const msgs = ref(tradingMessages)
+const msgs = ref(TRADING_MESSAGES)
 const status = reactive(new Status(StatusType.Idle))
 
-const isOpen = computed(() => modalStore.modals[Modal.AddGrantee])
-
-const { value: addressValue, errorMessage } = useStringField({
+const {
+  errorMessage,
+  value: addressValue,
+  resetField: resetAddressValue
+} = useStringField({
   name: 'address',
   rule: 'required|injAddress'
 })
@@ -55,17 +44,22 @@ async function grantAuthorization() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
-      closeModal()
+
+      modalStore.closeModal(Modal.AddGrantee)
     })
 }
 
-function closeModal() {
-  modalStore.closeModal(Modal.AddGrantee)
+function onOpenModal() {
+  resetAddressValue({ value: '' })
 }
 </script>
 
 <template>
-  <AppModal is-md v-bind="{ isOpen }" @modal:closed="closeModal">
+  <AppModal
+    v-model="modalStore.modals[Modal.AddGrantee]"
+    v-bind="{ isMd: true }"
+    @on:open="onOpenModal"
+  >
     <template #title>
       <h3>
         {{ $t('portfolio.settings.authz.addNewGrantee') }}
@@ -91,7 +85,7 @@ function closeModal() {
       >
         <PartialsPortfolioSettingsAuthzGranteeCommonMsgSelect
           v-for="[label, value] in Object.entries(MsgType).filter((entry) =>
-            tradingMessages.includes(entry[1])
+            TRADING_MESSAGES.includes(entry[1])
           )"
           :key="label"
           v-bind="{ value, label }"

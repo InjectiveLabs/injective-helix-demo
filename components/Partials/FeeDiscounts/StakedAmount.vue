@@ -4,13 +4,13 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
-const paramStore = useParamStore()
 const exchangeStore = useExchangeStore()
+const sharedParamStore = useSharedParamStore()
 
 const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
-  computed(() => paramStore.apr.times(100)),
+  computed(() => sharedParamStore.apr.times(100)),
   {
-    decimalPlaces: 2
+    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
 )
 
@@ -38,20 +38,18 @@ const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
 </script>
 
 <template>
-  <div class="flex flex-col bg-gray-850 rounded-lg p-6 h-full">
+  <div class="flex flex-col bg-coolGray-850 rounded-lg p-6 h-full">
     <div class="flex justify-start gap-6 lg:gap-8">
       <div class="flex flex-col">
         <span
-          class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
+          class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
           {{ $t('feeDiscounts.my_staked_amount') }}
         </span>
         <span
-          class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
+          class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
-          <b
-            class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
-          >
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
             {{ stakedAmountToFormat }}
           </b>
           INJ
@@ -59,7 +57,7 @@ const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
       </div>
     </div>
     <div class="mt-4">
-      <span class="text-xs text-gray-400">
+      <span class="text-xs text-coolGray-400">
         {{ $t('feeDiscounts.current_apr') }}: ≈ {{ aprToFormat }}%
       </span>
     </div>

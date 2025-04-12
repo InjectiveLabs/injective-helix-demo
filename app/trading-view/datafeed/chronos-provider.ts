@@ -113,12 +113,14 @@ export class ChronosApiProvider {
     }
 
     if (countBack) {
-      endpoint += `&countBack=${countBack}`
+      endpoint += `&countback=${countBack}`
     }
 
     if (firstDataRequest) {
       endpoint += `&firstDataRequest=${firstDataRequest}`
     }
+
+    endpoint += `&cache=true`
 
     return await this.client.get(endpoint)
   }
@@ -153,12 +155,14 @@ export class ChronosApiProvider {
     }
 
     if (countBack) {
-      endpoint += `&countBack=${countBack}`
+      endpoint += `&countback=${countBack}`
     }
 
     if (firstDataRequest) {
       endpoint += `&firstDataRequest=${firstDataRequest}`
     }
+
+    endpoint += `&cache=true`
 
     return await this.client.get(endpoint)
   }

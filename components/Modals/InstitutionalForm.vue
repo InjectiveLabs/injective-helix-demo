@@ -3,7 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const {
@@ -16,8 +16,6 @@ const {
 const status = reactive(new Status(StatusType.Idle))
 
 const classes = 'border border-white p-4 rounded-md bg-transparent'
-
-const isModalOpen = computed(() => modalStore.modals[Modal.InstitutionalForm])
 
 const { value: firstNameValue } = useStringField({
   name: InstitutionalFormField.FirstName,
@@ -35,14 +33,6 @@ const { value: emailValue } = useStringField({
 const { value: companyValue } = useStringField({
   name: InstitutionalFormField.Company
 })
-
-watch(isModalOpen, () => {
-  resetForm()
-})
-
-function closeModal() {
-  modalStore.closeModal(Modal.InstitutionalForm)
-}
 
 async function onSubmit() {
   const { valid } = await validate()
@@ -83,12 +73,12 @@ async function onSubmit() {
 
 <template>
   <AppModal
-    class="w-full"
-    v-bind="{ isOpen: isModalOpen }"
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.InstitutionalForm]"
+    :ui="{ width: 'lg:max-w-5xl' }"
+    @on:open="resetForm"
   >
     <div>
-      <h3 class="text-4xl pb-4">
+      <h3 class="text-5xl pb-4">
         {{ $t('institutional.modalTitle') }}
       </h3>
       <p>

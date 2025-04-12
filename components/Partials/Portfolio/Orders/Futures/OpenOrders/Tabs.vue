@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { SpotOpenOrdersFilterField } from '@/types'
 
+const appStore = useAppStore()
+const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
+const gridStrategyStore = useGridStrategyStore()
+
+withDefaults(
+  defineProps<{
+    isTradingBots?: boolean
+  }>(),
+  {
+    isTradingBots: false
+  }
+)
 
 const { value: marketValue } = useStringField({
   name: SpotOpenOrdersFilterField.Market,
@@ -12,11 +24,23 @@ const { value: sideValue } = useStringField({
   name: SpotOpenOrdersFilterField.Side,
   rule: ''
 })
+
+const hasActiveStrategyInSubaccount = computed(() =>
+  gridStrategyStore.activeDerivativeStrategies.find(
+    (strategy) => strategy.subaccountId === accountStore.subaccountId
+  )
+)
 </script>
 
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
+      }"
+    />
 
     <CommonTabMarketSelector
       v-bind="{ markets: derivativeStore.markets }"
@@ -27,7 +51,10 @@ const { value: sideValue } = useStringField({
 
     <CommonTabFormReset />
 
-    <div class="hidden lg:flex flex-1 items-center justify-end px-2">
+    <div
+      v-if="!hasActiveStrategyInSubaccount"
+      class="hidden lg:flex flex-1 items-center justify-end px-2"
+    >
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders />
     </div>
 

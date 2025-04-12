@@ -7,15 +7,15 @@ import {
 import { Status, StatusType } from '@injectivelabs/utils'
 
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  grant: {
-    type: Object as PropType<GrantAuthorizationWithDecodedAuthorization>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    grant: GrantAuthorizationWithDecodedAuthorization
+  }>(),
+  {}
+)
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -64,7 +64,8 @@ function revoke() {
     <div class="flex-1 p-2">
       <AppButton
         v-if="
-          walletStore.isAutoSignEnabled || walletStore.isAuthzWalletConnected
+          sharedWalletStore.isAutoSignEnabled ||
+          sharedWalletStore.isAuthzWalletConnected
         "
         variant="danger-ghost"
         size="sm"

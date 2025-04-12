@@ -1,30 +1,32 @@
 <script lang="ts" setup>
 const slots = useSlots()
 
-const props = defineProps({
-  isSm: Boolean,
-  isValid: Boolean,
-  isRight: Boolean,
-  isDisabled: Boolean,
-  isNoPadding: Boolean,
-  isDisabledGray: Boolean,
-  isTransparentBg: Boolean,
-
-  errors: {
-    type: Array as PropType<string[]>,
-    default: () => []
-  },
-
-  inputClasses: {
-    type: String,
-    default: ''
-  },
-
-  wrapperClasses: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isValid?: boolean
+    isRight?: boolean
+    isDisabled?: boolean
+    isNoPadding?: boolean
+    isDisabledGray?: boolean
+    isTransparentBg?: boolean
+    errors?: string[]
+    inputClasses?: string
+    wrapperClasses?: string
+  }>(),
+  {
+    isSm: false,
+    errors: () => [],
+    isValid: false,
+    isRight: false,
+    isDisabled: false,
+    isNoPadding: false,
+    inputClasses: '',
+    wrapperClasses: '',
+    isDisabledGray: false,
+    isTransparentBg: false
   }
-})
+)
 
 const emit = defineEmits<{
   blur: [value: string]
@@ -113,7 +115,7 @@ export default {
       <div :class="wrapperClass" class="overflow-hidden">
         <div
           class="flex items-center justify-between no-shadow"
-          :class="{ 'bg-gray-700': isDisabled && isDisabledGray }"
+          :class="{ 'bg-coolGray-700': isDisabled && isDisabledGray }"
         >
           <div v-if="slots.prefix" class="ml-3">
             <slot name="prefix" />
@@ -132,7 +134,7 @@ export default {
               <slot name="max" />
             </div>
 
-            <div v-if="slots.addon" class="mr-3 text-gray-300">
+            <div v-if="slots.addon" class="mr-3 text-coolGray-300">
               <slot name="addon" />
             </div>
           </SharedNumericInput>

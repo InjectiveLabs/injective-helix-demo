@@ -1,15 +1,23 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+useHead({
+  bodyAttrs: {
+    class: 'dark:bg-[#00001A]'
+  }
+})
+</script>
 
 <template>
   <div>
-    <AssetNoticeBanners />
-    <!-- hide for launch -->
-    <!-- <AssetKadoBanner /> -->
+    <PartialsHomeGradientBg />
 
-    <div class="flex flex-col p-4 lg:p-8 max-w-7xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full px-6 xs:px-8 lg:px-12 relative z-[3]">
       <PartialsHomeSectionsHero />
-      <PartialsHomeSectionsGettingStarted class="mb-16" />
-      <PartialsHomeSectionsOverview class="mb-16" />
+      <PartialsHomeSectionsBuiltForTheComunity />
+
+      <!-- <PartialsHomeSectionsGettingStarted class="mb-16" /> -->
+
+      <PartialsHomeSectionsOverview />
+
       <PartialsHomeAnnouncements />
       <PartialsHomeNewsletter />
     </div>

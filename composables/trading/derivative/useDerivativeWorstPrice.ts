@@ -8,11 +8,10 @@ import {
 } from '@/app/utils/helpers'
 import {
   TradeAmountOption,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -25,7 +24,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   )
 
   const isLimitOrder = computed(() =>
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
+    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
       derivativeFormValues.value[
         DerivativesTradeFormField.Type
       ] as DerivativeTradeTypes
@@ -67,9 +66,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
   const slippagePercentage = computed(() => {
     const slippagePercentage = new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.IsSlippageOn]
-        ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-        : 0
+      derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
     ).div(100)
 
     const slippage = isBuy.value
@@ -84,59 +81,49 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
     const price =
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
-
     const triggerPrice = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || 0
     )
 
-    let quantity
-
     if (isBaseOrder.value) {
-      quantity = new BigNumberInBase(
+      const quantity = new BigNumberInBase(
         derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
       )
-    } else {
-      // is quote order
-      if (isLimitOrder.value) {
-        const amount = new BigNumberInBase(
-          derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
-        )
 
-        quantity = price ? amount.div(price) : ZERO_IN_BASE
-      }
-
-      if (!isLimitOrder.value) {
-        // is market order
-
-        const total = new BigNumberInBase(
-          derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
-        )
-
-        const { worstPrice } = calculateTotalQuantity(total.toFixed(), records)
-
-        const worstPriceWithSlippage = worstPrice.times(
-          slippagePercentage.value
-        )
-
-        const triggerPriceWithSlippage = triggerPrice.times(
-          slippagePercentage.value
-        )
-
-        if (isStopOrder.value) {
-          quantity = triggerPrice
-            ? total.div(triggerPriceWithSlippage)
-            : ZERO_IN_BASE
-        } else {
-          quantity = total.div(worstPriceWithSlippage)
-        }
-      }
+      return quantizeNumber(quantity, market.value.quantityTensMultiplier)
     }
 
-    if (!quantity) {
-      return ZERO_IN_BASE
+    if (isLimitOrder.value) {
+      const amount = new BigNumberInBase(
+        derivativeFormValues.value[DerivativesTradeFormField.Amount] || 0
+      )
+
+      return quantizeNumber(
+        price ? amount.div(price) : ZERO_IN_BASE,
+        market.value.quantityTensMultiplier
+      )
     }
 
-    return quantizeNumber(quantity, market.value.quantityTensMultiplier)
+    const total = new BigNumberInBase(
+      derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
+    )
+    const { worstPrice } = calculateTotalQuantity(total.toFixed(), records)
+    const worstPriceWithSlippage = worstPrice.times(slippagePercentage.value)
+    const triggerPriceWithSlippage = triggerPrice.times(
+      slippagePercentage.value
+    )
+
+    if (isStopOrder.value) {
+      return quantizeNumber(
+        triggerPrice ? total.div(triggerPriceWithSlippage) : ZERO_IN_BASE,
+        market.value.quantityTensMultiplier
+      )
+    }
+
+    return quantizeNumber(
+      total.div(worstPriceWithSlippage),
+      market.value.quantityTensMultiplier
+    )
   })
 
   const minimumAmountInQuote = computed(() => {
@@ -161,6 +148,16 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     )
   })
 
+  const calculatedWorstPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return { hasEnoughLiquidity: true, worstPrice: ZERO_IN_BASE }
+    }
+
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
+
+    return calculateWorstPrice(quantity.value.toString(), records)
+  })
+
   const worstPrice = computed(() => {
     const price = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
@@ -170,32 +167,31 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || 0
     )
 
-    let worstPrice
-
     if (isLimitOrder.value) {
-      worstPrice = quantizeNumber(price, market.value.priceTensMultiplier)
+      const worstPrice = quantizeNumber(price, market.value.priceTensMultiplier)
+
+      return quantizeNumber(worstPrice, market.value.priceTensMultiplier)
     }
 
-    if (!isLimitOrder.value) {
-      if (isStopOrder.value) {
-        const priceWithSlippage = triggerPrice.times(slippagePercentage.value)
+    if (isStopOrder.value) {
+      const priceWithSlippage = triggerPrice.times(slippagePercentage.value)
 
-        worstPrice = priceWithSlippage
-      } else {
-        const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
-
-        worstPrice = calculateWorstPrice(
-          quantity.value.toString(),
-          records
-        ).worstPrice.times(slippagePercentage.value)
-      }
+      return quantizeNumber(priceWithSlippage, market.value.priceTensMultiplier)
     }
 
-    if (!worstPrice) {
-      return ZERO_IN_BASE
-    }
+    const worstPrice = calculatedWorstPrice.value.worstPrice.times(
+      slippagePercentage.value
+    )
 
     return quantizeNumber(worstPrice, market.value.priceTensMultiplier)
+  })
+
+  const hasEnoughLiquidity = computed(() => {
+    if (isLimitOrder.value) {
+      return true
+    }
+
+    return calculatedWorstPrice.value.hasEnoughLiquidity
   })
 
   const totalNotional = computed(() => {
@@ -228,6 +224,40 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
+  const priceForNotional = computed(() => {
+    switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
+      case DerivativeTradeTypes.StopMarket:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
+            0
+        )
+      case DerivativeTradeTypes.StopLimit:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+        )
+      case DerivativeTradeTypes.Market:
+        return worstPrice.value
+      case DerivativeTradeTypes.Limit:
+        return new BigNumberInBase(
+          derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+        )
+    }
+  })
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    if (
+      !priceForNotional.value ||
+      priceForNotional.value?.isZero() ||
+      new BigNumberInBase(quantity.value).isZero()
+    ) {
+      return
+    }
+
+    return quantity.value
+      .times(priceForNotional.value)
+      .lt(market.value.minNotionalInToken)
+  })
+
   return {
     isBuy,
     market,
@@ -240,8 +270,10 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     feePercentage,
     totalNotional,
     marginWithFee,
+    hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,
-    feePercentageWithLeverage
+    feePercentageWithLeverage,
+    isNotionalLessThanMinNotional
   }
 }

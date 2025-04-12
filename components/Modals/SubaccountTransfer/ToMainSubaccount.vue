@@ -2,17 +2,17 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
 const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
 const activeStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+  gridStrategyStore.activeSpotStrategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )
@@ -33,7 +33,7 @@ function onEndBot() {
     .catch($onError)
     .finally(() => {
       status.setIdle()
-      modalStore.closeModal(Modal.TransferToMainSubaccount)
+      onCloseModal()
     })
 }
 
@@ -44,9 +44,8 @@ function onCloseModal() {
 
 <template>
   <AppModal
-    is-md
-    :is-open="modalStore.modals[Modal.TransferToMainSubaccount]"
-    @modal:closed="onCloseModal"
+    v-model="modalStore.modals[Modal.TransferToMainSubaccount]"
+    v-bind="{ isMd: true }"
   >
     <template #title>
       <h3>

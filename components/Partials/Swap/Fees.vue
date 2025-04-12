@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { SwapForm } from '@/types'
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
+import { SwapForm, SwapCyTags } from '@/types'
 
 const showFeeBreakdown = ref(false)
 const formValues = useFormValues<SwapForm>()
@@ -27,7 +29,7 @@ function toggleShowFeeBreakdown() {
   >
     <div>
       <div class="flex items-center gap-1 justify-end mb-1">
-        <span>
+        <span :data-cy="dataCyTag(SwapCyTags.SwapSummaryFees)">
           {{ `~$${totalFeeToFormat}` }}
         </span>
       </div>
@@ -36,7 +38,7 @@ function toggleShowFeeBreakdown() {
         <div
           v-for="(fee, index) in swapRoutesFees"
           :key="`swap-route-fee-${index}`"
-          class="grid grid-cols-2 gap-10 items-center h-0 opacity-0 transition-all duration-200 text-gray-500 cursor-text"
+          class="grid grid-cols-2 gap-10 items-center h-0 opacity-0 transition-all duration-200 text-coolGray-500 cursor-text"
           :class="{ 'h-auto opacity-100': showFeeBreakdown }"
         >
           <div class="flex items-center justify-start">
@@ -47,9 +49,9 @@ function toggleShowFeeBreakdown() {
             >
               <span>{{ symbol.from }}</span>
 
-              <SharedIcon
-                name="arrow"
-                class="rotate-180 w-4 h-4 mx-1 cursor-text"
+              <UIcon
+                :name="NuxtUiIcons.ArrowLeft"
+                class="rotate-180 w-4 h-4 mx-1 !cursor-text"
               />
               <span>{{ symbol.to }}</span>
             </span>
@@ -60,10 +62,10 @@ function toggleShowFeeBreakdown() {
       </div>
     </div>
 
-    <SharedIcon
+    <UIcon
       v-if="swapRoutesFees.length > 1"
-      name="caret-down-slim"
-      class="w-3 h-3 mt-1 ml-1 transition-transform duration-300"
+      :name="NuxtUiIcons.ChevronDown"
+      class="w-3.5 h-3.5 mt-0.5 ml-1 transition-transform duration-300"
       :class="{ 'rotate-180': showFeeBreakdown }"
     />
   </span>

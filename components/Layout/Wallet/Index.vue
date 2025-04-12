@@ -1,125 +1,63 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@/app/utils/constants'
+import { commonCyTag } from '@shared/utils'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
+import { isCountryRestrictedFullAccess } from '@/app/data/geoip'
+import { Modal, NavBarCyTags } from '@/types'
 
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
-import { Modal, BusEvents, WalletModalType, WalletConnectStatus } from '@/types'
-
-const modalStore = useModalStore()
-const walletStore = useWalletStore()
-
-const status: Status = reactive(new Status(StatusType.Loading))
-const walletModalType = ref<WalletModalType>(WalletModalType.All)
-
-const isModalOpen = computed<boolean>(
-  () => modalStore.modals[Modal.Connect] && !walletStore.isUserWalletConnected
-)
-
-onMounted(() => {
-  useEventBus<string>(BusEvents.ShowLedgerConnect).on(connectLedger)
-
-  Promise.all([
-    walletStore.isMetamaskInstalled(),
-    walletStore.isTrustWalletInstalled(),
-    walletStore.isPhantomInstalled(),
-    walletStore.isOkxWalletInstalled(),
-    walletStore.isBitGetInstalled()
-  ]).finally(() => status.setIdle())
-})
-
-function connectLedger() {
-  walletModalType.value = WalletModalType.Ledger
-
-  modalStore.openModal(Modal.Connect)
-}
+const appStore = useAppStore()
+const modalStore = useSharedModalStore()
+const sharedGeoStore = useSharedGeoStore()
+const sharedWalletStore = useSharedWalletStore()
 
 function onWalletConnect() {
-  mixpanelAnalytics.trackConnectClicked()
+  if (isCountryRestrictedFullAccess(sharedGeoStore.country)) {
+    modalStore.openModal(Modal.GeoRestricted)
 
-  if (GEO_IP_RESTRICTIONS_ENABLED) {
-    modalStore.openModal(Modal.Terms)
-  } else {
-    modalStore.openModal(Modal.Connect)
+    return
   }
+
+  if (appStore.userState.hasAcceptedTerms) {
+    modalStore.openModal(Modal.Terms)
+    return
+  }
+
+  modalStore.openModal(Modal.Connect)
 }
 
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
 }
-
-function onWalletModalTypeChange(type: WalletModalType) {
-  walletModalType.value = type
-}
-
-watch(
-  () => walletStore.walletConnectStatus,
-  (newWalletConnectStatus) => {
-    if (newWalletConnectStatus === WalletConnectStatus.connected) {
-      modalStore.closeModal(Modal.Connect)
-      modalStore.openPersistedModalIfExist()
-    }
-  }
-)
-
-watch(isModalOpen, (newShowModalState) => {
-  if (!newShowModalState) {
-    onCloseModal()
-    walletModalType.value = WalletModalType.All
-  }
-})
 </script>
 
 <template>
-  <LayoutWalletDetails v-if="walletStore.isUserWalletConnected" />
+  <LayoutWalletDetails v-if="sharedWalletStore.isUserConnected" />
 
-  <AppButton v-else @click="onWalletConnect">
-    {{ $t('connect.connectWallet') }}
-  </AppButton>
+  <div v-else class="flex items-center justify-center gap-2">
+    <UIcon
+      v-if="sharedWalletStore.isAutoSignEnabled"
+      :name="NuxtUiIcons.RotateAuto"
+      class="text-white size-4"
+    />
 
-  <AppHocModal :is-open="isModalOpen" @modal:close="onCloseModal">
-    <template #title>
-      <h3 v-if="walletModalType === WalletModalType.Trezor">
-        {{ $t('connect.connectUsingTrezor') }}
-      </h3>
-      <h3 v-else-if="walletModalType === WalletModalType.Ledger">
-        {{ $t('connect.connectUsingLedger') }}
-      </h3>
-      <h3 v-else>
-        {{ $t('connect.connectToWallet') }}
-      </h3>
-    </template>
+    <AppButton
+      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
+      variant="primary"
+      :data-cy="commonCyTag(NavBarCyTags.WalletLoginButton)"
+      :is-loading="
+        sharedWalletStore.walletConnectStatus === WalletConnectStatus.connecting
+      "
+      @click="onWalletConnect"
+    >
+      <span>{{ $t('connect.connect') }}</span>
+    </AppButton>
+  </div>
 
-    <div class="p-4">
-      <LayoutWalletLedger v-if="walletModalType === WalletModalType.Ledger" />
-      <LayoutWalletTrezor
-        v-else-if="walletModalType === WalletModalType.Trezor"
-      />
+  <AppModal
+    v-model="modalStore.modals[Modal.Connect]"
+    v-bind="{ isSm: true, isHideCloseButton: true }"
+  >
+    <LayoutWalletConnect @modal:closed="onCloseModal" />
+  </AppModal>
 
-      <ul
-        v-else
-        class="divide-gray-800 border-gray-700 rounded-lg max-h-[65vh]"
-      >
-        <p class="text-gray-400 font-semibold text-sm mb-2">
-          {{ $t('common.popular') }}
-        </p>
-        <LayoutWalletConnectWalletMetamask />
-        <LayoutWalletConnectWalletOkxWallet />
-        <LayoutWalletConnectWalletKeplr />
-        <p class="text-gray-400 font-semibold text-sm mt-4">
-          {{ $t('common.otherWallets') }}
-        </p>
-        <div class="grid grid-cols-4">
-          <LayoutWalletConnectWalletNinji />
-          <LayoutWalletConnectWalletLedger @click="onWalletModalTypeChange" />
-          <LayoutWalletConnectWalletTrezor @click="onWalletModalTypeChange" />
-          <LayoutWalletConnectWalletTrustWallet />
-          <LayoutWalletConnectWalletPhantom />
-          <LayoutWalletConnectWalletLeap />
-          <LayoutWalletConnectWalletCosmostation />
-          <LayoutWalletConnectWalletTorus />
-        </div>
-      </ul>
-    </div>
-  </AppHocModal>
   <ModalsTerms />
 </template>

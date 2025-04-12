@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { SharedDropdownOption } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { LedgerDerivationPathType, Wallet } from '@injectivelabs/wallet-ts'
-import { WalletConnectStatus } from '@/types'
+import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
 
 const walletStore = useWalletStore()
+const toast = useSharedNotificationStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -29,9 +31,17 @@ const { value: address, errors: addressErrors } = useStringField({
   name: 'address'
 })
 
+const walletOptions = computed(() =>
+  sharedWalletStore.hwAddresses.map((address: string) => ({
+    display: address,
+    description: getEthereumAddress(address),
+    value: address
+  }))
+)
+
 onMounted(() => {
-  walletStore.$patch({
-    addresses: []
+  sharedWalletStore.$patch({
+    hwAddresses: []
   })
 })
 
@@ -43,7 +53,7 @@ function fetchAddresses() {
       ? Wallet.Ledger
       : Wallet.LedgerLegacy
 
-  walletStore
+  sharedWalletStore
     .getHWAddresses(wallet)
     .catch($onError)
     .finally(() => {
@@ -54,22 +64,22 @@ function fetchAddresses() {
 const connect = handleSubmit(() => {
   status.setLoading()
 
-  if (path.value === LedgerDerivationPathType.LedgerMew) {
-    return walletStore
-      .connectLedgerLegacy(getEthereumAddress(address.value))
-      .catch((e) => {
-        walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
-        $onError(e)
-      })
-      .finally(() => {
-        status.setIdle()
-      })
-  }
+  const wallet =
+    path.value === LedgerDerivationPathType.LedgerMew
+      ? Wallet.LedgerLegacy
+      : Wallet.Ledger
 
   walletStore
-    .connectLedger(getEthereumAddress(address.value))
+    .connect({
+      wallet,
+      address: address.value
+    })
+    .then(() =>
+      toast.success({
+        title: t('connect.successfullyConnected')
+      })
+    )
     .catch((e) => {
-      walletStore.setWalletConnectStatus(WalletConnectStatus.disconnected)
       $onError(e)
     })
     .finally(() => {
@@ -83,15 +93,18 @@ const connect = handleSubmit(() => {
     <p class="text-sm font-semibold mb-2">
       {{ $t('connect.derivationPath') }}
     </p>
-    <AppSelectField
+    <USelectMenu
       v-model="path"
       :options="options"
+      size="md"
+      value-attribute="value"
+      option-attribute="display"
       :placeholder="$t('connect.selectDerivationPath')"
     />
 
     <p
       v-if="fetchStatus.isLoading()"
-      class="text-gray-400 text-xs my-2 flex items-center gap-2"
+      class="text-coolGray-400 text-xs my-2 flex items-center gap-2"
     >
       <AppSpinner is-sm />
       <span>
@@ -106,32 +119,36 @@ const connect = handleSubmit(() => {
     >
       <span>
         {{
-          walletStore.addresses.length === 0
+          sharedWalletStore.hwAddresses.length === 0
             ? $t('connect.getAddresses')
             : $t('connect.getMoreAddresses')
         }}
       </span>
-      <SharedIcon name="arrow" class="rotate-180 w-4 h-4" />
+      <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-4 w-4 rotate-180" />
     </div>
 
-    <div class="border-b border-gray-600 mt-4 mb-4" />
+    <div class="border-b border-coolGray-600 mt-4 mb-4" />
 
-    <div v-if="walletStore.addresses.length > 0">
+    <div v-if="sharedWalletStore.hwAddresses.length > 0">
       <p class="text-sm font-semibold mb-2">
         {{ $t('connect.address') }}
       </p>
 
-      <AppSelectField
+      <USelectMenu
         v-model="address"
-        is-searchable
-        :options="
-          walletStore.addresses.map((address: string) => ({
-            display: address,
-            value: address
-          }))
-        "
+        size="md"
+        value-attribute="value"
+        option-attribute="display"
         :placeholder="$t('connect.selectAddressToConnect')"
-      />
+        :options="walletOptions"
+      >
+        <template #option="{ option }">
+          <div>
+            <p>{{ option.display }}</p>
+            <p class="text-coolGray-475 text-sm">{{ option.description }}</p>
+          </div>
+        </template>
+      </USelectMenu>
 
       <p
         v-if="addressErrors.length > 0"
@@ -142,16 +159,16 @@ const connect = handleSubmit(() => {
 
       <AppButton
         class="w-full mt-4 text-blue-900 bg-blue-500 font-semibold"
-        :is-disabled="addressErrors.length > 0"
+        :disabled="addressErrors.length > 0"
         :is-loading="status.isLoading()"
-        is-lg
+        size="lg"
         @click="connect"
       >
         {{ $t('connect.connect') }}
       </AppButton>
     </div>
 
-    <p class="text-xs text-gray-400 mt-4">
+    <p class="text-xs text-coolGray-400 mt-4">
       {{ $t('connect.connectUsingLedgerNote') }}
     </p>
   </div>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, PortfolioSubPage } from '@/types'
 
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -12,8 +14,11 @@ const status = reactive(new Status(StatusType.Idle))
 function connectAutoSign() {
   status.setLoading()
 
-  walletStore
-    .connectAutoSign()
+  sharedWalletStore
+    .connectAutoSign(
+      TRADING_MESSAGES
+      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+    )
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
@@ -29,7 +34,7 @@ function connectAutoSign() {
 function disconnectAutoSign() {
   status.setLoading()
 
-  walletStore
+  sharedWalletStore
     .disconnectAutoSign()
     .then(() => {
       notificationStore.success({
@@ -44,8 +49,11 @@ function disconnectAutoSign() {
 <template>
   <div>
     <div class="flex items-center p-4">
-      <NuxtLink :to="{ name: PortfolioSubPage.Settings }" class="pr-4">
-        <SharedIcon name="chevron" />
+      <NuxtLink
+        :to="{ name: PortfolioSubPage.Settings }"
+        class="pr-4 flex items-center"
+      >
+        <UIcon :name="NuxtUiIcons.ChevronLeft" class="h-6 w-6 min-w-6" />
       </NuxtLink>
 
       <h3 class="portfolio-title">
@@ -59,12 +67,15 @@ function disconnectAutoSign() {
           {{ $t('portfolio.settings.autoSign.howItWorks') }}
         </p>
 
-        <AppButton v-if="walletStore.isAuthzWalletConnected" :disabled="true">
+        <AppButton
+          v-if="sharedWalletStore.isAuthzWalletConnected"
+          :disabled="true"
+        >
           {{ $t('common.notAvailableinAuthZMode') }}
         </AppButton>
 
         <AppButton
-          v-else-if="!walletStore.isAutoSignEnabled"
+          v-else-if="!sharedWalletStore.isAutoSignEnabled"
           variant="success"
           :status="status"
           @click="connectAutoSign"

@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { Status } from '@injectivelabs/utils'
 import { ORDERBOOK_ROWS, ORDERBOOK_ROW_HEIGHT } from '@/app/utils/constants'
-import { OrderbookLayout, UiMarketWithToken, OrderbookStatusKey } from '@/types'
+import {
+  OrderbookLayout,
+  UiMarketWithToken,
+  OrderbookStatusKey,
+  SpotMarketCyTags
+} from '@/types'
 
-const props = defineProps({
-  isSpot: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  orderbookLayout: {
-    type: String as PropType<OrderbookLayout>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+    market: UiMarketWithToken
+    orderbookLayout: OrderbookLayout
+  }>(),
+  {}
+)
 
 const orderbookStatus = inject(OrderbookStatusKey) as Status
 
@@ -85,19 +85,19 @@ function setSellsIndex(index: number) {
 
 <template>
   <div>
-    <div class="flex justify-between pt-2 px-2">
-      <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.price') }}</span>
+    <div class="flex justify-between py-2 px-3">
+      <p class="text-xs space-x-1.5 flex-1">
+        <span class="text-coolGray-500">{{ $t('trade.price') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
 
-      <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.amount') }}</span>
-        <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
+      <p class="text-xs space-x-1.5 flex-1 text-center">
+        <span class="text-coolGray-500">{{ $t('trade.size') }}</span>
+        <span class="font-bold">{{ market.baseToken.symbol }}</span>
       </p>
 
       <p class="text-xs space-x-1.5 flex-1 text-right">
-        <span class="text-gray-500">{{ $t('trade.total') }}</span>
+        <span class="text-coolGray-500">{{ $t('trade.total') }}</span>
         <span class="font-bold uppercase">{{ market.quoteToken.symbol }}</span>
       </p>
     </div>
@@ -105,7 +105,8 @@ function setSellsIndex(index: number) {
     <div
       v-if="orderbookLayout !== OrderbookLayout.Buys"
       :style="{ height: sellsSectionHeight }"
-      class="flex flex-col-reverse px-2"
+      class="flex flex-col-reverse px-1"
+      :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGridBuys)"
       @mouseleave="activeSellsIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
@@ -131,7 +132,7 @@ function setSellsIndex(index: number) {
       </template>
     </div>
 
-    <div class="h-header border-y my-1 flex">
+    <div class="h-[44px] border-y my-1 flex">
       <PartialsTradeOrderbookBuysSellsMidMarkPrice
         v-bind="{ market, isSpot }"
       />
@@ -140,7 +141,8 @@ function setSellsIndex(index: number) {
     <div
       v-if="orderbookLayout !== OrderbookLayout.Sells"
       :style="{ height: buysSectionHeight }"
-      class="px-2"
+      class="px-1"
+      :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGridSells)"
       @mouseleave="activeBuysIndex = -1"
     >
       <template v-if="orderbookStatus.isLoading()">
@@ -148,6 +150,7 @@ function setSellsIndex(index: number) {
           v-for="i in buysSectionRows"
           :key="i"
           :index="i"
+          is-buy
         />
       </template>
 

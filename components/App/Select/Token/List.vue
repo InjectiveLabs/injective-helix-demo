@@ -1,20 +1,19 @@
 <script lang="ts" setup>
 import { SharedBalanceWithToken } from '@shared/types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 
-const props = defineProps({
-  isBalanceVisible: Boolean,
-
-  balances: {
-    type: Array as PropType<SharedBalanceWithToken[]>,
-    default: () => []
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
+const props = withDefaults(
+  defineProps<{
+    isBalanceVisible?: boolean
+    balances?: SharedBalanceWithToken[]
+    modelValue?: string
+  }>(),
+  {
+    isBalanceVisible: false,
+    balances: () => [],
+    modelValue: ''
   }
-})
+)
 
 const search = ref('')
 
@@ -33,32 +32,22 @@ const filteredOptions = computed(() => {
 
     const { name } = balance.token
     const shouldIncludeSupply =
-      name.toLowerCase().includes(formattedSearch) ||
-      balance.token.denom.toLowerCase().includes(formattedSearch) ||
-      balance.token.symbol.toLowerCase().includes(formattedSearch)
+      name.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.denom.toLowerCase().startsWith(formattedSearch) ||
+      balance.token.symbol.toLowerCase().startsWith(formattedSearch)
 
     return shouldIncludeSupply
   })
 })
 
-const sortedBalances = computed(() => {
-  if (!props.isBalanceVisible) {
-    return filteredOptions.value
-  }
-
-  return filteredOptions.value.sort(
-    (b1: SharedBalanceWithToken, b2: SharedBalanceWithToken) =>
-      new BigNumberInBase(b2.balance).minus(b1.balance).toNumber()
-  )
-})
-
 const sortedBalancesWithBalancesToBase = computed(() => {
-  return sortedBalances.value.map((balance) => {
+  return filteredOptions.value.map((balance) => {
     return {
       ...balance,
-      balance: new BigNumberInWei(balance.balance)
-        .toBase(balance.token.decimals)
-        .toFixed()
+      balance: sharedToBalanceInToken({
+        value: balance.balance,
+        decimalPlaces: balance.token.decimals
+      })
     }
   })
 })
@@ -96,7 +85,7 @@ onMounted(() => {
         balance: balance.balance
       }"
       :key="balance.denom"
-      class="px-2 py-3 hover:bg-gray-700 cursor-pointer rounded text-white"
+      class="px-2 py-3 hover:bg-coolGray-700 cursor-pointer rounded text-white"
       @click="onClick"
     />
   </div>

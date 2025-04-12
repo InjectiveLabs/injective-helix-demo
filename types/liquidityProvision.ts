@@ -8,4 +8,5 @@ export type LiquidityProvisionMitoCard = {
   vaultType: string
   type: LiquidityProvisionType
   contractAddress: string
+  isPermissionless: boolean
 }

@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  isPgtSubaccountId,
   isSgtSubaccountId,
   getSubaccountIndex,
   getMarketSlugFromSubaccountId
 } from '@/app/utils/helpers'
 import { DUST_AMOUNT_THRESHOLD } from '@/app/utils/constants'
-import { BusEvents } from '@/types'
 
-const props = defineProps({
-  showLowBalance: Boolean,
-  includeBotsSubaccounts: Boolean
-})
-
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const props = withDefaults(
+  defineProps<{ showLowBalance?: boolean; includeBotsSubaccounts?: boolean }>(),
+  {
+    showLowBalance: false,
+    includeBotsSubaccounts: false
+  }
+)
 
 onMounted(() => {
   const isSubaccountOptionAvailable = subaccountOptionsFiltered.value.some(
@@ -30,13 +33,12 @@ onMounted(() => {
   const defaultSubaccountId = Object.keys(accountStore.subaccountBalancesMap)[0]
 
   if (defaultSubaccountId) {
-    accountStore.$patch({ subaccountId: defaultSubaccountId })
-    useEventBus(BusEvents.SubaccountChange).emit()
+    accountStore.updateSubaccount(defaultSubaccountId)
   }
 })
 
 const subaccountOptions = computed(() =>
-  Object.keys(aggregatedPortfolioBalances.value)
+  Object.keys(subaccountPortfolioBalanceMap.value)
     .map((value) => {
       if (getSubaccountIndex(value) === 0) {
         return { display: `${t('account.main')}`, value }
@@ -46,6 +48,13 @@ const subaccountOptions = computed(() =>
         return {
           value,
           display: `SGT ${getMarketSlugFromSubaccountId(value)}`
+        }
+      }
+
+      if (isPgtSubaccountId(value)) {
+        return {
+          value,
+          display: `PGT ${getMarketSlugFromSubaccountId(value)}`
         }
       }
 
@@ -59,20 +68,21 @@ const subaccountOptions = computed(() =>
 
 const subaccountOptionsFiltered = computed(() =>
   subaccountOptions.value.filter(({ value: subaccountId }) => {
-    const includeBotsSubaccounts =
-      props.includeBotsSubaccounts || !isSgtSubaccountId(subaccountId)
+    const isBotsSubaccount =
+      isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
 
-    const hasBalance = aggregatedPortfolioBalances.value[subaccountId]?.some(
+    const includeBotsSubaccounts =
+      props.includeBotsSubaccounts || !isBotsSubaccount
+
+    const hasBalance = subaccountPortfolioBalanceMap.value[subaccountId]?.some(
       (balance) =>
-        new BigNumberInBase(balance.accountTotalBalance).gte(
-          DUST_AMOUNT_THRESHOLD
-        )
+        new BigNumberInBase(balance.totalBalance).gte(DUST_AMOUNT_THRESHOLD)
     )
 
     const includeLowBalance =
       props.showLowBalance ||
       hasBalance ||
-      subaccountId === walletStore.defaultSubaccountId
+      subaccountId === sharedWalletStore.defaultSubaccountId
 
     return includeBotsSubaccounts && includeLowBalance
   })
@@ -89,8 +99,8 @@ const activeSubaccountLabel = computed(
 <template>
   <slot
     v-bind="{
-      subaccountOptions: subaccountOptionsFiltered,
-      activeSubaccountLabel
+      activeSubaccountLabel,
+      subaccountOptions: subaccountOptionsFiltered
     }"
   />
 </template>

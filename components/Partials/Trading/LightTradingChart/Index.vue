@@ -17,23 +17,16 @@ import { colors } from '@/nuxt-config/tailwind'
 
 defineExpose({ fitContent, getChart, updateCandlesticksData })
 
-const props = defineProps({
-  candlesticksData: {
-    type: Object as PropType<(CandlestickData<Time> | WhitespaceData<Time>)[]>,
-    required: true
-  },
-
-  volumeData: {
-    type: Object as PropType<(HistogramData<Time> | WhitespaceData<Time>)[]>,
-    required: false,
-    default: undefined
-  },
-
-  tickSize: {
-    type: Number,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    tickSize: number
+    volumeData?: (HistogramData<Time> | WhitespaceData<Time>)[]
+    candlesticksData: (CandlestickData<Time> | WhitespaceData<Time>)[]
+  }>(),
+  {
+    volumeData: undefined
   }
-})
+)
 
 const emit = defineEmits<{
   'chart:ready': []

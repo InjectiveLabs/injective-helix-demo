@@ -276,6 +276,20 @@ html.theme-dark .chart-page {
   background: #2a2f41 !important;
 }
 
+#header-toolbar-intervals
+  .button-9pA37sIi.isInteractive-9pA37sIi.isActive-9pA37sIi:before {
+  background-color: #2891e9 !important;
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  left: 2px;
+  border-radius: 2px;
+}
+
 .theme-dark:root {
   --tv-color-platform-background: #14151a;
   --tv-color-pane-background: #14151a;

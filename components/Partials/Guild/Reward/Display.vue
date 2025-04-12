@@ -1,18 +1,13 @@
 <script lang="ts" setup>
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { UI_DEFAULT_MAX_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { RewardWithToken } from '@/types'
 
-const props = defineProps({
-  reward: {
-    type: Object as PropType<RewardWithToken>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ reward: RewardWithToken }>(), {})
 
 const { valueToString: rewardToString } = useSharedBigNumberFormatter(
   computed(() =>
-    toBalanceInToken({
+    sharedToBalanceInToken({
       value: props.reward.amount,
       decimalPlaces: props.reward.token.decimals
     })

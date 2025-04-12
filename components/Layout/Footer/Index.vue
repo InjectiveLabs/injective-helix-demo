@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { MainPage } from '@/types'
 
 const { t } = useLang()
+const route = useRoute()
 
-const aboutUsList = [
+const resourcesList = [
   {
     text: t('footer.institutional'),
     link: MainPage.Institutional
@@ -13,16 +15,19 @@ const aboutUsList = [
     link: MainPage.FeeDiscounts
   },
   {
-    text: t('footer.lpRewards'),
-    link: MainPage.LpRewards
+    text: t('footer.privacyPolicy'),
+    link: MainPage.PrivacyPolicy
+  }
+]
+
+const supportList = [
+  {
+    text: t('footer.docs'),
+    link: 'https://docs.helixapp.com/'
   },
   {
     text: t('footer.apiDocumentation'),
     link: 'https://api.injective.exchange/'
-  },
-  {
-    text: t('footer.privacyPolicy'),
-    link: 'https://injectivelabs.org/privacy'
   },
   {
     text: t('footer.termsAndConditions'),
@@ -30,16 +35,23 @@ const aboutUsList = [
   }
 ]
 
-const learnList = [
+const communityList = [
   {
-    text: t('footer.faq'),
-    link: 'https://helixapp.zendesk.com/'
+    text: t('footer.blog'),
+    link: 'https://blog.helixapp.com/'
   }
 ]
 </script>
 
 <template>
-  <footer class="w-full py-16 bg-brand-900 border-t border-t-gray-900">
+  <footer
+    :class="[
+      'relative z-[3] w-full py-16',
+      route.name === MainPage.Index
+        ? ''
+        : 'bg-brand-900 border-t border-t-coolGray-900'
+    ]"
+  >
     <div
       class="w-full mx-auto lg:w-4/5 grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 3md:grid-cols-10 lg:grid-cols-12 gap-8 px-8 lg:px-0"
     >
@@ -51,8 +63,8 @@ const learnList = [
           </div>
         </NuxtLink>
 
-        <span class="text-gray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Injective Labs Inc.
+        <span class="text-coolGray-500 text-xs">
+          &copy; {{ new Date().getFullYear() }} Helix
         </span>
       </div>
 
@@ -60,21 +72,13 @@ const learnList = [
         <h3 class="font-bold text-lg mb-4">{{ $t('footer.resources') }}</h3>
 
         <div
-          v-for="(item, index) in aboutUsList"
-          :key="`about-us-list-${index}`"
+          v-for="(item, index) in resourcesList"
+          :key="`resource-list-${index}`"
           class="mt-4 text-sm"
         >
-          <a
-            v-if="item.link.startsWith('http')"
-            :href="item.link"
-            class="opacity-75 cursor-pointer hover:text-blue-500"
-            target="_blank"
-          >
-            {{ item.text }}
-          </a>
           <NuxtLink
-            v-else-if="item.link"
-            :to="{ name: item.link }"
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
             class="opacity-75 cursor-pointer hover:text-blue-500"
           >
             {{ item.text }}
@@ -86,21 +90,13 @@ const learnList = [
         <h3 class="font-bold text-lg mb-4">{{ $t('footer.support') }}</h3>
 
         <div
-          v-for="(item, index) in learnList"
-          :key="`about-us-list-${index}`"
+          v-for="(item, index) in supportList"
+          :key="`support-list-${index}`"
           class="mt-4 text-sm"
         >
-          <a
-            v-if="item.link.startsWith('http')"
-            :href="item.link"
-            class="opacity-75 cursor-pointer hover:text-blue-500"
-            target="_blank"
-          >
-            {{ item.text }}
-          </a>
           <NuxtLink
-            v-else-if="item.link"
-            :to="{ name: item.link }"
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
             class="opacity-75 cursor-pointer hover:text-blue-500"
           >
             {{ item.text }}
@@ -109,33 +105,51 @@ const learnList = [
       </div>
 
       <div class="md:col-span-3">
-        <h3 class="font-bold text-lg mb-4 md:mb-6">
+        <h3 class="font-bold text-lg mb-4">
           {{ $t('footer.community') }}
         </h3>
 
-        <div class="flex items-center">
+        <div
+          v-for="(item, index) in communityList"
+          :key="`support-list-${index}`"
+          class="text-sm mt-4"
+        >
+          <NuxtLink
+            :to="item.link.startsWith('http') ? item.link : { name: item.link }"
+            :target="item.link.startsWith('http') ? '_blank' : '_self'"
+            class="opacity-75 cursor-pointer hover:text-blue-500"
+          >
+            {{ item.text }}
+          </NuxtLink>
+        </div>
+
+        <div class="flex items-center mt-4">
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
-            href="https://discord.com/invite/injective"
+            class="w-6 h-6 text-coolGray-500 rounded-full hover:text-blue-500 mr-4"
+            href="https://x.com/helixapp_"
             target="_blank"
           >
-            <SharedIcon name="discord-circle" />
+            <UIcon :name="NuxtUiIcons.TwitterX" class="h-6 w-6 min-w-6" />
           </a>
 
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
-            href="https://twitter.com/helixapp_"
+            class="w-6 h-6 mr-4"
+            href="https://discord.com/invite/helixapp"
             target="_blank"
           >
-            <SharedIcon name="twitter-circle" />
+            <div
+              class="h-6 w-6 min-w-6 flex items-center justify-center bg-coolGray-500 hover:bg-blue-500 text-brand-900 rounded-full"
+            >
+              <UIcon :name="NuxtUiIcons.Discord" class="h-4 w-4 min-w-4" />
+            </div>
           </a>
 
           <a
-            class="w-6 h-6 text-gray-500 hover:text-blue-500 mr-4"
+            class="w-6 h-6 text-coolGray-500 hover:text-blue-500 mr-4"
             href="https://t.me/helixapp"
             target="_blank"
           >
-            <SharedIcon name="telegram-circle" />
+            <UIcon :name="NuxtUiIcons.TelegramCircle" class="h-6 w-6 min-w-6" />
           </a>
         </div>
       </div>

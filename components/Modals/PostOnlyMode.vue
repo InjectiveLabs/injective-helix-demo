@@ -2,7 +2,7 @@
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const isModalOpen = computed(
   () =>
@@ -25,7 +25,7 @@ function onModalClose() {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-bind="{ modelValue: isModalOpen }" @on:close="onModalClose">
     <template #title>
       <h3>
         {{ $t('postOnlyMode.title') }}
@@ -34,7 +34,7 @@ function onModalClose() {
 
     <div class="relative">
       <p
-        class="text-center text-sm text-gray-100"
+        class="text-center text-sm text-coolGray-100"
         v-text="$t('postOnlyMode.description')"
       ></p>
 

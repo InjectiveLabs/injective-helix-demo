@@ -17,6 +17,7 @@ import {
 } from '@/app/client/streams/spot'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
 export const cancelOrderbookUpdateStream = grpcCancelOrderbookUpdateStream
@@ -25,11 +26,18 @@ export const cancelSubaccountTradesStream = grpcCancelSubaccountTradesStream
 export const cancelSubaccountOrdersHistoryStream =
   grpcCancelSubaccountOrdersHistoryStream
 
-export const streamOrderbookUpdate = (marketId: string) => {
+export const streamOrderbookUpdate = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId: string
+  onResetCallback?: Function
+}) => {
   const spotStore = useSpotStore()
 
   grpcStreamOrderbookUpdate({
     marketId,
+    onResetCallback,
     callback: ({ orderbook }) => {
       if (!orderbook) {
         return
@@ -75,11 +83,18 @@ export const streamOrderbookUpdate = (marketId: string) => {
   })
 }
 
-export const streamTrades = (marketId: string) => {
+export const streamTrades = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId: string
+  onResetCallback?: Function
+}) => {
   const spotStore = useSpotStore()
 
   grpcStreamTrades({
     marketId,
+    onResetCallback,
     callback: ({ trade, operation }) => {
       if (!trade || trade.executionSide !== TradeExecutionSide.Taker) {
         return
@@ -95,24 +110,30 @@ export const streamTrades = (marketId: string) => {
   })
 }
 
-export const streamSubaccountOrders = (
-  marketId?: string,
+export const streamSubaccountOrders = ({
+  marketId,
+  subaccountId,
+  onResetCallback
+}: {
+  marketId?: string
   subaccountId?: string
-) => {
+  onResetCallback?: Function
+}) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !sharedWalletStore.isUserConnected ||
     (!accountStore.subaccountId && !subaccountId)
   ) {
     return
   }
 
   grpcStreamSubaccountOrders({
-    subaccountId: subaccountId || accountStore.subaccountId,
     marketId,
+    onResetCallback,
+    subaccountId: subaccountId || accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -154,18 +175,25 @@ export const streamSubaccountOrders = (
   })
 }
 
-export const streamSubaccountOrderHistory = (marketId?: string) => {
+export const streamSubaccountOrderHistory = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId?: string
+  onResetCallback?: Function
+}) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountOrderHistory({
-    subaccountId: accountStore.subaccountId,
     marketId,
+    onResetCallback,
+    subaccountId: accountStore.subaccountId,
     callback: ({ order }) => {
       if (!order) {
         return
@@ -209,21 +237,32 @@ export const streamSubaccountOrderHistory = (marketId?: string) => {
   })
 }
 
-export const streamSubaccountTrades = (marketId?: string) => {
+export const streamSubaccountTrades = ({
+  marketId,
+  onResetCallback
+}: {
+  marketId?: string
+  onResetCallback?: Function
+}) => {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountTrade({
     marketId,
+    onResetCallback,
     subaccountId: accountStore.subaccountId,
     callback: ({ trade, operation }) => {
       if (!trade) {
         return
+      }
+
+      if (trade.tradeExecutionType === TradeExecutionType.LimitFill) {
+        useEventBus(BusEvents.SpotStreamLimitTradeExecuted).emit(trade)
       }
 
       switch (operation) {

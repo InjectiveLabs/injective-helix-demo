@@ -4,21 +4,22 @@ import { INJ_LOGO_URL } from '@shared/utils/constant'
 
 const tokenStore = useTokenStore()
 
-const props = defineProps({
-  isSm: Boolean,
-  isLg: Boolean,
-  isXl: Boolean,
-
-  denom: {
-    type: String,
-    default: ''
-  },
-
-  token: {
-    type: Object as PropType<TokenStatic>,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isLg?: boolean
+    isXl?: boolean
+    denom?: string
+    token?: TokenStatic
+  }>(),
+  {
+    isSm: false,
+    isLg: false,
+    isXl: false,
+    denom: '',
+    token: undefined
   }
-})
+)
 
 const formattedToken = computed(() => {
   if (props.denom) {

@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import { UiSpotMarket, MarketKey } from '@/types'
-
-const props = defineProps({
-  isTickerOnly: Boolean
-})
-
-const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+
+const props = withDefaults(
+  defineProps<{
+    isTickerOnly?: boolean
+  }>(),
+  {
+    isTickerOnly: false
+  }
+)
+
+const spotMarket = inject(MarketKey, undefined) as undefined | Ref<UiSpotMarket>
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -28,7 +32,7 @@ const filteredOrders = computed(() =>
 )
 
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -46,13 +50,7 @@ function cancelAllOrders() {
       })
     )
     .catch($onError)
-    .finally(() => {
-      status.setIdle()
-
-      backupPromiseCall(async () => {
-        await spotStore.fetchSubaccountOrders()
-      })
-    })
+    .finally(() => status.setIdle())
 }
 </script>
 

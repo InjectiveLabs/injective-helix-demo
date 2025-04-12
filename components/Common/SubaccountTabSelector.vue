@@ -1,24 +1,28 @@
 <script setup lang="ts">
-const walletStore = useWalletStore()
+import { NuxtUiIcons } from '@shared/types'
+import { PortfolioCyTags } from '@/types'
 
-defineProps({
-  includeBotsSubaccounts: Boolean,
+const breakpoints = useSharedBreakpoints()
+const sharedWalletStore = useSharedWalletStore()
 
-  showLowBalance: {
-    type: Boolean,
-    default: true
-  },
+const xxl = breakpoints['5xl']
 
-  wrapperClass: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    isSm?: boolean
+    wrapperClass?: string
+    showLowBalance?: boolean
+    includeBotsSubaccounts?: boolean
+  }>(),
+  {
+    wrapperClass: ''
   }
-})
+)
 </script>
 
 <template>
   <CommonSubaccountSelector
-    v-if="walletStore.isUserWalletConnected"
+    v-if="sharedWalletStore.isUserConnected"
     v-bind="{
       showLowBalance,
       includeBotsSubaccounts
@@ -28,19 +32,24 @@ defineProps({
       <button
         v-show="activeSubaccountLabel"
         class="flex items-center space-x-2 px-2 lg:px-4 hover:bg-brand-800 max-lg:py-2"
-        :class="wrapperClass"
+        :class="[wrapperClass, { 'lg:px-4': !isSm && !xxl }]"
       >
         <span
-          class="text-sm font-semibold bg-gradient-to-r from-blue-500 to-blue-300 bg-clip-text text-transparent"
+          class="font-semibold text-blue-500"
+          :class="{
+            'text-xs': isSm && !xxl,
+            'text-sm': !isSm || xxl
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.SubAccountDropdown)"
         >
           {{ $t('account.subaccount') }}: {{ activeSubaccountLabel }}
         </span>
 
         <div
-          class="transition-all duration-300 text-gray-500"
+          class="transition-all duration-300 text-coolGray-500"
           :class="{ 'rotate-180': isOpen }"
         >
-          <SharedIcon name="chevron-down" is-sm />
+          <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
         </div>
       </button>
     </template>

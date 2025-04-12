@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
+const { xs } = useSharedBreakpoints()
 
 function onCloseModal() {
   modalStore.closeModal(Modal.AlreadyJoinedGuild)
@@ -11,9 +12,8 @@ function onCloseModal() {
 
 <template>
   <AppModal
-    is-sm
-    :is-open="modalStore.modals[Modal.AlreadyJoinedGuild]"
-    @modal:closed="onCloseModal"
+    v-model="modalStore.modals[Modal.AlreadyJoinedGuild]"
+    v-bind="{ isHideCloseButton: !xs }"
   >
     <template #title>
       <h2 class="text-xl font-semibold normal-case text-center">
@@ -22,20 +22,18 @@ function onCloseModal() {
     </template>
 
     <div class="text-center">
-      <p class="font-semibold text-center">
+      <p class="font-semibold text-center break-all">
         {{
           $t('guild.alreadyPartOfGuild.description', {
-            address: walletStore.injectiveAddress
+            address: sharedWalletStore.injectiveAddress
           })
         }}
       </p>
 
-      <div class="mt-8 flex items-center gap-4">
+      <div class="mt-8 flex justify-center gap-4">
         <AppButton
           class="w-full font-semibold bg-blue-500 text-blue-900"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onCloseModal"
         >
           <span>

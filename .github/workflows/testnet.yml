@@ -4,19 +4,22 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - testnet
       - master
+      - testnet
 
 jobs:
   testnet:
     if: false
     name: 'Deploy to testnet'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
     env:
       ## Public
       VITE_NAME: 'TESTNET - Helix | Decentralized Derivatives Trading. Any Market. Anytime. Anywhere.'
+      VITE_PRODUCT: helix
       VITE_BASE_URL: https://testnet.helixapp.com
-      VITE_NETWORK: testnetSentry
       VITE_ENV: testnet
+      VITE_NETWORK: testnetSentry
       VITE_CHAIN_ID: injective-888
       VITE_ETHEREUM_CHAIN_ID: 11155111
       SOURCE_DIR: .output/public
@@ -26,55 +29,59 @@ jobs:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       ## Flags
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_VPN_CHECKS_ENABLED: false
+      VITE_MAINTENANCE_DISABLED: false
+      VITE_IS_ONRAMPER_DEV_MODE: false
       VITE_GEO_IP_RESTRICTIONS_ENABLED: false
 
-      ## Endpoints
-      VITE_INDEXER_API_ENDPOINT: ''
-      VITE_CHRONOS_API_ENDPOINT: ''
-      VITE_EXPLORER_API_ENDPOINT: ''
-      VITE_SENTRY_GRPC_ENDPOINT: ''
-      VITE_SENTRY_REST_ENDPOINT: ''
-
       ## Secret
-      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
-      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
+      VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
+      VITE_NEWSLETTER_API: ${{ secrets.VITE_NEWSLETTER_API }}
+      VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_ALCHEMY_SEPOLIA_KEY }}
       VITE_NINJA_PASS_ENDPOINT: ${{ secrets.VITE_NINJA_PASS_ENDPOINT }}
-      VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
+      VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
+      VITE_ONRAMPER_API_KEY_DEV: ${{ secrets.VITE_ONRAMPER_API_KEY_DEV }}
+      VITE_ONRAMPER_API_KEY_PROD: ${{ secrets.VITE_ONRAMPER_API_KEY_PROD }}
+      VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_TESTNET_FEE_PAYER_PUB_KEY }}
+      VITE_WALLET_CONNECT_PROJECT_ID: ${{ secrets.VITE_WALLET_CONNECT_PROJECT_ID }}
 
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
       AWS_REGION: ${{ secrets.AWS_TESTNET_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_TESTNET_BUCKET }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_TESTNET_DISTRIBUTION_ID }}
 
       NODE_OPTIONS: '--max_old_space_size=15360'
-    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Sleep for 10s
+        if: ${{ env.SKIP_DEPLOYMENTS != 'true' }}
+        uses: juliangruber/sleep-action@v2.0.0
+        with:
+          time: 10s
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Using Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Setup libudev-dev
         run: |
           sudo apt-get update
           sudo apt-get install libudev-dev
 
-      - name: Remove prev build
-        run: yarn clean-up
-
-      - name: Install Dependencies
-        run: yarn install --force --ignore-engines
-
-      - name: Generating the static pages
-        run: yarn generateNoSourceMap
+      - name: Build app
+        run: |
+          yarn install --force
+          yarn clean-up
+          yarn generate
 
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1

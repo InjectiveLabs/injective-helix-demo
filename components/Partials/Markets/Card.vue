@@ -5,23 +5,14 @@ import { SharedMarketChange, SharedUiMarketSummary } from '@shared/types'
 import { getMarketRoute } from '@/app/utils/market'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { UiMarketWithToken } from '@/types'
-
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  },
-
-  summary: {
-    type: Object as PropType<SharedUiMarketSummary>,
-    required: true
-  },
-
-  volumeInUsd: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketWithToken
+    summary: SharedUiMarketSummary
+    volumeInUsd: BigNumberInBase
+  }>(),
+  {}
+)
 
 const marketRoute = getMarketRoute(props.market)
 
@@ -65,9 +56,9 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 <template>
   <NuxtLink
     :to="marketRoute"
-    class="rounded-lg shadow-card p-4 bg-gray-750 bg-opacity-30 block cursor-pointer"
+    class="rounded-lg p-4 bg-coolGray-750 bg-opacity-30 block cursor-pointer"
   >
-    <div class="flex items-center justify-between text-gray-500">
+    <div class="flex items-center justify-between text-coolGray-500">
       <p class="tracking-widest uppercase text-xs">
         <slot />
       </p>
@@ -88,7 +79,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           >
             {{ market.ticker }}
           </p>
-          <span class="text-xs text-gray-500 capitalize">
+          <span class="text-xs text-coolGray-500 capitalize">
             {{ market.baseToken.name }}
           </span>
         </div>
@@ -97,7 +88,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
 
     <div class="flex items-center justify-start mt-4">
       <p
-        class="text-xl tracking-wide font-mono font-semibold flex items-center mr-2"
+        class="text-xl tracking-wide font-semibold flex items-center mr-2"
         data-cy="market-card-last-traded-price-text-content"
         :class="{
           'text-green-500 ':
@@ -111,7 +102,7 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       </p>
 
       <span
-        class="text-sm font-mono"
+        class="text-sm"
         data-cy="market-card-change_24h-text-content"
         :class="{
           'text-green-500': change.gt(0),
@@ -124,11 +115,11 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
     </div>
 
     <span
-      class="text-gray-500 w-full text-sm"
+      class="text-coolGray-500 w-full text-sm"
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <span class="font-mono">{{ volumeInUsdToFormat }}</span> USD
+      <span>{{ volumeInUsdToFormat }}</span> USD
     </span>
   </NuxtLink>
 </template>

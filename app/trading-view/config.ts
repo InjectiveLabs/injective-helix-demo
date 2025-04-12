@@ -1,8 +1,8 @@
 import './datafeed/polyfills'
+import { APP_BASE_URL } from '@shared/utils/constant'
 import { Datafeed } from './datafeed/index'
 import { getTimezone } from './datafeed/helpers'
 import { colors } from '@/nuxt-config/tailwind'
-import { BASE_URL } from '@/app/utils/constants'
 import {
   Timezone,
   ResolutionString,
@@ -37,10 +37,10 @@ export default function ({
     width: 100,
     datafeed: new Datafeed(datafeedEndpoint, 4000),
     library_path: `${
-      window.location ? window.location.origin : BASE_URL
+      window.location ? window.location.origin : APP_BASE_URL
     }/chart/charting_library/`,
     custom_css_url: `${
-      window.location ? window.location.origin : BASE_URL
+      window.location ? window.location.origin : APP_BASE_URL
     }/chart/charting_library/custom.css?v1`,
     locale: 'en',
     theme: 'Dark',
@@ -71,19 +71,19 @@ export default function ({
     client_id: 'injective.helix',
     loading_screen: {
       backgroundColor: colors.brand[900],
-      foregroundColor: colors.gray[400]
+      foregroundColor: colors.coolGray[400]
     },
     overrides: {
       'paneProperties.background': colors.brand[900],
       'paneProperties.backgroundType': 'solid',
-      'paneProperties.vertGridProperties.color': colors.gray[700],
-      'paneProperties.horzGridProperties.color': colors.gray[700],
+      'paneProperties.vertGridProperties.color': colors.coolGray[700],
+      'paneProperties.horzGridProperties.color': colors.coolGray[700],
       'paneProperties.vertGridProperties.style': 1,
       'paneProperties.horzGridProperties.style': 1,
-      'paneProperties.crossHairProperties.color': colors.gray[200],
+      'paneProperties.crossHairProperties.color': colors.coolGray[200],
 
-      'scalesProperties.textColor': colors.gray[200],
-      'scalesProperties.lineColor': colors.gray[700],
+      'scalesProperties.textColor': colors.coolGray[200],
+      'scalesProperties.lineColor': colors.coolGray[700],
 
       // Select chart type
       'mainSeriesProperties.style': STYLE_CANDLES,
@@ -129,7 +129,7 @@ export default function ({
       'mainSeriesProperties.lineStyle.linestyle': 0,
       'mainSeriesProperties.lineStyle.linewidth': 1,
       // Baseline styles
-      'mainSeriesProperties.baselineStyle.baselineColor': colors.gray[200],
+      'mainSeriesProperties.baselineStyle.baselineColor': colors.coolGray[200],
       'mainSeriesProperties.baselineStyle.topFillColor1': colors.green[500],
       'mainSeriesProperties.baselineStyle.topFillColor2':
         'rgba( 78, 205, 196, 0.1)',
@@ -157,24 +157,24 @@ export default function ({
     },
     time_frames: [
       {
-        text: '1D',
+        text: '5m',
         resolution: '5' as ResolutionString,
+        description: '5 Minutes'
+      },
+      {
+        text: '1H',
+        resolution: '60' as ResolutionString,
+        description: '1 Hour'
+      },
+      {
+        text: '1D',
+        resolution: '1D' as ResolutionString,
         description: '1 Day'
       },
       {
         text: '1W',
-        resolution: '120' as ResolutionString,
+        resolution: '1W' as ResolutionString,
         description: '1 Week'
-      },
-      {
-        text: '1M',
-        resolution: '360' as ResolutionString,
-        description: '1 Month'
-      },
-      {
-        text: '3M',
-        resolution: '1D' as ResolutionString,
-        description: '3 Month'
       }
     ],
     favorites: {

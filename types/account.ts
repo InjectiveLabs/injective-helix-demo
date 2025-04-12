@@ -22,3 +22,7 @@ export interface UiSubaccountTransactionWithToken
   extends UiSubaccountTransaction {
   token: TokenStatic
 }
+export interface SubAccount {
+  display: string
+  value: string
+}

@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { Modal } from '@/types'
 
-const walletStore = useWalletStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
 function openGranteeModal() {
   modalStore.openModal(Modal.AddGrantee)
 }
 
 const isDisabled = computed(
-  () => walletStore.isAuthzWalletConnected || walletStore.isAutoSignEnabled
+  () =>
+    sharedWalletStore.isAuthzWalletConnected ||
+    sharedWalletStore.isAutoSignEnabled
 )
 </script>
 
@@ -29,9 +31,9 @@ const isDisabled = computed(
 
     <button
       :disabled="isDisabled"
-      class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
+      class="flex-1 p-2 font-semibold cursor-pointer select-none xs:text-left max-xs:text-center"
       :class="{
-        'text-gray-500': isDisabled,
+        'text-coolGray-500': isDisabled,
         'text-blue-500 hover:text-blue-600': !isDisabled
       }"
       @click="openGranteeModal"

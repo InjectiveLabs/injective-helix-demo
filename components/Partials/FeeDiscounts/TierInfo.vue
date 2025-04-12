@@ -61,11 +61,11 @@ const lastUpdateTimestamp = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col bg-gray-850 rounded-lg p-6 h-full">
+  <div class="flex flex-col bg-coolGray-850 rounded-lg p-6 h-full">
     <div class="flex justify-start gap-6 lg:gap-8">
-      <div class="flex flex-col border-r border-gray-500 pr-6 lg:pr-8">
+      <div class="flex flex-col border-r border-coolGray-500 pr-6 lg:pr-8">
         <span
-          class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
+          class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
           {{ $t('feeDiscounts.my_tier') }}
         </span>
@@ -77,16 +77,14 @@ const lastUpdateTimestamp = computed(() => {
       </div>
       <div class="flex flex-col">
         <span
-          class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
+          class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
           {{ $t('feeDiscounts.maker') }}
         </span>
         <span
-          class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
+          class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
-          <b
-            class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
-          >
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
             {{ makerFeeDiscount }}%
           </b>
           {{ $t('feeDiscounts.off') }}
@@ -94,16 +92,14 @@ const lastUpdateTimestamp = computed(() => {
       </div>
       <div class="flex flex-col">
         <span
-          class="text-gray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
+          class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
           {{ $t('feeDiscounts.taker') }}
         </span>
         <span
-          class="uppercase text-xs lg:text-base text-gray-500 font-bold tracking-widest whitespace-nowrap"
+          class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
-          <b
-            class="text-xl lg:text-2xl font-bold text-white tracking-normal font-mono"
-          >
+          <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
             {{ takerFeeDiscount }}%
           </b>
           {{ $t('feeDiscounts.off') }}
@@ -111,11 +107,11 @@ const lastUpdateTimestamp = computed(() => {
       </div>
     </div>
     <div class="mt-4">
-      <span v-if="lastUpdateTimestamp" class="text-xs text-gray-400">
+      <span v-if="lastUpdateTimestamp" class="text-xs text-coolGray-400">
         {{ $t('feeDiscounts.update_daily') }}.
         {{ $t('feeDiscounts.last_updated_at') }} {{ lastUpdateTimestamp }}
       </span>
-      <span v-else class="text-xs text-gray-400">&mdash;</span>
+      <span v-else class="text-xs text-coolGray-400">&mdash;</span>
     </div>
   </div>
 </template>

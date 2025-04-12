@@ -4,24 +4,19 @@ import { ThrownException } from '@injectivelabs/exceptions'
 
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  loop: Boolean,
-
-  autoplay: {
-    type: Boolean,
-    default: true
-  },
-
-  name: {
-    type: String,
-    required: true
-  },
-
-  animationData: {
-    type: Object,
-    default: undefined
+const props = withDefaults(
+  defineProps<{
+    loop?: boolean
+    name: string
+    autoplay?: boolean
+    animationData?: object
+  }>(),
+  {
+    loop: false,
+    autoplay: true,
+    animationData: undefined
   }
-})
+)
 
 const animation = ref<AnimationItem | null>(null)
 const lottieContainer = ref()

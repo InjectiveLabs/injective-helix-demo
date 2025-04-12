@@ -7,14 +7,15 @@
     "verbatimModuleSyntax": false,
     "allowSyntheticDefaultImports": true,
     "types": [
-      "@vueuse/nuxt",
       "@pinia/nuxt",
+      "@vueuse/nuxt"
     ]
   },
   "exclude": [
     "node_modules",
     "dist",
-    ".output"
+    ".output",
+    "public"
   ],
   "ts-node": {
     // these options are overrides used only by ts-node
@@ -22,5 +23,5 @@
       "module": "commonjs",
       "esModuleInterop": true
     }
-  },
+  }
 }

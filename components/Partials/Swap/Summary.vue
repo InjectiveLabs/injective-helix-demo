@@ -1,15 +1,21 @@
 <script lang="ts" setup>
+import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm, SwapFormField } from '@/types'
+import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
 
-const props = defineProps({
-  isLoading: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    isLoading?: boolean
+  }>(),
+  {
+    isLoading: false
+  }
+)
 
 const {
   maximumInput,
@@ -57,7 +63,11 @@ defineExpose({
         <span v-if="orderedRouteTokensAndDecimals?.length === 0">
           &mdash;
         </span>
-        <div v-else class="flex items-center gap-1 justify-end">
+        <div
+          v-else
+          class="flex items-center gap-1 justify-end"
+          :data-cy="dataCyTag(SwapCyTags.SwapSummaryRoute)"
+        >
           <PartialsSwapRoute
             v-bind="{
               routeSymbols
@@ -71,9 +81,19 @@ defineExpose({
         <div
           v-else-if="orderedRouteTokensAndDecimals && inputToken && outputToken"
         >
-          <span> 1 {{ outputToken.token.symbol }} </span>
+          <span
+            :data-cy="`${dataCyTag(SwapCyTags.SwapSummaryRate)}-${
+              outputToken.token.symbol
+            }`"
+          >
+            1 {{ outputToken.token.symbol }}
+          </span>
           =
-          <span>
+          <span
+            :data-cy="`${dataCyTag(SwapCyTags.SwapSummaryRate)}-${
+              inputToken.token.symbol
+            }`"
+          >
             {{ priceForDisplayToFormat }}
             {{ inputToken.token.symbol }}
           </span>
@@ -91,7 +111,7 @@ defineExpose({
         :title="$t('trade.swap.minimumOutput')"
       >
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else>
+        <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryMinOutput)">
           {{ minimumOutput }} {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
@@ -103,7 +123,7 @@ defineExpose({
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else>
+        <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryExpectedOutput)">
           {{ formValues[SwapFormField.OutputAmount] }}
           {{ outputToken?.token.symbol }}
         </span>

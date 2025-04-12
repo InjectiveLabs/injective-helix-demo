@@ -1,28 +1,13 @@
 <script setup lang="ts">
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
 
-const props = defineProps({
-  market: {
-    type: Object as PropType<UiMarketAndSummaryWithVolumeInUsd>,
-    required: true
-  }
-})
-
-const { valueToString: priceToString } = useSharedBigNumberFormatter(
-  computed(() => props.market.summary.lastPrice || 0),
-  {
-    decimalPlaces: props.market.market.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: priceChangeToString } = useSharedBigNumberFormatter(
-  computed(() => props.market.summary.change),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+const props = withDefaults(
+  defineProps<{
+    market: UiMarketAndSummaryWithVolumeInUsd
+  }>(),
+  {}
 )
 
 const to = computed(() =>
@@ -33,7 +18,7 @@ const to = computed(() =>
 
 const priceChangeClasses = computed(() => {
   if (props.market.summary.lastPriceChange === SharedMarketChange.NoChange) {
-    return 'text-gray-350'
+    return 'text-coolGray-350'
   }
 
   return props.market.summary.lastPriceChange === SharedMarketChange.Increase
@@ -47,16 +32,36 @@ const priceChangeClasses = computed(() => {
     v-bind="{ to }"
     class="flex p-2 items-center space-x-2 rounded-md hover:bg-brand-800"
   >
-    <div class="flex-[2] flex items-center space-x-2 overflow-hidden">
-      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" is-sm />
-      <p class="text-sm tracking-wide truncate min-w-0">
+    <div class="flex-[3] flex items-center space-x-3 overflow-hidden">
+      <CommonTokenIcon v-bind="{ token: market.market.baseToken }" />
+      <p
+        class="text-sm tracking-wide font-bold truncate min-w-0"
+        :data-cy="dataCyTag(MarketCyTags.NewMarketsDenoms)"
+      >
         {{ market.market.ticker }}
       </p>
     </div>
-    <p class="flex-1 text-right font-mono text-xs">${{ priceToString }}</p>
-    <p class="flex-1 text-right font-mono text-xs" :class="priceChangeClasses">
+    <p class="flex flex-1 text-right text-xs">
+      <span class="mr-1">$</span>
+      <AppAmount
+        v-bind="{
+          amount: market?.summary?.lastPrice || 0,
+          decimalPlaces: market.market.priceDecimals
+        }"
+      />
+    </p>
+    <p
+      class="flex flex-1 text-right text-xs justify-end"
+      :class="priceChangeClasses"
+    >
       <span v-if="Number(market.summary.change) > 0">+</span>
-      <span>{{ priceChangeToString }}%</span>
+      <AppAmount
+        v-bind="{
+          amount: market.summary.change,
+          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        }"
+      />
+      %
     </p>
   </NuxtLink>
 </template>

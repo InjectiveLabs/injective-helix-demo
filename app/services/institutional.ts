@@ -1,13 +1,5 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { SHEETDB_BEARER_TOKEN } from '../utils/constants'
-
-const SHEETDB_ID = 'fwfkb2v469gav'
-
-const httpClient = new HttpClient('https://sheetdb.io/api/v1/')
-
-httpClient.setConfig({
-  headers: { Authorization: `Bearer ${SHEETDB_BEARER_TOKEN}` }
-})
+import { SHEETDB_BEARER_TOKEN } from '@/app/utils/constants'
 
 export const submitInstitutionalForm = async (formData: {
   firstName: string
@@ -16,6 +8,13 @@ export const submitInstitutionalForm = async (formData: {
   business: string
   telegram: string
 }) => {
+  const SHEETDB_ID = 'fwfkb2v469gav'
+  const httpClient = new HttpClient('https://sheetdb.io/api/v1/')
+
+  httpClient.setConfig({
+    headers: { Authorization: `Bearer ${SHEETDB_BEARER_TOKEN}` }
+  })
+
   const { data } = (await httpClient.post(SHEETDB_ID, formData)) as {
     data: { created: number }
   }

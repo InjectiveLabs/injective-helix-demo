@@ -4,8 +4,8 @@ import {
   getInjectiveAddress
 } from '@injectivelabs/sdk-ts'
 import { unknownToken } from '@shared/data/token'
+import { sharedGetToken } from '@shared/utils/helper'
 import { getExplorerUrl } from '@shared/utils/network'
-import { getToken } from '@/app/utils/helpers'
 import { UiSubaccountTransactionWithToken } from '@/types'
 
 export class UiSubaccountTransformer {
@@ -33,7 +33,9 @@ export class UiSubaccountTransformer {
       amount: transaction?.amount?.amount || '',
       denom: transaction?.amount?.denom || '',
       timestamp: transaction.executedAt,
-      token: (await getToken(transaction?.amount?.denom || '')) || unknownToken,
+      token:
+        (await sharedGetToken(transaction?.amount?.denom || '')) ||
+        unknownToken,
       explorerLink: `${getExplorerUrl()}/account/${explorerAccount}/`
     }
   }

@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  token: {
-    type: Object as PropType<TokenStatic>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ token: TokenStatic }>(), {})
 
 const emit = defineEmits<{
   'set:token': [token: TokenStatic]
@@ -25,7 +20,7 @@ function setToken() {
 
     <div class="px-2">
       <p class="font-semibold text-sm">{{ token.symbol }}</p>
-      <p class="text-gray-500 text-xs">{{ token.name }}</p>
+      <p class="text-coolGray-500 text-xs">{{ token.name }}</p>
     </div>
   </div>
 </template>

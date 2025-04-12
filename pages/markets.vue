@@ -1,246 +1,150 @@
 <script lang="ts" setup>
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  marketIsActive,
-  marketIsQuotePair,
-  marketIsPartOfType,
-  marketIsPartOfSearch,
-  marketIsPartOfCategory
-} from '@/app/utils/market'
-import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
-import {
-  MarketQuoteType,
-  MarketTypeOption,
-  MarketCategoryType,
-  UnknownTokenStatusKey
-} from '@/types'
-import { olpSlugsToIncludeInLowVolume } from '@/app/data/market'
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MarketCyTags, MarketCategoryType } from '@/types'
 
-const marketTypeOptionsToHideCategory = [
-  MarketTypeOption.NewListings,
-  MarketTypeOption.Permissionless
-]
-
-const appStore = useAppStore()
+const route = useRoute()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
-const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
-const { $onError } = useNuxtApp()
+const { sm } = useSharedBreakpoints()
 
 const search = ref('')
-const type = ref(MarketTypeOption.All)
-const category = ref(MarketCategoryType.All)
-const activeQuote = ref(MarketQuoteType.All)
+const activeCategory = ref(setCategoryFromQuery())
 const isLowVolumeMarketsVisible = ref(false)
-const unverifiedMarketsStatus = reactive(new Status(StatusType.Idle))
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
-  [
-    ...spotStore.marketsWithSummary,
-    ...derivativeStore.marketsWithSummary,
-    ...exchangeStore.upcomingMarketsWithSummary,
-    ...exchangeStore.deprecatedMarketsWithSummary
-  ].map(({ market, summary }) => {
-    const quoteTokenUsdPrice = new BigNumberInBase(
-      tokenStore.tokenUsdPrice(market.quoteToken)
-    )
-
-    return {
-      market,
-      summary,
-      volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
-    }
-  })
-)
-
-const filteredMarkets = computed(() =>
-  marketsWithSummaryAndVolumeInUsd.value
-    .filter(({ market, volumeInUsd }) => {
-      const shouldIgnoreCategory = marketTypeOptionsToHideCategory.includes(
-        type.value
+  [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary]
+    .map(({ market, summary }) => {
+      const quoteTokenUsdPrice = new BigNumberInBase(
+        tokenStore.tokenUsdPrice(market.quoteToken)
       )
 
-      const isPartOfCategory =
-        shouldIgnoreCategory || marketIsPartOfCategory(category.value, market)
-      const isPartOfSearch = marketIsPartOfSearch(search.value, market)
-      const isPartOfType = marketIsPartOfType({
+      return {
         market,
-        favoriteMarkets: appStore.favoriteMarkets,
-        activeType: type.value
-      })
-      const isQuotePair = marketIsQuotePair(activeQuote.value, market)
-
-      const isOLPMarket = olpSlugsToIncludeInLowVolume.includes(market.slug)
-
-      const isLowVolumeMarket =
-        isLowVolumeMarketsVisible.value ||
-        volumeInUsd.gte(LOW_VOLUME_MARKET_THRESHOLD) ||
-        search.value ||
-        isOLPMarket
-
-      return (
-        isLowVolumeMarket &&
-        isPartOfCategory &&
-        isPartOfType &&
-        isPartOfSearch &&
-        isQuotePair
-      )
+        summary,
+        volumeInUsd: quoteTokenUsdPrice.multipliedBy(summary?.volume || '0')
+      }
     })
-    .filter((market) => marketIsActive(market.market))
+    .filter(({ summary }) => summary)
 )
 
-onMounted(() => {
-  getQuoteTokenPrice()
-})
+function setCategoryFromQuery() {
+  if (
+    Object.values(MarketCategoryType).includes(
+      route.query.type as MarketCategoryType
+    )
+  ) {
+    return route.query.type as MarketCategoryType
+  }
 
-function getQuoteTokenPrice() {
-  Promise.all([appStore.pollMarkets()]).catch($onError)
+  return MarketCategoryType.All
 }
 
-async function onMarketTypeChange(type: string) {
-  if ((type as MarketTypeOption) !== MarketTypeOption.Permissionless) {
+function resetSearch() {
+  search.value = ''
+}
+
+function resetCategory() {
+  if (activeCategory.value === MarketCategoryType.All) {
     return
   }
 
-  unverifiedMarketsStatus.setLoading()
-
-  await until(unknownTokenStatus).toMatch((status) => status.isIdle())
-
-  spotStore
-    .fetchMarkets()
-    .catch($onError)
-    .finally(() => unverifiedMarketsStatus.setIdle())
+  activeCategory.value = MarketCategoryType.All
 }
-
-useIntervalFn(() => getQuoteTokenPrice(), 10 * 1000)
-
-const unknownTokenStatus = inject(
-  UnknownTokenStatusKey,
-  new Status(StatusType.Loading)
-)
 </script>
 
 <template>
   <div>
-    <div class="container py-10">
-      <h3 class="text-2xl font-semibold">{{ $t('trade.markets') }}</h3>
+    <div class="mx-auto max-w-7xl pt-16 pb-10 px-4 max-lg:pt-8">
+      <h3
+        class="text-3xl font-semibold"
+        :data-cy="dataCyTag(MarketCyTags.HeaderLabel)"
+      >
+        {{ $t('trade.markets') }}
+      </h3>
 
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
-        class="my-10"
+        class="mt-8"
       />
 
-      <div class="max-w-full">
+      <div class="max-w-full mt-4 lg:mb-2">
         <div
-          class="border-b border-brand-700 my-4 flex justify-between items-end flex-wrap"
+          class="flex sm:gap-4 lg:gap-2 justify-between flex-wrap max-sm:flex-col"
         >
-          <div class="flex overflow-x-auto">
-            <AppButtonSelect
-              v-for="value in Object.values(MarketTypeOption)"
-              :key="value"
-              v-model="type"
-              v-bind="{ value }"
-              class="capitalize text-gray-200 px-4 py-2 text-sm border-b font-medium whitespace-nowrap"
-              active-classes="border-blue-500 !text-blue-500"
-              @update:model-value="onMarketTypeChange"
-            >
-              {{ value }}
-            </AppButtonSelect>
+          <div
+            class="sm:flex max-sm:w-full items-center flex-wrap gap-2"
+            :data-cy="dataCyTag(MarketCyTags.MarketsCategoryType)"
+          >
+            <template v-if="sm">
+              <AppButtonSelect
+                v-for="value in Object.values(MarketCategoryType)"
+                :key="value"
+                v-model="activeCategory"
+                v-bind="{ value }"
+                :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
+                @update:model-value="resetSearch"
+              >
+                <template #default="{ isActive }">
+                  <AppButton
+                    variant="primary"
+                    size="xs"
+                    :class="[
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
+                      isActive ? 'opacity-100' : 'opacity-50'
+                    ]"
+                  >
+                    {{ $t(`markets.filters.${value}`) }}
+                  </AppButton>
+                </template>
+              </AppButtonSelect>
+            </template>
           </div>
 
-          <div class="flex max-lg:w-full">
+          <div class="flex justify-between max-xl:w-full">
             <label
-              class="w-full flex items-center border border-transparent focus-within:border-brand-850 rounded-md p-1"
+              class="flex items-center border-b border-[#181E31] rounded-md p-1 max-sm:w-full max-xs:flex-1"
             >
               <input
                 v-model="search"
                 type="text"
-                class="focus:outline-none bg-transparent p-1 px-3 w-full"
+                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
+                :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
+                :placeholder="$t('trade.search_market')"
+                @update:model-value="resetCategory"
               />
 
               <div class="flex items-center pr-3">
-                <SharedIcon name="search" class="text-gray-500" />
+                <UIcon
+                  :name="NuxtUiIcons.Search"
+                  class="size-5 text-coolGray-450"
+                />
               </div>
             </label>
-          </div>
-        </div>
-      </div>
 
-      <div class="overflow-x-auto max-w-full">
-        <div class="my-4 flex gap-x-2 justify-between flex-wrap">
-          <div
-            v-if="!marketTypeOptionsToHideCategory.includes(type)"
-            class="flex space-x-2"
-          >
-            <AppButtonSelect
-              v-for="value in Object.values(MarketCategoryType)"
-              :key="value"
-              v-model="category"
-              v-bind="{ value }"
-              class="py-1 px-3 text-gray-400 text-xs capitalize bg-brand-800 rounded"
-              active-classes="text-white !bg-brand-700"
-            >
-              {{ value }}
-            </AppButtonSelect>
-          </div>
-          <div v-else></div>
-
-          <div
-            v-if="type === MarketTypeOption.Permissionless"
-            class="flex items-center gap-x-2 text-gray-500"
-          >
-            <SharedIcon name="warning-triangle" is-md />
-            <span class="text-sm">{{
-              $t('markets.permisionlessWarning')
-            }}</span>
-          </div>
-
-          <div class="flex gap-x-3 mt-2 lg:mt-0 flex-wrap">
-            <div class="flex rounded border">
-              <AppButtonSelect
-                v-for="value in Object.values(MarketQuoteType)"
-                :key="value"
-                v-model="activeQuote"
-                v-bind="{ value }"
-                class="py-1 px-3 text-gray-400 text-xs uppercase hover:bg-brand-875"
-                active-classes="text-white !bg-brand-800"
+            <div class="flex max-sm:hidden">
+              <AppCheckbox2
+                v-model="isLowVolumeMarketsVisible"
+                class="text-coolGray-450"
+                is-sm
               >
-                {{ value }}
-              </AppButtonSelect>
+                {{ $t('markets.showLowVol') }}
+              </AppCheckbox2>
             </div>
-
-            <AppCheckbox2
-              v-model="isLowVolumeMarketsVisible"
-              class="md:ml-4 flex items-center"
-              is-sm
-            >
-              {{ $t('markets.showLowVol') }}
-            </AppCheckbox2>
           </div>
         </div>
       </div>
 
       <PartialsMarkets
-        is-markets-page
         v-bind="{
-          markets: filteredMarkets,
-          isLoading: unverifiedMarketsStatus.isLoading()
+          search,
+          activeCategory,
+          isLowVolumeMarketsVisible,
+          markets: marketsWithSummaryAndVolumeInUsd
         }"
       />
-
-      <!--
-      <PartialsMarkets
-        v-if="type !== MarketTypeOption.Themes"
-        is-markets-page
-        v-bind="{
-          markets: filteredMarkets,
-          isLoading: unverifiedMarketsStatus.isLoading()
-        }"
-      />
-
-      <PartialsMarketsThemes v-else v-bind="{ markets: filteredMarkets }" />
-      -->
     </div>
   </div>
 </template>

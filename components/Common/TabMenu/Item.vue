@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-defineProps({
-  isActive: Boolean
-})
+withDefaults(defineProps<{ isActive?: boolean }>(), { isActive: false })
 </script>
 
 <template>
   <div
     class="group px-4 h-[40px] cursor-pointer relative flex items-center justify-center"
     :class="{
-      'text-gray-300': !isActive,
+      'text-coolGray-300': !isActive,
       'text-blue-500': isActive
     }"
   >

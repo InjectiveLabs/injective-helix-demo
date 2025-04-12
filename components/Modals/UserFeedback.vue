@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import { Modal, SurveyTitle, TradeSubPage } from '@/types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { Modal, TradeSubPage } from '@/types'
+
 const route = useRoute()
 const appStore = useAppStore()
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
 const url = 'https://helixapp.xyz/3IGFwb9'
-
-const isModalOpen = computed(() => modalStore.modals[Modal.UserFeedback])
 
 onMounted(() => {
   init()
@@ -35,35 +33,27 @@ function init() {
   }, DELAY_MODAL_DISPLAY_TIME)
 }
 
-function onClose() {
-  modalStore.closeModal(Modal.UserFeedback)
-}
-
 function userFeedbackModalViewed() {
   appStore.setUserState({
     ...appStore.userState,
     modalsViewed: [...appStore.userState.modalsViewed, Modal.UserFeedback]
   })
 
-  onClose()
+  modalStore.closeModal(Modal.UserFeedback)
 }
 
 function onTakeSurveyClickEvent() {
-  mixpanelAnalytics.trackSurveyAccepted(SurveyTitle.HelixUserSurveyFeb23)
-
   userFeedbackModalViewed()
 }
 
 function onRejectSurveyClickEvent() {
-  mixpanelAnalytics.trackSurveyRejected(SurveyTitle.HelixUserSurveyFeb23)
-
   userFeedbackModalViewed()
 }
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onClose">
-    <div class="flex flex-col -mt-5 justify-center items-center">
+  <AppModal v-model="modalStore.modals[Modal.UserFeedback]">
+    <div class="flex flex-col mt-6 justify-center items-center">
       <div class="flex items-center justify-center cursor-pointer mb-6">
         <AssetLogo class="h-7 w-10 mr-2" alt="Helix" />
         <AssetLogoText class="h-7" />
@@ -99,7 +89,8 @@ function onRejectSurveyClickEvent() {
       </NuxtLink>
 
       <AppButton
-        class="bg-transparent w-full hover:bg-gray-700 font-semibold text-sm"
+        variant="primary-outline"
+        class="font-semibold"
         @click="onRejectSurveyClickEvent"
       >
         {{ $t('banners.userFeedback.notRightNow') }}

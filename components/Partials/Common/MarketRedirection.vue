@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import { UiMarketWithToken, TradingInterface } from '@/types'
+import {
+  TradePage,
+  TradeSubPage,
+  UiMarketWithToken,
+  TradingInterface
+} from '@/types'
 
-defineProps({
-  isTradingBotTab: Boolean,
-
-  market: {
-    type: Object as PropType<UiMarketWithToken>,
-    required: true
-  }
-})
+withDefaults(
+  defineProps<{
+    isTradingBotTab?: boolean
+    market: UiMarketWithToken
+  }>(),
+  {}
+)
 </script>
 
 <template>
@@ -17,9 +21,10 @@ defineProps({
     :to="
       market.isVerified
         ? {
-            name: `${
-              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
-            }-slug`,
+            name:
+              market.type === SharedMarketType.Spot
+                ? TradeSubPage.Spot
+                : TradeSubPage.Futures,
             params: { slug: market.slug },
             ...(isTradingBotTab
               ? {
@@ -31,7 +36,9 @@ defineProps({
           }
         : {
             name: `${
-              market.type === SharedMarketType.Spot ? 'spot' : 'futures'
+              market.type === SharedMarketType.Spot
+                ? TradePage.Spot
+                : TradePage.Futures
             }`,
             query: {
               marketId: market.marketId,

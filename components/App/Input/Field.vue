@@ -3,37 +3,29 @@ import { useIMask } from 'vue-imask'
 import type { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
 
-const props = defineProps({
-  noStyle: Boolean,
-  autofix: Boolean,
-  disabled: Boolean,
-
-  wrapperClass: {
-    type: String,
-    default: ''
-  },
-
-  modelValue: {
-    type: String,
-    default: ''
-  },
-
-  decimals: {
-    type: Number,
-    default: 18
-  },
-
-  max: {
-    type: Number,
+const props = withDefaults(
+  defineProps<{
+    max?: number
+    min?: number
+    decimals?: number
+    noStyle?: boolean
+    autofix?: boolean
+    disabled?: boolean
+    alignLeft?: boolean
+    modelValue?: string
+    wrapperClass?: string
+    inputClasses?: string
+  }>(),
+  {
     // eslint-disable-next-line
-    default: 9999999999999999999
-  },
-
-  min: {
-    type: Number,
-    default: undefined
+    max: 9999999999999999999,
+    min: undefined,
+    decimals: 18,
+    modelValue: '',
+    wrapperClass: '',
+    inputClasses: ''
   }
-})
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -45,6 +37,22 @@ const appStore = useAppStore()
 const thousandsSeparator = computed(() =>
   appStore.userState.preferences.thousandsSeparator ? ',' : ''
 )
+
+const inputClass = computed(() => {
+  const result = ['bg-transparent p-2 flex-1 min-w-0 focus:outline-none']
+
+  if (props.disabled) {
+    result.push('cursor-not-allowed')
+  }
+
+  if (thousandsSeparator.value && !props.alignLeft) {
+    result.push('text-right')
+  }
+
+  result.push(props.inputClasses)
+
+  return result.join(' ')
+})
 
 const { el, typed } = useIMask(
   computed(
@@ -119,7 +127,7 @@ onMounted(() => {
     :class="[
       noStyle
         ? wrapperClass
-        : 'block focus-within:focus-ring transition-all duration-300 border border-brand-725 rounded-md bg-brand-875 text-sm py-2 px-4',
+        : 'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm py-2 px-4',
       disabled ? 'opacity-50 cursor-not-allowed' : ''
     ]"
   >
@@ -135,11 +143,7 @@ onMounted(() => {
       <input
         ref="el"
         type="text"
-        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none font-mono"
-        :class="{
-          'cursor-not-allowed': disabled,
-          'text-right': thousandsSeparator
-        }"
+        :class="inputClass"
         v-bind="$attrs"
         :disabled="disabled"
         @blur="onBlur"

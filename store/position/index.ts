@@ -1,129 +1,130 @@
 import { defineStore } from 'pinia'
-import { usdtToken } from '@shared/data/token'
-import { BigNumberInWei } from '@injectivelabs/utils'
 import { indexerDerivativesApi } from '@shared/Service'
-import { Orderbook, Position, PositionV2 } from '@injectivelabs/sdk-ts'
+import { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   closePosition,
   closeAllPosition,
   addMarginToPosition,
-  closePositionAndReduceOnlyOrders
+  addMarginToSubaccountPosition
 } from '@/store/position/message'
 import {
-  streamSubaccountPositions,
-  cancelSubaccountPositionsStream
+  streamAccountPositions,
+  cancelAccountPositionsStream
 } from '@/store/position/stream'
-import { ActivityFetchOptions, MarketMarkPriceMap } from '@/types'
+import { ActivityFetchOptions } from '@/types'
 
 type OrderBookMap = Record<string, Orderbook>
 
 type PositionStoreState = {
   orderbooks: OrderBookMap
-  positions: PositionV2[] /** for account portfolio calculation */
-  subaccountPositions: Position[]
-  subaccountPositionsCount: number
+  positions: PositionV2[]
 }
 
 const initialStateFactory = (): PositionStoreState => ({
   orderbooks: {} as OrderBookMap,
-  positions: [],
-  subaccountPositions: [],
-  subaccountPositionsCount: 0
+  positions: []
 })
 
 export const usePositionStore = defineStore('position', {
   state: (): PositionStoreState => initialStateFactory(),
-  actions: {
-    addMarginToPosition,
-    closePosition,
-    closeAllPosition,
-    closePositionAndReduceOnlyOrders,
-
-    cancelSubaccountPositionsStream,
-    streamSubaccountPositions,
-
-    async fetchPositions() {
-      const walletStore = useWalletStore()
-      const positionStore = usePositionStore()
+  getters: {
+    positionsBySubaccountId: (state) => (subaccountId: string) => {
       const derivativeStore = useDerivativeStore()
 
+      return state.positions.filter(
+        (position) =>
+          position.subaccountId === subaccountId &&
+          derivativeStore.activeMarketIds.includes(position.marketId)
+      )
+    },
+
+    subaccountPositions: (state) => {
+      const accountStore = useAccountStore()
+      const derivativeStore = useDerivativeStore()
+
+      return state.positions.filter(
+        ({ marketId, subaccountId }) =>
+          subaccountId === accountStore.subaccountId &&
+          derivativeStore.activeMarketIds.includes(marketId)
+      )
+    }
+  },
+  actions: {
+    closePosition,
+    closeAllPosition,
+    addMarginToPosition,
+    addMarginToSubaccountPosition,
+
+    streamAccountPositions,
+    cancelAccountPositionsStream,
+
+    async fetchPositions() {
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
+
       if (
-        !walletStore.isUserWalletConnected ||
-        !walletStore.authZOrInjectiveAddress
+        !sharedWalletStore.isUserConnected ||
+        !sharedWalletStore.authZOrInjectiveAddress
       ) {
         return
       }
 
-      const marketsToTokenDecimals = derivativeStore.markets.reduce(
-        (marketsMap, market) => {
-          return {
-            ...marketsMap,
-            [market.marketId]: market.quoteToken.decimals
-          }
-        },
-        {} as Record<string, number>
-      )
       const { positions } = await indexerDerivativesApi.fetchPositionsV2({
-        address: walletStore.authZOrInjectiveAddress
+        address: sharedWalletStore.authZOrInjectiveAddress
       })
 
-      const markPricesMap = positions.reduce((markPrices, position) => {
-        return {
-          ...markPrices,
-          [position.marketId]: {
-            marketId: position.marketId,
-            price: new BigNumberInWei(position.markPrice)
-              .toBase(
-                marketsToTokenDecimals[position.marketId] || usdtToken.decimals
-              )
-              .toFixed()
-          }
-        }
-      }, {} as MarketMarkPriceMap)
+      derivativeStore.updateMarkPriceMapFromPosition(positions)
 
       positionStore.$patch({
         positions
-      })
-
-      derivativeStore.$patch({
-        marketMarkPriceMap: markPricesMap
       })
     },
 
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
-      const derivativeStore = useDerivativeStore()
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
+      const derivativeStore = useDerivativeStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 
       const filters = activityFetchOptions?.filters
 
-      const { positions, pagination } =
-        await indexerDerivativesApi.fetchPositionsV2({
-          subaccountId: accountStore.subaccountId,
-          marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
-          direction: filters?.direction
-        })
+      const { positions } = await indexerDerivativesApi.fetchPositionsV2({
+        subaccountId: accountStore.subaccountId,
+        marketIds: filters?.marketIds || derivativeStore.activeMarketIds,
+        direction: filters?.direction
+      })
+
+      derivativeStore.updateMarkPriceMapFromPosition(positions)
+
+      const filteredExistingPositions = positionStore.positions.filter(
+        (position) =>
+          !positions.some(
+            (p) =>
+              p.marketId === position.marketId &&
+              p.subaccountId === position.subaccountId
+          )
+      )
 
       positionStore.$patch({
-        subaccountPositions: positions,
-        subaccountPositionsCount: pagination.total
+        positions: [...filteredExistingPositions, ...positions]
       })
     },
 
+    // Todo: @ivan verify if we still needs this
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
-      const positionStore = usePositionStore()
       const accountStore = useAccountStore()
-      const walletStore = useWalletStore()
+      const positionStore = usePositionStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+      if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
         return
       }
 

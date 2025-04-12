@@ -1,5 +1,4 @@
 import {
-  Position,
   PositionV2,
   derivativePriceToChainPrice,
   formatAmountToAllowableAmount
@@ -91,21 +90,34 @@ export const calculateLiquidationPrice = ({
 }
 
 export const getRoundedLiquidationPrice = (
-  position: Position | PositionV2,
+  position: PositionV2,
   market: UiDerivativeMarket
 ) => {
   const minTickPrice = derivativePriceToChainPrice({
     value: new BigNumberInBase(1).shiftedBy(-market.priceDecimals).toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
+
   const liquidationPrice = new BigNumberInWei(position.liquidationPrice)
   const liquidationPriceRoundedToMinTickPrice = new BigNumberInBase(
     liquidationPrice.dividedBy(minTickPrice).toFixed(0)
   ).multipliedBy(minTickPrice)
 
-  return liquidationPriceRoundedToMinTickPrice.lte(0)
-    ? minTickPrice
-    : liquidationPriceRoundedToMinTickPrice
+  // Calculate the minimum liquidation price based on the minNotional
+  const minLiquidationPrice = new BigNumberInBase(
+    new BigNumberInBase(market.minNotional)
+      .dividedBy(position.quantity)
+      .dividedBy(minTickPrice)
+      .toFixed(0, BigNumberInBase.ROUND_UP)
+  ).multipliedBy(minTickPrice)
+
+  // Ensure liquidationPriceRoundedToMinTickPrice is not lower than minLiquidationPrice
+  if (liquidationPriceRoundedToMinTickPrice.gt(minLiquidationPrice)) {
+    return liquidationPriceRoundedToMinTickPrice
+  }
+
+  // Return the minimum liquidation price based on minNotional if the above condition is not met
+  return minLiquidationPrice
 }
 
 export const calculateScaledMarkPrice = ({

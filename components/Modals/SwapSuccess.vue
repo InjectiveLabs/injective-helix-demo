@@ -4,16 +4,11 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { getSwapAmountAndTokenFromTxHash } from '@/app/client/utils/explorer'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
-const props = defineProps({
-  txHash: {
-    type: String,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ txHash: string }>(), {})
 
 const status: Status = reactive(new Status(StatusType.Idle))
 const swapInfo = ref(undefined as Record<string, string> | undefined)
@@ -30,12 +25,8 @@ const explorerUrl = computed(() => {
   return `${getExplorerUrl()}/transaction/${props.txHash}`
 })
 
-function closeModal() {
-  modalStore.closeModal(Modal.SwapSuccess)
-}
-
 function onModalClose() {
-  closeModal()
+  modalStore.closeModal(Modal.SwapSuccess)
 }
 
 watch(isModalOpen, (isModalOpen: boolean) => {
@@ -59,10 +50,10 @@ watch(isModalOpen, (isModalOpen: boolean) => {
 </script>
 
 <template>
-  <AppModal :is-open="isModalOpen" is-sm @modal:closed="onModalClose">
+  <AppModal v-model="modalStore.modals[Modal.SwapSuccess]">
     <AppHocLoading v-bind="{ status }">
       <div class="text-center relative p-8">
-        <SharedRainConfetti class="absolute inset-0 h-48 -mt-9 w-full" />
+        <SharedRainConfetti class="absolute inset-0 h-48 -mt-6 w-full" />
 
         <AppLottie
           v-bind="{ name: 'circle-check-border' }"
@@ -72,7 +63,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
         <h2 class="mb-1 text-2xl font-semibold leading-7">
           {{ t('trade.swap.swappedSuccessfully') }}
         </h2>
-        <p class="text-gray-400">
+        <p class="text-coolGray-400">
           <span v-if="swapInfo">
             {{
               $t('trade.swap.youHaveSwapped', {
@@ -95,13 +86,15 @@ watch(isModalOpen, (isModalOpen: boolean) => {
           </NuxtLink>
         </div>
 
-        <AppButton
-          class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
-          is-md
-          @click="onModalClose"
-        >
-          {{ $t('trade.swap.backToSwap') }}
-        </AppButton>
+        <div class="flex flex-col items-center gap-2">
+          <AppButton
+            class="mx-auto mt-6 bg-blue-500 hover:bg-opacity-80 text-blue-900"
+            size="md"
+            @click="onModalClose"
+          >
+            {{ $t('trade.swap.backToSwap') }}
+          </AppButton>
+        </div>
       </div>
     </AppHocLoading>
   </AppModal>

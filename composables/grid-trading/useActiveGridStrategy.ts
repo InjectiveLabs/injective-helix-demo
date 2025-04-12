@@ -2,35 +2,49 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { UiSpotMarket, StrategyStatus } from '@/types'
+import { UiSpotMarket, AccountBalance, StrategyStatus } from '@/types'
 
 export default function useActiveGridStrategy(
   market: ComputedRef<UiSpotMarket>,
-  strategy: ComputedRef<TradingStrategy>
+  strategy: ComputedRef<TradingStrategy>,
+  subaccountBalancesMap?: ComputedRef<Record<string, AccountBalance[]>>
 ) {
   const spotStore = useSpotStore()
-  const walletStore = useWalletStore()
-  const accountStore = useAccountStore()
   const tokenStore = useTokenStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   const lastTradedPrice = ref(ZERO_IN_BASE)
+
+  const marketSubaccountId = computed(() =>
+    addressAndMarketSlugToSubaccountId(
+      sharedWalletStore.address,
+      market.value.slug
+    )
+  )
+
+  const marketSubaccountBalances = computed(
+    () => (subaccountBalancesMap?.value || {})[marketSubaccountId.value] || []
+  )
+
+  const accountTotalBalanceInUsd = computed(() =>
+    marketSubaccountBalances.value.reduce(
+      (total, balance) => total.plus(balance.totalBalanceInUsd),
+      ZERO_IN_BASE
+    )
+  )
 
   const investment = computed(() => {
     if (!market.value) {
       return ZERO_IN_BASE
     }
 
+    if (strategy.value.state === StrategyStatus.Active) {
+      return accountTotalBalanceInUsd.value
+    }
+
     const baseAmountInUsd = new BigNumberInWei(strategy.value.baseQuantity || 0)
       .toBase(market.value?.baseToken.decimals)
-      .times(
-        new BigNumberInWei(strategy.value.executionPrice)
-          .dividedBy(
-            new BigNumberInBase(10).pow(
-              market.value.quoteToken.decimals - market.value.baseToken.decimals
-            )
-          )
-          .toBase()
-      )
+      .times(new BigNumberInBase(strategy.value.executionPrice))
 
     const quoteAmountInUsd = new BigNumberInWei(
       strategy.value.quoteQuantity || 0
@@ -41,18 +55,8 @@ export default function useActiveGridStrategy(
       .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
   })
 
-  const subaccountBalances = computed(
-    () =>
-      accountStore.subaccountBalancesMap[
-        addressAndMarketSlugToSubaccountId(
-          walletStore.address,
-          market.value.slug
-        )
-      ]
-  )
-
   const pnl = computed(() => {
-    if (!market.value || !subaccountBalances.value) {
+    if (!market.value || !marketSubaccountBalances.value) {
       return ZERO_IN_BASE
     }
 
@@ -64,18 +68,12 @@ export default function useActiveGridStrategy(
       strategy.value.subscriptionBaseQuantity
     ).toBase(market.value?.baseToken.decimals)
 
-    const creationMidPrice = new BigNumberInWei(strategy.value.executionPrice)
-      .dividedBy(
-        new BigNumberInBase(10).pow(
-          market.value.quoteToken.decimals - market.value.baseToken.decimals
-        )
-      )
-      .toBase()
+    const creationMidPrice = new BigNumberInBase(strategy.value.executionPrice)
 
     const currentQuoteQuantity =
       strategy.value.state === StrategyStatus.Active
         ? new BigNumberInWei(
-            subaccountBalances.value.find(
+            marketSubaccountBalances.value.find(
               (balance) => balance.denom === market.value?.quoteDenom
             )?.totalBalance || 0
           ).toBase(market.value?.quoteToken.decimals)
@@ -86,7 +84,7 @@ export default function useActiveGridStrategy(
     const currentBaseQuantity =
       strategy.value.state === StrategyStatus.Active
         ? new BigNumberInWei(
-            subaccountBalances.value.find(
+            marketSubaccountBalances.value.find(
               (balance) => balance.denom === market.value?.baseDenom
             )?.totalBalance || 0
           ).toBase(market.value?.baseToken.decimals)
@@ -140,6 +138,7 @@ export default function useActiveGridStrategy(
   return {
     pnl,
     investment,
-    percentagePnl
+    percentagePnl,
+    marketSubaccountBalances
   }
 }

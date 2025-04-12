@@ -1,57 +1,32 @@
 <script setup lang="ts">
+import { injToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { INJ_DENOM } from '@shared/utils/constant'
-import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 
 const { subaccount } = useSubaccounts()
-const {
-  showUnverifiedAssets,
-  verifiedHoldingsWithToken,
-  userBalancesWithToken
-} = useBalance()
-
-const search = ref('')
-
-const balances = computed(() => {
-  if (!showUnverifiedAssets.value) {
-    return verifiedHoldingsWithToken.value
-  }
-
-  return userBalancesWithToken.value
-})
+const { activeSubaccountTradableBalancesWithToken } = useBalance()
 
 const balancesSorted = computed(() => {
-  const filteredBalances = balances.value.filter((balance) => {
-    const isIncludedInSymbol = balance.token.symbol
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
+  const balances = activeSubaccountTradableBalancesWithToken.value
 
-    const isIncludedInName = balance.token.name
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
+  const filteredBalances = balances.filter((balance) => {
+    const hasBalance = new BigNumberInBase(balance.totalBalance).gte(1)
 
-    const isPartOfSearch = isIncludedInSymbol || isIncludedInName
-    const hasBalance = new BigNumberInBase(balance.accountTotalBalance).gte(1)
-
-    return hasBalance && isPartOfSearch
+    return hasBalance
   })
 
   return filteredBalances.sort((a, b) => {
-    const aBalanceInToken = sharedToBalanceInTokenInBase({
-      value: a.accountTotalBalanceInUsd,
-      decimalPlaces: a.token.decimals
-    })
+    const aBalanceInToken = new BigNumberInBase(a.totalBalanceInUsd)
+    const bBalanceInToken = new BigNumberInBase(b.totalBalanceInUsd)
 
-    const bBalanceInToken = sharedToBalanceInTokenInBase({
-      value: b.accountTotalBalanceInUsd,
-      decimalPlaces: b.token.decimals
-    })
+    if (a.denom === injToken.denom) {
+      return -1
+    }
 
-    if (b.denom === INJ_DENOM) {
+    if (b.denom === injToken.denom) {
       return 1
     }
 
-    return aBalanceInToken.gt(bBalanceInToken) ? -1 : 1
+    return bBalanceInToken.minus(aBalanceInToken).toNumber()
   })
 })
 </script>
@@ -59,32 +34,26 @@ const balancesSorted = computed(() => {
 <template>
   <div>
     <div class="flex justify-between items-center pt-8">
-      <p class="text-gray-400 text-xs">{{ $t('portfolio.assetsFrom') }}:</p>
+      <p class="text-coolGray-400 text-xs">{{ $t('portfolio.assetsFrom') }}:</p>
 
       <CommonSubaccountOptions>
         <template #default="{ subaccountOptions }">
-          <AppSelect
+          <USelectMenu
             v-model="subaccount"
-            v-bind="{ options: subaccountOptions }"
-            wrapper-class="border border-brand-700 py-1 px-3 rounded hover:bg-brand-800"
-          >
-            <template #default="{ selected }">
-              <span class="select-none text-blue-500 text-sm">
-                {{ $t('account.subaccount') }} {{ selected?.display }}
-              </span>
-            </template>
-
-            <template #option="{ option }">
-              <span class="select-none text-sm">
-                {{ $t('account.subaccount') }} {{ option.display }}
-              </span>
-            </template>
-          </AppSelect>
+            class="w-44"
+            value-attribute="value"
+            :options="
+              subaccountOptions.map((option) => ({
+                value: option.value,
+                label: `${$t('account.subaccount')} ${option.display}`
+              }))
+            "
+          />
         </template>
       </CommonSubaccountOptions>
     </div>
 
-    <div class="border-t py-2 mt-2 divide-y">
+    <div class="border-t py-2 mt-2 divide-y max-h-96 overflow-y-auto">
       <LayoutWalletDetailsBalancesRow
         v-for="balance in balancesSorted"
         :key="balance.denom"

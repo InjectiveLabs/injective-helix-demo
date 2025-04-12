@@ -2,24 +2,21 @@
 import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Modal, UiSpotMarket } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 
-defineProps({
-  strategy: {
-    type: Object as PropType<TradingStrategy>,
-    default: undefined
-  },
-
-  market: {
-    type: Object as PropType<UiSpotMarket>,
-    default: undefined
+withDefaults(
+  defineProps<{ strategy?: TradingStrategy; market?: UiSpotMarket }>(),
+  {
+    market: undefined,
+    strategy: undefined
   }
-})
+)
 
 function onCloseModal() {
   modalStore.closeModal(Modal.GridStrategyDetails)
 }
 </script>
+
 <template>
   <AppModal
     is-md
@@ -28,6 +25,7 @@ function onCloseModal() {
   >
     <PartialsLiquidityCommonActiveStrategy
       v-if="strategy && market"
+      class="pt-10"
       v-bind="{ activeStrategy: strategy, market }"
     />
   </AppModal>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
@@ -12,45 +13,45 @@ import {
   TradeTypes,
   UiSpotMarket,
   SpotTradeForm,
+  SpotMarketCyTags,
   TradeAmountOption,
   SpotTradeFormField
 } from '@/types'
 
-const props = defineProps({
-  totalWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  minimumAmountInQuote: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
-const { userBalancesWithToken } = useBalance()
-const spotFormValues = useFormValues<SpotTradeForm>()
 const orderbookStore = useOrderbookStore()
+const spotFormValues = useFormValues<SpotTradeForm>()
+const validateLimitField = useValidateField(SpotTradeFormField.Price)
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
-const isShowTensMultiplierNote = ref(false)
 
-const validateLimitField = useValidateField(SpotTradeFormField.Price)
+const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
+
+const props = withDefaults(
+  defineProps<{
+    quantity: BigNumberInBase
+    totalWithFee: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+  }>(),
+  {
+    quantity: undefined,
+    totalWithFee: undefined,
+    minimumAmountInQuote: undefined
+  }
+)
 
 const options = [
   {
-    display: market.value.baseToken.symbol || '',
-    value: TradeAmountOption.Base
+    label: market.value.baseToken.symbol || '',
+    id: TradeAmountOption.Base
   },
   {
-    display: market.value.quoteToken.symbol || '',
-    value: TradeAmountOption.Quote
+    label: market.value.quoteToken.symbol || '',
+    id: TradeAmountOption.Quote
   }
 ]
+
+const isShowTensMultiplierNote = ref(false)
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,
@@ -72,9 +73,9 @@ const {
   valueToBigNumber: baseBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.baseToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return sharedToBalanceInToken({
       value: balance || 0,
@@ -88,9 +89,9 @@ const {
   valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return sharedToBalanceInToken({
       value: balance || 0,
@@ -143,9 +144,7 @@ async function setFromPercentage(percentage: number) {
     return
   }
 
-  const slippage = spotFormValues.value[SpotTradeFormField.IsSlippageOn]
-    ? spotFormValues.value[SpotTradeFormField.Slippage]
-    : 0
+  const slippage = spotFormValues.value[SpotTradeFormField.Slippage]
 
   if (isBuy.value && typeValue.value === TradeAmountOption.Quote) {
     const amount = quoteBalanceToBigNumber.value
@@ -299,60 +298,59 @@ onMounted(() => {
           .shiftedBy(market.quantityTensMultiplier)
           .toFixed()
       "
+      :data-cy="dataCyTag(SpotMarketCyTags.LimitAmountInputField)"
       @blur="onBlur"
       @click="onClick"
     >
       <template #right>
-        <AppSelect
+        <USelectMenu
           v-model="typeValue"
-          wrapper-class=" p-1 rounded select-none"
-          v-bind="{
-            options
-          }"
-        >
-          <template #default>
-            <div>
-              <span
-                v-if="typeValue === TradeAmountOption.Base"
-                class="text-sm select-none"
-              >
-                {{ market?.baseToken.symbol }}
-              </span>
-              <span v-else class="text-sm">
-                {{ market?.quoteToken.symbol }}
-              </span>
-            </div>
-          </template>
-
-          <template #option="{ option }">
-            <span class="text-sm font-semibold">{{ option.display }}</span>
-          </template>
-        </AppSelect>
+          :options="options"
+          variant="none"
+          value-attribute="id"
+        />
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
-          <div v-if="isBuy" class="space-x-2">
-            <span>{{
+        <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
+          <div v-if="isBuy" class="space-x-2 flex items-center justify-end">
+            <span :data-cy="dataCyTag(SpotMarketCyTags.TokenBuyBalance)">{{
               $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
+                amount: quoteBalanceToString
               })
             }}</span>
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
 
           <div v-else class="space-x-2">
-            <span>{{
-              $t('trade.availableAmount', {
-                amount: `${baseBalanceToString} ${market.baseToken.symbol}`
-              })
-            }}</span>
+            <span :data-cy="dataCyTag(SpotMarketCyTags.TokenSellBalance)">
+              {{
+                $t('trade.availableAmount', {
+                  amount: `${baseBalanceToString} ${market.baseToken.symbol}`
+                })
+              }}
+            </span>
           </div>
         </div>
       </template>
     </AppInputField>
-
-    <div v-if="errorMessage" class="error-message capitalize">
-      {{ errorMessage }}
+    <div
+      v-if="errorMessage || isNotionalLessThanMinNotional"
+      class="error-message capitalize"
+    >
+      {{
+        errorMessage
+          ? errorMessage
+          : $t('trade.minNotionalError', {
+              minNotional: market.minNotionalInToken,
+              symbol: market.quoteToken.symbol
+            })
+      }}
     </div>
     <div
       v-else-if="isShowTensMultiplierNote && amountValue"

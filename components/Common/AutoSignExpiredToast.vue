@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { BusEvents, PortfolioSubPage } from '@/types'
 
-const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isAutoSignExpiredToastVisible = ref(false)
 
@@ -18,7 +19,7 @@ function showAutoSignExpiredToast() {
 }
 
 onMounted(() => {
-  if (!walletStore.isAutoSignEnabled) {
+  if (!sharedWalletStore.isAutoSignEnabled) {
     pause()
   }
 
@@ -26,18 +27,18 @@ onMounted(() => {
 })
 
 const { pause, resume } = useIntervalFn(() => {
-  if (!walletStore.isAutoSignEnabled) {
+  if (!sharedWalletStore.isAutoSignEnabled) {
     pause()
 
     return
   }
 
   const nowInSeconds = Math.floor(Date.now() / 1000)
-  const autoSignExpiration = walletStore.autoSign?.expiration || 0
+  const autoSignExpiration = sharedWalletStore.autoSign?.expiration || 0
 
   if (autoSignExpiration <= nowInSeconds) {
     showAutoSignExpiredToast()
-    walletStore.disconnectAutoSign()
+    sharedWalletStore.disconnectAutoSign()
   }
 }, 10 * 1000)
 </script>
@@ -56,13 +57,13 @@ const { pause, resume } = useIntervalFn(() => {
     >
       <div
         v-if="isAutoSignExpiredToastVisible"
-        class="w-[400px] bg-gray-750 rounded-lg p-4 mb-2 pointer-events-auto"
+        class="w-[400px] bg-coolGray-750 rounded-lg p-4 mb-2 pointer-events-auto"
       >
         <div class="flex justify-between">
           <div class="flex space-x-2">
-            <SharedIcon
-              name="dash-circle"
-              class="w-6 h-6 min-w-6 text-gray-350"
+            <UIcon
+              :name="NuxtUiIcons.DashCircle"
+              class="w-6 h-6 min-w-6 text-coolGray-350"
             />
             <div class="space-y-1">
               <div class="leading-4 text-white font-semibold text-sm">
@@ -71,7 +72,7 @@ const { pause, resume } = useIntervalFn(() => {
               <i18n-t
                 keypath="portfolio.settings.autoSign.expiredToast.description"
                 tag="p"
-                class="leading-4 text-gray-300 text-sm"
+                class="leading-4 text-coolGray-300 text-sm"
               >
                 <template #settings>
                   <NuxtLink
@@ -87,10 +88,10 @@ const { pause, resume } = useIntervalFn(() => {
             </div>
           </div>
 
-          <SharedIcon
-            name="close"
+          <UIcon
+            :name="NuxtUiIcons.Close"
             is-md
-            class="cursor-pointer"
+            class="cursor-pointer h-4 w-4 min-w-4"
             @click="onClose"
           />
         </div>

@@ -1,5 +1,4 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { usdtToken, injToken } from '@shared/data/token'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   ONE_IN_BASE,
@@ -95,11 +94,89 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     ) as TokenAndPriceAndDecimals[]
   })
 
-  const orderedRouteTokensAndDecimals = computed(() => {
-    return formValues.value[SwapFormField.InputDenom] ===
-      routeTokensAndDecimals.value[0]?.token.denom
+  const orderedRouteTokensAndDecimals = computed(() =>
+    formValues.value[SwapFormField.InputDenom] ===
+    routeTokensAndDecimals.value[0]?.token.denom
       ? routeTokensAndDecimals.value
       : [...routeTokensAndDecimals.value].reverse()
+  )
+
+  const orderedRouteMarkets = computed(() => {
+    const [firstMarket] = routeMarkets.value
+
+    return [(firstMarket.baseDenom, firstMarket.quoteDenom)].includes(
+      formValues.value[SwapFormField.InputDenom] || ''
+    )
+      ? routeMarkets.value
+      : [...routeMarkets.value].reverse()
+  })
+
+  const inputTokenMarket = computed(() => {
+    const [inputTokenMarket] = orderedRouteMarkets.value
+
+    return inputTokenMarket
+  })
+
+  const outputTokenMarket = computed(() => {
+    const [outputTokenMarket] = [...orderedRouteMarkets.value].reverse()
+
+    return outputTokenMarket
+  })
+
+  const inputTokenNotional = computed(() => {
+    if (
+      !formValues.value[SwapFormField.InputAmount] ||
+      !formValues.value[SwapFormField.InputLastTradedPrice]
+    ) {
+      return new BigNumberInBase(0)
+    }
+
+    const isQuoteToken =
+      inputToken.value?.denom === inputTokenMarket.value.quoteDenom
+
+    return isQuoteToken
+      ? new BigNumberInBase(formValues.value[SwapFormField.InputAmount])
+      : new BigNumberInBase(formValues.value[SwapFormField.InputAmount]).times(
+          formValues.value[SwapFormField.InputLastTradedPrice]
+        )
+  })
+
+  const outputTokenNotional = computed(() => {
+    if (
+      !formValues.value[SwapFormField.OutputAmount] ||
+      !formValues.value[SwapFormField.OutputLastTradedPrice]
+    ) {
+      return new BigNumberInBase(0)
+    }
+
+    const isQuoteToken =
+      outputToken.value?.denom === outputTokenMarket.value.quoteDenom
+
+    return isQuoteToken
+      ? new BigNumberInBase(formValues.value[SwapFormField.OutputAmount])
+      : new BigNumberInBase(formValues.value[SwapFormField.OutputAmount]).times(
+          formValues.value[SwapFormField.OutputLastTradedPrice]
+        )
+  })
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    const inputTokenMarketLessThanMinNotional = inputTokenNotional.value.lt(
+      inputTokenMarket.value.minNotionalInToken
+    )
+
+    const outputTokenMarketLessThanMinNotional = outputTokenNotional.value.lt(
+      outputTokenMarket.value.minNotionalInToken
+    )
+
+    const hasAmounts =
+      formValues.value[SwapFormField.InputAmount] &&
+      formValues.value[SwapFormField.OutputAmount]
+
+    return (
+      hasAmounts &&
+      (inputTokenMarketLessThanMinNotional ||
+        outputTokenMarketLessThanMinNotional)
+    )
   })
 
   const inputToken = computed(() =>
@@ -161,49 +238,15 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   })
 
   return {
-    invalidInput,
-    maximumInput,
-    minimumOutput,
     inputToken,
     outputToken,
-    orderedRouteTokensAndDecimals
-  }
-}
-
-export function useSwapHomepage(formValues: Ref<Partial<SwapForm>>) {
-  const {
     invalidInput,
     maximumInput,
     minimumOutput,
-    inputToken,
-    outputToken,
-    orderedRouteTokensAndDecimals
-  } = useSwap(formValues)
-
-  return {
-    invalidInput,
-    maximumInput,
-    minimumOutput,
-    inputToken: computed(
-      () =>
-        inputToken.value ||
-        ({
-          token: usdtToken,
-          denom: usdtToken.denom,
-          usdPrice: 0,
-          quantityDecimals: 3
-        } as TokenAndPriceAndDecimals)
-    ),
-    outputToken: computed(
-      () =>
-        outputToken.value ||
-        ({
-          token: injToken,
-          denom: injToken.denom,
-          usdPrice: 0,
-          quantityDecimals: 3
-        } as TokenAndPriceAndDecimals)
-    ),
+    inputTokenMarket,
+    outputTokenMarket,
+    orderedRouteMarkets,
+    isNotionalLessThanMinNotional,
     orderedRouteTokensAndDecimals
   }
 }

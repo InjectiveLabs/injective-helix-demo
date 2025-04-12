@@ -4,36 +4,29 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
 const route = useRoute()
-const modalStore = useModalStore()
-const walletStore = useWalletStore()
+const modalStore = useSharedModalStore()
 const campaignStore = useCampaignStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
-const props = defineProps({
-  isDisabled: Boolean,
-
-  limit: {
-    type: Number,
-    required: true
-  },
-
-  guild: {
-    type: Object as PropType<Guild>,
-    required: true
-  },
-
-  guildInvitationHash: {
-    type: String,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    limit: number
+    guild: Guild
+    isDisabled?: boolean
+    guildInvitationHash: string
+  }>(),
+  {
+    isDisabled: false
   }
-})
+)
 
 const status = reactive(new Status(StatusType.Idle))
 
 onWalletConnected(() => {
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
@@ -80,11 +73,7 @@ function onSubmit() {
 </script>
 
 <template>
-  <AppModal
-    is-sm
-    :is-open="modalStore.modals[Modal.JoinGuild]"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.JoinGuild]">
     <template #title>
       <h2 class="text-xl font-semibold normal-case text-center">
         {{ $t('guild.joinGuild.title') }}
@@ -106,12 +95,10 @@ function onSubmit() {
         {{ $t('guild.joinGuild.description', { name: guild.name }) }}
       </p>
 
-      <div class="mt-8 flex items-center gap-4">
+      <div class="mt-8 flex justify-center gap-4">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
-          v-bind="{
-            isLg: true
-          }"
+          size="lg"
           @click="onSubmit"
         >
           <span>
@@ -120,11 +107,10 @@ function onSubmit() {
         </AppButton>
 
         <AppButton
-          class="w-full font-semibold border border-white"
-          v-bind="{
-            isLg: true
-          }"
-          @click="onSubmit"
+          class="w-full font-semibold"
+          variant="primary-outline"
+          size="lg"
+          @click="onCloseModal"
         >
           <span>
             {{ $t('common.cancel') }}

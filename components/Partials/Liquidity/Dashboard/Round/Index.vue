@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import { Campaign } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  activeRound: {
-    type: Number,
-    required: true
-  },
-
-  campaigns: {
-    type: Array as PropType<Campaign[]>,
-    required: true
-  },
-
-  round: {
-    type: Number,
-    required: true
-  }
-})
+const props = withDefaults(
+  defineProps<{
+    round: Number
+    campaigns: Campaign[]
+    activeRound: Number
+  }>(),
+  {}
+)
 
 const isActive = computed(() => props.activeRound === props.round)
 </script>
@@ -33,18 +25,11 @@ const isActive = computed(() => props.activeRound === props.round)
       </div>
     </div>
 
-    <div class="overflow-y-auto">
-      <table class="w-full min-w-3xl">
-        <PartialsLiquidityDashboardRoundTableHeader v-bind="{ isActive }" />
-
-        <tbody>
-          <PartialsLiquidityDashboardRoundTableRow
-            v-for="campaign in campaigns"
-            :key="campaign.campaignId"
-            v-bind="{ campaign }"
-          />
-        </tbody>
-      </table>
+    <div class="overflow-y-auto divide-y">
+      <PartialsLiquidityDashboardRoundTable
+        :is-active="isActive"
+        :campaigns="campaigns"
+      />
     </div>
   </div>
 </template>

@@ -1,46 +1,87 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UnknownTokenStatusKey } from '@/types'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { InitialStatusKey } from '@/types'
 
-const route = useRoute()
-const appStore = useAppStore()
+// const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
+const sharedGeoStore = useSharedGeoStore()
+const isActiveTab = useDocumentVisibility()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
-const { addTokensToPriceWatchList } = useTokenUsdPrice()
 
 const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  const queryMarketId = route.query.marketId as string | undefined
-
-  // coinGeckoIds only exist on verified tokens (manually added tokens to injective-list)
-  addTokensToPriceWatchList(tokenStore.verifiedTokens)
-
-  tokenStore.fetchUntrackedTokens().finally(() => unknownTokenStatus.setIdle())
+  tokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
-    spotStore.initFromTradingPage(queryMarketId),
-    derivativeStore.initFromTradingPage(queryMarketId)
+    spotStore.fetchMarkets(),
+    derivativeStore.fetchMarkets(),
+    sharedGeoStore.fetchGeoLocation(),
+    tokenStore.fetchTokensUsdPriceMap()
   ])
     .catch($onError)
+    .then(() => {
+      if (sharedWalletStore.isUserConnected) {
+        WalletTracker.trackWalletAddress(sharedWalletStore.injectiveAddress)
+      }
+    })
     .finally(() => status.setIdle())
 
   // Actions that should't block the app from loading
-  Promise.all([appStore.init(), appStore.fetchBlockHeight()])
+  // Promise.all([appStore.fetchBlockHeight()])
 })
 
-provide(UnknownTokenStatusKey, unknownTokenStatus)
+onWalletInitialConnected(() => {
+  WalletTracker.trackLogin({
+    wallet: sharedWalletStore.wallet,
+    address: sharedWalletStore.injectiveAddress
+  })
+})
+
+/**
+ * Post only mode modal when we do chain upgrade
+watch(
+  () => appStore.blockHeight,
+  () => {
+    if (
+      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
+      appStore.blockHeight <=
+        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
+    ) {
+      modalStore.openModal(Modal.PostOnlyMode)
+    }
+  }
+)
+ */
+provide(InitialStatusKey, status)
+
+useIntervalFn(
+  () =>
+    Promise.all([
+      streamProvider.healthCheck(),
+      tokenStore.fetchTokensUsdPriceMap()
+    ]),
+  30 * 1000
+)
+watch(isActiveTab, (isActive) => {
+  if (!isActive) {
+    return
+  }
+
+  streamProvider.healthCheck()
+})
 </script>
 
 <template>
-  <AppHocLoading is-helix wrapper-class="h-screen" :status="status">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </AppHocLoading>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

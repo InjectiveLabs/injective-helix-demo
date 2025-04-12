@@ -1,14 +1,17 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { Modal } from '@/types'
 
-const modalStore = useModalStore()
+const modalStore = useSharedModalStore()
 const walletStore = useWalletStore()
+const sharedWalletStore = useSharedWalletStore()
 const campaignStore = useCampaignStore()
 const { t } = useLang()
 const { validate, resetForm } = useForm()
@@ -24,7 +27,7 @@ const GUILD_MIN_AMOUNT = 1000
 
 const status = reactive(new Status(StatusType.Idle))
 
-const { userBalancesWithToken } = useBalance()
+const { activeSubaccountBalancesWithToken } = useBalance()
 
 const { value: name, errors: nameErrors } = useStringField({
   name: NAME_FIELD,
@@ -47,7 +50,7 @@ const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
 const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
   useSharedBigNumberFormatter(
     computed(() => {
-      const balance = userBalancesWithToken.value.find(
+      const balance = activeSubaccountBalancesWithToken.value.find(
         ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
       )
 
@@ -55,8 +58,8 @@ const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
         return 0
       }
 
-      return toBalanceInToken({
-        value: balance.accountTotalBalance,
+      return sharedToBalanceInToken({
+        value: balance.totalBalance,
         decimalPlaces: balance.token.decimals
       })
     })
@@ -70,6 +73,7 @@ const hasEmptyField = computed(() => !name.value || !thumbnail.value)
 
 function disconnect() {
   walletStore.disconnect()
+  WalletTracker.trackLogout()
 
   onCloseModal()
 }
@@ -116,12 +120,7 @@ watch(
 </script>
 
 <template>
-  <AppModal
-    is-sm
-    :ignore="['.v-popper__popper']"
-    :is-open="modalStore.modals[Modal.CreateGuild]"
-    @modal:closed="onCloseModal"
-  >
+  <AppModal v-model="modalStore.modals[Modal.CreateGuild]">
     <template #title>
       <h2 class="text-xl font-semibold normal-case">
         {{ $t('guild.createGuild.title') }}
@@ -134,7 +133,7 @@ watch(
           <span class="font-bold">
             {{ $t('guild.createGuild.name') }}
           </span>
-          <span class="text-gray-450">
+          <span class="text-coolGray-450">
             {{ name?.length || 0 }} / {{ NAME_MAX_CHARACTERS }}
             {{ $t('guild.createGuild.characters') }}
           </span>
@@ -169,7 +168,7 @@ watch(
         <AppInput
           is-sm
           is-disabled
-          :model-value="walletStore.injectiveAddress"
+          :model-value="sharedWalletStore.injectiveAddress"
           wrapper-classes="p-2"
           :placeholder="$t('guild.createGuild.namePlaceholder')"
         />
@@ -180,7 +179,7 @@ watch(
           <span class="font-bold">
             {{ $t('guild.createGuild.description') }}
           </span>
-          <span class="text-gray-450">
+          <span class="text-coolGray-450">
             {{ description?.length || 0 }} / {{ DESCRIPTION_MAX_CHARACTERS }}
           </span>
         </div>
@@ -205,22 +204,20 @@ watch(
         </span>
         <div class="flex items-center font-semibold text-xs gap-1">
           <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
-          <SharedIcon
-            v-if="balanceToBigNumber.gte(GUILD_MIN_AMOUNT)"
-            name="check-circle"
-            class="text-green-500"
-            is-sm
+          <UIcon
+            v-if="hasSufficientBalance"
+            :name="NuxtUiIcons.Checkmark"
+            class="text-green-500 w-4 h-4 min-w-4"
           />
-          <SharedIcon
+          <UIcon
             v-else
-            name="warning-circle"
-            class="text-orange-400"
-            is-sm
+            :name="NuxtUiIcons.Warning"
+            class="text-orange-400 w-4 h-4 min-w-4"
           />
         </div>
       </div>
 
-      <p v-if="!hasSufficientBalance" class="text-gray-450 text-xs mt-2">
+      <p v-if="!hasSufficientBalance" class="text-coolGray-450 text-xs mt-2">
         {{
           $t('guild.createGuild.insufficientBalanceDescription', {
             amount: minAmountToString,
@@ -246,20 +243,20 @@ watch(
       <div class="mt-8">
         <AppButton
           class="w-full bg-blue-500 text-blue-900 font-semibold"
+          size="lg"
           v-bind="{
             status,
-            isLg: true,
             isDisabled: !hasSufficientBalance || hasEmptyField
           }"
           @click="onSubmit"
         >
           <span
             v-if="hasSufficientBalance"
-            :class="{ 'text-gray-600': hasEmptyField }"
+            :class="{ 'text-coolGray-600': hasEmptyField }"
           >
             {{ $t('guild.createGuild.cta') }}
           </span>
-          <span v-else class="text-gray-600">
+          <span v-else class="text-coolGray-600">
             {{ $t('guild.createGuild.insufficientBalance') }}
           </span>
         </AppButton>

@@ -1,7 +1,7 @@
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   IndexerGrpcOracleStream,
-  PositionsStreamCallback,
+  PositionsV2StreamCallback,
   IndexerGrpcDerivativesStream,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
@@ -9,7 +9,7 @@ import {
   DerivativeOrderHistoryStreamCallback,
   DerivativeOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { ENDPOINTS } from '@/app/utils/constants'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 
@@ -45,17 +45,20 @@ export const cancelTradesStream = () => {
 
 export const streamOrderbookUpdate = ({
   marketId,
-  callback
+  callback,
+  onResetCallback
 }: {
   marketId: string
+  onResetCallback?: Function
   callback: DerivativeOrderbookUpdateStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeOrderbookUpdate.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
-    marketIds: [marketId],
-    callback
+    callback,
+    onResetCallback,
+    marketIds: [marketId]
   }
 
   streamProvider.subscribe({
@@ -67,18 +70,21 @@ export const streamOrderbookUpdate = ({
 
 export const streamTrades = ({
   marketId,
-  callback
+  callback,
+  onResetCallback
 }: {
   marketId: string
+  onResetCallback?: Function
   callback: DerivativeTradesStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeTrades.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
-    marketId,
     callback,
-    executionSide: TradeExecutionSide.Taker
+    marketId,
+    executionSide: TradeExecutionSide.Taker,
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -91,19 +97,22 @@ export const streamTrades = ({
 export const streamSubaccountTrades = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: DerivativeTradesStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeTrades.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
-    ...(subaccountId && { subaccountId }),
+    callback,
     ...(marketId && { marketId }),
-    callback
+    ...(subaccountId && { subaccountId }),
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -116,19 +125,22 @@ export const streamSubaccountTrades = ({
 export const streamSubaccountOrders = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: DerivativeOrdersStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeOrders.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
-    ...(subaccountId && { subaccountId }),
+    callback,
     ...(marketId && { marketId }),
-    callback
+    ...(subaccountId && { subaccountId }),
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -141,19 +153,22 @@ export const streamSubaccountOrders = ({
 export const streamSubaccountOrderHistory = ({
   marketId,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
   marketId?: string
   subaccountId?: string
+  onResetCallback?: Function
   callback: DerivativeOrderHistoryStreamCallback
 }) => {
   const streamFn = derivativesMarketStream.streamDerivativeOrderHistory.bind(
     derivativesMarketStream
   )
   const streamFnArgs = {
-    ...(subaccountId && { subaccountId }),
+    callback,
     ...(marketId && { marketId }),
-    callback
+    ...(subaccountId && { subaccountId }),
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -165,21 +180,27 @@ export const streamSubaccountOrderHistory = ({
 
 export const streamSubaccountPositions = ({
   marketId,
+  address,
   callback,
-  subaccountId
+  subaccountId,
+  onResetCallback
 }: {
-  subaccountId?: string
+  address?: string
   marketId?: string
-  callback: PositionsStreamCallback
+  subaccountId?: string
+  onResetCallback?: Function
+  callback: PositionsV2StreamCallback
 }) => {
-  const streamFn = derivativesMarketStream.streamDerivativePositions.bind(
+  const streamFn = derivativesMarketStream.streamDerivativePositionsV2.bind(
     derivativesMarketStream
   )
 
   const streamFnArgs = {
-    ...(subaccountId && { subaccountId }),
+    callback,
+    ...(address && { address }),
     ...(marketId && { marketId }),
-    callback
+    ...(subaccountId && { subaccountId }),
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -191,13 +212,19 @@ export const streamSubaccountPositions = ({
 
 export const streamMarketsMarkPrices = ({
   marketIds,
-  callback
+  callback,
+  onResetCallback
 }: {
   marketIds: string[]
+  onResetCallback?: Function
   callback: OraclePricesByMarketsStreamCallback
 }) => {
   const streamFn = oracleStream.streamOraclePricesByMarkets.bind(oracleStream)
-  const streamFnArgs = { marketIds, callback }
+  const streamFnArgs = {
+    callback,
+    marketIds,
+    ...(onResetCallback && { onResetCallback })
+  }
 
   streamProvider.subscribe({
     fn: streamFn,

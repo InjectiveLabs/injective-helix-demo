@@ -4,6 +4,7 @@ import {
   BigNumberInBase,
   BigNumberInWei
 } from '@injectivelabs/utils'
+import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   calculateWorstPrice,
@@ -17,29 +18,13 @@ import {
   UiDerivativeMarket,
   DerivativesTradeForm,
   DerivativeTradeTypes,
+  PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 
-const props = defineProps({
-  marginWithFee: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  minimumAmountInQuote: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
-
-const market = inject(MarketKey) as Ref<UiDerivativeMarket>
-
+const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
   DerivativesTradeFormField.LimitPrice
@@ -47,21 +32,35 @@ const validateLimitField = useValidateField(
 const validateTriggerField = useValidateField(
   DerivativesTradeFormField.TriggerPrice
 )
+const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const { markPrice } = useDerivativeLastPrice(market)
+const { activeSubaccountBalancesWithToken } = useBalance()
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
+
+const props = withDefaults(
+  defineProps<{
+    quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+    marginWithFee: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+  }>(),
+  {}
+)
 
 const options = [
   {
-    display: market.value.baseToken.symbol || '',
-    value: TradeAmountOption.Base
+    label:
+      market.value.baseToken.overrideSymbol ||
+      market.value.baseToken.symbol ||
+      '',
+    id: TradeAmountOption.Base
   },
   {
-    display: market.value.quoteToken.symbol || '',
-    value: TradeAmountOption.Quote
+    label: market.value.quoteToken.symbol || '',
+    id: TradeAmountOption.Quote
   }
 ]
-
-const positionStore = usePositionStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
-const { userBalancesWithToken } = useBalance()
 
 const decimals = computed(() =>
   typeValue.value === TradeAmountOption.Base
@@ -86,15 +85,30 @@ const {
   valueToBigNumber: quoteBalanceToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => {
-    const balance = userBalancesWithToken.value.find(
+    const balance = activeSubaccountBalancesWithToken.value.find(
       (balance) => balance.token.denom === market.value.quoteToken.denom
-    )?.availableMargin
+    )?.availableBalance
 
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
     )
   })
 )
+
+const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
+  isBuy,
+  market,
+  markPrice,
+  price: computed(() => props.worstPrice),
+  quantity: computed(() => props.quantity),
+  marginWithFee: computed(() => props.marginWithFee),
+  type: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Type]
+  ),
+  triggerPrice: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+  )
+})
 
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
@@ -111,24 +125,17 @@ const {
   dynamicRule: computed(() => {
     if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
       const maxAmount = activePosition.value?.quantity
-      const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule]
-
-      return rules.join('|')
+      return `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
     } else {
       const maxAmount = quoteBalanceToBigNumber.value.toFixed()
       const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
 
-      const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
-
-      const rules = [insufficientBalanceRule]
-
       if (typeValue.value === TradeAmountOption.Quote) {
-        rules.push(minAmountRule)
+        return `${insufficientBalanceRule}|minAmount:${props.minimumAmountInQuote.toFixed()}`
       }
 
-      return rules.join('|')
+      return insufficientBalanceRule
     }
   })
 })
@@ -163,11 +170,8 @@ async function setFromPercentage(percentage: number) {
     }
   }
 
-  const slippage = derivativeFormValues.value[
-    DerivativesTradeFormField.IsSlippageOn
-  ]
-    ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-    : 0
+  const slippage =
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
     isReduceOnly &&
@@ -349,50 +353,66 @@ onMounted(() => {
           .shiftedBy(market.quantityTensMultiplier)
           .toFixed()
       "
+      :data-cy="dataCyTag(PerpetualMarketCyTags.LimitAmountInputField)"
     >
       <template #right>
-        <AppSelect
+        <USelectMenu
           v-model="typeValue"
-          wrapper-class=" p-1 rounded select-none"
-          v-bind="{
-            options
-          }"
-        >
-          <template #default>
-            <div>
-              <span
-                v-if="typeValue === TradeAmountOption.Base"
-                class="text-sm select-none"
-              >
-                {{ market?.baseToken.symbol }}
-              </span>
-              <span v-else class="text-sm">
-                {{ market?.quoteToken.symbol }}
-              </span>
-            </div>
-          </template>
-
-          <template #option="{ option }">
-            <span class="text-sm font-semibold">{{ option.display }}</span>
-          </template>
-        </AppSelect>
+          :options="options"
+          variant="none"
+          value-attribute="id"
+        />
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-400 border-t pt-2 pb-1">
-          <div class="space-x-2">
-            <span>{{
-              $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
-              })
-            }}</span>
+        <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
+          <div
+            class="space-x-1 inline-flex"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
+          >
+            <span>
+              {{
+                $t('trade.availableAmount', {
+                  amount: quoteBalanceToString
+                })
+              }}
+            </span>
+
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
         </div>
       </template>
     </AppInputField>
 
-    <div v-if="amountErrorMessage" class="error-message capitalize">
+    <p
+      v-if="isMarkPriceThresholdError"
+      class="error-message first-letter:capitalize"
+    >
+      {{ $t('trade.mark_price_invalid') }}
+    </p>
+
+    <p
+      v-else-if="amountErrorMessage"
+      class="error-message first-letter:capitalize"
+    >
       {{ amountErrorMessage }}
-    </div>
+    </p>
+
+    <p
+      v-else-if="isNotionalLessThanMinNotional"
+      class="error-message first-letter:capitalize"
+    >
+      {{
+        $t('trade.minNotionalError', {
+          symbol: market.quoteToken.symbol,
+          minNotional: market.minNotionalInToken
+        })
+      }}
+    </p>
   </div>
 </template>

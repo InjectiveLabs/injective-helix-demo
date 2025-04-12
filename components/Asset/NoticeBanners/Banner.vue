@@ -1,14 +1,10 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Banner } from '@/types'
 
 const appStore = useAppStore()
 
-const props = defineProps({
-  noticeBanner: {
-    type: Object as PropType<Banner>,
-    required: true
-  }
-})
+const props = withDefaults(defineProps<{ noticeBanner: Banner }>(), {})
 
 function closeNoticeBanner() {
   appStore.setUserState({
@@ -20,9 +16,9 @@ function closeNoticeBanner() {
 
 <template>
   <div
-    class="flex justify-center items-center bg-blue-500 text-blue-900 p-1 border-b"
+    class="flex justify-center items-center bg-blue-500 text-blue-900 px-3 py-2 border-b"
   >
-    <p class="font-semibold text-xs md:text-md flex-1 text-center">
+    <p class="font-semibold text-sm md:text-md flex-1 text-center">
       {{ $t(noticeBanner.label) }}
       <NuxtLink
         v-if="noticeBanner.viewMore"
@@ -34,11 +30,11 @@ function closeNoticeBanner() {
         {{ noticeBanner.viewMore }}
       </NuxtLink>
     </p>
-    <button
-      class="text-3xl font-bold p-2 leading-[0.5]"
+
+    <UIcon
+      :name="NuxtUiIcons.Close"
+      class="hover:text-white h-4 w-4 min-w-4 cursor-pointer"
       @click="closeNoticeBanner"
-    >
-      &times;
-    </button>
+    />
   </div>
 </template>

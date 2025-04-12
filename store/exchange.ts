@@ -1,26 +1,16 @@
 import { defineStore } from 'pinia'
 import {
-  exchangeApi,
-  indexerSpotApi,
-  indexerDerivativesApi,
-  indexerRestMarketChronosApi
-} from '@shared/Service'
-import {
   TokenStatic,
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import {
-  toUiMarketHistory,
-  toZeroUiMarketSummary
-} from '@shared/transformer/market'
+import { SharedUiMarketHistory } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedUiMarketHistory, SharedUiMarketSummary } from '@shared/types'
-import { getToken } from '@/app/utils/helpers'
+import { sharedGetToken } from '@shared/utils/helper'
+import { toUiMarketHistory } from '@shared/transformer/market'
+import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import { UiMarketWithToken, UiMarketAndSummary } from '@/types'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
@@ -29,10 +19,6 @@ type ExchangeStoreState = {
   tradingRewardsCampaign?: TradingRewardsCampaign
   tradeRewardsPoints: string[]
   pendingTradeRewardsPoints: string[]
-  upcomingMarkets: UiMarketWithToken[]
-  upcomingMarketsSummaries: SharedUiMarketSummary[]
-  deprecatedMarkets: UiMarketWithToken[]
-  deprecatedMarketsSummaries: SharedUiMarketSummary[]
   marketsHistory: SharedUiMarketHistory[]
 }
 
@@ -43,43 +29,11 @@ const initialStateFactory = (): ExchangeStoreState => ({
   tradingRewardsCampaign: undefined,
   tradeRewardsPoints: [],
   pendingTradeRewardsPoints: [],
-
-  upcomingMarkets,
-  upcomingMarketsSummaries: upcomingMarkets.map((m) =>
-    toZeroUiMarketSummary(m.marketId)
-  ),
-
-  deprecatedMarkets,
-  deprecatedMarketsSummaries: deprecatedMarkets.map((m) =>
-    toZeroUiMarketSummary(m.marketId)
-  ),
   marketsHistory: []
 })
 
 export const useExchangeStore = defineStore('exchange', {
   state: (): ExchangeStoreState => initialStateFactory(),
-
-  getters: {
-    deprecatedMarketsWithSummary: (state) =>
-      state.deprecatedMarkets
-        .map((market) => ({
-          market,
-          summary: state.deprecatedMarketsSummaries.find(
-            (summary) => summary.marketId === market.marketId
-          )
-        }))
-        .filter((summary) => summary) as UiMarketAndSummary[],
-
-    upcomingMarketsWithSummary: (state) =>
-      state.upcomingMarkets
-        .map((market) => ({
-          market,
-          summary: state.upcomingMarketsSummaries.find(
-            (summary) => summary.marketId === market.marketId
-          )
-        }))
-        .filter((summary) => summary) as UiMarketAndSummary[]
-  },
 
   actions: {
     async initFeeDiscounts() {
@@ -103,24 +57,6 @@ export const useExchangeStore = defineStore('exchange', {
       })
     },
 
-    async fetchMarketsFromTicker(ticker: string) {
-      const spotMarkets = await indexerSpotApi.fetchMarkets()
-      const derivativeMarkets = await indexerDerivativesApi.fetchMarkets()
-
-      return {
-        spotMarketIds: spotMarkets
-          .filter((market) =>
-            market.ticker.toLowerCase().includes(ticker.toLowerCase())
-          )
-          .map((m) => m.marketId),
-        derivativeMarketIds: derivativeMarkets
-          .filter((market) =>
-            market.ticker.toLowerCase().includes(ticker.toLowerCase())
-          )
-          .map((m) => m.marketId)
-      }
-    },
-
     async fetchFeeDiscountSchedule() {
       const exchangeStore = useExchangeStore()
 
@@ -129,7 +65,7 @@ export const useExchangeStore = defineStore('exchange', {
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
           feeDiscountSchedule.quoteDenomsList.map(
-            async (denom) => await getToken(denom)
+            async (denom) => await sharedGetToken(denom)
           )
         )) as TokenStatic[]
 
@@ -157,15 +93,15 @@ export const useExchangeStore = defineStore('exchange', {
 
     async fetchFeeDiscountAccountInfo() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const feeDiscountAccountInfo =
         await exchangeApi.fetchFeeDiscountAccountInfo(
-          walletStore.authZOrInjectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         )
 
       if (feeDiscountAccountInfo) {
@@ -191,7 +127,7 @@ export const useExchangeStore = defineStore('exchange', {
       const quoteSymbolsList = (
         (
           await Promise.all(
-            quoteDenomsList.map(async (denom) => await getToken(denom))
+            quoteDenomsList.map(async (denom) => await sharedGetToken(denom))
           )
         ).filter((token) => token) as TokenStatic[]
       ).map((token) => token.symbol)
@@ -213,24 +149,24 @@ export const useExchangeStore = defineStore('exchange', {
     async fetchTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
 
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       exchangeStore.$patch({
         tradeRewardsPoints: await exchangeApi.fetchTradeRewardPoints([
-          walletStore.authZOrInjectiveAddress
+          sharedWalletStore.authZOrInjectiveAddress
         ])
       })
     },
 
     async fetchPendingTradeRewardPoints() {
       const exchangeStore = useExchangeStore()
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
@@ -250,7 +186,7 @@ export const useExchangeStore = defineStore('exchange', {
       const rewards = await Promise.all(
         pendingRewardsList.map(async (pendingReward) => {
           const rewards = await exchangeApi.fetchPendingTradeRewardPoints(
-            [walletStore.authZOrInjectiveAddress],
+            [sharedWalletStore.authZOrInjectiveAddress],
             pendingReward.startTimestamp
           )
 

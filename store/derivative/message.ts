@@ -1,6 +1,7 @@
 import {
-  Position,
+  Msgs,
   PositionV2,
+  DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
@@ -12,16 +13,32 @@ import {
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/msgs'
+import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
-import { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
+import {
+  UIDerivativeOrder,
+  UiDerivativeMarket,
+  ConditionalOrderSide
+} from '@/types'
 
-const fetchBalances = () => {
+const fetchBalances = (
+  {
+    shouldFetchCw20Balances
+  }: {
+    shouldFetchCw20Balances: boolean
+  } = { shouldFetchCw20Balances: false }
+) => {
   const accountStore = useAccountStore()
+  const derivativeStore = useDerivativeStore()
 
   return backupPromiseCall(() =>
-    Promise.all([accountStore.fetchAccountPortfolioBalances()])
+    Promise.all([
+      derivativeStore.fetchSubaccountOrders(),
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
+    ])
   )
 }
 
@@ -44,6 +61,8 @@ const createTpSlMessage = ({
   isBuy: boolean
   market: UiDerivativeMarket
 }) => {
+  const referralStore = useReferralStore()
+
   const orderType = getDerivativeOrderTypeToSubmit({
     isBuy,
     isPostOnly: true,
@@ -73,7 +92,7 @@ const createTpSlMessage = ({
       value: quantity.toFixed()
     }),
     marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderType)
   })
@@ -82,16 +101,15 @@ const createTpSlMessage = ({
 }
 
 export const cancelOrder = async (order: UIDerivativeOrder) => {
-  const appStore = useAppStore()
+  const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
-  const walletStore = useWalletStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const market = derivativeStore.markets.find(
@@ -102,33 +120,39 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
     return
   }
 
-  const message = MsgCancelDerivativeOrder.fromJSON({
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+  const messages = MsgCancelDerivativeOrder.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     marketId: order.marketId,
     orderHash: order.orderHash,
     subaccountId: order.subaccountId
   })
 
-  await walletStore.broadcastMessages(message)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
+
+  backupPromiseCall(() =>
+    Promise.all([
+      derivativeStore.fetchSubaccountOrders(),
+      derivativeStore.fetchSubaccountConditionalOrders()
+    ])
+  )
 }
 
 export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
-  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected || !accountStore.subaccountId) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
-  await appStore.queue()
   await walletStore.validate()
 
   const messages = orders.map((order: UIDerivativeOrder) => {
     return MsgBatchCancelDerivativeOrders.fromJSON({
-      injectiveAddress: walletStore.authZOrInjectiveAddress,
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
       orders: [
         {
           marketId: order.marketId,
@@ -139,7 +163,7 @@ export const batchCancelOrder = async (orders: UIDerivativeOrder[]) => {
     })
   })
 
-  await walletStore.broadcastMessages(messages)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
   await fetchBalances()
 }
@@ -160,47 +184,70 @@ export const submitLimitOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validateGeo()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
+
+  const priceToFixed = derivativePriceToChainPriceToFixed({
+    value: price.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const quantityToFixed = derivativeQuantityToChainQuantityToFixed({
+    value: quantity.toFixed()
+  })
+
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const cw20ConvertMessage = reduceOnly
+    ? []
+    : prepareOrderMessages({
+        amount: marginToFixed,
+        denom: market.quoteDenom
+      })
 
   const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
-    price: derivativePriceToChainPriceToFixed({
-      value: price.toFixed(),
-      quoteDecimals: market.quoteToken.decimals
-    }),
+    price: priceToFixed,
     triggerPrice: '0' /** TODO */,
-    quantity: derivativeQuantityToChainQuantityToFixed({
-      value: quantity.toFixed()
-    }),
-    margin: reduceOnly
-      ? '0'
-      : derivativeMarginToChainMarginToFixed({
-          value: margin.toFixed(),
-          quoteDecimals: market.quoteToken.decimals
-        }),
+    quantity: quantityToFixed,
+    margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT
+    feeRecipient: referralStore.feeRecipient
   })
 
-  await walletStore.broadcastMessages(message)
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
+    market,
+    quantity,
+    orderSide
+  })
 
-  await fetchBalances()
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+  })
+
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitStopLimitOrder = async ({
@@ -221,56 +268,75 @@ export const submitStopLimitOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
+  await walletStore.validateGeo()
   await walletStore.validate()
-  await appStore.validateGeoIp()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const msgTriggerPrice = derivativePriceToChainPriceToFixed({
     value: triggerPrice.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
+
   const msgPrice = derivativePriceToChainPriceToFixed({
     value: price.toFixed(),
     quoteDecimals: market.quoteToken.decimals
   })
+
   const msgQuantity = derivativeQuantityToChainQuantityToFixed({
     value: quantity.toFixed()
   })
 
-  const msgMargin = reduceOnly
-    ? '0'
-    : derivativeMarginToChainMarginToFixed({
-        value: margin.toFixed(),
-        quoteDecimals: market.quoteToken.decimals
-      })
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const msgMargin = reduceOnly ? '0' : marginToFixed
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market.quoteDenom,
+    amount: marginToFixed
+  })
 
   const message = MsgCreateDerivativeLimitOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
     margin: msgMargin,
     quantity: msgQuantity,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
+    market,
+    quantity,
+    orderSide
+  })
 
-  await fetchBalances()
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+  })
+
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitMarketOrder = async ({
@@ -293,21 +359,23 @@ export const submitMarketOrder = async ({
   stopLoss?: BigNumberInBase
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validateGeo()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const isTpslBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
@@ -317,7 +385,7 @@ export const submitMarketOrder = async ({
         triggerPrice: takeProfit ?? new BigNumberInBase(0),
         quantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: isTpslBuy,
         market
@@ -330,16 +398,30 @@ export const submitMarketOrder = async ({
         triggerPrice: stopLoss ?? new BigNumberInBase(0),
         quantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: isTpslBuy,
         market
       })
     : undefined
 
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const cw20ConvertMessage = prepareOrderMessages({
+    amount: marginToFixed,
+    denom: market.quoteDenom
+  })
+
+  const tpSlMessages = [tpMessage, slMessage].filter(
+    (msg) => msg
+  ) as MsgCreateDerivativeMarketOrder[]
+
   const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     orderType: orderSideToOrderType(orderSide),
     price: derivativePriceToChainPriceToFixed({
       value: price.toFixed(),
@@ -349,29 +431,30 @@ export const submitMarketOrder = async ({
     quantity: derivativeQuantityToChainQuantityToFixed({
       value: quantity.toFixed()
     }),
-    margin: reduceOnly
-      ? '0'
-      : derivativeMarginToChainMarginToFixed({
-          value: margin.toFixed(),
-          quoteDecimals: market.quoteToken.decimals
-        }),
+    margin: reduceOnly ? '0' : marginToFixed,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT
+    feeRecipient: referralStore.feeRecipient
   })
 
-  const messages = [message]
+  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
+    market,
+    quantity,
+    orderSide
+  })
 
-  const tpSlMessages = [tpMessage, slMessage].filter(
-    (msg) => msg
-  ) as MsgCreateDerivativeMarketOrder[]
-
-  await walletStore.broadcastMessages(messages)
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+  })
 
   if (tpSlMessages.length) {
-    await walletStore.broadcastMessages(tpSlMessages)
+    await sharedWalletStore.broadcastWithFeeDelegation({
+      messages: tpSlMessages
+    })
   }
 
-  await fetchBalances()
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitStopMarketOrder = async ({
@@ -392,21 +475,22 @@ export const submitStopMarketOrder = async ({
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
-  const accountStore = useAccountStore()
   const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const sharedWalletStore = useSharedWalletStore()
 
   if (
-    !walletStore.isUserWalletConnected ||
+    !market ||
     !accountStore.subaccountId ||
-    !market
+    !sharedWalletStore.isUserConnected
   ) {
     return
   }
 
-  await appStore.queue()
-  await appStore.validateGeoIp()
-  await appStore.validateGeoIpBasedOnDerivativesAction()
+  await walletStore.validateGeo()
   await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const msgPrice = derivativePriceToChainPriceToFixed({
     value: price.toFixed(),
@@ -420,42 +504,63 @@ export const submitStopMarketOrder = async ({
     value: quantity.toFixed()
   })
 
-  const msgMargin = reduceOnly
-    ? '0'
-    : derivativeMarginToChainMarginToFixed({
-        value: margin.toFixed(),
-        quoteDecimals: market.quoteToken.decimals
-      })
+  const marginToFixed = derivativeMarginToChainMarginToFixed({
+    value: margin.toFixed(),
+    quoteDecimals: market.quoteToken.decimals
+  })
 
   const message = MsgCreateDerivativeMarketOrder.fromJSON({
     subaccountId: accountStore.subaccountId,
-    injectiveAddress: walletStore.authZOrInjectiveAddress,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
     price: msgPrice,
-    margin: msgMargin,
+    margin: reduceOnly ? '0' : marginToFixed,
     quantity: msgQuantity,
     marketId: market.marketId,
-    feeRecipient: FEE_RECIPIENT,
+    feeRecipient: referralStore.feeRecipient,
     triggerPrice: msgTriggerPrice,
     orderType: orderSideToOrderType(orderSide)
   })
 
-  await walletStore.broadcastMessages(message)
+  const cw20ConvertMessage = prepareOrderMessages({
+    denom: market.quoteDenom,
+    amount: marginToFixed
+  })
 
-  await fetchBalances()
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [...cw20ConvertMessage, message]
+  })
+
+  await fetchBalances({
+    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+  })
 }
 
 export const submitTpSlOrder = async ({
   position,
-  stopLoss,
-  takeProfit
+  stopLossPrice,
+  takeProfitPrice,
+  stopLossQuantity,
+  takeProfitQuantity
 }: {
-  position: Position | PositionV2
-  takeProfit?: BigNumberInBase
-  stopLoss?: BigNumberInBase
+  position: PositionV2
+  stopLossPrice?: BigNumberInBase
+  takeProfitPrice?: BigNumberInBase
+  stopLossQuantity: BigNumberInBase
+  takeProfitQuantity: BigNumberInBase
 }) => {
+  const appStore = useAppStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  await walletStore.validateGeo()
+  await walletStore.validate()
+  await appStore.validateGeoIpBasedOnDerivativesAction()
 
   const market = derivativeStore.markets.find(
     (market) => market.marketId === position.marketId
@@ -471,26 +576,26 @@ export const submitTpSlOrder = async ({
     market.quoteToken.decimals
   )
 
-  const tpMessage = takeProfit
+  const tpMessage = takeProfitPrice
     ? createTpSlMessage({
         executionPrice: markPrice,
-        triggerPrice: takeProfit ?? new BigNumberInBase(0),
-        quantity: new BigNumberInBase(position.quantity),
+        triggerPrice: takeProfitPrice ?? new BigNumberInBase(0),
+        quantity: takeProfitQuantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: !isTpslBuy,
         market
       })
     : undefined
 
-  const slMessage = stopLoss
+  const slMessage = stopLossPrice
     ? createTpSlMessage({
         executionPrice: markPrice,
-        triggerPrice: stopLoss ?? new BigNumberInBase(0),
-        quantity: new BigNumberInBase(position.quantity),
+        triggerPrice: stopLossPrice ?? new BigNumberInBase(0),
+        quantity: stopLossQuantity,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: walletStore.authZOrInjectiveAddress,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
         isBuy: !isTpslBuy,
         market
@@ -511,7 +616,154 @@ export const submitTpSlOrder = async ({
     (msg) => msg
   ) as MsgCreateDerivativeMarketOrder[]
 
-  await walletStore.broadcastMessages(tpSlMessages)
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages: tpSlMessages })
 
   await fetchBalances()
+}
+
+export async function submitChase({
+  market,
+  order,
+  price
+}: {
+  market: UiDerivativeMarket
+  order: DerivativeLimitOrder
+  price: BigNumberInBase
+}) {
+  const walletStore = useWalletStore()
+  const accountStore = useAccountStore()
+  const referralStore = useReferralStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  await walletStore.validateGeo()
+
+  const cancelOrderMsg = MsgCancelDerivativeOrder.fromJSON({
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    marketId: order.marketId,
+    orderHash: order.orderHash,
+    subaccountId: accountStore.subaccountId
+  })
+
+  const createDerivativeLimitOrderMsg = MsgCreateDerivativeLimitOrder.fromJSON({
+    subaccountId: accountStore.subaccountId,
+    injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+    orderType: orderSideToChaseOrderType(order.orderType as OrderSide),
+    price: derivativePriceToChainPriceToFixed({
+      value: price.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    triggerPrice: '0',
+    quantity: order.quantity,
+    margin: order.margin,
+    marketId: order.marketId,
+    feeRecipient: referralStore.feeRecipient
+  })
+
+  const messages = [cancelOrderMsg, createDerivativeLimitOrderMsg]
+
+  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await fetchBalances()
+
+  return await true
+}
+
+export const prepareCancelTpSlOrderMsgs = ({
+  market,
+  quantity,
+  orderSide
+}: {
+  orderSide: OrderSide
+  quantity: BigNumberInBase
+  market: UiDerivativeMarket
+}) => {
+  const accountStore = useAccountStore()
+  const positionStore = usePositionStore()
+  const derivativeStore = useDerivativeStore()
+  const sharedWalletStore = useSharedWalletStore()
+
+  const selectedPosition = positionStore.positions.find(
+    (position) =>
+      position.marketId === market.marketId &&
+      position.subaccountId === accountStore.subaccountId
+  )
+
+  const shouldAutoCancelTpSlOnLong =
+    selectedPosition?.direction === TradeDirection.Long &&
+    [
+      OrderSide.Sell,
+      OrderSide.SellPO,
+      OrderSide.TakeSell,
+      OrderSide.StopSell
+    ].includes(orderSide)
+
+  const shouldAutoCancelTpSlOnShort =
+    selectedPosition?.direction === TradeDirection.Short &&
+    [
+      OrderSide.Buy,
+      OrderSide.BuyPO,
+      OrderSide.TakeBuy,
+      OrderSide.StopBuy
+    ].includes(orderSide)
+
+  const shouldAutoCancelTpSl =
+    shouldAutoCancelTpSlOnLong || shouldAutoCancelTpSlOnShort
+
+  const msgs = [] as Msgs[]
+
+  if (!shouldAutoCancelTpSl) {
+    return msgs
+  }
+
+  const availablePositionQuantity = new BigNumberInBase(
+    selectedPosition?.quantity || 0
+  )
+
+  const remainingQuantity = availablePositionQuantity.minus(quantity)
+
+  const selectedPositionConditionalOrders =
+    derivativeStore.subaccountConditionalOrders.filter(
+      (order) => order.marketId === market.marketId
+    )
+
+  const tpOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.TakeBuy ||
+      item.orderType === ConditionalOrderSide.TakeSell
+  )
+
+  const slOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.StopBuy ||
+      item.orderType === ConditionalOrderSide.StopSell
+  )
+
+  if (
+    tpOrder &&
+    new BigNumberInBase(remainingQuantity).lt(tpOrder.quantity || 0)
+  ) {
+    const cancelTpMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+      marketId: tpOrder.marketId,
+      orderHash: tpOrder.orderHash,
+      subaccountId: tpOrder.subaccountId
+    })
+
+    msgs.push(cancelTpMessage)
+  }
+
+  if (
+    slOrder &&
+    new BigNumberInBase(remainingQuantity).lt(slOrder.quantity || 0)
+  ) {
+    const cancelSlMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
+      marketId: slOrder.marketId,
+      orderHash: slOrder.orderHash,
+      subaccountId: slOrder.subaccountId
+    })
+
+    msgs.push(cancelSlMessage)
+  }
+
+  return msgs
 }

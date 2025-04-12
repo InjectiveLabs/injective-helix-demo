@@ -4,12 +4,12 @@ import { BigNumberInBase, Status } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
 
-const modalStore = useModalStore()
-const walletStore = useWalletStore()
 const accountStore = useAccountStore()
+const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const {
   values: formValues,
@@ -18,7 +18,8 @@ const {
   resetForm: resetSubaccountTransferForm
 } = useForm<SubaccountTransferForm>({
   initialValues: {
-    [SubaccountTransferField.SrcSubaccountId]: walletStore.defaultSubaccountId,
+    [SubaccountTransferField.SrcSubaccountId]:
+      sharedWalletStore.defaultSubaccountId,
     [SubaccountTransferField.DstSubaccountId]: '',
     [SubaccountTransferField.Token]: injToken,
     [SubaccountTransferField.Denom]: injToken.denom,
@@ -26,6 +27,8 @@ const {
   },
   keepValuesOnUnmount: true
 })
+
+const subaccountFormValues = computed(() => formValues)
 
 const { value: denomValue } = useStringField({
   name: SubaccountTransferField.Denom,
@@ -40,9 +43,48 @@ const isDisabled = computed(
 
 const status = reactive(new Status())
 
-const { supplyWithBalance } = useSubaccountTransferBalance(
-  computed(() => formValues)
-)
+const { subaccountPortfolioBalanceMap } = useBalance()
+
+const userBalance = computed(() => {
+  const balances =
+    subaccountPortfolioBalanceMap.value[
+      subaccountFormValues.value[SubaccountTransferField.SrcSubaccountId]
+    ]
+
+  const defaultBalance = {
+    denom: injToken.denom,
+    token: injToken,
+    balance: '0'
+  }
+
+  if (!balances) {
+    return [defaultBalance]
+  }
+
+  const hasInjBalance = balances.some(({ denom }) => denom === injToken.denom)
+  const balancesWithInjBalance = hasInjBalance
+    ? balances
+    : [
+        ...balances,
+        {
+          ...defaultBalance,
+          availableBalance: '0'
+        }
+      ]
+
+  return balancesWithInjBalance
+    .map(({ denom, token, availableBalance }) => ({
+      denom,
+      token,
+      balance: availableBalance
+    }))
+    .filter((balance) => {
+      const hasBalance = new BigNumberInBase(balance.balance).gt(0)
+      const isInjToken = balance.denom === injToken.denom
+
+      return hasBalance || isInjToken
+    })
+})
 
 const maxDecimals = computed(() => {
   const defaultDecimalsLessThanTokenDecimals =
@@ -59,14 +101,14 @@ const maxDecimals = computed(() => {
 function onSubaccountTransfer() {
   if (
     formValues[SubaccountTransferField.SrcSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountTransfer()
   }
 
   if (
     formValues[SubaccountTransferField.DstSubaccountId] ===
-    walletStore.defaultSubaccountId
+    sharedWalletStore.defaultSubaccountId
   ) {
     return defaultSubaccountWithdraw()
   }
@@ -144,7 +186,7 @@ function defaultSubaccountWithdraw() {
 
 function onTokenChange() {
   nextTick(() => {
-    const token = supplyWithBalance.value.find(
+    const token = userBalance.value?.find(
       (token) => token.denom === formValues[SubaccountTransferField.Denom]
     )
 
@@ -165,10 +207,18 @@ function onAmountChange({ amount }: { amount: string }) {
 
 function onSubaccountIdChange() {
   nextTick(() => {
+    const token = userBalance.value?.find(
+      (token) => token.denom === formValues[SubaccountTransferField.Denom]
+    )
+
     setFormValues({
       [SubaccountTransferField.Amount]: '',
-      [SubaccountTransferField.Token]: injToken,
-      [SubaccountTransferField.Denom]: injToken.denom
+      ...(token
+        ? {}
+        : {
+            [SubaccountTransferField.Token]: injToken,
+            [SubaccountTransferField.Denom]: injToken.denom
+          })
     })
   })
 }
@@ -192,55 +242,46 @@ function closeModal() {
 
 <template>
   <AppModal
-    :is-open="modalStore.modals[Modal.SubaccountTransfer]"
-    is-md
-    :ignore="['.v-popper__inner']"
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.SubaccountTransfer]"
+    v-bind="{ isMd: true, isHideCloseButton: true }"
   >
-    <template #title>
-      <h3>
-        {{ $t('account.subaccountTransfer') }}
-      </h3>
-    </template>
-
     <div>
-      <div class="mt-6">
-        <div>
-          <ModalsSubaccountTransferSelect
-            @update:subaccount-id="onSubaccountIdChange"
-          />
-          <div v-if="supplyWithBalance.length > 0" class="mt-6">
-            <AppSelectToken
-              v-model:denom="denomValue"
-              v-bind="{
-                maxDecimals,
-                isRequired: true,
-                amountFieldName: SubaccountTransferField.Amount,
-                options: supplyWithBalance
-              }"
-              @update:max="onAmountChange"
-              @update:denom="onTokenChange"
-            >
-              <span> {{ $t('account.amount') }} </span>
-            </AppSelectToken>
-          </div>
-          <div v-else class="mt-6 text-center text-gray-300 text-sm">
-            {{ t('account.noAssetToTransfer') }}
-          </div>
+      <div>
+        <ModalsSubaccountTransferSelect
+          @update:subaccount-id="onSubaccountIdChange"
+        />
+        <div v-if="userBalance.length > 0" class="mt-6">
+          <AppSelectToken
+            v-model:denom="denomValue"
+            v-bind="{
+              maxDecimals,
+              isRequired: true,
+              amountFieldName: SubaccountTransferField.Amount,
+              options: userBalance
+            }"
+            @update:max="onAmountChange"
+            @update:denom="onTokenChange"
+          >
+            <span> {{ $t('account.amount') }} </span>
+          </AppSelectToken>
         </div>
 
-        <AppButton
-          is-lg
-          class="w-full text-blue-900 bg-blue-500 mt-6"
-          :is-loading="status.isLoading()"
-          :disabled="isDisabled"
-          @click="onSubaccountTransfer"
-        >
-          <span class="font-semibold">
-            {{ $t('account.transfer') }}
-          </span>
-        </AppButton>
+        <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
+          {{ t('account.noAssetToTransfer') }}
+        </div>
       </div>
+
+      <AppButton
+        size="lg"
+        class="w-full text-blue-900 bg-blue-500 mt-6"
+        :is-loading="status.isLoading()"
+        :disabled="isDisabled"
+        @click="onSubaccountTransfer"
+      >
+        <span class="font-semibold">
+          {{ $t('account.transfer') }}
+        </span>
+      </AppButton>
     </div>
   </AppModal>
 </template>

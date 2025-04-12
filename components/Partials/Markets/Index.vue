@@ -1,96 +1,42 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { deprecatedMarkets, upcomingMarkets } from '@/app/data/market'
-import { MarketHeaderType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { MarketCategoryType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
-const props = defineProps({
-  isLoading: Boolean,
-  isMarketsPage: Boolean,
-
-  markets: {
-    type: Array as PropType<UiMarketAndSummaryWithVolumeInUsd[]>,
-    required: true
+withDefaults(
+  defineProps<{
+    search?: string
+    activeCategory: MarketCategoryType
+    isLowVolumeMarketsVisible?: boolean
+    markets: UiMarketAndSummaryWithVolumeInUsd[]
+  }>(),
+  {
+    search: ''
   }
-})
-
-const isAscending = ref(false)
-const sortBy = ref(MarketHeaderType.Volume)
-
-const sortedMarkets = computed(() => {
-  const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
-  const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
-
-  if (sortBy.value.trim() === '') {
-    return props.markets
-  }
-
-  const markets = [...props.markets].sort(
-    (
-      m1: UiMarketAndSummaryWithVolumeInUsd,
-      m2: UiMarketAndSummaryWithVolumeInUsd
-    ) => {
-      if (
-        upcomingMarketsSlugs.includes(m1.market.slug) ||
-        deprecatedMarketsSlugs.includes(m1.market.slug)
-      ) {
-        return 1
-      }
-
-      if (sortBy.value === MarketHeaderType.Price) {
-        return new BigNumberInBase(m2.summary.price || 0).comparedTo(
-          m1.summary.price || 0
-        )
-      }
-
-      if (sortBy.value === MarketHeaderType.Market) {
-        return m1.market.ticker.localeCompare(m2.market.ticker)
-      }
-
-      if (sortBy.value === MarketHeaderType.Change) {
-        if (new BigNumberInBase(m2.summary.change).eq(m1.summary.change)) {
-          return m1.market.ticker.localeCompare(m2.market.ticker)
-        }
-
-        return new BigNumberInBase(m2.summary.change)
-          .minus(m1.summary.change)
-          .toNumber()
-      }
-
-      // default: sort by volume
-      return m2.volumeInUsd.minus(m1.volumeInUsd).toNumber()
-    }
-  )
-
-  return isAscending.value ? markets.reverse() : markets
-})
-
-function handleIsAscending(value: boolean) {
-  isAscending.value = value
-}
-
-function handleSortBy(value: MarketHeaderType) {
-  sortBy.value = value
-}
+)
 </script>
 
 <template>
-  <AppHocLoading v-bind="{ isLoading }">
-    <div class="overflow-x-auto">
-      <div class="min-w-[800px]">
-        <PartialsMarketsCommonHeader
-          v-bind="{ isAscending, isMarketsPage, sortBy }"
-          @update:is-ascending="handleIsAscending"
-          @update:sort-by="handleSortBy"
-        />
-
-        <div class="divide-y">
-          <PartialsMarketsCommonRow
-            v-for="{ market, summary, volumeInUsd } in sortedMarkets"
-            :key="market.marketId"
-            v-bind="{ market, summary, volumeInUsd, isMarketsPage }"
-          />
-        </div>
-      </div>
-    </div>
-  </AppHocLoading>
+  <div class="divide-y">
+    <CommonHeadlessMarkets
+      v-bind="{
+        search,
+        markets,
+        activeCategory,
+        isLowVolumeMarketsVisible
+      }"
+    >
+      <template #default="{ sortedMarkets }">
+        <AppHocLoading
+          v-bind="{
+            isLoading:
+              !search.trim() &&
+              !sortedMarkets.length &&
+              activeCategory === MarketCategoryType.All,
+            wrapperClass: 'mt-4'
+          }"
+        >
+          <PartialsMarketsCommonTable v-bind="{ sortedMarkets }" />
+        </AppHocLoading>
+      </template>
+    </CommonHeadlessMarkets>
+  </div>
 </template>

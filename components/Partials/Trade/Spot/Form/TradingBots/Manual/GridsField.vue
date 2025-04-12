@@ -8,9 +8,14 @@ import {
 } from '@/app/utils/constants'
 import { MarketKey, SpotGridTradingForm, SpotGridTradingField } from '@/types'
 
-defineProps({
-  isDisabled: Boolean
-})
+withDefaults(
+  defineProps<{
+    isDisabled?: boolean
+  }>(),
+  {
+    isDisabled: false
+  }
+)
 
 const spotMarket = inject(MarketKey)
 
@@ -39,7 +44,10 @@ const maximumGrids = computed(() => {
     spotGridFormValues.value[SpotGridTradingField.UpperPrice] || 0
   ).minus(spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0)
 
-  const maximumGrids = range.dividedBy(Number(tickSize.value) * 10).toFixed(0)
+  const maximumGrids = range
+    .dividedBy(Number(tickSize.value))
+    .plus(1)
+    .toFixed(0)
 
   if (Number(maximumGrids) < GST_MINIMUM_GRIDS) {
     return GST_MINIMUM_GRIDS
@@ -66,7 +74,7 @@ const { value: gridsValue, errorMessage } = useStringField({
 
     const betweenRule = `betweenSgt:${GST_MINIMUM_GRIDS},${maximumGrids.value}`
 
-    rules.push(betweenRule, gridRangeRule)
+    rules.push(gridRangeRule, betweenRule)
 
     return rules.join('|')
   })
@@ -77,7 +85,7 @@ const { value: gridsValue, errorMessage } = useStringField({
   <div class="mb-4">
     <div class="space-y-2">
       <div class="field-label flex items-center space-x-2">
-        <span>2 .{{ $t('sgt.numberOfGrids') }}</span>
+        <span>2. {{ $t('sgt.numberOfGrids') }}</span>
         <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
       </div>
       <AppInputField

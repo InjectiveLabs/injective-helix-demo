@@ -1,5 +1,6 @@
+import type { IntervalOption } from '@/types'
+import { StopReason } from '@/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -12,6 +13,7 @@ export const UI_DEFAULT_MAX_DISPLAY_DECIMALS = 6
 export const UI_DEFAULT_PRICE_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_AGGREGATION_DECIMALS = 3
+export const UI_DEFAULT_FUNDING_RATE_DECIMALS = 5
 export const UI_DEFAULT_AGGREGATION_DECIMALS_STRING = '3'
 export const UI_DEFAULT_BINARY_OPTIONS_PRICE_DECIMALS = 4
 export const UI_DEFAULT_TOKEN_ASSET_DECIMALS = 8
@@ -19,6 +21,9 @@ export const UI_DEFAULT_MAX_NUMBER_OF_ORDERS = 20
 
 export const UI_DEFAULT_PRICE_MIN_DECIMALS = 10
 export const UI_DEFAULT_PRICE_MAX_DECIMALS = 0.00001
+
+export const UI_DEFAULT_LEVERAGE = '1'
+export const UI_AMOUNT_ABBREVIATION_FLOOR = 1_000_000
 
 export const UI_ORDERBOOK_AGGREGATED_BUY_KEY = '-1'
 export const UI_ORDERBOOK_AGGREGATED_SELL_KEY = '-1'
@@ -64,6 +69,8 @@ export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const HIDDEN_BALANCE_DISPLAY = '********'
 export const SMALL_BALANCE_THRESHOLD = '10'
 export const LOW_VOLUME_MARKET_THRESHOLD = 1000
+export const LOW_FEE_AMOUNT_THRESHOLD = 0.0001
+export const UI_DEFAULT_FEE_MIN_DECIMALS = 8
 
 export const ONE_IN_BASE = new BigNumberInBase(1)
 export const USDT_DECIMALS = 6
@@ -86,10 +93,11 @@ export const MAX_SYMBOL_LENGTH = 6
 export const SYMBOL_DISPLAY_LENGTH = 3
 
 export const DUST_AMOUNT_THRESHOLD = 1
+export const DEFAULT_TRUNCATE_LENGTH = 6
 
 export const GST_MINIMUM_GRIDS = 3
-export const GST_MAXIMUM_GRIDS = 100
-export const GST_MIN_TRADING_SIZE = 5
+export const GST_MAXIMUM_GRIDS = 150
+export const GST_MIN_TRADING_SIZE = 20
 export const GST_MIN_TRADING_SIZE_LOW = 1
 export const GST_GRID_THRESHOLD = 10
 export const GST_DEFAULT_AUTO_GRIDS = 20
@@ -102,6 +110,9 @@ export const GST_STABLE_LOWER_PERCENTAGE = '0.99'
 export const GST_STABLE_UPPER_PERCENTAGE = '1.01'
 export const GST_STABLE_GRIDS = 3
 export const GST_AUTO_PRICE_THRESHOLD = 2
+export const GST_MIN_TOTAL_AMOUNT_USD = 50
+
+export const PGT_MIN_TRADING_SIZE_LOW = 2
 
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
@@ -112,21 +123,26 @@ export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 
 export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
+export const NEPTUNE_USDT_BUFFER = 0.15
 
-export const ORDERBOOK_ROW_HEIGHT = 16
-export const ORDERBOOK_ROWS = 15
+export const ORDERBOOK_ROW_HEIGHT = 24
+export const ORDERBOOK_ROWS = 10
 export const ORDERBOOK_HEADER_HEIGHT = 56
+export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
+export const MAXIMUM_RANKED_TRADERS = 500
+export const MIN_LEADERBOARD_PNL_AMOUNT = 50
+export const MIN_COMPETITION_PNL_AMOUNT = 0.01
 
 export const intervalOptions: IntervalOption[] = [
-  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
-  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
-  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
-  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
-  { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
-  { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
-  { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
-  { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
-  { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
+  { label: '1m', value: { resolution: 1, countback: 30 * 32 } },
+  { label: '5m', value: { resolution: 5, countback: 30 * 32 } },
+  { label: '15m', value: { resolution: 15, countback: 30 * 32 } },
+  { label: '30m', value: { resolution: 30, countback: 30 * 32 } },
+  { label: '1h', value: { resolution: 60, countback: 30 * 32 } },
+  { label: '2h', value: { resolution: 120, countback: 30 * 16 } },
+  { label: '4h', value: { resolution: 240, countback: 30 * 10 } },
+  { label: '12h', value: { resolution: 720, countback: 30 * 10 } },
+  { label: '1D', value: { resolution: 1440, countback: 30 * 10 } }
 ]
 export const LEGACY_MARKET_IDS = [
   '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
@@ -159,3 +175,28 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
   },
   {} as Record<string, string>
 )
+
+export const STOP_REASON_MAP = {
+  [StopReason.User]: 'sgt.user',
+  [StopReason.StopLoss]: 'sgt.stopLoss',
+  [StopReason.TakeProfit]: 'sgt.takeProfit',
+  [StopReason.InsufficientFunds]: 'sgt.insufficientFunds',
+  [StopReason.ExceededMaxRetries]: 'sgt.exceededMaxRetries',
+  [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
+}
+
+export const CONNECT_SERVER_URL =
+  'https://k8s.mainnet.eu.helix-server.injective.network/api'
+
+export const LIGHT_CHART_MARKET_IDS = [
+  '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
+]
+
+export const INDEX_MARKETS_INFO = [
+  {
+    label: '$AIX Index',
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index',
+    marketId:
+      '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82'
+  }
+]

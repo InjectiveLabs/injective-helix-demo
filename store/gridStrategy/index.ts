@@ -1,20 +1,25 @@
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
+import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import {
-  createStrategy,
   removeStrategy,
+  createPerpStrategy,
+  createSpotLiquidityBot,
+  createSpotGridStrategy,
+  removeSubaccountDeposits,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
-import { UiSpotMarket, StrategyStatus } from '@/types'
+import { UiSpotMarket, StrategyStatus, StrategyPerformance } from '@/types'
 
 type GridStrategyStoreState = {
   spotMarket: UiSpotMarket | undefined
   strategies: TradingStrategy[]
+  stats: any
 }
 
 const initialStateFactory = (): GridStrategyStoreState => ({
   spotMarket: undefined,
-  strategies: []
+  strategies: [],
+  stats: undefined
 })
 
 export const useGridStrategyStore = defineStore('gridStrategy', {
@@ -22,66 +27,171 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   getters: {
     activeStrategies: (state) => {
       const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.state === StrategyStatus.Active &&
-          strategy.marketType === 'spot' &&
-          spotStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
+      const marketIds = new Set([
+        ...spotStore.markets.map(({ marketId }) => marketId),
+        ...derivativeStore.markets.map(({ marketId }) => marketId)
+      ])
+
+      return state.strategies.filter((strategy) => {
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
+
+        const isMarketInStore = marketIds.has(strategy.marketId)
+
+        return isActive && isMarketInStore
+      })
+    },
+
+    activeSpotStrategies: (state) => {
+      const spotStore = useSpotStore()
+
+      return state.strategies.filter((strategy) => {
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
+        const isSpot = strategy.marketType === MarketType.Spot
+        const isMarketInSpotStore = spotStore.markets.some(
+          ({ marketId }) => strategy.marketId === marketId
+        )
+
+        return isActive && isSpot && isMarketInSpotStore
+      })
+    },
+
+    activeDerivativeStrategies: (state) => {
+      const derivativeStore = useDerivativeStore()
+      const derivativeMarketIds = new Set(
+        derivativeStore.markets.map(({ marketId }) => marketId)
       )
+
+      return state.strategies.filter((strategy) => {
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
+
+        const isDerivative = strategy.marketType === MarketType.Derivative
+
+        const isMarketInDerivativeStore = derivativeMarketIds.has(
+          strategy.marketId
+        )
+
+        return isActive && isDerivative && isMarketInDerivativeStore
+      })
     },
 
     removedStrategies: (state) => {
       const spotStore = useSpotStore()
+      const derivativeStore = useDerivativeStore()
+
+      const marketIds = new Set([
+        ...spotStore.markets.map(({ marketId }) => marketId),
+        ...derivativeStore.markets.map(({ marketId }) => marketId)
+      ])
 
       return state.strategies.filter(
         (strategy) =>
           strategy.state === StrategyStatus.Removed &&
-          strategy.marketType === 'spot' &&
-          spotStore.markets.some(
-            ({ marketId }) => strategy.marketId === marketId
-          )
+          marketIds.has(strategy.marketId)
+      )
+    },
+
+    removedSpotStrategies: (state) => {
+      const spotStore = useSpotStore()
+      const spotMarketIds = new Set(
+        spotStore.markets.map(({ marketId }) => marketId)
+      )
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          strategy.marketType === MarketType.Spot &&
+          spotMarketIds.has(strategy.marketId)
+      )
+    },
+
+    removedDerivativeStrategies: (state) => {
+      const derivativeStore = useDerivativeStore()
+      const derivativeMarketIds = new Set(
+        derivativeStore.markets.map(({ marketId }) => marketId)
+      )
+
+      return state.strategies.filter(
+        (strategy) =>
+          strategy.state === StrategyStatus.Removed &&
+          strategy.marketType === MarketType.Derivative &&
+          derivativeMarketIds.has(strategy.marketId)
       )
     }
   },
   actions: {
-    createStrategy,
     removeStrategy,
+    createPerpStrategy,
+    createSpotGridStrategy,
+    createSpotLiquidityBot,
+    removeSubaccountDeposits,
     removeStrategyForSubaccount,
-
     async fetchStrategies(marketId?: string) {
-      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
 
       const gridStrategyStore = useGridStrategyStore()
 
-      if (!walletStore.isUserWalletConnected) {
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        accountAddress: walletStore.injectiveAddress,
+        accountAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId
       })
 
       gridStrategyStore.$patch({ strategies })
     },
 
-    async fetchAllStrategies() {
-      const walletStore = useWalletStore()
-      const gridStrategyStore = useGridStrategyStore()
+    async fetchAllStrategies(params: { active?: boolean } = { active: false }) {
+      const { active } = params
 
-      if (!walletStore.isUserWalletConnected) {
+      const gridStrategyStore = useGridStrategyStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isUserConnected) {
         return
       }
 
       const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
-        accountAddress: walletStore.injectiveAddress,
-        limit: 1000
+        accountAddress: sharedWalletStore.authZOrInjectiveAddress,
+        limit: 200,
+        state: active ? StrategyStatus.Active : undefined
       })
 
       gridStrategyStore.$patch({ strategies })
+    },
+
+    async fetchStrategyWithPnl() {
+      const { strategies } = await indexerGrpcTradingApi.fetchGridStrategies({
+        withPerformance: true,
+        withTvl: true,
+        limit: 300
+      })
+
+      return strategies.filter(
+        (strategy) => strategy.performance === StrategyPerformance.Top
+      )
+    },
+
+    async fetchStrategyStats() {
+      const gridStrategyStore = useGridStrategyStore()
+
+      const stats = await indexerGrpcTradingApi.fetchTradingStats()
+
+      gridStrategyStore.$patch((state) => {
+        state.stats = stats
+      })
     }
   }
 })

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-defineProps({
-  hasActiveStrategy: Boolean
-})
+withDefaults(
+  defineProps<{
+    hasActiveStrategy: boolean
+  }>(),
+  { hasActiveStrategy: false }
+)
 
 const emit = defineEmits<{
   'view:details': []
@@ -20,9 +23,10 @@ function onViewDetails() {
       :is-disabled="hasActiveStrategy"
     />
 
-    <div class="py-4">
+    <div class="pb-4 mt-4">
       <PartialsTradeSpotFormTradingBotsCommonCreateStrategy
         v-if="!hasActiveStrategy"
+        is-auto
       />
 
       <AppButton v-else class="w-full" @click="onViewDetails">

@@ -1,12 +1,14 @@
-import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from './setup'
+import { IS_DEVNET, IS_TESTNET, IS_MAINNET } from '@shared/utils/constant'
 
 // Campaign
 export const CAMPAIGN_ID = IS_TESTNET // no campaign for devnet
   ? 'spot-grid-tia-usdt'
   : 'spot-grid-tia-usdt'
+
 // we will read this from the contract later once its ready
 export const CAMPAIGN_INJ_REWARDS = '1000'
 export const CAMPAIGN_TIA_REWARDS = '10000'
+
 // Guild
 export const GUILD_CONTRACT_ADDRESS = IS_MAINNET
   ? 'inj1tej4n683z7l4wqnngjxyc5vf8p589d08mc23pa'

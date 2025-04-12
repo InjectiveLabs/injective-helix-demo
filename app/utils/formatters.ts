@@ -1,11 +1,8 @@
 import keccak256 from 'keccak256'
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
 import { Coin } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { SharedBalanceWithToken } from '@shared/types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { TimeDuration } from '@/types'
 
 BigNumber.config({
@@ -18,17 +15,6 @@ BigNumber.config({
     fractionGroupSize: 0
   }
 })
-
-export const formatWalletAddress = (address: string): string => {
-  if (address.length <= 10) {
-    return address
-  }
-
-  return `${address.slice(0, 6)}...${address.slice(
-    address.length - 6,
-    address.length
-  )}`
-}
 
 export function formatAmount(
   amount: BigNumberInBase,
@@ -77,26 +63,6 @@ export function formatPercent({
   const suffix = '%'
 
   return `${prefix}${String(numberInBigNumber.toFixed(precision))}${suffix}`
-}
-
-export const toBalanceInToken = ({
-  value,
-  decimalPlaces,
-  fixedDecimals,
-  roundingMode
-}: {
-  value: string | number
-  decimalPlaces: number
-  fixedDecimals?: number
-  roundingMode?: BigNumber.RoundingMode
-}): string => {
-  const balanceInToken = new BigNumberInWei(value).toBase(decimalPlaces)
-
-  if (fixedDecimals) {
-    return balanceInToken.toFixed(fixedDecimals, roundingMode)
-  }
-
-  return balanceInToken.toFixed()
 }
 
 export const convertCoinToBalancesWithToken = (
@@ -182,4 +148,51 @@ export const abbreviateNumber = (value: string | number) => {
   }).format(valueToBigNumber.toNumber())
 
   return abbreviatedValue
+}
+
+export const calculateLeverage = (initialMarginRatio?: string) => {
+  if (!initialMarginRatio) {
+    return ZERO_IN_BASE
+  }
+
+  const leverage = new BigNumberInBase(
+    new BigNumberInBase(1).dividedBy(initialMarginRatio).dp(0)
+  )
+
+  const steps = [1, 2, 3, 5, 10, 20, 25, 50, 100, 150, 200]
+
+  const stepsLessThanMaxLeverage = steps.filter(
+    (step) => step <= leverage.toNumber()
+  )
+
+  if (!stepsLessThanMaxLeverage.length) {
+    return leverage
+  }
+
+  return new BigNumberInBase(
+    stepsLessThanMaxLeverage[stepsLessThanMaxLeverage.length - 1]
+  )
+}
+
+export const roundDustAmount = ({
+  value,
+  decimalPlaces
+}: {
+  value: string
+  decimalPlaces: number
+}) => {
+  const valueInBase = new BigNumberInBase(value)
+
+  if (valueInBase.gte(0.01)) {
+    return valueInBase.toFormat(decimalPlaces, BigNumber.ROUND_DOWN)
+  }
+
+  const leadingZeros = value.match(/(0+\.0*)/)?.[0] || '0'
+  const dustAmount = new BigNumberInBase(
+    `0.${value.slice(leadingZeros.length).slice(0, decimalPlaces)}`
+  )
+    .toFixed(decimalPlaces)
+    .replace('0.', '')
+
+  return `${leadingZeros}${dustAmount}`
 }

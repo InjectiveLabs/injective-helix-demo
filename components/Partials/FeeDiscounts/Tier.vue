@@ -8,23 +8,19 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
 
-const props = defineProps({
-  tier: {
-    required: true,
-    type: Object as PropType<FeeDiscountTierInfo>
-  },
+const props = withDefaults(
+  defineProps<{
+    tier: FeeDiscountTierInfo
+    index: number
+  }>(),
+  {}
+)
 
-  index: {
-    required: true,
-    type: Number
-  }
-})
-
-const walletStore = useWalletStore()
 const exchangeStore = useExchangeStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const isUserTierLevel = computed(() => {
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return false
   }
 
@@ -108,7 +104,7 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
 
 <template>
   <tr>
-    <td class="h-8 text-left font-mono">
+    <td class="h-8 text-left">
       <div class="flex items-center gap-4">
         <div
           v-if="isUserTierLevel"
@@ -118,20 +114,20 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
         <span>#{{ index }}</span>
       </div>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-right">
       &#8805; {{ stakedAmountToFormat }}
-      <span class="text-2xs text-gray-500"> INJ </span>
+      <span class="text-xs text-coolGray-500"> INJ </span>
     </td>
-    <td class="h-8 text-right font-mono">
-      <span class="text-gray-500 uppercase text-2xs tracking-wider">
+    <td class="h-8 text-right">
+      <span class="text-coolGray-500 uppercase text-xs tracking-wider">
         {{ $t('and') }}
       </span>
     </td>
-    <td class="h-8 text-right font-mono">
+    <td class="h-8 text-right">
       &#8805; {{ volumeToFormat }}
-      <span class="text-2xs text-gray-500"> USD </span>
+      <span class="text-xs text-coolGray-500"> USD </span>
     </td>
-    <td class="h-8 text-right font-mono">{{ makerFeeDiscountToFormat }}%</td>
-    <td class="h-8 text-right font-mono">{{ takerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right">{{ makerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right">{{ takerFeeDiscountToFormat }}%</td>
   </tr>
 </template>

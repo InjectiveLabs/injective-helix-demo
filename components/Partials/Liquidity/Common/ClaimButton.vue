@@ -3,14 +3,17 @@ import { Campaign } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 
-const props = defineProps({
-  forceDisabled: Boolean,
-
-  campaign: {
-    type: Object as PropType<Campaign>,
-    required: true
+const props = withDefaults(
+  defineProps<{
+    extraClass?: string
+    campaign: Campaign
+    forceDisabled?: boolean
+  }>(),
+  {
+    extraClass: '',
+    forceDisabled: false
   }
-})
+)
 
 const campaignStore = useCampaignStore()
 const notificationStore = useSharedNotificationStore()
@@ -56,13 +59,18 @@ function claimRewards() {
 </script>
 
 <template>
-  <AppButton
-    v-bind="{ status }"
-    size="xs"
-    :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
-    @click="claimRewards"
+  <UTooltip
+    :prevent="campaign.isClaimable || campaign.endDate > Date.now()"
+    :text="t('campaign.rewardsPending')"
   >
-    <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
-    <span v-else>{{ $t('campaign.claim') }}</span>
-  </AppButton>
+    <AppButton
+      :class="extraClass"
+      v-bind="{ status }"
+      :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
+      @click="claimRewards"
+    >
+      <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
+      <span v-else>{{ $t('campaign.claim') }}</span>
+    </AppButton>
+  </UTooltip>
 </template>

@@ -10,16 +10,19 @@ import { SubaccountBalance, SubaccountBalanceStreamType } from '@/types'
 export const cancelBankBalanceStream = grpcCancelBankBalanceStream
 export const cancelSubaccountBalanceStream = grpcCancelSubaccountBalanceStream
 
-export const streamBankBalance = () => {
-  const walletStore = useWalletStore()
+export const streamBankBalance = ({
+  onResetCallback
+}: { onResetCallback?: Function } = {}) => {
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (!walletStore.isUserWalletConnected) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
   grpcStreamBankBalances({
-    accountAddress: walletStore.authZOrInjectiveAddress,
+    onResetCallback,
+    accountAddress: sharedWalletStore.authZOrInjectiveAddress,
     callback: ({ amount, denom }) => {
       const bankBalancesExcludingDenom = accountStore.bankBalances.filter(
         (balance: Coin) => balance.denom !== denom
@@ -32,20 +35,20 @@ export const streamBankBalance = () => {
   })
 }
 
-export const streamSubaccountBalance = (subaccountId?: string) => {
-  const walletStore = useWalletStore()
+export const streamSubaccountBalance = ({
+  onResetCallback
+}: { onResetCallback?: Function } = {}) => {
   const accountStore = useAccountStore()
+  const sharedWalletStore = useSharedWalletStore()
 
-  if (
-    !walletStore.isUserWalletConnected ||
-    !(accountStore.subaccountId || subaccountId)
-  ) {
+  if (!sharedWalletStore.isUserConnected || !accountStore.subaccountId) {
     return
   }
 
   grpcStreamSubaccountBalance({
-    accountAddress: walletStore.authZOrInjectiveAddress,
-    subaccountId: subaccountId || accountStore.subaccountId,
+    onResetCallback,
+    subaccountId: accountStore.subaccountId,
+    accountAddress: sharedWalletStore.authZOrInjectiveAddress,
     callback: (payload) => {
       const subaccountBalancesMapOrBlank =
         accountStore.subaccountBalancesMap[accountStore.subaccountId] || []
@@ -66,7 +69,8 @@ export const streamSubaccountBalance = (subaccountId?: string) => {
                 ? payload.amount
                 : accountBalance?.totalBalance || '0',
             availableBalance:
-              payload.subaccountId !== walletStore.authZOrDefaultSubaccountId &&
+              payload.subaccountId !==
+                sharedWalletStore.authZOrDefaultSubaccountId &&
               payload.type === SubaccountBalanceStreamType.AvailableBalance
                 ? payload.amount
                 : accountBalance?.availableBalance || '0'

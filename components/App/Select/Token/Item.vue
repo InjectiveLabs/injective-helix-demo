@@ -1,24 +1,29 @@
 <script lang="ts" setup>
 import { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const props = defineProps({
-  isSm: Boolean,
-  isXl: Boolean,
-  isLoading: Boolean,
-  isLgTokenIcon: Boolean,
-  isShowTokenName: Boolean,
-  isBalanceVisible: Boolean,
+const props = withDefaults(
+  defineProps<{
+    isSm?: boolean
+    isXl?: boolean
+    isLoading?: boolean
+    isLgTokenIcon?: boolean
+    isShowTokenName?: boolean
+    isBalanceVisible?: boolean
 
-  token: {
-    type: Object as PropType<TokenStatic>,
-    required: true
-  },
+    token: TokenStatic
 
-  balance: {
-    type: String,
-    default: ''
+    balance?: string
+  }>(),
+  {
+    isSm: false,
+    isXl: false,
+    isLoading: false,
+    isLgTokenIcon: false,
+    isShowTokenName: false,
+    isBalanceVisible: false,
+    balance: ''
   }
-})
+)
 
 const emit = defineEmits<{
   click: [state: string]
@@ -55,7 +60,7 @@ function click() {
           {{ token.symbol }}
         </span>
 
-        <span v-if="isShowTokenName" class="text-gray-450">
+        <span v-if="isShowTokenName" class="text-coolGray-450">
           {{ token.name }}
         </span>
       </div>

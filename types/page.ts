@@ -2,45 +2,42 @@ export enum MainPage {
   Swap = 'swap',
   Terms = 'terms',
   Index = 'index',
+  Referral = 'ref',
+  Points = 'points',
   Guilds = 'guilds',
+  Vaults = 'vaults',
   Markets = 'markets',
-  LpRewards = 'lp-rewards',
   Portfolio = 'portfolio',
+  LpRewards = 'lp-rewards',
   Maintenance = 'maintenance',
+  TradingBots = 'trading-bots',
   FeeDiscounts = 'fee-discounts',
   TradeAndEarn = 'trade-and-earn',
-  LiquidityProvision = 'liquidity-provision',
   Institutional = 'institutional',
-  PnlLeaderboard = 'pnl-leaderboard',
+  PrivacyPolicy = 'privacy-policy',
+  LiquidityProvision = 'liquidity-provision',
+  TeslaCompetitionTerms = 'tesla-competition-terms',
+  LikeAGCompetitionTerms = 'like-a-g-competition-terms',
+  CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
+  CompetitionPrivacyPolicyGwagon = 'competition-privacy-policy-gwagon',
+  OwnYourAssetCompetitionTerms = 'own-your-assets-competition-terms',
+  CompetitionPrivacyPolicyOwnYourAsset = 'competition-privacy-policy-own-your-assets',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
   TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
-}
-
-export enum ActivitySubPage {
-  Spot = 'activity-spot',
-  Positions = 'activity-positions',
-  Derivatives = 'activity-derivatives',
-  WalletHistory = 'activity-wallet-history',
-  SpotSwapHistory = 'activity-spot-swap-history',
-  SpotOrderHistory = 'activity-spot-order-history',
-  SpotTradeHistory = 'activity-spot-trade-history',
-  DerivativesTriggers = 'activity-derivatives-triggers',
-  DerivativesOrderHistory = 'activity-derivatives-order-history',
-  DerivativesTradeHistory = 'activity-derivatives-trade-history',
-  PositionsFundingPayments = 'activity-positions-funding-payments'
 }
 
 export enum CampaignSubPage {
   GuildDetails = 'guild-guild'
 }
 
-export enum AccountSubPage {
-  Positions = 'account-positions'
-}
-
 export enum TradingBotsSubPage {
   LiquiditySpotMarket = 'trading-bots-liquidity-bots-spot'
+}
+
+export enum TradePage {
+  Spot = 'spot',
+  Futures = 'futures'
 }
 
 export enum TradeSubPage {
@@ -72,9 +69,15 @@ export enum PortfolioSubPage {
   OrdersFuturesGrid = 'portfolio-orders-futures-grid',
   SettingsPreferences = 'portfolio-settings-preferences',
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
-  OrdersFuturesTriggers = 'portfolio-orders-futures-triggers',
-  HistoryFundingPayments = 'portfolio-history-funding-payments',
+  HistoryFundingHistory = 'portfolio-history-funding-history',
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',
   OrdersFuturesTradeHistory = 'portfolio-orders-futures-trade-history',
-  OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history'
+  OrdersFuturesOrderHistory = 'portfolio-orders-futures-order-history',
+  OrdersFuturesAdvancedOrders = 'portfolio-orders-futures-advanced-orders'
+}
+
+export enum LeaderboardSubPage {
+  Pnl = 'leaderboard',
+  Competition = 'leaderboard-competition',
+  PastCompetitions = 'leaderboard-past-competitions'
 }

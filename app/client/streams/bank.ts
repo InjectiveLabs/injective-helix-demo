@@ -1,10 +1,8 @@
-import {
-  AccountPortfolioStreamCallback,
-  IndexerGrpcAccountPortfolioStream
-} from '@injectivelabs/sdk-ts'
+import { ENDPOINTS } from '@shared/utils/constant'
 import { streamProvider } from '../../providers/StreamProvider'
-import { ENDPOINTS } from '@/app/utils/constants'
-import { StreamType } from '@/types/enums'
+import { IndexerGrpcAccountPortfolioStream } from '@injectivelabs/sdk-ts'
+import { StreamType } from '@/types'
+import type { AccountPortfolioStreamCallback } from '@injectivelabs/sdk-ts'
 
 export const portfolioStream = new IndexerGrpcAccountPortfolioStream(
   ENDPOINTS.indexer
@@ -20,15 +18,18 @@ export const cancelSubaccountBalanceStream = () => {
 
 export const streamBankBalances = ({
   callback,
-  accountAddress
+  accountAddress,
+  onResetCallback
 }: {
-  callback: AccountPortfolioStreamCallback
   accountAddress: string
+  onResetCallback?: Function
+  callback: AccountPortfolioStreamCallback
 }) => {
   const streamFn = portfolioStream.streamAccountPortfolio.bind(portfolioStream)
   const streamFnArgs = {
+    callback,
     accountAddress,
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({
@@ -39,22 +40,25 @@ export const streamBankBalances = ({
 }
 
 export const streamSubaccountBalances = ({
+  type,
   callback,
   subaccountId,
   accountAddress,
-  type
+  onResetCallback
 }: {
-  callback: AccountPortfolioStreamCallback
-  accountAddress: string
-  subaccountId?: string
   type?: string
+  subaccountId?: string
+  accountAddress: string
+  onResetCallback?: Function
+  callback: AccountPortfolioStreamCallback
 }) => {
   const streamFn = portfolioStream.streamAccountPortfolio.bind(portfolioStream)
   const streamFnArgs = {
+    type,
+    callback,
     subaccountId,
     accountAddress,
-    type,
-    callback
+    ...(onResetCallback && { onResetCallback })
   }
 
   streamProvider.subscribe({

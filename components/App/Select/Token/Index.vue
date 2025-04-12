@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import {
+  NuxtUiIcons,
   SharedBalanceWithToken,
   SharedBalanceWithTokenAndPrice
 } from '@shared/types'
+import { dataCyTag } from '@shared/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -10,73 +12,49 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  Modal,
+  SwapCyTags,
   TradeField,
   SwapFormField,
+  NeptuneUsdtField,
+  BankTransferField,
   SubaccountTransferField
 } from '@/types'
 
-const props = defineProps({
-  isMaxHidden: Boolean,
-  isUsdVisible: Boolean,
-  isDisabled: Boolean,
-  isRequired: Boolean,
-  isBalanceHidden: Boolean,
-  shouldCheckBalance: Boolean,
-  isTokenSelectorDisabled: Boolean,
-
-  denom: {
-    type: String,
-    default: ''
-  },
-
-  modal: {
-    required: false,
-    default: Modal.TokenSelector,
-    type: String as PropType<Modal>
-  },
-
-  debounce: {
-    type: Number,
-    default: 0
-  },
-
-  maxDecimals: {
-    type: Number,
-    default: 6
-  },
-
-  tensMultiplier: {
-    type: Number,
-    required: false,
-    default: undefined
-  },
-
-  additionalRules: {
-    type: Object,
-    default: undefined
-  },
-
-  amountFieldName: {
-    type: String as PropType<
-      TradeField | SubaccountTransferField | SwapFormField
-    >,
-    default: TradeField.BaseAmount
-  },
-
-  options: {
-    type: Array as PropType<
-      SharedBalanceWithToken[] | SharedBalanceWithTokenAndPrice[]
-    >,
-    default: () => []
+const props = withDefaults(
+  defineProps<{
+    denom?: string
+    debounce?: number
+    isDisabled?: boolean
+    isRequired?: boolean
+    maxDecimals?: number
+    isMaxHidden?: boolean
+    isUsdVisible?: boolean
+    tensMultiplier?: number
+    additionalRules?: object
+    isBalanceHidden?: boolean
+    amountFieldName?:
+      | TradeField
+      | SwapFormField
+      | NeptuneUsdtField
+      | BankTransferField
+      | SubaccountTransferField
+    shouldCheckBalance?: boolean
+    isTokenSelectorDisabled?: boolean
+    options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
+  }>(),
+  {
+    denom: '',
+    debounce: 0,
+    maxDecimals: 6,
+    options: () => [],
+    tensMultiplier: undefined,
+    additionalRules: undefined,
+    amountFieldName: TradeField.BaseAmount
   }
-})
-
-const modalStore = useModalStore()
+)
 
 const emit = defineEmits<{
   'on:update': []
-  'update:modal': []
   'update:max': [{ amount: string }]
   'update:denom': [state: string]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
@@ -101,6 +79,17 @@ const inputPlaceholder = computed(() => {
 
   return ONE_IN_BASE.shiftedBy(props.tensMultiplier).toFixed()
 })
+
+const tokenOptions = computed(() =>
+  props.options.map(({ denom, token }) => ({
+    label: token.symbol,
+    name: token.name,
+    value: denom,
+    avatar: {
+      src: token.logo
+    }
+  }))
+)
 
 const {
   valueToBigNumber,
@@ -171,19 +160,6 @@ const estimatedTotalInUsd = computed(() => {
   return usdValue.toFormat(decimalPlaces, BigNumberInBase.ROUND_DOWN)
 })
 
-function openTokenSelectorModal() {
-  if (props.options.length <= 1) {
-    return
-  }
-
-  if (props.isTokenSelectorDisabled) {
-    return
-  }
-
-  modalStore.openModal(props.modal)
-  emit('update:modal')
-}
-
 function changeAmount(amount: string) {
   setAmountValue(amount)
 
@@ -218,6 +194,10 @@ const onAmountChangeDebounced = useDebounceFn((value) => {
 
   changeAmount(allowableValue)
 }, props.debounce)
+
+defineExpose({
+  maxBalanceToString
+})
 </script>
 
 <script lang="ts">
@@ -234,7 +214,7 @@ export default {
     }"
   >
     <div
-      class="text-sm font-semibold text-gray-500 flex items-center justify-between px-4 mb-2"
+      class="text-sm font-semibold text-coolGray-500 flex items-center justify-between px-4 mb-2"
     >
       <slot />
 
@@ -250,15 +230,26 @@ export default {
         <div v-if="selectedToken" class="text-right flex items-center gap-2">
           <span
             v-if="valueToBigNumber.gt(0) && !isMaxHidden"
-            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-550 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
+            class="cursor-pointer text-blue-500 hover:text-opacity-80 bg-blue-500 bg-opacity-20 px-1 py-[1.5px] rounded uppercase text-[10px]"
             @click="changeMax"
           >
             {{ $t('trade.max') }}
           </span>
-          <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
-            <span>
-              {{ $t('trade.balance', { balance: maxBalanceToString }) }}
-            </span>
+          <p
+            v-if="!isBalanceHidden"
+            class="text-xs text-blue-500 inline-flex space-x-1"
+            :data-cy="dataCyTag(SwapCyTags.BalanceString)"
+          >
+            <span> {{ $t('trade.balanceTitle') }}: </span>
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                ...$attrs,
+                token: selectedToken.token,
+                value: maxBalanceToString,
+                textColorClass: 'text-blue-500',
+                borderColorClass: 'border-blue-500'
+              }"
+            />
           </p>
         </div>
       </slot>
@@ -281,48 +272,49 @@ export default {
         />
 
         <div class="flex items-center gap-2">
-          <slot
-            name="token-item"
-            v-bind="{ openTokenSelectorModal, selectedToken }"
-          >
-            <div
-              class="flex items-center gap-2 p-1.5"
-              :class="{
-                'hover:bg-gray-150 cursor-pointer rounded-xl  transition-all duration-300 ease-in-out':
-                  options.length > 1
-              }"
-              @click="openTokenSelectorModal"
-            >
-              <AppSelectTokenItem
-                v-if="selectedToken"
-                :class="{
-                  'cursor-default': isDisabled || options.length === 1
-                }"
-                v-bind="{
-                  token: selectedToken.token
-                }"
-              />
+          <slot name="token-item">
+            <div>
+              <USelectMenu
+                v-model="denomValue"
+                searchable
+                :options="tokenOptions"
+                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
+                :search-attributes="['label', 'name', 'symbol', 'value']"
+                value-attribute="value"
+              >
+                <template #default="{ open }">
+                  <div
+                    class="flex items-center gap-2"
+                    :class="{ 'cursor-text': isTokenSelectorDisabled }"
+                  >
+                    <UAvatar :src="selectedToken?.token.logo" size="xs" />
+                    <span class="font-semibold">
+                      {{ selectedToken?.token.symbol }}
+                    </span>
+                    <UIcon
+                      v-if="!isTokenSelectorDisabled"
+                      :name="NuxtUiIcons.ChevronDown"
+                      :class="{ 'rotate-180': open }"
+                      class="transition-all"
+                    />
+                  </div>
+                </template>
 
-              <div v-else-if="options.length > 0" class="whitespace-nowrap">
-                {{ $t('trade.swap.tokenSelector.selectToken') }}
-              </div>
+                <template #option="{ option }">
+                  <div class="flex items-center gap-2">
+                    <UAvatar :src="option.avatar.src" size="xs" />
 
-              <SharedIcon
-                v-if="options.length > 1 || !selectedToken"
-                name="caret-down-slim"
-                is-sm
-              />
+                    <div class="truncate">
+                      <span>{{ option.label }} </span>
+                      <span class="text-xs text-coolGray-500">
+                        - {{ option.name }}
+                      </span>
+                    </div>
+                  </div>
+                </template>
+              </USelectMenu>
             </div>
           </slot>
-
-          <ModalsTokenSelector
-            v-model="denomValue"
-            v-bind="{
-              modal,
-              ...$attrs,
-              balances: options
-            }"
-          />
         </div>
       </div>
     </div>
@@ -340,11 +332,13 @@ export default {
 
       <p
         v-if="isUsdVisible && selectedToken"
-        class="text-right text-sm text-gray-500 truncate"
+        class="text-right text-sm text-coolGray-500 truncate"
       >
         <slot name="usdPrice" v-bind="{ estimatedTotalInUsd }">
           <span v-if="Number(amount) > 0">${{ estimatedTotalInUsd }} </span>
-          <span v-else>$0.00</span>
+          <span v-else :data-cy="dataCyTag(SwapCyTags.TokenEstUsdPrice)">
+            $0.00
+          </span>
         </slot>
       </p>
     </div>

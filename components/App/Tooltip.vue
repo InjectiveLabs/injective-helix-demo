@@ -1,54 +1,49 @@
 <script lang="ts" setup>
-defineProps({
-  isLg: Boolean,
-  isWarning: Boolean,
+import { NuxtUiIcons } from '@shared/types'
 
-  content: {
-    type: String,
-    default: ''
-  },
-
-  contentClass: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    ui?: object
+    icon?: string
+    isLg?: boolean
+    content?: string
+    isWarning?: boolean
+    isDisabled?: boolean
+    contentClass?: string
+  }>(),
+  {
+    isLg: false,
+    content: '',
+    ui: () => ({}),
+    isWarning: false,
+    contentClass: '',
+    isDisabled: false,
+    icon: NuxtUiIcons.Info
   }
-})
+)
 </script>
 
 <template>
-  <SharedTooltip :triggers="['hover', 'click']">
+  <UTooltip
+    :prevent="isDisabled"
+    :text="content"
+    :ui="{
+      popper: {
+        placement: 'top'
+      },
+      ...ui
+    }"
+  >
     <slot>
-      <SharedIcon
-        name="circle-info"
+      <UIcon
+        :name="icon || NuxtUiIcons.Info"
         :class="{
           'w-4 h-4 min-w-4': isLg,
           'w-3 h-3 min-w-3': !isLg,
-          'text-gray-500': !isWarning,
+          'text-coolGray-500': !isWarning,
           'text-orange-200': isWarning
         }"
       />
     </slot>
-
-    <template #content>
-      <div class="leading-4" :class="contentClass">
-        <slot name="content">
-          {{ content }}
-        </slot>
-      </div>
-    </template>
-  </SharedTooltip>
+  </UTooltip>
 </template>
-
-<style>
-.tooltip,
-.v-popper--theme-tooltip {
-  .v-popper__inner {
-    @apply bg-gray-900 text-gray-200 border-none max-w-xs text-xs px-3 py-1 shadow-sm;
-  }
-
-  .v-popper__arrow-outer,
-  .v-popper__arrow-inner {
-    @apply border-gray-900;
-  }
-}
-</style>

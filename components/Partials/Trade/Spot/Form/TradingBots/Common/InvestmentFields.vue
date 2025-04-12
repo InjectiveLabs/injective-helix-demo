@@ -4,7 +4,8 @@ import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_DEFAULT_AUTO_GRIDS,
-  GST_MIN_TRADING_SIZE_LOW
+  GST_MIN_TRADING_SIZE_LOW,
+  GST_MIN_TOTAL_AMOUNT_USD
 } from '@/app/utils/constants'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
@@ -15,17 +16,22 @@ import {
   SpotGridTradingForm
 } from '@/types'
 
-const props = defineProps({
-  isAuto: Boolean,
-  isDisabled: Boolean
-})
+const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
+const spotFormValues = useFormValues<SpotGridTradingForm>()
+
+const props = withDefaults(
+  defineProps<{
+    isAuto?: boolean
+    isDisabled?: boolean
+  }>(),
+  {
+    isAuto: false,
+    isDisabled: false
+  }
+)
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
-
-const tokenStore = useTokenStore()
-const walletStore = useWalletStore()
-
-const spotFormValues = useFormValues<SpotGridTradingForm>()
 
 const setBaseAmount = useSetFieldValue(
   SpotGridTradingField.BaseInvestmentAmount
@@ -33,12 +39,14 @@ const setBaseAmount = useSetFieldValue(
 const setQuoteAmount = useSetFieldValue(
   SpotGridTradingField.QuoteInvestmentAmount
 )
-const { aggregatedPortfolioBalances } = useBalance()
+const { subaccountPortfolioBalanceMap } = useBalance()
 const { lastTradedPrice } = useSpotLastPrice(market)
 
 const accountBalance = computed(
   () =>
-    aggregatedPortfolioBalances.value[walletStore.authZOrDefaultSubaccountId]
+    subaccountPortfolioBalanceMap.value[
+      sharedWalletStore.authZOrDefaultSubaccountId
+    ]
 )
 
 const quoteDenomBalance = computed(
@@ -70,13 +78,15 @@ const gridThreshold = computed(() => {
 
   const isGridHigherThanGridThreshold =
     !!spotFormValues.value[SpotGridTradingField.Grids] &&
-    Number(spotFormValues.value[SpotGridTradingField.Grids]) >=
+    Number(spotFormValues.value[SpotGridTradingField.Grids]) >
       GST_GRID_THRESHOLD
 
+  if (!isGridHigherThanGridThreshold) {
+    return new BigNumberInBase(GST_MIN_TOTAL_AMOUNT_USD)
+  }
+
   return new BigNumberInBase(
-    isGridHigherThanGridThreshold
-      ? Number(spotFormValues.value[SpotGridTradingField.Grids])
-      : GST_GRID_THRESHOLD
+    spotFormValues.value[SpotGridTradingField.Grids] || GST_GRID_THRESHOLD
   ).times(tradingSize)
 })
 
@@ -98,7 +108,7 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
-      value: quoteDenomBalance.value?.bankBalance || 0,
+      value: quoteDenomBalance.value?.availableBalance || 0,
       decimalPlaces: quoteDenomBalance.value?.token.decimals
     })
   )
@@ -110,7 +120,7 @@ const {
 } = useSharedBigNumberFormatter(
   computed(() =>
     sharedToBalanceInTokenInBase({
-      value: baseDenomBalance.value?.bankBalance || 0,
+      value: baseDenomBalance.value?.availableBalance || 0,
       decimalPlaces: baseDenomBalance.value?.token.decimals
     })
   )
@@ -212,7 +222,14 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 <template>
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
-      <CommonHeaderTooltip v-bind="{ tooltip: $t('sgt.investmentTooltip') }">
+      <CommonHeaderTooltip
+        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        :popper="{
+          placement: 'top',
+          strategy: 'fixed',
+          offsetDistance: -40
+        }"
+      >
         <span v-if="!isAuto" class="text-white font-semibold text-xs">
           3.
         </span>
@@ -225,10 +242,14 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
         class="flex p-2 items-center space-x-2 text-xs bg-brand-875 rounded-md"
       >
         <CommonTokenIcon is-sm v-bind="{ token: market.baseToken }" />
-        <p>{{ market.baseToken.symbol }}</p>
-        <span>+</span>
+        <p class="text-white text-xs font-semibold">
+          {{ market.baseToken.symbol }}
+        </p>
+        <span class="text-white text-xs font-semibold">+</span>
         <CommonTokenIcon is-sm v-bind="{ token: market.quoteToken }" />
-        <p>{{ market.quoteToken.symbol }}</p>
+        <p class="text-white text-xs font-semibold">
+          {{ market.quoteToken.symbol }}
+        </p>
       </div>
     </div>
 
@@ -238,11 +259,11 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       :disabled="isUpperBoundLtLastPrice || isDisabled"
     >
       <template #right>
-        <span>{{ market.baseToken.symbol }}</span>
+        <span class="text-sm text-white">{{ market.baseToken.symbol }}</span>
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-500">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ baseDenomAmountToString }}
         </div>
       </template>
@@ -256,11 +277,13 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       :disabled="isLowerBoundGtLastPrice || isDisabled"
     >
       <template #right>
-        <span>{{ market.quoteToken.symbol }}</span>
+        <PartialsCommonBalanceDisplay
+          v-bind="{ token: market.quoteToken, value: market.quoteToken.symbol }"
+        />
       </template>
 
       <template #bottom>
-        <div class="text-right text-xs text-gray-500">
+        <div class="text-right text-xs text-coolGray-450">
           {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>
@@ -268,12 +291,13 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
     <p v-if="quoteAmountError" class="error-message">{{ quoteAmountError }}</p>
 
-    <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
+    <!-- TODO: Uncomment this once we have the new design -->
+    <!-- <PartialsLiquidityBotsSpotCreateCommonAmountMinDescription
       v-bind="{
         market,
         threshold: gridThreshold.toFixed(),
         investmentType: spotFormValues[SpotGridTradingField.InvestmentType]
       }"
-    />
+    /> -->
   </div>
 </template>

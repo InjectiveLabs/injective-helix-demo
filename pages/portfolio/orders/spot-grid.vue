@@ -1,20 +1,39 @@
 <script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
+const { t } = useLang()
+
+const gridStrategyStore = useGridStrategyStore()
+
+const status = reactive(new Status(StatusType.Loading))
+const { $onError } = useNuxtApp()
+
 const options = [
   {
-    label: 'Live Spot Grid',
+    label: t('sgt.tabs.liveSpotGrid'),
     to: '/portfolio/orders/spot-grid'
   },
   {
-    label: 'Spot Grid History',
+    label: t('sgt.tabs.spotGridHistory'),
     to: '/portfolio/orders/spot-grid/history'
   }
 ]
+
+onWalletConnected(() => {
+  status.setLoading()
+
+  gridStrategyStore
+    .fetchAllStrategies()
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+})
 </script>
 
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.spotGrid') }}</h3>
+      <h3 class="portfolio-title">{{ $t('tradingBots.spotGrid') }}</h3>
     </div>
 
     <div class="flex">
@@ -22,7 +41,7 @@ const options = [
         v-for="option in options"
         :key="option.label"
         :to="option.to"
-        class="p-4 text-gray-400 font-medium"
+        class="p-4 text-coolGray-400 font-medium"
         exact-active-class="text-white"
       >
         {{ option.label }}
@@ -30,7 +49,10 @@ const options = [
     </div>
 
     <div>
-      <NuxtPage />
+      <div v-if="status.isLoading()" class="p-4">
+        <USkeleton class="w-full h-52" />
+      </div>
+      <NuxtPage v-else />
     </div>
   </div>
 </template>

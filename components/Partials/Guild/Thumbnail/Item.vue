@@ -1,15 +1,10 @@
 <script lang="ts" setup>
-const props = defineProps({
-  value: {
-    type: String,
-    required: true
-  },
+import { NuxtUiIcons } from '@shared/types'
 
-  modelValue: {
-    type: String,
-    default: undefined
-  }
-})
+const props = withDefaults(
+  defineProps<{ value: string; modelValue?: string }>(),
+  { modelValue: undefined }
+)
 
 const isActive = computed(() => props.value === props.modelValue)
 
@@ -33,11 +28,10 @@ function onClick() {
 
     <div v-if="isActive">
       <!-- css hack to make check white -->
-      <div class="bg-white h-2 w-2 absolute right-1 bottom-1"></div>
-      <SharedIcon
-        name="check-circle"
-        class="text-blue-500 rounded-full absolute bottom-0 right-0"
-        is-md
+      <div class="bg-white h-2 w-2 absolute right-1.5 bottom-1.5"></div>
+      <UIcon
+        :name="NuxtUiIcons.Checkmark"
+        class="text-blue-500 rounded-full absolute bottom-0 right-0 w-5 h-5 min-w-5"
       />
     </div>
   </div>

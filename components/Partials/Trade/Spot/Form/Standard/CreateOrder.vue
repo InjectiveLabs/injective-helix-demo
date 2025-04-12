@@ -1,41 +1,45 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { MsgType, OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
-import { mixpanelAnalytics } from '@/app/providers/mixpanel'
+import { MsgType, OrderSide } from '@injectivelabs/ts-types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
+  Modal,
+  BusEvents,
   MarketKey,
   TradeTypes,
-  UiSpotMarket,
-  SpotTradeForm,
-  OrderAttemptStatus,
+  ChartViewOption,
+  MixPanelOrderType,
   SpotTradeFormField
 } from '@/types'
-
-const props = defineProps({
-  quantity: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  },
-
-  worstPrice: {
-    type: Object as PropType<BigNumberInBase>,
-    required: true
-  }
-})
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
-const walletStore = useWalletStore()
+const jsonStore = useSharedJsonStore()
+const modalStore = useSharedModalStore()
 const resetForm = useResetForm<SpotTradeForm>()
+const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
+const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
+  useSpotWorstPrice(market)
+
+const props = withDefaults(
+  defineProps<{
+    quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+  }>(),
+  {}
+)
+
+const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
 
 const spotFormValues = useFormValues<SpotTradeForm>()
@@ -69,19 +73,15 @@ const currentFormValues = computed(
     ({
       [SpotTradeFormField.Type]: spotFormValues.value[SpotTradeFormField.Type],
       [SpotTradeFormField.Side]: spotFormValues.value[SpotTradeFormField.Side],
-      [SpotTradeFormField.AmountOption]:
-        spotFormValues.value[SpotTradeFormField.AmountOption],
       [SpotTradeFormField.Slippage]:
-        spotFormValues.value[SpotTradeFormField.Slippage]
+        spotFormValues.value[SpotTradeFormField.Slippage],
+      [SpotTradeFormField.AmountOption]:
+        spotFormValues.value[SpotTradeFormField.AmountOption]
     }) as SpotTradeForm
 )
 
-const isLimitOrder = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-)
-
 const isAuthorized = computed(() => {
-  if (!walletStore.isAuthzWalletConnected) {
+  if (!sharedWalletStore.isAuthzWalletConnected) {
     return true
   }
 
@@ -92,17 +92,12 @@ const isAuthorized = computed(() => {
   return authZStore.hasAuthZPermission(msg)
 })
 
-const filteredFormErrors = computed(() =>
-  Object.keys(formErrors.value).filter(
-    (key) =>
-      spotFormValues.value[SpotTradeFormField.Type] !== TradeTypes.Limit ||
-      (key === SpotTradeFormField.Price &&
-        !spotFormValues.value[SpotTradeFormField.BypassPriceWarning])
-  )
-)
-
 const isDisabled = computed(() => {
-  if (filteredFormErrors.value.length > 0) {
+  if (!isLimitOrder.value && jsonStore.isPostUpgradeMode) {
+    return true
+  }
+
+  if (Object.keys(formErrors.value).length > 0) {
     return true
   }
 
@@ -114,124 +109,38 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit) {
-    return !spotFormValues.value[SpotTradeFormField.Price]
+  if (!hasEnoughLiquidity.value) {
+    return true
   }
+
+  if (isNotionalLessThanMinNotional.value) {
+    return true
+  }
+
+  return (
+    !spotFormValues.value[SpotTradeFormField.Price] &&
+    spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+  )
 })
 
-function submitLimitOrder() {
-  if (!market || !market?.value) {
-    return
-  }
+onMounted(() => {
+  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
+    chartType.value = chart
+  })
+})
 
-  status.setLoading()
-
-  const limitPrice = new BigNumberInBase(
-    spotFormValues.value[SpotTradeFormField.Price] || 0
-  )
-
-  const quantity = new BigNumberInBase(props.quantity)
-
-  spotStore
-    .submitLimitOrder({
-      quantity,
-      price: limitPrice,
-      market: market.value,
-      orderSide: orderTypeToSubmit.value
-    })
-    .then(() => {
-      notificationStore.success({ title: t('trade.order_placed') })
-      resetForm({ values: currentFormValues.value })
-
-      mixpanelAnalytics.trackPlaceOrderConfirm({
-        amount: quantity.toFixed(),
-        market: market.value.slug as string,
-        marketType: SharedMarketType.Spot,
-        orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
-        tradingType: TradeExecutionType.LimitFill,
-        limitPrice: limitPrice.toFixed(),
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        status: OrderAttemptStatus.Success
-      })
-    })
-    .catch((e) => {
-      mixpanelAnalytics.trackPlaceOrderAttempt({
-        amount: quantity.toFixed(),
-        market: market.value?.slug as string,
-        marketType: SharedMarketType.Spot,
-        tradingType: TradeExecutionType.LimitFill,
-        limitPrice: limitPrice.toFixed(),
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        leverage: '',
-        triggerPrice: '',
-        orderType: spotFormValues.value[SpotTradeFormField.Side] as OrderSide
-      })
-      $onError(e)
-    })
-    .finally(() => {
-      status.setIdle()
-    })
-}
-
-function submitMarketOrder() {
-  if (!market?.value) {
-    return
-  }
-
-  status.setLoading()
-
-  const quantity = new BigNumberInBase(props.quantity)
-
-  spotStore
-    .submitMarketOrder({
-      quantity,
-      market: market.value,
-      price: props.worstPrice,
-      orderSide: orderTypeToSubmit.value
-    })
-    .then(() => {
-      notificationStore.success({ title: t('trade.order_placed') })
-
-      resetForm({ values: currentFormValues.value })
-
-      mixpanelAnalytics.trackPlaceOrderConfirm({
-        amount: quantity.toFixed(),
-        market: market.value?.slug as string,
-        marketType: SharedMarketType.Spot,
-        orderSide: spotFormValues.value[SpotTradeFormField.Side] as OrderSide,
-        tradingType: TradeExecutionType.Market,
-        limitPrice: '',
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        status: OrderAttemptStatus.Success
-      })
-    })
-    .catch((e) => {
-      mixpanelAnalytics.trackPlaceOrderAttempt({
-        amount: quantity.toFixed(),
-        market: market.value?.slug as string,
-        marketType: SharedMarketType.Spot,
-        tradingType: TradeExecutionType.Market,
-        limitPrice: '',
-        slippageTolerance:
-          spotFormValues.value[SpotTradeFormField.Slippage] || '',
-        postOnly: spotFormValues.value[SpotTradeFormField.PostOnly] || false,
-        leverage: '',
-        triggerPrice: '',
-        orderType: spotFormValues.value[SpotTradeFormField.Side] as OrderSide
-      })
-
-      $onError(e)
-    })
-    .finally(() => {
-      status.setIdle()
-    })
-}
+const mixPanelFields = computed(() => ({
+  leverage: '',
+  triggerPrice: '',
+  isBuy: isBuy.value,
+  market: market.value.slug,
+  chartType: chartType.value,
+  amount: props.quantity.toFixed(),
+  marketType: SharedMarketType.Spot,
+  isAutoSign: sharedWalletStore.isAutoSignEnabled,
+  postOnly: !!spotFormValues.value[SpotTradeFormField.PostOnly],
+  slippageTolerance: spotFormValues.value[SpotTradeFormField.Slippage] || ''
+}))
 
 async function submitOrder() {
   const { valid } = await validate()
@@ -246,6 +155,82 @@ async function submitOrder() {
     submitMarketOrder()
   }
 }
+
+function submitMarketOrder() {
+  status.setLoading()
+
+  let err: Error
+  const quantity = new BigNumberInBase(props.quantity)
+
+  spotStore
+    .submitMarketOrder({
+      quantity,
+      market: market.value,
+      price: props.worstPrice,
+      orderSide: orderTypeToSubmit.value
+    })
+    .then(() => {
+      modalStore.openModal(Modal.IAsset)
+      notificationStore.success({ title: t('trade.order_placed') })
+      resetForm({ values: currentFormValues.value })
+    })
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
+    .finally(() => {
+      EventTracker.trackCreateOrder(
+        {
+          ...mixPanelFields.value,
+          limitPrice: '',
+          orderType: MixPanelOrderType.Market
+        },
+        err?.message
+      )
+
+      status.setIdle()
+    })
+}
+
+function submitLimitOrder() {
+  status.setLoading()
+
+  const limitPrice = new BigNumberInBase(
+    spotFormValues.value[SpotTradeFormField.Price] || 0
+  )
+
+  let err: Error
+  const quantity = new BigNumberInBase(props.quantity)
+
+  spotStore
+    .submitLimitOrder({
+      quantity,
+      price: limitPrice,
+      market: market.value,
+      orderSide: orderTypeToSubmit.value
+    })
+    .then(() => {
+      modalStore.openModal(Modal.IAsset)
+      notificationStore.success({ title: t('trade.order_placed') })
+      resetForm({ values: currentFormValues.value })
+    })
+    .catch((e) => {
+      err = e
+      $onError(e)
+    })
+    .finally(() => {
+      EventTracker.trackCreateOrder(
+        {
+          ...mixPanelFields.value,
+          limitPrice: limitPrice.toFixed(),
+          orderType: MixPanelOrderType.Limit
+        },
+        err?.message
+      )
+
+      status.setIdle()
+    })
+}
 </script>
 
 <template>
@@ -257,11 +242,24 @@ async function submitOrder() {
       v-bind="{ status, disabled: isDisabled }"
       @click="submitOrder"
     >
-      <span v-if="isAuthorized">
-        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      <span v-if="!isAuthorized">
+        {{ $t('common.unauthorized') }}
       </span>
 
-      <span v-else>{{ $t('common.unauthorized') }}</span>
+      <span v-else-if="!hasEnoughLiquidity">
+        {{ $t('trade.swap.insufficient_liquidity') }}
+      </span>
+
+      <span v-else>
+        {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
+      </span>
     </AppButton>
+
+    <p
+      v-if="!isLimitOrder && jsonStore.isPostUpgradeMode"
+      class="text-orange-500 text-xs mt-2"
+    >
+      {{ $t('trade.postOnlyWarning') }}
+    </p>
   </div>
 </template>
