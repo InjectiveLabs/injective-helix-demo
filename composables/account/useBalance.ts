@@ -1,17 +1,20 @@
+import {
+  PositionV2,
+  TokenStatic,
+  TokenVerification
+} from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { injToken, usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { PositionV2, TokenStatic } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
 import {
   AccountBalance,
   SubaccountBalance,
   SubaccountBalanceWithInOrder
 } from '@/types'
-
-const showUnverifiedAssets = ref(false)
 
 // to do move subaccount transforming functions to layer sharedBalanceStore
 function calculateSubaccountBalance(
@@ -46,13 +49,25 @@ function calculateDefaultSubaccountBalance(
         subaccountBalance?.totalBalance || 0
       )
 
+      const neptuneBankBalance =
+        denom === usdtToken.denom
+          ? new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
+              1 - NEPTUNE_USDT_BUFFER
+            )
+          : 0
+
       return [
         ...list,
         {
           denom,
           inOrderBalance: inOrderBalance.toFixed(),
-          availableBalance: availableBalanceInBank.toFixed(),
-          totalBalance: availableBalanceInBank.plus(inOrderBalance).toFixed()
+          availableBalance: availableBalanceInBank
+            .plus(neptuneBankBalance)
+            .toFixed(),
+          totalBalance: availableBalanceInBank
+            .plus(inOrderBalance)
+            .plus(neptuneBankBalance)
+            .toFixed()
         }
       ]
     },
@@ -117,13 +132,7 @@ function getDenomPositionMap(positions: PositionV2[]) {
   )
 }
 
-export function useBalance(
-  {
-    showUnverifiedAssetsOverride
-  }: {
-    showUnverifiedAssetsOverride: boolean
-  } = { showUnverifiedAssetsOverride: false }
-) {
+export function useBalance() {
   const spotStore = useSpotStore()
   const tokenStore = useTokenStore()
   const accountStore = useAccountStore()
@@ -204,17 +213,12 @@ export function useBalance(
   )
 
   const activeSubaccountTradableBalancesWithToken = computed(() => {
-    const tradeableDenoms = [
-      ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
-      ])
-    ]
-
     return (
       subaccountPortfolioBalanceMap.value[accountStore.subaccountId] || []
     ).filter(
-      (balance) => balance && tradeableDenoms.includes(balance.denom)
+      (balance) =>
+        balance &&
+        balance.token.tokenVerification === TokenVerification.Verified
     ) as AccountBalance[]
   })
 
@@ -249,22 +253,11 @@ export function useBalance(
   })
 
   const activeSubaccountTotalBalanceInUsd = computed(() => {
-    const tradeableDenoms = [
-      ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
-      ])
-    ]
-
     const totalBalanceInUsd =
       (
         subaccountPortfolioBalanceMap.value[accountStore.subaccountId] || []
       ).reduce((total, balance) => {
-        if (
-          !showUnverifiedAssets.value &&
-          !showUnverifiedAssetsOverride &&
-          !tradeableDenoms.includes(balance.denom)
-        ) {
+        if (balance.token.tokenVerification !== TokenVerification.Verified) {
           return total
         }
 
@@ -275,13 +268,6 @@ export function useBalance(
   })
 
   const aggregatedSubaccountTotalBalanceInUsd = computed(() => {
-    const tradeableDenoms = [
-      ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
-      ])
-    ]
-
     return Object.keys(subaccountPortfolioBalanceMap.value)
       .reduce(
         (balances, subaccountId) => [
@@ -295,11 +281,7 @@ export function useBalance(
           return total
         }
 
-        if (
-          !showUnverifiedAssets.value &&
-          !showUnverifiedAssetsOverride &&
-          !tradeableDenoms.includes(balance.denom)
-        ) {
+        if (balance.token.tokenVerification !== TokenVerification.Verified) {
           return total
         }
 
@@ -311,7 +293,6 @@ export function useBalance(
   return {
     stakedAmount,
     stakedAmountInUsd,
-    showUnverifiedAssets,
     subaccountPortfolioBalanceMap,
     activeSubaccountTotalBalanceInUsd,
     activeSubaccountBalancesWithToken,

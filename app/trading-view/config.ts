@@ -1,8 +1,8 @@
 import './datafeed/polyfills'
+import { APP_BASE_URL } from '@shared/utils/constant'
 import { Datafeed } from './datafeed/index'
 import { getTimezone } from './datafeed/helpers'
 import { colors } from '@/nuxt-config/tailwind'
-import { BASE_URL } from '@/app/utils/constants'
 import {
   Timezone,
   ResolutionString,
@@ -37,10 +37,10 @@ export default function ({
     width: 100,
     datafeed: new Datafeed(datafeedEndpoint, 4000),
     library_path: `${
-      window.location ? window.location.origin : BASE_URL
+      window.location ? window.location.origin : APP_BASE_URL
     }/chart/charting_library/`,
     custom_css_url: `${
-      window.location ? window.location.origin : BASE_URL
+      window.location ? window.location.origin : APP_BASE_URL
     }/chart/charting_library/custom.css?v1`,
     locale: 'en',
     theme: 'Dark',

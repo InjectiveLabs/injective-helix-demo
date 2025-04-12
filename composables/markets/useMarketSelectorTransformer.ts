@@ -2,19 +2,22 @@ import { SharedMarketChange } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
-import { rwaMarketIds } from '@/app/data/market'
+import {
+  INDEX_MARKETS_INFO,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
 import {
   UiDerivativeMarket,
   MarketsSelectorTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
-import { INDEX_MARKETS_INFO } from '~/app/utils/constants'
 
 export function useMarketSelectorTransformer(
   marketList: ComputedRef<UiMarketAndSummaryWithVolumeInUsd[]>,
   marketPriceMap: ComputedRef<Record<string, BigNumberInBase>>
 ) {
+  const jsonStore = useSharedJsonStore()
   // const derivativeStore = useDerivativeStore()
 
   const priceChangeClassesMap: Partial<Record<SharedMarketChange, string>> = {
@@ -33,7 +36,7 @@ export function useMarketSelectorTransformer(
 
       const lastTradedPrice =
         marketPriceMap.value[item.market.marketId]?.toFixed() ||
-        item.summary.lastPrice ||
+        item.summary?.lastPrice ||
         0
 
       const fundingRate = formatFundingRate({
@@ -47,11 +50,13 @@ export function useMarketSelectorTransformer(
 
       const leverage = calculateLeverage(uiDerivativeMarket.initialMarginRatio)
 
-      const change = item.summary?.change || 0
+      const changeInBigNumber = new BigNumberInBase(item.summary?.change || 0)
 
-      const changePrefix = new BigNumberInBase(change).gt(0) ? '+' : ''
+      const changePrefix = changeInBigNumber.gt(0) ? '+' : ''
 
-      const formattedChange = changePrefix + change
+      const formattedChange =
+        changePrefix +
+        changeInBigNumber.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
 
       const indexMarketInfo = INDEX_MARKETS_INFO.find(
         (market) => market.marketId === item.market.marketId
@@ -67,14 +72,15 @@ export function useMarketSelectorTransformer(
           BigNumberInBase.ROUND_DOWN
         ),
         indexMarketInfo,
-        isRWAMarket: rwaMarketIds.includes(item.market.marketId),
+        isRWAMarket: jsonStore.isTradeFiMarket(item.market.marketId),
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
+        [MarketsSelectorTableColumn.MarketChange24h]:
+          changeInBigNumber.toNumber(),
         [MarketsSelectorTableColumn.MarketVolume24h]:
           item.volumeInUsd.toNumber(),
         [MarketsSelectorTableColumn.Markets]:
           item.market?.ticker?.toUpperCase() || '',
-        [MarketsSelectorTableColumn.MarketChange24h]: change,
         [MarketsSelectorTableColumn.FundingRate]: fundingRate,
         [MarketsSelectorTableColumn.LastPrice]: lastTradedPrice
         // [MarketsSelectorTableColumn.OpenInterest]: openInterest

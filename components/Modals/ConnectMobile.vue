@@ -2,19 +2,17 @@
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  addDesktopAddress,
-  getMobileAddress
+  getMobileAddress,
+  addDesktopAddress
 } from '@/app/services/connectMobile'
-import { CONNECT_SERVER_URL } from '@/app/utils/constants'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import { CONNECT_SERVER_URL } from '@/app/utils/constants'
 import { BusEvents, Modal } from '@/types'
 
-const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const authZStore = useAuthZStore()
+const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
-
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
@@ -24,24 +22,20 @@ const qrCodeText = JSON.stringify({
   postUrl: `${CONNECT_SERVER_URL}/helix-connect/mobile`
 })
 
-const tradingMessages = [...TRADING_MESSAGES, MsgType.MsgExecuteContractCompat]
+const tradingMessages = [
+  ...TRADING_MESSAGES,
+  MsgType.MsgSend,
+  MsgType.MsgExecuteContractCompat
+]
 
-const status = reactive(new Status(StatusType.Idle))
 const mobileAddress = ref()
-
-const isModalOpen = computed(
-  () => modalStore.modals[Modal.ConnectMobile] && appStore.devMode
-)
+const status = reactive(new Status(StatusType.Idle))
 
 onMounted(() => {
   useEventBus(BusEvents.ConnectMobileModalOpened).on(() => {
     initServerConnection()
   })
 })
-
-function closeModal() {
-  modalStore.closeModal(Modal.ConnectMobile)
-}
 
 function initServerConnection() {
   status.setLoading()
@@ -69,7 +63,7 @@ function grantAuthorization() {
       messageTypes: tradingMessages
     })
     .then(() => {
-      closeModal()
+      modalStore.closeModal(Modal.ConnectMobile)
 
       return notificationStore.success({ title: t('common.success') })
     })
@@ -86,6 +80,7 @@ const { pause, resume } = useIntervalFn(
     if (!result?.data?.mobileAddress) {
       return
     }
+
     mobileAddress.value = result.data.mobileAddress
     pause()
   },
@@ -98,28 +93,23 @@ const { pause, resume } = useIntervalFn(
 </script>
 
 <template>
-  <AppModal
-    :is-open="isModalOpen"
-    is-dense
-    class="p-4"
-    @modal:closed="closeModal"
-  >
-    <section class="text-center">
+  <AppModal v-model="modalStore.modals[Modal.ConnectMobile]">
+    <section class="text-center max-xs:mt-10">
       <SharedQRCode
         class="max-w-[280px] w-full mx-auto rounded-lg overflow-hidden mt-4"
         :text="qrCodeText"
       />
 
-      <div class="flex items-center gap-2 max-w-[384px] mt-6 pb-3">
-        <p class="text-ellipsis overflow-hidden">
+      <div class="flex justify-center gap-2 mt-6 pb-3">
+        <p class="text-ellipsis overflow-hidden max-w-[384px]">
           {{ $t('portfolio.connectMobile.scanQRCode') }}
         </p>
       </div>
+
       <AppButton
-        v-bind="{ status }"
-        :disabled="!mobileAddress"
         class="w-full"
         variant="primary"
+        v-bind="{ status, disabled: !mobileAddress }"
         @click="grantAuthorization"
       >
         {{

@@ -3,11 +3,11 @@ import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   additionalEntriesMap,
-  checkIsCampaignWithEntries
+  checkIsCampaignWithEntries,
+  competitionVolumePerEntryMap
 } from '@/app/data/campaign'
 import {
   UI_ZERO_DECIMAL,
-  LEADERBOARD_VOLUME_PER_ENTRY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
@@ -50,7 +50,9 @@ const {
 
 const { valueToString: entriesToString } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInBase(props.volume).dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+    new BigNumberInBase(props.volume).dividedBy(
+      competitionVolumePerEntryMap[props.campaign.name] || 1000
+    )
   ),
   {
     shouldTruncate: true,

@@ -1,24 +1,34 @@
+import crypto from 'crypto'
 import {
   BigNumber,
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { intervalToDuration } from 'date-fns'
-import { sharedTokenClient } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
-import { tokenFactoryStatic } from '@/app/Services'
-import { OrderbookFormattedRecord } from '@/types/worker'
+  ZERO_IN_BASE
+} from '@shared/utils/constant'
+import { intervalToDuration } from 'date-fns'
+import { SharedMarketType } from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { PriceLevel } from '@injectivelabs/sdk-ts'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { hexToString, stringToHex } from '@/app/utils/converters'
-import { spotGridMarkets, derivativeGridMarkets } from '@/app/json'
-import { GridMarket, UiSpotMarket, UiMarketWithToken } from '@/types'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { OrderbookFormattedRecord } from '@/types/worker'
+import {
+  BotType,
+  MainPage,
+  GridMarket,
+  UiSpotMarket,
+  TradeSubPage,
+  TradingInterface,
+  UiMarketWithToken,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
+} from '@/types'
 
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
@@ -51,8 +61,9 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
   // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
 
   if (IS_MAINNET) {
-    return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-    // return `https://k8s.global.mainnet.chronos.grpc-web.injective.network/api/chronos/v1/${marketType}`
+    // [US region] chart service - EU service is temp down
+    return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    // return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
   // if (IS_TESTNET) {
@@ -109,7 +120,8 @@ const getProperSlug = (slug: string): string => {
   const edgeCaseSlugs = {
     'wmaticlegacy-usdt': 'wmatic-usdt',
     'arblegacy-usdt': 'arb-usdt',
-    'sollegacy-usdt': 'sol-usdt'
+    'sollegacy-usdt': 'sol-usdt',
+    'tradfi-usdt-p': 'tfi-usdt' // TODO: Slug is too long, we need to shorten it
   } as { [key: string]: string }
 
   return edgeCaseSlugs[slug] || slug
@@ -127,39 +139,64 @@ export const addressAndMarketSlugToSubaccountId = (
 }
 
 export const isSgtSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
 
   const slug = hexToString(subaccountHex)
 
-  return spotGridMarkets.find((market) => market.slug === slug)?.slug
+  return jsonStore.spotGridMarkets.find((market) => market.slug === slug)?.slug
 }
 
 export const isPgtSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   const subaccountHex = subaccountId.slice(42).replace(/^0+/, '')
 
   const slug = hexToString(subaccountHex)
 
-  return derivativeGridMarkets.find(
+  // TODO: Remove when we query the SC for subaccount
+  if (slug === 'tfi-usdt') {
+    return 'tradfi-usdt-perp'
+  }
+
+  return jsonStore.derivativeGridMarkets.find(
     (market) => market.slug.replace('-perp', '-p') === slug
   )?.slug
 }
 
+export const isTradingbotSubaccountId = (subaccountId: string) => {
+  return isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
+}
+
 export const getMarketSlugFromSubaccountId = (subaccountId: string) => {
+  const jsonStore = useSharedJsonStore()
+
   if (isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)) {
     const gridMarkets = [
-      ...spotGridMarkets,
-      ...derivativeGridMarkets.map((market: GridMarket) => ({
+      ...jsonStore.spotGridMarkets,
+      ...jsonStore.derivativeGridMarkets.map((market: GridMarket) => ({
         ...market,
         slug: market.slug.replace('-perp', '-p')
       }))
     ] as GridMarket[]
 
     return gridMarkets
-      .find(
-        (market) =>
-          market.slug.toLowerCase() ===
-          hexToString(subaccountId.slice(42).replace(/^0+/, '')).toLowerCase()
-      )
+      .find((market) => {
+        const slugFromSubaccount = hexToString(
+          subaccountId.slice(42).replace(/^0+/, '')
+        ).toLowerCase()
+
+        // TODO: Remove when we query the SC for subaccount
+        if (
+          slugFromSubaccount === 'tfi-usdt' &&
+          market.slug === 'tradfi-usdt-p'
+        ) {
+          return true
+        }
+
+        return market.slug.toLowerCase() === slugFromSubaccount
+      })
       ?.slug.toUpperCase()
       .replace('-P', '-PERP')
   }
@@ -187,8 +224,12 @@ export const getSubaccountLabel = (subaccountId: string): string => {
   return subaccountIndex.toString()
 }
 
-export const getSgtContractAddressFromSlug = (slug: string = '') =>
-  spotGridMarkets.find((sgt) => sgt.slug === slug)?.contractAddress
+export const getSgtContractAddressFromSlug = (slug: string = '') => {
+  const jsonStore = useSharedJsonStore()
+
+  return jsonStore.spotGridMarkets.find((sgt) => sgt.slug === slug)
+    ?.contractAddress
+}
 
 export function getMinPriceTickSize(
   isSpot: boolean,
@@ -306,6 +347,12 @@ export function quantizeNumber(
   number: number | BigNumberInBase,
   tensMultiplier: number
 ): BigNumberInBase {
+  const numberInBigNumber = new BigNumberInBase(number)
+
+  if (numberInBigNumber.isZero()) {
+    return ZERO_IN_BASE
+  }
+
   const divideBy = new BigNumberInBase(10).exponentiatedBy(tensMultiplier)
 
   return new BigNumberInBase(
@@ -350,6 +397,40 @@ export function calculateWorstPrice(
   }
 }
 
+export function calculateWorstPriceFromPriceLevel(
+  quantity: string,
+  records: PriceLevel[]
+) {
+  let remainingQuantity = Number(quantity || '0')
+
+  let price = 0
+  let worstPrice = '0'
+  let hasEnoughLiquidity = false
+
+  const worstPriceOnOrderBook = [...records].pop()?.price || '0'
+
+  for (const record of records) {
+    if (remainingQuantity - Number(record.quantity) <= 0) {
+      worstPrice = record.price
+      price += remainingQuantity * Number(record.price)
+
+      hasEnoughLiquidity = true
+      break
+    }
+
+    remainingQuantity -= Number(record.quantity)
+    price += Number(record.quantity) * Number(record.price)
+  }
+
+  return {
+    totalPrice: new BigNumberInBase(price),
+    worstPrice: hasEnoughLiquidity
+      ? new BigNumberInBase(worstPrice)
+      : new BigNumberInBase(worstPriceOnOrderBook),
+    hasEnoughLiquidity
+  }
+}
+
 export function calculateTotalQuantity(
   total: string,
   records: OrderbookFormattedRecord[]
@@ -374,24 +455,10 @@ export function calculateTotalQuantity(
   }
 
   return {
-    totalQuantity: new BigNumberInBase(totalQuantity),
     hasEnoughLiquidity,
-    worstPrice: new BigNumberInBase(worstPrice)
+    worstPrice: new BigNumberInBase(worstPrice),
+    totalQuantity: new BigNumberInBase(totalQuantity)
   }
-}
-
-export const getToken = async (
-  denomOrSymbol: string
-): Promise<TokenStatic | undefined> => {
-  const token = tokenFactoryStatic.toToken(denomOrSymbol)
-
-  if (token) {
-    return token
-  }
-
-  const asyncToken = await sharedTokenClient.queryToken(denomOrSymbol)
-
-  return asyncToken
 }
 
 export const getCw20AddressFromDenom = (denom: string) => {
@@ -461,18 +528,77 @@ export function countZerosAfterDecimal(num: string) {
   return zeroCount
 }
 
-export async function computeSHA512(message: string) {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-  return hashHex
-}
-
 export const valueSortFunction = (a: any, b: any, direction: string) => {
   if (direction === 'asc') {
     return new BigNumberInBase(a).comparedTo(new BigNumberInBase(b))
   }
 
   return new BigNumberInBase(b).comparedTo(new BigNumberInBase(a))
+}
+
+export const getTradingBotLinkFromStrategy = (
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
+) => {
+  if (strategy.market.type === SharedMarketType.Spot) {
+    return strategy.market.isVerified
+      ? {
+          name:
+            strategy.botType === BotType.SpotGrid
+              ? TradeSubPage.Spot
+              : MainPage.TradingBotsLiquidityBotsSpot,
+          params: {
+            slug:
+              strategy.botType === BotType.SpotGrid
+                ? strategy.market.slug
+                : undefined
+          },
+          query: {
+            interface:
+              strategy.botType === BotType.SpotGrid
+                ? TradingInterface.TradingBots
+                : undefined,
+            market:
+              strategy.botType === BotType.LiquidityGrid
+                ? strategy.market.slug
+                : undefined
+          }
+        }
+      : {
+          name: TradeSubPage.Futures,
+          params: {
+            slug: strategy.market.slug
+          },
+          query: {
+            interface: TradingInterface.TradingBots
+          }
+        }
+  }
+
+  return strategy.market.isVerified
+    ? {
+        name: TradeSubPage.Futures,
+        params: {
+          slug: strategy.market.slug
+        },
+        query: {
+          interface: TradingInterface.TradingBots
+        }
+      }
+    : {
+        name: TradeSubPage.Futures,
+        query: {
+          interface: TradingInterface.TradingBots,
+          marketId: strategy.market.marketId
+        }
+      }
+}
+
+export function generateOnramperSignature(
+  secretKey: string,
+  data: string
+): string {
+  const hmac = crypto.createHmac('sha256', secretKey)
+  hmac.update(data)
+
+  return hmac.digest('hex')
 }

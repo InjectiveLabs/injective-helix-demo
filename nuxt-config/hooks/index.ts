@@ -1,14 +1,13 @@
-import { NuxtHooks } from 'nuxt/schema'
-import { NitroConfig } from 'nitropack'
-import {
-  verifiedSpotSlugs,
-  verifiedExpirySlugs,
-  verifiedDerivativeSlugs
-} from './../../app/json'
 import { TradePage, TradeSubPage } from './../../types/page'
+import {
+  expiryMarketIdMap,
+  verifiedSpotMarketIdMap,
+  verifiedDerivateMarketIdMap
+} from './../../app/json'
+import type { NitroConfig } from 'nitropack'
+import type { NuxtHooks } from 'nuxt/schema'
 
 const customStaticRoutes: string[] = []
-const upcomingMarketsRoutes: string[] = []
 
 export default {
   'pages:extend'(pages) {
@@ -18,16 +17,16 @@ export default {
     if (futuresPage) {
       pages.push({
         ...futuresPage,
-        name: TradeSubPage.Futures,
-        path: '/futures/:slug()'
+        path: '/futures/:slug()',
+        name: TradeSubPage.Futures
       })
     }
 
     if (spotPage) {
       pages.push({
         ...spotPage,
-        name: TradeSubPage.Spot,
-        path: '/spot/:slug()'
+        path: '/spot/:slug()',
+        name: TradeSubPage.Spot
       })
     }
   },
@@ -43,11 +42,12 @@ export default {
     nitroConfig.prerender.routes = [
       ...nitroConfig.prerender.routes,
       ...customStaticRoutes,
-      ...upcomingMarketsRoutes,
-      ...verifiedSpotSlugs.map((s) => `/spot/${s}`),
-      ...[...verifiedDerivativeSlugs, ...verifiedExpirySlugs].map(
-        (s) => `/futures/${s}`
-      ),
+      ...Object.keys(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
+      ...Object.values(verifiedSpotMarketIdMap).map((s) => `/spot/${s}`),
+      ...[
+        ...Object.keys(verifiedDerivateMarketIdMap),
+        ...Object.keys(expiryMarketIdMap)
+      ].map((s) => `/futures/${s}`),
       ...['ef3bc2', '25269b', '5f90cb', '50be68'].map(
         (guildId) => `/guild/${guildId}`
       )

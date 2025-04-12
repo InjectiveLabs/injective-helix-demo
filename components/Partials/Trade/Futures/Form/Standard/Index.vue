@@ -3,14 +3,17 @@ import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   MarketKey,
+  BusEvents,
   UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeForm,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
-useForm<DerivativesTradeForm>()
+const appStore = useAppStore()
+
+const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -33,6 +36,42 @@ const {
   totalNotional,
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
+
+onMounted(() => {
+  setFormValues(
+    {
+      [DerivativesTradeFormField.Slippage]: appStore.slippageByMarketId(
+        market.value.marketId
+      )
+    },
+    false
+  )
+})
+
+function onOrderSideChange() {
+  if (
+    ![DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
+      orderType.value as DerivativeTradeTypes
+    )
+  ) {
+    return
+  }
+
+  useEventBus(BusEvents.OrderSideToggled).emit()
+}
+
+function onTradeTypeChange() {
+  if (orderType.value !== DerivativeTradeTypes.StopLimit) {
+    return
+  }
+
+  setFormValues(
+    {
+      [DerivativesTradeFormField.LimitPrice]: ''
+    },
+    false
+  )
+}
 </script>
 
 <template>
@@ -48,6 +87,7 @@ const {
         :data-cy="`${dataCyTag(
           PerpetualMarketCyTags.DerivativeTradeType
         )}-${value}`"
+        @click="onTradeTypeChange"
       >
         {{ $t(`trade.${value}`) }}
       </AppButtonSelect>
@@ -61,6 +101,7 @@ const {
         v-model="orderSide"
         class="flex-1"
         :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
+        @click="onOrderSideChange"
       >
         <AppButton
           :variant="
@@ -103,7 +144,7 @@ const {
       />
 
       <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity, minimumAmountInQuote }"
+        v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
       />
 
       <PartialsTradeFuturesFormStandardLeverage

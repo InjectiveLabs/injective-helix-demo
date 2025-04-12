@@ -4,8 +4,8 @@
       <h1 class="font-bold text-3xl">
         <span>Terms and Conditions</span>
       </h1>
-      <p class="font-semibold mt-2">
-        <span>Last updated: 12.4.2024</span>
+      <p class="font-semibold my-4">
+        <span>Last updated: 3.25.2025</span>
       </p>
 
       <section class="space-y-4">
@@ -41,17 +41,19 @@
         <p>
           PERSONS OR ENTITIES WHO RESIDE IN, ARE CITIZENS OF, ARE LOCATED IN,
           ARE INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN THE UNITED KINGDOM
-          (EACH SUCH PERSON OR ENTITY FROM THE UNITED KINGDOM, A &ldquo;UK
-          PERSON&rdquo;), UNLESS SUCH PERSONS OR ENTITIES ARE &ldquo;INVESTMENT
-          PROFESSIONALS&rdquo; AS DEFINED BY ARTICLE 19(5) OF THE UNITED
-          KINGDOM’S FINANCIAL SERVICES AND MARKETS ACT 2000 (FINANCIAL
-          PROMOTION) ORDER 2005.
+          (EACH SUCH PERSON OR ENTITY, A &ldquo;UK PERSON&rdquo;).
+        </p>
+
+        <p>
+          PERSONS OR ENTITIES WHO RESIDE IN, ARE CITIZENS OF, ARE LOCATED IN,
+          ARE INCORPORATED IN, OR HAVE A REGISTERED OFFICE IN CANADA (EACH SUCH
+          PERSON OR ENTITY, A "CANADIAN PERSON").
         </p>
 
         <p>
           WE DO NOT MAKE EXCEPTIONS; THEREFORE, IF YOU ARE A RESTRICTED PERSON,
-          A US PERSON SEEKING TO TRADE PERPETUAL CONTRACTS, OR A UK PERSON WHO
-          IS NOT AN INVESTMENT PROFESSIONAL, THEN DO NOT ATTEMPT TO USE
+          A US PERSON SEEKING TO TRADE PERPETUAL CONTRACTS, A CANADIAN PERSON,
+          OR A UK PERSON, THEN DO NOT ATTEMPT TO USE
           <NuxtLink
             to="https://helixapp.com"
             class="text-blue-500 text-opacity-80"
@@ -167,7 +169,7 @@
             <span>
               2.1.2. if you are entering into these Terms as an entity, then you
               must have the legal authority to accept these Terms on that
-              entity’s behalf, in which case &ldquo;you&rdquo; will mean that
+              entity's behalf, in which case &ldquo;you&rdquo; will mean that
               entity;
             </span>
           </p>
@@ -180,12 +182,7 @@
           </p>
 
           <p>
-            <span>
-              2.1.4. if you are a UK Person, you are an &ldquo;Investment
-              professional&rdquo; as defined by Article 19(5) of the United
-              Kingdom’s Financial Services and Markets Act 2000 (Financial
-              Promotion) Order 2005.
-            </span>
+            <span> 2.1.4. you are not a Canadian Person or UK Person; </span>
           </p>
 
           <p>
@@ -266,7 +263,7 @@
               limitation: (a) equipment malfunctions; (b) periodic maintenance
               procedures or repairs that Injective or any of its suppliers or
               contractors may undertake from time to time; (c) causes beyond
-              Injective’s control or that Injective could not reasonably
+              Injective's control or that Injective could not reasonably
               foresee; (d) disruptions and temporary or permanent unavailability
               of underlying blockchain infrastructure, including disruptions or
               unavailability caused by malicious actors or decentralized code
@@ -481,15 +478,15 @@
               any relevant and applicable anti-money laundering and
               anti-terrorist financing laws and sanctions programs, such as,
               without limitation, the Bank Secrecy Act and the US Department of
-              Treasury’s Office of Foreign Assets Control;
+              Treasury's Office of Foreign Assets Control;
             </span>
           </p>
 
           <p>
             <span>
               5.2. engage in transactions involving (a) items that infringe or
-              violate any copyright or trademark, (b) the use of Injective’s
-              intellectual property, name, or logo, including use of Injective’s
+              violate any copyright or trademark, (b) the use of Injective's
+              intellectual property, name, or logo, including use of Injective's
               trade or service marks, without express consent from Injective or
               in a manner that otherwise harms Injective; or (c) any action that
               implies an untrue endorsement by or affiliation with Injective;
@@ -605,7 +602,7 @@
               Content or have the right to grant the rights and licenses in
               these Terms; and (b) Your Content and our use of Your Content, as
               licensed herein, does not and will not violate, misappropriate or
-              infringe on any third party’s rights.
+              infringe on any third party's rights.
             </span>
           </p>
         </article>
@@ -629,7 +626,7 @@
               Content or have the right to grant the rights and licenses in
               these Terms; and (b) Your Content and our use of Your Content, as
               licensed herein, does not and will not violate, misappropriate or
-              infringe on any third party’s rights.
+              infringe on any third party's rights.
             </span>
           </p>
 
@@ -678,9 +675,9 @@
 
           <p>
             <span>
-              7.3. Any of Injective’s product or service names, logos, and other
+              7.3. Any of Injective's product or service names, logos, and other
               marks used on the Site or as a part of the Services, including
-              Injective’s name and logo, are trademarks owned by Injective, its
+              Injective's name and logo, are trademarks owned by Injective, its
               affiliates, or its applicable licensors or assignees. Unauthorized
               copying, imitation, or use is prohibited, and these Terms do not
               grant you any rights in those trademarks. You may not remove,
@@ -877,7 +874,7 @@
               (collectively, &ldquo;Indemnified Parties&rdquo;) from any claim,
               demand, lawsuit, action, proceeding, investigation, liability,
               damage, loss, cost or expense, including without limitation
-              reasonable attorneys’ fees, arising out of or relating to (a) your
+              reasonable attorneys' fees, arising out of or relating to (a) your
               use of, or conduct in connection with, the Site or the Services;
               (b) Digital Assets associated with your blockchain address or
               wallet for which you are the/a beneficial owner; (c) any feedback
@@ -908,7 +905,7 @@
               concerning your transactions using the Services and receives no
               fees therefrom. All transactions between users of
               Injective-developed open-source software are executed peer-to-peer
-              directly between the users’ Injective addresses through a smart
+              directly between the users' Injective addresses through a smart
               contract.
             </span>
           </p>
@@ -948,11 +945,11 @@
             </p>
 
             <p>
-              If you choose to add liquidity through the Site’s LP Rewards
+              If you choose to add liquidity through the Site's LP Rewards
               function, you do so entirely at your own discretion and your own
               risk. Any funds you use to add liquidity shall remain in your
               custody at all times. We will not take custody of any such funds.
-              The funds you use to add liquidity through the Site’s LP Rewards
+              The funds you use to add liquidity through the Site's LP Rewards
               function shall be programmatically deployed to add liquidity to
               the grid trading strategy that you, in your sole discretion, have
               chosen. Your funds will not be pooled with those of any other user
@@ -961,7 +958,7 @@
               liquidity in light of your investment objectives, risk tolerance,
               financial situation and needs. Injective makes no representation
               or warranty as to the outcome of your decision to add liquidity
-              through the Site’s LP Rewards function and will not be liable to
+              through the Site's LP Rewards function and will not be liable to
               you for any loss that might arise from or in connection with your
               decision to add liquidity.
             </p>
@@ -989,7 +986,7 @@
             <p>
               If you use the Site, you may be awarded points. These points have
               no monetary value. You agree that these points may be awarded in
-              Injective’s sole discretion and Injective has no duty or
+              Injective's sole discretion and Injective has no duty or
               obligation to: 1) disclose to you the method or methods by which
               points are awarded; or 2) provide you with anything of value,
               including money or other compensation, based on any points you
@@ -1099,7 +1096,7 @@
 
           <p>
             <span>
-              In no event shall Injective’s, as defined herein, aggregate
+              In no event shall Injective's, as defined herein, aggregate
               liability arising out of or in connection with the Site and the
               Services (and any of their content and functionality), any
               performance or nonperformance of the Services, your Digital
@@ -1214,7 +1211,7 @@
               unlawful provision shall be severed from these Terms; (b)
               severance of the unenforceable or unlawful provision shall have no
               impact whatsoever on the remainder of this Section 15 or the
-              parties’ ability to compel arbitration of any remaining claims on
+              parties' ability to compel arbitration of any remaining claims on
               an individual basis under this Section 15; and (c) to the extent
               that any claims must therefore proceed on a class, collective,
               consolidated, or representative basis, such claims must be

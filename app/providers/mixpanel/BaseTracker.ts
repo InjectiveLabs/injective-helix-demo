@@ -1,5 +1,5 @@
 import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
-import { MIXPANEL_KEY } from '@/app/utils/constants/setup'
+import { MIXPANEL_KEY } from '@shared/utils/constant'
 import { MixPanelCounter } from '@/types'
 
 export default class MixPanelAnalytics {

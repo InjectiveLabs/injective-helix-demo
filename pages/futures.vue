@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { IS_MAINNET } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
@@ -6,15 +7,19 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   IsSpotKey,
   MarketKey,
+  IsRWAMarketOpenKey,
   PortfolioStatusKey,
   UiDerivativeMarket,
   MarkPriceStatusKey
 } from '@/types'
 
 const route = useRoute()
+const jsonStore = useSharedJsonStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const portfolioStatus = inject(
@@ -22,6 +27,7 @@ const portfolioStatus = inject(
   new Status(StatusType.Loading)
 )
 
+const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() =>
@@ -36,6 +42,30 @@ useDerivativeOrderbook(computed(() => market.value))
 
 const { lastTradedPriceInUsd: derivativeLastTradedPriceInUsd } =
   useDerivativeLastPrice(market)
+
+onMounted(async () => {
+  if (!market.value) {
+    return
+  }
+
+  const isRWAMarket = jsonStore.isTradeFiMarket(market.value.marketId)
+
+  if (!isRWAMarket) {
+    return
+  }
+
+  const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
+    market.value.oracleBase
+  )
+
+  if (!isRWAMarketOpenStatus) {
+    notificationStore.warning({
+      title: t('trade.rwa.marketClosedToast')
+    })
+  }
+
+  isRWAMarketOpen.value = isRWAMarketOpenStatus
+})
 
 onWalletConnected(async () => {
   if (route.query.marketId) {
@@ -111,9 +141,31 @@ onUnmounted(() => {
   derivativeStore.cancelMarketsMarkPrices()
 })
 
+useIntervalFn(
+  async () => {
+    if (!market.value || !IS_MAINNET) {
+      return
+    }
+
+    const isRWAMarket = jsonStore.isTradeFiMarket(market.value.marketId)
+
+    if (!isRWAMarket) {
+      return
+    }
+
+    const isRWAMarketOpenStatus = await derivativeStore.fetchRWAMarketIsOpen(
+      market.value.oracleBase
+    )
+
+    isRWAMarketOpen.value = isRWAMarketOpenStatus
+  },
+  5 * 60 * 1000
+)
+
 provide(MarketKey, market)
 provide(IsSpotKey, false)
 provide(MarkPriceStatusKey, status)
+provide(IsRWAMarketOpenKey, isRWAMarketOpen)
 </script>
 
 <template>
@@ -127,5 +179,6 @@ provide(MarkPriceStatusKey, status)
     </template>
   </PartialsTradeLayout>
 
+  <ModalsIAssets />
   <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
 </template>

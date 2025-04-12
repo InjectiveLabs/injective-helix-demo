@@ -38,12 +38,12 @@ onMounted(async () => {
       <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
       <div class="divide-x-2 border-white flex">
         <div class="px-2">
-          {{ $t('banners.footer.operational') }}
+          {{ $t('footer.operational') }}
         </div>
         <div
           class="px-2 bg-gradient-to-r from-blue-500 to-blue-200 bg-clip-text text-transparent"
         >
-          {{ $t('banners.footer.v2') }}
+          {{ $t('footer.v2') }}
         </div>
       </div>
 

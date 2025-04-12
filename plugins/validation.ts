@@ -28,6 +28,7 @@ export const errorMessages = {
   integer: (fieldName: string) => `${fieldName} must be > 0`,
   fixedLength: (length: string) =>
     `This field must be exactly ${length} characters long.`,
+  maxCharacter: () => `Exceeds max characters`,
 
   [Network.Axelar]: () => 'This field is not a valid Cosmos address',
   [Network.CosmosHub]: () => 'This field is not a valid Cosmos address',
@@ -100,6 +101,10 @@ export const defineGlobalRules = () => {
           return 'amount is required'
         }
 
+        if (field.toLowerCase().includes('positionquantity')) {
+          return 'Invalid amount: Please enter a valid quantity greater than zero.'
+        }
+
         if (field.includes('-')) {
           return `${field.replaceAll('-', ' ')} is required.`
         }
@@ -113,7 +118,7 @@ export const defineGlobalRules = () => {
 
   defineRule('maxCharacter', (value: string, [max]: number[]) => {
     if (value.length > max) {
-      return 'Exceeds max characters'
+      return errorMessages.maxCharacter()
     }
 
     return true
@@ -226,6 +231,16 @@ export const defineGlobalRules = () => {
   })
 
   defineRule('minValueSgt', (value: string, [min]: string[]) => {
+    const valueInBigNumber = new BigNumberInBase(value)
+
+    if (valueInBigNumber.lt(min)) {
+      return `Minimum amount should be ${min}`
+    }
+
+    return true
+  })
+
+  defineRule('minValuePgt', (value: string, [min]: string[]) => {
     const valueInBigNumber = new BigNumberInBase(value)
 
     if (valueInBigNumber.lt(min)) {
@@ -405,6 +420,43 @@ export const defineGlobalRules = () => {
           return `Upper price level should be below ${upperThreshold.toFixed(
             2
           )}`
+        }
+      }
+
+      return true
+    }
+  )
+
+  defineRule('alphanumeric', (value: string) => {
+    if (!/^[a-zA-Z0-9]+$/.test(value)) {
+      return 'Only letters and numbers are allowed'
+    }
+
+    return true
+  })
+
+  defineRule('nonZeroPositionQuantity', (value: string | number) => {
+    if (new BigNumberInBase(value).isZero()) {
+      return 'Invalid amount: Please enter a valid quantity greater than zero.'
+    }
+
+    return true
+  })
+
+  defineRule(
+    'maxValuePositionQuantity',
+    (value: string, [max]: string[], { field }: { field: string }) => {
+      if (new BigNumberInBase(max).lt(value)) {
+        if (field.toLowerCase() === 'positionquantity') {
+          return 'Invalid amount: You cannot set an amount for more than your total position size.'
+        }
+
+        if (field.toLowerCase() === 'tppositionquantity') {
+          return 'Invalid amount: You cannot set a TP for more than your total position size.'
+        }
+
+        if (field.toLowerCase() === 'slpositionquantity') {
+          return 'Invalid amount: You cannot set a SL for more than your total position size.'
         }
       }
 

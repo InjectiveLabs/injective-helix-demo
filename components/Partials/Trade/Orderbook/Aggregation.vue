@@ -9,8 +9,8 @@ import {
 } from '@/types'
 
 const market = inject(MarketKey)
-const aggregation = inject(AggregationKey, ref(1))
 const isSpot = inject(IsSpotKey)
+const aggregation = inject(AggregationKey, ref(1))
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   market as Ref<UiMarketWithToken>

@@ -10,12 +10,11 @@ import { Modal } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    strategy: TradingStrategy
     isLiquidity?: boolean
+    strategy: TradingStrategy
   }>(),
   {
-    strategy: undefined,
-    isLiquidity: false
+    strategy: undefined
   }
 )
 

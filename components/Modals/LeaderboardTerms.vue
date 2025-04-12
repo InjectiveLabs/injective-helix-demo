@@ -30,12 +30,13 @@ function onConfirm() {
 
 <template>
   <AppModal
-    is-stay-open-on-resize
-    :is-open="isModalOpen"
-    @modal:closed="onCancel"
+    v-bind="{ isXl: true, modelValue: isModalOpen }"
+    @on:close="onCancel"
   >
     <div class="relative">
-      <PartialsLeaderboardTermsTesla class="max-h-[350px] overflow-scroll" />
+      <PartialsLeaderboardTermsOwnYourAsset
+        class="max-h-[350px] overflow-scroll"
+      />
 
       <div class="mt-6 flex items-center justify-center gap-3">
         <AppButton

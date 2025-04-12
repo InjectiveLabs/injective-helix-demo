@@ -14,9 +14,7 @@ const props = withDefaults(
     market: UiMarketWithToken
     orderbookLayout: OrderbookLayout
   }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
 
 const orderbookStatus = inject(OrderbookStatusKey) as Status
@@ -95,7 +93,7 @@ function setSellsIndex(index: number) {
 
       <p class="text-xs space-x-1.5 flex-1 text-center">
         <span class="text-coolGray-500">{{ $t('trade.size') }}</span>
-        <span class="font-bold uppercase">{{ market.baseToken.symbol }}</span>
+        <span class="font-bold">{{ market.baseToken.symbol }}</span>
       </p>
 
       <p class="text-xs space-x-1.5 flex-1 text-right">

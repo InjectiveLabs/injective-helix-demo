@@ -1,23 +1,30 @@
 <script setup lang="ts">
-import { MarketType } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { MarketType } from '@injectivelabs/sdk-ts'
 import {
-  DerivativeGridStrategyTransformed,
-  GridStrategyTransformed,
-  PortfolioTradingBotsRunningTableColumn,
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import {
   TradeSubPage,
-  TradingInterface
+  StrategyStatus,
+  TradingInterface,
+  PortfolioTradingBotsRunningTableColumn
+} from '@/types'
+import type {
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
+const jsonStore = useSharedJsonStore()
 const gridStrategyStore = useGridStrategyStore()
-const { lg } = useSharedBreakpoints()
 const { t } = useLang()
+const { lg } = useSharedBreakpoints()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<
-  GridStrategyTransformed | DerivativeGridStrategyTransformed | null
+  null | GridStrategyTransformed | DerivativeGridStrategyTransformed
 >(null)
 
 const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
@@ -40,42 +47,42 @@ const formattedStrategies = computed(() =>
 
 const columns = computed(() => [
   {
-    key: PortfolioTradingBotsRunningTableColumn.Time,
-    label: t('sgt.time'),
-    class: 'w-32'
+    class: 'w-32',
+    label: t('sgt.startTime'),
+    key: PortfolioTradingBotsRunningTableColumn.Time
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Market,
-    label: t('sgt.market')
+    label: t('sgt.market'),
+    key: PortfolioTradingBotsRunningTableColumn.Market
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.LowerBound,
-    label: t('sgt.lowerBound')
+    label: t('sgt.lowerBound'),
+    key: PortfolioTradingBotsRunningTableColumn.LowerBound
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.UpperBound,
-    label: t('sgt.upperBound')
+    label: t('sgt.upperBound'),
+    key: PortfolioTradingBotsRunningTableColumn.UpperBound
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.TotalAmount,
-    label: t('sgt.totalAmount')
+    label: t('sgt.totalAmount'),
+    key: PortfolioTradingBotsRunningTableColumn.TotalAmount
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.TotalProfit,
-    label: t('sgt.totalProfit')
+    label: t('sgt.totalProfit'),
+    key: PortfolioTradingBotsRunningTableColumn.TotalProfit
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Duration,
-    label: t('sgt.duration')
+    label: t('sgt.duration'),
+    key: PortfolioTradingBotsRunningTableColumn.Duration
   },
   {
-    key: PortfolioTradingBotsRunningTableColumn.Details,
-    label: t('sgt.details')
-  },
-  {
-    key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
-    label: t('sgt.removeStrategy')
+    label: t('sgt.details'),
+    key: PortfolioTradingBotsRunningTableColumn.Details
   }
+  // {
+  //   key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
+  //   label: t('sgt.removeStrategy')
+  // }
 ])
 
 function selectStrategy(
@@ -124,6 +131,38 @@ function selectStrategy(
         >
           <UAvatar size="xs" :src="row.market.baseToken.logo" />
           <span>{{ row.market.ticker }}</span>
+
+          <PartialsLiquidityBotsSpotCommonRemoveStrategy
+            v-bind="{
+              strategy: row.strategy,
+              pnl: row.pnl,
+              pnlPercentage: row.percentagePnl
+            }"
+          >
+            <template #default="{ removeStrategy, status }">
+              <AppTooltip
+                :ui="{ width: 'w-auto' }"
+                :is-disabled="!jsonStore.isPostUpgradeMode"
+                :content="t('trade.postOnlyWarning')"
+              >
+                <AppButton
+                  :is-loading="
+                    status.isLoading() ||
+                    row.strategyStatus === StrategyStatus.Pending
+                  "
+                  class="p-1"
+                  variant="danger-ghost"
+                  :disabled="jsonStore.isPostUpgradeMode"
+                  @click="removeStrategy"
+                >
+                  <UIcon
+                    :name="NuxtUiIcons.Trash"
+                    class="size-4 text-red-500"
+                  />
+                </AppButton>
+              </AppTooltip>
+            </template>
+          </PartialsLiquidityBotsSpotCommonRemoveStrategy>
         </NuxtLink>
       </template>
 
@@ -150,17 +189,25 @@ function selectStrategy(
       </template>
 
       <template #totalAmount-data="{ row }">
-        <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :decimal-places="2"
-            :max-decimal-places="3"
-            :amount="row.totalAmount.toFixed()"
-          />
+        <div v-if="row.strategyStatus === StrategyStatus.Pending">&mdash;</div>
+        <div v-else>
+          <div class="flex items-center gap-1">
+            $
+            <AppUsdAmount
+              :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+              :amount="row.totalAmount.toFixed()"
+            />
+          </div>
         </div>
       </template>
 
       <template #totalProfit-data="{ row }">
-        <AppSpinner v-if="!row.isSpot && row.isLoadingMarkPrice" />
+        <AppSpinner
+          v-if="
+            (!row.isSpot && row.isLoadingMarkPrice) ||
+            row.strategyStatus === StrategyStatus.Pending
+          "
+        />
         <div
           v-else
           class="flex flex-col font-mono"
@@ -194,15 +241,24 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.details') }}
+          {{ t('sgt.moreInfo') }}
         </AppButton>
       </template>
 
-      <template #removeStrategy-data="{ row }">
-        <PartialsLiquidityBotsSpotCommonRemoveStrategy :strategy="row.strategy">
+      <!-- <template #removeStrategy-data="{ row }">
+        <PartialsLiquidityBotsSpotCommonRemoveStrategy
+          v-bind="{
+            strategy: row.strategy,
+            pnl: row.pnl,
+            pnlPercentage: row.percentagePnl
+          }"
+        >
           <template #default="{ removeStrategy, status }">
             <AppButton
-              :is-loading="status.isLoading()"
+              :is-loading="
+                status.isLoading() ||
+                row.strategyStatus === StrategyStatus.Pending
+              "
               variant="danger-ghost"
               class="p-1"
               @click="removeStrategy"
@@ -211,7 +267,7 @@ function selectStrategy(
             </AppButton>
           </template>
         </PartialsLiquidityBotsSpotCommonRemoveStrategy>
-      </template>
+      </template> -->
 
       <template #empty-state>
         <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
@@ -233,22 +289,24 @@ function selectStrategy(
       :message="$t('sgt.noActiveStrategies')"
     />
 
-    <SharedModal v-model="isOpen">
-      <PartialsTradingBotsSpotStrategyDetails
-        v-if="
-          selectedStrategy &&
-          selectedStrategy.strategy.marketType === MarketType.Spot
-        "
-        :active-strategy="selectedStrategy.strategy"
-      />
+    <AppModal v-model="isOpen" v-bind="{ isSm: true }">
+      <div class="pt-6">
+        <PartialsTradingBotsSpotStrategyDetails
+          v-if="
+            selectedStrategy &&
+            selectedStrategy.strategy.marketType === MarketType.Spot
+          "
+          :active-strategy="selectedStrategy.strategy"
+        />
 
-      <PartialsTradingBotsDerivativeStrategyDetails
-        v-else-if="
-          selectedStrategy &&
-          selectedStrategy.strategy.marketType === MarketType.Derivative
-        "
-        :active-strategy="selectedStrategy.strategy"
-      />
-    </SharedModal>
+        <PartialsTradingBotsDerivativeStrategyDetails
+          v-else-if="
+            selectedStrategy &&
+            selectedStrategy.strategy.marketType === MarketType.Derivative
+          "
+          :active-strategy="selectedStrategy.strategy"
+        />
+      </div>
+    </AppModal>
   </div>
 </template>

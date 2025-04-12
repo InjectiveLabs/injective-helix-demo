@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - staging
-      - master
 
 jobs:
   staging:
@@ -29,7 +28,8 @@ jobs:
 
       ## Flags
       VPN_CHECKS_ENABLED: false
-      VITE_MAINTENANCE_ENABLED: false
+      VITE_MAINTENANCE_DISABLED: false
+      VITE_IS_ONRAMPER_DEV_MODE: false
 
       ## Endpoints
       VITE_INDEXER_API_ENDPOINT: ''
@@ -51,11 +51,13 @@ jobs:
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
-      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
       VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
+      VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
+      VITE_ONRAMPER_API_KEY_DEV: ${{ secrets.VITE_ONRAMPER_API_KEY_DEV }}
+      VITE_ONRAMPER_API_KEY_PROD: ${{ secrets.VITE_ONRAMPER_API_KEY_PROD }}
+      VITE_WALLET_CONNECT_PROJECT_ID: ${{ secrets.VITE_WALLET_CONNECT_PROJECT_ID }}
 
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
       VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}

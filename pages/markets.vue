@@ -42,6 +42,10 @@ function setCategoryFromQuery() {
   return MarketCategoryType.All
 }
 
+function resetSearch() {
+  search.value = ''
+}
+
 function resetCategory() {
   if (activeCategory.value === MarketCategoryType.All) {
     return
@@ -81,6 +85,7 @@ function resetCategory() {
                 v-model="activeCategory"
                 v-bind="{ value }"
                 :data-cy="`${dataCyTag(MarketCyTags.MarketChain)}-${value}`"
+                @update:model-value="resetSearch"
               >
                 <template #default="{ isActive }">
                   <AppButton
@@ -128,16 +133,6 @@ function resetCategory() {
                 {{ $t('markets.showLowVol') }}
               </AppCheckbox2>
             </div>
-          </div>
-
-          <div
-            v-if="activeCategory === MarketCategoryType.Experimental"
-            class="flex items-center gap-x-2 text-coolGray-500"
-          >
-            <UIcon :name="NuxtUiIcons.WarningOutline" class="w-5 h-5 min-w-5" />
-            <span class="text-sm">{{
-              $t('markets.permisionlessWarning')
-            }}</span>
           </div>
         </div>
       </div>

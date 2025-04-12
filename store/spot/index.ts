@@ -19,15 +19,14 @@ import {
   toUiMarketSummary,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
+import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
   cancelOrder,
+  submitChase,
   batchCancelOrder,
   submitLimitOrder,
-  submitMarketOrder,
-  submitStopLimitOrder,
-  submitStopMarketOrder,
-  submitChase
+  submitMarketOrder
 } from '@/store/spot/message'
 import {
   streamTrades,
@@ -41,11 +40,9 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import { verifiedSpotSlugs, verifiedSpotMarketIds } from '@/app/json'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
-import { marketIdsToHide } from '@/app/data/market'
 
 type SpotStoreState = {
   markets: UiSpotMarket[]
@@ -81,14 +78,17 @@ export const useSpotStore = defineStore('spot', {
     buys: (state) => state.orderbook?.buys || [],
     sells: (state) => state.orderbook?.sells || [],
 
-    activeMarketIds: (state) =>
-      state.markets
+    activeMarketIds: (state) => {
+      const jsonStore = useSharedJsonStore()
+
+      return state.markets
         .filter(
           ({ marketId }) =>
-            verifiedSpotMarketIds.includes(marketId) ||
-            state.marketIdsFromQuery.includes(marketId)
+            state.marketIdsFromQuery.includes(marketId) ||
+            jsonStore.verifiedSpotMarketIds.includes(marketId)
         )
-        .map((m) => m.marketId),
+        .map((m) => m.marketId)
+    },
 
     tradeableDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
@@ -144,8 +144,6 @@ export const useSpotStore = defineStore('spot', {
     batchCancelOrder,
     submitLimitOrder,
     submitMarketOrder,
-    submitStopLimitOrder,
-    submitStopMarketOrder,
 
     async appendMarketId(marketIdFromQuery: string) {
       const spotStore = useSpotStore()
@@ -160,6 +158,7 @@ export const useSpotStore = defineStore('spot', {
     async fetchMarkets() {
       const spotStore = useSpotStore()
       const tokenStore = useTokenStore()
+      const jsonStore = useSharedJsonStore()
 
       const markets = await spotCacheApi.fetchMarkets()
 
@@ -191,17 +190,21 @@ export const useSpotStore = defineStore('spot', {
 
           return {
             ...formattedMarket,
-            isVerified: verifiedSpotMarketIds.includes(market.marketId)
+            isVerified: jsonStore.verifiedSpotMarketIds.includes(
+              market.marketId
+            )
           }
         })
         .filter(
-          (market) => market && !marketIdsToHide.includes(market.marketId)
+          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
         ) as UiSpotMarket[]
 
       spotStore.$patch({
         markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex = verifiedSpotSlugs.indexOf(spotA.slug) || 1
-          const spotBIndex = verifiedSpotSlugs.indexOf(spotB.slug) || 1
+          const spotAIndex =
+            jsonStore.verifiedSpotSlugs.indexOf(spotA.slug) || 1
+          const spotBIndex =
+            jsonStore.verifiedSpotSlugs.indexOf(spotB.slug) || 1
 
           return spotAIndex - spotBIndex
         })
@@ -238,8 +241,8 @@ export const useSpotStore = defineStore('spot', {
       }
 
       const { orders, pagination } = await indexerSpotApi.fetchOrders({
+        marketIds,
         subaccountId: accountStore.subaccountId,
-        marketIds: marketIds || spotStore.activeMarketIds,
         pagination: {
           limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
         }

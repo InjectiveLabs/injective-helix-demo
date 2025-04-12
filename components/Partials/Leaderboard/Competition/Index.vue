@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { CAMPAIGNS_WITH_ANNOUNCED_WINNERS } from '@/app/data/campaign'
 import { LeaderboardType, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
@@ -25,7 +26,7 @@ function fetchLeaderboard() {
     return
   }
 
-  Promise.all([
+  const promises = [
     leaderboardStore.fetchCompetitionLeaderboard({
       type: props.campaign.type as LeaderboardType,
       account: sharedWalletStore.injectiveAddress,
@@ -33,16 +34,22 @@ function fetchLeaderboard() {
         startDate: props.campaign.startDate,
         endDate: props.campaign.endDate
       }
-    }),
+    })
+  ]
+
+  if (
+    CAMPAIGNS_WITH_ANNOUNCED_WINNERS.includes(props.campaign.name) &&
     route.name === LeaderboardSubPage.PastCompetitions
-      ? [
-          campaignStore.fetchLeaderboardCompetitionResults(
-            props.campaign.name,
-            sharedWalletStore.injectiveAddress
-          )
-        ]
-      : []
-  ])
+  ) {
+    promises.push(
+      campaignStore.fetchLeaderboardCompetitionResults(
+        props.campaign.name,
+        sharedWalletStore.injectiveAddress
+      )
+    )
+  }
+
+  Promise.all(promises)
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -55,7 +62,6 @@ function fetchLeaderboard() {
     <AppHocLoading v-bind="{ status }">
       <div>
         <PartialsLeaderboardCompetitionMyStats v-bind="{ campaign }" />
-
         <PartialsLeaderboardCompetitionTable v-bind="{ campaign }" />
       </div>
     </AppHocLoading>

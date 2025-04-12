@@ -2,30 +2,19 @@
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
-
-const isModalOpen = computed(() => modalStore.modals[Modal.GeoRestricted])
-
-function onCloseModal() {
-  modalStore.closeModal(Modal.GeoRestricted)
-}
 </script>
 
 <template>
-  <AppModal
-    v-bind="{
-      isSm: true,
-      isOpen: isModalOpen
-    }"
-    @modal:closed="onCloseModal"
-  >
-    <template #title>
-      <div />
-    </template>
+  <AppModal v-model="modalStore.modals[Modal.GeoRestricted]">
+    <img src="/svg/GeoRestriction.svg" class="mx-auto mt-2" />
 
-    <div class="pb-8">
-      <p class="font-bold text-md text-center">
+    <div class="text-center mt-8">
+      <h2 class="font-bold text-lg">{{ $t('geoRestricted.title') }}</h2>
+      <p class="text-sm mt-4 text-coolGray-450">
         {{ $t('geoRestricted.description') }}
       </p>
+
+      <AppButton class="w-full mt-4">{{ $t('geoRestricted.cta') }}</AppButton>
     </div>
   </AppModal>
 </template>

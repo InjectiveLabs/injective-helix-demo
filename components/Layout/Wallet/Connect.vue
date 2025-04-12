@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { WalletConnectStatus } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { Wallet, isCosmosWalletInstalled } from '@injectivelabs/wallet-ts'
 import { IS_DEVNET } from '@shared/utils/constant'
+import { WalletConnectStatus } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
+import { isCosmosStationWalletInstalled } from '@injectivelabs/wallet-cosmostation'
 import { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -34,36 +36,43 @@ const popularOptions = computed(
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
+            wallet: Wallet.BitGet,
+            downloadLink: !sharedWalletStore.bitGetInstalled
+              ? 'https://web3.bitget.com/en/wallet-download'
               : undefined
-          },
-      {
-        wallet: Wallet.OkxWallet,
-        downloadLink: !sharedWalletStore.okxWalletInstalled
-          ? 'https://www.okx.com/web3'
-          : undefined
-      }
+          }
     ].filter((option) => option) as WalletOption[]
 )
 
 const options = computed(
   () =>
     [
-      { wallet: Wallet.Ledger },
       {
-        beta: true,
-        wallet: Wallet.Phantom
+        wallet: Wallet.OkxWallet,
+        downloadLink: !sharedWalletStore.okxWalletInstalled
+          ? 'https://www.okx.com/web3'
+          : undefined
       },
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.BitGet,
-            downloadLink: !sharedWalletStore.bitGetInstalled
-              ? 'https://web3.bitget.com/en/wallet-download'
+            wallet: Wallet.Leap,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+              ? 'https://www.leapwallet.io/downloads'
               : undefined
           },
+      { wallet: Wallet.Ledger },
+      { wallet: Wallet.TrezorBip32 },
+      {
+        wallet: Wallet.Cosmostation,
+        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
+          ? 'https://www.cosmostation.io/wallet'
+          : undefined
+      },
+      {
+        beta: true,
+        wallet: Wallet.Phantom
+      },
       IS_DEVNET
         ? undefined
         : {
@@ -75,12 +84,11 @@ const options = computed(
           },
       {
         wallet: Wallet.Cosmostation,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
+        downloadLink: !isCosmosStationWalletInstalled()
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      { wallet: Wallet.Trezor }
-
+      { wallet: Wallet.WalletConnect }
       // Disabled for now
       // {
       //   wallet: Wallet.TrustWallet,
@@ -88,13 +96,6 @@ const options = computed(
       //     ? 'https://trustwallet.com/browser-extension/'
       //     : undefined
       // },
-
-      // Disabled for now
-      // {
-      //   wallet: Wallet.Torus
-      // },
-
-      // { wallet: Wallet.WalletConnect }
     ].filter((option) => option) as WalletOption[]
 )
 
@@ -152,12 +153,12 @@ function toggleShowMoreWallets() {
         <LayoutWalletLedger />
       </div>
 
-      <div v-else-if="selectedWallet === Wallet.Trezor" class="space-y-4">
+      <div v-else-if="selectedWallet === Wallet.TrezorBip32" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
           v-bind="{
             walletOption: {
-              wallet: Wallet.Trezor
+              wallet: Wallet.TrezorBip32
             }
           }"
           @selected-hardware-wallet:toggle="onWalletModalTypeChange"

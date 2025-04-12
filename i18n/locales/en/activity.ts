@@ -2,7 +2,7 @@ import {
   HistorySwapTableColumn,
   HistoryWalletTableColumn,
   FundingHistoryTableColumn
-} from '@/types'
+} from './../../../types'
 
 export default {
   activity: {

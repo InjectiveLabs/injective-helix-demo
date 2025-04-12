@@ -3,7 +3,7 @@ import {
   getEip712TypedDataV2,
   generateArbitrarySignDoc
 } from '@injectivelabs/sdk-ts'
-import { ETHEREUM_CHAIN_ID } from '@/app/utils/constants'
+import { ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
 
 export const getEip712TypedData = (signer: string, message: string) => {
   const { signDoc } = generateArbitrarySignDoc(message, signer)

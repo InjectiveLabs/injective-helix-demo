@@ -87,7 +87,7 @@ debug
 
 # IDE / Editor
 .idea
-.vscode
+
 
 # Service worker
 sw.*
@@ -117,3 +117,6 @@ pages/whiteboard2.vue
 
 # Cursor IDE
 .cursorrules
+
+# Local Netlify folder
+.netlify

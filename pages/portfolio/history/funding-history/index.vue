@@ -44,8 +44,8 @@ onSubaccountChange(() => {
 async function handlePageChange(page: number) {
   await router.push({
     query: {
-      page,
-      ...route.query
+      ...route.query,
+      page
     }
   })
 

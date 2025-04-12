@@ -7,23 +7,23 @@ const props = withDefaults(
   defineProps<{
     max?: number
     min?: number
+    decimals?: number
     noStyle?: boolean
     autofix?: boolean
     disabled?: boolean
-    decimals?: number
+    alignLeft?: boolean
     modelValue?: string
     wrapperClass?: string
+    inputClasses?: string
   }>(),
   {
     // eslint-disable-next-line
     max: 9999999999999999999,
     min: undefined,
-    noStyle: false,
-    autofix: false,
-    disabled: false,
     decimals: 18,
     modelValue: '',
-    wrapperClass: ''
+    wrapperClass: '',
+    inputClasses: ''
   }
 )
 
@@ -37,6 +37,22 @@ const appStore = useAppStore()
 const thousandsSeparator = computed(() =>
   appStore.userState.preferences.thousandsSeparator ? ',' : ''
 )
+
+const inputClass = computed(() => {
+  const result = ['bg-transparent p-2 flex-1 min-w-0 focus:outline-none']
+
+  if (props.disabled) {
+    result.push('cursor-not-allowed')
+  }
+
+  if (thousandsSeparator.value && !props.alignLeft) {
+    result.push('text-right')
+  }
+
+  result.push(props.inputClasses)
+
+  return result.join(' ')
+})
 
 const { el, typed } = useIMask(
   computed(
@@ -127,11 +143,7 @@ onMounted(() => {
       <input
         ref="el"
         type="text"
-        class="bg-transparent p-2 flex-1 min-w-0 focus:outline-none"
-        :class="{
-          'cursor-not-allowed': disabled,
-          'text-right': thousandsSeparator
-        }"
+        :class="inputClass"
         v-bind="$attrs"
         :disabled="disabled"
         @blur="onBlur"

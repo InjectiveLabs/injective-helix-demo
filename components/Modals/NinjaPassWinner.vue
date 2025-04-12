@@ -3,12 +3,10 @@ import { NuxtUiIcons } from '@shared/types'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const modalStore = useSharedModalStore()
 const confetti = useSharedConfetti()
+const modalStore = useSharedModalStore()
 const ninjaPassStore = useNinjaPassStore()
 const sharedWalletStore = useSharedWalletStore()
-
-const isModalOpen = computed(() => modalStore.modals[Modal.NinjaPassWinner])
 
 const ninjaPassCode = computed(() => {
   if (!ninjaPassStore.codes) {
@@ -34,7 +32,6 @@ watch(
       !appStore.userState.modalsViewed.includes(Modal.NinjaPassWinner)
     ) {
       modalStore.openModal(Modal.NinjaPassWinner)
-
       confetti.showConfetti()
     }
   }
@@ -46,7 +43,6 @@ onWalletConnected(() => {
 
 function closeModal() {
   modalStore.closeModal(Modal.NinjaPassWinner)
-
   appStore.setUserState({
     ...appStore.userState,
     modalsViewed: [...appStore.userState.modalsViewed, Modal.NinjaPassWinner]
@@ -56,10 +52,9 @@ function closeModal() {
 
 <template>
   <AppModal
-    :is-open="isModalOpen"
-    is-sm
-    is-hide-close-button
-    @modal:closed="closeModal"
+    v-model="modalStore.modals[Modal.NinjaPassWinner]"
+    v-bind="{ isHideCloseButton: true }"
+    @on:close="closeModal"
   >
     <template #title>
       <h3 class="normal-case">
@@ -74,11 +69,12 @@ function closeModal() {
       <span class="text-sm">
         {{ $t('ninjaPass.description') }}
       </span>
-      <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
+
+      <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 text-sm">
         <a
           :href="ninjaPassUrl"
           target="_blank"
-          class="bg-blue-500 py-2 h-10 rounded border flex items-center justify-center gap-2"
+          class="bg-blue-500 py-2 h-10 rounded border flex items-center justify-center gap-2 cursor-pointer"
         >
           <span class="font-semibold text-blue-900">
             {{ $t('ninjaPass.verifyNow') }}

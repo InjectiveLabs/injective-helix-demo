@@ -7,6 +7,7 @@ import wallet from './en/wallet'
 import points from './en/points'
 import banners from './en/banners'
 import account from './en/account'
+import referral from './en/referral'
 import campaign from './en/campaign'
 import portfolio from './en/portfolio'
 import activities from './en/activity'
@@ -15,7 +16,7 @@ import tradeAndEarn from './en/tradeAndEarn'
 import institutional from './en/institutional'
 import liquidityBots from './en/liquidityBots'
 import liquidityProvision from './en/liquidityProvision'
-import { I18nMessageFunction, TimeDuration } from '@/types'
+import { TimeDuration } from './../../types'
 
 export default {
   ...sgt,
@@ -28,6 +29,7 @@ export default {
   ...account,
   ...banners,
   ...campaign,
+  ...referral,
   ...portfolio,
   ...activities,
   ...activities,
@@ -40,6 +42,7 @@ export default {
   common: {
     or: 'or',
     ok: 'OK',
+    and: 'and',
     BTC: 'BTC',
     roi: 'ROI',
     pnl: 'PnL',
@@ -73,6 +76,7 @@ export default {
     filters: 'Filters',
     confirm: 'Confirm',
     popular: 'Popular',
+    disabled: 'Disabled',
     inactive: 'inactive',
     transfer: 'Transfer',
     withdraw: 'Withdraw',
@@ -116,17 +120,10 @@ export default {
         'Attention: This market will be migrating to the latest native issuance of this asset. Please migrate your tokens and visit the updated listing here: ',
       spotGridIsMigrating:
         'Attention: This market will be migrating to the latest native issuance of this asset. Please delete any active strategies on the legacy market, and create any new strategies on the new markets page. ',
-      attentionBanner: ({ interpolate, named }: I18nMessageFunction) =>
-        interpolate([
-          named('attention'),
-          'Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. ',
-          named('learnMore'),
-          '.'
-        ]),
-      goToNewMarket: ({ named }: I18nMessageFunction) =>
-        `Go to new ${named('market')} market`,
-      goToNewSGT: ({ named }: I18nMessageFunction) =>
-        `Go to new ${named('market')} spot grid`
+      attentionBanner:
+        '{aaa} Helix will be migrating all Wormhole-wrapped assets to the native issuance of the token. Please ensure any open limit order or active spot grid trading strategy related to these markets is canceled, and migrate to the current issuance of each asset. Affected markets include SOL/USDT, WMATIC/USDT, and ARB/USDT. {bbb}',
+      goToNewMarket: 'Go to new {market} market',
+      goToNewSGT: 'Go to new {market} spot grid'
     }
   },
 
@@ -139,11 +136,8 @@ export default {
   welcome_to_ip_sub:
     'The Canary Chain has a $5,000 trading limit which will be uplifted upon the canonical release over the coming weeks.',
   maintenance_header: 'System maintenance in progress',
-  maintenance_subheader:
-    'While this relayer is down for maintenance,<strong class="text-blue-500">Injective</strong> is never down! You can find other relayers in the Injective Ecosystem on the button below!',
-  maintenance_button: 'View status',
   maintenance_body:
-    'We are constantly improving Helix. Please come back later. Follow the latest updates on our public status page.',
+    'We are constantly improving Helix. Please come back later.',
   token_allowance_successful: 'Token allowance set successful',
   'There are no results found - Markets':
     'There are no markets found. You can go ahead and propose some!',
@@ -200,25 +194,18 @@ export default {
   overview: 'Overview',
 
   marketRestricted: {
-    title: 'Market Unavailable',
+    title: {
+      perpetual: 'Perpetual Trading Restricted',
+      spot: '{symbol} Restricted'
+    },
     description: {
       perpetual:
-        'Some markets such as perpetual futures are not available in your region.',
-      spot: ({ named }: I18nMessageFunction) =>
-        `${named('symbol')} is not available in your region.`
+        'Perpetual contracts are not available in your region due to regulatory restrictions. However, you can still trade on the spot market.',
+      spot: '{symbol} is not available in your region due to regulatory restrictions.'
     },
     cta: 'Return to homepage',
     tradeSpot: 'Trade Spot',
-    swapCta: ({ named }: I18nMessageFunction) =>
-      `${named('symbol')} is not available in your region`
-  },
-
-  marketBeta: {
-    title: 'Acknowledge the risk of trading on the market',
-    'I Understand': 'I Understand',
-    beta: 'beta',
-    description:
-      'This market is in the Beta phase. During this phase, typically there is no great depth in the order book. This means slippage may be applied when you make a trade.'
+    swapCta: '{symbol} is not available in your region.'
   },
 
   marketNotOnHelix: {
@@ -227,16 +214,15 @@ export default {
     termsAndCondition: 'Terms and Conditions',
     description:
       'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
-    description2: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix ',
-        named('link'),
-        ' as to any use you make of Helix'
-      ])
+    description2:
+      'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix {0} as to any use you make of Helix'
   },
 
   geoRestricted: {
-    description: 'Helix is currently not available in your region.'
+    title: 'Helix not available in your region.',
+    description:
+      "We're unable to offer Helix in your region due to regulatory requirements. Our team is actively working to expand our service area while ensuring full compliance with local laws. We appreciate your interest and hope to welcome you to our growing global community soon. If you have any open positions, you may close them from the portfolio page.",
+    cta: 'Got it'
   },
 
   marketExpired: {
@@ -250,48 +236,46 @@ export default {
   },
 
   marketNotLiquid: {
-    title: ({ named }: I18nMessageFunction) =>
-      `${named('slug')} market is no longer liquid`,
-    description: ({ named }: I18nMessageFunction) => `
-      The majority of trading activities for ${named(
-        'content'
-      )}. Please proceed to ${named('slug')} for a better trading experience.`,
-    cta: ({ named }: I18nMessageFunction) => `Go to ${named('slug')}`,
+    title: '{slug} market is no longer liquid',
+    description:
+      'The majority of trading activities for {content}. Please proceed to {slug} for a better trading experience.',
+    cta: 'Go to {slug}',
     'sol-usdcet-description': 'Solana is in the SOL/USDT market'
   },
 
   navigation: {
-    balances: 'Balances',
-    funding: 'Funding',
-    disconnect: 'Disconnect',
-    myAccount: 'My Account',
-    subaccountHistory: 'Subaccount History',
-    connectedWallets: 'Connected Wallets',
-    connected: 'Connected',
-    rewards: 'Rewards',
-    dashboard: 'Dashboard',
-    trade: 'Trade',
     swap: 'Swap',
+    home: 'Home',
+    trade: 'Trade',
     points: 'Points',
     vaults: 'Vaults',
-    liquidity: 'Liquidity',
-    swapDescription: 'Quickly swap assets through a simple interface',
-    activities: 'Activities',
-    activity: 'Activity',
-    portfolio: 'Portfolio',
-    deposit: 'Deposit',
-    depositDescription: 'TBD',
-    getInj: 'Get INJ',
-    getInjDescription: 'Deposit INJ from a CEX to your account',
-    depositCrypto: 'Crypto',
-    depositFiat: 'Fiat',
-    depositFiatDescription: 'Deposit via bank transfer or a bank card',
-    depositCryptoDescription: 'Deposit crypto into your trading account',
     guilds: 'Guilds',
-    guildsSub: 'Create and join Guilds to win team-based competitions',
-    lpRewards: 'LP Rewards',
+    getInj: 'Get INJ',
+    funding: 'Funding',
+    rewards: 'Rewards',
+    deposit: 'Deposit',
     account: 'Account',
-    home: 'Home',
+    depositFiat: 'Fiat',
+    balances: 'Balances',
+    activity: 'Activity',
+    referral: 'Referral',
+    connected: 'Connected',
+    dashboard: 'Dashboard',
+    liquidity: 'Liquidity',
+    portfolio: 'Portfolio',
+    myAccount: 'My Account',
+    depositCrypto: 'Crypto',
+    lpRewards: 'LP Rewards',
+    disconnect: 'Disconnect',
+    activities: 'Activities',
+    depositDescription: 'TBD',
+    connectedWallets: 'Connected Wallets',
+    subaccountHistory: 'Subaccount History',
+    getInjDescription: 'Deposit INJ from a CEX to your account',
+    swapDescription: 'Quickly swap assets through a simple interface',
+    depositFiatDescription: 'Deposit via bank transfer or a bank card',
+    guildsSub: 'Create and join Guilds to win team-based competitions',
+    depositCryptoDescription: 'Deposit crypto into your trading account',
     more: {
       olp: 'OLP',
       docs: 'Docs',
@@ -305,8 +289,7 @@ export default {
       tradingDiscounts: 'Trading Discounts'
     },
 
-    makerTakerFee: ({ named }: I18nMessageFunction) =>
-      `-${named('maker')}% maker / -${named('taker')}% taker`,
+    makerTakerFee: '-{maker}% maker / -{taker}% taker',
     noTierLevel: 'No VIP Tier',
     tradeAndEarn: 'Trade and Earn',
     tradeAndEarnDescription: 'Earn rewards with every trade',
@@ -322,8 +305,7 @@ export default {
     spotDescription: 'Buy and sell crypto assets using advanced trading tools',
     perpetual: 'Perpetual',
     perpetualDescription: 'Trade perpetual & pre-launch futures with leverage',
-    connectedUsingAuthZ: ({ named }: I18nMessageFunction) =>
-      `Connected to ${named('address')}. Click to close connection.`,
+    connectedUsingAuthZ: 'Connected to {address}. Click to close connection.',
     tradingBots: 'Trading Bots',
     tradingBotsDescription: 'Trade smarter with automated trading strategies ',
     liquidityBots: 'Bots',
@@ -381,25 +363,21 @@ export default {
     tier: 'Tier',
     current_apr: 'Current APR',
     fees_taker_maker: 'Fees (Taker / Maker)',
-    fees_taker_maker_percent: ({ named }: I18nMessageFunction) =>
-      `${named('takerFee')}% / ${named('makerFee')}%`,
+    fees_taker_maker_percent: '{takerFee}% / {makerFee}%',
     viewFeeDiscounts: 'View Fee Discounts',
     maker: 'Maker',
     taker: 'Taker',
     off: 'Off',
     last_updated_at: 'Last updated at',
     update_daily: 'Update daily',
-    in_past_days: ({ named }: I18nMessageFunction) =>
-      `In past ${named('days')} days`,
+    in_past_days: 'In past {days} days',
     tierAuthZ: 'Tier (AuthZ)'
   },
 
   pagination: {
     showRows: 'Show rows',
-    showCountOutOfTotal: ({ named }: I18nMessageFunction) =>
-      `Showing ${named('from')} - ${named('to')} out of ${named('totalCount')}`,
-    paginationPages: ({ named }: I18nMessageFunction) =>
-      `From ${named('from')} to ${named('to')} total ${named('totalCount')}`
+    showCountOutOfTotal: 'Showing {from} - {to} out of {totalCount}',
+    paginationPages: 'From {from} to {to} total {totalCount}`'
   },
 
   filters: {
@@ -430,14 +408,8 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    disclaimerNote: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix ',
-        named('terms'),
-        ' and the Injective Labs ',
-        named('policy'),
-        '.'
-      ])
+    disclaimerNote:
+      'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix {0} and the Injective Labs {1}.'
   },
 
   devMode: {
@@ -451,11 +423,6 @@ export default {
   authZ: {
     granters: 'Granters',
     grantees: 'Grantees'
-  },
-
-  scavengerHunt: {
-    title: 'You found it! 🕵️‍♀️',
-    description: 'The secret word for the Injective Scavenger Hunt is "brand".'
   },
 
   postOnlyMode: {
@@ -487,8 +454,28 @@ export default {
     closeAndContinue: 'Close and continue',
     injectiveBridge: 'Injective Bridge',
     processingMessageInfo:
-      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
+      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the ',
+    onramperSuccess:
+      'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.'
   },
 
-  helix: 'Helix'
+  notFound404: {
+    title: 'Page Not Found',
+    description: 'The page you are looking for does not exist.',
+    backToHome: 'Back to home page'
+  },
+
+  helix: 'Helix',
+
+  maintenance: {
+    title: 'Scheduled Maintenance',
+    description:
+      "We're carrying out a few updates. During this time, some features will be unavailable for a little while.",
+    governance: 'Governance Proposal',
+    governanceDescription: 'Check details on the latest chain upgrade',
+    subscribe: 'Subscribe for Alerts',
+    subscribeDescription: 'Get real-time notifications via Notifi',
+    footer:
+      "We're making Helix better. We appreciate your patience and will be back soon!"
+  }
 }

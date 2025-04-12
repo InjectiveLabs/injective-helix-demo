@@ -1,7 +1,7 @@
 import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { toBalanceInToken } from '@/app/utils/formatters'
 import {
   AccountBalance,
   PortfolioFuturesOpenOrdersTableColumn,
@@ -70,7 +70,7 @@ export function useFuturesOpenOrdersTransformer(
         (balance) => balance.denom === market.quoteDenom
       )
 
-      const accountQuoteBalance = toBalanceInToken({
+      const accountQuoteBalance = sharedToBalanceInToken({
         value: balance?.availableBalance || 0,
         decimalPlaces: market.quoteToken.decimals
       })

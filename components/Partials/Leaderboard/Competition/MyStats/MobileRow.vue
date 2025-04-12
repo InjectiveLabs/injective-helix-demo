@@ -6,10 +6,10 @@ import {
   MAXIMUM_RANKED_TRADERS,
   DEFAULT_TRUNCATE_LENGTH,
   MIN_COMPETITION_PNL_AMOUNT,
-  LEADERBOARD_VOLUME_PER_ENTRY,
   MAXIMUM_LEADERBOARD_STATS_RANK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { competitionVolumePerEntryMap } from '@/app/data/campaign'
 import { LeaderboardType } from '@/types'
 
 const props = withDefaults(
@@ -71,7 +71,7 @@ const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
 
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
-    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+    .dividedBy(competitionVolumePerEntryMap[props.campaign.name] || 1000)
     .integerValue(BigNumberInBase.ROUND_DOWN)
 )
 </script>

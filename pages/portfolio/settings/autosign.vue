@@ -15,7 +15,10 @@ function connectAutoSign() {
   status.setLoading()
 
   sharedWalletStore
-    .connectAutoSign(TRADING_MESSAGES)
+    .connectAutoSign(
+      TRADING_MESSAGES
+      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+    )
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 

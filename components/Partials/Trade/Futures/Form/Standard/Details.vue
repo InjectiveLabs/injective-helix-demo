@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { NuxtUiIcons } from '@shared/types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -22,11 +22,11 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const props = withDefaults(
   defineProps<{
     margin: BigNumberInBase
-    totalNotional: BigNumberInBase
-    worstPrice: BigNumberInBase
-    feeAmount: BigNumberInBase
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    feeAmount: BigNumberInBase
+    worstPrice: BigNumberInBase
+    totalNotional: BigNumberInBase
+    marginWithFee: BigNumberInBase
   }>(),
   {}
 )
@@ -107,6 +107,7 @@ function toggle() {
           >
             <span class="flex space-x-2">
               <span>&asymp;</span>
+
               <AppAmount
                 v-bind="{
                   amount: marginWithFee.toFixed(),

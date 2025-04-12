@@ -12,6 +12,7 @@ jobs:
     name: 'Deploy to mainnet'
     runs-on: ubuntu-22.04
     timeout-minutes: 45
+
     env:
       ## Public
       VITE_NAME: 'Helix | The Premier Decentralized Spot and Derivatives Exchange'
@@ -29,12 +30,12 @@ jobs:
 
       ## Flags
       VITE_SHOW_REDEEM_VOUCHER: true
-      VITE_MAINTENANCE_ENABLED: false
-      VITE_BANNER_NOTICE_ENABLED: false
+      VITE_MAINTENANCE_DISABLED: false
+      VITE_IS_ONRAMPER_DEV_MODE: false
 
       ## Endpoints
       # VITE_INDEXER_API_ENDPOINT: ''
-      VITE_INDEXER_API_ENDPOINT: 'https://k8s.global.mainnet.exchange.grpc-web.injective.network'
+      VITE_INDEXER_API_ENDPOINT: ''
       VITE_CHRONOS_API_ENDPOINT: ''
       VITE_EXPLORER_API_ENDPOINT: ''
       VITE_SENTRY_GRPC_ENDPOINT: ''
@@ -48,19 +49,21 @@ jobs:
 
       ## Secret
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
 
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
 
       VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
-      VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
-      VITE_MERCURYO_KEY: ${{ secrets.VITE_MERCURYO_KEY }}
       VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
-      VITE_MERCURYO_WIDGET_ID: ${{ secrets.VITE_MERCURYO_WIDGET_ID }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
+      VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
+      VITE_ONRAMPER_API_KEY_DEV: ${{ secrets.VITE_ONRAMPER_API_KEY_DEV }}
+      VITE_ONRAMPER_API_KEY_PROD: ${{ secrets.VITE_ONRAMPER_API_KEY_PROD }}
+      VITE_WALLET_CONNECT_PROJECT_ID: ${{ secrets.VITE_WALLET_CONNECT_PROJECT_ID }}
 
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
       VITE_GOOGLE_SITE_VERIFICATION_KEY: ${{ secrets.VITE_GOOGLE_SITE_VERIFICATION_KEY }}
@@ -127,15 +130,6 @@ jobs:
         env:
           GIT_TAG: ${{ steps.release_notes.outputs.bugsnag_version }}
 
-      - name: Upload bugsnag release
-        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
-        with:
-          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
-          directory: ./.nuxt/dist/client/_nuxt
-          baseUrl: ${{ env.VITE_BASE_URL }}
-          appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
-          overwrite: true
-
       - name: Use AWS CLI
         uses: chrislennon/action-aws-cli@v1.1
 
@@ -163,6 +157,15 @@ jobs:
           threshold: 1s
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload bugsnag release
+        uses: ricado-group/bugsnag-sourcemaps-upload-action@v1
+        with:
+          apiKey: ${{ env.VITE_BUGSNAG_KEY }}
+          directory: ./.nuxt/dist/client/_nuxt
+          baseUrl: ${{ env.VITE_BASE_URL }}
+          appVersion: ${{ steps.release_notes.outputs.bugsnag_version }}
+          overwrite: true
 
     outputs:
       release_notes: ${{ steps.release_notes.outputs.release_notes }}

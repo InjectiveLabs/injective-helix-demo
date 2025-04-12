@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-
-import {
-  BotType,
-  LiquidityBotField,
-  LiquidityBotForm,
-  LiquidityValues,
-  UiMarketWithToken,
-  UiSpotMarket
-} from '@/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { BotType, LiquidityBotField } from '@/types'
+import type {
+  UiSpotMarket,
+  LiquidityValues,
+  LiquidityBotForm,
+  UiMarketWithToken
+} from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -22,13 +20,14 @@ const props = withDefaults(
 
 const toast = useToast()
 const tokenStore = useTokenStore()
+const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
 const liquidityFormValues = useFormValues<LiquidityBotForm>()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 const hasConfirmed = ref(false)
 const confirmationModal = ref(false)
@@ -44,12 +43,6 @@ const totalUsd = computed(() =>
         liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0
       ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
     )
-)
-
-const isAutoSignOrAuthzEnabled = computed(
-  () =>
-    sharedWalletStore.isAuthzWalletConnected ||
-    sharedWalletStore.isAutoSignEnabled
 )
 
 async function openConfirmationModal() {
@@ -85,10 +78,10 @@ async function createLiquidityBot() {
 
   gridStrategyStore
     .createSpotLiquidityBot({
-      market: props.market as UiSpotMarket,
       grids,
       lowerBound: lowerBound.toFixed(),
       upperBound: upperBound.toFixed(),
+      market: props.market as UiSpotMarket,
       upperTrailingBound: trailingUpperBound.toFixed(),
       lowerTrailingBound: trailingLowerBound.toFixed(),
       baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount],
@@ -96,28 +89,28 @@ async function createLiquidityBot() {
     })
     .then(() => {
       EventTracker.trackCreateStrategy({
-        market: props.market.slug,
         isLiquidity: true,
+        market: props.market.slug,
+        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed(),
         formValues: {
-          baseInvestmentAmount:
-            liquidityFormValues.value[LiquidityBotField.BaseAmount],
-          quoteInvestmentAmount:
-            liquidityFormValues.value[LiquidityBotField.QuoteAmount],
+          grids: String(props.liquidityValues.grids),
           lowerPrice: props.liquidityValues.lowerBound.toFixed(),
           upperPrice: props.liquidityValues.upperBound.toFixed(),
           trailingLower: props.liquidityValues.trailingLowerBound.toFixed(),
           trailingUpper: props.liquidityValues.trailingUpperBound.toFixed(),
-          grids: String(props.liquidityValues.grids)
-        },
-        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed()
+          baseInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.BaseAmount],
+          quoteInvestmentAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount]
+        }
       })
 
       confirmationModal.value = false
 
       toast.add({
         title: t('sgt.success'),
-        description: t('sgt.gridStrategyCreatedSuccessfully'),
-        icon: NuxtUiIcons.Checkmark
+        icon: NuxtUiIcons.Checkmark,
+        description: t('sgt.gridStrategyCreatedSuccessfully')
       })
 
       status.setIdle()
@@ -125,21 +118,20 @@ async function createLiquidityBot() {
     .catch((e) => {
       if (e.message && e.originalMessage) {
         EventTracker.trackTradingBotError({
-          wallet: sharedWalletStore.injectiveAddress,
+          error: e.message || '',
           market: props.market.slug,
-          baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
-          quoteAmount:
-            liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
+          botType: BotType.LiquidityGrid,
+          originalMessage: e.originalMessage || '',
+          wallet: sharedWalletStore.injectiveAddress,
+          grids: String(props.liquidityValues.grids),
           lowerBound: props.liquidityValues.lowerBound.toFixed(),
           upperBound: props.liquidityValues.upperBound.toFixed(),
+          baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
+          quoteAmount: liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
           upperTrailingBound:
             props.liquidityValues.trailingUpperBound.toFixed(),
           lowerTrailingBound:
-            props.liquidityValues.trailingLowerBound.toFixed(),
-          error: e.message || '',
-          originalMessage: e.originalMessage || '',
-          botType: BotType.LiquidityGrid,
-          grids: String(props.liquidityValues.grids)
+            props.liquidityValues.trailingLowerBound.toFixed()
         })
       }
 
@@ -156,54 +148,59 @@ async function createLiquidityBot() {
     <AppConnectWallet
       v-if="!sharedWalletStore.isUserConnected"
       class="w-full"
-      size="xl"
       block
+      size="xl"
     />
 
     <AppButton
       v-else
       size="lg"
-      :disabled="Object.keys(formErrors).length > 0 || isAutoSignOrAuthzEnabled"
-      :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
       class="w-full"
+      :disabled="
+        Object.keys(formErrors).length > 0 || jsonStore.isPostUpgradeMode
+      "
+      :variant="Object.keys(formErrors).length ? 'primary-outline' : 'primary'"
       @click="openConfirmationModal"
     >
-      <span v-if="isAutoSignOrAuthzEnabled">
-        {{ $t('common.unauthorized') }}
+      <span v-if="jsonStore.isPostUpgradeMode">
+        {{ $t('trade.postOnlyWarning') }}
       </span>
       <span v-else>{{ $t('liquidityBots.createBot') }}</span>
     </AppButton>
 
-    <SharedModal
+    <AppModal
       v-model="confirmationModal"
-      v-bind="{ isHideCloseButton: true }"
+      v-bind="{ isSm: true, isHideCloseButton: true }"
     >
-      <template #header>
-        <div class="text-2xl font-bold">
+      <!-- <template #title>
+        <div class="text-xl font-bold">
           {{ $t('tradingBots.botCreationConfirmation') }}
         </div>
-      </template>
+      </template> -->
 
-      <div class="space-y-4 p-4 text-sm">
-        <p class="text-gray-300 mb-6">
+      <div class="space-y-4 text-sm">
+        <!-- <p class="text-gray-300 mb-6">
           {{ $t('sgt.confirmationDescription') }}
-        </p>
+        </p> -->
 
         <div class="space-y-4">
           <div class="flex justify-between items-start">
             <span class="text-gray-400">{{ $t('sgt.investment') }}</span>
             <div class="text-right">
               <div class="text-lg">
+                <span>$ </span>
                 <SharedUsdAmount :amount="totalUsd.toFixed()" />
-                <span> $</span>
               </div>
-              <div v-if="liquidityFormValues.baseAmount" class="text-gray-500">
-                {{ liquidityFormValues.baseAmount }}
-                {{ market.baseToken.symbol }}
-              </div>
-              <div v-if="liquidityFormValues.quoteAmount" class="text-gray-500">
-                {{ liquidityFormValues.quoteAmount }}
-                {{ market.quoteToken.symbol }}
+              <div class="flex items-center gap-1 text-coolGray-500">
+                <div v-if="liquidityFormValues.baseAmount">
+                  {{ liquidityFormValues.baseAmount }}
+                  {{ market.baseToken.symbol }}
+                </div>
+                /
+                <div v-if="liquidityFormValues.quoteAmount">
+                  {{ liquidityFormValues.quoteAmount }}
+                  {{ market.quoteToken.symbol }}
+                </div>
               </div>
             </div>
           </div>
@@ -215,7 +212,7 @@ async function createLiquidityBot() {
 
           <div class="flex justify-between items-center">
             <span class="text-gray-400">{{ $t('sgt.gridMode') }}</span>
-            <span>Arithmetic LP</span>
+            <span>{{ $t('sgt.modes.arithmetic_lp') }}</span>
           </div>
 
           <div class="flex justify-between items-center">
@@ -249,16 +246,18 @@ async function createLiquidityBot() {
         </div>
 
         <SharedButton
-          :loading="status.isLoading()"
           class="mt-6"
-          variant="solid"
           block
-          :disabled="!hasConfirmed"
+          variant="solid"
+          v-bind="{
+            disabled: !hasConfirmed,
+            loading: status.isLoading()
+          }"
           @click="createLiquidityBot"
         >
           {{ $t('sgt.confirm') }}
         </SharedButton>
       </div>
-    </SharedModal>
+    </AppModal>
   </div>
 </template>

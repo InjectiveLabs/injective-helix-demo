@@ -1,16 +1,14 @@
 import { format } from 'date-fns'
 import { AtomicSwap } from '@injectivelabs/sdk-ts'
-import { getExplorerUrl } from '@shared/utils/network'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import {
-  toBalanceInToken,
-  convertCoinToBalancesWithToken
-} from '@/app/utils/formatters'
+import { getExplorerUrl } from '@shared/utils/network'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   DATE_TIME_DISPLAY,
   MAX_QUOTE_DECIMALS,
   UI_DEFAULT_AGGREGATION_DECIMALS
 } from '@/app/utils/constants'
+import { convertCoinToBalancesWithToken } from '@/app/utils/formatters'
 
 export function useSwapHistory(swap: Ref<AtomicSwap>) {
   const tokenStore = useTokenStore()
@@ -39,7 +37,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
       return ZERO_IN_BASE
     }
 
-    return toBalanceInToken({
+    return sharedToBalanceInToken({
       value: destinationTokenWithBalance.value.balance,
       decimalPlaces: destinationTokenWithBalance.value.token.decimals,
       fixedDecimals: 3
@@ -56,7 +54,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
       return ZERO_IN_BASE
     }
 
-    return toBalanceInToken({
+    return sharedToBalanceInToken({
       value: sourceTokenWithBalance.value.balance,
       decimalPlaces: sourceTokenWithBalance.value.token.decimals,
       fixedDecimals: 3
@@ -72,7 +70,7 @@ export function useSwapHistory(swap: Ref<AtomicSwap>) {
     swap.value.fees.map(({ denom, amount }) => {
       const token = tokenStore.tokenByDenomOrSymbol(denom)
 
-      const amountInToken = toBalanceInToken({
+      const amountInToken = sharedToBalanceInToken({
         value: amount,
         decimalPlaces: token?.decimals || 18,
         fixedDecimals: MAX_QUOTE_DECIMALS

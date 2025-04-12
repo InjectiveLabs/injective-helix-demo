@@ -1,11 +1,6 @@
 import { format } from 'date-fns'
+import { ExitType, MarketType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  ExitType,
-  MarketType,
-  StrategyType,
-  TradingStrategy
-} from '@injectivelabs/sdk-ts'
 import { formatInterval } from '@/app/utils/helpers'
 import {
   BotType,
@@ -13,7 +8,8 @@ import {
   SgtMarketType,
   AccountBalance,
   StrategyStatus,
-  UiDerivativeMarket
+  UiDerivativeMarket,
+  IndexerGridStrategyType
 } from '@/types'
 
 export const useDerivativeGridStrategies = (
@@ -115,8 +111,7 @@ export const useDerivativeGridStrategies = (
             exitType: strategy.stopLossConfig.exitType,
             exitPrice: sharedToBalanceInToken({
               value: strategy.stopLossConfig.exitPrice,
-              decimalPlaces:
-                market.quoteToken.decimals - market.baseToken.decimals
+              decimalPlaces: market.quoteToken.decimals
             })
           }
         : undefined
@@ -126,8 +121,7 @@ export const useDerivativeGridStrategies = (
             exitType: strategy.takeProfitConfig.exitType,
             exitPrice: sharedToBalanceInToken({
               value: strategy.takeProfitConfig.exitPrice,
-              decimalPlaces:
-                market.quoteToken.decimals - market.baseToken.decimals
+              decimalPlaces: market.quoteToken.decimals
             })
           }
         : undefined
@@ -155,22 +149,6 @@ export const useDerivativeGridStrategies = (
           })
         : undefined
 
-      // PNL New
-
-      const pnl = isActive
-        ? currentUsdValue.minus(initialUsdValue).toString()
-        : strategy.pnl
-
-      const percentagePnl = isActive
-        ? currentUsdValue
-            .minus(initialUsdValue)
-            .div(initialUsdValue)
-            .times(100)
-            .toFixed(2)
-        : strategy.pnlPerc
-
-      // PNL
-
       const depositQuoteQuantity = sharedToBalanceInToken({
         value: strategy.quoteDeposit,
         decimalPlaces: market.quoteToken.decimals
@@ -179,6 +157,26 @@ export const useDerivativeGridStrategies = (
       const depositUsdValue = new BigNumberInBase(depositQuoteQuantity).times(
         tokenStore.tokenUsdPrice(market.quoteToken)
       )
+
+      // PNL New
+
+      const pnl = isActive
+        ? currentUsdValue.minus(initialUsdValue).toString()
+        : depositUsdValue.minus(initialUsdValue).toString()
+
+      const percentagePnl = isActive
+        ? currentUsdValue
+            .minus(initialUsdValue)
+            .div(initialUsdValue)
+            .times(100)
+            .toFixed(2)
+        : depositUsdValue
+            .minus(initialUsdValue)
+            .div(initialUsdValue)
+            .times(100)
+            .toFixed(2)
+
+      // PNL
 
       const totalAmount = isActive ? currentUsdValue : depositUsdValue
 
@@ -192,7 +190,7 @@ export const useDerivativeGridStrategies = (
 
       if (
         strategy.marketType === MarketType.Spot &&
-        strategy.strategyType === StrategyType.ArithmeticLP
+        strategy.strategyType === IndexerGridStrategyType.ArithmeticLP
       ) {
         botType = BotType.LiquidityGrid
       } else if (strategy.marketType === MarketType.Derivative) {
@@ -206,7 +204,9 @@ export const useDerivativeGridStrategies = (
       const isSpot = false
 
       const isLoadingMarkPrice =
-        !derivativeStore.marketMarkPriceMap[market.marketId]
+        isActive &&
+        (!derivativeStore.marketMarkPriceMap[market.marketId] ||
+          new BigNumberInBase(currentQuoteAccountBalanceQuantity).eq(0))
 
       return {
         pnl,
@@ -226,6 +226,7 @@ export const useDerivativeGridStrategies = (
         trailingUpper,
         trailingLower,
         percentagePnl,
+        strategyStatus: strategy.state as StrategyStatus,
         currentUsdValue,
         initialUsdValue,
         durationFormatted,
@@ -236,7 +237,6 @@ export const useDerivativeGridStrategies = (
         marketId: strategy.marketId,
         createdAt: strategy.createdAt,
         stopReason: strategy.stopReason as StopReason,
-        gridMode: strategy.strategyType as StrategyType,
         marketType: strategy.marketType as SgtMarketType,
         currentQuoteAccountBalanceQuantity,
         strategyType: strategy.strategyType,

@@ -153,6 +153,7 @@ function selectStrategy(
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
+          <span>$</span>
           <AppUsdAmount
             :decimal-places="4"
             :amount="row.totalAmount.toFixed()"
@@ -163,7 +164,11 @@ function selectStrategy(
       <template #totalProfit-data="{ row }">
         <div
           class="flex flex-col font-mono"
-          :class="row.isPositivePnl ? 'text-green-500' : 'text-red-500'"
+          :class="{
+            'text-green-500': row.isPositivePnl,
+            'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
+            'text-coolGray-500': row.isZeroPnl
+          }"
         >
           <div class="flex items-center gap-1">
             <span>{{ row.isPositivePnl ? '+' : '' }}</span>
@@ -219,7 +224,7 @@ function selectStrategy(
       :message="$t('sgt.noStrategies')"
     />
 
-    <SharedModal v-model="isOpen">
+    <AppModal v-model="isOpen" v-bind="{ isSm: true }">
       <div class="pt-6">
         <PartialsTradingBotsSpotStrategyDetails
           v-if="selectedStrategy && selectedStrategy.isSpot"
@@ -231,6 +236,6 @@ function selectStrategy(
           :active-strategy="selectedStrategy.strategy"
         />
       </div>
-    </SharedModal>
+    </AppModal>
   </div>
 </template>

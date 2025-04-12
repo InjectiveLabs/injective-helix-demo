@@ -2,7 +2,7 @@
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
 import { TokenSymbols } from '@/app/data/token'
-import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
+import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
@@ -215,7 +215,6 @@ function onMaxSelected({ amount }: { amount: string }) {
             isUsdVisible: true,
             shouldCheckBalance: true,
             options: inputDenomOptions,
-            modal: Modal.TokenSelectorFrom,
             amountFieldName: SwapFormField.InputAmount,
             tensMultiplier: inputToken?.tensMultiplier,
             maxDecimals: inputToken?.quantityDecimals || 0,
@@ -260,7 +259,6 @@ function onMaxSelected({ amount }: { amount: string }) {
             isMaxHidden: true,
             isUsdVisible: true,
             options: outputDenomOptions,
-            modal: Modal.TokenSelectorTo,
             amountFieldName: SwapFormField.OutputAmount,
             tensMultiplier: outputToken?.tensMultiplier,
             hideBalance: !sharedWalletStore.isUserConnected,

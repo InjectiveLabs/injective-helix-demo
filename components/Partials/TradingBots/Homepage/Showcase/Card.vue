@@ -2,10 +2,10 @@
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  MainPage,
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
 } from '@/types'
+import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
 
 const props = withDefaults(
   defineProps<{
@@ -25,6 +25,8 @@ const totalUsers = computed(
 const isPositivePnl = computed(() =>
   new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
 )
+
+const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
 </script>
 
 <template>
@@ -110,14 +112,8 @@ const isPositivePnl = computed(() =>
     </div>
 
     <template #footer>
-      <UButton
-        block
-        :to="{
-          name: MainPage.TradingBotsLiquidityBotsSpot,
-          query: { market: strategy.market.slug }
-        }"
-      >
-        {{ $t('common.create') }}
+      <UButton block :to="to">
+        {{ $t('sgt.replicateStrategy') }}
       </UButton>
     </template>
   </UCard>

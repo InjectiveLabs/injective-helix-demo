@@ -18,12 +18,12 @@ import {
   UiDerivativeMarket,
   DerivativesTradeForm,
   DerivativeTradeTypes,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
 
-const orderbookStore = useOrderbookStore()
 const positionStore = usePositionStore()
+const orderbookStore = useOrderbookStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
@@ -34,14 +34,15 @@ const validateTriggerField = useValidateField(
 )
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
-
+const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
+const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
-    marginWithFee: BigNumberInBase
     quantity: BigNumberInBase
+    worstPrice: BigNumberInBase
+    marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
   }>(),
   {}
@@ -94,6 +95,21 @@ const {
   })
 )
 
+const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
+  isBuy,
+  market,
+  markPrice,
+  price: computed(() => props.worstPrice),
+  quantity: computed(() => props.quantity),
+  marginWithFee: computed(() => props.marginWithFee),
+  type: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Type]
+  ),
+  triggerPrice: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+  )
+})
+
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
   initialValue: TradeAmountOption.Base
@@ -109,24 +125,17 @@ const {
   dynamicRule: computed(() => {
     if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
       const maxAmount = activePosition.value?.quantity
-      const insufficientBalanceRule = `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
 
-      const rules = [insufficientBalanceRule]
-
-      return rules.join('|')
+      return `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
     } else {
       const maxAmount = quoteBalanceToBigNumber.value.toFixed()
       const insufficientBalanceRule = `insufficientBalanceCustom:${props.marginWithFee.toFixed()},${maxAmount}`
 
-      const minAmountRule = `minAmount:${props.minimumAmountInQuote.toFixed()}`
-
-      const rules = [insufficientBalanceRule]
-
       if (typeValue.value === TradeAmountOption.Quote) {
-        rules.push(minAmountRule)
+        return `${insufficientBalanceRule}|minAmount:${props.minimumAmountInQuote.toFixed()}`
       }
 
-      return rules.join('|')
+      return insufficientBalanceRule
     }
   })
 })
@@ -161,11 +170,8 @@ async function setFromPercentage(percentage: number) {
     }
   }
 
-  const slippage = derivativeFormValues.value[
-    DerivativesTradeFormField.IsSlippageOn
-  ]
-    ? derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-    : 0
+  const slippage =
+    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
     isReduceOnly &&
@@ -361,31 +367,52 @@ onMounted(() => {
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
           <div
-            class="space-x-2"
+            class="space-x-1 inline-flex"
             :data-cy="dataCyTag(PerpetualMarketCyTags.AvailableBalance)"
           >
-            <span>{{
-              $t('trade.availableAmount', {
-                amount: `${quoteBalanceToString} ${market.quoteToken.symbol}`
-              })
-            }}</span>
+            <span>
+              {{
+                $t('trade.availableAmount', {
+                  amount: quoteBalanceToString
+                })
+              }}
+            </span>
+
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                token: market.quoteToken,
+                value: market.quoteToken.symbol
+              }"
+            />
           </div>
         </div>
       </template>
     </AppInputField>
 
-    <div
-      v-if="amountErrorMessage || isNotionalLessThanMinNotional"
-      class="error-message capitalize"
+    <p
+      v-if="isMarkPriceThresholdError"
+      class="error-message first-letter:capitalize"
+    >
+      {{ $t('trade.mark_price_invalid') }}
+    </p>
+
+    <p
+      v-else-if="amountErrorMessage"
+      class="error-message first-letter:capitalize"
+    >
+      {{ amountErrorMessage }}
+    </p>
+
+    <p
+      v-else-if="isNotionalLessThanMinNotional"
+      class="error-message first-letter:capitalize"
     >
       {{
-        amountErrorMessage
-          ? amountErrorMessage
-          : $t('trade.minNotionalError', {
-              minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.symbol
-            })
+        $t('trade.minNotionalError', {
+          symbol: market.quoteToken.symbol,
+          minNotional: market.minNotionalInToken
+        })
       }}
-    </div>
+    </p>
   </div>
 </template>

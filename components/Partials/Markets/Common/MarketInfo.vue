@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
+import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
+import { calculateLeverage } from '@/app/utils/formatters'
 import {
   TradePage,
   TradeSubPage,
   TradingInterface,
-  UiDerivativeMarket,
-  UiMarketWithToken
+  UiMarketWithToken,
+  UiDerivativeMarket
 } from '@/types'
-import { rwaMarketIds, RWA_TRADFI_MARKET_IDS } from '@/app/data/market'
-import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
-import { calculateLeverage } from '@/app/utils/formatters'
-import { derivativeGridMarkets, spotGridMarkets } from '@/app/json'
 
 const route = useRoute()
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
     includeName?: boolean
+    market: UiMarketWithToken
   }>(),
   {
     includeName: false
@@ -25,7 +24,7 @@ const props = withDefaults(
 )
 
 const hasGridStrategyEnabled = computed(() =>
-  [...spotGridMarkets, ...derivativeGridMarkets]
+  [...jsonStore.spotGridMarkets, ...jsonStore.derivativeGridMarkets]
     .map(({ slug }) => slug)
     .includes(props.market.slug)
 )
@@ -61,7 +60,9 @@ const marketRoute = computed(() =>
       }
 )
 
-const isRwaMarket = computed(() => rwaMarketIds.includes(props.market.marketId))
+const isRwaMarket = computed(() =>
+  jsonStore.isTradeFiMarket(props.market.marketId)
+)
 
 const indexMarketInfo = computed(() =>
   INDEX_MARKETS_INFO.find((market) => market.marketId === props.market.marketId)
@@ -75,7 +76,7 @@ const leverage = computed(() =>
 </script>
 
 <template>
-  <div class="">
+  <div>
     <UPopover
       mode="hover"
       :open-delay="300"
@@ -95,15 +96,16 @@ const leverage = computed(() =>
             'ml-1': includeName
           }"
         >
-          <div
-            :class="{
-              'border-b border-white border-dashed':
-                isRwaMarket || indexMarketInfo,
-              'font-bold': includeName
-            }"
-            class="uppercase flex items-center gap-2"
-          >
-            <span>{{ market.ticker }}</span>
+          <div class="flex items-center gap-2">
+            <span
+              :class="{
+                'font-bold': includeName,
+                'border-b border-white border-dashed':
+                  isRwaMarket || indexMarketInfo
+              }"
+            >
+              {{ market.ticker }}
+            </span>
 
             <span
               v-if="leverage"
@@ -112,9 +114,11 @@ const leverage = computed(() =>
               {{ leverage }}x
             </span>
           </div>
-          <p v-if="includeName" class="text-xs text-coolGray-500">
-            {{ market.baseToken.name }}
-          </p>
+
+          <div v-if="includeName" class="flex items-center gap-1">
+            <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
+            <PartialsTradeStatsCategoryChip v-bind="{ market }" />
+          </div>
         </div>
       </NuxtLink>
 
@@ -124,8 +128,10 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  !RWA_TRADFI_MARKET_IDS.includes(market.marketId)
-                    ? 'marketClosedMarketRow'
+                  jsonStore.helixMarketCategoriesMap.rwa.includes(
+                    market.marketId
+                  )
+                    ? 'rwaClosedMarketRow'
                     : 'nyseClosedMarketRow'
                 }`
               )

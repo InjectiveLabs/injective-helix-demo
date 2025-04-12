@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
@@ -26,14 +26,8 @@ const formattedAddress = computed(() =>
   )
 )
 
-function openDepositQRModal() {
-  if (sharedWalletStore.wallet === Wallet.Magic) {
-    modalStore.openModal(Modal.FiatOnboard)
-
-    return
-  }
-
-  modalStore.openModal(Modal.DepositQr)
+function onFiatOnRamp() {
+  modalStore.openModal(Modal.FiatOnboard)
 }
 
 function disconnect() {
@@ -95,9 +89,9 @@ function disconnect() {
             <div class="flex flex-col py-3 px-4 border-b">
               <div class="flex justify-between pb-2">
                 <div class="flex items-center gap-2">
-                  <span class="text-sm font-semibold text-coolGray-200">
+                  <p class="text-sm font-semibold text-coolGray-200 mb-1">
                     {{ $t('navigation.myAccount') }}
-                  </span>
+                  </p>
 
                   <NuxtLink :to="{ name: PortfolioSubPage.Settings }">
                     <UIcon
@@ -151,7 +145,7 @@ function disconnect() {
               </div>
 
               <div class="mt-6">
-                <AppButton class="w-full" size="md" @click="openDepositQRModal">
+                <AppButton class="w-full" size="md" @click="onFiatOnRamp">
                   {{ $t('connect.deposit') }}
                 </AppButton>
               </div>

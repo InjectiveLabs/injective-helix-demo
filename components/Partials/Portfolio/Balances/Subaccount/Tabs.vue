@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { PortfolioCyTags } from '@/types'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
+import { PortfolioCyTags, StrategyStatus } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +20,7 @@ const emit = defineEmits<{
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
+const gridStrategyStore = useGridStrategyStore()
 const { activeSubaccountTotalBalanceInUsd } = useBalance()
 
 const search = computed({
@@ -32,11 +33,17 @@ const showUnverifiedAssets = computed({
   set: (value: boolean) => emit('update:showUnverifiedAssets', value)
 })
 
-const isGridTradingAccount = computed(
-  () =>
-    isSgtSubaccountId(accountStore.subaccountId) ||
-    isPgtSubaccountId(accountStore.subaccountId)
-)
+const isGridTradingAccount = computed(() => {
+  const activeStrategy = gridStrategyStore.activeStrategies.find(
+    ({ subaccountId }) => subaccountId === accountStore.subaccountId
+  )
+
+  return (
+    (isSgtSubaccountId(accountStore.subaccountId) ||
+      isPgtSubaccountId(accountStore.subaccountId)) &&
+    activeStrategy?.state !== StrategyStatus.Active
+  )
+})
 
 const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
   useSharedBigNumberFormatter(

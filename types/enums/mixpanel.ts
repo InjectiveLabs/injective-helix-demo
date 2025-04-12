@@ -4,16 +4,20 @@ export enum MixPanelStatus {
 }
 
 export enum MixPanelEvent {
-  WalletConnected = 'Wallet Connected',
-  PlaceOrderClicked = 'Place Order Clicked',
   SwapClicked = 'Swap Clicked',
-  CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',
-  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
-  LiteBridgePageView = 'Lite Bridge Page View',
-  LiteBridgeBridged = 'Lite Bridge Bridged',
+  OnramperSeen = 'OnRamper Seen',
+  WalletConnected = 'Wallet Connected',
   QrCodePageView = 'QR Code Page View',
   QrCodeBuyFunds = 'QR Code Buy Funds',
-  TradingBotError = 'Trading Bot Error'
+  OnramperSuccess = 'OnRamper Success',
+  TradingBotError = 'Trading Bot Error',
+  RefereeLoggedIn = 'Referee Logged In',
+  PlaceOrderClicked = 'Place Order Clicked',
+  LiteBridgeBridged = 'Lite Bridge Bridged',
+  LiteBridgePageView = 'Lite Bridge Page View',
+  ReferralCodeCreated = 'Referral Code Created',
+  EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
+  CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked'
 }
 
 export enum MixPanelCounter {

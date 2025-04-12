@@ -5,8 +5,7 @@ import {
   closePosition,
   closeAllPosition,
   addMarginToPosition,
-  addMarginToSubaccountPosition,
-  closePositionAndReduceOnlyOrders
+  addMarginToSubaccountPosition
 } from '@/store/position/message'
 import {
   streamAccountPositions,
@@ -55,7 +54,6 @@ export const usePositionStore = defineStore('position', {
     closeAllPosition,
     addMarginToPosition,
     addMarginToSubaccountPosition,
-    closePositionAndReduceOnlyOrders,
 
     streamAccountPositions,
     cancelAccountPositionsStream,

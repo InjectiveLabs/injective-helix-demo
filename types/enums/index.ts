@@ -1,77 +1,18 @@
-export * from './mixpanel'
 export * from './cy'
+export * from './mixpanel'
 
-export enum Modal {
-  Terms = 'terms',
-  QrCode = 'qrcode',
-  Connect = 'connect',
-  DevMode = 'dev-mode',
-  DepositQr = 'deposit-qr',
-  SgtBanner = 'sgt-banner',
-  JoinGuild = 'join-guild',
-  LpRewards = 'lp-rewards',
-  LiteBridge = 'lite-bridge',
-  AddGrantee = 'add-grantee',
-  BidConfirm = 'bid-confirm',
-  MarketBeta = 'market-beta',
-  FiatOnboard = 'fiat-onboard',
-  CreateGuild = 'create-guild',
-  SwapSuccess = 'swap-success',
-  BankTransfer = 'bank-transfer',
-  AssetDetails = 'asset-details',
-  OrderConfirm = 'order-confirm',
-  UserFeedback = 'user-feedback',
-  MitoRedirect = 'mito-redirect',
-  PostOnlyMode = 'post-only-mode',
-  GasFeeRebate = 'gas-fee-rebate',
-  GeoRestricted = 'geo-restricted',
-  MarketExpired = 'market-expired',
-  TokenSelector = 'token-selector',
-  ScavengerHunt = 'scavenger-hunt',
-  ConnectMobile = 'connect-mobile',
-  PriceDeviation = 'price-deviation',
-  SgtBalancedFees = 'sgtBalancedFees',
-  ClosedRWAMarket = 'closed-rwa-market',
-  NinjaPassWinner = 'ninja-pass-winner',
-  TokenSelectorTo = 'token-selector-to',
-  MarketNotLiquid = 'market-not-liquid',
-  CreateSubaccount = 'create-subaccount',
-  MarketRestricted = 'market-restricted',
-  LeaderboardTerms = 'leaderboard-terms',
-  SharePositionPnl = 'share-position-pnl',
-  InstitutionalForm = 'institutionalForm',
-  CompetitionWinner = 'competition-winner',
-  MarketNotOnHelix = 'market-not-on-helix',
-  TokenSelectorFrom = 'token-selector-from',
-  SubaccountTransfer = 'subaccount-transfer',
-  CheckSpotGridAuth = 'check-spot-grid-auth',
-  AlreadyJoinedGuild = 'already-joined-guild',
-  MobileTradeDetails = 'mobile-trade-details',
-  ShareLeaderboardPnl = 'share-leaderboard-pnl',
-  GridStrategyDetails = 'grid-strategy-details',
-  DelegateToValidator = 'delegate-to-validator',
-  MarketRewardFactors = 'market-reward-factors',
-  AddMarginToPosition = 'add-margin-to-position',
-  VerifyJoinGuildHash = 'verify-join-guild-hash',
-  NewFeatureTalisLaunch = 'new-feature-talis-launch',
-  NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
-  AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
-  CreateSpotGridStrategy = 'create-spot-grid-strategy',
-  TransferToMainSubaccount = 'transfer-to-main-subaccount',
-  ShareLeaderboardCompetition = 'share-leaderboard-competition'
+export enum DontShowAgain {
+  AutoSign = 'auto-sign'
 }
 
-export enum Breakpoint {
-  Lg = 'lg',
-  Md = 'md',
-  Sm = 'sm',
-  Xs = 'xs',
-  Xxs = 'xxs'
+export enum GuildSortBy {
+  TVL = 'tvl',
+  Volume = 'volume'
 }
 
-export enum TransferSide {
-  Bank = 'Bank',
-  TradingAccount = 'TradingAccount'
+export enum TradingLayout {
+  Left = 'left',
+  Right = 'right'
 }
 
 export enum TradeTypes {
@@ -84,150 +25,63 @@ export enum SpotTradeDirection {
   Sell = 'sell'
 }
 
-export enum DerivativeTradeTypes {
-  Limit = 'limit',
-  Market = 'market',
-  StopLimit = 'stop-limit',
-  StopMarket = 'stop-market'
+export enum TradeAmountOption {
+  Base = 'base',
+  Quote = 'quote'
 }
 
-export enum TradeSelectorType {
-  Type = 'type',
-  TypeAllDerivatives = 'type-all-derivatives',
-  TypeAllSpot = 'type-all-spot',
+export enum StrategyPerformance {
+  Top = 'top',
+  Worst = 'worst'
+}
+
+export enum GridStrategyType {
+  Auto = 'auto',
+  Manual = 'manual'
+}
+
+export enum PositionsFilterField {
   Side = 'side',
-  PositionSide = 'position-side',
-  TransferType = 'transfer-type'
+  Market = 'market'
 }
 
-export enum StreamType {
-  SpotTrades = 'spot-trades',
-  OraclePrices = 'oracle-prices',
-  DerivativesTrades = 'derivatives-trades',
-  BankBalance = 'bank-balance',
-  SubaccountBalances = 'subaccount-balances',
-  SpotOrderbookUpdate = 'spot-orderbook-update',
-  SpotSubaccountOrders = 'spot-subaccount-orders',
-  SpotSubaccountTrades = 'spot-subaccount-trades',
-  DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
-  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
-  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
-  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
-  DerivativesSubaccountPositions = 'derivatives-positions-trades',
-  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history'
+export enum SgtMarketType {
+  Spot = 'spot',
+  Derivative = 'derivative'
 }
 
-export enum AveragePriceOptions {
-  None = 0,
-  BaseAmount = 1,
-  QuoteAmount = 2,
-  Percentage = 3
+export enum GridStrategyTabs {
+  Running = 'running',
+  History = 'history'
+}
+
+export enum SpotOpenOrdersFilterField {
+  Side = 'side',
+  Market = 'market'
 }
 
 export enum SurveyTitle {
   HelixUserSurveyFeb23 = 'helix-user-survey-feb-23'
 }
 
-export enum DefaultMarket {
-  Perpetual = 'btc-usdt-perp',
-  PerpetualTestnet = 'btc-usdt-perp-pyth',
-  Spot = 'inj-usdt'
+export enum AggregatedBalanceType {
+  Inj = 'inj',
+  Aggregated = 'aggregated'
 }
 
-export enum OrderbookLayout {
-  Default = 'default',
-  Buys = 'buys',
-  Sells = 'sells'
+export enum TransferSide {
+  Bank = 'Bank',
+  TradingAccount = 'TradingAccount'
 }
 
-export enum TradingLayout {
-  Left = 'left',
-  Right = 'right'
+export enum OrderbookViewOption {
+  Trades = 'trades',
+  Orderbook = 'orderbook'
 }
 
-export enum BalanceHeaderType {
-  None = 'none',
-  Asset = 'asset',
-  Total = 'total',
-  Available = 'available',
-  Value = 'value'
-}
-
-export enum BusEvents {
-  FundingRefresh = 'funding-refresh',
-  NavLinkClicked = 'nav-link-clicked',
-  WalletConnected = 'wallet-connected',
-  PostOnlyToggled = 'post-only-toggled',
-  SubaccountChange = 'subaccount-change',
-  AutoSignConnected = 'auto-sign-connected',
-  ShowLedgerConnect = 'show-ledger-connect',
-  UpdateMarketChart = 'update-market-chart',
-  OrderbookSizeClick = 'orderbook-size-click',
-  SharePositionOpened = 'share-position-opened',
-  OrderbookPriceClick = 'orderbook-price-click',
-  AddMarginToPosition = 'add-margin-to-position',
-  ActivityFilterUpdate = 'activity-filter-update',
-  OpenTradingBotDetails = 'open-trading-bot-details',
-  OrderbookNotionalClick = 'orderbook-notional-click',
-  AssetDetailsModalPayload = 'asset-details-modal-payload',
-  ConnectMobileModalOpened = 'connect-mobile-modal-opened',
-  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
-  BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
-  SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
-  TradeConfirmationModalPayload = 'trade-confirmation-modal-payload',
-  ShareLeaderboardCompetitionOpened = 'share-leaderboard-competition-opened',
-  DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
-}
-
-export enum ActivityField {
-  Symbol = 'Symbol',
-  Denom = 'Denom',
-  Limit = 'Limit',
-  Page = 'Page',
-  Side = 'Side',
-  Type = 'Type'
-}
-
-export enum SubaccountTransferField {
-  Amount = 'Amount',
-  SrcSubaccountId = 'SrcSubaccountId',
-  DstSubaccountId = 'DstSubaccountId',
-  Denom = 'Denom',
-  Token = 'Token'
-}
-
-export enum TradeField {
-  BaseAmount = 'Base amount',
-  BaseDenom = 'Base denom',
-  Leverage = 'Leverage',
-  LimitPrice = 'Limit price',
-  OrderSide = 'Order side',
-  PostOnly = 'Post-Only',
-  ProportionalPercentage = 'Proportional percentage',
-  QuoteAmount = 'Quote amount',
-  QuoteDenom = 'Quote denom',
-  ReduceOnly = 'Reduce-Only',
-  SlippageTolerance = 'Slippage tolerance',
-  TradingType = 'Trading type',
-  TriggerPrice = 'Trigger price'
-}
-
-export type BaseQuoteFields = Exclude<
-  TradeField,
-  | TradeField.LimitPrice
-  | TradeField.TriggerPrice
-  | TradeField.BaseDenom
-  | TradeField.QuoteDenom
-  | TradeField.ProportionalPercentage
->
-
-export enum TradeExecutionType {
-  Market = 'market',
-  LimitFill = 'limitFill',
-  LimitMatchRestingOrder = 'limitMatchRestingOrder',
-  LimitMatchNewOrder = 'limitMatchNewOrder',
-  StopLimit = 'stopLimit',
-  StopMarket = 'stopMarket'
+export enum ClosePositionLimitFormField {
+  Price = 'price',
+  Quantity = 'quantity'
 }
 
 export enum WalletModalType {
@@ -236,91 +90,71 @@ export enum WalletModalType {
   Trezor = 'trezor'
 }
 
-export enum ActivityView {
-  Positions = 'Positions/Index',
-  FundingHistory = 'Positions/FundingHistory',
-  SpotOrders = 'Spot/Index',
-  SpotOrderHistory = 'Spot/OrderHistory',
-  SpotTradeHistory = 'Spot/TradeHistory',
-  DerivativeOrders = 'Derivatives/Index',
-  DerivativeAdvancedOrders = 'Derivatives/AdvancedOrders',
-  DerivativeOrderHistory = 'Derivatives/OrderHistory',
-  DerivativeTradeHistory = 'Derivatives/TradeHistory',
-  WalletTransfers = 'WalletHistory/Transfers',
-  WalletDeposits = 'WalletHistory/Deposits',
-  WalletWithdrawals = 'WalletHistory/Withdrawals'
+export enum TradingInterface {
+  Standard = 'standard',
+  TradingBots = 'trading-bots'
 }
 
-export enum AggregatedBalanceType {
-  Inj = 'inj',
-  Aggregated = 'aggregated'
+export enum OrderbookLayout {
+  Buys = 'buys',
+  Sells = 'sells',
+  Default = 'default'
 }
 
-export enum NoticeBanner {
-  ScheduledUpgradeJanuary2024 = 'scheduled-upgrade-january-2024',
-  ScheduledUpgradeAugust2024 = 'scheduled-upgrade-august-2024',
-  TeslaCampaign = 'tesla-campaign'
+export enum LeaderboardType {
+  Pnl = 'pnl_leaderboard',
+  Volume = 'volume_leaderboard'
 }
 
-export enum SubaccountBalanceStreamType {
-  AvailableBalance = 'available_balances',
-  TotalBalance = 'total_balances'
+export enum Breakpoint {
+  Lg = 'lg',
+  Md = 'md',
+  Sm = 'sm',
+  Xs = 'xs',
+  Xxs = 'xxs'
 }
 
-export enum PaginationState {
-  InvalidQuery = 'invalid-query',
-  QueryPageExist = 'query-page-exist',
-  QueryMoreThanTotalPage = 'query-more-than-total-page'
+export enum PortfolioChartType {
+  Pnl = 'pnl',
+  Volume = 'volume',
+  Balance = 'balance'
 }
 
-export enum InstitutionalFormField {
-  FirstName = 'firstName',
-  LastName = 'lastName',
-  Email = 'email',
-  Company = 'company',
-  Telegram = 'telegram'
+export enum LiquidityProvisionTypeOption {
+  All = 'All',
+  Mito = 'Mito',
+  Helix = 'Helix'
 }
 
-export enum SpotGridTradingField {
-  Grids = 'grids',
-  SettleIn = 'SettleIn',
-  ExitType = 'exitType',
-  StopLoss = 'stopLoss',
-  LowerPrice = 'lowerPrice',
-  UpperPrice = 'upperPrice',
-  TakeProfit = 'takeProfit',
-  StrategyType = 'strategyType',
-  InvestmentType = 'investmentType',
-  QuoteInvestmentAmount = 'quoteInvestmentAmount',
-  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
-  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
-  BaseInvestmentAmount = 'baseInvestmentAmount',
-  IsAssetRebalanceOn = 'isAssetRebalanceOn',
-  IsTrailingEnabled = 'isTrailingEnabled',
-  TrailingUpper = 'trailingUpper',
-  TrailingLower = 'trailingLower'
+export enum MarketQuoteType {
+  All = 'all',
+  INJ = 'inj',
+  USDT = 'usdt',
+  USDC = 'usdc'
 }
 
-export enum DerivativeGridTradingField {
-  Grids = 'grids',
-  Margin = 'margin',
-  Leverage = 'leverage',
-  LowerPrice = 'lowerPrice',
-  UpperPrice = 'upperPrice',
+export enum StrategyStatus {
+  Active = 'active',
+  Pending = 'pending',
+  Removed = 'removed'
+}
+
+export enum TakeProfitStopLossFormField {
   StopLoss = 'stopLoss',
   TakeProfit = 'takeProfit'
 }
 
-export enum SpotGridMessages {
-  MsgCreateSpotLimitOrder = 'injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
-  MsgCreateSpotMarketOrder = 'injective.exchange.v1beta1.MsgCreateSpotMarketOrder',
-  MsgWithdraw = 'injective.exchange.v1beta1.MsgWithdraw',
-  MsgBatchUpdateOrders = 'injective.exchange.v1beta1.MsgBatchUpdateOrders'
+export enum SpotOrderHistoryFilterField {
+  Side = 'side',
+  Type = 'type',
+  Market = 'market'
 }
 
-export enum GridStrategyTabs {
-  Running = 'running',
-  History = 'history'
+export enum AveragePriceOptions {
+  None = 0,
+  BaseAmount = 1,
+  Percentage = 3,
+  QuoteAmount = 2
 }
 
 export enum InvestmentTypeGst {
@@ -329,9 +163,169 @@ export enum InvestmentTypeGst {
   BaseAndQuote = 'baseAndQuote'
 }
 
-export enum StrategyStatus {
+export enum TimeDuration {
+  Day = 'day',
+  Hour = 'hour',
+  Minute = 'minute',
+  Second = 'second'
+}
+
+export enum MitoRegistrationMode {
+  Restricted = 'Restricted',
+  Permissionless = 'Permissionless'
+}
+
+export enum LeaderboardDuration {
+  All = 'ALL',
+  OneDay = '1D',
+  OneWeek = '1W',
+  OneMonth = '1M'
+}
+
+export enum MarketFilterType {
+  All = 'all',
+  New = 'new',
+  Volume = 'volume',
+  Upcoming = 'upcoming'
+}
+
+export enum LeaderboardCampaignStatus {
   Active = 'active',
-  Removed = 'removed'
+  Inactive = 'inactive',
+  Upcoming = 'upcoming'
+}
+
+export enum MarketHeaderType {
+  Price = 'price',
+  Market = 'market',
+  Change = 'change',
+  Volume = 'volume'
+}
+
+export enum BotType {
+  SpotGrid = 'spotGrid',
+  FuturesGrid = 'futuresGrid',
+  LiquidityGrid = 'liquidityGrid'
+}
+
+export enum ChartViewOption {
+  Info = 'info',
+  Chart = 'chart',
+  // ProChart = 'pro-chart',
+  Depth = 'depth'
+}
+
+export enum VolatilityStrategyType {
+  Passive = 'passive',
+  Moderate = 'moderate',
+  Aggressive = 'aggressive'
+}
+
+export enum SubaccountBalanceStreamType {
+  TotalBalance = 'total_balances',
+  AvailableBalance = 'available_balances'
+}
+
+export enum LiquidityBotField {
+  Volatility = 'volatility',
+  BaseAmount = 'baseAmount',
+  QuoteAmount = 'quoteAmount'
+}
+
+export enum DefaultMarket {
+  Spot = 'inj-usdt',
+  Perpetual = 'btc-usdt-perp',
+  PerpetualTestnet = 'btc-usdt-perp-pyth'
+}
+
+export enum DerivativeTradeTypes {
+  Limit = 'limit',
+  Market = 'market',
+  StopLimit = 'stop-limit',
+  StopMarket = 'stop-market'
+}
+
+export enum BalanceHeaderType {
+  None = 'none',
+  Asset = 'asset',
+  Total = 'total',
+  Value = 'value',
+  Available = 'available'
+}
+
+export enum ActivityField {
+  Page = 'Page',
+  Side = 'Side',
+  Type = 'Type',
+  Denom = 'Denom',
+  Limit = 'Limit',
+  Symbol = 'Symbol'
+}
+
+export enum SpotOrdersStandardView {
+  Orders = 'orders',
+  Balances = 'balances',
+  TradeHistory = 'tradeHistory',
+  OrderHistory = 'orderHistory'
+}
+
+export enum LiquidityProvisionType {
+  MitoVault = 'mito-vault',
+  InjectiveStaking = 'injective-staking',
+  HelixSpotGridBot = 'helix-spot-grid-bot'
+}
+
+export enum InstitutionalFormField {
+  Email = 'email',
+  Company = 'company',
+  LastName = 'lastName',
+  Telegram = 'telegram',
+  FirstName = 'firstName'
+}
+
+export enum PaginationState {
+  InvalidQuery = 'invalid-query',
+  QueryPageExist = 'query-page-exist',
+  QueryMoreThanTotalPage = 'query-more-than-total-page'
+}
+
+export enum SubaccountTransferField {
+  Denom = 'Denom',
+  Token = 'Token',
+  Amount = 'Amount',
+  SrcSubaccountId = 'SrcSubaccountId',
+  DstSubaccountId = 'DstSubaccountId'
+}
+
+export enum TradingChartInterval {
+  '1m' = '1',
+  '3m' = '3',
+  '5m' = '5',
+  'D' = '1D',
+  'W' = '1W',
+  '1h' = '60',
+  '15m' = '15',
+  '30m' = '30',
+  '2h' = '120',
+  '4h' = '240',
+  '6h' = '360'
+}
+
+export enum SpotOrdersTradingBotsView {
+  Orders = 'orders',
+  TradeHistory = 'tradeHistory',
+  OrderHistory = 'orderHistory',
+  ActiveStrategies = 'activeStrategies',
+  RemovedStrategies = 'removedStrategies'
+}
+
+export enum TradeSelectorType {
+  Type = 'type',
+  Side = 'side',
+  TypeAllSpot = 'type-all-spot',
+  PositionSide = 'position-side',
+  TransferType = 'transfer-type',
+  TypeAllDerivatives = 'type-all-derivatives'
 }
 
 export enum StopReason {
@@ -343,121 +337,32 @@ export enum StopReason {
   ExceededMaxRetries = 'exceeded_max_retries'
 }
 
-export enum GridStrategyType {
-  Auto = 'auto',
-  Manual = 'manual'
-}
-
-export enum GuildSortBy {
-  TVL = 'tvl',
-  Volume = 'volume'
-}
-
-export enum TimeDuration {
-  Day = 'day',
-  Hour = 'hour',
-  Minute = 'minute',
-  Second = 'second'
-}
-
-export enum ChartViewOption {
-  Chart = 'chart',
-  // ProChart = 'pro-chart',
-  Depth = 'depth',
-  Info = 'info'
-}
-
-export enum OrderbookViewOption {
-  Orderbook = 'orderbook',
-  Trades = 'trades'
-}
-
-export enum MarketHeaderType {
-  Market = 'market',
-  Change = 'change',
-  Volume = 'volume',
-  Price = 'price'
-}
-
-export enum TradingInterface {
-  Standard = 'standard',
-  TradingBots = 'trading-bots'
-}
-
-export enum SgtMarketType {
-  Spot = 'spot',
-  Derivative = 'derivative'
-}
-
-export enum VolatilityStrategyType {
-  Passive = 'passive',
-  Moderate = 'moderate',
-  Aggressive = 'aggressive'
-}
-
-export enum LiquidityBotField {
-  Volatility = 'volatility',
-  BaseAmount = 'baseAmount',
-  QuoteAmount = 'quoteAmount'
-}
-
-export enum SpotOrdersStandardView {
-  Orders = 'orders',
-  Balances = 'balances',
-  TradeHistory = 'tradeHistory',
-  OrderHistory = 'orderHistory'
-}
-
-export enum SpotOrdersTradingBotsView {
-  Orders = 'orders',
-  TradeHistory = 'tradeHistory',
-  OrderHistory = 'orderHistory',
-  ActiveStrategies = 'activeStrategies',
-  RemovedStrategies = 'removedStrategies'
-}
-
-export enum PerpOrdersStandardView {
-  Balances = 'balances',
-  Positions = 'positions',
-  Orders = 'orders',
-  AdvancedOrders = 'advancedOrders',
-  OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory',
-  FundingHistory = 'fundingHistory'
-}
-
-export enum PerpOrdersTradingBotsView {
-  ActiveStrategies = 'activeStrategies',
-  RemovedStrategies = 'removedStrategies',
-  Positions = 'positions',
-  OpenOrders = 'openOrders',
-  OrderHistory = 'orderHistory',
-  TradeHistory = 'tradeHistory'
-}
-
-export enum PositionsFilterField {
-  Market = 'market',
-  Side = 'side'
-}
-
-export enum SpotOpenOrdersFilterField {
-  Market = 'market',
-  Side = 'side'
-}
-
-export enum SpotOrderHistoryFilterField {
-  Market = 'market',
-  Side = 'side',
-  Type = 'type'
+export enum DerivativeGridTradingField {
+  Grids = 'grids',
+  Margin = 'margin',
+  Leverage = 'leverage',
+  StopLoss = 'stopLoss',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
+  TakeProfit = 'takeProfit'
 }
 
 export enum OrderTypeFilter {
-  Market = 'market',
   Limit = 'limit',
+  Market = 'market',
   StopLossLimit = 'stopLossLimit',
   StopLossMarket = 'stopLossMarket',
   TakeProfitLimit = 'takeProfitLimit',
   TakeProfitMarket = 'takeProfitMarket'
+}
+
+export enum TradeExecutionType {
+  Market = 'market',
+  LimitFill = 'limitFill',
+  StopLimit = 'stopLimit',
+  StopMarket = 'stopMarket',
+  LimitMatchNewOrder = 'limitMatchNewOrder',
+  LimitMatchRestingOrder = 'limitMatchRestingOrder'
 }
 
 export enum SpotTradeFormField {
@@ -468,13 +373,59 @@ export enum SpotTradeFormField {
   PostOnly = 'postOnly',
   Slippage = 'slippage',
   AmountOption = 'amountOption',
-  IsSlippageOn = 'isSlippageOn',
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
-export enum TradeAmountOption {
-  Base = 'base',
-  Quote = 'quote'
+export enum PerpOrdersTradingBotsView {
+  Positions = 'positions',
+  OpenOrders = 'openOrders',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory',
+  ActiveStrategies = 'activeStrategies',
+  RemovedStrategies = 'removedStrategies'
+}
+
+export enum PerpOrdersStandardView {
+  Orders = 'orders',
+  Balances = 'balances',
+  Positions = 'positions',
+  OrderHistory = 'orderHistory',
+  TradeHistory = 'tradeHistory',
+  AdvancedOrders = 'advancedOrders',
+  FundingHistory = 'fundingHistory'
+}
+
+export enum MarketCategoryType {
+  AI = 'aI',
+  All = 'all',
+  RWA = 'rwa',
+  Spot = 'spot',
+  DeFi = 'deFi',
+  Meme = 'meme',
+  Perps = 'perps',
+  Layer1 = 'layer-1',
+  Layer2 = 'layer-2',
+  iAssets = 'iAssets',
+  Trending = 'trending',
+  Favorites = 'favorites',
+  Injective = 'injective'
+}
+
+export enum NoticeBanner {
+  NeptuneUsdt = 'neptune-usdt',
+  TeslaCampaign = 'tesla-campaign',
+  AuthzConnected = 'authz-connected',
+  FTMSettleMarket = 'ftm-settle-market',
+  PostChainUpgrade = 'post-chain-upgrade',
+  UpcomingChainUpgrade = 'upcoming-chain-upgrade',
+  OwnYourAssetCampaign = 'own-your-asset-campaign'
+}
+
+export enum SpotGridMessages {
+  MsgWithdraw = 'injective.exchange.v1beta1.MsgWithdraw',
+  MsgBatchUpdateOrders = 'injective.exchange.v1beta1.MsgBatchUpdateOrders',
+  MsgCreateSpotLimitOrder = 'injective.exchange.v1beta1.MsgCreateSpotLimitOrder',
+  MsgCreateSpotMarketOrder = 'injective.exchange.v1beta1.MsgCreateSpotMarketOrder'
 }
 
 export enum DerivativesTradeFormField {
@@ -490,124 +441,155 @@ export enum DerivativesTradeFormField {
   TakeProfit = 'takeProfit',
   AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
-  IsSlippageOn = 'isSlippageOn',
   isTpSlEnabled = 'isTpSlEnabled',
   BypassPriceWarning = 'bypassPriceWarning'
 }
 
-export enum ClosePositionLimitFormField {
-  Price = 'price',
-  Quantity = 'quantity'
+export enum TradeField {
+  Leverage = 'Leverage',
+  PostOnly = 'Post-Only',
+  BaseDenom = 'Base denom',
+  OrderSide = 'Order side',
+  BaseAmount = 'Base amount',
+  LimitPrice = 'Limit price',
+  QuoteDenom = 'Quote denom',
+  ReduceOnly = 'Reduce-Only',
+  QuoteAmount = 'Quote amount',
+  TradingType = 'Trading type',
+  TriggerPrice = 'Trigger price',
+  SlippageTolerance = 'Slippage tolerance',
+  ProportionalPercentage = 'Proportional percentage'
 }
 
-export enum TakeProfitStopLossFormField {
+export enum ActivityView {
+  SpotOrders = 'Spot/Index',
+  Positions = 'Positions/Index',
+  SpotOrderHistory = 'Spot/OrderHistory',
+  SpotTradeHistory = 'Spot/TradeHistory',
+  DerivativeOrders = 'Derivatives/Index',
+  WalletDeposits = 'WalletHistory/Deposits',
+  FundingHistory = 'Positions/FundingHistory',
+  WalletTransfers = 'WalletHistory/Transfers',
+  WalletWithdrawals = 'WalletHistory/Withdrawals',
+  DerivativeOrderHistory = 'Derivatives/OrderHistory',
+  DerivativeTradeHistory = 'Derivatives/TradeHistory',
+  DerivativeAdvancedOrders = 'Derivatives/AdvancedOrders'
+}
+
+export enum SpotGridTradingField {
+  Grids = 'grids',
+  SettleIn = 'SettleIn',
+  ExitType = 'exitType',
+  StopLoss = 'stopLoss',
+  IsLpMode = 'isLpMode',
+  LowerPrice = 'lowerPrice',
+  UpperPrice = 'upperPrice',
   TakeProfit = 'takeProfit',
-  StopLoss = 'stopLoss'
+  StrategyType = 'strategyType',
+  TrailingUpper = 'trailingUpper',
+  TrailingLower = 'trailingLower',
+  InvestmentType = 'investmentType',
+  IsTrailingEnabled = 'isTrailingEnabled',
+  SellBaseOnStopLoss = 'sellBaseOnStopLoss',
+  IsAssetRebalanceOn = 'isAssetRebalanceOn',
+  BuyBaseOnTakeProfit = 'buyBaseOnTakeProfit',
+  BaseInvestmentAmount = 'baseInvestmentAmount',
+  QuoteInvestmentAmount = 'quoteInvestmentAmount'
 }
 
-export enum PortfolioChartType {
-  Balance = 'balance',
-  Pnl = 'pnl',
-  Volume = 'volume'
+export enum StreamType {
+  SpotTrades = 'spot-trades',
+  BankBalance = 'bank-balance',
+  OraclePrices = 'oracle-prices',
+  DerivativesTrades = 'derivatives-trades',
+  SubaccountBalances = 'subaccount-balances',
+  SpotOrderbookUpdate = 'spot-orderbook-update',
+  SpotSubaccountOrders = 'spot-subaccount-orders',
+  SpotSubaccountTrades = 'spot-subaccount-trades',
+  DerivativesOrderbookUpdate = 'derivatives-orderbook-update',
+  SpotSubaccountOrderHistory = 'spot-subaccount-order-history',
+  DerivativesSubaccountOrders = 'derivatives-subaccount-orders',
+  DerivativesSubaccountTrades = 'derivatives-subaccount-trades',
+  DerivativesSubaccountPositions = 'derivatives-positions-trades',
+  DerivativesSubaccountOrderHistory = 'derivatives-subaccount-order-history'
 }
 
-export enum LiquidityProvisionTypeOption {
-  All = 'All',
-  Helix = 'Helix',
-  Mito = 'Mito'
+export enum BusEvents {
+  NeptuneUsdt = 'neptune-usdt',
+  FundingRefresh = 'funding-refresh',
+  NavLinkClicked = 'nav-link-clicked',
+  WalletConnected = 'wallet-connected',
+  PostOnlyToggled = 'post-only-toggled',
+  SubaccountChange = 'subaccount-change',
+  OrderSideToggled = 'order-side-toggled',
+  OrderbookReplaced = 'orderbook-replaced',
+  AutoSignConnected = 'auto-sign-connected',
+  UpdateMarketChart = 'update-market-chart',
+  OrderbookSizeClick = 'orderbook-size-click',
+  SharePositionOpened = 'share-position-opened',
+  OrderbookPriceClick = 'orderbook-price-click',
+  AddMarginToPosition = 'add-margin-to-position',
+  OpenTradingBotDetails = 'open-trading-bot-details',
+  SetPositionStatusIdle = 'set-position-status-idle',
+  OrderbookNotionalClick = 'orderbook-notional-click',
+  ConnectMobileModalOpened = 'connect-mobile-modal-opened',
+  BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
+  ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',
+  SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
+  DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
 }
 
-export enum LeaderboardType {
-  Pnl = 'pnl_leaderboard',
-  Volume = 'volume_leaderboard'
+export enum Modal {
+  Terms = 'terms',
+  QrCode = 'qrcode',
+  Connect = 'connect',
+  DevMode = 'dev-mode',
+  IAsset = 'iasset-modal',
+  JoinGuild = 'join-guild',
+  LpRewards = 'lp-rewards',
+  LiteBridge = 'lite-bridge',
+  AddGrantee = 'add-grantee',
+  FiatOnboard = 'fiat-onboard',
+  CreateGuild = 'create-guild',
+  SwapSuccess = 'swap-success',
+  NeptuneUsdt = 'neptune-usdt',
+  BankTransfer = 'bank-transfer',
+  UserFeedback = 'user-feedback',
+  MitoRedirect = 'mito-redirect',
+  PostOnlyMode = 'post-only-mode',
+  GeoRestricted = 'geo-restricted',
+  ShareReferral = 'share-referral',
+  ConnectMobile = 'connect-mobile',
+  SgtBalancedFees = 'sgtBalancedFees',
+  ConfirmReferral = 'confirm-referral',
+  ClosedRWAMarket = 'closed-rwa-market',
+  NinjaPassWinner = 'ninja-pass-winner',
+  MarketRestricted = 'market-restricted',
+  LeaderboardTerms = 'leaderboard-terms',
+  SharePositionPnl = 'share-position-pnl',
+  InstitutionalForm = 'institutionalForm',
+  CompetitionWinner = 'competition-winner',
+  MarketNotOnHelix = 'market-not-on-helix',
+  OptimizeSgtValues = 'optimize-sgt-values',
+  SubaccountTransfer = 'subaccount-transfer',
+  CreateReferralLink = 'create-referral-link',
+  AlreadyJoinedGuild = 'already-joined-guild',
+  GridStrategyDetails = 'grid-strategy-details',
+  AddMarginToPosition = 'add-margin-to-position',
+  VerifyJoinGuildHash = 'verify-join-guild-hash',
+  PartialClosePosition = 'partial-close-position',
+  ClosePositionWarning = 'close-position-warning',
+  ShareLeaderboardStats = 'share-leaderboard-stats',
+  AddTakeProfitStopLoss = 'add-take-profit-stop-loss',
+  NewFeatureTradFiLaunch = 'new-feature-tradfi-launch',
+  TransferToMainSubaccount = 'transfer-to-main-subaccount'
 }
 
-export enum LeaderboardDuration {
-  All = 'ALL',
-  OneMonth = '1M',
-  OneWeek = '1W',
-  OneDay = '1D'
-}
-
-export enum LeaderboardCampaignStatus {
-  Active = 'active',
-  Inactive = 'inactive',
-  Upcoming = 'upcoming'
-}
-
-export enum DontShowAgain {
-  AutoSign = 'auto-sign'
-}
-
-export enum BotType {
-  SpotGrid = 'spotGrid',
-  LiquidityGrid = 'liquidityGrid',
-  FuturesGrid = 'futuresGrid'
-}
-
-export enum StrategyPerformance {
-  Top = 'top',
-  Worst = 'worst'
-}
-
-export enum LiquidityProvisionType {
-  MitoVault = 'mito-vault',
-  InjectiveStaking = 'injective-staking',
-  HelixSpotGridBot = 'helix-spot-grid-bot'
-}
-
-export enum MitoRegistrationMode {
-  Restricted = 'Restricted',
-  Permissionless = 'Permissionless'
-}
-
-export enum MarketFilterType {
-  All = 'all',
-  Volume = 'volume',
-  New = 'new',
-  Upcoming = 'upcoming'
-}
-
-export enum MarketCategoryType {
-  All = 'all',
-  Favorites = 'favorites',
-  Perps = 'perps',
-  Spot = 'spot',
-  Trending = 'trending',
-  Injective = 'injective',
-  Layer1 = 'layer-1',
-  Layer2 = 'layer-2',
-  Experimental = 'experimental',
-  DeFi = 'deFi',
-  AI = 'aI',
-  Meme = 'meme',
-  RWA = 'rwa'
-  // All = 'all',
-  // Cosmos = 'cosmos',
-  // Ethereum = 'ethereum',
-  // Injective = 'injective',
-  // Solana = 'solana',
-  // Experimental = 'experimental',
-  // RWA = 'RWA',
-}
-
-export enum MarketQuoteType {
-  All = 'all',
-  USDT = 'usdt',
-  USDC = 'usdc',
-  INJ = 'inj'
-}
-
-export enum TradingChartInterval {
-  '1m' = '1',
-  '3m' = '3',
-  '5m' = '5',
-  '15m' = '15',
-  '30m' = '30',
-  '1h' = '60',
-  '2h' = '120',
-  '4h' = '240',
-  '6h' = '360',
-  'D' = '1D',
-  'W' = '1W'
-}
+export type BaseQuoteFields = Exclude<
+  TradeField,
+  | TradeField.BaseDenom
+  | TradeField.LimitPrice
+  | TradeField.QuoteDenom
+  | TradeField.TriggerPrice
+  | TradeField.ProportionalPercentage
+>

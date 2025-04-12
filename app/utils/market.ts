@@ -1,40 +1,20 @@
-import {
-  PriceLevel,
-  TokenStatic,
-  ExecArgCW20Send,
-  DerivativeMarket,
-  ExpiryFuturesMarket,
-  isCw20ContractAddress,
-  MsgExecuteContractCompat
-} from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { SharedMarketType, SharedUiMarketHistory } from '@shared/types'
+import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
-import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import { IS_TESTNET, NETWORK } from '@/app/utils/constants'
-import {
-  MarketRoute,
-  UiSpotMarket,
-  TradeSubPage,
-  DefaultMarket,
-  UiMarketWithToken
-} from '@/types'
+import { deprecatedMarkets } from '@/app/data/market'
+import { TradeSubPage } from '@/types'
+import type { SharedUiMarketHistory } from '@shared/types'
+import type { MarketRoute, UiMarketWithToken } from '@/types'
+import type {
+  PriceLevel,
+  DerivativeMarket,
+  ExpiryFuturesMarket
+} from '@injectivelabs/sdk-ts'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
 }
 
 export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
-  if (upcomingMarkets.map((m) => m.slug).includes(market.slug)) {
-    return {
-      name: TradeSubPage.Market,
-      params: {
-        market: market.slug
-      }
-    }
-  }
-
   if (deprecatedMarkets.map((m) => m.slug).includes(market.slug)) {
     return {
       name: TradeSubPage.Market,
@@ -46,7 +26,7 @@ export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
 
   if (market.type === SharedMarketType.Derivative) {
     if (
-      [SharedMarketType.Perpetual, SharedMarketType.Futures].includes(
+      [SharedMarketType.Futures, SharedMarketType.Perpetual].includes(
         market.subType
       )
     ) {
@@ -83,27 +63,6 @@ export const getMarketRoute = (market: UiMarketWithToken): MarketRoute => {
     }
   }
 }
-
-export const getDefaultPerpetualMarketRouteParams = () => {
-  return {
-    name: TradeSubPage.Futures,
-    params: {
-      futures: getDefaultFuturesMarket()
-    }
-  }
-}
-
-export const getDefaultSpotMarketRouteParams = () => {
-  return {
-    name: TradeSubPage.Spot,
-    params: {
-      spot: DefaultMarket.Spot
-    }
-  }
-}
-
-export const getDefaultFuturesMarket = () =>
-  IS_TESTNET ? DefaultMarket.PerpetualTestnet : DefaultMarket.Perpetual
 
 export const getFormattedMarketsHistoryChartData = (
   marketsHistory: SharedUiMarketHistory
@@ -214,137 +173,5 @@ export const combineOrderbookRecords = ({
     return isBuy
       ? new BigNumberInBase(b.price).minus(a.price).toNumber()
       : new BigNumberInBase(a.price).minus(b.price).toNumber()
-  })
-}
-
-/**
- * Add a Cw20 conversion message if:
- * 1. The base token is cw20
- *  1.1 Limit/Market SELL
- *  1.2 We don't have enough base token balance in the bank balance
- *
- * 2. The quote token is cw20
- * 2.1 Limit/Market BUY
- * 2.2 We don't have enough quote token balance in the bank balance
- */
-export const convertCw20ToBankBalance = ({
-  injectiveAddress,
-  market,
-  order,
-  bankBalancesMap,
-  cw20BalancesMap
-}: {
-  injectiveAddress: string
-  market: UiSpotMarket
-  order: {
-    price: string
-    orderSide: OrderSide
-    quantity: string
-    market: UiSpotMarket
-  }
-  bankBalancesMap: Record<string, string>
-  cw20BalancesMap: Record<string, string>
-}) => {
-  const [baseCw20Address] = market.baseDenom.split('/').reverse()
-  const [quoteCw20Address] = market.quoteDenom.split('/').reverse()
-
-  if (order.orderSide === OrderSide.Buy) {
-    if (!quoteCw20Address) {
-      return
-    }
-
-    const hasSufficientBalanceInBank = new BigNumberInBase(
-      bankBalancesMap[market.quoteDenom] || 0
-    ).gte(new BigNumberInBase(order.price).times(order.quantity))
-
-    if (!hasSufficientBalanceInBank) {
-      return
-    }
-
-    if (!cw20BalancesMap[quoteCw20Address]) {
-      return
-    }
-
-    return MsgExecuteContractCompat.fromJSON({
-      contractAddress: quoteCw20Address,
-      sender: injectiveAddress,
-      execArgs: ExecArgCW20Send.fromJSON({
-        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
-        amount: cw20BalancesMap[quoteCw20Address]
-      })
-    })
-  }
-
-  if (order.orderSide === OrderSide.Sell) {
-    if (!baseCw20Address) {
-      return
-    }
-
-    const hasSufficientBalanceInBank = new BigNumberInBase(
-      bankBalancesMap[market.baseDenom] || 0
-    ).gte(order.quantity)
-
-    if (hasSufficientBalanceInBank) {
-      return
-    }
-
-    if (!cw20BalancesMap[baseCw20Address]) {
-      return
-    }
-
-    return MsgExecuteContractCompat.fromJSON({
-      contractAddress: baseCw20Address,
-      sender: injectiveAddress,
-      execArgs: ExecArgCW20Send.fromJSON({
-        contractAddress: getCw20AdapterContractForNetwork(NETWORK),
-        amount: cw20BalancesMap[baseCw20Address]
-      })
-    })
-  }
-}
-
-/**
- * Add a Cw20 conversion message if:
- * 1. The base token is cw20 and doesn't have enough balance in the bank
- */
-export const convertCw20ToBankBalanceForSwap = ({
-  token,
-  quantity,
-  injectiveAddress,
-  bankBalancesMap,
-  cw20BalancesMap
-}: {
-  token: TokenStatic
-  quantity: string
-  injectiveAddress: string
-  bankBalancesMap: Record<string, string>
-  cw20BalancesMap: Record<string, string>
-}) => {
-  const [cw20Address] = token.denom.split('/').reverse()
-
-  if (!cw20Address) {
-    return
-  }
-
-  if (!isCw20ContractAddress(cw20Address)) {
-    return
-  }
-
-  const quantityInWei = new BigNumberInBase(quantity).toWei(token.decimals)
-  const hasSufficientBalanceInBank = new BigNumberInBase(
-    bankBalancesMap[token.denom] || 0
-  ).gte(quantityInWei.toFixed())
-
-  if (hasSufficientBalanceInBank) {
-    return
-  }
-
-  return MsgExecuteContractCompat.fromJSON({
-    contractAddress: cw20Address,
-    sender: injectiveAddress,
-    execArgs: ExecArgCW20Send.fromJSON({
-      contractAddress: getCw20AdapterContractForNetwork(NETWORK),
-      amount: cw20BalancesMap[cw20Address]
-    })
   })
 }

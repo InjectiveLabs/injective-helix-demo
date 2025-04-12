@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
 import { OrderbookFormattedRecord } from '@/types/worker'
 import {
@@ -17,14 +17,12 @@ const props = withDefaults(
   defineProps<{
     isBuy?: boolean
     index?: number
-    record: OrderbookFormattedRecord
     isActive?: boolean
     highestVolume: string
+    record: OrderbookFormattedRecord
   }>(),
   {
-    isBuy: false,
-    index: -1,
-    isActive: false
+    index: -1
   }
 )
 
@@ -67,25 +65,26 @@ const { valueToString: volumeToString } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: priceToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (aggregation.value < 0) {
-      return new BigNumberInBase(props.record.price).times(
-        new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
-      )
-    } else {
-      return props.record.price
+const { valueToString: priceToString, valueToFixed: priceToFixed } =
+  useSharedBigNumberFormatter(
+    computed(() => {
+      if (aggregation.value < 0) {
+        return new BigNumberInBase(props.record.price).times(
+          new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
+        )
+      } else {
+        return props.record.price
+      }
+    }),
+    {
+      decimalPlaces: computed(() =>
+        props.record.price.split('.')[1]?.length
+          ? props.record.price.split('.')[1].length
+          : 0
+      ),
+      displayAbsoluteDecimalPlace: true
     }
-  }),
-  {
-    decimalPlaces: computed(() =>
-      props.record.price.split('.')[1]?.length
-        ? props.record.price.split('.')[1].length
-        : 0
-    ),
-    displayAbsoluteDecimalPlace: true
-  }
-)
+  )
 
 const { valueToString: quantityToString } = useSharedBigNumberFormatter(
   computed(() => props.record.quantity),
@@ -150,7 +149,7 @@ const hasOrders = computed(() => {
       isSameSide &&
       priceInBase
         .dp(getDecimals(props.record.price), BigNumber.ROUND_CEIL)
-        .isEqualTo(props.record.price)
+        .isEqualTo(priceToFixed.value)
     )
   })
 })
@@ -164,7 +163,14 @@ function setQuantityFlashOff() {
 }
 
 function handlePriceClick() {
-  useEventBus(BusEvents.OrderbookPriceClick).emit(props.record.price)
+  const formattedPrice =
+    aggregation.value < 0
+      ? new BigNumberInBase(props.record.price)
+          .times(new BigNumberInBase(10).exponentiatedBy(-aggregation.value))
+          .toFixed()
+      : props.record.price
+
+  useEventBus(BusEvents.OrderbookPriceClick).emit(formattedPrice)
 }
 </script>
 

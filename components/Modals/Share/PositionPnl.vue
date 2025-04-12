@@ -46,7 +46,6 @@ const { valueToString: priceToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const isModalOpen = computed(() => modalStore.modals[Modal.SharePositionPnl])
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
 onMounted(() => {
@@ -66,7 +65,7 @@ async function download() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Leaderboard-PNL-${now.value}.jpeg`
+    link.download = `Position-PNL-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
@@ -86,11 +85,18 @@ watchDebounced(
 </script>
 
 <template>
-  <SharedModalWrapper
-    v-if="isModalOpen"
-    class="relative mx-auto sm:rounded-lg max-sm:h-full max-sm:max-w-full max-sm:w-full min-w-90% sm:max-w-5xl max-md:w-[90%] md:w-[700px] font-pingFang"
-    wrapper-class="backdrop-filter backdrop-blur bg-coolGray-900 bg-opacity-90 max-sm:z-40"
-    @modal:closed="onCloseModal"
+  <AppModal
+    v-model="modalStore.modals[Modal.SharePositionPnl]"
+    v-bind="{
+      isAlwaysOpen: !showSelectors,
+      cardUi: { body: { padding: 'p-0 sm:p-0' } },
+      ui: {
+        padding: 'p-0',
+        overlay: { base: 'backdrop-filter backdrop-blur' },
+        width:
+          'max-sm:w-full max-md:w-[90%] md:w-[700px] sm:max-w-full max-sm:h-full'
+      }
+    }"
   >
     <section v-if="market" ref="canvas" class="sm:aspect-[1.91/1] bg-black">
       <div
@@ -106,13 +112,6 @@ watchDebounced(
             <AssetLogo class="w-auto h-6" alt="Helix" />
             <AssetLogoText class="block ml-2 h-6 text-white" />
           </div>
-
-          <UIcon
-            v-if="showSelectors"
-            :name="NuxtUiIcons.Close"
-            class="w-6 h-6 min-w-6 text-white hover:text-coolGray-500"
-            @click="onCloseModal"
-          />
         </div>
 
         <div
@@ -200,7 +199,7 @@ watchDebounced(
         <div
           class="flex justify-between items-center text-xs md:text-sm text-coolGray-925 mb-2.5 sm:mb-1.5 md:mb-2.5"
         >
-          <div class="flex items-center justify-start gap-2 flex-1">
+          <div class="flex items-center justify-start gap-2 mr-2 flex-1">
             <div class="bg-white p-1">
               <img
                 class="w-8 h-8 min-w-8"
@@ -230,5 +229,5 @@ watchDebounced(
         </div>
       </div>
     </section>
-  </SharedModalWrapper>
+  </AppModal>
 </template>

@@ -1,12 +1,9 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { getNetworkEndpoints } from '@injectivelabs/networks'
-import { NETWORK } from '@shared/utils/constant'
-
-const endpoint = getNetworkEndpoints(NETWORK).indexer
-
-const httpClient = new HttpClient(`${endpoint}/api/aggregator/v1/`)
+import { ENDPOINTS } from '@shared/utils/constant'
 
 export const fetchDerivativeStats = async () => {
+  const httpClient = new HttpClient(`${ENDPOINTS.indexer}/api/aggregator/v1/`)
+
   const { data } = (await httpClient.get('derivative/contracts')) as {
     data: { ticker_id: string; open_interest: number }[]
   }

@@ -7,9 +7,9 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { SharedUiMarketHistory } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedGetToken } from '@shared/utils/helper'
 import { toUiMarketHistory } from '@shared/transformer/market'
 import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
-import { getToken } from '@/app/utils/helpers'
 import { TradingRewardsCampaign } from '@/app/client/types/exchange'
 
 type ExchangeStoreState = {
@@ -65,7 +65,7 @@ export const useExchangeStore = defineStore('exchange', {
       if (feeDiscountSchedule) {
         const quoteTokenMeta = (await Promise.all(
           feeDiscountSchedule.quoteDenomsList.map(
-            async (denom) => await getToken(denom)
+            async (denom) => await sharedGetToken(denom)
           )
         )) as TokenStatic[]
 
@@ -127,7 +127,7 @@ export const useExchangeStore = defineStore('exchange', {
       const quoteSymbolsList = (
         (
           await Promise.all(
-            quoteDenomsList.map(async (denom) => await getToken(denom))
+            quoteDenomsList.map(async (denom) => await sharedGetToken(denom))
           )
         ).filter((token) => token) as TokenStatic[]
       ).map((token) => token.symbol)

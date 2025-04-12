@@ -1,14 +1,11 @@
-import { I18nMessageFunction } from '@/types'
-
 export default {
   sgt: {
     pnl: 'PnL',
     time: 'Time',
-    skip: 'Skip',
     user: 'User',
     auto: 'Auto',
-    grids: 'Grids',
     close: 'Close',
+    grids: 'Grids',
     amount: 'Amount',
     market: 'Market',
     endBot: 'End Bot',
@@ -20,9 +17,16 @@ export default {
     details: 'Details',
     confirm: 'Confirm',
     success: 'Success',
+    moreInfo: 'More Info',
+    startTime: 'Start Time',
+    enableLpMode: 'Enable LP Mode',
+    lpModeTooltip:
+      'When LP Mode is enabled, the strategy avoids rebalancing during setup and creates asymmetric buy and sell orders, replicating the behavior of a liquidity provider.',
     history: 'History',
     enabled: 'Enabled',
+    active: 'Active',
     removed: 'Removed',
+    pending: 'Pending',
     lowerPrice: 'Lower Price',
     upperPrice: 'Upper Price',
     disabled: 'Disabled',
@@ -49,7 +53,6 @@ export default {
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
     saveOnFees: 'Adjust Deposit Amounts',
-    tradeAmount: 'Trade Amount',
     gridDetails: 'Grid Details',
     enableTrailing: 'Enable Trailing',
     keepQuote: 'Keep {quote} Only',
@@ -58,7 +61,6 @@ export default {
     timeCreated: 'Time Created',
     learnMore: 'Learn More',
     currentPrice: 'Current Price',
-    next: 'Next ({step}/{steps})',
     orderDetails: 'Order Details',
     initialAmount: 'Initial Amount',
     numberOfGrids: 'Number Of Grids',
@@ -67,15 +69,11 @@ export default {
     removeStrategy: 'Remove Strategy',
     finalBalance: 'Final Balance',
     currentBalance: 'Current Balance',
+    replicateStrategy: 'Replicate Strategy',
     trailingPriceRange: 'Trailing Price Range',
-    minInvestmentDescription: ({ named }: I18nMessageFunction) =>
-      `Min Investment: ${named('symbols')} ≥ $${named('amount')}.`,
-    minInvestmentTooltip: ({ named }: I18nMessageFunction) =>
-      `Minimum Investment: Starts at $${named(
-        'amount'
-      )}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the ${named(
-        'assets'
-      )} assets.`,
+    minInvestmentDescription: "Min Investment: {symbols} ≥ {'$'}{amount}",
+    minInvestmentTooltip:
+      "Minimum Investment: Starts at {'$'}{amount}. Each grid beyond 10 adds $5, up to 100 grids. The amount is calculated in $ value of the {assets} assets.",
     sellSymbolUponTermination: 'Sell {symbol} upon termination',
     buySymbolOnStop: 'Buy {symbol} on stop',
     sellAllSymbolOnStop: 'Sell all {symbol} on stop',
@@ -123,28 +121,13 @@ export default {
     sellAllBaseOnStopTooltip:
       'Once enabled, the bot will automatically sell all {symbol} at market price when the grid is stopped.',
     nOfGridsTooltip:
-      'The higher the number of grids means the more limit orders the bot will place on behalf of you. More limit orders increases the chances of capturing the price movements but also increases the minimum amount of initial capital required.',
+      'Higher grid count places more orders, better capturing price movements but requiring more initial capital.',
     connectWallet: 'Connect wallet to start grid trading',
     includeDenom: 'Include [{symbol}] in your initial investment',
-    createStrategyModalQuote: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate([
-        named('quoteAmount'),
-        ' will be transferred from your main subaccount to your SGT ',
-        named('marketSlug'),
-        ' sub account.'
-      ]),
-    createStrategyModalBaseAndQuote: ({
-      named,
-      interpolate
-    }: I18nMessageFunction) =>
-      interpolate([
-        named('quoteAmount'),
-        ' and ',
-        named('baseAmount'),
-        ' will be transferred from your main subaccount to your SGT ',
-        named('marketSlug'),
-        ' sub account.'
-      ]),
+    createStrategyModalQuote:
+      '{quoteAmount} will be transferred from your main subaccount to your SGT {marketSlug} sub account.',
+    createStrategyModalBaseAndQuote:
+      '{quoteAmount} and {baseAmount} will be transferred from your main subaccount to your SGT {marketSlug} sub account.',
     aFewClicksBeforeTheStrategyIsCreated:
       'A few clicks before the strategy is created',
     thereAre2TransactionsRequiredToCreateAndEnableSpotGridTrading:
@@ -156,7 +139,6 @@ export default {
     createYourGridTradingStrategy: 'Create your grid trading strategy',
     gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
     gridStrategyRemovedSuccessfully: 'Grid Strategy Removed Successfully!',
-    gridOrderConfirmation: 'Grid Order Confirmation',
     investmentAmountTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     initialEntryTooltip:
@@ -178,17 +160,16 @@ export default {
       "Reduce balancing strategy fees with a USDT & INJ mix. This isn't a new platform fee, but a way to cut gas costs when converting between quote and base denoms when creating the strategy.",
     gridModeTooltip:
       'In arithmetic mode, the price between two consecutive grids has a constant difference. In geometric mode, the price between two consecutive grids has a constant ratio.',
+    accountEndBot:
+      'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
     bannerTitle: 'Get started with Spot Grid Trading.',
     spotGridTradingBot: 'Spot grid trading bot ',
     automatesBuyingAndSelling:
       'Automate order placements to buy low, sell high.',
-    splitSentence: ({ named, interpolate }: I18nMessageFunction) =>
-      interpolate([named('first'), named('second')]),
+    splitSentence: '{first}{second}',
     setUpABot: 'Set up a bot',
     runABot: 'Run a bot',
     endABot: 'End a bot',
-    accountEndBot:
-      'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
     helixTradingBots: 'Helix Trading Bots',
 
     step1: {
@@ -206,8 +187,7 @@ export default {
         'When the price rises and meet your sell order price level, your order will be filled and the bot will automatically place a buy order at a lower price.',
       viewOrders:
         'You can check the open orders placed by the bot at any time.',
-      faq: ({ named, interpolate }: I18nMessageFunction) =>
-        interpolate(['Check the ', named('faq'), ' for more info.'])
+      faq: 'Check the {faq} for more info.'
     },
 
     step3: {
@@ -246,12 +226,37 @@ export default {
       perpetual: 'Perpetual'
     },
 
-    confirmationTitle: 'Grid Order Confirmation',
     confirmationDescription:
       'Please read the below information carefully before you confirm to proceed.',
     profitPerGrid: 'Profit/grid (fees deducted)',
     disclaimer:
-      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.'
+      'I have read and agreed to the Risk Disclaimer and understand that the parameter selection and investment decision will in all cases be made solely by the client.',
+
+    optimization: {
+      balanceStability: 'Balance Stability',
+      balanceNeedsAdjusting: 'Balance Needs Adjusting',
+      balanceOptimized: 'Optimal Balance',
+      optimizeBalance: 'Optimize Balance',
+      yourBalanceIsOffBy:
+        'Your balance is off by {percentage}% from the optimal 50/50 ratio.',
+      yourBalanceIsOptimal:
+        'Well-balanced for maximum grid efficiency within price range',
+      balancedTooltip:
+        'Balance Stability indicates how well your liquidity position maintains its intended ratio between tokens. A higher percentage means your position is more resistant to market volatility and requires less frequent rebalancing.',
+      balanceNeedsAdjustingTooltip: 'Balance is improving but not optimal',
+      optimizeBalanceTitle: 'Optimize Strategy Balance',
+      optimizeBalanceBody:
+        'To reduce trading fees and improve operational efficiency, we suggest rebalancing your assets. This technical adjustment optimizes how your strategy executes trades, but is not financial advice on asset selection or expected returns.',
+      confirmAndAdjust: 'Confirm and Adjust',
+      adjustYourAvailableBalance:
+        'Adjust your available [{base}] and [{quote}] balance'
+    },
+
+    aproximateProfit: 'Approximate Profit',
+    yourTradingStrategyIsBeingRemoved:
+      'Your trading strategy is being removed and will be completed automatically. This process can take up to a few minutes.',
+    youCanCloseThisNotification:
+      'You can close this notification and continue using the platform.'
   },
 
   tradingBots: {
@@ -277,14 +282,18 @@ export default {
     copyStrategy: 'Copy Strategy',
     createYourStrategy: 'Create Your Strategy',
     topPerformers: 'Top Performers',
+    topPerformersDescription:
+      'Learn from real-time success. See which strategies and parameters are currently yielding the best results on Helix. Use this data to refine your approach or launch a new bot based on proven performance.',
     volumeBoost: 'Volume Boost',
     description:
-      'Level up your Helix game with institutional-grade automation. 180K+ advanced strategies have already been deployed with our gas-free bots',
+      'Your command center for automated trading on Helix. Monitor your active bots, track your LP rewards, and discover high-performing community strategies to inform your next move.',
+
     botType: {
       spotGrid: 'Spot Grid',
       liquidityGrid: 'Volume Boost',
       futuresGrid: 'Futures Grid'
     },
+
     myLpRewards: {
       viewAll: 'View All',
       title: 'My LP Rewards',
@@ -299,7 +308,7 @@ export default {
   liquidityBots: {
     title: 'Volume Boost Bot',
     description:
-      'Boost your trading volume with ease. The Volume Boost Bot simplifies liquidity provision, automating trades within you chose range to help you capture opportunities and stay active in the market.',
+      'Boost trading volume effortlessly. Volume Boost Bot automates liquidity provision, executing trades within your specified range to capture opportunities and maintain market presence.',
     selectPair: 'Select Pair',
     setLiquidityBot: 'Set Up a Liquidity Bot',
     volatilityStrategy: 'Volatility Strategy',

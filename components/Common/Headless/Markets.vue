@@ -1,28 +1,26 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketStatus } from '@shared/types'
-import { marketCategoriesMap } from '@/app/json'
+import { deprecatedMarkets } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
-import { upcomingMarkets, deprecatedMarkets } from '@/app/data/market'
-import {
-  MarketHeaderType,
+import { MarketHeaderType, MarketCategoryType } from '@/types'
+import type {
   UiMarketWithToken,
-  MarketCategoryType,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 
 const props = withDefaults(
   defineProps<{
     search?: string
-    activeCategory: MarketCategoryType
+    activeCategory?: MarketCategoryType
     isLowVolumeMarketsVisible?: boolean
     markets: UiMarketAndSummaryWithVolumeInUsd[]
   }>(),
   {
     search: '',
-    markets: () => [],
     activeCategory: MarketCategoryType.All
   }
 )
@@ -49,9 +47,9 @@ const filteredMarkets = computed(() => {
   }
 
   const searchWithStartWith = activeMarkets.filter(({ market }) => {
-    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
-      market.marketId
-    )
+    const isDeprecatedMarket = (
+      jsonStore.helixMarketCategoriesMap.deprecated || []
+    ).includes(market.marketId)
 
     if (isDeprecatedMarket) {
       return market.ticker.toLowerCase() === formattedSearch
@@ -72,9 +70,9 @@ const filteredMarkets = computed(() => {
   }
 
   return activeMarkets.filter(({ market }) => {
-    const isDeprecatedMarket = (marketCategoriesMap.deprecated || []).includes(
-      market.marketId
-    )
+    const isDeprecatedMarket = (
+      jsonStore.helixMarketCategoriesMap.deprecated || []
+    ).includes(market.marketId)
 
     if (isDeprecatedMarket) {
       return market.ticker.toLowerCase() === formattedSearch
@@ -92,7 +90,6 @@ const filteredMarkets = computed(() => {
 })
 
 const sortedMarkets = computed(() => {
-  const upcomingMarketsSlugs = upcomingMarkets.map(({ slug }) => slug)
   const deprecatedMarketsSlugs = deprecatedMarkets.map(({ slug }) => slug)
 
   if (sortBy.value.trim() === '') {
@@ -104,10 +101,7 @@ const sortedMarkets = computed(() => {
       m1: UiMarketAndSummaryWithVolumeInUsd,
       m2: UiMarketAndSummaryWithVolumeInUsd
     ) => {
-      if (
-        upcomingMarketsSlugs.includes(m1.market.slug) ||
-        deprecatedMarketsSlugs.includes(m1.market.slug)
-      ) {
+      if (deprecatedMarketsSlugs.includes(m1.market.slug)) {
         return 1
       }
 
@@ -150,6 +144,14 @@ const sortedMarkets = computed(() => {
   return isAscending.value ? markets.reverse() : markets
 })
 
+function onAscending(value: boolean) {
+  isAscending.value = value
+}
+
+function onSortBy(value: MarketHeaderType) {
+  sortBy.value = value
+}
+
 function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   if (props.activeCategory === MarketCategoryType.All) {
     return true
@@ -172,51 +174,58 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
   }
 
   if (props.activeCategory === MarketCategoryType.Trending) {
-    return (marketCategoriesMap.trending || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.trending || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Injective) {
-    return (marketCategoriesMap.injective || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.injective || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Layer1) {
-    return (marketCategoriesMap.layer1 || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.layer1 || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Layer2) {
-    return (marketCategoriesMap.layer2 || []).includes(market.marketId)
-  }
-
-  if (props.activeCategory === MarketCategoryType.Experimental) {
-    return (
-      !market.isVerified &&
-      !(marketCategoriesMap.deprecated || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.layer2 || []).includes(
+      market.marketId
     )
   }
 
   if (props.activeCategory === MarketCategoryType.DeFi) {
-    return (marketCategoriesMap.defi || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.defi || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.AI) {
-    return (marketCategoriesMap.ai || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.ai || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.Meme) {
-    return (marketCategoriesMap.meme || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.meme || []).includes(
+      market.marketId
+    )
   }
 
   if (props.activeCategory === MarketCategoryType.RWA) {
-    return (marketCategoriesMap.rwaMarkets || []).includes(market.marketId)
+    return (jsonStore.helixMarketCategoriesMap.rwa || []).includes(
+      market.marketId
+    )
   }
-}
 
-function onAscending(value: boolean) {
-  isAscending.value = value
-}
-
-function onSortBy(value: MarketHeaderType) {
-  sortBy.value = value
+  if (props.activeCategory === MarketCategoryType.iAssets) {
+    return (jsonStore.helixMarketCategoriesMap.iAssets || []).includes(
+      market.marketId
+    )
+  }
 }
 </script>
 

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
+const jsonStore = useSharedJsonStore()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
@@ -16,7 +17,7 @@ const props = withDefaults(
   {}
 )
 
-const { formattedStrategies: strategies, status: lastTradedPriceStatus } =
+const { status: lastTradedPriceStatus, formattedStrategies: strategies } =
   useSpotGridStrategies(
     computed(() => props.activeStrategy),
     subaccountPortfolioBalanceMap
@@ -273,16 +274,24 @@ const percentagePnl = computed(() =>
     <div v-if="strategy.isActive" class="pt-4">
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
         v-slot="{ removeStrategy, status }"
-        :strategy="strategy.strategy"
+        v-bind="{
+          strategy: strategy.strategy,
+          pnl: strategy.pnl,
+          pnlPercentage: strategy.percentagePnl
+        }"
       >
         <AppButton
           variant="danger"
           :is-loading="status.isLoading()"
           size="lg"
           class="w-full"
+          :disabled="jsonStore.isPostUpgradeMode"
           @click="removeStrategy"
         >
-          {{ $t('sgt.removeStrategy') }}
+          <span v-if="jsonStore.isPostUpgradeMode">
+            {{ $t('trade.postOnlyWarning') }}
+          </span>
+          <span v-else>{{ $t('sgt.removeStrategy') }}</span>
         </AppButton>
       </PartialsLiquidityBotsSpotCommonRemoveStrategy>
     </div>

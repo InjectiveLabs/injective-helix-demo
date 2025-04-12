@@ -1,10 +1,10 @@
 import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
 import {
-  createStrategy,
   removeStrategy,
   createPerpStrategy,
   createSpotLiquidityBot,
-  copySpotGridTradingStrategy,
+  createSpotGridStrategy,
+  removeSubaccountDeposits,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
 import { indexerGrpcTradingApi } from '@/app/Services'
@@ -34,18 +34,26 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         ...derivativeStore.markets.map(({ marketId }) => marketId)
       ])
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.state === StrategyStatus.Active &&
-          marketIds.has(strategy.marketId)
-      )
+      return state.strategies.filter((strategy) => {
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
+
+        const isMarketInStore = marketIds.has(strategy.marketId)
+
+        return isActive && isMarketInStore
+      })
     },
 
     activeSpotStrategies: (state) => {
       const spotStore = useSpotStore()
 
       return state.strategies.filter((strategy) => {
-        const isActive = strategy.state === StrategyStatus.Active
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
         const isSpot = strategy.marketType === MarketType.Spot
         const isMarketInSpotStore = spotStore.markets.some(
           ({ marketId }) => strategy.marketId === marketId
@@ -61,12 +69,20 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
         derivativeStore.markets.map(({ marketId }) => marketId)
       )
 
-      return state.strategies.filter(
-        (strategy) =>
-          strategy.state === StrategyStatus.Active &&
-          strategy.marketType === MarketType.Derivative &&
-          derivativeMarketIds.has(strategy.marketId)
-      )
+      return state.strategies.filter((strategy) => {
+        const isActive = [
+          StrategyStatus.Active,
+          StrategyStatus.Pending
+        ].includes(strategy.state as StrategyStatus)
+
+        const isDerivative = strategy.marketType === MarketType.Derivative
+
+        const isMarketInDerivativeStore = derivativeMarketIds.has(
+          strategy.marketId
+        )
+
+        return isActive && isDerivative && isMarketInDerivativeStore
+      })
     },
 
     removedStrategies: (state) => {
@@ -114,13 +130,12 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     }
   },
   actions: {
-    createStrategy,
     removeStrategy,
     createPerpStrategy,
+    createSpotGridStrategy,
     createSpotLiquidityBot,
-    copySpotGridTradingStrategy,
+    removeSubaccountDeposits,
     removeStrategyForSubaccount,
-
     async fetchStrategies(marketId?: string) {
       const sharedWalletStore = useSharedWalletStore()
 

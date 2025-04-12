@@ -5,9 +5,9 @@ import { LiquidityValues, UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
+    status: Status
     market: UiMarketWithToken
     liquidityValues: LiquidityValues
-    status: Status
     activeStrategy?: TradingStrategy
     lastTradedPrice: BigNumberInBase
     marketReward?: {
@@ -16,8 +16,8 @@ withDefaults(
     }
   }>(),
   {
-    activeStrategy: undefined,
-    marketReward: undefined
+    marketReward: undefined,
+    activeStrategy: undefined
   }
 )
 </script>
@@ -47,14 +47,6 @@ withDefaults(
           }}
         </span>
       </div>
-      <p class="text-sm text-coolGray-500">
-        {{
-          $t('liquidityBots.currentPriceQuotePerBase', {
-            quote: market.quoteToken.symbol,
-            base: market.baseToken.symbol
-          })
-        }}
-      </p>
     </div>
 
     <USkeleton v-if="status.isLoading()" class="h-[500px] mt-4" />

@@ -1,3 +1,5 @@
+import { PositionV2, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+
 export enum MarketStatus {
   Unspecified = 'unspecified',
   Active = 'active',
@@ -33,4 +35,9 @@ export type IntervalOption = {
     countback: number
     resolution: number
   }
+}
+
+export type PositionAndReduceOnlyOrders = {
+  position: PositionV2
+  reduceOnlyOrders: DerivativeLimitOrder[]
 }

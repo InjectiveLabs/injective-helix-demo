@@ -3,6 +3,7 @@ import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,
+  BusEvents,
   MarketKey,
   TradeTypes,
   UiSpotMarket,
@@ -11,7 +12,9 @@ import {
   SpotMarketCyTags
 } from '@/types'
 
-useForm<SpotTradeForm>()
+const appStore = useAppStore()
+
+const { setValues: setFormValues } = useForm<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -35,6 +38,25 @@ const {
   slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+onMounted(() => {
+  setFormValues(
+    {
+      [SpotTradeFormField.Slippage]: appStore.slippageByMarketId(
+        market.value.marketId
+      )
+    },
+    false
+  )
+})
+
+function onOrderSideClicked() {
+  if (orderTypeValue.value !== TradeTypes.Limit) {
+    return
+  }
+
+  useEventBus(BusEvents.OrderSideToggled).emit()
+}
 </script>
 
 <template>
@@ -78,6 +100,7 @@ const {
         v-model="orderSideValue"
         class="flex-1"
         :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
+        @click="onOrderSideClicked"
       >
         <AppButton
           :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
@@ -115,11 +138,11 @@ const {
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
         total,
-        totalWithFee,
         quantity,
         feeAmount,
         worstPrice,
         feePercentage,
+        totalWithFee,
         slippagePercentage
       }"
     />

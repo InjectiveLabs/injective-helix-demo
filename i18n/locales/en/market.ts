@@ -1,11 +1,14 @@
-import { MarketCategoryType, I18nMessageFunction } from '@/types'
+import { MarketCategoryType } from '@/types'
 
 export default {
   markets: {
-    title: 'Markets',
     vol: 'Vol',
     quote: 'Quote',
+    title: 'Markets',
+    cancel: 'Cancel',
+    iAsset: 'iAsset',
     market: 'Market',
+    inactive: 'Inactive',
     category: 'Category',
     marketId: 'Market ID',
     whatsNew: "What's new",
@@ -21,16 +24,19 @@ export default {
     newMarkets: '🐤 New Markets',
     topGainers: '🚀 Top Gainers',
     unverified: 'Unverified',
+    emptyHeader: 'No markets found',
+    proceedAnyway: 'Proceed Anyway',
+    preLaunchFutures: 'Pre Launch Futures',
+    emptyHeaderFavorites: 'No favorited markets yet.',
+    expiredOrSettledRecently: 'Recently Expired/Settled',
+    closePositionWarningTitle: 'High price impact detected',
+    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
     permisionlessWarning:
       'Anyone can create a permissionless market on Helix. Participants are advised to conduct their own research before trading.',
-    emptyHeader: 'No markets found',
-    preLaunchFutures: 'Pre Launch Futures',
-    expiredOrSettledRecently: 'Recently Expired/Settled',
-    emptyHeaderFavorites: 'No favorited markets yet.',
     emptyDescription:
       'No results found. Search for markets available on Injective outside of Helix.',
-    emptyDescriptionFavorites: 'Your starred markets will be shown here.',
-    inactive: 'Inactive',
+    closePositionWarningDescription:
+      'Closing this open position with a market order may result in an unfavorable execution price. You may want to consider closing with a limit order instead.',
     themes: {
       memes: 'Memes',
       l1l2: 'L1/L2',
@@ -40,26 +46,12 @@ export default {
       'liquid-staking': 'Liquid Staking',
       stablecoins: 'Stablecoins'
     },
-    '2024ElectionTooltip': ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'This market follows the Polymarket 2024 Presidential Election market price feed, with TRUMPWIN as the underlying asset. For more details, visit the ',
-        named('docs'),
-        '.'
-      ]),
-    buidlTooltip: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'This product is an Index Perp. For more information, please refer to the ',
-        named('docs'),
-        '.'
-      ]),
-    indexMarketTooltip: ({ interpolate, named }: I18nMessageFunction) =>
-      interpolate([
-        'This market follows the ',
-        named('label'),
-        '. More details can be found ',
-        named('link'),
-        '.'
-      ]),
+    '2024ElectionTooltip':
+      'This market follows the Polymarket 2024 Presidential Election market price feed, with TRUMPWIN as the underlying asset. For more details, visit the {docs}.',
+    buidlTooltip:
+      'This product is an Index Perp. For more information, please refer to the {docs}.',
+    indexMarketTooltip:
+      'This market follows the {label}. More details can be found {link}.',
     filters: {
       [MarketCategoryType.All]: 'All',
       [MarketCategoryType.Favorites]: 'Favorites',
@@ -69,11 +61,11 @@ export default {
       [MarketCategoryType.Injective]: 'Injective',
       [MarketCategoryType.Layer1]: 'L1',
       [MarketCategoryType.Layer2]: 'L2',
-      [MarketCategoryType.Experimental]: 'Experimental',
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
       [MarketCategoryType.Meme]: 'Meme',
-      [MarketCategoryType.RWA]: 'RWA'
+      [MarketCategoryType.RWA]: 'RWA',
+      [MarketCategoryType.iAssets]: 'iAssets'
     }
   },
 
@@ -90,9 +82,14 @@ export default {
     noTradingAccountBalance:
       'Transfer to your Injective Trading Account to start trading on Helix.',
     startTrading: 'Start Trading!',
-    availableBalance: ({ named }: I18nMessageFunction) =>
-      `Available ${named('asset')}`,
+    availableBalance: 'Available {asset}',
     transferToTrade: 'Transfer to trade',
     wallet: 'Wallet'
+  },
+
+  partialPositionClose: {
+    marketTitle: 'Partial market close',
+    totalPositionSize: 'Total position size',
+    marketPrice: 'Market price'
   }
 }

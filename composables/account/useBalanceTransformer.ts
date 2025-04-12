@@ -1,5 +1,5 @@
 import { injToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { INJ_DENOM, BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
@@ -73,7 +73,6 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         hasNoActionButtons,
         isStakingRow: false,
         token: balance.token,
-        isVerified: balance.isVerified,
         [BalanceTableColumn.Total]: totalAmount,
         [BalanceTableColumn.Available]: availableAmount.eq(0)
           ? ZERO_IN_BASE
@@ -84,6 +83,8 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         [BalanceTableColumn.UsedOrReserved]: usedOrReserved.eq(0)
           ? ZERO_IN_BASE
           : usedOrReserved,
+        isVerified:
+          balance.token.tokenVerification === TokenVerification.Verified,
         [BalanceTableColumn.TotalUsd]: new BigNumberInBase(totalAmountInUsd)
       }
     })

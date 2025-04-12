@@ -90,7 +90,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             }"
           >
             <span
-              class="uppercase tracking-wider font-bold text-base"
+              class="tracking-wider font-bold text-base"
               :data-cy="dataCyTag(CommonCyTags.MarketPair)"
             >
               {{ market.ticker }}
@@ -130,7 +130,10 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             </template>
           </CommonHeaderTooltip>
 
-          <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
+          <div class="flex items-center gap-1">
+            <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
+            <PartialsTradeStatsCategoryChip v-bind="{ market }" />
+          </div>
         </div>
 
         <div class="absolute left-full">

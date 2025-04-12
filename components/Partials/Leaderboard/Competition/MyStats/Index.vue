@@ -2,15 +2,19 @@
 import { CampaignV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  MIN_LEADERBOARD_PNL_AMOUNT,
-  LEADERBOARD_VOLUME_PER_ENTRY
-} from '@/app/utils/constants'
+import { MIN_LEADERBOARD_PNL_AMOUNT } from '@/app/utils/constants'
 import {
   checkIsCampaignWithEntries,
+  competitionVolumePerEntryMap,
   CAMPAIGNS_WITH_ANNOUNCED_WINNERS
 } from '@/app/data/campaign'
-import { Modal, MainPage, BusEvents, LeaderboardSubPage } from '@/types'
+import {
+  Modal,
+  MainPage,
+  BusEvents,
+  LeaderboardType,
+  LeaderboardSubPage
+} from '@/types'
 
 const route = useRoute()
 const modalStore = useSharedModalStore()
@@ -33,7 +37,7 @@ const isUserWithoutRaffleTickets = computed(() => {
   const raffleTickets = new BigNumberInBase(
     leaderboardStore.competitionLeaderboard.accountRow.volume
   )
-    .dividedBy(LEADERBOARD_VOLUME_PER_ENTRY)
+    .dividedBy(competitionVolumePerEntryMap[props.campaign.name] || 1000)
     .integerValue(BigNumberInBase.ROUND_DOWN)
 
   return raffleTickets.isZero()
@@ -76,9 +80,9 @@ const isShowMyStats = computed(() => {
 })
 
 function onShareCompetition() {
-  modalStore.openModal(Modal.ShareLeaderboardPnl)
+  modalStore.openModal(Modal.ShareLeaderboardStats)
 
-  useEventBus(BusEvents.ShareLeaderboardPnlOpened).emit()
+  useEventBus(BusEvents.ShareLeaderboardStatsOpened).emit()
 }
 </script>
 
@@ -179,11 +183,13 @@ function onShareCompetition() {
       </template>
     </PartialsLeaderboardMyStats>
 
-    <ModalsShareLeaderboardPnl
+    <ModalsShareLeaderboardStats
       v-if="leaderboardStore.competitionLeaderboard.accountRow"
       v-bind="{
+        isVolumeCampaign: campaign.type === LeaderboardType.Volume,
         pnl: leaderboardStore.competitionLeaderboard.accountRow.pnl,
-        rank: leaderboardStore.competitionLeaderboard.accountRow.rank
+        rank: leaderboardStore.competitionLeaderboard.accountRow.rank,
+        volume: leaderboardStore.competitionLeaderboard.accountRow.volume
       }"
     />
   </div>

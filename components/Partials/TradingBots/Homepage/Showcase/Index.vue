@@ -113,6 +113,10 @@ onMounted(() => {
       </span>
     </h3>
 
+    <p class="text-sm text-zinc-500 mb-4 max-w-3xl">
+      {{ $t('tradingBots.topPerformersDescription') }}
+    </p>
+
     <UTabs
       v-model="activeTab"
       :items="items"

@@ -10,7 +10,7 @@ import {
 const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const positionStore = usePositionStore()
-
+const gridStrategyStore = useGridStrategyStore()
 const { values } = useForm<PositionsFilterForm>()
 
 const selectedPosition = ref<PositionV2 | undefined>(undefined)
@@ -47,16 +47,22 @@ function onSharePosition(position: PositionV2) {
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
 }
+
+const hasActiveStrategy = computed(() => {
+  return !!gridStrategyStore.activeDerivativeStrategies.find(
+    (strategy) => strategy.subaccountId === accountStore.subaccountId
+  )
+})
 </script>
 
 <template>
   <PartialsPortfolioPositionsTabs />
 
   <div class="overflow-x-auto divide-y border-b">
-    <PartialsPortfolioPositionsTable
+    <PartialsPositionsTable
       v-if="filteredPosition.length"
       :positions="filteredPosition"
-      :is-trading-bots="accountStore.isSgtSubaccount"
+      :is-trading-bots="hasActiveStrategy"
       @margin:add="addMargin"
       @tpsl:add="addTakeProfitStopLoss"
       @position:share="onSharePosition"

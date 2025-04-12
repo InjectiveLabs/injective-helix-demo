@@ -1,21 +1,5 @@
-import { NoticeBanner } from '@/types'
-
 export default {
   banners: {
-    welcome: {
-      title: 'Welcome to Injective!',
-      subtitle: 'Just a few more steps and you’re good to go!',
-      depositDescription:
-        'Use Injective Bridge to transfer assets in your wallet.',
-      transferDescription:
-        'Transfer to your Injective Trading Account to start trading.',
-      tradeDescription:
-        'You are ready to Trade. Choose a market to get started!',
-      showAddress: 'Show address',
-      howItWorks: 'How it works',
-      faq: 'F.A.Q'
-    },
-
     kado: {
       title: 'Introducing Helix 2.0! Discover a whole new trading experience.',
       tryNow: 'Get started'
@@ -41,14 +25,18 @@ export default {
       cta1: 'Trade TradFi'
     },
 
-    [NoticeBanner.ScheduledUpgradeJanuary2024]:
-      'Scheduled maintenance at ~14:00 UTC, 11th January 2024 due to the Injective Volan mainnet upgrade. Find out more',
-    [NoticeBanner.ScheduledUpgradeAugust2024]:
-      'Scheduled maintenance at ~15:00 UTC, 20th August 2024 due to the Injective mainnet upgrade. Find out more',
+    findOutMore: 'Find out more',
 
-    footer: {
-      operational: 'Operational',
-      v2: ' Version 2.0'
-    }
+    ftmMarketBanner:
+      'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.',
+
+    ownYourAssetCompetition:
+      'Trade on Helix and compete for your share of a {linkDescription}',
+    ownYourAssetCompetitionLink: '$50K prize pool on Helix!',
+
+    authz: 'Connected as {address}',
+
+    postOnly:
+      'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}'
   }
 }

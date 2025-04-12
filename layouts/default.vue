@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-ts'
-import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BANNER_NOTICE_ENABLED } from '@/app/utils/constants'
+import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
@@ -11,14 +10,15 @@ import {
   TradeSubPage,
   InitialStatusKey,
   PortfolioStatusKey,
-  LeaderboardSubPage,
   LiquidityRewardsPage
 } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
+const jsonStore = useSharedJsonStore()
 const accountStore = useAccountStore()
+const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
@@ -29,6 +29,7 @@ const { $onError } = useNuxtApp()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
+const jsonStatus = reactive(new Status(StatusType.Loading))
 const portfolioStatus = reactive(new Status(StatusType.Loading))
 
 const showFooter = computed(() =>
@@ -45,13 +46,16 @@ const showFooter = computed(() =>
 onWalletConnected(async () => {
   portfolioStatus.setLoading()
 
-  mixpanelAnalytics.init()
+  if (!sharedWalletStore.isDev) {
+    mixpanelAnalytics.init()
+  }
 
   await until(initialStatus).toMatch((status) => status.isIdle())
 
   Promise.all([
     fetchUserPortfolio(),
     spotStore.fetchMarketsSummary(),
+    referralStore.fetchUserReferrer(),
     derivativeStore.fetchMarketsSummary()
   ])
     .then(checkOnboarding)
@@ -65,6 +69,10 @@ onWalletConnected(async () => {
 onSubaccountChange(() => {
   fetchSubaccountStream()
 })
+
+function onJsonLoaded() {
+  jsonStatus.setIdle()
+}
 
 function fetchUserPortfolio() {
   return Promise.all([
@@ -105,13 +113,11 @@ function checkOnboarding() {
     return
   }
 
-  const erc20UsdtBalance = accountStore.erc20BalancesMap[usdtToken.denom]
-
   if (
     !accountStore.hasBalance &&
     sharedWalletStore.isUserConnected &&
     sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(erc20UsdtBalance?.balance || 0) > 0
+    Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
   ) {
     modalStore.closeModal(Modal.Connect)
     modalStore.openModal(Modal.LiteBridge)
@@ -135,6 +141,16 @@ useIntervalFn(
     ]),
   30 * 1000
 )
+
+watch(
+  () => jsonStore.isMaintenanceMode,
+  (status) => {
+    if (status && route.name !== MainPage.Maintenance) {
+      return navigateTo({ name: MainPage.Maintenance })
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -149,18 +165,17 @@ useIntervalFn(
     ]"
   >
     <LayoutNavbar />
+
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
-      :is-loading="route.name !== MainPage.Index && initialStatus.isLoading()"
+      :is-loading="
+        route.name !== MainPage.Index &&
+        (initialStatus.isLoading() || jsonStatus.isLoading())
+      "
     >
-      <main class="relative mt-[56px] pb-6">
-        <LayoutAuthZBanner v-if="sharedWalletStore.isAuthzWalletConnected" />
-        <LayoutBanner v-else-if="!BANNER_NOTICE_ENABLED" />
-        <LayoutTeslaCompetitionBanner
-          v-if="route.name !== LeaderboardSubPage.Competition"
-        />
-        <LayoutFTMPerpBanner />
+      <main class="relative pb-6 pt-[56px]">
+        <LayoutBanner />
 
         <ModalsCompetitionWinner
           v-if="
@@ -178,7 +193,7 @@ useIntervalFn(
     <!-- hide survey for now but can be resurrected and modified for future surveys -->
     <!-- <ModalsUserFeedback /> -->
 
-    <ModalsNewFeature />
+    <ModalsNvidia />
     <ModalsPostOnlyMode />
     <ModalsDevMode />
     <ModalsGeoRestricted />
@@ -194,8 +209,6 @@ useIntervalFn(
       <ModalsOnboardingLiteBridge />
       <ModalsOnboardingFiat />
     </template>
-
-    <ModalsDepositQrCode />
 
     <LayoutFooter v-if="showFooter" />
     <LayoutStatusBar />
@@ -228,5 +241,6 @@ useIntervalFn(
     <UNotifications />
 
     <CommonAutoSignExpiredToast />
+    <AppJsonPoll @on:loaded="onJsonLoaded" />
   </div>
 </template>

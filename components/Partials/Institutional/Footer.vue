@@ -40,13 +40,7 @@ const socialLinks = [
               :href="link.link"
               target="_blank"
             >
-              <UIcon
-                :name="link.icon"
-                class="w-4 h-4"
-                :class="
-                  link.icon === NuxtUiIcons.Twitter && 'w-[18px] h-[18px]'
-                "
-              />
+              <UIcon :name="link.icon" class="size-4" />
             </a>
           </div>
         </div>

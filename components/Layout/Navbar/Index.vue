@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getTopNavMenu } from '@/app/data/menu'
+import { getTopNavMenu, getGeoRestrictedTopMenu } from '@/app/data/menu'
 import { MainPage } from '@/types'
 
 const route = useRoute()
@@ -7,17 +7,19 @@ const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const filteredTopNavMenu = computed(() =>
-  getTopNavMenu().filter((item) => {
-    if (item.isDevOnly) {
-      return appStore.devMode
-    }
+  appStore.isCountryRestricted
+    ? getGeoRestrictedTopMenu()
+    : getTopNavMenu().filter((item) => {
+        if (item.isDevOnly) {
+          return appStore.devMode
+        }
 
-    if (item.isConnectedOnly) {
-      return sharedWalletStore.isUserConnected
-    }
+        if (item.isConnectedOnly) {
+          return sharedWalletStore.isUserConnected
+        }
 
-    return true
-  })
+        return true
+      })
 )
 </script>
 

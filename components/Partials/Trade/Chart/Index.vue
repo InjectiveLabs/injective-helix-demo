@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { intervalOptions, LIGHT_CHART_MARKET_IDS } from '@/app/utils/constants'
-import { ChartViewOption, BusEvents, SpotMarketCyTags } from '@/types'
-import type { UiMarketWithToken } from '@/types'
 import { MARKETS_POWERED_BY_STORK } from '@/app/data/marketInfo'
+import { intervalOptions, LIGHT_CHART_MARKET_IDS } from '@/app/utils/constants'
+import type { UiMarketWithToken } from '@/types'
+import { ChartViewOption, BusEvents, SpotMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{

@@ -1,5 +1,6 @@
+import type { IntervalOption } from '@/types'
+import { StopReason } from '@/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { IntervalOption, StopReason } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -111,6 +112,8 @@ export const GST_STABLE_GRIDS = 3
 export const GST_AUTO_PRICE_THRESHOLD = 2
 export const GST_MIN_TOTAL_AMOUNT_USD = 50
 
+export const PGT_MIN_TRADING_SIZE_LOW = 2
+
 export const GST_ROUTE = 'trading-bots-grid-spot'
 
 export const DEFAULT_LP_ROUND = '1'
@@ -120,6 +123,7 @@ export const POST_ONLY_MODE_BLOCK_THRESHOLD = 2000
 
 export const ADMIN_UI_SMART_CONTRACT =
   'inj1xufs3ggc9styawwhfp23q9jz7kxmm7tek8yflk'
+export const NEPTUNE_USDT_BUFFER = 0.15
 
 export const ORDERBOOK_ROW_HEIGHT = 24
 export const ORDERBOOK_ROWS = 10
@@ -129,17 +133,16 @@ export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
 
-export const LEADERBOARD_VOLUME_PER_ENTRY = 10
 export const intervalOptions: IntervalOption[] = [
-  { label: '1m', value: { countback: 30 * 32, resolution: 1 } },
-  { label: '5m', value: { countback: 30 * 32, resolution: 5 } },
-  { label: '15m', value: { countback: 30 * 32, resolution: 15 } },
-  { label: '30m', value: { countback: 30 * 32, resolution: 30 } },
-  { label: '1h', value: { countback: 30 * 32, resolution: 60 } },
-  { label: '2h', value: { countback: 30 * 16, resolution: 120 } },
-  { label: '4h', value: { countback: 30 * 10, resolution: 240 } },
-  { label: '12h', value: { countback: 30 * 10, resolution: 720 } },
-  { label: '1D', value: { countback: 30 * 10, resolution: 1440 } }
+  { label: '1m', value: { resolution: 1, countback: 30 * 32 } },
+  { label: '5m', value: { resolution: 5, countback: 30 * 32 } },
+  { label: '15m', value: { resolution: 15, countback: 30 * 32 } },
+  { label: '30m', value: { resolution: 30, countback: 30 * 32 } },
+  { label: '1h', value: { resolution: 60, countback: 30 * 32 } },
+  { label: '2h', value: { resolution: 120, countback: 30 * 16 } },
+  { label: '4h', value: { resolution: 240, countback: 30 * 10 } },
+  { label: '12h', value: { resolution: 720, countback: 30 * 10 } },
+  { label: '1D', value: { resolution: 1440, countback: 30 * 10 } }
 ]
 export const LEGACY_MARKET_IDS = [
   '0xac938722067b1dfdfbf346d2434573fb26cb090d309b19af17df2c6827ceb32c',
@@ -182,11 +185,8 @@ export const STOP_REASON_MAP = {
   [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
 }
 
-export const CONNECT_SERVER_URL = 'https://api.express.injective.dev'
-
-export const MARKET_IDS_TO_HIDE = [
-  '0x0314518c986964f6ae97695330b4ba4377313a11778b0dfd69525b57d66bf006'
-]
+export const CONNECT_SERVER_URL =
+  'https://k8s.mainnet.eu.helix-server.injective.network/api'
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
@@ -194,9 +194,9 @@ export const LIGHT_CHART_MARKET_IDS = [
 
 export const INDEX_MARKETS_INFO = [
   {
-    marketId:
-      '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82',
     label: '$AIX Index',
-    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index'
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index',
+    marketId:
+      '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82'
   }
 ]

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
-import { ThrownException } from '@injectivelabs/exceptions'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { toBalanceInToken } from '@/app/utils/formatters'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
-import { Modal, SwapForm, SwapFormField, SwapCyTags } from '@/types'
+import { Modal, SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
+import type { ThrownException } from '@injectivelabs/exceptions'
 
 definePageMeta({
   middleware: ['swap']
@@ -19,8 +20,8 @@ const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const {
-  resetForm,
   validate,
+  resetForm,
   values: formValues,
   setValues: setFormValues
 } = useForm<SwapForm>()
@@ -65,10 +66,155 @@ onMounted(() => {
   initRoutes()
 })
 
+function resetQueryError() {
+  queryError.value = ''
+}
+
+function resetPriceWarning() {
+  showPriceWarning.value = false
+}
+
 function initRoutes() {
   Promise.all([swapStore.fetchRoutes()])
     .catch($onError)
     .finally(() => setTimeout(() => status.setIdle(), 1000))
+}
+
+function resetFormValues() {
+  showPriceWarning.value = false
+  const inputDenom = inputToken.value?.denom
+  const outputDenom = outputToken.value?.denom
+
+  resetForm()
+
+  setFormValues(
+    {
+      [SwapFormField.InputAmount]: '',
+      [SwapFormField.OutputAmount]: '',
+      [SwapFormField.InputDenom]: inputDenom || '',
+      [SwapFormField.OutputDenom]: outputDenom || ''
+    },
+    false
+  )
+}
+
+function getInputQuantity() {
+  fetchStatus.setLoading()
+
+  if (!inputToken.value || !outputToken.value || !hasOutputAmount.value) {
+    fetchStatus.setIdle()
+    showPriceWarning.value = true
+
+    return
+  }
+
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchInputQuantity({
+      inputToken: inputToken.value,
+      outputToken: outputToken.value,
+      outputAmount: formValues[SwapFormField.OutputAmount]
+    })
+  ])
+    .then(() => updateAmount())
+    .catch((e: ThrownException) => {
+      queryError.value = mapErrorToMessage(e.message)
+
+      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
+        $onError(e)
+      }
+    })
+    .finally(() => {
+      fetchStatus.setIdle()
+      showPriceWarning.value = true
+    })
+}
+
+function getOutputQuantity() {
+  showPriceWarning.value = false
+  fetchStatus.setLoading()
+
+  if (!inputToken.value || !outputToken.value || !hasInputAmount.value) {
+    fetchStatus.setIdle()
+    showPriceWarning.value = true
+
+    return
+  }
+
+  Promise.all([
+    fetchLastTradedPrices(),
+    swapStore.fetchOutputQuantity({
+      inputToken: inputToken.value,
+      outputToken: outputToken.value,
+      inputAmount: formValues[SwapFormField.InputAmount]
+    })
+  ])
+    .then(() => updateAmount())
+    .catch((e: ThrownException) => {
+      queryError.value = mapErrorToMessage(e.message)
+      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
+        $onError(e)
+      }
+    })
+    .finally(() => {
+      fetchStatus.setIdle()
+      showPriceWarning.value = true
+    })
+}
+
+function updateAmount() {
+  if (swapStore.isInputEntered) {
+    setFormValues(
+      {
+        [SwapFormField.OutputAmount]: sharedToBalanceInToken({
+          roundingMode: BigNumberInBase.ROUND_DOWN,
+          value: swapStore.outputQuantity.resultQuantity,
+          decimalPlaces: outputToken.value?.token.decimals || 0,
+          fixedDecimals:
+            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
+        })
+      },
+      false
+    )
+
+    return
+  }
+
+  setFormValues(
+    {
+      [SwapFormField.InputAmount]: sharedToBalanceInToken({
+        roundingMode: BigNumberInBase.ROUND_UP,
+        value: swapStore.inputQuantity.resultQuantity,
+        decimalPlaces: inputToken.value?.token.decimals || 0,
+        fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
+      })
+    },
+    false
+  )
+}
+
+function fetchLastTradedPrices() {
+  return Promise.all([
+    spotStore.fetchLastTrade({ marketId: inputTokenMarket.value.marketId }),
+    spotStore.fetchLastTrade({ marketId: outputTokenMarket.value.marketId })
+  ])
+    .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
+      setFormValues({
+        [SwapFormField.InputLastTradedPrice]: sharedToBalanceInWei({
+          value: inputTokenLastTradedPrice.price,
+          decimalPlaces:
+            inputTokenMarket.value.baseToken.decimals -
+            inputTokenMarket.value.quoteToken.decimals
+        }).toFixed(),
+        [SwapFormField.OutputLastTradedPrice]: sharedToBalanceInWei({
+          value: outputTokenLastTradedPrice.price,
+          decimalPlaces:
+            outputTokenMarket.value.baseToken.decimals -
+            outputTokenMarket.value.quoteToken.decimals
+        }).toFixed()
+      })
+    })
+    .catch($onError)
 }
 
 async function submit() {
@@ -131,151 +277,6 @@ async function submit() {
       submitStatus.setIdle()
     })
 }
-
-function resetFormValues() {
-  showPriceWarning.value = false
-  const inputDenom = inputToken.value?.denom
-  const outputDenom = outputToken.value?.denom
-
-  resetForm()
-
-  setFormValues(
-    {
-      [SwapFormField.InputAmount]: '',
-      [SwapFormField.OutputAmount]: '',
-      [SwapFormField.InputDenom]: inputDenom || '',
-      [SwapFormField.OutputDenom]: outputDenom || ''
-    },
-    false
-  )
-}
-
-function fetchLastTradedPrices() {
-  return Promise.all([
-    spotStore.fetchLastTrade({ marketId: inputTokenMarket.value.marketId }),
-    spotStore.fetchLastTrade({ marketId: outputTokenMarket.value.marketId })
-  ])
-    .then(([inputTokenLastTradedPrice, outputTokenLastTradedPrice]) => {
-      setFormValues({
-        [SwapFormField.InputLastTradedPrice]: sharedToBalanceInWei({
-          value: inputTokenLastTradedPrice.price,
-          decimalPlaces:
-            inputTokenMarket.value.baseToken.decimals -
-            inputTokenMarket.value.quoteToken.decimals
-        }).toFixed(),
-        [SwapFormField.OutputLastTradedPrice]: sharedToBalanceInWei({
-          value: outputTokenLastTradedPrice.price,
-          decimalPlaces:
-            outputTokenMarket.value.baseToken.decimals -
-            outputTokenMarket.value.quoteToken.decimals
-        }).toFixed()
-      })
-    })
-    .catch($onError)
-}
-
-function getOutputQuantity() {
-  showPriceWarning.value = false
-  fetchStatus.setLoading()
-
-  if (!inputToken.value || !outputToken.value || !hasInputAmount.value) {
-    fetchStatus.setIdle()
-    showPriceWarning.value = true
-
-    return
-  }
-
-  Promise.all([
-    fetchLastTradedPrices(),
-    swapStore.fetchOutputQuantity({
-      inputToken: inputToken.value,
-      outputToken: outputToken.value,
-      inputAmount: formValues[SwapFormField.InputAmount]
-    })
-  ])
-    .then(() => updateAmount())
-    .catch((e: ThrownException) => {
-      queryError.value = mapErrorToMessage(e.message)
-      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
-        $onError(e)
-      }
-    })
-    .finally(() => {
-      fetchStatus.setIdle()
-      showPriceWarning.value = true
-    })
-}
-
-function getInputQuantity() {
-  fetchStatus.setLoading()
-
-  if (!inputToken.value || !outputToken.value || !hasOutputAmount.value) {
-    fetchStatus.setIdle()
-    showPriceWarning.value = true
-
-    return
-  }
-
-  Promise.all([
-    fetchLastTradedPrices(),
-    swapStore.fetchInputQuantity({
-      inputToken: inputToken.value,
-      outputToken: outputToken.value,
-      outputAmount: formValues[SwapFormField.OutputAmount]
-    })
-  ])
-    .then(() => updateAmount())
-    .catch((e: ThrownException) => {
-      queryError.value = mapErrorToMessage(e.message)
-
-      if (sharedWalletStore.isUserConnected && !hideErrorToast.value) {
-        $onError(e)
-      }
-    })
-    .finally(() => {
-      fetchStatus.setIdle()
-      showPriceWarning.value = true
-    })
-}
-
-function updateAmount() {
-  if (swapStore.isInputEntered) {
-    setFormValues(
-      {
-        [SwapFormField.OutputAmount]: toBalanceInToken({
-          roundingMode: BigNumberInBase.ROUND_DOWN,
-          value: swapStore.outputQuantity.resultQuantity,
-          decimalPlaces: outputToken.value?.token.decimals || 0,
-          fixedDecimals:
-            outputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
-        })
-      },
-      false
-    )
-
-    return
-  }
-
-  setFormValues(
-    {
-      [SwapFormField.InputAmount]: toBalanceInToken({
-        roundingMode: BigNumberInBase.ROUND_UP,
-        value: swapStore.inputQuantity.resultQuantity,
-        decimalPlaces: inputToken.value?.token.decimals || 0,
-        fixedDecimals: inputToken.value?.quantityDecimals || MAX_QUOTE_DECIMALS
-      })
-    },
-    false
-  )
-}
-
-function resetPriceWarning() {
-  showPriceWarning.value = false
-}
-
-function resetQueryError() {
-  queryError.value = ''
-}
 </script>
 
 <template>
@@ -304,9 +305,9 @@ function resetQueryError() {
               disabled: fetchStatus.isLoading() || submitStatus.isLoading()
             }"
             @reset:price-warning="resetPriceWarning"
-            @update:inputQuantity="getInputQuantity"
-            @update:outputQuantity="getOutputQuantity"
-            @queryError:reset="resetQueryError"
+            @update:input-quantity="getInputQuantity"
+            @update:output-quantity="getOutputQuantity"
+            @query-error:reset="resetQueryError"
             @form:reset="resetFormValues"
           />
 
@@ -345,8 +346,8 @@ function resetQueryError() {
               isLoading: submitStatus.isLoading() || fetchStatus.isLoading()
             }"
             @submit="submit"
-            @update:outputQuantity="getOutputQuantity"
-            @update:inputQuantity="getInputQuantity"
+            @update:output-quantity="getOutputQuantity"
+            @update:input-quantity="getInputQuantity"
           />
 
           <ModalsSwapSuccess v-bind="{ txHash }" />

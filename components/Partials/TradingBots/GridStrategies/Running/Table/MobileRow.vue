@@ -2,16 +2,21 @@
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  StrategyStatus,
+  PortfolioSpotTradingBotsRunningTableColumn
+} from '@/types'
+import type {
   UTableColumn,
   GridStrategyTransformed,
-  PortfolioSpotTradingBotsRunningTableColumn,
   DerivativeGridStrategyTransformed
 } from '@/types'
 
+const jsonStore = useSharedJsonStore()
+
 const props = withDefaults(
   defineProps<{
-    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
     columns: UTableColumn[]
+    strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
   }>(),
   {}
 )
@@ -78,12 +83,20 @@ function selectStrategy() {
             {{ t('sgt.details') }}
           </AppButton>
           <PartialsLiquidityBotsSpotCommonRemoveStrategy
-            :strategy="strategy.strategy"
+            v-bind="{
+              strategy: strategy.strategy,
+              pnl: strategy.pnl,
+              pnlPercentage: strategy.percentagePnl
+            }"
           >
             <template #default="{ removeStrategy, status }">
               <AppButton
                 size="xs"
-                :is-loading="status.isLoading()"
+                :disabled="jsonStore.isPostUpgradeMode"
+                :is-loading="
+                  status.isLoading() ||
+                  strategy.strategyStatus === StrategyStatus.Pending
+                "
                 variant="danger-shade"
                 @click="removeStrategy"
               >
@@ -122,7 +135,13 @@ function selectStrategy() {
     </template>
 
     <template #totalAmount-data>
-      <div class="flex items-center gap-1">
+      <div
+        v-if="strategy.strategyStatus === StrategyStatus.Pending"
+        class="text-coolGray-400"
+      >
+        &mdash;
+      </div>
+      <div v-else class="flex items-center gap-1">
         <SharedAmountFormatter
           :decimal-places="2"
           :max-decimal-places="3"
@@ -133,6 +152,13 @@ function selectStrategy() {
 
     <template #totalProfit-data>
       <div
+        v-if="strategy.strategyStatus === StrategyStatus.Pending"
+        class="text-coolGray-400"
+      >
+        &mdash;
+      </div>
+      <div
+        v-else
         class="flex flex-col font-mono"
         :class="strategy.isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
@@ -166,7 +192,11 @@ function selectStrategy() {
 
     <template #removeStrategy-data>
       <PartialsLiquidityBotsSpotCommonRemoveStrategy
-        :strategy="strategy.strategy"
+        v-bind="{
+          pnl: strategy.pnl,
+          strategy: strategy.strategy,
+          pnlPercentage: strategy.percentagePnl
+        }"
       >
         <template #default="{ removeStrategy, status }">
           <AppButton

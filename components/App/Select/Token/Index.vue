@@ -12,64 +12,49 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  Modal,
   SwapCyTags,
   TradeField,
   SwapFormField,
+  NeptuneUsdtField,
   BankTransferField,
   SubaccountTransferField
 } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    isMaxHidden?: boolean
-    isUsdVisible?: boolean
+    denom?: string
+    debounce?: number
     isDisabled?: boolean
     isRequired?: boolean
-    isBalanceHidden?: boolean
-    shouldCheckBalance?: boolean
-    isTokenSelectorDisabled?: boolean
-
-    denom?: string
-
-    modal?: Modal
-    debounce?: number
     maxDecimals?: number
+    isMaxHidden?: boolean
+    isUsdVisible?: boolean
     tensMultiplier?: number
     additionalRules?: object
-
+    isBalanceHidden?: boolean
     amountFieldName?:
       | TradeField
       | SwapFormField
+      | NeptuneUsdtField
       | BankTransferField
       | SubaccountTransferField
+    shouldCheckBalance?: boolean
+    isTokenSelectorDisabled?: boolean
     options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
   }>(),
   {
-    isMaxHidden: false,
-    isUsdVisible: false,
-    isDisabled: false,
-    isRequired: false,
-    isBalanceHidden: false,
-    shouldCheckBalance: false,
-    isTokenSelectorDisabled: false,
-
     denom: '',
-
-    modal: Modal.TokenSelector,
     debounce: 0,
     maxDecimals: 6,
+    options: () => [],
     tensMultiplier: undefined,
     additionalRules: undefined,
-
-    amountFieldName: TradeField.BaseAmount,
-    options: () => []
+    amountFieldName: TradeField.BaseAmount
   }
 )
 
 const emit = defineEmits<{
   'on:update': []
-  'update:modal': []
   'update:max': [{ amount: string }]
   'update:denom': [state: string]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
@@ -209,6 +194,10 @@ const onAmountChangeDebounced = useDebounceFn((value) => {
 
   changeAmount(allowableValue)
 }, props.debounce)
+
+defineExpose({
+  maxBalanceToString
+})
 </script>
 
 <script lang="ts">
@@ -246,10 +235,21 @@ export default {
           >
             {{ $t('trade.max') }}
           </span>
-          <p v-if="!isBalanceHidden" class="text-xs text-blue-500">
-            <span :data-cy="dataCyTag(SwapCyTags.BalanceString)">
-              {{ $t('trade.balance', { balance: maxBalanceToString }) }}
-            </span>
+          <p
+            v-if="!isBalanceHidden"
+            class="text-xs text-blue-500 inline-flex space-x-1"
+            :data-cy="dataCyTag(SwapCyTags.BalanceString)"
+          >
+            <span> {{ $t('trade.balanceTitle') }}: </span>
+            <PartialsCommonBalanceDisplay
+              v-bind="{
+                ...$attrs,
+                token: selectedToken.token,
+                value: maxBalanceToString,
+                textColorClass: 'text-blue-500',
+                borderColorClass: 'border-blue-500'
+              }"
+            />
           </p>
         </div>
       </slot>
@@ -277,18 +277,22 @@ export default {
               <USelectMenu
                 v-model="denomValue"
                 searchable
-                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
                 :options="tokenOptions"
-                :search-attributes="['label', 'name', 'symbol']"
+                :ui-menu="{ width: 'w-72', input: 'dark:bg-brand-900' }"
+                :search-attributes="['label', 'name', 'symbol', 'value']"
                 value-attribute="value"
               >
                 <template #default="{ open }">
-                  <div class="flex items-center gap-2">
+                  <div
+                    class="flex items-center gap-2"
+                    :class="{ 'cursor-text': isTokenSelectorDisabled }"
+                  >
                     <UAvatar :src="selectedToken?.token.logo" size="xs" />
                     <span class="font-semibold">
                       {{ selectedToken?.token.symbol }}
                     </span>
                     <UIcon
+                      v-if="!isTokenSelectorDisabled"
                       :name="NuxtUiIcons.ChevronDown"
                       :class="{ 'rotate-180': open }"
                       class="transition-all"
