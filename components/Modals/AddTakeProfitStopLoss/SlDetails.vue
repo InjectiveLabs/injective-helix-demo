@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiDerivativeMarket, ConditionalOrderSide } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import { ConditionalOrderSide } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
     isBuy: boolean
-    slQuantity: string
+    slQuantity?: string
     position: PositionV2
     stopLossValue: string
     market: UiDerivativeMarket
@@ -72,7 +73,7 @@ const stopLossPnl = computed(() => {
         <AppAmount
           v-bind="{
             amount: getSlQuantity,
-            decimalPlaces: market.priceDecimals
+            decimalPlaces: market.quantityDecimals
           }"
         />
         <span>{{ market.baseToken.symbol }}</span>
