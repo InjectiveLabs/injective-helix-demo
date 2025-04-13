@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UiDerivativeMarket } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -40,7 +40,7 @@ function onOptionUpdate(percentage: number) {
           noStyle: true,
           alignLeft: true,
           placeholder: '0.00',
-          decimals: market.priceDecimals,
+          decimals: market.quantityDecimals,
           inputClasses:
             'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
         }"
