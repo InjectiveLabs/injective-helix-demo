@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_TOKEN_ASSET_DECIMALS
+  UI_DEFAULT_TOKEN_ASSET_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { TakeProfitStopLossForm } from '@/types'
 import {
   Modal,
   DerivativeTradeTypes,
-  TakeProfitStopLossForm,
   TakeProfitStopLossFormField
 } from '@/types'
 
@@ -55,12 +56,7 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
     type: computed(() => DerivativeTradeTypes.StopMarket)
   })
 
-const props = withDefaults(
-  defineProps<{
-    position: PositionV2
-  }>(),
-  {}
-)
+const props = withDefaults(defineProps<{ position: PositionV2 }>(), {})
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
@@ -182,7 +178,11 @@ const {
   valueToBigNumber: availableQuantityToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(availableQuantity.value)),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: computed(
+      () => market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+    )
+  }
 )
 
 const {
@@ -395,17 +395,13 @@ async function submitTpSl() {
       })
 
       if (!takeProfitValue.value) {
-        notificationStore.success({
-          title: slSuccessMessage
-        })
+        notificationStore.success({ title: slSuccessMessage })
 
         return
       }
 
       if (!stopLossValue.value) {
-        notificationStore.success({
-          title: tpSuccessMessage
-        })
+        notificationStore.success({ title: tpSuccessMessage })
 
         return
       }
