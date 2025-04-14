@@ -1,4 +1,4 @@
-import {
+import type {
   Campaign,
   PositionV2,
   TokenStatic,
@@ -7,14 +7,14 @@ import {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
+import type { BigNumberInBase } from '@injectivelabs/utils'
+import type {
   SharedUiSpotTrade,
   SharedUiMarketSummary,
   SharedBalanceWithToken,
   SharedUiDerivativeTrade
 } from '@shared/types'
-import {
+import type {
   UiSpotMarket,
   UiMarketWithToken,
   UiDerivativeMarket,
@@ -350,6 +350,7 @@ export interface TransformedLiquidityDashboard {
 }
 
 export interface TransformedPosition {
+  hasTpSl: boolean
   pnl: BigNumberInBase
   position: PositionV2
   subaccountId: string
@@ -367,6 +368,8 @@ export interface TransformedPosition {
   isMarketOrderAuthorized: boolean
   liquidationPrice: BigNumberInBase
   effectiveLeverage: BigNumberInBase
+  tpTriggerPrice: BigNumberInBase | undefined
+  slTriggerPrice: BigNumberInBase | undefined
   reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   [PositionTableColumn.Margin]: BigNumberInBase
   [PositionTableColumn.Market]: UiDerivativeMarket

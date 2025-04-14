@@ -22,7 +22,6 @@ const notificationStore = useSharedNotificationStore()
 
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { sm } = useSharedBreakpoints()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 const { markPrice } = useDerivativeLastPrice(computed(() => market.value))
 
@@ -489,14 +488,13 @@ async function submitTpSl() {
   <AppModal
     v-model="modalStore.modals[Modal.AddTakeProfitStopLoss]"
     v-bind="{
-      isHideCloseButton: !sm,
       isAlwaysOpen: status.isLoading(),
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
     @on:open="resetTakeProfitStopLossForm"
   >
     <template #title>
-      <p class="text-center font-bold">
+      <p class="sm:text-center max-sm:w-11/12 font-bold">
         {{ $t('trade.takeProfitStopLossForPosition') }}
       </p>
     </template>
@@ -515,7 +513,7 @@ async function submitTpSl() {
         />
 
         <div class="flex flex-col gap-2">
-          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+          <div class="flex gap-8 max-sm:flex-wrap max-sm:gap-2">
             <ModalsAddTakeProfitStopLossTpPriceInput
               v-model="takeProfitValue"
               v-bind="{
@@ -565,7 +563,7 @@ async function submitTpSl() {
         </div>
 
         <div class="flex flex-col gap-2">
-          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+          <div class="flex gap-8 max-sm:flex-wrap max-sm:gap-2">
             <ModalsAddTakeProfitStopLossSlPriceInput
               v-model="stopLossValue"
               v-bind="{
