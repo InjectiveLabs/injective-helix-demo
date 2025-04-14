@@ -24,10 +24,6 @@ const emit = defineEmits<{
 }>()
 
 function editTpSl() {
-  if (jsonStore.isPostUpgradeMode) {
-    return
-  }
-
   emit('tpsl:update', props.position)
 }
 </script>

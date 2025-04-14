@@ -56,6 +56,7 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
   })
 
 const props = withDefaults(defineProps<{ position: PositionV2 }>(), {})
+const emit = defineEmits<{ 'on:reset': [] }>()
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
@@ -359,6 +360,7 @@ const isSubmitButtonDisabled = computed(() => {
 
 function closeModal() {
   modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+  emit('on:reset')
 }
 
 function resetTakeProfitStopLossForm() {
@@ -492,6 +494,7 @@ async function submitTpSl() {
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
     @on:open="resetTakeProfitStopLossForm"
+    @on:close="closeModal"
   >
     <template #title>
       <p class="sm:text-center max-sm:w-11/12 font-bold">
