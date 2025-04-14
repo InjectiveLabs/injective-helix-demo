@@ -1,6 +1,7 @@
+import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { orderSideToOrderType } from '@shared/transformer/trade'
 import {
-  SpotLimitOrder,
-  SpotOrderHistory,
   MsgCancelSpotOrder,
   MsgBatchUpdateOrders,
   MsgCreateSpotLimitOrder,
@@ -9,13 +10,11 @@ import {
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { orderSideToOrderType } from '@shared/transformer/trade'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/msgs'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
-import { UiSpotMarket } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
 
 const fetchBalances = (
   {
@@ -94,10 +93,10 @@ export const submitLimitOrder = async ({
   quantity,
   orderSide
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
-  quantity: BigNumberInBase
   market: UiSpotMarket
+  price: BigNumberInBase
+  quantity: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -139,7 +138,7 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const isBuy = [OrderSide.BuyPO, OrderSide.Buy].includes(orderSide)
+  const isBuy = [OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
   const cw20ConvertMessage = prepareOrderMessages({
     denom: isBuy ? market.quoteDenom : market.baseDenom,
@@ -164,9 +163,9 @@ export const submitMarketOrder = async ({
   orderSide
 }: {
   orderSide: OrderSide
+  market: UiSpotMarket
   price: BigNumberInBase
   quantity: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -235,11 +234,11 @@ export const submitStopLimitOrder = async ({
   orderSide,
   triggerPrice
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
+  market: UiSpotMarket
+  price: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -295,11 +294,11 @@ export const submitStopMarketOrder = async ({
   orderSide,
   triggerPrice
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
+  market: UiSpotMarket
+  price: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -353,8 +352,8 @@ export async function submitChase({
   market,
   price
 }: {
-  order: SpotLimitOrder
   market: UiSpotMarket
+  order: SpotLimitOrder
   price: BigNumberInBase
 }) {
   const appStore = useAppStore()

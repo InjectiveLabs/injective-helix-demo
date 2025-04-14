@@ -182,8 +182,9 @@ export default {
 
       preferences: {
         title: 'Preferences',
-        description: 'Customize your trading experience',
+        enableEip712: 'Enable EIP-712 Signing',
         thousandsSeparator: 'Thousands Separator',
+        description: 'Customize your trading experience',
         showGridTradingSubaccounts: 'Show Grid Trading Subaccounts'
       },
 

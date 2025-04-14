@@ -1,15 +1,16 @@
-import {
+import { defineNuxtPlugin } from '#imports'
+import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { isThrownException } from '@injectivelabs/exceptions'
+import { localStorage } from '@/app/Services'
+import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
+import type { ThrownException } from '@injectivelabs/exceptions'
+import type {
   StateTree,
   PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/wallet-base'
-import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
-import { defineNuxtPlugin } from '#imports'
-import { localStorage } from '@/app/Services'
-import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -48,6 +49,7 @@ const stateToPersist = {
   },
 
   sharedWallet: {
+    isEip712: false, //todo: remove once this passes qa
     walletConnectStatus: '',
     hwAddresses: '',
     wallet: Wallet.Metamask,
@@ -153,6 +155,7 @@ const persistState = (
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
+
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,

@@ -1,6 +1,6 @@
-import type { IntervalOption } from '@/types'
-import { StopReason } from '@/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { StopReason } from '@/types'
+import type { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -131,6 +131,7 @@ export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
 export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
+export const DEFAULT_MIN_GAS = 200000
 
 export const intervalOptions: IntervalOption[] = [
   { label: '1m', value: { resolution: 1, countback: 30 * 32 } },

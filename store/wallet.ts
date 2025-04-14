@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import {
   ErrorType,
   WalletException,
   GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { Wallet } from '@injectivelabs/wallet-base'
-import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
-import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { Modal } from '@/types'
 import { traceUserDetails } from '@/app/services/tracer'
+import { fundInjectiveAddress } from '@/app/services/faucet'
+import { Modal } from '@/types'
 
 type WalletStoreState = {}
 
@@ -163,11 +164,44 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async validate() {
+    async validateGas() {
+      const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
+        return
+      }
+
+      await fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+      await accountStore.fetchAccountPortfolioBalances()
+
+      if (accountStore.hasSufficientGas) {
+        return
+      }
+
+      throw new GeneralException(
+        new Error(
+          'Due to extremely high usage, gas-free transactions are currently unavailable. You need INJ to cover the transaction.'
+        )
+      )
+    },
+
+    async validate() {
+      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      // @bojan, option B for detecting if web 3 gateway is down
+      // more accurate, but not the best UX
+      /*
+        web3GatewayHealthCheck()
+        if (sharedWalletStore.isEip712) {
+          await walletStore.validateGas()
+        }
+      */
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
+      await walletStore.validateGas()
       await sharedWalletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {

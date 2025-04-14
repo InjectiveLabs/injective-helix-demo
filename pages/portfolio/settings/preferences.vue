@@ -21,6 +21,8 @@ import { PortfolioSubPage } from '@/types'
     <div class="border-y divide-y">
       <PartialsPortfolioSettingsPreferencesThousandsSeparator />
       <PartialsPortfolioSettingsPreferencesShowGridTradingSubaccounts />
+      <!-- todo: remove after QA approves -->
+      <PartialsPortfolioSettingsPreferencesEip712 />
     </div>
   </div>
 </template>

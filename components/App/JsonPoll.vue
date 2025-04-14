@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { JSON_POLL_INTERVAL } from '@shared/utils/constant'
+import { web3GatewayHealthCheck } from '@/app/services/web3HealthCheck'
 import {
   swapRoutes,
   verifiedDenoms,
@@ -28,6 +29,7 @@ onMounted(() => {
 
 function pollJson() {
   return Promise.all([
+    web3GatewayHealthCheck(),
     jsonStore.fetchToken(),
     jsonStore.fetchSwapRoutes(),
     jsonStore.fetchSpotGridMarkets(),
@@ -56,6 +58,9 @@ function mountCachedJson() {
 }
 
 useIntervalFn(pollJson, JSON_POLL_INTERVAL)
+// @bojan, option A for detecting if web 3 gateway is down
+// better UX, but expensive [alot of polls], and users may still hit web3 gateway is down issue between polls
+useIntervalFn(web3GatewayHealthCheck, 10 * 1000)
 </script>
 
 <template>

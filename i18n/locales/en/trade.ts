@@ -319,6 +319,8 @@ export default {
     estLiqPrice: 'EST Liq Price',
     balance: 'Balance: {balance}',
     postOnlyWarning: 'Temporarily post-only due to chain upgrade',
+    eip712Warning:
+      'Due to extremely high usage, gas-free transactions are currently unavailable',
     slippageWarnings: {
       exceed: 'Slippage can not be higher than 50%.',
       tooLow:
