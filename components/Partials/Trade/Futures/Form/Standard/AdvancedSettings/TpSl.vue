@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import {
-  MarketKey,
-  UiDerivativeMarket,
-  DerivativesTradeForm,
-  DerivativesTradeFormField
-} from '@/types'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import { MarketKey, DerivativesTradeFormField } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -58,35 +54,17 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
     })
   })
 
-const isTpDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
+const isTpSlDisabled = computed(() =>
+  derivativeStore.subaccountConditionalOrders.some(
+    (order) => order.marketId === market.value.marketId
   )
-})
-
-const isSlDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.StopSell : OrderSide.StopBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
-  )
-})
-
-watch(
-  () => isTpDisabled,
-  (isDisabled) => {
-    if (isDisabled) {
-      takeProfitValue.value = ''
-    }
-  }
 )
 
 watch(
-  () => isSlDisabled,
+  () => isTpSlDisabled,
   (isDisabled) => {
     if (isDisabled) {
+      takeProfitValue.value = ''
       stopLossValue.value = ''
     }
   }
@@ -105,7 +83,7 @@ watch(
       <div class="space-y-2">
         <AppInputField
           v-model="takeProfitValue"
-          :disabled="isTpDisabled"
+          :disabled="isTpSlDisabled"
           :placeholder="$t('trade.take_Profit')"
           class="placeholder:font-sans"
         />
@@ -118,7 +96,7 @@ watch(
       <div class="space-y-2">
         <AppInputField
           v-model="stopLossValue"
-          :disabled="isSlDisabled"
+          :disabled="isTpSlDisabled"
           :placeholder="$t('trade.stop_Loss')"
           class="placeholder:font-sans"
         />
