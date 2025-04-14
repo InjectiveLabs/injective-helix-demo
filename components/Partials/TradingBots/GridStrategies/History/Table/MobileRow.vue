@@ -3,13 +3,13 @@ import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
+import type {
   StopReason,
   UTableColumn,
   DerivativeGridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn,
   GridStrategyTransformed
 } from '@/types'
+import { PortfolioSpotTradingBotsHistoryTableColumn } from '@/types'
 
 const { t } = useLang()
 
@@ -58,7 +58,7 @@ function selectStrategy() {
     <template #header>
       <div class="flex items-center justify-between mb-4">
         <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 font-sans"
+          class="flex items-center space-x-2 font-mono"
           v-bind="{ market: strategy.market }"
           is-trading-bot-tab
         >
