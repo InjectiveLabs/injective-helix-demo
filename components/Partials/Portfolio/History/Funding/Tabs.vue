@@ -24,7 +24,7 @@ function onFormReset() {
 
 <template>
   <div class="h-header flex">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector v-bind="{ includeBotsSubaccounts: true,showLowBalance: true }" />
 
     <div class="flex divide-x border-r">
       <CommonTabMarketSelector
