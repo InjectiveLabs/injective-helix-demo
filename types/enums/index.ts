@@ -533,7 +533,6 @@ export enum BusEvents {
   SetPositionStatusIdle = 'set-position-status-idle',
   OrderbookNotionalClick = 'orderbook-notional-click',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
-  LimitOrdersModifyOnChart = 'limit-orders-modify-on-chart',
   ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
   ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',

@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import { OrderSide } from '@injectivelabs/ts-types'
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import type {
+  SpotLimitOrder,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
-import {
-  BusEvents,
-  UiSpotMarket,
-  UiDerivativeMarket,
-  TradingChartInterval
-} from '@/types'
+import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
+import { TradingChartInterval } from '@/types'
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 const { t } = useLang()
 
 const props = withDefaults(
@@ -22,11 +20,7 @@ const props = withDefaults(
     interval: string
     datafeedEndpoint: string
     market: UiSpotMarket | UiDerivativeMarket
-    orders?: {
-      formattedPrice: string
-      formattedUnfilledQuantity: string
-      order: SpotLimitOrder | DerivativeLimitOrder
-    }[]
+    orders?: SpotLimitOrder[] | DerivativeLimitOrder[]
   }>(),
   { orders: () => [] }
 )
@@ -34,10 +28,14 @@ const props = withDefaults(
 const emit = defineEmits<{
   ready: []
   'interval:change': [value: TradingChartInterval]
-  'order:close': [order: SpotLimitOrder | DerivativeLimitOrder]
+  'order:close': [
+    {
+      order: SpotLimitOrder | DerivativeLimitOrder
+    }
+  ]
   'order:change': [
     {
-      newPrice: number
+      newPrice: string
       order: SpotLimitOrder | DerivativeLimitOrder
     }
   ]
@@ -50,11 +48,7 @@ const containerId = `tv_chart_container-${window.crypto
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
-onWalletDisconnected(clearAllOrderLines)
-
 onMounted(() => {
-  useEventBus(BusEvents.LimitOrdersModifyOnChart).on(modifyLimitOrderLines)
-
   const widgetOptions = config({
     containerId,
     symbol: props.symbol,
@@ -71,7 +65,6 @@ onMounted(() => {
       tradingView.value.view = tradingWidget
 
       emit('ready')
-
       modifyLimitOrderLines()
     })
 
@@ -121,6 +114,7 @@ onMounted(() => {
 
 function modifyLimitOrderLines() {
   nextTick(() => {
+    const updatedOrderLinesId: string[] = []
     const chart = tradingView.value.view?.chart()
 
     if (!chart) {
@@ -129,110 +123,127 @@ function modifyLimitOrderLines() {
 
     clearAllOrderLines()
 
-    if (props.orders.length === 0) {
-      return
-    }
+    props.orders?.forEach((order) => {
+      const formattedPrice = (
+        props.isSpot
+          ? sharedToBalanceInWei({
+              value: order.price,
+              decimalPlaces:
+                props.market.baseToken.decimals -
+                props.market.quoteToken.decimals
+            })
+          : sharedToBalanceInTokenInBase({
+              value: order.price,
+              decimalPlaces: props.market.quoteToken.decimals
+            })
+      ).toFixed(props.market.priceDecimals)
 
-    props.orders?.forEach(
-      ({ order, formattedPrice, formattedUnfilledQuantity }) => {
-        const orderLine = chart.createOrderLine({ disableUndo: true })
+      const formattedUnfilledQuantity = (
+        props.isSpot
+          ? new BigNumberInWei(order.unfilledQuantity).toBase(
+              (props.market as UiSpotMarket).baseToken.decimals
+            )
+          : new BigNumberInBase(order.unfilledQuantity)
+      ).toFixed(props.market.quantityDecimals)
 
-        const themeColor = [OrderSide.Buy, OrderSide.BuyPO].includes(
-          order.orderSide
-        )
-          ? '#0EE29B'
-          : '#F3164D'
+      const uid = order.orderHash || order.cid
+      const existingOrderLine = orderLines.value[uid]
+      const orderLine = existingOrderLine || chart.createOrderLine({ disableUndo: true })
 
-        orderLine.setLineStyle(2)
-        orderLine.setPrice(formattedPrice)
-        orderLine.setBodyTextColor(themeColor)
-        orderLine.setLineColor(themeColor)
-        orderLine.setBodyBackgroundColor('#000')
-        orderLine.setBodyBorderColor(themeColor)
-        orderLine.setQuantityBackgroundColor('#000')
-        orderLine.setQuantityBorderColor(themeColor)
-        orderLine.setCancelButtonBackgroundColor('#000')
-        orderLine.setCancelButtonIconColor(themeColor)
-        orderLine.setCancelButtonBorderColor(themeColor)
+      if (existingOrderLine) {
         orderLine.setQuantity(
-          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
         )
+
+        return
+      }
+
+      const themeColor = [OrderSide.Buy, OrderSide.BuyPO].includes(
+        order.orderSide
+      )
+        ? '#0EE29B'
+        : '#F3164D'
+
+      orderLine.setLineStyle(2)
+      orderLine.setPrice(formattedPrice)
+      orderLine.setBodyTextColor(themeColor)
+      orderLine.setLineColor(themeColor)
+      orderLine.setBodyBackgroundColor('#000')
+      orderLine.setBodyBorderColor(themeColor)
+      orderLine.setQuantityBackgroundColor('#000')
+      orderLine.setQuantityBorderColor(themeColor)
+      orderLine.setCancelButtonBackgroundColor('#000')
+      orderLine.setCancelButtonIconColor(themeColor)
+      orderLine.setCancelButtonBorderColor(themeColor)
+      orderLine.setQuantity(
+        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+      )
+      orderLine.setText(
+        `${t('trade.limit')} ${t(
+          `trade.${order.orderSide}`
+        ).toUpperCase()} @ ${formattedPrice}`
+      )
+
+      orderLine.onMove?.(() => {
+        const newPrice = orderLine.getPrice()
         orderLine.setText(
           `${t('trade.limit')} ${t(
             `trade.${order.orderSide}`
-          ).toUpperCase()} @ ${formattedPrice}`
+          ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
         )
 
-        orderLine.onMove?.(() => {
-          const newPrice = orderLine.getPrice()
-          orderLine.setText(
-            `${t('trade.limit')} ${t(
-              `trade.${order.orderSide}`
-            ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
-          )
-
-          emit('order:change', { order, newPrice })
+        delete orderLines.value[uid];
+        
+        emit('order:change', {
+          order,
+          newPrice
         })
+        
+        // temp orderline
+        orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
+        orderLine.setCancellable(false)
+        orderLine.setCancelButtonIconColor('#000')
+      })
 
-        orderLine.setCancellable(true)
-
-        orderLine.onCancel?.(() => {
-          emit('order:close', order)
+      orderLine.onCancel?.(() => {
+        emit('order:close', {
+          order,
         })
+        
+        toRaw(orderLine).remove()
+        delete orderLines.value[uid]
+      })
 
-        orderLines.value[order.orderHash] = orderLine
+      orderLines.value[uid] = orderLine
+      updatedOrderLinesId.push(uid)
+    })
+
+    // // remove outdated lines
+    Object.keys(orderLines.value).forEach((uid) => {
+      if (!updatedOrderLinesId.includes(uid)) {
+        nextTick(() => {
+          toRaw(orderLines.value[uid]).remove()
+          delete orderLines.value[uid]
+        })
       }
-    )
+    })
   })
-}
-
-function removeOrderline(order: SpotLimitOrder | DerivativeLimitOrder) {
-  const orderLine = orderLines.value[order.orderHash]
-
-  if (!orderLine) {
-    return
-  }
-
-  orderLine.remove()
-  delete orderLines.value[order.orderHash]
 }
 
 function clearAllOrderLines() {
   Object.values(orderLines.value).forEach((orderLine) => {
-    orderLine.remove()
+    nextTick(() => {
+      toRaw(orderLine).remove()
+    })
   })
 
   orderLines.value = {}
 }
-
 watch(
-  [() => spotStore.subaccountOrders, () => derivativeStore.subaccountOrders],
-  (
-    [newSpotOrders, newDerivativeOrders],
-    [oldSpotOrders, oldDerivativeOrders]
-  ) => {
-    const newOrders = props.isSpot ? newSpotOrders : newDerivativeOrders
-    const oldOrders = props.isSpot ? oldSpotOrders : oldDerivativeOrders
-
-    if (newOrders.length === oldOrders.length) {
-      modifyLimitOrderLines()
-
-      return
-    }
-
-    const newOrderHashes = new Set(newOrders.map((o) => o.orderHash))
-    const [removedOrder] = oldOrders.filter(
-      ({ orderHash }) => !newOrderHashes.has(orderHash)
-    )
-
-    if (!removedOrder) {
-      return
-    }
-
-    removeOrderline(removedOrder)
-  },
-  { deep: true }
+  () => props.orders, modifyLimitOrderLines, { deep: true }
 )
+
+defineExpose({ modifyLimitOrderLines })
 </script>
 
 <template>

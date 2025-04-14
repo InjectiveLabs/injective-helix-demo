@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
+import type {
   Time,
   IChartApi,
-  LineStyle,
-  ColorType,
   DeepPartial,
-  createChart,
   ChartOptions,
   HistogramData,
   CandlestickData,
-  WhitespaceData,
+  WhitespaceData} from 'lightweight-charts';
+import {
+  LineStyle,
+  ColorType,
+  createChart,
   CrosshairMode
 } from 'lightweight-charts'
 import { colors } from '@/nuxt-config/tailwind'
@@ -180,7 +181,7 @@ watch(
 
 <template>
   <div ref="wrapper" class="flex-1 relative">
-    <div ref="container" class="lw-chart absolute inset-0"></div>
+    <div ref="container" class="lw-chart absolute inset-0"/>
   </div>
 </template>
 
