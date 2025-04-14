@@ -65,7 +65,7 @@ export const QUOTE_DENOMS_GECKO_IDS = [
   USDT_COIN_GECKO_ID,
   USDC_COIN_GECKO_ID
 ]
-export const BTC_COIN_GECKO_ID = 'bitcoin'
+export const INJ_COIN_GECKO_ID = 'injective-protocol'
 export const HIDDEN_BALANCE_DISPLAY = '********'
 export const SMALL_BALANCE_THRESHOLD = '10'
 export const LOW_VOLUME_MARKET_THRESHOLD = 1000

@@ -43,7 +43,7 @@ export default {
     or: 'or',
     ok: 'OK',
     and: 'and',
-    BTC: 'BTC',
+    INJ: 'INJ',
     roi: 'ROI',
     pnl: 'PnL',
     max: 'Max',

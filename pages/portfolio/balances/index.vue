@@ -5,7 +5,7 @@ import { Wallet } from '@injectivelabs/wallet-base'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  BTC_COIN_GECKO_ID,
+  INJ_COIN_GECKO_ID,
   UI_DEFAULT_TOKEN_ASSET_DECIMALS
 } from '@/app/utils/constants'
 import { Modal } from '@/types'
@@ -17,14 +17,14 @@ const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
-const accountTotalBalanceInBtc = computed(() => {
-  const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
+const accountTotalBalanceInInj = computed(() => {
+  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
 
-  if (!btcUsdPrice) {
+  if (!injUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
+  return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(injUsdPrice)
 })
 
 const shoWNeptune = computed(() => {
@@ -100,14 +100,14 @@ function onFiatOnRamp() {
             <span>≈</span>
             <CommonSkeletonSubaccountAmount>
               <CommonNumberCounter
-                :decimals="UI_DEFAULT_TOKEN_ASSET_DECIMALS"
                 v-bind="{
-                  value: accountTotalBalanceInBtc.toNumber(),
-                  size: 14
+                  size: 14,
+                  decimals: UI_DEFAULT_TOKEN_ASSET_DECIMALS,
+                  value: accountTotalBalanceInInj.toNumber()
                 }"
               />
             </CommonSkeletonSubaccountAmount>
-            <span class="pb-[2px]">{{ $t('common.BTC') }}</span>
+            <span class="pb-[2px]">{{ $t('common.INJ') }}</span>
           </p>
         </div>
 
