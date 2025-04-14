@@ -15,7 +15,10 @@ import {
   isCountryRestricted
 } from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
-import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
+import {
+  DEFAULT_SLIPPAGE,
+  DEFAULT_100_CHART_CANDLE_BAR_SPACING
+} from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import {
   Modal,
@@ -36,11 +39,12 @@ export interface UserBasedState {
 
   preferences: {
     isHideBalances: boolean
-    authZManagement: boolean
     futuresLeverage: string
+    authZManagement: boolean
     thousandsSeparator: boolean
     tradingLayout: TradingLayout
     subaccountManagement: boolean
+    chartCandleBarSpacing: number
     orderbookLayout: OrderbookLayout
     skipTradeConfirmationModal: boolean
     showGridTradingSubaccounts: boolean
@@ -95,7 +99,8 @@ const initialStateFactory = (): AppStoreState => ({
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
-      tradingChartInterval: TradingChartInterval.D
+      tradingChartInterval: TradingChartInterval.D,
+      chartCandleBarSpacing: DEFAULT_100_CHART_CANDLE_BAR_SPACING
     }
   }
 })
@@ -219,6 +224,18 @@ export const useAppStore = defineStore('app', {
         preferences: {
           ...appStore.userState.preferences,
           futuresLeverage: leverageAmount
+        }
+      })
+    },
+
+    setChartCandleBarSpacing(number: number) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          chartCandleBarSpacing: number
         }
       })
     },

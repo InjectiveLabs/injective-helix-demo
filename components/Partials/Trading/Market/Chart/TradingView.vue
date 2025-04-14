@@ -6,12 +6,12 @@ import type {
 } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
 import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
 import { TradingChartInterval } from '@/types'
 
-const { t } = useLang()
+const appStore = useAppStore()
 
 const props = withDefaults(
   defineProps<{
@@ -60,6 +60,7 @@ onMounted(() => {
 
   tradingWidget.onChartReady(() => {
     tradingWidget.applyOverrides(widgetOptions.overrides)
+    const tradingViewChart = tradingWidget?.chart()
 
     nextTick(() => {
       tradingView.value.view = tradingWidget
@@ -109,6 +110,24 @@ onMounted(() => {
         emit('interval:change', interval)
       })
     })
+
+    if (tradingViewChart) {
+      setTimeout(() => {
+        tradingViewChart.setBarSpacing(
+          appStore.userState.preferences.chartCandleBarSpacing ||
+            DEFAULT_100_CHART_CANDLE_BAR_SPACING
+        )
+
+        tradingViewChart.onVisibleRangeChanged().subscribe(null, () => {
+          appStore.setChartCandleBarSpacing(
+            tradingViewChart.getTimeScale()?.barSpacing() ||
+              DEFAULT_100_CHART_CANDLE_BAR_SPACING
+          )
+        })
+
+        emit('ready')
+      }, 100)
+    }
   })
 })
 

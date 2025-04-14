@@ -119,7 +119,9 @@ function onOrderClose({
 </script>
 
 <template>
-  <div class="h-full relative">
+  <div ref="trading-view-wrap" class="h-full relative">
+    <AppHocLoading v-bind="{ status }" is-helix />
+
     <ClientOnly>
       <PartialsTradingMarketChartTradingView
         v-show="status.isNotLoading()"

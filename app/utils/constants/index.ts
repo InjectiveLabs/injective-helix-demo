@@ -200,3 +200,5 @@ export const INDEX_MARKETS_INFO = [
       '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82'
   }
 ]
+
+export const DEFAULT_100_CHART_CANDLE_BAR_SPACING = 9.2
