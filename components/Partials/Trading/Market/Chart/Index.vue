@@ -32,7 +32,6 @@ const isSpot = props.market.type === SharedMarketType.Spot
 
 const tradingChartComponent = ref()
 const status = reactive(new Status(StatusType.Loading))
-const orderStatus = reactive(new Status(StatusType.Idle))
 
 const symbol = computed(() => {
   if (!isSpot) {
@@ -73,111 +72,49 @@ function onIntervalChange(value: TradingChartInterval) {
 }
 
 function onOrderChange({
-  price,
-  quantity,
+  order,
   newPrice
 }: {
-  price: string
-  quantity: string
+  order: SpotLimitOrder | DerivativeLimitOrder
   newPrice: string
 }) {
-  orderStatus.setLoading()
-
-  const orders = isSpot
-    ? spotStore.subaccountOrders
-    : derivativeStore.subaccountOrders
-
-  const order = orders.find(
-    (order) => order.price === price && order.quantity === quantity
-  )
-
-  if (!order) {
-    console.log('order not found!')
-
-    return
-  }
-
-  if (props.isSpot) {
-    spotStore
+  const action = props.isSpot ? 
+    () => spotStore
       .submitChase({
         order: order as SpotLimitOrder,
         price: new BigNumberInBase(newPrice),
         market: props.market as UiSpotMarket
-      })
-      .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
-      .catch((e) => {
-        $onError(e)
-      })
-      .finally(() => {
-        orderStatus.setIdle()
-        tradingChartComponent.value?.modifyLimitOrderLines()
-      })
-  } else {
-    derivativeStore
-      .submitChase({
+      }) :
+    () => derivativeStore.submitChase({
         order: order as DerivativeLimitOrder,
         price: new BigNumberInBase(newPrice),
         market: props.market as UiDerivativeMarket
       })
-      .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
-      .catch((e) => {
-        $onError(e)
-      })
-      .finally(() => {
-        orderStatus.setIdle()
-        tradingChartComponent.value?.modifyLimitOrderLines()
-      })
-  }
+
+  action()
+    .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
+    .catch((e) => {
+      $onError(e)
+      tradingChartComponent.value?.modifyLimitOrderLines()
+    })
 }
 
 function onOrderClose({
-  price,
-  quantity
+  order
 }: {
-  price: string
-  quantity: string
+  order: SpotLimitOrder | DerivativeLimitOrder
 }) {
-  orderStatus.setLoading()
+  const action = props.isSpot ? 
+    () => spotStore.cancelOrder(order as SpotLimitOrder) :
+    () => derivativeStore.cancelOrder(order as DerivativeLimitOrder)
 
-  const orders = isSpot
-    ? spotStore.subaccountOrders
-    : derivativeStore.subaccountOrders
-
-  const order = orders.find(
-    (order) => order.price === price && order.quantity === quantity
-  )
-
-  if (!order) {
-    console.log('order not found!')
-
-    return
-  }
-
-  if (props.isSpot) {
-    spotStore
-      .cancelOrder(order as SpotLimitOrder)
-      .then(() => {
-        notificationStore.success({ title: t('trade.order_success_canceling') })
-      })
-      .catch((e) => {
-        $onError(e)
-
-        tradingChartComponent.value?.modifyLimitOrderLines()
-      })
-      .finally(() => orderStatus.setIdle())
-  } else {
-    derivativeStore
-      .cancelOrder(order as DerivativeLimitOrder)
-      .then(() =>
-        notificationStore.success({ title: t('trade.order_success_canceling') })
-      )
-      .catch((e) => {
-        $onError(e)
-
-        tradingChartComponent.value?.modifyLimitOrderLines()
-      })
-      .finally(() => orderStatus.setIdle())
-  }
+  action().then(() => {
+    notificationStore.success({ title: t('trade.order_success_canceling') })
+  })
+  .catch((e) => {
+    $onError(e)
+    tradingChartComponent.value?.modifyLimitOrderLines()
+  })
 }
 </script>
 

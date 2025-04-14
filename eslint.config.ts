@@ -61,6 +61,7 @@ export default withNuxt({
     'vue/html-self-closing': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-dynamic-delete': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',
     ...perfectionist.configs['recommended-line-length'].rules,
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type {
+  UiDerivativeMarket} from '@/types';
 import {
-  BusEvents,
   MarketKey,
-  UiDerivativeMarket,
   PerpOrdersStandardView
 } from '@/types'
 
@@ -33,7 +33,6 @@ function refreshData() {
     derivativeStore.fetchSubaccountOrderHistory(filters),
     derivativeStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
   ])
-    .then(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
     .catch($onError)
 
   derivativeStore.streamSubaccountOrders({

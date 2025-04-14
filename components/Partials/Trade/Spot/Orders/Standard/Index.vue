@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type {
+  UiSpotMarket
+} from '@/types';
 import {
-  BusEvents,
-  UiSpotMarket,
   SpotMarketCyTags,
   SpotOrdersStandardView
 } from '@/types'
@@ -40,7 +41,6 @@ function refreshData() {
     spotStore.fetchSubaccountOrderHistory(filters),
     spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
   ])
-    .then(() => useEventBus(BusEvents.LimitOrdersModifyOnChart).emit())
     .catch($onError)
 
   spotStore.streamSubaccountOrders({

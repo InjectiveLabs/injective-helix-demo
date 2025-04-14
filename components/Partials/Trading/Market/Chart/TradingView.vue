@@ -9,7 +9,7 @@ import config from '@/app/trading-view/config'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
 import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
-import { BusEvents, TradingChartInterval } from '@/types'
+import { TradingChartInterval } from '@/types'
 
 const { t } = useLang()
 
@@ -30,15 +30,13 @@ const emit = defineEmits<{
   'interval:change': [value: TradingChartInterval]
   'order:close': [
     {
-      price: string
-      quantity: string
+      order: SpotLimitOrder | DerivativeLimitOrder
     }
   ]
   'order:change': [
     {
-      price: string
-      quantity: string
       newPrice: string
+      order: SpotLimitOrder | DerivativeLimitOrder
     }
   ]
 }>()
@@ -50,11 +48,9 @@ const containerId = `tv_chart_container-${window.crypto
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
-// onWalletDisconnected(clearAllOrderLines)
+onWalletDisconnected(clearAllOrderLines)
 
 onMounted(() => {
-  useEventBus(BusEvents.LimitOrdersModifyOnChart).on(modifyLimitOrderLines)
-
   const widgetOptions = config({
     containerId,
     symbol: props.symbol,
@@ -71,7 +67,6 @@ onMounted(() => {
       tradingView.value.view = tradingWidget
 
       emit('ready')
-
       modifyLimitOrderLines()
     })
 
@@ -128,9 +123,7 @@ function modifyLimitOrderLines() {
       return
     }
 
-    if (props.orders.length === 0) {
-      return
-    }
+    clearAllOrderLines()
 
     props.orders?.forEach((order) => {
       const formattedPrice = (
@@ -155,9 +148,17 @@ function modifyLimitOrderLines() {
           : new BigNumberInBase(order.unfilledQuantity)
       ).toFixed(props.market.quantityDecimals)
 
-      const uid = `${formattedPrice}-${order.quantity}`
-      const orderLine =
-        orderLines.value[uid] || chart.createOrderLine({ disableUndo: true })
+      const uid = order.orderHash || order.cid
+      const existingOrderLine = orderLines.value[uid]
+      const orderLine = existingOrderLine || chart.createOrderLine({ disableUndo: true })
+
+      if (existingOrderLine) {
+        orderLine.setQuantity(
+        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+        )
+
+        return
+      }
 
       const themeColor = [OrderSide.Buy, OrderSide.BuyPO].includes(
         order.orderSide
@@ -193,44 +194,26 @@ function modifyLimitOrderLines() {
           ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
         )
 
-         // Remove the old reference
         delete orderLines.value[uid];
-
-        // Update the order line's UID
-        orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
-
-        orderLine.onCancel = undefined; // Clear previous handler
-
-        // Rebind onCancel with the new UID
-        orderLine.onCancel?.(() => {
-          emit('order:close', { quantity: order.quantity, price: newPrice })
-
-          nextTick(() => {
-            // this breaks the app
-            orderLine.remove()
-
-            delete orderLines.value[uid]
-          })
-        });
-
+        
         emit('order:change', {
-          quantity: order.quantity,
-          price: order.price,
+          order,
           newPrice
         })
+        
+        // temp orderline
+        orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
+        orderLine.setCancellable(false)
+        orderLine.setCancelButtonIconColor('#000')
       })
 
-      orderLine.setCancellable(true)
-
       orderLine.onCancel?.(() => {
-        emit('order:close', { quantity: order.quantity, price: order.price })
-
-        nextTick(() => {
-          // this breaks the app
-          orderLine.remove()
-
-          delete orderLines.value[uid]
+        emit('order:close', {
+          order,
         })
+        
+        toRaw(orderLine).remove()
+        delete orderLines.value[uid]
       })
 
       orderLines.value[uid] = orderLine
@@ -240,31 +223,26 @@ function modifyLimitOrderLines() {
     // // remove outdated lines
     Object.keys(orderLines.value).forEach((uid) => {
       if (!updatedOrderLinesId.includes(uid)) {
-        delete orderLines.value[uid]
+        nextTick(() => {
+          toRaw(orderLines.value[uid]).remove()
+          delete orderLines.value[uid]
+        })
       }
     })
   })
 }
 
-// got to get this to work for logout flow
-// function clearAllOrderLines() {
-//   Object.values(orderLines.value).forEach((orderLine) => {
-//     nextTick(() => {
-//       orderLine.remove()
-//     })
-//   })
+function clearAllOrderLines() {
+  Object.values(orderLines.value).forEach((orderLine) => {
+    nextTick(() => {
+      toRaw(orderLine).remove()
+    })
+  })
 
-//   orderLines.value = {}
-// }
-
-// only used for new orders
+  orderLines.value = {}
+}
 watch(
-  () => props.orders,
-  (oldOrders, newOrders) => {
-    if (oldOrders.length > newOrders.length) {
-      modifyLimitOrderLines()
-    }
-  }
+  () => props.orders, modifyLimitOrderLines, { deep: true }
 )
 
 defineExpose({ modifyLimitOrderLines })
@@ -277,8 +255,5 @@ defineExpose({ modifyLimitOrderLines })
       ref="tradingView"
       class="tv_chart_container w-full h-full"
     />
-    <Whiteboard>
-      {{ { keys: Object.keys(orderLines) } }}
-    </Whiteboard>
   </div>
 </template>
