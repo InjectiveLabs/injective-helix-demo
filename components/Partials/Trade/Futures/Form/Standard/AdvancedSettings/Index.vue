@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
@@ -10,6 +11,10 @@ import type { DerivativesTradeForm } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const emit = defineEmits<{
+  'tpsl:add': [position: PositionV2]
+}>()
 
 const isOpen = ref(false)
 
@@ -21,6 +26,10 @@ const isLimit = computed(
 
 function toggle() {
   isOpen.value = !isOpen.value
+}
+
+function addTpSl(position: PositionV2) {
+  emit('tpsl:add', position)
 }
 </script>
 
@@ -92,6 +101,7 @@ function toggle() {
               ] as DerivativeTradeTypes
             )
           "
+          @tpsl:add="addTpSl"
         />
       </div>
     </AppCollapse>

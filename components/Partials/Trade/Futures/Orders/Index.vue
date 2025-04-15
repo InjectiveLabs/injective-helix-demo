@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PartialsTradeFuturesOrdersStandard } from '#components'
-import { MarketKey, TradingInterface, UiDerivativeMarket } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import { MarketKey, TradingInterface } from '@/types'
 
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 

@@ -7,15 +7,11 @@ import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
-const jsonStore = useSharedJsonStore()
-const breakpoints = useSharedBreakpoints()
-const { t } = useLang()
-const { lg } = useSharedBreakpoints()
-
 const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     isTradingBots?: boolean
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ui?: Record<string, any>
   }>(),
   {
@@ -38,9 +34,13 @@ const emit = defineEmits<{
 }>()
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 const positionStore = usePositionStore()
+const breakpoints = useSharedBreakpoints()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
@@ -375,36 +375,22 @@ function onClosePartialPosition() {
 
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
-          <AppTooltip
-            :ui="{ width: 'w-auto' }"
-            :content="$t('trade.postOnlyWarning')"
-            :is-disabled="!jsonStore.isPostUpgradeMode"
-          >
-            <button
-              :disabled="
-                appStore.isCountryRestricted || jsonStore.isPostUpgradeMode
-              "
-              class="flex p-2 focus-visible:outline-none"
-              @click="addTpSl(row.position)"
-            >
-              <div
-                class="flex rounded-full transition"
-                :class="{
-                  'hover:bg-coolGray-600': !appStore.isCountryRestricted
-                }"
-              >
-                <UIcon
-                  :name="NuxtUiIcons.CirclePlus"
-                  class="h-6 w-6 min-w-6"
-                  :class="{
-                    'text-coolGray-700':
-                      appStore.isCountryRestricted ||
-                      jsonStore.isPostUpgradeMode
-                  }"
-                />
-              </div>
-            </button>
-          </AppTooltip>
+          <PartialsPositionsTableTpSlPrice
+            v-if="row.hasTpSl"
+            v-bind="{
+              position: row.position,
+              priceDecimals: row.priceDecimals,
+              tpTriggerPrice: row.tpTriggerPrice,
+              slTriggerPrice: row.slTriggerPrice
+            }"
+            @tpsl:update="addTpSl"
+          />
+
+          <PartialsPositionsTableTpSlButton
+            v-else
+            v-bind="{ position: row.position }"
+            @tpsl:add="addTpSl"
+          />
         </div>
       </template>
 
@@ -423,10 +409,10 @@ function onClosePartialPosition() {
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
+      @tpsl:add="addTpSl"
+      @margin:add="addMargin"
+      @position:share="sharePosition"
       @position:set="setSelectedPosition"
-      @tpsl:add="addTpSl(position.position)"
-      @margin:add="addMargin(position.position)"
-      @position:share="sharePosition(position.position)"
     />
   </template>
 

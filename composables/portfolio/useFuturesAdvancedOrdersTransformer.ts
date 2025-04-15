@@ -4,12 +4,10 @@ import {
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  PortfolioFuturesAdvancedOrdersTableColumn,
-  TransformedPortfolioFuturesAdvancedOrders
-} from '@/types'
+import type { TransformedPortfolioFuturesAdvancedOrders } from '@/types'
+import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
 
 export function useFuturesAdvancedOrdersTransformer(
   triggerList: ComputedRef<DerivativeOrderHistory[]>
@@ -78,9 +76,10 @@ export function useFuturesAdvancedOrdersTransformer(
         trigger.orderType === OrderSide.StopBuy ||
         trigger.orderType === OrderSide.StopSell
 
-      const triggerPrice = new BigNumberInWei(trigger.triggerPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const triggerPrice = sharedToBalanceInTokenInBase({
+        value: trigger.triggerPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isTakeProfit =
         trigger.orderType === OrderSide.TakeBuy ||
