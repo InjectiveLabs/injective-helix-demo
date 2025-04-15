@@ -1,17 +1,18 @@
 <script lang="ts" setup>
 import { OrderSide } from '@injectivelabs/ts-types'
-import type {
-  SpotLimitOrder,
-  DerivativeLimitOrder
-} from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
 import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
-import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
 import { TradingChartInterval } from '@/types'
+import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
+import type {
+  SpotLimitOrder,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 
 const appStore = useAppStore()
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
@@ -64,8 +65,6 @@ onMounted(() => {
 
     nextTick(() => {
       tradingView.value.view = tradingWidget
-
-      emit('ready')
       modifyLimitOrderLines()
     })
 
@@ -131,6 +130,16 @@ onMounted(() => {
   })
 })
 
+function clearAllOrderLines() {
+  Object.values(orderLines.value).forEach((orderLine) => {
+    nextTick(() => {
+      toRaw(orderLine).remove()
+    })
+  })
+
+  orderLines.value = {}
+}
+
 function modifyLimitOrderLines() {
   nextTick(() => {
     const updatedOrderLinesId: string[] = []
@@ -167,11 +176,12 @@ function modifyLimitOrderLines() {
 
       const uid = order.orderHash || order.cid
       const existingOrderLine = orderLines.value[uid]
-      const orderLine = existingOrderLine || chart.createOrderLine({ disableUndo: true })
+      const orderLine =
+        existingOrderLine || chart.createOrderLine({ disableUndo: true })
 
       if (existingOrderLine) {
         orderLine.setQuantity(
-        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
         )
 
         return
@@ -187,11 +197,11 @@ function modifyLimitOrderLines() {
       orderLine.setPrice(formattedPrice)
       orderLine.setBodyTextColor(themeColor)
       orderLine.setLineColor(themeColor)
-      orderLine.setBodyBackgroundColor('#000')
+      orderLine.setBodyBackgroundColor('#14151A')
       orderLine.setBodyBorderColor(themeColor)
-      orderLine.setQuantityBackgroundColor('#000')
+      orderLine.setQuantityBackgroundColor('#14151A')
       orderLine.setQuantityBorderColor(themeColor)
-      orderLine.setCancelButtonBackgroundColor('#000')
+      orderLine.setCancelButtonBackgroundColor('#14151A')
       orderLine.setCancelButtonIconColor(themeColor)
       orderLine.setCancelButtonBorderColor(themeColor)
       orderLine.setQuantity(
@@ -208,16 +218,16 @@ function modifyLimitOrderLines() {
         orderLine.setText(
           `${t('trade.limit')} ${t(
             `trade.${order.orderSide}`
-          ).toUpperCase()} @ ${newPrice.toFixed(UI_DEFAULT_DISPLAY_DECIMALS)}`
+          ).toUpperCase()} @ ${newPrice.toFixed(props.market.priceDecimals)}`
         )
 
-        delete orderLines.value[uid];
-        
+        delete orderLines.value[uid]
+
         emit('order:change', {
           order,
           newPrice
         })
-        
+
         // temp orderline
         orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
         orderLine.setCancellable(false)
@@ -226,9 +236,9 @@ function modifyLimitOrderLines() {
 
       orderLine.onCancel?.(() => {
         emit('order:close', {
-          order,
+          order
         })
-        
+
         toRaw(orderLine).remove()
         delete orderLines.value[uid]
       })
@@ -249,18 +259,7 @@ function modifyLimitOrderLines() {
   })
 }
 
-function clearAllOrderLines() {
-  Object.values(orderLines.value).forEach((orderLine) => {
-    nextTick(() => {
-      toRaw(orderLine).remove()
-    })
-  })
-
-  orderLines.value = {}
-}
-watch(
-  () => props.orders, modifyLimitOrderLines, { deep: true }
-)
+watch(() => props.orders, modifyLimitOrderLines, { deep: true })
 
 defineExpose({ modifyLimitOrderLines })
 </script>

@@ -1,6 +1,6 @@
-import type { IntervalOption } from '@/types'
-import { StopReason } from '@/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { StopReason } from '@/types'
+import type { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
@@ -202,3 +202,5 @@ export const INDEX_MARKETS_INFO = [
 ]
 
 export const DEFAULT_100_CHART_CANDLE_BAR_SPACING = 9.2
+
+export const MAX_LIMIT_ORDER_LINES = 3
