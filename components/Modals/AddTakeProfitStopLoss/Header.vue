@@ -2,6 +2,7 @@
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import type { UiDerivativeMarket } from '@/types'
 
 withDefaults(
@@ -58,7 +59,13 @@ withDefaults(
     <div class="flex justify-between items-center border-b py-2">
       <p>{{ $t('trade.totalQuantitySize') }}:</p>
       <div class="flex items-center gap-1">
-        <AppAmount v-bind="{ amount: availableQuantityToFixed }" />
+        <AppAmount
+          v-bind="{
+            amount: availableQuantityToFixed,
+            decimalPlaces:
+              market.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+          }"
+        />
         <span>{{ market.baseToken.symbol }}</span>
       </div>
     </div>

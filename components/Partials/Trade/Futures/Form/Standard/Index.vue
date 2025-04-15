@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 import {
+  Modal,
   MarketKey,
   BusEvents,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 
 const appStore = useAppStore()
+const modalStore = useSharedModalStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const selectedPosition = ref<PositionV2 | undefined>(undefined)
 
 const { value: orderType } = useStringField({
   name: DerivativesTradeFormField.Type,
@@ -72,6 +76,15 @@ function onTradeTypeChange() {
     false
   )
 }
+
+function addTpSl(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.AddTakeProfitStopLoss)
+}
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 </script>
 
 <template>
@@ -110,8 +123,8 @@ function onTradeTypeChange() {
                 ? 'success'
                 : 'danger'
               : side === TradeDirection.Long
-              ? 'success-cta'
-              : 'danger-cta'
+                ? 'success-cta'
+                : 'danger-cta'
           "
           :class="[
             'w-full py-1.5 leading-relaxed focus-within:ring-0',
@@ -154,7 +167,7 @@ function onTradeTypeChange() {
       />
     </div>
 
-    <PartialsTradeFuturesFormStandardAdvancedSettings />
+    <PartialsTradeFuturesFormStandardAdvancedSettings @tpsl:add="addTpSl" />
 
     <PartialsTradeFuturesFormStandardDetails
       v-bind="{
@@ -180,5 +193,11 @@ function onTradeTypeChange() {
     />
 
     <PartialsTradeCommonFormAccountEquity />
+
+    <ModalsAddTakeProfitStopLoss
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+      @on:reset="resetSelectedPosition"
+    />
   </div>
 </template>

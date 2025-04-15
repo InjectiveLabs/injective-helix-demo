@@ -1,9 +1,10 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
-import { PositionTableColumn, TransformedPosition } from '@/types'
+import type { TransformedPosition } from '@/types'
+import { PositionTableColumn, ConditionalOrderSide } from '@/types'
 import { isTradingbotSubaccountId } from '@/app/utils/helpers'
 
 export function usePositionTransformer(
@@ -92,6 +93,34 @@ export function usePositionTransformer(
         .times(markPrice)
         .times(tokenStore.tokenUsdPrice(market.quoteToken) || 0)
 
+      const tpOrder = derivativeStore.subaccountConditionalOrders.find(
+        (order) =>
+          order.marketId === position.marketId &&
+          (order.orderType === ConditionalOrderSide.TakeBuy ||
+            order.orderType === ConditionalOrderSide.TakeSell)
+      )
+
+      const tpTriggerPrice = tpOrder
+        ? sharedToBalanceInTokenInBase({
+            value: tpOrder.triggerPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
+        : undefined
+
+      const slOrder = derivativeStore.subaccountConditionalOrders.find(
+        (order) =>
+          order.marketId === position.marketId &&
+          (order.orderType === ConditionalOrderSide.StopBuy ||
+            order.orderType === ConditionalOrderSide.StopSell)
+      )
+
+      const slTriggerPrice = slOrder
+        ? sharedToBalanceInTokenInBase({
+            value: slOrder.triggerPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
+        : undefined
+
       list.push({
         pnl,
         price,
@@ -100,6 +129,8 @@ export function usePositionTransformer(
         markPrice,
         percentagePnl,
         quantityInUsd,
+        tpTriggerPrice,
+        slTriggerPrice,
         liquidationPrice,
         effectiveLeverage,
         hasActiveStrategy,
@@ -109,6 +140,7 @@ export function usePositionTransformer(
         subaccountId: position.subaccountId,
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
+        hasTpSl: !!tpTriggerPrice || !!slTriggerPrice,
         hasReduceOnlyOrders: !!reduceOnlyCurrentOrders.length,
         isTradingBotSubaccount: !!isTradingbotSubaccountId(
           position.subaccountId

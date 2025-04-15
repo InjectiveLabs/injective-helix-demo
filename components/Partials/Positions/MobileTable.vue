@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
@@ -20,19 +21,22 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'tpsl:add': []
-  'margin:add': []
-  'position:share': []
+  'tpsl:add': [position: PositionV2]
+  'margin:add': [position: PositionV2]
   'position:set': [TransformedPosition]
+  'position:share': [position: PositionV2]
 }>()
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
     const removedKey = [
       PositionTableColumn.Market,
-      PositionTableColumn.TpOrSl,
       PositionTableColumn.ClosePosition
     ]
+
+    if (!props.position.hasTpSl) {
+      removedKey.push(PositionTableColumn.TpOrSl)
+    }
 
     if (removedKey.includes(column.key as PositionTableColumn)) {
       return list
@@ -45,15 +49,15 @@ const filteredColumns = computed(() =>
 )
 
 function addTpSl() {
-  emit('tpsl:add')
+  emit('tpsl:add', props.position.position)
 }
 
 function addMargin() {
-  emit('margin:add')
+  emit('margin:add', props.position.position)
 }
 
 function sharePosition() {
-  emit('position:share')
+  emit('position:share', props.position.position)
 }
 
 function onSetPosition(value: TransformedPosition) {
@@ -89,7 +93,9 @@ function onSetPosition(value: TransformedPosition) {
             @click="addTpSl"
           >
             <span>
-              {{ $t('trade.addTpSl') }}
+              {{
+                position.hasTpSl ? $t('trade.editTpSl') : $t('trade.addTpSl')
+              }}
             </span>
           </AppButton>
 
@@ -254,6 +260,19 @@ function onSetPosition(value: TransformedPosition) {
           }"
         />x
       </div>
+    </template>
+
+    <template #tp-or-sl-data>
+      <PartialsPositionsTableTpSlPrice
+        v-bind="{
+          isHideEditButton: true,
+          position: position.position,
+          priceDecimals: position.priceDecimals,
+          tpTriggerPrice: position.tpTriggerPrice,
+          slTriggerPrice: position.slTriggerPrice
+        }"
+        @tpsl:update="addTpSl"
+      />
     </template>
   </AppMobileTable>
 </template>
