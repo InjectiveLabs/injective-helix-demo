@@ -2,14 +2,20 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
-import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
-import { TradingChartInterval } from '@/types'
-import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
+import {
+  CHART_ZOOM_FALLBACK_NUMBER,
+  DEFAULT_100_CHART_CANDLE_BAR_SPACING
+} from '@/app/utils/constants'
 import type {
   SpotLimitOrder,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
+import type {
+  UiSpotMarket,
+  UiDerivativeMarket,
+  TradingChartInterval
+} from '@/types'
 
 const appStore = useAppStore()
 const { t } = useLang()
@@ -68,60 +74,35 @@ onMounted(() => {
       modifyLimitOrderLines()
     })
 
-    tradingWidget.subscribe('series_properties_changed', () => {
-      nextTick(() => {
-        const iframes = document.querySelectorAll('iframe')
-
-        const iframe = Array.from(iframes).find((iframe) =>
-          iframe.id.startsWith('tradingview_')
-        )
-
-        if (!iframe || !iframe.contentDocument) {
-          return
-        }
-
-        const xpath =
-          "//div[contains(@class, 'isActive-9pA37sIi')]//div[contains(@class, 'value-e0RYyFXU')]"
-
-        const result = iframe.contentDocument.evaluate(
-          xpath,
-          iframe.contentDocument,
-          null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
-          null
-        )
-
-        const element = result.singleNodeValue
-
-        if (!element) {
-          return
-        }
-
-        const interval =
-          TradingChartInterval[
-            element.textContent as keyof typeof TradingChartInterval
-          ]
-
-        if (!interval) {
-          return
-        }
-
-        emit('interval:change', interval)
-      })
-    })
+    tradingViewChart
+      .onIntervalChanged()
+      .subscribe(null, (selectedInterval: TradingChartInterval) =>
+        emit('interval:change', selectedInterval)
+      )
 
     if (tradingViewChart) {
       setTimeout(() => {
         tradingViewChart.setBarSpacing(
-          appStore.userState.preferences.chartCandleBarSpacing ||
+          appStore.userState.preferences.chartZoomPreference ||
             DEFAULT_100_CHART_CANDLE_BAR_SPACING
         )
 
         tradingViewChart.onVisibleRangeChanged().subscribe(null, () => {
-          appStore.setChartCandleBarSpacing(
+          const zoomRange =
             tradingViewChart.getTimeScale()?.barSpacing() ||
-              DEFAULT_100_CHART_CANDLE_BAR_SPACING
-          )
+            DEFAULT_100_CHART_CANDLE_BAR_SPACING
+
+          const isTradingViewDefaultZoomConfig =
+            zoomRange === CHART_ZOOM_FALLBACK_NUMBER
+
+          if (isTradingViewDefaultZoomConfig) {
+            tradingViewChart.setBarSpacing(
+              appStore.userState.preferences.chartZoomPreference ||
+                DEFAULT_100_CHART_CANDLE_BAR_SPACING
+            )
+          } else {
+            appStore.setChartZoomPreference(zoomRange)
+          }
         })
 
         emit('ready')
@@ -215,6 +196,7 @@ function modifyLimitOrderLines() {
 
       orderLine.onMove?.(() => {
         const newPrice = orderLine.getPrice()
+
         orderLine.setText(
           `${t('trade.limit')} ${t(
             `trade.${order.orderSide}`
@@ -231,7 +213,7 @@ function modifyLimitOrderLines() {
         // temp orderline
         orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
         orderLine.setCancellable(false)
-        orderLine.setCancelButtonIconColor('#000')
+        orderLine.setCancelButtonIconColor('#14151A')
       })
 
       orderLine.onCancel?.(() => {
@@ -247,7 +229,7 @@ function modifyLimitOrderLines() {
       updatedOrderLinesId.push(uid)
     })
 
-    // // remove outdated lines
+    // remove outdated lines
     Object.keys(orderLines.value).forEach((uid) => {
       if (!updatedOrderLinesId.includes(uid)) {
         nextTick(() => {

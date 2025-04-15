@@ -202,5 +202,6 @@ export const INDEX_MARKETS_INFO = [
 ]
 
 export const DEFAULT_100_CHART_CANDLE_BAR_SPACING = 9.2
+export const CHART_ZOOM_FALLBACK_NUMBER = 0.5
 
 export const MAX_LIMIT_ORDER_LINES = 3

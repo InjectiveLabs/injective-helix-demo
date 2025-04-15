@@ -1,16 +1,17 @@
-import {
+import { defineNuxtPlugin } from '#imports'
+import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { isThrownException } from '@injectivelabs/exceptions'
+import { localStorage } from '@/app/Services'
+import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
+import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
+import type { ThrownException } from '@injectivelabs/exceptions'
+import type {
   StateTree,
   PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/wallet-base'
-import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
-import { defineNuxtPlugin } from '#imports'
-import { localStorage } from '@/app/Services'
-import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
-import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -32,7 +33,7 @@ const stateToPersist = {
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
         tradingChartInterval: TradingChartInterval.D,
-        chartCandleBarSpacing: DEFAULT_100_CHART_CANDLE_BAR_SPACING
+        chartZoomPreference: DEFAULT_100_CHART_CANDLE_BAR_SPACING
       }
     }
   },
