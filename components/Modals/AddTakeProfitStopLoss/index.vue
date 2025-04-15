@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
@@ -9,12 +8,13 @@ import {
   UI_DEFAULT_TOKEN_ASSET_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import type { TakeProfitStopLossForm } from '@/types'
 import {
   Modal,
   DerivativeTradeTypes,
   TakeProfitStopLossFormField
 } from '@/types'
+import type { TakeProfitStopLossForm } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
@@ -358,6 +358,73 @@ const isSubmitButtonDisabled = computed(() => {
   return isInvalidTp || isInvalidSl || isEmptyTpSl || hasErrorMessages
 })
 
+function closeModal() {
+  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+}
+
+function resetTakeProfitStopLossForm() {
+  resetForm()
+  availableQuantity.value = props.position.quantity || '0'
+}
+
+function selectTpPartialOption(quantityPercentage: number) {
+  setTpQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .dividedBy(100)
+      .toFixed(
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+      )
+  )
+}
+
+function selectSlPartialOption(quantityPercentage: number) {
+  setSlQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .dividedBy(100)
+      .toFixed(
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+      )
+  )
+}
+
+function cancelTp() {
+  if (!isTpDisabled.value) {
+    return
+  }
+
+  cancelTpStatus.setLoading()
+
+  derivativeStore
+    .cancelOrder(isTpDisabled.value)
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+    .finally(() => {
+      cancelTpStatus.setIdle()
+    })
+}
+
+function cancelSl() {
+  if (!isSlDisabled.value) {
+    return
+  }
+
+  cancelSlStatus.setLoading()
+
+  derivativeStore
+    .cancelOrder(isSlDisabled.value)
+    .then(() => {
+      notificationStore.success({ title: t('common.success') })
+    })
+    .catch($onError)
+    .finally(() => {
+      cancelSlStatus.setIdle()
+    })
+}
+
 async function submitTpSl() {
   const { valid } = await validate()
 
@@ -415,69 +482,6 @@ async function submitTpSl() {
       closeModal()
       status.setIdle()
     })
-}
-
-function closeModal() {
-  modalStore.closeModal(Modal.AddTakeProfitStopLoss)
-}
-
-function cancelTp() {
-  if (!isTpDisabled.value) {
-    return
-  }
-
-  cancelTpStatus.setLoading()
-
-  derivativeStore
-    .cancelOrder(isTpDisabled.value)
-    .then(() => {
-      notificationStore.success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      cancelTpStatus.setIdle()
-    })
-}
-
-function cancelSl() {
-  if (!isSlDisabled.value) {
-    return
-  }
-
-  cancelSlStatus.setLoading()
-
-  derivativeStore
-    .cancelOrder(isSlDisabled.value)
-    .then(() => {
-      notificationStore.success({ title: t('common.success') })
-    })
-    .catch($onError)
-    .finally(() => {
-      cancelSlStatus.setIdle()
-    })
-}
-
-function selectTpPartialOption(quantityPercentage: number) {
-  setTpQuantity(
-    availableQuantityToBigNumber.value
-      .times(quantityPercentage)
-      .dividedBy(100)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
-}
-
-function selectSlPartialOption(quantityPercentage: number) {
-  setSlQuantity(
-    availableQuantityToBigNumber.value
-      .times(quantityPercentage)
-      .dividedBy(100)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
-}
-
-function resetTakeProfitStopLossForm() {
-  resetForm()
-  availableQuantity.value = props.position.quantity || '0'
 }
 </script>
 

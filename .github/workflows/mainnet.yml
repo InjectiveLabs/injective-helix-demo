@@ -52,6 +52,7 @@ jobs:
 
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
       VITE_FEE_PAYER_PUB_KEY: ${{ secrets.VITE_FEE_PAYER_PUB_KEY }}
+      VITE_FAUCET_MAINNET_API: ${{ secrets.VITE_FAUCET_MAINNET_API }}
 
       VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}

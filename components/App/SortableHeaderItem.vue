@@ -27,7 +27,7 @@ withDefaults(
       >
         <div class="flex flex-col">
           <UIcon
-            :name="NuxtUiIcons.Triangle"
+            :name="NuxtUiIcons.TriangleUp"
             class="transition-all rotate-180 -mb-0.5"
             :class="[
               isActive && isAscending
@@ -36,7 +36,7 @@ withDefaults(
             ]"
           />
           <UIcon
-            :name="NuxtUiIcons.Triangle"
+            :name="NuxtUiIcons.TriangleUp"
             class="-mt-0.5"
             :class="[
               isActive && !isAscending
