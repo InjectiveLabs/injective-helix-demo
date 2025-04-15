@@ -1,5 +1,5 @@
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
-import { fundReferee } from '@/app/services/referral'
+import { fundInjectiveAddress } from '@/app/services/faucet'
 import { REFERRAL_CONTRACT_ADDRESS } from '@/app/data/referral'
 
 export const registerInvitee = async (referralCode: string) => {
@@ -13,7 +13,7 @@ export const registerInvitee = async (referralCode: string) => {
   await walletStore.validate()
 
   // This function will fund the referee with dust amount if the referee's address is not created on chain
-  await fundReferee(sharedWalletStore.injectiveAddress)
+  await fundInjectiveAddress(sharedWalletStore.injectiveAddress)
 
   const messages = MsgExecuteContractCompat.fromJSON({
     sender: sharedWalletStore.injectiveAddress,

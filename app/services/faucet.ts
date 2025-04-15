@@ -1,21 +1,21 @@
 import { HttpClient } from '@injectivelabs/utils'
-import { IS_TESTNET } from '@shared/utils/constant'
+import { IS_DEVNET } from '@shared/utils/constant'
+import { FAUCET_ENDPOINT } from '@/app/utils/constants'
 
-export const fundReferee = async (refereeAddress: string) => {
-  // Maybe we can move to env if needed
-  const lambdaApi = IS_TESTNET
-    ? 'https://182lv47gxg.execute-api.us-east-1.amazonaws.com/v1'
-    : 'https://6vomscnow9.execute-api.us-east-1.amazonaws.com/v1'
-
+export const fundInjectiveAddress = async (injectiveAddress: string) => {
   const TOTAL_RETRIES = 5
   const DELAY_BETWEEN_CALLS = 1000
 
+  if (IS_DEVNET) {
+    return
+  }
+
   const retryHttpCall = async (attempt = 1): Promise<any> => {
     try {
-      return await new HttpClient(lambdaApi).post(`faucet-no-queue`, {
-        address: refereeAddress
+      return await new HttpClient(FAUCET_ENDPOINT).post(`faucet-no-queue`, {
+        address: injectiveAddress
       })
-    } catch (e: any) {
+    } catch {
       if (attempt < TOTAL_RETRIES) {
         return new Promise((resolve) =>
           setTimeout(
