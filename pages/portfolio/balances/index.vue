@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
+import { injToken, usdtToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  INJ_COIN_GECKO_ID,
-  UI_DEFAULT_TOKEN_ASSET_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_TOKEN_ASSET_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -18,7 +15,7 @@ const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
 const accountTotalBalanceInInj = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(INJ_COIN_GECKO_ID)
+  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE
@@ -107,7 +104,7 @@ function onFiatOnRamp() {
                 }"
               />
             </CommonSkeletonSubaccountAmount>
-            <span class="pb-[2px]">{{ $t('common.INJ') }}</span>
+            <span class="pb-[2px]">{{ injToken.symbol }}</span>
           </p>
         </div>
 
