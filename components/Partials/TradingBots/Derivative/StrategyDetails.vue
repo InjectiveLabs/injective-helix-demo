@@ -58,7 +58,7 @@ const percentagePnl = computed(() =>
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
       <div
-        class="font-bold"
+        class="font-bold flex"
         :class="{
           'text-green-500': isPositivePnl,
           'text-red-500': !isPositivePnl && !isZeroPnl,

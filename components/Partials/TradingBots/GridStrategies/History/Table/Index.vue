@@ -3,12 +3,14 @@ import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
+import type {
   StopReason,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
+} from '@/types'
+import {
   TradeSubPage,
   TradingInterface,
-  GridStrategyTransformed,
-  DerivativeGridStrategyTransformed,
   PortfolioTradingBotsHistoryTableColumn
 } from '@/types'
 
@@ -163,7 +165,7 @@ function selectStrategy(
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col font-mono"
+          class="flex flex-col font-sans"
           :class="{
             'text-green-500': row.isPositivePnl,
             'text-red-500': !row.isPositivePnl && !row.isZeroPnl,

@@ -210,7 +210,7 @@ function selectStrategy(
         />
         <div
           v-else
-          class="flex flex-col font-mono"
+          class="flex flex-col font-sans"
           :class="{
             'text-green-500': row.isPositivePnl,
             'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
