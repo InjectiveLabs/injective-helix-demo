@@ -396,19 +396,19 @@ export enum PerpOrdersStandardView {
 }
 
 export enum MarketCategoryType {
-  AI = 'aI',
   All = 'all',
-  RWA = 'rwa',
+  Favorites = 'favorites',
   Spot = 'spot',
-  DeFi = 'deFi',
-  Meme = 'meme',
   Perps = 'perps',
+  Trending = 'trending',
+  Injective = 'injective',
   Layer1 = 'layer-1',
   Layer2 = 'layer-2',
   iAssets = 'iAssets',
-  Trending = 'trending',
-  Favorites = 'favorites',
-  Injective = 'injective'
+  RWA = 'rwa',
+  AI = 'aI',
+  DeFi = 'deFi',
+  Meme = 'meme',
 }
 
 export enum NoticeBanner {
