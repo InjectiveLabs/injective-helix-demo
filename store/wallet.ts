@@ -190,18 +190,14 @@ export const useWalletStore = defineStore('wallet', {
       const walletStore = useWalletStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      // @bojan, option B for detecting if web 3 gateway is down
-      // more accurate, but not the best UX
-      /*
-        web3GatewayHealthCheck()
-        if (sharedWalletStore.isEip712) {
-          await walletStore.validateGas()
-        }
-      */
+      await sharedWalletStore.fetchWeb3GatewayStatus()
+
+      if (sharedWalletStore.isEip712) {
+        await walletStore.validateGas()
+      }
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
-      await walletStore.validateGas()
       await sharedWalletStore.validateAndQueue()
 
       if (isAutoSignEnabled) {
