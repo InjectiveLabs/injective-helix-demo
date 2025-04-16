@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { Modal, StrategyStatus } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -11,30 +11,28 @@ const { success } = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 
-const hasActiveStrategy = computed(() =>
-  gridStrategyStore.activeStrategies.find(
+const strategy = computed(() =>
+  gridStrategyStore.strategies.find(
     (strategy) => strategy.subaccountId === accountStore.subaccountId
   )
 )
 
 function transferToMain() {
-  if (!hasActiveStrategy.value) {
+  if (!strategy.value) {
     return
   }
 
   status.setLoading()
 
-  const strategy = hasActiveStrategy.value
-
   // If the strategy is pending, we manually call the SC method to remove
   // the deposits instead of the executioner
 
   const action =
-    strategy.state === StrategyStatus.Removed
+    strategy.value.state === StrategyStatus.Removed
       ? accountStore.withdrawToMain.bind(accountStore)
       : gridStrategyStore.removeSubaccountDeposits.bind(gridStrategyStore, {
           subaccountIds: [accountStore.subaccountId],
-          contractAddress: strategy.contractAddress
+          contractAddress: strategy.value.contractAddress
         })
 
   action()
@@ -58,14 +56,11 @@ const accountHasBalances = computed(
 )
 
 function handleClick() {
-  if (!accountHasBalances) {
+  if (!accountHasBalances.value) {
     return
   }
 
-  if (
-    hasActiveStrategy.value &&
-    hasActiveStrategy.value.state === StrategyStatus.Active
-  ) {
+  if (strategy.value && strategy.value.state === StrategyStatus.Active) {
     modalStore.openModal(Modal.TransferToMainSubaccount)
   } else {
     transferToMain()

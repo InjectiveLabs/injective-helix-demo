@@ -1,23 +1,23 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  TokenStatic,
   MsgExternalTransfer,
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { prepareOrderMessages } from '@/app/utils/msgs'
 import { backupPromiseCall } from '@/app/utils/async'
+import { prepareOrderMessages } from '@/app/utils/msgs'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 export const deposit = async ({
   amount,
   token,
   subaccountId
 }: {
-  amount: BigNumberInBase
   token: TokenStatic
   subaccountId?: string
+  amount: BigNumberInBase
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -66,9 +66,9 @@ export const withdraw = async ({
   token,
   subaccountId
 }: {
-  amount: BigNumberInBase
   token: TokenStatic
   subaccountId?: string
+  amount: BigNumberInBase
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -103,9 +103,9 @@ export const transfer = async ({
   memo,
   destination
 }: {
-  amount: string
   denom: string
   memo?: string
+  amount: string
   destination: string
 }) => {
   const tokenStore = useTokenStore()
@@ -156,12 +156,12 @@ export const externalTransfer = async ({
   dstSubaccountId,
   token
 }: {
-  amount: BigNumberInBase
   denom: string
   memo?: string
+  token: TokenStatic
+  amount: BigNumberInBase
   srcSubaccountId: string
   dstSubaccountId: string
-  token: TokenStatic
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -192,6 +192,8 @@ export const withdrawToMain = async () => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
   const sharedWalletStore = useSharedWalletStore()
+
+  console.log('Withdraw to main called')
 
   if (!accountStore.subaccountId || !sharedWalletStore.isUserConnected) {
     return
