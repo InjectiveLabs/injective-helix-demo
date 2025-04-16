@@ -366,10 +366,10 @@ export interface TransformedPosition {
   isLimitOrderAuthorized: boolean
   isTradingBotSubaccount: boolean
   isMarketOrderAuthorized: boolean
+  tpTriggerPrice?: BigNumberInBase
+  slTriggerPrice?: BigNumberInBase
   liquidationPrice: BigNumberInBase
   effectiveLeverage: BigNumberInBase
-  tpTriggerPrice: BigNumberInBase | undefined
-  slTriggerPrice: BigNumberInBase | undefined
   reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   [PositionTableColumn.Margin]: BigNumberInBase
   [PositionTableColumn.Market]: UiDerivativeMarket
