@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
-import { PortfolioCyTags, StrategyStatus } from '@/types'
+import { StrategyStatus, PortfolioCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +34,7 @@ const showUnverifiedAssets = computed({
 })
 
 const isGridTradingAccount = computed(() => {
-  const activeStrategy = gridStrategyStore.activeStrategies.find(
+  const activeStrategy = gridStrategyStore.strategies.find(
     ({ subaccountId }) => subaccountId === accountStore.subaccountId
   )
 
