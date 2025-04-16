@@ -68,7 +68,7 @@ function selectPartialOption(quantityPercentage: number) {
     availableQuantityToBigNumber.value
       .times(quantityPercentage)
       .dividedBy(100)
-      .toFixed(props.row.quantityDecimals)
+      .toFixed(props.row.quantityDecimals, BigNumber.ROUND_DOWN)
   )
 }
 

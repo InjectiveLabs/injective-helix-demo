@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
@@ -374,7 +379,8 @@ function selectTpPartialOption(quantityPercentage: number) {
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(
-        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        BigNumber.ROUND_DOWN
       )
   )
 }
@@ -385,7 +391,8 @@ function selectSlPartialOption(quantityPercentage: number) {
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(
-        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        BigNumber.ROUND_DOWN
       )
   )
 }
