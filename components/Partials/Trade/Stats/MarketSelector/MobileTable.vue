@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { rwaMarketsInIAssets } from '@/app/data/market'
 import { abbreviateNumber } from '@/app/utils/formatters'
-import {
-  MarketCyTags,
-  UTableColumn,
-  TransformedMarketsSelector,
-  MarketsSelectorTableColumn
-} from '@/types'
+import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
+import type { UTableColumn, TransformedMarketsSelector } from '@/types'
 
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
@@ -22,6 +19,13 @@ const props = withDefaults(
 const emit = defineEmits<{
   'mobile-table:click': []
 }>()
+
+const showRwaTooltip = computed(
+  () =>
+    jsonStore.helixMarketCategoriesMap.rwa.includes(
+      props.market.market.marketId
+    ) || rwaMarketsInIAssets.includes(props.market.market.marketId)
+)
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
@@ -64,9 +68,7 @@ const toggleFavorite = () => {
                   :tooltip="
                     $t(
                       `trade.rwa.${
-                        jsonStore.helixMarketCategoriesMap.rwa.includes(
-                          market.market.marketId
-                        )
+                        showRwaTooltip
                           ? 'rwaClosedMarketRow'
                           : 'nyseClosedMarketRow'
                       }`
