@@ -274,6 +274,10 @@ watch(
     })
   }
 )
+
+useIntervalFn(() => {
+  gridStrategyStore.fetchAllStrategies({ active: true })
+}, 10000)
 </script>
 
 <template>
@@ -373,10 +377,10 @@ watch(
           class="w-full h-96 mt-4"
         />
 
-        <PartialsLiquidityCommonActiveStrategyDetails
+        <PartialsTradingBotsSpotStrategyDetails
           v-else-if="activeStrategy && selectedMarket"
           class="mt-4"
-          :active-strategy="activeStrategy"
+          v-bind="{ activeStrategy }"
         />
 
         <PartialsLiquidityBotsSpotForm

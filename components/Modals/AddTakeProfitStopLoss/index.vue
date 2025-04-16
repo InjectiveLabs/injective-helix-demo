@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_TOKEN_ASSET_DECIMALS
+  UI_DEFAULT_TOKEN_ASSET_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
   Modal,
   DerivativeTradeTypes,
-  TakeProfitStopLossForm,
   TakeProfitStopLossFormField
 } from '@/types'
+import type { TakeProfitStopLossForm } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
@@ -21,7 +27,6 @@ const notificationStore = useSharedNotificationStore()
 
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { sm } = useSharedBreakpoints()
 const { resetForm, validate, errors } = useForm<TakeProfitStopLossForm>()
 const { markPrice } = useDerivativeLastPrice(computed(() => market.value))
 
@@ -55,12 +60,8 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
     type: computed(() => DerivativeTradeTypes.StopMarket)
   })
 
-const props = withDefaults(
-  defineProps<{
-    position: PositionV2
-  }>(),
-  {}
-)
+const props = withDefaults(defineProps<{ position: PositionV2 }>(), {})
+const emit = defineEmits<{ 'on:reset': [] }>()
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
@@ -182,7 +183,11 @@ const {
   valueToBigNumber: availableQuantityToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(availableQuantity.value)),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
+  {
+    decimalPlaces: computed(
+      () => market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+    )
+  }
 )
 
 const {
@@ -358,71 +363,38 @@ const isSubmitButtonDisabled = computed(() => {
   return isInvalidTp || isInvalidSl || isEmptyTpSl || hasErrorMessages
 })
 
-async function submitTpSl() {
-  const { valid } = await validate()
-
-  if (
-    !valid ||
-    !props.position ||
-    !(takeProfitValue.value || stopLossValue.value)
-  ) {
-    return
-  }
-
-  status.setLoading()
-
-  derivativeStore
-    .submitTpSlOrder({
-      position: props.position,
-      stopLossPrice: stopLossValue.value
-        ? new BigNumberInBase(stopLossValue.value)
-        : undefined,
-      takeProfitPrice: takeProfitValue.value
-        ? new BigNumberInBase(takeProfitValue.value)
-        : undefined,
-      stopLossQuantity: new BigNumberInBase(slQuantity.value),
-      takeProfitQuantity: new BigNumberInBase(tpQuantity.value)
-    })
-    .then(() => {
-      const tpSuccessMessage = t('trade.tpSuccessMessage', {
-        quantity: `${tpQuantity.value} ${market.value?.baseToken?.symbol}`,
-        price: `${takeProfitValue.value} ${market.value?.quoteToken?.symbol}`
-      })
-
-      const slSuccessMessage = t('trade.slSuccessMessage', {
-        quantity: `${slQuantity.value} ${market.value?.baseToken?.symbol}`,
-        price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
-      })
-
-      if (!takeProfitValue.value) {
-        notificationStore.success({
-          title: slSuccessMessage
-        })
-
-        return
-      }
-
-      if (!stopLossValue.value) {
-        notificationStore.success({
-          title: tpSuccessMessage
-        })
-
-        return
-      }
-
-      notificationStore.success({
-        title: `${tpSuccessMessage}, ${t('common.and')} ${slSuccessMessage}`
-      })
-    })
-    .catch($onError)
-    .finally(() => {
-      closeModal()
-      status.setIdle()
-    })
-}
-
 function closeModal() {
   modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+  emit('on:reset')
+}
+
+function resetTakeProfitStopLossForm() {
+  resetForm()
+  availableQuantity.value = props.position.quantity || '0'
+}
+
+function selectTpPartialOption(quantityPercentage: number) {
+  setTpQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .dividedBy(100)
+      .toFixed(
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        BigNumber.ROUND_DOWN
+      )
+  )
+}
+
+function selectSlPartialOption(quantityPercentage: number) {
+  setSlQuantity(
+    availableQuantityToBigNumber.value
+      .times(quantityPercentage)
+      .dividedBy(100)
+      .toFixed(
+        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        BigNumber.ROUND_DOWN
+      )
+  )
 }
 
 function cancelTp() {
@@ -461,27 +433,63 @@ function cancelSl() {
     })
 }
 
-function selectTpPartialOption(quantityPercentage: number) {
-  setTpQuantity(
-    availableQuantityToBigNumber.value
-      .times(quantityPercentage)
-      .dividedBy(100)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
-}
+async function submitTpSl() {
+  const { valid } = await validate()
 
-function selectSlPartialOption(quantityPercentage: number) {
-  setSlQuantity(
-    availableQuantityToBigNumber.value
-      .times(quantityPercentage)
-      .dividedBy(100)
-      .toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
-  )
-}
+  if (
+    !valid ||
+    !props.position ||
+    !(takeProfitValue.value || stopLossValue.value)
+  ) {
+    return
+  }
 
-function resetTakeProfitStopLossForm() {
-  resetForm()
-  availableQuantity.value = props.position.quantity || '0'
+  status.setLoading()
+
+  derivativeStore
+    .submitTpSlOrder({
+      position: props.position,
+      stopLossPrice: stopLossValue.value
+        ? new BigNumberInBase(stopLossValue.value)
+        : undefined,
+      takeProfitPrice: takeProfitValue.value
+        ? new BigNumberInBase(takeProfitValue.value)
+        : undefined,
+      stopLossQuantity: new BigNumberInBase(slQuantity.value),
+      takeProfitQuantity: new BigNumberInBase(tpQuantity.value)
+    })
+    .then(() => {
+      const tpSuccessMessage = t('trade.tpSuccessMessage', {
+        quantity: `${tpQuantity.value} ${market.value?.baseToken?.symbol}`,
+        price: `${takeProfitValue.value} ${market.value?.quoteToken?.symbol}`
+      })
+
+      const slSuccessMessage = t('trade.slSuccessMessage', {
+        quantity: `${slQuantity.value} ${market.value?.baseToken?.symbol}`,
+        price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
+      })
+
+      if (!takeProfitValue.value) {
+        notificationStore.success({ title: slSuccessMessage })
+
+        return
+      }
+
+      if (!stopLossValue.value) {
+        notificationStore.success({ title: tpSuccessMessage })
+
+        return
+      }
+
+      notificationStore.success({
+        title: `${tpSuccessMessage}, ${t('common.and')} ${slSuccessMessage}`
+      })
+    })
+    .catch($onError)
+    .finally(() => {
+      closeModal()
+      status.setIdle()
+    })
 }
 </script>
 
@@ -489,14 +497,14 @@ function resetTakeProfitStopLossForm() {
   <AppModal
     v-model="modalStore.modals[Modal.AddTakeProfitStopLoss]"
     v-bind="{
-      isHideCloseButton: !sm,
       isAlwaysOpen: status.isLoading(),
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
     @on:open="resetTakeProfitStopLossForm"
+    @on:close="closeModal"
   >
     <template #title>
-      <p class="text-center font-bold">
+      <p class="sm:text-center max-sm:w-11/12 font-bold">
         {{ $t('trade.takeProfitStopLossForPosition') }}
       </p>
     </template>
@@ -515,7 +523,7 @@ function resetTakeProfitStopLossForm() {
         />
 
         <div class="flex flex-col gap-2">
-          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+          <div class="flex gap-8 max-sm:flex-wrap max-sm:gap-2">
             <ModalsAddTakeProfitStopLossTpPriceInput
               v-model="takeProfitValue"
               v-bind="{
@@ -565,7 +573,7 @@ function resetTakeProfitStopLossForm() {
         </div>
 
         <div class="flex flex-col gap-2">
-          <div class="flex gap-8 max-xs:flex-wrap max-xs:gap-2">
+          <div class="flex gap-8 max-sm:flex-wrap max-sm:gap-2">
             <ModalsAddTakeProfitStopLossSlPriceInput
               v-model="stopLossValue"
               v-bind="{

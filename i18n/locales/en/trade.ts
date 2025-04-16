@@ -44,6 +44,8 @@ export default {
       mark_price_tooltip:
         'Used for computing unrealised PNL and triggering liquidations'
     },
+    tp: 'TP',
+    sl: 'SL',
     get: 'Get',
     asset_only: '{asset} only',
     assetTransfer: 'Asset Transfer',
@@ -147,6 +149,7 @@ export default {
     stopMarket: 'Stop-Market',
     margin: 'Margin',
     addTpSl: 'Add TP/SL',
+    editTpSl: 'Edit TP/SL',
     takeProfitStopLoss: 'Take Profit / Stop Loss',
     takeProfitStopLossForPosition: 'Take Profit / Stop Loss For Position',
     cancelTakeProfit: 'Cancel Take Profit',

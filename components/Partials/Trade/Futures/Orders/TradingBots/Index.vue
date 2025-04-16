@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import {
-  Modal,
-  BusEvents,
-  UiDerivativeMarket,
-  PerpOrdersTradingBotsView
-} from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket } from '@/types'
+import { Modal, BusEvents, PerpOrdersTradingBotsView } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 
 const modalStore = useSharedModalStore()
@@ -84,6 +80,10 @@ function fetchStrategies() {
       status.setIdle()
     })
 }
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 </script>
 
 <template>
@@ -138,9 +138,8 @@ function fetchStrategies() {
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
+      v-bind="{ position: selectedPosition }"
+      @on:reset="resetSelectedPosition"
     />
 
     <ModalsSharePositionPnl

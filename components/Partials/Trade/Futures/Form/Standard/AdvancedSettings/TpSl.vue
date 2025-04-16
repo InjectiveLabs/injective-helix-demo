@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import {
-  MarketKey,
-  UiDerivativeMarket,
-  DerivativesTradeForm,
-  DerivativesTradeFormField
-} from '@/types'
+import { TradeDirection } from '@injectivelabs/ts-types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import { MarketKey, DerivativesTradeFormField } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const derivativeStore = useDerivativeStore()
+const positionStore = usePositionStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { markPrice } = useDerivativeLastPrice(market)
+
+const emit = defineEmits<{
+  'tpsl:add': [position: PositionV2]
+}>()
 
 const isBuy = computed(
   () =>
@@ -58,74 +60,65 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
     })
   })
 
-const isTpDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.TakeSell : OrderSide.TakeBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
+const currentMarketPosition = computed(() =>
+  positionStore.subaccountPositions.find(
+    (position) => position.marketId === market.value.marketId
   )
-})
-
-const isSlDisabled = computed(() => {
-  const orderType = isBuy.value ? OrderSide.StopSell : OrderSide.StopBuy
-
-  return derivativeStore.subaccountConditionalOrders.some(
-    (order) => order.orderType === orderType
-  )
-})
-
-watch(
-  () => isTpDisabled,
-  (isDisabled) => {
-    if (isDisabled) {
-      takeProfitValue.value = ''
-    }
-  }
 )
 
-watch(
-  () => isSlDisabled,
-  (isDisabled) => {
-    if (isDisabled) {
-      stopLossValue.value = ''
-    }
+function addTpSl() {
+  if (currentMarketPosition.value) {
+    emit('tpsl:add', currentMarketPosition.value)
   }
-)
+}
 </script>
 
 <template>
   <div class="border-t mt-2">
-    <div class="py-2">
-      <AppCheckbox2 v-model="isTpSlEnabled" class="text-white">
-        {{ $t('trade.tpSl') }}
-      </AppCheckbox2>
+    <div v-if="currentMarketPosition" class="pt-2">
+      <button
+        class="flex items-center p-2 focus-visible:outline-none"
+        @click="addTpSl"
+      >
+        <div class="flex rounded-full transition hover:bg-coolGray-600">
+          <UIcon class="h-6 w-6 min-w-6" :name="NuxtUiIcons.CirclePlus" />
+        </div>
+
+        <span class="ml-2 text-xs">{{ $t('trade.tpSl') }}</span>
+      </button>
     </div>
 
-    <div v-if="isTpSlEnabled" class="space-y-2 p-1">
-      <div class="space-y-2">
-        <AppInputField
-          v-model="takeProfitValue"
-          :disabled="isTpDisabled"
-          :placeholder="$t('trade.take_Profit')"
-          class="placeholder:font-sans"
-        />
-
-        <p v-if="takeProfitErrorMessage" class="error-message">
-          {{ takeProfitErrorMessage }}
-        </p>
+    <div v-else>
+      <div class="py-2">
+        <AppCheckbox2 v-model="isTpSlEnabled" class="text-white">
+          {{ $t('trade.tpSl') }}
+        </AppCheckbox2>
       </div>
 
-      <div class="space-y-2">
-        <AppInputField
-          v-model="stopLossValue"
-          :disabled="isSlDisabled"
-          :placeholder="$t('trade.stop_Loss')"
-          class="placeholder:font-sans"
-        />
+      <div v-if="isTpSlEnabled" class="space-y-2 p-1">
+        <div class="space-y-2">
+          <AppInputField
+            v-model="takeProfitValue"
+            :placeholder="$t('trade.take_Profit')"
+            class="placeholder:font-sans"
+          />
 
-        <p v-if="stopLossErrorMessage" class="error-message">
-          {{ stopLossErrorMessage }}
-        </p>
+          <p v-if="takeProfitErrorMessage" class="error-message">
+            {{ takeProfitErrorMessage }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <AppInputField
+            v-model="stopLossValue"
+            :placeholder="$t('trade.stop_Loss')"
+            class="placeholder:font-sans"
+          />
+
+          <p v-if="stopLossErrorMessage" class="error-message">
+            {{ stopLossErrorMessage }}
+          </p>
+        </div>
       </div>
     </div>
   </div>

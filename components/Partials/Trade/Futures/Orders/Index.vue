@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { MarketKey, TradingInterface, UiDerivativeMarket } from '@/types'
+import { MarketKey, TradingInterface } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const tradingMode = useQueryRef('interface', TradingInterface.Standard)
 
