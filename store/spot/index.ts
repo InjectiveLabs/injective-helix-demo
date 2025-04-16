@@ -1,26 +1,13 @@
 import { defineStore } from 'pinia'
-import {
-  SpotMarket,
-  SpotLimitOrder,
-  SpotOrderHistory
-} from '@injectivelabs/sdk-ts'
-import {
-  SharedUiSpotTrade,
-  SharedUiMarketSummary,
-  SharedUiOrderbookWithSequence
-} from '@shared/types'
-import {
-  OrderSide,
-  TradeExecutionSide,
-  TradeExecutionType
-} from '@injectivelabs/ts-types'
+import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
+import { spotCacheApi, indexerSpotApi } from '@shared/Service'
 import {
   toUiSpotMarket,
   toUiMarketSummary,
   toZeroUiMarketSummary
 } from '@shared/transformer/market'
-import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
-import { spotCacheApi, indexerSpotApi } from '@shared/Service'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
   cancelOrder,
   submitChase,
@@ -40,22 +27,39 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import { combineOrderbookRecords } from '@/app/utils/market'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
-import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import type {
+  UiSpotMarket,
+  UiMarketAndSummary,
+  ActivityFetchOptions
+} from '@/types'
+import type {
+  SpotMarket,
+  SpotLimitOrder,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
+import type {
+  OrderSide,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
+import type {
+  SharedUiSpotTrade,
+  SharedUiMarketSummary,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
 
 type SpotStoreState = {
   markets: UiSpotMarket[]
+  trades: SharedUiSpotTrade[]
   marketIdsFromQuery: string[]
+  subaccountTradesCount: number
+  subaccountOrdersCount: number
+  subaccountOrders: SpotLimitOrder[]
+  subaccountOrderHistoryCount: number
+  subaccountTrades: SharedUiSpotTrade[]
   marketsSummary: SharedUiMarketSummary[]
   orderbook?: SharedUiOrderbookWithSequence
-  trades: SharedUiSpotTrade[]
-  subaccountTrades: SharedUiSpotTrade[]
-  subaccountTradesCount: number
-  subaccountOrders: SpotLimitOrder[]
-  subaccountOrdersCount: number
   subaccountOrderHistory: SpotOrderHistory[]
-  subaccountOrderHistoryCount: number
 }
 
 const initialStateFactory = (): SpotStoreState => ({
@@ -261,8 +265,8 @@ export const useSpotStore = defineStore('spot', {
       subaccountId,
       marketIds
     }: {
-      subaccountId: string
       marketIds: string[]
+      subaccountId: string
     }) {
       const spotStore = useSpotStore()
       const sharedWalletStore = useSharedWalletStore()
