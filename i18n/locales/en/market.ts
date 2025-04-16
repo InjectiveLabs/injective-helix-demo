@@ -89,7 +89,6 @@ export default {
 
   partialPositionClose: {
     marketTitle: 'Partial market close',
-    totalPositionSize: 'Total position size',
-    marketPrice: 'Market price'
+    totalPositionSize: 'Total position size'
   }
 }

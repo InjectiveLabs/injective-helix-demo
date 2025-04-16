@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { indexerDerivativesApi } from '@shared/Service'
 import {
   Status,
   BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { indexerDerivativesApi } from '@shared/Service'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
-import { Modal, BusEvents, TransformedPosition } from '@/types'
+import { Modal, BusEvents } from '@/types'
+import type { TransformedPosition } from '@/types'
 
 const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
@@ -39,7 +40,6 @@ const status = reactive(new Status(StatusType.Idle))
 
 const {
   valueToFixed: availableQuantityToFixed,
-  valueToString: availableQuantityToString,
   valueToBigNumber: availableQuantityToBigNumber
 } = useSharedBigNumberFormatter(
   computed(() => new BigNumberInBase(availableQuantity.value)),
@@ -58,6 +58,11 @@ const {
   )
 })
 
+function onCloseModal() {
+  emit('position:set', undefined)
+  useEventBus(BusEvents.SetPositionStatusIdle).emit()
+}
+
 function selectPartialOption(quantityPercentage: number) {
   setQuantityValue(
     availableQuantityToBigNumber.value
@@ -65,32 +70,6 @@ function selectPartialOption(quantityPercentage: number) {
       .dividedBy(100)
       .toFixed(props.row.quantityDecimals)
   )
-}
-
-async function validateSlippage() {
-  const orderbookRecords = await indexerDerivativesApi
-    .fetchOrderbookV2(props.row.market.marketId)
-    .catch($onError)
-
-  const { worstPrice } = calculateWorstPriceFromPriceLevel(
-    quantityValue.value,
-    orderbookRecords?.sells || []
-  )
-
-  const formattedWorstPrice = sharedToBalanceInTokenInBase({
-    value: worstPrice.toFixed(),
-    decimalPlaces: props.row.market.quoteToken.decimals
-  })
-
-  const slippagePercentage = formattedWorstPrice
-    .minus(props.row.markPrice)
-    .abs()
-    .dividedBy(
-      BigNumber.max(formattedWorstPrice, props.row.markPrice.toNumber())
-    )
-    .times(100)
-
-  return slippagePercentage.gt(5)
 }
 
 async function closePosition() {
@@ -125,9 +104,30 @@ async function closePosition() {
   }
 }
 
-function onCloseModal() {
-  emit('position:set', undefined)
-  useEventBus(BusEvents.SetPositionStatusIdle).emit()
+async function validateSlippage() {
+  const orderbookRecords = await indexerDerivativesApi
+    .fetchOrderbookV2(props.row.market.marketId)
+    .catch($onError)
+
+  const { worstPrice } = calculateWorstPriceFromPriceLevel(
+    quantityValue.value,
+    orderbookRecords?.sells || []
+  )
+
+  const formattedWorstPrice = sharedToBalanceInTokenInBase({
+    value: worstPrice.toFixed(),
+    decimalPlaces: props.row.market.quoteToken.decimals
+  })
+
+  const slippagePercentage = formattedWorstPrice
+    .minus(props.row.markPrice)
+    .abs()
+    .dividedBy(
+      BigNumber.max(formattedWorstPrice, props.row.markPrice.toNumber())
+    )
+    .times(100)
+
+  return slippagePercentage.gt(5)
 }
 
 onMounted(() => {
@@ -151,14 +151,21 @@ onMounted(() => {
         <h5 class="text-coolGray-450 font-semibold">
           {{ $t('partialPositionClose.totalPositionSize') }}:
         </h5>
-        <span class="font-mono">
-          {{ availableQuantityToString }} {{ row.market.baseToken.symbol }}
-        </span>
+
+        <div class="flex items-center gap-1 font-mono">
+          <AppAmount
+            v-bind="{
+              amount: availableQuantityToFixed,
+              decimalPlaces: row.quantityDecimals
+            }"
+          />
+          <span>{{ row.market.baseToken.symbol }}</span>
+        </div>
       </div>
 
       <div class="flex gap-4 justify-between border-b py-2">
         <h5 class="text-coolGray-450 font-semibold">
-          {{ $t('partialPositionClose.marketPrice') }}:
+          {{ $t('trade.price') }}:
         </h5>
         <span>{{ $t('home.market') }}</span>
       </div>
