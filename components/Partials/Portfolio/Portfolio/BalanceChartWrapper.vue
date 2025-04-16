@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { HistoricalPortfolioDuration } from '@/types'
 
 const isMobile = useIsMobile()
 const appStore = useAppStore()
+const accountStore = useAccountStore()
 const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
-const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
-  useBalance()
+const {
+  stakedAmountInUsd,
+  aggregatedSubaccountUnrealizedPnl,
+  aggregatedSubaccountTotalBalanceInUsd
+} = useBalance()
 
 const selectedDuration = ref(HistoricalPortfolioDuration.OneDay)
 const status = reactive(new Status(StatusType.Loading))
@@ -16,7 +21,11 @@ const status = reactive(new Status(StatusType.Loading))
 const isProfit = computed(() => percentageChange.value > 0)
 
 const balanceSeries = computed(() =>
-  leaderboardStore.historicalBalance.map((item) => [item.time, item.value])
+  leaderboardStore.historicalBalance.map((item, index, array) =>
+    index === array.length - 1
+      ? [item.time, aggregatedSubaccountTotalTradeable.value.toNumber()]
+      : [item.time, item.value]
+  )
 )
 
 const percentageChange = computed(() => {
@@ -26,17 +35,26 @@ const percentageChange = computed(() => {
     return 0
   }
 
-  return aggregatedSubaccountTotalWithoutStaking.value
+  return aggregatedSubaccountTotalTradeable.value
     .minus(oldBalance[1])
     .dividedBy(oldBalance[1])
     .times(100)
     .toNumber()
 })
 
-const { valueToBigNumber: aggregatedSubaccountTotalWithoutStaking } =
+const neptuneBankBalance = computed(() =>
+  new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
+    1 - NEPTUNE_USDT_BUFFER
+  )
+)
+
+const { valueToBigNumber: aggregatedSubaccountTotalTradeable } =
   useSharedBigNumberFormatter(
     computed(() =>
-      aggregatedSubaccountTotalBalanceInUsd.value.minus(stakedAmountInUsd.value)
+      aggregatedSubaccountTotalBalanceInUsd.value
+        .minus(stakedAmountInUsd.value)
+        .minus(neptuneBankBalance.value)
+        .minus(aggregatedSubaccountUnrealizedPnl.value)
     )
   )
 
@@ -57,44 +75,21 @@ function fetchBalance() {
     <div class="gap-2 flex justify-between items-start max-xs:flex-col">
       <div>
         <p class="text-coolGray-400">
-          {{ $t(`portfolio.home.balance.title`) }}
+          {{ $t(`portfolio.home.tradeableBalance.title`) }}
         </p>
 
-        <div class="h-14 flex flex-col">
+        <div class="h-20 lg:h-[88px] flex flex-col">
           <div class="flex items-center space-x-2">
             <div class="flex space-x-1 items-center">
               <span class="lg:text-2xl">$</span>
               <CommonSkeletonSubaccountAmount>
                 <CommonNumberCounter
                   v-bind="{
-                    value:
-                      aggregatedSubaccountTotalWithoutStaking.toNumber() || 0
+                    value: aggregatedSubaccountTotalTradeable.toNumber() || 0
                   }"
                   :size="isMobile ? 16 : 24"
                 />
               </CommonSkeletonSubaccountAmount>
-            </div>
-
-            <div class="h-1 w-1 rounded-full bg-coolGray-300" />
-
-            <div class="space-x-1 flex items-center text-xs sm:text-sm">
-              <UIcon
-                :name="NuxtUiIcons.PottedPlant"
-                class="max-sm:h-4 max-sm:w-4 h-5 w-5 hidden sm:block"
-              />
-
-              <div>{{ $t('account.staked') }}:</div>
-              <div class="flex items-center">
-                <span>$</span>
-                <CommonSkeletonSubaccountAmount>
-                  <AppUsdAmount
-                    class="leading-5"
-                    v-bind="{
-                      amount: stakedAmountInUsd.toFixed()
-                    }"
-                  />
-                </CommonSkeletonSubaccountAmount>
-              </div>
             </div>
 
             <button
@@ -113,6 +108,16 @@ function fetchBalance() {
               />
             </button>
           </div>
+
+          <PartialsPortfolioPortfolioValue
+            v-bind="{
+              stakedAmountInUsd,
+              neptuneBankBalance,
+              aggregatedSubaccountTotalTradeable,
+              aggregatedSubaccountTotalBalanceInUsd,
+              aggregatedSubaccountUnrealizedPnl
+            }"
+          />
 
           <p
             :class="{
@@ -153,8 +158,8 @@ function fetchBalance() {
     <PartialsPortfolioPortfolioAreaChart
       v-else
       v-bind="{
-        series: balanceSeries,
         isProfit,
+        series: balanceSeries,
         label: 'common.value'
       }"
     />

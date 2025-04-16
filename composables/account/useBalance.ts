@@ -267,7 +267,7 @@ export function useBalance() {
     return totalBalanceInUsd
   })
 
-  const aggregatedSubaccountTotalBalanceInUsd = computed(() => {
+  const aggregatedSubaccountTotalBalance = computed(() => {
     return Object.keys(subaccountPortfolioBalanceMap.value)
       .reduce(
         (balances, subaccountId) => [
@@ -276,6 +276,10 @@ export function useBalance() {
         ],
         [] as AccountBalance[]
       )
+  })
+
+  const aggregatedSubaccountTotalBalanceInUsd = computed(() => {
+    return aggregatedSubaccountTotalBalance.value
       .reduce((total, balance) => {
         if (!balance) {
           return total
@@ -290,14 +294,37 @@ export function useBalance() {
       .plus(stakedAmountInUsd.value)
   })
 
+  const aggregatedSubaccountUnrealizedPnl = computed(() => {
+    const aggregatedUnrealizedPnl = aggregatedSubaccountTotalBalance.value
+      .reduce((total, balance) => {
+        if (!balance) {
+          return total
+        }
+
+        if (balance.token.tokenVerification !== TokenVerification.Verified) {
+          return total
+        }
+
+        const unrealizedPnl = sharedToBalanceInTokenInBase({
+          value: balance.unrealizedPnl,
+          decimalPlaces: balance.token.decimals
+        })
+
+        return total.plus(unrealizedPnl)
+      }, ZERO_IN_BASE)
+
+    return aggregatedUnrealizedPnl
+  })
+
   return {
     stakedAmount,
     stakedAmountInUsd,
     subaccountPortfolioBalanceMap,
     activeSubaccountTotalBalanceInUsd,
     activeSubaccountBalancesWithToken,
+    aggregatedSubaccountUnrealizedPnl,
     activeSubaccountPositionPnlDenomMap,
     aggregatedSubaccountTotalBalanceInUsd,
-    activeSubaccountTradableBalancesWithToken
+    activeSubaccountTradableBalancesWithToken,
   }
 }

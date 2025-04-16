@@ -114,12 +114,6 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum PortfolioChartType {
-  Pnl = 'pnl',
-  Volume = 'volume',
-  Balance = 'balance'
-}
-
 export enum LiquidityProvisionTypeOption {
   All = 'All',
   Mito = 'Mito',
@@ -142,6 +136,12 @@ export enum StrategyStatus {
 export enum TakeProfitStopLossFormField {
   StopLoss = 'stopLoss',
   TakeProfit = 'takeProfit'
+}
+
+export enum HistoricalPortfolioDuration {
+  OneDay = '1D',
+  OneWeek = '1W',
+  OneMonth = '1M'
 }
 
 export enum SpotOrderHistoryFilterField {
@@ -238,6 +238,13 @@ export enum DefaultMarket {
   PerpetualTestnet = 'btc-usdt-perp-pyth'
 }
 
+export enum PortfolioChartType {
+  Pnl = 'pnl',
+  Volume = 'volume',
+  Balance = 'balance',
+  TradeableBalance = 'tradeableBalance'
+}
+
 export enum DerivativeTradeTypes {
   Limit = 'limit',
   Market = 'market',
@@ -309,12 +316,6 @@ export enum TradingChartInterval {
   '2h' = '120',
   '4h' = '240',
   '6h' = '360'
-}
-
-export enum HistoricalPortfolioDuration {
-  OneDay = '1D',
-  OneWeek = '1W',
-  OneMonth = '1M'
 }
 
 export enum SpotOrdersTradingBotsView {
@@ -402,19 +403,19 @@ export enum PerpOrdersStandardView {
 }
 
 export enum MarketCategoryType {
+  AI = 'aI',
   All = 'all',
-  Favorites = 'favorites',
+  RWA = 'rwa',
   Spot = 'spot',
+  DeFi = 'deFi',
+  Meme = 'meme',
   Perps = 'perps',
-  Trending = 'trending',
-  Injective = 'injective',
   Layer1 = 'layer-1',
   Layer2 = 'layer-2',
   iAssets = 'iAssets',
-  RWA = 'rwa',
-  AI = 'aI',
-  DeFi = 'deFi',
-  Meme = 'meme',
+  Trending = 'trending',
+  Favorites = 'favorites',
+  Injective = 'injective'
 }
 
 export enum NoticeBanner {
