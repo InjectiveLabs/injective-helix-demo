@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { TradeTypes, SpotMarketCyTags, SpotTradeFormField } from '@/types'
-import type { SpotTradeForm } from '@/types'
+import { SpotMarketCyTags } from '@/types'
 
 const jsonStore = useSharedJsonStore()
-const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isOpen = ref(false)
-
-const isLimit = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -35,26 +29,20 @@ function toggle() {
 
     <AppCollapse
       v-bind="{
-        isOpen: isLimit && jsonStore.isPostUpgradeMode ? true : isOpen
+        isOpen: jsonStore.isPostUpgradeMode ? true : isOpen
       }"
     >
       <div class="space-y-2 py-2">
-        <PartialsTradeSpotFormStandardAdvancedSettingsPostOnly v-if="isLimit" />
+        <PartialsTradeSpotFormStandardAdvancedSettingsPostOnly />
 
         <p
-          v-if="isLimit && jsonStore.isPostUpgradeMode"
+          v-if="jsonStore.isPostUpgradeMode"
           class="text-orange-500 text-xs ml-1"
         >
           {{ $t('trade.postOnlyWarning') }}
         </p>
 
-        <PartialsTradeSpotFormStandardAdvancedSettingsBypassWarning
-          v-if="isLimit"
-        />
-
-        <PartialsTradeSpotFormStandardAdvancedSettingsSlippage
-          v-if="!isLimit"
-        />
+        <PartialsTradeSpotFormStandardAdvancedSettingsBypassWarning />
       </div>
     </AppCollapse>
   </div>
