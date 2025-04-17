@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { rwaMarketsInIAssets } from '@/app/data/market'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
   MarketKey,
   RwaMarketField,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
@@ -19,7 +20,7 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 useForm()
 
-const props = withDefaults(defineProps<{ worstPrice: String }>(), {})
+const props = withDefaults(defineProps<{ worstPrice: string }>(), {})
 const emit = defineEmits<{
   'terms:agreed': []
 }>()
@@ -34,27 +35,28 @@ const { marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
-const isNyseMarket = computed(() =>
-  jsonStore.helixMarketCategoriesMap.iAssets.includes(
-    derivativeMarket.value.marketId
-  )
+const isRwaMarket = computed(
+  () =>
+    jsonStore.helixMarketCategoriesMap.rwa.includes(
+      derivativeMarket.value.marketId
+    ) || rwaMarketsInIAssets.includes(derivativeMarket.value.marketId)
 )
 
 const executionPrice = computed(() => {
   switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
-    case DerivativeTradeTypes.Limit:
+    case DerivativeTradeTypes.StopMarket:
+      return (
+        derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || ''
+      )
+    case DerivativeTradeTypes.StopLimit:
       return (
         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || ''
       )
     case DerivativeTradeTypes.Market:
       return props.worstPrice
-    case DerivativeTradeTypes.StopLimit:
+    case DerivativeTradeTypes.Limit:
       return (
         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || ''
-      )
-    case DerivativeTradeTypes.StopMarket:
-      return (
-        derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || ''
       )
     default:
       return props.worstPrice
@@ -150,22 +152,10 @@ function confirm() {
 
       <div class="mt-6 text-sm lg:text-base">
         <i18n-t
-          v-if="isNyseMarket"
-          keypath="trade.rwa.nyseMarketClosedTrade"
+          v-if="isRwaMarket"
+          keypath="trade.rwa.marketClosedTrade"
           tag="p"
         >
-          <template #nyseClosedTimes>
-            <NuxtLink
-              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
-              to="https://docs.pyth.network/price-feeds/market-hours"
-              target="_blank"
-            >
-              <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
-            </NuxtLink>
-          </template>
-        </i18n-t>
-
-        <i18n-t v-else keypath="trade.rwa.marketClosedTrade" tag="p">
           <template #marketClosedTimes>
             <NuxtLink
               class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
@@ -173,6 +163,18 @@ function confirm() {
               target="_blank"
             >
               <strong>{{ $t('trade.rwa.rwaClosedTimes') }}</strong>
+            </NuxtLink>
+          </template>
+        </i18n-t>
+
+        <i18n-t v-else keypath="trade.rwa.nyseMarketClosedTrade" tag="p">
+          <template #nyseClosedTimes>
+            <NuxtLink
+              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
+              to="https://docs.pyth.network/price-feeds/market-hours"
+              target="_blank"
+            >
+              <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
             </NuxtLink>
           </template>
         </i18n-t>

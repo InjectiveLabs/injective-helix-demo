@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { injToken, usdtToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { injToken, usdtToken } from '@shared/data/token'
 import { UI_DEFAULT_TOKEN_ASSET_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
@@ -42,12 +42,12 @@ const shoWNeptune = computed(() => {
   )
 })
 
-function onOpenBankTransferModal() {
-  modalStore.openModal(Modal.BankTransfer)
-}
-
 function onFiatOnRamp() {
   modalStore.openModal(Modal.FiatOnboard)
+}
+
+function onOpenBankTransferModal() {
+  modalStore.openModal(Modal.BankTransfer)
 }
 </script>
 

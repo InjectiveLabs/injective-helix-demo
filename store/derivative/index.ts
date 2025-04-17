@@ -1,38 +1,24 @@
 import { defineStore } from 'pinia'
+import { usdtToken } from '@shared/data/token'
+import { SharedMarketType } from '@shared/types'
+import { OrderState } from '@injectivelabs/ts-types'
+import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   indexerOracleApi,
   cachePythService,
   derivativeCacheApi,
   indexerDerivativesApi
 } from '@shared/Service'
-import type {
-  PositionV2,
-  PerpetualMarket,
-  ExpiryFuturesMarket,
-  DerivativeLimitOrder,
-  DerivativeOrderHistory
-} from '@injectivelabs/sdk-ts'
-import type {
-  SharedUiMarketSummary,
-  SharedUiDerivativeTrade,
-  SharedUiOrderbookWithSequence
-} from '@shared/types'
-import { SharedMarketType } from '@shared/types'
-import type {
-  OrderSide,
-  TradeExecutionSide,
-  TradeExecutionType
-} from '@injectivelabs/ts-types'
-import { OrderState } from '@injectivelabs/ts-types'
 import {
   toUiMarketSummary,
   toUiDerivativeMarket,
   toZeroUiMarketSummary,
   sharedGetDerivativeSlugOverride
 } from '@shared/transformer/market'
-import { usdtToken } from '@shared/data/token'
-import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
-import { sharedToBalanceInToken } from '@shared/utils/formatter'
+// import { fetchDerivativeStats } from '@/app/services/derivative'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
+import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
   cancelOrder,
   submitChase,
@@ -52,39 +38,53 @@ import {
   streamSubaccountOrders,
   streamMarketsMarkPrices,
   cancelMarketsMarkPrices,
+  cancelOrderbookUpdateStream,
   cancelSubaccountTradesStream,
   cancelSubaccountOrdersStream,
-  cancelOrderbookUpdateStream,
   streamSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream
 } from '@/store/derivative/stream'
-// import { fetchDerivativeStats } from '@/app/services/derivative'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
-import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
+import type {
+  OrderSide,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
 import type {
   UiDerivativeMarket,
   UiMarketAndSummary,
   MarketMarkPriceMap,
   ActivityFetchOptions
 } from '@/types'
+import type {
+  SharedUiMarketSummary,
+  SharedUiDerivativeTrade,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
+import type {
+  PositionV2,
+  PerpetualMarket,
+  ExpiryFuturesMarket,
+  DerivativeLimitOrder,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
 
 type DerivativeStoreState = {
-  recentlyExpiredMarkets: UiDerivativeMarket[]
-  markets: UiDerivativeMarket[]
   marketIdsFromQuery: string[]
-  marketsSummary: SharedUiMarketSummary[]
-  marketMarkPriceMap: MarketMarkPriceMap
+  markets: UiDerivativeMarket[]
+  subaccountTradesCount: number
+  subaccountOrdersCount: number
   // tickerOpenInterestMap: Record<string, number>
   trades: SharedUiDerivativeTrade[]
+  subaccountOrderHistoryCount: number
+  marketMarkPriceMap: MarketMarkPriceMap
+  marketsSummary: SharedUiMarketSummary[]
+  subaccountOrders: DerivativeLimitOrder[]
+  subaccountConditionalOrdersCount: number
   orderbook?: SharedUiOrderbookWithSequence
   subaccountTrades: SharedUiDerivativeTrade[]
-  subaccountTradesCount: number
-  subaccountOrders: DerivativeLimitOrder[]
-  subaccountOrdersCount: number
+  recentlyExpiredMarkets: UiDerivativeMarket[]
   subaccountOrderHistory: DerivativeOrderHistory[]
-  subaccountOrderHistoryCount: number
   subaccountConditionalOrders: DerivativeOrderHistory[]
-  subaccountConditionalOrdersCount: number
 }
 
 const initialStateFactory = (): DerivativeStoreState => ({
@@ -271,9 +271,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
 
       const recentlyExpiredMarkets = (
-        (await derivativeCacheApi.fetchMarkets({
-          marketStatus: 'expired'
-        })) as Array<ExpiryFuturesMarket>
+        (await derivativeCacheApi.fetchMarkets()) as Array<ExpiryFuturesMarket>
       ).filter(marketIsInactive)
 
       const uiMarkets = recentlyExpiredMarkets.map((market) => {
@@ -442,7 +440,7 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountOrderHistory(
-      options: ActivityFetchOptions | undefined
+      options: undefined | ActivityFetchOptions
     ) {
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
@@ -475,8 +473,8 @@ export const useDerivativeStore = defineStore('derivative', {
       options,
       subaccountId
     }: {
-      options?: ActivityFetchOptions
       subaccountId: string
+      options?: ActivityFetchOptions
     }) {
       const derivativeStore = useDerivativeStore()
 
@@ -551,7 +549,7 @@ export const useDerivativeStore = defineStore('derivative', {
               .map(({ marketId }) => toZeroUiMarketSummary(marketId))
           ]
         })
-      } catch (e) {
+      } catch {
         // don't do anything for now
       }
     },
@@ -606,7 +604,7 @@ export const useDerivativeStore = defineStore('derivative', {
       }
     },
 
-    async fetchSubaccountTrades(options?: ActivityFetchOptions | undefined) {
+    async fetchSubaccountTrades(options?: undefined | ActivityFetchOptions) {
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -635,8 +633,8 @@ export const useDerivativeStore = defineStore('derivative', {
       subaccountId,
       options
     }: {
-      options?: ActivityFetchOptions
       subaccountId: string
+      options?: ActivityFetchOptions
     }) {
       const derivativeStore = useDerivativeStore()
 

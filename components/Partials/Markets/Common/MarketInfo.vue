@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { SharedMarketType } from '@shared/types'
+import { rwaMarketsInIAssets } from '@/app/data/market'
 import { INDEX_MARKETS_INFO } from '@/app/utils/constants'
 import { calculateLeverage } from '@/app/utils/formatters'
-import {
-  TradePage,
-  TradeSubPage,
-  TradingInterface,
-  UiMarketWithToken,
-  UiDerivativeMarket
-} from '@/types'
+import { TradePage, TradeSubPage, TradingInterface } from '@/types'
+import type { UiMarketWithToken, UiDerivativeMarket } from '@/types'
 
 const route = useRoute()
 const jsonStore = useSharedJsonStore()
@@ -62,6 +58,12 @@ const marketRoute = computed(() =>
 
 const isRwaMarket = computed(() =>
   jsonStore.isTradeFiMarket(props.market.marketId)
+)
+
+const showRwaTooltip = computed(
+  () =>
+    jsonStore.helixMarketCategoriesMap.rwa.includes(props.market.marketId) ||
+    rwaMarketsInIAssets.includes(props.market.marketId)
 )
 
 const indexMarketInfo = computed(() =>
@@ -128,11 +130,7 @@ const leverage = computed(() =>
             {{
               $t(
                 `trade.rwa.${
-                  jsonStore.helixMarketCategoriesMap.rwa.includes(
-                    market.marketId
-                  )
-                    ? 'rwaClosedMarketRow'
-                    : 'nyseClosedMarketRow'
+                  showRwaTooltip ? 'rwaClosedMarketRow' : 'nyseClosedMarketRow'
                 }`
               )
             }}
