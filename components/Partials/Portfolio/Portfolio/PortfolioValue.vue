@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumber } from '@injectivelabs/utils'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 
 const isMobile = useIsMobile()
@@ -7,10 +8,10 @@ const { lg } = useSharedBreakpoints()
 withDefaults(
   defineProps<{
     stakedAmountInUsd: BigNumberInBase
-    neptuneBankBalance: BigNumberInBase
-    aggregatedSubaccountUnrealizedPnl: BigNumberInBase
+    neptuneBalanceInBigNumber: BigNumberInBase
     aggregatedSubaccountTotalTradeable: BigNumberInBase
     aggregatedSubaccountTotalBalanceInUsd: BigNumberInBase
+    aggregatedSubaccountUnrealizedPnlInUsd: BigNumberInBase
   }>(),
   {}
 )
@@ -48,7 +49,10 @@ withDefaults(
           <p class="flex">
             <span>$</span>
             <AppUsdAmount
-              v-bind="{ amount: aggregatedSubaccountTotalTradeable.toFixed() }"
+              v-bind="{
+                roundingMode: BigNumber.ROUND_HALF_UP,
+                amount: aggregatedSubaccountTotalTradeable.toFixed()
+              }"
             />
           </p>
         </span>
@@ -57,7 +61,12 @@ withDefaults(
           <p>{{ $t('portfolio.home.stakedInj') }}:</p>
           <p class="flex">
             <span>$</span>
-            <AppUsdAmount v-bind="{ amount: stakedAmountInUsd.toFixed() }" />
+            <AppUsdAmount
+              v-bind="{
+                roundingMode: BigNumber.ROUND_HALF_UP,
+                amount: stakedAmountInUsd.toFixed()
+              }"
+            />
           </p>
         </span>
 
@@ -65,7 +74,12 @@ withDefaults(
           <p>{{ $t('portfolio.home.yieldBearingUsdt') }}:</p>
           <p class="flex">
             <span>$</span>
-            <AppUsdAmount v-bind="{ amount: neptuneBankBalance.toFixed() }" />
+            <AppUsdAmount
+              v-bind="{
+                roundingMode: BigNumber.ROUND_HALF_UP,
+                amount: neptuneBalanceInBigNumber.toFixed()
+              }"
+            />
           </p>
         </span>
 
@@ -75,7 +89,8 @@ withDefaults(
             <span>$</span>
             <AppUsdAmount
               v-bind="{
-                amount: aggregatedSubaccountUnrealizedPnl.toFixed()
+                roundingMode: BigNumber.ROUND_HALF_UP,
+                amount: aggregatedSubaccountUnrealizedPnlInUsd.toFixed()
               }"
             />
           </p>

@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import ApexCharts, { ApexOptions } from 'apexcharts'
+import ApexCharts from 'apexcharts'
+import { colors } from '@/nuxt-config/tailwind'
 import { BigNumber } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { colors } from '@/nuxt-config/tailwind'
+import type { ApexOptions } from 'apexcharts'
 
 const props = withDefaults(
   defineProps<{
-    series: number[][]
-    isProfit: boolean
     label?: string
+    isProfit?: boolean
+    series: number[][]
   }>(),
-  {
-    isProfit: false,
-    label: 'trade.amount'
-  }
+  { label: 'trade.amount' }
 )
 
 const { t } = useLang()
 
-const chartEl = ref<HTMLElement | null>(null)
+const chartEl = ref<null | HTMLElement>(null)
 let chart: ApexCharts
 
 const options: ApexOptions = {
@@ -111,6 +109,19 @@ onMounted(() => {
 onUnmounted(() => {
   chart.destroy()
 })
+
+watch(
+  () => props.series,
+  (newSeries) => {
+    chart?.updateSeries([
+      {
+        name: t(props.label),
+        data: newSeries,
+        color: props.isProfit ? colors.green[500] : colors.red[500]
+      }
+    ])
+  }
+)
 </script>
 
 <template>

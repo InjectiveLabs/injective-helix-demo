@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
+import { usdtToken } from '@shared/data/token'
+import { Status, StatusType } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { HistoricalPortfolioDuration } from '@/types'
 
 const isMobile = useIsMobile()
@@ -11,8 +12,8 @@ const leaderboardStore = useLeaderboardStore()
 const { $onError } = useNuxtApp()
 const {
   stakedAmountInUsd,
-  aggregatedSubaccountUnrealizedPnl,
-  aggregatedSubaccountTotalBalanceInUsd
+  aggregatedSubaccountTotalBalanceInUsd,
+  aggregatedSubaccountUnrealizedPnlInUsd
 } = useBalance()
 
 const selectedDuration = ref(HistoricalPortfolioDuration.OneDay)
@@ -20,13 +21,16 @@ const status = reactive(new Status(StatusType.Loading))
 
 const isProfit = computed(() => percentageChange.value > 0)
 
-const balanceSeries = computed(() =>
-  leaderboardStore.historicalBalance.map((item, index, array) =>
-    index === array.length - 1
+const balanceSeries = computed(() => {
+  const lastSeriesCount =
+    selectedDuration.value === HistoricalPortfolioDuration.OneMonth ? 3 : 1
+
+  return leaderboardStore.historicalBalance.map((item, index, array) =>
+    index >= array.length - lastSeriesCount
       ? [item.time, aggregatedSubaccountTotalTradeable.value.toNumber()]
       : [item.time, item.value]
   )
-)
+})
 
 const percentageChange = computed(() => {
   const oldBalance = balanceSeries.value[0]
@@ -42,19 +46,24 @@ const percentageChange = computed(() => {
     .toNumber()
 })
 
-const neptuneBankBalance = computed(() =>
-  new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
-    1 - NEPTUNE_USDT_BUFFER
+const { valueToBigNumber: neptuneBalanceInBigNumber } =
+  useSharedBigNumberFormatter(
+    computed(() =>
+      sharedToBalanceInToken({
+        decimalPlaces: usdtToken.decimals,
+        value: accountStore.neptuneUsdtInBankBalance,
+        fixedDecimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+      })
+    )
   )
-)
 
 const { valueToBigNumber: aggregatedSubaccountTotalTradeable } =
   useSharedBigNumberFormatter(
     computed(() =>
       aggregatedSubaccountTotalBalanceInUsd.value
         .minus(stakedAmountInUsd.value)
-        .minus(neptuneBankBalance.value)
-        .minus(aggregatedSubaccountUnrealizedPnl.value)
+        .minus(neptuneBalanceInBigNumber.value)
+        .minus(aggregatedSubaccountUnrealizedPnlInUsd.value)
     )
   )
 
@@ -112,10 +121,10 @@ function fetchBalance() {
           <PartialsPortfolioPortfolioValue
             v-bind="{
               stakedAmountInUsd,
-              neptuneBankBalance,
+              neptuneBalanceInBigNumber,
               aggregatedSubaccountTotalTradeable,
               aggregatedSubaccountTotalBalanceInUsd,
-              aggregatedSubaccountUnrealizedPnl
+              aggregatedSubaccountUnrealizedPnlInUsd
             }"
           />
 
