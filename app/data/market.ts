@@ -6,10 +6,7 @@ export interface UnTradableMarket {
   slug: string
 }
 
-// @CK unhide markets through this
-export const marketsToHideFromSelection = [
-  '0xedc48ec071136eeb858b11ba50ba87c96e113400e29670fecc0a18d588238052' // XAG-USDT-PERP
-]
+export const marketsToHideFromSelection = []
 
 export const rwaMarketsInIAssets = [
   '0x0160a0c8ecbf5716465b9fc22bceeedf6e92dcdc688e823bbe1af3b22a84e5b5', // XAU-USDT-PERP
