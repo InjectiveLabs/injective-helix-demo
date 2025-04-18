@@ -1,136 +1,17 @@
-import {
-  PositionV2,
-  TokenStatic,
-  TokenVerification
-} from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { injToken, usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
-import {
+import type { PositionV2, TokenStatic } from '@injectivelabs/sdk-ts'
+import type {
   AccountBalance,
   SubaccountBalance,
   SubaccountBalanceWithInOrder
 } from '@/types'
-
-// to do move subaccount transforming functions to layer sharedBalanceStore
-function calculateSubaccountBalance(
-  balance: SubaccountBalance[]
-): SubaccountBalanceWithInOrder[] {
-  return balance.map((balance) => ({
-    ...balance,
-    inOrderBalance: new BigNumberInBase(balance.totalBalance)
-      .minus(balance.availableBalance)
-      .toFixed()
-  }))
-}
-
-// combines subaccount0 + bank + cw20 balance
-function calculateDefaultSubaccountBalance(
-  balances: SubaccountBalance[]
-): SubaccountBalanceWithInOrder[] {
-  const accountStore = useAccountStore()
-
-  return Object.entries(accountStore.balancesMap).reduce(
-    (list, [denom, amount]) => {
-      const cw20Address = getCw20AddressFromDenom(denom)
-      const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
-      const subaccountBalance = balances.find(
-        (balance) => balance.denom === denom
-      )
-
-      const availableBalanceInBank = new BigNumberInBase(amount).plus(
-        cw20Balance
-      )
-      const inOrderBalance = new BigNumberInBase(
-        subaccountBalance?.totalBalance || 0
-      )
-
-      const neptuneBankBalance =
-        denom === usdtToken.denom
-          ? new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
-              1 - NEPTUNE_USDT_BUFFER
-            )
-          : 0
-
-      return [
-        ...list,
-        {
-          denom,
-          inOrderBalance: inOrderBalance.toFixed(),
-          availableBalance: availableBalanceInBank
-            .plus(neptuneBankBalance)
-            .toFixed(),
-          totalBalance: availableBalanceInBank
-            .plus(inOrderBalance)
-            .plus(neptuneBankBalance)
-            .toFixed()
-        }
-      ]
-    },
-    [] as SubaccountBalanceWithInOrder[]
-  )
-}
-
-function getDenomPositionMap(positions: PositionV2[]) {
-  const tokenStore = useTokenStore()
-  const derivativeStore = useDerivativeStore()
-
-  return positions.reduce(
-    (list, position) => {
-      const quoteToken =
-        tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
-      const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
-        ?.price
-        ? sharedToBalanceInWei({
-            value: derivativeStore.marketMarkPriceMap[position.marketId].price,
-            decimalPlaces: quoteToken.decimals
-          })
-        : new BigNumberInBase(position.markPrice)
-
-      const pnl = new BigNumberInBase(position.quantity)
-        .times(markPrice.minus(position.entryPrice))
-        .times(position.direction === TradeDirection.Long ? 1 : -1)
-
-      if (list[position.denom]) {
-        const totalPnL = list[position.denom].pnl.plus(pnl)
-        const totalMargin = list[position.denom].margin.plus(position.margin)
-
-        return {
-          ...list,
-          [position.denom]: {
-            pnl: totalPnL,
-            token: quoteToken,
-            margin: totalMargin,
-            pnlPlusMargin: totalPnL.plus(totalMargin)
-          }
-        }
-      }
-
-      return {
-        ...list,
-        [position.denom]: {
-          pnl,
-          token: quoteToken,
-          pnlPlusMargin: pnl.plus(position.margin),
-          margin: new BigNumberInBase(position.margin)
-        }
-      }
-    },
-    {} as Record<
-      string,
-      {
-        pnl: BigNumberInBase
-        token: TokenStatic
-        margin: BigNumberInBase
-        pnlPlusMargin: BigNumberInBase
-      }
-    >
-  )
-}
 
 export function useBalance() {
   const spotStore = useSpotStore()
@@ -144,8 +25,8 @@ export function useBalance() {
   const subaccountPortfolioBalanceMap = computed(() => {
     const tradeableDenoms = [
       ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
+        ...derivativeStore.tradeableDenoms,
+        ...spotStore.tradeableDenoms
       ])
     ]
 
@@ -300,4 +181,120 @@ export function useBalance() {
     aggregatedSubaccountTotalBalanceInUsd,
     activeSubaccountTradableBalancesWithToken
   }
+}
+
+// to do move subaccount transforming functions to layer sharedBalanceStore
+function calculateSubaccountBalance(
+  balance: SubaccountBalance[]
+): SubaccountBalanceWithInOrder[] {
+  return balance.map((balance) => ({
+    ...balance,
+    inOrderBalance: new BigNumberInBase(balance.totalBalance)
+      .minus(balance.availableBalance)
+      .toFixed()
+  }))
+}
+
+// combines subaccount0 + bank + cw20 balance
+function calculateDefaultSubaccountBalance(
+  balances: SubaccountBalance[]
+): SubaccountBalanceWithInOrder[] {
+  const accountStore = useAccountStore()
+
+  return Object.entries(accountStore.balancesMap).reduce(
+    (list, [denom, amount]) => {
+      const cw20Address = getCw20AddressFromDenom(denom)
+      const cw20Balance = accountStore.cw20BalancesMap[cw20Address] || '0'
+      const subaccountBalance = balances.find(
+        (balance) => balance.denom === denom
+      )
+
+      const availableBalanceInBank = new BigNumberInBase(amount).plus(
+        cw20Balance
+      )
+      const inOrderBalance = new BigNumberInBase(
+        subaccountBalance?.totalBalance || 0
+      )
+
+      const neptuneBankBalance =
+        denom === usdtToken.denom
+          ? new BigNumberInBase(accountStore.neptuneUsdtInBankBalance).times(
+              1 - NEPTUNE_USDT_BUFFER
+            )
+          : 0
+
+      return [
+        ...list,
+        {
+          denom,
+          inOrderBalance: inOrderBalance.toFixed(),
+          availableBalance: availableBalanceInBank
+            .plus(neptuneBankBalance)
+            .toFixed(),
+          totalBalance: availableBalanceInBank
+            .plus(inOrderBalance)
+            .plus(neptuneBankBalance)
+            .toFixed()
+        }
+      ]
+    },
+    [] as SubaccountBalanceWithInOrder[]
+  )
+}
+
+function getDenomPositionMap(positions: PositionV2[]) {
+  const tokenStore = useTokenStore()
+  const derivativeStore = useDerivativeStore()
+
+  return positions.reduce(
+    (list, position) => {
+      const quoteToken =
+        tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
+      const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
+        ?.price
+        ? sharedToBalanceInWei({
+            value: derivativeStore.marketMarkPriceMap[position.marketId].price,
+            decimalPlaces: quoteToken.decimals
+          })
+        : new BigNumberInBase(position.markPrice)
+
+      const pnl = new BigNumberInBase(position.quantity)
+        .times(markPrice.minus(position.entryPrice))
+        .times(position.direction === TradeDirection.Long ? 1 : -1)
+
+      if (list[position.denom]) {
+        const totalPnL = list[position.denom].pnl.plus(pnl)
+        const totalMargin = list[position.denom].margin.plus(position.margin)
+
+        return {
+          ...list,
+          [position.denom]: {
+            pnl: totalPnL,
+            token: quoteToken,
+            margin: totalMargin,
+            pnlPlusMargin: totalPnL.plus(totalMargin)
+          }
+        }
+      }
+
+      return {
+        ...list,
+        [position.denom]: {
+          pnl,
+          token: quoteToken,
+          pnlPlusMargin: pnl.plus(position.margin),
+          margin: new BigNumberInBase(position.margin)
+        }
+      }
+    },
+    {} as Record<
+      string,
+      {
+        token: TokenStatic
+        pnl: BigNumberInBase
+        margin: BigNumberInBase
+        pnlPlusMargin: BigNumberInBase
+      }
+    >
+  )
 }

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { faucetService } from '@shared/Service'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
 import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
@@ -11,7 +12,6 @@ import {
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
 import { traceUserDetails } from '@/app/services/tracer'
-import { fundInjectiveAddress } from '@/app/services/faucet'
 import { Modal } from '@/types'
 
 type WalletStoreState = {}
@@ -168,12 +168,30 @@ export const useWalletStore = defineStore('wallet', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
+      // if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
+      //   return
+      // }
+
+      if (!sharedWalletStore.isEip712) {
         return
       }
 
-      await fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+      console.log(
+        'before',
+        sharedWalletStore.injectiveAddress,
+        `hasSufficientGas ${accountStore.hasSufficientGas}`
+      )
+
+      await faucetService.fundInjectiveAddress(
+        sharedWalletStore.injectiveAddress
+      )
       await accountStore.fetchAccountPortfolioBalances()
+
+      console.log(
+        'after',
+        sharedWalletStore.injectiveAddress,
+        `hasSufficientGas ${accountStore.hasSufficientGas}`
+      )
 
       if (accountStore.hasSufficientGas) {
         return

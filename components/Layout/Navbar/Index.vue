@@ -26,7 +26,7 @@ const filteredTopNavMenu = computed(() =>
 <template>
   <header
     :class="[
-      'w-full z-50 fixed top-0 left-0 px-6',
+      'w-full z-50 fixed top-0 left-0 px-4 md:px-6',
       route.name === MainPage.Index ? '' : 'bg-brand-900'
     ]"
   >

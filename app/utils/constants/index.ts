@@ -131,7 +131,7 @@ export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
 export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
-export const DEFAULT_MIN_GAS = 200_000
+export const DEFAULT_MIN_GAS = 1_000_000_000_000_000 // 0.001 INJ
 
 export const intervalOptions: IntervalOption[] = [
   { label: '1m', value: { resolution: 1, countback: 30 * 32 } },
