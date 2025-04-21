@@ -53,9 +53,7 @@ function onSlippageChange(value: string) {
         {{ $t('trade.slippage_tolerance') }}
       </p>
 
-      <AppTooltip
-        v-bind="{ content: 'Sample Description of Slippage Tolerance Tooltip' }"
-      >
+      <AppTooltip v-bind="{ content: $t('trade.slippageTooltip') }">
         <UIcon :name="NuxtUiIcons.Info3" class="size-4 text-coolGray-450" />
       </AppTooltip>
     </div>
@@ -94,9 +92,7 @@ function onSlippageChange(value: string) {
           {{ $t('trade.worstPrice') }}
         </p>
 
-        <AppTooltip
-          v-bind="{ content: 'Sample Description of Worst Price Tooltip' }"
-        >
+        <AppTooltip v-bind="{ content: $t('trade.worstPriceTooltip') }">
           <UIcon :name="NuxtUiIcons.Info3" class="size-4 text-coolGray-450" />
         </AppTooltip>
       </div>
