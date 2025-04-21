@@ -1,18 +1,19 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { orderSideToOrderType } from '@shared/transformer/trade'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
-  PositionV2,
   MsgCancelDerivativeOrder,
   MsgIncreasePositionMargin,
   MsgCreateDerivativeMarketOrder,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { orderSideToOrderType } from '@shared/transformer/trade'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
-import { UiDerivativeMarket, ConditionalOrderSide } from '@/types'
+import { ConditionalOrderSide } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 export const closePosition = async ({
   quantity,
@@ -204,8 +205,8 @@ export const addMarginToPosition = async ({
   market,
   amount
 }: {
-  market: UiDerivativeMarket
   amount: BigNumberInBase
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -252,10 +253,10 @@ export const addMarginToSubaccountPosition = async ({
   fromSubaccountId,
   toSubaccountId
 }: {
-  market: UiDerivativeMarket
+  toSubaccountId: string
   amount: BigNumberInBase
   fromSubaccountId: string
-  toSubaccountId: string
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumber } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
@@ -112,8 +113,9 @@ function disconnect() {
                 <span>$</span>
                 <AppUsdAmount
                   v-bind="{
-                    amount: aggregatedSubaccountTotalBalanceInUsd.toFixed(),
-                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                    roundingMode: BigNumber.ROUND_HALF_UP,
+                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+                    amount: aggregatedSubaccountTotalBalanceInUsd.toFixed()
                   }"
                 />
               </p>
@@ -129,7 +131,8 @@ function disconnect() {
                   <AppUsdAmount
                     class="leading-5"
                     v-bind="{
-                      amount: stakedAmountInUsd.toFixed()
+                      amount: stakedAmountInUsd.toFixed(),
+                      roundingMode: BigNumber.ROUND_HALF_UP
                     }"
                   />
                 </div>

@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-enums */
 export * from './cy'
 export * from './mixpanel'
 
@@ -114,12 +115,6 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum PortfolioChartType {
-  Pnl = 'pnl',
-  Volume = 'volume',
-  Balance = 'balance'
-}
-
 export enum LiquidityProvisionTypeOption {
   All = 'All',
   Mito = 'Mito',
@@ -142,6 +137,12 @@ export enum StrategyStatus {
 export enum TakeProfitStopLossFormField {
   StopLoss = 'stopLoss',
   TakeProfit = 'takeProfit'
+}
+
+export enum HistoricalPortfolioDuration {
+  OneDay = '1D',
+  OneWeek = '1W',
+  OneMonth = '1M'
 }
 
 export enum SpotOrderHistoryFilterField {
@@ -236,6 +237,13 @@ export enum DefaultMarket {
   Spot = 'inj-usdt',
   Perpetual = 'btc-usdt-perp',
   PerpetualTestnet = 'btc-usdt-perp-pyth'
+}
+
+export enum PortfolioChartType {
+  Pnl = 'pnl',
+  Volume = 'volume',
+  Balance = 'balance',
+  TradeableBalance = 'tradeableBalance'
 }
 
 export enum DerivativeTradeTypes {
@@ -406,9 +414,9 @@ export enum MarketCategoryType {
   Layer2 = 'layer-2',
   iAssets = 'iAssets',
   RWA = 'rwa',
-  AI = 'aI',
+  AI = 'ai',
   DeFi = 'deFi',
-  Meme = 'meme',
+  Meme = 'meme'
 }
 
 export enum NoticeBanner {
@@ -533,6 +541,7 @@ export enum BusEvents {
   SetPositionStatusIdle = 'set-position-status-idle',
   OrderbookNotionalClick = 'orderbook-notional-click',
   ConnectMobileModalOpened = 'connect-mobile-modal-opened',
+  ShareLeaderboardPnlOpened = 'share-leaderboard-pnl-opened',
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
   ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',
   SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',

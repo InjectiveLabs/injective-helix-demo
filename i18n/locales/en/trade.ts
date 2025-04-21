@@ -328,6 +328,7 @@ export default {
       tooHigh:
         'Your transaction might be executed at a less desirable price if slippage % is set too high.'
     },
+    invalid_price: 'Invalid Price',
     advanced_settings: 'Advanced Settings',
     slippage_tolerance: 'Slippage Tolerance',
     invalid_slippage: 'Please enter a valid slippage percentage',
@@ -371,6 +372,10 @@ export default {
       left: 'Left',
       right: 'Right'
     },
+    slippageTooltip:
+      'Slippage tolerance is the maximum price change allowed before a trade is canceled.',
+    worstPriceTooltip:
+      "The worst price reflects the highest you'll pay when buying or the lowest you'll receive when selling, according to slippage tolerance.",
 
     swap: {
       to: 'To',

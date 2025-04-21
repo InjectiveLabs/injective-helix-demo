@@ -134,11 +134,11 @@ export default {
       'By subscribing, you agree to the {termsAndCondition} and have read the {privacyPolicy}.'
   },
   footer: {
-    blog: 'Blog',
+    operational: 'Operational',
     v2: ' Version 2.0',
+    blog: 'Blog',
     resources: 'Resources',
     analytics: 'Analytics',
-    operational: 'Operational',
     termsAndConditions: 'Terms & Conditions',
     privacyPolicy: 'Privacy Policy',
     support: 'Support',

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
-import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
+import { endOfHour, intervalToDuration, differenceInSeconds } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { UiMarketWithToken, MarkPriceStatusKey } from '@/types'
+import { MarkPriceStatusKey } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
 
 const derivativeStore = useDerivativeStore()
 
@@ -154,6 +155,12 @@ useIntervalFn(() => {
 
     <div v-if="!fundingRateToBigNumber.isNaN()" class="lg:text-right block">
       <AppTooltip
+        :ui="{
+          width: 'w-auto',
+          popper: {
+            placement: 'bottom'
+          }
+        }"
         :content="`${$t('trade.stats.annualized')}: ${
           fundingRateToBigNumber.gt(0) ? '+' : ''
         }${annualizedFundingRateToString}%`"
