@@ -35,6 +35,7 @@ const sharedWalletStore = useSharedWalletStore()
 const now = useNow({ interval: 1000 })
 
 const isHideBanner = ref(false)
+const bannersToHide = ref<string[]>([])
 
 const ftmBanners = computed<Banner[]>(() => [
   {
@@ -93,7 +94,10 @@ const bannerToDisplay = computed(
       ...ftmBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
-    ].filter((banner) => banner.shouldDisplay)[0]
+    ].filter(
+      (banner) =>
+        banner.shouldDisplay && !bannersToHide.value.includes(banner.id)
+    )[0]
 )
 
 function openNeptuneUsdtModal() {
@@ -102,11 +106,11 @@ function openNeptuneUsdtModal() {
 }
 
 function onHideBanner() {
-  isHideBanner.value = true
-
   if (!bannerToDisplay.value) {
     return
   }
+
+  bannersToHide.value.push(bannerToDisplay.value.id)
 
   if (bannerToDisplay.value.shouldPersist) {
     return
@@ -130,7 +134,7 @@ function onHideBanner() {
     <div />
 
     <template v-if="bannerToDisplay.id === NoticeBanner.FTMSettleMarket">
-      {{ $t('banners.ftmSettleMarket') }}
+      {{ $t('banners.ftmMarketBanner') }}
     </template>
 
     <i18n-t

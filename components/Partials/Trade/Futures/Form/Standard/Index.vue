@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 import {
   Modal,
   MarketKey,
@@ -11,15 +9,18 @@ import {
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 
 const { value: orderType } = useStringField({
   name: DerivativesTradeFormField.Type,
@@ -52,16 +53,13 @@ onMounted(() => {
   )
 })
 
-function onOrderSideChange() {
-  if (
-    ![DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
-      orderType.value as DerivativeTradeTypes
-    )
-  ) {
-    return
-  }
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 
-  useEventBus(BusEvents.OrderSideToggled).emit()
+function addTpSl(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.AddTakeProfitStopLoss)
 }
 
 function onTradeTypeChange() {
@@ -77,13 +75,16 @@ function onTradeTypeChange() {
   )
 }
 
-function addTpSl(position: PositionV2) {
-  selectedPosition.value = position
-  modalStore.openModal(Modal.AddTakeProfitStopLoss)
-}
+function onOrderSideChange() {
+  if (
+    ![DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+      orderType.value as DerivativeTradeTypes
+    )
+  ) {
+    return
+  }
 
-function resetSelectedPosition() {
-  selectedPosition.value = undefined
+  useEventBus(BusEvents.OrderSideToggled).emit()
 }
 </script>
 
@@ -160,14 +161,25 @@ function resetSelectedPosition() {
         v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
       />
 
-      <PartialsTradeFuturesFormStandardLeverage
-        v-bind="{
-          worstPrice
-        }"
-      />
+      <PartialsTradeFuturesFormStandardLeverage v-bind="{ worstPrice }" />
     </div>
 
-    <PartialsTradeFuturesFormStandardAdvancedSettings @tpsl:add="addTpSl" />
+    <PartialsTradeFuturesFormStandardSlippage
+      v-if="
+        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+          derivativeFormValues[
+            DerivativesTradeFormField.Type
+          ] as DerivativeTradeTypes
+        )
+      "
+      v-bind="{ worstPrice }"
+      class="mt-4"
+    />
+
+    <PartialsTradeFuturesFormStandardAdvancedSettings
+      class="mt-4"
+      @tpsl:add="addTpSl"
+    />
 
     <PartialsTradeFuturesFormStandardDetails
       v-bind="{

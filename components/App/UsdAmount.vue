@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { BigNumber } from '@injectivelabs/utils'
 import {
   MAX_QUOTE_DECIMALS,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -11,9 +12,11 @@ const props = withDefaults(
     shouldTruncate?: boolean
     maxTrailingZeros?: number
     isShowNoDecimals?: boolean
+    roundingMode?: BigNumber.RoundingMode
   }>(),
   {
     shouldTruncate: false,
+    roundingMode: BigNumber.ROUND_DOWN,
     maxTrailingZeros: MAX_QUOTE_DECIMALS,
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
   }
@@ -22,6 +25,7 @@ const props = withDefaults(
 const { valueToFixed: amountToFixed } = useSharedBigNumberFormatter(
   computed(() => props.amount),
   {
+    roundingMode: props.roundingMode,
     decimalPlaces: computed(() => props.decimalPlaces)
   }
 )

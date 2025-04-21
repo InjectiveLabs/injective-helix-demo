@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 
 const isMobile = useIsMobile()
 const appStore = useAppStore()
@@ -47,35 +47,27 @@ const isProfit = computed(() => {
       <AppTooltip :content="$t(`portfolio.home.pnl.tooltip`)" />
     </div>
 
-    <div class="h-14">
-      <div class="flex-1">
-        <div>
-          <div class="flex items-center space-x-2">
-            <span class="lg:text-2xl">$</span>
-            <CommonSkeletonSubaccountAmount>
-              <CommonNumberCounter
-                v-bind="{ value: pnlToBigNumber?.toNumber() || 0 }"
-                :size="isMobile ? 16 : 24"
-              />
-            </CommonSkeletonSubaccountAmount>
+    <div class="flex-1 h-20 lg:h-[88px]">
+      <div class="flex items-center space-x-2">
+        <span class="lg:text-2xl">$</span>
+        <CommonSkeletonSubaccountAmount>
+          <CommonNumberCounter
+            v-bind="{ value: pnlToBigNumber?.toNumber() || 0 }"
+            :size="isMobile ? 16 : 24"
+          />
+        </CommonSkeletonSubaccountAmount>
 
-            <button
-              class="text-coolGray-500 flex justify-center cursor-pointer"
-              @click="appStore.toggleHideBalances"
-            >
-              <UIcon
-                v-if="appStore.userState.preferences.isHideBalances"
-                :name="NuxtUiIcons.EyeSlash"
-                class="w-5 h-5 lg:w-7 lg:h-7 -translate-x-[2px]"
-              />
-              <UIcon
-                v-else
-                :name="NuxtUiIcons.Eye"
-                class="w-5 h-5 lg:w-7 lg:h-7"
-              />
-            </button>
-          </div>
-        </div>
+        <button
+          class="text-coolGray-500 flex justify-center cursor-pointer"
+          @click="appStore.toggleHideBalances"
+        >
+          <UIcon
+            v-if="appStore.userState.preferences.isHideBalances"
+            :name="NuxtUiIcons.EyeSlash"
+            class="w-5 h-5 lg:w-7 lg:h-7 -translate-x-[2px]"
+          />
+          <UIcon v-else :name="NuxtUiIcons.Eye" class="w-5 h-5 lg:w-7 lg:h-7" />
+        </button>
       </div>
     </div>
 
