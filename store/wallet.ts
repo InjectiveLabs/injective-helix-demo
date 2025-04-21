@@ -185,7 +185,7 @@ export const useWalletStore = defineStore('wallet', {
       await faucetService.fundInjectiveAddress(
         sharedWalletStore.injectiveAddress
       )
-      await accountStore.fetchAccountPortfolioBalances()
+      await accountStore.fetchSignerInjBalance()
 
       console.log(
         'after',

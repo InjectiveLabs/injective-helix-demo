@@ -81,6 +81,7 @@ function fetchUserPortfolio() {
 
     accountStore.fetchCw20Balances(),
     accountStore.fetchErc20Balances(),
+    accountStore.fetchSignerInjBalance(),
     accountStore.fetchAccountPortfolioBalances(),
 
     positionStore.fetchPositions(),

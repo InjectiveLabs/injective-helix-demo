@@ -49,6 +49,7 @@ type AccountStoreState = {
   pubKey?: string
   subaccountId: string
   bankBalances: Coin[]
+  singerInjBalance: string
   neptuneUsdtLendingApy: string
   neptuneUsdtRedemptionRatio: number
   cw20Balances: { amount: string; address: string }[]
@@ -67,6 +68,7 @@ const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   cw20Balances: [],
   subaccountId: '',
+  singerInjBalance: '0',
   erc20BalancesMap: {},
   subaccountBalancesMap: {},
   neptuneUsdtRedemptionRatio: 0,
@@ -81,10 +83,7 @@ export const useAccountStore = defineStore('account', {
 
       return (
         !sharedWalletStore.isEip712 ||
-        new BigNumberInBase(
-          state.bankBalances.find(({ denom }) => denom === injToken.denom)
-            ?.amount || 0
-        ).gt(DEFAULT_MIN_GAS)
+        new BigNumberInBase(state.singerInjBalance).gt(DEFAULT_MIN_GAS)
       )
     },
 
@@ -187,6 +186,29 @@ export const useAccountStore = defineStore('account', {
 
       accountStore.$patch({ subaccountId })
       useEventBus(BusEvents.SubaccountChange).emit(subaccountId)
+    },
+
+    async fetchSignerInjBalance() {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isUserConnected) {
+        return
+      }
+
+      const accountPortfolio =
+        await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
+          sharedWalletStore.injectiveAddress
+        )
+
+      const injBalance =
+        accountPortfolio.bankBalancesList.find(
+          ({ denom }) => denom === injToken.denom
+        )?.amount || '0'
+
+      accountStore.$patch({
+        singerInjBalance: injBalance
+      })
     },
 
     async fetchAccountPortfolioBalances() {
