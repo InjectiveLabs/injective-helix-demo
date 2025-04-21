@@ -59,14 +59,17 @@ const datafeedEndpoint = computed(() =>
   )
 )
 
+const priceReference = computed(
+  () =>
+    new BigNumberInBase(
+      isSpot ? spotLastTradedPrice.value : derivativeMarkPrice.value
+    )
+)
+
 const limitOrders = computed(() => {
   const ordersData = isSpot
     ? spotStore.subaccountOrders
     : derivativeStore.subaccountOrders
-
-  const priceReference = isSpot
-    ? spotLastTradedPrice.value
-    : derivativeMarkPrice.value
 
   const filteredOrders = ordersData.filter(
     (order) => order.marketId === props.market.marketId
@@ -81,8 +84,8 @@ const limitOrders = computed(() => {
       const bPrice = getFormattedPriceInBigNumber(b.price)
 
       return (
-        aPrice.minus(priceReference).abs().toNumber() -
-        bPrice.minus(priceReference).abs().toNumber()
+        aPrice.minus(priceReference.value).abs().toNumber() -
+        bPrice.minus(priceReference.value).abs().toNumber()
       )
     })
     .slice(0, MAX_LIMIT_ORDER_LINES)
@@ -96,8 +99,8 @@ const limitOrders = computed(() => {
       const bPrice = getFormattedPriceInBigNumber(b.price)
 
       return (
-        aPrice.minus(priceReference).abs().toNumber() -
-        bPrice.minus(priceReference).abs().toNumber()
+        aPrice.minus(priceReference.value).abs().toNumber() -
+        bPrice.minus(priceReference.value).abs().toNumber()
       )
     })
     .slice(0, MAX_LIMIT_ORDER_LINES)
@@ -160,6 +163,22 @@ function onOrderChange({
   newPrice: string
   order: SpotLimitOrder | DerivativeLimitOrder
 }) {
+  const isBuy = [OrderSide.Buy, OrderSide.BuyPO].includes(order.orderSide)
+
+  const isInvalidPrice =
+    (isBuy && priceReference.value.lte(newPrice)) ||
+    (!isBuy && priceReference.value.gte(newPrice))
+
+  if (isInvalidPrice) {
+    notificationStore.error({
+      title: t('trade.invalid_price')
+    })
+
+    tradingChartComponent.value?.modifyLimitOrderLines()
+
+    return
+  }
+
   const action = props.isSpot
     ? () =>
         spotStore.submitChase({
@@ -192,9 +211,9 @@ function onOrderChange({
         v-show="status.isNotLoading()"
         ref="tradingChartComponent"
         v-bind="{
-          symbol: symbol,
-          isSpot: isSpot,
-          market: market,
+          symbol,
+          isSpot,
+          market,
           datafeedEndpoint,
           orders: limitOrders,
           interval:

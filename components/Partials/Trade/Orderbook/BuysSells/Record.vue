@@ -4,19 +4,14 @@ import {
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { OrderbookFormattedRecord } from '@/types/worker'
-import {
-  IsSpotKey,
-  BusEvents,
-  MarketKey,
-  AggregationKey,
-  UiMarketWithToken
-} from '@/types'
+import { IsSpotKey, BusEvents, MarketKey, AggregationKey } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { OrderbookFormattedRecord } from '@/types/worker'
 
 const props = withDefaults(
   defineProps<{
-    isBuy?: boolean
     index?: number
+    isBuy?: boolean
     isActive?: boolean
     highestVolume: string
     record: OrderbookFormattedRecord
@@ -132,15 +127,21 @@ const hasOrders = computed(() => {
   ]
 
   return orders.some((order) => {
-    const market = [...spotStore.markets, ...derivativeStore.markets].find(
+    const isCurrentMarket = market.value.marketId === order.marketId
+
+    if (!isCurrentMarket) {
+      return
+    }
+
+    const orderMarket = [...spotStore.markets, ...derivativeStore.markets].find(
       ({ marketId }) => marketId === order.marketId
     )
 
     const priceInBase = new BigNumberInWei(Number(order.price)).toBase(
       isSpot
-        ? (market?.quoteToken?.decimals || 6) -
-            (market?.baseToken?.decimals || 18)
-        : market?.quoteToken.decimals || 6
+        ? (orderMarket?.quoteToken?.decimals || 6) -
+            (orderMarket?.baseToken?.decimals || 18)
+        : orderMarket?.quoteToken.decimals || 6
     )
 
     const isSameSide = order.orderSide === (props.isBuy ? 'buy' : 'sell')
