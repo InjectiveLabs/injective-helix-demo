@@ -28,6 +28,7 @@ export type AccountBalance = Omit<
   // Balance in orders (total - available from the subaccount)
   inOrderBalance: string
   totalBalanceInUsd: string
+  unrealizedPnlAndMarginInUsd: string
 }
 
 export type AccountBalanceWithAggregatedType = AccountBalance & {

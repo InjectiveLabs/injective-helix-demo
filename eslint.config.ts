@@ -63,12 +63,14 @@ export default withNuxt({
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-dynamic-delete': 'off',
     '@typescript-eslint/no-unsafe-function-type': 'off',
+
     ...perfectionist.configs['recommended-line-length'].rules,
 
+    'perfectionist/sort-sets': ['off', orderParams],
     'perfectionist/sort-enums': ['warn', orderParams],
     'perfectionist/sort-objects': ['off', orderParams],
+    'perfectionist/sort-modules': ['off', orderParams],
     'perfectionist/sort-exports': ['warn', orderParams],
-    'perfectionist/sort-modules': ['warn', orderParams],
     'perfectionist/sort-interfaces': ['warn', orderParams],
     'perfectionist/sort-union-types': ['warn', orderParams],
     'perfectionist/sort-object-types': ['warn', orderParams],

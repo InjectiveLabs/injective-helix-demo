@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
-import { FactoryOpts } from 'imask'
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
@@ -8,12 +7,12 @@ import { calculateLeverage } from '@/app/utils/formatters'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {
   MarketKey,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
+import type { FactoryOpts } from 'imask'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 
@@ -184,6 +183,7 @@ const leverageNumber = computed({
     </div>
 
     <p
+      v-if="errorMessage"
       class="error-message mb-4"
       :data-cy="dataCyTag(PerpetualMarketCyTags.LeverageError)"
     >

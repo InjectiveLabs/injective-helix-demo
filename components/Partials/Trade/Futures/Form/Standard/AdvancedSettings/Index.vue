@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import {
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 import type { DerivativesTradeForm } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const jsonStore = useSharedJsonStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -72,19 +72,6 @@ function addTpSl(position: PositionV2) {
             [
               DerivativeTradeTypes.Limit,
               DerivativeTradeTypes.StopLimit
-            ].includes(
-              derivativeFormValues[
-                DerivativesTradeFormField.Type
-              ] as DerivativeTradeTypes
-            )
-          "
-        />
-
-        <PartialsTradeFuturesFormStandardAdvancedSettingsSlippage
-          v-if="
-            [
-              DerivativeTradeTypes.Market,
-              DerivativeTradeTypes.StopMarket
             ].includes(
               derivativeFormValues[
                 DerivativesTradeFormField.Type

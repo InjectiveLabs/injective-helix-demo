@@ -21,9 +21,9 @@ type Banner = {
 
 const ftmPairs = [
   {
-    slug: 'omni-usdt-perp',
+    slug: 'om-usdt-perp',
     marketId:
-      '0x4d42425fc3ccd6b61b8c4ad61134ab3cf21bdae1b665317eff671cfab79f4387'
+      '0xdcfdb105edb27c8be6cdbf25906f424d31b9db3d69876cdd9bcfc475660f1006'
   }
 ]
 
