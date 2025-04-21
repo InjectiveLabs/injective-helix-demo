@@ -6,15 +6,15 @@ import {
   BusEvents,
   MarketKey,
   TradeTypes,
-  UiSpotMarket,
-  SpotTradeForm,
-  SpotTradeFormField,
-  SpotMarketCyTags
+  SpotMarketCyTags,
+  SpotTradeFormField
 } from '@/types'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
 
 const { setValues: setFormValues } = useForm<SpotTradeForm>()
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -38,6 +38,10 @@ const {
   slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+const isLimit = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
 
 onMounted(() => {
   setFormValues(
@@ -110,8 +114,8 @@ function onOrderSideClicked() {
                 ? 'success'
                 : 'danger'
               : side === OrderSide.Buy
-              ? 'success-cta'
-              : 'danger-cta'
+                ? 'success-cta'
+                : 'danger-cta'
           "
         >
           {{ $t(`trade.${side}`) }}
@@ -133,7 +137,16 @@ function onOrderSideClicked() {
       />
     </div>
 
-    <PartialsTradeSpotFormStandardAdvancedSettings class="my-4" />
+    <PartialsTradeSpotFormStandardSlippage
+      v-if="!isLimit"
+      class="my-4"
+      v-bind="{ worstPrice }"
+    />
+
+    <PartialsTradeSpotFormStandardAdvancedSettings
+      v-if="isLimit"
+      class="my-4"
+    />
 
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
