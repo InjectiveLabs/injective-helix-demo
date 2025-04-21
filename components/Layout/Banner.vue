@@ -134,7 +134,7 @@ function onHideBanner() {
     <div />
 
     <template v-if="bannerToDisplay.id === NoticeBanner.FTMSettleMarket">
-      {{ $t('banners.ftmSettleMarket') }}
+      {{ $t('banners.ftmMarketBanner') }}
     </template>
 
     <i18n-t
