@@ -36,7 +36,7 @@ withDefaults(
             ]"
           />
           <UIcon
-            :name="NuxtUiIcons.TriangleUp"
+            :name="NuxtUiIcons.TriangleDown"
             class="-mt-0.5"
             :class="[
               isActive && !isAscending

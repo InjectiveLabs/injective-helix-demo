@@ -6,7 +6,8 @@ import { colors } from '@/nuxt-config/tailwind'
 import {
   Timezone,
   ResolutionString,
-  ChartingLibraryWidgetOptions
+  ChartingLibraryWidgetOptions,
+  ThemeName
 } from '@/assets/js/chart/charting_library'
 
 const STYLE_CANDLES = 1
@@ -43,7 +44,7 @@ export default function ({
       window.location ? window.location.origin : APP_BASE_URL
     }/chart/charting_library/custom.css?v1`,
     locale: 'en',
-    theme: 'Dark',
+    theme: 'Dark' as ThemeName,
     drawings_access: {
       type: 'black' as 'black' | 'white',
       tools: [{ name: 'Regression Trend', grayed: true }]
@@ -51,8 +52,6 @@ export default function ({
     disabled_features: [
       'header_compare',
       'header_symbol_search',
-      'header_saveload_to_the_right',
-      'header_interval_dialog_button',
       'remove_library_container_border',
       'uppercase_instrument_names',
       'go_to_date',
@@ -61,9 +60,7 @@ export default function ({
     enabled_features: [
       'move_logo_to_main_pane',
       'hide_last_na_study_output',
-      'clear_bars_on_series_error',
       'dont_show_boolean_study_arguments',
-      'narrow_chart_enabled',
       'side_toolbar_in_fullscreen_mode',
       'save_chart_properties_to_local_storage',
       'use_localstorage_for_settings'
@@ -179,7 +176,7 @@ export default function ({
     ],
     favorites: {
       intervals: ['5', '15', '60', 'D'] as ResolutionString[],
-      chartTypes: ['Candle']
+      chartTypes: ['Candles']
     }
   }
 }

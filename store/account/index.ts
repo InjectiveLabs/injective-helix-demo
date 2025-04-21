@@ -8,7 +8,7 @@ import {
   getInjectiveAddress,
   NEPTUNE_USDT_CW20_CONTRACT
 } from '@injectivelabs/sdk-ts'
-import { Coin } from '@injectivelabs/ts-types'
+import type { Coin } from '@injectivelabs/ts-types'
 import { usdtToken } from '@shared/data/token'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
@@ -41,7 +41,8 @@ import {
 import { getAccountDetails } from '@/app/services/account'
 import { neptuneService } from '@/app/Services'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
-import { BusEvents, SubaccountBalance } from '@/types'
+import type { SubaccountBalance } from '@/types'
+import { BusEvents } from '@/types'
 
 type AccountStoreState = {
   pubKey?: string

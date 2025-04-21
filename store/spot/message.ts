@@ -394,7 +394,7 @@ export async function submitChase({
         feeRecipient: referralStore.feeRecipient,
         price: priceToFixed,
         triggerPrice: '0',
-        quantity: order.quantity,
+        quantity: order.unfilledQuantity,
         orderType: orderSideToChaseOrderType(order.orderSide)
       }
     ]

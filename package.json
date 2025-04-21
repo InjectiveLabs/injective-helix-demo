@@ -27,7 +27,7 @@
     "typecheck": "nuxi typecheck"
   },
   "lint-staged": {
-    "**/*.{js,ts,vue,html}": [
+    "**/*.{js,ts,vue,html},!public/chart/**/*.{js,css,ts}": [
       "eslint --max-warnings 0 --no-ignore"
     ],
     "*.{css,vue}": "stylelint"
