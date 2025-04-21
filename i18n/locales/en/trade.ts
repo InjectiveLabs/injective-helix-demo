@@ -326,6 +326,7 @@ export default {
       tooHigh:
         'Your transaction might be executed at a less desirable price if slippage % is set too high.'
     },
+    invalid_price: 'Invalid Price',
     advanced_settings: 'Advanced Settings',
     slippage_tolerance: 'Slippage Tolerance',
     invalid_slippage: 'Please enter a valid slippage percentage',

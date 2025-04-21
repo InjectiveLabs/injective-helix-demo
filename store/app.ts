@@ -1,44 +1,42 @@
 import { defineStore } from 'pinia'
+import { alchemyKey } from '@shared/wallet/alchemy'
+import { fetchGasPrice } from '@shared/services/ethGasPrice'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   NETWORK,
   CHAIN_ID,
   DEFAULT_GAS_PRICE,
   ETHEREUM_CHAIN_ID
 } from '@shared/utils/constant'
-import { alchemyKey } from '@shared/wallet/alchemy'
-import { fetchGasPrice } from '@shared/services/ethGasPrice'
-import { GeneralException } from '@injectivelabs/exceptions'
-import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
-import {
-  isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets,
-  isCountryRestricted
-} from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
-import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import {
-  Modal,
-  NoticeBanner,
-  TradingLayout,
-  DontShowAgain,
-  OrderbookLayout,
-  TradingChartInterval
-} from '@/types'
+  DEFAULT_SLIPPAGE,
+  DEFAULT_100_CHART_CANDLE_BAR_SPACING
+} from '@/app/utils/constants'
+import {
+  isCountryRestricted,
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
+import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
+import type { Modal, NoticeBanner, DontShowAgain } from '@/types'
+import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
-  hasAcceptedTerms: boolean
   modalsViewed: Modal[]
+  hasAcceptedTerms: boolean
+  favoriteMarkets: string[]
   bannersViewed: NoticeBanner[]
   dontShowAgain: DontShowAgain[]
-  favoriteMarkets: string[]
   marketSlippageIdMap: Record<string, string>
 
   preferences: {
     isHideBalances: boolean
-    authZManagement: boolean
     futuresLeverage: string
+    authZManagement: boolean
     thousandsSeparator: boolean
+    chartZoomPreference: number
     tradingLayout: TradingLayout
     subaccountManagement: boolean
     orderbookLayout: OrderbookLayout
@@ -50,18 +48,18 @@ export interface UserBasedState {
 }
 
 type AppStoreState = {
-  blockHeight: number
-
   // App Settings
   chainId: ChainId
+
   gasPrice: string
-  ethereumChainId: EthereumChainId
+  blockHeight: number
+  // User settings
+  userState: UserBasedState
 
   // Dev Mode
   devMode: boolean | undefined
 
-  // User settings
-  userState: UserBasedState
+  ethereumChainId: EthereumChainId
 }
 
 const initialStateFactory = (): AppStoreState => ({
@@ -95,7 +93,8 @@ const initialStateFactory = (): AppStoreState => ({
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
-      tradingChartInterval: TradingChartInterval.D
+      tradingChartInterval: TradingChartInterval.D,
+      chartZoomPreference: DEFAULT_100_CHART_CANDLE_BAR_SPACING
     }
   }
 })
@@ -223,7 +222,19 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    setUserState(userState: Object) {
+    setChartZoomPreference(number: number) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          chartZoomPreference: number
+        }
+      })
+    },
+
+    setUserState(userState: object) {
       const appStore = useAppStore()
 
       // we have to use patch for values that we are caching in localStorage, this ensure that the payload is passed to the persistState function
