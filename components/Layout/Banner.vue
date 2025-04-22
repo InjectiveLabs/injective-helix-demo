@@ -129,7 +129,7 @@ function onHideBanner() {
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40 font-semibold"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-[55] font-semibold"
   >
     <div />
 
