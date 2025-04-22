@@ -139,10 +139,10 @@ export function useBalance() {
   const sharedWalletStore = useSharedWalletStore()
 
   const subaccountPortfolioBalanceMap = computed(() => {
-    const tradeableDenoms = [
+    const tradableDenoms = [
       ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
+        ...spotStore.tradableDenoms,
+        ...derivativeStore.tradableDenoms
       ])
     ]
 
@@ -174,7 +174,7 @@ export function useBalance() {
               }
 
               const usdPrice = tokenStore.tokenUsdPrice(token)
-              const isVerified = tradeableDenoms.includes(balance.denom)
+              const isVerified = tradableDenoms.includes(balance.denom)
               const unrealizedPnlAndMargin = new BigNumberInBase(
                 subaccountPositionPnlDenomMap[balance.denom]?.pnlPlusMargin || 0
               )

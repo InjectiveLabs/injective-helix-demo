@@ -243,7 +243,7 @@ export enum PortfolioChartType {
   Pnl = 'pnl',
   Volume = 'volume',
   Balance = 'balance',
-  TradeableBalance = 'tradeableBalance'
+  TradableBalance = 'tradableBalance'
 }
 
 export enum DerivativeTradeTypes {

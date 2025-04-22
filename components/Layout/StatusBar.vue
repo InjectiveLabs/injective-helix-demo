@@ -13,7 +13,7 @@ const isLoaded = computed(
 onMounted(async () => {
   await until(isLoaded).toBe(true)
 
-  markets.value = tokenStore.tradeableTokens
+  markets.value = tokenStore.tradableTokens
     .map<[string, number]>((token) => [
       token.symbol,
       tokenStore.tokenUsdPrice(token)
