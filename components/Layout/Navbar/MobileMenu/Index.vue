@@ -59,7 +59,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
     <Transition name="menu-fade-in" mode="out-in">
       <div
         v-if="isOpen"
-        class="fixed inset-0 bg-black/20 z-50 backdrop-blur-sm mobile-menu"
+        class="fixed inset-0 bg-black/20 z-[60] backdrop-blur-sm mobile-menu"
         @click="close"
       >
         <div
