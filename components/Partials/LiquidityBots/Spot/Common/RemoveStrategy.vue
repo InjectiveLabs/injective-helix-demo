@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
@@ -12,10 +11,10 @@ const props = defineProps<{
   strategy: TradingStrategy
 }>()
 
-const toast = useToast()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -73,9 +72,8 @@ function removeStrategy() {
         ])
       }
 
-      toast.add({
+      notificationStore.success({
         title: t('sgt.success'),
-        icon: NuxtUiIcons.Checkmark,
         description: t('sgt.gridStrategyRemovedSuccessfully')
       })
 

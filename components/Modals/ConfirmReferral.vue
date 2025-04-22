@@ -49,8 +49,15 @@ function joinReferral() {
     .then(async () => {
       await referralStore.fetchUserReferrer()
 
-      notificationStore.success({
-        title: t('referral.success', { referralCode: referralCode.value })
+      notificationStore.info({
+        title: t('referral.success'),
+        description: t('portfolio.discoverTrendingPairs'),
+        actions: [
+          {
+            label: t('portfolio.tradeNow'),
+            callback: tradeNow
+          }
+        ]
       })
 
       trackRefereeLoggedIn({
@@ -83,6 +90,10 @@ function checkJoinReferralEligibility() {
       }
     })
     .catch($onError)
+}
+
+function tradeNow() {
+  router.push({ name: MainPage.Markets })
 }
 
 onWalletConnected(() => {

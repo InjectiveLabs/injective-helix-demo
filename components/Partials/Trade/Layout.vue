@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
 import { TRADING_MESSAGES } from '@/app/data/trade'
-import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
+import { BusEvents, DontShowAgain } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const toast = useToast()
 const appStore = useAppStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -30,7 +31,7 @@ function connectAutoSign() {
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
-      toast.add({
+      notificationStore.success({
         title: t('portfolio.settings.autoSign.enabledToast.title'),
         description: t('portfolio.settings.autoSign.enabledToast.description')
       })
@@ -50,7 +51,7 @@ function dontShowAutoSignAgain() {
   })
 }
 
-let timeout: NodeJS.Timeout | undefined
+let timeout: undefined | NodeJS.Timeout
 
 onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
@@ -68,21 +69,18 @@ onWalletConnected(() => {
       !appStore.userState.dontShowAgain?.includes(DontShowAgain.AutoSign) &&
       sharedWalletStore.wallet !== Wallet.Magic
     ) {
-      toast.add({
+      notificationStore.info({
         title: t('portfolio.settings.autoSign.enable'),
         description: t('portfolio.settings.autoSign.allowsYouToTrade'),
         actions: [
           {
             label: t('common.enable'),
-            variant: 'soft',
-            color: 'primary',
-            click: connectAutoSign
+            callback: connectAutoSign
           },
           {
             label: t('common.dontShowAgain'),
-            variant: 'soft',
-            color: 'red',
-            click: dontShowAutoSignAgain
+            class: 'text-red-400 hover:text-red-500',
+            callback: dontShowAutoSignAgain
           }
         ]
       })

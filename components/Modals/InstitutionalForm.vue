@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { Modal, InstitutionalForm, InstitutionalFormField } from '@/types'
 import { submitInstitutionalForm } from '@/app/services/institutional'
+import { Modal, InstitutionalFormField } from '@/types'
+import type { InstitutionalForm } from '@/types'
 
 const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
@@ -55,7 +56,7 @@ async function onSubmit() {
     .then(() =>
       notificationStore.success({
         title: t('common.success'),
-        description: t('institutional.formSubmittedSuccesfuly')
+        description: t('institutional.formSubmittedSuccesfully')
       })
     )
     .catch(() => {

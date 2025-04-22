@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { Status, StatusType } from '@injectivelabs/utils'
-import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
+import { WalletConnectStatus } from '@shared/types'
+import { Status, INJ_DENOM, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   Modal,
@@ -14,6 +14,7 @@ import {
 } from '@/types'
 
 const route = useRoute()
+const router = useRouter()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const jsonStore = useSharedJsonStore()
@@ -25,7 +26,10 @@ const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { activeSubaccountTradableBalancesWithToken } = useBalance()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
@@ -121,14 +125,59 @@ function checkOnboarding() {
     Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
   ) {
     modalStore.closeModal(Modal.Connect)
-    modalStore.openModal(Modal.LiteBridge)
+
+    notificationStore.info({
+      title: t('portfolio.moveAssetsToInjTitle'),
+      description: t('portfolio.moveAssetsToInj'),
+      actions: [
+        {
+          label: t('portfolio.bridgeNow'),
+          callback: bridgeCrypto
+        }
+      ]
+    })
 
     return
   }
 
   if (!accountStore.hasBalance) {
     modalStore.closeModal(Modal.Connect)
-    modalStore.openModal(Modal.FiatOnboard)
+
+    notificationStore.info({
+      title: t('portfolio.startTradingInSeconds'),
+      description: t('portfolio.buyCryptoInstantly'),
+      actions: [
+        {
+          label: t('portfolio.buyCrypto'),
+          callback: buyCrypto
+        }
+      ]
+    })
+  }
+
+  const hasNoTransactions =
+    spotStore.subaccountTrades.length === 0 &&
+    spotStore.subaccountOrderHistory.length === 0 &&
+    derivativeStore.subaccountTrades.length === 0 &&
+    derivativeStore.subaccountOrderHistory.length === 0
+
+  if (
+    !hasNoTransactions &&
+    route.name !== MainPage.Markets &&
+    activeSubaccountTradableBalancesWithToken.value.find(
+      (token) => token.denom === INJ_DENOM
+    )
+  ) {
+    notificationStore.info({
+      title: t('portfolio.readyToTrade'),
+      description: t('portfolio.discoverTrendingPairs'),
+      actions: [
+        {
+          label: t('portfolio.tradeNow'),
+          callback: tradeNow
+        }
+      ]
+    })
   }
 }
 
@@ -152,6 +201,18 @@ watch(
   },
   { immediate: true }
 )
+
+function buyCrypto() {
+  modalStore.openModal(Modal.FiatOnboard)
+}
+
+function bridgeCrypto() {
+  modalStore.openModal(Modal.LiteBridge)
+}
+
+function tradeNow() {
+  router.push({ name: MainPage.Markets })
+}
 </script>
 
 <template>
@@ -217,30 +278,9 @@ watch(
 
     <div id="modals" />
 
-    <SharedNotifications
-      class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
-    >
-      <template #default="{ notification }">
-        <SharedNotification
-          :notification="notification"
-          class="pointer-events-auto bg-brand-900"
-          wrapper-class="bg-brand-900 border-brand-700 border"
-        >
-          <template v-if="notification.isTemplateString" #custom>
-            <PartialsNotificationsCustom :title="notification.title" />
-          </template>
-          <template #close="{ closeNotification }">
-            <UIcon
-              :name="NuxtUiIcons.CloseBold"
-              class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
-              @click="closeNotification"
-            />
-          </template>
-        </SharedNotification>
-      </template>
-    </SharedNotifications>
-
-    <UNotifications />
+    <AppNotifications
+      class="z-[1110] fixed top-0 right-0 flex flex-col gap-2 p-6 pointer-events-none"
+    />
 
     <CommonAutoSignExpiredToast />
     <AppJsonPoll @on:loaded="onJsonLoaded" />

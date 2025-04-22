@@ -29,11 +29,11 @@ export default {
     createReferralLinkTitle: 'Create Your Referral Link',
     referralLinkIsUnavailable: 'Referral Link is Unavailable',
     trackYourReferrals: 'Track your referrals and earned commissions',
+    success: 'Your code is successfully claimed. Explore Markets Now!',
     shareYourReferralLink: 'Share your referral link and invite friends.',
     referralCodeMaxLengthMessage: 'Referral code can be up to 32 characters',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
-    success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,
     joinSelfReferralMessage:
       "Your referral code is valid, but you can't refer yourself. Share it with someone else!",
     createReferralLinkSubtitle:

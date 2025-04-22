@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import { WalletOption } from '@/types'
+import type { WalletOption } from '@/types'
 
-const toast = useToast()
 const walletStore = useWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
@@ -48,7 +48,7 @@ function handleConnect() {
   walletStore
     .connect({ wallet: props.walletOption.wallet })
     .then(() =>
-      toast.add({
+      notificationStore.success({
         title: t('connect.successfullyConnected')
       })
     )

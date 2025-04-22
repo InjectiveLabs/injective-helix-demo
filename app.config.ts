@@ -26,10 +26,6 @@ export default defineAppConfig({
       padding: 'p-3'
     },
 
-    notification: {
-      background: 'dark:bg-brand-900'
-    },
-
     tooltip: {
       background: 'dark:bg-coolGray-900',
       base: '[@media(pointer:coarse)]:hidden px-2 py-1 text-xs h-auto font-normal relative overflow-auto text-wrap',

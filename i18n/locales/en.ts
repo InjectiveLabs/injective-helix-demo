@@ -90,6 +90,7 @@ export default {
     sortDirection: 'Sort Direction',
     marketCategory: 'Market Category',
     dontShowAgain: "Don't Show Again",
+    showMoreContext: 'Show more context',
     notAvailableinAutoSignMode: 'Not available in Auto-Sign Mode',
     notAvailableinAuthZMode: 'Not available in Access Control Mode',
     notAvailableinAuthZOrAutoSignMode:

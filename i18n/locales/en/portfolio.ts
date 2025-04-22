@@ -114,9 +114,18 @@ export default {
         [PositionTableColumn.ClosePosition]: 'Close Position'
       }
     },
+    tradeNow: 'Trade Now',
+    buyCrypto: 'Buy crypto',
+    bridgeNow: 'Bridge Now',
+    value: 'Portfolio Value',
     assetsFrom: 'Assets From',
     totalValue: 'Total Value',
-    value: 'Portfolio Value',
+    buyCryptoInstantly: 'Buy crypto instantly',
+    startTradingInSeconds: 'Start Trading in Seconds!',
+    readyToTrade: 'Ready to Trade? Explore Markets Now!',
+    moveAssetsToInj: 'Move assets from Ethereum/Solana to inj',
+    discoverTrendingPairs: 'Discover trending pairs and start trading',
+    moveAssetsToInjTitle: 'Move Your Crypto to Injective & Start Trading',
 
     home: {
       [PortfolioChartType.Volume]: {
