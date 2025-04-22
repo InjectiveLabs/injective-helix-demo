@@ -5,8 +5,8 @@ import {
   sharedTokenClient,
   tokenStaticFactory
 } from '@shared/Service'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
-import { TokenUsdPriceMap } from '@/types'
+import type { TokenUsdPriceMap } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 type TokenStoreState = {
   unknownTokens: TokenStatic[]
@@ -25,7 +25,7 @@ export const useTokenStore = defineStore('token', {
   getters: {
     tokenByDenomOrSymbol:
       (state) =>
-      (denomOrSymbol: string): TokenStatic | undefined => {
+      (denomOrSymbol: string): undefined | TokenStatic => {
         return (
           tokenStaticFactory.toToken(denomOrSymbol) ||
           state.unknownTokens.find(
@@ -67,14 +67,14 @@ export const useTokenStore = defineStore('token', {
         .filter((token) => token) as TokenStatic[]
     },
 
-    tradeableTokens: (_): TokenStatic[] => {
+    tradableTokens: (_): TokenStatic[] => {
       const spotStore = useSpotStore()
       const derivativeStore = useDerivativeStore()
 
       const denoms = [
         ...new Set([
-          ...spotStore.tradeableDenoms,
-          ...derivativeStore.tradeableDenoms
+          ...spotStore.tradableDenoms,
+          ...derivativeStore.tradableDenoms
         ])
       ]
 
@@ -115,9 +115,8 @@ export const useTokenStore = defineStore('token', {
     async fetchTokensUsdPriceMap(coinGeckoIdList: string[] = []) {
       const tokenStore = useTokenStore()
 
-      const tokenUsdPriceMap = await tokenPriceService.fetchUsdTokensPrice(
-        coinGeckoIdList
-      )
+      const tokenUsdPriceMap =
+        await tokenPriceService.fetchUsdTokensPrice(coinGeckoIdList)
 
       tokenStore.tokenUsdPriceMap = tokenUsdPriceMap
     },
@@ -135,9 +134,8 @@ export const useTokenStore = defineStore('token', {
           !tokenStore.unknownTokens.find((token) => token.denom === denom)
       )
 
-      const unknownTokens = await sharedTokenClient.queryTokens(
-        denomsTokensNotExist
-      )
+      const unknownTokens =
+        await sharedTokenClient.queryTokens(denomsTokensNotExist)
 
       tokenStore.$patch({
         unknownTokens: [...tokenStore.unknownTokens, ...unknownTokens]

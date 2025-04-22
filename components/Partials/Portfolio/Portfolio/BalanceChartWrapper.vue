@@ -27,7 +27,7 @@ const balanceSeries = computed(() => {
 
   return leaderboardStore.historicalBalance.map((item, index, array) =>
     index >= array.length - lastSeriesCount
-      ? [item.time, aggregatedSubaccountTotalTradeable.value.toNumber()]
+      ? [item.time, aggregatedSubaccountTotalTradable.value.toNumber()]
       : [item.time, item.value]
   )
 })
@@ -39,7 +39,7 @@ const percentageChange = computed(() => {
     return 0
   }
 
-  return aggregatedSubaccountTotalTradeable.value
+  return aggregatedSubaccountTotalTradable.value
     .minus(oldBalance[1])
     .dividedBy(oldBalance[1])
     .times(100)
@@ -57,7 +57,7 @@ const { valueToBigNumber: neptuneBalanceInBigNumber } =
     )
   )
 
-const { valueToBigNumber: aggregatedSubaccountTotalTradeable } =
+const { valueToBigNumber: aggregatedSubaccountTotalTradable } =
   useSharedBigNumberFormatter(
     computed(() =>
       aggregatedSubaccountTotalBalanceInUsd.value
@@ -84,7 +84,7 @@ function fetchBalance() {
     <div class="gap-2 flex justify-between items-start max-xs:flex-col">
       <div>
         <p class="text-coolGray-400">
-          {{ $t(`portfolio.home.tradeableBalance.title`) }}
+          {{ $t(`portfolio.home.tradableBalance.title`) }}
         </p>
 
         <div class="h-20 lg:h-[88px] flex flex-col">
@@ -94,7 +94,7 @@ function fetchBalance() {
               <CommonSkeletonSubaccountAmount>
                 <CommonNumberCounter
                   v-bind="{
-                    value: aggregatedSubaccountTotalTradeable.toNumber() || 0
+                    value: aggregatedSubaccountTotalTradable.toNumber() || 0
                   }"
                   :size="isMobile ? 16 : 24"
                 />
@@ -122,7 +122,7 @@ function fetchBalance() {
             v-bind="{
               stakedAmountInUsd,
               neptuneBalanceInBigNumber,
-              aggregatedSubaccountTotalTradeable,
+              aggregatedSubaccountTotalTradable,
               aggregatedSubaccountTotalBalanceInUsd,
               aggregatedSubaccountUnrealizedPnlInUsd
             }"

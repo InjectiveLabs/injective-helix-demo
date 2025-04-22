@@ -9,7 +9,7 @@ withDefaults(
   defineProps<{
     stakedAmountInUsd: BigNumberInBase
     neptuneBalanceInBigNumber: BigNumberInBase
-    aggregatedSubaccountTotalTradeable: BigNumberInBase
+    aggregatedSubaccountTotalTradable: BigNumberInBase
     aggregatedSubaccountTotalBalanceInUsd: BigNumberInBase
     aggregatedSubaccountUnrealizedPnlInUsd: BigNumberInBase
   }>(),
@@ -45,13 +45,13 @@ withDefaults(
         class="p-2 rounded bg-brand-800 flex flex-col gap-1 text-xs tracking-wide"
       >
         <span class="flex items-center gap-1">
-          <p>{{ $t('portfolio.home.tradeableBalance.title') }}:</p>
+          <p>{{ $t('portfolio.home.tradableBalance.title') }}:</p>
           <p class="flex">
             <span>$</span>
             <AppUsdAmount
               v-bind="{
                 roundingMode: BigNumber.ROUND_HALF_UP,
-                amount: aggregatedSubaccountTotalTradeable.toFixed()
+                amount: aggregatedSubaccountTotalTradable.toFixed()
               }"
             />
           </p>

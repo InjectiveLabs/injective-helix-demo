@@ -125,8 +125,8 @@ export default {
       [PortfolioChartType.Balance]: {
         title: 'Portfolio Value'
       },
-      [PortfolioChartType.TradeableBalance]: {
-        title: 'Tradeable Value'
+      [PortfolioChartType.TradableBalance]: {
+        title: 'Tradable Value'
       },
       [PortfolioChartType.Pnl]: {
         title: 'Trading PnL',

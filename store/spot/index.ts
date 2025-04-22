@@ -94,7 +94,7 @@ export const useSpotStore = defineStore('spot', {
         .map((m) => m.marketId)
     },
 
-    tradeableDenoms: (state) => [
+    tradableDenoms: (state) => [
       ...state.markets.reduce((denoms, market) => {
         if (!market.isVerified) {
           return denoms
