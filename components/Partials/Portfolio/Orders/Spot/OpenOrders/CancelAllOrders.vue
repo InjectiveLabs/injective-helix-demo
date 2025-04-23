@@ -46,7 +46,7 @@ function cancelAllOrders() {
     .batchCancelOrder(filteredOrders.value)
     .then(() =>
       notificationStore.success({
-        title: t('common.success')
+        title: t('toast.success')
       })
     )
     .catch($onError)

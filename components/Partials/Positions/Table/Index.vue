@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     isTradingBots?: boolean
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     ui?: Record<string, any>
   }>(),
   {
@@ -165,7 +165,7 @@ function onClosePartialPosition() {
       availablePositionQuantity: selectedPositionDetails.value.quantity
     })
     .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
+      notificationStore.success({ title: t('toast.trade.position_closed') })
     )
     .catch($onError)
     .finally(() => {

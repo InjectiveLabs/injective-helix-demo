@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   Status,
   BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { Coin } from '@injectivelabs/sdk-ts'
-import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
   GUILD_VOLUME_REWARD_CONTRACT,
   GUILD_BALANCE_REWARD_CONTRACT
 } from '@/app/utils/constants'
-import { RewardWithToken } from '@/types'
+import type { RewardWithToken } from '@/types'
+import type { Coin } from '@injectivelabs/sdk-ts'
 
 const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
@@ -105,8 +105,8 @@ function onClaimRewards() {
     .claimReward(contractAddress)
     .then(() => {
       notificationStore.success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
+        title: t('toast.success'),
+        description: t('toast.successfullyClaimedRewards')
       })
 
       hasUserClaimed.value = true
@@ -114,8 +114,8 @@ function onClaimRewards() {
     .catch((err: any) => {
       if ((err.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
+          title: t('toast.error'),
+          description: t('toast.errorAlreadyClaimed')
         })
 
         return

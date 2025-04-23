@@ -32,8 +32,8 @@ function connectAutoSign() {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
       notificationStore.success({
-        title: t('portfolio.settings.autoSign.enabledToast.title'),
-        description: t('portfolio.settings.autoSign.enabledToast.description')
+        title: t('toast.portfolio.autoSign.enabledToast.title'),
+        description: t('toast.portfolio.autoSign.enabledToast.description')
       })
     })
     .catch($onError)
@@ -71,7 +71,7 @@ onWalletConnected(() => {
     ) {
       notificationStore.info({
         title: t('portfolio.settings.autoSign.enable'),
-        description: t('portfolio.settings.autoSign.allowsYouToTrade'),
+        description: t('toast.portfolio.autoSign.allowsYouToTrade'),
         actions: [
           {
             label: t('common.enable'),

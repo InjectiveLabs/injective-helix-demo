@@ -19,7 +19,7 @@ const campaign = computed(() => route.query.campaign as string)
 
 onWalletConnected(() => {
   if (!campaign.value) {
-    notificationStore.error({ title: t('campaign.campaignNotFound') })
+    notificationStore.error({ title: t('toast.campaign.notFound') })
     navigateTo({ name: MainPage.Index })
   }
 
@@ -32,7 +32,7 @@ onWalletConnected(() => {
   ])
     .then(() => {
       if (!campaignStore.campaign) {
-        notificationStore.error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('toast.campaign.notFound') })
         navigateTo({ name: MainPage.Index })
       }
     })
@@ -63,7 +63,7 @@ function fetchCampaign({ skip }: { skip: number }) {
     })
     .then(() => {
       if (!campaignStore.campaign) {
-        notificationStore.error({ title: t('campaign.campaignNotFound') })
+        notificationStore.error({ title: t('toast.campaign.notFound') })
         navigateTo({ name: MainPage.Index })
       }
     })

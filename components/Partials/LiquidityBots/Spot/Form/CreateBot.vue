@@ -107,8 +107,8 @@ async function createLiquidityBot() {
       confirmationModal.value = false
 
       notificationStore.success({
-        title: t('sgt.success'),
-        description: t('sgt.gridStrategyCreatedSuccessfully')
+        title: t('toast.success'),
+        description: t('toast.sgt.gridStrategyCreatedSuccessfully')
       })
 
       status.setIdle()

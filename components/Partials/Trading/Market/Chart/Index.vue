@@ -148,7 +148,9 @@ function onOrderClose({
 
   action()
     .then(() => {
-      notificationStore.success({ title: t('trade.order_success_canceling') })
+      notificationStore.success({
+        title: t('toast.trade.order_success_cancelling')
+      })
     })
     .catch((e) => {
       $onError(e)
@@ -171,7 +173,7 @@ function onOrderChange({
 
   if (isInvalidPrice) {
     notificationStore.error({
-      title: t('trade.invalid_price')
+      title: t('toast.trade.invalid_price')
     })
 
     tradingChartComponent.value?.modifyLimitOrderLines()
@@ -194,7 +196,9 @@ function onOrderChange({
         })
 
   action()
-    .then(() => notificationStore.success({ title: t('trade.orderUpdated') }))
+    .then(() =>
+      notificationStore.success({ title: t('toast.trade.orderUpdated') })
+    )
     .catch((e) => {
       $onError(e)
       tradingChartComponent.value?.modifyLimitOrderLines()

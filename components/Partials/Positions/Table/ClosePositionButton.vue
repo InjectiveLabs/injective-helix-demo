@@ -92,7 +92,7 @@ function openPartialClosePositionModal() {
 //           ? OrderSide.SellPO
 //           : OrderSide.BuyPO
 //     })
-//     .then(() => notificationStore.success({ title: t('common.success') }))
+//     .then(() => notificationStore.success({ title: t('toast.success') }))
 //     .catch($onError)
 //     .finally(() => {
 //       limitCloseStatus.setIdle()

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { injToken } from '@shared/data/token'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Status, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
+import { Modal, SubaccountTransferField } from '@/types'
+import type { SubaccountTransferForm } from '@/types'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -129,7 +130,7 @@ function nonDefaultSubaccountTransfer() {
     })
     .then(() => {
       notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+        title: t('toast.account.transferToSubaccountSuccess')
       })
       resetForm()
     })
@@ -151,7 +152,7 @@ function defaultSubaccountTransfer() {
     })
     .then(() => {
       notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+        title: t('toast.account.transferToSubaccountSuccess')
       })
       resetForm()
     })
@@ -173,7 +174,7 @@ function defaultSubaccountWithdraw() {
     })
     .then(() => {
       notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+        title: t('toast.account.transferToSubaccountSuccess')
       })
       resetForm()
     })

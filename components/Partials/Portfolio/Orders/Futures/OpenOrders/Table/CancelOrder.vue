@@ -2,8 +2,8 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
@@ -34,7 +34,9 @@ function cancelOrder() {
   derivativeStore
     .cancelOrder(props.order)
     .then(() => {
-      notificationStore.success({ title: t('trade.order_success_canceling') })
+      notificationStore.success({
+        title: t('toast.trade.order_success_cancelling')
+      })
     })
     .catch($onError)
     .finally(() => status.setIdle())

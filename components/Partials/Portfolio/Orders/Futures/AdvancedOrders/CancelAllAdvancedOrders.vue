@@ -15,12 +15,12 @@ function cancelAllAdvancedOrders() {
     .batchCancelOrder(derivativeStore.subaccountConditionalOrders)
     .then(() =>
       notificationStore.success({
-        title: t('common.success')
+        title: t('toast.success')
       })
     )
     .catch((e) => {
       $onError(e)
-      notificationStore.error({ title: t('common.error') })
+      notificationStore.error({ title: t('toast.error') })
     })
     .finally(() => {
       status.setIdle()

@@ -53,11 +53,11 @@ function joinReferral() {
       await referralStore.fetchUserReferrer()
 
       notificationStore.info({
-        title: t('referral.success'),
-        description: t('portfolio.discoverTrendingPairs'),
+        title: t('toast.referral.success'),
+        description: t('toast.portfolio.discoverTrendingPairs'),
         actions: [
           {
-            label: t('portfolio.tradeNow'),
+            label: t('toast.portfolio.tradeNow'),
             callback: () => {
               trackOnboardingUserBecomeReferee({
                 isPopupShown: true,

@@ -2,11 +2,11 @@
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
   GUILD_DISCORD_LINK,
   GUILD_BASE_TOKEN_SYMBOL
 } from '@/app/utils/constants'
-import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -99,7 +99,7 @@ async function onSubmit() {
     })
     .then(() => {
       notificationStore.success({
-        title: t('guild.createGuild.toast')
+        title: t('toast.guild.successfullyCreateGuild')
       })
       onCloseModal()
     })

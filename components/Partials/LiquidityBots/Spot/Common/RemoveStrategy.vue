@@ -73,8 +73,8 @@ function removeStrategy() {
       }
 
       notificationStore.success({
-        title: t('sgt.success'),
-        description: t('sgt.gridStrategyRemovedSuccessfully')
+        title: t('toast.success'),
+        description: t('toast.sgt.gridStrategyRemovedSuccessfully')
       })
 
       isOpen.value = true

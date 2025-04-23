@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Guild } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Modal } from '@/types'
+import type { Guild } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
 const modalStore = useSharedModalStore()
@@ -13,8 +13,8 @@ const { $onError } = useNuxtApp()
 
 const props = withDefaults(
   defineProps<{
-    limit: number
     guild: Guild
+    limit: number
     isDisabled?: boolean
     guildInvitationHash: string
   }>(),
@@ -61,7 +61,7 @@ function onSubmit() {
     })
     .then(() => {
       notificationStore.success({
-        title: t('guild.joinGuild.toast')
+        title: t('toast.guild.successfullyJoinGuild')
       })
       onCloseModal()
     })

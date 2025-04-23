@@ -129,7 +129,6 @@ export default {
     disclaimer: 'Disclaimer',
     privacyPolicy: 'Privacy Policy',
     termsAndCondition: 'Terms and Conditions',
-    subscribeToast: "You've successfully signed up for Helix notifications!",
     disclaimerMessage:
       'By subscribing, you agree to the {termsAndCondition} and have read the {privacyPolicy}.'
   },

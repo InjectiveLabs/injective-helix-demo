@@ -66,7 +66,7 @@ const connect = handleSubmit(() => {
     })
     .then(() =>
       notificationStore.success({
-        title: t('connect.successfullyConnected')
+        title: t('toast.successfullyConnected')
       })
     )
     .catch((e) => {

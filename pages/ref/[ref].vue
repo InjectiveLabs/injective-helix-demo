@@ -26,7 +26,7 @@ function checkReferralCode() {
         referrerAddress === sharedWalletStore.injectiveAddress
       ) {
         notificationStore.error({
-          title: t('referral.joinSelfReferralMessage')
+          title: t('toast.referral.joinSelfReferralMessage')
         })
 
         router.push({ name: MainPage.Index })
@@ -34,7 +34,7 @@ function checkReferralCode() {
         modalStore.openModal(Modal.ConfirmReferral)
       } else {
         notificationStore.error({
-          title: t('referral.referralLinkIsUnavailable')
+          title: t('toast.referral.referralLinkIsUnavailable')
         })
 
         router.push({ name: MainPage.Index })

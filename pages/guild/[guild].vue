@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import {
-  sharedToBalanceInToken,
-  sharedEllipsisFormatText
-} from '@shared/utils/formatter'
 import { format } from 'date-fns'
 import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  sharedToBalanceInToken,
+  sharedEllipsisFormatText
+} from '@shared/utils/formatter'
+import { guildDescriptionMap } from '@/app/data/campaign'
+import { generateUniqueHash } from '@/app/utils/formatters'
 import {
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
@@ -15,8 +17,6 @@ import {
   GUILD_BASE_TOKEN_SYMBOL,
   DEFAULT_TRUNCATE_LENGTH
 } from '@/app/utils/constants'
-import { guildDescriptionMap } from '@/app/data/campaign'
-import { generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
@@ -154,7 +154,7 @@ function fetchGuildDetails({ skip = 0 }: { skip: number }) {
 
 function onCopyInvitationLink() {
   copy(guildInvitationHash.value)
-  notificationStore.success({ title: t('guild.toast.copiedInvitationLink') })
+  notificationStore.success({ title: t('toast.guild.copiedInvitationLink') })
 }
 
 function onRefresh() {
@@ -393,7 +393,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.TVL"
                         :value="GuildSortBy.TVL"
-                        @sortBy:changed="onRefresh"
+                        @sort-by:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{
@@ -417,7 +417,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.Volume"
                         :value="GuildSortBy.Volume"
-                        @sortBy:changed="onRefresh"
+                        @sort-by:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{

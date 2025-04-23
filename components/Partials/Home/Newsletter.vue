@@ -20,7 +20,7 @@ const subscribe = handleSubmit((values) => {
   subscribeToNewsletter(values.email)
     .then(() => {
       notificationStore.success({
-        title: t('newsletter.subscribeToast')
+        title: t('toast.subscribeToast')
       })
 
       resetForm()

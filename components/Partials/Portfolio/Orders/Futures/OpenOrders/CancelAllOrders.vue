@@ -30,11 +30,11 @@ function cancelAllOrders() {
     .batchCancelOrder(derivativeStore.subaccountOrders)
     .then(() =>
       notificationStore.success({
-        title: t('common.success')
+        title: t('toast.success')
       })
     )
     .catch((e) => {
-      notificationStore.error({ title: t('common.error') })
+      notificationStore.error({ title: t('toast.error') })
       $onError(e)
     })
     .finally(() => {

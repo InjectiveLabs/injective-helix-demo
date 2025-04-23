@@ -28,11 +28,11 @@ onMounted(async () => {
     const isUsdtExist = accountStore.erc20BalancesMap[usdtToken.denom]
 
     notificationStore.info({
-      title: t('portfolio.moveAssetsToInjTitle'),
-      description: t('portfolio.moveAssetsToInj'),
+      title: t('toast.portfolio.moveAssetsToInjTitle'),
+      description: t('toast.portfolio.moveAssetsToInj'),
       actions: [
         {
-          label: t('portfolio.bridgeNow'),
+          label: t('toast.portfolio.bridgeNow'),
           callback: () => {
             if (isUsdtExist) {
               modalStore.openModal(Modal.LiteBridge)
@@ -61,11 +61,11 @@ onMounted(async () => {
 
   if (!checkUserHasAssetsOnChain()) {
     notificationStore.info({
-      title: t('portfolio.startTradingInSeconds'),
-      description: t('portfolio.buyCryptoInstantly'),
+      title: t('toast.portfolio.startTradingInSeconds'),
+      description: t('toast.portfolio.buyCryptoInstantly'),
       actions: [
         {
-          label: t('portfolio.buyCrypto'),
+          label: t('toast.portfolio.buyCrypto'),
           callback: () => {
             modalStore.openModal(Modal.FiatOnboard)
 
@@ -90,11 +90,11 @@ onMounted(async () => {
 
   if (!(await checkUserHasTraded()) && route.name !== MainPage.Markets) {
     notificationStore.info({
-      title: t('portfolio.readyToTrade'),
-      description: t('portfolio.discoverTrendingPairs'),
+      title: t('toast.portfolio.readyToTrade'),
+      description: t('toast.portfolio.discoverTrendingPairs'),
       actions: [
         {
-          label: t('portfolio.tradeNow'),
+          label: t('toast.portfolio.tradeNow'),
           callback: () => {
             router.push({ name: MainPage.Markets })
 

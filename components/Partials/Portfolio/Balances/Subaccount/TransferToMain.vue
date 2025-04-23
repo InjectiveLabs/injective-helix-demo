@@ -37,7 +37,7 @@ function transferToMain() {
 
   action()
     .then(() => {
-      success({ title: t('common.success') })
+      success({ title: t('toast.success') })
     })
     .catch($onError)
     .finally(() => {

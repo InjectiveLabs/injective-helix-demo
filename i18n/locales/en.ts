@@ -1,6 +1,7 @@
 import home from './en/home'
-import trade from './en/trade'
 import guild from './en/guild'
+import toast from './en/toast'
+import trade from './en/trade'
 import sgt from './en/spotGrid'
 import market from './en/market'
 import wallet from './en/wallet'
@@ -22,6 +23,7 @@ export default {
   ...sgt,
   ...home,
   ...guild,
+  ...toast,
   ...trade,
   ...market,
   ...wallet,
@@ -100,10 +102,7 @@ export default {
     otherWallets: 'Other Wallets',
     ready: 'Ready',
     new: 'New',
-    success: 'Success',
-    error: 'Error',
     qrCode: 'QR Code',
-    somethingHappened: 'Something Happened...',
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',
     [TimeDuration.Minute]: 'Minute',
@@ -454,9 +453,7 @@ export default {
     closeAndContinue: 'Close and continue',
     injectiveBridge: 'Injective Bridge',
     processingMessageInfo:
-      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the ',
-    onramperSuccess:
-      'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.'
+      'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
   },
 
   notFound404: {

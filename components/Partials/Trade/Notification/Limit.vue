@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import {
-  SpotTrade,
-  TradeDirection,
-  DerivativeTrade
-} from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { BusEvents } from '@/types'
+import type { SpotTrade, DerivativeTrade } from '@injectivelabs/sdk-ts'
 
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
@@ -67,14 +64,14 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
   notificationStore.success({
     title:
       trade.tradeDirection === TradeDirection.Buy
-        ? t('trade.tradeToast.bought', {
+        ? t('toast.trade.tradeToast.bought', {
             quantity,
             usdPrice,
             symbol: market.baseToken.symbol,
             usdPriceDecimals: market.priceDecimals,
             quantityDecimals: market.quantityDecimals
           })
-        : t('trade.tradeToast.sold', {
+        : t('toast.trade.tradeToast.sold', {
             quantity,
             usdPrice,
             symbol: market.baseToken.symbol,
