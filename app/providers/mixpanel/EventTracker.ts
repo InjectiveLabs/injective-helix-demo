@@ -1,17 +1,19 @@
-import { SharedMarketType } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
-  BotType,
   MixPanelEvent,
   MixPanelStatus,
   MixPanelCounter,
-  ChartViewOption,
   MixPanelOrderSide,
-  MixPanelOrderType,
-  SpotGridTradingForm,
   SpotGridTradingField,
   MixPanelStrategyPage
+} from '@/types'
+import type { SharedMarketType } from '@shared/types'
+import type {
+  BotType,
+  ChartViewOption,
+  MixPanelOrderType,
+  SpotGridTradingForm
 } from '@/types'
 
 const formatStatus = (error?: string) => ({
@@ -22,13 +24,13 @@ const formatStatus = (error?: string) => ({
 export const trackSwap = (
   props: {
     fee: string
-    rate: string | undefined
-    inputAmount: string | undefined
-    outputAmount: string | undefined
-    outputToken: string | undefined
-    inputToken: string | undefined
     minimumOutput: string
+    rate: string | undefined
     slippageTolerance: string
+    inputToken: string | undefined
+    inputAmount: string | undefined
+    outputToken: string | undefined
+    outputAmount: string | undefined
   },
   error?: string
 ) => {
@@ -56,19 +58,19 @@ export const trackSwap = (
 
 export const trackCreateOrder = (
   props: {
-    isAutoSign: boolean
     isBuy: boolean
     market: string
+    amount: string
+    leverage: string
+    limitPrice: string
+    postOnly?: boolean
+    isAutoSign: boolean
+    triggerPrice: string
+    reduceOnly?: boolean
+    slippageTolerance: string
+    chartType: ChartViewOption
     orderType: MixPanelOrderType
     marketType: SharedMarketType
-    amount: string
-    limitPrice: string
-    leverage: string
-    triggerPrice: string
-    slippageTolerance: string
-    reduceOnly?: boolean
-    postOnly?: boolean
-    chartType: ChartViewOption
   },
   error?: string
 ) => {
@@ -105,10 +107,10 @@ export const trackCreateStrategy = ({
   marketPrice
 }: {
   error?: string
-  formValues: Partial<SpotGridTradingForm>
   market: string
   marketPrice: string
   isLiquidity: boolean
+  formValues: Partial<SpotGridTradingForm>
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.CreateGridTradingBotClicked, {
     'Lower Price': new BigNumberInBase(
@@ -149,8 +151,8 @@ export const trackCreateStrategy = ({
 
 export const trackRemoveStrategy = (
   props: {
-    market: string
     pnl: string
+    market: string
     duration: string
     isLiquidity?: boolean
   },
@@ -223,18 +225,18 @@ export const trackTradingBotError = ({
   originalMessage,
   error
 }: {
+  grids: string
   wallet: string
   market: string
-  grids: string
+  error?: string
+  botType: BotType
   baseAmount: string
-  quoteAmount: string
   lowerBound: string
   upperBound: string
+  quoteAmount: string
+  originalMessage?: string
   upperTrailingBound?: string
   lowerTrailingBound?: string
-  error?: string
-  originalMessage?: string
-  botType: BotType
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.TradingBotError, {
     type: botType,
@@ -321,5 +323,66 @@ export const trackReferralCodeCreated = ({
     'Referral Code': referralCode,
     'Referee Address': refereeAddress,
     'Is Success': isSuccess
+  })
+}
+
+export const trackOnboardingUserWithNoAssets = ({
+  walletType,
+  isPopupShown,
+  isBuyCryptoClicked
+}: {
+  walletType: string
+  isPopupShown: boolean
+  isBuyCryptoClicked: boolean
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnboardingUserWithNoAssets, {
+    'Connected Wallet': walletType,
+    'Popup Shown': isPopupShown,
+    'Buy Crypto Clicked': isBuyCryptoClicked
+  })
+}
+
+export const trackOnboardingWalletEmptyWithEvmAssets = ({
+  walletType,
+  isPopupShown,
+  isBridgeClicked
+}: {
+  walletType: string
+  isPopupShown: boolean
+  isBridgeClicked: boolean
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnboardingWalletEmptyWithEvmAssets, {
+    'Connected Wallet': walletType,
+    'Popup Shown': isPopupShown,
+    'Trade Clicked': isBridgeClicked
+  })
+}
+
+export const trackOnboardingUserDoesntTrade = ({
+  isPopupShown,
+  isTradeClicked
+}: {
+  isPopupShown: boolean
+  isTradeClicked: boolean
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnboardingUserDoesntTrade, {
+    'Popup Shown': isPopupShown,
+    'Trade Clicked': isTradeClicked
+  })
+}
+
+export const trackOnboardingUserBecomeReferee = ({
+  isPopupShown,
+  isTradeClicked,
+  refereeAddress
+}: {
+  isPopupShown: boolean
+  refereeAddress: string
+  isTradeClicked: boolean
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.OnboardingUserBecomeReferee, {
+    'Referee Signed': refereeAddress,
+    'Popup Shown': isPopupShown,
+    'Trade Clicked': isTradeClicked
   })
 }

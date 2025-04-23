@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-base'
 import { WalletConnectStatus } from '@shared/types'
-import { Status, INJ_DENOM, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
-  Modal,
   MainPage,
   TradeSubPage,
   InitialStatusKey,
@@ -14,22 +11,17 @@ import {
 } from '@/types'
 
 const route = useRoute()
-const router = useRouter()
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const jsonStore = useSharedJsonStore()
 const accountStore = useAccountStore()
 const referralStore = useReferralStore()
-const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { activeSubaccountTradableBalancesWithToken } = useBalance()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
 
@@ -62,7 +54,6 @@ onWalletConnected(async () => {
     referralStore.fetchUserReferrer(),
     derivativeStore.fetchMarketsSummary()
   ])
-    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
@@ -84,7 +75,6 @@ function fetchUserPortfolio() {
     exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
-    accountStore.fetchErc20Balances(),
     accountStore.fetchSignerInjBalance(),
     accountStore.fetchAccountPortfolioBalances(),
 
@@ -107,80 +97,6 @@ function fetchSubaccountStream() {
   })
 }
 
-function checkOnboarding() {
-  if (!sharedWalletStore.isUserConnected) {
-    return
-  }
-
-  if (route.query.bridge === 'true') {
-    modalStore.openModal(Modal.LiteBridge)
-
-    return
-  }
-
-  if (
-    !accountStore.hasBalance &&
-    sharedWalletStore.isUserConnected &&
-    sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
-  ) {
-    modalStore.closeModal(Modal.Connect)
-
-    notificationStore.info({
-      title: t('portfolio.moveAssetsToInjTitle'),
-      description: t('portfolio.moveAssetsToInj'),
-      actions: [
-        {
-          label: t('portfolio.bridgeNow'),
-          callback: bridgeCrypto
-        }
-      ]
-    })
-
-    return
-  }
-
-  if (!accountStore.hasBalance) {
-    modalStore.closeModal(Modal.Connect)
-
-    notificationStore.info({
-      title: t('portfolio.startTradingInSeconds'),
-      description: t('portfolio.buyCryptoInstantly'),
-      actions: [
-        {
-          label: t('portfolio.buyCrypto'),
-          callback: buyCrypto
-        }
-      ]
-    })
-  }
-
-  const hasNoTransactions =
-    spotStore.subaccountTrades.length === 0 &&
-    spotStore.subaccountOrderHistory.length === 0 &&
-    derivativeStore.subaccountTrades.length === 0 &&
-    derivativeStore.subaccountOrderHistory.length === 0
-
-  if (
-    !hasNoTransactions &&
-    route.name !== MainPage.Markets &&
-    activeSubaccountTradableBalancesWithToken.value.find(
-      (token) => token.denom === INJ_DENOM
-    )
-  ) {
-    notificationStore.info({
-      title: t('portfolio.readyToTrade'),
-      description: t('portfolio.discoverTrendingPairs'),
-      actions: [
-        {
-          label: t('portfolio.tradeNow'),
-          callback: tradeNow
-        }
-      ]
-    })
-  }
-}
-
 provide(PortfolioStatusKey, portfolioStatus)
 
 useIntervalFn(
@@ -201,18 +117,6 @@ watch(
   },
   { immediate: true }
 )
-
-function buyCrypto() {
-  modalStore.openModal(Modal.FiatOnboard)
-}
-
-function bridgeCrypto() {
-  modalStore.openModal(Modal.LiteBridge)
-}
-
-function tradeNow() {
-  router.push({ name: MainPage.Markets })
-}
 </script>
 
 <template>
@@ -284,5 +188,7 @@ function tradeNow() {
 
     <CommonAutoSignExpiredToast />
     <AppJsonPoll @on:loaded="onJsonLoaded" />
+
+    <AppToastOnboarding v-if="portfolioStatus.isIdle()" />
   </div>
 </template>

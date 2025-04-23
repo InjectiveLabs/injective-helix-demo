@@ -4,6 +4,7 @@ export default defineAppConfig({
     gray: 'slate',
 
     modal: {
+      wrapper: 'relative z-[99]',
       background: 'dark:bg-brand-900',
       overlay: {
         background: 'dark:bg-black/50'

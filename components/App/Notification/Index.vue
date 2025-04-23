@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NuxtUiIcons, NotificationType } from '@shared/types'
+import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
 import type { Notification } from '@shared/types'
 
@@ -19,26 +19,19 @@ const props = withDefaults(
 )
 
 const notifTimeout = ref()
+const lastResumeTime = ref(0)
 const progressBarInterval = ref()
 const progressBarPercent = ref(100)
+const lastProgressBarPercent = ref(100)
 const remainingTimeout = ref(DEFAULT_NOTIFICATION_TIMEOUT)
-
-const progressBarBg = computed(() => {
-  const bgList = {
-    [NotificationType.Error]: 'bg-red-500',
-    [NotificationType.Warning]: 'bg-orange-400',
-    [NotificationType.Success]: 'bg-green-400',
-    [NotificationType.Info]: 'bg-primary-500'
-  }
-
-  return bgList[props.notification.type]
-})
 
 onMounted(() => {
   const timeout = props.notification.timeout || DEFAULT_NOTIFICATION_TIMEOUT
 
-  notifTimeout.value = setTimeout(onClose, timeout)
+  lastResumeTime.value = Date.now()
   remainingTimeout.value = timeout
+
+  notifTimeout.value = setTimeout(onClose, timeout)
   setupProgressBar(timeout)
 })
 
@@ -47,34 +40,43 @@ function onCopy() {
 }
 
 function onResume() {
+  lastResumeTime.value = Date.now()
+  lastProgressBarPercent.value = progressBarPercent.value
+
   notifTimeout.value = setTimeout(onClose, remainingTimeout.value)
   setupProgressBar(remainingTimeout.value)
 }
 
 function onClose() {
   notificationStore.clear(props.notification.id)
+
   clearTimeout(notifTimeout.value)
+  clearInterval(progressBarInterval.value)
 }
 
 function onPause() {
   clearTimeout(notifTimeout.value)
   clearInterval(progressBarInterval.value)
 
-  remainingTimeout.value -= Date.now() - props.notification.id
+  const elapsedTimeSinceLastResume = Date.now() - lastResumeTime.value
+  remainingTimeout.value -= elapsedTimeSinceLastResume
 }
 
 function setupProgressBar(timeout: number) {
-  const interval = 100
-  const step = (interval / timeout) * 100
+  const endTime = Date.now() + timeout
+
+  clearInterval(progressBarInterval.value)
 
   progressBarInterval.value = setInterval(() => {
-    progressBarPercent.value -= step
+    const remainingDuration = Math.max(endTime - Date.now(), 0)
 
-    if (progressBarPercent.value <= 0) {
-      progressBarPercent.value = 0
+    progressBarPercent.value =
+      (remainingDuration / timeout) * lastProgressBarPercent.value
+
+    if (remainingDuration === 0) {
       clearInterval(progressBarInterval.value)
     }
-  }, interval)
+  }, 100)
 }
 </script>
 
@@ -100,8 +102,7 @@ function setupProgressBar(timeout: number) {
       >
         <div class="absolute top-0 left-0 w-full h-1">
           <div
-            class="h-full w-full transition-all duration-[100ms]"
-            :class="progressBarBg"
+            class="h-full w-full transition-all duration-[100ms] bg-primary-500"
             :style="{ width: progressBarPercent + '%' }"
           />
         </div>
@@ -121,7 +122,7 @@ function setupProgressBar(timeout: number) {
 
             <span
               v-if="notification.description"
-              class="text-xs text-gray-400 flex items-center leading-tight"
+              class="text-sm text-gray-400 flex items-center leading-tight"
             >
               {{ notification.description }}
             </span>
@@ -131,7 +132,7 @@ function setupProgressBar(timeout: number) {
               :content="notification.context"
             >
               <span
-                class="text-xs text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
+                class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
                 @click="onCopy"
               >
                 {{ $t('common.showMoreContext') }}
@@ -145,7 +146,7 @@ function setupProgressBar(timeout: number) {
                 @click="() => action.callback()"
               >
                 <span
-                  class="text-xs text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
+                  class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
                   :class="action.class"
                 >
                   {{ action.label }}

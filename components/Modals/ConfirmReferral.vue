@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { trackRefereeLoggedIn } from '@/app/providers/mixpanel/EventTracker'
+import {
+  trackRefereeLoggedIn,
+  trackOnboardingUserBecomeReferee
+} from '@/app/providers/mixpanel/EventTracker'
 import { Modal, MainPage } from '@/types'
 
 const route = useRoute()
@@ -55,9 +58,23 @@ function joinReferral() {
         actions: [
           {
             label: t('portfolio.tradeNow'),
-            callback: tradeNow
+            callback: () => {
+              trackOnboardingUserBecomeReferee({
+                isPopupShown: true,
+                isTradeClicked: true,
+                refereeAddress: sharedWalletStore.injectiveAddress
+              })
+
+              router.push({ name: MainPage.Markets })
+            }
           }
         ]
+      })
+
+      trackOnboardingUserBecomeReferee({
+        isPopupShown: true,
+        isTradeClicked: false,
+        refereeAddress: sharedWalletStore.injectiveAddress
       })
 
       trackRefereeLoggedIn({
@@ -90,10 +107,6 @@ function checkJoinReferralEligibility() {
       }
     })
     .catch($onError)
-}
-
-function tradeNow() {
-  router.push({ name: MainPage.Markets })
 }
 
 onWalletConnected(() => {

@@ -52,15 +52,9 @@ type AccountStoreState = {
   singerInjBalance: string
   neptuneUsdtLendingApy: string
   neptuneUsdtRedemptionRatio: number
+  erc20BalancesMap: Record<string, string>
   cw20Balances: { amount: string; address: string }[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
-  erc20BalancesMap: Record<
-    string,
-    {
-      balance: string
-      allowance: string
-    }
-  >
 }
 
 const initialStateFactory = (): AccountStoreState => ({
@@ -288,20 +282,29 @@ export const useAccountStore = defineStore('account', {
     async fetchErc20Balances() {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
+      const spotStore = useSpotStore()
 
-      const { balance, allowance } =
-        await web3Client.fetchTokenBalanceAndAllowance({
-          address: sharedWalletStore.address,
-          contractAddress: usdtToken.denom.replace('peggy', '')
+      const evmDenoms = spotStore.tradableDenoms.filter((denom) =>
+        denom.startsWith('peggy')
+      )
+
+      const erc20Balances: Record<string, string> = {}
+
+      await Promise.all(
+        evmDenoms.map(async (denom) => {
+          const { balance } = await web3Client.fetchTokenBalanceAndAllowance({
+            address: sharedWalletStore.address,
+            contractAddress: denom.replace('peggy', '')
+          })
+
+          if (new BigNumberInBase(balance).gt(0)) {
+            erc20Balances[denom] = balance
+          }
         })
+      )
 
       accountStore.$patch({
-        erc20BalancesMap: {
-          [usdtToken.denom]: {
-            balance,
-            allowance
-          }
-        }
+        erc20BalancesMap: erc20Balances
       })
     },
 

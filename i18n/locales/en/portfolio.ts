@@ -123,7 +123,7 @@ export default {
     buyCryptoInstantly: 'Buy crypto instantly',
     startTradingInSeconds: 'Start Trading in Seconds!',
     readyToTrade: 'Ready to Trade? Explore Markets Now!',
-    moveAssetsToInj: 'Move assets from Ethereum/Solana to inj',
+    moveAssetsToInj: 'Move assets from Ethereum to Injective',
     discoverTrendingPairs: 'Discover trending pairs and start trading',
     moveAssetsToInjTitle: 'Move Your Crypto to Injective & Start Trading',
 
