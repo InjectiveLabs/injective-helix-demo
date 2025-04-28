@@ -61,7 +61,7 @@ Reach out to us at one of the following places!
 
 - Website at <a href="https://injective.com" target="_blank">`injective.com`</a>
 - Website at <a href="https://injectivelabs.org" target="_blank">`injectivelabs.org`</a>
-- Twitter at <a href="https://twitter.com/Injective_" target="_blank">`@Injective`</a>
+- Twitter at <a href="https://twitter.com/injective" target="_blank">`@Injective`</a>
 - Twitter at <a href="https://twitter.com/InjectiveLabs" target="_blank">`@InjectiveLabs`</a>
 - Discord at <a href="https://discord.com/invite/NK4qdbv" target="_blank">`Injective Discord`</a>
 - Telegram at <a href="https://t.me/joininjective" target="_blank">`Injective Telegram`</a>
