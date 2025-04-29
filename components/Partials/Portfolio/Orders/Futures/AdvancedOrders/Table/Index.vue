@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { PortfolioFuturesAdvancedOrdersTableColumn, PerpetualMarketCyTags } from '@/types'
+import {
+  PerpetualMarketCyTags,
+  PortfolioFuturesAdvancedOrdersTableColumn
+} from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -8,7 +11,7 @@ const breakpoints = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    advancedOrders: DerivativeOrderHistory[]
+    advancedOrders: DerivativeLimitOrder[]
   }>(),
   {}
 )
@@ -102,7 +105,13 @@ const columns = computed(() => {
             v-bind="{ market: row.market }"
           >
             <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-            <p :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableMarketTicker)">{{ row.market.ticker }}</p>
+            <p
+              :data-cy="
+                dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableMarketTicker)
+              "
+            >
+              {{ row.market.ticker }}
+            </p>
           </PartialsCommonMarketRedirection>
 
           <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
@@ -128,7 +137,11 @@ const columns = computed(() => {
                 'text-green-500': row.isBuy,
                 'text-red-500': !row.isBuy
               }"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableOrderDirection)"
+              :data-cy="
+                dataCyTag(
+                  PerpetualMarketCyTags.AdvancedOrdersTableOrderDirection
+                )
+              "
             >
               {{ $t(`trade.${row.isBuy ? 'buy' : 'sell'}`) }}
             </p>
@@ -149,7 +162,9 @@ const columns = computed(() => {
                 amount: row.price.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)"
+              :data-cy="
+                dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)
+              "
             />
           </span>
         </div>
@@ -162,7 +177,9 @@ const columns = computed(() => {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
-            :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)"
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)
+            "
           />
         </div>
       </template>
