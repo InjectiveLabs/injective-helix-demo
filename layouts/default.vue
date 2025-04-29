@@ -166,10 +166,8 @@ watch(
   >
     <LayoutNavbar />
 
-    <LayoutBanner
-      class="sticky top-[56px]"
-      :class="{ '-mt-[56px]': route.name === MainPage.Index }"
-    />
+    <PartialsHomeGradientBg v-if="route.name === MainPage.Index" />
+    <LayoutBanner class="sticky top-[56px]" />
 
     <AppHocLoading
       is-helix

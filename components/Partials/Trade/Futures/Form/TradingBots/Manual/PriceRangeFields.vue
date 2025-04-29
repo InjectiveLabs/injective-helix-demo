@@ -7,14 +7,14 @@ import {
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const { lastTradedPrice } = useDerivativeLastPrice(market)
+const { lastTradedPrice, markPrice } = useDerivativeLastPrice(market)
 
 const { value: upperPriceValue, errorMessage: upperErrorMessage } =
   useStringField({
     name: DerivativeGridTradingField.UpperPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const greaterThanRule = `greaterThanSgt:${lastTradedPrice.value.toFixed()}`
+      const greaterThanRule = `greaterThanSgt:${markPrice.value}`
 
       const rules = [greaterThanRule]
 
@@ -27,7 +27,7 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
     name: DerivativeGridTradingField.LowerPrice,
     rule: '',
     dynamicRule: computed(() => {
-      const lessThanRule = `lessThanSgt:${lastTradedPrice.value.toFixed()}`
+      const lessThanRule = `lessThanSgt:${markPrice.value}`
       const greaterThanRule = `greaterThanSgt:${0}`
 
       const rules = [greaterThanRule, lessThanRule]
