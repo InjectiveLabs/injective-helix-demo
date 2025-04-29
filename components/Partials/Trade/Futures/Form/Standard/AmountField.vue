@@ -1,26 +1,27 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { dataCyTag } from '@shared/utils'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { ONE_IN_BASE } from '@/app/utils/constants'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
 } from '@/app/utils/helpers'
-import { ONE_IN_BASE } from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
+  MarketCyTags,
   TradeAmountOption,
-  UiDerivativeMarket,
-  DerivativesTradeForm,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
@@ -78,6 +79,10 @@ const activePosition = computed(() =>
   positionStore.subaccountPositions.find(
     (position) => position.marketId === market.value.marketId
   )
+)
+
+const selectedSymbol = computed(
+  () => options.find((item) => item.id === typeValue.value)?.label || ''
 )
 
 const {
@@ -191,7 +196,7 @@ async function setFromPercentage(percentage: number) {
     typeValue.value === TradeAmountOption.Quote &&
     activePosition.value
   ) {
-    const records = isBuy ? orderbookStore.sells : orderbookStore.buys
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
     const { worstPrice } = calculateWorstPrice(
       activePosition.value.quantity,
@@ -297,7 +302,7 @@ async function setFromPercentage(percentage: number) {
     return
   }
 
-  const records = isBuy ? orderbookStore.sells : orderbookStore.buys
+  const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
   const { worstPrice } = calculateTotalQuantity(
     maxMargin.times(leverage).toFixed(),
@@ -358,10 +363,41 @@ onMounted(() => {
       <template #right>
         <USelectMenu
           v-model="typeValue"
-          :options="options"
-          variant="none"
-          value-attribute="id"
-        />
+          v-bind="{
+            options,
+            variant: 'none',
+            valueAttribute: 'id',
+            uiMenu: { width: 'w-auto' },
+            popper: { offsetDistance: 12 }
+          }"
+        >
+          <div
+            class="flex items-center gap-2"
+            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
+          >
+            <span>
+              {{ selectedSymbol }}
+            </span>
+
+            <UIcon
+              :name="NuxtUiIcons.ChevronDown"
+              class="size-3 transition-all text-gray-500 -mb-0.5"
+            />
+          </div>
+
+          <template #option="{ option }">
+            <span
+              class="mr-1"
+              :data-cy="
+                option.id === TradeAmountOption.Base
+                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
+                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
+              "
+            >
+              {{ option.label }}
+            </span>
+          </template>
+        </USelectMenu>
       </template>
 
       <template #bottom>
