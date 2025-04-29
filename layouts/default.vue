@@ -166,6 +166,11 @@ watch(
   >
     <LayoutNavbar />
 
+    <LayoutBanner
+      class="sticky top-[56px]"
+      :class="{ '-mt-[56px]': route.name === MainPage.Index }"
+    />
+
     <AppHocLoading
       is-helix
       wrapper-class="h-screen"
@@ -174,9 +179,7 @@ watch(
         (initialStatus.isLoading() || jsonStatus.isLoading())
       "
     >
-      <main class="relative pb-6 pt-[56px]">
-        <LayoutBanner />
-
+      <main class="relative pb-6 pt-[56px] overflow-x-hidden">
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&
