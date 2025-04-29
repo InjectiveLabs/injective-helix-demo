@@ -110,9 +110,9 @@ function onHideBanner() {
     return
   }
 
-  bannersToHide.value.push(bannerToDisplay.value.id)
+  bannersToHide.value.push(bannerToDisplay.value?.id)
 
-  if (bannerToDisplay.value.shouldPersist) {
+  if (bannerToDisplay.value?.shouldPersist) {
     return
   }
 
@@ -120,7 +120,7 @@ function onHideBanner() {
     ...appStore.userState,
     bannersViewed: [
       ...appStore.userState.bannersViewed,
-      bannerToDisplay.value.id
+      bannerToDisplay.value?.id
     ]
   })
 }
