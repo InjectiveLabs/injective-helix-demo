@@ -4,13 +4,8 @@ import {
   GST_SINGLE_SIDED_THRESHOLD,
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
-import {
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField
-} from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -38,19 +33,17 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
 
-      // Temporary disabled single sided rule
+      const singleSidedRule = `singleSided:@${
+        SpotGridTradingField.LowerPrice
+      },@${
+        SpotGridTradingField.UpperPrice
+      },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+        marketUsesStableCoins.value
+          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+          : GST_SINGLE_SIDED_THRESHOLD
+      }`
 
-      // const singleSidedRule = `singleSided:@${
-      //   SpotGridTradingField.LowerPrice
-      // },@${
-      //   SpotGridTradingField.UpperPrice
-      // },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
-      //   marketUsesStableCoins.value
-      //     ? GST_KAVA_SINGLE_SIDED_THRESHOLD
-      //     : GST_SINGLE_SIDED_THRESHOLD
-      // }`
-
-      const rules = ['requiredSgt', greaterThanRule]
+      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
 
       if (
         spotGridFormValues.value[SpotGridTradingField.IsAssetRebalanceOn] &&
