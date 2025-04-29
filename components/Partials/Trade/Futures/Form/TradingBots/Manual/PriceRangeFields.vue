@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import {
-  DerivativeGridTradingField,
-  MarketKey,
-  UiDerivativeMarket
-} from '@/types'
+import { MarketKey, DerivativeGridTradingField } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 

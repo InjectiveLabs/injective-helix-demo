@@ -29,6 +29,7 @@ const filteredTopNavMenu = computed(() =>
       'w-full z-50 fixed top-0 left-0',
       route.name === MainPage.Index ? '' : 'bg-brand-900'
     ]"
+    class="overflow-x-hidden"
   >
     <div
       :class="['flex py-3', route.name === MainPage.Index ? '' : 'border-b']"

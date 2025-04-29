@@ -4,13 +4,8 @@ import {
   GST_SINGLE_SIDED_THRESHOLD,
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
-import {
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField
-} from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
