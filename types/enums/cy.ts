@@ -105,7 +105,8 @@ export enum SpotMarketCyTags {
   OrderbookMidMarkPrice = 'orderbook-mid-mark-price',
   OrderbookGridBuys = 'orderbook-grid-buys',
   OrderbookGridSells = 'orderbook-grid-sells',
-  OrderDetailsTable = 'order-details-table'
+  OrderDetailsTable = 'order-details-table',
+  SlippageInputField = 'slippage-input-field'
 }
 
 export enum PerpetualMarketCyTags {
@@ -164,7 +165,12 @@ export enum PerpetualMarketCyTags {
   TradeHistoryPrice = 'trade-history-price',
   TradeHistoryAmount = 'trade-history-amount',
   TradeHistoryFee = 'trade-history-fee',
-  TradeHistoryTotal = 'trade-history-total'
+  TradeHistoryTotal = 'trade-history-total',
+  SlippageInputField = 'slippage-input-field',
+  AdvancedOrdersTablePrice = 'advanced-orders-table-price',
+  AdvancedOrdersTableAmount = 'advanced-orders-table-amount',
+  AdvancedOrdersTableMarketTicker = 'advanced-orders-table-market-ticker',
+  AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction'
 }
 
 export enum PortfolioCyTags {
