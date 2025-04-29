@@ -51,7 +51,6 @@ const stateToPersist = {
   },
 
   sharedWallet: {
-    isEip712: false, //todo: remove once this passes qa
     walletConnectStatus: '',
     hwAddresses: '',
     wallet: Wallet.Metamask,

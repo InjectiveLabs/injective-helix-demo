@@ -168,30 +168,14 @@ export const useWalletStore = defineStore('wallet', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      // if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
-      //   return
-      // }
-
-      if (!sharedWalletStore.isEip712) {
+      if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
         return
       }
-
-      console.log(
-        'before',
-        sharedWalletStore.injectiveAddress,
-        `hasSufficientGas ${accountStore.hasSufficientGas}`
-      )
 
       await faucetService.fundInjectiveAddress(
         sharedWalletStore.injectiveAddress
       )
       await accountStore.fetchSignerInjBalance()
-
-      console.log(
-        'after',
-        sharedWalletStore.injectiveAddress,
-        `hasSufficientGas ${accountStore.hasSufficientGas}`
-      )
 
       if (accountStore.hasSufficientGas) {
         return
@@ -209,10 +193,7 @@ export const useWalletStore = defineStore('wallet', {
       const sharedWalletStore = useSharedWalletStore()
 
       await sharedWalletStore.fetchWeb3GatewayStatus()
-
-      if (sharedWalletStore.isEip712) {
-        await walletStore.validateGas()
-      }
+      await walletStore.validateGas()
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
