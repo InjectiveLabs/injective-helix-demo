@@ -40,6 +40,15 @@ function connectAutoSign() {
 }
 
 function dontShowAutoSignAgain() {
+  const selectedNotification = notificationStore.notifications.find(
+    (notification) =>
+      notification.title === t('portfolio.settings.autoSign.enable')
+  )
+
+  if (selectedNotification) {
+    notificationStore.clear(selectedNotification.id)
+  }
+
   appStore.$patch({
     userState: {
       ...appStore.userState,

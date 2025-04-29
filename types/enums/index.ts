@@ -524,6 +524,7 @@ export enum StreamType {
 
 export enum BusEvents {
   NeptuneUsdt = 'neptune-usdt',
+  OpenOnramper = 'open-onramper',
   FundingRefresh = 'funding-refresh',
   NavLinkClicked = 'nav-link-clicked',
   WalletConnected = 'wallet-connected',

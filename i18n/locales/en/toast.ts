@@ -17,7 +17,7 @@ export default {
       tradeNow: 'Trade Now',
       bridgeNow: 'Bridge Now',
       buyCrypto: 'Buy crypto',
-      buyCryptoInstantly: 'Buy crypto instantly',
+      getCryptoWithFiat: 'Get crypto with FIAT',
       bankTransferSuccessful: 'Transfer Successful',
       startTradingInSeconds: 'Start Trading in Seconds!',
       readyToTrade: 'Ready to Trade? Explore Markets Now!',

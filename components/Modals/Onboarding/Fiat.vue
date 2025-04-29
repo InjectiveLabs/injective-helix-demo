@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Modal } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const modalStore = useSharedModalStore()
 const { xs } = useSharedBreakpoints()
@@ -13,6 +13,11 @@ function onPurchaseFunds() {
 function resetState() {
   isPurchaseFunds.value = false
 }
+
+useEventBus(BusEvents.OpenOnramper).on(async () => {
+  await nextTick()
+  onPurchaseFunds()
+})
 </script>
 
 <template>

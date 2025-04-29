@@ -100,7 +100,9 @@ function setupProgressBar(timeout: number) {
         class="relative flex gap-4 justify-between p-4 pt-5"
         :class="{ 'items-center': !notification.description }"
       >
-        <div class="absolute top-0 left-0 w-full h-1">
+        <div
+          class="absolute top-0 left-0 w-full h-1 [transform:rotateY(180deg)]"
+        >
           <div
             class="h-full w-full transition-all duration-[100ms] bg-primary-500"
             :style="{ width: progressBarPercent + '%' }"

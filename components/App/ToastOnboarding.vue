@@ -7,7 +7,7 @@ import {
   trackOnboardingUserWithNoAssets,
   trackOnboardingWalletEmptyWithEvmAssets
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage } from '@/types'
+import { Modal, MainPage, BusEvents } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -62,12 +62,14 @@ onMounted(async () => {
   if (!checkUserHasAssetsOnChain()) {
     notificationStore.info({
       title: t('toast.portfolio.startTradingInSeconds'),
-      description: t('toast.portfolio.buyCryptoInstantly'),
+      description: t('toast.portfolio.getCryptoWithFiat'),
       actions: [
         {
           label: t('toast.portfolio.buyCrypto'),
           callback: () => {
             modalStore.openModal(Modal.FiatOnboard)
+
+            useEventBus(BusEvents.OpenOnramper).emit()
 
             trackOnboardingUserWithNoAssets({
               isPopupShown: true,
