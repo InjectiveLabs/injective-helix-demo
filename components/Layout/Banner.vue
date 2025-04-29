@@ -110,9 +110,9 @@ function onHideBanner() {
     return
   }
 
-  bannersToHide.value.push(bannerToDisplay.value.id)
+  bannersToHide.value.push(bannerToDisplay.value?.id)
 
-  if (bannerToDisplay.value.shouldPersist) {
+  if (bannerToDisplay.value?.shouldPersist) {
     return
   }
 
@@ -120,7 +120,7 @@ function onHideBanner() {
     ...appStore.userState,
     bannersViewed: [
       ...appStore.userState.bannersViewed,
-      bannerToDisplay.value.id
+      bannerToDisplay.value?.id
     ]
   })
 }
@@ -129,7 +129,7 @@ function onHideBanner() {
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-[49] font-semibold"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40 font-semibold"
   >
     <div />
 
