@@ -3,6 +3,7 @@ import { TradeSubPage } from '@/types'
 
 const route = useRoute()
 const tokenStore = useTokenStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const markets = ref<[string, number][]>([])
 
@@ -35,7 +36,10 @@ onMounted(async () => {
           : 'border-t'
       ]"
     >
-      <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
+      <div
+        class="w-2 h-2 rounded-full mr-2"
+        :class="[sharedWalletStore.isEip712 ? 'bg-orange-500' : 'bg-green-500']"
+      />
       <div class="divide-x-2 border-white flex">
         <div class="px-2">
           {{ $t('footer.operational') }}

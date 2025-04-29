@@ -1,27 +1,28 @@
 import { defineStore } from 'pinia'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { walletStrategy } from '@shared/WalletService'
+import { injToken, usdtToken } from '@shared/data/token'
+import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
+import { WalletStrategy } from '@injectivelabs/wallet-strategy'
+import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
+import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
+import {
+  getInjectiveAddress,
+  NEPTUNE_USDT_CW20_CONTRACT
+} from '@injectivelabs/sdk-ts'
 import {
   web3Client,
   indexerRestExplorerApi,
   indexerAccountPortfolioApi
 } from '@shared/Service'
+import { neptuneService } from '@/app/Services'
+import { DEFAULT_MIN_GAS } from '@/app/utils/constants'
+import { getAccountDetails } from '@/app/services/account'
+import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import {
-  getInjectiveAddress,
-  NEPTUNE_USDT_CW20_CONTRACT
-} from '@injectivelabs/sdk-ts'
-import type { Coin } from '@injectivelabs/ts-types'
-import { usdtToken } from '@shared/data/token'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { alchemyRpcEndpoint } from '@shared/wallet/alchemy'
-import { walletStrategy } from '@shared/WalletService'
-import { WalletStrategy } from '@injectivelabs/wallet-strategy'
-import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
-import { CHAIN_ID, ETHEREUM_CHAIN_ID } from '@shared/utils/constant'
-import {
-  streamBankBalance,
-  streamSubaccountBalance,
-  cancelBankBalanceStream,
-  cancelSubaccountBalanceStream
-} from '@/store/account/stream'
+  getDefaultAccountBalances,
+  getNonDefaultSubaccountBalances
+} from '@/app/client/utils/account'
 import {
   deposit,
   transfer,
@@ -35,22 +36,23 @@ import {
   fetchNeptuneRedemptionRatio
 } from '@/store/account/neptune'
 import {
-  getDefaultAccountBalances,
-  getNonDefaultSubaccountBalances
-} from '@/app/client/utils/account'
-import { getAccountDetails } from '@/app/services/account'
-import { neptuneService } from '@/app/Services'
-import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
-import type { SubaccountBalance } from '@/types'
+  streamBankBalance,
+  streamSubaccountBalance,
+  cancelBankBalanceStream,
+  cancelSubaccountBalanceStream
+} from '@/store/account/stream'
 import { BusEvents } from '@/types'
+import type { SubaccountBalance } from '@/types'
+import type { Coin } from '@injectivelabs/ts-types'
 
 type AccountStoreState = {
   pubKey?: string
   subaccountId: string
   bankBalances: Coin[]
-  neptuneUsdtRedemptionRatio: number
+  singerInjBalance: string
   neptuneUsdtLendingApy: string
-  cw20Balances: { address: string; amount: string }[]
+  neptuneUsdtRedemptionRatio: number
+  cw20Balances: { amount: string; address: string }[]
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
   erc20BalancesMap: Record<
     string,
@@ -66,6 +68,7 @@ const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   cw20Balances: [],
   subaccountId: '',
+  singerInjBalance: '0',
   erc20BalancesMap: {},
   subaccountBalancesMap: {},
   neptuneUsdtRedemptionRatio: 0,
@@ -75,6 +78,15 @@ const initialStateFactory = (): AccountStoreState => ({
 export const useAccountStore = defineStore('account', {
   state: (): AccountStoreState => initialStateFactory(),
   getters: {
+    hasSufficientGas: (state: AccountStoreState) => {
+      const sharedWalletStore = useSharedWalletStore()
+
+      return (
+        !sharedWalletStore.isEip712 ||
+        new BigNumberInBase(state.singerInjBalance).gt(DEFAULT_MIN_GAS)
+      )
+    },
+
     balancesMap: (state: AccountStoreState) => {
       if (state.bankBalances.length === 0) {
         return {}
@@ -174,6 +186,29 @@ export const useAccountStore = defineStore('account', {
 
       accountStore.$patch({ subaccountId })
       useEventBus(BusEvents.SubaccountChange).emit(subaccountId)
+    },
+
+    async fetchSignerInjBalance() {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isUserConnected) {
+        return
+      }
+
+      const accountPortfolio =
+        await indexerAccountPortfolioApi.fetchAccountPortfolioBalances(
+          sharedWalletStore.injectiveAddress
+        )
+
+      const injBalance =
+        accountPortfolio.bankBalancesList.find(
+          ({ denom }) => denom === injToken.denom
+        )?.amount || '0'
+
+      accountStore.$patch({
+        singerInjBalance: injBalance
+      })
     },
 
     async fetchAccountPortfolioBalances() {
@@ -292,7 +327,7 @@ export const useAccountStore = defineStore('account', {
 
         // eth returns eth address so convert to inj address
         return getInjectiveAddress(address)
-      } catch (e: any) {
+      } catch {
         // silently fail
       }
     },
@@ -316,7 +351,7 @@ export const useAccountStore = defineStore('account', {
         accountStore.$patch({
           pubKey: await walletStrategy.getPubKey(address)
         })
-      } catch (e: any) {
+      } catch {
         // silently fail
       }
     },

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { PortfolioSubPage } from '@/types'
+
+const appStore = useAppStore()
 </script>
 
 <template>
@@ -21,6 +23,7 @@ import { PortfolioSubPage } from '@/types'
     <div class="border-y divide-y">
       <PartialsPortfolioSettingsPreferencesThousandsSeparator />
       <PartialsPortfolioSettingsPreferencesShowGridTradingSubaccounts />
+      <PartialsPortfolioSettingsPreferencesEip712 v-if="appStore.devMode" />
     </div>
   </div>
 </template>

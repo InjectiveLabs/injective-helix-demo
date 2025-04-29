@@ -65,15 +65,6 @@ function disconnect() {
               :name="NuxtUiIcons.UserOutline"
               class="w-4 h-4 rounded-md text-[#black]"
             />
-            <div
-              v-if="sharedWalletStore.isAutoSignEnabled"
-              class="bg-white px-1 py-0.5 rounded flex items-center justify-center"
-            >
-              <UIcon
-                :name="NuxtUiIcons.RotateAuto"
-                class="w-4 h-4 rounded-md text-black"
-              />
-            </div>
           </div>
 
           <span class="hidden lg:block lg:ml-2">
@@ -161,6 +152,23 @@ function disconnect() {
         </div>
       </template>
     </UPopover>
+
+    <AppTooltip
+      v-if="sharedWalletStore.isAutoSignEnabled"
+      :ui="{ width: 'w-auto' }"
+      :content="$t('trade.eip712Warning')"
+      :is-disabled="!sharedWalletStore.isEip712"
+    >
+      <div
+        class="px-1 py-0.5 rounded flex items-center justify-center"
+        :class="[sharedWalletStore.isEip712 ? 'bg-red-500' : 'bg-white']"
+      >
+        <UIcon
+          :name="NuxtUiIcons.RotateAuto"
+          class="w-4 h-4 rounded-md text-black"
+        />
+      </div>
+    </AppTooltip>
 
     <ModalsQRCode />
   </div>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCyTags, MarketCategoryType } from '@/types'
 
@@ -12,7 +13,7 @@ const { sm } = useSharedBreakpoints()
 
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
-const isLowVolumeMarketsVisible = ref(false)
+const isLowVolumeMarketsVisible = ref(!IS_MAINNET)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary]
@@ -30,18 +31,6 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     .filter(({ summary }) => summary)
 )
 
-function setCategoryFromQuery() {
-  if (
-    Object.values(MarketCategoryType).includes(
-      route.query.type as MarketCategoryType
-    )
-  ) {
-    return route.query.type as MarketCategoryType
-  }
-
-  return MarketCategoryType.All
-}
-
 function resetSearch() {
   search.value = ''
 }
@@ -52,6 +41,18 @@ function resetCategory() {
   }
 
   activeCategory.value = MarketCategoryType.All
+}
+
+function setCategoryFromQuery() {
+  if (
+    Object.values(MarketCategoryType).includes(
+      route.query.type as MarketCategoryType
+    )
+  ) {
+    return route.query.type as MarketCategoryType
+  }
+
+  return MarketCategoryType.All
 }
 </script>
 

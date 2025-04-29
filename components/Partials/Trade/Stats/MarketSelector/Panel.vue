@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType } from '@/types'
 
@@ -24,7 +25,7 @@ const activeCategoryOptions = Object.values(MarketCategoryType).map(
 )
 
 const search = ref('')
-const isLowVolumeMarketsVisible = ref(false)
+const isLowVolumeMarketsVisible = ref(!IS_MAINNET)
 const activeCategory = ref(MarketCategoryType.All)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
