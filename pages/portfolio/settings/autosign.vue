@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Status, StatusType } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType } from '@injectivelabs/utils'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { BusEvents, PortfolioSubPage } from '@/types'
 
@@ -10,6 +10,20 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
+
+function disconnectAutoSign() {
+  status.setLoading()
+
+  sharedWalletStore
+    .disconnectAutoSign()
+    .then(() => {
+      notificationStore.success({
+        title: t('portfolio.settings.autoSign.disabledToast.title')
+      })
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
+}
 
 function connectAutoSign() {
   status.setLoading()
@@ -25,20 +39,6 @@ function connectAutoSign() {
       notificationStore.success({
         title: t('portfolio.settings.autoSign.enabledToast.title'),
         description: t('portfolio.settings.autoSign.enabledToast.description')
-      })
-    })
-    .catch($onError)
-    .finally(() => status.setIdle())
-}
-
-function disconnectAutoSign() {
-  status.setLoading()
-
-  sharedWalletStore
-    .disconnectAutoSign()
-    .then(() => {
-      notificationStore.success({
-        title: t('portfolio.settings.autoSign.disabledToast.title')
       })
     })
     .catch($onError)
@@ -74,22 +74,33 @@ function disconnectAutoSign() {
           {{ $t('common.notAvailableinAuthZMode') }}
         </AppButton>
 
-        <AppButton
-          v-else-if="!sharedWalletStore.isAutoSignEnabled"
-          variant="success"
-          :status="status"
-          @click="connectAutoSign"
-        >
-          {{ $t('portfolio.settings.autoSign.enable') }}
-        </AppButton>
-        <AppButton
-          v-else
-          variant="danger"
-          :status="status"
-          @click="disconnectAutoSign"
-        >
-          {{ $t('portfolio.settings.autoSign.disconnect') }}
-        </AppButton>
+        <template v-else>
+          <AppButton
+            v-if="!sharedWalletStore.isAutoSignEnabled"
+            variant="success"
+            :status="status"
+            :disabled="sharedWalletStore.isEip712"
+            @click="connectAutoSign"
+          >
+            {{ $t('portfolio.settings.autoSign.enable') }}
+          </AppButton>
+
+          <span
+            v-if="sharedWalletStore.isEip712"
+            class="text-orange-500 text-xs mt-2"
+          >
+            {{ $t('trade.eip712Warning') }}
+          </span>
+
+          <AppButton
+            v-if="sharedWalletStore.isAutoSignEnabled"
+            variant="danger"
+            :status="status"
+            @click="disconnectAutoSign"
+          >
+            {{ $t('portfolio.settings.autoSign.disconnect') }}
+          </AppButton>
+        </template>
       </div>
     </div>
   </div>

@@ -1,3 +1,5 @@
+import { LocalStorage } from '@injectivelabs/utils'
+import { tokenStaticFactory } from '@shared/Service'
 import {
   NETWORK,
   ENDPOINTS,
@@ -15,12 +17,10 @@ import {
   IndexerGrpcReferralApi,
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
-import { LocalStorage } from '@injectivelabs/utils'
-import { tokenStaticFactory } from '@shared/Service'
 import { tokens } from '@/app/json'
 import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 
-tokenStaticFactory.mapRegistry(tokens)
+tokenStaticFactory.mapRegistry(tokens as any)
 
 // Services
 // https://k8s.mainnet.eu.abacus.injective.network/grpc
@@ -52,8 +52,8 @@ export const indexerGrpcArchiverApi = new IndexerGrpcArchiverApi(
   IS_MAINNET
     ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
     : IS_TESTNET
-    ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
-    : ENDPOINTS.indexer
+      ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
+      : ENDPOINTS.indexer
 )
 
 export const indexerRestLeaderboardChronosApi =

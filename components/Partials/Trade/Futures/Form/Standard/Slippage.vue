@@ -2,7 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
-import { MarketKey, DerivativesTradeFormField } from '@/types'
+import { MarketKey, DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
@@ -72,6 +72,7 @@ function onSlippageChange(value: string) {
               'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4 font-mono'
           }"
           @update:model-value="onSlippageChange"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageInputField)"
         >
           <template #right>%</template>
         </AppInputField>

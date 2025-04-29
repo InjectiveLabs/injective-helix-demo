@@ -9,6 +9,10 @@ const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
 const sharedWalletStore = useSharedWalletStore()
 
+function onCloseModal() {
+  modalStore.closeModal(Modal.Connect)
+}
+
 function onWalletConnect() {
   if (isCountryRestrictedFullAccess(sharedGeoStore.country)) {
     modalStore.openModal(Modal.GeoRestricted)
@@ -23,10 +27,6 @@ function onWalletConnect() {
 
   modalStore.openModal(Modal.Connect)
 }
-
-function onCloseModal() {
-  modalStore.closeModal(Modal.Connect)
-}
 </script>
 
 <template>
@@ -40,7 +40,7 @@ function onCloseModal() {
     />
 
     <AppButton
-      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 mr-1 xl:mr-5 border-none"
+      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 border-none"
       variant="primary"
       :data-cy="commonCyTag(NavBarCyTags.WalletLoginButton)"
       :is-loading="

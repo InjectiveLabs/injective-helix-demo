@@ -14,6 +14,7 @@ import {
 } from '@/app/json'
 
 const jsonStore = useSharedJsonStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const emit = defineEmits<{
   'on:loaded': []
@@ -38,6 +39,7 @@ function pollJson() {
     jsonStore.fetchBlacklistedAddresses(),
     jsonStore.fetchVerifiedSpotMarketMap(),
     jsonStore.fetchDerivativeGridMarkets(),
+    sharedWalletStore.fetchWeb3GatewayStatus(),
     jsonStore.fetchVerifiedDerivativeMarketMap()
   ])
 }
@@ -55,7 +57,7 @@ function mountCachedJson() {
   jsonStore.verifiedDerivativeMarketMap = verifiedDerivateMarketIdMap
 }
 
-useIntervalFn(pollJson, JSON_POLL_INTERVAL)
+useIntervalFn(pollJson, JSON_POLL_INTERVAL) // 10 mins
 </script>
 
 <template>

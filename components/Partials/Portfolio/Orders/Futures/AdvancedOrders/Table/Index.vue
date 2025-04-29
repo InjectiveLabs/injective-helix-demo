@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
+import { PortfolioFuturesAdvancedOrdersTableColumn, PerpetualMarketCyTags } from '@/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -102,7 +102,7 @@ const columns = computed(() => {
             v-bind="{ market: row.market }"
           >
             <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-            <p>{{ row.market.ticker }}</p>
+            <p :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableMarketTicker)">{{ row.market.ticker }}</p>
           </PartialsCommonMarketRedirection>
 
           <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
@@ -128,6 +128,7 @@ const columns = computed(() => {
                 'text-green-500': row.isBuy,
                 'text-red-500': !row.isBuy
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableOrderDirection)"
             >
               {{ $t(`trade.${row.isBuy ? 'buy' : 'sell'}`) }}
             </p>
@@ -148,6 +149,7 @@ const columns = computed(() => {
                 amount: row.price.toFixed(),
                 decimalPlaces: row.priceDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)"
             />
           </span>
         </div>
@@ -160,6 +162,7 @@ const columns = computed(() => {
               amount: row.quantity.toFixed(),
               decimalPlaces: row.quantityDecimals
             }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)"
           />
         </div>
       </template>

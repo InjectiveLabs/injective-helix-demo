@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia'
-import { msgBroadcaster } from '@shared/WalletService'
 import {
   MsgGrant,
   MsgRevoke,
-  getGenericAuthorizationFromMessageType,
-  GrantAuthorizationWithDecodedAuthorization
+  getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
-import { MsgType } from '@injectivelabs/ts-types'
 import { authZApi } from '@/app/Services'
 import { backupPromiseCall } from '@/app/utils/async'
+import type { MsgType } from '@injectivelabs/ts-types'
+import type { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
 type AuthZStoreState = {
   granterGrants: GrantAuthorizationWithDecodedAuthorization[]
@@ -137,7 +136,7 @@ export const useAuthZStore = defineStore('authZ', {
 
       await walletStore.validate()
 
-      const msgs = messageTypes.map((messageType) =>
+      const messages = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
           grantee,
           authorization: getGenericAuthorizationFromMessageType(messageType),
@@ -145,9 +144,8 @@ export const useAuthZStore = defineStore('authZ', {
         })
       )
 
-      await msgBroadcaster.broadcastWithFeeDelegation({
-        msgs,
-        injectiveAddress: sharedWalletStore.injectiveAddress
+      await sharedWalletStore.broadcastWithFeeDelegation({
+        messages
       })
 
       await backupPromiseCall(() => authZStore.fetchGrants())
@@ -170,7 +168,7 @@ export const useAuthZStore = defineStore('authZ', {
 
       await walletStore.validate()
 
-      const msgs = messageTypes.map((messageType) =>
+      const messages = messageTypes.map((messageType) =>
         MsgRevoke.fromJSON({
           grantee,
           messageType,
@@ -178,9 +176,8 @@ export const useAuthZStore = defineStore('authZ', {
         })
       )
 
-      await msgBroadcaster.broadcastWithFeeDelegation({
-        msgs,
-        injectiveAddress: sharedWalletStore.injectiveAddress
+      await sharedWalletStore.broadcastWithFeeDelegation({
+        messages
       })
 
       await backupPromiseCall(() => authZStore.fetchGrants())

@@ -158,6 +158,7 @@ const persistState = (
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
+
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,
