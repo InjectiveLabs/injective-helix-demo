@@ -1,16 +1,16 @@
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   MsgType,
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import type { TransformedPortfolioFuturesAdvancedOrders } from '@/types'
 import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import type { TransformedPortfolioFuturesAdvancedOrders } from '@/types'
 
 export function useFuturesAdvancedOrdersTransformer(
-  triggerList: ComputedRef<DerivativeOrderHistory[]>
+  triggerList: ComputedRef<DerivativeLimitOrder[]>
 ) {
   const authZStore = useAuthZStore()
   const derivativeStore = useDerivativeStore()
@@ -69,7 +69,7 @@ export function useFuturesAdvancedOrdersTransformer(
         : new BigNumberInBase(price.times(quantity).dividedBy(margin))
 
       const isBuy =
-        trigger.direction === OrderSide.Buy ||
+        [OrderSide.Buy, OrderSide.BuyPO].includes(trigger.orderSide) ||
         orderSideList.includes(trigger.orderType as OrderSide)
 
       const isStopLoss =

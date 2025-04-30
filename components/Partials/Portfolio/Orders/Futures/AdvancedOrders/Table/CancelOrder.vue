@@ -2,8 +2,8 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
@@ -16,7 +16,7 @@ const props = withDefaults(
   defineProps<{
     isAuthorized?: boolean
     isCancelable?: boolean
-    trigger: DerivativeOrderHistory
+    trigger: DerivativeLimitOrder
   }>(),
   {}
 )

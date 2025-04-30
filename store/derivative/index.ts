@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { usdtToken } from '@shared/data/token'
 import { SharedMarketType } from '@shared/types'
-import { OrderState } from '@injectivelabs/ts-types'
 import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import {
@@ -84,7 +83,7 @@ type DerivativeStoreState = {
   subaccountTrades: SharedUiDerivativeTrade[]
   recentlyExpiredMarkets: UiDerivativeMarket[]
   subaccountOrderHistory: DerivativeOrderHistory[]
-  subaccountConditionalOrders: DerivativeOrderHistory[]
+  subaccountConditionalOrders: DerivativeLimitOrder[]
 }
 
 const initialStateFactory = (): DerivativeStoreState => ({
@@ -102,7 +101,7 @@ const initialStateFactory = (): DerivativeStoreState => ({
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as DerivativeOrderHistory[],
   subaccountOrderHistoryCount: 0,
-  subaccountConditionalOrders: [] as DerivativeOrderHistory[],
+  subaccountConditionalOrders: [] as DerivativeLimitOrder[],
   subaccountConditionalOrdersCount: 0
 })
 
@@ -506,19 +505,17 @@ export const useDerivativeStore = defineStore('derivative', {
         return
       }
 
-      const { orderHistory, pagination } =
-        await indexerDerivativesApi.fetchOrderHistory({
-          subaccountId: accountStore.subaccountId,
-          isConditional: true,
-          state: OrderState.Booked,
-          marketIds: marketIds || derivativeStore.activeMarketIds,
-          pagination: {
-            limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
-          }
-        })
+      const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
+        subaccountId: accountStore.subaccountId,
+        isConditional: true,
+        marketIds: marketIds || derivativeStore.activeMarketIds,
+        pagination: {
+          limit: TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
+        }
+      })
 
       derivativeStore.$patch({
-        subaccountConditionalOrders: orderHistory,
+        subaccountConditionalOrders: orders,
         subaccountConditionalOrdersCount: Math.min(
           pagination.total,
           TRADE_MAX_SUBACCOUNT_ARRAY_SIZE
