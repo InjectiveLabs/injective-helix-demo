@@ -20,15 +20,15 @@ import {
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
 import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
-import type { Modal, NoticeBanner, DontShowAgain } from '@/types'
+import type { Modal, CtaToast, NoticeBanner } from '@/types'
 import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
   modalsViewed: Modal[]
   hasAcceptedTerms: boolean
   favoriteMarkets: string[]
+  dontShowAgain: CtaToast[]
   bannersViewed: NoticeBanner[]
-  dontShowAgain: DontShowAgain[]
   marketSlippageIdMap: Record<string, string>
 
   preferences: {
@@ -257,7 +257,10 @@ export const useAppStore = defineStore('app', {
         ...initialState
       })
 
-      appStore.userState = { ...initialState.userState, hasAcceptedTerms }
+      appStore.userState = {
+        ...initialState.userState,
+        hasAcceptedTerms
+      }
     }
   }
 })

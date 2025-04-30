@@ -2,15 +2,17 @@
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { getBridgeUrl } from '@shared/utils/network'
+import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import {
   trackOnboardingUserDoesntTrade,
   trackOnboardingUserWithNoAssets,
   trackOnboardingWalletEmptyWithEvmAssets
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage, BusEvents } from '@/types'
+import { Modal, MainPage, CtaToast, BusEvents } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -24,12 +26,19 @@ onMounted(async () => {
     return
   }
 
-  if (await checkUserHasTradableAssetsOnEvm()) {
+  if (
+    (await checkUserHasTradableAssetsOnEvm()) &&
+    !appStore.userState.dontShowAgain?.includes(
+      CtaToast.WalletEmptyWithEvmAssets
+    )
+  ) {
     const isUsdtExist = accountStore.erc20BalancesMap[usdtToken.denom]
 
     notificationStore.info({
       title: t('toast.portfolio.moveAssetsToInjTitle'),
       description: t('toast.portfolio.moveAssetsToInj'),
+      timeout: MAX_TOAST_TIMEOUT,
+      key: CtaToast.WalletEmptyWithEvmAssets,
       actions: [
         {
           label: t('toast.portfolio.bridgeNow'),
@@ -59,10 +68,15 @@ onMounted(async () => {
     return
   }
 
-  if (!checkUserHasAssetsOnChain()) {
+  if (
+    !checkUserHasAssetsOnChain() &&
+    !appStore.userState.dontShowAgain?.includes(CtaToast.UserWithNoAssets)
+  ) {
     notificationStore.info({
       title: t('toast.portfolio.startTradingInSeconds'),
       description: t('toast.portfolio.getCryptoWithFiat'),
+      timeout: MAX_TOAST_TIMEOUT,
+      key: CtaToast.UserWithNoAssets,
       actions: [
         {
           label: t('toast.portfolio.buyCrypto'),
@@ -90,10 +104,17 @@ onMounted(async () => {
     return
   }
 
-  if (!(await checkUserHasTraded()) && route.name !== MainPage.Markets) {
+  if (
+    checkUserHasAssetsOnChain() &&
+    !(await checkUserHasTraded()) &&
+    route.name !== MainPage.Markets &&
+    !appStore.userState.dontShowAgain?.includes(CtaToast.UserDoesntTrade)
+  ) {
     notificationStore.info({
       title: t('toast.portfolio.readyToTrade'),
       description: t('toast.portfolio.discoverTrendingPairs'),
+      timeout: MAX_TOAST_TIMEOUT,
+      key: CtaToast.UserDoesntTrade,
       actions: [
         {
           label: t('toast.portfolio.tradeNow'),
@@ -116,6 +137,18 @@ onMounted(async () => {
 
     return
   }
+})
+
+onWalletDisconnected(() => {
+  Object.values(CtaToast).forEach((key) => {
+    const selectedNotification = notificationStore.notifications.find(
+      (notification) => notification.key === key
+    )
+
+    if (selectedNotification) {
+      notificationStore.clear(selectedNotification.id)
+    }
+  })
 })
 
 function checkUserHasAssetsOnChain() {

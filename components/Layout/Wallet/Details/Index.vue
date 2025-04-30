@@ -15,6 +15,7 @@ const router = useRouter()
 const walletStore = useWalletStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
   useBalance()
 
@@ -47,7 +48,7 @@ function disconnect() {
 
 <template>
   <div class="flex items-center min-h-[22px]">
-    <UPopover mode="hover" :ui="{ base: 'overflow-visible' }">
+    <UPopover :mode="lg ? 'hover' : 'click'" :ui="{ base: 'overflow-visible' }">
       <template #default>
         <div
           class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-4 rounded-lg"

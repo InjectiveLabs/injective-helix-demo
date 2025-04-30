@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
+import type { CtaToast } from '@/types'
 import type { Notification } from '@shared/types'
 
+const appStore = useAppStore()
 const notificationStore = useSharedNotificationStore()
 const { copy } = useClipboard()
 
@@ -52,6 +54,18 @@ function onClose() {
 
   clearTimeout(notifTimeout.value)
   clearInterval(progressBarInterval.value)
+
+  if (props.notification.actions) {
+    appStore.$patch({
+      userState: {
+        ...appStore.userState,
+        dontShowAgain: [
+          ...appStore.userState.dontShowAgain,
+          props.notification.key as CtaToast
+        ]
+      }
+    })
+  }
 }
 
 function onPause() {
@@ -101,6 +115,7 @@ function setupProgressBar(timeout: number) {
         :class="{ 'items-center': !notification.description }"
       >
         <div
+          v-if="!notification.actions"
           class="absolute top-0 left-0 w-full h-1 [transform:rotateY(180deg)]"
         >
           <div
@@ -161,7 +176,7 @@ function setupProgressBar(timeout: number) {
         <slot name="close" :close-notification="onClose">
           <UIcon
             :name="NuxtUiIcons.Close"
-            class="text-white size-4"
+            class="text-white size-4 hover:text-gray-400 transition-colors"
             @click="onClose"
           />
         </slot>

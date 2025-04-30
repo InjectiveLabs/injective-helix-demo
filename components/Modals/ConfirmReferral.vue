@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
+import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import {
   trackRefereeLoggedIn,
   trackOnboardingUserBecomeReferee
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage } from '@/types'
+import { Modal, CtaToast, MainPage } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -52,30 +53,36 @@ function joinReferral() {
     .then(async () => {
       await referralStore.fetchUserReferrer()
 
-      notificationStore.info({
-        title: t('toast.referral.success'),
-        description: t('toast.portfolio.discoverTrendingPairs'),
-        actions: [
-          {
-            label: t('toast.portfolio.tradeNow'),
-            callback: () => {
-              trackOnboardingUserBecomeReferee({
-                isPopupShown: true,
-                isTradeClicked: true,
-                refereeAddress: sharedWalletStore.injectiveAddress
-              })
+      if (
+        !appStore.userState.dontShowAgain?.includes(CtaToast.ReferralSuccess)
+      ) {
+        notificationStore.info({
+          title: t('toast.referral.success'),
+          description: t('toast.portfolio.discoverTrendingPairs'),
+          key: CtaToast.ReferralSuccess,
+          timeout: MAX_TOAST_TIMEOUT,
+          actions: [
+            {
+              label: t('toast.portfolio.tradeNow'),
+              callback: () => {
+                trackOnboardingUserBecomeReferee({
+                  isPopupShown: true,
+                  isTradeClicked: true,
+                  refereeAddress: sharedWalletStore.injectiveAddress
+                })
 
-              router.push({ name: MainPage.Markets })
+                router.push({ name: MainPage.Markets })
+              }
             }
-          }
-        ]
-      })
+          ]
+        })
 
-      trackOnboardingUserBecomeReferee({
-        isPopupShown: true,
-        isTradeClicked: false,
-        refereeAddress: sharedWalletStore.injectiveAddress
-      })
+        trackOnboardingUserBecomeReferee({
+          isPopupShown: true,
+          isTradeClicked: false,
+          refereeAddress: sharedWalletStore.injectiveAddress
+        })
+      }
 
       trackRefereeLoggedIn({
         isSuccess: true,

@@ -2,10 +2,6 @@
 export * from './cy'
 export * from './mixpanel'
 
-export enum DontShowAgain {
-  AutoSign = 'auto-sign'
-}
-
 export enum GuildSortBy {
   TVL = 'tvl',
   Volume = 'volume'
@@ -603,3 +599,11 @@ export type BaseQuoteFields = Exclude<
   | TradeField.TriggerPrice
   | TradeField.ProportionalPercentage
 >
+
+export enum CtaToast {
+  AutoSign = 'auto-sign',
+  ReferralSuccess = 'referral-success',
+  UserDoesntTrade = 'user-doesnt-trade',
+  UserWithNoAssets = 'user-with-no-assets',
+  WalletEmptyWithEvmAssets = 'wallet-empty-with-evm-assets'
+}
