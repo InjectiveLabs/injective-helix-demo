@@ -1,15 +1,14 @@
-/* eslint-disable no-console */
+import { defineNuxtPlugin } from '#imports'
+import { StatusCodes } from 'http-status-codes'
+import { BUGSNAG_KEY, IS_PRODUCTION } from '@shared/utils/constant'
 import {
   ErrorType,
-  ThrownException,
   isThrownException,
   GRPC_REQUEST_FAILED,
   TransactionException,
   GrpcUnaryRequestException
 } from '@injectivelabs/exceptions'
-import { StatusCodes } from 'http-status-codes'
-import { IS_PRODUCTION, BUGSNAG_KEY } from '@shared/utils/constant'
-import { defineNuxtPlugin } from '#imports'
+import type { ThrownException } from '@injectivelabs/exceptions'
 
 const reportToUser = (error: ThrownException) => {
   const notificationStore = useSharedNotificationStore()
@@ -27,9 +26,8 @@ const reportToUser = (error: ThrownException) => {
     error.contextCode === GRPC_REQUEST_FAILED
   ) {
     return notificationStore.error({
-      title: 'The product is experiencing higher than usual demand',
-      description:
-        'Hang tight, engineers are doing their best to improve the performance and efficiency.'
+      title: 'High demand detected',
+      description: 'Engineers are improving performance and efficiency.'
     })
   }
 

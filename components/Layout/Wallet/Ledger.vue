@@ -77,7 +77,7 @@ const connect = handleSubmit(() => {
     })
     .then(() =>
       toast.success({
-        title: t('toast.successfullyConnected')
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {

@@ -49,7 +49,7 @@ function handleConnect() {
     .connect({ wallet: props.walletOption.wallet })
     .then(() =>
       notificationStore.success({
-        title: t('toast.successfullyConnected')
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {

@@ -78,7 +78,7 @@ function connectViaAddress() {
     })
     .then(() =>
       notificationStore.success({
-        title: t('toast.successfullyConnected')
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {
@@ -106,7 +106,7 @@ function connectViaPrivateKey() {
     })
     .then(() =>
       notificationStore.success({
-        title: t('toast.successfullyConnected')
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {

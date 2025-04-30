@@ -56,7 +56,7 @@ async function onSubmit() {
     .then(() =>
       notificationStore.success({
         title: t('toast.success'),
-        description: t('toast.formSubmittedSuccesfully')
+        description: t('toast.formSubmittedSuccessfully')
       })
     )
     .catch(() => {

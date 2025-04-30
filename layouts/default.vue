@@ -183,7 +183,7 @@ watch(
     <div id="modals" />
 
     <AppNotifications
-      class="z-[35] fixed top-14 right-4 flex flex-col gap-2 pointer-events-none"
+      class="z-[41] fixed top-14 right-4 flex flex-col gap-2 pointer-events-none"
     />
 
     <CommonAutoSignExpiredToast />
