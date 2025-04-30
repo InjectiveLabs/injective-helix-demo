@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
-import type { UiDerivativeMarket } from '@/types'
-import { Modal, BusEvents, PerpOrdersTradingBotsView } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { Modal, BusEvents, PerpOrdersTradingBotsView } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
@@ -20,7 +20,7 @@ const props = withDefaults(
 
 const view = ref(PerpOrdersTradingBotsView.ActiveStrategies)
 const status = reactive(new Status(StatusType.Loading))
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 const { $onError } = useNuxtApp()
 
 onWalletConnected(fetchStrategies)
@@ -64,7 +64,7 @@ function fetchStrategies() {
   Promise.all([
     gridStrategyStore.fetchAllStrategies(),
     positionStore.fetchPositions(),
-    derivativeStore.fetchOrdersForSubaccount({
+    derivativeStore.fetchSecondarySubaccountOrders({
       marketIds: [props.market.marketId],
       subaccountId: pgtSubaccount.value
     }),

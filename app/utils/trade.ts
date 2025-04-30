@@ -1,17 +1,18 @@
-import { GrpcOrderType, GrpcOrderTypeMap } from '@injectivelabs/sdk-ts'
-import { TradeExecutionType, OrderSide } from '@injectivelabs/ts-types'
-import { ConditionalOrderSide, OrderTypeFilter } from '@/types'
+import { GrpcOrderTypeMap } from '@injectivelabs/sdk-ts'
+import { OrderSide, TradeExecutionType } from '@injectivelabs/ts-types'
+import { OrderTypeFilter, ConditionalOrderSide } from '@/types'
+import type { GrpcOrderType } from '@injectivelabs/sdk-ts'
 
 export function derivativeTypeToExecutionTypes(type: OrderTypeFilter) {
   switch (type) {
-    case OrderTypeFilter.Limit:
-    case OrderTypeFilter.StopLossLimit:
-    case OrderTypeFilter.TakeProfitLimit:
-      return [OrderTypeFilter.Limit] as any
-    case OrderTypeFilter.Market:
-    case OrderTypeFilter.StopLossMarket:
     case OrderTypeFilter.TakeProfitMarket:
+    case OrderTypeFilter.StopLossMarket:
+    case OrderTypeFilter.Market:
       return [OrderTypeFilter.Market] as any
+    case OrderTypeFilter.TakeProfitLimit:
+    case OrderTypeFilter.StopLossLimit:
+    case OrderTypeFilter.Limit:
+      return [OrderTypeFilter.Limit] as any
     default:
       return undefined
   }
@@ -19,33 +20,33 @@ export function derivativeTypeToExecutionTypes(type: OrderTypeFilter) {
 
 export function derivativeTypeToOrderType(type: OrderTypeFilter) {
   switch (type) {
-    case OrderTypeFilter.StopLossLimit:
-    case OrderTypeFilter.StopLossMarket:
-      return [ConditionalOrderSide.StopBuy, ConditionalOrderSide.StopSell]
-
-    case OrderTypeFilter.TakeProfitLimit:
     case OrderTypeFilter.TakeProfitMarket:
+    case OrderTypeFilter.TakeProfitLimit:
       return [ConditionalOrderSide.TakeBuy, ConditionalOrderSide.TakeSell]
 
+    case OrderTypeFilter.StopLossMarket:
+    case OrderTypeFilter.StopLossLimit:
+      return [ConditionalOrderSide.StopBuy, ConditionalOrderSide.StopSell]
+
     default:
-      return [ConditionalOrderSide.Buy, ConditionalOrderSide.Sell]
+      return undefined
   }
 }
 
 export function derivativeTypeToTradeType(type: OrderTypeFilter) {
   switch (type) {
-    case OrderTypeFilter.Limit:
-    case OrderTypeFilter.StopLossLimit:
+    case OrderTypeFilter.TakeProfitMarket:
+    case OrderTypeFilter.StopLossMarket:
+    case OrderTypeFilter.Market:
+      return [TradeExecutionType.Market]
     case OrderTypeFilter.TakeProfitLimit:
+    case OrderTypeFilter.StopLossLimit:
+    case OrderTypeFilter.Limit:
       return [
         TradeExecutionType.LimitFill,
         TradeExecutionType.LimitMatchNewOrder,
         TradeExecutionType.LimitMatchRestingOrder
       ]
-    case OrderTypeFilter.Market:
-    case OrderTypeFilter.StopLossMarket:
-    case OrderTypeFilter.TakeProfitMarket:
-      return [TradeExecutionType.Market]
 
     default:
       return undefined
@@ -58,22 +59,22 @@ export const orderSideToChaseOrderType = (
   switch (orderType) {
     case OrderSide.Unspecified:
       return GrpcOrderTypeMap.UNSPECIFIED
-    case OrderSide.Buy:
+    case OrderSide.StopSell:
+      return GrpcOrderTypeMap.STOP_SELL
+    case OrderSide.TakeSell:
+      return GrpcOrderTypeMap.TAKE_SELL
+    case OrderSide.StopBuy:
+      return GrpcOrderTypeMap.STOP_BUY
+    case OrderSide.TakeBuy:
+      return GrpcOrderTypeMap.TAKE_BUY
+    case OrderSide.SellPO:
+      return GrpcOrderTypeMap.SELL_PO
+    case OrderSide.BuyPO:
       return GrpcOrderTypeMap.BUY_PO
     case OrderSide.Sell:
       return GrpcOrderTypeMap.SELL_PO
-    case OrderSide.StopBuy:
-      return GrpcOrderTypeMap.STOP_BUY
-    case OrderSide.StopSell:
-      return GrpcOrderTypeMap.STOP_SELL
-    case OrderSide.TakeBuy:
-      return GrpcOrderTypeMap.TAKE_BUY
-    case OrderSide.TakeSell:
-      return GrpcOrderTypeMap.TAKE_SELL
-    case OrderSide.BuyPO:
+    case OrderSide.Buy:
       return GrpcOrderTypeMap.BUY_PO
-    case OrderSide.SellPO:
-      return GrpcOrderTypeMap.SELL_PO
     default:
       return GrpcOrderTypeMap.BUY
   }

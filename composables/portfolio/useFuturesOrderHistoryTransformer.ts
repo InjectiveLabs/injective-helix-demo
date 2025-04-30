@@ -1,16 +1,14 @@
+import { format } from 'date-fns'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { format } from 'date-fns'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { DATE_TIME_DISPLAY } from '@/app/utils/constants'
-import {
-  PortfolioFuturesOrderHistoryTableColumn,
-  TransformedPortfolioFuturesOrderHistory
-} from '@/types'
+import { PortfolioFuturesOrderHistoryTableColumn } from '@/types'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import type { TransformedPortfolioFuturesOrderHistory } from '@/types'
 
 export function useFuturesOrderHistoryTransformer(
   orderList: ComputedRef<DerivativeOrderHistory[]>

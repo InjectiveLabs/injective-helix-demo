@@ -60,7 +60,7 @@ function removeStrategy() {
         ])
       } else {
         Promise.all([
-          derivativeStore.fetchOrdersForSubaccount({
+          derivativeStore.fetchSecondarySubaccountOrders({
             subaccountId,
             marketIds: [marketId]
           }),
