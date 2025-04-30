@@ -414,7 +414,7 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async fetchOrdersForSubaccount({
+    async fetchSecondarySubaccountOrders({
       marketIds,
       subaccountId
     }: {

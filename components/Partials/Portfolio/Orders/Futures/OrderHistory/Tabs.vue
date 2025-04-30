@@ -17,10 +17,10 @@ const { value: typeValue } = useStringField({
 })
 
 const emit = defineEmits<{
-  'market:update': [market: string]
+  'form:reset': []
   'type:update': [type: string]
   'side:update': [side: string]
-  'form:reset': []
+  'market:update': [market: string]
 }>()
 
 function onMarketChange(market: string) {

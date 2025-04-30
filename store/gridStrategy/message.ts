@@ -1,38 +1,38 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { GeneralException } from '@injectivelabs/exceptions'
+import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
+import ExecArgRemoveSubaccountDeposits from '~/app/grid-trading/ExecArgRemoveSubaccountDeposits'
 import {
-  Msgs,
   MsgExecuteContractCompat,
   spotPriceToChainPriceToFixed,
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { GeneralException } from '@injectivelabs/exceptions'
+import { backupPromiseCall } from '@/app/utils/async'
+import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
+import {
+  prepareAuthZMsg,
+  prepareWithdrawMsg,
+  prepareOrderMessages
+} from '@/app/utils/msgs'
 import {
   ExecArgCreateSpotGridStrategy,
   ExecArgCreatePerpGridStrategy
 } from '@/app/grid-trading'
-import { backupPromiseCall } from '@/app/utils/async'
-
-import {
-  prepareOrderMessages,
-  prepareAuthZMsg,
-  prepareWithdrawMsg
-} from '@/app/utils/msgs'
-import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   ExitType,
+  SpotGridStrategyType,
+  PerpetualGridStrategyType,
+  DerivativeGridTradingField
+} from '@/types'
+import type { Msgs } from '@injectivelabs/sdk-ts'
+import type {
   ExitConfig,
   UiSpotMarket,
   UiDerivativeMarket,
-  SpotGridStrategyType,
-  PerpetualGridStrategyType,
-  DerivativeGridTradingForm,
-  DerivativeGridTradingField
+  DerivativeGridTradingForm
 } from '@/types'
-import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
-import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
-import ExecArgRemoveSubaccountDeposits from '~/app/grid-trading/ExecArgRemoveSubaccountDeposits'
 
 export const createSpotGridStrategy = async ({
   grids,
@@ -48,14 +48,14 @@ export const createSpotGridStrategy = async ({
   trailingParams
 }: {
   grids: number
-  stopLoss?: ExitConfig
-  takeProfit?: ExitConfig
-  exitType?: ExitType
   lowerPrice: string
   upperPrice: string
-  quoteAmount?: string
+  exitType?: ExitType
   baseAmount?: string
+  quoteAmount?: string
   market: UiSpotMarket
+  stopLoss?: ExitConfig
+  takeProfit?: ExitConfig
   strategyType: SpotGridStrategyType
   trailingParams?: {
     lowerTrailingBound: string
@@ -437,7 +437,7 @@ export const createPerpStrategy = async (
         accountStore.fetchCw20Balances(),
         gridStrategyStore.fetchAllStrategies(),
         accountStore.fetchAccountPortfolioBalances(),
-        derivativeStore.fetchOrdersForSubaccount({
+        derivativeStore.fetchSecondarySubaccountOrders({
           marketIds: [market.marketId],
           subaccountId: gridStrategySubaccountId
         }),
@@ -460,10 +460,10 @@ export async function createSpotLiquidityBot(params: {
   baseAmount?: string
   quoteAmount?: string
 
-  lowerTrailingBound: string
-  upperTrailingBound: string
-
   market: UiSpotMarket
+  lowerTrailingBound: string
+
+  upperTrailingBound: string
 }) {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()

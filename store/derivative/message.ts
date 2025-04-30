@@ -1,7 +1,7 @@
+import { orderSideToOrderType } from '@shared/transformer/trade'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  Msgs,
-  PositionV2,
-  DerivativeLimitOrder,
   MsgCancelDerivativeOrder,
   MsgCreateDerivativeLimitOrder,
   MsgCreateDerivativeMarketOrder,
@@ -10,18 +10,17 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { orderSideToOrderType } from '@shared/transformer/trade'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
 import { prepareOrderMessages } from '@/app/utils/msgs'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
-import {
-  UIDerivativeOrder,
-  UiDerivativeMarket,
-  ConditionalOrderSide
-} from '@/types'
+import { ConditionalOrderSide } from '@/types'
+import type { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
+import type {
+  Msgs,
+  PositionV2,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 
 const fetchBalances = (
   {
@@ -52,14 +51,14 @@ const createTpSlMessage = ({
   isBuy,
   market
 }: {
-  triggerPrice: BigNumberInBase
-  executionPrice: BigNumberInBase
-  quantity: BigNumberInBase
+  isBuy: boolean
+  marketId: string
   subaccountId: string
   injectiveAddress: string
-  marketId: string
-  isBuy: boolean
+  quantity: BigNumberInBase
   market: UiDerivativeMarket
+  triggerPrice: BigNumberInBase
+  executionPrice: BigNumberInBase
 }) => {
   const referralStore = useReferralStore()
 
@@ -177,10 +176,10 @@ export const submitLimitOrder = async ({
   reduceOnly
 }: {
   reduceOnly: boolean
+  orderSide: OrderSide
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  orderSide: OrderSide
   market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
@@ -260,12 +259,12 @@ export const submitStopLimitOrder = async ({
   triggerPrice
 }: {
   reduceOnly: boolean
+  orderSide: OrderSide
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  triggerPrice: BigNumberInBase
-  orderSide: OrderSide
   market: UiDerivativeMarket
+  triggerPrice: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -350,13 +349,13 @@ export const submitMarketOrder = async ({
   stopLoss
 }: {
   reduceOnly: boolean
+  orderSide: OrderSide
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  orderSide: OrderSide
   market: UiDerivativeMarket
-  takeProfit?: BigNumberInBase
   stopLoss?: BigNumberInBase
+  takeProfit?: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -467,12 +466,12 @@ export const submitStopMarketOrder = async ({
   triggerPrice
 }: {
   reduceOnly: boolean
+  orderSide: OrderSide
   price: BigNumberInBase
   margin: BigNumberInBase
   quantity: BigNumberInBase
-  triggerPrice: BigNumberInBase
-  orderSide: OrderSide
   market: UiDerivativeMarket
+  triggerPrice: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
