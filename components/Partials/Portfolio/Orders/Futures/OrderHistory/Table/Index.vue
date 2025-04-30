@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import {
   PerpetualMarketCyTags,
   PortfolioFuturesOrderHistoryTableColumn
 } from '@/types'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()

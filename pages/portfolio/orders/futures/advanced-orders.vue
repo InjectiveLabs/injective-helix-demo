@@ -27,8 +27,10 @@ const filteredAdvancedOrders = computed(() =>
       : true
 
     const isPartOfType = formValues[SpotOrderHistoryFilterField.Type]
-      ? derivativeTypeToOrderType(
-          formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
+      ? (
+          derivativeTypeToOrderType(
+            formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
+          ) || []
         ).includes(advancedOrders.orderType as ConditionalOrderSide)
       : true
 

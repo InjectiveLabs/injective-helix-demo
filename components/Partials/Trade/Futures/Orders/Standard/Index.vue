@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import type {
-  UiDerivativeMarket} from '@/types';
-import {
-  MarketKey,
-  PerpOrdersStandardView
-} from '@/types'
+import { MarketKey, PerpOrdersStandardView } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const activityStore = useActivityStore()
 const derivativeStore = useDerivativeStore()
@@ -32,8 +28,7 @@ function refreshData() {
     activityStore.fetchSubaccountFundingHistory(filters),
     derivativeStore.fetchSubaccountOrderHistory(filters),
     derivativeStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
-  ])
-    .catch($onError)
+  ]).catch($onError)
 
   derivativeStore.streamSubaccountOrders({
     marketId,
