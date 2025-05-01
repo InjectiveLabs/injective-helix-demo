@@ -105,7 +105,7 @@ function setupProgressBar(timeout: number) {
   >
     <div
       v-if="notification"
-      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800"
+      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 max-w-[600px]"
       :class="wrapperClass"
       @mouseenter="onPause"
       @mouseleave="onResume"
@@ -176,7 +176,7 @@ function setupProgressBar(timeout: number) {
         <slot name="close" :close-notification="onClose">
           <UIcon
             :name="NuxtUiIcons.Close"
-            class="text-white size-4 hover:text-gray-400 transition-colors"
+            class="text-white size-4 min-w-4 hover:text-gray-400 transition-colors"
             @click="onClose"
           />
         </slot>

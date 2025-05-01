@@ -27,11 +27,10 @@ export default {
       autoSign: {
         disabledToast: 'Auto sign disabled',
         allowsYouToTrade:
-          'Allows trading on Helix for 72 hours without signing most transactions; can be deactivated at any time',
+          'Allows trading on Helix for 3 days; can be deactivated at any time',
         enabledToast: {
           title: 'Auto sign enabled',
-          description:
-            'Auto sign active for 72 hours without signing most transactions'
+          description: 'Auto sign active for 3 days'
         }
       }
     },
