@@ -10,8 +10,8 @@ const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const notificationStore = useSharedNotificationStore()
-const { $onError } = useNuxtApp()
 const { t } = useLang()
+const { $onError } = useNuxtApp()
 
 withDefaults(
   defineProps<{
@@ -37,13 +37,13 @@ function connectAutoSign() {
         description: t('toast.portfolio.autoSign.enabledToast.description')
       })
 
-      closeNotification()
+      notificationStore.close(CtaToast.AutoSign)
     })
     .catch($onError)
 }
 
 function dontShowAutoSignAgain() {
-  closeNotification()
+  notificationStore.close(CtaToast.AutoSign)
 
   appStore.$patch({
     userState: {
@@ -51,16 +51,6 @@ function dontShowAutoSignAgain() {
       dontShowAgain: [...appStore.userState.dontShowAgain, CtaToast.AutoSign]
     }
   })
-}
-
-function closeNotification() {
-  const selectedNotification = notificationStore.notifications.find(
-    (notification) => notification.key === CtaToast.AutoSign
-  )
-
-  if (selectedNotification) {
-    notificationStore.clear(selectedNotification.id)
-  }
 }
 
 let timeout: undefined | NodeJS.Timeout
@@ -82,7 +72,7 @@ onWalletConnected(() => {
       sharedWalletStore.wallet !== Wallet.Magic
     ) {
       notificationStore.info({
-        title: t('portfolio.settings.autoSign.enable'),
+        title: t('autoSign.enable'),
         description: t('toast.portfolio.autoSign.allowsYouToTrade'),
         key: CtaToast.AutoSign,
         timeout: MAX_TOAST_TIMEOUT,

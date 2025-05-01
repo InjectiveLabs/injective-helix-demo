@@ -27,7 +27,6 @@ const ftmPairs = [
 
 const route = useRoute()
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
 const now = useNow({ interval: 1000 })
@@ -61,12 +60,6 @@ const chainUpgradeBanners = computed<Banner[]>(() => [
 ])
 
 const promotionalBanners = computed<Banner[]>(() => [
-  {
-    // todo: replace this banner with new UX after Ned comes back with the design
-    shouldPersist: true,
-    id: NoticeBanner.AuthzConnected,
-    shouldDisplay: sharedWalletStore.isAuthzWalletConnected
-  },
   {
     id: NoticeBanner.OwnYourAssetCampaign,
     shouldDisplay:
@@ -172,16 +165,6 @@ function onHideBanner() {
       </template>
     </i18n-t>
 
-    <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.AuthzConnected"
-      keypath="banners.authz"
-      tag="p"
-    >
-      <template #address>
-        <strong>{{ sharedWalletStore.authZOrInjectiveAddress }}</strong>
-      </template>
-    </i18n-t>
-
     <div
       v-if="
         bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade &&
@@ -217,13 +200,6 @@ function onHideBanner() {
         </NuxtLink>
       </template>
     </i18n-t>
-
-    <UIcon
-      v-if="bannerToDisplay.id === NoticeBanner.AuthzConnected"
-      :name="NuxtUiIcons.Exit"
-      class="text-blue-900 h-6 w-6 min-w-6"
-      @click="sharedWalletStore.resetAuthZ()"
-    />
 
     <UIcon
       v-else

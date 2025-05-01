@@ -57,8 +57,8 @@ export const useTokenStore = defineStore('token', {
 
       const denoms = [
         ...new Set([
-          ...spotStore.unverifiedDenoms,
-          ...derivativeStore.unverifiedDenoms
+          ...derivativeStore.unverifiedDenoms,
+          ...spotStore.unverifiedDenoms
         ])
       ]
 
@@ -73,8 +73,8 @@ export const useTokenStore = defineStore('token', {
 
       const denoms = [
         ...new Set([
-          ...spotStore.tradableDenoms,
-          ...derivativeStore.tradableDenoms
+          ...derivativeStore.tradableDenoms,
+          ...spotStore.tradableDenoms
         ])
       ]
 

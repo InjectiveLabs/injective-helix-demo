@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
-import { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
+import type { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 
 const props = withDefaults(
   defineProps<{
@@ -22,6 +24,11 @@ function toggle() {
 
 function connectAuthZ() {
   sharedWalletStore.connectAuthZ(props.granter)
+
+  notificationStore.success({
+    title: t('toast.authz.connectedAs'),
+    description: sharedWalletStore.authZOrInjectiveAddress
+  })
 }
 </script>
 
@@ -45,16 +52,17 @@ function connectAuthZ() {
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
-      <span>{{ $t('portfolio.settings.authz.viewGrantedFunctions') }}</span>
+      <span>{{ $t('authZ.viewGrantedFunctions') }}</span>
     </div>
 
-    <div class="flex-1 flex items-center p-2">
+    <div class="flex-1 flex items-center p-2 justify-end">
       <AppButton
         v-if="sharedWalletStore.authZOrInjectiveAddress === granter"
-        disabled
+        variant="danger"
         size="sm"
+        @click="sharedWalletStore.resetAuthZ"
       >
-        {{ $t('portfolio.settings.authz.connected') }}
+        {{ $t('navigation.disconnect') }}
       </AppButton>
 
       <AppButton
@@ -72,16 +80,16 @@ function connectAuthZ() {
         class="text-nowrap px-2"
         @click.stop="connectAuthZ"
       >
-        {{ $t('portfolio.settings.authz.connectAs') }}
+        {{ $t('authZ.connectAs') }}
       </AppButton>
     </div>
   </div>
 
   <AppCollapse :wrapper-classes="'divide-y bg-black/30'" v-bind="{ isOpen }">
     <PartialsPortfolioSettingsAuthzGranterTableRowGrant
-      v-for="grant in grants"
+      v-for="(grant, index) in grants"
       v-bind="{ grant }"
-      :key="`${grant.authorizationType}-${grant.grantee}-${grant.granter}`"
+      :key="`${index}-${grant.authorizationType}-${grant.grantee}-${grant.granter}`"
     />
   </AppCollapse>
 </template>

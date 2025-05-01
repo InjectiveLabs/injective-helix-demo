@@ -5,7 +5,7 @@ import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
 import { isCosmosStationWalletInstalled } from '@injectivelabs/wallet-cosmostation'
-import { WalletOption } from '@/types'
+import type { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -173,7 +173,7 @@ function toggleShowMoreWallets() {
 
         <LayoutWalletSso
           class="my-6"
-          @set:magicStatusLoading="onSetMagicStatusLoading"
+          @set:magic-status-loading="onSetMagicStatusLoading"
         />
 
         <div class="flex items-center justify-center">

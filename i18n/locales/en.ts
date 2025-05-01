@@ -419,11 +419,6 @@ export default {
     enterInjectiveAddress: 'Enter your injective address'
   },
 
-  authZ: {
-    granters: 'Granters',
-    grantees: 'Grantees'
-  },
-
   postOnlyMode: {
     title: 'Post Only Mode!',
     description:

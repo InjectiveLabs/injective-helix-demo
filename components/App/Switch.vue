@@ -1,5 +1,11 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ modelValue: boolean }>(), {})
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean
+    isDisabled?: boolean
+  }>(),
+  {}
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -17,8 +23,10 @@ const value = computed({
   >
     <input
       v-model="value"
+      :disabled="isDisabled"
       type="checkbox"
-      class="absolute inset-0 z-10 opacity-0 cursor-pointer"
+      class="absolute inset-0 z-10 opacity-0"
+      :class="[isDisabled ? 'cursor-not-allowed' : 'cursor-pointer']"
     />
     <div
       class="h-4 w-4 rounded-full bg-white [&+:checked]:translate-x-4 transition-all"

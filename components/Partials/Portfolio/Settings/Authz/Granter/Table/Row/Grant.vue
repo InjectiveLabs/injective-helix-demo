@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import {
-  GrantAuthorizationType,
-  GrantAuthorizationWithDecodedAuthorization
-} from '@injectivelabs/sdk-ts'
+import { GrantAuthorizationType } from '@injectivelabs/sdk-ts'
+import type { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +18,8 @@ const authorizationFormatted = computed(() => {
   ) {
     return props.grant.authorization.msg.split('.').reverse()[0]
   }
+
+  return ''
 })
 </script>
 
