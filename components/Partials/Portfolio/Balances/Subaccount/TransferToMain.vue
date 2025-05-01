@@ -37,7 +37,7 @@ function transferToMain() {
 
   action()
     .then(() => {
-      success({ title: t('toast.success') })
+      success({ title: t('toast.account.assetsTransferred') })
     })
     .catch($onError)
     .finally(() => {

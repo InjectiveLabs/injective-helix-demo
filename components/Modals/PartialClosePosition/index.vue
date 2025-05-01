@@ -81,7 +81,7 @@ async function closePosition() {
     }
 
     if (props.row.pnl.isNaN()) {
-      notificationStore.error({ title: t('toast.trade.no_liquidity') })
+      notificationStore.error({ title: t('toast.trade.noLiquidity') })
 
       return false
     }

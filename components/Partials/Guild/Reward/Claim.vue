@@ -106,7 +106,7 @@ function onClaimRewards() {
     .then(() => {
       notificationStore.success({
         title: t('toast.success'),
-        description: t('toast.successfullyClaimedRewards')
+        description: t('toast.campaign.successfullyClaimedRewards')
       })
 
       hasUserClaimed.value = true

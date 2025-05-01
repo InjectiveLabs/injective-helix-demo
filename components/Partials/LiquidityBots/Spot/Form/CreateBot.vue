@@ -108,7 +108,7 @@ async function createLiquidityBot() {
 
       notificationStore.success({
         title: t('toast.success'),
-        description: t('toast.sgt.gridStrategyCreatedSuccessfully')
+        description: t('toast.sgt.tradingBotCreatedSuccessfully')
       })
 
       status.setIdle()

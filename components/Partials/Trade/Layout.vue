@@ -36,18 +36,14 @@ function connectAutoSign() {
         title: t('toast.portfolio.autoSign.enabledToast.title'),
         description: t('toast.portfolio.autoSign.enabledToast.description')
       })
+
+      closeNotification()
     })
     .catch($onError)
 }
 
 function dontShowAutoSignAgain() {
-  const selectedNotification = notificationStore.notifications.find(
-    (notification) => notification.key === CtaToast.AutoSign
-  )
-
-  if (selectedNotification) {
-    notificationStore.clear(selectedNotification.id)
-  }
+  closeNotification()
 
   appStore.$patch({
     userState: {
@@ -55,6 +51,16 @@ function dontShowAutoSignAgain() {
       dontShowAgain: [...appStore.userState.dontShowAgain, CtaToast.AutoSign]
     }
   })
+}
+
+function closeNotification() {
+  const selectedNotification = notificationStore.notifications.find(
+    (notification) => notification.key === CtaToast.AutoSign
+  )
+
+  if (selectedNotification) {
+    notificationStore.clear(selectedNotification.id)
+  }
 }
 
 let timeout: undefined | NodeJS.Timeout

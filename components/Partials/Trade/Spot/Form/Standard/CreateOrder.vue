@@ -171,7 +171,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('toast.trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -211,7 +211,7 @@ function submitLimitOrder() {
     })
     .then(() => {
       modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('toast.trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {

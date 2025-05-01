@@ -407,7 +407,7 @@ function cancelTp() {
   derivativeStore
     .cancelOrder(isTpDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('toast.success') })
+      notificationStore.success({ title: t('toast.trade.tpOrderCancelled') })
     })
     .catch($onError)
     .finally(() => {
@@ -425,7 +425,7 @@ function cancelSl() {
   derivativeStore
     .cancelOrder(isSlDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('toast.success') })
+      notificationStore.success({ title: t('toast.trade.slOrderCancelled') })
     })
     .catch($onError)
     .finally(() => {

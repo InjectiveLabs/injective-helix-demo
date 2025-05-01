@@ -165,7 +165,7 @@ function onClosePartialPosition() {
       availablePositionQuantity: selectedPositionDetails.value.quantity
     })
     .then(() =>
-      notificationStore.success({ title: t('toast.trade.position_closed') })
+      notificationStore.success({ title: t('toast.trade.positionClosed') })
     )
     .catch($onError)
     .finally(() => {

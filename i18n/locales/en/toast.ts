@@ -5,12 +5,14 @@ export default {
     addressCopied: 'Address copied',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
+    subscribeToast: 'Signed up for Helix notifications',
     formSubmittedSuccessfully: 'Form submitted successfully.',
     copiedAddressToClipboard: 'Address copied to clipboard',
-    subscribeToast: 'Signed up for Helix notifications',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
     account: {
+      authZAdded: 'AuthZ account added',
+      assetsTransferred: 'Assets transferred to your account',
       transferToSubaccountSuccess: 'Subaccount transfer successful'
     },
     portfolio: {
@@ -35,13 +37,18 @@ export default {
       }
     },
     trade: {
-      invalid_price: 'Invalid price',
-      position_closed: 'Position closed',
-      no_liquidity: 'Not enough liquidity',
-      order_placed: 'Order placed successfully',
-      order_success_cancelling: 'Order cancelled',
+      invalidPrice: 'Invalid price',
+      orderCancelled: 'Order cancelled',
+      positionClosed: 'Position closed',
+      noLiquidity: 'Not enough liquidity',
+      orderPlaced: 'Order placed successfully',
+      allOrdersCancelled: 'All orders cancelled',
       orderUpdated: 'Order updated successfully',
-      success_added_margin: 'Margin added successfully',
+      slOrderCancelled: 'Stop loss order cancelled',
+      successAddedMargin: 'Margin added successfully',
+      tpOrderCancelled: 'Take profit order cancelled',
+      advancedOrderCancelled: 'Advanced order cancelled',
+      allAdvancedOrdersCancelled: 'All advanced orders cancelled',
       tpSuccessMessage:
         'your take profit order has been set for {quantity} quantity at {price} price',
       slSuccessMessage:
@@ -72,9 +79,9 @@ export default {
         'We’ve received your information; our team will reach out to you shortly '
     },
     campaign: {
+      errorAlreadyClaimed: 'Reward already claimed',
       notFound: 'Campaign not found; please try again later',
-      successfullyClaimedRewards: 'Rewards claimed successfully',
-      errorAlreadyClaimed: 'Reward already claimed'
+      successfullyClaimedRewards: 'Rewards claimed successfully'
     },
     guild: {
       successfullyJoinGuild: 'Successfully joined guild',
@@ -83,8 +90,8 @@ export default {
     },
     sgt: {
       strategyRemoved: 'strategy removed successfully',
-      gridStrategyRemovedSuccessfully: 'Grid strategy removed successfully',
-      gridStrategyCreatedSuccessfully: 'Grid strategy created successfully'
+      tradingBotRemovedSuccessfully: 'Trading bot removed successfully',
+      tradingBotCreatedSuccessfully: 'Trading bot created successfully'
     }
   }
 }

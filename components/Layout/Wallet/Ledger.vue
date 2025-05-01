@@ -7,8 +7,8 @@ import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
 import type { SharedDropdownOption } from '@shared/types'
 
 const walletStore = useWalletStore()
-const toast = useSharedNotificationStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -76,7 +76,7 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      toast.success({
+      notificationStore.success({
         title: t('toast.connectedSuccessfully')
       })
     )

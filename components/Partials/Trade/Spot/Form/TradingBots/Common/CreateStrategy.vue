@@ -343,7 +343,9 @@ async function createStrategy() {
       market: market.value
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.success') })
+      notificationStore.success({
+        title: t('toast.trade.tradingBotCreatedSuccessfully')
+      })
     })
     .catch((e) => {
       err = e

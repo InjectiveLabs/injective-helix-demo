@@ -35,7 +35,7 @@ function cancelOrder() {
     .cancelOrder(props.order)
     .then(() => {
       notificationStore.success({
-        title: t('toast.trade.order_success_cancelling')
+        title: t('toast.trade.orderCancelled')
       })
     })
     .catch($onError)

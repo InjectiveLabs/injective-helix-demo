@@ -37,7 +37,7 @@ function claimRewards() {
     .then(() => {
       notificationStore.success({
         title: t('toast.success'),
-        description: t('toast.successfullyClaimedRewards')
+        description: t('toast.campaign.successfullyClaimedRewards')
       })
 
       backupPromiseCall(() => campaignStore.fetchRound())

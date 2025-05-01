@@ -149,7 +149,7 @@ function onOrderClose({
   action()
     .then(() => {
       notificationStore.success({
-        title: t('toast.trade.order_success_cancelling')
+        title: t('toast.trade.orderCancelled')
       })
     })
     .catch((e) => {
@@ -173,7 +173,7 @@ function onOrderChange({
 
   if (isInvalidPrice) {
     notificationStore.error({
-      title: t('toast.trade.invalid_price')
+      title: t('toast.trade.invalidPrice')
     })
 
     tradingChartComponent.value?.modifyLimitOrderLines()
