@@ -14,7 +14,7 @@ import type { UiDerivativeMarket } from '@/types'
 
 const appStore = useAppStore()
 
-const minLeverage = 1
+const minLeverage = 1.2
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -99,7 +99,7 @@ function onMouseUp() {
   }
 
   if (Number(leverage.value) < 0) {
-    leverageModel.value = minLeverage
+    leverageModel.value = `${minLeverage}`
   }
 }
 
