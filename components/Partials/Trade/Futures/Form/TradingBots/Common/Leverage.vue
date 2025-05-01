@@ -109,7 +109,7 @@ const leverageNumber = computed({
 })
 
 onMounted(() => {
-  leverageModel.value = '1'
+  leverageModel.value = '1.2'
 })
 </script>
 
