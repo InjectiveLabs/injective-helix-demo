@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
-import { FactoryOpts } from 'imask'
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {
   MarketKey,
-  UiDerivativeMarket,
-  DerivativesTradeFormField,
-  PerpetualMarketCyTags
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
 } from '@/types'
+import type { FactoryOpts } from 'imask'
+import type { UiDerivativeMarket } from '@/types'
 
 const appStore = useAppStore()
+
+const minLeverage = 1.2
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -45,7 +47,7 @@ const { el, typed } = useIMask(
             mapToRadix: ['.', ','],
             scale: 2,
             lazy: false,
-            min: 0.1,
+            min: minLeverage,
             max: Number(maxLeverageAvailable.value),
             autofix: true
           }
@@ -97,7 +99,7 @@ function onMouseUp() {
   }
 
   if (Number(leverage.value) < 0) {
-    leverageModel.value = '0.01'
+    leverageModel.value = `${minLeverage}`
   }
 }
 
@@ -107,7 +109,7 @@ const leverageNumber = computed({
 })
 
 onMounted(() => {
-  leverageModel.value = '1'
+  leverageModel.value = '1.2'
 })
 </script>
 
@@ -125,7 +127,7 @@ onMounted(() => {
         <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
           :step="0.01"
-          :min-leverage="0.01"
+          :min-leverage="minLeverage"
           :max-leverage="Number(maxLeverageAvailable)"
           @mouseup="onMouseUp"
         />
