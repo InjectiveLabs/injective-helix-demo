@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
+import { HELIX_MOBILE_CONNECT_SERVER_URL } from '@/app/utils/constants'
 import {
   getMobileAddress,
   addDesktopAddress
 } from '@/app/services/connectMobile'
-import { TRADING_MESSAGES } from '@/app/data/trade'
-import { CONNECT_SERVER_URL } from '@/app/utils/constants'
-import { BusEvents, Modal } from '@/types'
+import { Modal, BusEvents } from '@/types'
 
 const authZStore = useAuthZStore()
 const modalStore = useSharedModalStore()
@@ -18,8 +18,8 @@ const { $onError } = useNuxtApp()
 
 const qrCodeText = JSON.stringify({
   granter: sharedWalletStore.injectiveAddress,
-  endpoint: CONNECT_SERVER_URL,
-  postUrl: `${CONNECT_SERVER_URL}/helix-connect/mobile`
+  endpoint: HELIX_MOBILE_CONNECT_SERVER_URL,
+  postUrl: `${HELIX_MOBILE_CONNECT_SERVER_URL}/helix-connect/mobile`
 })
 
 const tradingMessages = [
