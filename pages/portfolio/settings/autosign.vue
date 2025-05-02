@@ -11,20 +11,6 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Idle))
 
-function disconnectAutoSign() {
-  status.setLoading()
-
-  sharedWalletStore
-    .disconnectAutoSign()
-    .then(() => {
-      notificationStore.success({
-        title: t('portfolio.settings.autoSign.disabledToast.title')
-      })
-    })
-    .catch($onError)
-    .finally(() => status.setIdle())
-}
-
 function connectAutoSign() {
   status.setLoading()
 
@@ -37,8 +23,22 @@ function connectAutoSign() {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
       notificationStore.success({
-        title: t('portfolio.settings.autoSign.enabledToast.title'),
-        description: t('portfolio.settings.autoSign.enabledToast.description')
+        title: t('toast.portfolio.autoSign.enabledToast.title'),
+        description: t('toast.portfolio.autoSign.enabledToast.description')
+      })
+    })
+    .catch($onError)
+    .finally(() => status.setIdle())
+}
+
+function disconnectAutoSign() {
+  status.setLoading()
+
+  sharedWalletStore
+    .disconnectAutoSign()
+    .then(() => {
+      notificationStore.success({
+        title: t('toast.portfolio.autoSign.disabledToast')
       })
     })
     .catch($onError)

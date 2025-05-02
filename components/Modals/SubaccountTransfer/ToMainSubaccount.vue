@@ -29,7 +29,11 @@ function onEndBot() {
       activeStrategy.value.contractAddress
     )
   ])
-    .then(() => notificationStore.success({ title: t('common.success') }))
+    .then(() =>
+      notificationStore.success({
+        title: t('toast.sgt.tradingBotRemovedSuccessfully')
+      })
+    )
     .catch($onError)
     .finally(() => {
       status.setIdle()

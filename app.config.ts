@@ -4,6 +4,7 @@ export default defineAppConfig({
     gray: 'slate',
 
     modal: {
+      wrapper: 'relative z-[99]',
       background: 'dark:bg-brand-900',
       overlay: {
         background: 'dark:bg-black/50'
@@ -24,10 +25,6 @@ export default defineAppConfig({
       background: 'dark:bg-coolGray-875',
       ring: 'ring-0',
       padding: 'p-3'
-    },
-
-    notification: {
-      background: 'dark:bg-brand-900'
     },
 
     tooltip: {

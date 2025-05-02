@@ -18,7 +18,6 @@ const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
 const jsonStore = useSharedJsonStore()
-const modalStore = useSharedModalStore()
 const resetForm = useResetForm<SpotTradeForm>()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -169,7 +168,7 @@ function submitMarketOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -208,7 +207,7 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {

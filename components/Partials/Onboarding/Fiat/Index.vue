@@ -31,7 +31,7 @@ function onPurchaseFunds() {
 
 function onCopyInjectiveAddress() {
   copy(sharedWalletStore.injectiveAddress)
-  notificationStore.success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
 }
 
 onMounted(() => {

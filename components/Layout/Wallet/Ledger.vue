@@ -1,13 +1,14 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
+import type { SharedDropdownOption } from '@shared/types'
 
 const walletStore = useWalletStore()
-const toast = useSharedNotificationStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
@@ -75,8 +76,8 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      toast.success({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {

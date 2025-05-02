@@ -81,7 +81,7 @@ async function closePosition() {
     }
 
     if (props.row.pnl.isNaN()) {
-      notificationStore.error({ title: t('trade.no_liquidity') })
+      notificationStore.error({ title: t('toast.trade.noLiquidity') })
 
       return false
     }
@@ -97,7 +97,7 @@ async function closePosition() {
     }
 
     emit('position:close')
-  } catch (error) {
+  } catch {
     useEventBus(BusEvents.SetPositionStatusIdle).emit()
   } finally {
     modalStore.closeModal(Modal.PartialClosePosition)

@@ -107,9 +107,7 @@ export default {
         bannerDescription:
           'Congrats! You are one of the winners of our leaderboard competition. This time you won a {prize}. Click to start claiming your prize!',
         namePlaceholder: 'Your first and last name',
-        emailPlaceholder: 'Your email address',
-        receivedInformation:
-          "We've received your information. Our team will reach out to you shortly."
+        emailPlaceholder: 'Your email address'
       }
     },
 

@@ -9,9 +9,9 @@ import {
   MarketKey,
   IsRWAMarketOpenKey,
   PortfolioStatusKey,
-  UiDerivativeMarket,
   MarkPriceStatusKey
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const route = useRoute()
 const jsonStore = useSharedJsonStore()
@@ -60,7 +60,7 @@ onMounted(async () => {
 
   if (!isRWAMarketOpenStatus) {
     notificationStore.warning({
-      title: t('trade.rwa.marketClosedToast')
+      title: t('toast.trade.rwaMarketClosedToast')
     })
   }
 

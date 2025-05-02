@@ -28,11 +28,6 @@ export default {
     seasonOneEnded: 'Season 1 Ended',
     readyIn: 'Ready in',
     startOn: 'Starts on {date}',
-
-    toast: {
-      copiedInvitationLink: 'Invitation code copied to your clipboard.'
-    },
-
     howToParticipate: {
       title: 'How to participate',
       createGuild: {
@@ -100,8 +95,7 @@ export default {
         'A guild master must have at least {amount} {symbol} in the wallet throughout the whole competition, including at time of creation.',
       characters: 'characters',
       balanceInWallet: '{symbol} balance in wallet:',
-      cta: 'Create Guild',
-      toast: 'Successfully created guild'
+      cta: 'Create Guild'
     },
 
     joinGuild: {
@@ -110,7 +104,6 @@ export default {
         'Join the guild "{name}" on Helix to earn a share of the rewards!',
       cta: 'Join Guild',
       maxCap: 'Max Capacity',
-      toast: 'Successfully joined guild',
       invitationCode: 'Get invitation code on Discord'
     },
 

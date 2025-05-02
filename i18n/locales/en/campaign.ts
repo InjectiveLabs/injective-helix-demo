@@ -22,12 +22,10 @@ export default {
 
     apy: 'APY',
     rank: 'Rank',
-    error: 'Error',
     claim: 'Claim',
     volume: 'Volume',
     market: 'Market',
     details: 'Details',
-    success: 'Success',
     overall: 'Overall',
     address: 'Address',
     rewards: 'Rewards',
@@ -64,10 +62,7 @@ export default {
     totalRewardsThisRound: 'Total Rewards This Round',
     totalRewardsOfRound: 'Total Rewards of Round {round}',
     helixLpRewardsRound: 'Helix LP Rewards Round {round}',
-    successfullyClaimedRewards: 'Succesfuly Claimed Rewards',
-    errorAlreadyClaimed: 'This reward has already been claimed.',
     readyInLessThan: 'Ready in less than {time} {interval}',
-    campaignNotFound: 'Campaign not found, please try again later.',
     description: 'Earn rewards by trading different spot markets',
     eligibleMarkets: 'Eligible Market for Rewards ',
     rewardsPending:

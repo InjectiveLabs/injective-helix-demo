@@ -40,7 +40,9 @@ async function grantAuthorization() {
       grantee: addressValue.value,
       messageTypes: msgs.value
     })
-    .then(() => notificationStore.success({ title: t('common.success') }))
+    .then(() =>
+      notificationStore.success({ title: t('toast.account.authZAdded') })
+    )
     .catch($onError)
     .finally(() => {
       status.setIdle()

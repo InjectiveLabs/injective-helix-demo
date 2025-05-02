@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { BotType, LiquidityBotField } from '@/types'
@@ -18,11 +17,11 @@ const props = withDefaults(
   {}
 )
 
-const toast = useToast()
 const tokenStore = useTokenStore()
 const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
 const liquidityFormValues = useFormValues<LiquidityBotForm>()
@@ -107,10 +106,9 @@ async function createLiquidityBot() {
 
       confirmationModal.value = false
 
-      toast.add({
-        title: t('sgt.success'),
-        icon: NuxtUiIcons.Checkmark,
-        description: t('sgt.gridStrategyCreatedSuccessfully')
+      notificationStore.success({
+        title: t('toast.success'),
+        description: t('toast.sgt.tradingBotCreatedSuccessfully')
       })
 
       status.setIdle()
@@ -127,11 +125,11 @@ async function createLiquidityBot() {
           lowerBound: props.liquidityValues.lowerBound.toFixed(),
           upperBound: props.liquidityValues.upperBound.toFixed(),
           baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
-          quoteAmount: liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
+          quoteAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
           upperTrailingBound:
             props.liquidityValues.trailingUpperBound.toFixed(),
-          lowerTrailingBound:
-            props.liquidityValues.trailingLowerBound.toFixed()
+          lowerTrailingBound: props.liquidityValues.trailingLowerBound.toFixed()
         })
       }
 
