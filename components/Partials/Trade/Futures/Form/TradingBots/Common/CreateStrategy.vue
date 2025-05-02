@@ -49,7 +49,7 @@ async function createStrategy() {
     .createPerpStrategy(derivativeFormValues.value, market.value)
     .then(() => {
       notificationStore.success({
-        title: t('toast.trade.tradingBotCreatedSuccessfully')
+        title: t('toast.sgt.tradingBotCreatedSuccessfully')
       })
     })
     .catch($onError)
