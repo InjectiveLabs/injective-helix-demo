@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
+import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   durationFormatter,
   getSgtContractAddressFromSlug
 } from '@/app/utils/helpers'
-import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -64,8 +64,8 @@ function removeStrategy() {
       modalStore.closeModal(Modal.GridStrategyDetails)
 
       notificationStore.success({
-        title: t('sgt.success'),
-        description: t('sgt.strategyRemoved')
+        title: t('toast.success'),
+        description: t('toast.sgt.strategyRemoved')
       })
     })
     .catch((e) => {

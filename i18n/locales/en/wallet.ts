@@ -26,8 +26,6 @@ export default {
       'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
     connectUsingWalletConnect:
       'Connect using WalletConnect (mobile and desktop wallets)',
-    addressCopied: 'Address Copied',
-    copiedAddress: 'Address copied to your clipboard',
     getAddresses: 'Get addresses',
     getMoreAddresses: 'Get more addresses',
     getAddressNote: 'We are getting your addresses, please wait ...',
@@ -46,7 +44,6 @@ export default {
     connectUsingKeplr: 'Connect using Keplr',
     selectAddressToConnect: 'Select address to connect',
     selectDerivationPath: 'Select Derivation Path',
-    successfullyConnected: 'Successfully Connected',
     switchToEthereumAddress: 'Switch to Ethereum Address',
     switchToInjectiveAddress: 'Switch to Injective Address',
     trezorConnectionNote:

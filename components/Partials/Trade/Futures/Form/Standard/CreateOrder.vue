@@ -274,8 +274,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -313,8 +312,7 @@ function submitMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -356,8 +354,7 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -399,8 +396,7 @@ function submitStopMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.success({ title: t('toast.trade.orderPlaced') })
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {

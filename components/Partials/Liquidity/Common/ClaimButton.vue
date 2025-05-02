@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { backupPromiseCall } from '@/app/utils/async'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    extraClass?: string
     campaign: Campaign
+    extraClass?: string
     forceDisabled?: boolean
   }>(),
   {
@@ -36,8 +36,8 @@ function claimRewards() {
     .claimReward(props.campaign.rewardContract, campaignId)
     .then(() => {
       notificationStore.success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
+        title: t('toast.success'),
+        description: t('toast.campaign.successfullyClaimedRewards')
       })
 
       backupPromiseCall(() => campaignStore.fetchRound())
@@ -45,8 +45,8 @@ function claimRewards() {
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
+          title: t('toast.error'),
+          description: t('toast.errorAlreadyClaimed')
         })
       } else {
         $onError(er)

@@ -9,7 +9,6 @@ export default {
     learnMore: 'Ready to learn More?',
     talkToUs: 'Talk to us.',
     trustedByTheBest: 'Trusted by the best',
-    formSubmittedSuccesfuly: 'Form submitted Successfuly.',
     benefits: 'Benefits',
     whyFinancialInstitutionsChooseHelix:
       'Why financial institutions choose Helix',

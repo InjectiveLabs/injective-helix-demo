@@ -33,7 +33,7 @@ const referralLink = computed(
 function copyReferral() {
   copy(referralLink.value).then(() =>
     notificationStore.success({
-      title: t('referral.referralLinkCopied')
+      title: t('toast.referral.referralLinkCopied')
     })
   )
 }

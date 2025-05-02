@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    position: PositionV2
     isPgt?: boolean
+    position: PositionV2
   }>(),
   {
     isPgt: false
@@ -95,7 +95,9 @@ const onSubmit = handleSubmit(() => {
       })
       .then(() => {
         resetForm()
-        notificationStore.success({ title: t('trade.success_added_margin') })
+        notificationStore.success({
+          title: t('toast.trade.successAddedMargin')
+        })
         onModalClose()
       })
       .catch($onError)
@@ -114,7 +116,9 @@ const onSubmit = handleSubmit(() => {
     })
     .then(() => {
       resetForm()
-      notificationStore.success({ title: t('trade.success_added_margin') })
+      notificationStore.success({
+        title: t('toast.trade.successAddedMargin')
+      })
       onModalClose()
     })
     .catch($onError)

@@ -48,7 +48,9 @@ async function createStrategy() {
   await gridStrategyStore
     .createPerpStrategy(derivativeFormValues.value, market.value)
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({
+        title: t('toast.sgt.tradingBotCreatedSuccessfully')
+      })
     })
     .catch($onError)
     .finally(() => {

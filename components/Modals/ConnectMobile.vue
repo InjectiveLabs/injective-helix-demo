@@ -65,7 +65,7 @@ function grantAuthorization() {
     .then(() => {
       modalStore.closeModal(Modal.ConnectMobile)
 
-      return notificationStore.success({ title: t('common.success') })
+      return notificationStore.success({ title: t('toast.success') })
     })
     .catch($onError)
     .finally(() => status.setIdle())

@@ -110,7 +110,6 @@ export default {
     amount: 'Amount',
     noAssetToTransfer:
       "You don't have any assets to transfer from this subaccount.",
-    transferToSubaccountSuccess: 'Subaccount transfer successful',
     mainSubaccount: 'Main Subaccount',
     subaccountId: 'Subaccount {subaccountId}',
     balanceIncludesCw20Balance:

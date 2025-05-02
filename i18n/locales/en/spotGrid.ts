@@ -16,7 +16,6 @@ export default {
     upper: 'Upper',
     details: 'Details',
     confirm: 'Confirm',
-    success: 'Success',
     moreInfo: 'More Info',
     startTime: 'Start Time',
     enableLpMode: 'Enable LP Mode',
@@ -82,7 +81,6 @@ export default {
     totalInvestment: 'Total Investment',
     useFeeOptimizedAmounts: 'Use Suggested Amounts',
     keepOriginalAmounts: 'Keep Original Amounts',
-    strategyRemoved: 'Strategy Removed!',
     totalBaseAndQuote: 'Total {base} + {quote} value',
     investmentAmount: 'Investment Amount',
     advancedSettings: 'Advanced Settings',
@@ -137,8 +135,6 @@ export default {
     pleaseConfirmOnYourWallet: 'Please confirm on your wallet...',
     copyParametersToManual: 'Copy Parameters to Manual',
     createYourGridTradingStrategy: 'Create your grid trading strategy',
-    gridStrategyCreatedSuccessfully: 'Grid Strategy Created Successfully!',
-    gridStrategyRemovedSuccessfully: 'Grid Strategy Removed Successfully!',
     investmentAmountTooltip:
       'Amounts may be less than initially entered due to fees, ensuring optimal strategy execution with sufficient INJ and USDT.',
     initialEntryTooltip:

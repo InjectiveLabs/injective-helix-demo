@@ -8,9 +8,9 @@ enum ConnectType {
   PrivateKey = 'privateKey'
 }
 
-const toast = useToast()
 const modalStore = useSharedModalStore()
 const walletStore = useWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { resetForm } = useForm()
 const { $onError } = useNuxtApp()
@@ -77,8 +77,8 @@ function connectViaAddress() {
       addressOrPk: address.value
     })
     .then(() =>
-      toast.add({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {
@@ -105,8 +105,8 @@ function connectViaPrivateKey() {
       addressOrPk: privateKey.value
     })
     .then(() =>
-      toast.add({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {

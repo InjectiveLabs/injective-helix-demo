@@ -19,7 +19,6 @@ export default {
     affiliatedAddress: 'Affiliated Address',
     startEarningToday: 'Start earning today',
     createReferralLinkPlaceholder: 'BULLISH',
-    referralLinkCopied: 'Referral Link Copied',
     customReferralCode: 'Custom Referral Code',
     chooseDifferentLink: 'Choose Different Link',
     dashboardTitle: 'Refer Traders, Earn Rewards',
@@ -27,15 +26,11 @@ export default {
     lettersAndNumbersOnly: 'letters and numbers only',
     confirmAndGenerateLink: 'Confirm and Generate Link',
     createReferralLinkTitle: 'Create Your Referral Link',
-    referralLinkIsUnavailable: 'Referral Link is Unavailable',
     trackYourReferrals: 'Track your referrals and earned commissions',
     shareYourReferralLink: 'Share your referral link and invite friends.',
     referralCodeMaxLengthMessage: 'Referral code can be up to 32 characters',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
-    success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,
-    joinSelfReferralMessage:
-      "Your referral code is valid, but you can't refer yourself. Share it with someone else!",
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
     rewardsTooltipContent:

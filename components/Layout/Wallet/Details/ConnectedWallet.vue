@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { Wallet } from '@injectivelabs/wallet-base'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { Modal } from '@/types'
+import type { Wallet } from '@injectivelabs/wallet-base'
 
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -31,12 +31,12 @@ function onToggleDropdown() {
 
 function onCopyAddress() {
   copy(sharedWalletStore.address)
-  notificationStore.success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
 }
 
 function onCopyInjectiveAddress() {
   copy(sharedWalletStore.injectiveAddress)
-  notificationStore.success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
 }
 
 function openQrCodeModal() {

@@ -407,7 +407,7 @@ function cancelTp() {
   derivativeStore
     .cancelOrder(isTpDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({ title: t('toast.trade.tpOrderCancelled') })
     })
     .catch($onError)
     .finally(() => {
@@ -425,7 +425,7 @@ function cancelSl() {
   derivativeStore
     .cancelOrder(isSlDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.success({ title: t('toast.trade.slOrderCancelled') })
     })
     .catch($onError)
     .finally(() => {
@@ -459,12 +459,12 @@ async function submitTpSl() {
       takeProfitQuantity: new BigNumberInBase(tpQuantity.value)
     })
     .then(() => {
-      const tpSuccessMessage = t('trade.tpSuccessMessage', {
+      const tpSuccessMessage = t('toast.trade.tpSuccessMessage', {
         quantity: `${tpQuantity.value} ${market.value?.baseToken?.symbol}`,
         price: `${takeProfitValue.value} ${market.value?.quoteToken?.symbol}`
       })
 
-      const slSuccessMessage = t('trade.slSuccessMessage', {
+      const slSuccessMessage = t('toast.trade.slSuccessMessage', {
         quantity: `${slQuantity.value} ${market.value?.baseToken?.symbol}`,
         price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
       })

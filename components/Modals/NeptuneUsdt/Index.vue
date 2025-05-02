@@ -5,7 +5,8 @@ import { NEPTUNE_USDT_CW20_CONTRACT } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { neptuneService } from '@/app/Services'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, MainPage, NeptuneUsdtForm, NeptuneUsdtField } from '@/types'
+import { Modal, MainPage, NeptuneUsdtField } from '@/types'
+import type { NeptuneUsdtForm } from '@/types'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -89,7 +90,7 @@ async function onSubmit() {
     .then(() => {
       notificationStore.success({
         title: t(
-          `trade.neptuneUsdt.success.${props.isLend ? 'deposit' : 'withdraw'}`
+          `toast.trade.neptuneUsdt.success.${props.isLend ? 'deposit' : 'withdraw'}`
         )
       })
       resetForm()

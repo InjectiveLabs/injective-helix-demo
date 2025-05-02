@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
 import { TRADING_MESSAGES } from '@/app/data/trade'
-import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
+import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
+import { CtaToast, BusEvents } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const toast = useToast()
 const appStore = useAppStore()
 const accountStore = useAccountStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -30,27 +32,38 @@ function connectAutoSign() {
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
-      toast.add({
-        title: t('portfolio.settings.autoSign.enabledToast.title'),
-        description: t('portfolio.settings.autoSign.enabledToast.description')
+      notificationStore.success({
+        title: t('toast.portfolio.autoSign.enabledToast.title'),
+        description: t('toast.portfolio.autoSign.enabledToast.description')
       })
+
+      closeNotification()
     })
     .catch($onError)
 }
 
 function dontShowAutoSignAgain() {
+  closeNotification()
+
   appStore.$patch({
     userState: {
       ...appStore.userState,
-      dontShowAgain: [
-        ...appStore.userState.dontShowAgain,
-        DontShowAgain.AutoSign
-      ]
+      dontShowAgain: [...appStore.userState.dontShowAgain, CtaToast.AutoSign]
     }
   })
 }
 
-let timeout: NodeJS.Timeout | undefined
+function closeNotification() {
+  const selectedNotification = notificationStore.notifications.find(
+    (notification) => notification.key === CtaToast.AutoSign
+  )
+
+  if (selectedNotification) {
+    notificationStore.clear(selectedNotification.id)
+  }
+}
+
+let timeout: undefined | NodeJS.Timeout
 
 onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
@@ -65,24 +78,23 @@ onWalletConnected(() => {
       !sharedWalletStore.isAutoSignEnabled &&
       !sharedWalletStore.isAuthzWalletConnected &&
       sharedWalletStore.isUserConnected &&
-      !appStore.userState.dontShowAgain?.includes(DontShowAgain.AutoSign) &&
+      !appStore.userState.dontShowAgain?.includes(CtaToast.AutoSign) &&
       sharedWalletStore.wallet !== Wallet.Magic
     ) {
-      toast.add({
+      notificationStore.info({
         title: t('portfolio.settings.autoSign.enable'),
-        description: t('portfolio.settings.autoSign.allowsYouToTrade'),
+        description: t('toast.portfolio.autoSign.allowsYouToTrade'),
+        key: CtaToast.AutoSign,
+        timeout: MAX_TOAST_TIMEOUT,
         actions: [
           {
             label: t('common.enable'),
-            variant: 'soft',
-            color: 'primary',
-            click: connectAutoSign
+            callback: connectAutoSign
           },
           {
             label: t('common.dontShowAgain'),
-            variant: 'soft',
-            color: 'red',
-            click: dontShowAutoSignAgain
+            class: 'text-red-400 hover:text-red-500',
+            callback: dontShowAutoSignAgain
           }
         ]
       })

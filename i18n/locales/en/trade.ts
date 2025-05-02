@@ -180,8 +180,6 @@ export default {
       'There are not enough orders to fill this amount',
     balance_higher_than_orderbook_liquidity:
       'Balance is higher than orderbook liquidity',
-    order_placed: 'Your order has been placed',
-    orderUpdated: 'Your order has been updated',
     error_in_form: 'There are errors in your form',
     volume_asset: '24h Volume ({asset})',
     perpetuals: 'Perpetuals',
@@ -201,13 +199,11 @@ export default {
     max_leverage: 'Max Leverage: {max}',
     you_can_only_have_max_orders:
       'You can only have {number} orders per side per market per trading account',
-    no_liquidity: 'Not enough Liquidity',
     add_margin_to_position_title: 'Add Margin',
     order_insufficient_margin:
       'Please modify price, amount, or leverage to meet margin requirement',
     mark_price_invalid:
       'Please modify price, amount, or leverage to meet mark price requirement',
-    success_added_margin: 'You have successfully added margin to your position',
     add_margin: 'Add Margin',
     fee_order_details_note_negative_margin:
       "Trading fees associated with the trade. If your limit order doesn't get filled as a taker order, you are not going to pay any trading fees.",
@@ -230,7 +226,6 @@ export default {
     time_to_expiry: 'Time to expiry',
     derivatives: 'Derivatives',
     not_available_n_a: 'N/A',
-    position_closed: 'Position Closed',
     insufficient_balance: 'Insufficient balance',
     trade_placed: 'Trade placed',
     notional_value: 'Notional Value',
@@ -254,7 +249,6 @@ export default {
     average_price: 'Average price',
     total_volume_in_quote: 'Volume in {symbol}',
     total_volume_in_base: 'Volume in {symbol}',
-    order_success_canceling: 'Order Cancelled',
     trade: 'Trade',
     trades: 'Trades',
     tradeHistoryDetails: 'Trade History Details',
@@ -328,7 +322,6 @@ export default {
       tooHigh:
         'Your transaction might be executed at a less desirable price if slippage % is set too high.'
     },
-    invalid_price: 'Invalid Price',
     advanced_settings: 'Advanced Settings',
     slippage_tolerance: 'Slippage Tolerance',
     invalid_slippage: 'Please enter a valid slippage percentage',
@@ -431,10 +424,6 @@ export default {
     lastUpdated: 'Last Updated',
     totalQuantitySize: 'Total Quantity Size',
     estLiquidationPrice: 'Est. Liquidation Price',
-    tpSuccessMessage:
-      'your take profit order has been set for {quantity} quantity at {price} price',
-    slSuccessMessage:
-      'your stop loss order has been set for {quantity} quantity at {price} price',
     takeProfitDetails:
       'When Mark Price reaches {price}, it will trigger a Take Profit Market order for {quantity}.',
     stopLossDetails:
@@ -454,9 +443,6 @@ export default {
         'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.',
       nyseMarketClosedTrade:
         'All markets on Helix can be traded 24/7. It should be noted that this market follows {nyseClosedTimes}, 2:30pm UTC through 9pm UTC, closing on nights, weekends, and NYSE trading holidays.',
-
-      marketClosedToast:
-        'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
       tradesCanBePlace:
         'Trades can be placed outside of these times, but prices will not update until the market reopens.',
       thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',
@@ -519,12 +505,7 @@ export default {
       description:
         'Deposit stablecoins into the USDT lending pool on {link} to automatically earn yield without leaving Helix. When you’re ready to make a trade, funds are automatically withdrawn from the lending pool with no extra steps.',
       percentageInReserve: '(15% in reserve)',
-      success: {
-        deposit: 'Neptune Deposit Successful',
-        withdraw: 'Neptune Withdrawal Succesful'
-      },
       termsAndConditions: 'Terms and Conditions',
-
       warningText:
         'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.',
       banner:
@@ -532,12 +513,6 @@ export default {
     },
 
     balanceTitle: 'Available',
-
-    tradeToast: {
-      bought:
-        "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} bought at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}",
-      sold: "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} sold at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}"
-    },
 
     iAssetModal: {
       title: 'Unlock the Power of iAssets!',
