@@ -167,46 +167,12 @@ export default {
     settings: {
       title: 'Settings',
 
-      authz: {
-        title: 'Access Control Manager',
-        description:
-          'Grant other wallet address full/partial permissions to make trades on their behalf',
-        grantee: 'Grantee',
-        granteeAddress: 'Grantee Address',
-        grantedFunctions: 'Granted Functions',
-        actions: 'Actions',
-        granter: 'Granter',
-        addNewGrantee: 'Add new grantee address',
-        addGranteeAddress: 'Add grantee address',
-        connectMobile: 'Connect Mobile Device',
-        noGrants: 'No grants found',
-        viewGrantedFunctions: 'View granted functions',
-        connected: 'Connected',
-        connectAs: 'Connect as',
-        revoke: 'Revoke',
-        revokeAll: 'Revoke All'
-      },
-
       preferences: {
         title: 'Preferences',
         enableEip712: 'Enable EIP-712 Signing',
         thousandsSeparator: 'Thousands Separator',
         description: 'Customize your trading experience',
         showGridTradingSubaccounts: 'Show Grid Trading Subaccounts'
-      },
-
-      autoSign: {
-        title: 'Auto-Sign',
-        description: 'Automatically sign transactions',
-        howItWorks:
-          'During the enabled duration (3 days), you can perform many operations on Helix (including opening/closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters) without signing additional transactions. Interactions with the swap feature or trading bots are not included. For security reasons, the auto sign function will expire after the 3 days time frame, at which point you may choose to initiate a new session.',
-        enable: 'Enable auto-sign',
-        expiredToast: {
-          title: 'Auto sign session has expired',
-          settings: 'Settings',
-          description: 'You can start a new session from {settings}'
-        },
-        disconnect: 'Disconnect Auto-Sign'
       }
     },
 

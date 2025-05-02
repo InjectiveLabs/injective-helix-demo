@@ -1,32 +1,13 @@
-import mixpanel, { OverridedMixpanel } from 'mixpanel-browser'
+import mixpanel from 'mixpanel-browser'
 import { MIXPANEL_KEY } from '@shared/utils/constant'
-import { MixPanelCounter } from '@/types'
+import type { MixPanelCounter } from '@/types'
+import type { OverridedMixpanel } from 'mixpanel-browser'
 
 export default class MixPanelAnalytics {
-  mixpanelClient: OverridedMixpanel | undefined
+  mixpanelClient: undefined | OverridedMixpanel
 
   constructor() {
     this.mixpanelClient = undefined
-  }
-
-  public track(event: string, props: any) {
-    const client = this.getMixpanelClient()
-
-    if (!client) {
-      return
-    }
-
-    return client.track(event, props)
-  }
-
-  public increment(event: MixPanelCounter) {
-    const client = this.getMixpanelClient()
-
-    if (!client) {
-      return
-    }
-
-    return client.people.increment(event)
   }
 
   public init() {
@@ -53,6 +34,26 @@ export default class MixPanelAnalytics {
     }
 
     return this.mixpanelClient as OverridedMixpanel
+  }
+
+  public increment(event: MixPanelCounter) {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    return client.people.increment(event)
+  }
+
+  public track(event: string, props: any) {
+    const client = this.getMixpanelClient()
+
+    if (!client) {
+      return
+    }
+
+    return client.track(event, props)
   }
 }
 

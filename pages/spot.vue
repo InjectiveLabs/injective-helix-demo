@@ -3,7 +3,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MarketKey, IsSpotKey, UiSpotMarket, PortfolioStatusKey } from '@/types'
+import { MarketKey, IsSpotKey, PortfolioStatusKey } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()

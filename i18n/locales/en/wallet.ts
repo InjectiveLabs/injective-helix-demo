@@ -1,4 +1,6 @@
+import { content } from '#tailwind-config'
 import { Wallet } from '@injectivelabs/wallet-base'
+import { title } from 'process'
 
 export default {
   connect: {
@@ -19,6 +21,7 @@ export default {
     connectedAs: 'Connected as',
     connectWallet: 'Connect Wallet',
     connectToWallet: 'Connect to Wallet',
+    injectiveAddress: 'Injective Address',
     connectUsingBrowser: 'Connect using browser wallet',
     connectUsingHardware: 'Connect using hardware wallet',
     connectUsingLedger: 'Connect using Ledger',
@@ -87,5 +90,60 @@ export default {
       [Wallet.Cosmostation]: 'Cosmostation',
       [Wallet.WalletConnect]: 'Wallet Connect'
     }
+  },
+
+  authZ: {
+    title: 'Access Control Manager',
+    description:
+      'Grant other wallet address full/partial permissions to make trades on their behalf',
+    grantee: 'Grantee',
+    grantees: 'Grantees',
+    granters: 'Granters',
+    granteeAddress: 'Grantee Address',
+    grantedFunctions: 'Granted Functions',
+    actions: 'Actions',
+    granter: 'Granter',
+    authZAs: 'AuthZ as {address}',
+    addNewGrantee: 'Add new grantee address',
+    addGranteeAddress: 'Add grantee address',
+    connectMobile: 'Connect Mobile Device',
+    noGrants: 'No grants found',
+    viewGrantedFunctions: 'View granted functions',
+    connected: 'Connected',
+    connectAs: 'Connect as',
+    revoke: 'Revoke',
+    revokeAll: 'Revoke All'
+  },
+
+  autoSign: {
+    title: 'Auto Sign',
+    description: 'Automatically sign transactions',
+    durationDescription: 'Auto sign is active for 3 days.',
+    pageTitle: 'Auto-Sign: Approve Transactions Automatically',
+    content1: {
+      a: 'Once enabled, you can use Helix without signing',
+      b: 'each transaction for up to 3 days.'
+    },
+    content2: {
+      title: 'You can use it for:',
+      a: 'Opening/closing positions (spot & perpetual pairs)',
+      b: 'Setting limit orders',
+      c: 'Creating Take-Profit / Stop-Loss (TP/SL) orders'
+    },
+    content3: {
+      title: 'Note:',
+      a: 'Swap and trading bots are not included.',
+      b: 'For security, the session automatically expires after 3 days.',
+      c: 'You can start a new session anytime after it ends.'
+    },
+    howItWorks:
+      'During the enabled duration (3 days), you can perform many operations on Helix (including opening/closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters) without signing additional transactions. Interactions with the swap feature or trading bots are not included. For security reasons, the auto sign function will expire after the 3 days time frame, at which point you may choose to initiate a new session.',
+    enable: 'Enable auto-sign',
+    expiredToast: {
+      title: 'Auto sign session has expired',
+      settings: 'Settings',
+      description: 'You can start a new session from {settings}'
+    },
+    disconnect: 'Disconnect Auto-Sign'
   }
 }

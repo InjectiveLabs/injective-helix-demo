@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
+import { BusEvents } from '@/types'
 import type { CtaToast } from '@/types'
 import type { Notification } from '@shared/types'
 
@@ -51,6 +52,8 @@ function onResume() {
 
 function onClose() {
   notificationStore.clear(props.notification.id)
+
+  useEventBus(BusEvents.NotificationClosed).emit(props.notification.key)
 
   clearTimeout(notifTimeout.value)
   clearInterval(progressBarInterval.value)
@@ -105,7 +108,7 @@ function setupProgressBar(timeout: number) {
   >
     <div
       v-if="notification"
-      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 max-w-[600px]"
+      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 max-w-[328px]"
       :class="wrapperClass"
       @mouseenter="onPause"
       @mouseleave="onResume"
@@ -129,7 +132,10 @@ function setupProgressBar(timeout: number) {
           :class="{ 'items-center': !notification.description }"
         >
           <AppNotificationIcon
-            v-bind="{ notificationType: notification.type }"
+            v-bind="{
+              icon: notification.icon,
+              notificationType: notification.type
+            }"
           />
 
           <div class="flex flex-col gap-3" :class="contentClass">

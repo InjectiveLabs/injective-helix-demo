@@ -36,7 +36,7 @@ export default defineNuxtRouteMiddleware((to) => {
     } = (to.query as Record<string, string>) || {}
 
     notificationStore.success({
-      title: t('toast.onboarding.onramperSuccess', {
+      title: t('toast.onramperSuccess', {
         fiatCurrency,
         cryptoAmount,
         crypto: to.query.cryptoCurrency

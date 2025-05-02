@@ -34,8 +34,6 @@ export default {
       'Trade on Helix and compete for your share of a {linkDescription}',
     ownYourAssetCompetitionLink: '$50K prize pool on Helix!',
 
-    authz: 'Connected as {address}',
-
     postOnly:
       'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}'
   }
