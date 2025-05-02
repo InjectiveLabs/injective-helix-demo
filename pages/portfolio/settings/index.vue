@@ -4,8 +4,8 @@ import { PortfolioSubPage } from '@/types'
 
 const settingsOptions = [
   {
-    label: 'portfolio.settings.authz.title',
-    description: 'portfolio.settings.authz.description',
+    label: 'authZ.title',
+    description: 'authZ.description',
     to: { name: PortfolioSubPage.SettingsAuthz }
   },
   {
@@ -14,8 +14,8 @@ const settingsOptions = [
     to: { name: PortfolioSubPage.SettingsPreferences }
   },
   {
-    label: 'portfolio.settings.autoSign.title',
-    description: 'portfolio.settings.autoSign.description',
+    label: 'autoSign.title',
+    description: 'autoSign.description',
     to: { name: PortfolioSubPage.SettingsAutosign }
   }
 ]

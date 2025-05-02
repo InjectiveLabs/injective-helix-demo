@@ -1,23 +1,38 @@
 <script lang="ts" setup>
-import { BigNumber } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { Status, BigNumber, StatusType } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
+import { trackGenericEvent } from '@/app/providers/mixpanel/EventTracker'
 import {
+  MAX_TOAST_TIMEOUT,
   DEFAULT_TRUNCATE_LENGTH,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { Modal, MainPage, PortfolioSubPage } from '@/types'
+import {
+  Modal,
+  CtaToast,
+  MainPage,
+  BusEvents,
+  MixPanelEvent,
+  PortfolioSubPage
+} from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const walletStore = useWalletStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
 const { lg } = useSharedBreakpoints()
 const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
   useBalance()
+
+const status = reactive(new Status(StatusType.Idle))
 
 const formattedAddress = computed(() =>
   sharedEllipsisFormatText(
@@ -27,6 +42,14 @@ const formattedAddress = computed(() =>
     DEFAULT_TRUNCATE_LENGTH
   )
 )
+
+onMounted(() => {
+  useEventBus(BusEvents.NotificationClosed).on((notificationId) => {
+    if (notificationId === CtaToast.EnableAutoSign) {
+      status.setIdle()
+    }
+  })
+})
 
 function onFiatOnRamp() {
   modalStore.openModal(Modal.FiatOnboard)
@@ -44,14 +67,60 @@ function disconnect() {
     router.push({ name: MainPage.Index })
   }
 }
+
+function toggleAutoSign() {
+  if (sharedWalletStore.isAuthzWalletConnected) {
+    sharedWalletStore.resetAuthZ()
+
+    return
+  }
+
+  if (sharedWalletStore.isAutoSignEnabled) {
+    sharedWalletStore.disconnectAutoSign()
+
+    return
+  }
+
+  trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
+  notificationStore.success({
+    title: t('toast.portfolio.autoSign.enable.title'),
+    description: t('toast.portfolio.autoSign.enable.description'),
+    icon: NuxtUiIcons.RotateAuto,
+    timeout: MAX_TOAST_TIMEOUT,
+    key: CtaToast.EnableAutoSign,
+    actions: [
+      {
+        label: t('common.enable'),
+        callback: () => {
+          trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
+          notificationStore.close(CtaToast.EnableAutoSign)
+
+          sharedWalletStore
+            .connectAutoSign(
+              TRADING_MESSAGES
+              // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+            )
+            .catch($onError)
+            .finally(() => status.setIdle())
+        }
+      }
+    ]
+  })
+
+  status.setLoading()
+}
 </script>
 
 <template>
   <div class="flex items-center min-h-[22px]">
-    <UPopover :mode="lg ? 'hover' : 'click'" :ui="{ base: 'overflow-visible' }">
+    <UPopover
+      :key="lg ? 'lg' : 'mobile'"
+      :mode="lg ? 'hover' : 'click'"
+      :ui="{ base: 'overflow-visible' }"
+    >
       <template #default>
         <div
-          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-4 rounded-lg"
+          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
         >
           <AppSpinner
             v-if="
@@ -72,6 +141,7 @@ function disconnect() {
             {{ formattedAddress }}
           </span>
         </div>
+        <!-- </section> -->
       </template>
 
       <template #panel>
@@ -79,26 +149,29 @@ function disconnect() {
           class="flex flex-col gap-4 min-w-[310px] sm:min-w-[356px] rounded-lg bg-brand-900 backdrop-blur-sm border border-brand-800"
         >
           <div class="rounded-lg">
-            <div class="flex flex-col py-3 px-4 border-b">
-              <div class="flex justify-between pb-2">
-                <div class="flex items-center gap-2">
-                  <p class="text-sm font-semibold text-coolGray-200 mb-1">
-                    {{ $t('navigation.myAccount') }}
-                  </p>
+            <div class="flex flex-col py-5 px-4 border-b">
+              <div class="flex justify-between pb-5">
+                <p class="text-sm font-semibold text-coolGray-200">
+                  {{ $t('navigation.myAccount') }}
+                </p>
 
-                  <NuxtLink :to="{ name: PortfolioSubPage.Settings }">
+                <div class="flex items-center gap-x-4">
+                  <NuxtLink
+                    :to="{ name: PortfolioSubPage.Settings }"
+                    class="leading-4"
+                  >
                     <UIcon
-                      :name="NuxtUiIcons.Settings"
-                      class="h-4 w-4 min-w-4 text-white hover:text-blue-500"
+                      :name="NuxtUiIcons.SettingsOutline"
+                      class="h-4 w-4 min-w-4 mt-0.5 text-white hover:text-blue-500"
                     />
                   </NuxtLink>
+
+                  <UIcon
+                    :name="NuxtUiIcons.ExitOutline"
+                    class="h-5 w-5 min-w-5 text-white hover:text-blue-500"
+                    @click="disconnect"
+                  />
                 </div>
-                <span
-                  class="text-blue-500 hover:text-opacity-80 cursor-pointer text-xs font-medium"
-                  @click="disconnect"
-                >
-                  {{ $t('navigation.disconnect') }}
-                </span>
               </div>
               <LayoutWalletDetailsConnectedWallet
                 :wallet="sharedWalletStore.wallet"
@@ -106,11 +179,11 @@ function disconnect() {
             </div>
 
             <div class="text-white p-4">
-              <p class="text-xs text-coolGray-400">
+              <p class="text-2xs text-coolGray-450 font-medium">
                 {{ $t('portfolio.totalValue') }}
               </p>
 
-              <p class="text-2xl font-semibold mb-2 mt-0">
+              <p class="text-2xl font-semibold my-1 leading-6">
                 <span>$</span>
                 <AppUsdAmount
                   v-bind="{
@@ -121,11 +194,7 @@ function disconnect() {
                 />
               </p>
 
-              <div class="flex items-center space-x-1 text-sm">
-                <UIcon
-                  :name="NuxtUiIcons.PottedPlant"
-                  class="max-sm:h-4 max-sm:w-4 h-5 w-5 hidden sm:block"
-                />
+              <div class="flex items-center space-x-1 text-2xs">
                 <div>{{ $t('account.staked') }}:</div>
                 <div>
                   <span>$</span>
@@ -139,7 +208,7 @@ function disconnect() {
                 </div>
               </div>
 
-              <div class="mt-6">
+              <div class="mt-5">
                 <AppButton class="w-full" size="md" @click="onFiatOnRamp">
                   {{ $t('connect.deposit') }}
                 </AppButton>
@@ -154,22 +223,28 @@ function disconnect() {
       </template>
     </UPopover>
 
-    <AppTooltip
-      v-if="sharedWalletStore.isAutoSignEnabled"
-      :ui="{ width: 'w-auto' }"
-      :content="$t('trade.eip712Warning')"
-      :is-disabled="!sharedWalletStore.isEip712"
-    >
-      <div
-        class="px-1 py-0.5 rounded flex items-center justify-center"
-        :class="[sharedWalletStore.isEip712 ? 'bg-red-500' : 'bg-white']"
+    <div class="mx-3 w-6 h-6 flex items-center justify-center">
+      <AppSpinner v-if="status.isLoading()" is-sm is-white />
+
+      <AppTooltip
+        v-else
+        :ui="{ width: 'w-auto' }"
+        :content="$t('trade.eip712Warning')"
+        :is-disabled="!sharedWalletStore.isEip712"
       >
         <UIcon
           :name="NuxtUiIcons.RotateAuto"
-          class="w-4 h-4 rounded-md text-black"
+          class="w-6 h-6 rounded-md"
+          :class="[
+            sharedWalletStore.isAutoSignEnabled ||
+            sharedWalletStore.isAuthzWalletConnected
+              ? 'text-green-500'
+              : 'text-white'
+          ]"
+          @click="toggleAutoSign"
         />
-      </div>
-    </AppTooltip>
+      </AppTooltip>
+    </div>
 
     <ModalsQRCode />
   </div>

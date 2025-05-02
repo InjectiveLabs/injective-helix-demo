@@ -15,6 +15,9 @@ export default {
       assetsTransferred: 'Assets transferred to your account',
       transferToSubaccountSuccess: 'Subaccount transfer successful'
     },
+    authz: {
+      connectedAs: 'Connected as'
+    },
     portfolio: {
       tradeNow: 'Trade now',
       bridgeNow: 'Bridge now',
@@ -33,6 +36,11 @@ export default {
         enabledToast: {
           title: 'Auto sign enabled',
           description: 'Auto sign active for 3 days'
+        },
+        enable: {
+          title: 'Auto Sign',
+          description:
+            'Once enabled, you can trade on Helix smoother;  without signing each transaction.'
         }
       }
     },
@@ -76,7 +84,7 @@ export default {
     },
     leaderboard: {
       receivedInformation:
-        'We’ve received your information; our team will reach out to you shortly '
+        "We've received your information; our team will reach out to you shortly"
     },
     campaign: {
       errorAlreadyClaimed: 'Reward already claimed',

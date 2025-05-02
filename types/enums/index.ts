@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-enums */
 export * from './cy'
 export * from './mixpanel'
 
@@ -418,7 +417,6 @@ export enum MarketCategoryType {
 export enum NoticeBanner {
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
-  AuthzConnected = 'authz-connected',
   FTMSettleMarket = 'ftm-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',
   UpcomingChainUpgrade = 'upcoming-chain-upgrade',
@@ -528,6 +526,7 @@ export enum BusEvents {
   SubaccountChange = 'subaccount-change',
   OrderSideToggled = 'order-side-toggled',
   OrderbookReplaced = 'orderbook-replaced',
+  NotificationClosed = 'notification-closed',
   AutoSignConnected = 'auto-sign-connected',
   UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
@@ -602,6 +601,7 @@ export type BaseQuoteFields = Exclude<
 
 export enum CtaToast {
   AutoSign = 'auto-sign',
+  EnableAutoSign = 'enable-auto-sign',
   ReferralSuccess = 'referral-success',
   UserDoesntTrade = 'user-doesnt-trade',
   UserWithNoAssets = 'user-with-no-assets',

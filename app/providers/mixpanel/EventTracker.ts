@@ -260,6 +260,9 @@ export const trackOnramperSeen = (walletAddress: string) => {
   })
 }
 
+export const trackGenericEvent = (event: MixPanelEvent) =>
+  mixpanelAnalytics.track(event, {})
+
 export const trackOnramperSuccess = ({
   network,
   orderId,

@@ -14,6 +14,8 @@ export enum MixPanelEvent {
   RefereeLoggedIn = 'Referee Logged In',
   PlaceOrderClicked = 'Place Order Clicked',
   LiteBridgeBridged = 'Lite Bridge Bridged',
+  AutoSignCTAPopUp = 'Auto Sign CTA Pop Up',
+  AutoSignCTAEnabled = 'Auto Sign CTA Enabled',
   LiteBridgePageView = 'Lite Bridge Page View',
   ReferralCodeCreated = 'Referral Code Created',
   EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',

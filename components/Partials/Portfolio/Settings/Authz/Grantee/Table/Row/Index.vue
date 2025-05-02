@@ -70,7 +70,7 @@ function revokeAll() {
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
-      <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>
+      <span> {{ $t('authZ.viewGrantedFunctions') }} </span>
     </div>
 
     <div class="xs:flex-1 flex items-center p-2" @click.stop>
@@ -86,7 +86,7 @@ function revokeAll() {
         disabled
         class="text-nowrap px-2"
       >
-        {{ $t('portfolio.settings.authz.revokeAll') }}
+        {{ $t('authZ.revokeAll') }}
       </AppButton>
 
       <AppButton
@@ -97,7 +97,7 @@ function revokeAll() {
         class="text-nowrap px-2"
         @click="revokeAll"
       >
-        {{ $t('portfolio.settings.authz.revokeAll') }}
+        {{ $t('authZ.revokeAll') }}
       </AppButton>
     </div>
   </div>
