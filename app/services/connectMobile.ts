@@ -1,8 +1,8 @@
-import { HttpRequestException } from '@injectivelabs/exceptions'
 import { HttpClient } from '@injectivelabs/utils'
-import { CONNECT_SERVER_URL } from '@/app/utils/constants'
+import { HttpRequestException } from '@injectivelabs/exceptions'
+import { HELIX_MOBILE_CONNECT_SERVER_URL } from '@/app/utils/constants'
 
-export const client = new HttpClient(CONNECT_SERVER_URL)
+export const client = new HttpClient(HELIX_MOBILE_CONNECT_SERVER_URL)
 
 export const addDesktopAddress = async ({
   desktopAddress
