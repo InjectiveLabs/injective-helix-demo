@@ -16,6 +16,8 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
 
+const minLeverage = 1
+
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -58,7 +60,7 @@ const { el, typed } = useIMask(
             mapToRadix: ['.', ','],
             scale: 2,
             lazy: false,
-            min: 0.1,
+            min: minLeverage,
             max: Number(maxLeverageAvailable.value),
             autofix: true
           }
@@ -127,7 +129,7 @@ function onMouseUp() {
   }
 
   if (Number(leverage.value) < 0) {
-    leverageModel.value = '0.01'
+    leverageModel.value = `${minLeverage}`
   }
 }
 
@@ -158,7 +160,7 @@ const leverageNumber = computed({
         <PartialsTradeFuturesFormStandardLeverageSlider
           v-model="leverageNumber"
           :step="0.01"
-          :min-leverage="0.01"
+          :min-leverage="minLeverage"
           :max-leverage="Number(maxLeverageAvailable)"
           @mouseup="onMouseUp"
         />
