@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { isWithinInterval } from 'date-fns'
-import { usdtToken } from '@shared/data/token'
 import { getHubUrl } from '@shared/utils/network'
 import { NOTIFI_LINK } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   BusEvents,
   TradePage,
@@ -79,13 +77,13 @@ const promotionalBanners = computed<Banner[]>(() => [
         end: new Date(1733497200000),
         start: new Date(1732633200000)
       })
-  },
-  {
-    id: NoticeBanner.NeptuneUsdt,
-    shouldDisplay:
-      !appStore.userState.bannersViewed.includes(NoticeBanner.NeptuneUsdt) &&
-      new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(0)
   }
+  // {
+  //   id: NoticeBanner.NeptuneUsdt,
+  //   shouldDisplay:
+  //     !appStore.userState.bannersViewed.includes(NoticeBanner.NeptuneUsdt) &&
+  //     new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(0)
+  // }
 ])
 
 const bannerToDisplay = computed(
