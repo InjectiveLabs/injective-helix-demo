@@ -4,7 +4,6 @@ import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
-  Modal,
   BusEvents,
   MarketKey,
   TradeTypes,
@@ -170,7 +169,6 @@ function submitMarketOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -210,7 +208,6 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })

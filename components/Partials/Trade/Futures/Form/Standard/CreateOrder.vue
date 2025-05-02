@@ -274,7 +274,6 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -313,7 +312,6 @@ function submitMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -356,7 +354,6 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
@@ -399,7 +396,6 @@ function submitStopMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
       notificationStore.success({ title: t('trade.order_placed') })
       resetForm({ values: currentFormValues.value })
     })
