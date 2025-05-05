@@ -1,52 +1,54 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
-import type { TransformedPosition } from '@/types'
-import { PositionTableColumn, ConditionalOrderSide } from '@/types'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { isTradingbotSubaccountId } from '@/app/utils/helpers'
+import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
+import { PositionTableColumn, ConditionalOrderSide } from '@/types'
+import type { TransformedPosition } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 export function usePositionTransformer(
   positionList: ComputedRef<PositionV2[]>
 ) {
   const authZStore = useAuthZStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
   const derivativeStore = useDerivativeStore()
   const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const rows = computed(() =>
     positionList.value.reduce((list, position) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === position.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
       if (!market) {
         return list
       }
 
-      const margin = new BigNumberInWei(position.margin).toBase(
-        market.quoteToken.decimals
-      )
+      const margin = sharedToBalanceInTokenInBase({
+        value: position.margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const markPriceFromStream =
         derivativeStore.marketMarkPriceMap[market.marketId || '']
 
       const markPriceNotScaled = markPriceFromStream
         ? new BigNumberInBase(markPriceFromStream.price)
-        : new BigNumberInWei(position.markPrice).toBase(
-            market.quoteToken.decimals
-          )
+        : sharedToBalanceInTokenInBase({
+            value: position.markPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
 
       const markPrice = calculateScaledMarkPrice({
         market,
         markPriceNotScaled
       })
 
-      const price = new BigNumberInWei(position.entryPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: position.entryPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const pnl = new BigNumberInBase(position.quantity)
         .times(markPrice.minus(price))
@@ -58,9 +60,10 @@ export function usePositionTransformer(
         ? ZERO_IN_BASE
         : new BigNumberInBase(pnl.dividedBy(margin).times(100))
 
-      const liquidationPriceData = new BigNumberInWei(
-        position.liquidationPrice
-      ).toBase(market.quoteToken.decimals)
+      const liquidationPriceData = sharedToBalanceInTokenInBase({
+        value: position.liquidationPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const liquidationPrice = liquidationPriceData.gt(0)
         ? liquidationPriceData
@@ -91,7 +94,7 @@ export function usePositionTransformer(
 
       const quantityInUsd = quantity
         .times(markPrice)
-        .times(tokenStore.tokenUsdPrice(market.quoteToken) || 0)
+        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken) || 0)
 
       const tpOrder = derivativeStore.subaccountConditionalOrders.find(
         (order) =>

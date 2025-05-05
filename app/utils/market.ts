@@ -84,23 +84,6 @@ export const getFormattedMarketsHistoryChartData = (
   })
 }
 
-export const marketIsInactive = (market: DerivativeMarket) => {
-  const HIDDEN_MARKET_TICKERS = [
-    'LUNA/UST PERP',
-    'STX/USDT PERP',
-    'BAYC/WETH PERP',
-    'OSMO/USDT PERP',
-    'ETH/USDT 19SEP22',
-    'BONK/USDT PERP',
-    '1000PEPE/USDT PERP',
-    'TIA/USDT-30NOV2023',
-    'ETH/USDTkv PERP',
-    'BTC/USDTkv PERP'
-  ]
-
-  return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
-}
-
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   const now = Date.now() / 1000
   const secondsInADay = SECONDS_IN_A_DAY.toNumber()

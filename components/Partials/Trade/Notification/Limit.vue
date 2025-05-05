@@ -5,8 +5,8 @@ import { BusEvents } from '@/types'
 import type { SpotTrade, DerivativeTrade } from '@injectivelabs/sdk-ts'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivateStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
@@ -15,10 +15,6 @@ const props = withDefaults(
     isSpot?: boolean
   }>(),
   {}
-)
-
-const markets = computed(() =>
-  props.isSpot ? spotStore.markets : derivateStore.markets
 )
 
 onMounted(() => {
@@ -32,9 +28,9 @@ onMounted(() => {
 })
 
 function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
-  const market = markets.value.find(
-    ({ marketId }) => marketId === trade.marketId
-  )
+  const market =
+    spotStore.marketByIdOrSlug(trade.marketId) ||
+    derivateStore.marketByIdOrSlug(trade.marketId)
 
   if (!market) {
     return
@@ -58,7 +54,7 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
       })
 
   const usdPrice = new BigNumberInBase(
-    tokenStore.tokenUsdPrice(market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(market.quoteToken)
   ).times(price)
 
   notificationStore.success({

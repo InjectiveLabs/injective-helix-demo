@@ -1,24 +1,20 @@
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  LiquidityDashboardTableColumn,
-  TransformedLiquidityDashboard
-} from '@/types'
+import { LiquidityDashboardTableColumn } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
+import type { TransformedLiquidityDashboard } from '@/types'
 
 export function useLiquidityDashboardTransformer(
   campaignList: ComputedRef<Campaign[]>
 ) {
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   const rows = computed(() =>
     campaignList.value.reduce((list, campaign) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === campaign.marketId
-      )
+      const market = spotStore.marketByIdOrSlug(campaign.marketId)
 
       if (!market) {
         return list
@@ -30,7 +26,7 @@ export function useLiquidityDashboardTransformer(
           decimalPlaces:
             market.quoteToken?.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
         })
-      ).times(tokenStore.tokenUsdPrice(market.quoteToken))
+      ).times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
 
       const userScore = campaign.userScore
 
@@ -42,14 +38,17 @@ export function useLiquidityDashboardTransformer(
           : ZERO_IN_BASE
 
       const rewards = campaign.rewards.map((reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
-        const amount = new BigNumberInWei(estRewardsInPercentage)
-          .multipliedBy(reward.amount || 0)
-          .toBase(token?.decimals || 0)
+        const amount = sharedToBalanceInTokenInBase({
+          value: new BigNumberInBase(estRewardsInPercentage)
+            .times(reward.amount)
+            .toFixed(),
+          decimalPlaces: token?.decimals
+        })
 
         const amountInUsd = token
-          ? new BigNumberInBase(amount).times(tokenStore.tokenUsdPrice(token))
+          ? amount.times(sharedTokenStore.tokenUsdPrice(token))
           : ZERO_IN_BASE
 
         return {

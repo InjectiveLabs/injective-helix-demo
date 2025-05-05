@@ -2,9 +2,9 @@
 import { TokenType } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { stableCoinSymbols } from '@/app/data/token'
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +23,7 @@ const isStableQuoteAsset = computed(() =>
 
 const lastTradedPriceInUsd = computed(() =>
   spotLastTradedPrice.value.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 )
 
@@ -31,9 +31,9 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
   computed(() => {
     const totalSupply = sharedToBalanceInTokenInBase({
       decimalPlaces: props.market.baseToken.decimals,
-      value: tokenStore.supplyMap[props.market.baseToken.denom] || 0
+      value: sharedTokenStore.supplyMap[props.market.baseToken.denom] || 0
     })
-    const usdPrice = tokenStore.tokenUsdPrice(props.market.baseToken)
+    const usdPrice = sharedTokenStore.tokenUsdPrice(props.market.baseToken)
 
     return new BigNumberInBase(usdPrice).times(totalSupply)
   })

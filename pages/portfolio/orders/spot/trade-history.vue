@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   derivativeTypeToOrderType,
   derivativeTypeToTradeType
 } from '@/app/utils/trade'
-import {
-  OrderTypeFilter,
-  SpotOrderHistoryFilterField,
-  SpotOrderHistoryFilterForm
-} from '@/types'
+import { SpotOrderHistoryFilterField } from '@/types'
+import type { TradeDirection } from '@injectivelabs/sdk-ts'
+import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,14 +24,9 @@ const { limit, page, skip } = usePagination({
 function fetchTrades() {
   status.setLoading()
 
-  const marketIds = formValues[SpotOrderHistoryFilterField.Market]
-    ? spotStore.markets
-        .filter(
-          (market) =>
-            market.marketId === formValues[SpotOrderHistoryFilterField.Market]
-        )
-        .map((market) => market.marketId)
-    : undefined
+  const market = spotStore.marketByIdOrSlug(
+    formValues[SpotOrderHistoryFilterField.Market]
+  )
 
   const direction = formValues[
     SpotOrderHistoryFilterField.Side
@@ -58,7 +50,7 @@ function fetchTrades() {
         direction,
         orderTypes,
         executionTypes,
-        marketIds
+        marketIds: market ? [market.marketId] : undefined
       }
     })
     .catch($onError)

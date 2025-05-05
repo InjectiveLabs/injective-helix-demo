@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { LiquidityBotField, LiquidityBotForm, UiMarketWithToken } from '@/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { LiquidityBotField } from '@/types'
+import type { LiquidityBotForm, UiMarketWithToken } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const formValues = useFormValues<LiquidityBotForm>()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
     isSingleColumn?: boolean
+    market: UiMarketWithToken
   }>(),
   {}
 )
@@ -52,11 +53,11 @@ const totalAmountInUsd = computed(() => {
   )
 
   const baseInUsd = baseAmountInBigNumber.times(
-    tokenStore.tokenUsdPrice(props.market.baseToken)
+    sharedTokenStore.tokenUsdPrice(props.market.baseToken)
   )
 
   const quoteInUsd = quoteAmountInBigNumber.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 
   return baseInUsd.plus(quoteInUsd).toString()

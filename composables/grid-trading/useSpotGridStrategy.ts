@@ -1,24 +1,24 @@
 import { format } from 'date-fns'
 import { indexerSpotApi } from '@shared/Service'
+import { ExitType } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { TradingStrategy, ExitType } from '@injectivelabs/sdk-ts'
 import {
   formatInterval,
   addressAndMarketSlugToSubaccountId
 } from '@/app/utils/helpers'
 import {
   BotType,
-  StopReason,
   SgtMarketType,
-  AccountBalance,
   StrategyStatus,
   IndexerGridStrategyType
 } from '@/types'
+import type { StopReason, AccountBalance } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 export const useSpotGridStrategies = (
-  strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>,
+  strategiesArg: ComputedRef<undefined | TradingStrategy | TradingStrategy[]>,
   subaccountBalancesMap: ComputedRef<Record<string, AccountBalance[]>>
 ) => {
   const strategies = computed(() =>
@@ -29,7 +29,7 @@ export const useSpotGridStrategies = (
       : []
   )
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
   const sharedWalletStore = useSharedWalletStore()
   const now = useNow({ interval: 10000 })
 
@@ -40,18 +40,15 @@ export const useSpotGridStrategies = (
   const filteredStrategies = computed(() =>
     strategies.value.filter(
       (strategy) =>
-        spotStore.markets.some(
-          (spotMarket) => spotMarket.marketId === strategy.marketId
-        ) && strategy.marketType === SgtMarketType.Spot
+        spotStore.marketByIdOrSlug(strategy.marketId) &&
+        strategy.marketType === SgtMarketType.Spot
     )
   )
 
   const formattedStrategies = computed(() =>
     filteredStrategies.value.map((strategy) => {
       const isActive = strategy.state === StrategyStatus.Active
-      const market = spotStore.markets.find(
-        (market) => market.marketId === strategy.marketId
-      )!
+      const market = spotStore.marketByIdOrSlug(strategy.marketId)!
 
       const marketSubaccountId = addressAndMarketSlugToSubaccountId(
         sharedWalletStore.authZOrAddress,
@@ -106,7 +103,7 @@ export const useSpotGridStrategies = (
       )
         .times(lastTradedSpotPrice.value[strategy.marketId] || 0)
         .plus(new BigNumberInBase(currentQuoteAccountBalanceQuantity))
-        .times(tokenStore.tokenUsdPrice(market.quoteToken))
+        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
 
       const initialBaseBalanceQuantity = sharedToBalanceInToken({
         value: strategy.subscriptionBaseQuantity,
@@ -123,7 +120,7 @@ export const useSpotGridStrategies = (
         .plus(new BigNumberInBase(initialQuoteBalanceQuantity))
         .times(
           // TODO: Use Initial Quote Price
-          tokenStore.tokenUsdPrice(market.quoteToken)
+          sharedTokenStore.tokenUsdPrice(market.quoteToken)
         )
 
       const stopLoss = strategy.stopLossConfig
@@ -152,8 +149,8 @@ export const useSpotGridStrategies = (
         strategy.exitType === ExitType.Base
           ? market.baseToken.symbol
           : strategy.exitType === ExitType.Quote
-          ? market.quoteToken.symbol
-          : undefined
+            ? market.quoteToken.symbol
+            : undefined
 
       const trailingUpper = strategy.trailUpPrice
         ? sharedToBalanceInToken({
@@ -226,7 +223,7 @@ export const useSpotGridStrategies = (
       const depositUsdValue = new BigNumberInBase(depositBaseQuantity)
         .times(midPrice)
         .plus(depositQuoteQuantity)
-        .times(tokenStore.tokenUsdPrice(market.quoteToken))
+        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
 
       const totalAmount = isActive ? currentUsdValue : depositUsdValue
 
@@ -328,9 +325,7 @@ export const useSpotGridStrategies = (
 
     lastTradedSpotPrice.value = marketPrices.reduce(
       (acc, { price, marketId }) => {
-        const market = spotStore.markets.find(
-          (market) => market.marketId === marketId
-        )!
+        const market = spotStore.marketByIdOrSlug(marketId)!
 
         const formattedPrice = sharedToBalanceInToken({
           value: price,

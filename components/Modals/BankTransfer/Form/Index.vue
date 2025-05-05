@@ -1,14 +1,15 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
-import { BigNumberInBase, Status, StatusType } from '@injectivelabs/utils'
-import { NuxtUiIcons } from '@shared/types'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { WalletOption, BankTransferField } from '@/types'
+import { BankTransferField } from '@/types'
+import type { WalletOption } from '@/types'
 
-const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const setBankTransferFormValues = useSetFormValues()
 const { $onError } = useNuxtApp()
@@ -93,7 +94,7 @@ const balancesSorted = computed(() => {
 })
 
 const maxDecimals = computed(() => {
-  const token = tokenStore.tokenByDenomOrSymbol(denomValue.value)
+  const token = sharedTokenStore.tokenByDenomOrSymbol(denomValue.value)
 
   if (!token) {
     return UI_DEFAULT_DISPLAY_DECIMALS

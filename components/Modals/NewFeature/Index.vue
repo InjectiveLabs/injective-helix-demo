@@ -7,7 +7,7 @@ const derivativeStore = useDerivativeStore()
 const market = computed(() => {
   const MARKET_SLUG = 'tradfi-usdt-perp'
 
-  return derivativeStore.markets.find(({ slug }) => slug === MARKET_SLUG)
+  return derivativeStore.marketByIdOrSlug(MARKET_SLUG)
 })
 
 const marketRoute = computed(() => {

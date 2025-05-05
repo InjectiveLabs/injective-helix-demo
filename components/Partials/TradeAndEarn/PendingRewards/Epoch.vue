@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import {
-  CampaignRewardPool,
-  cosmosSdkDecToBigNumber
-} from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
-import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { injToken, usdtToken } from '@shared/data/token'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { getHubUrl } from '@/app/utils/helpers'
 import {
-  USDT_DECIMALS,
   DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
-import { getHubUrl } from '@/app/utils/helpers'
+import type { CampaignRewardPool } from '@injectivelabs/sdk-ts'
 
-const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { rewardsCampaign } = useTradeReward()
 
@@ -31,7 +29,7 @@ const props = withDefaults(
 const hubUrl = `${getHubUrl()}/staking`
 
 const injUsdPrice = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+  const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
   return injUsdPrice || ZERO_IN_BASE
 })
@@ -121,9 +119,10 @@ const pendingTradeRewardPoints = computed(() => {
 })
 
 const pendingTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(pendingTradeRewardPoints.value).toBase(
-    USDT_DECIMALS
-  )
+  return sharedToBalanceInTokenInBase({
+    value: pendingTradeRewardPoints.value.toFixed(),
+    decimalPlaces: usdtToken.decimals
+  })
 })
 
 const totalPendingTradeRewardPoints = computed(() => {
@@ -143,9 +142,10 @@ const totalPendingTradeRewardPoints = computed(() => {
 })
 
 const totalPendingTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(totalPendingTradeRewardPoints.value).toBase(
-    USDT_DECIMALS
-  )
+  return sharedToBalanceInTokenInBase({
+    value: totalPendingTradeRewardPoints.value.toFixed(),
+    decimalPlaces: usdtToken.decimals
+  })
 })
 
 const pendingEstimatedRewards = computed(() => {

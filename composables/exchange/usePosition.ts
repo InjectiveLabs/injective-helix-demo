@@ -1,4 +1,3 @@
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
@@ -8,14 +7,13 @@ import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 export function useDerivativePosition(position: Ref<PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
-    return derivativeStore.markets.find(
-      (m) => m.marketId === position.value.marketId
-    )
+    return derivativeStore.marketByIdOrSlug(position.value.marketId)
   })
 
   const margin = computed(() => {

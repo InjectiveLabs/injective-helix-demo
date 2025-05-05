@@ -38,7 +38,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/abstract-spot-derivative-store'
   ],
 
   // @ts-expect-error - typing issue

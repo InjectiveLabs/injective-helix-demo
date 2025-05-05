@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { INJ_LOGO_URL } from '@shared/utils/constant'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const props = withDefaults(
   defineProps<{
@@ -23,7 +23,7 @@ const props = withDefaults(
 
 const formattedToken = computed(() => {
   if (props.denom) {
-    return tokenStore.tokenByDenomOrSymbol(props.denom)
+    return sharedTokenStore.tokenByDenomOrSymbol(props.denom)
   }
 
   return props.token

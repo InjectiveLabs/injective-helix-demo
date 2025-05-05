@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   sharedToBalanceInToken,
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
-import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
+import { LiquidityRewardsPage } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
     campaign: Campaign
+    market: UiMarketWithToken
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const rewardsWithToken = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+    const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
       token,
@@ -39,7 +40,7 @@ const { valueToString: totalRewardsInUsdToString } =
   useSharedBigNumberFormatter(
     computed(() => {
       return props.campaign.rewards.reduce((total, reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
         if (!token) {
           return total
@@ -51,7 +52,7 @@ const { valueToString: totalRewardsInUsdToString } =
         })
 
         const rewardInUsd = new BigNumberInBase(rewardInBase).times(
-          tokenStore.tokenUsdPrice(token)
+          sharedTokenStore.tokenUsdPrice(token)
         )
 
         return total.plus(rewardInUsd)
@@ -65,7 +66,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
     sharedToBalanceInTokenInBase({
       value: props.campaign.totalScore,
       decimalPlaces: props.market.quoteToken.decimals
-    }).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    }).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
   ),
   {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS

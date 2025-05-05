@@ -1,4 +1,5 @@
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   MsgType,
   OrderSide,
@@ -26,9 +27,7 @@ export function useFuturesAdvancedOrdersTransformer(
 
   const rows = computed(() =>
     triggerList.value.reduce((list, trigger) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === trigger.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(trigger.marketId)
 
       if (!market) {
         return list
@@ -50,13 +49,15 @@ export function useFuturesAdvancedOrdersTransformer(
 
       const type = typeMap[trigger.orderType as OrderSide] || ''
 
-      const price = new BigNumberInWei(trigger.price).toBase(
-        market.quoteToken.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: trigger.price,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
-      const margin = new BigNumberInWei(trigger.margin).toBase(
-        market.quoteToken.decimals
-      )
+      const margin = sharedToBalanceInTokenInBase({
+        value: trigger.margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isReduceOnly = trigger.isReduceOnly || margin.isZero()
 

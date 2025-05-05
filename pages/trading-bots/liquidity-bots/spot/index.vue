@@ -17,10 +17,11 @@ import { LiquidityBotField } from '@/types'
 import type { LiquidityBotForm } from '@/types'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
 const campaignStore = useCampaignStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 
@@ -34,7 +35,7 @@ const market = useQueryRef('market', 'inj-usdt')
 const lastTradedPrice = ref(ZERO_IN_BASE)
 
 const marketOptions = computed(() =>
-  spotStore.markets
+  sharedSpotStore.marketsWithToken
     .filter(({ slug }) =>
       jsonStore.spotGridMarkets.some((market) => market.slug === slug)
     )
@@ -56,9 +57,7 @@ const marketOptions = computed(() =>
     })
 )
 
-const selectedMarket = computed(() =>
-  spotStore.markets.find((m) => m.slug === market.value)
-)
+const selectedMarket = computed(() => spotStore.marketByIdOrSlug(market.value))
 
 const sgtSubaccountId = computed(() =>
   addressAndMarketSlugToSubaccountId(
@@ -70,13 +69,11 @@ const sgtSubaccountId = computed(() =>
 const marketRewards = computed(() =>
   campaignStore.latestRoundCampaigns.reduce(
     (acc, campaign) => {
-      const market = spotStore.markets.find(
-        ({ marketId }) => marketId === campaign.marketId
-      )
+      const market = spotStore.marketByIdOrSlug(campaign.marketId)
 
       const reward = campaign.rewards[0]
 
-      const token = tokenStore.verifiedTokens.find(
+      const token = sharedTokenStore.verifiedTokens.find(
         ({ denom }) => denom === reward?.denom
       )
 
@@ -151,13 +148,13 @@ const liquidityValues = computed(() => {
 
   const baseAmountInUsd = selectedMarket.value
     ? new BigNumberInBase(values[LiquidityBotField.BaseAmount] || 0).times(
-        tokenStore.tokenUsdPrice(selectedMarket.value.baseToken) || 0
+        sharedTokenStore.tokenUsdPrice(selectedMarket.value.baseToken) || 0
       )
     : ZERO_IN_BASE
 
   const quoteAmountInUsd = selectedMarket.value
     ? new BigNumberInBase(values[LiquidityBotField.QuoteAmount] || 0).times(
-        tokenStore.tokenUsdPrice(selectedMarket.value.quoteToken) || 0
+        sharedTokenStore.tokenUsdPrice(selectedMarket.value.quoteToken) || 0
       )
     : ZERO_IN_BASE
 

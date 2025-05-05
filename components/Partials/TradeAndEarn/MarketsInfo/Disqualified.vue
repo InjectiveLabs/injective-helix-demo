@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
+
+const { disqualifiedMarketIdsList } = useTradeReward()
 
 const disqualifiedMarkets = computed(() =>
-  [...derivativeStore.markets, ...spotStore.markets]
-    .filter((m) =>
-      useTradeReward().disqualifiedMarketIdsList.value.includes(m.marketId)
-    )
+  [
+    ...sharedSpotStore.marketsWithToken,
+    ...sharedDerivativeStore.marketsWithToken
+  ]
+    .filter((m) => disqualifiedMarketIdsList.value.includes(m.marketId))
     .map((m) => m.ticker)
 )
 </script>

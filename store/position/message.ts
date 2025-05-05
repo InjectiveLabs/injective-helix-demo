@@ -30,9 +30,7 @@ export const closePosition = async ({
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
-  const market = derivativeStore.markets.find(
-    (m) => m.marketId === position.marketId
-  )
+  const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
   if (
     !market ||
@@ -144,9 +142,7 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
 
   const formattedPositions = positions
     .map((position) => {
-      const market = derivativeStore.markets.find(
-        (m) => m.marketId === position.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
       if (!market) {
         return undefined

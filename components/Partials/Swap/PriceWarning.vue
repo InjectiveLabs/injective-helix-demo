@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { SwapForm, SwapFormField } from '@/types'
+import { SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const swapFormValues = useFormValues<SwapForm>()
 const { inputToken, outputToken } = useSwap(swapFormValues)
 
@@ -10,7 +12,7 @@ const SLIPPAGE = 15
 
 const inputAmountUsd = computed(() => {
   if (!inputToken.value) {
-    return new BigNumberInBase(0)
+    return ZERO_IN_BASE
   }
 
   const inputAmount = new BigNumberInBase(
@@ -18,7 +20,7 @@ const inputAmountUsd = computed(() => {
   )
 
   return inputAmount.multipliedBy(
-    tokenStore.tokenUsdPrice(inputToken.value.token)
+    sharedTokenStore.tokenUsdPrice(inputToken.value.token)
   )
 })
 
@@ -32,7 +34,7 @@ const outputAmountUsd = computed(() => {
   )
 
   return outputAmount.multipliedBy(
-    tokenStore.tokenUsdPrice(outputToken.value.token)
+    sharedTokenStore.tokenUsdPrice(outputToken.value.token)
   )
 })
 

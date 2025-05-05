@@ -73,13 +73,13 @@ function calculateDefaultSubaccountBalance(
 }
 
 function getDenomPositionMap(positions: PositionV2[]) {
-  const tokenStore = useTokenStore()
   const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   return positions.reduce(
     (list, position) => {
       const quoteToken =
-        tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
+        sharedTokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
       const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
         ?.price
         ? sharedToBalanceInWei({
@@ -131,18 +131,18 @@ function getDenomPositionMap(positions: PositionV2[]) {
 
 export function useBalance() {
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
   const accountStore = useAccountStore()
   const exchangeStore = useExchangeStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const subaccountPortfolioBalanceMap = computed(() => {
     const tradableDenoms = [
       ...new Set([
-        ...spotStore.tradableDenoms,
-        ...derivativeStore.tradableDenoms
+        ...derivativeStore.tradableDenoms,
+        ...spotStore.tradableDenoms
       ])
     ]
 
@@ -167,13 +167,13 @@ export function useBalance() {
           ...subaccountIdBalanceMap,
           [subaccountId]: subaccountBalances
             .map((balance) => {
-              const token = tokenStore.tokenByDenomOrSymbol(balance.denom)
+              const token = sharedTokenStore.tokenByDenomOrSymbol(balance.denom)
 
               if (!token || !balance) {
                 return undefined
               }
 
-              const usdPrice = tokenStore.tokenUsdPrice(token)
+              const usdPrice = sharedTokenStore.tokenUsdPrice(token)
               const isVerified = tradableDenoms.includes(balance.denom)
               const unrealizedPnlAndMargin = new BigNumberInBase(
                 subaccountPositionPnlDenomMap[balance.denom]?.pnlPlusMargin || 0
@@ -246,7 +246,7 @@ export function useBalance() {
   })
 
   const stakedAmountInUsd = computed(() => {
-    const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+    const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
     if (!injUsdPrice) {
       return ZERO_IN_BASE

@@ -19,12 +19,10 @@ const portfolioStatus = inject(
   new Status(StatusType.Loading)
 )
 
-const market = computed(() =>
-  spotStore.markets.find(
-    (market) =>
-      market.slug === route.params.slug ||
-      market.marketId === route.query.marketId
-  )
+const market = computed(
+  () =>
+    spotStore.marketByIdOrSlug(route.params.slug as string) ||
+    spotStore.marketByIdOrSlug(route.query.marketId as string)
 )
 
 useSpotOrderbook(computed(() => market.value))

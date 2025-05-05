@@ -1,22 +1,20 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { FundingPayment } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { FundingPayment } from '@injectivelabs/sdk-ts'
 
 export function useFundingHistory(fundingHistory: Ref<FundingPayment>) {
   const derivativeStore = useDerivativeStore()
 
-  const UI_MINIMAL_AMOUNT = new BigNumberInWei(1).shiftedBy(-6)
+  const UI_MINIMAL_AMOUNT = new BigNumberInBase(1).shiftedBy(-6)
 
   const market = computed(() =>
-    derivativeStore.markets.find(
-      (m) => m.marketId === fundingHistory.value.marketId
-    )
+    derivativeStore.marketByIdOrSlug(fundingHistory.value.marketId)
   )
 
   const priceDecimals = computed(() =>
@@ -44,7 +42,10 @@ export function useFundingHistory(fundingHistory: Ref<FundingPayment>) {
       ? market.value.quoteToken.decimals
       : UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 
-    return new BigNumberInWei(fundingHistory.value.amount).toBase(decimals)
+    return sharedToBalanceInTokenInBase({
+      value: fundingHistory.value.amount,
+      decimalPlaces: decimals
+    })
   })
 
   const time = computed(() => {

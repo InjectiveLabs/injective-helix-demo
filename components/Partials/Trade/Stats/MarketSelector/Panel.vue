@@ -5,8 +5,8 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const { t } = useLang()
 const { sm } = useSharedBreakpoints()
 
@@ -32,7 +32,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary].map(
     ({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       return {

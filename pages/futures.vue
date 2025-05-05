@@ -30,12 +30,10 @@ const portfolioStatus = inject(
 const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
-const market = computed(() =>
-  derivativeStore.markets.find(
-    (market) =>
-      market.slug === route.params.slug ||
-      market.marketId === route.query.marketId
-  )
+const market = computed(
+  () =>
+    derivativeStore.marketByIdOrSlug(route.params.slug as string) ||
+    derivativeStore.marketByIdOrSlug(route.query.marketId as string)
 )
 
 useDerivativeOrderbook(computed(() => market.value))
@@ -113,8 +111,8 @@ onWalletConnected(async () => {
     marketIds: [
       ...new Set([
         market.value.marketId,
-        ...positionStore.positions.map(({ marketId }) => marketId),
-        ...gridStrategyStore.strategies.map(({ marketId }) => marketId)
+        ...gridStrategyStore.strategies.map(({ marketId }) => marketId),
+        ...positionStore.positions.map(({ marketId }) => marketId)
       ])
     ]
   })

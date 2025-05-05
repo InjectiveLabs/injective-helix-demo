@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
@@ -7,16 +8,10 @@ import {
   GST_MIN_TRADING_SIZE_LOW,
   GST_MIN_TOTAL_AMOUNT_USD
 } from '@/app/utils/constants'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
-import {
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 
@@ -25,10 +20,7 @@ const props = withDefaults(
     isAuto?: boolean
     isDisabled?: boolean
   }>(),
-  {
-    isAuto: false,
-    isDisabled: false
-  }
+  {}
 )
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -49,18 +41,16 @@ const accountBalance = computed(
     ]
 )
 
-const quoteDenomBalance = computed(
-  () =>
-    accountBalance.value?.find(
-      (balance) => balance.denom === market.value.quoteDenom
-    )
+const quoteDenomBalance = computed(() =>
+  accountBalance.value?.find(
+    (balance) => balance.denom === market.value.quoteDenom
+  )
 )
 
-const baseDenomBalance = computed(
-  () =>
-    accountBalance.value?.find(
-      (balance) => balance.denom === market.value.baseDenom
-    )
+const baseDenomBalance = computed(() =>
+  accountBalance.value?.find(
+    (balance) => balance.denom === market.value.baseDenom
+  )
 )
 
 const gridThreshold = computed(() => {
@@ -137,11 +127,11 @@ const { value: baseAmount, errorMessage: baseAmountError } = useStringField({
 
     const baseAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.baseToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       market.value.baseToken.symbol
@@ -178,11 +168,11 @@ const { value: quoteAmount, errorMessage: quoteAmountError } = useStringField({
 
     const baseAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.baseToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       market.value.baseToken.symbol
