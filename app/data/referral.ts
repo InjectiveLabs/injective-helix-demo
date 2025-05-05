@@ -405,7 +405,6 @@ export const whitelistedAddresses = [
   'inj1rr7yx45un44lrn49kjnhx336r7a97srhjc6jvv',
   'inj1d6a75vay0f6ck78dgwcxuca0g2ng4ja802nu4v',
   'inj15wn7dtshtqm43mz4pad4fmumk4l8zcwq7qkg7l',
-  '0xA59582AbE6B7B5f6E4178108C18066c806E3aDfD',
   'inj1fgymw6a2a4uc36pd50405d7azlv3f6jtc0lhc5',
   'inj1nqtldzll0scm0f9y05z7sk4sa526uyrjvsrfhn',
   'inj1z432srswzqxltppk27vn2x69ra8zydpv7lc96y',
@@ -424,7 +423,24 @@ export const whitelistedAddresses = [
   'inj1lye3du2qf6m0zc8hg7vmkh3zph2xfe9qy32hmk',
   'inj1l873g53duywd6twc7njl728urwwly69hhqttxz',
   'inj13y3ggd259mfftzyzya4zsjfgamtlglj5623dc0',
-  'inj1zpkga0nr77tlqzu59hcevhrlyed3sw9luhu0tz'
+  'inj1zpkga0nr77tlqzu59hcevhrlyed3sw9luhu0tz',
+  'inj1g6grlgchxw95mxc5c3949ygw75hqpghqhgkj0k',
+  'inj1z6877t734um3vfdjty6xscspsh82jp8ld7az9y',
+  'inj1rw66tzp4y8trj3eh0k5hwj90zg3gh7h5skdzq2',
+  'inj1peca26ykg7v3a4tlr35sqrgju30z0qhjchmg33',
+  'inj1drlzyrf6fj2u2rjgsxvtnqqdjsge48fzntn5yl',
+  'inj12rsdrh7v76uwd08rk8w37g99q6whs2npmtzxr3',
+  'inj16dwt6ew8tnjkjcvtklupejd4vxatkj487ht64m',
+  'inj1mh7efynqjvw3rt2ntty2unmxr6kwaec5g5050y',
+  'inj1zj8dd6lu96lep97hguuch3lzwkcgr7edj0sjg2',
+  'inj1y2chpncwftamuktxvppu7wm8gk0hy9lu22yhgs',
+  'inj1d2pzc22xypaq9n60ny3pzalyqc2v8ftyxuwnhm',
+  'inj1d07m5lngl5hs2wv0k52sqjp7qah8030gr2awf7',
+  'inj1drfe54ww2enjeaw7sxxdaxyus5qgd9ryupp632',
+  'inj1khc76hh4vh8jmjlf5rg069k2gqqupn6yf9ds25',
+  'inj1t9fq7pcclfx6rge43a3j28kvxtrggcew6neeld',
+  'inj16dwt6ew8tnjkjcvtklupejd4vxatkj487ht64m',
+  'inj1p9agdy03rtml2u0nzgzrjv8472jrkwzgu5apth'
 ]
 
 export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
