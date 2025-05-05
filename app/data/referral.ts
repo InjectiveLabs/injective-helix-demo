@@ -440,7 +440,9 @@ export const whitelistedAddresses = [
   'inj1khc76hh4vh8jmjlf5rg069k2gqqupn6yf9ds25',
   'inj1t9fq7pcclfx6rge43a3j28kvxtrggcew6neeld',
   'inj16dwt6ew8tnjkjcvtklupejd4vxatkj487ht64m',
-  'inj1p9agdy03rtml2u0nzgzrjv8472jrkwzgu5apth'
+  'inj1p9agdy03rtml2u0nzgzrjv8472jrkwzgu5apth',
+  'inj1z39zn354gq25jfr9407d2pfeg2v3dxeu3gfhr3', // 0x144A29c6954015492465ABFcd505394299169b3C
+  'inj15k2c92lxk76ldeqhsyyvrqrxeqrw8t0a73azlu' //0xA59582AbE6B7B5f6E4178108C18066c806E3aDfD
 ]
 
 export const REFERRAL_CONTRACT_ADDRESS = IS_MAINNET
