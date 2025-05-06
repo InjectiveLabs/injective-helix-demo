@@ -600,7 +600,6 @@ export type BaseQuoteFields = Exclude<
 >
 
 export enum CtaToast {
-  AutoSign = 'auto-sign',
   EnableAutoSign = 'enable-auto-sign',
   ReferralSuccess = 'referral-success',
   UserDoesntTrade = 'user-doesnt-trade',

@@ -31,8 +31,6 @@ export default {
       moveAssetsToInjTitle: 'Move Your Crypto to Injective & Start Trading',
       autoSign: {
         disabledToast: 'Auto sign disabled',
-        allowsYouToTrade:
-          'Allows trading on Helix for 3 days; can be deactivated at any time',
         enabledToast: {
           title: 'Auto sign enabled',
           description: 'Auto sign active for 3 days'
@@ -40,7 +38,7 @@ export default {
         enable: {
           title: 'Auto Sign',
           description:
-            'Once enabled, you can trade on Helix smoother;  without signing each transaction.'
+            'Once enabled, you can trade on Helix smoother; without signing each transaction.'
         }
       }
     },
