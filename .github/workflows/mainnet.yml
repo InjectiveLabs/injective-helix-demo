@@ -48,6 +48,7 @@ jobs:
 
       ## Secret
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      NUXT_CLARITY_ID: ${{ secrets.NUXT_CLARITY_ID }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
 
       VITE_FEE_RECIPIENT: ${{ secrets.VITE_FEE_RECIPIENT }}
