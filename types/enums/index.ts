@@ -406,15 +406,14 @@ export enum MarketCategoryType {
   Trending = 'trending',
   Injective = 'injective',
   Layer1 = 'layer-1',
-  Layer2 = 'layer-2',
   iAssets = 'iAssets',
   RWA = 'rwa',
   AI = 'ai',
-  DeFi = 'deFi',
-  Meme = 'meme'
+  DeFi = 'deFi'
 }
 
 export enum NoticeBanner {
+  IAssets = 'i-assets',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
   FTMSettleMarket = 'ftm-settle-market',
@@ -600,7 +599,6 @@ export type BaseQuoteFields = Exclude<
 >
 
 export enum CtaToast {
-  AutoSign = 'auto-sign',
   EnableAutoSign = 'enable-auto-sign',
   ReferralSuccess = 'referral-success',
   UserDoesntTrade = 'user-doesnt-trade',

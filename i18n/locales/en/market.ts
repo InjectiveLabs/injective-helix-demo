@@ -60,19 +60,21 @@ export default {
       [MarketCategoryType.Trending]: 'Trending',
       [MarketCategoryType.Injective]: 'Injective',
       [MarketCategoryType.Layer1]: 'L1',
-      [MarketCategoryType.Layer2]: 'L2',
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
-      [MarketCategoryType.Meme]: 'Meme',
       [MarketCategoryType.RWA]: 'RWA',
       [MarketCategoryType.iAssets]: 'iAssets'
+    },
+    iAssetsBanner: {
+      title: 'Trade iAssets on Helix',
+      description:
+        'Trade stocks with crypto for faster, cheaper, and more transparent transactions - combining traditional markets with the power of decentralized finance.'
     }
   },
 
   marketPage: {
     assets: 'Assets',
     assetsFrom: 'Assets From',
-    asseuitsNote: '',
     balances: 'Balances',
     portfolio: 'Portfolio',
     account: 'Account',

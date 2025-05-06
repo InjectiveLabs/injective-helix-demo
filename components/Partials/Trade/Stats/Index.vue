@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags, MarketCategoryType } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
@@ -9,11 +10,25 @@ withDefaults(
   {}
 )
 
+const route = useRoute()
 const breakpoints = useSharedBreakpoints()
 
 const sm = breakpoints.sm
 
 const isMarketOpen = ref(false)
+
+onMounted(() => {
+  if (route.query.category) {
+    Object.keys(MarketCategoryType).forEach((category) => {
+      if (
+        category.toLowerCase() ===
+        route.query?.category?.toString()?.toLowerCase()
+      ) {
+        isMarketOpen.value = true
+      }
+    })
+  }
+})
 </script>
 
 <template>

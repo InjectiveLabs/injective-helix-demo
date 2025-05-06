@@ -19,8 +19,13 @@ import {
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
-import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
-import type { Modal, CtaToast, NoticeBanner } from '@/types'
+import {
+  NoticeBanner,
+  TradingLayout,
+  OrderbookLayout,
+  TradingChartInterval
+} from '@/types'
+import type { Modal, CtaToast } from '@/types'
 import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
@@ -253,13 +258,22 @@ export const useAppStore = defineStore('app', {
 
       const hasAcceptedTerms = appStore.userState.hasAcceptedTerms
 
+      const isIAssetBannerViewed = appStore.userState.bannersViewed.find(
+        (item) => item === NoticeBanner.IAssets
+      )
+
       appStore.$patch({
-        ...initialState
+        ...initialState,
+        userState: {
+          ...initialState.userState,
+          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
+        }
       })
 
       appStore.userState = {
         ...initialState.userState,
-        hasAcceptedTerms
+        hasAcceptedTerms,
+        bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
       }
     }
   }

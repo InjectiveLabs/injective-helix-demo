@@ -138,7 +138,6 @@ export default {
     },
     howItWorks:
       'During the enabled duration (3 days), you can perform many operations on Helix (including opening/closing positions on spot and perp trading pairs, setting limit orders, and creating TP/SL parameters) without signing additional transactions. Interactions with the swap feature or trading bots are not included. For security reasons, the auto sign function will expire after the 3 days time frame, at which point you may choose to initiate a new session.',
-    enable: 'Enable auto-sign',
     expiredToast: {
       title: 'Auto sign session has expired',
       settings: 'Settings',

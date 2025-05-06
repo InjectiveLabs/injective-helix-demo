@@ -2,11 +2,13 @@ import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
 import {
   MainPage,
-  MenuItem,
+  TradePage,
   TradeSubPage,
   PortfolioSubPage,
-  LeaderboardSubPage
+  LeaderboardSubPage,
+  MarketCategoryType
 } from '@/types'
+import type { MenuItem } from '@/types'
 
 export const getMoreMenu = () => [
   {
@@ -19,8 +21,12 @@ export const getMoreMenu = () => [
     label: 'navigation.more.lpRewards'
   },
   {
-    label: 'navigation.referral',
-    to: { name: MainPage.Referral }
+    to: { name: MainPage.Referral },
+    label: 'navigation.more.referral'
+  },
+  {
+    to: { name: MainPage.Vaults },
+    label: 'navigation.more.vaults'
   },
   {
     to: { name: MainPage.FeeDiscounts },
@@ -75,12 +81,15 @@ export const TRADING_OPTIONS = [
     }
   },
   {
-    label: 'navigation.vaults',
-    to: { name: MainPage.Vaults }
-  },
-  {
     label: 'navigation.tradingBots',
     to: { name: MainPage.TradingBots }
+  },
+  {
+    label: 'navigation.stocks',
+    to: {
+      name: TradePage.Futures,
+      query: { category: MarketCategoryType.iAssets }
+    }
   },
   {
     to: { name: LeaderboardSubPage.Pnl },

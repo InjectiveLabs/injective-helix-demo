@@ -1,102 +1,15 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-base'
-import { TRADING_MESSAGES } from '@/app/data/trade'
-import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
-import { CtaToast, BusEvents } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
-const appStore = useAppStore()
-const accountStore = useAccountStore()
-const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
-const notificationStore = useSharedNotificationStore()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
 
 withDefaults(
   defineProps<{
     isSpot?: boolean
     market: UiMarketWithToken
   }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
-
-function connectAutoSign() {
-  sharedWalletStore
-    .connectAutoSign(
-      TRADING_MESSAGES
-      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
-    )
-    .then(() => {
-      useEventBus(BusEvents.AutoSignConnected).emit()
-
-      notificationStore.success({
-        title: t('toast.portfolio.autoSign.enabledToast.title'),
-        description: t('toast.portfolio.autoSign.enabledToast.description')
-      })
-
-      notificationStore.close(CtaToast.AutoSign)
-    })
-    .catch($onError)
-}
-
-function dontShowAutoSignAgain() {
-  notificationStore.close(CtaToast.AutoSign)
-
-  appStore.$patch({
-    userState: {
-      ...appStore.userState,
-      dontShowAgain: [...appStore.userState.dontShowAgain, CtaToast.AutoSign]
-    }
-  })
-}
-
-let timeout: undefined | NodeJS.Timeout
-
-onWalletConnected(() => {
-  if (!sharedWalletStore.isUserConnected) {
-    return
-  }
-
-  clearTimeout(timeout)
-
-  timeout = setTimeout(() => {
-    if (
-      accountStore.hasBalance &&
-      !sharedWalletStore.isAutoSignEnabled &&
-      !sharedWalletStore.isAuthzWalletConnected &&
-      sharedWalletStore.isUserConnected &&
-      !appStore.userState.dontShowAgain?.includes(CtaToast.AutoSign) &&
-      sharedWalletStore.wallet !== Wallet.Magic
-    ) {
-      notificationStore.info({
-        title: t('autoSign.enable'),
-        description: t('toast.portfolio.autoSign.allowsYouToTrade'),
-        key: CtaToast.AutoSign,
-        timeout: MAX_TOAST_TIMEOUT,
-        actions: [
-          {
-            label: t('common.enable'),
-            callback: connectAutoSign
-          },
-          {
-            label: t('common.dontShowAgain'),
-            class: 'text-red-400 hover:text-red-500',
-            callback: dontShowAutoSignAgain
-          }
-        ]
-      })
-    }
-  }, 8000)
-})
-
-onUnmounted(() => {
-  if (timeout) {
-    clearTimeout(timeout)
-  }
-})
 
 useIntervalFn(() => {
   gridStrategyStore.fetchAllStrategies()
