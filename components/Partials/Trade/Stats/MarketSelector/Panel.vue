@@ -17,6 +17,8 @@ withDefaults(
   {}
 )
 
+const route = useRoute()
+
 const activeCategoryOptions = Object.values(MarketCategoryType).map(
   (value) => ({
     label: t(`markets.filters.${value}`),
@@ -43,6 +45,20 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     }
   )
 )
+
+onMounted(() => {
+  if (route.query.category) {
+    Object.keys(MarketCategoryType).forEach((category) => {
+      if (
+        category.toLowerCase() ===
+        route.query?.category?.toString()?.toLowerCase()
+      ) {
+        activeCategory.value =
+          MarketCategoryType[category as keyof typeof MarketCategoryType]
+      }
+    })
+  }
+})
 
 function resetSearch() {
   search.value = ''

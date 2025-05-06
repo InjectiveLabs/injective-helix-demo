@@ -73,9 +73,12 @@ onWalletConnected(async () => {
   }
 
   if (!market.value) {
+    const routeQuery = route.query
+
     return navigateTo({
       name: 'futures-slug',
-      params: { slug: 'btc-usdt-perp' }
+      params: { slug: 'btc-usdt-perp' },
+      ...(routeQuery && { query: routeQuery })
     })
   }
 
@@ -113,8 +116,8 @@ onWalletConnected(async () => {
     marketIds: [
       ...new Set([
         market.value.marketId,
-        ...positionStore.positions.map(({ marketId }) => marketId),
-        ...gridStrategyStore.strategies.map(({ marketId }) => marketId)
+        ...gridStrategyStore.strategies.map(({ marketId }) => marketId),
+        ...positionStore.positions.map(({ marketId }) => marketId)
       ])
     ]
   })

@@ -415,6 +415,7 @@ export enum MarketCategoryType {
 }
 
 export enum NoticeBanner {
+  IAssets = 'i-assets',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
   FTMSettleMarket = 'ftm-settle-market',

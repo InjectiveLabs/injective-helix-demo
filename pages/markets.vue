@@ -3,9 +3,11 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCyTags, MarketCategoryType } from '@/types'
+import { PartialsMarketsIAssetsBanner } from '#components'
+import { MarketCyTags, NoticeBanner, MarketCategoryType } from '@/types'
 
 const route = useRoute()
+const appStore = useAppStore()
 const spotStore = useSpotStore()
 const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
@@ -31,6 +33,20 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     .filter(({ summary }) => summary)
 )
 
+onMounted(() => {
+  if (route.query.category) {
+    Object.keys(MarketCategoryType).forEach((category) => {
+      if (
+        category.toLowerCase() ===
+        route.query?.category?.toString()?.toLowerCase()
+      ) {
+        activeCategory.value =
+          MarketCategoryType[category as keyof typeof MarketCategoryType]
+      }
+    })
+  }
+})
+
 function resetSearch() {
   search.value = ''
 }
@@ -54,6 +70,13 @@ function setCategoryFromQuery() {
 
   return MarketCategoryType.All
 }
+
+function closeIAssetsBanner() {
+  appStore.setUserState({
+    ...appStore.userState,
+    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.IAssets]
+  })
+}
 </script>
 
 <template>
@@ -69,6 +92,11 @@ function setCategoryFromQuery() {
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
         class="mt-8"
+      />
+
+      <PartialsMarketsIAssetsBanner
+        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.IAssets)"
+        @banner:close="closeIAssetsBanner"
       />
 
       <div class="max-w-full mt-4 lg:mb-2">

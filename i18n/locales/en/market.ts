@@ -66,13 +66,17 @@ export default {
       [MarketCategoryType.Meme]: 'Meme',
       [MarketCategoryType.RWA]: 'RWA',
       [MarketCategoryType.iAssets]: 'iAssets'
+    },
+    iAssetsBanner: {
+      title: 'Trade iAssets in Helix',
+      description:
+        'Trade stocks with crypto for faster, cheaper, and more transparent transactions; blending traditional markets with the power of decentralized finance.'
     }
   },
 
   marketPage: {
     assets: 'Assets',
     assetsFrom: 'Assets From',
-    asseuitsNote: '',
     balances: 'Balances',
     portfolio: 'Portfolio',
     account: 'Account',
