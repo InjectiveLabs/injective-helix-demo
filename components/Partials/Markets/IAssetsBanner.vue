@@ -33,7 +33,7 @@ function onTradeNow() {
     <UIcon
       v-if="sharedWalletStore.isUserConnected"
       :name="NuxtUiIcons.Close"
-      class="size-6 min-w-6 absolute right-3 top-3 z-[5] cursor-pointer"
+      class="size-6 min-w-6 absolute right-3 top-3 z-[5] cursor-pointer hover:text-gray-400 transition-colors"
       @click="onCloseBanner"
     />
 
