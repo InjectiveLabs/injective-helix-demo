@@ -263,7 +263,11 @@ export const useAppStore = defineStore('app', {
       )
 
       appStore.$patch({
-        ...initialState
+        ...initialState,
+        userState: {
+          ...initialState.userState,
+          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
+        }
       })
 
       appStore.userState = {
