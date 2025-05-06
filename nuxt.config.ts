@@ -1,6 +1,7 @@
 import { head, hooks } from './nuxt-config'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
+const isProduction = process.env.NODE_ENV === 'production'
 
 export default defineNuxtConfig({
   hooks,
@@ -23,7 +24,14 @@ export default defineNuxtConfig({
     server: false
   },
 
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui', '@nuxt/eslint'],
+  modules: [
+    '@funken-studio/sitemap-nuxt-3',
+    '@nuxt/ui',
+    '@nuxt/eslint',
+    ...(isProduction && import.meta.env.NUXT_CLARITY_ID
+      ? ['nuxt-clarity-analytics']
+      : [])
+  ],
 
   imports: {
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
