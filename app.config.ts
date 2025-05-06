@@ -17,8 +17,8 @@ export default defineAppConfig({
     },
 
     popover: {
-      background: 'dark:bg-brand-900',
-      ring: 'ring-coolGray-800'
+      ring: 'ring-coolGray-800',
+      background: 'dark:bg-brand-900'
     },
 
     dropdown: {

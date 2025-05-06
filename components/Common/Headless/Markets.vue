@@ -198,12 +198,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
     )
   }
 
-  if (props.activeCategory === MarketCategoryType.Layer2) {
-    return (jsonStore.helixMarketCategoriesMap.layer2 || []).includes(
-      market.marketId
-    )
-  }
-
   if (props.activeCategory === MarketCategoryType.DeFi) {
     return (jsonStore.helixMarketCategoriesMap.defi || []).includes(
       market.marketId
@@ -212,12 +206,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
 
   if (props.activeCategory === MarketCategoryType.AI) {
     return (jsonStore.helixMarketCategoriesMap.ai || []).includes(
-      market.marketId
-    )
-  }
-
-  if (props.activeCategory === MarketCategoryType.Meme) {
-    return (jsonStore.helixMarketCategoriesMap.meme || []).includes(
       market.marketId
     )
   }
