@@ -75,6 +75,7 @@ function openGranteeModal() {
     <div class="border-y">
       <NuxtPage />
     </div>
+
+    <ModalsConnectMobile />
   </div>
-  <ModalsConnectMobile />
 </template>
