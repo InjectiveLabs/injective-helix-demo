@@ -68,7 +68,7 @@ export default {
     iAssetsBanner: {
       title: 'Trade iAssets on Helix',
       description:
-        'Trade stocks with crypto for faster, cheaper, and more transparent transactions; blending traditional markets with the power of decentralized finance.'
+        'Trade stocks with crypto for faster, cheaper, and more transparent transactions - combining traditional markets with the power of decentralized finance.'
     }
   },
 

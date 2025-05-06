@@ -81,15 +81,15 @@ export const TRADING_OPTIONS = [
     }
   },
   {
+    label: 'navigation.tradingBots',
+    to: { name: MainPage.TradingBots }
+  },
+  {
     label: 'navigation.stocks',
     to: {
       name: TradePage.Futures,
       query: { category: MarketCategoryType.iAssets }
     }
-  },
-  {
-    label: 'navigation.tradingBots',
-    to: { name: MainPage.TradingBots }
   },
   {
     to: { name: LeaderboardSubPage.Pnl },
