@@ -145,7 +145,7 @@ function setupProgressBar(timeout: number) {
             }"
           />
 
-          <div class="flex flex-col gap-3" :class="contentClass">
+          <div class="flex flex-col gap-4" :class="contentClass">
             <span class="text-sm font-semibold leading-tight">
               {{ notification.title }}
             </span>
@@ -162,7 +162,7 @@ function setupProgressBar(timeout: number) {
               :content="notification.context"
             >
               <span
-                class="text-sm font-semibold py-1.5 px-2.5 border border-[#A7C8FF] rounded-lg text-[#A7C8FF] hover:bg-[#A7C8FF] hover:text-brand-800 transition-opacity cursor-pointer"
+                class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
                 @click="onCopy"
               >
                 {{
@@ -177,7 +177,7 @@ function setupProgressBar(timeout: number) {
               <button
                 v-for="(action, index) in notification.actions"
                 :key="index"
-                class="text-sm font-semibold py-1.5 px-2.5 border border-[#A7C8FF] rounded-lg text-[#A7C8FF] hover:bg-[#A7C8FF] hover:text-brand-800 transition-colors cursor-pointer"
+                class="text-sm font-semibold py-1 px-3 bg-[#A7C8FF] rounded-xl text-brand-800 hover:opacity-80 transition-opacity cursor-pointer"
                 :class="action.class"
                 @click="() => action.callback()"
               >
