@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { SharedMarketType } from '@shared/types'
+import { TRADING_MESSAGES } from '~/app/data/trade'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { MAX_TOAST_TIMEOUT, UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {
   Modal,
+  CtaToast,
   BusEvents,
   MarketKey,
+  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   IsRWAMarketOpenKey,
@@ -275,6 +278,7 @@ async function submitLimitOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -313,6 +317,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -355,6 +360,7 @@ function submitStopLimitOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -397,6 +403,7 @@ function submitStopMarketOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -416,6 +423,36 @@ function submitStopMarketOrder() {
 
       status.setIdle()
     })
+}
+
+function showAutosignCta() {
+  if (!derivativeStore.subaccountTradesCount) {
+    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
+    notificationStore.success({
+      title: t('toast.portfolio.autoSign.enable.title'),
+      description: t('toast.portfolio.autoSign.enable.description'),
+      icon: NuxtUiIcons.RotateAuto,
+      timeout: MAX_TOAST_TIMEOUT,
+      key: CtaToast.EnableAutoSign,
+      actions: [
+        {
+          label: t('common.enable'),
+          callback: () => {
+            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
+            notificationStore.close(CtaToast.EnableAutoSign)
+
+            sharedWalletStore
+              .connectAutoSign(
+                TRADING_MESSAGES
+                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+              )
+              .catch($onError)
+              .finally(() => status.setIdle())
+          }
+        }
+      ]
+    })
+  }
 }
 </script>
 

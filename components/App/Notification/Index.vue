@@ -23,6 +23,7 @@ const props = withDefaults(
 
 const notifTimeout = ref()
 const lastResumeTime = ref(0)
+const hasCopied = ref(false)
 const progressBarInterval = ref()
 const progressBarPercent = ref(100)
 const lastProgressBarPercent = ref(100)
@@ -40,6 +41,12 @@ onMounted(() => {
 
 function onCopy() {
   copy(props.notification.context)
+
+  hasCopied.value = true
+
+  setTimeout(() => {
+    hasCopied.value = false
+  }, 3000)
 }
 
 function onResume() {
@@ -155,10 +162,14 @@ function setupProgressBar(timeout: number) {
               :content="notification.context"
             >
               <span
-                class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
+                class="text-sm font-semibold py-1.5 px-2.5 border border-[#A7C8FF] rounded-lg text-[#A7C8FF] hover:bg-[#A7C8FF] hover:text-brand-800 transition-opacity cursor-pointer"
                 @click="onCopy"
               >
-                {{ $t('common.showMoreContext') }}
+                {{
+                  hasCopied
+                    ? $t('toast.contextCopied')
+                    : $t('common.showMoreContext')
+                }}
               </span>
             </AppTooltip>
 
@@ -166,14 +177,11 @@ function setupProgressBar(timeout: number) {
               <button
                 v-for="(action, index) in notification.actions"
                 :key="index"
+                class="text-sm font-semibold py-1.5 px-2.5 border border-[#A7C8FF] rounded-lg text-[#A7C8FF] hover:bg-[#A7C8FF] hover:text-brand-800 transition-colors cursor-pointer"
+                :class="action.class"
                 @click="() => action.callback()"
               >
-                <span
-                  class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
-                  :class="action.class"
-                >
-                  {{ action.label }}
-                </span>
+                {{ action.label }}
               </button>
             </div>
           </div>

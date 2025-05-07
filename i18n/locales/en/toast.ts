@@ -3,6 +3,7 @@ export default {
     error: 'Error',
     success: 'Success',
     addressCopied: 'Address copied',
+    contextCopied: 'Context copied',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
     subscribeToast: 'Signed up for Helix notifications',
