@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { SharedMarketType } from '@shared/types'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
+import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
+  CtaToast,
   BusEvents,
   MarketKey,
   TradeTypes,
+  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   SpotTradeFormField
@@ -169,6 +173,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -208,6 +213,7 @@ function submitLimitOrder() {
     })
     .then(() => {
       notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -226,6 +232,36 @@ function submitLimitOrder() {
 
       status.setIdle()
     })
+}
+
+function showAutosignCta() {
+  if (!spotStore.subaccountTradesCount) {
+    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
+    notificationStore.success({
+      title: t('toast.portfolio.autoSign.enable.title'),
+      description: t('toast.portfolio.autoSign.enable.description'),
+      icon: NuxtUiIcons.RotateAuto,
+      timeout: MAX_TOAST_TIMEOUT,
+      key: CtaToast.EnableAutoSign,
+      actions: [
+        {
+          label: t('common.enable'),
+          callback: () => {
+            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
+            notificationStore.close(CtaToast.EnableAutoSign)
+
+            sharedWalletStore
+              .connectAutoSign(
+                TRADING_MESSAGES
+                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+              )
+              .catch($onError)
+              .finally(() => status.setIdle())
+          }
+        }
+      ]
+    })
+  }
 }
 </script>
 
