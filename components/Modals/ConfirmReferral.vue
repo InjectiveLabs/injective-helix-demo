@@ -79,7 +79,6 @@ function joinReferral() {
 
         trackOnboardingUserBecomeReferee({
           isPopupShown: true,
-          isTradeClicked: false,
           refereeAddress: sharedWalletStore.injectiveAddress
         })
       }

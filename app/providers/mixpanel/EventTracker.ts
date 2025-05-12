@@ -336,12 +336,12 @@ export const trackOnboardingUserWithNoAssets = ({
 }: {
   walletType: string
   isPopupShown: boolean
-  isBuyCryptoClicked: boolean
+  isBuyCryptoClicked?: boolean
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.OnboardingUserWithNoAssets, {
     'Connected Wallet': walletType,
     'Popup Shown': isPopupShown,
-    'Buy Crypto Clicked': isBuyCryptoClicked
+    'Buy Crypto Clicked': !!isBuyCryptoClicked
   })
 }
 
@@ -352,12 +352,12 @@ export const trackOnboardingWalletEmptyWithEvmAssets = ({
 }: {
   walletType: string
   isPopupShown: boolean
-  isBridgeClicked: boolean
+  isBridgeClicked?: boolean
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.OnboardingWalletEmptyWithEvmAssets, {
     'Connected Wallet': walletType,
     'Popup Shown': isPopupShown,
-    'Trade Clicked': isBridgeClicked
+    'Trade Clicked': !!isBridgeClicked
   })
 }
 
@@ -366,11 +366,11 @@ export const trackOnboardingUserDoesntTrade = ({
   isTradeClicked
 }: {
   isPopupShown: boolean
-  isTradeClicked: boolean
+  isTradeClicked?: boolean
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.OnboardingUserDoesntTrade, {
     'Popup Shown': isPopupShown,
-    'Trade Clicked': isTradeClicked
+    'Trade Clicked': !!isTradeClicked
   })
 }
 
@@ -381,12 +381,12 @@ export const trackOnboardingUserBecomeReferee = ({
 }: {
   isPopupShown: boolean
   refereeAddress: string
-  isTradeClicked: boolean
+  isTradeClicked?: boolean
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.OnboardingUserBecomeReferee, {
     'Referee Signed': refereeAddress,
     'Popup Shown': isPopupShown,
-    'Trade Clicked': isTradeClicked
+    'Trade Clicked': !!isTradeClicked
   })
 }
 
@@ -402,13 +402,13 @@ export const trackUtmStockTwitsToast = ({
   walletType: string
   utmCampaign?: string
   isPopupShown: boolean
-  isCtaClicked: boolean
+  isCtaClicked?: boolean
   utmSourcePlatform?: string
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.UtmStockTwitsToast, {
     'Wallet Type': walletType,
     'Popup Shown': isPopupShown,
-    'Start Here Clicked': isCtaClicked,
+    'Start Here Clicked': !!isCtaClicked,
     'Utm Medium': utmMedium || '-',
     'Utm Campaign': utmCampaign || '-',
     'Utm Source Platform': utmSourcePlatform || '-'
@@ -426,14 +426,14 @@ export const trackUtmStockTwitsBanner = ({
   utmMedium?: string
   walletType: string
   utmCampaign?: string
-  isCtaClicked: boolean
+  isCtaClicked?: boolean
   isBannerShown: boolean
   utmSourcePlatform?: string
 }) => {
   mixpanelAnalytics.track(MixPanelEvent.UtmStockTwitsBanner, {
     'Wallet Type': walletType,
     'Banner Shown': isBannerShown,
-    'Learn More Clicked': isCtaClicked,
+    'Learn More Clicked': !!isCtaClicked,
     'Utm Medium': utmMedium || '-',
     'Utm Campaign': utmCampaign || '-',
     'Utm Source Platform': utmSourcePlatform || '-'

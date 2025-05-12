@@ -35,6 +35,7 @@ onMounted(async () => {
     )
   ) {
     showMoveAssetsToInjToast()
+
     return
   }
 
@@ -43,6 +44,7 @@ onMounted(async () => {
     !appStore.userState.dontShowAgain?.includes(CtaToast.UserWithNoAssets)
   ) {
     showGetCryptoToast()
+
     return
   }
 
@@ -53,6 +55,7 @@ onMounted(async () => {
     !appStore.userState.dontShowAgain?.includes(CtaToast.UserDoesntTrade)
   ) {
     showStartTradingToast()
+
     return
   }
 })
@@ -61,22 +64,24 @@ onWalletConnected(async () => {
   if (route.query.utm_source === UtmSource.StockTwits) {
     if (!sharedWalletStore.isUserConnected) {
       showStockTwitsToast()
-    } else {
-      const selectedNotification = notificationStore.notifications.find(
-        (notification) => notification.key === CtaToast.StockTwits
-      )
 
-      notificationStore.clear(selectedNotification?.id || 0)
+      return
     }
+
+    const selectedNotification = notificationStore.notifications.find(
+      (notification) => notification.key === CtaToast.StockTwits
+    )
+
+    notificationStore.clear(selectedNotification?.id || 0)
   }
 })
 
 onWalletDisconnected(() => {
-  const resetCtaToastList = Object.values(CtaToast).filter(
-    (key) => key !== CtaToast.StockTwits
-  )
+  Object.values(CtaToast).forEach((key) => {
+    if (key === CtaToast.StockTwits) {
+      return
+    }
 
-  resetCtaToastList.forEach((key) => {
     const selectedNotification = notificationStore.notifications.find(
       (notification) => notification.key === key
     )
@@ -151,7 +156,6 @@ function showMoveAssetsToInjToast() {
 
   trackOnboardingWalletEmptyWithEvmAssets({
     isPopupShown: true,
-    isBridgeClicked: false,
     walletType: sharedWalletStore.wallet
   })
 }
@@ -182,7 +186,6 @@ function showGetCryptoToast() {
 
   trackOnboardingUserWithNoAssets({
     isPopupShown: true,
-    isBuyCryptoClicked: false,
     walletType: sharedWalletStore.wallet
   })
 }
@@ -209,8 +212,7 @@ function showStartTradingToast() {
   })
 
   trackOnboardingUserDoesntTrade({
-    isPopupShown: true,
-    isTradeClicked: false
+    isPopupShown: true
   })
 }
 
@@ -250,7 +252,6 @@ function showStockTwitsToast() {
 
   trackUtmStockTwitsToast({
     isPopupShown: true,
-    isCtaClicked: false,
     walletType: sharedWalletStore.wallet,
     utmMedium: routeQuery?.utm_medium as string,
     utmCampaign: routeQuery?.utm_campaign as string,
