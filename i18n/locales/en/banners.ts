@@ -35,6 +35,9 @@ export default {
     ownYourAssetCompetitionLink: '$50K prize pool on Helix!',
 
     postOnly:
-      'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}'
+      'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}',
+
+    stockTwits:
+      'Want to learn how to place a trade or how trading tokenized stocks works? → {learnMore}'
   }
 }

@@ -414,6 +414,7 @@ export enum MarketCategoryType {
 
 export enum NoticeBanner {
   IAssets = 'i-assets',
+  StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
   FTMSettleMarket = 'ftm-settle-market',
@@ -599,9 +600,14 @@ export type BaseQuoteFields = Exclude<
 >
 
 export enum CtaToast {
+  StockTwits = 'stock-twits',
   EnableAutoSign = 'enable-auto-sign',
   ReferralSuccess = 'referral-success',
   UserDoesntTrade = 'user-doesnt-trade',
   UserWithNoAssets = 'user-with-no-assets',
   WalletEmptyWithEvmAssets = 'wallet-empty-with-evm-assets'
+}
+
+export enum UtmSource {
+  StockTwits = 'stocktwits'
 }
