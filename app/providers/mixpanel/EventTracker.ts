@@ -389,3 +389,53 @@ export const trackOnboardingUserBecomeReferee = ({
     'Trade Clicked': isTradeClicked
   })
 }
+
+export const trackUtmStockTwitsToast = ({
+  utmMedium,
+  walletType,
+  utmCampaign,
+  isPopupShown,
+  isCtaClicked,
+  utmSourcePlatform
+}: {
+  utmMedium?: string
+  walletType: string
+  utmCampaign?: string
+  isPopupShown: boolean
+  isCtaClicked: boolean
+  utmSourcePlatform?: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.UtmStockTwitsToast, {
+    'Wallet Type': walletType,
+    'Popup Shown': isPopupShown,
+    'Start Here Clicked': isCtaClicked,
+    'Utm Medium': utmMedium || '-',
+    'Utm Campaign': utmCampaign || '-',
+    'Utm Source Platform': utmSourcePlatform || '-'
+  })
+}
+
+export const trackUtmStockTwitsBanner = ({
+  utmMedium,
+  walletType,
+  utmCampaign,
+  isCtaClicked,
+  isBannerShown,
+  utmSourcePlatform
+}: {
+  utmMedium?: string
+  walletType: string
+  utmCampaign?: string
+  isCtaClicked: boolean
+  isBannerShown: boolean
+  utmSourcePlatform?: string
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.UtmStockTwitsBanner, {
+    'Wallet Type': walletType,
+    'Banner Shown': isBannerShown,
+    'Learn More Clicked': isCtaClicked,
+    'Utm Medium': utmMedium || '-',
+    'Utm Campaign': utmCampaign || '-',
+    'Utm Source Platform': utmSourcePlatform || '-'
+  })
+}

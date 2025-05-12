@@ -18,6 +18,8 @@ export enum MixPanelEvent {
   AutoSignCTAEnabled = 'Auto Sign CTA Enabled',
   LiteBridgePageView = 'Lite Bridge Page View',
   ReferralCodeCreated = 'Referral Code Created',
+  UtmStockTwitsToast = 'Utm - Stock Twits Toast',
+  UtmStockTwitsBanner = 'Utm - Stock Twits Banner',
   EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
   OnboardingUserDoesntTrade = 'Onboarding - User Doesnt Trade',
   CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',
