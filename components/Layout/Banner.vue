@@ -1,15 +1,10 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { isWithinInterval } from 'date-fns'
+// import { isWithinInterval } from 'date-fns'
 import { getHubUrl } from '@shared/utils/network'
 import { NOTIFI_LINK } from '@shared/utils/constant'
-import {
-  BusEvents,
-  TradePage,
-  NoticeBanner,
-  PortfolioSubPage,
-  LeaderboardSubPage
-} from '@/types'
+import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
+import { TradePage, UtmSource, NoticeBanner } from '@/types'
 
 type Banner = {
   id: string
@@ -29,10 +24,9 @@ const route = useRoute()
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
-const now = useNow({ interval: 1000 })
+// const now = useNow({ interval: 1000 })
 
 const isHideBanner = ref(false)
-const bannersToHide = ref<string[]>([])
 
 const ftmBanners = computed<Banner[]>(() => [
   {
@@ -60,16 +54,23 @@ const chainUpgradeBanners = computed<Banner[]>(() => [
 ])
 
 const promotionalBanners = computed<Banner[]>(() => [
+  // {
+  //   id: NoticeBanner.OwnYourAssetCampaign,
+  //   shouldDisplay:
+  //     !appStore.userState.bannersViewed.includes(
+  //       NoticeBanner.OwnYourAssetCampaign
+  //     ) &&
+  //     isWithinInterval(now.value, {
+  //       end: new Date(1733497200000),
+  //       start: new Date(1732633200000)
+  //     })
+  // },
   {
-    id: NoticeBanner.OwnYourAssetCampaign,
+    id: NoticeBanner.StockTwits,
     shouldDisplay:
-      !appStore.userState.bannersViewed.includes(
-        NoticeBanner.OwnYourAssetCampaign
-      ) &&
-      isWithinInterval(now.value, {
-        end: new Date(1733497200000),
-        start: new Date(1732633200000)
-      })
+      sharedWalletStore.isUserConnected &&
+      route.query.utm_source === UtmSource.StockTwits &&
+      !appStore.userState.bannersViewed.includes(NoticeBanner.StockTwits)
   }
   // {
   //   id: NoticeBanner.NeptuneUsdt,
@@ -85,25 +86,34 @@ const bannerToDisplay = computed(
       ...ftmBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
-    ].filter(
-      (banner) =>
-        banner.shouldDisplay && !bannersToHide.value.includes(banner.id)
-    )[0]
+    ].filter((banner) => banner.shouldDisplay)[0]
 )
 
-function openNeptuneUsdtModal() {
-  useEventBus(BusEvents.NeptuneUsdt).emit()
-  onHideBanner()
-}
+watch(
+  () => bannerToDisplay.value?.id,
+  (id) => {
+    if (id === NoticeBanner.StockTwits) {
+      const routeQuery = route.query
+
+      trackUtmStockTwitsBanner({
+        isBannerShown: true,
+        walletType: sharedWalletStore.wallet,
+        utmMedium: routeQuery?.utm_medium as string,
+        utmCampaign: routeQuery?.utm_campaign as string,
+        utmSourcePlatform: routeQuery?.utm_source_platform as string
+      })
+    }
+  },
+  { immediate: true }
+)
+
+// function openNeptuneUsdtModal() {
+//   useEventBus(BusEvents.NeptuneUsdt).emit()
+//   onHideBanner()
+// }
 
 function onHideBanner() {
-  if (!bannerToDisplay.value) {
-    return
-  }
-
-  bannersToHide.value.push(bannerToDisplay.value?.id)
-
-  if (bannerToDisplay.value?.shouldPersist) {
+  if (!bannerToDisplay.value || bannerToDisplay.value?.shouldPersist) {
     return
   }
 
@@ -115,12 +125,28 @@ function onHideBanner() {
     ]
   })
 }
+
+function onClickStockTwitsCta() {
+  const routeQuery = route.query
+
+  trackUtmStockTwitsBanner({
+    isCtaClicked: true,
+    isBannerShown: true,
+    walletType: sharedWalletStore.wallet,
+    utmMedium: routeQuery?.utm_medium as string,
+    utmCampaign: routeQuery?.utm_campaign as string,
+    utmSourcePlatform: routeQuery?.utm_source_platform as string
+  })
+}
 </script>
 
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40 font-semibold"
+    :class="[
+      'bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold',
+      jsonStore.isPostUpgradeMode ? 'justify-center' : 'justify-between'
+    ]"
   >
     <div />
 
@@ -128,7 +154,8 @@ function onHideBanner() {
       {{ $t('banners.ftmMarketBanner') }}
     </template>
 
-    <i18n-t
+    <!-- for future reference as per PR feedback -->
+    <!-- <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.NeptuneUsdt"
       tag="p"
       keypath="trade.neptuneUsdt.banner"
@@ -163,7 +190,7 @@ function onHideBanner() {
           {{ $t('banners.ownYourAssetCompetitionLink') }}
         </NuxtLink>
       </template>
-    </i18n-t>
+    </i18n-t> -->
 
     <div
       v-if="
@@ -184,6 +211,23 @@ function onHideBanner() {
         {{ $t('banners.findOutMore') }}
       </NuxtLink>
     </div>
+
+    <i18n-t
+      v-if="bannerToDisplay.id === NoticeBanner.StockTwits"
+      keypath="banners.stockTwits"
+      tag="p"
+    >
+      <template #learnMore>
+        <NuxtLink
+          class="hover:opacity-80 underline cursor-pointer"
+          to="https://app.gitbook.com/o/LzWvewxXUBLXQT4cTrrj/s/7eHQ0oqbU5OAi8PxyRjr/getting-started"
+          target="_blank"
+          @click="onClickStockTwitsCta"
+        >
+          {{ $t('common.learnMore') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"

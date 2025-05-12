@@ -99,6 +99,11 @@ export default {
       strategyRemoved: 'strategy removed successfully',
       tradingBotRemovedSuccessfully: 'Trading bot removed successfully',
       tradingBotCreatedSuccessfully: 'Trading bot created successfully'
+    },
+    stockTwits: {
+      title: '👋 New to Helix?',
+      description: 'Start trading crypto & tokenized stocks with ease.',
+      startHere: 'Start here'
     }
   }
 }

@@ -2,13 +2,15 @@
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { getBridgeUrl } from '@shared/utils/network'
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import {
+  trackUtmStockTwitsToast,
   trackOnboardingUserDoesntTrade,
   trackOnboardingUserWithNoAssets,
   trackOnboardingWalletEmptyWithEvmAssets
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage, CtaToast, BusEvents } from '@/types'
+import { Modal, MainPage, CtaToast, BusEvents, UtmSource } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,38 +34,7 @@ onMounted(async () => {
       CtaToast.WalletEmptyWithEvmAssets
     )
   ) {
-    const isUsdtExist = accountStore.erc20BalancesMap[usdtToken.denom]
-
-    notificationStore.info({
-      title: t('toast.portfolio.moveAssetsToInjTitle'),
-      description: t('toast.portfolio.moveAssetsToInj'),
-      timeout: MAX_TOAST_TIMEOUT,
-      key: CtaToast.WalletEmptyWithEvmAssets,
-      actions: [
-        {
-          label: t('toast.portfolio.bridgeNow'),
-          callback: () => {
-            if (isUsdtExist) {
-              modalStore.openModal(Modal.LiteBridge)
-            } else {
-              window.open(getBridgeUrl(), '_blank')
-            }
-
-            trackOnboardingWalletEmptyWithEvmAssets({
-              isPopupShown: true,
-              isBridgeClicked: true,
-              walletType: sharedWalletStore.wallet
-            })
-          }
-        }
-      ]
-    })
-
-    trackOnboardingWalletEmptyWithEvmAssets({
-      isPopupShown: true,
-      isBridgeClicked: false,
-      walletType: sharedWalletStore.wallet
-    })
+    showMoveAssetsToInjToast()
 
     return
   }
@@ -72,34 +43,7 @@ onMounted(async () => {
     !checkUserHasAssetsOnChain() &&
     !appStore.userState.dontShowAgain?.includes(CtaToast.UserWithNoAssets)
   ) {
-    notificationStore.info({
-      title: t('toast.portfolio.startTradingInSeconds'),
-      description: t('toast.portfolio.getCryptoWithFiat'),
-      timeout: MAX_TOAST_TIMEOUT,
-      key: CtaToast.UserWithNoAssets,
-      actions: [
-        {
-          label: t('toast.portfolio.buyCrypto'),
-          callback: () => {
-            modalStore.openModal(Modal.FiatOnboard)
-
-            useEventBus(BusEvents.OpenOnramper).emit()
-
-            trackOnboardingUserWithNoAssets({
-              isPopupShown: true,
-              isBuyCryptoClicked: true,
-              walletType: sharedWalletStore.wallet
-            })
-          }
-        }
-      ]
-    })
-
-    trackOnboardingUserWithNoAssets({
-      isPopupShown: true,
-      isBuyCryptoClicked: false,
-      walletType: sharedWalletStore.wallet
-    })
+    showGetCryptoToast()
 
     return
   }
@@ -110,44 +54,39 @@ onMounted(async () => {
     route.name !== MainPage.Markets &&
     !appStore.userState.dontShowAgain?.includes(CtaToast.UserDoesntTrade)
   ) {
-    notificationStore.info({
-      title: t('toast.portfolio.readyToTrade'),
-      description: t('toast.portfolio.discoverTrendingPairs'),
-      timeout: MAX_TOAST_TIMEOUT,
-      key: CtaToast.UserDoesntTrade,
-      actions: [
-        {
-          label: t('toast.portfolio.tradeNow'),
-          callback: () => {
-            router.push({ name: MainPage.Markets })
-
-            trackOnboardingUserDoesntTrade({
-              isPopupShown: true,
-              isTradeClicked: true
-            })
-          }
-        }
-      ]
-    })
-
-    trackOnboardingUserDoesntTrade({
-      isPopupShown: true,
-      isTradeClicked: false
-    })
+    showStartTradingToast()
 
     return
   }
 })
 
+onWalletConnected(async () => {
+  if (route.query.utm_source === UtmSource.StockTwits) {
+    if (!sharedWalletStore.isUserConnected) {
+      showStockTwitsToast()
+
+      return
+    }
+
+    const selectedNotification = notificationStore.notifications.find(
+      (notification) => notification.key === CtaToast.StockTwits
+    )
+
+    notificationStore.clear(selectedNotification?.id || 0)
+  }
+})
+
 onWalletDisconnected(() => {
   Object.values(CtaToast).forEach((key) => {
+    if (key === CtaToast.StockTwits) {
+      return
+    }
+
     const selectedNotification = notificationStore.notifications.find(
       (notification) => notification.key === key
     )
 
-    if (selectedNotification) {
-      notificationStore.clear(selectedNotification.id)
-    }
+    notificationStore.clear(selectedNotification?.id || 0)
   })
 })
 
@@ -185,6 +124,139 @@ async function checkUserHasTraded() {
     !!derivativeStore.subaccountOrderHistory.length
 
   return hasTransactions
+}
+
+function showMoveAssetsToInjToast() {
+  const isUsdtExist = accountStore.erc20BalancesMap[usdtToken.denom]
+
+  notificationStore.info({
+    title: t('toast.portfolio.moveAssetsToInjTitle'),
+    description: t('toast.portfolio.moveAssetsToInj'),
+    timeout: MAX_TOAST_TIMEOUT,
+    key: CtaToast.WalletEmptyWithEvmAssets,
+    actions: [
+      {
+        label: t('toast.portfolio.bridgeNow'),
+        callback: () => {
+          if (isUsdtExist) {
+            modalStore.openModal(Modal.LiteBridge)
+          } else {
+            window.open(getBridgeUrl(), '_blank')
+          }
+
+          trackOnboardingWalletEmptyWithEvmAssets({
+            isPopupShown: true,
+            isBridgeClicked: true,
+            walletType: sharedWalletStore.wallet
+          })
+        }
+      }
+    ]
+  })
+
+  trackOnboardingWalletEmptyWithEvmAssets({
+    isPopupShown: true,
+    walletType: sharedWalletStore.wallet
+  })
+}
+
+function showGetCryptoToast() {
+  notificationStore.info({
+    title: t('toast.portfolio.startTradingInSeconds'),
+    description: t('toast.portfolio.getCryptoWithFiat'),
+    timeout: MAX_TOAST_TIMEOUT,
+    key: CtaToast.UserWithNoAssets,
+    actions: [
+      {
+        label: t('toast.portfolio.buyCrypto'),
+        callback: () => {
+          modalStore.openModal(Modal.FiatOnboard)
+
+          useEventBus(BusEvents.OpenOnramper).emit()
+
+          trackOnboardingUserWithNoAssets({
+            isPopupShown: true,
+            isBuyCryptoClicked: true,
+            walletType: sharedWalletStore.wallet
+          })
+        }
+      }
+    ]
+  })
+
+  trackOnboardingUserWithNoAssets({
+    isPopupShown: true,
+    walletType: sharedWalletStore.wallet
+  })
+}
+
+function showStartTradingToast() {
+  notificationStore.info({
+    title: t('toast.portfolio.readyToTrade'),
+    description: t('toast.portfolio.discoverTrendingPairs'),
+    timeout: MAX_TOAST_TIMEOUT,
+    key: CtaToast.UserDoesntTrade,
+    actions: [
+      {
+        label: t('toast.portfolio.tradeNow'),
+        callback: () => {
+          router.push({ name: MainPage.Markets })
+
+          trackOnboardingUserDoesntTrade({
+            isPopupShown: true,
+            isTradeClicked: true
+          })
+        }
+      }
+    ]
+  })
+
+  trackOnboardingUserDoesntTrade({
+    isPopupShown: true
+  })
+}
+
+function showStockTwitsToast() {
+  const routeQuery = route.query
+
+  notificationStore.info({
+    title: t('toast.stockTwits.title'),
+    description: t('toast.stockTwits.description'),
+    timeout: MAX_TOAST_TIMEOUT,
+    key: CtaToast.StockTwits,
+    actions: [
+      {
+        label: t('toast.stockTwits.startHere'),
+        callback: () => {
+          if (
+            GEO_IP_RESTRICTIONS_ENABLED &&
+            !appStore.userState.hasAcceptedTerms
+          ) {
+            modalStore.openModal(Modal.Terms)
+          } else {
+            modalStore.openModal(Modal.Connect)
+          }
+
+          trackUtmStockTwitsToast({
+            isPopupShown: true,
+            isCtaClicked: true,
+            walletType: sharedWalletStore.wallet,
+            utmMedium: routeQuery?.utm_medium as string,
+            utmCampaign: routeQuery?.utm_campaign as string,
+            utmSourcePlatform: routeQuery?.utm_source_platform as string
+          })
+        }
+      }
+    ]
+  })
+
+  trackUtmStockTwitsToast({
+    isPopupShown: true,
+    walletType: sharedWalletStore.wallet,
+    utmMedium: routeQuery?.utm_medium as string,
+    utmCampaign: routeQuery?.utm_campaign as string,
+    utmSourcePlatform: routeQuery?.utm_source_platform as string
+  })
 }
 </script>
 

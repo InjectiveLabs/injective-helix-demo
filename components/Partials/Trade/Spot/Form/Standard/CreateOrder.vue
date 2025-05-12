@@ -248,7 +248,6 @@ function showAutosignCta() {
           label: t('common.enable'),
           callback: () => {
             EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
-            notificationStore.close(CtaToast.EnableAutoSign)
 
             sharedWalletStore
               .connectAutoSign(
