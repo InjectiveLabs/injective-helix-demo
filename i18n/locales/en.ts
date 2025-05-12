@@ -90,6 +90,7 @@ export default {
     tradingDocs: 'Trading Docs',
     unauthorized: 'Unauthorized',
     sortDirection: 'Sort Direction',
+    faq: 'Frequently Asked Questions',
     marketCategory: 'Market Category',
     dontShowAgain: "Don't Show Again",
     showMoreContext: 'Show more context',
@@ -173,7 +174,6 @@ export default {
   'My Fee Paid Amount': 'Total Fees Paid',
   'My Fee Paid Amount Tooltip':
     'The total fees you have paid on Injective during the current epoch. You pay fees during trades and traders on the protocol. The amount of fees paid helps determine your fee tier.',
-  'Frequently Asked Questions': 'Frequently Asked Questions',
   'Search for FAQs': 'Search for FAQs',
   'faq-category-All': 'All',
   'faq-category-General': 'General',

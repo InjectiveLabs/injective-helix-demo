@@ -39,6 +39,10 @@ const communityList = [
   {
     text: t('footer.blog'),
     link: 'https://blog.helixapp.com/'
+  },
+  {
+    text: t('footer.explorer'),
+    link: 'https://injscan.com/'
   }
 ]
 </script>
@@ -125,11 +129,18 @@ const communityList = [
 
         <div class="flex items-center mt-4">
           <a
-            class="w-6 h-6 text-coolGray-500 rounded-full hover:text-blue-500 mr-4"
+            class="w-6 h-6 mr-4"
             href="https://x.com/helixapp_"
             target="_blank"
           >
-            <UIcon :name="NuxtUiIcons.TwitterX" class="h-6 w-6 min-w-6" />
+            <div
+              class="h-6 w-6 min-w-6 flex items-center justify-center bg-coolGray-500 hover:bg-blue-500 text-brand-900 rounded-full"
+            >
+              <UIcon
+                :name="NuxtUiIcons.TwitterX"
+                class="h-3.5 w-3.5 min-w-3.5"
+              />
+            </div>
           </a>
 
           <a

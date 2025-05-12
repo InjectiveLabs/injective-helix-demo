@@ -6,7 +6,6 @@ export default {
     contextCopied: 'Context copied!',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
-    subscribeToast: 'Signed up for Helix notifications',
     formSubmittedSuccessfully: 'Form submitted successfully.',
     copiedAddressToClipboard: 'Address copied to clipboard',
     onramperSuccess:

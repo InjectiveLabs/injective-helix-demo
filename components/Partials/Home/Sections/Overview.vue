@@ -1,35 +1,35 @@
 <script setup lang="ts">
 enum OverviewSection {
-  AccountOverview = 'accountOverview',
   TradingBots = 'tradingBots',
-  Pnl = 'pnl',
+  TradeStocks = 'tradeStocks',
+  LpRewards = 'lpRewards',
   GasFree = 'gasFree'
 }
 
 const animationList = {
-  [OverviewSection.AccountOverview]: '1AccountOverview.json',
   [OverviewSection.TradingBots]: '2TradingBots.json',
-  [OverviewSection.Pnl]: '3pnlAnalysis.json',
+  [OverviewSection.TradeStocks]: '1AccountOverview.json',
+  [OverviewSection.LpRewards]: '3pnlAnalysis.json',
   [OverviewSection.GasFree]: '4gasFees.json'
 }
 
-const activeType = ref(OverviewSection.AccountOverview)
+const activeType = ref(OverviewSection.TradeStocks)
 
 const options = [
-  {
-    type: OverviewSection.AccountOverview,
-    title: 'home.overview.accountOverviewTitle',
-    description: 'home.overview.accountOverviewDescription'
-  },
   {
     type: OverviewSection.TradingBots,
     title: 'home.overview.tradingBotsTitle',
     description: 'home.overview.tradingBotsDescription'
   },
   {
-    type: OverviewSection.Pnl,
-    title: 'home.overview.pnlTitle',
-    description: 'home.overview.pnlDescription'
+    type: OverviewSection.TradeStocks,
+    title: 'home.overview.tradeStocksTitle',
+    description: 'home.overview.tradeStocksDescription'
+  },
+  {
+    type: OverviewSection.LpRewards,
+    title: 'home.overview.lpRewardsTitle',
+    description: 'home.overview.lpRewardsDescription'
   },
   {
     type: OverviewSection.GasFree,
@@ -82,14 +82,11 @@ onMounted(() => {
           <h2
             class="text-xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
           >
-            <i18n-t keypath="home.overview.title">
-              <template #faster>
-                <span class="italic">{{ $t('home.overview.faster') }}</span>
-              </template>
-            </i18n-t>
+            {{ $t('home.overview.title') }}
           </h2>
+
           <p class="text-center text-lg text-white">
-            {{ $t('home.overview.experienceTrading') }}
+            {{ $t('home.overview.description') }}
           </p>
         </div>
 

@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { Modal, TradeSubPage } from '@/types'
+import { TradeSubPage } from '@/types'
 
-const appStore = useAppStore()
-const modalStore = useSharedModalStore()
-const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 onMounted(() => {
   const mm = gsap.matchMedia()
@@ -36,19 +33,14 @@ onMounted(() => {
   })
 })
 
-function onFiatOnRamp() {
-  if (sharedWalletStore.isUserConnected) {
-    modalStore.openModal(Modal.FiatOnboard)
-  } else {
-    onWalletConnect()
-  }
-}
+function goToWhyHelix() {
+  const target = document.querySelector('#overview-section')
 
-function onWalletConnect() {
-  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
-    modalStore.openModal(Modal.Terms)
-  } else {
-    modalStore.openModal(Modal.Connect)
+  if (target) {
+    gsap.to(window, {
+      scrollTo: { y: target, offsetY: lg.value ? 80 : 40 },
+      duration: 1
+    })
   }
 }
 </script>
@@ -85,9 +77,9 @@ function onWalletConnect() {
         <AppButton
           class="w-full isolate"
           variant="primary-outline"
-          @click="onFiatOnRamp"
+          @click="goToWhyHelix"
         >
-          {{ $t('home.depositCrypto') }}
+          {{ $t('home.whyHelix') }}
         </AppButton>
       </div>
     </div>

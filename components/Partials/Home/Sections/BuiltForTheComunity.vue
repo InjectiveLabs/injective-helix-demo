@@ -2,7 +2,7 @@
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
-const TOTAL_VOLUME_IN_USD = '42.5 Billion'
+const TOTAL_VOLUME_IN_USD = '50+ Billion'
 
 const totalMarkets = computed(
   () =>
