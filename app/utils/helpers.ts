@@ -1,4 +1,8 @@
 import crypto from 'crypto'
+import { intervalToDuration } from 'date-fns'
+import { SharedMarketType } from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import {
   BigNumber,
   BigNumberInWei,
@@ -10,21 +14,14 @@ import {
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
-import { intervalToDuration } from 'date-fns'
-import { SharedMarketType } from '@shared/types'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { PriceLevel } from '@injectivelabs/sdk-ts'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { OrderbookFormattedRecord } from '@/types/worker'
-import {
-  BotType,
-  MainPage,
+import { BotType, MainPage, TradeSubPage, TradingInterface } from '@/types'
+import type { PriceLevel } from '@injectivelabs/sdk-ts'
+import type { OrderbookFormattedRecord } from '@/types/worker'
+import type {
   GridMarket,
   UiSpotMarket,
-  TradeSubPage,
-  TradingInterface,
   UiMarketWithToken,
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
@@ -33,7 +30,7 @@ import {
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
   defaultDecimals = UI_DEFAULT_DISPLAY_DECIMALS
-): { number: BigNumberInBase; decimals: number } => {
+): { decimals: number; number: BigNumberInBase } => {
   const actualNumber = new BigNumber(number)
 
   if (actualNumber.gte(1e6)) {
@@ -62,8 +59,8 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
 
   if (IS_MAINNET) {
     // [US region] chart service - EU service is temp down
-    return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-    // return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    // return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
   // if (IS_TESTNET) {
@@ -281,8 +278,8 @@ export const getSgtInvalidRange = ({
   midPrice,
   minPriceTickSize
 }: {
-  midPrice: string | number
   levels: string | number
+  midPrice: string | number
   minPriceTickSize: string | number
 }) => {
   const midPriceInBigNumber = new BigNumberInBase(midPrice)
@@ -474,11 +471,11 @@ export const getDerivativeOrderTypeToSubmit = ({
   triggerPrice,
   isBuy
 }: {
-  isStopOrder: boolean
-  triggerPrice: string
+  isBuy: boolean
   markPrice: string
   isPostOnly: boolean
-  isBuy: boolean
+  isStopOrder: boolean
+  triggerPrice: string
 }) => {
   if (isStopOrder) {
     const triggerPriceInBase = new BigNumberInBase(triggerPrice)
@@ -488,8 +485,8 @@ export const getDerivativeOrderTypeToSubmit = ({
         ? OrderSide.TakeBuy
         : OrderSide.StopBuy
       : triggerPriceInBase.gt(markPrice)
-      ? OrderSide.TakeSell
-      : OrderSide.StopSell
+        ? OrderSide.TakeSell
+        : OrderSide.StopSell
   }
 
   switch (true) {
