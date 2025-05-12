@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
 import { BusEvents } from '@/types'
 import type { CtaToast } from '@/types'
-import type { Notification } from '@shared/types'
+import type { Notification, NotificationAction } from '@shared/types'
 
 const appStore = useAppStore()
 const notificationStore = useSharedNotificationStore()
@@ -102,6 +102,14 @@ function setupProgressBar(timeout: number) {
     }
   }, 100)
 }
+
+function onActionClick(action: NotificationAction) {
+  if (action.callback) {
+    action.callback()
+  }
+
+  onClose()
+}
 </script>
 
 <template>
@@ -174,15 +182,12 @@ function setupProgressBar(timeout: number) {
             </AppTooltip>
 
             <div v-if="notification.actions" class="flex gap-3">
-              <button
+              <AppNotificationButton
                 v-for="(action, index) in notification.actions"
                 :key="index"
-                class="text-sm font-semibold py-1 px-3 bg-[#A7C8FF] rounded-xl text-brand-800 hover:opacity-80 transition-opacity cursor-pointer"
-                :class="action.class"
-                @click="() => action.callback()"
-              >
-                {{ action.label }}
-              </button>
+                v-bind="{ action }"
+                @on:click="onActionClick"
+              />
             </div>
           </div>
         </div>
