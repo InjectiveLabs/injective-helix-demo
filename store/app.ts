@@ -266,15 +266,12 @@ export const useAppStore = defineStore('app', {
         ...initialState,
         userState: {
           ...initialState.userState,
+          dontShowAgain: appStore.userState.dontShowAgain,
           bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
         }
       })
 
-      appStore.userState = {
-        ...initialState.userState,
-        hasAcceptedTerms,
-        bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
-      }
+      appStore.userState.hasAcceptedTerms = hasAcceptedTerms
     }
   }
 })
