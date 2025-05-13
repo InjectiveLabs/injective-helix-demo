@@ -163,12 +163,12 @@ function showMoveAssetsToInjToast() {
 function showGetCryptoToast() {
   notificationStore.info({
     title: t('toast.portfolio.startTradingInSeconds'),
-    description: t('toast.portfolio.getCryptoWithFiat'),
+    description: t('toast.portfolio.topUpWithCreditOrDebit'),
     timeout: MAX_TOAST_TIMEOUT,
     key: CtaToast.UserWithNoAssets,
     actions: [
       {
-        label: t('toast.portfolio.buyCrypto'),
+        label: t('toast.portfolio.buyInj'),
         callback: () => {
           modalStore.openModal(Modal.FiatOnboard)
 
