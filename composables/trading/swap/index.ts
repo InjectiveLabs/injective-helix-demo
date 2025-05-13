@@ -5,17 +5,13 @@ import {
   MAX_QUOTE_DECIMALS,
   MAX_QUOTE_TENS_MULTIPLIER
 } from '@/app/utils/constants/index'
-import {
-  SwapForm,
-  UiSpotMarket,
-  SwapFormField,
-  TokenAndPriceAndDecimals
-} from '@/types'
+import { SwapFormField } from '@/types'
+import type { SwapForm, UiSpotMarket, TokenAndPriceAndDecimals } from '@/types'
 
 export function useSwap(formValues: Ref<Partial<SwapForm>>) {
   const swapStore = useSwapStore()
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   const activeRoute = computed(() =>
     swapStore.routes.find((route) =>
@@ -33,9 +29,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
     }
 
     return activeRoute.value.steps
-      .map((routeMarketId) =>
-        spotStore.markets.find(({ marketId }) => marketId === routeMarketId)
-      )
+      .map((routeMarketId) => spotStore.marketByIdOrSlug(routeMarketId))
       .filter((market) => market) as UiSpotMarket[]
   })
 
@@ -74,7 +68,7 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
             token: baseToken,
             denom: baseToken.denom,
             tensMultiplier: quantityTensMultiplier,
-            usdPrice: baseToken ? tokenStore.tokenUsdPrice(baseToken) : 0
+            usdPrice: baseToken ? sharedTokenStore.tokenUsdPrice(baseToken) : 0
           })
         }
 
@@ -84,7 +78,9 @@ export function useSwap(formValues: Ref<Partial<SwapForm>>) {
             denom: quoteToken.denom,
             tensMultiplier: priceTensMultiplier,
             quantityDecimals: MAX_QUOTE_DECIMALS,
-            usdPrice: quoteToken ? tokenStore.tokenUsdPrice(quoteToken) : 0
+            usdPrice: quoteToken
+              ? sharedTokenStore.tokenUsdPrice(quoteToken)
+              : 0
           })
         }
 

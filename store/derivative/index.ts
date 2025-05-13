@@ -1,20 +1,14 @@
 import { defineStore } from 'pinia'
 import { usdtToken } from '@shared/data/token'
 import { SharedMarketType } from '@shared/types'
-import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { toUiDerivativeMarket } from '@shared/transformer/market'
 import {
   indexerOracleApi,
   cachePythService,
   derivativeCacheApi,
   indexerDerivativesApi
 } from '@shared/Service'
-import {
-  toUiMarketSummary,
-  toUiDerivativeMarket,
-  toZeroUiMarketSummary,
-  sharedGetDerivativeSlugOverride
-} from '@shared/transformer/market'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
@@ -55,13 +49,12 @@ import type {
   ActivityFetchOptions
 } from '@/types'
 import type {
-  SharedUiMarketSummary,
   SharedUiDerivativeTrade,
+  SharedUiDerivativeMarket,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
 import type {
   PositionV2,
-  PerpetualMarket,
   ExpiryFuturesMarket,
   DerivativeLimitOrder,
   DerivativeOrderHistory
@@ -69,14 +62,12 @@ import type {
 
 type DerivativeStoreState = {
   marketIdsFromQuery: string[]
-  markets: UiDerivativeMarket[]
   subaccountTradesCount: number
   subaccountOrdersCount: number
   // tickerOpenInterestMap: Record<string, number>
   trades: SharedUiDerivativeTrade[]
   subaccountOrderHistoryCount: number
   marketMarkPriceMap: MarketMarkPriceMap
-  marketsSummary: SharedUiMarketSummary[]
   subaccountOrders: DerivativeLimitOrder[]
   subaccountConditionalOrdersCount: number
   orderbook?: SharedUiOrderbookWithSequence
@@ -88,9 +79,7 @@ type DerivativeStoreState = {
 
 const initialStateFactory = (): DerivativeStoreState => ({
   recentlyExpiredMarkets: [],
-  markets: [],
   marketIdsFromQuery: [],
-  marketsSummary: [],
   marketMarkPriceMap: {},
   // tickerOpenInterestMap: {},
   orderbook: undefined,
@@ -111,63 +100,95 @@ export const useDerivativeStore = defineStore('derivative', {
     buys: (state) => state.orderbook?.buys || [],
     sells: (state) => state.orderbook?.sells || [],
 
-    perpetualMarkets: (state) =>
-      state.markets.filter(
-        (market) => market.subType === SharedMarketType.Perpetual
-      ),
+    marketByIdOrSlug:
+      () =>
+      (marketIdOrSlug: string): undefined | SharedUiDerivativeMarket => {
+        const sharedDerivativeStore = useSharedDerivativeStore()
 
-    expiryFuturesMarkets: (state) =>
-      state.markets.filter(
+        const market = sharedDerivativeStore.marketsWithToken.find(
+          (market) =>
+            market.marketId === marketIdOrSlug || market.slug === marketIdOrSlug
+        )
+
+        return market as SharedUiDerivativeMarket
+      },
+
+    perpetualMarkets: () => {
+      const sharedDerivativeStore = useSharedDerivativeStore()
+
+      sharedDerivativeStore.marketsWithToken.filter(
+        (market) => market && market.subType === SharedMarketType.Perpetual
+      )
+    },
+
+    expiryFuturesMarkets: () => {
+      const sharedDerivativeStore = useSharedDerivativeStore()
+
+      return sharedDerivativeStore.marketsWithToken.filter(
         (market) => market.subType === SharedMarketType.Futures
-      ),
+      )
+    },
 
     activeMarketIds: (state) => {
       const jsonStore = useSharedJsonStore()
+      const sharedDerivativeStore = useSharedDerivativeStore()
 
-      return state.markets
+      return sharedDerivativeStore.marketsWithToken
         .filter(
-          ({ marketId }) =>
+          (market) =>
             [
               ...jsonStore.expiryMarketIds,
               ...jsonStore.verifiedDerivativeMarketIds
-            ].includes(marketId) || state.marketIdsFromQuery.includes(marketId)
+            ].includes(market.marketId) ||
+            state.marketIdsFromQuery.includes(market.marketId)
         )
         .map((m) => m.marketId)
     },
 
-    tradableDenoms: (state) => [
-      ...state.markets.reduce((denoms, market) => {
-        if (!market.isVerified) {
+    tradableDenoms: () => {
+      const sharedDerivativeStore = useSharedDerivativeStore()
+
+      return [
+        ...sharedDerivativeStore.marketsWithToken.reduce((denoms, market) => {
+          if (!market.isVerified) {
+            return denoms
+          }
+
+          denoms.add(market.quoteDenom)
+
           return denoms
-        }
+        }, new Set() as Set<string>)
+      ]
+    },
 
-        denoms.add(market.quoteDenom)
+    unverifiedDenoms: () => {
+      const sharedDerivativeStore = useSharedDerivativeStore()
 
-        return denoms
-      }, new Set() as Set<string>)
-    ],
+      return [
+        ...sharedDerivativeStore.marketsWithToken.reduce((denoms, market) => {
+          if (market.isVerified) {
+            return denoms
+          }
 
-    unverifiedDenoms: (state) => [
-      ...state.markets.reduce((denoms, market) => {
-        if (market.isVerified) {
+          denoms.add(market.quoteDenom)
+
           return denoms
-        }
+        }, new Set() as Set<string>)
+      ]
+    },
 
-        denoms.add(market.quoteDenom)
+    marketsWithSummary: () => {
+      const sharedDerivativeStore = useSharedDerivativeStore()
 
-        return denoms
-      }, new Set() as Set<string>)
-    ],
-
-    marketsWithSummary: (state) =>
-      state.markets
+      return sharedDerivativeStore.marketsWithToken
         .map((market) => ({
           market,
-          summary: state.marketsSummary.find(
+          summary: sharedDerivativeStore.marketsSummary.find(
             (summary) => summary.marketId === market.marketId
           )
         }))
         .filter((summary) => summary) as UiMarketAndSummary[]
+    }
   },
   actions: {
     submitChase,
@@ -202,76 +223,14 @@ export const useDerivativeStore = defineStore('derivative', {
           marketIdFromQuery
         ]
       })
-
-      await derivativeStore.fetchMarkets()
-    },
-
-    async fetchMarkets() {
-      const tokenStore = useTokenStore()
-      const jsonStore = useSharedJsonStore()
-      const derivativeStore = useDerivativeStore()
-
-      const markets =
-        (await derivativeCacheApi.fetchMarkets()) as PerpetualMarket[]
-
-      const slugs = [
-        ...jsonStore.expirySlugs,
-        ...jsonStore.verifiedDerivativeSlugs
-      ]
-
-      const uiMarkets = markets
-        .map((market) => {
-          const slug = sharedGetDerivativeSlugOverride({
-            ticker: market.ticker,
-            marketId: market.marketId
-          })
-
-          const [baseTokenSymbol] = slug.split('-')
-          const baseToken = tokenStore.tokenByDenomOrSymbol(
-            baseTokenSymbol.toUpperCase()
-          )
-          const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
-
-          if (!baseToken || !quoteToken) {
-            return undefined
-          }
-
-          const formattedMarket = toUiDerivativeMarket({
-            market,
-            baseToken,
-            quoteToken,
-            slug
-          })
-
-          return {
-            ...formattedMarket,
-            isVerified: [
-              ...jsonStore.expiryMarketIds,
-              ...jsonStore.verifiedDerivativeMarketIds
-            ].includes(market.marketId)
-          }
-        })
-        .filter(
-          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
-        ) as UiDerivativeMarket[]
-
-      derivativeStore.$patch({
-        markets: uiMarkets.sort((derivativeA, derivativeB) => {
-          const derivativeAIndex = slugs.indexOf(derivativeA.slug) || 1
-          const derivativeBIndex = slugs.indexOf(derivativeB.slug) || 1
-
-          return derivativeAIndex - derivativeBIndex
-        })
-      })
     },
 
     async fetchRecentlyExpiredMarkets() {
-      const tokenStore = useTokenStore()
+      const sharedTokenStore = useSharedTokenStore()
       const derivativeStore = useDerivativeStore()
 
-      const recentlyExpiredMarkets = (
+      const recentlyExpiredMarkets =
         (await derivativeCacheApi.fetchMarkets()) as Array<ExpiryFuturesMarket>
-      ).filter(marketIsInactive)
 
       const uiMarkets = recentlyExpiredMarkets.map((market) => {
         const slug = market.ticker
@@ -279,8 +238,10 @@ export const useDerivativeStore = defineStore('derivative', {
           .replaceAll(' ', '-')
           .toLowerCase()
         const [baseTokenSymbol] = slug.split('-')
-        const baseToken = tokenStore.tokenByDenomOrSymbol(baseTokenSymbol)
-        const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
+        const baseToken = sharedTokenStore.tokenByDenomOrSymbol(baseTokenSymbol)
+        const quoteToken = sharedTokenStore.tokenByDenomOrSymbol(
+          market.quoteDenom
+        )
 
         if (!baseToken || !quoteToken) {
           return undefined
@@ -523,84 +484,6 @@ export const useDerivativeStore = defineStore('derivative', {
       })
     },
 
-    async fetchMarketsSummary() {
-      const derivativeStore = useDerivativeStore()
-      const { markets } = derivativeStore
-
-      try {
-        const marketSummaries = await derivativeCacheApi.fetchMarketsSummary()
-
-        const marketsWithoutMarketSummaries = marketSummaries.filter(
-          ({ marketId }) =>
-            !markets.some((market) => market.marketId === marketId)
-        )
-
-        derivativeStore.$patch({
-          marketsSummary: [
-            ...marketSummaries.map(toUiMarketSummary),
-            ...marketsWithoutMarketSummaries.map(({ marketId }) =>
-              toZeroUiMarketSummary(marketId)
-            ),
-            ...markets
-              .filter(marketIsInactive)
-              .map(({ marketId }) => toZeroUiMarketSummary(marketId))
-          ]
-        })
-      } catch {
-        // don't do anything for now
-      }
-    },
-
-    async fetchMarket(marketId: string) {
-      const tokenStore = useTokenStore()
-      const derivativeStore = useDerivativeStore()
-
-      const updatedMarket = (await indexerDerivativesApi.fetchMarket(
-        marketId
-      )) as PerpetualMarket
-
-      if (!updatedMarket) {
-        return
-      }
-
-      const slug = updatedMarket.ticker
-        .replaceAll('/', '-')
-        .replaceAll(' ', '-')
-        .toLowerCase()
-      const [baseTokenSymbol] = slug.split('-')
-      const baseToken = tokenStore.tokenByDenomOrSymbol(baseTokenSymbol)
-      const quoteToken = tokenStore.tokenByDenomOrSymbol(
-        updatedMarket.quoteDenom
-      )
-
-      if (!baseToken || !quoteToken || !updatedMarket) {
-        return
-      }
-
-      const updatedUiMarket = toUiDerivativeMarket({
-        slug,
-        baseToken,
-        quoteToken,
-        market: updatedMarket
-      })
-
-      const currentMarketIndex = derivativeStore.markets.findIndex(
-        (m) => m.marketId === marketId
-      )
-
-      if (currentMarketIndex) {
-        const markets = [...derivativeStore.markets]
-        markets[currentMarketIndex] = {
-          ...markets[currentMarketIndex],
-          ...updatedUiMarket
-        }
-
-        derivativeStore.$patch({
-          markets
-        })
-      }
-    },
-
     async fetchSubaccountTrades(options?: undefined | ActivityFetchOptions) {
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
@@ -659,9 +542,7 @@ export const useDerivativeStore = defineStore('derivative', {
       const derivativeStore = useDerivativeStore()
 
       const markPricesMap = positions.reduce((markPrices, position) => {
-        const market = derivativeStore.markets.find(
-          ({ marketId }) => marketId === position.marketId
-        )
+        const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
         return {
           ...markPrices,

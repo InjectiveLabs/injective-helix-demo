@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getMitoUrl } from '@shared/utils/network'
-import { LiquidityProvisionMitoCard, VaultsCyTags } from '@/types'
+import { VaultsCyTags } from '@/types'
+import type { LiquidityProvisionMitoCard } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -16,10 +17,10 @@ const emit = defineEmits<{
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
-const market = computed(() =>
-  [...derivativeStore.markets, ...spotStore.markets].find(
-    (market) => market.marketId === props.vault.marketId
-  )
+const market = computed(
+  () =>
+    spotStore.marketByIdOrSlug(props.vault.marketId) ||
+    derivativeStore.marketByIdOrSlug(props.vault.marketId)
 )
 
 const mitoUrl = computed(

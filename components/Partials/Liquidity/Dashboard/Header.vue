@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { BigNumberInWei } from '@injectivelabs/utils'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { NuxtUiIcons } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { LiquidityRewardsPage } from '@/types'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const currentRound = computed(() =>
   Math.max(...campaignStore.round.map(({ roundId }) => roundId))
@@ -20,7 +20,7 @@ const totalRewards = computed(() =>
         const userRewardPercentage =
           Number(campaign.userScore) / Number(campaign.totalScore)
 
-        const userRewardAmount = new BigNumberInWei(reward.amount).times(
+        const userRewardAmount = new BigNumberInBase(reward.amount).times(
           userRewardPercentage
         )
 
@@ -33,7 +33,7 @@ const totalRewards = computed(() =>
 
       return rewards
     },
-    {} as Record<string, BigNumberInWei>
+    {} as Record<string, BigNumberInBase>
   )
 )
 
@@ -46,7 +46,7 @@ const rewardsThisRound = computed(() =>
           const userRewardPercentage =
             Number(campaign.userScore) / Number(campaign.totalScore)
 
-          const userRewardAmount = new BigNumberInWei(reward.amount).times(
+          const userRewardAmount = new BigNumberInBase(reward.amount).times(
             userRewardPercentage
           )
 
@@ -59,17 +59,18 @@ const rewardsThisRound = computed(() =>
 
         return rewards
       },
-      {} as Record<string, BigNumberInWei>
+      {} as Record<string, BigNumberInBase>
     )
 )
 
 const rewardsThisRoundInUsd = computed(() =>
   Object.entries(rewardsThisRound.value).reduce((sum, [denom, amount]) => {
-    const token = tokenStore.tokenByDenomOrSymbol(denom)
+    const token = sharedTokenStore.tokenByDenomOrSymbol(denom)
 
-    const amountInUsd = amount
-      .toBase(token?.decimals || 18)
-      .times(tokenStore.tokenUsdPrice(token))
+    const amountInUsd = sharedToBalanceInTokenInBase({
+      value: amount.toFixed(),
+      decimalPlaces: token?.decimals
+    }).times(sharedTokenStore.tokenUsdPrice(token))
 
     return sum.plus(amountInUsd)
   }, ZERO_IN_BASE)
@@ -85,11 +86,12 @@ const rewardsToClaim = computed(
 const totalRewardsInUsd = computed(() =>
   Object.entries(totalRewards.value)
     .reduce((sum, [denom, amount]) => {
-      const token = tokenStore.tokenByDenomOrSymbol(denom)
+      const token = sharedTokenStore.tokenByDenomOrSymbol(denom)
 
-      const amountInUsd = amount
-        .toBase(token?.decimals || 18)
-        .times(tokenStore.tokenUsdPrice(token))
+      const amountInUsd = sharedToBalanceInTokenInBase({
+        value: amount.toFixed(),
+        decimalPlaces: token?.decimals
+      })
 
       return sum.plus(amountInUsd)
     }, ZERO_IN_BASE)
@@ -98,9 +100,7 @@ const totalRewardsInUsd = computed(() =>
 
 const volumeThisRound = computed(() =>
   campaignStore.latestRoundCampaigns.reduce((sum, campaign) => {
-    const market = spotStore.markets.find(
-      (market) => market.marketId === campaign.marketId
-    )
+    const market = spotStore.marketByIdOrSlug(campaign.marketId)
 
     if (!market) {
       return sum
@@ -112,7 +112,7 @@ const volumeThisRound = computed(() =>
     })
 
     const userVolumeInUsd = userVolume.times(
-      tokenStore.tokenUsdPrice(market.quoteToken)
+      sharedTokenStore.tokenUsdPrice(market.quoteToken)
     )
 
     return sum.plus(userVolumeInUsd)

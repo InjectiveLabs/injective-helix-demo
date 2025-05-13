@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
 import { stableCoinSymbols } from '~/app/data/token'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -13,7 +14,7 @@ const props = withDefaults(
   }
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -37,7 +38,9 @@ const lastTradedPrice = computed(() =>
 )
 
 const lastTradedPriceInUsd = computed(() =>
-  lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  lastTradedPrice.value.times(
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
+  )
 )
 
 const isStableCoinMarket = computed(() =>

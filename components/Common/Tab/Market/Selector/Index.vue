@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    markets: UiMarketWithToken[]
     modelValue: string
     wrapperClass?: string
+    markets?: UiMarketWithToken[]
   }>(),
   {
     markets: () => [],
-    modelValue: '',
     wrapperClass: ''
   }
 )

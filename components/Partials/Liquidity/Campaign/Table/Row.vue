@@ -1,25 +1,26 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { getExplorerUrl } from '@shared/utils/network'
-import { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { UiSpotMarket } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { Campaign, CampaignUser } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    market: UiSpotMarket
     campaign: Campaign
     totalScore: string
+    market: UiSpotMarket
     campaignUser: CampaignUser
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const explorerLink = `${getExplorerUrl()}/account/${
   props.campaignUser.accountAddress
@@ -27,9 +28,10 @@ const explorerLink = `${getExplorerUrl()}/account/${
 
 const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
   computed(() =>
-    new BigNumberInWei(props.campaignUser.score)
-      .toBase(props.market.quoteToken.decimals)
-      .times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+    sharedToBalanceInTokenInBase({
+      value: props.campaignUser.score,
+      decimalPlaces: props.market.quoteToken.decimals
+    }).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
   )
 )
 
@@ -45,20 +47,21 @@ const estRewardsInPercentage = computed(() => {
 
 const rewards = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+    const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
-    const amount = new BigNumberInWei(reward.amount || 0)
-      .toBase(token?.decimals || 18)
-      .multipliedBy(estRewardsInPercentage.value)
+    const amount = sharedToBalanceInTokenInBase({
+      value: reward.amount || 0,
+      decimalPlaces: token?.decimals
+    }).multipliedBy(estRewardsInPercentage.value)
 
     const amountInUsd = token
-      ? amount.times(tokenStore.tokenUsdPrice(token))
+      ? amount.times(sharedTokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {
       amount,
-      symbol: token?.symbol || '',
-      amountInUsd
+      amountInUsd,
+      symbol: token?.symbol || ''
     }
   })
 })

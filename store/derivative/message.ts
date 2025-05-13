@@ -111,9 +111,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
 
   await walletStore.validate()
 
-  const market = derivativeStore.markets.find(
-    (m) => m.marketId === order.marketId
-  )
+  const market = derivativeStore.marketByIdOrSlug(order.marketId)
 
   if (!market) {
     return
@@ -561,9 +559,7 @@ export const submitTpSlOrder = async ({
   await walletStore.validate()
   await appStore.validateGeoIpBasedOnDerivativesAction()
 
-  const market = derivativeStore.markets.find(
-    (market) => market.marketId === position.marketId
-  )
+  const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
   if (!market) {
     return

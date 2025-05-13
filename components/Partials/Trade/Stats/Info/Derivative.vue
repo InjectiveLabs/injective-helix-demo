@@ -10,7 +10,7 @@ import { MarkPriceStatusKey } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
 
-const derivativeStore = useDerivativeStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const markPriceStatus = inject(
   MarkPriceStatusKey,
@@ -102,7 +102,7 @@ useIntervalFn(() => {
     return
   }
 
-  derivativeStore.fetchMarketsSummary()
+  sharedDerivativeStore.fetchMarketsSummary()
 }, 1000)
 </script>
 

@@ -2,7 +2,7 @@
 import { SpotOrderHistoryFilterField } from '@/types'
 
 const appStore = useAppStore()
-const derivativeStore = useDerivativeStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const { value: marketValue } = useStringField({
   name: SpotOrderHistoryFilterField.Market
@@ -17,10 +17,10 @@ const { value: typeValue } = useStringField({
 })
 
 const emit = defineEmits<{
-  'market:update': [market: string]
+  'form:reset': []
   'type:update': [type: string]
   'side:update': [side: string]
-  'form:reset': []
+  'market:update': [market: string]
 }>()
 
 function onMarketChange(market: string) {
@@ -54,7 +54,7 @@ function onFormReset() {
     <div class="grid lg:flex lg:divide-x border-r flex-1">
       <CommonTabMarketSelector
         v-model="marketValue"
-        v-bind="{ markets: derivativeStore.markets }"
+        v-bind="{ markets: sharedDerivativeStore.marketsWithToken }"
         @update:model-value="onMarketChange"
       />
 

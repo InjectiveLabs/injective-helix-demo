@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -18,13 +18,13 @@ const props = withDefaults(
 )
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const totalRewardsThisRound = computed(() =>
   props.roundCampaigns.reduce((sum, campaign) => {
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
-      const token = tokenStore.tokenByDenomOrSymbol(reward.denom)!
+      const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)!
 
       const rewardInBase = sharedToBalanceInToken({
         value: reward.amount,
@@ -32,7 +32,7 @@ const totalRewardsThisRound = computed(() =>
       })
 
       const rewardInUsd = new BigNumberInBase(rewardInBase).times(
-        tokenStore.tokenUsdPrice(token)
+        sharedTokenStore.tokenUsdPrice(token)
       )
 
       return sum.plus(rewardInUsd)
@@ -45,13 +45,15 @@ const totalRewardsThisRound = computed(() =>
 const totalVolume = computed(() =>
   props.roundCampaigns
     .reduce((totalScore, campaign) => {
-      const market = spotStore.markets.find(
-        ({ marketId }) => marketId === campaign.marketId
-      )!
+      const market = spotStore.marketByIdOrSlug(campaign.marketId)
+
+      if (!market) {
+        return totalScore
+      }
 
       const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
         .toBase(market.quoteToken?.decimals || 18)
-        .times(tokenStore.tokenUsdPrice(market.quoteToken))
+        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
       return totalScore.plus(campaignVolumeInUsd)
     }, ZERO_IN_BASE)
     .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)

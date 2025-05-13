@@ -5,27 +5,27 @@ import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { InitialStatusKey } from '@/types'
 
 // const appStore = useAppStore()
-const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const walletStore = useWalletStore()
 const sharedGeoStore = useSharedGeoStore()
 const isActiveTab = useDocumentVisibility()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  tokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
+  sharedTokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
-    spotStore.fetchMarkets(),
-    derivativeStore.fetchMarkets(),
+    sharedSpotStore.fetchMarkets(),
     sharedGeoStore.fetchGeoLocation(),
-    tokenStore.fetchTokensUsdPriceMap()
+    sharedDerivativeStore.fetchMarkets(),
+    sharedTokenStore.fetchTokensUsdPriceMap()
   ])
     .catch($onError)
     .then(() => {
@@ -67,7 +67,7 @@ useIntervalFn(
   () =>
     Promise.all([
       streamProvider.healthCheck(),
-      tokenStore.fetchTokensUsdPriceMap()
+      sharedTokenStore.fetchTokensUsdPriceMap()
     ]),
   30 * 1000
 )

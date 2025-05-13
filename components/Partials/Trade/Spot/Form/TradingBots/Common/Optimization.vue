@@ -1,34 +1,30 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { calculateOptimalInvestment } from '~/app/utils/grid-strategy'
-import {
-  UiSpotMarket,
-  Modal,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
 import {
   GST_GRID_THRESHOLD,
-  GST_MIN_TOTAL_AMOUNT_USD,
   GST_MIN_TRADING_SIZE,
+  GST_MIN_TOTAL_AMOUNT_USD,
   GST_MIN_TRADING_SIZE_LOW
 } from '~/app/utils/constants'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
+import { Modal, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     market: UiSpotMarket
     baseQuantity: number
-    quoteQuantity: number
     currentPrice: number
+    quoteQuantity: number
     lowerPriceLevel: number
     upperPriceLevel: number
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
 const modalStore = useSharedModalStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 const { subaccountPortfolioBalanceMap } = useBalance()
@@ -164,11 +160,11 @@ const gridThreshold = computed(() => {
 
 const isMinimumInvestmentAmount = computed(() => {
   const baseAmount = new BigNumberInBase(props.baseQuantity).times(
-    tokenStore.tokenUsdPrice(props.market.baseToken)
+    sharedTokenStore.tokenUsdPrice(props.market.baseToken)
   )
 
   const quoteAmount = new BigNumberInBase(props.quoteQuantity).times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 
   return baseAmount.plus(quoteAmount).gte(gridThreshold.value)

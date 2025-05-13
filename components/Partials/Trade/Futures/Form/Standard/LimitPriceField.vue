@@ -5,16 +5,15 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   MarketKey,
-  UiDerivativeMarket,
-  DerivativesTradeForm,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
-const tokenStore = useTokenStore()
 const orderbookStore = useOrderbookStore()
+const sharedTokenStore = useSharedTokenStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -49,7 +48,7 @@ const hasClickedLimitField = ref(false)
 const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(limitValue.value || 0).times(
-      tokenStore.tokenUsdPrice(market.value.quoteToken)
+      sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
     )
   )
 )

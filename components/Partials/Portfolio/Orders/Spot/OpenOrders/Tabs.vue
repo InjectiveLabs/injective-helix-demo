@@ -2,8 +2,8 @@
 import { SpotOpenOrdersFilterField } from '@/types'
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
 const accountStore = useAccountStore()
+const sharedSpotStore = useSharedSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 
 const { value: marketValue } = useStringField({
@@ -35,7 +35,7 @@ const hasActiveStrategyInSubaccount = computed(() =>
     />
 
     <CommonTabMarketSelector
-      v-bind="{ markets: spotStore.markets }"
+      v-bind="{ markets: sharedSpotStore.marketsWithToken }"
       v-model="marketValue"
     />
 

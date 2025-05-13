@@ -1,15 +1,15 @@
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import {
   sharedToBalanceInToken,
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
-import { MsgType, OrderSide } from '@injectivelabs/ts-types'
-import {
+import { PortfolioSpotOpenOrdersTableColumn } from '@/types'
+import type { SpotLimitOrder } from '@injectivelabs/sdk-ts'
+import type {
   UiSpotMarket,
   AccountBalance,
-  PortfolioSpotOpenOrdersTableColumn,
   TransformedPortfolioSpotOpenOrders
 } from '@/types'
 
@@ -24,9 +24,7 @@ export function useSpotOpenOrdersTransformer(
 
   const rows = computed(() =>
     orderList.value.reduce((list, order) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === order.marketId
-      )
+      const market = spotStore.marketByIdOrSlug(order.marketId)
 
       if (!market) {
         return list

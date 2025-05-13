@@ -1,25 +1,25 @@
 import { defineStore } from 'pinia'
-import {
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { sharedGetToken } from '@shared/utils/helper'
+import { toUiMarketHistory } from '@shared/transformer/market'
+import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
+import type { SharedUiMarketHistory } from '@shared/types'
+import type { TradingRewardsCampaign } from '@/app/client/types/exchange'
+import type {
   TokenStatic,
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
-import { SharedUiMarketHistory } from '@shared/types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { sharedGetToken } from '@shared/utils/helper'
-import { toUiMarketHistory } from '@shared/transformer/market'
-import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
-import { TradingRewardsCampaign } from '@/app/client/types/exchange'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
-  feeDiscountSchedule?: FeeDiscountSchedule
-  feeDiscountAccountInfo?: FeeDiscountAccountInfo
-  tradingRewardsCampaign?: TradingRewardsCampaign
   tradeRewardsPoints: string[]
   pendingTradeRewardsPoints: string[]
   marketsHistory: SharedUiMarketHistory[]
+  feeDiscountSchedule?: FeeDiscountSchedule
+  feeDiscountAccountInfo?: FeeDiscountAccountInfo
+  tradingRewardsCampaign?: TradingRewardsCampaign
 }
 
 const initialStateFactory = (): ExchangeStoreState => ({
@@ -208,9 +208,9 @@ export const useExchangeStore = defineStore('exchange', {
       resolution,
       countback
     }: {
-      marketIds: string[]
-      resolution: number
       countback: number
+      resolution: number
+      marketIds: string[]
     }) {
       const exchangeStore = useExchangeStore()
 
@@ -253,9 +253,9 @@ export const useExchangeStore = defineStore('exchange', {
       resolution,
       countback
     }: {
-      marketIds: string[]
-      resolution: number
       countback: number
+      resolution: number
+      marketIds: string[]
     }) {
       const exchangeStore = useExchangeStore()
 
@@ -290,9 +290,9 @@ export const useExchangeStore = defineStore('exchange', {
       resolution,
       countback
     }: {
-      marketIds: string[]
-      resolution: number
       countback: number
+      resolution: number
+      marketIds: string[]
     }) {
       const exchangeStore = useExchangeStore()
 

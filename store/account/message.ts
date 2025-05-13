@@ -108,16 +108,16 @@ export const transfer = async ({
   amount: string
   destination: string
 }) => {
-  const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedTokenStore = useSharedTokenStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  const token = tokenStore.tokenByDenomOrSymbol(denom) as TokenStatic
+  const token = sharedTokenStore.tokenByDenomOrSymbol(denom) as TokenStatic
 
   await walletStore.validate()
 

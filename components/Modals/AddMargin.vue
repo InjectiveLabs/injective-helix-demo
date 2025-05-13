@@ -33,9 +33,7 @@ const market = computed(() => {
     return
   }
 
-  return derivativeStore.markets.find(
-    (market) => market.marketId === props.position?.marketId
-  )
+  return derivativeStore.marketByIdOrSlug(props.position?.marketId)
 })
 
 const quoteBalance = computed(() => {
