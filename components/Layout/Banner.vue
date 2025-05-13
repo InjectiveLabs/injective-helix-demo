@@ -14,9 +14,9 @@ type Banner = {
 
 const ftmPairs = [
   {
-    slug: 'om-usdt-perp',
+    slug: 'jellyjelly-usdt-perp',
     marketId:
-      '0xdcfdb105edb27c8be6cdbf25906f424d31b9db3d69876cdd9bcfc475660f1006'
+      '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
   }
 ]
 
