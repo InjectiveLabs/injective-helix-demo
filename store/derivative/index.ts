@@ -9,9 +9,9 @@ import {
   derivativeCacheApi,
   indexerDerivativesApi
 } from '@shared/Service'
+import { combineOrderbookRecords } from '@/app/utils/market'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
-import { marketIsInactive, combineOrderbookRecords } from '@/app/utils/market'
 import {
   cancelOrder,
   submitChase,
