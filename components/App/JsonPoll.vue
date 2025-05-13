@@ -45,6 +45,8 @@ function pollJson() {
 }
 
 function mountCachedJson() {
+  jsonStore.fetchFullTokenList()
+
   jsonStore.swapRoutes = swapRoutes
   jsonStore.verifiedDenoms = verifiedDenoms
   jsonStore.spotGridMarkets = spotGridMarkets
