@@ -121,8 +121,9 @@ function closeIAssetsBanner() {
                     variant="primary"
                     size="xs"
                     :class="[
-                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
-                      isActive ? 'opacity-100' : 'opacity-50'
+                      isActive ? 'opacity-100' : 'opacity-50',
+                      value === MarketCategoryType.iAssets ? '' : 'capitalize',
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
                     ]"
                   >
                     {{ $t(`markets.filters.${value}`) }}

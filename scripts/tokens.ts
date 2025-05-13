@@ -1,11 +1,10 @@
-/* eslint-disable no-console */
 import 'dotenv/config'
-import { HttpClient } from '@injectivelabs/utils'
 import { storeJsonFile } from './helper'
+import { HttpClient } from '@injectivelabs/utils'
 
 export const fetchTokens = async (fileName: string): Promise<any> => {
   const client = new HttpClient(
-    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/tokens/'
+    'https://raw.githubusercontent.com/InjectiveLabs/injective-lists/master/json/tokens/verified/'
   )
 
   try {
