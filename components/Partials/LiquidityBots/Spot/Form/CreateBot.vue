@@ -17,8 +17,8 @@ const props = withDefaults(
   {}
 )
 
-const tokenStore = useTokenStore()
 const jsonStore = useSharedJsonStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
 const notificationStore = useSharedNotificationStore()
@@ -36,11 +36,11 @@ const totalUsd = computed(() =>
   new BigNumberInBase(
     liquidityFormValues.value[LiquidityBotField.BaseAmount] || 0
   )
-    .times(tokenStore.tokenUsdPrice(props.market.baseToken))
+    .times(sharedTokenStore.tokenUsdPrice(props.market.baseToken))
     .plus(
       new BigNumberInBase(
         liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0
-      ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+      ).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
     )
 )
 
@@ -90,7 +90,9 @@ async function createLiquidityBot() {
       EventTracker.trackCreateStrategy({
         isLiquidity: true,
         market: props.market.slug,
-        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed(),
+        marketPrice: sharedTokenStore
+          .tokenUsdPrice(props.market.baseToken)
+          .toFixed(),
         formValues: {
           grids: String(props.liquidityValues.grids),
           lowerPrice: props.liquidityValues.lowerBound.toFixed(),

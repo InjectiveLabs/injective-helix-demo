@@ -9,8 +9,8 @@ import { MarketCyTags, NoticeBanner, MarketCategoryType } from '@/types'
 const route = useRoute()
 const appStore = useAppStore()
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const { sm } = useSharedBreakpoints()
 
 const search = ref('')
@@ -21,7 +21,7 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary]
     .map(({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       return {

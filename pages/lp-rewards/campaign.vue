@@ -47,9 +47,7 @@ const market = computed(() => {
     return
   }
 
-  return spotStore.markets.find(
-    ({ marketId }) => marketId === campaign.marketId
-  )
+  return spotStore.marketByIdOrSlug(campaign.marketId)
 })
 
 function fetchCampaign({ skip }: { skip: number }) {

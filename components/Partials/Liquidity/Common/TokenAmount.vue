@@ -1,16 +1,18 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
+    index: number
     amount: string
     symbol: string
-    index: number
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
-const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
+const token = computed(() =>
+  sharedTokenStore.tokenByDenomOrSymbol(props.symbol)
+)
 </script>
 
 <template>

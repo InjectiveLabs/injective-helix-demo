@@ -1,9 +1,9 @@
 import keccak256 from 'keccak256'
-import { Coin } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SharedBalanceWithToken } from '@shared/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { TimeDuration } from '@/types'
+import type { Coin } from '@injectivelabs/sdk-ts'
+import type { SharedBalanceWithToken } from '@shared/types'
 
 BigNumber.config({
   FORMAT: {
@@ -67,10 +67,10 @@ export function formatPercent({
 
 export const convertCoinToBalancesWithToken = (
   coin: Coin
-): SharedBalanceWithToken | undefined => {
-  const tokenStore = useTokenStore()
+): undefined | SharedBalanceWithToken => {
+  const sharedTokenStore = useSharedTokenStore()
 
-  const meta = tokenStore.tokenByDenomOrSymbol(coin.denom)
+  const meta = sharedTokenStore.tokenByDenomOrSymbol(coin.denom)
 
   if (!meta) {
     return

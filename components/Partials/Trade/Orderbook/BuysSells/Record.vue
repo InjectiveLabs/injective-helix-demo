@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { IsSpotKey, BusEvents, MarketKey, AggregationKey } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 import type { OrderbookFormattedRecord } from '@/types/worker'
@@ -133,16 +129,17 @@ const hasOrders = computed(() => {
       return
     }
 
-    const orderMarket = [...spotStore.markets, ...derivativeStore.markets].find(
-      ({ marketId }) => marketId === order.marketId
-    )
+    const orderMarket =
+      spotStore.marketByIdOrSlug(order.marketId) ||
+      derivativeStore.marketByIdOrSlug(order.marketId)
 
-    const priceInBase = new BigNumberInWei(Number(order.price)).toBase(
-      isSpot
+    const priceInBase = sharedToBalanceInTokenInBase({
+      value: order.price,
+      decimalPlaces: isSpot
         ? (orderMarket?.quoteToken?.decimals || 6) -
-            (orderMarket?.baseToken?.decimals || 18)
+          (orderMarket?.baseToken?.decimals || 18)
         : orderMarket?.quoteToken.decimals || 6
-    )
+    })
 
     const isSameSide = order.orderSide === (props.isBuy ? 'buy' : 'sell')
 

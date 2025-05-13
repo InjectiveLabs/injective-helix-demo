@@ -1,21 +1,24 @@
 import { format } from 'date-fns'
-import { ExitType, MarketType, TradingStrategy } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { ExitType, MarketType } from '@injectivelabs/sdk-ts'
 import { formatInterval } from '@/app/utils/helpers'
 import {
   BotType,
-  StopReason,
   SgtMarketType,
-  AccountBalance,
   StrategyStatus,
-  UiDerivativeMarket,
   IndexerGridStrategyType
 } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+import type { StopReason, AccountBalance, UiDerivativeMarket } from '@/types'
 
 export const useDerivativeGridStrategies = (
-  strategiesArg: ComputedRef<TradingStrategy | TradingStrategy[] | undefined>,
+  strategiesArg: ComputedRef<undefined | TradingStrategy | TradingStrategy[]>,
   subaccountBalancesMap: ComputedRef<Record<string, AccountBalance[]>>
 ) => {
+  const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
+  const sharedDerivativeStore = useSharedDerivativeStore()
+
   const strategies = computed(() =>
     strategiesArg.value
       ? Array.isArray(strategiesArg.value)
@@ -23,12 +26,10 @@ export const useDerivativeGridStrategies = (
         : [strategiesArg.value]
       : []
   )
-  const tokenStore = useTokenStore()
-  const derivativeStore = useDerivativeStore()
   const now = useNow({ interval: 10000 })
 
   const marketsMap = computed(() =>
-    derivativeStore.markets.reduce(
+    sharedDerivativeStore.marketsWithToken.reduce(
       (acc, market) => {
         acc[market.marketId] = market
         return acc
@@ -39,7 +40,7 @@ export const useDerivativeGridStrategies = (
 
   const filteredStrategies = computed(() => {
     const marketIds = new Set(
-      derivativeStore.markets.map(({ marketId }) => marketId)
+      sharedDerivativeStore.marketsWithToken.map(({ marketId }) => marketId)
     )
 
     return strategies.value.filter(
@@ -92,7 +93,7 @@ export const useDerivativeGridStrategies = (
 
       const currentUsdValue = new BigNumberInBase(
         currentQuoteAccountBalanceQuantity
-      ).times(tokenStore.tokenUsdPrice(market.quoteToken))
+      ).times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
 
       const initialQuoteBalanceQuantity = sharedToBalanceInToken({
         value: strategy.subscriptionQuoteQuantity,
@@ -103,7 +104,7 @@ export const useDerivativeGridStrategies = (
         initialQuoteBalanceQuantity
       ).times(
         // TODO: Use Initial Quote Price
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       const stopLoss = strategy.stopLossConfig
@@ -130,8 +131,8 @@ export const useDerivativeGridStrategies = (
         strategy.exitType === ExitType.Base
           ? market.baseToken.symbol
           : strategy.exitType === ExitType.Quote
-          ? market.quoteToken.symbol
-          : undefined
+            ? market.quoteToken.symbol
+            : undefined
 
       const trailingUpper = strategy.trailUpPrice
         ? sharedToBalanceInToken({
@@ -155,7 +156,7 @@ export const useDerivativeGridStrategies = (
       })
 
       const depositUsdValue = new BigNumberInBase(depositQuoteQuantity).times(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       // PNL New

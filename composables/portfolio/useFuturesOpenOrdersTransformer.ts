@@ -1,10 +1,10 @@
-import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
+import { PortfolioFuturesOpenOrdersTableColumn } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import type {
   AccountBalance,
-  PortfolioFuturesOpenOrdersTableColumn,
   TransformedPortfolioFuturesOpenOrders
 } from '@/types'
 
@@ -26,17 +26,16 @@ export function useFuturesOpenOrdersTransformer(
 
   const rows = computed(() =>
     orderList.value.reduce((list, order) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === order.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(order.marketId)
 
       if (!market) {
         return list
       }
 
-      const price = new BigNumberInWei(order.price).toBase(
-        market.quoteToken?.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: order.price,
+        decimalPlaces: market.quoteToken?.decimals
+      })
 
       const isBuy = orderTypeMap[order.orderType as OrderSide] || false
 
@@ -44,9 +43,10 @@ export function useFuturesOpenOrdersTransformer(
 
       const total = quantity.multipliedBy(price)
 
-      const margin = new BigNumberInWei(
-        (order as DerivativeLimitOrder).margin
-      ).toBase(market.quoteToken.decimals)
+      const margin = sharedToBalanceInTokenInBase({
+        value: (order as DerivativeLimitOrder).margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isReduceOnly = !margin
         ? false

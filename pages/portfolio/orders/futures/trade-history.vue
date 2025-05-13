@@ -4,11 +4,8 @@ import {
   derivativeTypeToOrderType,
   derivativeTypeToTradeType
 } from '@/app/utils/trade'
-import {
-  OrderTypeFilter,
-  SpotOrderHistoryFilterField,
-  SpotOrderHistoryFilterForm
-} from '@/types'
+import { SpotOrderHistoryFilterField } from '@/types'
+import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,14 +23,9 @@ const status = reactive(new Status(StatusType.Loading))
 function fetchDerivativeTradeHistory() {
   status.setLoading()
 
-  const marketIds = formValues[SpotOrderHistoryFilterField.Market]
-    ? derivativeStore.markets
-        .filter(
-          (market) =>
-            market.marketId === formValues[SpotOrderHistoryFilterField.Market]
-        )
-        .map((market) => market.marketId)
-    : undefined
+  const market = derivativeStore.marketByIdOrSlug(
+    formValues[SpotOrderHistoryFilterField.Market]
+  )
 
   const executionTypes = derivativeTypeToTradeType(
     formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
@@ -49,10 +41,10 @@ function fetchDerivativeTradeHistory() {
         limit: limit.value
       },
       filters: {
-        direction: formValues[SpotOrderHistoryFilterField.Side] as any,
         orderTypes,
         executionTypes,
-        marketIds
+        marketIds: market ? [market.marketId] : undefined,
+        direction: formValues[SpotOrderHistoryFilterField.Side] as any
       }
     })
     .catch($onError)

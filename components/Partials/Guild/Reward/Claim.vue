@@ -13,11 +13,11 @@ import {
 import type { RewardWithToken } from '@/types'
 import type { Coin } from '@injectivelabs/sdk-ts'
 
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const sharedTokenStore = useSharedTokenStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{
@@ -68,7 +68,7 @@ const rewardsWithToken = computed(
   () =>
     props.rewards
       .map((reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
         if (!token) {
           return undefined

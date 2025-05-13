@@ -17,6 +17,7 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useSharedModalStore()
+const sharedSpotStore = useSharedSpotStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 const {
@@ -47,7 +48,9 @@ const {
 const { totalFee } = useSwapFee(computed(() => formValues))
 
 const showErrorState = computed(
-  () => swapStore.routes.length === 0 || spotStore.markets.length === 0
+  () =>
+    swapStore.routes.length === 0 ||
+    sharedSpotStore.marketsWithToken.length === 0
 )
 
 const hasInputAmount = computed(() =>

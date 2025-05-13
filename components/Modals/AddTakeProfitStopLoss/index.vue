@@ -71,9 +71,7 @@ const cancelSlStatus = reactive(new Status(StatusType.Idle))
 const isBuy = computed(() => props.position?.direction === TradeDirection.Long)
 
 const market = computed(() =>
-  derivativeStore.markets.find(
-    ({ marketId }) => marketId === props.position?.marketId
-  )
+  derivativeStore.marketByIdOrSlug(props.position?.marketId)
 )
 
 const isTpDisabled = computed(() => {

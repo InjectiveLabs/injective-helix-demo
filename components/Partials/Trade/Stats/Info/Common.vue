@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { dataCyTag } from '@shared/utils'
 import { stableCoinSymbols } from '@/app/data/token'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedTokenStore = useSharedTokenStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
@@ -19,12 +20,12 @@ const props = withDefaults(
 
 const summary = computed(() => {
   if (props.isSpot) {
-    return spotStore.marketsSummary.find(
+    return sharedSpotStore.marketsSummary.find(
       (market) => market.marketId === props.market.marketId
     )
   }
 
-  return derivativeStore.marketsSummary.find(
+  return sharedDerivativeStore.marketsSummary.find(
     (market) => market.marketId === props.market.marketId
   )
 })
@@ -34,7 +35,7 @@ const isStableQuoteAsset = computed(() =>
 )
 
 const volumeInUsd = computed(() =>
-  volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  volume.value.times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
 )
 
 const { valueToBigNumber: volume } = useSharedBigNumberFormatter(

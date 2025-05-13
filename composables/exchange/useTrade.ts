@@ -1,13 +1,13 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 
 export function useTrade(
   trade: Ref<SharedUiSpotTrade | SharedUiDerivativeTrade>,
@@ -19,8 +19,8 @@ export function useTrade(
 
   const market = computed(() =>
     isSpot
-      ? spotStore.markets.find((m) => m.marketId === trade.value.marketId)
-      : derivativeStore.markets.find((m) => m.marketId === trade.value.marketId)
+      ? spotStore.marketByIdOrSlug(trade.value.marketId)
+      : derivativeStore.marketByIdOrSlug(trade.value.marketId)
   )
 
   /** Unifying both spot and derivative to spot trade type */
@@ -107,14 +107,14 @@ export function useTrade(
     }
 
     switch (trade.value.tradeExecutionType) {
-      case TradeExecutionType.LimitFill:
-        return t('trade.limit')
-      case TradeExecutionType.Market:
-        return t('trade.market')
       case TradeExecutionType.LimitMatchRestingOrder:
         return t('trade.limit')
       case TradeExecutionType.LimitMatchNewOrder:
         return t('trade.limit')
+      case TradeExecutionType.LimitFill:
+        return t('trade.limit')
+      case TradeExecutionType.Market:
+        return t('trade.market')
       default:
         return t('trade.limit')
     }

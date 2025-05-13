@@ -1,21 +1,20 @@
 import { usdtToken } from '@shared/data/token'
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { CURRENT_MARKET_TO_LEGACY_MARKET_ID_MAP } from '@/app/utils/constants'
-import { LiquidityTableColumn, TransformedLiquidity } from '@/types'
+import { LiquidityTableColumn } from '@/types'
+import type { TransformedLiquidity } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
   const gridStrategyStore = useGridStrategyStore()
 
   const rows = computed(() =>
     campaignList.value.reduce((list, campaign) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === campaign.marketId
-      )!
+      const market = spotStore.marketByIdOrSlug(campaign.marketId)!
 
       if (!market) {
         return list
@@ -29,7 +28,7 @@ export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
         )
 
       const rewardsWithToken = campaign.rewards.map((reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
         return {
           value: sharedToBalanceInToken({
@@ -43,7 +42,7 @@ export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
       const totalRewardsInUsd = rewardsWithToken.reduce((total, reward) => {
         return total.plus(
           new BigNumberInBase(reward.value).times(
-            tokenStore.tokenUsdPrice(reward.token)
+            sharedTokenStore.tokenUsdPrice(reward.token)
           )
         )
       }, ZERO_IN_BASE)
@@ -53,7 +52,7 @@ export function useLiquidityTransformer(campaignList: ComputedRef<Campaign[]>) {
       )
 
       const marketVolumeInUsd = marketVolume.times(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       list.push({

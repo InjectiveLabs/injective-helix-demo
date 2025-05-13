@@ -1,22 +1,22 @@
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 
 export function useTrigger(trigger: Ref<DerivativeOrderHistory>) {
   const derivativeStore = useDerivativeStore()
   const { t } = useLang()
 
   const market = computed(() =>
-    derivativeStore.markets.find((m) => m.marketId === trigger.value.marketId)
+    derivativeStore.marketByIdOrSlug(trigger.value.marketId)
   )
 
   const isMarketOrder = computed(() => trigger.value.executionType === 'market')
@@ -109,8 +109,8 @@ export function useTrigger(trigger: Ref<DerivativeOrderHistory>) {
     switch (trigger.value.orderType) {
       case OrderSide.TakeBuy:
       case OrderSide.StopBuy:
-      case OrderSide.Buy:
       case OrderSide.BuyPO:
+      case OrderSide.Buy:
         return true
       default:
         return false
@@ -136,15 +136,15 @@ export function useTrigger(trigger: Ref<DerivativeOrderHistory>) {
         : t('trade.limit')
 
     switch (trigger.value.orderType) {
-      case OrderSide.BuyPO:
-      case OrderSide.SellPO:
-        return executionType
       case OrderSide.TakeSell:
       case OrderSide.TakeBuy:
         return `${t('trade.takeProfit')} ${executionType}`
       case OrderSide.StopSell:
       case OrderSide.StopBuy:
         return `${t('trade.stopLoss')} ${executionType}`
+      case OrderSide.SellPO:
+      case OrderSide.BuyPO:
+        return executionType
       default:
         return ''
     }

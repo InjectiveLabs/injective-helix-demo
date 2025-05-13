@@ -8,14 +8,14 @@ import { UI_DEFAULT_TOKEN_ASSET_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
 const accountTotalBalanceInInj = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+  const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
   if (!injUsdPrice) {
     return ZERO_IN_BASE

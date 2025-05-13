@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   NuxtUiIcons,
   SharedMarketType,
   SharedMarketChange
 } from '@shared/types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { dataCyTag } from '@shared/utils'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
@@ -29,12 +30,12 @@ const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
 
 const summary = computed(() => {
   if (isSpot.value) {
-    return spotStore.marketsSummary.find(
+    return sharedSpotStore.marketsSummary.find(
       (market) => market.marketId === props.market.marketId
     )
   }
 
-  return derivativeStore.marketsSummary.find(
+  return sharedDerivativeStore.marketsSummary.find(
     (market) => market.marketId === props.market.marketId
   )
 })

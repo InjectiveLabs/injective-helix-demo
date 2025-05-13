@@ -11,16 +11,16 @@ import {
 } from '@/types'
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const jsonStore = useSharedJsonStore()
 const accountStore = useAccountStore()
 const referralStore = useReferralStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
@@ -50,9 +50,9 @@ onWalletConnected(async () => {
 
   Promise.all([
     fetchUserPortfolio(),
-    spotStore.fetchMarketsSummary(),
     referralStore.fetchUserReferrer(),
-    derivativeStore.fetchMarketsSummary()
+    sharedSpotStore.fetchMarketsSummary(),
+    sharedDerivativeStore.fetchMarketsSummary()
   ])
     .catch($onError)
     .finally(() => {
@@ -102,8 +102,8 @@ provide(PortfolioStatusKey, portfolioStatus)
 useIntervalFn(
   () =>
     Promise.all([
-      spotStore.fetchMarketsSummary(),
-      derivativeStore.fetchMarketsSummary()
+      sharedSpotStore.fetchMarketsSummary(),
+      sharedDerivativeStore.fetchMarketsSummary()
     ]),
   30 * 1000
 )

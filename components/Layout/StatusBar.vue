@@ -1,23 +1,36 @@
 <script setup lang="ts">
 import { TradeSubPage } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
-const tokenStore = useTokenStore()
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const markets = ref<[string, number][]>([])
 
 const isLoaded = computed(
-  () => Object.keys(tokenStore.tokenUsdPriceMap).length > 0
+  () => Object.keys(sharedTokenStore.tokenUsdPriceMap).length > 0
 )
+
+const tradableTokens = computed(() => {
+  const denoms = [
+    ...new Set([...derivativeStore.tradableDenoms, ...spotStore.tradableDenoms])
+  ]
+
+  return denoms
+    .map((denom) => sharedTokenStore.tokenByDenomOrSymbol(denom))
+    .filter((token) => token) as TokenStatic[]
+})
 
 onMounted(async () => {
   await until(isLoaded).toBe(true)
 
-  markets.value = tokenStore.tradableTokens
+  markets.value = tradableTokens.value
     .map<[string, number]>((token) => [
       token.symbol,
-      tokenStore.tokenUsdPrice(token)
+      sharedTokenStore.tokenUsdPrice(token)
     ])
     .filter(([_, price]) => Number(price) > 0.001)
     .sort(() => Math.random() - 0.5)
