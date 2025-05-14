@@ -1,45 +1,77 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 
+const { t } = useI18n()
+
 const faqList = [
   {
-    label: 'How do I get started with Helix?',
+    label: t('home.faq.accordion1.title'),
     defaultOpen: true,
     slot: 'accordion-1'
   },
   {
-    label: 'Is Identity Verification required?',
-    content:
-      'No, identity verification is not required on Helix, as it is a decentralized exchange where anyone can freely trade while maintaining full custody of their assets.'
+    label: t('home.faq.accordion2.title'),
+    slot: 'accordion-2'
   },
   {
-    label: 'What are the trading fees on Helix?',
-    content:
-      'Trading fees on Helix are designed to be user friendly, with additional benefits like maker rebates, low taker fees, and further discounts tiers available for users who stake INJ.'
+    label: t('home.faq.accordion3.title'),
+    slot: 'accordion-3'
   },
   {
-    label: 'How do I earn rewards on Helix?',
-    content:
-      'Helix offers several ways for users to earn by regularly using Helix:'
+    label: t('home.faq.accordion4.title'),
+    content: t('home.faq.accordion4.content1')
   },
   {
-    label: 'What features are there available on Helix?',
-    content:
-      'Helix offers a seamless and powerful trading experience with advanced features and flexibility:'
+    label: t('home.faq.accordion5.title'),
+    slot: 'accordion-5'
   },
   {
-    label: 'What stocks can I trade on Helix?',
-    content:
-      'Helix offers a wide range of stock perpetual markets that allow users to trade tokenized versions of popular equities with leverage. Some of the major stocks available on Helix include Apple (AAPL), Amazon (AMZN), Tesla (TSLA) and many others.'
+    label: t('home.faq.accordion6.title'),
+    slot: 'accordion-6'
+  },
+  {
+    label: t('home.faq.accordion7.title'),
+    slot: 'accordion-7'
   }
+]
+
+const helixFeatures = [
+  `${t('home.faq.accordion2.feature1.section1')} <a href="http://helixapp.com/spot" class="faq-link" target="_blank">${t('home.faq.accordion2.feature1.section2')}</a>${t('home.faq.fullstop')}`,
+  `${t('home.faq.accordion2.feature2.section1')} <strong>${t('home.faq.accordion2.feature2.section2')}</strong> ${t('home.faq.on')} <a href="https://helixapp.com/futures" class="faq-link" target="_blank">${t('home.faq.accordion2.feature2.section3')}</a>, ${t('home.faq.accordion2.feature2.section4')}, <a href="https://helixapp.com/futures/btc-usdt-perp/?category=iAssets" class="faq-link" target="_blank">${t('home.faq.accordion2.feature2.section5')}</a>, ${t('home.faq.and')} <strong>${t('home.faq.accordion2.feature2.section6')}</strong> ${t('home.faq.accordion2.feature2.section7')}`,
+  `${t('home.faq.accordion2.feature3.section1')} <strong>${t('home.faq.accordion2.feature3.section2')}</strong> ${t('home.faq.accordion2.feature3.section3')}`,
+  `${t('home.faq.accordion2.feature4.section1')} <strong>${t('home.faq.accordion2.feature4.section2')}</strong>, <strong>${t('home.faq.accordion2.feature4.section3')}</strong>, ${t('home.faq.and')} <strong>${t('home.faq.accordion2.feature4.section4')}</strong> ${t('home.faq.accordion2.feature4.section5')}`,
+  `${t('home.faq.accordion2.feature5.section1')} <strong>${t('home.faq.accordion2.feature5.section2')}</strong> ${t('home.faq.accordion2.feature5.section3')}`,
+  `${t('home.faq.accordion2.feature6.section1')} <strong>${t('home.faq.accordion2.feature6.section2')}</strong> ${t('home.faq.accordion2.feature6.section3')}`
+]
+
+const getAssetsOptions = [
+  `${t('home.faq.accordion5.option1.section1')} <a href="https://bridge.injective.network/fiat" class="faq-link" target="_blank">${t('home.faq.accordion5.option1.section2')}</a> ${t('home.faq.accordion5.option1.section3')}`,
+  `${t('home.faq.accordion5.option2.section1')} <a href="http://bridge.injective.network" class="faq-link" target="_blank">${t('home.faq.accordion5.option2.section2')}</a> ${t('home.faq.accordion5.option2.section3')}`,
+  `${t('home.faq.accordion5.option3')}`
+]
+
+const tradeSteps = [
+  `${t('home.faq.accordion6.step1.section1')} <a href="https://helixapp.com/" class="faq-link" target="_blank">${t('home.faq.accordion6.step1.section2')}</a> ${t('home.faq.accordion6.step1.section3')}`,
+  `${t('home.faq.accordion6.step2.section1')} <strong>${t('home.faq.accordion6.step2.section2')}</strong> ${t('home.faq.or')} <strong>${t('home.faq.accordion6.step2.section3')}</strong>${t('home.faq.fullstop')}`,
+  `${t('home.faq.accordion6.step3.section1')} <a href="https://helixapp.com/spot" class="faq-link" target="_blank">${t('home.faq.accordion6.step3.section2')}</a> ${t('home.faq.or')} <a href="https://helixapp.com/futures" class="faq-link" target="_blank">${t('home.faq.accordion6.step3.section3')}</a> ${t('home.faq.accordion6.step3.section4')}`,
+  `${t('home.faq.accordion6.step4.section1')} <strong>${t('home.faq.accordion6.step4.section2')}</strong> ${t('home.faq.or')} <strong>${t('home.faq.accordion6.step4.section3')}</strong> ${t('home.faq.accordion6.step4.section4')}`
+]
+
+const earnRewardsOptions = [
+  `<strong>${t('home.faq.accordion7.option1.section1')}</strong>: ${t('home.faq.accordion7.option1.section2')}`,
+  `<strong>${t('home.faq.accordion7.option2.section1')}</strong>: ${t('home.faq.accordion7.option2.section2')}`,
+  `<strong>${t('home.faq.accordion7.option3.section1')}</strong>: ${t('home.faq.accordion7.option3.section2')}`,
+  `<strong>${t('home.faq.accordion7.option4.section1')}</strong>: ${t('home.faq.accordion7.option4.section2')} <a href="https://helixapp.com/lp-rewards" class="faq-link" target="_blank">${t('home.faq.accordion7.option4.section3')}</a> ${t('home.faq.accordion7.option4.section4')}`
 ]
 </script>
 
 <template>
-  <div class="relative pt-32 flex flex-col items-center">
-    <div id="faq-title" class="mb-6">
+  <div
+    class="relative mt-24 lg:mt-32 pb-8 flex flex-col items-center max-w-[830px] mx-auto"
+  >
+    <div id="faq-title" class="mb-2 lg:mb-6">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
-        {{ $t('common.faq') }}
+        {{ $t('home.faq.title') }}
       </h1>
     </div>
 
@@ -52,11 +84,14 @@ const faqList = [
         ui: {
           container: 'border-b border-b-[#727376] last:border-b-0',
           default: {
-            class: 'text-[22px] px-0 pt-6 pb-4 dark:hover:bg-transparent '
+            class:
+              'text-lg lg:text-[22px] px-0 pt-6 pb-4 dark:hover:bg-transparent font-semibold text-left',
+            truncate: false
           },
           item: {
+            base: 'leading-[1.1]',
             size: 'text-sm',
-            icon: '!size-8',
+            icon: 'lg:!size-8 max-lg:!size-7',
             color: 'text-white',
             padding: 'pt-0 pb-4'
           }
@@ -65,23 +100,194 @@ const faqList = [
     >
       <template #accordion-1>
         <div>
-          <p>
-            To start trading on Helix, simply log in using your social account
-            or connect your wallet, then deposit your assets.
+          <i18n-t
+            keypath="home.faq.accordion1.content1"
+            tag="p"
+            class="leading-tight"
+          >
+            <template #btc>
+              <a
+                class="faq-link"
+                target="_blank"
+                href="https://helixapp.com/futures/btc-usdt-perp"
+              >
+                {{ $t('home.faq.accordion1.btc') }}
+              </a>
+            </template>
+
+            <template #eth>
+              <a
+                class="faq-link"
+                target="_blank"
+                href="https://helixapp.com/futures/eth-usdt-perp"
+              >
+                {{ $t('home.faq.accordion1.eth') }}
+              </a>
+            </template>
+
+            <template #inj>
+              <a
+                class="faq-link"
+                target="_blank"
+                href="https://helixapp.com/futures/inj-usdt-perp"
+              >
+                {{ $t('home.faq.accordion1.inj') }}
+              </a>
+            </template>
+          </i18n-t>
+
+          <br />
+
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion1.content2') }}
           </p>
 
-          <p>
-            Follow the complete onboarding guide
-            <a
-              class="underline hover:text-white/70 transition-colors"
-              href="https://docs.helixapp.com/getting-started"
-              target="_blank"
-              >here</a
-            >
-            to get set up step-by-step.
+          <br />
+
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion1.content3') }}
           </p>
+        </div>
+      </template>
+
+      <template #accordion-2>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion2.featureTitle') }}
+          </p>
+
+          <br />
+
+          <ul class="faq-description-list">
+            <li
+              v-for="(feature, index) in helixFeatures"
+              :key="index"
+              v-html="feature"
+            />
+          </ul>
+        </div>
+      </template>
+
+      <template #accordion-3>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion3.content1') }}
+          </p>
+
+          <br />
+
+          <i18n-t
+            keypath="home.faq.accordion3.content2"
+            tag="p"
+            class="leading-tight"
+          >
+            <template #here>
+              <a
+                class="faq-link"
+                target="_blank"
+                href="https://docs.helixapp.com/getting-started"
+              >
+                {{ $t('home.faq.here') }}
+              </a>
+            </template>
+          </i18n-t>
+        </div>
+      </template>
+
+      <template #accordion-5>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion5.optionTitle') }}
+          </p>
+
+          <br />
+
+          <ul class="faq-description-list">
+            <li
+              v-for="(option, index) in getAssetsOptions"
+              :key="index"
+              v-html="option"
+            />
+          </ul>
+        </div>
+      </template>
+
+      <template #accordion-6>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion6.stepTitle') }}
+          </p>
+
+          <br />
+
+          <ol class="faq-steps-list">
+            <li
+              v-for="(option, index) in tradeSteps"
+              :key="index"
+              v-html="option"
+            />
+          </ol>
+
+          <br />
+
+          <i18n-t
+            keypath="home.faq.accordion6.cta"
+            tag="p"
+            class="leading-tight"
+          >
+            <template #tutorial>
+              <a
+                class="faq-link"
+                target="_blank"
+                href="https://app.gitbook.com/o/LzWvewxXUBLXQT4cTrrj/s/7eHQ0oqbU5OAi8PxyRjr/getting-started"
+              >
+                {{ $t('home.faq.accordion6.videoTutorialHere') }}</a
+              >
+            </template>
+          </i18n-t>
+        </div>
+      </template>
+
+      <template #accordion-7>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion7.optionTitle') }}
+          </p>
+
+          <br />
+
+          <ul class="faq-description-list">
+            <li
+              v-for="(option, index) in earnRewardsOptions"
+              :key="index"
+              v-html="option"
+            />
+          </ul>
         </div>
       </template>
     </UAccordion>
   </div>
 </template>
+
+<style>
+.faq-link {
+  @apply underline hover:text-white/70 transition-colors font-bold;
+}
+
+.faq-description-list,
+.faq-steps-list {
+  @apply pl-4;
+
+  li {
+    @apply leading-relaxed;
+  }
+}
+
+.faq-description-list {
+  @apply list-disc;
+}
+
+.faq-steps-list {
+  @apply list-decimal;
+}
+</style>

@@ -90,7 +90,6 @@ export default {
     tradingDocs: 'Trading Docs',
     unauthorized: 'Unauthorized',
     sortDirection: 'Sort Direction',
-    faq: 'Frequently Asked Questions',
     marketCategory: 'Market Category',
     dontShowAgain: "Don't Show Again",
     showMoreContext: 'Show more context',

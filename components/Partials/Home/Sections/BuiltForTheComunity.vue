@@ -17,7 +17,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: '#built-for-the-community-text',
         start: () => 'top 40%',
-        end: () => 'bottom 0%',
+        end: () => 'bottom 10%',
         scrub: 1,
         pin: true
       },
@@ -40,18 +40,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32">
+  <div class="relative max-lg:pt-16">
     <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
     <img
       src="/svg/blurs/blur-1.svg"
       class="absolute -top-20 left-1/2 blur-xl"
     />
 
-    <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
+    <div id="built-for-the-community-text" class="lg:opacity-0 lg:blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
       </h1>
-      <p class="text-lg text-center">
+      <p class="text-lg text-center mt-4">
         {{ $t('home.builtForTheCommunityDescription') }}
       </p>
     </div>

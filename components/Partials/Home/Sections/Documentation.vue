@@ -1,42 +1,46 @@
 <script setup lang="ts">
-// onMounted(() => {
-// const mm = gsap.matchMedia()
+onMounted(() => {
+  const mm = gsap.matchMedia()
 
-// mm.add('(min-width: 1024px)', () => {
-//   gsap.to('#documentation-title', {
-//     scrollTrigger: {
-//       trigger: '#documentation-title',
-//       start: () => 'top 40%',
-//       end: () => 'bottom 0%',
-//       scrub: 1,
-//       pin: true
-//     },
-//     opacity: 1,
-//     filter: 'blur(0px)'
-//   })
-//   gsap.to('#documentation-image', {
-//     scrollTrigger: {
-//       trigger: '#documentation-image',
-//       start: () => 'top 20%',
-//       end: () => 'bottom 40%',
-//       scrub: 2,
-//       pin: true
-//     },
-//     scale: 0.9
-//   })
-// })
-// })
+  mm.add('(min-width: 1024px)', () => {
+    gsap.to('#documentation-title', {
+      scrollTrigger: {
+        trigger: '#documentation-title',
+        start: () => 'top 70%',
+        end: () => 'top 60%',
+        scrub: 1,
+        pin: true
+      },
+      opacity: 1,
+      filter: 'blur(0px)'
+    })
+
+    gsap.to('#documentation-content', {
+      scrollTrigger: {
+        trigger: '#documentation-content',
+        start: () => 'top 70%',
+        end: () => 'top 60%',
+        scrub: 1,
+        pin: true
+      },
+      scale: 1
+    })
+  })
+})
 </script>
 
 <template>
-  <div class="relative pb-32 flex flex-col items-center">
-    <div id="documentation-title">
+  <div class="relative pt-24 lg:pt-32 lg:pb-80 flex flex-col items-center">
+    <div id="documentation-title" class="lg:opacity-0 lg:blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.documentation') }}
       </h1>
     </div>
 
-    <div id="documentation-image" class="pt-8 flex gap-10">
+    <div
+      id="documentation-content"
+      class="pt-8 flex gap-10 max-sm:flex-col max-sm:max-w-80"
+    >
       <div
         class="rounded-2xl border border-[#0B182B] bg-coolGray-800 py-10 px-6 flex flex-col gap-9"
       >
