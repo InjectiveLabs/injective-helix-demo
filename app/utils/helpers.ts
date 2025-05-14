@@ -7,7 +7,6 @@ import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   NETWORK,
   ENDPOINTS,
-  IS_DEVNET,
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
@@ -56,15 +55,11 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
     return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
-  if (IS_DEVNET) {
-    return `https://devnet.api.injective.dev/chart/v1/spot/market_summary_all?resolution=24h/api/chart/v1/${marketType}`
-  }
-
   // if (IS_TESTNET) {
   //   return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   // }
 
-  return `${ENDPOINTS.indexer}/api/chronos/v1/${marketType}`
+  return `${ENDPOINTS.indexer}/api/chart/v1/${marketType}`
 }
 
 export const getHubUrl = (): string => {
