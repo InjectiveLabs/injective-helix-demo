@@ -417,7 +417,8 @@ export enum NoticeBanner {
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
-  FTMSettleMarket = 'ftm-settle-market',
+  DeprecatedWallet = 'deprecated-wallet',
+  PerpSettleMarket = 'perp-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',
   UpcomingChainUpgrade = 'upcoming-chain-upgrade',
   OwnYourAssetCampaign = 'own-your-asset-campaign'
@@ -558,6 +559,7 @@ export enum Modal {
   CreateGuild = 'create-guild',
   SwapSuccess = 'swap-success',
   NeptuneUsdt = 'neptune-usdt',
+  MigrateMagic = 'migrate-magic',
   BankTransfer = 'bank-transfer',
   UserFeedback = 'user-feedback',
   MitoRedirect = 'mito-redirect',

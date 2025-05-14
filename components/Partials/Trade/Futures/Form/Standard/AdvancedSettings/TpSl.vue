@@ -114,9 +114,9 @@ function addTpSl() {
 
     <div v-else>
       <div class="py-2">
-        <AppCheckbox2 v-model="isTpSlEnabled" class="text-white">
+        <AppCheckbox v-model="isTpSlEnabled" class="text-white">
           {{ $t('trade.tpSl') }}
-        </AppCheckbox2>
+        </AppCheckbox>
       </div>
 
       <div v-if="isTpSlEnabled" class="space-y-2 p-1">

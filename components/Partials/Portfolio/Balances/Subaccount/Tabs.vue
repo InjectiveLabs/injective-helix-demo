@@ -104,9 +104,9 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
     </div>
 
     <div class="flex items-center px-2 max-md:py-2 shrink-0 overflow-hidden">
-      <AppCheckbox2 v-model="showUnverifiedAssets">
+      <AppCheckbox v-model="showUnverifiedAssets">
         {{ $t('account.showUnverifiedAssets') }}
-      </AppCheckbox2>
+      </AppCheckbox>
     </div>
   </div>
 </template>

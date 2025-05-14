@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { Banner } from '@/types'
+import type { Banner } from '@/types'
 
 const appStore = useAppStore()
 

@@ -11,6 +11,7 @@ const sharedWalletStore = useSharedWalletStore()
 
 function onCloseModal() {
   modalStore.closeModal(Modal.Connect)
+  sharedWalletStore.walletConnectStatus = WalletConnectStatus.idle
 }
 
 function onWalletConnect() {
@@ -55,6 +56,7 @@ function onWalletConnect() {
   <AppModal
     v-model="modalStore.modals[Modal.Connect]"
     v-bind="{ isSm: true, isHideCloseButton: true }"
+    @on:close="onCloseModal"
   >
     <LayoutWalletConnect @modal:closed="onCloseModal" />
   </AppModal>

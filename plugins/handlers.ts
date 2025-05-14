@@ -6,7 +6,8 @@ import {
   isThrownException,
   GRPC_REQUEST_FAILED,
   TransactionException,
-  GrpcUnaryRequestException
+  GrpcUnaryRequestException,
+  TurnkeyWalletSessionException
 } from '@injectivelabs/exceptions'
 import type { ThrownException } from '@injectivelabs/exceptions'
 
@@ -101,6 +102,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const errorHandler = (error: ThrownException) => {
+    const sharedWalletStore = useSharedWalletStore()
+
+    if (error.name === TurnkeyWalletSessionException.errorClass) {
+      sharedWalletStore.logout()
+    }
+
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }

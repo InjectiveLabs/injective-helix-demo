@@ -13,10 +13,12 @@ const emits = defineEmits<{
   'modal:closed': []
 }>()
 
+const showOtp = ref(false)
 const isShowMoreWallets = ref(false)
+const showDeprecatedSso = ref(false)
 const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
-const magicStatus = reactive(new Status(StatusType.Idle))
+const ssoStatus = reactive(new Status(StatusType.Idle))
 
 const popularOptions = computed(
   () =>
@@ -91,7 +93,8 @@ const options = computed(
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      { wallet: Wallet.WalletConnect }
+      { wallet: Wallet.WalletConnect },
+      { wallet: Wallet.Magic }
       // Disabled for now
       // {
       //   wallet: Wallet.TrustWallet,
@@ -103,6 +106,9 @@ const options = computed(
 )
 
 onMounted(() => {
+  showOtp.value = false
+  showDeprecatedSso.value = false
+
   Promise.all([
     sharedWalletStore.checkIsBitGetInstalled(),
     sharedWalletStore.checkIsRainbowInstalled(),
@@ -116,19 +122,26 @@ onMounted(() => {
 watch(
   () => sharedWalletStore.walletConnectStatus,
   (status: WalletConnectStatus) => {
-    if (status === WalletConnectStatus.idle) {
-      magicStatus.setIdle()
-    }
-
     if (status === WalletConnectStatus.connected) {
-      magicStatus.setIdle()
-      emits('modal:closed')
+      onCloseModal()
     }
   }
 )
 
-function onSetMagicStatusLoading() {
-  magicStatus.setLoading()
+function onCloseModal() {
+  emits('modal:closed')
+}
+
+function onShowOtp() {
+  showOtp.value = true
+}
+
+function setSsoStatusLoading() {
+  ssoStatus.setLoading()
+}
+
+function onShowDeprecatedSso() {
+  showDeprecatedSso.value = true
 }
 
 function onWalletModalTypeChange(wallet?: Wallet) {
@@ -141,8 +154,11 @@ function toggleShowMoreWallets() {
 </script>
 
 <template>
-  <AppHocLoading wrapper-class="p-32" v-bind="{ status: magicStatus }">
-    <div class="py-4 -mt-6 -mb-4">
+  <AppHocLoading wrapper-class="p-32" v-bind="{ status: ssoStatus }">
+    <LayoutWalletOTP v-if="showOtp" @sso:set-loading="setSsoStatusLoading" />
+    <LayoutWalletDeprecatedSSO v-else-if="showDeprecatedSso" />
+
+    <div v-else class="py-4 -mt-6 -mb-4">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
@@ -177,7 +193,8 @@ function toggleShowMoreWallets() {
 
         <LayoutWalletSso
           class="my-6"
-          @set:magic-status-loading="onSetMagicStatusLoading"
+          @opt:show="onShowOtp"
+          @sso:set-loading="onCloseModal"
         />
 
         <div class="flex items-center justify-center">
@@ -193,6 +210,7 @@ function toggleShowMoreWallets() {
               : popularOptions"
             :key="walletOption.wallet"
             v-bind="{ walletOption }"
+            @deprecated-sso:show="onShowDeprecatedSso"
             @selected-hardware-wallet:toggle="onWalletModalTypeChange"
           />
         </div>

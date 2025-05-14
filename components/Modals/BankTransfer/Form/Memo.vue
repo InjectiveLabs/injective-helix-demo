@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { BINANCE_DEPOSIT_ADDRESS } from '@shared/utils/constant'
-import { BankTransferField, BankTransferForm } from '@/types'
+import { BankTransferField } from '@/types'
+import type { BankTransferForm } from '@/types'
 
 const bankTransferFormValues = useFormValues() as Ref<BankTransferForm>
 
@@ -47,18 +48,18 @@ watch(
         {{ $t('portfolio.bankTransfer.memo.title') }}
       </div>
 
-      <AppCheckbox2
+      <AppCheckbox
         v-model="memoRequired"
         :disabled="
           bankTransferFormValues[BankTransferField.Address] ===
           BINANCE_DEPOSIT_ADDRESS
         "
-        @update:modelValue="onUpdateMemoRequired"
+        @update:model-value="onUpdateMemoRequired"
       >
         <div class="text-xs leading-4 tracking-wide text-coolGray-200">
           {{ $t('portfolio.bankTransfer.memo.required') }}
         </div>
-      </AppCheckbox2>
+      </AppCheckbox>
     </div>
 
     <div

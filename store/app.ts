@@ -32,9 +32,9 @@ export interface UserBasedState {
   modalsViewed: Modal[]
   hasAcceptedTerms: boolean
   favoriteMarkets: string[]
-  dontShowAgain: CtaToast[]
   bannersViewed: NoticeBanner[]
   marketSlippageIdMap: Record<string, string>
+  dontShowAgain: Array<Modal | CtaToast | NoticeBanner>
 
   preferences: {
     isHideBalances: boolean

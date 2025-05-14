@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { InitialStatusKey } from '@/types'
 
-// const appStore = useAppStore()
+const route = useRoute()
+const router = useRouter()
 const walletStore = useWalletStore()
 const sharedGeoStore = useSharedGeoStore()
 const isActiveTab = useDocumentVisibility()
@@ -17,7 +19,8 @@ const { $onError } = useNuxtApp()
 const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
+onMounted(async () => {
+  handleGoogleOAuth()
   sharedTokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
@@ -33,10 +36,9 @@ onMounted(() => {
         WalletTracker.trackWalletAddress(sharedWalletStore.injectiveAddress)
       }
     })
-    .finally(() => status.setIdle())
-
-  // Actions that should't block the app from loading
-  // Promise.all([appStore.fetchBlockHeight()])
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 onWalletInitialConnected(() => {
@@ -46,21 +48,32 @@ onWalletInitialConnected(() => {
   })
 })
 
-/**
- * Post only mode modal when we do chain upgrade
-watch(
-  () => appStore.blockHeight,
-  () => {
-    if (
-      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
-      appStore.blockHeight <=
-        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
-    ) {
-      modalStore.openModal(Modal.PostOnlyMode)
-    }
+function handleGoogleOAuth() {
+  if (sharedWalletStore.isUserConnected) {
+    return
   }
-)
- */
+
+  if (!route.hash) {
+    return
+  }
+
+  const params = new URLSearchParams(route.hash.substring(1))
+  const idToken = params.get('id_token')
+
+  if (!idToken) {
+    return
+  }
+
+  router.replace({ hash: '' })
+
+  sharedWalletStore
+    .initTurnkeyGoogle(idToken)
+    .catch($onError)
+    .finally(() => {
+      sharedWalletStore.walletConnectStatus = WalletConnectStatus.idle
+    })
+}
+
 provide(InitialStatusKey, status)
 
 useIntervalFn(

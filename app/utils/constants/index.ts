@@ -206,3 +206,6 @@ export const CHART_ZOOM_FALLBACK_NUMBER = 0.5
 
 export const MAX_LIMIT_ORDER_LINES = 3
 export const MAX_TOAST_TIMEOUT = 10 * 24 * 60 * 60 * 1000 // 10 days
+
+export const DEPRECATED_WALLET_DOCS_LINK =
+  'https://docs.helixapp.com/getting-started/sign-up/google-account-wallet'

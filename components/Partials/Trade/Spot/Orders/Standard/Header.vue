@@ -131,7 +131,7 @@ watch(
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
-      <AppCheckbox2
+      <AppCheckbox
         v-if="view !== SpotOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
@@ -140,7 +140,7 @@ watch(
         <span>
           {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
         </span>
-      </AppCheckbox2>
+      </AppCheckbox>
 
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
         v-if="view === SpotOrdersStandardView.Orders && !isMobile"

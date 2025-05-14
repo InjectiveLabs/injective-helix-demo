@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const campaignStore = useCampaignStore()
 
-const props = withDefaults(defineProps<{ isVolume?: boolean; now: number }>(), {
+const props = withDefaults(defineProps<{ now: number; isVolume?: boolean }>(), {
   isVolume: false
 })
 
@@ -22,7 +22,7 @@ const sortedGuilds = computed(() => {
     return filteredGuilds.value
   }
 
-  return filteredGuilds.value.sort((g1, g2) => {
+  return [...filteredGuilds.value].sort((g1, g2) => {
     if (g1.isActive === g2.isActive) {
       return g1.name.localeCompare(g2.name)
     }

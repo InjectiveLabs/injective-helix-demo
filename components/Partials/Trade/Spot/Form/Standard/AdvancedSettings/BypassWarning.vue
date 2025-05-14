@@ -10,12 +10,12 @@ const { value: bypassPriceWarningValue } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2
+    <AppCheckbox
       v-model="bypassPriceWarningValue"
       class="w-full text-white"
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsBypassWarning)"
     >
       {{ $t('trade.bypassPriceWarning') }}
-    </AppCheckbox2>
+    </AppCheckbox>
   </div>
 </template>
