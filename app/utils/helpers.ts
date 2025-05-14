@@ -3,14 +3,11 @@ import { intervalToDuration } from 'date-fns'
 import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   NETWORK,
   ENDPOINTS,
+  IS_DEVNET,
   IS_MAINNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
@@ -54,13 +51,13 @@ export const getDecimalsBasedOnNumber = (
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
-  // Todo: Replace with actual endpoint once devops deploy this to production server
-  // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
-
   if (IS_MAINNET) {
-    // [US region] chart service - EU service is temp down
     // return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
     return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+  }
+
+  if (IS_DEVNET) {
+    return `https://devnet.api.injective.dev/chart/v1/spot/market_summary_all?resolution=24h/api/chart/v1/${marketType}`
   }
 
   // if (IS_TESTNET) {
@@ -107,9 +104,10 @@ export function getMinQuantityTickSize(
   const spotMarket = market as UiSpotMarket
 
   return market.quoteToken && spotMarket.baseToken
-    ? new BigNumberInWei(market.minQuantityTickSize)
-        .toBase(spotMarket.baseToken.decimals)
-        .toFixed()
+    ? sharedToBalanceInToken({
+        value: market.minQuantityTickSize,
+        decimalPlaces: spotMarket.baseToken.decimals
+      })
     : ''
 }
 
@@ -233,17 +231,20 @@ export function getMinPriceTickSize(
   market: UiMarketWithToken
 ) {
   if (!isSpot) {
-    return new BigNumberInWei(market.minPriceTickSize)
-      .toBase(market.quoteToken.decimals)
-      .toFixed()
+    return sharedToBalanceInToken({
+      value: market.minPriceTickSize,
+      decimalPlaces: market.quoteToken.decimals
+    })
   }
 
   const spotMarket = market as UiSpotMarket
 
   return spotMarket.baseToken
-    ? new BigNumberInWei(market.minPriceTickSize)
-        .toBase(spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals)
-        .toFixed()
+    ? sharedToBalanceInToken({
+        value: market.minPriceTickSize,
+        decimalPlaces:
+          spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals
+      })
     : ''
 }
 
