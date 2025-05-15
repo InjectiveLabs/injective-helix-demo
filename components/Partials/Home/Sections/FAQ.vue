@@ -6,7 +6,6 @@ const { t } = useI18n()
 const faqList = [
   {
     label: t('home.faq.accordion1.title'),
-    defaultOpen: true,
     slot: 'accordion-1'
   },
   {
@@ -82,18 +81,18 @@ const earnRewardsOptions = [
         variant: 'ghost',
         openIcon: NuxtUiIcons.ChevronDownCircle,
         ui: {
-          container: 'border-b border-b-[#727376] last:border-b-0',
+          container: 'border-b border-b-coolGray-475 last:border-b-0',
           default: {
+            truncate: false,
             class:
-              'text-lg lg:text-[22px] px-0 pt-6 pb-4 dark:hover:bg-transparent font-semibold text-left',
-            truncate: false
+              'text-lg lg:text-[22px] px-0 pt-6 pb-4 dark:hover:bg-transparent font-semibold text-left'
           },
           item: {
-            base: 'leading-[1.1]',
             size: 'text-sm',
-            icon: 'lg:!size-8 max-lg:!size-7',
             color: 'text-white',
-            padding: 'pt-0 pb-4'
+            padding: 'pt-0 pb-4',
+            base: 'leading-[1.1]',
+            icon: 'lg:!size-8 max-lg:!size-7'
           }
         }
       }"
@@ -101,8 +100,8 @@ const earnRewardsOptions = [
       <template #accordion-1>
         <div>
           <i18n-t
-            keypath="home.faq.accordion1.content1"
             tag="p"
+            keypath="home.faq.accordion1.content1"
             class="leading-tight"
           >
             <template #btc>
@@ -177,8 +176,8 @@ const earnRewardsOptions = [
           <br />
 
           <i18n-t
-            keypath="home.faq.accordion3.content2"
             tag="p"
+            keypath="home.faq.accordion3.content2"
             class="leading-tight"
           >
             <template #here>
@@ -231,15 +230,15 @@ const earnRewardsOptions = [
           <br />
 
           <i18n-t
-            keypath="home.faq.accordion6.cta"
             tag="p"
+            keypath="home.faq.accordion6.cta"
             class="leading-tight"
           >
             <template #tutorial>
               <a
                 class="faq-link"
                 target="_blank"
-                href="https://app.gitbook.com/o/LzWvewxXUBLXQT4cTrrj/s/7eHQ0oqbU5OAi8PxyRjr/getting-started"
+                href="https://www.youtube.com/watch?v=uEhCbu8L2o0"
               >
                 {{ $t('home.faq.accordion6.videoTutorialHere') }}</a
               >

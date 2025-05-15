@@ -6,11 +6,10 @@ onMounted(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: '#documentation-content',
-        start: () => 'center center',
+        start: () => 'center 60%',
         end: () => '+=700px',
         scrub: 1,
         pin: true,
-        markers: true,
         pinSpacing: true
       }
     })
@@ -25,7 +24,7 @@ onMounted(() => {
     ).to(
       '#documentation-content',
       {
-        scale: 0.9
+        scale: 1
       },
       0
     )
@@ -34,8 +33,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pt-24 lg:pt-32 lg:pb-80 flex flex-col items-center">
-    <div id="documentation-content">
+  <div class="relative pt-24 lg:pt-32 lg:pb-40 flex flex-col items-center">
+    <div id="documentation-content" class="lg:scale-90">
       <div id="documentation-title" class="lg:opacity-0 lg:blur-3xl">
         <h1 class="text-2xl lg:text-5xl font-semibold text-center">
           {{ $t('home.documentation') }}
@@ -54,7 +53,7 @@ onMounted(() => {
 
           <SharedButton
             class="w-full dark:bg-blue-500 py-3 justify-center border border-blue-500 dark:hover:bg-blue-500/70 hover:border-blue-500/70 transition-colors font-semibold"
-            to="https://app.gitbook.com/o/LzWvewxXUBLXQT4cTrrj/"
+            to="https://docs.helixapp.com/"
             target="_blank"
           >
             {{ $t('home.helixDocs') }}
@@ -73,7 +72,7 @@ onMounted(() => {
           <SharedButton
             variant="outline"
             class="w-full py-3 justify-center dark:text-white font-semibold ring-blue-500"
-            to="https://api.injective.exchange/"
+            to="https://api.injective.exchange/#change-log"
             target="_blank"
           >
             {{ $t('home.apiDocs') }}

@@ -1,19 +1,19 @@
 <script setup lang="ts">
 enum OverviewSection {
-  TradingBots = 'tradingBots',
-  TradeStocks = 'tradeStocks',
+  GasFree = 'gasFree',
   LpRewards = 'lpRewards',
-  GasFree = 'gasFree'
+  TradingBots = 'tradingBots',
+  TradeStocks = 'tradeStocks'
 }
 
 const animationList = {
-  [OverviewSection.TradingBots]: '2TradingBots.json',
-  [OverviewSection.TradeStocks]: '1AccountOverview.json',
+  [OverviewSection.GasFree]: '4gasFees.json',
   [OverviewSection.LpRewards]: '3pnlAnalysis.json',
-  [OverviewSection.GasFree]: '4gasFees.json'
+  [OverviewSection.TradingBots]: '2TradingBots.json',
+  [OverviewSection.TradeStocks]: '1AccountOverview.json'
 }
 
-const activeType = ref(OverviewSection.TradeStocks)
+const activeType = ref(OverviewSection.TradingBots)
 
 const options = [
   {
@@ -76,7 +76,7 @@ onMounted(() => {
       class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl"
     />
 
-    <div id="overview-section" class="relative max-lg:mt-10 lg:py-20">
+    <div id="overview-section" class="relative max-lg:mt-28 lg:py-20">
       <h2
         class="text-2xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold text-white"
       >
@@ -87,8 +87,8 @@ onMounted(() => {
         {{ $t('home.overview.description') }}
       </p>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-16">
-        <div class="space-y-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 max-lg:mt-14 mt-10 gap-16">
+        <div class="space-y-10 lg:space-y-12">
           <SharedSelectorItem
             v-for="item in options"
             :key="`home-${item.type}`"

@@ -47,15 +47,15 @@ function goToWhyHelix() {
 
 <template>
   <div
-    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section z-30"
+    class="lg:h-screen flex flex-col lg:justify-center max-lg:pt-10 relative gsap-section z-30"
   >
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
-      <h1 id="hero-title" class="font-semibold gsap-text mb-5">
-        <p class="text-2xl lg:text-7xl">
+      <h1 id="hero-title" class="font-semibold gsap-text mb-10 lg:mb-5">
+        <p class="text-4xl lg:text-7xl">
           {{ $t('home.openFinance') + ' ' }}
         </p>
         <p
-          class="text-blue-500 text-2xl lg:text-[128px] font-bold leading-none"
+          class="text-blue-500 text-4xl lg:text-[128px] font-bold lg:leading-none"
         >
           {{ $t('home.reimagined') }}
         </p>
@@ -65,7 +65,7 @@ function goToWhyHelix() {
         {{ $t('home.description') }}
       </p>
 
-      <div class="flex justify-center gap-4 mt-10 gsap-text">
+      <div class="flex justify-center gap-4 mt-14 lg:mt-10 gsap-text">
         <NuxtLink
           :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
         >

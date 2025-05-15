@@ -130,7 +130,7 @@ export default {
         content2:
           'Unlike centralized exchanges (CEXs), DEXs are permissionless, fully transparent, and non-custodial.',
         content3:
-          'Helix is a leading DEX built on the Injective, offering fast, gas-free, on-chain trading. You stay in control of your assets at all times.',
+          'Helix is a leading DEX built on Injective, offering fast, gas-free, on-chain trading. You stay in control of your assets at all times.',
         btc: 'Bitcoin (BTC)',
         eth: 'Ethereum (ETH)',
         inj: 'Injective (INJ)'
@@ -145,7 +145,7 @@ export default {
         },
         feature2: {
           section1: 'Use up to',
-          section2: '50x leverage',
+          section2: '100x leverage',
           section3: 'Perpetual Markets',
           section4: 'including crypto',
           section5: 'stocks',

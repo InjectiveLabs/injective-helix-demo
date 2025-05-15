@@ -91,7 +91,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="flex flex-col items-center justify-center">
+      <div class="lg:min-w-44 flex flex-col items-center justify-center">
         <p class="text-coolGray-400">
           {{ $t('home.totalMarkets') }}
         </p>

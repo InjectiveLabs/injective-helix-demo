@@ -1,5 +1,4 @@
 import { NuxtUiIcons } from '@shared/types'
-import { getExplorerUrl } from '@shared/utils/network'
 import {
   MainPage,
   TradePage,
@@ -14,27 +13,20 @@ export const getMoreMenu = () => [
   {
     isConnectedOnly: true,
     isOpenDepositModal: true,
-    label: 'navigation.deposit'
+    label: 'navigation.more.deposit'
+  },
+  {
+    label: 'navigation.swap',
+    to: { name: MainPage.Swap }
   },
   {
     to: { name: MainPage.LpRewards },
     label: 'navigation.more.lpRewards'
   },
   {
+    isConnectedOnly: true,
     to: { name: MainPage.Referral },
     label: 'navigation.more.referral'
-  },
-  {
-    to: { name: MainPage.Vaults },
-    label: 'navigation.more.vaults'
-  },
-  {
-    to: { name: MainPage.FeeDiscounts },
-    label: 'navigation.more.tradingDiscounts'
-  },
-  {
-    to: { name: MainPage.Institutional },
-    label: 'navigation.more.institutional'
   },
   {
     isExternal: true,
@@ -42,19 +34,8 @@ export const getMoreMenu = () => [
     to: 'https://bridge.injective.network/'
   },
   {
-    isExternal: true,
-    to: getExplorerUrl(),
-    label: 'navigation.more.explorer'
-  },
-  {
-    isExternal: true,
-    label: 'navigation.more.apiDocs',
-    to: 'https://api.injective.exchange/'
-  },
-  {
-    isExternal: true,
-    label: 'navigation.more.docs',
-    to: 'https://docs.helixapp.com/'
+    to: { name: MainPage.Vaults },
+    label: 'navigation.more.vaults'
   },
   {
     isExternal: true,
@@ -62,9 +43,9 @@ export const getMoreMenu = () => [
     to: 'https://trading.injective.network/program/liquidity/'
   },
   {
-    isExternal: true,
-    label: 'footer.blog',
-    to: 'https://blog.helixapp.com/'
+    isConnectedOnly: true,
+    label: 'navigation.settings',
+    to: { name: PortfolioSubPage.Settings }
   }
 ]
 
@@ -159,11 +140,6 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
     icon: NuxtUiIcons.SubAccount,
     label: 'navigation.subaccounts',
     to: { name: PortfolioSubPage.Subaccounts }
-  },
-  {
-    label: 'navigation.settings',
-    icon: NuxtUiIcons.SettingsOutline,
-    to: { name: PortfolioSubPage.Settings }
   }
 ]
 
@@ -213,6 +189,13 @@ export const getGeoRestrictedMobileMenuItems = () =>
       isExpandable: true,
       isConnectedOnly: true,
       label: 'navigation.portfolio',
-      children: PORTFOLIO_MENU_ITEMS
+      children: [
+        ...PORTFOLIO_MENU_ITEMS,
+        {
+          label: 'navigation.settings',
+          icon: NuxtUiIcons.SettingsOutline,
+          to: { name: PortfolioSubPage.Settings }
+        }
+      ]
     }
   ] as MenuItem[]
