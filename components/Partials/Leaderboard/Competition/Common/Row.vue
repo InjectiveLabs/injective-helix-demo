@@ -1,15 +1,17 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { checkIsCampaignWithEntries } from '@/app/data/campaign'
 import {
   MAXIMUM_RANKED_TRADERS,
   DEFAULT_TRUNCATE_LENGTH,
   MIN_COMPETITION_PNL_AMOUNT,
   MAXIMUM_LEADERBOARD_STATS_RANK
 } from '@/app/utils/constants'
-import { checkIsCampaignWithEntries } from '@/app/data/campaign'
 import { LeaderboardType, LeaderboardSubPage } from '@/types'
+import type { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
 const isMobile = useIsMobile()
@@ -83,15 +85,25 @@ const isShowRank = computed(() => {
     </div>
 
     <div>
-      <span class="font-light font-mono">
+      <a
+        target="_blank"
+        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+        class="font-light font-mono hover:text-white/70 transition-colors"
+      >
         <div class="md:hidden flex items-center text-xs lowercase space-x-2">
-          <div>
-            {{ formattedAddress }}
+          <div class="flex items-center gap-2">
+            <div>
+              {{ formattedAddress }}
+            </div>
+
+            <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
           </div>
+
           <div v-if="leader.rank === 1">
             {{ $t('leaderboard.competition.currentLeaderMobile') }}
           </div>
         </div>
+
         <div
           class="hidden md:flex justify-start items-center space-x-1 xl:space-x-4"
           :class="[
@@ -100,9 +112,14 @@ const isShowRank = computed(() => {
               : 'text-xs lg:text-sm 2xl:text-base'
           ]"
         >
-          <div>
-            {{ leader.account }}
+          <div class="flex items-center gap-2">
+            <div>
+              {{ leader.account }}
+            </div>
+
+            <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
           </div>
+
           <div
             v-if="
               leader.rank === 1 &&
@@ -124,7 +141,7 @@ const isShowRank = computed(() => {
             </div>
           </div>
         </div>
-      </span>
+      </a>
     </div>
 
     <template v-if="!isMobile">

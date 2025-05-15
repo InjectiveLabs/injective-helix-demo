@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { competitionVolumePerEntryMap } from '@/app/data/campaign'
 import {
   MAXIMUM_RANKED_TRADERS,
   DEFAULT_TRUNCATE_LENGTH,
@@ -9,8 +11,8 @@ import {
   MAXIMUM_LEADERBOARD_STATS_RANK,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { competitionVolumePerEntryMap } from '@/app/data/campaign'
 import { LeaderboardType } from '@/types'
+import type { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -92,7 +94,14 @@ const entries = computed(() =>
         {{ $t('leaderboard.header.address') }}
       </div>
 
-      <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+      <a
+        target="_blank"
+        class="flex items-center gap-2"
+        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+      >
+        <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+        <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
+      </a>
 
       <div class="flex justify-between mt-3 space-x-10">
         <div v-if="isShowRank" class="flex flex-col items-start gap-y-1">

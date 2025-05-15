@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   DEFAULT_TRUNCATE_LENGTH,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { LeaderBoardCyTags } from '@/types'
+import type { LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -52,7 +54,11 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <span class="font-light font-mono">
+      <a
+        target="_blank"
+        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+        class="font-light font-mono flex items-center gap-2 hover:text-white/70 transition-colors"
+      >
         <span class="lg:hidden text-xs lowercase">
           {{ formattedAddress }}
         </span>
@@ -63,7 +69,12 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         >
           {{ leader.account }}
         </span>
-      </span>
+
+        <UIcon
+          :class="[leader.rank > 3 ? 'size-4' : 'size-4 xl:size-[18px]']"
+          :name="NuxtUiIcons.ExternalLink2"
+        />
+      </a>
     </div>
 
     <div>

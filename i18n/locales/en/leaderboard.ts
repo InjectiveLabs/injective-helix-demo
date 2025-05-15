@@ -3,7 +3,8 @@ import { LeaderboardSubPage, LeaderboardDuration } from './../../../types'
 export default {
   leaderboard: {
     title: 'Leaderboard',
-    description: 'Top Traders on Helix',
+    description:
+      'Helix ranks the top traders based on their on-chain trading PnL',
     unranked: 'Unranked',
     screenshot: 'Screenshot',
     startTrading: 'Start Trading',
