@@ -89,6 +89,7 @@ const id = Math.random().toString()
   border: 1px solid white;
   transition: all 0.2s ease;
   box-shadow: 0 1px 1px rgba(0, 16, 75, 0.05);
+  padding-right: 8px;
 }
 .checkbox-wrapper-4 .cbx span:first-child svg {
   position: absolute;
@@ -106,7 +107,6 @@ const id = Math.random().toString()
   transform: translate3d(0, 0, 0);
 }
 .checkbox-wrapper-4 .cbx span:last-child {
-  padding-left: 8px;
   line-height: 18px;
 }
 .checkbox-wrapper-4 .cbx:hover span:first-child {

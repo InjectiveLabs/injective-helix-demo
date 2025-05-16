@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SharedDropdownOption } from '@shared/types'
-import {
-  MarketKey,
-  UiSpotMarket,
-  SpotOrdersStandardView,
-  SpotMarketCyTags
-} from '@/types'
+import { MarketKey, SpotMarketCyTags, SpotOrdersStandardView } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const isMobile = useIsMobile()
 const spotStore = useSpotStore()
@@ -151,7 +147,5 @@ watch(
         v-bind="{ isTickerOnly }"
       />
     </div>
-
-    <div class="flex-1 lg:hidden" />
   </div>
 </template>
