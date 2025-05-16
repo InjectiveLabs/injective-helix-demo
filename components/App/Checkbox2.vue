@@ -33,8 +33,8 @@ const id = Math.random().toString()
       type="checkbox"
     />
     <label
-      class="cbx"
-      :class="[noWrap ? 'flex flex-nowrap' : 'inline-block']"
+      class="cbx gap-2 max-sm:gap-1"
+      :class="[noWrap ? 'flex flex-nowrap' : 'inline-flex']"
       :for="id"
     >
       <span class="w-4 h-4">
@@ -89,7 +89,6 @@ const id = Math.random().toString()
   border: 1px solid white;
   transition: all 0.2s ease;
   box-shadow: 0 1px 1px rgba(0, 16, 75, 0.05);
-  padding-right: 8px;
 }
 .checkbox-wrapper-4 .cbx span:first-child svg {
   position: absolute;
@@ -140,7 +139,8 @@ const id = Math.random().toString()
 @media screen and (max-width: 640px) {
   .checkbox-wrapper-4 .cbx {
     width: 100%;
-    display: inline-block;
+    display: inline-flex;
+    flex-wrap: wrap;
   }
 }
 @-moz-keyframes wave-4 {
