@@ -25,7 +25,7 @@ export default {
       volumeInUsd: 'Volume USD (24h)',
       est_funding_rate: 'Est. Funding Rate',
       funding_rate_tooltip:
-        'The interest rate paid is determined by the difference between the perpetual swap price and the underlying spot price. If the funding rate is positive, traders with long positions will pay traders with short positions. If the funding rate is negative, traders with short positions will pay those in long positions.',
+        'Funding payments are based on the difference between the perpetual price and the spot price. If the rate is positive, longs pay shorts. If negative, shorts pay longs.',
       high: '24h High',
       low: '24h Low',
       marketCap: 'Market Cap',
@@ -42,7 +42,7 @@ export default {
       next_funding_tooltip:
         'The time remaining for the end of the funding interval.',
       mark_price_tooltip:
-        'Used for computing unrealised PNL and triggering liquidations'
+        'Used for margining, computing unrealised PNL and funding rates, liquidations, and TP/SL orders.'
     },
     tp: 'TP',
     sl: 'SL',
