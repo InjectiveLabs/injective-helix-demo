@@ -51,14 +51,14 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         {{ $t('leaderboard.header.address') }}
       </div>
 
-      <a
+      <NuxtLink
         target="_blank"
         class="flex items-center gap-2"
-        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
       >
         <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
         <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
-      </a>
+      </NuxtLink>
 
       <div class="flex justify-between mt-3">
         <div class="flex flex-col items-start gap-y-1">

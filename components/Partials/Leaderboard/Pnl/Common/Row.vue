@@ -54,9 +54,9 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <a
+      <NuxtLink
         target="_blank"
-        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
         class="font-light font-mono flex items-center gap-2 hover:text-white/70 transition-colors"
       >
         <span class="lg:hidden text-xs lowercase">
@@ -74,7 +74,7 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
           :class="[leader.rank > 3 ? 'size-4' : 'size-4 xl:size-[18px]']"
           :name="NuxtUiIcons.ExternalLink2"
         />
-      </a>
+      </NuxtLink>
     </div>
 
     <div>

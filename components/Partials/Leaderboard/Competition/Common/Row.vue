@@ -85,9 +85,9 @@ const isShowRank = computed(() => {
     </div>
 
     <div>
-      <a
+      <NuxtLink
         target="_blank"
-        :href="`${getExplorerUrl()}/account/${leader.account}/`"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
         class="font-light font-mono hover:text-white/70 transition-colors"
       >
         <div class="md:hidden flex items-center text-xs lowercase space-x-2">
@@ -141,7 +141,7 @@ const isShowRank = computed(() => {
             </div>
           </div>
         </div>
-      </a>
+      </NuxtLink>
     </div>
 
     <template v-if="!isMobile">
