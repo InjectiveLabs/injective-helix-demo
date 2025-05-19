@@ -327,15 +327,7 @@ export default {
     derivativesGrid: 'Derivatives Grid',
     history: 'History',
     leaderboard: {
-      title: 'Leaderboard',
-      pnl: {
-        title: 'PnL Leaderboard',
-        description: 'Top Traders on Helix by PnL'
-      },
-      competition: {
-        title: 'Trading Competitions',
-        description: 'Top Traders Competing for Top Rewards'
-      }
+      title: 'Leaderboard'
     }
   },
 
