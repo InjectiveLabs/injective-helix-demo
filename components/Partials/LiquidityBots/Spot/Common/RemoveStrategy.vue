@@ -133,12 +133,13 @@ function removeStrategy() {
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 
-            <SharedAmountFormatter
-              class="text-nowrap whitespace-nowrap"
-              :max-decimal-places="3"
-              :amount="currentPnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <span class="text-nowrap whitespace-nowrap">
+              <SharedAmountFormatter
+                :max-decimal-places="3"
+                :amount="currentPnl"
+                :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+              />
+            </span>
             <span>
               (
               {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
