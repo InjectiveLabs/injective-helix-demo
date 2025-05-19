@@ -75,10 +75,18 @@ const isBuy = computed(
     TradeDirection.Long
 )
 
+const isReduceOnly = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
+)
+
 const activePosition = computed(() =>
   positionStore.subaccountPositions.find(
     (position) => position.marketId === market.value.marketId
   )
+)
+
+const activePositionQuantity = computed(
+  () => activePosition.value?.quantity || 0
 )
 
 const selectedSymbol = computed(
@@ -128,8 +136,8 @@ const {
   name: DerivativesTradeFormField.Amount,
   initialValue: '',
   dynamicRule: computed(() => {
-    if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
-      const maxAmount = activePosition.value?.quantity
+    if (isReduceOnly.value) {
+      const maxAmount = activePositionQuantity.value
 
       return `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
     } else {
@@ -146,9 +154,6 @@ const {
 })
 
 async function setFromPercentage(percentage: number) {
-  const isReduceOnly =
-    derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
-
   const isLimit =
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
       DerivativeTradeTypes.Limit ||
@@ -179,11 +184,11 @@ async function setFromPercentage(percentage: number) {
     derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
-    isReduceOnly &&
-    typeValue.value === TradeAmountOption.Base &&
-    activePosition.value
+    isReduceOnly.value &&
+    activePositionQuantity.value &&
+    typeValue.value === TradeAmountOption.Base
   ) {
-    amountValue.value = new BigNumberInBase(activePosition.value?.quantity)
+    amountValue.value = new BigNumberInBase(activePositionQuantity.value)
       .times(percentage)
       .div(100)
       .toFixed(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
@@ -192,14 +197,14 @@ async function setFromPercentage(percentage: number) {
   }
 
   if (
-    isReduceOnly &&
-    typeValue.value === TradeAmountOption.Quote &&
-    activePosition.value
+    isReduceOnly.value &&
+    activePositionQuantity.value &&
+    typeValue.value === TradeAmountOption.Quote
   ) {
     const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
     const { worstPrice } = calculateWorstPrice(
-      activePosition.value.quantity,
+      activePositionQuantity.value,
       records
     )
 
@@ -219,8 +224,8 @@ async function setFromPercentage(percentage: number) {
       : executionPrice.times(1 - Number(slippage) / 100)
 
     const totalNotional = isLimit
-      ? limitPrice.times(activePosition.value.quantity)
-      : executionPriceWithSlippage.times(activePosition.value.quantity)
+      ? limitPrice.times(activePositionQuantity.value)
+      : executionPriceWithSlippage.times(activePositionQuantity.value)
 
     amountValue.value = totalNotional
       .times(percentage)
@@ -409,15 +414,19 @@ onMounted(() => {
             <span>
               {{
                 $t('trade.availableAmount', {
-                  amount: quoteBalanceToString
+                  amount: isReduceOnly
+                    ? activePositionQuantity
+                    : quoteBalanceToString
                 })
               }}
             </span>
 
             <PartialsCommonBalanceDisplay
               v-bind="{
-                token: market.quoteToken,
-                value: market.quoteToken.symbol
+                token: isReduceOnly ? market.baseToken : market.quoteToken,
+                value: isReduceOnly
+                  ? market.baseToken.symbol
+                  : market.quoteToken.symbol
               }"
             />
           </div>
