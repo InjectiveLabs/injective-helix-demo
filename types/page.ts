@@ -41,11 +41,16 @@ export enum TradePage {
 }
 
 export enum TradeSubPage {
+  Stocks = 'stocks',
   Spot = 'spot-slug',
   Market = 'market-market',
   Futures = 'futures-slug',
   Perpetual = 'perpetual-perpetual',
   Derivatives = 'derivatives-derivative'
+}
+
+export enum TradeSubPagePath {
+  Stocks = '/futures/stocks'
 }
 
 export enum LiquidityRewardsPage {

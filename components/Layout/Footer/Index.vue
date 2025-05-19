@@ -68,7 +68,7 @@ const communityList = [
         </NuxtLink>
 
         <span class="text-coolGray-500 text-xs">
-          &copy; {{ new Date().getFullYear() }} Helix
+          &copy; {{ new Date().getFullYear() }} Injective Foundation
         </span>
       </div>
 

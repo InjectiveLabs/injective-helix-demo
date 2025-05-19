@@ -1,11 +1,9 @@
 import { NuxtUiIcons } from '@shared/types'
 import {
   MainPage,
-  TradePage,
   TradeSubPage,
   PortfolioSubPage,
-  LeaderboardSubPage,
-  MarketCategoryType
+  LeaderboardSubPage
 } from '@/types'
 import type { MenuItem } from '@/types'
 
@@ -67,10 +65,7 @@ export const TRADING_OPTIONS = [
   },
   {
     label: 'navigation.stocks',
-    to: {
-      name: TradePage.Futures,
-      query: { category: MarketCategoryType.iAssets }
-    }
+    to: { name: TradeSubPage.Stocks }
   },
   {
     to: { name: LeaderboardSubPage.Pnl },
