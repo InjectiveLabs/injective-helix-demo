@@ -7,7 +7,6 @@ export const streamGridStrategies = (props?: {
 }) => {
   const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
-  console.log('🪵 Stream Started:', sharedWalletStore.injectiveAddress)
 
   if (!sharedWalletStore.injectiveAddress) {
     return
@@ -18,8 +17,6 @@ export const streamGridStrategies = (props?: {
     accountAddresses: [sharedWalletStore.injectiveAddress],
     onResetCallback: props?.onResetCallback,
     callback: ({ tradingStrategy }) => {
-      console.log('🪵 tradingStrategy RECEIVED', tradingStrategy)
-
       if (!tradingStrategy) {
         return
       }
