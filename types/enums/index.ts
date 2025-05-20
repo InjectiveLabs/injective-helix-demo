@@ -504,6 +504,7 @@ export enum StreamType {
   SpotTrades = 'spot-trades',
   BankBalance = 'bank-balance',
   OraclePrices = 'oracle-prices',
+  GridStrategies = 'grid-strategies',
   DerivativesTrades = 'derivatives-trades',
   SubaccountBalances = 'subaccount-balances',
   SpotOrderbookUpdate = 'spot-orderbook-update',

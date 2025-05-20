@@ -70,7 +70,6 @@ export const createSpotGridStrategy = async ({
   const jsonStore = useSharedJsonStore()
   const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const gridMarket = jsonStore.spotGridMarkets.find(
     (m) => m.slug === market.slug
@@ -193,9 +192,9 @@ export const createSpotGridStrategy = async ({
   sharedBackupPromiseCall(() =>
     Promise.all([
       authZStore.fetchGrants(),
-      accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
-      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : []),
+      // gridStrategyStore.fetchAllStrategies()
+      accountStore.fetchAccountPortfolioBalances()
     ])
   )
 }
@@ -250,7 +249,7 @@ export const removeStrategy = async (contractAddress?: string) => {
   sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
+      // gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -262,7 +261,6 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -293,7 +291,7 @@ export const removeStrategyForSubaccount = async (
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -318,7 +316,7 @@ export const createPerpStrategy = async (
   const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
+  // const gridStrategyStore = useGridStrategyStore()
 
   if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
     return
@@ -423,7 +421,8 @@ export const createPerpStrategy = async (
     () =>
       Promise.all([
         authZStore.fetchGrants(),
-        gridStrategyStore.fetchAllStrategies(),
+        accountStore.fetchCw20Balances(),
+        // gridStrategyStore.fetchAllStrategies(),
         accountStore.fetchAccountPortfolioBalances(),
         derivativeStore.fetchSecondarySubaccountOrders({
           marketIds: [market.marketId],
@@ -459,7 +458,6 @@ export async function createSpotLiquidityBot(params: {
   const jsonStore = useSharedJsonStore()
   const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const {
     grids,
@@ -565,9 +563,9 @@ export async function createSpotLiquidityBot(params: {
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances(),
-      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : []),
+      // gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchAccountPortfolioBalances()
     ])
   )
 }
@@ -581,7 +579,6 @@ export const removeSubaccountDeposits = async ({
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -608,7 +605,7 @@ export const removeSubaccountDeposits = async ({
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )

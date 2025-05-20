@@ -235,6 +235,7 @@ export const useWalletStore = defineStore('wallet', {
       sharedWalletStore.logout()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
+      gridStrategyStore.cancelGridStrategiesStream()
 
       exchangeStore.$patch({ feeDiscountAccountInfo: undefined })
       accountStore.$reset()

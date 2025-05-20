@@ -87,6 +87,7 @@ export default {
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    strategyRemovalInitiated: 'Strategy Removal Initiated',
     noActiveStrategies: 'No Active Strategies',
     noStrategies: 'No Strategies found.',
     endLegacyBotText:
