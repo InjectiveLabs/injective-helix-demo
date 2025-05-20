@@ -6,7 +6,7 @@ const sharedWalletStore = useSharedWalletStore()
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="flex items-center max-lg:pr-2">
     <LayoutNavbarMenuItem
       v-if="!appStore.isCountryRestricted"
       class="hidden lg:block px-4"

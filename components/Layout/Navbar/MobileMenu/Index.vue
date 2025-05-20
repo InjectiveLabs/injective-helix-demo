@@ -44,7 +44,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
 
 <template>
   <div
-    class="flex items-center pr-2 lg:hidden"
+    class="flex items-center lg:hidden"
     :class="{ 'ml-2': sharedWalletStore.isAuthzWalletConnected }"
   >
     <button

@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { TradeSubPage } from '@/types'
+
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
-const TOTAL_VOLUME_IN_USD = '42.5 Billion'
+const TOTAL_VOLUME_IN_USD = '50+ Billion'
 
 const totalMarkets = computed(
   () =>
@@ -17,7 +19,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: '#built-for-the-community-text',
         start: () => 'top 40%',
-        end: () => 'bottom 0%',
+        end: () => 'bottom 10%',
         scrub: 1,
         pin: true
       },
@@ -40,18 +42,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative pb-32">
+  <div class="relative max-lg:pt-16 lg:pb-48">
     <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
     <img
       src="/svg/blurs/blur-1.svg"
       class="absolute -top-20 left-1/2 blur-xl"
     />
 
-    <div id="built-for-the-community-text" class="opacity-0 blur-3xl">
+    <div id="built-for-the-community-text" class="lg:opacity-0 lg:blur-3xl">
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
       </h1>
-      <p class="text-lg text-center">
+      <p class="text-lg text-center mt-4">
         {{ $t('home.builtForTheCommunityDescription') }}
       </p>
     </div>
@@ -91,12 +93,26 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="flex flex-col items-center justify-center">
+      <div class="lg:min-w-44 flex flex-col items-center justify-center">
         <p class="text-coolGray-400">
           {{ $t('home.totalMarkets') }}
         </p>
         <p class="text-2xl">{{ totalMarkets }}</p>
       </div>
+    </div>
+
+    <div class="flex justify-center flex-wrap gap-6 mt-12 lg:gap-16 lg:mt-16">
+      <NuxtLink :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }">
+        <AppButton class="w-52 h-12 font-semibold">
+          {{ $t('home.startTrading') }}
+        </AppButton>
+      </NuxtLink>
+
+      <NuxtLink to="https://docs.helixapp.com/" target="_blank">
+        <AppButton class="w-52 h-12 font-semibold" variant="primary-outline">
+          {{ $t('home.helixDocs') }}
+        </AppButton>
+      </NuxtLink>
     </div>
   </div>
 </template>
