@@ -7,6 +7,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   IsSpotKey,
   MarketKey,
+  TradeSubPagePath,
   IsRWAMarketOpenKey,
   PortfolioStatusKey,
   MarkPriceStatusKey
@@ -30,11 +31,34 @@ const portfolioStatus = inject(
 const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
-const market = computed(
-  () =>
+const market = computed(() => {
+  const iAssetsMarkets = derivativeStore.marketsWithSummary.reduce(
+    (acc, { market }) => {
+      if (
+        (jsonStore?.helixMarketCategoriesMap?.iAssets || []).includes(
+          market.marketId
+        )
+      ) {
+        acc.push(market as UiDerivativeMarket)
+      }
+
+      return acc
+    },
+    [] as UiDerivativeMarket[]
+  )
+
+  if (
+    iAssetsMarkets.length > 0 &&
+    route.path.startsWith(TradeSubPagePath.Stocks)
+  ) {
+    return iAssetsMarkets[0]
+  }
+
+  return (
     derivativeStore.marketByIdOrSlug(route.params.slug as string) ||
     derivativeStore.marketByIdOrSlug(route.query.marketId as string)
-)
+  )
+})
 
 useDerivativeOrderbook(computed(() => market.value))
 
@@ -73,11 +97,15 @@ onWalletConnected(async () => {
   if (!market.value) {
     const routeQuery = route.query
 
-    return navigateTo({
-      name: 'futures-slug',
-      params: { slug: 'btc-usdt-perp' },
-      ...(routeQuery && { query: routeQuery })
-    })
+    if (!route.path.startsWith(TradeSubPagePath.Stocks)) {
+      return navigateTo({
+        name: 'futures-slug',
+        params: { slug: 'btc-usdt-perp' },
+        ...(routeQuery && { query: routeQuery })
+      })
+    } else {
+      return
+    }
   }
 
   status.setLoading()

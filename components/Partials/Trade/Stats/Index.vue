@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotMarketCyTags, MarketCategoryType } from '@/types'
+import { SpotMarketCyTags, TradeSubPagePath, MarketCategoryType } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
 withDefaults(
@@ -27,6 +27,10 @@ onMounted(() => {
         isMarketOpen.value = true
       }
     })
+  }
+
+  if (route.path.startsWith(TradeSubPagePath.Stocks)) {
+    isMarketOpen.value = true
   }
 })
 </script>

@@ -57,6 +57,7 @@ export default withNuxt({
 
   rules: {
     'no-console': 'off',
+    'vue/no-v-html': 'off',
     'no-unused-vars': 'off',
     'vue/html-self-closing': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { TradePage, MarketCategoryType } from '@/types'
+import { TradeSubPage } from '@/types'
 
 const emit = defineEmits<{
   'banner:close': []
@@ -14,10 +14,7 @@ function onCloseBanner() {
 }
 
 function onTradeNow() {
-  router.push({
-    name: TradePage.Futures,
-    query: { category: MarketCategoryType.iAssets }
-  })
+  router.push({ name: TradeSubPage.Stocks })
 }
 </script>
 

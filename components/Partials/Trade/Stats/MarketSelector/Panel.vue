@@ -2,7 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCategoryType } from '@/types'
+import { TradeSubPagePath, MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
@@ -57,6 +57,10 @@ onMounted(() => {
           MarketCategoryType[category as keyof typeof MarketCategoryType]
       }
     })
+  }
+
+  if (route.path.startsWith(TradeSubPagePath.Stocks)) {
+    activeCategory.value = MarketCategoryType.iAssets
   }
 })
 

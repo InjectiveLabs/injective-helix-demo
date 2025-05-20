@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { Modal, TradeSubPage } from '@/types'
+import { TradeSubPage } from '@/types'
 
-const appStore = useAppStore()
-const modalStore = useSharedModalStore()
-const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 onMounted(() => {
   const mm = gsap.matchMedia()
@@ -36,34 +33,29 @@ onMounted(() => {
   })
 })
 
-function onFiatOnRamp() {
-  if (sharedWalletStore.isUserConnected) {
-    modalStore.openModal(Modal.FiatOnboard)
-  } else {
-    onWalletConnect()
-  }
-}
+function goToWhyHelix() {
+  const target = document.querySelector('#overview-section')
 
-function onWalletConnect() {
-  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
-    modalStore.openModal(Modal.Terms)
-  } else {
-    modalStore.openModal(Modal.Connect)
+  if (target) {
+    gsap.to(window, {
+      scrollTo: { y: target, offsetY: lg.value ? 80 : 40 },
+      duration: 1
+    })
   }
 }
 </script>
 
 <template>
   <div
-    class="lg:h-screen flex flex-col lg:justify-center max-lg:py-10 relative gsap-section z-30"
+    class="lg:h-screen flex flex-col lg:justify-center max-lg:pt-10 relative gsap-section z-30"
   >
     <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
-      <h1 id="hero-title" class="font-semibold gsap-text mb-5">
-        <p class="text-2xl lg:text-7xl">
+      <h1 id="hero-title" class="font-semibold gsap-text mb-10 lg:mb-5">
+        <p class="text-4xl lg:text-7xl">
           {{ $t('home.openFinance') + ' ' }}
         </p>
         <p
-          class="text-blue-500 text-2xl lg:text-[128px] font-bold leading-none"
+          class="text-blue-500 text-4xl lg:text-[128px] font-bold lg:leading-none"
         >
           {{ $t('home.reimagined') }}
         </p>
@@ -73,21 +65,21 @@ function onWalletConnect() {
         {{ $t('home.description') }}
       </p>
 
-      <div class="flex justify-center gap-4 mt-10 gsap-text">
+      <div class="flex justify-center gap-4 mt-14 lg:mt-10 gsap-text">
         <NuxtLink
           :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
         >
-          <AppButton class="w-full">
+          <AppButton class="w-full font-semibold">
             {{ $t('home.startTrading') }}
           </AppButton>
         </NuxtLink>
 
         <AppButton
-          class="w-full isolate"
+          class="w-full isolate font-semibold"
           variant="primary-outline"
-          @click="onFiatOnRamp"
+          @click="goToWhyHelix"
         >
-          {{ $t('home.depositCrypto') }}
+          {{ $t('home.whyHelix') }}
         </AppButton>
       </div>
     </div>

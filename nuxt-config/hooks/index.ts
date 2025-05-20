@@ -9,6 +9,12 @@ export default {
     if (futuresPage) {
       pages.push({
         ...futuresPage,
+        path: '/futures/stocks',
+        name: TradeSubPage.Stocks
+      })
+
+      pages.push({
+        ...futuresPage,
         path: '/futures/:slug()',
         name: TradeSubPage.Futures
       })
