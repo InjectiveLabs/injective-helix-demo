@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-  MarketKey,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  UiSpotMarket
-} from '@/types'
+import { MarketKey, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 

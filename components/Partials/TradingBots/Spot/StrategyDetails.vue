@@ -249,7 +249,7 @@ const percentagePnl = computed(() =>
 
       <div>
         <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
-        <span v-else>
+        <span v-else class="capitalize">
           {{ strategy.takeProfit.exitPrice }} /
           {{ strategy.takeProfit.exitType }}
         </span>
@@ -263,7 +263,7 @@ const percentagePnl = computed(() =>
 
       <div>
         <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
-        <span v-else>
+        <span v-else class="capitalize">
           {{ strategy.stopLoss.exitPrice }} /
           {{ strategy.stopLoss.exitType }}
         </span>

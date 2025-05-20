@@ -57,33 +57,37 @@ const percentagePnl = computed(() =>
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
 
-      <div
-        class="font-bold flex"
-        :class="{
-          'text-green-500': isPositivePnl,
-          'text-red-500': !isPositivePnl && !isZeroPnl,
-          'text-coolGray-500': isZeroPnl
-        }"
-      >
+      <div class="font-bold flex">
         <span
-          v-if="strategy.strategyStatus === StrategyStatus.Pending"
+          v-if="
+            new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
+            strategy.strategyStatus === StrategyStatus.Pending
+          "
           class="text-coolGray-400"
         >
           &mdash;
         </span>
 
         <template v-else>
-          <span>{{ isPositivePnl ? '+' : '' }}</span>
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :amount="strategy.pnl"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          />
-          <span>
-            {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
-              percentagePnl
-            }}%)
-          </span>
+          <div
+            :class="{
+              'text-green-500': isPositivePnl,
+              'text-red-500': !isPositivePnl && !isZeroPnl,
+              'text-coolGray-500': isZeroPnl
+            }"
+          >
+            <span>{{ isPositivePnl ? '+' : '' }}</span>
+            <SharedAmountFormatter
+              :max-decimal-places="3"
+              :amount="strategy.pnl"
+              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            />
+            <span>
+              {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
+                percentagePnl
+              }}%)
+            </span>
+          </div>
         </template>
       </div>
     </div>
@@ -93,7 +97,12 @@ const percentagePnl = computed(() =>
         {{ $t('liquidityBots.totalAmount') }}
       </p>
 
-      <div v-if="strategy.strategyStatus === StrategyStatus.Pending">
+      <div
+        v-if="
+          new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
+          strategy.strategyStatus === StrategyStatus.Pending
+        "
+      >
         &mdash;
       </div>
       <div v-else>

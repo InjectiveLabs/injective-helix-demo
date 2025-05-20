@@ -147,13 +147,21 @@ export const createSpotGridStrategy = async ({
     stop_loss: stopLoss
       ? {
           exit_type: stopLoss.exitType,
-          exit_price: stopLoss.exitPrice
+          exit_price: spotPriceToChainPriceToFixed({
+            value: stopLoss.exitPrice,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals
+          })
         }
       : undefined,
     take_profit: takeProfit
       ? {
           exit_type: takeProfit.exitType,
-          exit_price: takeProfit.exitPrice
+          exit_price: spotPriceToChainPriceToFixed({
+            value: takeProfit.exitPrice,
+            baseDecimals: market.baseToken.decimals,
+            quoteDecimals: market.quoteToken.decimals
+          })
         }
       : undefined
   }
