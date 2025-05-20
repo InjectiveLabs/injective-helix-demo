@@ -12,7 +12,6 @@ useHead({
       <PartialsHomeSectionsHero />
       <PartialsHomeSectionsOverview />
       <PartialsHomeSectionsBuiltForTheComunity />
-      <PartialsHomeSectionsDocumentation />
       <PartialsHomeAnnouncements />
       <PartialsHomeSectionsFAQ />
     </div>

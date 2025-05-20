@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { TradeSubPage } from '@/types'
+
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 
@@ -40,7 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative max-lg:pt-16">
+  <div class="relative max-lg:pt-16 lg:pb-48">
     <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
     <img
       src="/svg/blurs/blur-1.svg"
@@ -97,6 +99,20 @@ onMounted(() => {
         </p>
         <p class="text-2xl">{{ totalMarkets }}</p>
       </div>
+    </div>
+
+    <div class="flex justify-center flex-wrap gap-6 mt-12 lg:gap-16 lg:mt-16">
+      <NuxtLink :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }">
+        <AppButton class="w-52 h-12 font-semibold">
+          {{ $t('home.startTrading') }}
+        </AppButton>
+      </NuxtLink>
+
+      <NuxtLink to="https://docs.helixapp.com/" target="_blank">
+        <AppButton class="w-52 h-12 font-semibold" variant="primary-outline">
+          {{ $t('home.helixDocs') }}
+        </AppButton>
+      </NuxtLink>
     </div>
   </div>
 </template>

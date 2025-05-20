@@ -69,13 +69,13 @@ function goToWhyHelix() {
         <NuxtLink
           :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
         >
-          <AppButton class="w-full">
+          <AppButton class="w-full font-semibold">
             {{ $t('home.startTrading') }}
           </AppButton>
         </NuxtLink>
 
         <AppButton
-          class="w-full isolate"
+          class="w-full isolate font-semibold"
           variant="primary-outline"
           @click="goToWhyHelix"
         >

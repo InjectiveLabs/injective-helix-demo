@@ -8,9 +8,9 @@ enum OverviewSection {
 
 const animationList = {
   [OverviewSection.GasFree]: '4gasFees.json',
-  [OverviewSection.LpRewards]: '3pnlAnalysis.json',
-  [OverviewSection.TradingBots]: '2TradingBots.json',
-  [OverviewSection.TradeStocks]: '1AccountOverview.json'
+  [OverviewSection.TradingBots]: '3pnlAnalysis.json',
+  [OverviewSection.LpRewards]: '/images/home/lp-rewards.webp',
+  [OverviewSection.TradeStocks]: '/images/home/trade-stocks.webp'
 }
 
 const activeType = ref(OverviewSection.TradingBots)
@@ -117,12 +117,24 @@ onMounted(() => {
 
         <div class="flex justify-center items-center lg:ml-20">
           <div class="max-lg:h-[400px]">
-            <Transition name="fade">
-              <CommonLottieAnimation
+            <Transition name="fade" mode="out-in">
+              <div
                 :key="`home-${activeType}`"
-                class="rounded-xl overflow-hidden"
-                :name="animationList[activeType]"
-              />
+                class="rounded-xl overflow-hidden size-[360px]"
+              >
+                <CommonLottieAnimation
+                  v-if="
+                    activeType === OverviewSection.GasFree ||
+                    activeType === OverviewSection.TradingBots
+                  "
+                  :name="animationList[activeType]"
+                />
+                <img
+                  v-else
+                  class="w-full object-contain"
+                  :src="animationList[activeType]"
+                />
+              </div>
             </Transition>
           </div>
         </div>

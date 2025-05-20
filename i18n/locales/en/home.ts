@@ -42,7 +42,7 @@ export default {
     change24h: 'Change (24h)',
     totalTrades: 'Total trades',
     newToCrypto: 'New to Crypto',
-    startTrading: 'Start trading',
+    startTrading: 'Start Trading',
     sevenDaysPrice: '7 days price',
     documentation: 'Documentation',
     interoperable: 'Interoperable',
@@ -183,11 +183,6 @@ export default {
           'Follow the complete onboarding guide {here} to get set up step-by-step.'
       },
       accordion4: {
-        title: 'Is Identity Verification required?',
-        content1:
-          'No, identity verification is not required on Helix, as it is a decentralized exchange where anyone can freely trade while maintaining full custody of their assets.'
-      },
-      accordion5: {
         title: 'How do I get assets onto Helix?',
         optionTitle:
           'To start trading on Helix, you’ll first need to get assets like USDT or INJ on Injective:',
@@ -203,9 +198,9 @@ export default {
           section3: 'to deposit assets from other chains.'
         },
         option3:
-          'Deposit from different centralized exchanges like Binance, ByBit & more.'
+          'Alternatively, you can also deposit from different centralized exchanges like Binance, ByBit & more.'
       },
-      accordion6: {
+      accordion5: {
         title: 'How do I trade cryptocurrencies on Helix?',
         stepTitle:
           "Trading on Helix is fast, permissionless, and completely gas-free. Here's how to get started:",
@@ -234,7 +229,7 @@ export default {
           section4: 'with just a few clicks.'
         }
       },
-      accordion7: {
+      accordion6: {
         title: 'How can I earn rewards on Helix?',
         optionTitle:
           'Helix offers several ways for users to earn by regularly using Helix:',

@@ -18,7 +18,7 @@ const faqList = [
   },
   {
     label: t('home.faq.accordion4.title'),
-    content: t('home.faq.accordion4.content1')
+    slot: 'accordion-4'
   },
   {
     label: t('home.faq.accordion5.title'),
@@ -27,40 +27,7 @@ const faqList = [
   {
     label: t('home.faq.accordion6.title'),
     slot: 'accordion-6'
-  },
-  {
-    label: t('home.faq.accordion7.title'),
-    slot: 'accordion-7'
   }
-]
-
-const helixFeatures = [
-  `${t('home.faq.accordion2.feature1.section1')} <a href="http://helixapp.com/spot" class="faq-link" target="_blank">${t('home.faq.accordion2.feature1.section2')}</a>${t('home.faq.fullstop')}`,
-  `${t('home.faq.accordion2.feature2.section1')} <strong>${t('home.faq.accordion2.feature2.section2')}</strong> ${t('home.faq.on')} <a href="https://helixapp.com/futures" class="faq-link" target="_blank">${t('home.faq.accordion2.feature2.section3')}</a>, ${t('home.faq.accordion2.feature2.section4')}, <a href="https://helixapp.com/futures/btc-usdt-perp/?category=iAssets" class="faq-link" target="_blank">${t('home.faq.accordion2.feature2.section5')}</a>, ${t('home.faq.and')} <strong>${t('home.faq.accordion2.feature2.section6')}</strong> ${t('home.faq.accordion2.feature2.section7')}`,
-  `${t('home.faq.accordion2.feature3.section1')} <strong>${t('home.faq.accordion2.feature3.section2')}</strong> ${t('home.faq.accordion2.feature3.section3')}`,
-  `${t('home.faq.accordion2.feature4.section1')} <strong>${t('home.faq.accordion2.feature4.section2')}</strong>, <strong>${t('home.faq.accordion2.feature4.section3')}</strong>, ${t('home.faq.and')} <strong>${t('home.faq.accordion2.feature4.section4')}</strong> ${t('home.faq.accordion2.feature4.section5')}`,
-  `${t('home.faq.accordion2.feature5.section1')} <strong>${t('home.faq.accordion2.feature5.section2')}</strong> ${t('home.faq.accordion2.feature5.section3')}`,
-  `${t('home.faq.accordion2.feature6.section1')} <strong>${t('home.faq.accordion2.feature6.section2')}</strong> ${t('home.faq.accordion2.feature6.section3')}`
-]
-
-const getAssetsOptions = [
-  `${t('home.faq.accordion5.option1.section1')} <a href="https://bridge.injective.network/fiat" class="faq-link" target="_blank">${t('home.faq.accordion5.option1.section2')}</a> ${t('home.faq.accordion5.option1.section3')}`,
-  `${t('home.faq.accordion5.option2.section1')} <a href="http://bridge.injective.network" class="faq-link" target="_blank">${t('home.faq.accordion5.option2.section2')}</a> ${t('home.faq.accordion5.option2.section3')}`,
-  `${t('home.faq.accordion5.option3')}`
-]
-
-const tradeSteps = [
-  `${t('home.faq.accordion6.step1.section1')} <a href="https://helixapp.com/" class="faq-link" target="_blank">${t('home.faq.accordion6.step1.section2')}</a> ${t('home.faq.accordion6.step1.section3')}`,
-  `${t('home.faq.accordion6.step2.section1')} <strong>${t('home.faq.accordion6.step2.section2')}</strong> ${t('home.faq.or')} <strong>${t('home.faq.accordion6.step2.section3')}</strong>${t('home.faq.fullstop')}`,
-  `${t('home.faq.accordion6.step3.section1')} <a href="https://helixapp.com/spot" class="faq-link" target="_blank">${t('home.faq.accordion6.step3.section2')}</a> ${t('home.faq.or')} <a href="https://helixapp.com/futures" class="faq-link" target="_blank">${t('home.faq.accordion6.step3.section3')}</a> ${t('home.faq.accordion6.step3.section4')}`,
-  `${t('home.faq.accordion6.step4.section1')} <strong>${t('home.faq.accordion6.step4.section2')}</strong> ${t('home.faq.or')} <strong>${t('home.faq.accordion6.step4.section3')}</strong> ${t('home.faq.accordion6.step4.section4')}`
-]
-
-const earnRewardsOptions = [
-  `<strong>${t('home.faq.accordion7.option1.section1')}</strong>: ${t('home.faq.accordion7.option1.section2')}`,
-  `<strong>${t('home.faq.accordion7.option2.section1')}</strong>: ${t('home.faq.accordion7.option2.section2')}`,
-  `<strong>${t('home.faq.accordion7.option3.section1')}</strong>: ${t('home.faq.accordion7.option3.section2')}`,
-  `<strong>${t('home.faq.accordion7.option4.section1')}</strong>: ${t('home.faq.accordion7.option4.section2')} <a href="https://helixapp.com/lp-rewards" class="faq-link" target="_blank">${t('home.faq.accordion7.option4.section3')}</a> ${t('home.faq.accordion7.option4.section4')}`
 ]
 </script>
 
@@ -105,33 +72,33 @@ const earnRewardsOptions = [
             class="leading-tight"
           >
             <template #btc>
-              <a
-                class="faq-link"
+              <NuxtLink
                 target="_blank"
-                href="https://helixapp.com/futures/btc-usdt-perp"
+                class="faq-link"
+                to="https://helixapp.com/futures/btc-usdt-perp"
               >
                 {{ $t('home.faq.accordion1.btc') }}
-              </a>
+              </NuxtLink>
             </template>
 
             <template #eth>
-              <a
-                class="faq-link"
+              <NuxtLink
                 target="_blank"
-                href="https://helixapp.com/futures/eth-usdt-perp"
+                class="faq-link"
+                to="https://helixapp.com/futures/eth-usdt-perp"
               >
                 {{ $t('home.faq.accordion1.eth') }}
-              </a>
+              </NuxtLink>
             </template>
 
             <template #inj>
-              <a
-                class="faq-link"
+              <NuxtLink
                 target="_blank"
-                href="https://helixapp.com/futures/inj-usdt-perp"
+                class="faq-link"
+                to="https://helixapp.com/futures/inj-usdt-perp"
               >
                 {{ $t('home.faq.accordion1.inj') }}
-              </a>
+              </NuxtLink>
             </template>
           </i18n-t>
 
@@ -158,11 +125,64 @@ const earnRewardsOptions = [
           <br />
 
           <ul class="faq-description-list">
-            <li
-              v-for="(feature, index) in helixFeatures"
-              :key="index"
-              v-html="feature"
-            />
+            <li>
+              {{ $t('home.faq.accordion2.feature1.section1') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/spot"
+              >
+                {{ $t('home.faq.accordion2.feature1.section2') }} </NuxtLink
+              >{{ $t('home.faq.fullstop') }}
+            </li>
+
+            <li>
+              {{ $t('home.faq.accordion2.feature2.section1') }}
+              <strong>{{ $t('home.faq.accordion2.feature2.section2') }}</strong>
+              {{ $t('home.faq.on') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/futures"
+                >{{ $t('home.faq.accordion2.feature2.section3') }}</NuxtLink
+              >, {{ $t('home.faq.accordion2.feature2.section4') }},
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/futures/stocks"
+                >{{ $t('home.faq.accordion2.feature2.section5') }}</NuxtLink
+              >, {{ $t('home.faq.and') }}
+              <strong>{{ $t('home.faq.accordion2.feature2.section6') }}</strong>
+              {{ $t('home.faq.accordion2.feature2.section7') }}
+            </li>
+
+            <li>
+              {{ $t('home.faq.accordion2.feature3.section1') }}
+              <strong>{{ $t('home.faq.accordion2.feature3.section2') }}</strong>
+              {{ $t('home.faq.accordion2.feature3.section3') }}
+            </li>
+
+            <li>
+              {{ $t('home.faq.accordion2.feature4.section1') }}
+              <strong>{{ $t('home.faq.accordion2.feature4.section2') }}</strong
+              >,
+              <strong>{{ $t('home.faq.accordion2.feature4.section3') }}</strong
+              >, {{ $t('home.faq.and') }}
+              <strong>{{ $t('home.faq.accordion2.feature4.section4') }}</strong>
+              {{ $t('home.faq.accordion2.feature4.section5') }}
+            </li>
+
+            <li>
+              {{ $t('home.faq.accordion2.feature5.section1') }}
+              <strong>{{ $t('home.faq.accordion2.feature5.section2') }}</strong>
+              {{ $t('home.faq.accordion2.feature5.section3') }}
+            </li>
+
+            <li>
+              {{ $t('home.faq.accordion2.feature6.section1') }}
+              <strong>{{ $t('home.faq.accordion2.feature6.section2') }}</strong>
+              {{ $t('home.faq.accordion2.feature6.section3') }}
+            </li>
           </ul>
         </div>
       </template>
@@ -181,86 +201,166 @@ const earnRewardsOptions = [
             class="leading-tight"
           >
             <template #here>
-              <a
-                class="faq-link"
+              <NuxtLink
                 target="_blank"
-                href="https://docs.helixapp.com/getting-started"
+                class="faq-link"
+                to="https://docs.helixapp.com/getting-started"
               >
                 {{ $t('home.faq.here') }}
-              </a>
+              </NuxtLink>
             </template>
           </i18n-t>
+        </div>
+      </template>
+
+      <template #accordion-4>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion4.optionTitle') }}
+          </p>
+
+          <br />
+
+          <ul class="faq-description-list">
+            <li>
+              {{ $t('home.faq.accordion4.option1.section1') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://bridge.injective.network/fiat"
+              >
+                {{ $t('home.faq.accordion4.option1.section2') }}
+              </NuxtLink>
+              {{ $t('home.faq.accordion4.option1.section3') }}
+            </li>
+            <li>
+              {{ $t('home.faq.accordion4.option2.section1') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://bridge.injective.network"
+              >
+                {{ $t('home.faq.accordion4.option2.section2') }}
+              </NuxtLink>
+              {{ $t('home.faq.accordion4.option2.section3') }}
+            </li>
+            <li>{{ $t('home.faq.accordion4.option3') }}</li>
+          </ul>
         </div>
       </template>
 
       <template #accordion-5>
         <div>
           <p class="leading-tight">
-            {{ $t('home.faq.accordion5.optionTitle') }}
-          </p>
-
-          <br />
-
-          <ul class="faq-description-list">
-            <li
-              v-for="(option, index) in getAssetsOptions"
-              :key="index"
-              v-html="option"
-            />
-          </ul>
-        </div>
-      </template>
-
-      <template #accordion-6>
-        <div>
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion6.stepTitle') }}
+            {{ $t('home.faq.accordion5.stepTitle') }}
           </p>
 
           <br />
 
           <ol class="faq-steps-list">
-            <li
-              v-for="(option, index) in tradeSteps"
-              :key="index"
-              v-html="option"
-            />
+            <li>
+              {{ $t('home.faq.accordion5.step1.section1') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/"
+              >
+                {{ $t('home.faq.accordion5.step1.section2') }}
+              </NuxtLink>
+              {{ $t('home.faq.accordion5.step1.section3') }}
+            </li>
+            <li>
+              {{ $t('home.faq.accordion5.step2.section1') }}
+              <strong>{{ $t('home.faq.accordion5.step2.section2') }}</strong>
+              {{ $t('home.faq.or') }}
+              <strong>{{ $t('home.faq.accordion5.step2.section3') }}</strong
+              >{{ $t('home.faq.fullstop') }}
+            </li>
+            <li>
+              {{ $t('home.faq.accordion5.step3.section1') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/spot"
+              >
+                {{ $t('home.faq.accordion5.step3.section2') }}
+              </NuxtLink>
+              {{ $t('home.faq.or') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/futures"
+                >{{ $t('home.faq.accordion5.step3.section3') }}
+              </NuxtLink>
+              {{ $t('home.faq.accordion5.step3.section4') }}
+            </li>
+            <li>
+              {{ $t('home.faq.accordion5.step4.section1') }}
+              <strong>{{ $t('home.faq.accordion5.step4.section2') }}</strong>
+              {{ $t('home.faq.or') }}
+              <strong>{{ $t('home.faq.accordion5.step4.section3') }}</strong>
+              {{ $t('home.faq.accordion5.step4.section4') }}
+            </li>
           </ol>
 
           <br />
 
           <i18n-t
             tag="p"
-            keypath="home.faq.accordion6.cta"
+            keypath="home.faq.accordion5.cta"
             class="leading-tight"
           >
             <template #tutorial>
-              <a
-                class="faq-link"
+              <NuxtLink
                 target="_blank"
-                href="https://www.youtube.com/watch?v=uEhCbu8L2o0"
+                class="faq-link"
+                to="https://www.youtube.com/watch?v=uEhCbu8L2o0"
               >
-                {{ $t('home.faq.accordion6.videoTutorialHere') }}</a
-              >
+                {{ $t('home.faq.accordion5.videoTutorialHere') }}
+              </NuxtLink>
             </template>
           </i18n-t>
         </div>
       </template>
 
-      <template #accordion-7>
+      <template #accordion-6>
         <div>
           <p class="leading-tight">
-            {{ $t('home.faq.accordion7.optionTitle') }}
+            {{ $t('home.faq.accordion6.optionTitle') }}
           </p>
 
           <br />
 
           <ul class="faq-description-list">
-            <li
-              v-for="(option, index) in earnRewardsOptions"
-              :key="index"
-              v-html="option"
-            />
+            <li>
+              <strong>{{ $t('home.faq.accordion6.option1.section1') }} </strong
+              >:
+              {{ $t('home.faq.accordion6.option1.section2') }}
+            </li>
+            <li>
+              <strong>{{ $t('home.faq.accordion6.option2.section1') }} </strong
+              >:
+              {{ $t('home.faq.accordion6.option2.section2') }}
+            </li>
+            <li>
+              <strong>{{ $t('home.faq.accordion6.option3.section1') }} </strong
+              >:
+              {{ $t('home.faq.accordion6.option3.section2') }}
+            </li>
+            <li>
+              <strong>{{ $t('home.faq.accordion6.option4.section1') }} </strong
+              >:
+              {{ $t('home.faq.accordion6.option4.section2') }}
+              <NuxtLink
+                target="_blank"
+                class="faq-link"
+                to="https://helixapp.com/lp-rewards"
+              >
+                {{ $t('home.faq.accordion6.option4.section3') }}
+              </NuxtLink>
+
+              {{ $t('home.faq.accordion6.option4.section4') }}
+            </li>
           </ul>
         </div>
       </template>
