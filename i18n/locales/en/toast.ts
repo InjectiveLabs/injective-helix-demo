@@ -69,9 +69,8 @@ export default {
         }
       },
       tradeToast: {
-        bought:
-          "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} bought at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}",
-        sold: "{'{{'}quantity:{quantity}-{quantityDecimals}{'}}'} {symbol} sold at average price {'$'}{'{{'}usdPrice:{usdPrice}-{usdPriceDecimals}{'}}'}"
+        sold: '{quantity} {symbol} sold at average price ${usdPrice}',
+        bought: '{quantity} {symbol} bought at average price ${usdPrice}'
       }
     },
     referral: {

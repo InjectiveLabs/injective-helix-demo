@@ -55,7 +55,9 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
 
   const usdPrice = new BigNumberInBase(
     sharedTokenStore.tokenUsdPrice(market.quoteToken)
-  ).times(price)
+  )
+    .times(price)
+    .toFixed(market.priceDecimals)
 
   notificationStore.success({
     title:
@@ -63,18 +65,13 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
         ? t('toast.trade.tradeToast.bought', {
             quantity,
             usdPrice,
-            symbol: market.baseToken.symbol,
-            usdPriceDecimals: market.priceDecimals,
-            quantityDecimals: market.quantityDecimals
+            symbol: market.baseToken.symbol
           })
         : t('toast.trade.tradeToast.sold', {
             quantity,
             usdPrice,
-            symbol: market.baseToken.symbol,
-            usdPriceDecimals: market.priceDecimals,
-            quantityDecimals: market.quantityDecimals
-          }),
-    isTemplateString: true
+            symbol: market.baseToken.symbol
+          })
   })
 }
 </script>
