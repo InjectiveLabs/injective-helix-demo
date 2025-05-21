@@ -184,7 +184,9 @@ function toggleShowMoreWallets() {
 
         <div class="space-y-2">
           <LayoutWalletConnectItem
-            v-for="walletOption in isShowMoreWallets ? options : popularOptions"
+            v-for="walletOption in isShowMoreWallets
+              ? [...popularOptions, ...options]
+              : popularOptions"
             :key="walletOption.wallet"
             v-bind="{ walletOption }"
             @selected-hardware-wallet:toggle="onWalletModalTypeChange"
