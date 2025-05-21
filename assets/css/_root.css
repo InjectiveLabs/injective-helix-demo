@@ -128,6 +128,10 @@ input[type='number'] {
   @apply cursor-pointer;
 }
 
+.break-word {
+  overflow-wrap: anywhere;
+}
+
 /* button:focus-visible {
   @apply outline-none;
 } */

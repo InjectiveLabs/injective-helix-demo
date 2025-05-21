@@ -3,9 +3,9 @@ import { TRADING_MESSAGES } from '~/app/data/trade'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
-import { MAX_TOAST_TIMEOUT, UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import {
   Modal,
   CtaToast,
@@ -106,7 +106,8 @@ const isBuy = computed(
 const currentFormValues = computed(
   () =>
     ({
-      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE,
+      [DerivativesTradeFormField.Leverage]:
+        derivativeFormValues.value[DerivativesTradeFormField.Leverage],
       [DerivativesTradeFormField.Type]:
         derivativeFormValues.value[DerivativesTradeFormField.Type],
       [DerivativesTradeFormField.Side]:

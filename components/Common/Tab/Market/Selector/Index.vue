@@ -4,13 +4,14 @@ import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string
+    modelValue?: string
     wrapperClass?: string
     markets?: UiMarketWithToken[]
   }>(),
   {
-    markets: () => [],
-    wrapperClass: ''
+    modelValue: '',
+    wrapperClass: '',
+    markets: () => []
   }
 )
 
