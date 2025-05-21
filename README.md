@@ -66,6 +66,7 @@ Reach out to us at one of the following places!
 - Discord at <a href="https://discord.com/invite/NK4qdbv" target="_blank">`Injective Discord`</a>
 - Telegram at <a href="https://t.me/joininjective" target="_blank">`Injective Telegram`</a>
 - Telegram at <a href="https://t.me/helixapp" target="_blank">`Helix Telegram`</a>
+- YouTube at <a href="https://www.youtube.com/channel/UCN99m0dicoMjNmJV9mxioqQ" target="_blank">`Injective YouTube`</a>
 
 ---
 
