@@ -614,6 +614,10 @@ export const submitTpSlOrder = async ({
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: tpSlMessages })
 
   await fetchBalances()
+
+  backupPromiseCall(() =>
+    Promise.all([derivativeStore.fetchSubaccountConditionalOrders()])
+  )
 }
 
 export async function submitChase({

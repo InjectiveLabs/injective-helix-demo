@@ -195,7 +195,7 @@ export const LIGHT_CHART_MARKET_IDS = [
 export const INDEX_MARKETS_INFO = [
   {
     label: '$AIX Index',
-    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index',
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index-aix',
     marketId:
       '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82'
   }

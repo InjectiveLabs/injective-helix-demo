@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { Status, StatusType } from '@injectivelabs/utils'
+
+const derivativeStore = useDerivativeStore()
+const { $onError } = useNuxtApp()
+
+const status = reactive(new Status(StatusType.Loading))
+
+function fetchAdvancedOrders() {
+  status.setLoading()
+
+  derivativeStore
+    .fetchSubaccountConditionalOrders()
+    .catch($onError)
+    .finally(() => {
+      status.setIdle()
+    })
+}
+
+onSubaccountChange(fetchAdvancedOrders)
+</script>
+
 <template>
   <div>
     <div class="p-4">
@@ -8,7 +30,14 @@
     </div>
 
     <div class="border-y divide-y">
-      <PartialsPortfolioPositions />
+      <CommonSkeletonRow
+        v-if="status.isLoading()"
+        :rows="10"
+        :columns="12"
+        :height="57"
+      />
+
+      <PartialsPortfolioPositions v-else />
     </div>
   </div>
 </template>
