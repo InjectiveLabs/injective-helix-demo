@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Wallet } from '@injectivelabs/wallet-base'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
@@ -235,6 +236,10 @@ function submitLimitOrder() {
 }
 
 function showAutosignCta() {
+  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+    return
+  }
+
   if (!spotStore.subaccountTradesCount) {
     EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
     notificationStore.success({

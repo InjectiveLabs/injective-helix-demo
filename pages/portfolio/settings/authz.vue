@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { BusEvents, Modal, PortfolioSubPage } from '@/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { Modal, MainPage, BusEvents, PortfolioSubPage } from '@/types'
+
+definePageMeta({
+  middleware: [
+    () => {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+        return navigateTo({ name: MainPage.Index })
+      }
+    }
+  ]
+})
 
 const modalStore = useSharedModalStore()
 
