@@ -160,7 +160,7 @@ function onActionClick(action: NotificationAction) {
 
             <span
               v-if="notification.description"
-              class="text-sm text-gray-400 flex items-center leading-tight"
+              class="text-sm text-gray-400 flex items-center leading-tight break-word"
             >
               {{ notification.description }}
             </span>
