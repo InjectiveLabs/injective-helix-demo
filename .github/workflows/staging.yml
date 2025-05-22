@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+      - blacksmith-migration-4711219
 
 jobs:
   staging-release:
