@@ -263,6 +263,7 @@ export default {
     subaccounts: 'Subaccounts',
     tradingBots: 'Trading Bots',
     fundingHistory: 'Funding History',
+    subaccountHistory: 'Subaccount History',
     makerTakerFee: '-{maker}% maker / -{taker}% taker',
     more: {
       olp: 'OLP',
