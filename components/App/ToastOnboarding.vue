@@ -2,8 +2,10 @@
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { getBridgeUrl } from '@shared/utils/network'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
+import {
+  MAX_TOAST_TIMEOUT,
+  GEO_IP_RESTRICTIONS_ENABLED
+} from '@shared/utils/constant'
 import {
   trackUtmStockTwitsToast,
   trackOnboardingUserDoesntTrade,
@@ -77,6 +79,10 @@ onWalletConnected(async () => {
 })
 
 onWalletDisconnected(() => {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
   Object.values(CtaToast).forEach((key) => {
     if (key === CtaToast.StockTwits) {
       return

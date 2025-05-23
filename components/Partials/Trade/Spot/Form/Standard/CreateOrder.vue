@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { TRADING_MESSAGES } from '@/app/data/trade'
-import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   CtaToast,

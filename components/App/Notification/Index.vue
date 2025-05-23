@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
 import { BusEvents } from '@/types'
 import type { CtaToast } from '@/types'
@@ -29,7 +30,21 @@ const progressBarPercent = ref(100)
 const lastProgressBarPercent = ref(100)
 const remainingTimeout = ref(DEFAULT_NOTIFICATION_TIMEOUT)
 
+const isTelemetryDoneToast = computed(() => props.notification?.data?.txHash)
+
 onMounted(() => {
+  setupNotification()
+})
+
+watch(
+  () => props.notification,
+  () => {
+    setupNotification()
+  },
+  { deep: true }
+)
+
+function setupNotification() {
   const timeout = props.notification.timeout || DEFAULT_NOTIFICATION_TIMEOUT
 
   lastResumeTime.value = Date.now()
@@ -37,7 +52,7 @@ onMounted(() => {
 
   notifTimeout.value = setTimeout(onClose, timeout)
   setupProgressBar(timeout)
-})
+}
 
 function onCopy() {
   copy(props.notification.context)
@@ -123,14 +138,20 @@ function onActionClick(action: NotificationAction) {
   >
     <div
       v-if="notification"
-      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 max-w-[328px]"
-      :class="wrapperClass"
+      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 ml-4"
+      :class="[
+        isTelemetryDoneToast ? 'max-w-[480px]' : 'max-w-[328px]',
+        wrapperClass
+      ]"
       @mouseenter="onPause"
       @mouseleave="onResume"
     >
       <div
         class="relative flex gap-4 justify-between p-4 pt-5"
-        :class="{ 'items-center': !notification.description }"
+        :class="{
+          'pr-6': notification.isTelemetry,
+          'items-center': !notification.description
+        }"
       >
         <div
           v-if="!notification.actions"
@@ -146,7 +167,12 @@ function onActionClick(action: NotificationAction) {
           class="flex gap-4"
           :class="{ 'items-center': !notification.description }"
         >
+          <div v-if="notification.isTelemetry" class="px-3">
+            <span class="toast-loader block size-1 rounded-full animate-spin" />
+          </div>
+
           <AppNotificationIcon
+            v-else
             v-bind="{
               icon: notification.icon,
               notificationType: notification.type
@@ -154,8 +180,22 @@ function onActionClick(action: NotificationAction) {
           />
 
           <div class="flex flex-col gap-4" :class="contentClass">
-            <span class="text-sm font-semibold leading-tight">
+            <span
+              class="text-sm font-semibold leading-tight"
+              :class="{
+                'flex gap-2 items-center flex-wrap': isTelemetryDoneToast
+              }"
+            >
               {{ notification.title }}
+
+              <NuxtLink
+                v-if="isTelemetryDoneToast"
+                target="_blank"
+                class="text-blue-500"
+                :to="`${getExplorerUrl()}/transaction/${notification?.data?.txHash}`"
+              >
+                {{ $t('toast.viewOnInjScan') }}
+              </NuxtLink>
             </span>
 
             <span
@@ -192,7 +232,11 @@ function onActionClick(action: NotificationAction) {
           </div>
         </div>
 
-        <slot name="close" :close-notification="onClose">
+        <slot
+          v-if="!notification.isTelemetry"
+          name="close"
+          :close-notification="onClose"
+        >
           <UIcon
             :name="NuxtUiIcons.Close"
             class="text-white size-4 min-w-4 hover:text-gray-400 transition-colors"
@@ -203,3 +247,17 @@ function onActionClick(action: NotificationAction) {
     </div>
   </Transition>
 </template>
+
+<style>
+.toast-loader {
+  animation-duration: 1.2s;
+  box-shadow:
+    10.2px 0px 0 0 #94a3b8,
+    6.3px 8px 0 0 #94a3b8,
+    -2.2px 9.9px 0 0 #94a3b8,
+    -9.2px 4.4px 0 0 #94a3b8,
+    -9.2px -4.4px 0 0 #94a3b8,
+    -2.2px -9.9px 0 0 #94a3b8,
+    6.3px -8px 0 0 #94a3b8;
+}
+</style>

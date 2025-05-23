@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
+import {
+  MAX_TOAST_TIMEOUT,
+  GEO_IP_RESTRICTIONS_ENABLED
+} from '@shared/utils/constant'
 import {
   trackRefereeLoggedIn,
   trackOnboardingUserBecomeReferee

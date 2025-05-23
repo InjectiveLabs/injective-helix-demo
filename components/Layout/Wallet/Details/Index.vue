@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-base'
+import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { Status, BigNumber, StatusType } from '@injectivelabs/utils'
@@ -7,7 +8,6 @@ import { TRADING_MESSAGES } from '@/app/data/trade'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { trackGenericEvent } from '@/app/providers/mixpanel/EventTracker'
 import {
-  MAX_TOAST_TIMEOUT,
   DEFAULT_TRUNCATE_LENGTH,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'

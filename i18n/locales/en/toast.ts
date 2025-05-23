@@ -3,6 +3,7 @@ export default {
     error: 'Error',
     success: 'Success',
     addressCopied: 'Address copied',
+    viewOnInjScan: 'View on InjScan',
     contextCopied: 'Context copied!',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
@@ -10,6 +11,7 @@ export default {
     copiedAddressToClipboard: 'Address copied to clipboard',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
+    broacastingTransaction: 'Broadcasting transaction...',
     account: {
       authZAdded: 'AuthZ account added',
       assetsTransferred: 'Assets transferred to your account',
