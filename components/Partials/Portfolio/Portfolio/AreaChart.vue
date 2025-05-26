@@ -24,7 +24,7 @@ const options: ApexOptions = {
     {
       name: t(props.label),
       data: props.series,
-      color: props.isProfit ? colors.green[500] : colors.red[500]
+      color: props.isProfit ? colors.green[500] : '#FFFFFF'
     }
   ],
 
@@ -57,7 +57,7 @@ const options: ApexOptions = {
   stroke: {
     show: true,
     width: 2,
-    colors: [props.isProfit ? colors.green[500] : colors.red[500]],
+    colors: [props.isProfit ? colors.green[500] : '#FFFFFF'],
     curve: 'monotoneCubic'
   },
 
@@ -81,23 +81,9 @@ const options: ApexOptions = {
   },
 
   fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-
-      colorStops: [
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 30,
-          opacity: 0.5
-        },
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 90,
-          opacity: 0
-        }
-      ]
-    }
+    type: 'solid',
+    colors: [props.isProfit ? colors.green[500] : '#FFFFFF'],
+    opacity: 0
   }
 }
 
@@ -117,7 +103,7 @@ watch(
       {
         name: t(props.label),
         data: newSeries,
-        color: props.isProfit ? colors.green[500] : colors.red[500]
+        color: props.isProfit ? colors.green[500] : '#FFFFFF'
       }
     ])
   }

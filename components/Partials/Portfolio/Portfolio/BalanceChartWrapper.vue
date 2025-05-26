@@ -16,7 +16,7 @@ const {
   aggregatedSubaccountUnrealizedPnlInUsd
 } = useBalance()
 
-const selectedDuration = ref(HistoricalPortfolioDuration.OneDay)
+const selectedDuration = ref(HistoricalPortfolioDuration.OneMonth)
 const status = reactive(new Status(StatusType.Loading))
 
 const isProfit = computed(() => percentageChange.value > 0)
