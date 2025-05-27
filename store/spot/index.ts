@@ -134,7 +134,7 @@ export const useSpotStore = defineStore('spot', {
             (summary) => summary.marketId === market.marketId
           )
         }))
-        .filter((summary) => summary) as UiMarketAndSummary[]
+        .filter(({ summary }) => summary) as UiMarketAndSummary[]
     }
   },
   actions: {
