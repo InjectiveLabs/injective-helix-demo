@@ -182,9 +182,11 @@ watch(
 
     <div id="modals" />
 
-    <AppNotifications
-      class="z-[41] fixed top-14 right-4 flex items-end flex-col gap-2 pointer-events-none"
-    />
+    <Teleport to="body">
+      <AppNotifications
+        class="z-[1110] fixed top-14 right-4 flex items-end flex-col gap-2 pointer-events-none"
+      />
+    </Teleport>
 
     <CommonAutoSignExpiredToast />
     <AppJsonPoll @on:loaded="onJsonLoaded" />
