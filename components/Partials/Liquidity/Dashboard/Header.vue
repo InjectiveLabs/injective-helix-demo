@@ -24,6 +24,8 @@ const totalRewards = computed(() =>
           userRewardPercentage
         )
 
+        console.log(userRewardAmount.toFixed())
+
         if (rewards[reward.denom]) {
           rewards[reward.denom] = rewards[reward.denom].plus(userRewardAmount)
         } else {
@@ -91,7 +93,7 @@ const totalRewardsInUsd = computed(() =>
       const amountInUsd = sharedToBalanceInTokenInBase({
         value: amount.toFixed(),
         decimalPlaces: token?.decimals
-      })
+      }).times(sharedTokenStore.tokenUsdPrice(token))
 
       return sum.plus(amountInUsd)
     }, ZERO_IN_BASE)
