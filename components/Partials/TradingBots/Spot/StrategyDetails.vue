@@ -234,16 +234,6 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.advanced.settleIn') }}</span>
-      </span>
-
-      <span>
-        {{ strategy.settleIn ? strategy.settleIn : $t('sgt.disabled') }}
-      </span>
-    </div>
-
-    <div class="flex justify-between mb-4 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
       </span>
 
