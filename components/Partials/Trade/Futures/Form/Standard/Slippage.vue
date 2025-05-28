@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
@@ -105,6 +106,7 @@ function onSlippageChange(value: string) {
             decimalPlaces: derivativeMarket.priceDecimals
           }"
           class="font-mono"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWorstPrice)"
         />
         <span class="text-coolGray-450">
           {{ derivativeMarket.quoteToken.symbol }}
