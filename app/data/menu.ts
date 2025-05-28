@@ -41,6 +41,7 @@ export const getMoreMenu = () => [
     to: 'https://trading.injective.network/program/liquidity/'
   },
   {
+    isDesktopOnly: true,
     isConnectedOnly: true,
     label: 'navigation.settings',
     to: { name: PortfolioSubPage.Settings }
@@ -135,6 +136,11 @@ export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
     icon: NuxtUiIcons.SubAccount,
     label: 'navigation.subaccounts',
     to: { name: PortfolioSubPage.Subaccounts }
+  },
+  {
+    label: 'navigation.settings',
+    icon: NuxtUiIcons.SettingsOutline,
+    to: { name: PortfolioSubPage.Settings }
   }
 ]
 
@@ -184,13 +190,6 @@ export const getGeoRestrictedMobileMenuItems = () =>
       isExpandable: true,
       isConnectedOnly: true,
       label: 'navigation.portfolio',
-      children: [
-        ...PORTFOLIO_MENU_ITEMS,
-        {
-          label: 'navigation.settings',
-          icon: NuxtUiIcons.SettingsOutline,
-          to: { name: PortfolioSubPage.Settings }
-        }
-      ]
+      children: PORTFOLIO_MENU_ITEMS
     }
   ] as MenuItem[]

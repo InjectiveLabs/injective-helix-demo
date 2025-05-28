@@ -108,6 +108,7 @@ type MenuItemBase = {
   isExternal?: boolean
   description?: string
   isExpandable?: boolean
+  isDesktopOnly?: boolean
   isConnectedOnly?: boolean
   isOpenDepositModal?: boolean
 }
