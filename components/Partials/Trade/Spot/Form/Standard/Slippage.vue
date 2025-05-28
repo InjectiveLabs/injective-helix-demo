@@ -109,6 +109,7 @@ function onSlippageChange(value: string) {
             decimalPlaces: spotMarket.priceDecimals
           }"
           class="font-mono"
+          :data-cy="dataCyTag(SpotMarketCyTags.SlippageWorstPrice)"
         />
         <span class="text-coolGray-450">
           {{ spotMarket.quoteToken.symbol }}

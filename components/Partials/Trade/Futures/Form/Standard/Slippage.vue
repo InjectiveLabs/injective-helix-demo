@@ -105,6 +105,7 @@ function onSlippageChange(value: string) {
             decimalPlaces: derivativeMarket.priceDecimals
           }"
           class="font-mono"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWorstPrice)"
         />
         <span class="text-coolGray-450">
           {{ derivativeMarket.quoteToken.symbol }}

@@ -109,7 +109,8 @@ export enum SpotMarketCyTags {
   AdvancedSettingsPostOnly = 'advanced-settings-post-only',
   OrderHistoryMarketTicker = 'order-history-market-ticker',
   OpenOrderTotalAmtTokenSymbol = 'open-order-total-amt-token-symbol',
-  AdvancedSettingsBypassWarning = 'advanced-settings-bypass-price-warning'
+  AdvancedSettingsBypassWarning = 'advanced-settings-bypass-price-warning',
+  SlippageWorstPrice = 'slippage-worst-price'
 }
 
 export enum PerpetualMarketCyTags {
@@ -173,7 +174,8 @@ export enum PerpetualMarketCyTags {
   AdvancedOrdersTableAmount = 'advanced-orders-table-amount',
   DetailsEstLiquidationPrice = 'details-est-liquidation-price',
   AdvancedOrdersTableMarketTicker = 'advanced-orders-table-market-ticker',
-  AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction'
+  AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction',
+  SlippageWorstPrice = 'slippage-worst-price'
 }
 
 export enum PortfolioCyTags {
