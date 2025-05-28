@@ -86,6 +86,7 @@ export enum SpotMarketCyTags {
   OrderHistoryStatus = 'order-history-status',
   OrderbookGridSells = 'orderbook-grid-sells',
   SlippageInputField = 'slippage-input-field',
+  SlippageWorstPrice = 'slippage-worst-price',
   OpenOrderFilledQty = 'open-order-filled-qty',
   DoNotShowAgainCheckbox = 'do-not-show-again',
   TradeStatsMarketSelector = 'market-selector',
@@ -109,8 +110,7 @@ export enum SpotMarketCyTags {
   AdvancedSettingsPostOnly = 'advanced-settings-post-only',
   OrderHistoryMarketTicker = 'order-history-market-ticker',
   OpenOrderTotalAmtTokenSymbol = 'open-order-total-amt-token-symbol',
-  AdvancedSettingsBypassWarning = 'advanced-settings-bypass-price-warning',
-  SlippageWorstPrice = 'slippage-worst-price'
+  AdvancedSettingsBypassWarning = 'advanced-settings-bypass-price-warning'
 }
 
 export enum PerpetualMarketCyTags {
@@ -145,6 +145,7 @@ export enum PerpetualMarketCyTags {
   OpenOrdersLeverage = 'open-orders-leverage',
   TradeHistoryAmount = 'trade-history-amount',
   SlippageInputField = 'slippage-input-field',
+  SlippageWorstPrice = 'slippage-worst-price',
   DerivativeTradeType = 'derivative-trade-type',
   OpenPosMarketTicker = 'open-pos-market-ticker',
   DetailsTotalNotional = 'details-total-notional',
@@ -174,8 +175,7 @@ export enum PerpetualMarketCyTags {
   AdvancedOrdersTableAmount = 'advanced-orders-table-amount',
   DetailsEstLiquidationPrice = 'details-est-liquidation-price',
   AdvancedOrdersTableMarketTicker = 'advanced-orders-table-market-ticker',
-  AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction',
-  SlippageWorstPrice = 'slippage-worst-price'
+  AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction'
 }
 
 export enum PortfolioCyTags {
