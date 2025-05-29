@@ -1,53 +1,95 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { PortfolioSubPage } from '@/types'
+import { PortfolioSubPage, SettingsPreferences } from '@/types'
 
-const settingsOptions = [
-  {
-    label: 'authZ.title',
-    description: 'authZ.description',
-    to: { name: PortfolioSubPage.SettingsAuthz }
-  },
-  {
-    label: 'portfolio.settings.preferences.title',
-    description: 'portfolio.settings.preferences.description',
-    to: { name: PortfolioSubPage.SettingsPreferences }
-  },
-  {
-    label: 'autoSign.title',
-    description: 'autoSign.description',
-    to: { name: PortfolioSubPage.SettingsAutosign }
+const appStore = useAppStore()
+const { t } = useLang()
+
+const preferencesList = computed(() => {
+  const list: Record<string, any> = [
+    {
+      type: SettingsPreferences.ThousandsSeparators,
+      title: t('portfolio.settings.preferences.thousandsSeparator.title'),
+      description: t(
+        'portfolio.settings.preferences.thousandsSeparator.description'
+      )
+    },
+    {
+      type: SettingsPreferences.GridTradingSubaccounts,
+      title: t('portfolio.settings.preferences.gridTradingSubaccounts.title'),
+      description: t(
+        'portfolio.settings.preferences.gridTradingSubaccounts.description'
+      )
+    },
+    {
+      type: SettingsPreferences.AutoSign,
+      title: t('portfolio.settings.preferences.autosign.title'),
+      description: t('portfolio.settings.preferences.autosign.description'),
+      tooltipText: t('portfolio.settings.preferences.autosign.tooltip'),
+      tooltipLink: 'https://docs.helixapp.com/trading/auto-sign'
+    }
+  ]
+
+  if (appStore.devMode) {
+    list.splice(2, 0, {
+      type: SettingsPreferences.Eip712,
+      title: t('portfolio.settings.preferences.eip712.title')
+    })
   }
-]
+
+  return list
+})
 </script>
 
 <template>
   <div>
-    <div class="p-4">
+    <div class="mt-6 ml-4">
       <h3 class="portfolio-title">{{ $t('portfolio.settings.title') }}</h3>
     </div>
 
-    <div class="divide-y border-y">
-      <NuxtLink
-        v-for="link in settingsOptions"
-        :key="link.label"
-        :to="link.to"
-        class="p-4 flex justify-between hover:bg-brand-850"
-      >
-        <div class="pr-8">
-          <h3 class="font-semibold text-sm">{{ $t(link.label) }}</h3>
-          <p class="text-xs text-coolGray-500 mt-2">
-            {{ $t(link.description) }}
-          </p>
-        </div>
+    <div class="mt-8">
+      <h4 class="font-bold mb-2 pl-4">
+        {{ $t('portfolio.settings.preferences.title') }}
+      </h4>
 
-        <div class="flex items-center p-4">
+      <PartialsPortfolioSettingsToggler
+        v-for="(item, index) in preferencesList"
+        :key="index"
+        v-bind="{
+          type: item.type,
+          title: item.title,
+          description: item.description,
+          tooltipText: item.tooltipText,
+          tooltipLink: item.tooltipLink
+        }"
+      />
+    </div>
+
+    <div class="mt-8">
+      <h4 class="font-bold mb-2 pl-4">
+        {{ $t('portfolio.settings.account') }}
+      </h4>
+
+      <div class="border-b">
+        <NuxtLink
+          :to="{ name: PortfolioSubPage.SettingsAuthz }"
+          class="p-4 sm:pr-6 flex justify-between items-center hover:bg-brand-850 gap-4"
+        >
+          <div>
+            <h3 class="font-medium text-sm text-white">
+              {{ $t('authZ.title') }}
+            </h3>
+            <p class="text-xs text-coolGray-350 mt-2">
+              {{ $t('authZ.description') }}
+            </p>
+          </div>
+
           <UIcon
             :name="NuxtUiIcons.ChevronLeft"
-            class="h-3 w-3 min-w-3 rotate-180"
+            class="h-4 w-4 min-w-4 rotate-180"
           />
-        </div>
-      </NuxtLink>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>

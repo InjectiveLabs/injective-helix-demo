@@ -1,6 +1,4 @@
-import { content } from '#tailwind-config'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { title } from 'process'
 
 export default {
   connect: {
@@ -93,7 +91,7 @@ export default {
   },
 
   authZ: {
-    title: 'Access Control Manager',
+    title: 'Access Control Management',
     description:
       'Grant other wallet address full/partial permissions to make trades on their behalf',
     grantee: 'Grantee',
@@ -117,7 +115,6 @@ export default {
 
   autoSign: {
     title: 'Auto Sign',
-    description: 'Automatically sign transactions',
     durationDescription: 'Auto sign is active for 3 days.',
     pageTitle: 'Auto-Sign: Approve Transactions Automatically',
     content1: {

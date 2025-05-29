@@ -611,3 +611,10 @@ export enum CtaToast {
 export enum UtmSource {
   StockTwits = 'stocktwits'
 }
+
+export enum SettingsPreferences {
+  Eip712 = 'eip712',
+  AutoSign = 'auto-sign',
+  ThousandsSeparators = 'thousands-separators',
+  GridTradingSubaccounts = 'grid-trading-subaccounts'
+}
