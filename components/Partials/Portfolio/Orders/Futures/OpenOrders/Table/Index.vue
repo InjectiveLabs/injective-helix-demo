@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 import {
   PortfolioSubPage,
   PerpetualMarketCyTags,
   PortfolioFuturesOpenOrdersTableColumn
 } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
@@ -14,10 +14,8 @@ const { lg } = useSharedBreakpoints()
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
-  defineProps<{ orders: DerivativeLimitOrder[]; isTradingBots?: boolean }>(),
-  {
-    isTradingBots: false
-  }
+  defineProps<{ isTradingBots?: boolean; orders: DerivativeLimitOrder[] }>(),
+  {}
 )
 
 const { rows } = useFuturesOpenOrdersTransformer(
@@ -114,7 +112,7 @@ const columns = computed(() => {
     <UTable :rows="rows" :columns="columns">
       <template #chase-header>
         <NuxtLink
-          :to="{ name: PortfolioSubPage.SettingsAutosign }"
+          :to="{ name: PortfolioSubPage.Settings }"
           class="flex justify-center space-x-2 items-center"
         >
           <p>

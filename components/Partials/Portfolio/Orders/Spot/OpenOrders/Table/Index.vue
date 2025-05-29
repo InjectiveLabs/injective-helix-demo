@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import {
   SpotMarketCyTags,
   PortfolioSubPage,
   PortfolioSpotOpenOrdersTableColumn
 } from '@/types'
+import type { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 
 const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
@@ -105,7 +105,7 @@ const columns = computed(() => {
     <UTable :rows="rows" :columns="columns">
       <template #chase-header>
         <NuxtLink
-          :to="{ name: PortfolioSubPage.SettingsAutosign }"
+          :to="{ name: PortfolioSubPage.Settings }"
           class="flex justify-center space-x-2 items-center"
         >
           <p>
