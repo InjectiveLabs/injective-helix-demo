@@ -8,6 +8,7 @@ import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
+  IS_TESTNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
 import { hexToString, stringToHex } from '@/app/utils/converters'
@@ -55,9 +56,9 @@ export const getChronosDatafeedEndpoint = (marketType: string): string => {
     return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
-  // if (IS_TESTNET) {
-  //   return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-  // }
+  if (IS_TESTNET) {
+    return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+  }
 
   return `${ENDPOINTS.indexer}/api/chart/v1/${marketType}`
 }
