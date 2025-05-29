@@ -77,7 +77,7 @@ const { pause, resume } = useIntervalFn(() => {
                 <template #settings>
                   <NuxtLink
                     class="text-blue-500 hover:opacity-80 hover:text-opacity-80 cursor-pointer"
-                    :to="{ name: PortfolioSubPage.SettingsAutosign }"
+                    :to="{ name: PortfolioSubPage.Settings }"
                   >
                     {{ $t('autoSign.expiredToast.settings') }}
                   </NuxtLink>
