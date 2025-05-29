@@ -48,6 +48,12 @@ const options = computed(
   () =>
     [
       {
+        wallet: Wallet.Rainbow,
+        downloadLink: !sharedWalletStore.rainbowInstalled
+          ? 'https://rainbow.me/download'
+          : undefined
+      },
+      {
         wallet: Wallet.OkxWallet,
         downloadLink: !sharedWalletStore.okxWalletInstalled
           ? 'https://www.okx.com/web3'
@@ -102,6 +108,7 @@ const options = computed(
 onMounted(() => {
   Promise.all([
     sharedWalletStore.checkIsBitGetInstalled(),
+    sharedWalletStore.checkIsRainbowInstalled(),
     sharedWalletStore.checkIsMetamaskInstalled(),
     sharedWalletStore.checkIsOkxWalletInstalled(),
     sharedWalletStore.checkIsTrustWalletInstalled(),
