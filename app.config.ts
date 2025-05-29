@@ -17,6 +17,7 @@ export default defineAppConfig({
     },
 
     popover: {
+      wrapper: 'inline-flex',
       ring: 'ring-coolGray-800',
       background: 'dark:bg-brand-900'
     },

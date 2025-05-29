@@ -166,13 +166,31 @@ export default {
 
     settings: {
       title: 'Settings',
+      account: 'Account',
 
       preferences: {
         title: 'Preferences',
-        enableEip712: 'Enable EIP-712 Signing',
-        thousandsSeparator: 'Thousands Separator',
         description: 'Customize your trading experience',
-        showGridTradingSubaccounts: 'Show Grid Trading Subaccounts'
+
+        eip712: {
+          title: 'Enable EIP-712 Signing'
+        },
+        autosign: {
+          title: 'Auto Sign',
+          description:
+            'Auto-sign allows you to trade without needing to manually approve each transaction in your wallet',
+          tooltip:
+            "Once activated, you won't need to sign each transaction for up to 3 days, and you can switch it back at any time."
+        },
+        thousandsSeparator: {
+          title: 'Thousands Separator',
+          description:
+            'Adds commas to large numbers for easier reading. Example: 1234567 to 1,234,567'
+        },
+        gridTradingSubaccounts: {
+          title: 'Show Grid Trading Subaccounts',
+          description: 'Display a list of subaccounts dedicated to grid trading'
+        }
       }
     },
 

@@ -19,7 +19,7 @@ const value = computed({
 
 <template>
   <div
-    class="w-8 h-4 rounded-full bg-coolGray-600 relative checkbox-base transition-all"
+    class="w-8 h-5 rounded-full bg-coolGray-600 relative checkbox-base transition-all flex items-center"
   >
     <input
       v-model="value"
@@ -29,7 +29,7 @@ const value = computed({
       :class="[isDisabled ? 'cursor-not-allowed' : 'cursor-pointer']"
     />
     <div
-      class="h-4 w-4 rounded-full bg-white [&+:checked]:translate-x-4 transition-all"
+      class="h-4 w-4 rounded-full bg-white translate-x-0.5 [&+:checked]:translate-x-3.5 transition-all"
     />
   </div>
 </template>
@@ -40,6 +40,6 @@ const value = computed({
 }
 
 input:checked + div {
-  @apply translate-x-4;
+  @apply translate-x-3.5;
 }
 </style>
