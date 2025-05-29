@@ -7,11 +7,12 @@ export default {
     contextCopied: 'Context copied!',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
-    formSubmittedSuccessfully: 'Form submitted successfully.',
+    broacastingTransaction: 'Broadcasting transaction...',
     copiedAddressToClipboard: 'Address copied to clipboard',
+    formSubmittedSuccessfully: 'Form submitted successfully.',
+    transactionFinalized: 'Transaction finalized in {duration} sec.',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
-    broacastingTransaction: 'Broadcasting transaction...',
     account: {
       authZAdded: 'AuthZ account added',
       assetsTransferred: 'Assets transferred to your account',
