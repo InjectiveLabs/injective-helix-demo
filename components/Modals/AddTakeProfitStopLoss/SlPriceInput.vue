@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { UiDerivativeMarket } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
-    isSlDisabled: boolean
     market: UiDerivativeMarket
     stopLossErrorMessage?: string
   }>(),
@@ -29,7 +28,6 @@ const stopLossValue = computed({
       {{ $t('trade.stopLossTriggerPrice') }}
     </h5>
     <AppInputField
-      v-if="!isSlDisabled"
       v-model="stopLossValue"
       v-bind="{
         noStyle: true,

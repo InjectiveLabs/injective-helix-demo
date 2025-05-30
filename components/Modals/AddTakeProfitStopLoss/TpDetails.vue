@@ -1,35 +1,31 @@
 <script setup lang="ts">
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket } from '@/types'
-import { ConditionalOrderSide } from '@/types'
-
-const derivativeStore = useDerivativeStore()
+import type { Status } from '@injectivelabs/utils'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
     isBuy: boolean
+    status: Status
     tpQuantity?: string
     position: PositionV2
+    cancelTpStatus: Status
     takeProfitValue: string
+    tpOrderQuantity?: string
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
     tpOrderTriggerPrice?: string
   }>(),
-  { tpQuantity: '', tpOrderTriggerPrice: '' }
+  { tpQuantity: '', tpOrderQuantity: '', tpOrderTriggerPrice: '' }
 )
 
-const getTpQuantity = computed(() => {
-  const tpOrderQuantity =
-    derivativeStore.subaccountConditionalOrders.find(
-      (order) =>
-        order.marketId === props.position.marketId &&
-        (order.orderType === ConditionalOrderSide.TakeBuy ||
-          order.orderType === ConditionalOrderSide.TakeSell)
-    )?.quantity || 0
+const emit = defineEmits<{
+  'tp:cancel': []
+}>()
 
-  return props.tpOrderTriggerPrice ? tpOrderQuantity : props.tpQuantity
-})
+const getTpQuantity = computed(() => props.tpOrderQuantity || props.tpQuantity)
 
 const hasNoTpQuantity = computed(() =>
   new BigNumberInBase(getTpQuantity.value || 0).isZero()
@@ -47,6 +43,14 @@ const takeProfitPnl = computed(() => {
     ? takeProfitTotal.minus(entryTotal)
     : entryTotal.minus(takeProfitTotal)
 })
+
+const isCancelButtonDisabled = computed(
+  () => props.status.isLoading() || !props.tpOrderTriggerPrice
+)
+
+function cancelTp() {
+  emit('tp:cancel')
+}
 </script>
 
 <template>
@@ -81,24 +85,54 @@ const takeProfitPnl = computed(() => {
     </template>
   </i18n-t>
 
-  <p class="text-xs">
-    <span>{{ $t('trade.profitLoss') }}: </span>
+  <div class="flex justify-between items-center flex-wrap gap-4 max-sm:gap-2">
+    <div>
+      <p class="text-xs">
+        <span>{{ $t('trade.profitLoss') }}: </span>
 
-    <span v-if="(!takeProfitValue && !tpOrderTriggerPrice) || hasNoTpQuantity">
-      &mdash;
-    </span>
-    <span
-      v-else
-      :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-      class="font-bold inline-flex gap-1"
+        <span
+          v-if="(!takeProfitValue && !tpOrderTriggerPrice) || hasNoTpQuantity"
+        >
+          &mdash;
+        </span>
+        <span
+          v-else
+          :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
+          class="font-bold inline-flex gap-1"
+        >
+          <AppAmount
+            v-bind="{
+              amount: takeProfitPnl.toFixed(),
+              decimalPlaces: market.priceDecimals
+            }"
+          />
+          <span>{{ market.quoteToken.symbol }}</span>
+        </span>
+      </p>
+    </div>
+
+    <AppButton
+      class="w-full py-1.5"
+      v-bind="{
+        size: 'sm',
+        status: cancelTpStatus,
+        variant: 'primary-outline',
+        disabled: isCancelButtonDisabled
+      }"
+      :class="[
+        isCancelButtonDisabled ? '!border-coolGray-450' : '!border-blue-250'
+      ]"
+      @click="cancelTp"
     >
-      <AppAmount
-        v-bind="{
-          amount: takeProfitPnl.toFixed(),
-          decimalPlaces: market.priceDecimals
-        }"
-      />
-      <span>{{ market.quoteToken.symbol }}</span>
-    </span>
-  </p>
+      <div
+        class="flex gap-2 items-center font-medium"
+        :class="[
+          isCancelButtonDisabled ? 'text-coolGray-450' : 'text-blue-250'
+        ]"
+      >
+        <UIcon :name="NuxtUiIcons.Trash3" class="size-5" />
+        <p>{{ $t('trade.cancelTakeProfit') }}</p>
+      </div>
+    </AppButton>
+  </div>
 </template>

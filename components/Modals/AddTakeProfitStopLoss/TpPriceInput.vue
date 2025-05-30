@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { UiDerivativeMarket } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
-    isTpDisabled: boolean
     market: UiDerivativeMarket
     takeProfitErrorMessage?: string
   }>(),
@@ -30,7 +29,6 @@ const takeProfitValue = computed({
     </h5>
 
     <AppInputField
-      v-if="!isTpDisabled"
       v-model="takeProfitValue"
       v-bind="{
         noStyle: true,
