@@ -48,7 +48,7 @@ const deprecatedWarningBanner = computed<Banner[]>(() => [
     id: NoticeBanner.DeprecatedWallet,
     shouldDisplay:
       sharedWalletStore.isUserConnected &&
-      sharedWalletStore.wallet === Wallet.Magic,
+      [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet),
     shouldPersist: true
   }
 ])

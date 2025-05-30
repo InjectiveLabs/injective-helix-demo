@@ -4,7 +4,8 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { INJ_DENOM, BigNumberInBase } from '@injectivelabs/utils'
 import { TokenType, TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { AccountBalance, BalanceTableColumn } from '@/types'
+import { BalanceTableColumn } from '@/types'
+import type { AccountBalance } from '@/types'
 
 export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
   const accountStore = useAccountStore()
@@ -43,7 +44,8 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         isInjDenom || isVerifiedIbcToken || isVerifiedErc20Token
 
       const hasNoActionButtons = accountStore.isDefaultSubaccount
-        ? sharedWalletStore.wallet !== Wallet.Magic && !isBridgable
+        ? [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet) &&
+          !isBridgable
         : accountStore.isSgtSubaccount
 
       const availableAmount = sharedToBalanceInTokenInBase({

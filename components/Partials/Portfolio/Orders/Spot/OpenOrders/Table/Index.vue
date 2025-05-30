@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
 import {
   SpotMarketCyTags,
   PortfolioSubPage,
@@ -76,7 +77,10 @@ const columns = computed(() => {
     }
   ]
 
-  if (!props.isTradingBots) {
+  if (
+    !props.isTradingBots &&
+    ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+  ) {
     baseColumns.push({
       key: PortfolioSpotOpenOrdersTableColumn.Chase,
       label: t(

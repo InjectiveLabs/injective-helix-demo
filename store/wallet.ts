@@ -259,7 +259,7 @@ export const useWalletStore = defineStore('wallet', {
     async signArbitraryData(address: string, message: string) {
       const sharedWalletStore = useSharedWalletStore()
 
-      if (sharedWalletStore.wallet === Wallet.Magic) {
+      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
         return await walletStrategy.signEip712TypedData(
           message,
           sharedWalletStore.address
