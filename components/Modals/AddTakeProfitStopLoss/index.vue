@@ -136,18 +136,14 @@ const {
   initialValue: '',
   rule: '',
   dynamicRule: computed(() => {
-    const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
+    const formattedEntryPrice = entryPrice.value.toFixed(
       market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    )}`
-
-    const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
-      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    )}`
+    )
 
     if (isBuy.value) {
-      return minValueRule
+      return `minValue:${formattedEntryPrice}`
     } else {
-      return maxValueRule
+      return `maxValue:${formattedEntryPrice}`
     }
   })
 })
@@ -161,24 +157,26 @@ const {
   initialValue: '',
   rule: '',
   dynamicRule: computed(() => {
-    if (isBuy.value) {
-      const minValueRule = `minValue:${liquidationPrice.value.toFixed(
-        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      )}`
+    const formattedEntryPrice = entryPrice.value.toFixed(
+      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    )
 
-      const maxValueRule = `maxValue:${markPriceNotScaled.value.toFixed(
-        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      )}`
+    const formattedMarkPriceNotScaled = markPriceNotScaled.value.toFixed(
+      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    )
+
+    const formattedLiquidationPrice = liquidationPrice.value.toFixed(
+      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    )
+
+    if (isBuy.value) {
+      const minValueRule = `minValue:${formattedLiquidationPrice}`
+      const maxValueRule = `maxValue:${markPriceNotScaled.value.lt(entryPrice.value) ? formattedMarkPriceNotScaled : formattedEntryPrice}`
 
       return [minValueRule, maxValueRule].join('|')
     } else {
-      const maxValueRule = `maxValue:${liquidationPrice.value.toFixed(
-        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      )}`
-
-      const minValueRule = `minValue:${markPriceNotScaled.value.toFixed(
-        market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      )}`
+      const minValueRule = `minValue:${markPriceNotScaled.value.gt(entryPrice.value) ? formattedMarkPriceNotScaled : formattedEntryPrice}`
+      const maxValueRule = `maxValue:${formattedLiquidationPrice}`
 
       return [minValueRule, maxValueRule].join('|')
     }
@@ -616,8 +614,7 @@ async function submitTpSl() {
               entryPrice,
               cancelTpStatus,
               takeProfitValue,
-              tpOrderQuantity,
-              tpOrderTriggerPrice
+              hasExistingTpOrder: !!existingTpOrder
             }"
             @tp:cancel="cancelTp"
           />
@@ -655,8 +652,7 @@ async function submitTpSl() {
               entryPrice,
               stopLossValue,
               cancelSlStatus,
-              slOrderQuantity,
-              slOrderTriggerPrice
+              hasExistingSlOrder: !!existingSlOrder
             }"
             @sl:cancel="cancelSl"
           />
