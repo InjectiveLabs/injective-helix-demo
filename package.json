@@ -52,6 +52,7 @@
     "@injectivelabs/wallet-private-key": "1.15.23",
     "@injectivelabs/wallet-strategy": "1.15.24",
     "@injectivelabs/wallet-trezor": "1.15.23",
+    "@injectivelabs/wallet-turnkey": "1.15.23",
     "@injectivelabs/wallet-wallet-connect": "1.15.23",
     "@nuxt/kit": "3.15.4",
     "@nuxt/ui": "^2.18.7",

@@ -36,9 +36,9 @@ const popularOptions = computed(
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.BitGet,
-            downloadLink: !sharedWalletStore.bitGetInstalled
-              ? 'https://web3.bitget.com/en/wallet-download'
+            wallet: Wallet.Leap,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+              ? 'https://www.leapwallet.io/downloads'
               : undefined
           }
     ].filter((option) => option) as WalletOption[]
@@ -48,19 +48,25 @@ const options = computed(
   () =>
     [
       {
-        wallet: Wallet.OkxWallet,
-        downloadLink: !sharedWalletStore.okxWalletInstalled
-          ? 'https://www.okx.com/web3'
+        wallet: Wallet.Rainbow,
+        downloadLink: !sharedWalletStore.rainbowInstalled
+          ? 'https://rainbow.me/download'
           : undefined
       },
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
+            wallet: Wallet.BitGet,
+            downloadLink: !sharedWalletStore.bitGetInstalled
+              ? 'https://web3.bitget.com/en/wallet-download'
               : undefined
           },
+      {
+        wallet: Wallet.OkxWallet,
+        downloadLink: !sharedWalletStore.okxWalletInstalled
+          ? 'https://www.okx.com/web3'
+          : undefined
+      },
       { wallet: Wallet.Ledger },
       { wallet: Wallet.TrezorBip32 },
       {
@@ -69,10 +75,7 @@ const options = computed(
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      {
-        beta: true,
-        wallet: Wallet.Phantom
-      },
+      { wallet: Wallet.Phantom },
       IS_DEVNET
         ? undefined
         : {
@@ -102,6 +105,7 @@ const options = computed(
 onMounted(() => {
   Promise.all([
     sharedWalletStore.checkIsBitGetInstalled(),
+    sharedWalletStore.checkIsRainbowInstalled(),
     sharedWalletStore.checkIsMetamaskInstalled(),
     sharedWalletStore.checkIsOkxWalletInstalled(),
     sharedWalletStore.checkIsTrustWalletInstalled(),
