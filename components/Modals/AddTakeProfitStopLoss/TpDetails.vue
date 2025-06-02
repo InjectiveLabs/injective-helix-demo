@@ -13,31 +13,26 @@ const props = withDefaults(
     position: PositionV2
     cancelTpStatus: Status
     takeProfitValue: string
-    tpOrderQuantity?: string
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
-    tpOrderTriggerPrice?: string
+    hasExistingTpOrder?: boolean
   }>(),
-  { tpQuantity: '', tpOrderQuantity: '', tpOrderTriggerPrice: '' }
+  { tpQuantity: '' }
 )
 
 const emit = defineEmits<{
   'tp:cancel': []
 }>()
 
-const getTpQuantity = computed(() => props.tpOrderQuantity || props.tpQuantity)
-
 const hasNoTpQuantity = computed(() =>
-  new BigNumberInBase(getTpQuantity.value || 0).isZero()
+  new BigNumberInBase(props.tpQuantity || 0).isZero()
 )
 
 const takeProfitPnl = computed(() => {
-  const takeProfitPrice = props.tpOrderTriggerPrice
-    ? new BigNumberInBase(props.tpOrderTriggerPrice)
-    : new BigNumberInBase(props.takeProfitValue || 0)
+  const takeProfitPrice = new BigNumberInBase(props.takeProfitValue || 0)
 
-  const takeProfitTotal = takeProfitPrice.times(getTpQuantity.value || 0)
-  const entryTotal = props.entryPrice.times(getTpQuantity.value || 0)
+  const takeProfitTotal = takeProfitPrice.times(props.tpQuantity || 0)
+  const entryTotal = props.entryPrice.times(props.tpQuantity || 0)
 
   return props.isBuy
     ? takeProfitTotal.minus(entryTotal)
@@ -45,7 +40,7 @@ const takeProfitPnl = computed(() => {
 })
 
 const isCancelButtonDisabled = computed(
-  () => props.status.isLoading() || !props.tpOrderTriggerPrice
+  () => props.status.isLoading() || !props.hasExistingTpOrder
 )
 
 function cancelTp() {
@@ -61,11 +56,11 @@ function cancelTp() {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!takeProfitValue && !tpOrderTriggerPrice"> &mdash;</span>
+        <span v-if="!takeProfitValue"> &mdash;</span>
         <AppAmount
           v-else
           v-bind="{
-            amount: tpOrderTriggerPrice || takeProfitValue,
+            amount: takeProfitValue,
             decimalPlaces: market.priceDecimals
           }"
         />
@@ -76,7 +71,7 @@ function cancelTp() {
       <span class="inline-flex gap-1">
         <AppAmount
           v-bind="{
-            amount: getTpQuantity,
+            amount: tpQuantity,
             decimalPlaces: market.quantityDecimals
           }"
         />
@@ -90,11 +85,7 @@ function cancelTp() {
       <p class="text-xs">
         <span>{{ $t('trade.profitLoss') }}: </span>
 
-        <span
-          v-if="(!takeProfitValue && !tpOrderTriggerPrice) || hasNoTpQuantity"
-        >
-          &mdash;
-        </span>
+        <span v-if="!takeProfitValue || hasNoTpQuantity"> &mdash; </span>
         <span
           v-else
           :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"

@@ -584,7 +584,29 @@ export const submitTpSlOrder = async ({
   const tpSlMessages = [] as Msgs[]
   const cancelMessages = [] as Msgs[]
 
-  if (existingTpOrder) {
+  const tpHasChange =
+    !takeProfitQuantity.eq(existingTpOrder?.quantity || 0) ||
+    !new BigNumberInBase(existingTpOrder?.triggerPrice || 0).eq(
+      derivativePriceToChainPriceToFixed({
+        value: takeProfitPrice?.toFixed() || 0,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    )
+
+  const slHasChange =
+    !stopLossQuantity.eq(existingSlOrder?.quantity || 0) ||
+    !new BigNumberInBase(existingSlOrder?.triggerPrice || 0).eq(
+      derivativePriceToChainPriceToFixed({
+        value: stopLossPrice?.toFixed() || 0,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    )
+
+  const shouldCreateTpOrder = takeProfitPrice && tpHasChange
+
+  const shouldCreateSlOrder = stopLossPrice && slHasChange
+
+  if (existingTpOrder && shouldCreateTpOrder) {
     cancelMessages.push(
       MsgCancelDerivativeOrder.fromJSON({
         marketId: existingTpOrder.marketId,
@@ -595,18 +617,7 @@ export const submitTpSlOrder = async ({
     )
   }
 
-  if (existingSlOrder) {
-    cancelMessages.push(
-      MsgCancelDerivativeOrder.fromJSON({
-        marketId: existingSlOrder.marketId,
-        orderHash: existingSlOrder.orderHash,
-        subaccountId: existingSlOrder.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-      })
-    )
-  }
-
-  if (takeProfitPrice) {
+  if (shouldCreateTpOrder) {
     tpSlMessages.push(
       createTpSlMessage({
         market,
@@ -621,7 +632,18 @@ export const submitTpSlOrder = async ({
     )
   }
 
-  if (stopLossPrice) {
+  if (existingSlOrder && shouldCreateSlOrder) {
+    cancelMessages.push(
+      MsgCancelDerivativeOrder.fromJSON({
+        marketId: existingSlOrder.marketId,
+        orderHash: existingSlOrder.orderHash,
+        subaccountId: existingSlOrder.subaccountId,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+      })
+    )
+  }
+
+  if (shouldCreateSlOrder) {
     tpSlMessages.push(
       createTpSlMessage({
         market,

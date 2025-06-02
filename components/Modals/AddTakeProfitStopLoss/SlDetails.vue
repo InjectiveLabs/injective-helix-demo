@@ -13,31 +13,26 @@ const props = withDefaults(
     position: PositionV2
     stopLossValue: string
     cancelSlStatus: Status
-    slOrderQuantity?: string
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
-    slOrderTriggerPrice?: string
+    hasExistingSlOrder?: boolean
   }>(),
-  { slQuantity: '', slOrderQuantity: '', slOrderTriggerPrice: '' }
+  { slQuantity: '' }
 )
 
 const emit = defineEmits<{
   'sl:cancel': []
 }>()
 
-const getSlQuantity = computed(() => props.slOrderQuantity || props.slQuantity)
-
 const hasNoSlQuantity = computed(() =>
-  new BigNumberInBase(getSlQuantity.value || 0).isZero()
+  new BigNumberInBase(props.slQuantity || 0).isZero()
 )
 
 const stopLossPnl = computed(() => {
-  const stopLossPrice = props.slOrderTriggerPrice
-    ? new BigNumberInBase(props.slOrderTriggerPrice)
-    : new BigNumberInBase(props.stopLossValue || 0)
+  const stopLossPrice = new BigNumberInBase(props.stopLossValue || 0)
 
-  const stopLossTotal = stopLossPrice.times(getSlQuantity.value || 0)
-  const entryTotal = props.entryPrice.times(getSlQuantity.value || 0)
+  const stopLossTotal = stopLossPrice.times(props.slQuantity || 0)
+  const entryTotal = props.entryPrice.times(props.slQuantity || 0)
 
   return props.isBuy
     ? stopLossTotal.minus(entryTotal)
@@ -45,7 +40,7 @@ const stopLossPnl = computed(() => {
 })
 
 const isCancelButtonDisabled = computed(
-  () => props.status.isLoading() || !props.slOrderTriggerPrice
+  () => props.status.isLoading() || !props.hasExistingSlOrder
 )
 
 function cancelSl() {
@@ -61,11 +56,11 @@ function cancelSl() {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!stopLossValue && !slOrderTriggerPrice"> &mdash;</span>
+        <span v-if="!stopLossValue"> &mdash;</span>
         <AppAmount
           v-else
           v-bind="{
-            amount: slOrderTriggerPrice || stopLossValue,
+            amount: stopLossValue,
             decimalPlaces: market.priceDecimals
           }"
         />
@@ -76,7 +71,7 @@ function cancelSl() {
       <span class="inline-flex gap-1">
         <AppAmount
           v-bind="{
-            amount: getSlQuantity,
+            amount: slQuantity,
             decimalPlaces: market.quantityDecimals
           }"
         />
@@ -90,11 +85,7 @@ function cancelSl() {
       <p class="text-xs">
         <span>{{ $t('trade.profitLoss') }}: </span>
 
-        <span
-          v-if="(!stopLossValue && !slOrderTriggerPrice) || hasNoSlQuantity"
-        >
-          &mdash;
-        </span>
+        <span v-if="!stopLossValue || hasNoSlQuantity"> &mdash; </span>
         <span
           v-else
           :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
