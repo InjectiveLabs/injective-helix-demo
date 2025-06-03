@@ -114,7 +114,7 @@ function onOpenBankTransferModal() {
         >
           <template
             v-if="
-              [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
             "
           >
             <PartialsCommonBridgeRedirection
