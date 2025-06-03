@@ -60,7 +60,7 @@ function onSubmit() {
       guildId: props.guild.guildId
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.guild.successfullyJoinGuild')
       })
       onCloseModal()

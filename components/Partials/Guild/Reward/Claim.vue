@@ -104,7 +104,7 @@ function onClaimRewards() {
   campaignStore
     .claimReward(contractAddress)
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.success'),
         description: t('toast.campaign.successfullyClaimedRewards')
       })

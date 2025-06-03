@@ -88,11 +88,12 @@ async function onSubmit() {
     props.isLend ? formValues[NeptuneUsdtField.Amount] : withdrawAmount.value
   )
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t(
           `toast.trade.neptuneUsdt.success.${props.isLend ? 'deposit' : 'withdraw'}`
         )
       })
+
       resetForm()
       closeModal()
     })

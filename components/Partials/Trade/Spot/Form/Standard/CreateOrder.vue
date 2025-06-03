@@ -6,10 +6,10 @@ import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
-  CtaToast,
   BusEvents,
   MarketKey,
   TradeTypes,
+  HelixCtaToast,
   MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
@@ -172,7 +172,7 @@ function submitMarketOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -212,7 +212,7 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -242,7 +242,7 @@ function showAutosignCta() {
       description: t('toast.portfolio.autoSign.enable.description'),
       icon: NuxtUiIcons.RotateAuto,
       timeout: MAX_TOAST_TIMEOUT,
-      key: CtaToast.EnableAutoSign,
+      key: HelixCtaToast.EnableAutoSign,
       actions: [
         {
           label: t('common.enable'),
@@ -254,6 +254,14 @@ function showAutosignCta() {
                 TRADING_MESSAGES
                 // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
               )
+              .then(() => {
+                notificationStore.update({
+                  title: t('toast.portfolio.autoSign.enabledToast.title'),
+                  description: t(
+                    'toast.portfolio.autoSign.enabledToast.description'
+                  )
+                })
+              })
               .catch($onError)
               .finally(() => status.setIdle())
           }

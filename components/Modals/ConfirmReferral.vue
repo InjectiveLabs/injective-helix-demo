@@ -8,7 +8,7 @@ import {
   trackRefereeLoggedIn,
   trackOnboardingUserBecomeReferee
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, CtaToast, MainPage } from '@/types'
+import { Modal, MainPage, HelixCtaToast } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -56,12 +56,16 @@ function joinReferral() {
       await referralStore.fetchUserReferrer()
 
       if (
-        !appStore.userState.dontShowAgain?.includes(CtaToast.ReferralSuccess)
+        !appStore.userState.dontShowAgain?.includes(
+          HelixCtaToast.ReferralSuccess
+        )
       ) {
+        notificationStore.update({ title: t('toast.success') })
+
         notificationStore.info({
           title: t('toast.referral.success'),
           description: t('toast.portfolio.discoverTrendingPairs'),
-          key: CtaToast.ReferralSuccess,
+          key: HelixCtaToast.ReferralSuccess,
           timeout: MAX_TOAST_TIMEOUT,
           actions: [
             {

@@ -5,9 +5,9 @@ import { Modal, StrategyStatus } from '@/types'
 const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const { success } = useSharedNotificationStore()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -37,7 +37,7 @@ function transferToMain() {
 
   action()
     .then(() => {
-      success({ title: t('toast.account.assetsTransferred') })
+      notificationStore.update({ title: t('toast.account.assetsTransferred') })
     })
     .catch($onError)
     .finally(() => {

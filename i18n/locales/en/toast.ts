@@ -7,7 +7,6 @@ export default {
     contextCopied: 'Context copied!',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
-    broacastingTransaction: 'Broadcasting transaction...',
     copiedAddressToClipboard: 'Address copied to clipboard',
     formSubmittedSuccessfully: 'Form submitted successfully.',
     transactionFinalized: 'Transaction finalized in {duration} sec.',
@@ -37,7 +36,7 @@ export default {
         disabledToast: 'Auto sign disabled',
         enabledToast: {
           title: 'Auto sign enabled',
-          description: 'Auto sign active for 3 days'
+          description: 'Auto sign active for 3 days.'
         },
         enable: {
           title: 'Auto Sign',
@@ -79,7 +78,7 @@ export default {
     referral: {
       referralLinkCopied: 'Referral Link Copied',
       referralLinkIsUnavailable: 'Referral Link is Unavailable',
-      success: 'Your code is successfully claimed. Explore Markets Now!',
+      success: 'Your Code is Successfully Claimed. Explore Markets Now!',
       joinSelfReferralMessage:
         "Your referral code is valid, but you can't refer yourself. Share it with someone else!"
     },
@@ -90,7 +89,7 @@ export default {
     campaign: {
       errorAlreadyClaimed: 'Reward already claimed',
       notFound: 'Campaign not found; please try again later',
-      successfullyClaimedRewards: 'Rewards claimed successfully'
+      successfullyClaimedRewards: 'Rewards claimed successfully.'
     },
     guild: {
       successfullyJoinGuild: 'Successfully joined guild',

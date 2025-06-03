@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
 import { DEFAULT_NOTIFICATION_TIMEOUT } from '@shared/utils/constant'
 import { BusEvents } from '@/types'
-import type { CtaToast } from '@/types'
+import type { HelixCtaToast } from '@/types'
 import type { Notification, NotificationAction } from '@shared/types'
 
 const appStore = useAppStore()
@@ -29,8 +29,6 @@ const progressBarInterval = ref()
 const progressBarPercent = ref(100)
 const lastProgressBarPercent = ref(100)
 const remainingTimeout = ref(DEFAULT_NOTIFICATION_TIMEOUT)
-
-const isTelemetryDoneToast = computed(() => props.notification?.data?.txHash)
 
 onMounted(() => {
   setupNotification()
@@ -86,7 +84,7 @@ function onClose() {
         ...appStore.userState,
         dontShowAgain: [
           ...appStore.userState.dontShowAgain,
-          props.notification.key as CtaToast
+          props.notification.key as HelixCtaToast
         ]
       }
     })
@@ -140,7 +138,9 @@ function onActionClick(action: NotificationAction) {
       v-if="notification"
       class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 ml-4"
       :class="[
-        isTelemetryDoneToast ? 'max-w-[480px]' : 'max-w-[328px]',
+        notification.txHash || notification.isTelemetry
+          ? 'w-[328px]'
+          : 'max-w-[328px]',
         wrapperClass
       ]"
       @mouseenter="onPause"
@@ -180,29 +180,23 @@ function onActionClick(action: NotificationAction) {
           />
 
           <div class="flex flex-col gap-4" :class="contentClass">
-            <span
-              class="text-sm font-semibold leading-tight"
-              :class="{
-                'flex gap-2 items-center flex-wrap': isTelemetryDoneToast
-              }"
-            >
+            <span class="text-sm font-semibold leading-tight">
               {{ notification.title }}
-
-              <NuxtLink
-                v-if="isTelemetryDoneToast"
-                target="_blank"
-                class="text-blue-500"
-                :to="`${getExplorerUrl()}/transaction/${notification?.data?.txHash}`"
-              >
-                {{ $t('toast.viewOnInjScan') }}
-              </NuxtLink>
             </span>
 
             <span
-              v-if="notification.description"
-              class="text-sm text-gray-400 flex items-center leading-tight break-word"
+              v-if="notification.description || notification.timeElapsed"
+              class="text-sm text-gray-400 leading-tight break-word"
             >
               {{ notification.description }}
+
+              <span v-if="notification.timeElapsed">
+                {{
+                  $t('toast.transactionFinalized', {
+                    duration: notification.timeElapsed
+                  })
+                }}
+              </span>
             </span>
 
             <AppTooltip
@@ -221,7 +215,19 @@ function onActionClick(action: NotificationAction) {
               </span>
             </AppTooltip>
 
-            <div v-if="notification.actions" class="flex gap-3">
+            <div
+              v-if="notification.actions || notification.txHash"
+              class="flex items-center gap-3 flex-wrap"
+            >
+              <NuxtLink
+                v-if="notification.txHash"
+                target="_blank"
+                class="text-sm text-blue-500"
+                :to="`${getExplorerUrl()}/transaction/${notification.txHash}`"
+              >
+                {{ $t('toast.viewOnInjScan') }}
+              </NuxtLink>
+
               <AppNotificationButton
                 v-for="(action, index) in notification.actions"
                 :key="index"

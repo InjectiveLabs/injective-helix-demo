@@ -129,9 +129,10 @@ function nonDefaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)
@@ -151,9 +152,10 @@ function defaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)
@@ -173,9 +175,10 @@ function defaultSubaccountWithdraw() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)

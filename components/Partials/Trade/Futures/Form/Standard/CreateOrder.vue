@@ -8,9 +8,9 @@ import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   Modal,
-  CtaToast,
   BusEvents,
   MarketKey,
+  HelixCtaToast,
   MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
@@ -278,7 +278,7 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -317,7 +317,7 @@ function submitMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -360,7 +360,7 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -403,7 +403,7 @@ function submitStopMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.orderPlaced') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
       showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
@@ -434,7 +434,7 @@ function showAutosignCta() {
       description: t('toast.portfolio.autoSign.enable.description'),
       icon: NuxtUiIcons.RotateAuto,
       timeout: MAX_TOAST_TIMEOUT,
-      key: CtaToast.EnableAutoSign,
+      key: HelixCtaToast.EnableAutoSign,
       actions: [
         {
           label: t('common.enable'),
@@ -446,6 +446,14 @@ function showAutosignCta() {
                 TRADING_MESSAGES
                 // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
               )
+              .then(() => {
+                notificationStore.update({
+                  title: t('toast.portfolio.autoSign.enabledToast.title'),
+                  description: t(
+                    'toast.portfolio.autoSign.enabledToast.description'
+                  )
+                })
+              })
               .catch($onError)
               .finally(() => status.setIdle())
           }

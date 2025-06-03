@@ -405,7 +405,9 @@ function cancelTp() {
   derivativeStore
     .cancelOrder(isTpDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.tpOrderCancelled') })
+      notificationStore.update({
+        title: t('toast.trade.tpOrderCancelled')
+      })
     })
     .catch($onError)
     .finally(() => {
@@ -423,7 +425,9 @@ function cancelSl() {
   derivativeStore
     .cancelOrder(isSlDisabled.value)
     .then(() => {
-      notificationStore.success({ title: t('toast.trade.slOrderCancelled') })
+      notificationStore.update({
+        title: t('toast.trade.slOrderCancelled')
+      })
     })
     .catch($onError)
     .finally(() => {
@@ -468,18 +472,22 @@ async function submitTpSl() {
       })
 
       if (!takeProfitValue.value) {
-        notificationStore.success({ title: slSuccessMessage })
+        notificationStore.update({
+          title: slSuccessMessage
+        })
 
         return
       }
 
       if (!stopLossValue.value) {
-        notificationStore.success({ title: tpSuccessMessage })
+        notificationStore.update({
+          title: tpSuccessMessage
+        })
 
         return
       }
 
-      notificationStore.success({
+      notificationStore.update({
         title: `${tpSuccessMessage}, ${t('common.and')} ${slSuccessMessage}`
       })
     })

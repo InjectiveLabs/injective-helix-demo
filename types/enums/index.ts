@@ -599,8 +599,7 @@ export type BaseQuoteFields = Exclude<
   | TradeField.ProportionalPercentage
 >
 
-export enum CtaToast {
-  Telemetry = 'telemetry',
+export enum HelixCtaToast {
   StockTwits = 'stock-twits',
   EnableAutoSign = 'enable-auto-sign',
   ReferralSuccess = 'referral-success',

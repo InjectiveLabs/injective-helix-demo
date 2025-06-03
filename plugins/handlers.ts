@@ -1,3 +1,4 @@
+import { CtaToast } from '@shared/types'
 import { defineNuxtPlugin } from '#imports'
 import { StatusCodes } from 'http-status-codes'
 import { BUGSNAG_KEY, IS_PRODUCTION } from '@shared/utils/constant'
@@ -101,6 +102,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const errorHandler = (error: ThrownException) => {
+    const notificationStore = useSharedNotificationStore()
+
+    notificationStore.close(CtaToast.Telemetry)
+
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }

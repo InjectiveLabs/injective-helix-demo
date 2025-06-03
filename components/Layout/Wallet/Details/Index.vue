@@ -13,9 +13,9 @@ import {
 } from '@/app/utils/constants'
 import {
   Modal,
-  CtaToast,
   MainPage,
   BusEvents,
+  HelixCtaToast,
   MixPanelEvent,
   PortfolioSubPage
 } from '@/types'
@@ -45,7 +45,7 @@ const formattedAddress = computed(() =>
 
 onMounted(() => {
   useEventBus(BusEvents.NotificationClosed).on((notificationId) => {
-    if (notificationId === CtaToast.EnableAutoSign) {
+    if (notificationId === HelixCtaToast.EnableAutoSign) {
       status.setIdle()
     }
   })
@@ -87,7 +87,7 @@ function toggleAutoSign() {
     description: t('toast.portfolio.autoSign.enable.description'),
     icon: NuxtUiIcons.RotateAuto,
     timeout: MAX_TOAST_TIMEOUT,
-    key: CtaToast.EnableAutoSign,
+    key: HelixCtaToast.EnableAutoSign,
     actions: [
       {
         label: t('common.enable'),
@@ -99,6 +99,14 @@ function toggleAutoSign() {
               TRADING_MESSAGES
               // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
             )
+            .then(() => {
+              notificationStore.update({
+                title: t('toast.portfolio.autoSign.enabledToast.title'),
+                description: t(
+                  'toast.portfolio.autoSign.enabledToast.description'
+                )
+              })
+            })
             .catch($onError)
             .finally(() => status.setIdle())
         }

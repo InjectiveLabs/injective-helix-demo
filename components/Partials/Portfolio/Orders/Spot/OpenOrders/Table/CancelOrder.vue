@@ -31,7 +31,7 @@ function cancelOrder() {
   spotStore
     .cancelOrder(props.order)
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.orderCancelled')
       })
     })

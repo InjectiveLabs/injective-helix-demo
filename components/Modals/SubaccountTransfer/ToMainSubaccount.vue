@@ -30,7 +30,7 @@ function onEndBot() {
     )
   ])
     .then(() =>
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.sgt.tradingBotRemovedSuccessfully')
       })
     )
