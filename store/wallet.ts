@@ -125,6 +125,10 @@ export const useWalletStore = defineStore('wallet', {
         })
       }
 
+      if (wallet === Wallet.Rainbow) {
+        await sharedWalletStore.connectRainbow()
+      }
+
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
       modalStore.closeModal(Modal.Connect)
 

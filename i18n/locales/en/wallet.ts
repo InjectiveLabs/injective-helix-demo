@@ -79,6 +79,7 @@ export default {
       [Wallet.Ninji]: 'Ninji',
       [Wallet.Ledger]: 'Ledger',
       [Wallet.Phantom]: 'Phantom',
+      [Wallet.Rainbow]: 'Rainbow',
       [Wallet.Metamask]: 'Metamask',
       [Wallet.TrezorBip32]: 'Trezor',
       [Wallet.TrezorBip44]: 'Trezor Bip44',
