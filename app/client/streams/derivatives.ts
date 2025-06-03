@@ -1,17 +1,19 @@
+import { ENDPOINTS } from '@shared/utils/constant'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import {
   IndexerGrpcOracleStream,
+  IndexerGrpcDerivativesStream
+} from '@injectivelabs/sdk-ts'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import { StreamType } from '@/types'
+import type {
   PositionsV2StreamCallback,
-  IndexerGrpcDerivativesStream,
   DerivativeOrdersStreamCallback,
   DerivativeTradesStreamCallback,
   OraclePricesByMarketsStreamCallback,
   DerivativeOrderHistoryStreamCallback,
   DerivativeOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { ENDPOINTS } from '@shared/utils/constant'
-import { streamProvider } from '@/app/providers/StreamProvider'
-import { StreamType } from '@/types'
 
 export const derivativesMarketStream = new IndexerGrpcDerivativesStream(
   ENDPOINTS.indexer
