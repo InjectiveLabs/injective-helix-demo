@@ -4,6 +4,7 @@ export default {
     success: 'Success',
     addressCopied: 'Address copied',
     contextCopied: 'Context copied!',
+    marketIdCopied: 'Market ID copied',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
     formSubmittedSuccessfully: 'Form submitted successfully.',
