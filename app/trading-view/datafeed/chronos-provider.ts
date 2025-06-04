@@ -1,5 +1,5 @@
-import { HttpClient } from '@injectivelabs/utils'
 import { getTimezone } from './helpers'
+import { HttpClient } from '@injectivelabs/utils'
 
 export class ChronosApiProvider {
   private client: HttpClient
@@ -11,78 +11,6 @@ export class ChronosApiProvider {
     this.isSpot = endpoint.includes('spot')
   }
 
-  async getConfig() {
-    const { data } = await (this.isSpot
-      ? this.getSpotConfig()
-      : this.getDerivativesConfig())
-
-    return data
-  }
-
-  async getSymbol(symbol: string) {
-    const { data } = await (this.isSpot
-      ? this.getSpotSymbol(symbol)
-      : this.getDerivativesSymbol(symbol))
-
-    delete data.has_no_volume
-    data.visible_plots_set = 'ohlcv'
-    data.timezone = getTimezone()
-
-    return data
-  }
-
-  async getBars({
-    symbol,
-    from,
-    to,
-    firstDataRequest,
-    countBack,
-    resolution
-  }: {
-    symbol: string
-    from: string
-    countBack?: number
-    firstDataRequest?: boolean
-    to: string
-    resolution: string
-  }) {
-    const { data } = await (this.isSpot
-      ? this.getSpotBars({
-          symbol,
-          from,
-          firstDataRequest,
-          countBack,
-          to,
-          resolution
-        })
-      : this.getDerivativeBars({
-          symbol,
-          from,
-          firstDataRequest,
-          countBack,
-          to,
-          resolution
-        }))
-
-    return data
-  }
-
-  getSpotConfig = async (): Promise<any> => {
-    return await this.client.get('config')
-  }
-
-  getDerivativesConfig = async (): Promise<any> => {
-    return await this.client.get('config')
-  }
-
-  getSpotSymbol = async (symbol: string): Promise<any> => {
-    return await this.client.get(`symbols?symbol=${encodeURI(symbol)}`)
-  }
-
-  getDerivativesSymbol = async (symbol: string): Promise<any> => {
-    return await this.client.get(`symbols?symbol=${encodeURI(symbol)}`)
-  }
-
   getSpotBars = async ({
     symbol,
     from,
@@ -91,14 +19,15 @@ export class ChronosApiProvider {
     countBack,
     resolution
   }: {
-    symbol: string
-    from: string
-    firstDataRequest?: boolean
-    countBack?: number
     to: string
+    from: string
+    symbol: string
+    countBack?: number
     resolution: string
+    firstDataRequest?: boolean
   }): Promise<any> => {
     let endpoint = `history?symbol=${encodeURI(symbol)}`
+    console.log({ symbol })
 
     if (resolution) {
       endpoint += `&resolution=${resolution}`
@@ -133,12 +62,12 @@ export class ChronosApiProvider {
     countBack,
     resolution
   }: {
-    symbol: string
-    from: string
-    firstDataRequest?: boolean
-    countBack?: number
     to: string
+    from: string
+    symbol: string
+    countBack?: number
     resolution: string
+    firstDataRequest?: boolean
   }): Promise<any> => {
     let endpoint = `history?symbol=${encodeURI(symbol)}`
 
@@ -165,5 +94,77 @@ export class ChronosApiProvider {
     endpoint += `&cache=true`
 
     return await this.client.get(endpoint)
+  }
+
+  async getBars({
+    symbol,
+    from,
+    to,
+    firstDataRequest,
+    countBack,
+    resolution
+  }: {
+    to: string
+    from: string
+    symbol: string
+    countBack?: number
+    resolution: string
+    firstDataRequest?: boolean
+  }) {
+    const { data } = await (this.isSpot
+      ? this.getSpotBars({
+          symbol,
+          from,
+          firstDataRequest,
+          countBack,
+          to,
+          resolution
+        })
+      : this.getDerivativeBars({
+          symbol,
+          from,
+          firstDataRequest,
+          countBack,
+          to,
+          resolution
+        }))
+
+    return data
+  }
+
+  async getSymbol(symbol: string) {
+    const { data } = await (this.isSpot
+      ? this.getSpotSymbol(symbol)
+      : this.getDerivativesSymbol(symbol))
+
+    delete data.has_no_volume
+    data.visible_plots_set = 'ohlcv'
+    data.timezone = getTimezone()
+
+    return data
+  }
+
+  async getConfig() {
+    const { data } = await (this.isSpot
+      ? this.getSpotConfig()
+      : this.getDerivativesConfig())
+
+    return data
+  }
+
+  getDerivativesSymbol = async (symbol: string): Promise<any> => {
+    return await this.client.get(`symbols?symbol=${encodeURI(symbol)}`)
+  }
+
+  getSpotSymbol = async (symbol: string): Promise<any> => {
+    return await this.client.get(`symbols?symbol=${encodeURI(symbol)}`)
+  }
+
+  getDerivativesConfig = async (): Promise<any> => {
+    return await this.client.get('config')
+  }
+
+  getSpotConfig = async (): Promise<any> => {
+    return await this.client.get('config')
   }
 }
