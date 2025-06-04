@@ -1,9 +1,9 @@
 import {
-  getHours,
-  getMinutes,
-  getTime,
   set,
+  getTime,
+  getHours,
   subHours,
+  getMinutes,
   subMinutes
 } from 'date-fns'
 
@@ -99,4 +99,15 @@ export function getTimezone(): string {
   }
 
   return 'Etc/UTC'
+}
+
+export function shouldSkipBar(symbol: string, timestamp: number) {
+  if (
+    symbol === 'factory/inj1nw35hnkz5j74kyrfq9ejlh2u4f7y7gt7c3ckde/PUGGO/inj' &&
+    timestamp < 1748967296
+  ) {
+    return true
+  }
+
+  return false
 }
