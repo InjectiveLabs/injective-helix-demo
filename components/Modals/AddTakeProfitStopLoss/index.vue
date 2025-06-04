@@ -462,12 +462,10 @@ async function submitTpSl() {
     })
     .then(() => {
       const tpSuccessMessage = t('toast.trade.tpSuccessMessage', {
-        quantity: `${tpQuantity.value} ${market.value?.baseToken?.symbol}`,
         price: `${takeProfitValue.value} ${market.value?.quoteToken?.symbol}`
       })
 
       const slSuccessMessage = t('toast.trade.slSuccessMessage', {
-        quantity: `${slQuantity.value} ${market.value?.baseToken?.symbol}`,
         price: `${stopLossValue.value} ${market.value?.quoteToken?.symbol}`
       })
 

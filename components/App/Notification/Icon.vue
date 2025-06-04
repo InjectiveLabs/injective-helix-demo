@@ -32,7 +32,7 @@ withDefaults(
   <div v-if="notificationType === NotificationType.Success">
     <slot name="success">
       <UIcon
-        :name="icon || NuxtUiIcons.CheckmarkOutline"
+        :name="icon || NuxtUiIcons.CheckmarkCircle"
         class="block size-6 text-green-400"
       />
     </slot>

@@ -46,7 +46,7 @@ function claimRewards() {
       if ((er.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
           title: t('toast.error'),
-          description: t('toast.errorAlreadyClaimed')
+          description: t('toast.campaign.errorAlreadyClaimed')
         })
       } else {
         $onError(er)

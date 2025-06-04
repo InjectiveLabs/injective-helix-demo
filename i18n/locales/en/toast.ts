@@ -9,7 +9,7 @@ export default {
     connectedSuccessfully: 'Connected successfully ',
     copiedAddressToClipboard: 'Address copied to clipboard',
     formSubmittedSuccessfully: 'Form submitted successfully.',
-    transactionFinalized: 'Transaction finalized in {duration} sec.',
+    transactionFinalized: 'Tx finalized in {duration} sec. {viewOnInjScan}',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
     account: {
@@ -36,7 +36,7 @@ export default {
         disabledToast: 'Auto sign disabled',
         enabledToast: {
           title: 'Auto sign enabled',
-          description: 'Auto sign active for 3 days.'
+          description: 'Auto sign enabled for 3 days.'
         },
         enable: {
           title: 'Auto Sign',
@@ -58,10 +58,8 @@ export default {
       tpOrderCancelled: 'Take profit order cancelled',
       advancedOrderCancelled: 'Advanced order cancelled',
       allAdvancedOrdersCancelled: 'All advanced orders cancelled',
-      tpSuccessMessage:
-        'your take profit order has been set for {quantity} quantity at {price} price',
-      slSuccessMessage:
-        'your stop loss order has been set for {quantity} quantity at {price} price',
+      tpSuccessMessage: 'TP is set to {price}',
+      slSuccessMessage: 'SL is set to {price}',
       rwaMarketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
       neptuneUsdt: {

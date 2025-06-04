@@ -139,18 +139,17 @@ function onActionClick(action: NotificationAction) {
       class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 ml-4"
       :class="[
         notification.txHash || notification.isTelemetry
-          ? 'w-[328px]'
-          : 'max-w-[328px]',
+          ? 'w-[340px]'
+          : 'max-w-[340px]',
         wrapperClass
       ]"
       @mouseenter="onPause"
       @mouseleave="onResume"
     >
       <div
-        class="relative flex gap-4 justify-between p-4 pt-5"
+        class="relative flex gap-3 justify-between p-4 pt-5"
         :class="{
-          'pr-6': notification.isTelemetry,
-          'items-center': !notification.description
+          'pr-6': notification.isTelemetry
         }"
       >
         <div
@@ -163,78 +162,84 @@ function onActionClick(action: NotificationAction) {
           />
         </div>
 
-        <div
-          class="flex gap-4"
-          :class="{ 'items-center': !notification.description }"
-        >
-          <div v-if="notification.isTelemetry" class="px-3">
-            <span class="toast-loader block size-1 rounded-full animate-spin" />
-          </div>
-
-          <AppNotificationIcon
-            v-else
-            v-bind="{
-              icon: notification.icon,
-              notificationType: notification.type
-            }"
-          />
-
-          <div class="flex flex-col gap-4" :class="contentClass">
-            <span class="text-sm font-semibold leading-tight">
-              {{ notification.title }}
-            </span>
-
-            <span
-              v-if="notification.description || notification.timeElapsed"
-              class="text-sm text-gray-400 leading-tight break-word"
-            >
-              {{ notification.description }}
-
-              <span v-if="notification.timeElapsed">
-                {{
-                  $t('toast.transactionFinalized', {
-                    duration: notification.timeElapsed
-                  })
-                }}
-              </span>
-            </span>
-
-            <AppTooltip
-              v-if="notification.context"
-              :content="notification.context"
-            >
+        <div class="flex flex-col gap-4" :class="contentClass">
+          <div
+            class="flex gap-3"
+            :class="{ 'items-center': notification.isTelemetry }"
+          >
+            <div v-if="notification.isTelemetry" class="px-3">
               <span
-                class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
-                @click="onCopy"
-              >
-                {{
-                  hasCopied
-                    ? $t('toast.contextCopied')
-                    : $t('common.showMoreContext')
-                }}
-              </span>
-            </AppTooltip>
-
-            <div
-              v-if="notification.actions || notification.txHash"
-              class="flex items-center gap-3 flex-wrap"
-            >
-              <NuxtLink
-                v-if="notification.txHash"
-                target="_blank"
-                class="text-sm text-blue-500"
-                :to="`${getExplorerUrl()}/transaction/${notification.txHash}`"
-              >
-                {{ $t('toast.viewOnInjScan') }}
-              </NuxtLink>
-
-              <AppNotificationButton
-                v-for="(action, index) in notification.actions"
-                :key="index"
-                v-bind="{ action }"
-                @on:click="onActionClick"
+                class="toast-loader block size-1 rounded-full animate-spin"
               />
             </div>
+
+            <AppNotificationIcon
+              v-else
+              v-bind="{
+                icon: notification.icon,
+                notificationType: notification.type
+              }"
+            />
+
+            <span class="text-sm font-semibold leading-tight h-auto my-auto">
+              {{ notification.title }}
+            </span>
+          </div>
+
+          <span
+            v-if="notification.description || notification.timeElapsed"
+            class="text-sm text-gray-400 leading-tight break-word"
+          >
+            {{ notification.description }}
+
+            <i18n-t
+              v-if="notification.txHash && notification.timeElapsed"
+              tag="span"
+              keypath="toast.transactionFinalized"
+            >
+              <template #duration>
+                {{ notification.timeElapsed }}
+              </template>
+
+              <template #viewOnInjScan>
+                <NuxtLink
+                  v-if="notification.txHash"
+                  target="_blank"
+                  class="text-sm text-blue-500 underline hover:opacity-80 transition-opacity"
+                  :to="`${getExplorerUrl()}/transaction/${notification.txHash}`"
+                >
+                  {{ $t('toast.viewOnInjScan') }}
+                </NuxtLink>
+              </template>
+            </i18n-t>
+          </span>
+
+          <AppTooltip
+            v-if="notification.context"
+            :content="notification.context"
+          >
+            <span
+              class="text-sm font-semibold text-[#A7C8FF] hover:text-[#A7C8FF]/80 transition-colors cursor-pointer"
+              @click="onCopy"
+            >
+              {{
+                hasCopied
+                  ? $t('toast.contextCopied')
+                  : $t('common.showMoreContext')
+              }}
+            </span>
+          </AppTooltip>
+
+          <div
+            v-if="notification.actions"
+            class="flex items-center gap-3 flex-wrap"
+          >
+            <AppNotificationButton
+              v-for="(action, index) in notification.actions"
+              :key="index"
+              v-bind="{ action }"
+              @on:click="onActionClick"
+            />
           </div>
         </div>
 
@@ -245,7 +250,7 @@ function onActionClick(action: NotificationAction) {
         >
           <UIcon
             :name="NuxtUiIcons.Close"
-            class="text-white size-4 min-w-4 hover:text-gray-400 transition-colors"
+            class="text-white size-5 min-w-5 hover:text-gray-400 transition-colors"
             @click="onClose"
           />
         </slot>
