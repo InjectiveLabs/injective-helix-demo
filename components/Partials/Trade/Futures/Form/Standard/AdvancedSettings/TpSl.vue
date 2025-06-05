@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MarketKey, DerivativesTradeFormField } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -15,6 +16,13 @@ const { markPrice } = useDerivativeLastPrice(market)
 const emit = defineEmits<{
   'tpsl:add': [position: PositionV2]
 }>()
+
+const props = withDefaults(
+  defineProps<{
+    estLiquidationPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const isBuy = computed(
   () =>
@@ -34,13 +42,16 @@ const { value: takeProfitValue, errorMessage: takeProfitErrorMessage } =
     initialValue: '',
     rule: '',
     dynamicRule: computed(() => {
-      const minMaxRule = isBuy.value ? 'minValue' : 'maxValue'
+      const formattedMarkPrice = new BigNumberInBase(markPrice.value).toFixed(
+        market.value.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
 
-      const minMaxValueRule = `${minMaxRule}:${new BigNumberInBase(
-        markPrice.value
-      ).toFixed(market.value.priceDecimals)}`
-
-      return minMaxValueRule
+      if (isBuy.value) {
+        return `minValue:${formattedMarkPrice}`
+      } else {
+        return `maxValue:${formattedMarkPrice}`
+      }
     })
   })
 
@@ -50,13 +61,26 @@ const { value: stopLossValue, errorMessage: stopLossErrorMessage } =
     initialValue: '',
     rule: '',
     dynamicRule: computed(() => {
-      const minMaxRule = !isBuy.value ? 'minValue' : 'maxValue'
+      const formattedMarkPrice = new BigNumberInBase(markPrice.value).toFixed(
+        market.value.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
+      const formattedEstLiquidationPrice = props.estLiquidationPrice.toFixed(
+        market.value.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
 
-      const minMaxValueRule = `${minMaxRule}:${new BigNumberInBase(
-        markPrice.value
-      ).toFixed(market.value.priceDecimals)}`
+      if (isBuy.value) {
+        const minValueRule = `minValue:${formattedEstLiquidationPrice}`
+        const maxValueRule = `maxValue:${formattedMarkPrice}`
 
-      return minMaxValueRule
+        return [minValueRule, maxValueRule].join('|')
+      } else {
+        const minValueRule = `minValue:${formattedMarkPrice}`
+        const maxValueRule = `maxValue:${formattedEstLiquidationPrice}`
+
+        return [minValueRule, maxValueRule].join('|')
+      }
     })
   })
 

@@ -17,12 +17,12 @@ function closeModal() {
       v-bind="{ isHideCloseButton: true }"
     >
       <template #title>
-        <p class="text-center font-bold">
+        <p class="text-center">
           {{ $t('campaign.helixLpRewardsRound', { round: round }) }}
         </p>
       </template>
 
-      <div class="md:text-xl space-y-2 text-center text-coolGray-300">
+      <div class="md:text-lg space-y-2 text-center text-coolGray-300">
         <div>
           <i18n-t keypath="campaign.roundIsLive" tag="div">
             <template #round1>

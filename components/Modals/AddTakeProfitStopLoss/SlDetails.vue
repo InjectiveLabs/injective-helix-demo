@@ -1,52 +1,51 @@
 <script setup lang="ts">
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket } from '@/types'
-import { ConditionalOrderSide } from '@/types'
-
-const derivativeStore = useDerivativeStore()
+import type { Status } from '@injectivelabs/utils'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
     isBuy: boolean
+    status: Status
     slQuantity?: string
     position: PositionV2
     stopLossValue: string
+    cancelSlStatus: Status
     market: UiDerivativeMarket
     entryPrice: BigNumberInBase
-    slOrderTriggerPrice?: string
+    hasExistingSlOrder?: boolean
   }>(),
-  { slQuantity: '', slOrderTriggerPrice: '' }
+  { slQuantity: '' }
 )
 
-const getSlQuantity = computed(() => {
-  const slOrderQuantity =
-    derivativeStore.subaccountConditionalOrders.find(
-      (order) =>
-        order.marketId === props.position.marketId &&
-        (order.orderType === ConditionalOrderSide.StopBuy ||
-          order.orderType === ConditionalOrderSide.StopSell)
-    )?.quantity || 0
-
-  return props.slOrderTriggerPrice ? slOrderQuantity : props.slQuantity
-})
+const emit = defineEmits<{
+  'sl:cancel': []
+}>()
 
 const hasNoSlQuantity = computed(() =>
-  new BigNumberInBase(getSlQuantity.value || 0).isZero()
+  new BigNumberInBase(props.slQuantity || 0).isZero()
 )
 
 const stopLossPnl = computed(() => {
-  const stopLossPrice = props.slOrderTriggerPrice
-    ? new BigNumberInBase(props.slOrderTriggerPrice)
-    : new BigNumberInBase(props.stopLossValue || 0)
+  const stopLossPrice = new BigNumberInBase(props.stopLossValue || 0)
 
-  const stopLossTotal = stopLossPrice.times(getSlQuantity.value || 0)
-  const entryTotal = props.entryPrice.times(getSlQuantity.value || 0)
+  const stopLossTotal = stopLossPrice.times(props.slQuantity || 0)
+  const entryTotal = props.entryPrice.times(props.slQuantity || 0)
 
   return props.isBuy
     ? stopLossTotal.minus(entryTotal)
     : entryTotal.minus(stopLossTotal)
 })
+
+const isCancelButtonDisabled = computed(
+  () => props.status.isLoading() || !props.hasExistingSlOrder
+)
+
+function cancelSl() {
+  emit('sl:cancel')
+}
 </script>
 
 <template>
@@ -57,11 +56,11 @@ const stopLossPnl = computed(() => {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!stopLossValue && !slOrderTriggerPrice"> &mdash;</span>
+        <span v-if="!stopLossValue"> &mdash;</span>
         <AppAmount
           v-else
           v-bind="{
-            amount: slOrderTriggerPrice || stopLossValue,
+            amount: stopLossValue,
             decimalPlaces: market.priceDecimals
           }"
         />
@@ -72,7 +71,7 @@ const stopLossPnl = computed(() => {
       <span class="inline-flex gap-1">
         <AppAmount
           v-bind="{
-            amount: getSlQuantity,
+            amount: slQuantity,
             decimalPlaces: market.quantityDecimals
           }"
         />
@@ -81,24 +80,50 @@ const stopLossPnl = computed(() => {
     </template>
   </i18n-t>
 
-  <p class="text-xs">
-    <span>{{ $t('trade.profitLoss') }}: </span>
+  <div class="flex justify-between items-center flex-wrap gap-4 max-sm:gap-2">
+    <div>
+      <p class="text-xs">
+        <span>{{ $t('trade.profitLoss') }}: </span>
 
-    <span v-if="(!stopLossValue && !slOrderTriggerPrice) || hasNoSlQuantity">
-      &dash;
-    </span>
-    <span
-      v-else
-      :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
-      class="font-bold inline-flex gap-1"
+        <span v-if="!stopLossValue || hasNoSlQuantity"> &mdash; </span>
+        <span
+          v-else
+          :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
+          class="font-bold inline-flex gap-1"
+        >
+          <AppAmount
+            v-bind="{
+              amount: stopLossPnl.toFixed(),
+              decimalPlaces: market.priceDecimals
+            }"
+          />
+          <span>{{ market.quoteToken.symbol }}</span>
+        </span>
+      </p>
+    </div>
+
+    <AppButton
+      class="w-40 py-1.5"
+      v-bind="{
+        size: 'sm',
+        status: cancelSlStatus,
+        variant: 'primary-outline',
+        disabled: isCancelButtonDisabled
+      }"
+      :class="[
+        isCancelButtonDisabled ? '!border-coolGray-450' : '!border-blue-250'
+      ]"
+      @click="cancelSl"
     >
-      <AppAmount
-        v-bind="{
-          amount: stopLossPnl.toFixed(),
-          decimalPlaces: market.priceDecimals
-        }"
-      />
-      <span>{{ market.quoteToken.symbol }}</span>
-    </span>
-  </p>
+      <div
+        class="flex gap-2 items-center font-medium"
+        :class="[
+          isCancelButtonDisabled ? 'text-coolGray-450' : 'text-blue-250'
+        ]"
+      >
+        <UIcon :name="NuxtUiIcons.Trash3" class="size-5" />
+        <p>{{ $t('trade.cancelStopLoss') }}</p>
+      </div>
+    </AppButton>
+  </div>
 </template>

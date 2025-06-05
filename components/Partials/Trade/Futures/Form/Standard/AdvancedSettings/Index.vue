@@ -8,6 +8,7 @@ import {
 } from '@/types'
 import type { DerivativesTradeForm } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 const jsonStore = useSharedJsonStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
@@ -15,6 +16,13 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const emit = defineEmits<{
   'tpsl:add': [position: PositionV2]
 }>()
+
+withDefaults(
+  defineProps<{
+    estLiquidationPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const isOpen = ref(false)
 
@@ -88,6 +96,7 @@ function addTpSl(position: PositionV2) {
               ] as DerivativeTradeTypes
             )
           "
+          v-bind="{ estLiquidationPrice }"
           @tpsl:add="addTpSl"
         />
       </div>
