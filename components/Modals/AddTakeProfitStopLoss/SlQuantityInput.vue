@@ -42,7 +42,7 @@ function onOptionUpdate(percentage: number) {
           placeholder: '0.00',
           decimals: market.quantityDecimals,
           inputClasses:
-            'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+            'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
         }"
       />
 

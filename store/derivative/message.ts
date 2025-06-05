@@ -1,3 +1,4 @@
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
@@ -10,9 +11,8 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/msgs'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import { ConditionalOrderSide } from '@/types'
 import type { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
@@ -32,7 +32,7 @@ const fetchBalances = (
   const accountStore = useAccountStore()
   const derivativeStore = useDerivativeStore()
 
-  return backupPromiseCall(() =>
+  return sharedBackupPromiseCall(() =>
     Promise.all([
       derivativeStore.fetchSubaccountOrders(),
       accountStore.fetchAccountPortfolioBalances(),
@@ -42,14 +42,14 @@ const fetchBalances = (
 }
 
 const createTpSlMessage = ({
-  executionPrice,
-  triggerPrice,
-  quantity,
-  subaccountId,
-  injectiveAddress,
-  marketId,
   isBuy,
-  market
+  market,
+  quantity,
+  marketId,
+  triggerPrice,
+  subaccountId,
+  executionPrice,
+  injectiveAddress
 }: {
   isBuy: boolean
   marketId: string
@@ -128,7 +128,7 @@ export const cancelOrder = async (order: UIDerivativeOrder) => {
 
   await fetchBalances()
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
       derivativeStore.fetchSubaccountOrders(),
       derivativeStore.fetchSubaccountConditionalOrders()
@@ -213,9 +213,9 @@ export const submitLimitOrder = async ({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = reduceOnly
+  const cw20Messages = reduceOnly
     ? []
-    : prepareOrderMessages({
+    : prepareNeptuneWithdrawMessage({
         amount: marginToFixed,
         denom: market.quoteDenom
       })
@@ -232,18 +232,20 @@ export const submitLimitOrder = async ({
     feeRecipient: referralStore.feeRecipient
   })
 
-  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
-    market,
-    quantity,
-    orderSide
-  })
-
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+    messages: [
+      ...cw20Messages,
+      ...derivativeStore.prepareCancelTpSlOrderMsgs({
+        market,
+        quantity,
+        orderSide
+      }),
+      message
+    ]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -304,7 +306,7 @@ export const submitStopLimitOrder = async ({
 
   const msgMargin = reduceOnly ? '0' : marginToFixed
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market.quoteDenom,
     amount: marginToFixed
   })
@@ -321,18 +323,20 @@ export const submitStopLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
-    market,
-    quantity,
-    orderSide
-  })
-
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+    messages: [
+      ...cw20Messages,
+      ...derivativeStore.prepareCancelTpSlOrderMsgs({
+        market,
+        quantity,
+        orderSide
+      }),
+      message
+    ]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -407,7 +411,7 @@ export const submitMarketOrder = async ({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     amount: marginToFixed,
     denom: market.quoteDenom
   })
@@ -433,14 +437,16 @@ export const submitMarketOrder = async ({
     feeRecipient: referralStore.feeRecipient
   })
 
-  const cancelTpSlMessages = derivativeStore.prepareCancelTpSlOrderMsgs({
-    market,
-    quantity,
-    orderSide
-  })
-
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, ...cancelTpSlMessages, message]
+    messages: [
+      ...cw20Messages,
+      ...derivativeStore.prepareCancelTpSlOrderMsgs({
+        market,
+        quantity,
+        orderSide
+      }),
+      message
+    ]
   })
 
   if (tpSlMessages.length) {
@@ -450,7 +456,7 @@ export const submitMarketOrder = async ({
   }
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -518,17 +524,17 @@ export const submitStopMarketOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market.quoteDenom,
     amount: marginToFixed
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, message]
+    messages: [...cw20Messages, message]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -536,6 +542,8 @@ export const submitTpSlOrder = async ({
   position,
   stopLossPrice,
   takeProfitPrice,
+  existingTpOrder,
+  existingSlOrder,
   stopLossQuantity,
   takeProfitQuantity
 }: {
@@ -544,6 +552,8 @@ export const submitTpSlOrder = async ({
   takeProfitPrice?: BigNumberInBase
   stopLossQuantity: BigNumberInBase
   takeProfitQuantity: BigNumberInBase
+  existingTpOrder?: DerivativeLimitOrder
+  existingSlOrder?: DerivativeLimitOrder
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -571,51 +581,89 @@ export const submitTpSlOrder = async ({
     market.quoteToken.decimals
   )
 
-  const tpMessage = takeProfitPrice
-    ? createTpSlMessage({
+  const messages = [] as Msgs[]
+
+  const tpHasChange =
+    !takeProfitQuantity.eq(existingTpOrder?.quantity || 0) ||
+    !new BigNumberInBase(existingTpOrder?.triggerPrice || 0).eq(
+      derivativePriceToChainPriceToFixed({
+        value: takeProfitPrice?.toFixed() || 0,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    )
+
+  const slHasChange =
+    !stopLossQuantity.eq(existingSlOrder?.quantity || 0) ||
+    !new BigNumberInBase(existingSlOrder?.triggerPrice || 0).eq(
+      derivativePriceToChainPriceToFixed({
+        value: stopLossPrice?.toFixed() || 0,
+        quoteDecimals: market.quoteToken.decimals
+      })
+    )
+
+  const shouldCreateTpOrder = takeProfitPrice && tpHasChange
+
+  const shouldCreateSlOrder = stopLossPrice && slHasChange
+
+  if (existingTpOrder && shouldCreateTpOrder) {
+    messages.push(
+      MsgCancelDerivativeOrder.fromJSON({
+        marketId: existingTpOrder.marketId,
+        orderHash: existingTpOrder.orderHash,
+        subaccountId: existingTpOrder.subaccountId,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+      })
+    )
+  }
+
+  if (existingSlOrder && shouldCreateSlOrder) {
+    messages.push(
+      MsgCancelDerivativeOrder.fromJSON({
+        marketId: existingSlOrder.marketId,
+        orderHash: existingSlOrder.orderHash,
+        subaccountId: existingSlOrder.subaccountId,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+      })
+    )
+  }
+
+  if (shouldCreateTpOrder) {
+    messages.push(
+      createTpSlMessage({
+        market,
+        isBuy: !isTpslBuy,
         executionPrice: markPrice,
-        triggerPrice: takeProfitPrice ?? new BigNumberInBase(0),
+        marketId: market.marketId,
         quantity: takeProfitQuantity,
+        triggerPrice: takeProfitPrice,
         subaccountId: accountStore.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        marketId: market.marketId,
-        isBuy: !isTpslBuy,
-        market
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
       })
-    : undefined
+    )
+  }
 
-  const slMessage = stopLossPrice
-    ? createTpSlMessage({
+  if (shouldCreateSlOrder) {
+    messages.push(
+      createTpSlMessage({
+        market,
+        isBuy: !isTpslBuy,
         executionPrice: markPrice,
-        triggerPrice: stopLossPrice ?? new BigNumberInBase(0),
-        quantity: stopLossQuantity,
-        subaccountId: accountStore.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
         marketId: market.marketId,
-        isBuy: !isTpslBuy,
-        market
+        quantity: stopLossQuantity,
+        triggerPrice: stopLossPrice,
+        subaccountId: accountStore.subaccountId,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
       })
-    : undefined
-
-  const msgs = []
-
-  if (tpMessage) {
-    msgs.push(tpMessage)
+    )
   }
 
-  if (slMessage) {
-    msgs.push(slMessage)
-  }
-
-  const tpSlMessages = [tpMessage, slMessage].filter(
-    (msg) => msg
-  ) as MsgCreateDerivativeMarketOrder[]
-
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages: tpSlMessages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages
+  })
 
   await fetchBalances()
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([derivativeStore.fetchSubaccountConditionalOrders()])
   )
 }
