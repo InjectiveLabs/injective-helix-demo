@@ -1,7 +1,7 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { usdtToken } from '@shared/data/token'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import { NEPTUNE_USDT_CW20_CONTRACT } from '@injectivelabs/sdk-ts'
-import { backupPromiseCall } from '@/app/utils/async'
 import { neptuneService } from '@/app/Services'
 
 export const fetchNeptuneRedemptionRatio = async () => {
@@ -56,7 +56,7 @@ export const convertNeptuneToPeggyUsdt = async (
     messages: [withdrawMsg]
   })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()
@@ -89,7 +89,7 @@ export const convertPeggyToNeptuneUsdt = async (amountInPeggyUsdt: string) => {
     messages: [depositMsg]
   })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
@@ -40,7 +40,7 @@ function claimRewards() {
         description: t('toast.campaign.successfullyClaimedRewards')
       })
 
-      backupPromiseCall(() => campaignStore.fetchRound())
+      sharedBackupPromiseCall(() => campaignStore.fetchRound())
     })
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {

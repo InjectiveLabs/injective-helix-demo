@@ -1,22 +1,22 @@
-import {
-  TokenStatic,
-  ExecArgCW20Send,
-  isCw20ContractAddress,
-  MsgExecuteContractCompat,
-  NEPTUNE_USDT_CW20_CONTRACT,
-  getGenericAuthorizationFromMessageType,
-  MsgGrant,
-  MsgWithdraw
-} from '@injectivelabs/sdk-ts'
 import { usdtToken } from '@shared/data/token'
 import { NETWORK } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import { gridStrategyAuthorizationMessageTypes } from '../data/grid-strategy'
+import {
+  MsgGrant,
+  MsgWithdraw,
+  ExecArgCW20Send,
+  isCw20ContractAddress,
+  MsgExecuteContractCompat,
+  NEPTUNE_USDT_CW20_CONTRACT,
+  getGenericAuthorizationFromMessageType
+} from '@injectivelabs/sdk-ts'
 import { neptuneService } from '@/app/Services'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
-export const prepareOrderMessages = ({
+export const prepareNeptuneWithdrawMessage = ({
   denom,
   amount
 }: {
@@ -104,8 +104,8 @@ export const convertCw20ToBankBalanceForSwap = ({
   bankBalancesMap,
   cw20BalancesMap
 }: {
-  token: TokenStatic
   quantity: string
+  token: TokenStatic
   injectiveAddress: string
   bankBalancesMap: Record<string, string>
   cw20BalancesMap: Record<string, string>

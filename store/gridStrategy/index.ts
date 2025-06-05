@@ -142,6 +142,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     createSpotLiquidityBot,
     removeSubaccountDeposits,
     removeStrategyForSubaccount,
+
     async fetchStrategies(marketId?: string) {
       const sharedWalletStore = useSharedWalletStore()
 

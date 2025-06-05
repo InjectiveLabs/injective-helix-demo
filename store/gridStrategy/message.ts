@@ -1,6 +1,10 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
+import {
+  sharedDelayPromiseCall,
+  sharedBackupPromiseCall
+} from '@shared/utils/async'
 import ExecArgRemoveSubaccountDeposits from '~/app/grid-trading/ExecArgRemoveSubaccountDeposits'
 import {
   MsgExecuteContractCompat,
@@ -8,25 +12,23 @@ import {
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { backupPromiseCall } from '@/app/utils/async'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
-import {
-  prepareAuthZMsg,
-  prepareWithdrawMsg,
-  prepareOrderMessages
-} from '@/app/utils/msgs'
 import {
   ExecArgCreateSpotGridStrategy,
   ExecArgCreatePerpGridStrategy
 } from '@/app/grid-trading'
+import {
+  prepareAuthZMsg,
+  prepareWithdrawMsg,
+  prepareNeptuneWithdrawMessage
+} from '@/app/utils/msgs'
 import {
   ExitType,
   SpotGridStrategyType,
   PerpetualGridStrategyType,
   DerivativeGridTradingField
 } from '@/types'
-import type { Msgs } from '@injectivelabs/sdk-ts'
 import type {
   ExitConfig,
   UiSpotMarket,
@@ -174,32 +176,26 @@ export const createSpotGridStrategy = async ({
     funds
   })
 
-  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
-
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market.quoteDenom || '',
     amount: quoteAmountToFixed
   })
 
-  const messages: Msgs[] = []
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [
+      ...prepareWithdrawMsg(gridStrategySubaccountId),
+      ...prepareAuthZMsg(gridMarket.contractAddress),
+      ...cw20Messages,
+      message
+    ]
+  })
 
-  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
-
-  messages.push(
-    ...withdrawMsgs,
-    ...grantAuthZMessages,
-    ...cw20ConvertMessage,
-    message
-  )
-
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
-
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
       authZStore.fetchGrants(),
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances()
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
     ])
   )
 }
@@ -251,7 +247,7 @@ export const removeStrategy = async (contractAddress?: string) => {
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
@@ -295,9 +291,8 @@ export const removeStrategyForSubaccount = async (
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
-      accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
@@ -406,35 +401,28 @@ export const createPerpStrategy = async (
     funds
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market?.quoteDenom || '',
     amount: marginToFixed
   })
 
-  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
-
-  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
-
-  const messages: Msgs[] = []
-
-  // The messages must be in this order
-  messages.push(
-    ...withdrawMsgs,
-    ...grantAuthZMessages,
-    ...cw20ConvertMessage,
-    message
-  )
-
   await walletStore.validateGeo()
   await walletStore.validate()
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    // The messages must be in this order
+    messages: [
+      ...prepareWithdrawMsg(gridStrategySubaccountId),
+      ...prepareAuthZMsg(gridMarket.contractAddress),
+      ...cw20Messages,
+      message
+    ]
+  })
 
-  setTimeout(
+  sharedDelayPromiseCall(
     () =>
       Promise.all([
         authZStore.fetchGrants(),
-        accountStore.fetchCw20Balances(),
         gridStrategyStore.fetchAllStrategies(),
         accountStore.fetchAccountPortfolioBalances(),
         derivativeStore.fetchSecondarySubaccountOrders({
@@ -446,7 +434,8 @@ export const createPerpStrategy = async (
         }),
         derivativeStore.fetchSubaccountTrades({
           subaccountId: gridStrategySubaccountId
-        })
+        }),
+        ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
       ]),
     5000
   )
@@ -508,6 +497,11 @@ export async function createSpotLiquidityBot(params: {
     })
   }
 
+  const quoteAmountToFixed = spotQuantityToChainQuantityToFixed({
+    value: quoteAmount || '',
+    baseDecimals: market.quoteToken.decimals
+  })
+
   if (quoteAmount && !new BigNumberInBase(quoteAmount).eq(0)) {
     funds.push({
       denom: market.quoteToken.denom,
@@ -518,7 +512,7 @@ export async function createSpotLiquidityBot(params: {
     })
   }
 
-  const msg = MsgExecuteContractCompat.fromJSON({
+  const message = MsgExecuteContractCompat.fromJSON({
     funds,
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
@@ -552,23 +546,28 @@ export async function createSpotLiquidityBot(params: {
     }).toExecData()
   })
 
-  const withdrawMsgs = prepareWithdrawMsg(gridStrategySubaccountId)
-  const grantAuthZMessages = prepareAuthZMsg(gridMarket.contractAddress)
-
-  const messages: Msgs[] = []
-
-  messages.push(...withdrawMsgs, ...grantAuthZMessages, msg)
+  const cw20Messages = prepareNeptuneWithdrawMessage({
+    denom: market?.quoteDenom || '',
+    amount: quoteAmountToFixed
+  })
 
   await walletStore.validateGeo()
   await walletStore.validate()
 
-  await sharedWalletStore.broadcastWithFeeDelegation({ messages })
+  await sharedWalletStore.broadcastWithFeeDelegation({
+    messages: [
+      ...prepareWithdrawMsg(gridStrategySubaccountId),
+      ...prepareAuthZMsg(gridMarket.contractAddress),
+      ...cw20Messages,
+      message
+    ]
+  })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
-      accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
     ])
   )
 }
@@ -607,9 +606,8 @@ export const removeSubaccountDeposits = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
-      accountStore.fetchCw20Balances(),
       gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
