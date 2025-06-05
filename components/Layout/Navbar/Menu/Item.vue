@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { LocationAsRelativeRaw } from 'vue-router'
 import { commonCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { NavBarCyTags } from '@/types'
+import type { LocationAsRelativeRaw } from 'vue-router'
 import type { NavLink, MenuItem, NavChild } from '@/types'
 
 const route = useRoute()
@@ -57,8 +57,13 @@ function closeAllMenus() {
 
 <template>
   <div v-if="isShowItem">
+    <LayoutNavbarMenuDepositItem
+      v-if="item.isOpenDepositModal"
+      v-bind="{ label: item.label }"
+    />
+
     <NuxtLink
-      v-if="!item.isExpandable"
+      v-else-if="!item.isExpandable"
       :to="(item as NavLink).to"
       class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
       :class="{
@@ -108,13 +113,7 @@ function closeAllMenus() {
               class="relative cursor-pointer"
             >
               <template v-if="!child.isExpandable">
-                <LayoutNavbarMenuDepositItem
-                  v-if="child.isOpenDepositModal"
-                  v-bind="{ label: child.label }"
-                />
-
                 <NuxtLink
-                  v-else
                   :to="(child as NavLink).to"
                   :target="child.isExternal ? '_blank' : '_self'"
                   :data-cy="`${commonCyTag(NavBarCyTags.NavbarMenuItems)}-${

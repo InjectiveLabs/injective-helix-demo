@@ -42,14 +42,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative max-lg:pt-16 lg:pb-48">
-    <img src="/svg/blurs/blur-1.svg" class="absolute top-52 -left-52 blur-xl" />
+  <div class="relative max-lg:pt-24 lg:pb-48">
     <img
       src="/svg/blurs/blur-1.svg"
-      class="absolute -top-20 left-1/2 blur-xl"
+      class="absolute top-52 -left-52 blur-xl pointer-events-none"
+    />
+    <img
+      src="/svg/blurs/blur-1.svg"
+      class="absolute -top-20 left-1/2 blur-xl pointer-events-none"
     />
 
-    <div id="built-for-the-community-text" class="lg:opacity-0 lg:blur-3xl">
+    <div
+      id="built-for-the-community-text"
+      class="relative z-[2] lg:opacity-0 lg:blur-3xl"
+    >
       <h1 class="text-2xl lg:text-5xl font-semibold text-center">
         {{ $t('home.builtForTheCommunity') }}
       </h1>
@@ -58,7 +64,7 @@ onMounted(() => {
       </p>
     </div>
 
-    <div class="pt-8 pb-4">
+    <div class="relative z-[3] pt-8 pb-4">
       <div id="built-for-the-community-image" class="rounded-xl">
         <img
           :style="{
@@ -72,12 +78,29 @@ onMounted(() => {
     </div>
 
     <div
-      class="flex justify-center font-semibold max-lg:mt-6 gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-8 relative"
+      class="relative z-[2] flex justify-center flex-wrap gap-6 mt-6 lg:mt-8 lg:gap-16"
     >
       <img
         src="/svg/blurs/blur-1.svg"
-        class="absolute -top-52 -left-0 rotate-180 blur-xl"
+        class="absolute -top-52 -left-0 rotate-180 blur-xl pointer-events-none"
       />
+
+      <NuxtLink :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }">
+        <AppButton class="w-52 h-12 font-semibold">
+          {{ $t('home.startTrading') }}
+        </AppButton>
+      </NuxtLink>
+
+      <NuxtLink to="https://docs.helixapp.com/" target="_blank">
+        <AppButton class="w-52 h-12 font-semibold" variant="primary-outline">
+          {{ $t('home.helixDocs') }}
+        </AppButton>
+      </NuxtLink>
+    </div>
+
+    <div
+      class="relative z-[2] flex justify-center font-semibold gap-[120px] max-sm:gap-6 max-sm:items-center max-sm:flex-col mt-12 lg:mt-16"
+    >
       <div
         class="lg:text-center lg:min-w-44 flex flex-col items-center justify-center"
       >
@@ -99,20 +122,6 @@ onMounted(() => {
         </p>
         <p class="text-2xl">{{ totalMarkets }}</p>
       </div>
-    </div>
-
-    <div class="flex justify-center flex-wrap gap-6 mt-12 lg:gap-16 lg:mt-16">
-      <NuxtLink :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }">
-        <AppButton class="w-52 h-12 font-semibold">
-          {{ $t('home.startTrading') }}
-        </AppButton>
-      </NuxtLink>
-
-      <NuxtLink to="https://docs.helixapp.com/" target="_blank">
-        <AppButton class="w-52 h-12 font-semibold" variant="primary-outline">
-          {{ $t('home.helixDocs') }}
-        </AppButton>
-      </NuxtLink>
     </div>
   </div>
 </template>

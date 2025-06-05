@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import lottie, { AnimationItem } from 'lottie-web'
+import lottie from 'lottie-web'
+import type { AnimationItem } from 'lottie-web'
+
 const props = withDefaults(
   defineProps<{
     name: string
@@ -9,7 +11,7 @@ const props = withDefaults(
 
 const lottieContainer = ref()
 
-let lottiePlayer: AnimationItem | null = null
+let lottiePlayer: null | AnimationItem = null
 
 watchEffect(() => {
   if (!lottieContainer.value) return
