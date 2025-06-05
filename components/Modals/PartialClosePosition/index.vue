@@ -141,9 +141,7 @@ onMounted(() => {
     @on:close="onCloseModal"
   >
     <template #title>
-      <p class="font-semibold">
-        {{ $t('partialPositionClose.marketTitle') }}
-      </p>
+      {{ $t('partialPositionClose.marketTitle') }}
     </template>
 
     <div class="flex flex-col text-xs">

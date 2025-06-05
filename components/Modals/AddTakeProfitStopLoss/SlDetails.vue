@@ -103,7 +103,7 @@ function cancelSl() {
     </div>
 
     <AppButton
-      class="w-full py-1.5"
+      class="w-40 py-1.5"
       v-bind="{
         size: 'sm',
         status: cancelSlStatus,

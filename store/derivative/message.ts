@@ -581,8 +581,7 @@ export const submitTpSlOrder = async ({
     market.quoteToken.decimals
   )
 
-  const tpSlMessages = [] as Msgs[]
-  const cancelMessages = [] as Msgs[]
+  const messages = [] as Msgs[]
 
   const tpHasChange =
     !takeProfitQuantity.eq(existingTpOrder?.quantity || 0) ||
@@ -607,7 +606,7 @@ export const submitTpSlOrder = async ({
   const shouldCreateSlOrder = stopLossPrice && slHasChange
 
   if (existingTpOrder && shouldCreateTpOrder) {
-    cancelMessages.push(
+    messages.push(
       MsgCancelDerivativeOrder.fromJSON({
         marketId: existingTpOrder.marketId,
         orderHash: existingTpOrder.orderHash,
@@ -617,8 +616,19 @@ export const submitTpSlOrder = async ({
     )
   }
 
+  if (existingSlOrder && shouldCreateSlOrder) {
+    messages.push(
+      MsgCancelDerivativeOrder.fromJSON({
+        marketId: existingSlOrder.marketId,
+        orderHash: existingSlOrder.orderHash,
+        subaccountId: existingSlOrder.subaccountId,
+        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+      })
+    )
+  }
+
   if (shouldCreateTpOrder) {
-    tpSlMessages.push(
+    messages.push(
       createTpSlMessage({
         market,
         isBuy: !isTpslBuy,
@@ -632,19 +642,8 @@ export const submitTpSlOrder = async ({
     )
   }
 
-  if (existingSlOrder && shouldCreateSlOrder) {
-    cancelMessages.push(
-      MsgCancelDerivativeOrder.fromJSON({
-        marketId: existingSlOrder.marketId,
-        orderHash: existingSlOrder.orderHash,
-        subaccountId: existingSlOrder.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-      })
-    )
-  }
-
   if (shouldCreateSlOrder) {
-    tpSlMessages.push(
+    messages.push(
       createTpSlMessage({
         market,
         isBuy: !isTpslBuy,
@@ -659,7 +658,7 @@ export const submitTpSlOrder = async ({
   }
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: cancelMessages.concat(tpSlMessages)
+    messages
   })
 
   await fetchBalances()

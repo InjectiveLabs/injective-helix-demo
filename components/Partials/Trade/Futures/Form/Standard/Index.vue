@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
   Modal,
   MarketKey,
@@ -41,6 +42,20 @@ const {
   totalNotional,
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
+
+const estLiquidationPrice = computed(() => {
+  const isBuy =
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
+
+  return calculateLiquidationPrice({
+    price: worstPrice.value.toFixed(),
+    quantity: quantity.value.toFixed(),
+    notionalWithLeverage: margin.value.toFixed(),
+    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
+    market: market.value
+  })
+})
 
 onMounted(() => {
   setFormValues(
@@ -178,6 +193,7 @@ function onOrderSideChange() {
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
       class="mt-4"
+      v-bind="{ estLiquidationPrice }"
       @tpsl:add="addTpSl"
     />
 
@@ -188,7 +204,8 @@ function onOrderSideChange() {
         feeAmount,
         worstPrice,
         marginWithFee,
-        totalNotional
+        totalNotional,
+        estLiquidationPrice
       }"
     />
 

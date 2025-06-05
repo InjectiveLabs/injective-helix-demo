@@ -564,7 +564,7 @@ async function submitTpSl() {
     @on:close="closeModal"
   >
     <template #title>
-      <p class="sm:text-center max-sm:w-11/12 font-bold">
+      <p class="sm:text-center max-sm:w-11/12">
         {{ $t('trade.modifyTakeProfitStopLoss') }}
       </p>
     </template>
