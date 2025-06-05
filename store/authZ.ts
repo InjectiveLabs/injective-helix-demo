@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import {
   MsgGrant,
   MsgRevoke,
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
 import { authZApi } from '@/app/Services'
-import { backupPromiseCall } from '@/app/utils/async'
 import type { MsgType } from '@injectivelabs/ts-types'
 import type { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
@@ -148,7 +148,7 @@ export const useAuthZStore = defineStore('authZ', {
         messages
       })
 
-      await backupPromiseCall(() => authZStore.fetchGrants())
+      await sharedBackupPromiseCall(() => authZStore.fetchGrants())
     },
 
     async revokeAuthorization({
@@ -180,7 +180,7 @@ export const useAuthZStore = defineStore('authZ', {
         messages
       })
 
-      await backupPromiseCall(() => authZStore.fetchGrants())
+      await sharedBackupPromiseCall(() => authZStore.fetchGrants())
     }
   }
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
@@ -25,7 +25,7 @@ function cancelAllAdvancedOrders() {
     .finally(() => {
       status.setIdle()
 
-      backupPromiseCall(async () => {
+      sharedBackupPromiseCall(async () => {
         await derivativeStore.fetchSubaccountConditionalOrders()
       })
     })
