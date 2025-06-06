@@ -105,7 +105,7 @@ onMounted(() => {
           >
             <div class="flex-1 flex items-center">
               <div class="flex-1 space-y-2">
-                <h2 class="text-2xl xs:leading-8 font-semibold">
+                <h2 class="text-2xl leading-8 font-semibold">
                   {{ $t(item.title) }}
                 </h2>
 
@@ -119,7 +119,7 @@ onMounted(() => {
                 :to="item.link"
                 class="p-2 inline-flex"
               >
-                <UIcon class="size-4" :name="NuxtUiIcons.ChevronRight2" />
+                <UIcon class="size-6" :name="NuxtUiIcons.ExternalLink2" />
               </NuxtLink>
             </div>
           </SharedSelectorItem>

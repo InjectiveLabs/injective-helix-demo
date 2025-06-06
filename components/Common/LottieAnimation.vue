@@ -2,11 +2,16 @@
 import lottie from 'lottie-web'
 import type { AnimationItem } from 'lottie-web'
 
+const emit = defineEmits<{
+  'animation:ready': [value: string]
+}>()
+
 const props = withDefaults(
   defineProps<{
     name: string
+    lottieKey?: string
   }>(),
-  {}
+  { lottieKey: '' }
 )
 
 const lottieContainer = ref()
@@ -26,6 +31,10 @@ watchEffect(() => {
     loop: true,
     autoplay: true,
     path: `/lottie/${props.name}`
+  })
+
+  lottiePlayer.addEventListener('DOMLoaded', () => {
+    emit('animation:ready', props.lottieKey)
   })
 })
 

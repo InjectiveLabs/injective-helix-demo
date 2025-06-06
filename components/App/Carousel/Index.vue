@@ -4,10 +4,11 @@ import emblaCarouselVue from 'embla-carousel-vue'
 
 const [emblaRef, emblaApi] = emblaCarouselVue({ loop: false })
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     hasDots?: boolean
     hasArrow?: boolean
+    doRecalculateHeight?: boolean
   }>(),
   { hasDots: true }
 )
@@ -35,17 +36,31 @@ function scrollTo(index: number) {
   emblaApi.value?.scrollTo(index)
 }
 
-const adjustHeight = () => {
-  if (!emblaRef.value) {
-    return
-  }
+function adjustHeight() {
+  setTimeout(() => {
+    if (!emblaRef.value) {
+      return
+    }
 
-  const slideList = emblaRef.value.querySelectorAll('.embla__slide-content')
+    const slideList = emblaRef.value.querySelectorAll('.embla__slide-content')
 
-  if (slideList?.length) {
-    emblaRef.value.style.height = `${(slideList[selectedIndex.value] as HTMLElement).offsetHeight}px`
-  }
+    if (slideList?.length) {
+      const height = (slideList[selectedIndex.value] as HTMLElement)
+        .offsetHeight
+
+      emblaRef.value.style.height = `${height}px`
+    }
+  }, 100)
 }
+
+watch(
+  () => props.doRecalculateHeight,
+  (newVal) => {
+    if (newVal) {
+      adjustHeight()
+    }
+  }
+)
 
 onMounted(() => {
   if (!emblaApi.value) {
@@ -55,27 +70,17 @@ onMounted(() => {
   emblaApi.value.on('init', () => {
     onSelect()
     scrollSnapList.value = emblaApi.value?.scrollSnapList() || []
-
-    setTimeout(() => {
-      adjustHeight()
-    }, 200)
   })
 
   emblaApi.value.on('reInit', () => {
     onSelect()
+    adjustHeight()
     scrollSnapList.value = emblaApi.value?.scrollSnapList() || []
-
-    setTimeout(() => {
-      adjustHeight()
-    }, 200)
   })
 
   emblaApi.value.on('select', () => {
     onSelect()
-
-    setTimeout(() => {
-      adjustHeight()
-    }, 100)
+    adjustHeight()
   })
 })
 </script>
