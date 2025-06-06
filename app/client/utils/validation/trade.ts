@@ -1,6 +1,6 @@
 import { defineRule } from 'vee-validate'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { DEFAULT_SLIPPAGE, MAX_SLIPPAGE } from '@/app/utils/constants'
+import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
 
 export const tradeErrorMessages = {
   enoughBalance: () => 'Insufficient balance',
@@ -174,6 +174,31 @@ export const defineTradeRules = () => {
         valueInBigNumber.gt(lastTradedPrice) &&
         priceDifferenceInPercentage.gte(DEFAULT_MAX_PRICE_BAND_DIFFERENCE)
       ) {
+        return tradeErrorMessages.priceTooFarFromLastTradePrice()
+      }
+
+      return true
+    }
+  )
+
+  defineRule(
+    'partialLimitPriceTooFarFromMarkPrice',
+    (value: string | number, [markPrice]: [string]) => {
+      const DEFAULT_DIFFERENCE = 10
+
+      const valueInBigNumber = new BigNumberInBase(value)
+
+      if (valueInBigNumber.eq(0)) {
+        return true
+      }
+
+      const priceDifferenceInPercentage = valueInBigNumber
+        .dividedBy(markPrice)
+        .times(100)
+        .minus(100)
+        .abs()
+
+      if (priceDifferenceInPercentage.gte(DEFAULT_DIFFERENCE)) {
         return tradeErrorMessages.priceTooFarFromLastTradePrice()
       }
 
