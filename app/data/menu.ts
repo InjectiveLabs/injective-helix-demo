@@ -9,11 +9,6 @@ import type { MenuItem } from '@/types'
 
 export const getMoreMenu = () => [
   {
-    isConnectedOnly: true,
-    isOpenDepositModal: true,
-    label: 'navigation.more.deposit'
-  },
-  {
     label: 'navigation.swap',
     to: { name: MainPage.Swap }
   },
@@ -71,6 +66,10 @@ export const TRADING_OPTIONS = [
   {
     to: { name: LeaderboardSubPage.Pnl },
     label: 'navigation.leaderboard.title'
+  },
+  {
+    isOpenDepositModal: true,
+    label: 'navigation.more.deposit'
   }
 ]
 

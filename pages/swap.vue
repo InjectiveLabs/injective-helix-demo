@@ -19,6 +19,8 @@ const spotStore = useSpotStore()
 const modalStore = useSharedModalStore()
 const sharedSpotStore = useSharedSpotStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const {
   validate,
@@ -251,6 +253,7 @@ async function submit() {
 
       await nextTick()
 
+      notificationStore.update({ title: t('toast.success') })
       modalStore.openModal(Modal.SwapSuccess)
     })
     .catch((error: ThrownException) => {

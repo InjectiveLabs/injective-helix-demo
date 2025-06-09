@@ -25,15 +25,15 @@ import {
   OrderbookLayout,
   TradingChartInterval
 } from '@/types'
-import type { Modal, CtaToast } from '@/types'
+import type { Modal, HelixCtaToast } from '@/types'
 import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
   modalsViewed: Modal[]
   hasAcceptedTerms: boolean
   favoriteMarkets: string[]
-  dontShowAgain: CtaToast[]
   bannersViewed: NoticeBanner[]
+  dontShowAgain: HelixCtaToast[]
   marketSlippageIdMap: Record<string, string>
 
   preferences: {

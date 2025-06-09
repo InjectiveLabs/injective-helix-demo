@@ -93,7 +93,7 @@ const onSubmit = handleSubmit(() => {
       })
       .then(() => {
         resetForm()
-        notificationStore.success({
+        notificationStore.update({
           title: t('toast.trade.successAddedMargin')
         })
         onModalClose()
@@ -114,7 +114,7 @@ const onSubmit = handleSubmit(() => {
     })
     .then(() => {
       resetForm()
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.successAddedMargin')
       })
       onModalClose()

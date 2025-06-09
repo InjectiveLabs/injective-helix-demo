@@ -2,15 +2,17 @@
 import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { getBridgeUrl } from '@shared/utils/network'
-import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
-import { MAX_TOAST_TIMEOUT } from '@/app/utils/constants'
+import {
+  MAX_TOAST_TIMEOUT,
+  GEO_IP_RESTRICTIONS_ENABLED
+} from '@shared/utils/constant'
 import {
   trackUtmStockTwitsToast,
   trackOnboardingUserDoesntTrade,
   trackOnboardingUserWithNoAssets,
   trackOnboardingWalletEmptyWithEvmAssets
 } from '@/app/providers/mixpanel/EventTracker'
-import { Modal, MainPage, CtaToast, BusEvents, UtmSource } from '@/types'
+import { Modal, MainPage, BusEvents, UtmSource, HelixCtaToast } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,7 +33,7 @@ onMounted(async () => {
   if (
     (await checkUserHasTradableAssetsOnEvm()) &&
     !appStore.userState.dontShowAgain?.includes(
-      CtaToast.WalletEmptyWithEvmAssets
+      HelixCtaToast.WalletEmptyWithEvmAssets
     )
   ) {
     showMoveAssetsToInjToast()
@@ -41,7 +43,7 @@ onMounted(async () => {
 
   if (
     !checkUserHasAssetsOnChain() &&
-    !appStore.userState.dontShowAgain?.includes(CtaToast.UserWithNoAssets)
+    !appStore.userState.dontShowAgain?.includes(HelixCtaToast.UserWithNoAssets)
   ) {
     showGetCryptoToast()
 
@@ -52,7 +54,7 @@ onMounted(async () => {
     checkUserHasAssetsOnChain() &&
     !(await checkUserHasTraded()) &&
     route.name !== MainPage.Markets &&
-    !appStore.userState.dontShowAgain?.includes(CtaToast.UserDoesntTrade)
+    !appStore.userState.dontShowAgain?.includes(HelixCtaToast.UserDoesntTrade)
   ) {
     showStartTradingToast()
 
@@ -69,7 +71,7 @@ onWalletConnected(async () => {
     }
 
     const selectedNotification = notificationStore.notifications.find(
-      (notification) => notification.key === CtaToast.StockTwits
+      (notification) => notification.key === HelixCtaToast.StockTwits
     )
 
     notificationStore.clear(selectedNotification?.id || 0)
@@ -77,8 +79,12 @@ onWalletConnected(async () => {
 })
 
 onWalletDisconnected(() => {
-  Object.values(CtaToast).forEach((key) => {
-    if (key === CtaToast.StockTwits) {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  Object.values(HelixCtaToast).forEach((key) => {
+    if (key === HelixCtaToast.StockTwits) {
       return
     }
 
@@ -133,7 +139,7 @@ function showMoveAssetsToInjToast() {
     title: t('toast.portfolio.moveAssetsToInjTitle'),
     description: t('toast.portfolio.moveAssetsToInj'),
     timeout: MAX_TOAST_TIMEOUT,
-    key: CtaToast.WalletEmptyWithEvmAssets,
+    key: HelixCtaToast.WalletEmptyWithEvmAssets,
     actions: [
       {
         label: t('toast.portfolio.bridgeNow'),
@@ -165,7 +171,7 @@ function showGetCryptoToast() {
     title: t('toast.portfolio.startTradingInSeconds'),
     description: t('toast.portfolio.topUpWithCreditOrDebit'),
     timeout: MAX_TOAST_TIMEOUT,
-    key: CtaToast.UserWithNoAssets,
+    key: HelixCtaToast.UserWithNoAssets,
     actions: [
       {
         label: t('toast.portfolio.buyInj'),
@@ -195,7 +201,7 @@ function showStartTradingToast() {
     title: t('toast.portfolio.readyToTrade'),
     description: t('toast.portfolio.discoverTrendingPairs'),
     timeout: MAX_TOAST_TIMEOUT,
-    key: CtaToast.UserDoesntTrade,
+    key: HelixCtaToast.UserDoesntTrade,
     actions: [
       {
         label: t('toast.portfolio.tradeNow'),
@@ -223,7 +229,7 @@ function showStockTwitsToast() {
     title: t('toast.stockTwits.title'),
     description: t('toast.stockTwits.description'),
     timeout: MAX_TOAST_TIMEOUT,
-    key: CtaToast.StockTwits,
+    key: HelixCtaToast.StockTwits,
     actions: [
       {
         label: t('toast.stockTwits.startHere'),

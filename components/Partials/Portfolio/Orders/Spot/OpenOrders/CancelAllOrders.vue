@@ -46,7 +46,7 @@ function cancelAllOrders() {
   spotStore
     .batchCancelOrder(filteredOrders.value)
     .then(() =>
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.allOrdersCancelled')
       })
     )

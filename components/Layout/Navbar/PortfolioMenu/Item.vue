@@ -58,7 +58,7 @@ function closeMenu() {
       v-bind="{ label: item.label }"
     >
       <div
-        class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 select-none cursor-pointer border border-transparent text-xs"
+        class="flex items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 cursor-pointer border border-transparent text-xs font-medium"
         @click="closeMenu"
       >
         <div class="flex-1">

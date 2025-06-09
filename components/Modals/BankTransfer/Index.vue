@@ -59,7 +59,7 @@ async function onSubmit() {
       memo: transferFormValues[BankTransferField.MemoValue]
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.portfolio.bankTransferSuccessful')
       })
       resetForm()

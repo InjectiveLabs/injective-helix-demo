@@ -104,7 +104,7 @@ function onClaimRewards() {
   campaignStore
     .claimReward(contractAddress)
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.success'),
         description: t('toast.campaign.successfullyClaimedRewards')
       })
@@ -115,7 +115,7 @@ function onClaimRewards() {
       if ((err.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
           title: t('toast.error'),
-          description: t('toast.errorAlreadyClaimed')
+          description: t('toast.campaign.errorAlreadyClaimed')
         })
 
         return

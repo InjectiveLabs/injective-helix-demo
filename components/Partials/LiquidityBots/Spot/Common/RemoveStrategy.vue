@@ -72,7 +72,7 @@ function removeStrategy() {
         ])
       }
 
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.success'),
         description: t('toast.sgt.tradingBotRemovedSuccessfully')
       })

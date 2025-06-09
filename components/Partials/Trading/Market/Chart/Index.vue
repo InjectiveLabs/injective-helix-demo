@@ -148,7 +148,7 @@ function onOrderClose({
 
   action()
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.orderCancelled')
       })
     })
@@ -197,7 +197,7 @@ function onOrderChange({
 
   action()
     .then(() =>
-      notificationStore.success({ title: t('toast.trade.orderUpdated') })
+      notificationStore.update({ title: t('toast.trade.orderUpdated') })
     )
     .catch((e) => {
       $onError(e)

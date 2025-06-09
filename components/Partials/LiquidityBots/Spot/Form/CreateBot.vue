@@ -108,7 +108,7 @@ async function createLiquidityBot() {
 
       confirmationModal.value = false
 
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.success'),
         description: t('toast.sgt.tradingBotCreatedSuccessfully')
       })

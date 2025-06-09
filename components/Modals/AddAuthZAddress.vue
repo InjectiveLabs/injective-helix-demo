@@ -41,7 +41,9 @@ async function grantAuthorization() {
       messageTypes: msgs.value
     })
     .then(() =>
-      notificationStore.success({ title: t('toast.account.authZAdded') })
+      notificationStore.update({
+        title: t('toast.account.authZAdded')
+      })
     )
     .catch($onError)
     .finally(() => {
