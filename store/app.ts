@@ -35,6 +35,7 @@ export interface UserBasedState {
   bannersViewed: NoticeBanner[]
   dontShowAgain: HelixCtaToast[]
   marketSlippageIdMap: Record<string, string>
+  dontShowAgain: Array<Modal | CtaToast | NoticeBanner>
 
   preferences: {
     isHideBalances: boolean

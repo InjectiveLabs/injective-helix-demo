@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { Wallet } from '@injectivelabs/wallet-base'
 import {
-  UTableColumn,
   PerpetualMarketCyTags,
-  TransformedPortfolioFuturesOpenOrders,
   PortfolioFuturesOpenOrdersTableColumn
+} from '@/types'
+import type {
+  UTableColumn,
+  TransformedPortfolioFuturesOpenOrders
 } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -55,6 +58,9 @@ const filteredColumns = computed(() =>
 
         <div class="flex space-x-2">
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-if="
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+            "
             v-bind="{
               order: order.order,
               isBuy: order.isBuy,

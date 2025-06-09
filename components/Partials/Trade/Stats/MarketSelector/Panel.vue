@@ -132,9 +132,9 @@ function resetCategory() {
             </template>
           </div>
 
-          <AppCheckbox2 v-model="isLowVolumeMarketsVisible" no-wrap>
+          <AppCheckbox v-model="isLowVolumeMarketsVisible" no-wrap>
             {{ $t('markets.showLowVol') }}
-          </AppCheckbox2>
+          </AppCheckbox>
         </div>
       </div>
     </div>

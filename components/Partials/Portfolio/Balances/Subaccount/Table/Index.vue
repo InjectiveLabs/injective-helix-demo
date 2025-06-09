@@ -4,11 +4,8 @@ import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenVerification } from '@injectivelabs/sdk-ts'
-import {
-  PortfolioCyTags,
-  BalanceTableColumn,
-  TransformedBalances
-} from '@/types'
+import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import type { TransformedBalances } from '@/types'
 
 const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
@@ -105,7 +102,7 @@ const columns = computed(() => {
 })
 
 const sortedRows = computed(() => {
-  return rows.value.sort((balance1, balance2) => {
+  return [...rows.value].sort((balance1, balance2) => {
     if (balance1.token.denom === injToken.denom) {
       return -1
     }

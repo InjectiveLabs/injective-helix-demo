@@ -22,6 +22,7 @@ export default {
     injectiveAddress: 'Injective Address',
     connectUsingBrowser: 'Connect using browser wallet',
     connectUsingHardware: 'Connect using hardware wallet',
+    connectDeprecatedSSO: 'Connect using deprecated login',
     connectUsingLedger: 'Connect using Ledger',
     connectUsingLedgerNote:
       'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
@@ -63,7 +64,11 @@ export default {
 
     qrTitle: 'Deposit only INJ network assets to this address',
 
-    magic: {
+    otp: {
+      description: 'Enter your one time code to verify your email'
+    },
+
+    sso: {
       google: {
         cta: 'Sign up with Google'
       },
@@ -71,6 +76,15 @@ export default {
         placeholder: 'Your email address',
         cta: 'Continue'
       }
+    },
+
+    deprecate: {
+      title: 'Action required: migrate your wallet',
+      description:
+        'We are upgrading our wallet provider and your current one is being deprecated. We strongly encourage you to migrate your wallet by following this',
+      migrateDescription:
+        'We’ve upgraded how you sign in to make things faster, simpler, and more secure. To continue using Helix, please connect your updated wallet to move your assets over. It only takes a moment, and your funds are always safe.',
+      cta: 'Migrate Wallet'
     },
 
     option: {
@@ -85,6 +99,7 @@ export default {
       [Wallet.TrezorBip44]: 'Trezor Bip44',
       [Wallet.OkxWallet]: 'OKX Wallet',
       [Wallet.BitGet]: 'Bitget Wallet',
+      [Wallet.Magic]: '"Legacy login"',
       [Wallet.TrustWallet]: 'Trust Wallet',
       [Wallet.Cosmostation]: 'Cosmostation',
       [Wallet.WalletConnect]: 'Wallet Connect'

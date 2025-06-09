@@ -12,12 +12,12 @@ const { value: postOnly } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2
+    <AppCheckbox
       v-model="postOnly"
       :disabled="jsonStore.isPostUpgradeMode"
       class="text-white"
     >
       {{ $t('trade.postOnly') }}
-    </AppCheckbox2>
+    </AppCheckbox>
   </div>
 </template>

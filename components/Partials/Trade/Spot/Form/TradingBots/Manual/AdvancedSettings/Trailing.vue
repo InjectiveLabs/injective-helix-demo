@@ -55,9 +55,9 @@ const isEnabled = computed({
 
 <template>
   <div class="p-1 space-y-2">
-    <AppCheckbox2 v-model="isEnabled">
+    <AppCheckbox v-model="isEnabled">
       {{ $t('sgt.enableTrailing') }}
-    </AppCheckbox2>
+    </AppCheckbox>
 
     <div v-if="isTrailingEnabled" class="space-y-2">
       <AppInputField v-model="trailingUpper" :placeholder="$t('sgt.upper')" />

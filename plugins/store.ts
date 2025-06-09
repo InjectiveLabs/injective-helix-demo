@@ -54,11 +54,12 @@ const stateToPersist = {
     walletConnectStatus: '',
     hwAddresses: '',
     wallet: Wallet.Metamask,
+    session: '',
     address: '',
     addresses: '',
     injectiveAddress: '',
     addressConfirmation: '',
-    session: '',
+    turnkeyInjectiveAddress: '',
 
     authZ: {
       address: '',

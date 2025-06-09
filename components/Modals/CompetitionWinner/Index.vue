@@ -44,7 +44,7 @@ const isShowBannerOrModal = computed(
 )
 
 const claimMessage = computed(() =>
-  sharedWalletStore.wallet !== Wallet.Magic
+  [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
     ? CAMPAIGN_WINNER_MESSAGE
     : JSON.stringify(
         getEip712TypedData(sharedWalletStore.address, CAMPAIGN_WINNER_MESSAGE)
@@ -119,7 +119,7 @@ async function onSubmit(signature: string) {
       wallet: sharedWalletStore.wallet,
       injectiveAddress: sharedWalletStore.injectiveAddress,
       ...(isCosmosWallet(sharedWalletStore.wallet) ||
-      sharedWalletStore.wallet === Wallet.Magic
+      [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
         ? { pubKey: accountStore.pubKey }
         : {})
     })

@@ -9,8 +9,8 @@ const { value: bypassPriceWarningValue } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2 v-model="bypassPriceWarningValue" class="w-full text-white">
+    <AppCheckbox v-model="bypassPriceWarningValue" class="w-full text-white">
       {{ $t('trade.bypassPriceWarning') }}
-    </AppCheckbox2>
+    </AppCheckbox>
   </div>
 </template>
