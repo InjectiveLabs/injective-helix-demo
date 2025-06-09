@@ -182,31 +182,6 @@ export const defineTradeRules = () => {
   )
 
   defineRule(
-    'partialLimitPriceTooFarFromMarkPrice',
-    (value: string | number, [markPrice]: [string]) => {
-      const DEFAULT_DIFFERENCE = 10
-
-      const valueInBigNumber = new BigNumberInBase(value)
-
-      if (valueInBigNumber.eq(0)) {
-        return true
-      }
-
-      const priceDifferenceInPercentage = valueInBigNumber
-        .dividedBy(markPrice)
-        .times(100)
-        .minus(100)
-        .abs()
-
-      if (priceDifferenceInPercentage.gte(DEFAULT_DIFFERENCE)) {
-        return tradeErrorMessages.priceTooFarFromLastTradePrice()
-      }
-
-      return true
-    }
-  )
-
-  defineRule(
     'invalidPostOnlyPrice',
     (value: string | number, [orderbookPrice, isBuy]: string[]) => {
       const isBuyOrder = isBuy === 'true'

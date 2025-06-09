@@ -67,16 +67,10 @@ const {
       props.row.priceDecimals
     )
 
-    const priceTooFarRule = `partialLimitPriceTooFarFromMarkPrice:${props.row.markPrice.toFixed()}`
-
     if (props.row.position.direction === TradeDirection.Long) {
-      const minValueRule = `minValue:${formattedLiquidationPrice}`
-
-      return [priceTooFarRule, minValueRule].join('|')
+      return `minValue:${formattedLiquidationPrice}`
     } else {
-      const maxValueRule = `maxValue:${formattedLiquidationPrice}`
-
-      return [priceTooFarRule, maxValueRule].join('|')
+      return `maxValue:${formattedLiquidationPrice}`
     }
   })
 })
