@@ -112,6 +112,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     notificationStore.close(CtaToast.Telemetry)
 
+    if (error.name === TurnkeyWalletSessionException.errorClass) {
+      sharedWalletStore.logout()
+    }
+
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }
