@@ -11,7 +11,7 @@ export class ChronosApiProvider {
     this.isSpot = endpoint.includes('spot')
   }
 
-  getSpotBars = async ({
+  getDerivativeBars = async ({
     symbol,
     from,
     to,
@@ -27,7 +27,6 @@ export class ChronosApiProvider {
     firstDataRequest?: boolean
   }): Promise<any> => {
     let endpoint = `history?symbol=${encodeURI(symbol)}`
-    console.log({ symbol })
 
     if (resolution) {
       endpoint += `&resolution=${resolution}`
@@ -54,7 +53,7 @@ export class ChronosApiProvider {
     return await this.client.get(endpoint)
   }
 
-  getDerivativeBars = async ({
+  getSpotBars = async ({
     symbol,
     from,
     to,
