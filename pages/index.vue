@@ -11,7 +11,7 @@ useHead({
     <div class="max-w-7xl mx-auto w-full px-6 xs:px-8 lg:px-12 relative z-[3]">
       <PartialsHomeSectionsHero />
       <PartialsHomeSectionsOverview />
-      <PartialsHomeSectionsBuiltForTheComunity />
+      <PartialsHomeSectionsBuiltForTheCommunity />
       <PartialsHomeAnnouncements />
       <PartialsHomeSectionsFAQ />
     </div>

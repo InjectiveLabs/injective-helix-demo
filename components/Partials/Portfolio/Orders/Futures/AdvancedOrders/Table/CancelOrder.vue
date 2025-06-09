@@ -35,7 +35,7 @@ function cancelOrder() {
   derivativeStore
     .cancelOrder(props.trigger)
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.advancedOrderCancelled')
       })
     })

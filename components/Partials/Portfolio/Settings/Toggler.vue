@@ -83,7 +83,7 @@ function connectAutoSign() {
     .then(() => {
       useEventBus(BusEvents.AutoSignConnected).emit()
 
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.portfolio.autoSign.enabledToast.title'),
         description: t('toast.portfolio.autoSign.enabledToast.description')
       })

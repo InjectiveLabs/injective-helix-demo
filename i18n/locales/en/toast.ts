@@ -3,12 +3,14 @@ export default {
     error: 'Error',
     success: 'Success',
     addressCopied: 'Address copied',
+    viewOnInjScan: 'View on InjScan',
     contextCopied: 'Context copied!',
     marketIdCopied: 'Market ID copied',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
-    formSubmittedSuccessfully: 'Form submitted successfully.',
     copiedAddressToClipboard: 'Address copied to clipboard',
+    formSubmittedSuccessfully: 'Form submitted successfully.',
+    transactionFinalized: 'Tx finalized in {duration} sec. {viewOnInjScan}',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
     account: {
@@ -35,7 +37,7 @@ export default {
         disabledToast: 'Auto sign disabled',
         enabledToast: {
           title: 'Auto sign enabled',
-          description: 'Auto sign active for 3 days'
+          description: 'Auto sign enabled for 3 days.'
         },
         enable: {
           title: 'Auto Sign',
@@ -57,10 +59,8 @@ export default {
       tpOrderCancelled: 'Take profit order cancelled',
       advancedOrderCancelled: 'Advanced order cancelled',
       allAdvancedOrdersCancelled: 'All advanced orders cancelled',
-      tpSuccessMessage:
-        'your take profit order has been set for {quantity} quantity at {price} price',
-      slSuccessMessage:
-        'your stop loss order has been set for {quantity} quantity at {price} price',
+      tpSuccessMessage: 'TP is set to {price}',
+      slSuccessMessage: 'SL is set to {price}',
       rwaMarketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
       neptuneUsdt: {
@@ -77,7 +77,7 @@ export default {
     referral: {
       referralLinkCopied: 'Referral Link Copied',
       referralLinkIsUnavailable: 'Referral Link is Unavailable',
-      success: 'Your code is successfully claimed. Explore Markets Now!',
+      success: 'Your Code is Successfully Claimed. Explore Markets Now!',
       joinSelfReferralMessage:
         "Your referral code is valid, but you can't refer yourself. Share it with someone else!"
     },
@@ -88,7 +88,7 @@ export default {
     campaign: {
       errorAlreadyClaimed: 'Reward already claimed',
       notFound: 'Campaign not found; please try again later',
-      successfullyClaimedRewards: 'Rewards claimed successfully'
+      successfullyClaimedRewards: 'Rewards claimed successfully.'
     },
     guild: {
       successfullyJoinGuild: 'Successfully joined guild',

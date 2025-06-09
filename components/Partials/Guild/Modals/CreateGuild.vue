@@ -98,7 +98,7 @@ async function onSubmit() {
       description: description.value
     })
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.guild.successfullyCreateGuild')
       })
       onCloseModal()

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
+const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
   defineProps<{
@@ -10,8 +13,20 @@ withDefaults(
   {}
 )
 
+function connect() {
+  if (GEO_IP_RESTRICTIONS_ENABLED && !appStore.userState.hasAcceptedTerms) {
+    modalStore.openModal(Modal.Terms)
+  } else {
+    modalStore.openModal(Modal.Connect)
+  }
+}
+
 function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+  if (sharedWalletStore.isUserConnected) {
+    modalStore.openModal(Modal.FiatOnboard)
+  } else {
+    connect()
+  }
 }
 </script>
 
@@ -19,7 +34,7 @@ function onFiatOnRamp() {
   <div @click="onFiatOnRamp">
     <slot>
       <div
-        class="group/item block text-xs text-white hover:text-blue-550 font-semibold w-full rounded p-1 cursor-pointer"
+        class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
       >
         <div class="inline-block">
           {{ $t(label) }}

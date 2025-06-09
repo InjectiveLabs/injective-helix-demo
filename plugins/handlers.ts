@@ -1,3 +1,4 @@
+import { CtaToast } from '@shared/types'
 import { defineNuxtPlugin } from '#imports'
 import { StatusCodes } from 'http-status-codes'
 import { BUGSNAG_KEY, IS_PRODUCTION } from '@shared/utils/constant'
@@ -103,10 +104,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const errorHandler = (error: ThrownException) => {
     const sharedWalletStore = useSharedWalletStore()
+    const notificationStore = useSharedNotificationStore()
 
     if (error.name === TurnkeyWalletSessionException.errorClass) {
       sharedWalletStore.logout()
     }
+
+    notificationStore.close(CtaToast.Telemetry)
 
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)

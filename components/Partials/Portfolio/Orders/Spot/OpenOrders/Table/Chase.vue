@@ -46,7 +46,7 @@ function chase() {
         price: new BigNumberInBase(price)
       })
       .then(() => {
-        notificationStore.success({ title: t('toast.trade.orderUpdated') })
+        notificationStore.update({ title: t('toast.trade.orderUpdated') })
       })
       .catch($onError)
       .finally(() => {
@@ -60,7 +60,7 @@ function chase() {
         price: new BigNumberInBase(price)
       })
       .then(() => {
-        notificationStore.success({ title: t('toast.trade.orderUpdated') })
+        notificationStore.update({ title: t('toast.trade.orderUpdated') })
       })
       .catch($onError)
       .finally(() => {
