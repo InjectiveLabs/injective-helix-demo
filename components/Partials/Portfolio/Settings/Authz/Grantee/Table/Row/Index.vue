@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {
-  GenericAuthorization,
-  GrantAuthorizationType,
-  GrantAuthorizationWithDecodedAuthorization
-} from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { GrantAuthorizationType } from '@injectivelabs/sdk-ts'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
+import type {
+  GenericAuthorization,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +19,8 @@ const props = withDefaults(
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const isOpen = ref(false)
@@ -44,6 +46,9 @@ function revokeAll() {
             )
         )
         .map((grant) => (grant.authorization as GenericAuthorization).msg)
+    })
+    .then(() => {
+      notificationStore.update({ title: t('toast.success') })
     })
     .catch($onError)
     .finally(() => status.setIdle())

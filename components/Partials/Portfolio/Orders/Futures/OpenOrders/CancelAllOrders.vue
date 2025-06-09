@@ -29,7 +29,7 @@ function cancelAllOrders() {
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountOrders)
     .then(() =>
-      notificationStore.success({
+      notificationStore.update({
         title: t('toast.trade.allOrdersCancelled')
       })
     )

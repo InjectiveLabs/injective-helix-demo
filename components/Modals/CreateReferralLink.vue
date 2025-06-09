@@ -69,6 +69,8 @@ function generateLink() {
         refereeAddress: sharedWalletStore.injectiveAddress
       })
 
+      notificationStore.update({ title: t('toast.success') })
+
       modalStore.openModal(Modal.ShareReferral)
       resetData()
       modalStore.closeModal(Modal.CreateReferralLink)
