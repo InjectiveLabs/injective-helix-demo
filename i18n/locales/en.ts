@@ -53,6 +53,7 @@ export default {
     base: 'Base',
     copy: 'Copy',
     here: 'here',
+    link: 'link',
     view: 'View',
     open: 'Open',
     days: 'Days',

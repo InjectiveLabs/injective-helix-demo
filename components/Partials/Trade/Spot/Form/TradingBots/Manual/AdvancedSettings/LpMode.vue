@@ -10,9 +10,9 @@ const { value: isLpModeValue } = useBooleanField({
 
 <template>
   <div class="flex items-center text-coolGray-450 font-medium">
-    <AppCheckbox2 v-model="isLpModeValue">
+    <AppCheckbox v-model="isLpModeValue">
       {{ $t('sgt.enableLpMode') }}
-    </AppCheckbox2>
+    </AppCheckbox>
 
     <div class="-ml-2">
       <AppTooltip

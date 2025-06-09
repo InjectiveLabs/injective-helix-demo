@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import {
-  UTableColumn,
-  SpotMarketCyTags,
-  TransformedPortfolioSpotOpenOrders,
-  PortfolioSpotOpenOrdersTableColumn
-} from '@/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { SpotMarketCyTags, PortfolioSpotOpenOrdersTableColumn } from '@/types'
+import type { UTableColumn, TransformedPortfolioSpotOpenOrders } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -59,7 +56,10 @@ const filteredColumns = computed(() =>
 
         <div class="flex space-x-2">
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
-            v-if="!isTradingBots"
+            v-if="
+              !isTradingBots &&
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+            "
             v-bind="{
               order: order.order,
               isBuy: order.isBuy,

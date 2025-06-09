@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { cx } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
+import { cx } from 'class-variance-authority'
 
 const props = withDefaults(
   defineProps<{
     value: string
     modelValue: string
-    class?: string | string[] | Record<string, boolean>
     activeClasses?: string
+    class?: string | string[] | Record<string, boolean>
   }>(),
   {
     activeClasses: '',

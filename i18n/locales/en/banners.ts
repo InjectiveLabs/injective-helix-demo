@@ -27,7 +27,7 @@ export default {
 
     findOutMore: 'Find out more',
 
-    ftmMarketBanner:
+    settlePerpMarketBanner:
       'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.',
 
     ownYourAssetCompetition:
@@ -36,6 +36,11 @@ export default {
 
     postOnly:
       'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}',
+
+    deprecatedWallet:
+      'This wallet is depreciated. Follow the migration guide to move your funds. {learnMore}',
+    deprecatedWalletWithAddress:
+      'This wallet is depreciated. Your new SSO address is {address}. Follow the migration guide to move your funds. {learnMore}',
 
     stockTwits:
       'Want to learn how to place a trade or how trading tokenized stocks works? → {learnMore}'

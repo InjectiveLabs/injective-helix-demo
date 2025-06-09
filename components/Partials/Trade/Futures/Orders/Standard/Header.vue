@@ -150,7 +150,7 @@ watch(
     </AppButtonSelect>
 
     <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
-      <AppCheckbox2
+      <AppCheckbox
         v-if="view !== PerpOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
@@ -163,7 +163,7 @@ watch(
         <span class="hidden 3xl:block 4xl:hidden">
           {{ derivativeMarket.ticker }}
         </span>
-      </AppCheckbox2>
+      </AppCheckbox>
 
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
         v-if="view === PerpOrdersStandardView.Orders"

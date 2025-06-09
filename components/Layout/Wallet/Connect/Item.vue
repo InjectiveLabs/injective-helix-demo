@@ -21,6 +21,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  'deprecatedSso:show': []
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
 }>()
 
@@ -29,6 +30,13 @@ const hardwareWallets = [Wallet.Ledger, Wallet.TrezorBip32]
 function handleConnect() {
   if (props.isBackButton) {
     emit('selectedHardwareWallet:toggle', undefined)
+
+    return
+  }
+
+  if (props.walletOption.wallet === Wallet.Magic) {
+    emit('deprecatedSso:show')
+
     return
   }
 
@@ -100,9 +108,12 @@ function handleConnect() {
 
       <p class="text-xs text-coolGray-500">
         <span v-if="hardwareWallets.includes(walletOption.wallet)">
-          {{ $t(`connect.${'connectUsingHardware'}`) }}
+          {{ $t('connect.connectUsingHardware') }}
         </span>
-        <span v-else>{{ $t(`connect.${'connectUsingBrowser'}`) }}</span>
+        <span v-else-if="walletOption.wallet === Wallet.Magic">
+          {{ $t('connect.connectDeprecatedSSO') }}
+        </span>
+        <span v-else>{{ $t('connect.connectUsingBrowser') }}</span>
       </p>
     </div>
 

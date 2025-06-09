@@ -155,13 +155,13 @@ function closeIAssetsBanner() {
             </label>
 
             <div class="flex max-sm:hidden">
-              <AppCheckbox2
+              <AppCheckbox
                 v-model="isLowVolumeMarketsVisible"
                 class="text-coolGray-450"
                 is-sm
               >
                 {{ $t('markets.showLowVol') }}
-              </AppCheckbox2>
+              </AppCheckbox>
             </div>
           </div>
         </div>

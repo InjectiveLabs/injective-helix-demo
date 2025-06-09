@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Wallet } from '@injectivelabs/wallet-base'
 import { TRADING_MESSAGES } from '~/app/data/trade'
 import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
@@ -427,6 +428,10 @@ function submitStopMarketOrder() {
 }
 
 function showAutosignCta() {
+  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+    return
+  }
+
   if (!derivativeStore.subaccountTradesCount) {
     EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
     notificationStore.success({

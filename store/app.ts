@@ -33,8 +33,8 @@ export interface UserBasedState {
   hasAcceptedTerms: boolean
   favoriteMarkets: string[]
   bannersViewed: NoticeBanner[]
-  dontShowAgain: HelixCtaToast[]
   marketSlippageIdMap: Record<string, string>
+  dontShowAgain: Array<Modal | NoticeBanner | HelixCtaToast>
 
   preferences: {
     isHideBalances: boolean

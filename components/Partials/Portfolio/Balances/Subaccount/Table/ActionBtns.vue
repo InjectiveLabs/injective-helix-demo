@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -38,7 +38,11 @@ function onTransfer() {
         isTablePopover ? 'lg:flex-col lg:gap-1.5' : 'lg:gap-2'
       ]"
     >
-      <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
+      <template
+        v-if="
+          ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+        "
+      >
         <PartialsCommonBridgeRedirection
           v-if="isBridgable"
           v-bind="{

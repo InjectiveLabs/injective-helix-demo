@@ -2,8 +2,13 @@
 import { NuxtUiIcons } from '@shared/types'
 // import { isWithinInterval } from 'date-fns'
 import { getHubUrl } from '@shared/utils/network'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
+import {
+  DEFAULT_TRUNCATE_LENGTH,
+  DEPRECATED_WALLET_DOCS_LINK
+} from '@/app/utils/constants'
 import { TradePage, UtmSource, NoticeBanner } from '@/types'
 
 type Banner = {
@@ -12,7 +17,7 @@ type Banner = {
   shouldPersist?: boolean
 }
 
-const ftmPairs = [
+const perpSettlePairs = [
   {
     slug: 'jellyjelly-usdt-perp',
     marketId:
@@ -24,17 +29,37 @@ const route = useRoute()
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { copy } = useClipboard()
 // const now = useNow({ interval: 1000 })
 
 const isHideBanner = ref(false)
 
-const ftmBanners = computed<Banner[]>(() => [
+const formattedTurnkeyInjectiveAddress = computed(() =>
+  sharedEllipsisFormatText(
+    sharedWalletStore.turnkeyInjectiveAddress,
+    DEFAULT_TRUNCATE_LENGTH
+  )
+)
+
+const deprecatedWarningBanner = computed<Banner[]>(() => [
+  {
+    id: NoticeBanner.DeprecatedWallet,
+    shouldDisplay:
+      sharedWalletStore.isUserConnected &&
+      sharedWalletStore.wallet === Wallet.Magic,
+    shouldPersist: true
+  }
+])
+
+const perpMarketSettleBanners = computed<Banner[]>(() => [
   {
     shouldPersist: true,
-    id: NoticeBanner.FTMSettleMarket,
+    id: NoticeBanner.PerpSettleMarket,
     shouldDisplay:
       (route.name as string)?.startsWith(TradePage.Futures) &&
-      ftmPairs.some(
+      perpSettlePairs.some(
         ({ slug, marketId }) =>
           slug === route.params.slug || marketId === route.query.marketId
       )
@@ -83,7 +108,8 @@ const promotionalBanners = computed<Banner[]>(() => [
 const bannerToDisplay = computed(
   () =>
     [
-      ...ftmBanners.value,
+      ...deprecatedWarningBanner.value,
+      ...perpMarketSettleBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
     ].filter((banner) => banner.shouldDisplay)[0]
@@ -126,6 +152,11 @@ function onHideBanner() {
   })
 }
 
+function onCopyAddress() {
+  copy(sharedWalletStore.turnkeyInjectiveAddress)
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
+}
+
 function onClickStockTwitsCta() {
   const routeQuery = route.query
 
@@ -150,8 +181,8 @@ function onClickStockTwitsCta() {
   >
     <div />
 
-    <template v-if="bannerToDisplay.id === NoticeBanner.FTMSettleMarket">
-      {{ $t('banners.ftmMarketBanner') }}
+    <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
+      {{ $t('banners.settlePerpMarketBanner') }}
     </template>
 
     <!-- for future reference as per PR feedback -->
@@ -191,6 +222,38 @@ function onClickStockTwitsCta() {
         </NuxtLink>
       </template>
     </i18n-t> -->
+    <i18n-t
+      v-if="bannerToDisplay.id === NoticeBanner.DeprecatedWallet"
+      class="flex items-center gap-1"
+      :keypath="
+        sharedWalletStore.turnkeyInjectiveAddress
+          ? 'banners.deprecatedWalletWithAddress'
+          : 'banners.deprecatedWallet'
+      "
+      tag="p"
+    >
+      <template #address>
+        <div class="flex items-center gap-2">
+          <span>{{ formattedTurnkeyInjectiveAddress }}</span>
+          <UIcon
+            :name="NuxtUiIcons.Copy2"
+            class="hover:text-white h-4 w-4"
+            @click.stop="onCopyAddress"
+          />
+        </div>
+      </template>
+
+      <template #learnMore>
+        <NuxtLink
+          class="hover:opacity-80 underline cursor-pointer"
+          :to="DEPRECATED_WALLET_DOCS_LINK"
+          target="_blank"
+          @click="onClickStockTwitsCta"
+        >
+          {{ $t('common.learnMore') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
 
     <div
       v-if="
