@@ -1,25 +1,22 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
   UI_DEFAULT_DISPLAY_DECIMALS,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
   MarketKey,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { BigNumberInBase } from '@injectivelabs/utils'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     margin: BigNumberInBase
     quantity: BigNumberInBase
@@ -27,6 +24,7 @@ const props = withDefaults(
     worstPrice: BigNumberInBase
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
+    estLiquidationPrice: BigNumberInBase
   }>(),
   {}
 )
@@ -63,20 +61,6 @@ const isLimitAndPostOnly = computed(
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
       DerivativeTradeTypes.StopLimit
 )
-
-const estLiquidationPrice = computed(() => {
-  const isBuy =
-    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-    TradeDirection.Long
-
-  return calculateLiquidationPrice({
-    price: props.worstPrice.toFixed(),
-    quantity: props.quantity.toFixed(),
-    notionalWithLeverage: props.margin.toFixed(),
-    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
-    market: derivativeMarket.value
-  })
-})
 
 function toggle() {
   isOpen.value = !isOpen.value

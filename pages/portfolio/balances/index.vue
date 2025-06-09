@@ -24,7 +24,7 @@ const accountTotalBalanceInInj = computed(() => {
   return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(injUsdPrice)
 })
 
-const shoWNeptune = computed(() => {
+const showNeptune = computed(() => {
   if (sharedWalletStore.isAuthzWalletConnected) {
     return false
   }
@@ -32,6 +32,7 @@ const shoWNeptune = computed(() => {
   const hasNeptuneUsdtBalance = new BigNumberInBase(
     accountStore.neptuneUsdtInBankBalance
   ).gt(0)
+
   const hasPeggyUsdtBalance = new BigNumberInBase(
     accountStore.balancesMap[usdtToken.denom]
   ).gt(0)
@@ -157,10 +158,10 @@ function onOpenBankTransferModal() {
         </div>
       </div>
 
-      <PartialsPortfolioBalancesNeptuneUsdt v-if="shoWNeptune" />
+      <PartialsPortfolioBalancesNeptuneUsdt v-if="showNeptune" />
 
       <PartialsPortfolioBalancesSubaccount
-        :class="[shoWNeptune ? 'lg:mt-7' : 'lg:mt-12']"
+        :class="[showNeptune ? 'lg:mt-7' : 'lg:mt-12']"
       />
     </div>
 

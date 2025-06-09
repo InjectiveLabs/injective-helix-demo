@@ -1,4 +1,5 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import { orderSideToOrderType } from '@shared/transformer/trade'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
@@ -8,8 +9,7 @@ import {
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/msgs'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
 import { ConditionalOrderSide } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
@@ -120,7 +120,7 @@ export const closePosition = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: msgs })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  sharedBackupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const closeAllPosition = async (positions: PositionV2[]) => {
@@ -194,7 +194,7 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  sharedBackupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const addMarginToPosition = async ({
@@ -225,7 +225,7 @@ export const addMarginToPosition = async ({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market.quoteDenom,
     amount: amountToFixed
   })
@@ -239,7 +239,7 @@ export const addMarginToPosition = async ({
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, increasePositionMessage]
+    messages: [...cw20Messages, increasePositionMessage]
   })
 }
 

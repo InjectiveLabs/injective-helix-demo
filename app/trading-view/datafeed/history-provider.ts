@@ -1,5 +1,9 @@
 import { ChronosApiProvider } from './chronos-provider'
-import { getErrorMessage, roundTimestampByResolution } from './helpers'
+import {
+  shouldSkipBar,
+  getErrorMessage,
+  roundTimestampByResolution
+} from './helpers'
 import { mapBarsToProperValues } from '@/app/data/trading-view'
 
 export class HistoryProvider {
@@ -13,8 +17,8 @@ export class HistoryProvider {
     symbolInfo: any,
     resolution: number | string,
     periodParams: {
-      from: string
       to: string
+      from: string
       countBack?: number
       firstDataRequest?: boolean
     }
@@ -48,6 +52,10 @@ export class HistoryProvider {
             const ohlPresent = response.o !== undefined
 
             for (let i = 0; i < response.t.length; ++i) {
+              if (shouldSkipBar(symbolInfo.ticker, Number(response.t[i]))) {
+                continue
+              }
+
               const barValue = {
                 time: Number(
                   roundTimestampByResolution(

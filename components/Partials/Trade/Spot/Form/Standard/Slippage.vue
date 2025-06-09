@@ -73,10 +73,10 @@ function onSlippageChange(value: string) {
             noStyle: true,
             alignLeft: true,
             wrapperClass:
-              'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4 font-mono'
+              'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4'
           }"
-          @update:model-value="onSlippageChange"
           :data-cy="dataCyTag(SpotMarketCyTags.SlippageInputField)"
+          @update:model-value="onSlippageChange"
         >
           <template #right>%</template>
         </AppInputField>

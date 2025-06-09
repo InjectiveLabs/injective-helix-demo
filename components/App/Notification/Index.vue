@@ -136,21 +136,19 @@ function onActionClick(action: NotificationAction) {
   >
     <div
       v-if="notification"
-      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 ml-4"
       :class="[
         notification.txHash || notification.isTelemetry
           ? 'w-[340px]'
           : 'max-w-[340px]',
         wrapperClass
       ]"
+      class="rounded-lg overflow-hidden pointer-events-auto bg-brand-800 ml-4"
       @mouseenter="onPause"
       @mouseleave="onResume"
     >
       <div
+        :class="{ 'pr-6': notification.isTelemetry }"
         class="relative flex gap-3 justify-between p-4 pt-5"
-        :class="{
-          'pr-6': notification.isTelemetry
-        }"
       >
         <div
           v-if="!notification.actions"
@@ -205,8 +203,8 @@ function onActionClick(action: NotificationAction) {
                 <NuxtLink
                   v-if="notification.txHash"
                   target="_blank"
-                  class="text-sm text-blue-500 underline hover:opacity-80 transition-opacity"
                   :to="`${getExplorerUrl()}/transaction/${notification.txHash}`"
+                  class="text-sm text-blue-500 underline hover:opacity-80 transition-opacity"
                 >
                   {{ $t('toast.viewOnInjScan') }}
                 </NuxtLink>

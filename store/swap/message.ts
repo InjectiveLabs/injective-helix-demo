@@ -1,14 +1,15 @@
+import { sharedBackupPromiseCall } from '@shared/utils/async'
+import { sharedToBalanceInWei } from '@shared/utils/formatter'
 import {
   ExecArgSwapMinOutput,
   ExecArgSwapExactOutput,
   MsgExecuteContractCompat,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
 import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
-import { prepareOrderMessages } from '@/app/utils/msgs'
-import { SwapForm, SwapFormField, TokenAndPriceAndDecimals } from '@/types'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
+import { SwapFormField } from '@/types'
+import type { SwapForm, TokenAndPriceAndDecimals } from '@/types'
 
 const fetchBalances = (
   {
@@ -19,7 +20,7 @@ const fetchBalances = (
 ) => {
   const accountStore = useAccountStore()
 
-  return backupPromiseCall(() =>
+  return sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchAccountPortfolioBalances(),
       ...(shouldFetchCw20Balances ? [accountStore.fetchCw20Balances()] : [])
@@ -34,9 +35,9 @@ export const submitAtomicOrder = async ({
   minimumOutput
 }: {
   formValues: SwapForm
+  minimumOutput: string
   inputToken: TokenAndPriceAndDecimals
   outputToken: TokenAndPriceAndDecimals
-  minimumOutput: string
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -66,11 +67,12 @@ export const submitAtomicOrder = async ({
     })
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: inputToken.token.denom,
-    amount: new BigNumberInBase(activeInputAmount)
-      .toWei(inputToken.token.decimals)
-      .toFixed()
+    amount: sharedToBalanceInWei({
+      value: activeInputAmount,
+      decimalPlaces: inputToken.token.decimals
+    }).toFixed()
   })
 
   const swapMessage = MsgExecuteContractCompat.fromJSON({
@@ -87,11 +89,11 @@ export const submitAtomicOrder = async ({
   })
 
   const response = await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, swapMessage]
+    messages: [...cw20Messages, swapMessage]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 
   if (response) {
@@ -106,9 +108,9 @@ export const submitAtomicOrderExactOutput = async ({
   maximumInput
 }: {
   formValues: SwapForm
+  maximumInput: string
   inputToken: TokenAndPriceAndDecimals
   outputToken: TokenAndPriceAndDecimals
-  maximumInput: string
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -130,11 +132,12 @@ export const submitAtomicOrderExactOutput = async ({
 
   const activeOutputAmount = formValues[SwapFormField.OutputAmount]
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: inputToken.token.denom,
-    amount: new BigNumberInBase(maximumInput)
-      .toWei(inputToken.token.decimals)
-      .toFixed()
+    amount: sharedToBalanceInWei({
+      value: maximumInput,
+      decimalPlaces: inputToken.token.decimals
+    }).toFixed()
   })
 
   const execArgs = ExecArgSwapExactOutput.fromJSON({
@@ -159,11 +162,11 @@ export const submitAtomicOrderExactOutput = async ({
   })
 
   const response = await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, swapMessage]
+    messages: [...cw20Messages, swapMessage]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 
   if (response) {

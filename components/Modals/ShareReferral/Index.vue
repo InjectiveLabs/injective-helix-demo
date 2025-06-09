@@ -62,7 +62,7 @@ function onCopyLink() {
     }"
   >
     <template #title>
-      <h2 class="text-lg font-semibold leading-none capitalize">
+      <h2 class="leading-none capitalize">
         {{ $t('referral.shareModal.title') }}
       </h2>
     </template>

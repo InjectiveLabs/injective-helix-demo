@@ -5,6 +5,7 @@ export default {
     addressCopied: 'Address copied',
     viewOnInjScan: 'View on InjScan',
     contextCopied: 'Context copied!',
+    marketIdCopied: 'Market ID copied',
     somethingHappened: 'Something happened...',
     connectedSuccessfully: 'Connected successfully ',
     copiedAddressToClipboard: 'Address copied to clipboard',
