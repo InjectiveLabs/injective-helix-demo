@@ -77,10 +77,10 @@ export default {
       description: 'Built as top-tier exchange, but fully decentralized.',
       tradingBotsTitle: 'Trading Bots',
       tradingBotsDescription:
-        'Trade smarter and leverage advanced strategies in just a click.',
-      tradeStocksTitle: 'Trade Stocks',
+        'Deploy advanced smart on-chain trading strategies in just a click.',
+      tradeStocksTitle: 'Trade Stocks and RWAs',
       tradeStocksDescription:
-        'Trade stocks with crypto for faster, cheaper, and more transparent transactions.',
+        'Trade stocks and Real World Assets (RWAs) with crypto for faster, cheaper, and more transparent transactions.',
       lpRewardsTitle: 'LP Rewards',
       lpRewardsDescription: 'Provide liquidity and get paid for it.',
       gasFreeTitle: 'Gas Free Trading',

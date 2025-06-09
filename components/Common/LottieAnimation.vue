@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import lottie, { AnimationItem } from 'lottie-web'
+import lottie from 'lottie-web'
+import type { AnimationItem } from 'lottie-web'
+
+const emit = defineEmits<{
+  'animation:ready': [value: string]
+}>()
+
 const props = withDefaults(
   defineProps<{
     name: string
+    lottieKey?: string
   }>(),
-  {}
+  { lottieKey: '' }
 )
 
 const lottieContainer = ref()
 
-let lottiePlayer: AnimationItem | null = null
+let lottiePlayer: null | AnimationItem = null
 
 watchEffect(() => {
   if (!lottieContainer.value) return
@@ -24,6 +31,10 @@ watchEffect(() => {
     loop: true,
     autoplay: true,
     path: `/lottie/${props.name}`
+  })
+
+  lottiePlayer.addEventListener('DOMLoaded', () => {
+    emit('animation:ready', props.lottieKey)
   })
 })
 
