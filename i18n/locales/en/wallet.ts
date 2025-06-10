@@ -70,7 +70,7 @@ export default {
 
     sso: {
       google: {
-        cta: 'Sign up with Google'
+        cta: 'Sign in with Google'
       },
       email: {
         placeholder: 'Your email address',
