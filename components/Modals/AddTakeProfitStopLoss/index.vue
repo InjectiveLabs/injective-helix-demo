@@ -157,10 +157,6 @@ const {
   initialValue: '',
   rule: '',
   dynamicRule: computed(() => {
-    const formattedEntryPrice = entryPrice.value.toFixed(
-      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    )
-
     const formattedMarkPriceNotScaled = markPriceNotScaled.value.toFixed(
       market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
     )
@@ -171,11 +167,11 @@ const {
 
     if (isBuy.value) {
       const minValueRule = `minValue:${formattedLiquidationPrice}`
-      const maxValueRule = `maxValue:${markPriceNotScaled.value.lt(entryPrice.value) ? formattedMarkPriceNotScaled : formattedEntryPrice}`
+      const maxValueRule = `maxValue:${formattedMarkPriceNotScaled}`
 
       return [minValueRule, maxValueRule].join('|')
     } else {
-      const minValueRule = `minValue:${markPriceNotScaled.value.gt(entryPrice.value) ? formattedMarkPriceNotScaled : formattedEntryPrice}`
+      const minValueRule = `minValue:${formattedMarkPriceNotScaled}`
       const maxValueRule = `maxValue:${formattedLiquidationPrice}`
 
       return [minValueRule, maxValueRule].join('|')
