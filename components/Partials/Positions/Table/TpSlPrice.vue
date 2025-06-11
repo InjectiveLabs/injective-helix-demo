@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
-import { NuxtUiIcons } from '@shared/types'
 
 const jsonStore = useSharedJsonStore()
 
@@ -35,8 +35,8 @@ function editTpSl() {
     :is-disabled="!jsonStore.isPostUpgradeMode"
   >
     <div class="flex items-center gap-2">
-      <div class="text-xs font-mono flex flex-col items-end">
-        <div class="flex items-center">
+      <div class="text-xs flex flex-col items-end">
+        <div class="flex items-center gap-1.5">
           <AppAmount
             v-if="tpTriggerPrice"
             v-bind="{
@@ -46,10 +46,10 @@ function editTpSl() {
           />
           <span v-else> &mdash; </span>
 
-          <span class="text-coolGray-450">&nbsp;{{ $t('trade.tp') }}</span>
+          <span class="text-coolGray-450">{{ $t('trade.tp') }}</span>
         </div>
 
-        <div class="flex items-center">
+        <div class="flex items-center gap-1.5">
           <AppAmount
             v-if="slTriggerPrice"
             v-bind="{
@@ -59,7 +59,7 @@ function editTpSl() {
           />
           <span v-else> &mdash; </span>
 
-          <span class="text-coolGray-450">&nbsp;{{ $t('trade.sl') }}</span>
+          <span class="text-coolGray-450">{{ $t('trade.sl') }}</span>
         </div>
       </div>
 
