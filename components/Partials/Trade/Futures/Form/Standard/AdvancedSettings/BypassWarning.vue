@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField } from '@/types'
+import { DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
 
 const { value: bypassPriceWarningValue } = useBooleanField({
   name: DerivativesTradeFormField.BypassPriceWarning,
@@ -9,7 +9,11 @@ const { value: bypassPriceWarningValue } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox v-model="bypassPriceWarningValue" class="w-full text-white">
+    <AppCheckbox 
+      v-model="bypassPriceWarningValue"
+      class="w-full text-white"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox)"
+    >
       {{ $t('trade.bypassPriceWarning') }}
     </AppCheckbox>
   </div>

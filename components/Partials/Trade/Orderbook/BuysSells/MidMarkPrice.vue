@@ -55,7 +55,6 @@ const isStableCoinMarket = computed(() =>
     <div v-else class="flex items-center justify-center space-x-2">
       <span
         class="text-sm tracking-wider font-bold spacing"
-        :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         :class="{
           'text-red-500 ':
             lastTradedPriceChange === SharedMarketChange.Decrease,
@@ -68,6 +67,7 @@ const isStableCoinMarket = computed(() =>
             amount: lastTradedPrice.toFixed(),
             decimalPlaces: market.priceDecimals
           }"
+          :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         />
       </span>
 
@@ -111,6 +111,7 @@ const isStableCoinMarket = computed(() =>
               amount: markPrice,
               decimalPlaces: market.priceDecimals
             }"
+            :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMarkPrice)"
           />
         </CommonHeaderTooltip>
       </span>
