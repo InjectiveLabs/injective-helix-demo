@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PerpetualMarketCyTags } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
@@ -28,6 +29,7 @@ withDefaults(
             amount: entryPrice.toFixed(),
             decimalPlaces: market.priceDecimals
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormEntryPrice)"
         />
       </p>
     </div>
@@ -40,6 +42,7 @@ withDefaults(
             amount: markPriceNotScaled.toFixed(),
             decimalPlaces: market.priceDecimals
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormMarkPrice)"
         />
       </p>
     </div>
@@ -77,6 +80,7 @@ withDefaults(
           'text-green-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
         }"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormTradeDirection)"
       >
         {{ $t(`trade.${position.direction}`) }}
       </p>

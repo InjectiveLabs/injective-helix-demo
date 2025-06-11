@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MarketKey, DerivativesTradeFormField } from '@/types'
+import { MarketKey, DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
@@ -114,7 +114,11 @@ function addTpSl() {
 
     <div v-else>
       <div class="py-2">
-        <AppCheckbox v-model="isTpSlEnabled" class="text-white">
+        <AppCheckbox
+          v-model="isTpSlEnabled"
+          class="text-white"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlCheckbox)"
+        >
           {{ $t('trade.tpSl') }}
         </AppCheckbox>
       </div>
@@ -125,6 +129,7 @@ function addTpSl() {
             v-model="takeProfitValue"
             :placeholder="$t('trade.take_Profit')"
             class="placeholder:font-sans"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.TakeProfitInputField)"
           />
 
           <p v-if="takeProfitErrorMessage" class="error-message">
@@ -137,6 +142,7 @@ function addTpSl() {
             v-model="stopLossValue"
             :placeholder="$t('trade.stop_Loss')"
             class="placeholder:font-sans"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.StopLossInputField)"
           />
 
           <p v-if="stopLossErrorMessage" class="error-message">

@@ -16,6 +16,7 @@ import {
 import {
   Modal,
   DerivativeTradeTypes,
+  PerpetualMarketCyTags,
   TakeProfitStopLossFormField
 } from '@/types'
 import type { TakeProfitStopLossForm } from '@/types'
@@ -660,6 +661,7 @@ async function submitTpSl() {
           class="w-full"
           v-bind="{ status, disabled: isSubmitButtonDisabled }"
           @click="submitTpSl"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlConfirmButton)"
         >
           {{ $t('trade.confirmTpSl') }}
         </AppButton>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PerpetualMarketCyTags } from '@/types';
 import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
@@ -38,9 +39,14 @@ const takeProfitValue = computed({
         inputClasses:
           'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
       }"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormTakeProfitTriggerPrice)"
     />
 
-    <p v-if="takeProfitErrorMessage" class="error-message">
+    <p
+      v-if="takeProfitErrorMessage"
+      class="error-message"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormTakeProfitErrorMessage)"
+    >
       {{ takeProfitErrorMessage }}
     </p>
   </div>
