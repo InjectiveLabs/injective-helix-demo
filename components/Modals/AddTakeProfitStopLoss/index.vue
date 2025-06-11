@@ -136,14 +136,14 @@ const {
   initialValue: '',
   rule: '',
   dynamicRule: computed(() => {
-    const formattedEntryPrice = entryPrice.value.toFixed(
+    const formattedMarkPriceNotScaled = markPriceNotScaled.value.toFixed(
       market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
     )
 
     if (isBuy.value) {
-      return `minValue:${formattedEntryPrice}`
+      return `minValue:${formattedMarkPriceNotScaled}`
     } else {
-      return `maxValue:${formattedEntryPrice}`
+      return `maxValue:${formattedMarkPriceNotScaled}`
     }
   })
 })

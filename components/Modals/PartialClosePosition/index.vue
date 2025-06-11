@@ -150,7 +150,7 @@ onMounted(() => {
           {{ $t('partialPositionClose.totalPositionSize') }}:
         </h5>
 
-        <div class="flex items-center gap-1 font-mono">
+        <div class="flex items-center gap-1">
           <AppAmount
             v-bind="{
               amount: availableQuantityToFixed,
