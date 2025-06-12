@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PerpetualMarketCyTags } from '@/types';
 import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
@@ -37,9 +38,14 @@ const stopLossValue = computed({
         inputClasses:
           'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
       }"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormStopLossTriggerPrice)"
     />
 
-    <p v-if="stopLossErrorMessage" class="error-message">
+    <p 
+      v-if="stopLossErrorMessage"
+      class="error-message"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormStopLossErrorMessage)"
+    >
       {{ stopLossErrorMessage }}
     </p>
   </div>

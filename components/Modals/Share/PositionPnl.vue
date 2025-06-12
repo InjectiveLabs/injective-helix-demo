@@ -2,10 +2,10 @@
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const { width } = useWindowSize()

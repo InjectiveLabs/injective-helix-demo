@@ -80,10 +80,6 @@ function fetchStrategies() {
       status.setIdle()
     })
 }
-
-function resetSelectedPosition() {
-  selectedPosition.value = undefined
-}
 </script>
 
 <template>
@@ -130,16 +126,13 @@ function resetSelectedPosition() {
 
     <ModalsAddMargin
       v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
+      v-bind="{ position: selectedPosition }"
       is-pgt
     />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
       v-bind="{ position: selectedPosition }"
-      @on:reset="resetSelectedPosition"
     />
 
     <ModalsSharePositionPnl

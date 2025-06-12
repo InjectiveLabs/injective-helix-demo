@@ -16,6 +16,7 @@ import {
 import {
   Modal,
   DerivativeTradeTypes,
+  PerpetualMarketCyTags,
   TakeProfitStopLossFormField
 } from '@/types'
 import type { TakeProfitStopLossForm } from '@/types'
@@ -61,7 +62,6 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
   })
 
 const props = withDefaults(defineProps<{ position: PositionV2 }>(), {})
-const emit = defineEmits<{ 'on:reset': [] }>()
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
@@ -393,32 +393,31 @@ const isSubmitButtonDisabled = computed(() => {
   )
 })
 
-onMounted(() => {
-  if (tpOrderTriggerPrice.value) {
-    setTakeProfitValue(tpOrderTriggerPrice.value)
-  }
-
-  if (slOrderTriggerPrice.value) {
-    setStopLossValue(slOrderTriggerPrice.value)
-  }
-
-  if (tpOrderQuantity.value) {
-    setTpQuantity(tpOrderQuantity.value)
-  }
-
-  if (slOrderQuantity.value) {
-    setSlQuantity(slOrderQuantity.value)
-  }
-})
-
 function closeModal() {
   modalStore.closeModal(Modal.AddTakeProfitStopLoss)
-  emit('on:reset')
 }
 
-function resetTakeProfitStopLossForm() {
+function onOpenModal() {
   resetForm()
+  setupTpSlInputs()
   availableQuantity.value = props.position.quantity || '0'
+}
+
+function setupTpSlInputs() {
+  setTpQuantity('')
+  setSlQuantity('')
+  setStopLossValue('')
+  setTakeProfitValue('')
+
+  if (existingTpOrder.value) {
+    setTpQuantity(tpOrderQuantity.value || '')
+    setTakeProfitValue(tpOrderTriggerPrice.value || '')
+  }
+
+  if (existingSlOrder.value) {
+    setSlQuantity(slOrderQuantity.value || '')
+    setStopLossValue(slOrderTriggerPrice.value || '')
+  }
 }
 
 function selectTpPartialOption(quantityPercentage: number) {
@@ -558,8 +557,7 @@ async function submitTpSl() {
       isAlwaysOpen: status.isLoading(),
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
-    @on:open="resetTakeProfitStopLossForm"
-    @on:close="closeModal"
+    @on:open="onOpenModal"
   >
     <template #title>
       <p class="sm:text-center max-sm:w-11/12">
@@ -659,6 +657,7 @@ async function submitTpSl() {
         <AppButton
           class="w-full"
           v-bind="{ status, disabled: isSubmitButtonDisabled }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlConfirmButton)"
           @click="submitTpSl"
         >
           {{ $t('trade.confirmTpSl') }}

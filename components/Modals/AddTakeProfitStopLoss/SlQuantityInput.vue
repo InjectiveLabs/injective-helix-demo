@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PerpetualMarketCyTags } from '@/types';
 import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
@@ -44,6 +45,7 @@ function onOptionUpdate(percentage: number) {
           inputClasses:
             'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
         }"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormStopLossQuantity)"
       />
 
       <div
@@ -66,6 +68,7 @@ function onOptionUpdate(percentage: number) {
     <p
       v-else-if="slQuantityErrorMessage"
       class="error-message first-letter:capitalize"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormStopLossQtyErrorMessage)"
     >
       {{ slQuantityErrorMessage }}
     </p>

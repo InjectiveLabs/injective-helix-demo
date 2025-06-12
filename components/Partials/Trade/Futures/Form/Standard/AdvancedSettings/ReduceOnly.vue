@@ -3,6 +3,7 @@ import {
   MarketKey,
   UiDerivativeMarket,
   DerivativesTradeForm,
+  PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 
@@ -39,7 +40,12 @@ watchEffect(() => {
 
 <template>
   <div>
-    <AppCheckbox v-bind="{ disabled }" v-model="reduceOnly" class="text-white">
+    <AppCheckbox
+      v-bind="{ disabled }"
+      v-model="reduceOnly"
+      class="text-white"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettingsReduceOnlyCheckbox)"
+    >
       {{ $t('trade.reduceOnly') }}
     </AppCheckbox>
   </div>

@@ -68,10 +68,6 @@ onMounted(() => {
   )
 })
 
-function resetSelectedPosition() {
-  selectedPosition.value = undefined
-}
-
 function addTpSl(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.AddTakeProfitStopLoss)
@@ -226,7 +222,6 @@ function onOrderSideChange() {
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
       v-bind="{ position: selectedPosition }"
-      @on:reset="resetSelectedPosition"
     />
   </div>
 </template>
