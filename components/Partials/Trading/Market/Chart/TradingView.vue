@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { OrderSide } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
@@ -8,11 +8,13 @@ import {
   DEFAULT_100_CHART_CANDLE_BAR_SPACING
 } from '@/app/utils/constants'
 import { TradingInterface } from '@/types'
+import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import type {
   SpotLimitOrder,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
 import type {
+  UiTrade,
   UiSpotMarket,
   UiDerivativeMarket,
   TradingChartInterval
@@ -28,6 +30,7 @@ const props = withDefaults(
     isSpot: boolean
     interval: string
     datafeedEndpoint: string
+    historicalTrades: UiTrade[]
     market: UiSpotMarket | UiDerivativeMarket
     orders?: SpotLimitOrder[] | DerivativeLimitOrder[]
   }>(),
@@ -54,21 +57,40 @@ const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
 
+const widgetOptions = ref<any>({})
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
+const showTradeHistory = computed({
+  get: () => true,
+  set: (value) => {
+    if (!value) {
+      setupChartMarkers(true)
+    } else {
+      setupChartMarkers()
+    }
+  }
+})
+
+watch(
+  () => props.historicalTrades,
+  () => {
+    setupChartMarkers()
+  }
+)
+
 onMounted(() => {
-  const widgetOptions = config({
+  widgetOptions.value = config({
     containerId,
     symbol: props.symbol,
     interval: props.interval,
     datafeedEndpoint: props.datafeedEndpoint
   })
 
-  const tradingWidget = new TradingViewWidget(widgetOptions as any)
+  const tradingWidget = new TradingViewWidget(widgetOptions.value as any)
 
   tradingWidget.onChartReady(() => {
-    tradingWidget.applyOverrides(widgetOptions.overrides)
+    tradingWidget.applyOverrides(widgetOptions.value.overrides)
     const tradingViewChart = tradingWidget?.chart()
 
     nextTick(() => {
@@ -107,11 +129,81 @@ onMounted(() => {
           }
         })
 
+        setupChartMarkers()
         emit('ready')
       }, 100)
     }
   })
 })
+
+function setupChartMarkers(isHide?: boolean) {
+  const tradingViewChart = tradingView.value?.view?.chart()
+
+  if (tradingViewChart) {
+    const customMarks = props.historicalTrades.map((trade) => {
+      const time = trade.executedAt / 1000
+
+      const price = props.isSpot
+        ? new BigNumberInBase((trade as SharedUiSpotTrade).price).toWei(
+            props.market.baseToken.decimals - props.market.quoteToken.decimals
+          )
+        : sharedToBalanceInTokenInBase({
+            value: (trade as SharedUiDerivativeTrade).executionPrice,
+            decimalPlaces: props.market.quoteToken.decimals
+          })
+
+      const formattedPrice = new BigNumberInBase(price)
+        .toFixed(props.market.priceDecimals)
+        .replace(/\.?0+$/, '')
+
+      const isBuy = trade.tradeDirection === TradeDirection.Buy
+      const label = isBuy ? 'B' : 'S'
+      const color = isBuy ? '#43E2AC' : '#FF8080'
+
+      return {
+        time,
+        label,
+        minSize: 16,
+        borderWidth: 0,
+        id: trade.tradeId,
+        labelFontColor: '#14151A',
+        text: `${isBuy ? t('trade.bought') : t('trade.sold')} ${props.market.baseToken.symbol} at ${formattedPrice}`,
+        color: {
+          border: color,
+          background: color
+        }
+      }
+    })
+
+    widgetOptions.value.datafeed.getMarks = (
+      symbolInfo: string,
+      from: string,
+      to: string,
+      onDataCallback: (marks: Record<string, any>) => void
+    ) => {
+      const updatedMarks = isHide ? [] : customMarks
+      onDataCallback(updatedMarks)
+    }
+
+    triggerMarkersUpdate()
+  }
+}
+
+function triggerMarkersUpdate() {
+  const tradingViewChart = tradingView.value?.view?.chart()
+
+  tradingViewChart.setResolution('1')
+  tradingViewChart.setResolution(props.interval)
+
+  const timeScale = tradingViewChart.getTimeScale()
+
+  if (timeScale) {
+    const originalSpacing = timeScale.barSpacing()
+
+    timeScale.setBarSpacing(originalSpacing + 1)
+    timeScale.setBarSpacing(originalSpacing)
+  }
+}
 
 function clearAllOrderLines() {
   Object.values(orderLines.value).forEach((orderLine) => {
@@ -249,7 +341,17 @@ defineExpose({ modifyLimitOrderLines })
 </script>
 
 <template>
-  <div class="w-full h-full">
+  <div class="relative w-full h-full">
+    <AppCheckbox
+      v-model="showTradeHistory"
+      v-bind="{ isReverse: true }"
+      class="absolute top-1 left-[420px] flex-row-reverse max-2xl:hidden"
+    >
+      <span class="text-sm leading-4 font-proximaNova">
+        {{ $t('trade.showTradeHistory') }}
+      </span>
+    </AppCheckbox>
+
     <div
       :id="containerId"
       ref="tradingView"

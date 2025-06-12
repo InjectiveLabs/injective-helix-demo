@@ -4,6 +4,7 @@ const props = withDefaults(
     noWrap?: boolean
     isPlain?: boolean
     disabled?: boolean
+    isReverse?: boolean
     modelValue: boolean
   }>(),
   {}
@@ -22,7 +23,10 @@ const id = Math.random().toString()
 </script>
 
 <template>
-  <div class="checkbox-wrapper-4 flex" :class="{ 'items-center': !noWrap }">
+  <div
+    class="checkbox-wrapper flex"
+    :class="{ 'items-center': !noWrap, 'is-reverse': isReverse }"
+  >
     <input
       :id="id"
       v-model="value"
@@ -32,7 +36,10 @@ const id = Math.random().toString()
     />
     <label
       class="cbx"
-      :class="[noWrap ? 'flex flex-nowrap' : 'inline-block']"
+      :class="[
+        { 'flex-row-reverse': isReverse },
+        noWrap || isReverse ? 'flex flex-nowrap' : 'inline-block'
+      ]"
       :for="id"
     >
       <span class="w-4 h-4">
@@ -56,10 +63,11 @@ const id = Math.random().toString()
 </template>
 
 <style scoped>
-.checkbox-wrapper-4 * {
+.checkbox-wrapper * {
   box-sizing: border-box;
 }
-.checkbox-wrapper-4 .cbx {
+
+.checkbox-wrapper .cbx {
   -webkit-user-select: none;
   user-select: none;
   cursor: pointer;
@@ -68,18 +76,22 @@ const id = Math.random().toString()
   overflow: hidden;
   transition: all 0.2s ease;
 }
-.checkbox-wrapper-4 .cbx:not(:last-child) {
+
+.checkbox-wrapper .cbx:not(:last-child) {
   margin-right: 6px;
 }
-.checkbox-wrapper-4 .cbx:hover {
+
+.checkbox-wrapper .cbx:hover {
   background: rgba(0, 119, 255, 0.06);
 }
-.checkbox-wrapper-4 .cbx span {
+
+.checkbox-wrapper .cbx span {
   float: left;
   vertical-align: middle;
   transform: translate3d(0, 0, 0);
 }
-.checkbox-wrapper-4 .cbx span:first-child {
+
+.checkbox-wrapper .cbx span:first-child {
   position: relative;
   width: 18px;
   height: 18px;
@@ -88,7 +100,8 @@ const id = Math.random().toString()
   transition: all 0.2s ease;
   box-shadow: 0 1px 1px rgba(0, 16, 75, 0.05);
 }
-.checkbox-wrapper-4 .cbx span:first-child svg {
+
+.checkbox-wrapper .cbx span:first-child svg {
   position: absolute;
   top: 3px;
   left: 2px;
@@ -103,59 +116,75 @@ const id = Math.random().toString()
   transition-delay: 0.1s;
   transform: translate3d(0, 0, 0);
 }
-.checkbox-wrapper-4 .cbx span:last-child {
+
+.checkbox-wrapper .cbx span:last-child {
   padding-left: 8px;
   line-height: 18px;
 }
-.checkbox-wrapper-4 .cbx:hover span:first-child {
+
+.checkbox-wrapper.is-reverse .cbx span:last-child {
+  padding-left: 0;
+  padding-right: 8px;
+}
+
+.checkbox-wrapper .cbx:hover span:first-child {
   border-color: #2891e9;
 }
-.checkbox-wrapper-4 .inp-cbx {
+
+.checkbox-wrapper .inp-cbx {
   position: absolute;
   visibility: hidden;
 }
-.checkbox-wrapper-4 .inp-cbx:checked + .cbx span:first-child {
+
+.checkbox-wrapper .inp-cbx:checked + .cbx span:first-child {
   background: #2891e9;
   border-color: #2891e9;
   animation: wave-4 0.4s ease;
 }
 
-.checkbox-wrapper-4 .inp-cbx:disabled + .cbx span:first-child {
+.checkbox-wrapper .inp-cbx:disabled + .cbx span:first-child {
   background: #333;
   border-color: #333;
   animation: wave-4 0.4s ease;
 }
-.checkbox-wrapper-4 .inp-cbx:checked + .cbx span:first-child svg {
+
+.checkbox-wrapper .inp-cbx:checked + .cbx span:first-child svg {
   stroke-dashoffset: 0;
 }
-.checkbox-wrapper-4 .inline-svg {
+
+.checkbox-wrapper .inline-svg {
   position: absolute;
   width: 0;
   height: 0;
   pointer-events: none;
   user-select: none;
 }
+
 @media screen and (max-width: 640px) {
-  .checkbox-wrapper-4 .cbx {
+  .checkbox-wrapper .cbx {
     width: 100%;
     display: inline-block;
   }
 }
+
 @-moz-keyframes wave-4 {
   50% {
     transform: scale(0.9);
   }
 }
+
 @-webkit-keyframes wave-4 {
   50% {
     transform: scale(0.9);
   }
 }
+
 @-o-keyframes wave-4 {
   50% {
     transform: scale(0.9);
   }
 }
+
 @keyframes wave-4 {
   50% {
     transform: scale(0.9);

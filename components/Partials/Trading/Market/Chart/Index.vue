@@ -108,6 +108,14 @@ const limitOrders = computed(() => {
   return buyOrders.concat(sellOrders)
 })
 
+const historicalTrades = computed(() => {
+  const tradesData = isSpot
+    ? spotStore.subaccountTrades
+    : derivativeStore.subaccountTrades
+
+  return tradesData.filter((trade) => trade.marketId === props.market.marketId)
+})
+
 function onReady() {
   status.setIdle()
 }
@@ -219,6 +227,7 @@ function onOrderChange({
           isSpot,
           market,
           datafeedEndpoint,
+          historicalTrades,
           orders: limitOrders,
           interval:
             appStore.userState.preferences.tradingChartInterval ||
