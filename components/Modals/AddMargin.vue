@@ -6,25 +6,23 @@ import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
+const modalStore = useSharedModalStore()
+const positionStore = usePositionStore()
+const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { $onError } = useNuxtApp()
+const { handleSubmit, resetForm } = useForm()
+const { activeSubaccountBalancesWithToken } = useBalance()
+
 const props = withDefaults(
   defineProps<{
     isPgt?: boolean
     position: PositionV2
   }>(),
-  {
-    isPgt: false
-  }
+  {}
 )
-
-const modalStore = useSharedModalStore()
-const positionStore = usePositionStore()
-const derivativeStore = useDerivativeStore()
-const sharedWalletStore = useSharedWalletStore()
-const { t } = useLang()
-const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
-const { handleSubmit, resetForm } = useForm()
-const { activeSubaccountBalancesWithToken } = useBalance()
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -72,7 +70,7 @@ function onMaxClicked() {
   setAmountValue(availableMarginToFixed.value)
 }
 
-function onModalClose() {
+function onCloseModal() {
   modalStore.closeModal(Modal.AddMarginToPosition)
 }
 
@@ -96,7 +94,7 @@ const onSubmit = handleSubmit(() => {
         notificationStore.update({
           title: t('toast.trade.successAddedMargin')
         })
-        onModalClose()
+        onCloseModal()
       })
       .catch($onError)
       .finally(() => {
@@ -117,7 +115,7 @@ const onSubmit = handleSubmit(() => {
       notificationStore.update({
         title: t('toast.trade.successAddedMargin')
       })
-      onModalClose()
+      onCloseModal()
     })
     .catch($onError)
     .finally(() => {

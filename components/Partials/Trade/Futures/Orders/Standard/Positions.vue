@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
-import type { UiDerivativeMarket } from '@/types'
 import { Modal, BusEvents, MarketKey } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
@@ -14,7 +14,7 @@ const props = withDefaults(
   {}
 )
 
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 
 const filteredPositions = computed(() =>
   positionStore.subaccountPositions.filter((position) => {
@@ -40,10 +40,6 @@ function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
-}
-
-function resetSelectedPosition() {
-  selectedPosition.value = undefined
 }
 </script>
 
@@ -73,7 +69,6 @@ function resetSelectedPosition() {
   <ModalsAddTakeProfitStopLoss
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
-    @on:reset="resetSelectedPosition"
   />
 
   <ModalsSharePositionPnl
