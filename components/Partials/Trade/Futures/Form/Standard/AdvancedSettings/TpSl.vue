@@ -102,6 +102,7 @@ function addTpSl() {
     <div v-if="currentMarketPosition" class="pt-2">
       <button
         class="flex items-center p-2 focus-visible:outline-none"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlAddButton)"
         @click="addTpSl"
       >
         <div class="flex rounded-full transition hover:bg-coolGray-600">

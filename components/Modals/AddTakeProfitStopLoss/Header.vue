@@ -55,6 +55,7 @@ withDefaults(
             amount: liquidationPrice.toFixed(),
             decimalPlaces: market.priceDecimals
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormEstLiqPrice)"
         />
       </p>
     </div>
@@ -68,6 +69,7 @@ withDefaults(
             decimalPlaces:
               market.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormTotalQtySize)"
         />
         <span>{{ market.baseToken.symbol }}</span>
       </div>
