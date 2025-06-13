@@ -2,7 +2,6 @@
 import { BigNumber } from '@injectivelabs/utils'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 
-const isMobile = useIsMobile()
 const { lg } = useSharedBreakpoints()
 
 withDefaults(
@@ -22,19 +21,19 @@ withDefaults(
     :mode="lg ? 'hover' : 'click'"
     :popper="{ placement: 'bottom-start', offsetDistance: 0 }"
   >
-    <div class="flex items-center gap-1 sm:mb-0.5">
-      <p class="text-coolGray-400 text-xs lg:text-sm">
+    <div class="flex items-center gap-1 mb-0.5">
+      <p class="text-coolGray-400 text-sm">
         {{ $t(`portfolio.home.balance.title`) }}:
       </p>
 
       <div class="flex items-center">
-        <span class="text-xs lg:text-sm">$</span>
+        <span class="text-sm">$</span>
         <CommonSkeletonSubaccountAmount>
           <CommonNumberCounter
             v-bind="{
+              size: 14,
               value: aggregatedSubaccountTotalBalanceInUsd.toNumber() || 0
             }"
-            :size="isMobile ? 12 : 14"
           />
         </CommonSkeletonSubaccountAmount>
       </div>

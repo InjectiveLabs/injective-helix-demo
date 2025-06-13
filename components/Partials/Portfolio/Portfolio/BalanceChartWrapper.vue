@@ -5,7 +5,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { HistoricalPortfolioDuration } from '@/types'
 
-const isMobile = useIsMobile()
 const appStore = useAppStore()
 const accountStore = useAccountStore()
 const leaderboardStore = useLeaderboardStore()
@@ -80,23 +79,25 @@ function fetchBalance() {
 </script>
 
 <template>
-  <div class="border p-4">
-    <div class="gap-2 flex justify-between items-start max-xs:flex-col">
+  <div class="p-6">
+    <div
+      class="h-40 xs:h-28 gap-2 flex justify-between items-start max-xs:flex-col"
+    >
       <div>
         <p class="text-coolGray-400">
           {{ $t(`portfolio.home.tradableBalance.title`) }}
         </p>
 
-        <div class="h-20 lg:h-[88px] flex flex-col">
+        <div class="flex flex-col">
           <div class="flex items-center space-x-2">
             <div class="flex space-x-1 items-center">
-              <span class="lg:text-2xl">$</span>
+              <span class="text-2xl">$</span>
               <CommonSkeletonSubaccountAmount>
                 <CommonNumberCounter
                   v-bind="{
+                    size: 24,
                     value: aggregatedSubaccountTotalTradable.toNumber() || 0
                   }"
-                  :size="isMobile ? 16 : 24"
                 />
               </CommonSkeletonSubaccountAmount>
             </div>
@@ -108,13 +109,9 @@ function fetchBalance() {
               <UIcon
                 v-if="appStore.userState.preferences.isHideBalances"
                 :name="NuxtUiIcons.EyeSlash"
-                class="w-5 h-5 lg:w-7 lg:h-7 -translate-x-[2px]"
+                class="size-7 -translate-x-[2px]"
               />
-              <UIcon
-                v-else
-                :name="NuxtUiIcons.Eye"
-                class="w-5 h-5 lg:w-7 lg:h-7"
-              />
+              <UIcon v-else :name="NuxtUiIcons.Eye" class="size-7" />
             </button>
           </div>
 
@@ -144,14 +141,14 @@ function fetchBalance() {
         </div>
       </div>
 
-      <div class="bg-brand-800 rounded flex p-1">
+      <div class="bg-coolGray-800 rounded flex p-1">
         <AppButtonSelect
           v-for="value in Object.values(HistoricalPortfolioDuration)"
           :key="value"
           v-model="selectedDuration"
           v-bind="{ value }"
-          class="text-xs md:text-sm py-1 px-2 text-white hover:opacity-50 cursor-pointer rounded transition-opacity"
-          active-classes="bg-brand-900 !opacity-100"
+          active-classes="bg-coolGray-875 !opacity-100"
+          class="text-sm py-1 px-3 text-white hover:opacity-50 cursor-pointer rounded transition-opacity"
           @update:model-value="fetchBalance"
         >
           {{ $t(`portfolio.duration.${value}`) }}

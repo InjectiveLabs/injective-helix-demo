@@ -10,7 +10,7 @@ import {
   PortfolioFuturesOpenOrdersTableColumn,
   PortfolioFuturesOrderHistoryTableColumn,
   PortfolioFuturesTradeHistoryTableColumn
-} from './../../../types'
+} from '@/types'
 
 export default {
   portfolio: {
@@ -118,6 +118,11 @@ export default {
     assetsFrom: 'Assets From',
     totalValue: 'Total Value',
 
+    tab: {
+      pnl: 'PNL',
+      account: 'Account'
+    },
+
     home: {
       [PortfolioChartType.Volume]: {
         title: 'Trade Volume (Weekly)'
@@ -139,23 +144,23 @@ export default {
     },
 
     balances: {
+      total: 'Total',
       netWorth: 'Net Worth',
       available: 'Available',
-      inUseReserved: 'In Use/Reserved',
       unrealizedPnl: 'Unrealized PnL',
-      total: 'Total',
-      totalValueUsd: 'Total Value (USD)',
-      transferToMain: 'Transfer to Main'
+      inUseReserved: 'In Use/Reserved',
+      transferToMain: 'Transfer to Main',
+      totalValueUsd: 'Total Value (USD)'
     },
 
     subaccounts: {
       name: 'Subaccount Name',
       address: 'Subaccount Address',
       totalValue: 'Total Value (USD)',
-      description:
-        'This is a secondary account linked to your main account for separate management and trading of digital assets. To activate it, you first need to transfer funds. Learn more about subaccounts in our FAQ.',
       addSubaccount: 'Add Subaccount',
-      addSubaccountOrTransfer: 'Add Subaccount / Transfer'
+      addSubaccountOrTransfer: 'Add Subaccount / Transfer',
+      description:
+        'This is a secondary account linked to your main account for separate management and trading of digital assets. To activate it, you first need to transfer funds. Learn more about subaccounts in our FAQ.'
     },
 
     history: {
@@ -199,8 +204,8 @@ export default {
       filterBySide: 'Filter by Side'
     },
     connectMobile: {
-      scanQRCode: 'Scan this QR code on mobile to connect your wallet',
       grantAccess: 'Grant Access',
+      scanQRCode: 'Scan this QR code on mobile to connect your wallet',
       scanCode: 'Scan Code to Continue'
     },
 
@@ -220,6 +225,16 @@ export default {
       [HistoricalPortfolioDuration.OneDay]: '1D',
       [HistoricalPortfolioDuration.OneWeek]: '1W',
       [HistoricalPortfolioDuration.OneMonth]: '1M'
+    },
+
+    keyStats: {
+      title: 'Key Stats',
+      allTimePnl: 'All-time PNL',
+      totalVolume: 'Total Volume',
+      totalEquity: 'Total Equity',
+      stakingAccount: 'Staking Account',
+      spotAccountEquity: 'Spot Account Equity',
+      perpsAccountEquity: 'Perps Account Equity'
     }
   }
 }
