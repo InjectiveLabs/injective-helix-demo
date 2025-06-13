@@ -298,6 +298,10 @@ html.theme-dark .chart-page {
   opacity: 1;
 }
 
+.icon-uMfL97K2 {
+  padding: 5px 3px;
+}
+
 .theme-dark:root {
   --tv-color-platform-background: #14151a;
   --tv-color-pane-background: #14151a;

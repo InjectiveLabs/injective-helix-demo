@@ -22,6 +22,7 @@ import type {
 
 const route = useRoute()
 const appStore = useAppStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
 const props = withDefaults(
@@ -176,7 +177,7 @@ function setupChartMarkers(isHide?: boolean) {
     })
 
     widgetOptions.value.datafeed.getMarks = (
-      symbolInfo: string,
+      symbolInfo: any,
       from: string,
       to: string,
       onDataCallback: (marks: Record<string, any>) => void
@@ -185,7 +186,10 @@ function setupChartMarkers(isHide?: boolean) {
       onDataCallback(updatedMarks)
     }
 
-    triggerMarkersUpdate()
+    // ensure markers process doesn't clash with orderline process
+    setTimeout(() => {
+      triggerMarkersUpdate()
+    }, 300)
   }
 }
 
@@ -343,12 +347,13 @@ defineExpose({ modifyLimitOrderLines })
 <template>
   <div class="relative w-full h-full">
     <AppCheckbox
+      v-if="sharedWalletStore.isUserConnected"
       v-model="showTradeHistory"
       v-bind="{ isReverse: true }"
-      class="absolute top-1 left-[420px] flex-row-reverse max-2xl:hidden"
+      class="absolute top-1 right-[155px] flex-row-reverse max-2xl:hidden"
     >
       <span class="text-sm leading-4 font-proximaNova">
-        {{ $t('trade.showTradeHistory') }}
+        {{ $t('trade.showHistory') }}
       </span>
     </AppCheckbox>
 

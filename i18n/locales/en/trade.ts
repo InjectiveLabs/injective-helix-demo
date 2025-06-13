@@ -363,7 +363,7 @@ export default {
     cancelled: 'Cancelled',
     partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
-    showTradeHistory: 'Show Trade History',
+    showHistory: 'Show History',
     spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency',
     tradingLayout: 'Trading Layout',
     tradingLayoutOptions: {
