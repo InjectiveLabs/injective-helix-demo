@@ -258,14 +258,27 @@ function onClosePartialPosition() {
       </template>
 
       <template #contracts-data="{ row }">
-        <div class="flex items-center justify-end p-2 text-white">
+        <div
+          class="flex items-center justify-end gap-1 p-2"
+          :class="[
+            row.availableQuantity.isZero() ? 'text-coolGray-500' : 'text-white'
+          ]"
+        >
+          <PartialsPositionsRemainingQuantity
+            v-if="row.usedQuantity.gt(0)"
+            v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
+          />
+
           <p
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
             class="flex gap-1"
+            :class="{
+              'line-through ': row.availableQuantity.isZero()
+            }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
           >
             <AppAmount
               v-bind="{
-                amount: row.quantity.toFixed(),
+                amount: row.availableQuantity.toFixed(),
                 decimalPlaces: row.quantityDecimals
               }"
             />

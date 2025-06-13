@@ -56,6 +56,15 @@ export function usePositionTransformer(
 
       const quantity = new BigNumberInBase(position.quantity)
 
+      const usedQuantity = derivativeStore.subaccountOrders.reduce(
+        (acc, order) => {
+          return order.marketId === market.marketId
+            ? acc.plus(order.quantity)
+            : acc
+        },
+        ZERO_IN_BASE
+      )
+
       const percentagePnl = pnl.isNaN()
         ? ZERO_IN_BASE
         : new BigNumberInBase(pnl.dividedBy(margin).times(100))
@@ -130,6 +139,7 @@ export function usePositionTransformer(
         position,
         quantity,
         markPrice,
+        usedQuantity,
         percentagePnl,
         quantityInUsd,
         tpTriggerPrice,
@@ -144,6 +154,7 @@ export function usePositionTransformer(
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
         hasTpSl: !!tpTriggerPrice || !!slTriggerPrice,
+        availableQuantity: quantity.minus(usedQuantity),
         hasReduceOnlyOrders: !!reduceOnlyCurrentOrders.length,
         isTradingBotSubaccount: !!isTradingbotSubaccountId(
           position.subaccountId

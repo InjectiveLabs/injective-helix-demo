@@ -40,16 +40,19 @@ const partialOptions = [
 const isMarketPositionClose = ref(true)
 const status = reactive(new Status(StatusType.Idle))
 
+const getAvailableQuantity = computed(() =>
+  isMarketPositionClose.value ? props.row.quantity : props.row.availableQuantity
+)
+
 const {
   value: quantityValue,
   errorMessage: quantityErrorMessage,
   setValue: setQuantityValue
 } = useStringField({
   name: 'positionQuantity',
-  rule: 'required',
   dynamicRule: computed(
     () =>
-      `maxValuePositionQuantity:${props.row.quantity.toFixed(
+      `maxValuePositionQuantity:${getAvailableQuantity.value.toFixed(
         props.row.quantityDecimals
       )}`
   )
@@ -61,7 +64,6 @@ const {
   setValue: setPriceValue
 } = useStringField({
   name: 'Price',
-  rule: 'required',
   dynamicRule: computed(() => {
     const formattedLiquidationPrice = props.row.liquidationPrice.toFixed(
       props.row.priceDecimals
@@ -86,7 +88,11 @@ const isSubmitButtonDisabled = computed(() => {
   if (isMarketPositionClose.value) {
     return isQuantityInputError
   } else {
-    return isQuantityInputError || isPriceInputError
+    return (
+      isPriceInputError ||
+      isQuantityInputError ||
+      props.row.availableQuantity.isZero()
+    )
   }
 })
 
@@ -107,7 +113,7 @@ function onCloseModal() {
 
 function selectPartialOption(quantityPercentage: number) {
   setQuantityValue(
-    props.row.quantity
+    getAvailableQuantity.value
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(props.row.quantityDecimals, BigNumber.ROUND_DOWN)
@@ -195,7 +201,8 @@ async function validateSlippage() {
         <ModalsPartialClosePositionInfo
           v-bind="{
             row,
-            isMarketPositionClose
+            isMarketPositionClose,
+            availableQuantity: getAvailableQuantity
           }"
         />
 

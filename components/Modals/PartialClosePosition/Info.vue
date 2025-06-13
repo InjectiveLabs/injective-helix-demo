@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { TransformedPosition } from '@/types'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
     row: TransformedPosition
     isMarketPositionClose?: boolean
+    availableQuantity: BigNumberInBase
   }>(),
   {}
 )
@@ -16,14 +18,33 @@ withDefaults(
       {{ $t('partialClosePosition.totalPositionSize') }}
     </h5>
 
-    <div class="flex items-center gap-1">
-      <AppAmount
-        v-bind="{
-          amount: row.quantity.toFixed(),
-          decimalPlaces: row.quantityDecimals
-        }"
+    <div
+      class="flex items-center gap-1"
+      :class="{
+        'text-coolGray-500':
+          !isMarketPositionClose && row.availableQuantity.isZero()
+      }"
+    >
+      <PartialsPositionsRemainingQuantity
+        v-if="!isMarketPositionClose && row.usedQuantity.gt(0)"
+        v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
       />
-      <span>{{ row.market.baseToken.symbol }}</span>
+
+      <div
+        class="flex items-center gap-1"
+        :class="{
+          'line-through':
+            !isMarketPositionClose && row.availableQuantity.isZero()
+        }"
+      >
+        <AppAmount
+          v-bind="{
+            amount: availableQuantity.toFixed(),
+            decimalPlaces: row.quantityDecimals
+          }"
+        />
+        <span>{{ row.market.baseToken.symbol }}</span>
+      </div>
     </div>
   </div>
 
