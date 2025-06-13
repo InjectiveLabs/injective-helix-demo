@@ -622,3 +622,8 @@ export enum SettingsPreferences {
   ThousandsSeparators = 'thousands-separators',
   GridTradingSubaccounts = 'grid-trading-subaccounts'
 }
+
+export enum PartialLimitField {
+  PositionPrice = 'positionPrice',
+  PositionQuantity = 'positionQuantity'
+}

@@ -370,7 +370,7 @@ export default {
     slippageTooltip:
       'Slippage tolerance is the maximum price change allowed before a trade is canceled.',
     positionUsedTooltip:
-      '{quantity} is being used for another order. Any open order must be cancelled to continue.',
+      '{quantity} is being used for another order. You can cancel or modify any of your open orders.',
     worstPriceTooltip:
       "The worst price reflects the highest you'll pay when buying or the lowest you'll receive when selling, according to slippage tolerance.",
 

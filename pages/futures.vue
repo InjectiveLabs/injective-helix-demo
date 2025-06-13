@@ -165,7 +165,6 @@ useHead({
 })
 
 onUnmounted(() => {
-  derivativeStore.reset()
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
 })

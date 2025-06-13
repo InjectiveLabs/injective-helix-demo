@@ -14,18 +14,12 @@ const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     isTradingBots?: boolean
-
     ui?: Record<string, any>
   }>(),
   {
-    isTradingBots: false,
     ui: () => ({
-      td: {
-        font: 'font-sans'
-      },
-      th: {
-        base: 'whitespace-nowrap'
-      }
+      td: { font: 'font-sans' },
+      th: { base: 'whitespace-nowrap' }
     })
   }
 )
@@ -233,8 +227,10 @@ function onClosePartialPosition() {
           </PartialsCommonMarketRedirection>
 
           <PartialsPositionsTableClosePositionButton
-            :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)"
             v-if="!sixXl && !isTradingBots"
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)
+            "
             v-bind="{ row }"
             @position:set="setSelectedPosition"
           />
@@ -278,8 +274,8 @@ function onClosePartialPosition() {
           >
             <AppAmount
               v-bind="{
-                amount: row.availableQuantity.toFixed(),
-                decimalPlaces: row.quantityDecimals
+                decimalPlaces: row.quantityDecimals,
+                amount: row.availableQuantity.toFixed()
               }"
             />
             {{

@@ -8,7 +8,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
-import { Modal, BusEvents } from '@/types'
+import { Modal, BusEvents, PartialLimitField } from '@/types'
 import type { TransformedPosition } from '@/types'
 
 const modalStore = useSharedModalStore()
@@ -49,7 +49,7 @@ const {
   errorMessage: quantityErrorMessage,
   setValue: setQuantityValue
 } = useStringField({
-  name: 'positionQuantity',
+  name: PartialLimitField.PositionQuantity,
   dynamicRule: computed(
     () =>
       `maxValuePositionQuantity:${getAvailableQuantity.value.toFixed(
@@ -63,7 +63,7 @@ const {
   errorMessage: priceErrorMessage,
   setValue: setPriceValue
 } = useStringField({
-  name: 'Price',
+  name: PartialLimitField.PositionPrice,
   dynamicRule: computed(() => {
     const formattedLiquidationPrice = props.row.liquidationPrice.toFixed(
       props.row.priceDecimals

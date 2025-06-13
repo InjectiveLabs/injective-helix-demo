@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { BusEvents } from '../../../types/enums'
+import { TradePage, BusEvents, TradeSubPage } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
-import type { UiDerivativeMarket } from '~/types'
 
+const route = useRoute()
+const router = useRouter()
 const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
@@ -26,8 +28,14 @@ const getUsedQuantity = computed(() => {
   return `${usedQuantityToString.value} ${props.market.baseToken.symbol}`
 })
 
-function onViewOrder() {
-  useEventBus(BusEvents.GoToPerpOrdersView).emit()
+async function onViewOrder() {
+  if (route.name !== TradeSubPage.Futures) {
+    router.push({ name: TradePage.Futures })
+  }
+
+  setTimeout(() => {
+    useEventBus(BusEvents.GoToPerpOrdersView).emit()
+  }, 200)
 }
 </script>
 

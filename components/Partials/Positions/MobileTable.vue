@@ -147,8 +147,8 @@ function onSetPosition(value: TransformedPosition) {
         >
           <AppAmount
             v-bind="{
-              amount: position.quantity.toFixed(),
-              decimalPlaces: position.quantityDecimals
+              decimalPlaces: position.quantityDecimals,
+              amount: position.availableQuantity.toFixed()
             }"
           />
           {{

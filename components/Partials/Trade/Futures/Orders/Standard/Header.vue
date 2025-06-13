@@ -88,9 +88,9 @@ watch(
 )
 
 onMounted(() => {
-  useEventBus(BusEvents.GoToPerpOrdersView).on(
-    () => (view.value = PerpOrdersStandardView.Orders)
-  )
+  useEventBus(BusEvents.GoToPerpOrdersView).on(() => {
+    view.value = PerpOrdersStandardView.Orders
+  })
 })
 </script>
 
