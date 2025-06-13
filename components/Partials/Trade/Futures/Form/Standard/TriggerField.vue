@@ -2,6 +2,7 @@
 import {
   MarketKey,
   UiDerivativeMarket,
+  PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 
@@ -17,7 +18,11 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
   <div v-if="market" class="space-y-2">
     <p class="field-label">{{ $t('trade.trigger_price') }}</p>
 
-    <AppInputField v-model="trigger" placeholder="0.00">
+    <AppInputField
+      v-model="trigger"
+      placeholder="0.00"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TriggerPriceInputField)"
+    >
       <template #right>
         <span class="text-sm text-white">
           {{ market.quoteToken.symbol }}
