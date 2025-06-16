@@ -380,31 +380,33 @@ export const submitMarketOrder = async ({
 
   const isTpslBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
-  const tpMessage = takeProfit
-    ? createTpSlMessage({
-        executionPrice: price,
-        triggerPrice: takeProfit ?? new BigNumberInBase(0),
-        quantity,
-        subaccountId: accountStore.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        marketId: market.marketId,
-        isBuy: isTpslBuy,
-        market
-      })
-    : undefined
+  const tpMessage =
+    takeProfit && takeProfit.gt(0)
+      ? createTpSlMessage({
+          market,
+          quantity,
+          isBuy: isTpslBuy,
+          executionPrice: price,
+          marketId: market.marketId,
+          subaccountId: accountStore.subaccountId,
+          triggerPrice: takeProfit ?? new BigNumberInBase(0),
+          injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+        })
+      : undefined
 
-  const slMessage = stopLoss
-    ? createTpSlMessage({
-        executionPrice: price,
-        triggerPrice: stopLoss ?? new BigNumberInBase(0),
-        quantity,
-        subaccountId: accountStore.subaccountId,
-        injectiveAddress: sharedWalletStore.authZOrInjectiveAddress,
-        marketId: market.marketId,
-        isBuy: isTpslBuy,
-        market
-      })
-    : undefined
+  const slMessage =
+    stopLoss && stopLoss.gt(0)
+      ? createTpSlMessage({
+          market,
+          quantity,
+          isBuy: isTpslBuy,
+          executionPrice: price,
+          marketId: market.marketId,
+          subaccountId: accountStore.subaccountId,
+          triggerPrice: stopLoss ?? new BigNumberInBase(0),
+          injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
+        })
+      : undefined
 
   const marginToFixed = derivativeMarginToChainMarginToFixed({
     value: margin.toFixed(),
