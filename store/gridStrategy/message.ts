@@ -1,11 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { getTrailingAndStrategyType } from '~/app/utils/grid-strategy'
-import {
-  sharedDelayPromiseCall,
-  sharedBackupPromiseCall
-} from '@shared/utils/async'
-import ExecArgRemoveSubaccountDeposits from '~/app/grid-trading/ExecArgRemoveSubaccountDeposits'
+import { getSpotGridStrategyType } from '~/app/grid-trading/utils'
 import {
   MsgExecuteContractCompat,
   spotPriceToChainPriceToFixed,
@@ -13,11 +8,6 @@ import {
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import ExecArgCloseGridStrategy from '@/app/grid-trading/ExecArgCloseGridStrategy'
-import {
-  ExecArgCreateSpotGridStrategy,
-  ExecArgCreatePerpGridStrategy
-} from '@/app/grid-trading'
 import {
   prepareAuthZMsg,
   prepareWithdrawMsg,
@@ -26,14 +16,17 @@ import {
 import {
   ExitType,
   SpotGridStrategyType,
-  PerpetualGridStrategyType,
   DerivativeGridTradingField
 } from '@/types'
 import type {
   ExitConfig,
   UiSpotMarket,
   UiDerivativeMarket,
-  DerivativeGridTradingForm
+  CloseGridStrategyData,
+  DerivativeGridTradingForm,
+  CreateSpotGridStrategyData,
+  CreatePerpGridStrategyData,
+  RemoveSubaccountDepositsData
 } from '@/types'
 
 export const createSpotGridStrategy = async ({
@@ -70,7 +63,6 @@ export const createSpotGridStrategy = async ({
   const jsonStore = useSharedJsonStore()
   const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const gridMarket = jsonStore.spotGridMarkets.find(
     (m) => m.slug === market.slug
@@ -128,52 +120,59 @@ export const createSpotGridStrategy = async ({
     throw new GeneralException(new Error('No funds to create strategy'))
   }
 
-  const baseArgs = {
+  const lowerBound = spotPriceToChainPriceToFixed({
+    value: lowerPrice,
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const upperBound = spotPriceToChainPriceToFixed({
+    value: upperPrice,
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const msgExecArgs: CreateSpotGridStrategyData = {
+    subaccount_id: gridStrategySubaccountId,
     levels: grids,
-    stopLoss: stopLoss
+    slippage: '0.1',
+    exit_type: exitType,
+    fee_recipient: referralStore.feeRecipient,
+    strategy_type: getSpotGridStrategyType({
+      strategyType,
+      trailingParams,
+      market
+    }),
+    bounds: [lowerBound, upperBound],
+    stop_loss: stopLoss
       ? {
-          exitPrice: spotPriceToChainPriceToFixed({
+          exit_type: stopLoss.exitType,
+          exit_price: spotPriceToChainPriceToFixed({
             value: stopLoss.exitPrice,
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals
-          }),
-          exitType: stopLoss.exitType
+          })
         }
       : undefined,
-    takeProfit: takeProfit
+    take_profit: takeProfit
       ? {
-          exitPrice: spotPriceToChainPriceToFixed({
+          exit_type: takeProfit.exitType,
+          exit_price: spotPriceToChainPriceToFixed({
             value: takeProfit.exitPrice,
             baseDecimals: market.baseToken.decimals,
             quoteDecimals: market.quoteToken.decimals
-          }),
-          exitType: takeProfit.exitType
+          })
         }
-      : undefined,
-    subaccountId: gridStrategySubaccountId,
-    lowerBound: spotPriceToChainPriceToFixed({
-      value: lowerPrice,
-      baseDecimals: market.baseToken.decimals,
-      quoteDecimals: market.quoteToken.decimals
-    }),
-    upperBound: spotPriceToChainPriceToFixed({
-      value: upperPrice,
-      baseDecimals: market.baseToken.decimals,
-      quoteDecimals: market.quoteToken.decimals
-    }),
-    exitType,
-    feeRecipient: referralStore.feeRecipient
+      : undefined
   }
 
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
-    msg: ExecArgCreateSpotGridStrategy.fromJSON({
-      ...baseArgs,
-      slippage: '0.1',
-      ...getTrailingAndStrategyType({ strategyType, trailingParams, market })
-    }).toExecData(),
-    funds
+    funds,
+    msg: {
+      create_strategy: msgExecArgs
+    }
   })
 
   const cw20Messages = prepareNeptuneWithdrawMessage({
@@ -193,9 +192,8 @@ export const createSpotGridStrategy = async ({
   sharedBackupPromiseCall(() =>
     Promise.all([
       authZStore.fetchGrants(),
-      accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
-      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : []),
+      accountStore.fetchAccountPortfolioBalances()
     ])
   )
 }
@@ -235,9 +233,11 @@ export const removeStrategy = async (contractAddress?: string) => {
     gridStrategyStore.spotMarket.slug
   )
 
-  const msg = ExecArgCloseGridStrategy.fromJSON({
-    subaccountId: gridStrategySubaccountId
-  }).toExecData()
+  const msg: CloseGridStrategyData = {
+    close_strategy: {
+      subaccount_id: gridStrategySubaccountId
+    }
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     contractAddress: contractAddress || gridMarket.contractAddress,
@@ -250,7 +250,7 @@ export const removeStrategy = async (contractAddress?: string) => {
   sharedBackupPromiseCall(() =>
     Promise.all([
       accountStore.fetchCw20Balances(),
-      gridStrategyStore.fetchAllStrategies(),
+      // gridStrategyStore.fetchAllStrategies(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -262,7 +262,6 @@ export const removeStrategyForSubaccount = async (
 ) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -279,9 +278,11 @@ export const removeStrategyForSubaccount = async (
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const msg = ExecArgCloseGridStrategy.fromJSON({
-    subaccountId: subaccountId || accountStore.subaccountId
-  }).toExecData()
+  const msg: CloseGridStrategyData = {
+    close_strategy: {
+      subaccount_id: subaccountId || accountStore.subaccountId
+    }
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     contractAddress,
@@ -293,7 +294,7 @@ export const removeStrategyForSubaccount = async (
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )
@@ -318,7 +319,7 @@ export const createPerpStrategy = async (
   const referralStore = useReferralStore()
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
+  // const gridStrategyStore = useGridStrategyStore()
 
   if (!margin || !grids || !lowerPrice || !upperPrice || !leverage) {
     return
@@ -373,31 +374,47 @@ export const createPerpStrategy = async (
       })
     : undefined
 
-  const args = ExecArgCreatePerpGridStrategy.fromJSON({
-    levels,
-    stopLoss: stopLossToChain,
-    takeProfit: takeProfitToChain,
-    subaccountId: gridStrategySubaccountId,
-
-    lowerBound: derivativePriceToChainPriceToFixed({
-      value: lowerPrice,
-      quoteDecimals: market.quoteToken.decimals
-    }),
-
-    upperBound: derivativePriceToChainPriceToFixed({
-      value: upperPrice,
-      quoteDecimals: market.quoteToken.decimals
-    }),
-
-    strategyType: PerpetualGridStrategyType.Perpetual,
-    marginRatio: new BigNumberInBase(1).div(leverage).toFixed(2),
-    feeRecipient: referralStore.feeRecipient
+  const lowerBound = derivativePriceToChainPriceToFixed({
+    value: lowerPrice,
+    quoteDecimals: market.quoteToken.decimals
   })
+
+  const upperBound = derivativePriceToChainPriceToFixed({
+    value: upperPrice,
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const msgExecArgs: CreatePerpGridStrategyData = {
+    bounds: [lowerBound, upperBound],
+    levels,
+    subaccount_id: gridStrategySubaccountId,
+    fee_recipient: referralStore.feeRecipient,
+    slippage: '0.1',
+    strategy_type: {
+      perpetual: {
+        margin_ratio: new BigNumberInBase(1).div(leverage).toFixed(2)
+      }
+    },
+    stop_loss: stopLossToChain
+      ? {
+          exit_type: ExitType.Default,
+          exit_price: stopLossToChain
+        }
+      : undefined,
+    take_profit: takeProfitToChain
+      ? {
+          exit_type: ExitType.Default,
+          exit_price: takeProfitToChain
+        }
+      : undefined
+  }
 
   const message = MsgExecuteContractCompat.fromJSON({
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
-    msg: args.toExecData(),
+    msg: {
+      create_strategy: msgExecArgs
+    },
     funds
   })
 
@@ -423,7 +440,8 @@ export const createPerpStrategy = async (
     () =>
       Promise.all([
         authZStore.fetchGrants(),
-        gridStrategyStore.fetchAllStrategies(),
+        accountStore.fetchCw20Balances(),
+        // gridStrategyStore.fetchAllStrategies(),
         accountStore.fetchAccountPortfolioBalances(),
         derivativeStore.fetchSecondarySubaccountOrders({
           marketIds: [market.marketId],
@@ -459,17 +477,16 @@ export async function createSpotLiquidityBot(params: {
   const jsonStore = useSharedJsonStore()
   const referralStore = useReferralStore()
   const sharedWalletStore = useSharedWalletStore()
-  const gridStrategyStore = useGridStrategyStore()
 
   const {
     grids,
     market,
-    lowerBound,
-    upperBound,
     baseAmount,
     quoteAmount,
     lowerTrailingBound,
-    upperTrailingBound
+    upperTrailingBound,
+    lowerBound: lowerPrice,
+    upperBound: upperPrice
   } = params
 
   const gridStrategySubaccountId = addressAndMarketSlugToSubaccountId(
@@ -512,38 +529,42 @@ export async function createSpotLiquidityBot(params: {
     })
   }
 
-  const message = MsgExecuteContractCompat.fromJSON({
+  const lowerBound = spotPriceToChainPriceToFixed({
+    value: lowerPrice,
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const upperBound = spotPriceToChainPriceToFixed({
+    value: upperPrice,
+    baseDecimals: market.baseToken.decimals,
+    quoteDecimals: market.quoteToken.decimals
+  })
+
+  const msgExecArgs: CreateSpotGridStrategyData = {
+    subaccount_id: gridStrategySubaccountId,
+    bounds: [lowerBound, upperBound],
+    levels: grids,
+    slippage: '0.1',
+    exit_type: ExitType.Default,
+    fee_recipient: referralStore.feeRecipient ?? undefined,
+    strategy_type: getSpotGridStrategyType({
+      strategyType: SpotGridStrategyType.TrailingArithmeticLP,
+      trailingParams: {
+        lowerTrailingBound,
+        upperTrailingBound
+      },
+      market
+    })
+  }
+
+  const msg = MsgExecuteContractCompat.fromJSON({
     funds,
     contractAddress: gridMarket.contractAddress,
     sender: sharedWalletStore.injectiveAddress,
-    msg: ExecArgCreateSpotGridStrategy.fromJSON({
-      subaccountId: gridStrategySubaccountId,
-      levels: grids,
-      lowerBound: spotPriceToChainPriceToFixed({
-        value: lowerBound,
-        baseDecimals: market.baseToken.decimals,
-        quoteDecimals: market.quoteToken.decimals
-      }),
-      upperBound: spotPriceToChainPriceToFixed({
-        value: upperBound,
-        baseDecimals: market.baseToken.decimals,
-        quoteDecimals: market.quoteToken.decimals
-      }),
-      strategyType: SpotGridStrategyType.TrailingArithmeticLP,
-      trailingParams: {
-        lowerTrailingBound: spotPriceToChainPriceToFixed({
-          value: lowerTrailingBound,
-          baseDecimals: market.baseToken.decimals,
-          quoteDecimals: market.quoteToken.decimals
-        }),
-        upperTrailingBound: spotPriceToChainPriceToFixed({
-          value: upperTrailingBound,
-          baseDecimals: market.baseToken.decimals,
-          quoteDecimals: market.quoteToken.decimals
-        })
-      },
-      feeRecipient: referralStore.feeRecipient
-    }).toExecData()
+    msg: {
+      create_strategy: msgExecArgs
+    }
   })
 
   const cw20Messages = prepareNeptuneWithdrawMessage({
@@ -559,15 +580,14 @@ export async function createSpotLiquidityBot(params: {
       ...prepareWithdrawMsg(gridStrategySubaccountId),
       ...prepareAuthZMsg(gridMarket.contractAddress),
       ...cw20Messages,
-      message
+      msg
     ]
   })
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
-      accountStore.fetchAccountPortfolioBalances(),
-      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : []),
+      accountStore.fetchAccountPortfolioBalances()
     ])
   )
 }
@@ -581,7 +601,6 @@ export const removeSubaccountDeposits = async ({
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
-  const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
@@ -594,9 +613,11 @@ export const removeSubaccountDeposits = async ({
     throw new GeneralException(new Error('AuthZ not supported for this action'))
   }
 
-  const msg = ExecArgRemoveSubaccountDeposits.fromJSON({
-    subaccountIds
-  }).toExecData()
+  const msg: RemoveSubaccountDepositsData = {
+    remove_subaccount_deposits: {
+      subaccounts: subaccountIds
+    }
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     contractAddress,
@@ -608,7 +629,7 @@ export const removeSubaccountDeposits = async ({
 
   sharedBackupPromiseCall(() =>
     Promise.all([
-      gridStrategyStore.fetchAllStrategies(),
+      accountStore.fetchCw20Balances(),
       accountStore.fetchAccountPortfolioBalances()
     ])
   )

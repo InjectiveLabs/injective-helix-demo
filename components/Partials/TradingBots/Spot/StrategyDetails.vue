@@ -33,6 +33,17 @@ const isPositivePnl = computed(() =>
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
 )
+
+// const subaccountHasFunds = computed(() => {
+//   const subaccountBalance =
+//     subaccountPortfolioBalanceMap.value[strategy.value.subaccountId]
+
+//   const totalInUsd = subaccountBalance.reduce((acc, balance) => {
+//     return acc.plus(balance.totalBalanceInUsd)
+//   }, new BigNumberInBase(0))
+
+//   return totalInUsd.gt(1)
+// })
 </script>
 
 <template>
@@ -55,6 +66,7 @@ const percentagePnl = computed(() =>
 
       <div
         v-if="
+          new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
           new BigNumberInBase(strategy.pnl).isZero() ||
           lastTradedPriceStatus.isLoading() ||
           strategy.strategyStatus === StrategyStatus.Pending
@@ -91,6 +103,7 @@ const percentagePnl = computed(() =>
 
       <div
         v-if="
+          new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
           lastTradedPriceStatus.isLoading() ||
           strategy.strategyStatus === StrategyStatus.Pending
         "
@@ -119,6 +132,7 @@ const percentagePnl = computed(() =>
 
       <div
         v-if="
+          new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
           lastTradedPriceStatus.isLoading() ||
           strategy.strategyStatus === StrategyStatus.Pending
         "
@@ -220,22 +234,12 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.advanced.settleIn') }}</span>
-      </span>
-
-      <span>
-        {{ strategy.settleIn ? strategy.settleIn : $t('sgt.disabled') }}
-      </span>
-    </div>
-
-    <div class="flex justify-between mb-4 text-sm">
-      <span class="text-coolGray-400 flex items-center space-x-2">
         <span>{{ $t('sgt.takeProfit') }}</span>
       </span>
 
       <div>
         <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
-        <span v-else>
+        <span v-else class="capitalize">
           {{ strategy.takeProfit.exitPrice }} /
           {{ strategy.takeProfit.exitType }}
         </span>
@@ -249,7 +253,7 @@ const percentagePnl = computed(() =>
 
       <div>
         <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
-        <span v-else>
+        <span v-else class="capitalize">
           {{ strategy.stopLoss.exitPrice }} /
           {{ strategy.stopLoss.exitType }}
         </span>

@@ -33,17 +33,18 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
 
-      const singleSidedRule = `singleSided:@${
-        SpotGridTradingField.LowerPrice
-      },@${
-        SpotGridTradingField.UpperPrice
-      },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
-        marketUsesStableCoins.value
-          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
-          : GST_SINGLE_SIDED_THRESHOLD
-      }`
+      // Temporary disabled single sided rule
+      // const singleSidedRule = `singleSided:@${
+      //   SpotGridTradingField.LowerPrice
+      // },@${
+      //   SpotGridTradingField.UpperPrice
+      // },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+      //   marketUsesStableCoins.value
+      //     ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+      //     : GST_SINGLE_SIDED_THRESHOLD
+      // }`
 
-      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+      const rules = ['requiredSgt', greaterThanRule]
 
       if (
         spotGridFormValues.value[SpotGridTradingField.IsAssetRebalanceOn] &&

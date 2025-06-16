@@ -15,6 +15,7 @@ import {
   IndexerGrpcCampaignApi,
   IndexerGrpcArchiverApi,
   IndexerGrpcReferralApi,
+  IndexerGrpcTradingStream,
   IndexerRestLeaderboardChronosApi
 } from '@injectivelabs/sdk-ts'
 import { tokens } from '@/app/json'
@@ -37,6 +38,10 @@ export const indexerGrpcCampaignApi = new IndexerGrpcCampaignApi(
 )
 /** TODO remove conditional when resync is done */
 export const indexerGrpcTradingApi = new IndexerGrpcTradingApi(
+  ENDPOINTS.indexer
+)
+
+export const indexerGrpcTradingStream = new IndexerGrpcTradingStream(
   ENDPOINTS.indexer
 )
 
