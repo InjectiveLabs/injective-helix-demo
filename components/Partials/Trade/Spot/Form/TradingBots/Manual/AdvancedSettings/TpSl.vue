@@ -47,9 +47,14 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
 
 <template>
   <div class="p-1 space-y-4">
+    <div class="flex items-center gap-2">
+      <p class="text-xs text-coolGray-450">{{ $t('sgt.upperPriceStop') }}</p>
+      <AppTooltip :text="$t('sgt.upperPriceStopTooltip')" />
+    </div>
+
     <AppInputField
       v-model="takeProfitValue"
-      :placeholder="$t('trade.takeProfit')"
+      :placeholder="$t('sgt.upperPriceStop')"
       class="placeholder:font-sans"
     />
     <p v-if="takeProfitErrorMessage" class="error-message">
@@ -65,9 +70,14 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
       </AppCheckbox>
     </div>
 
+    <div class="flex items-center gap-2">
+      <p class="text-xs text-coolGray-450">{{ $t('sgt.lowerPriceStop') }}</p>
+      <AppTooltip :text="$t('sgt.lowerPriceStopTooltip')" />
+    </div>
+
     <AppInputField
       v-model="stopLossValue"
-      :placeholder="$t('trade.stopLoss')"
+      :placeholder="$t('sgt.lowerPriceStop')"
       class="placeholder:font-sans"
     />
 
