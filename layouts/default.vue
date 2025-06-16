@@ -59,6 +59,13 @@ onWalletConnected(async () => {
     .finally(() => {
       portfolioStatus.setIdle()
       fetchSubaccountStream()
+
+      if (!sharedWalletStore.injectiveAddress) {
+        console.log('No injective address found')
+        return
+      }
+
+      gridStrategyStore.streamGridStrategies()
     })
 })
 

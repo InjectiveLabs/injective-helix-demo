@@ -1,5 +1,7 @@
+import { streamGridStrategies } from './stream'
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { indexerGrpcTradingApi } from '@/app/Services'
+import { cancelGridStrategiesStream } from '@/app/client/streams/grid-strategies'
 import {
   removeStrategy,
   createPerpStrategy,
@@ -138,9 +140,11 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   actions: {
     removeStrategy,
     createPerpStrategy,
+    streamGridStrategies,
     createSpotGridStrategy,
     createSpotLiquidityBot,
     removeSubaccountDeposits,
+    cancelGridStrategiesStream,
     removeStrategyForSubaccount,
 
     async fetchStrategies(marketId?: string) {

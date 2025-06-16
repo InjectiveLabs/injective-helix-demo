@@ -51,6 +51,12 @@ export default {
     stopTrigger: 'Stop Trigger',
     profitGrid: 'Grid Interval',
     totalProfit: 'Total Profit',
+    lowerPriceStop: 'Lower Price Stop',
+    lowerPriceStopTooltip:
+      'Define the price below which the grid will cease creating new buy orders. This isn’t a traditional ‘stop loss’ closing your position, but a condition to pause buying activity outside your desired grid range.',
+    upperPriceStop: 'Upper Price Stop',
+    upperPriceStopTooltip:
+      'Set the price above which the grid will cease creating new sell orders. This acts as a ceiling for active grid selling, pausing activity when the price exceeds your defined range.',
     saveOnFees: 'Adjust Deposit Amounts',
     gridDetails: 'Grid Details',
     enableTrailing: 'Enable Trailing',
@@ -87,6 +93,7 @@ export default {
     insufficientFunds: 'Insufficient Funds',
     exceededMaxRetries: 'Volatile Market Conditions',
     initialInvestment: 'Initial Investment',
+    strategyRemovalInitiated: 'Strategy Removal Initiated',
     noActiveStrategies: 'No Active Strategies',
     noStrategies: 'No Strategies found.',
     endLegacyBotText:

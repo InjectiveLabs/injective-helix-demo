@@ -83,8 +83,8 @@ function removeStrategy() {
       gridStrategyStore.$patch((state) => {
         state.strategies = state.strategies.map((strategy) => {
           if (
-            strategy.contractAddress !== props.strategy.contractAddress &&
-            strategy.subaccountId !== props.strategy.subaccountId
+            strategy.createdAt === props.strategy.createdAt &&
+            strategy.subaccountId === props.strategy.subaccountId
           ) {
             return {
               ...strategy,
@@ -118,7 +118,9 @@ function removeStrategy() {
         class="w-6 h-6 mx-auto mb-4"
       />
 
-      <h3 class="text-xl font-bold">Strategy Removal Initiated</h3>
+      <h3 class="text-xl font-bold">
+        {{ $t('sgt.strategyRemovalInitiated') }}
+      </h3>
 
       <div class="text-sm text-coolGray-400 space-y-4 mt-4">
         <p>
@@ -133,7 +135,9 @@ function removeStrategy() {
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 
-            <span class="text-nowrap whitespace-nowrap">
+            <span
+              class="text-nowrap whitespace-nowrap *:text-nowrap *:whitespace-nowrap"
+            >
               <SharedAmountFormatter
                 :max-decimal-places="3"
                 :amount="currentPnl"

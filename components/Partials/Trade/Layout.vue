@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { UiMarketWithToken } from '@/types'
 
-const gridStrategyStore = useGridStrategyStore()
-
 withDefaults(
   defineProps<{
     isSpot?: boolean
@@ -10,10 +8,6 @@ withDefaults(
   }>(),
   {}
 )
-
-useIntervalFn(() => {
-  gridStrategyStore.fetchAllStrategies()
-}, 10000)
 </script>
 
 <template>

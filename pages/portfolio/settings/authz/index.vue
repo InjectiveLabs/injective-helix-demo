@@ -1,5 +1,14 @@
 <script setup lang="ts">
 const authZStore = useAuthZStore()
+const gridStrategyStore = useGridStrategyStore()
+
+const authzGranteeExcludingActiveGridContracts = computed(() => {
+  return authZStore.granterGrantsByAddress.filter(([address]) => {
+    return !gridStrategyStore.activeStrategies.some(
+      (strategy) => strategy.contractAddress === address
+    )
+  })
+})
 </script>
 
 <template>
@@ -8,13 +17,13 @@ const authZStore = useAuthZStore()
 
     <div class="divide-y border-t">
       <CommonEmptyList
-        v-if="authZStore.granterGrantsByAddress.length === 0"
+        v-if="authzGranteeExcludingActiveGridContracts.length === 0"
         v-bind="{ message: $t('authZ.noGrants') }"
       />
 
       <template v-else>
         <PartialsPortfolioSettingsAuthzGranteeTableRow
-          v-for="[grantee, grants] in authZStore.granterGrantsByAddress"
+          v-for="[grantee, grants] in authzGranteeExcludingActiveGridContracts"
           :key="grantee"
           v-bind="{ grantee, grants }"
         />

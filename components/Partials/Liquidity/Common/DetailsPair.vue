@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const { quote, base } = useSlots()
 
@@ -17,7 +17,7 @@ withDefaults(
 )
 </script>
 <template>
-  <p>
+  <p class="whitespace-nowrap">
     <span>
       <slot name="base" />
     </span>
