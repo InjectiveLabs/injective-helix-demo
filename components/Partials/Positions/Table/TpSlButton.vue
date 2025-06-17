@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { PerpetualMarketCyTags } from '@/types'
 
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
@@ -23,6 +24,7 @@ function addTpSl() {
     :is-disabled="!jsonStore.isPostUpgradeMode"
   >
     <button
+      :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableAddTpSlButton)"
       class="flex p-2 focus-visible:outline-none"
       :disabled="appStore.isCountryRestricted || jsonStore.isPostUpgradeMode"
       @click="addTpSl"

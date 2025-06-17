@@ -192,6 +192,7 @@ function onClosePartialPosition() {
           </PartialsCommonMarketRedirection>
 
           <PartialsPositionsTableClosePositionButton
+            :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)"
             v-if="!sixXl && !isTradingBots"
             v-bind="{ row }"
             @position:set="setSelectedPosition"
