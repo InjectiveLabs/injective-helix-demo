@@ -2,6 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
+import { PerpetualMarketCyTags } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 
@@ -43,6 +44,7 @@ function editTpSl() {
               amount: tpTriggerPrice.toFixed(),
               decimalPlaces: priceDecimals
             }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableTPValue)"
           />
           <span v-else> &mdash; </span>
 
@@ -56,6 +58,7 @@ function editTpSl() {
               amount: slTriggerPrice.toFixed(),
               decimalPlaces: priceDecimals
             }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableSLValue)"
           />
           <span v-else> &mdash; </span>
 
@@ -68,6 +71,7 @@ function editTpSl() {
         :name="NuxtUiIcons.Edit"
         class="size-5 transition-colors"
         :class="{ 'hover:text-coolGray-450': !jsonStore.isPostUpgradeMode }"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableEditTpSlButton)"
         @click="editTpSl"
       />
     </div>
