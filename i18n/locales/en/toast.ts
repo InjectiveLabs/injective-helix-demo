@@ -42,7 +42,7 @@ export default {
         enable: {
           title: 'Auto Sign',
           description:
-            'Once enabled, you can trade on Helix smoother; without signing each transaction.'
+            'Once enabled, you can trade on Helix more smoothly, without signing each transaction.'
         }
       }
     },

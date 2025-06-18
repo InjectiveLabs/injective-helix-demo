@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { TransformedPosition } from '@/types'
@@ -11,18 +14,12 @@ const props = withDefaults(
   defineProps<{
     positions: PositionV2[]
     isTradingBots?: boolean
-
     ui?: Record<string, any>
   }>(),
   {
-    isTradingBots: false,
     ui: () => ({
-      td: {
-        font: 'font-sans'
-      },
-      th: {
-        base: 'whitespace-nowrap'
-      }
+      td: { font: 'font-sans' },
+      th: { base: 'whitespace-nowrap' }
     })
   }
 )
@@ -37,6 +34,7 @@ const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
 const positionStore = usePositionStore()
 const breakpoints = useSharedBreakpoints()
+const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
@@ -46,6 +44,7 @@ const { rows } = usePositionTransformer(computed(() => props.positions))
 const sixXl = breakpoints['6xl']
 
 const selectedPositionQuantity = ref('0')
+const selectedPositionLimitPrice = ref(ZERO_IN_BASE)
 const selectedPositionDetails = ref<undefined | TransformedPosition>()
 
 const columns = computed(() => {
@@ -136,6 +135,10 @@ function setSelectedPositionQuantity(quantity: string) {
   selectedPositionQuantity.value = quantity
 }
 
+function setSelectedPositionLimitPrice(price: string) {
+  selectedPositionLimitPrice.value = new BigNumberInBase(price || 0)
+}
+
 function setSelectedPosition(value: undefined | TransformedPosition) {
   selectedPositionDetails.value = value
 }
@@ -158,19 +161,51 @@ function onClosePartialPosition() {
     return
   }
 
-  positionStore
-    .closePosition({
-      quantity: selectedPositionQuantity.value,
-      position: selectedPositionDetails.value.position,
-      availablePositionQuantity: selectedPositionDetails.value.quantity
-    })
-    .then(() =>
-      notificationStore.update({ title: t('toast.trade.positionClosed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      setPositionStatusIdle()
-    })
+  if (selectedPositionLimitPrice.value.isZero()) {
+    positionStore
+      .closePosition({
+        quantity: selectedPositionQuantity.value,
+        position: selectedPositionDetails.value.position,
+        availablePositionQuantity: selectedPositionDetails.value.quantity
+      })
+      .then(() =>
+        notificationStore.update({ title: t('toast.trade.positionClosed') })
+      )
+      .catch($onError)
+      .finally(() => {
+        setPositionStatusIdle()
+      })
+  } else {
+    const isBuy =
+      selectedPositionDetails.value.position.direction === TradeDirection.Long
+
+    let orderTypeToSubmit = OrderSide.Buy
+
+    if (jsonStore.isPostUpgradeMode) {
+      orderTypeToSubmit = isBuy ? OrderSide.SellPO : OrderSide.BuyPO
+    } else {
+      orderTypeToSubmit = isBuy ? OrderSide.Sell : OrderSide.Buy
+    }
+
+    derivativeStore
+      .submitLimitOrder({
+        reduceOnly: true,
+        orderSide: orderTypeToSubmit,
+        margin: selectedPositionDetails.value.margin,
+        market: selectedPositionDetails.value.market,
+        quantity: new BigNumberInBase(selectedPositionQuantity.value),
+        price: new BigNumberInBase(selectedPositionLimitPrice.value.toFixed())
+      })
+      .then(() =>
+        notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      )
+      .catch($onError)
+      .finally(() => {
+        setPositionStatusIdle()
+      })
+  }
+
+  return
 }
 </script>
 
@@ -193,6 +228,9 @@ function onClosePartialPosition() {
 
           <PartialsPositionsTableClosePositionButton
             v-if="!sixXl && !isTradingBots"
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)
+            "
             v-bind="{ row }"
             @position:set="setSelectedPosition"
           />
@@ -216,15 +254,28 @@ function onClosePartialPosition() {
       </template>
 
       <template #contracts-data="{ row }">
-        <div class="flex items-center justify-end p-2 text-white">
+        <div
+          class="flex items-center justify-end gap-1 p-2"
+          :class="[
+            row.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
+          ]"
+        >
+          <PartialsPositionsRemainingQuantity
+            v-if="row.usedQuantity.gt(0)"
+            v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
+          />
+
           <p
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
             class="flex gap-1"
+            :class="{
+              'line-through ': row.availableQuantity.lte(0)
+            }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
           >
             <AppAmount
               v-bind="{
-                amount: row.quantity.toFixed(),
-                decimalPlaces: row.quantityDecimals
+                decimalPlaces: row.quantityDecimals,
+                amount: row.availableQuantity.toFixed()
               }"
             />
             {{
@@ -427,5 +478,6 @@ function onClosePartialPosition() {
     @position:set="setSelectedPosition"
     @position:close="onClosePartialPosition"
     @position:set-quantity="setSelectedPositionQuantity"
+    @position:set-limit-price="setSelectedPositionLimitPrice"
   />
 </template>

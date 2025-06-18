@@ -532,6 +532,7 @@ export enum BusEvents {
   AutoSignConnected = 'auto-sign-connected',
   UpdateMarketChart = 'update-market-chart',
   OrderbookSizeClick = 'orderbook-size-click',
+  GoToPerpOrdersView = 'go-to-perp-orders-view',
   SharePositionOpened = 'share-position-opened',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',
@@ -620,4 +621,9 @@ export enum SettingsPreferences {
   AutoSign = 'auto-sign',
   ThousandsSeparators = 'thousands-separators',
   GridTradingSubaccounts = 'grid-trading-subaccounts'
+}
+
+export enum PartialLimitField {
+  PositionPrice = 'positionPrice',
+  PositionQuantity = 'positionQuantity'
 }

@@ -89,8 +89,10 @@ export default {
     wallet: 'Wallet'
   },
 
-  partialPositionClose: {
-    marketTitle: 'Partial market close',
+  partialClosePosition: {
+    limitClose: 'Limit Close',
+    marketClose: 'Market Close',
+    marketTitle: 'Partial close position',
     totalPositionSize: 'Total position size'
   }
 }

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SharedDropdownOption } from '@shared/types'
 import {
   MarketKey,
-  UiDerivativeMarket,
+  BusEvents,
   PerpetualMarketCyTags,
   PerpOrdersStandardView
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const positionStore = usePositionStore()
 const breakpoints = useSharedBreakpoints()
@@ -85,6 +86,12 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  useEventBus(BusEvents.GoToPerpOrdersView).on(() => {
+    view.value = PerpOrdersStandardView.Orders
+  })
+})
 </script>
 
 <template>

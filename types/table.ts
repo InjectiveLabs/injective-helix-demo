@@ -361,6 +361,7 @@ export interface TransformedPosition {
   markPrice: BigNumberInBase
   hasActiveStrategy: boolean
   hasReduceOnlyOrders: boolean
+  usedQuantity: BigNumberInBase
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
   isLimitOrderAuthorized: boolean
@@ -369,6 +370,7 @@ export interface TransformedPosition {
   tpTriggerPrice?: BigNumberInBase
   slTriggerPrice?: BigNumberInBase
   liquidationPrice: BigNumberInBase
+  availableQuantity: BigNumberInBase
   effectiveLeverage: BigNumberInBase
   [PositionTableColumn.Margin]: BigNumberInBase
   reduceOnlyCurrentOrders: DerivativeLimitOrder[]
