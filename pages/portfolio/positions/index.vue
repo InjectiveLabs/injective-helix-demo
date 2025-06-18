@@ -6,7 +6,7 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-function fetchData() {
+function fetchOrders() {
   status.setLoading()
 
   Promise.all([
@@ -19,7 +19,7 @@ function fetchData() {
     })
 }
 
-onSubaccountChange(fetchData)
+onSubaccountChange(fetchOrders)
 </script>
 
 <template>

@@ -257,7 +257,7 @@ function onClosePartialPosition() {
         <div
           class="flex items-center justify-end gap-1 p-2"
           :class="[
-            row.availableQuantity.isZero() ? 'text-coolGray-500' : 'text-white'
+            row.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
           ]"
         >
           <PartialsPositionsRemainingQuantity
@@ -268,7 +268,7 @@ function onClosePartialPosition() {
           <p
             class="flex gap-1"
             :class="{
-              'line-through ': row.availableQuantity.isZero()
+              'line-through ': row.availableQuantity.lte(0)
             }"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
           >

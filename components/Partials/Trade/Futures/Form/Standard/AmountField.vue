@@ -91,10 +91,10 @@ const activePositionQuantity = computed(() => {
   const positionQuantity = activePosition.value?.quantity || 0
 
   const reduceOnlyOrderAmount = derivativeStore.subaccountOrders.reduce(
-    (acc, order) => {
-      return order.marketId === market.value.marketId
-        ? acc.plus(order.quantity)
-        : acc
+    (sum, order) => {
+      return order.isReduceOnly && order.marketId === market.value.marketId
+        ? sum.plus(order.quantity)
+        : sum
     },
     ZERO_IN_BASE
   )

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 const emit = defineEmits<{
-  'on:select': [value: boolean]
+  'limitOrder:select': []
+  'marketOrder:select': []
 }>()
 
 withDefaults(
@@ -11,11 +12,11 @@ withDefaults(
 )
 
 function onClickMarketClose() {
-  emit('on:select', true)
+  emit('marketOrder:select')
 }
 
 function onClickLimitClose() {
-  emit('on:select', false)
+  emit('limitOrder:select')
 }
 </script>
 

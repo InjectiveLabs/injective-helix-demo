@@ -30,17 +30,18 @@ const disabled = computed(() => {
   const positionQuantity = position.value?.quantity || 0
 
   const reduceOnlyOrderAmount = derivativeStore.subaccountOrders.reduce(
-    (acc, order) => {
-      return order.marketId === derivativeMarket.value.marketId
-        ? acc.plus(order.quantity)
-        : acc
+    (sum, order) => {
+      return order.isReduceOnly &&
+        order.marketId === derivativeMarket.value.marketId
+        ? sum.plus(order.quantity)
+        : sum
     },
     ZERO_IN_BASE
   )
 
   const hasNoAvailableBalance = new BigNumberInBase(positionQuantity)
     .minus(reduceOnlyOrderAmount)
-    .isZero()
+    .lte(0)
 
   return (
     !position.value ||

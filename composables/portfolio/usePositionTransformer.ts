@@ -57,10 +57,10 @@ export function usePositionTransformer(
       const quantity = new BigNumberInBase(position.quantity)
 
       const usedQuantity = derivativeStore.subaccountOrders.reduce(
-        (acc, order) => {
-          return order.marketId === market.marketId
-            ? acc.plus(order.quantity)
-            : acc
+        (sum, order) => {
+          return order.isReduceOnly && order.marketId === market.marketId
+            ? sum.plus(order.quantity)
+            : sum
         },
         ZERO_IN_BASE
       )

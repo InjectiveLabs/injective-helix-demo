@@ -22,7 +22,7 @@ withDefaults(
       class="flex items-center gap-1"
       :class="{
         'text-coolGray-500':
-          !isMarketPositionClose && row.availableQuantity.isZero()
+          !isMarketPositionClose && row.availableQuantity.lte(0)
       }"
     >
       <PartialsPositionsRemainingQuantity
@@ -33,8 +33,7 @@ withDefaults(
       <div
         class="flex items-center gap-1"
         :class="{
-          'line-through':
-            !isMarketPositionClose && row.availableQuantity.isZero()
+          'line-through': !isMarketPositionClose && row.availableQuantity.lte(0)
         }"
       >
         <AppAmount

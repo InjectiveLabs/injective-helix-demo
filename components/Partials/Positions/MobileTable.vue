@@ -126,9 +126,7 @@ function onSetPosition(value: TransformedPosition) {
         class="flex gap-1"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
         :class="[
-          position.availableQuantity.isZero()
-            ? 'text-coolGray-500'
-            : 'text-white'
+          position.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
         ]"
       >
         <PartialsPositionsRemainingQuantity
@@ -142,7 +140,7 @@ function onSetPosition(value: TransformedPosition) {
         <p
           class="flex gap-1"
           :class="{
-            'line-through ': position.availableQuantity.isZero()
+            'line-through ': position.availableQuantity.lte(0)
           }"
         >
           <AppAmount

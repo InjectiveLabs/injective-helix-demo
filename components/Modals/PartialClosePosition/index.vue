@@ -40,7 +40,7 @@ const partialOptions = [
 const isMarketPositionClose = ref(true)
 const status = reactive(new Status(StatusType.Idle))
 
-const getAvailableQuantity = computed(() =>
+const availableQuantity = computed(() =>
   isMarketPositionClose.value ? props.row.quantity : props.row.availableQuantity
 )
 
@@ -52,7 +52,7 @@ const {
   name: PartialLimitField.PositionQuantity,
   dynamicRule: computed(
     () =>
-      `maxValuePositionQuantity:${getAvailableQuantity.value.toFixed(
+      `maxValuePositionQuantity:${availableQuantity.value.toFixed(
         props.row.quantityDecimals
       )}`
   )
@@ -71,9 +71,9 @@ const {
 
     if (props.row.position.direction === TradeDirection.Long) {
       return `minValue:${formattedLiquidationPrice}`
-    } else {
-      return `maxValue:${formattedLiquidationPrice}`
     }
+
+    return `maxValue:${formattedLiquidationPrice}`
   })
 })
 
@@ -87,23 +87,23 @@ const isSubmitButtonDisabled = computed(() => {
 
   if (isMarketPositionClose.value) {
     return isQuantityInputError
-  } else {
-    return (
-      isPriceInputError ||
-      isQuantityInputError ||
-      props.row.availableQuantity.isZero()
-    )
   }
+
+  return (
+    isPriceInputError ||
+    isQuantityInputError ||
+    props.row.availableQuantity.lte(0)
+  )
 })
 
-function onSelectPositionCloseType(isMarketType: boolean) {
-  isMarketPositionClose.value = isMarketType
+function onSelectMarketPositionClose() {
+  isMarketPositionClose.value = true
+  setPriceValue('0')
+}
 
-  if (isMarketType) {
-    setPriceValue('0')
-  } else {
-    setPriceValue(props.row.markPrice.toFixed(props.row.priceDecimals))
-  }
+function onSelectLimitPositionClose() {
+  isMarketPositionClose.value = false
+  setPriceValue(props.row.markPrice.toFixed(props.row.priceDecimals))
 }
 
 function onCloseModal() {
@@ -113,7 +113,7 @@ function onCloseModal() {
 
 function selectPartialOption(quantityPercentage: number) {
   setQuantityValue(
-    getAvailableQuantity.value
+    availableQuantity.value
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(props.row.quantityDecimals, BigNumber.ROUND_DOWN)
@@ -191,9 +191,10 @@ async function validateSlippage() {
           {{ $t('partialClosePosition.marketTitle') }}
         </h4>
 
-        <ModalsPartialClosePositionNavigation
+        <ModalsPartialClosePositionTypeSelector
           v-bind="{ isMarketPositionClose }"
-          @on:select="onSelectPositionCloseType"
+          @limit-order:select="onSelectLimitPositionClose"
+          @market-order:select="onSelectMarketPositionClose"
         />
       </div>
 
@@ -201,8 +202,8 @@ async function validateSlippage() {
         <ModalsPartialClosePositionInfo
           v-bind="{
             row,
-            isMarketPositionClose,
-            availableQuantity: getAvailableQuantity
+            availableQuantity,
+            isMarketPositionClose
           }"
         />
 
