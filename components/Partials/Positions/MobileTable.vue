@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UTableColumn, TransformedPosition } from '@/types'
 
 const jsonStore = useSharedJsonStore()
@@ -122,21 +122,39 @@ function onSetPosition(value: TransformedPosition) {
     </template>
 
     <template #contracts-data>
-      <p
-        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
+      <div
         class="flex gap-1"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
+        :class="[
+          position.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
+        ]"
       >
-        <AppAmount
+        <PartialsPositionsRemainingQuantity
+          v-if="position.usedQuantity.gt(0)"
           v-bind="{
-            amount: position.quantity.toFixed(),
-            decimalPlaces: position.quantityDecimals
+            market: position.market,
+            usedQuantity: position.usedQuantity
           }"
         />
-        {{
-          position.market.baseToken.overrideSymbol ||
-          position.market.baseToken.symbol
-        }}
-      </p>
+
+        <p
+          class="flex gap-1"
+          :class="{
+            'line-through ': position.availableQuantity.lte(0)
+          }"
+        >
+          <AppAmount
+            v-bind="{
+              decimalPlaces: position.quantityDecimals,
+              amount: position.availableQuantity.toFixed()
+            }"
+          />
+          {{
+            position.market.baseToken.overrideSymbol ||
+            position.market.baseToken.symbol
+          }}
+        </p>
+      </div>
     </template>
 
     <template #entry-data>

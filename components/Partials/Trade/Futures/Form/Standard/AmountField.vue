@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumber,
@@ -25,6 +26,7 @@ import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
+const derivativeStore = useDerivativeStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
@@ -85,9 +87,22 @@ const activePosition = computed(() =>
   )
 )
 
-const activePositionQuantity = computed(
-  () => activePosition.value?.quantity || 0
-)
+const activePositionQuantity = computed(() => {
+  const positionQuantity = activePosition.value?.quantity || 0
+
+  const reduceOnlyOrderAmount = derivativeStore.subaccountOrders.reduce(
+    (sum, order) => {
+      return order.isReduceOnly && order.marketId === market.value.marketId
+        ? sum.plus(order.quantity)
+        : sum
+    },
+    ZERO_IN_BASE
+  )
+
+  return new BigNumberInBase(positionQuantity)
+    .minus(reduceOnlyOrderAmount)
+    .toFixed()
+})
 
 const selectedSymbol = computed(
   () => options.find((item) => item.id === typeValue.value)?.label || ''

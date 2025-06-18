@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import type {
-  UiSpotMarket
-} from '@/types';
-import {
-  SpotMarketCyTags,
-  SpotOrdersStandardView
-} from '@/types'
+import { SpotMarketCyTags, SpotOrdersStandardView } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -40,8 +35,7 @@ function refreshData() {
     spotStore.fetchSubaccountTrades(filters),
     spotStore.fetchSubaccountOrderHistory(filters),
     spotStore.fetchSubaccountOrders(marketId ? [marketId] : undefined)
-  ])
-    .catch($onError)
+  ]).catch($onError)
 
   spotStore.streamSubaccountOrders({
     marketId,

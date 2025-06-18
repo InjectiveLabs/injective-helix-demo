@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOpenOrdersFilterField, SpotOpenOrdersFilterForm } from '@/types'
+import { SpotOpenOrdersFilterField } from '@/types'
+import type { SpotOpenOrdersFilterForm } from '@/types'
 
 const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()

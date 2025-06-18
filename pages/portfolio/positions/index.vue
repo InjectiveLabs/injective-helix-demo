@@ -6,18 +6,20 @@ const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 
-function fetchAdvancedOrders() {
+function fetchOrders() {
   status.setLoading()
 
-  derivativeStore
-    .fetchSubaccountConditionalOrders()
+  Promise.all([
+    derivativeStore.fetchSubaccountOrders(),
+    derivativeStore.fetchSubaccountConditionalOrders()
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
     })
 }
 
-onSubaccountChange(fetchAdvancedOrders)
+onSubaccountChange(fetchOrders)
 </script>
 
 <template>
