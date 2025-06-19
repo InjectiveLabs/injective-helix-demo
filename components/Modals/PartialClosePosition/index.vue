@@ -137,12 +137,14 @@ async function closePosition() {
 
     status.setLoading()
 
-    const isShowWarningModal = await validateSlippage()
+    if (isMarketPositionClose.value) {
+      const isShowWarningModal = await validateSlippage()
 
-    if (isShowWarningModal) {
-      modalStore.openModal(Modal.ClosePositionWarning)
+      if (isShowWarningModal) {
+        modalStore.openModal(Modal.ClosePositionWarning)
 
-      return
+        return
+      }
     }
 
     emit('position:close')
