@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { MainPage } from '@/types'
 
-const router = useRouter()
 const referralStore = useReferralStore()
-const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -19,12 +16,6 @@ onWalletConnected(() => {
     .finally(() => {
       status.setIdle()
     })
-})
-
-onMounted(() => {
-  if (!sharedWalletStore.isUserConnected) {
-    router.push({ name: MainPage.Index })
-  }
 })
 </script>
 

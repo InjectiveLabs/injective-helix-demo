@@ -17,7 +17,6 @@ export const getMoreMenu = () => [
     label: 'navigation.more.lpRewards'
   },
   {
-    isConnectedOnly: true,
     to: { name: MainPage.Referral },
     label: 'navigation.more.referral'
   },

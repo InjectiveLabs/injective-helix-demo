@@ -13,7 +13,11 @@ export const registerInvitee = async (referralCode: string) => {
   await walletStore.validate()
 
   // This function will fund the referee with dust amount if the referee's address is not created on chain
-  await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+  try {
+    await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+  } catch {
+    // silently throw error
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     sender: sharedWalletStore.injectiveAddress,
@@ -36,7 +40,12 @@ export const createReferralLink = async (referralCode: string) => {
   }
 
   await walletStore.validate()
-  await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+
+  try {
+    await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+  } catch {
+    // silently throw error
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     sender: sharedWalletStore.injectiveAddress,
