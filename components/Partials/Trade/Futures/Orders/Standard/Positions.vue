@@ -41,6 +41,10 @@ function onSharePosition(position: PositionV2) {
   modalStore.openModal(Modal.SharePositionPnl)
   useEventBus(BusEvents.SharePositionOpened).emit()
 }
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 </script>
 
 <template>
@@ -69,6 +73,7 @@ function onSharePosition(position: PositionV2) {
   <ModalsAddTakeProfitStopLoss
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 
   <ModalsSharePositionPnl
