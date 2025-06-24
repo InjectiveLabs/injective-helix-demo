@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PortfolioType, LeaderboardDuration } from '@/types'
+import { PortfolioType } from '@/types'
 
-const leaderboardStore = useLeaderboardStore()
-const sharedWalletStore = useSharedWalletStore()
+const accountStore = useAccountStore()
+
 const { $onError } = useNuxtApp()
 
 const activePortfolioTab = ref(PortfolioType.Account)
 const status = reactive(new Status(StatusType.Loading))
 
 onMounted(() => {
-  leaderboardStore
-    .fetchPnlLeaderboard(
-      LeaderboardDuration.All,
-      sharedWalletStore.injectiveAddress
-    )
+  accountStore
+    .fetchAccountStats()
     .catch($onError)
     .finally(() => status.setIdle())
 })
