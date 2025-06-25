@@ -82,6 +82,28 @@ function goToWhyHelix() {
           {{ $t('home.whyHelix') }}
         </AppButton>
       </div>
+      <div class="flex justify-center items-center gap-4 mt-14 lg:mt-10">
+        <a
+          href="https://apps.apple.com/us/app/helix-trade-with-control/id6737353178"
+          target="_blank"
+        >
+          <img
+            src="/images/mobile/app-store.svg"
+            alt="Apple App Store"
+            class="h-10 md:h-12 lg:h-14"
+          />
+        </a>
+        <a
+          href="https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile"
+          target="_blank"
+        >
+          <img
+            src="/images/mobile/google-play.png"
+            alt="Google Play"
+            class="h-10 md:h-12 lg:h-14"
+          />
+        </a>
+      </div>
     </div>
   </div>
 </template>
