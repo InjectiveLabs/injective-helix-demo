@@ -283,7 +283,7 @@ function onClickStockTwitsCta() {
       <template #learnMore>
         <NuxtLink
           class="hover:opacity-80 underline cursor-pointer"
-          to="https://app.gitbook.com/o/LzWvewxXUBLXQT4cTrrj/s/7eHQ0oqbU5OAi8PxyRjr/getting-started"
+          to="https://docs.helixapp.com/getting-started"
           target="_blank"
           @click="onClickStockTwitsCta"
         >
