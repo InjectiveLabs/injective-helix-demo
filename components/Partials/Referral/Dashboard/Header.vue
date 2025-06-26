@@ -2,6 +2,7 @@
 import { Modal } from '@/types'
 
 const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
   defineProps<{
@@ -11,6 +12,10 @@ withDefaults(
 )
 
 function referAndEarn() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
   modalStore.openModal(Modal.CreateReferralLink)
 }
 </script>
@@ -34,6 +39,7 @@ function referAndEarn() {
       <AppButton
         v-if="!hasReferralLink"
         size="lg"
+        :disabled="!sharedWalletStore.isUserConnected"
         class="font-semibold tracking-wide min-w-48 mt-8 max-xs:w-full"
         @click="referAndEarn"
       >

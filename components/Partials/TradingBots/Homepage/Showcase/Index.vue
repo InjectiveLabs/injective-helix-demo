@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { BotType } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 enum ShowcaseTab {
   All = 'All',

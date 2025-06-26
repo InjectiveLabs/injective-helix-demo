@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
+import {
+  MAX_QUOTE_DECIMALS,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
+import { SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
@@ -112,19 +116,33 @@ defineExpose({
       >
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryMinOutput)">
-          {{ minimumOutput }} {{ outputToken?.token.symbol }}
+          <SharedAmountFormatter
+            :amount="minimumOutput"
+            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          />
+          {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow v-else :title="$t('trade.swap.maximumInput')">
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else> {{ maximumInput }} {{ inputToken?.token.symbol }} </span>
+        <span v-else>
+          <SharedAmountFormatter
+            :amount="maximumInput"
+            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          />
+          {{ inputToken?.token.symbol }}
+        </span>
       </PartialsSwapSummaryRow>
 
       <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryExpectedOutput)">
-          {{ formValues[SwapFormField.OutputAmount] }}
+          <SharedAmountFormatter
+            :amount="formValues[SwapFormField.OutputAmount] || '0'"
+            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+            :max-decimal-places="3"
+          />
           {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>

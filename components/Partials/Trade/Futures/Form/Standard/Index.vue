@@ -97,6 +97,10 @@ function onOrderSideChange() {
 
   useEventBus(BusEvents.OrderSideToggled).emit()
 }
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 </script>
 
 <template>
@@ -222,6 +226,7 @@ function onOrderSideChange() {
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
       v-bind="{ position: selectedPosition }"
+      @on:close="resetSelectedPosition"
     />
   </div>
 </template>

@@ -7,6 +7,7 @@ import {
   CHART_ZOOM_FALLBACK_NUMBER,
   DEFAULT_100_CHART_CANDLE_BAR_SPACING
 } from '@/app/utils/constants'
+import { TradingInterface } from '@/types'
 import type {
   SpotLimitOrder,
   DerivativeLimitOrder
@@ -17,6 +18,7 @@ import type {
   TradingChartInterval
 } from '@/types'
 
+const route = useRoute()
 const appStore = useAppStore()
 const { t } = useLang()
 
@@ -126,11 +128,11 @@ function modifyLimitOrderLines() {
     const updatedOrderLinesId: string[] = []
     const chart = tradingView.value.view?.chart()
 
-    if (!chart) {
+    clearAllOrderLines()
+
+    if (!chart || route.query?.interface === TradingInterface.TradingBots) {
       return
     }
-
-    clearAllOrderLines()
 
     props.orders?.forEach((order) => {
       const formattedPrice = (

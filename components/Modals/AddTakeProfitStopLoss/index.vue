@@ -62,6 +62,9 @@ const { isMarkPriceThresholdError: isSlMarkPriceThresholdError } =
   })
 
 const props = withDefaults(defineProps<{ position: PositionV2 }>(), {})
+const emit = defineEmits<{
+  'on:close': []
+}>()
 
 const availableQuantity = ref('0')
 const status = reactive(new Status(StatusType.Idle))
@@ -395,12 +398,17 @@ const isSubmitButtonDisabled = computed(() => {
 
 function closeModal() {
   modalStore.closeModal(Modal.AddTakeProfitStopLoss)
+  onCloseModal()
 }
 
 function onOpenModal() {
   resetForm()
   setupTpSlInputs()
   availableQuantity.value = props.position.quantity || '0'
+}
+
+function onCloseModal() {
+  emit('on:close')
 }
 
 function setupTpSlInputs() {
@@ -429,6 +437,7 @@ function selectTpPartialOption(quantityPercentage: number) {
         market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
         BigNumber.ROUND_DOWN
       )
+      .replace(/\.?0+$/, '')
   )
 }
 
@@ -441,6 +450,7 @@ function selectSlPartialOption(quantityPercentage: number) {
         market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
         BigNumber.ROUND_DOWN
       )
+      .replace(/\.?0+$/, '')
   )
 }
 
@@ -558,6 +568,7 @@ async function submitTpSl() {
       ui: { width: 'sm:min-w-[550px] sm:max-w-[550px]' }
     }"
     @on:open="onOpenModal"
+    @on:close="onCloseModal"
   >
     <template #title>
       <p class="sm:text-center max-sm:w-11/12">

@@ -1,19 +1,18 @@
 <script lang="ts" setup>
-import {
-  NuxtUiIcons,
-  SharedBalanceWithToken,
-  SharedBalanceWithTokenAndPrice
-} from '@shared/types'
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   ONE_IN_BASE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
-  SwapCyTags,
-  TradeField,
+import { SwapCyTags, TradeField } from '@/types'
+import type {
+  SharedBalanceWithToken,
+  SharedBalanceWithTokenAndPrice
+} from '@shared/types'
+import type {
   SwapFormField,
   NeptuneUsdtField,
   BankTransferField,
@@ -32,15 +31,15 @@ const props = withDefaults(
     tensMultiplier?: number
     additionalRules?: object
     isBalanceHidden?: boolean
+    shouldCheckBalance?: boolean
+    isTokenSelectorDisabled?: boolean
+    options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
     amountFieldName?:
       | TradeField
       | SwapFormField
       | NeptuneUsdtField
       | BankTransferField
       | SubaccountTransferField
-    shouldCheckBalance?: boolean
-    isTokenSelectorDisabled?: boolean
-    options?: (SharedBalanceWithToken | SharedBalanceWithTokenAndPrice)[]
   }>(),
   {
     denom: '',
@@ -55,8 +54,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'on:update': []
-  'update:max': [{ amount: string }]
   'update:denom': [state: string]
+  'update:max': [{ amount: string }]
   'update:amount': [{ amount: string; isBaseAmount: boolean }]
 }>()
 
@@ -132,8 +131,8 @@ const denomValue = computed({
 
 const estimatedTotalInUsd = computed(() => {
   const token = selectedToken.value as
-    | SharedBalanceWithTokenAndPrice
     | undefined
+    | SharedBalanceWithTokenAndPrice
 
   if (!amount.value || !selectedToken.value || !token?.usdPrice) {
     return '0.00'
@@ -257,18 +256,14 @@ export default {
 
     <div class="px-4">
       <div class="flex justify-between">
-        <AppInputNumeric
+        <SharedNumInput
           v-model="amount"
-          is-sm
-          is-no-padding
-          is-transparent-bg
-          input-classes="p-0 text-xl font-bold"
+          is-show-mask
           :max-decimals="maxDecimals"
-          :tens-multiplier="tensMultiplier"
           :placeholder="inputPlaceholder"
-          :is-disabled="isDisabled || !selectedToken"
-          @update:model-value="onAmountChange"
+          :disabled="isDisabled || !selectedToken"
           @click.stop
+          @update:model-value="onAmountChange"
         />
 
         <div class="flex items-center gap-2">

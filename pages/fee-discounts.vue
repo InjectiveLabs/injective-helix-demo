@@ -3,6 +3,7 @@ import { Status, StatusType } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
 const sharedParamStore = useSharedParamStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -25,24 +26,26 @@ onMounted(() => {
   <AppHocLoading :status="status" is-full-screen>
     <div class="fee-discounts min-h-screen-excluding-header-and-footer">
       <div class="container mx-auto">
-        <div class="w-full mx-auto xl:w-4/5">
-          <div class="mt-6">
-            <h3 class="text-xl font-bold text-coolGray-200">
-              {{ $t(`feeDiscounts.page_title`) }}
-            </h3>
-            <div class="mt-6">
-              <p class="text-sm font-normal mb-2">
-                {{ $t('feeDiscounts.page_description') }}
-              </p>
-              <p class="text-sm text-blue-500 font-normal">
-                {{ $t('feeDiscounts.page_description_warning') }}
-              </p>
-            </div>
-            <PartialsFeeDiscountsOverview class="my-8" />
-            <AppPanel>
-              <PartialsFeeDiscounts />
-            </AppPanel>
+        <div class="w-full mx-auto xl:w-4/5 mt-6 max-xl:px-4">
+          <h3 class="text-xl font-bold text-coolGray-200">
+            {{ $t(`feeDiscounts.page_title`) }}
+          </h3>
+          <div class="mt-6 mb-8">
+            <p class="text-sm font-normal mb-2">
+              {{ $t('feeDiscounts.page_description') }}
+            </p>
+            <p class="text-sm text-blue-500 font-normal">
+              {{ $t('feeDiscounts.page_description_warning') }}
+            </p>
           </div>
+
+          <div v-if="sharedWalletStore.isUserConnected" class="mb-8">
+            <PartialsFeeDiscountsOverview />
+          </div>
+
+          <AppPanel>
+            <PartialsFeeDiscounts />
+          </AppPanel>
         </div>
       </div>
     </div>
