@@ -200,6 +200,8 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
 
       const stats = await indexerGrpcTradingApi.fetchTradingStats()
 
+      console.log('stats', stats)
+
       gridStrategyStore.$patch((state) => {
         state.stats = stats
       })
