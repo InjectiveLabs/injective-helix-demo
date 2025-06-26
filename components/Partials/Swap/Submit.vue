@@ -229,7 +229,7 @@ watch(
     </AppButton>
 
     <AppButton
-      v-if="jsonStore.isPostUpgradeMode"
+      v-else-if="jsonStore.isPostUpgradeMode"
       disabled
       class="mb-2 w-full text-coolGray-525 text-opacity-100"
     >
