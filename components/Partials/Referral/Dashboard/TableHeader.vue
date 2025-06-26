@@ -3,6 +3,7 @@ import { Modal } from '@/types'
 
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
+const sharedWalletStore = useSharedWalletStore()
 
 withDefaults(
   defineProps<{
@@ -13,6 +14,10 @@ withDefaults(
 )
 
 function referNow() {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
   modalStore.openModal(Modal.CreateReferralLink)
 }
 </script>
@@ -39,6 +44,7 @@ function referNow() {
       <AppButton
         v-if="!hasReferralLink"
         size="lg"
+        :disabled="!sharedWalletStore.isUserConnected"
         class="font-semibold tracking-wide min-w-48 mt-8 max-sm:mt-4 max-xs:w-full"
         @click="referNow"
       >

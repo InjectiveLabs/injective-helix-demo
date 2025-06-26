@@ -16,7 +16,7 @@ export const registerInvitee = async (referralCode: string) => {
   try {
     await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
   } catch {
-    // Ignore error
+    // silently throw error
   }
 
   const messages = MsgExecuteContractCompat.fromJSON({
@@ -40,6 +40,12 @@ export const createReferralLink = async (referralCode: string) => {
   }
 
   await walletStore.validate()
+
+  try {
+    await faucetService.fundInjectiveAddress(sharedWalletStore.injectiveAddress)
+  } catch {
+    // silently throw error
+  }
 
   const messages = MsgExecuteContractCompat.fromJSON({
     sender: sharedWalletStore.injectiveAddress,
