@@ -6,14 +6,15 @@ const appStore = useAppStore()
 const { t } = useLang()
 
 const preferencesList = computed(() => {
+  // note: temporarily comment thousands separator because https://injective-labs.atlassian.net/browse/IL-1650
   const list: Record<string, any> = [
-    {
-      type: SettingsPreferences.ThousandsSeparators,
-      title: t('portfolio.settings.preferences.thousandsSeparator.title'),
-      description: t(
-        'portfolio.settings.preferences.thousandsSeparator.description'
-      )
-    },
+    // {
+    //   type: SettingsPreferences.ThousandsSeparators,
+    //   title: t('portfolio.settings.preferences.thousandsSeparator.title'),
+    //   description: t(
+    //     'portfolio.settings.preferences.thousandsSeparator.description'
+    //   )
+    // },
     {
       type: SettingsPreferences.GridTradingSubaccounts,
       title: t('portfolio.settings.preferences.gridTradingSubaccounts.title'),
