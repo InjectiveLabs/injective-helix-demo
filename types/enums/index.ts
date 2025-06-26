@@ -544,6 +544,7 @@ export enum BusEvents {
   BankTransferModalWithDenom = 'bank-transfer-modal-with-denom',
   ShareLeaderboardStatsOpened = 'share-leaderboard-stats-opened',
   SpotStreamLimitTradeExecuted = 'spot-stream-limit-trade-executed',
+  SubaccountTradeStreamResponded = 'subaccount-trade-stream-responded',
   DerivativeStreamLimitTradeExecuted = 'derivative-stream-limit-trade-executed'
 }
 

@@ -7,18 +7,13 @@ import {
   CHART_ZOOM_FALLBACK_NUMBER,
   DEFAULT_100_CHART_CANDLE_BAR_SPACING
 } from '@/app/utils/constants'
-import { TradingInterface } from '@/types'
+import { BusEvents, TradingInterface, TradingChartInterval } from '@/types'
+import type { UiTrade, UiSpotMarket, UiDerivativeMarket } from '@/types'
 import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import type {
   SpotLimitOrder,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
-import type {
-  UiTrade,
-  UiSpotMarket,
-  UiDerivativeMarket,
-  TradingChartInterval
-} from '@/types'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -59,6 +54,7 @@ const containerId = `tv_chart_container-${window.crypto
   .toString()}`
 
 const widgetOptions = ref<any>({})
+const isFromSubaccountTradeStream = ref(false)
 const orderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
@@ -79,6 +75,8 @@ watch(
     setupChartMarkers()
   }
 )
+
+watch(() => props.orders, modifyLimitOrderLines, { deep: true })
 
 onMounted(() => {
   widgetOptions.value = config({
@@ -101,9 +99,14 @@ onMounted(() => {
 
     tradingViewChart
       .onIntervalChanged()
-      .subscribe(null, (selectedInterval: TradingChartInterval) =>
+      .subscribe(null, (selectedInterval: TradingChartInterval) => {
+        if (selectedInterval === '1' || selectedInterval === props.interval) {
+          return
+        }
+
+        setupChartMarkers(false, selectedInterval)
         emit('interval:change', selectedInterval)
-      )
+      })
 
     if (tradingViewChart) {
       setTimeout(() => {
@@ -135,14 +138,67 @@ onMounted(() => {
       }, 100)
     }
   })
+
+  useEventBus(BusEvents.SubaccountTradeStreamResponded).on(() => {
+    isFromSubaccountTradeStream.value = true
+
+    setTimeout(() => {
+      isFromSubaccountTradeStream.value = false
+    }, 1000)
+  })
 })
 
-function setupChartMarkers(isHide?: boolean) {
+function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
   const tradingViewChart = tradingView.value?.view?.chart()
 
-  if (tradingViewChart) {
-    const customMarks = props.historicalTrades.map((trade) => {
-      const time = trade.executedAt / 1000
+  const intervalToSeconds = Object.values(TradingChartInterval).reduce(
+    (acc, value) => {
+      if (value === TradingChartInterval.D) {
+        acc[value] = 24 * 60 * 60
+      } else if (value === TradingChartInterval.W) {
+        acc[value] = 7 * 24 * 60 * 60
+      } else {
+        acc[value] = parseInt(value) * 60
+      }
+
+      return acc
+    },
+    {} as Record<string, number>
+  )
+
+  if (tradingViewChart && !isFromSubaccountTradeStream.value) {
+    const selectedInterval = interval || props.interval
+    const balancer = intervalToSeconds[selectedInterval]
+    const isDayInterval = selectedInterval === TradingChartInterval.D
+
+    const filteredTrades = Object.values(
+      props.historicalTrades.reduce(
+        (acc, originalTrade) => {
+          const trade = { ...originalTrade }
+
+          const localTimezoneSeconds = isDayInterval
+            ? -new Date().getTimezoneOffset() * 60
+            : 0
+          const time =
+            Math.floor(trade.executedAt / 1000) + localTimezoneSeconds
+
+          // ensure to show the last buy + sell markers
+          const extra = trade.tradeDirection === TradeDirection.Sell ? 1 : 0
+          const groupedTime = Math.floor(time / balancer) * balancer + extra
+
+          if (!acc[groupedTime]) {
+            trade.executedAt = groupedTime
+            acc[groupedTime] = trade
+          }
+
+          return acc
+        },
+        {} as Record<number, UiTrade>
+      )
+    )
+
+    const customMarks = filteredTrades.map((trade) => {
+      const time = trade.executedAt
 
       const price = props.isSpot
         ? new BigNumberInBase((trade as SharedUiSpotTrade).price).toWei(
@@ -338,8 +394,6 @@ function modifyLimitOrderLines() {
     })
   })
 }
-
-watch(() => props.orders, modifyLimitOrderLines, { deep: true })
 
 defineExpose({ modifyLimitOrderLines })
 </script>

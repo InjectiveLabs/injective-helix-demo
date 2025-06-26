@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SpotMarketCyTags, SpotOrdersStandardView } from '@/types'
+import { BusEvents, SpotMarketCyTags, SpotOrdersStandardView } from '@/types'
 import type { UiSpotMarket } from '@/types'
 
 const props = withDefaults(
@@ -44,7 +44,10 @@ function refreshData() {
   })
   spotStore.streamSubaccountTrades({
     marketId,
-    onResetCallback: () => spotStore.fetchSubaccountTrades(filters)
+    onResetCallback: () => {
+      useEventBus(BusEvents.SubaccountTradeStreamResponded).emit()
+      spotStore.fetchSubaccountTrades(filters)
+    }
   })
   spotStore.streamSubaccountOrderHistory({
     marketId,

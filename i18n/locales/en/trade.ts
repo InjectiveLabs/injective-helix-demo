@@ -361,9 +361,9 @@ export default {
     bought: 'Bought',
     triggered: 'Triggered',
     cancelled: 'Cancelled',
+    showHistory: 'Show History',
     partialFilled: 'Partial Filled',
     partiallyFilled: 'Partially Filled',
-    showHistory: 'Show History',
     spotTradeHistoryTotalTooltip: 'Total value of the order in quote currency',
     tradingLayout: 'Trading Layout',
     tradingLayoutOptions: {
