@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
-import { CAMPAIGN_LP_ROUNDS } from '@/app/data/campaign'
 
-const latestRound = Math.max(...CAMPAIGN_LP_ROUNDS.map((round) => round.round))
+const campaignStore = useCampaignStore()
 
-const latestRoundData = CAMPAIGN_LP_ROUNDS.find(
-  (round) => round.round === latestRound
-)!
-
-const date = format(latestRoundData.startDate * 1000, 'MMM dd yyyy')
+const lastUpdated = computed(() =>
+  format(
+    campaignStore.latestRoundCampaigns?.[0].lastUpdated || 0,
+    'MMM dd yyyy'
+  )
+)
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const date = format(latestRoundData.startDate * 1000, 'MMM dd yyyy')
 
     <div>
       <p class="text-xs p-2">
-        {{ $t('campaign.lastUpdated', { date }) }}
+        {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>
   </div>
