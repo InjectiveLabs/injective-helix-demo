@@ -100,7 +100,10 @@ onMounted(() => {
     tradingViewChart
       .onIntervalChanged()
       .subscribe(null, (selectedInterval: TradingChartInterval) => {
-        if (selectedInterval === '1' || selectedInterval === props.interval) {
+        if (
+          selectedInterval === props.interval ||
+          selectedInterval === TradingChartInterval['1m']
+        ) {
           return
         }
 
@@ -152,16 +155,16 @@ function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
   const tradingViewChart = tradingView.value?.view?.chart()
 
   const intervalToSeconds = Object.values(TradingChartInterval).reduce(
-    (acc, value) => {
+    (intervalSecondsMap, value) => {
       if (value === TradingChartInterval.D) {
-        acc[value] = 24 * 60 * 60
+        intervalSecondsMap[value] = 24 * 60 * 60
       } else if (value === TradingChartInterval.W) {
-        acc[value] = 7 * 24 * 60 * 60
+        intervalSecondsMap[value] = 7 * 24 * 60 * 60
       } else {
-        acc[value] = parseInt(value) * 60
+        intervalSecondsMap[value] = parseInt(value) * 60
       }
 
-      return acc
+      return intervalSecondsMap
     },
     {} as Record<string, number>
   )
@@ -173,7 +176,7 @@ function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
 
     const filteredTrades = Object.values(
       props.historicalTrades.reduce(
-        (acc, originalTrade) => {
+        (tradeList, originalTrade) => {
           const trade = { ...originalTrade }
 
           const localTimezoneSeconds = isDayInterval
@@ -186,12 +189,12 @@ function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
           const extra = trade.tradeDirection === TradeDirection.Sell ? 1 : 0
           const groupedTime = Math.floor(time / balancer) * balancer + extra
 
-          if (!acc[groupedTime]) {
+          if (!tradeList[groupedTime]) {
             trade.executedAt = groupedTime
-            acc[groupedTime] = trade
+            tradeList[groupedTime] = trade
           }
 
-          return acc
+          return tradeList
         },
         {} as Record<number, UiTrade>
       )
@@ -252,7 +255,7 @@ function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
 function triggerMarkersUpdate() {
   const tradingViewChart = tradingView.value?.view?.chart()
 
-  tradingViewChart.setResolution('1')
+  tradingViewChart.setResolution(TradingChartInterval['1m'])
   tradingViewChart.setResolution(props.interval)
 
   const timeScale = tradingViewChart.getTimeScale()
