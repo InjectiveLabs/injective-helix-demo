@@ -627,3 +627,8 @@ export enum PartialLimitField {
   PositionPrice = 'positionPrice',
   PositionQuantity = 'positionQuantity'
 }
+
+export enum PortfolioType {
+  Pnl = 'pnl',
+  Account = 'account'
+}
