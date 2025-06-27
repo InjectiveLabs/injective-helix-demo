@@ -67,7 +67,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('feeDiscounts.my_tier') }}
+          {{ $t('feeDiscounts.my_fee_tier') }}
         </span>
         <span
           class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-blue-500"

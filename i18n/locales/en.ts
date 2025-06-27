@@ -165,9 +165,6 @@ export default {
   'Acknowledge Terms': 'Acknowledge Terms',
   'Fee Discounts': 'Fee Discounts',
   staked_amount: 'Staked Amount',
-  'My Tier': 'My Tier',
-  'My Tier Tooltip':
-    'The fee tier you currently hold on Injective based on your INJ staked amount and fees paid on the protocol in the current epoch. You can see a full breakdown of the tiers in the table below.',
   'My Staked Amount': 'Staked Amount',
   'My Staked Amount Tooltip':
     'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',
@@ -286,7 +283,7 @@ export default {
       "Trading fees are based on a user's staked amount of INJ and the total trading volume in the past 28 days.",
     page_description_warning:
       'Please note that the maker fee discounts are only applicable to markets with a non-negative maker fee.',
-    my_tier: 'My Tier',
+    my_fee_tier: 'My Fee Tier',
     my_staked_amount: 'Staked Amount',
     my_staked_amount_tooltip:
       'The amount of INJ that you have staked. Staking INJ secures the protocol, earns you rewards and can help you obtain a more preferable fee tier.',

@@ -49,7 +49,7 @@ onMounted(() => {
       <div class="flex justify-start gap-16 lg:gap-20 text-coolGray-200">
         <div class="flex flex-col gap-2">
           <span class="text-sm tracking-wide">
-            {{ $t('feeDiscounts.my_tier') }}
+            {{ $t('feeDiscounts.my_fee_tier') }}
           </span>
           <span class="text-3xl"> #{{ tierLevel }} </span>
         </div>
