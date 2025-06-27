@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { SharedUiDerivativeTrade } from '@shared/types'
 import {
+  USDT_DECIMALS,
   LOW_FEE_AMOUNT_THRESHOLD,
   UI_DEFAULT_FEE_MIN_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -11,6 +11,7 @@ import {
   PerpetualMarketCyTags,
   PortfolioFuturesTradeHistoryTableColumn
 } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -69,6 +70,13 @@ const columns = [
     key: PortfolioFuturesTradeHistoryTableColumn.Fee,
     label: t(
       `portfolio.table.futuresTradeHistory.${PortfolioFuturesTradeHistoryTableColumn.Fee}`
+    ),
+    class: 'text-right'
+  },
+  {
+    key: PortfolioFuturesTradeHistoryTableColumn.Pnl,
+    label: t(
+      `portfolio.table.futuresTradeHistory.${PortfolioFuturesTradeHistoryTableColumn.Pnl}`
     ),
     class: 'text-right'
   },
@@ -175,6 +183,34 @@ const columns = [
           <span class="ml-1 text-coolGray-500">
             {{ row.market.quoteToken.symbol }}
           </span>
+        </div>
+      </template>
+
+      <template #pnl-data="{ row }">
+        <div
+          class="flex-1 flex items-center justify-end p-2"
+          :class="{
+            'text-red-500': row.pnl.lt(0),
+            'text-green-500': row.pnl.gt(0)
+          }"
+        >
+          <template v-if="row.pnl.isZero()">
+            <span>&mdash;</span>
+          </template>
+
+          <template v-else>
+            <AppAmount
+              v-bind="{
+                amount: row.pnl.toFixed(),
+                decimalPlaces: row.pnl.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+                  ? USDT_DECIMALS
+                  : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+              }"
+            />
+            <span class="ml-1 text-coolGray-500">
+              {{ row.market.quoteToken.symbol }}
+            </span>
+          </template>
         </div>
       </template>
 

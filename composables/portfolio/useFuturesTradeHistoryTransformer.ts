@@ -45,6 +45,13 @@ export function useFuturesTradeHistoryTransformer(
         ? ZERO_IN_BASE
         : new BigNumberInBase(tradeToSpotTrade.quantity)
 
+      const pnl = !trade.pnl
+        ? ZERO_IN_BASE
+        : sharedToBalanceInTokenInBase({
+            value: trade.pnl,
+            decimalPlaces: market.quoteToken.decimals
+          })
+
       const tradeExecutionType = derivativeTrade.isLiquidation
         ? t('trade.liquidation')
         : tradeExecutionMap[trade.tradeExecutionType] || t('trade.limit')
@@ -76,6 +83,7 @@ export function useFuturesTradeHistoryTransformer(
         tradeExecutionType,
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
+        [PortfolioFuturesTradeHistoryTableColumn.Pnl]: pnl,
         [PortfolioFuturesTradeHistoryTableColumn.Fee]: fee,
         [PortfolioFuturesTradeHistoryTableColumn.Time]: time,
         [PortfolioFuturesTradeHistoryTableColumn.Total]: total,
