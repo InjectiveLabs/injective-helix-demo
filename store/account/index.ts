@@ -15,9 +15,9 @@ import {
   indexerRestExplorerApi,
   indexerAccountPortfolioApi
 } from '@shared/Service'
-import { neptuneService } from '@/app/Services'
 import { DEFAULT_MIN_GAS } from '@/app/utils/constants'
 import { getAccountDetails } from '@/app/services/account'
+import { neptuneService, indexerGrpcArchiverApi } from '@/app/Services'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
 import {
   getDefaultAccountBalances,
@@ -44,6 +44,7 @@ import {
 import { BusEvents } from '@/types'
 import type { SubaccountBalance } from '@/types'
 import type { Coin } from '@injectivelabs/ts-types'
+import type { AccountStats } from '@injectivelabs/sdk-ts'
 
 type AccountStoreState = {
   pubKey?: string
@@ -54,6 +55,7 @@ type AccountStoreState = {
   neptuneUsdtRedemptionRatio: number
   erc20BalancesMap: Record<string, string>
   cw20Balances: { amount: string; address: string }[]
+  accountStats: AccountStats | Record<string, number>
   subaccountBalancesMap: Record<string, SubaccountBalance[]>
 }
 
@@ -62,6 +64,7 @@ const initialStateFactory = (): AccountStoreState => ({
   bankBalances: [],
   cw20Balances: [],
   subaccountId: '',
+  accountStats: {},
   singerInjBalance: '0',
   erc20BalancesMap: {},
   subaccountBalancesMap: {},
@@ -382,6 +385,17 @@ export const useAccountStore = defineStore('account', {
       accountStore.$patch({
         neptuneUsdtLendingApy
       })
+    },
+
+    async fetchAccountStats() {
+      const accountStore = useAccountStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      const response = await indexerGrpcArchiverApi.fetchAccountStats({
+        account: sharedWalletStore.authZOrInjectiveAddress
+      })
+
+      accountStore.accountStats = response
     },
 
     reset() {

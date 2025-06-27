@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const props = withDefaults(
-  defineProps<{ value?: number; size?: number; decimals?: number }>(),
+  defineProps<{
+    size?: number
+    value?: number
+    decimals?: number
+  }>(),
   {
     value: 0,
     size: 16,
@@ -83,10 +87,8 @@ watch(
       <div
         v-for="(char, index) in numberSplitted"
         :key="index"
-        class="text-2xl font-bold overflow-hidden"
-        :style="{
-          height: `${size + paddingH}px`
-        }"
+        class="text-2xl overflow-hidden"
+        :style="{ height: `${size + paddingH}px` }"
       >
         <div
           v-for="(character, i) in characters"
@@ -97,7 +99,7 @@ watch(
             }px)`,
             lineHeight: `${size + paddingH}px`,
             height: `${size + paddingH}px`,
-            width: `${[',', '.'].includes(char) ? size / 3 : size / 1.45}px`,
+            width: `${[',', '.'].includes(char) ? size / 3 : size / 1.6}px`,
             fontSize: `${size}px`
           }"
           class="transition-all duration-[1s] font-sans text-center ease-in-out"

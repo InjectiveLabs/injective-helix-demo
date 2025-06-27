@@ -20,55 +20,36 @@ const chartEl = ref<null | HTMLElement>(null)
 let chart: ApexCharts
 
 const options: ApexOptions = {
+  grid: { show: false },
+  theme: { mode: 'dark' },
+  dataLabels: { enabled: false },
   series: [
     {
-      name: t(props.label),
       data: props.series,
-      color: props.isProfit ? colors.green[500] : colors.red[500]
+      name: t(props.label),
+      color: colors.blue[300]
     }
   ],
-
   chart: {
-    type: 'area',
+    type: 'line',
     height: 350,
-    background: 'transparent',
-    toolbar: {
-      show: false
-    },
-    zoom: {
-      enabled: false
-    }
+    zoom: { enabled: false },
+    toolbar: { show: false },
+    background: 'transparent'
   },
-
-  theme: {
-    mode: 'dark'
-  },
-
   plotOptions: {
-    area: {
-      fillTo: 'origin'
-    }
+    area: { fillTo: 'origin' }
   },
-
-  dataLabels: {
-    enabled: false
-  },
-
   stroke: {
-    show: true,
     width: 2,
-    colors: [props.isProfit ? colors.green[500] : colors.red[500]],
-    curve: 'monotoneCubic'
+    curve: 'smooth',
+    colors: [colors.blue[300]]
   },
-
-  grid: {
-    borderColor: colors.brand[875]
-  },
-
   xaxis: {
-    type: 'datetime'
+    type: 'datetime',
+    axisTicks: { show: false },
+    axisBorder: { show: false }
   },
-
   yaxis: {
     opposite: true,
     labels: {
@@ -77,26 +58,6 @@ const options: ApexOptions = {
           UI_DEFAULT_MIN_DISPLAY_DECIMALS
         )}`
       }
-    }
-  },
-
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-
-      colorStops: [
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 30,
-          opacity: 0.5
-        },
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 90,
-          opacity: 0
-        }
-      ]
     }
   }
 }
@@ -115,9 +76,9 @@ watch(
   (newSeries) => {
     chart?.updateSeries([
       {
-        name: t(props.label),
         data: newSeries,
-        color: props.isProfit ? colors.green[500] : colors.red[500]
+        name: t(props.label),
+        color: colors.blue[300]
       }
     ])
   }
