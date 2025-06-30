@@ -51,6 +51,11 @@ export enum SwapCyTags {
   WarningInsufficientbalance = 'insufficient-balance-error'
 }
 
+export enum TradeCyTags {
+  Aggregation = 'aggregation',
+  AggregationSelector = 'aggregation-selector',
+}
+
 export enum SpotMarketCyTags {
   TradeStats = 'trade-stats',
   ChartHeader = 'chart-header',
