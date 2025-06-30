@@ -263,6 +263,10 @@ html.theme-dark .button-GwQQdU8S {
   color: #282c39;
 }
 
+html.theme-dark .button-GwQQdU8S:hover {
+  color: #282c39;
+}
+
 html.theme-dark .chart-controls-bar {
   left: -5px !important;
   bottom: 8px !important;
@@ -288,6 +292,14 @@ html.theme-dark .chart-page {
   bottom: 2px;
   left: 2px;
   border-radius: 2px;
+}
+
+.button-GwQQdU8S.isDisabled-GwQQdU8S {
+  opacity: 1;
+}
+
+.icon-uMfL97K2 {
+  padding: 5px 3px;
 }
 
 .theme-dark:root {
