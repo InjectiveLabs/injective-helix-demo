@@ -1,17 +1,18 @@
 <script lang="ts" setup>
+import { usdtToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  FeeDiscountTierInfo,
   cosmosSdkDecToBigNumber,
   getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UI_MINIMAL_AMOUNT, USDT_DECIMALS } from '@/app/utils/constants'
+import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
+import type { FeeDiscountTierInfo } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    tier: FeeDiscountTierInfo
     index: number
+    tier: FeeDiscountTierInfo
   }>(),
   {}
 )
@@ -40,7 +41,7 @@ const stakedAmount = computed(
 
 const volume = computed(() =>
   new BigNumberInWei(cosmosSdkDecToBigNumber(props.tier.volume || 0)).toBase(
-    USDT_DECIMALS
+    usdtToken.decimals
   )
 )
 

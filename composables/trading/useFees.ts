@@ -1,7 +1,6 @@
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { ONE_IN_BASE } from '@/app/utils/constants'
 
 export function useTradeFee({
   marketTakerFeeRate,

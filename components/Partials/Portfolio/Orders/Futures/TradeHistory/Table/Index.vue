@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
-  USDT_DECIMALS,
   LOW_FEE_AMOUNT_THRESHOLD,
   UI_DEFAULT_FEE_MIN_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
@@ -203,7 +203,7 @@ const columns = [
               v-bind="{
                 amount: row.pnl.toFixed(),
                 decimalPlaces: row.pnl.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
-                  ? USDT_DECIMALS
+                  ? usdtToken.decimals
                   : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
               }"
             />

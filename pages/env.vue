@@ -5,10 +5,10 @@ import { MainPage } from '@/types'
 
 type GitLog = {
   hash: string
-  message: string
-  author_name: string
   date: string
+  message: string
   commitLink: string
+  author_name: string
 }
 
 definePageMeta({
@@ -28,7 +28,7 @@ const {
   logs,
   branch,
   gitTagLink
-}: { tag: string; branch: string; gitTagLink: string; logs: GitLog[] } =
+}: { tag: string; branch: string; logs: GitLog[]; gitTagLink: string } =
   gitBuild()
 </script>
 

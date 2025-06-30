@@ -1,7 +1,7 @@
+import { ONE_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
-  ONE_IN_BASE,
   MAX_QUOTE_DECIMALS,
   MAX_QUOTE_TENS_MULTIPLIER
 } from '@/app/utils/constants/index'
