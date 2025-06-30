@@ -61,7 +61,6 @@ onWalletConnected(async () => {
       fetchSubaccountStream()
 
       if (!sharedWalletStore.injectiveAddress) {
-        console.log('No injective address found')
         return
       }
 

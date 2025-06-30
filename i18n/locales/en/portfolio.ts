@@ -21,97 +21,98 @@ export default {
         [PortfolioSubaccountsTableColumn.TotalUsd]: 'Total Value (USD)'
       },
       spotOpenOrder: {
-        [PortfolioSpotOpenOrdersTableColumn.Market]: 'Market',
         [PortfolioSpotOpenOrdersTableColumn.Side]: 'Side',
         [PortfolioSpotOpenOrdersTableColumn.Price]: 'Price',
-        [PortfolioSpotOpenOrdersTableColumn.Amount]: 'Amount',
-        [PortfolioSpotOpenOrdersTableColumn.Unfilled]: 'Unfilled',
-        [PortfolioSpotOpenOrdersTableColumn.Filled]: 'Filled',
-        [PortfolioSpotOpenOrdersTableColumn.TotalAmount]: 'Total Amount',
         [PortfolioSpotOpenOrdersTableColumn.Chase]: 'Chase',
-        [PortfolioSpotOpenOrdersTableColumn.Action]: 'Action'
+        [PortfolioSpotOpenOrdersTableColumn.Action]: 'Action',
+        [PortfolioSpotOpenOrdersTableColumn.Market]: 'Market',
+        [PortfolioSpotOpenOrdersTableColumn.Amount]: 'Amount',
+        [PortfolioSpotOpenOrdersTableColumn.Filled]: 'Filled',
+        [PortfolioSpotOpenOrdersTableColumn.Unfilled]: 'Unfilled',
+        [PortfolioSpotOpenOrdersTableColumn.TotalAmount]: 'Total Amount'
       },
       spotOrderHistory: {
-        [PortfolioSpotOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
-        [PortfolioSpotOrderHistoryTableColumn.Market]: 'Market',
         [PortfolioSpotOrderHistoryTableColumn.Type]: 'Type',
         [PortfolioSpotOrderHistoryTableColumn.Side]: 'Side',
         [PortfolioSpotOrderHistoryTableColumn.Price]: 'Price',
-        [PortfolioSpotOrderHistoryTableColumn.Amount]: 'Amount',
         [PortfolioSpotOrderHistoryTableColumn.Total]: 'Total',
+        [PortfolioSpotOrderHistoryTableColumn.Status]: 'Status',
+        [PortfolioSpotOrderHistoryTableColumn.Market]: 'Market',
+        [PortfolioSpotOrderHistoryTableColumn.Amount]: 'Amount',
+        [PortfolioSpotOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
         [PortfolioSpotOrderHistoryTableColumn.TriggerCondition]:
-          'Trigger Condition',
-        [PortfolioSpotOrderHistoryTableColumn.Status]: 'Status'
+          'Trigger Condition'
       },
       spotTradeHistory: {
+        [PortfolioSpotTradeHistoryTableColumn.Fee]: 'Fee',
         [PortfolioSpotTradeHistoryTableColumn.Time]: 'Time',
         [PortfolioSpotTradeHistoryTableColumn.Pair]: 'Pair',
         [PortfolioSpotTradeHistoryTableColumn.Type]: 'Type',
         [PortfolioSpotTradeHistoryTableColumn.Side]: 'Side',
+        [PortfolioSpotTradeHistoryTableColumn.Total]: 'Total',
         [PortfolioSpotTradeHistoryTableColumn.Price]: 'Price',
-        [PortfolioSpotTradeHistoryTableColumn.Amount]: 'Amount',
-        [PortfolioSpotTradeHistoryTableColumn.Fee]: 'Fee',
-        [PortfolioSpotTradeHistoryTableColumn.Total]: 'Total'
+        [PortfolioSpotTradeHistoryTableColumn.Amount]: 'Amount'
       },
       futuresOpenOrder: {
-        [PortfolioFuturesOpenOrdersTableColumn.Market]: 'Market',
         [PortfolioFuturesOpenOrdersTableColumn.Side]: 'Side',
         [PortfolioFuturesOpenOrdersTableColumn.Price]: 'Price',
-        [PortfolioFuturesOpenOrdersTableColumn.Amount]: 'Amount',
-        [PortfolioFuturesOpenOrdersTableColumn.Unfilled]: 'Unfilled',
-        [PortfolioFuturesOpenOrdersTableColumn.Filled]: 'Filled',
-        [PortfolioFuturesOpenOrdersTableColumn.Leverage]: 'Leverage',
         [PortfolioFuturesOpenOrdersTableColumn.Total]: 'Total',
         [PortfolioFuturesOpenOrdersTableColumn.Chase]: 'Chase',
-        [PortfolioFuturesOpenOrdersTableColumn.Action]: 'Action'
+        [PortfolioFuturesOpenOrdersTableColumn.Action]: 'Action',
+        [PortfolioFuturesOpenOrdersTableColumn.Market]: 'Market',
+        [PortfolioFuturesOpenOrdersTableColumn.Amount]: 'Amount',
+        [PortfolioFuturesOpenOrdersTableColumn.Filled]: 'Filled',
+        [PortfolioFuturesOpenOrdersTableColumn.Unfilled]: 'Unfilled',
+        [PortfolioFuturesOpenOrdersTableColumn.Leverage]: 'Leverage'
       },
       futuresAdvancedOrders: {
-        [PortfolioFuturesAdvancedOrdersTableColumn.Market]: 'Market',
         [PortfolioFuturesAdvancedOrdersTableColumn.Type]: 'Type',
         [PortfolioFuturesAdvancedOrdersTableColumn.Side]: 'Side',
         [PortfolioFuturesAdvancedOrdersTableColumn.Price]: 'Price',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Total]: 'Total',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Action]: 'Action',
+        [PortfolioFuturesAdvancedOrdersTableColumn.Market]: 'Market',
         [PortfolioFuturesAdvancedOrdersTableColumn.Amount]: 'Amount',
         [PortfolioFuturesAdvancedOrdersTableColumn.Leverage]: 'Leverage',
-        [PortfolioFuturesAdvancedOrdersTableColumn.Total]: 'Total',
         [PortfolioFuturesAdvancedOrdersTableColumn.TriggerCondition]:
-          'Trigger Condition',
-        [PortfolioFuturesAdvancedOrdersTableColumn.Action]: 'Action'
+          'Trigger Condition'
       },
       futuresOrderHistory: {
-        [PortfolioFuturesOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
-        [PortfolioFuturesOrderHistoryTableColumn.Market]: 'Market',
         [PortfolioFuturesOrderHistoryTableColumn.Type]: 'Type',
         [PortfolioFuturesOrderHistoryTableColumn.Side]: 'Side',
         [PortfolioFuturesOrderHistoryTableColumn.Price]: 'Price',
-        [PortfolioFuturesOrderHistoryTableColumn.Amount]: 'Amount',
         [PortfolioFuturesOrderHistoryTableColumn.Total]: 'Total',
+        [PortfolioFuturesOrderHistoryTableColumn.Status]: 'Status',
+        [PortfolioFuturesOrderHistoryTableColumn.Market]: 'Market',
+        [PortfolioFuturesOrderHistoryTableColumn.Amount]: 'Amount',
+        [PortfolioFuturesOrderHistoryTableColumn.LastUpdated]: 'Last Updated',
         [PortfolioFuturesOrderHistoryTableColumn.TriggerCondition]:
-          'Trigger Condition',
-        [PortfolioFuturesOrderHistoryTableColumn.Status]: 'Status'
+          'Trigger Condition'
       },
       futuresTradeHistory: {
+        [PortfolioFuturesTradeHistoryTableColumn.Fee]: 'Fee',
         [PortfolioFuturesTradeHistoryTableColumn.Time]: 'Time',
-        [PortfolioFuturesTradeHistoryTableColumn.Market]: 'Market',
         [PortfolioFuturesTradeHistoryTableColumn.Type]: 'Type',
         [PortfolioFuturesTradeHistoryTableColumn.Side]: 'Side',
         [PortfolioFuturesTradeHistoryTableColumn.Price]: 'Price',
+        [PortfolioFuturesTradeHistoryTableColumn.Total]: 'Total',
+        [PortfolioFuturesTradeHistoryTableColumn.Market]: 'Market',
         [PortfolioFuturesTradeHistoryTableColumn.Amount]: 'Amount',
-        [PortfolioFuturesTradeHistoryTableColumn.Fee]: 'Fee',
-        [PortfolioFuturesTradeHistoryTableColumn.Total]: 'Total'
+        [PortfolioFuturesTradeHistoryTableColumn.Pnl]: 'Closed PNL'
       },
       position: {
-        [PositionTableColumn.Market]: 'Market',
         [PositionTableColumn.Side]: 'Side',
-        [PositionTableColumn.Contracts]: 'Contracts',
-        [PositionTableColumn.Entry]: 'Entry Price',
-        [PositionTableColumn.Mark]: 'Mark Price',
-        [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL',
-        [PositionTableColumn.TotalUsd]: 'Total Value (USD)',
-        [PositionTableColumn.Margin]: 'Position Margin',
-        [PositionTableColumn.LiquidationPrice]: 'Liq. Price',
-        [PositionTableColumn.Leverage]: 'Leverage',
         [PositionTableColumn.TpOrSl]: 'TP/SL',
-        [PositionTableColumn.ClosePosition]: 'Close Position'
+        [PositionTableColumn.Market]: 'Market',
+        [PositionTableColumn.Mark]: 'Mark Price',
+        [PositionTableColumn.Entry]: 'Entry Price',
+        [PositionTableColumn.Leverage]: 'Leverage',
+        [PositionTableColumn.Contracts]: 'Contracts',
+        [PositionTableColumn.Margin]: 'Position Margin',
+        [PositionTableColumn.TotalUsd]: 'Total Value (USD)',
+        [PositionTableColumn.LiquidationPrice]: 'Liq. Price',
+        [PositionTableColumn.ClosePosition]: 'Close Position',
+        [PositionTableColumn.UnrealizedPnl]: 'Unrealized PNL'
       }
     },
     value: 'Portfolio Value',

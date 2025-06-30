@@ -56,23 +56,12 @@ export const DATE_TIME_DISPLAY = 'dd MMM HH:mm:ss'
 
 export const VPN_PROXY_VALIDATION_PERIOD = 7 /* 7 days */
 
-export const ETH_COIN_GECKO_ID = 'ethereum'
-export const USDT_COIN_GECKO_ID = 'tether'
-export const USDC_COIN_GECKO_ID = 'usd-coin'
-export const UST_COIN_GECKO_ID = 'terrausd'
-export const QUOTE_DENOMS_GECKO_IDS = [
-  ETH_COIN_GECKO_ID,
-  USDT_COIN_GECKO_ID,
-  USDC_COIN_GECKO_ID
-]
 export const HIDDEN_BALANCE_DISPLAY = '********'
 export const SMALL_BALANCE_THRESHOLD = '10'
 export const LOW_VOLUME_MARKET_THRESHOLD = 1000
 export const LOW_FEE_AMOUNT_THRESHOLD = 0.0001
 export const UI_DEFAULT_FEE_MIN_DECIMALS = 8
 
-export const ONE_IN_BASE = new BigNumberInBase(1)
-export const USDT_DECIMALS = 6
 export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 10
 export const UI_MINIMAL_ABBREVIATION_FLOOR = 1_000_000
 
