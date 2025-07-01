@@ -15,7 +15,6 @@ import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import {
   createTpSlMessage,
   createCancelTpSlOrderMsgs,
-  createTpSlMessageNoUndefined,
   prepareNeptuneWithdrawMessage
 } from '@/app/utils/msgs'
 import type { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
@@ -586,7 +585,7 @@ export const submitTpSlOrder = async ({
 
   if (shouldCreateTpOrder) {
     messages.push(
-      createTpSlMessageNoUndefined({
+      createTpSlMessage({
         market,
         isExitOrderBuy,
         markPrice: markPrice,
@@ -596,13 +595,13 @@ export const submitTpSlOrder = async ({
         feeRecipient: referralStore.feeRecipient,
         subaccountId: accountStore.subaccountId,
         injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-      })
+      }) as MsgCreateDerivativeMarketOrder
     )
   }
 
   if (shouldCreateSlOrder) {
     messages.push(
-      createTpSlMessageNoUndefined({
+      createTpSlMessage({
         market,
         isExitOrderBuy,
         markPrice: markPrice,
@@ -612,7 +611,7 @@ export const submitTpSlOrder = async ({
         feeRecipient: referralStore.feeRecipient,
         subaccountId: accountStore.subaccountId,
         injectiveAddress: sharedWalletStore.authZOrInjectiveAddress
-      })
+      }) as MsgCreateDerivativeMarketOrder
     )
   }
 

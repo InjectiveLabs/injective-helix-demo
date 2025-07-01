@@ -209,6 +209,9 @@ export const prepareAuthZMsg = (contractAddress: string) => {
   return []
 }
 
+
+
+
 export const createTpSlMessage = ({
   market,
   quantity,
@@ -271,40 +274,6 @@ export const createTpSlMessage = ({
   })
 
   return message
-}
-
-export const createTpSlMessageNoUndefined = ({
-  isExitOrderBuy,
-  market,
-  quantity,
-  marketId,
-  triggerPrice,
-  subaccountId,
-  feeRecipient,
-  markPrice,
-  injectiveAddress
-}: {
-  marketId: string
-  feeRecipient: string
-  subaccountId: string
-  isExitOrderBuy: boolean
-  injectiveAddress: string
-  quantity: BigNumberInBase
-  market: UiDerivativeMarket
-  markPrice: BigNumberInBase
-  triggerPrice: BigNumberInBase
-}) => {
-  return createTpSlMessage({
-    isExitOrderBuy,
-    market,
-    quantity,
-    marketId,
-    triggerPrice,
-    subaccountId,
-    feeRecipient,
-    markPrice,
-    injectiveAddress
-  }) as MsgCreateDerivativeMarketOrder
 }
 
 export const createCancelTpSlOrderMsgs = ({
