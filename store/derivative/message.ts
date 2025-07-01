@@ -375,12 +375,13 @@ export const submitMarketOrder = async ({
     (takeProfit && takeProfit.gt(0)) || (stopLoss && stopLoss.gt(0))
 
   if (shouldCreateConditionalOrders) {
-    const isTpSlBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
+    // To exist a position with conditional orders: long position = sell, short position = buy
+    const isExitOrderBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
     const tpMessage = createTpSlMessage({
       market,
       quantity,
-      isBuy: isTpSlBuy,
+      isExitOrderBuy,
       markPrice: price,
       marketId: market.marketId,
       feeRecipient: referralStore.feeRecipient,
@@ -392,7 +393,7 @@ export const submitMarketOrder = async ({
     const slMessage = createTpSlMessage({
       market,
       quantity,
-      isBuy: isTpSlBuy,
+      isExitOrderBuy,
       markPrice: price,
       feeRecipient: referralStore.feeRecipient,
       marketId: market.marketId,
@@ -531,7 +532,8 @@ export const submitTpSlOrder = async ({
     return
   }
 
-  const isTpSlBuy = position.direction === TradeDirection.Long
+  // To exist a position with conditional orders: long position = sell, short position = buy
+  const isExitOrderBuy = position.direction !== TradeDirection.Long
 
   const markPrice = new BigNumberInWei(position.markPrice).toBase(
     market.quoteToken.decimals
@@ -586,7 +588,7 @@ export const submitTpSlOrder = async ({
     messages.push(
       createTpSlMessageNoUndefined({
         market,
-        isBuy: !isTpSlBuy,
+        isExitOrderBuy,
         markPrice: markPrice,
         marketId: market.marketId,
         quantity: takeProfitQuantity,
@@ -602,7 +604,7 @@ export const submitTpSlOrder = async ({
     messages.push(
       createTpSlMessageNoUndefined({
         market,
-        isBuy: !isTpSlBuy,
+        isExitOrderBuy,
         markPrice: markPrice,
         marketId: market.marketId,
         quantity: stopLossQuantity,

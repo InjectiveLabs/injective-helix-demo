@@ -210,34 +210,34 @@ export const prepareAuthZMsg = (contractAddress: string) => {
 }
 
 export const createTpSlMessage = ({
-  isBuy,
   market,
   quantity,
   marketId,
+  markPrice,
   triggerPrice,
   subaccountId,
   feeRecipient,
-  markPrice,
+  isExitOrderBuy,
   injectiveAddress
 }: {
-  isBuy: boolean
   marketId: string
   feeRecipient: string
   subaccountId: string
+  isExitOrderBuy: boolean
   injectiveAddress: string
   quantity: BigNumberInBase
   market: UiDerivativeMarket
   markPrice: BigNumberInBase
   triggerPrice: BigNumberInBase
 }) => {
+  const DEFAULT_SLIPPAGE = 0.01 // %1 slippage of the trigger price
+
   if (triggerPrice.eq(0)) {
     return undefined
   }
 
-  const DEFAULT_SLIPPAGE = 0.01 // %1 slippage of the trigger price
-
   const orderType = getDerivativeOrderTypeToSubmit({
-    isBuy,
+    isBuy: isExitOrderBuy,
     isPostOnly: true,
     isTriggerOrder: true,
     markPrice: markPrice.toFixed(),
@@ -245,7 +245,7 @@ export const createTpSlMessage = ({
   })
 
   const orderExecutionPriceWithSlippage = (
-    isBuy
+    isExitOrderBuy
       ? triggerPrice.times(1 + DEFAULT_SLIPPAGE)
       : triggerPrice.times(1 - DEFAULT_SLIPPAGE)
   ).dp(market.priceDecimals)
@@ -274,7 +274,7 @@ export const createTpSlMessage = ({
 }
 
 export const createTpSlMessageNoUndefined = ({
-  isBuy,
+  isExitOrderBuy,
   market,
   quantity,
   marketId,
@@ -284,10 +284,10 @@ export const createTpSlMessageNoUndefined = ({
   markPrice,
   injectiveAddress
 }: {
-  isBuy: boolean
   marketId: string
   feeRecipient: string
   subaccountId: string
+  isExitOrderBuy: boolean
   injectiveAddress: string
   quantity: BigNumberInBase
   market: UiDerivativeMarket
@@ -295,7 +295,7 @@ export const createTpSlMessageNoUndefined = ({
   triggerPrice: BigNumberInBase
 }) => {
   return createTpSlMessage({
-    isBuy,
+    isExitOrderBuy,
     market,
     quantity,
     marketId,
