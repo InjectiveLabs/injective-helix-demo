@@ -1,20 +1,34 @@
 import { usdtToken } from '@shared/data/token'
 import { NETWORK } from '@shared/utils/constant'
+import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { getDerivativeOrderTypeToSubmit } from './helpers'
+import { orderSideToOrderType } from '@shared/transformer/trade'
+import { ConditionalOrderSide, type UiDerivativeMarket } from '~/types'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import { gridStrategyAuthorizationMessageTypes } from '../data/grid-strategy'
 import {
   MsgGrant,
   MsgWithdraw,
+  TradeDirection,
   ExecArgCW20Send,
   isCw20ContractAddress,
   MsgExecuteContractCompat,
+  MsgCancelDerivativeOrder,
   NEPTUNE_USDT_CW20_CONTRACT,
-  getGenericAuthorizationFromMessageType
+  MsgCreateDerivativeMarketOrder,
+  derivativePriceToChainPriceToFixed,
+  getGenericAuthorizationFromMessageType,
+  derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
 import { neptuneService } from '@/app/Services'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
-import type { TokenStatic } from '@injectivelabs/sdk-ts'
+import type {
+  Msgs,
+  PositionV2,
+  TokenStatic,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 
 export const prepareNeptuneWithdrawMessage = ({
   denom,
@@ -193,4 +207,207 @@ export const prepareAuthZMsg = (contractAddress: string) => {
   }
 
   return []
+}
+
+export const createTpSlMessage = ({
+  isBuy,
+  market,
+  quantity,
+  marketId,
+  triggerPrice,
+  subaccountId,
+  feeRecipient,
+  markPrice,
+  injectiveAddress
+}: {
+  isBuy: boolean
+  marketId: string
+  feeRecipient: string
+  subaccountId: string
+  injectiveAddress: string
+  quantity: BigNumberInBase
+  market: UiDerivativeMarket
+  markPrice: BigNumberInBase
+  triggerPrice: BigNumberInBase
+}) => {
+  if (triggerPrice.eq(0)) {
+    return undefined
+  }
+
+  const DEFAULT_SLIPPAGE = 0.01 // %1 slippage of the trigger price
+
+  const orderType = getDerivativeOrderTypeToSubmit({
+    isBuy,
+    isPostOnly: true,
+    isTriggerOrder: true,
+    markPrice: markPrice.toFixed(),
+    triggerPrice: triggerPrice.toFixed()
+  })
+
+  const orderExecutionPriceWithSlippage = (
+    isBuy
+      ? triggerPrice.times(1 + DEFAULT_SLIPPAGE)
+      : triggerPrice.times(1 - DEFAULT_SLIPPAGE)
+  ).dp(market.priceDecimals)
+
+  const message = MsgCreateDerivativeMarketOrder.fromJSON({
+    subaccountId,
+    injectiveAddress,
+    price: derivativePriceToChainPriceToFixed({
+      value: orderExecutionPriceWithSlippage.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    margin: '0',
+    quantity: derivativeQuantityToChainQuantityToFixed({
+      value: quantity.toFixed()
+    }),
+    marketId,
+    feeRecipient: feeRecipient,
+    triggerPrice: derivativePriceToChainPriceToFixed({
+      value: triggerPrice.toFixed(),
+      quoteDecimals: market.quoteToken.decimals
+    }),
+    orderType: orderSideToOrderType(orderType)
+  })
+
+  return message
+}
+
+export const createTpSlMessageNoUndefined = ({
+  isBuy,
+  market,
+  quantity,
+  marketId,
+  triggerPrice,
+  subaccountId,
+  feeRecipient,
+  markPrice,
+  injectiveAddress
+}: {
+  isBuy: boolean
+  marketId: string
+  feeRecipient: string
+  subaccountId: string
+  injectiveAddress: string
+  quantity: BigNumberInBase
+  market: UiDerivativeMarket
+  markPrice: BigNumberInBase
+  triggerPrice: BigNumberInBase
+}) => {
+  return createTpSlMessage({
+    isBuy,
+    market,
+    quantity,
+    marketId,
+    triggerPrice,
+    subaccountId,
+    feeRecipient,
+    markPrice,
+    injectiveAddress
+  }) as MsgCreateDerivativeMarketOrder
+}
+
+export const createCancelTpSlOrderMsgs = ({
+  market,
+  positions,
+  quantity,
+  orderSide,
+  subaccountId,
+  injectiveAddress,
+  conditionalOrders
+}: {
+  orderSide: OrderSide
+  subaccountId: string
+  positions: PositionV2[]
+  injectiveAddress: string
+  quantity: BigNumberInBase
+  market: UiDerivativeMarket
+  conditionalOrders: DerivativeLimitOrder[]
+}) => {
+  const msgs = [] as Msgs[]
+
+  const position = positions.find(
+    (position) =>
+      position.marketId === market.marketId &&
+      position.subaccountId === subaccountId
+  )
+
+  if (!position) {
+    return msgs
+  }
+
+  const shouldAutoCancelTpSlOnLong =
+    position.direction === TradeDirection.Long &&
+    [
+      OrderSide.Sell,
+      OrderSide.SellPO,
+      OrderSide.TakeSell,
+      OrderSide.StopSell
+    ].includes(orderSide)
+
+  const shouldAutoCancelTpSlOnShort =
+    position.direction === TradeDirection.Short &&
+    [
+      OrderSide.Buy,
+      OrderSide.BuyPO,
+      OrderSide.TakeBuy,
+      OrderSide.StopBuy
+    ].includes(orderSide)
+
+  const shouldAutoCancelTpSl =
+    shouldAutoCancelTpSlOnLong || shouldAutoCancelTpSlOnShort
+
+  if (!shouldAutoCancelTpSl) {
+    return msgs
+  }
+
+  const availablePositionQuantity = new BigNumberInBase(position.quantity || 0)
+
+  const remainingQuantity = availablePositionQuantity.minus(quantity)
+
+  const selectedPositionConditionalOrders = conditionalOrders.filter(
+    (order) => order.marketId === market.marketId
+  )
+
+  const tpOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.TakeBuy ||
+      item.orderType === ConditionalOrderSide.TakeSell
+  )
+
+  const slOrder = selectedPositionConditionalOrders.find(
+    (item) =>
+      item.orderType === ConditionalOrderSide.StopBuy ||
+      item.orderType === ConditionalOrderSide.StopSell
+  )
+
+  if (
+    tpOrder &&
+    new BigNumberInBase(remainingQuantity).lt(tpOrder.quantity || 0)
+  ) {
+    const cancelTpMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: injectiveAddress,
+      marketId: tpOrder.marketId,
+      orderHash: tpOrder.orderHash,
+      subaccountId: tpOrder.subaccountId
+    })
+
+    msgs.push(cancelTpMessage)
+  }
+
+  if (
+    slOrder &&
+    new BigNumberInBase(remainingQuantity).lt(slOrder.quantity || 0)
+  ) {
+    const cancelSlMessage = MsgCancelDerivativeOrder.fromJSON({
+      injectiveAddress: injectiveAddress,
+      marketId: slOrder.marketId,
+      orderHash: slOrder.orderHash,
+      subaccountId: slOrder.subaccountId
+    })
+
+    msgs.push(cancelSlMessage)
+  }
+
+  return msgs
 }

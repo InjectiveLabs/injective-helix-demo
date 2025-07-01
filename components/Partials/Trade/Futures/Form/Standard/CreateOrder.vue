@@ -127,7 +127,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isStopOrder: [
+    isTriggerOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
     ].includes(

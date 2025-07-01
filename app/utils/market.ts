@@ -4,11 +4,7 @@ import { deprecatedMarkets } from '@/app/data/market'
 import { TradeSubPage } from '@/types'
 import type { SharedUiMarketHistory } from '@shared/types'
 import type { MarketRoute, UiMarketWithToken } from '@/types'
-import type {
-  PriceLevel,
-  DerivativeMarket,
-  ExpiryFuturesMarket
-} from '@injectivelabs/sdk-ts'
+import type { PriceLevel, ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
