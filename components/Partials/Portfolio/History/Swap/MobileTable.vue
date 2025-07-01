@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_AGGREGATION_DECIMALS } from '~/app/utils/constants'
-import {
-  UTableColumn,
-  TransformedHistorySwap,
-  HistorySwapTableColumn
-} from '@/types'
+import { UI_DEFAULT_AGGREGATION_DECIMALS } from '@/app/utils/constants'
+import { HistorySwapTableColumn } from '@/types'
+import type { UTableColumn, TransformedHistorySwap } from '@/types'
 
 const props = withDefaults(
   defineProps<{

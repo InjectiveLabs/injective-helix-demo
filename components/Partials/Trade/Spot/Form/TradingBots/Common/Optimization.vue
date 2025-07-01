@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { calculateOptimalInvestment } from '~/app/utils/grid-strategy'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '~/app/data/grid-strategy'
+import { calculateOptimalInvestment } from '@/app/utils/grid-strategy'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
   GST_MIN_TOTAL_AMOUNT_USD,
   GST_MIN_TRADING_SIZE_LOW
-} from '~/app/utils/constants'
+} from '@/app/utils/constants'
 import { Modal, SpotGridTradingField } from '@/types'
 import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
