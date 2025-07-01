@@ -4,7 +4,6 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { getDerivativeOrderTypeToSubmit } from './helpers'
 import { orderSideToOrderType } from '@shared/transformer/trade'
-import { ConditionalOrderSide, type UiDerivativeMarket } from '~/types'
 import { getCw20AdapterContractForNetwork } from '@injectivelabs/networks'
 import { gridStrategyAuthorizationMessageTypes } from '../data/grid-strategy'
 import {
@@ -23,6 +22,7 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { neptuneService } from '@/app/Services'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
+import { ConditionalOrderSide, type UiDerivativeMarket } from '@/types'
 import type {
   Msgs,
   PositionV2,
@@ -208,9 +208,6 @@ export const prepareAuthZMsg = (contractAddress: string) => {
 
   return []
 }
-
-
-
 
 export const createTpSlMessage = ({
   market,
