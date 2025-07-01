@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { ONE_IN_BASE } from '@shared/utils/constant'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  ONE_IN_BASE,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { SwapCyTags, TradeField } from '@/types'
 import type {
   SharedBalanceWithToken,

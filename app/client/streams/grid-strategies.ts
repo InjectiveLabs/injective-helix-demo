@@ -1,6 +1,6 @@
-import { StreamType } from '~/types'
-import { streamProvider } from '~/app/providers/StreamProvider'
 import { indexerGrpcTradingStream } from '@/app/Services'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import { StreamType } from '@/types'
 import type { GridStrategyStreamResponse } from '@injectivelabs/sdk-ts'
 export const streamGridStrategies = ({
   callback,

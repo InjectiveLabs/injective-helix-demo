@@ -1,12 +1,12 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { GeneralException } from '@injectivelabs/exceptions'
-import { getSpotGridStrategyType } from '~/app/grid-trading/utils'
 import {
   MsgExecuteContractCompat,
   spotPriceToChainPriceToFixed,
   derivativePriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
+import { getSpotGridStrategyType } from '@/app/grid-trading/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import {
   prepareAuthZMsg,

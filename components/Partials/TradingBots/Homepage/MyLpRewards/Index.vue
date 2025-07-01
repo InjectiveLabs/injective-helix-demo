@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { LiquidityRewardsPage } from '~/types'
+import { LiquidityRewardsPage } from '@/types'
 
 const campaignStore = useCampaignStore()
 

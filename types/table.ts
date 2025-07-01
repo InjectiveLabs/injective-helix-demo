@@ -164,6 +164,7 @@ export enum PortfolioFuturesOrderHistoryTableColumn {
 
 export enum PortfolioFuturesTradeHistoryTableColumn {
   Fee = 'fee',
+  Pnl = 'pnl',
   Time = 'time',
   Type = 'type',
   Side = 'side',
@@ -476,6 +477,7 @@ export interface TransformedPortfolioFuturesTradeHistory {
   trade: SharedUiDerivativeTrade
   [PortfolioFuturesTradeHistoryTableColumn.Time]: string
   [PortfolioFuturesTradeHistoryTableColumn.Fee]: BigNumberInBase
+  [PortfolioFuturesTradeHistoryTableColumn.Pnl]: BigNumberInBase
   [PortfolioFuturesTradeHistoryTableColumn.Total]: BigNumberInBase
   [PortfolioFuturesTradeHistoryTableColumn.Price]: BigNumberInBase
 }

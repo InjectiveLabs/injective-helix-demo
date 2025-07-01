@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
   LOW_FEE_AMOUNT_THRESHOLD,
@@ -7,10 +8,12 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  UTableColumn,
   PerpetualMarketCyTags,
-  TransformedPortfolioFuturesTradeHistory,
   PortfolioFuturesTradeHistoryTableColumn
+} from '@/types'
+import type {
+  UTableColumn,
+  TransformedPortfolioFuturesTradeHistory
 } from '@/types'
 
 const props = withDefaults(
@@ -122,6 +125,34 @@ const filteredColumns = computed(() =>
         <span class="ml-1 text-coolGray-500">
           {{ trade.market.quoteToken.symbol }}
         </span>
+      </div>
+    </template>
+
+    <template #pnl-data>
+      <div
+        class="flex items-center"
+        :class="{
+          'text-red-500': trade.pnl.lt(0),
+          'text-green-500': trade.pnl.gt(0)
+        }"
+      >
+        <template v-if="trade.pnl.isZero()">
+          <span>&mdash;</span>
+        </template>
+
+        <template v-else>
+          <AppAmount
+            v-bind="{
+              amount: trade.pnl.toFixed(),
+              decimalPlaces: trade.pnl.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
+                ? usdtToken.decimals
+                : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+            }"
+          />
+          <span class="ml-1 text-coolGray-500">
+            {{ trade.market.quoteToken.symbol }}
+          </span>
+        </template>
       </div>
     </template>
 

@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { USDT_DECIMALS } from '@/app/utils/constants'
-import {
-  UTableColumn,
-  TransformedFundingHistory,
-  FundingHistoryTableColumn
-} from '@/types'
+import { usdtToken } from '@shared/data/token'
+import { FundingHistoryTableColumn } from '@/types'
+import type { UTableColumn, TransformedFundingHistory } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -60,7 +57,7 @@ const filteredColumns = computed(() =>
           <AppAmount
             v-bind="{
               amount: fundingHistory.total.toFixed(),
-              decimalPlaces: USDT_DECIMALS
+              decimalPlaces: usdtToken.decimals
             }"
           />
         </span>

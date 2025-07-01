@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { stableCoinSymbols } from '~/app/data/token'
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
+import { stableCoinSymbols } from '@/app/data/token'
 import { SpotMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 

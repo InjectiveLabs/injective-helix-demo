@@ -3,7 +3,7 @@ import { format, utcToZonedTime } from 'date-fns-tz'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 
 const spotStore = useSpotStore()
 const campaignStore = useCampaignStore()

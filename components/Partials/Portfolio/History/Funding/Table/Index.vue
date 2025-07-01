@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { USDT_DECIMALS } from '@/app/utils/constants'
+import { usdtToken } from '@shared/data/token'
 import { FundingHistoryTableColumn } from '@/types'
+import type { FundingPayment } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -70,7 +70,7 @@ const columns = [
             <AppAmount
               v-bind="{
                 amount: row.total.toFixed(),
-                decimalPlaces: USDT_DECIMALS
+                decimalPlaces: usdtToken.decimals
               }"
             />
           </span>

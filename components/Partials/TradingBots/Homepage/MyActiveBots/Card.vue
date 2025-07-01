@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
+import type {
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
 } from '@/types'
-import { getTradingBotLinkFromStrategy } from '~/app/utils/helpers'
 
 const props = defineProps<{
   strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed

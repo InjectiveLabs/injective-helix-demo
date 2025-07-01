@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { generateOnramperSignature } from '@/app/utils/helpers'
+import { generateOnRamperSignature } from '@/app/utils/helpers'
 import { trackOnramperSeen } from '@/app/providers/mixpanel/EventTracker'
 import {
   ONRAMPER_API_KEY,
@@ -13,7 +13,7 @@ const sharedWalletStore = useSharedWalletStore()
 const onramperUrl = computed(() => {
   const siteUrl = siteFullUrl?.href || 'https://helixapp.com'
   const signContent = `wallets=inj_injective:${sharedWalletStore.injectiveAddress}`
-  const signature = generateOnramperSignature(ONRAMPER_SIGNING_KEY, signContent)
+  const signature = generateOnRamperSignature(ONRAMPER_SIGNING_KEY, signContent)
 
   const theme = {
     themeName: 'dark',

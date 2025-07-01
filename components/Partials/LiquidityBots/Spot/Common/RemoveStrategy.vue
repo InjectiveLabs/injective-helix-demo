@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
-import { TRADING_MESSAGES } from '~/app/data/trade'
 import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
@@ -127,7 +127,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isStopOrder: [
+    isTriggerOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
     ].includes(
