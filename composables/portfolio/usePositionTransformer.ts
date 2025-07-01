@@ -2,7 +2,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { isTradingbotSubaccountId } from '@/app/utils/helpers'
+import { isTradingBotSubaccountId } from '@/app/utils/helpers'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { PositionTableColumn, ConditionalOrderSide } from '@/types'
 import type { TransformedPosition } from '@/types'
@@ -156,7 +156,7 @@ export function usePositionTransformer(
         hasTpSl: !!tpTriggerPrice || !!slTriggerPrice,
         availableQuantity: quantity.minus(usedQuantity),
         hasReduceOnlyOrders: !!reduceOnlyCurrentOrders.length,
-        isTradingBotSubaccount: !!isTradingbotSubaccountId(
+        isTradingBotSubaccount: !!isTradingBotSubaccountId(
           position.subaccountId
         ),
         [PositionTableColumn.Market]: market,

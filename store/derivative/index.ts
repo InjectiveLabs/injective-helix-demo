@@ -20,8 +20,7 @@ import {
   submitLimitOrder,
   submitMarketOrder,
   submitStopLimitOrder,
-  submitStopMarketOrder,
-  prepareCancelTpSlOrderMsgs
+  submitStopMarketOrder
 } from '@/store/derivative/message'
 import {
   streamTrades,
@@ -199,7 +198,6 @@ export const useDerivativeStore = defineStore('derivative', {
     submitMarketOrder,
     submitStopLimitOrder,
     submitStopMarketOrder,
-    prepareCancelTpSlOrderMsgs,
 
     streamTrades,
     cancelTradesStream,

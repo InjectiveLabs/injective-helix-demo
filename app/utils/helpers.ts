@@ -156,7 +156,7 @@ export const isPgtSubaccountId = (subaccountId: string) => {
   )?.slug
 }
 
-export const isTradingbotSubaccountId = (subaccountId: string) => {
+export const isTradingBotSubaccountId = (subaccountId: string) => {
   return isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
 }
 
@@ -462,19 +462,19 @@ export const getCw20AddressFromDenom = (denom: string) => {
 }
 
 export const getDerivativeOrderTypeToSubmit = ({
+  isBuy,
   isPostOnly,
-  isStopOrder,
-  markPrice,
   triggerPrice,
-  isBuy
+  markPrice,
+  isTriggerOrder
 }: {
   isBuy: boolean
   markPrice: string
   isPostOnly: boolean
-  isStopOrder: boolean
   triggerPrice: string
+  isTriggerOrder: boolean
 }) => {
-  if (isStopOrder) {
+  if (isTriggerOrder) {
     const triggerPriceInBase = new BigNumberInBase(triggerPrice)
 
     return isBuy
@@ -587,7 +587,7 @@ export const getTradingBotLinkFromStrategy = (
       }
 }
 
-export function generateOnramperSignature(
+export function generateOnRamperSignature(
   secretKey: string,
   data: string
 ): string {
