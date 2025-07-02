@@ -12,9 +12,10 @@ import {
 import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 
-const { setValues: setFormValues } = useForm<SpotTradeForm>()
 const spotFormValues = useFormValues<SpotTradeForm>()
+const { setValues: setFormValues } = useForm<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -38,6 +39,16 @@ const {
   slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+const isSwapEnabled = computed(() =>
+  jsonStore.swapRoutes.find(
+    (route) =>
+      (route.target_denom === market.value.baseDenom &&
+        route.source_denom === market.value.quoteDenom) ||
+      (route.target_denom === market.value.quoteDenom &&
+        route.source_denom === market.value.baseDenom)
+  )
+)
 
 const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
@@ -82,6 +93,7 @@ function onOrderSideClicked() {
         </AppButtonSelect>
 
         <NuxtLink
+          v-if="isSwapEnabled"
           class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,

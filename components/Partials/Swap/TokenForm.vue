@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { TokenSymbols } from '@/app/data/token'
-import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
+import { SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
