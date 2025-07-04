@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { IS_MAINNET } from '@shared/utils/constant'
 import {
   MainPage,
   BusEvents,
@@ -12,6 +13,7 @@ import {
 import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
+const swapStore = useSwapStore()
 const jsonStore = useSharedJsonStore()
 
 const { setValues: setFormValues } = useForm<SpotTradeForm>()
@@ -40,15 +42,25 @@ const {
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
-const isSwapEnabled = computed(() =>
-  jsonStore.swapRoutes.find(
+const isSwapEnabled = computed(() => {
+  if (IS_MAINNET) {
+    return jsonStore.swapRoutes.some(
+      (route) =>
+        (route.target_denom === market.value.baseDenom &&
+          route.source_denom === market.value.quoteDenom) ||
+        (route.target_denom === market.value.quoteDenom &&
+          route.source_denom === market.value.baseDenom)
+    )
+  }
+
+  return swapStore.routes.some(
     (route) =>
-      (route.target_denom === market.value.baseDenom &&
-        route.source_denom === market.value.quoteDenom) ||
-      (route.target_denom === market.value.quoteDenom &&
-        route.source_denom === market.value.baseDenom)
+      (route.targetDenom === market.value.baseDenom &&
+        route.sourceDenom === market.value.quoteDenom) ||
+      (route.targetDenom === market.value.quoteDenom &&
+        route.sourceDenom === market.value.baseDenom)
   )
-)
+})
 
 const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit

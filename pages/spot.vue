@@ -8,6 +8,7 @@ import type { UiSpotMarket } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const swapStore = useSwapStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -42,6 +43,7 @@ onMounted(async () => {
   status.setLoading()
 
   Promise.all([
+    swapStore.fetchRoutes(),
     spotStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
