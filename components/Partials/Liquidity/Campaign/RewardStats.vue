@@ -34,11 +34,11 @@ const market = computed(() =>
 )
 
 const explorerLink = computed(() => {
-  if (!sharedWalletStore.address) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  return `${getExplorerUrl()}/account/${sharedWalletStore.address}`
+  return `${getExplorerUrl()}/account/${sharedWalletStore.injectiveAddress}`
 })
 
 const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
@@ -115,7 +115,7 @@ const rewardsFormatted = computed(() =>
           <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
           <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
             <p class="text-blue-500 truncate">
-              {{ sharedWalletStore.address }}
+              {{ sharedWalletStore.injectiveAddress }}
             </p>
           </NuxtLink>
         </div>
