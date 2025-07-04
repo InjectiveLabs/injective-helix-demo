@@ -14,8 +14,8 @@ import type { UiSpotMarket, SpotTradeForm } from '@/types'
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
 
-const spotFormValues = useFormValues<SpotTradeForm>()
 const { setValues: setFormValues } = useForm<SpotTradeForm>()
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
