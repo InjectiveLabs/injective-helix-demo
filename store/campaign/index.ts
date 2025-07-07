@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia'
-import {
-  Guild,
-  toUtf8,
-  Campaign,
-  toBase64,
-  CampaignV2,
-  fromBase64,
-  GuildMember,
-  CampaignUser,
-  GuildCampaignSummary
-} from '@injectivelabs/sdk-ts'
+import { getWasmApi } from '@shared/Service'
 import { awaitForAll } from '@injectivelabs/utils'
-import { wasmApi } from '@shared/Service'
+import { toUtf8, toBase64, fromBase64 } from '@injectivelabs/sdk-ts'
+import { getIndexerGrpcCampaignApi } from '@/app/Services'
+import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
+import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
+import {
+  LP_CAMPAIGNS,
+  campaignNameOverrideMap,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
+import {
+  joinGuild,
+  createGuild,
+  claimReward,
+  submitLeaderboardCompetitionClaim
+} from '@/store/campaign/message'
 import {
   pollGuildDetails,
   fetchGuildsByTVL,
@@ -20,49 +24,39 @@ import {
   fetchGuildsByVolume,
   fetchUserIsOptedOutOfRewards
 } from '@/store/campaign/guild'
-import {
-  LP_CAMPAIGNS,
-  campaignNameOverrideMap,
-  PAST_LEADERBOARD_CAMPAIGN_NAMES
-} from '@/app/data/campaign'
-import { indexerGrpcCampaignApi } from '@/app/Services'
-import {
-  joinGuild,
-  createGuild,
-  claimReward,
-  submitLeaderboardCompetitionClaim
-} from '@/store/campaign/message'
-import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
-import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
-import {
-  LeaderboardType,
-  CompetitionResult,
-  CampaignWithScAndData,
-  LeaderboardCampaignStatus
-} from '@/types'
+import { LeaderboardType, LeaderboardCampaignStatus } from '@/types'
+import type {
+  Guild,
+  Campaign,
+  CampaignV2,
+  GuildMember,
+  CampaignUser,
+  GuildCampaignSummary
+} from '@injectivelabs/sdk-ts'
+import type { CompetitionResult, CampaignWithScAndData } from '@/types'
 
 type CampaignStoreState = {
-  userIsOptedOutOfReward: boolean
   guild?: Guild
-  guildsByTVL: Guild[]
-  guildsByVolume: Guild[]
   round: Campaign[]
   campaign?: Campaign
+  guildsByTVL: Guild[]
   campaigns: Campaign[]
-  campaignsWithSc: CampaignWithScAndData[]
-  campaignsInfo: Campaign[]
   totalUserCount: number
+  guildsByVolume: Guild[]
   totalGuildMember: number
+  claimedRewards: string[]
+  campaignsInfo: Campaign[]
   userGuildInfo?: GuildMember
   guildMembers: GuildMember[]
-  campaignUsers: CampaignUser[]
-  ownerCampaignInfo?: CampaignUser
+  activeCampaign?: CampaignV2
   ownerRewards: CampaignUser[]
-  guildCampaignSummary?: GuildCampaignSummary
-  claimedRewards: string[]
+  campaignUsers: CampaignUser[]
+  userIsOptedOutOfReward: boolean
+  ownerCampaignInfo?: CampaignUser
   pnlOrVolumeCampaigns?: CampaignV2[]
   pastPnlOrVolumeCampaigns?: CampaignV2[]
-  activeCampaign?: CampaignV2
+  campaignsWithSc: CampaignWithScAndData[]
+  guildCampaignSummary?: GuildCampaignSummary
   leaderboardCompetitionResult?: CompetitionResult
 }
 
@@ -127,6 +121,8 @@ export const useCampaignStore = defineStore('campaign', {
       limit?: number
       campaignId: string
     }) {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -150,8 +146,10 @@ export const useCampaignStore = defineStore('campaign', {
       pagination
     }: {
       campaignIds: string[]
-      pagination?: { limit?: number; skip?: number }
+      pagination?: { skip?: number; limit?: number }
     }) {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
 
       const campaignsWithSc = await Promise.all([
@@ -174,6 +172,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchCampaignRewardsForUser() {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -228,6 +228,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchUserClaimedStatus(contractAddress: string) {
+      const wasmApi = await getWasmApi()
+
       const sharedWalletStore = useSharedWalletStore()
 
       if (!sharedWalletStore.injectiveAddress || !contractAddress) {
@@ -249,6 +251,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchActiveStrategiesOnSmartContract(contractAddress?: string) {
+      const wasmApi = await getWasmApi()
+
       if (!contractAddress) {
         return 0
       }
@@ -264,6 +268,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchRound(roundId?: number) {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -277,6 +283,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchActiveCampaign() {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
@@ -318,6 +326,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchUpcomingCampaigns() {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
 
       const { campaigns } = await indexerGrpcCampaignApi.fetchCampaigns({
@@ -353,6 +363,8 @@ export const useCampaignStore = defineStore('campaign', {
     },
 
     async fetchPastCampaigns() {
+      const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
       const campaignStore = useCampaignStore()
 
       const { campaigns: pnlCampaigns } =

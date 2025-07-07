@@ -37,7 +37,7 @@ const sortGroups = {
         '^@/pages/',
         '^@/public/',
         '^@/server/',
-        '^@/store/'
+        '^@/stores/'
       ]
     }
   }
@@ -52,7 +52,7 @@ export default withNuxt({
   ignores: ['i18n/locales/**'],
 
   plugins: {
-    perfectionist
+    perfectionist: perfectionist as any
   },
 
   rules: {

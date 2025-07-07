@@ -20,7 +20,7 @@ import tradeAndEarn from './en/tradeAndEarn'
 import institutional from './en/institutional'
 import { TimeDuration } from '@/types'
 
-export default {
+export default defineI18nLocale(() => ({
   ...home,
   ...swap,
   ...guild,
@@ -179,4 +179,4 @@ export default {
     backToHome: 'Back to home page',
     description: 'The page you are looking for does not exist.'
   }
-}
+}))

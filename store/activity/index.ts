@@ -1,15 +1,18 @@
 import { defineStore } from 'pinia'
-import { TradingReward, FundingPayment } from '@injectivelabs/sdk-ts'
-import { indexerAccountApi, indexerDerivativesApi } from '@shared/Service'
+import { getIndexerAccountApi, getIndexerDerivativesApi } from '@shared/Service'
 import { UiSubaccountTransformer } from '@/app/client/transformers/UiSubaccountTransformer'
-import { ActivityFetchOptions, UiSubaccountTransactionWithToken } from '@/types'
+import type { TradingReward, FundingPayment } from '@injectivelabs/sdk-ts'
+import type {
+  ActivityFetchOptions,
+  UiSubaccountTransactionWithToken
+} from '@/types'
 
 type ActivityStoreState = {
-  subaccountFundingHistory: FundingPayment[]
-  tradingRewardsHistory: TradingReward[]
   subaccountFundingHistoryCount: number
-  subaccountTransfers: UiSubaccountTransactionWithToken[]
+  tradingRewardsHistory: TradingReward[]
+  subaccountFundingHistory: FundingPayment[]
   subaccountTransferTransactionsCount: number
+  subaccountTransfers: UiSubaccountTransactionWithToken[]
 }
 
 const initialStateFactory = (): ActivityStoreState => ({
@@ -24,6 +27,8 @@ export const useActivityStore = defineStore('activity', {
   state: (): ActivityStoreState => initialStateFactory(),
   actions: {
     async fetchTradingRewardsHistory() {
+      const indexerAccountApi = await getIndexerAccountApi()
+
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -41,6 +46,8 @@ export const useActivityStore = defineStore('activity', {
     },
 
     async fetchSubaccountFundingHistory(options?: ActivityFetchOptions) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const activityStore = useActivityStore()
       const derivativeStore = useDerivativeStore()
@@ -65,7 +72,9 @@ export const useActivityStore = defineStore('activity', {
       })
     },
 
-    async fetchSubaccountTransfers(options: ActivityFetchOptions | undefined) {
+    async fetchSubaccountTransfers(options: undefined | ActivityFetchOptions) {
+      const indexerAccountApi = await getIndexerAccountApi()
+
       const activityStore = useActivityStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()

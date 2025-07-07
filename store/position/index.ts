@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { indexerDerivativesApi } from '@shared/Service'
+import { getIndexerDerivativesApi } from '@shared/Service'
 import {
   streamAccountPositions,
   cancelAccountPositionsStream
@@ -10,8 +10,8 @@ import {
   addMarginToPosition,
   addMarginToSubaccountPosition
 } from '@/store/position/message'
-import type { ActivityFetchOptions } from '@/types'
 import type { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
+import type { ActivityFetchOptions } from '@/types'
 
 type OrderBookMap = Record<string, Orderbook>
 
@@ -59,6 +59,8 @@ export const usePositionStore = defineStore('position', {
     cancelAccountPositionsStream,
 
     async fetchPositions() {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -84,6 +86,8 @@ export const usePositionStore = defineStore('position', {
     async fetchSubaccountPositions(
       activityFetchOptions?: ActivityFetchOptions
     ) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const positionStore = usePositionStore()
       const derivativeStore = useDerivativeStore()
@@ -120,6 +124,8 @@ export const usePositionStore = defineStore('position', {
     // Todo: @ivan verify if we still needs this
     // Fetching multiple market orderbooks for unrealized PnL calculation within a market page
     async fetchOpenPositionsMarketsOrderbook() {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const positionStore = usePositionStore()
       const sharedWalletStore = useSharedWalletStore()

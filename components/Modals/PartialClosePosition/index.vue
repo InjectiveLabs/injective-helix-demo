@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { indexerDerivativesApi } from '@shared/Service'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { getIndexerDerivativesApi } from '@shared/Service'
 import {
   Status,
   BigNumber,
@@ -156,6 +156,8 @@ async function closePosition() {
 }
 
 async function validateSlippage() {
+  const indexerDerivativesApi = await getIndexerDerivativesApi()
+
   const orderbookRecords = await indexerDerivativesApi
     .fetchOrderbookV2(props.row.market.marketId)
     .catch($onError)

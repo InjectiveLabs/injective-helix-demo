@@ -1,14 +1,14 @@
-import {
-  IndexerGrpcSpotStream,
+import { ENDPOINTS } from '@shared/utils/constant'
+import { TradeExecutionSide } from '@injectivelabs/ts-types'
+import { IndexerGrpcSpotStream } from '@injectivelabs/sdk-ts'
+import { streamProvider } from '@/app/providers/StreamProvider'
+import { StreamType } from '@/types'
+import type {
   SpotOrdersStreamCallback,
   SpotTradesStreamCallback,
   SpotOrderHistoryStreamCallback,
   SpotOrderbookUpdateStreamCallback
 } from '@injectivelabs/sdk-ts'
-import { TradeExecutionSide } from '@injectivelabs/ts-types'
-import { ENDPOINTS } from '@shared/utils/constant'
-import { streamProvider } from '@/app/providers/StreamProvider'
-import { StreamType } from '@/types'
 
 export const spotMarketStream = new IndexerGrpcSpotStream(ENDPOINTS.indexer)
 

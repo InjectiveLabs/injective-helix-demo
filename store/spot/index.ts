@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { indexerSpotApi } from '@shared/Service'
+import { getIndexerSpotApi } from '@shared/Service'
 import { combineOrderbookRecords } from '@/app/utils/market'
 import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
@@ -21,7 +21,6 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import type { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
 import type {
   OrderSide,
@@ -33,6 +32,7 @@ import type {
   SharedUiSpotMarket,
   SharedUiOrderbookWithSequence
 } from '@shared/types'
+import type { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
 
 type SpotStoreState = {
   trades: SharedUiSpotTrade[]
@@ -165,6 +165,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -197,6 +199,8 @@ export const useSpotStore = defineStore('spot', {
       marketIds: string[]
       subaccountId: string
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -219,6 +223,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountOrderHistory(options?: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -247,6 +253,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchOrderHistoryForSubaccount(options: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       if (!options?.subaccountId) {
@@ -273,6 +281,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchOrderbook(marketId: string) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       const currentOrderbookSequence = spotStore.orderbook?.sequence || 0
@@ -309,6 +319,8 @@ export const useSpotStore = defineStore('spot', {
       marketId: string
       executionSide?: TradeExecutionSide
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       const { trades } = await indexerSpotApi.fetchTrades({
@@ -328,6 +340,8 @@ export const useSpotStore = defineStore('spot', {
       marketId: string
       executionSide?: TradeExecutionSide
     }) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const { trades } = await indexerSpotApi.fetchTrades({
         marketIds: [marketId],
         executionSide,
@@ -338,6 +352,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchSubaccountTrades(options?: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -363,6 +379,8 @@ export const useSpotStore = defineStore('spot', {
     },
 
     async fetchTradesForSubaccount(options: ActivityFetchOptions) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const spotStore = useSpotStore()
 
       if (!options?.subaccountId) {

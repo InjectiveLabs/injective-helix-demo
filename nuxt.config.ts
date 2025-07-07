@@ -1,4 +1,5 @@
 import { head, hooks } from './nuxt-config'
+import { metaTags } from './nuxt-config/meta'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -13,11 +14,7 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-09-09',
 
-  css: ['@/assets/css/tailwind.css'],
-
-  pinia: {
-    autoImports: ['defineStore']
-  },
+  // css: ['@/assets/css/tailwind.css'],
 
   sourcemap: {
     client: true,
@@ -25,9 +22,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@funken-studio/sitemap-nuxt-3',
     '@nuxt/ui',
     '@nuxt/eslint',
+    '@nuxtjs/sitemap',
     ...(isProduction && import.meta.env.NUXT_CLARITY_ID
       ? ['nuxt-clarity-analytics']
       : [])
@@ -59,17 +56,12 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui/layer'
-      : 'github:InjectiveLabs/injective-ui/layer#master'
+      : 'github:InjectiveLabs/injective-ui/layer#feat/pnpm-build'
   ],
-
-  // @ts-expect-error - typing issue
-  sitemap: {
-    gzip: true,
-    hostname:
-      process.env.VITE_BASE_URL &&
-      !process.env.VITE_BASE_URL.includes('localhost')
-        ? process.env.VITE_BASE_URL
-        : 'https://helixapp.com'
+  // @ts-ignore
+  site: {
+    url: 'https://helixapp.com',
+    name: metaTags.description
   },
 
   colorMode: {

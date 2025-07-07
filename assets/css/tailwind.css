@@ -2,8 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-@import '@vuepic/vue-datepicker/dist/main.css';
-
 @import './_root.css';
 @import './_charts.css';
 @import './_fonts.css';

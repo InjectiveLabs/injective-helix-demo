@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { abacusGrpcApi } from '@/app/Services'
-import { AccountPoints, HistoricalPoints } from '@/types'
+import { getAbacusGrpcApi } from '@/app/Services'
+import type { AccountPoints, HistoricalPoints } from '@/types'
 
 const DAILY_LIMIT = 365
 const WEEKLY_LIMIT = 52
@@ -19,6 +19,8 @@ export const usePointsStore = defineStore('points', {
   state: (): PointStoreState => initialStateFactory(),
   actions: {
     async fetchAccountPointsStat() {
+      const abacusGrpcApi = await getAbacusGrpcApi()
+
       const pointsStore = usePointsStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -37,6 +39,8 @@ export const usePointsStore = defineStore('points', {
     },
 
     async fetchAccountDailyPoints() {
+      const abacusGrpcApi = await getAbacusGrpcApi()
+
       const pointsStore = usePointsStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -56,6 +60,8 @@ export const usePointsStore = defineStore('points', {
     },
 
     async fetchAccountWeeklyPoints() {
+      const abacusGrpcApi = await getAbacusGrpcApi()
+
       const pointsStore = usePointsStore()
       const sharedWalletStore = useSharedWalletStore()
 

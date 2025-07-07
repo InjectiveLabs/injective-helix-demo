@@ -4,10 +4,10 @@ import { SharedMarketType } from '@shared/types'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { toUiDerivativeMarket } from '@shared/transformer/market'
 import {
-  indexerOracleApi,
   cachePythService,
   derivativeCacheApi,
-  indexerDerivativesApi
+  getIndexerOracleApi,
+  getIndexerDerivativesApi
 } from '@shared/Service'
 import { combineOrderbookRecords } from '@/app/utils/market'
 // import { fetchDerivativeStats } from '@/app/services/derivative'
@@ -42,12 +42,6 @@ import type {
   TradeExecutionType
 } from '@injectivelabs/ts-types'
 import type {
-  UiDerivativeMarket,
-  UiMarketAndSummary,
-  MarketMarkPriceMap,
-  ActivityFetchOptions
-} from '@/types'
-import type {
   SharedUiDerivativeTrade,
   SharedUiDerivativeMarket,
   SharedUiOrderbookWithSequence
@@ -58,6 +52,12 @@ import type {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
+import type {
+  UiDerivativeMarket,
+  UiMarketAndSummary,
+  MarketMarkPriceMap,
+  ActivityFetchOptions
+} from '@/types'
 
 type DerivativeStoreState = {
   marketIdsFromQuery: string[]
@@ -254,6 +254,8 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async getMarketMarkPrice(market: UiDerivativeMarket) {
+      const indexerOracleApi = await getIndexerOracleApi()
+
       const derivativeStore = useDerivativeStore()
 
       const oraclePrice = await indexerOracleApi.fetchOraclePrice({
@@ -297,6 +299,8 @@ export const useDerivativeStore = defineStore('derivative', {
     // },
 
     async fetchOrderbook(marketId: string) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const derivativeStore = useDerivativeStore()
 
       const currentOrderbookSequence = derivativeStore.orderbook?.sequence || 0
@@ -334,6 +338,8 @@ export const useDerivativeStore = defineStore('derivative', {
       marketId: string
       executionSide?: TradeExecutionSide
     }) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const derivativeStore = useDerivativeStore()
 
       const { trades } = await indexerDerivativesApi.fetchTrades({
@@ -347,6 +353,8 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountOrders(marketIds?: string[]) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -380,6 +388,8 @@ export const useDerivativeStore = defineStore('derivative', {
       marketIds: string[]
       subaccountId: string
     }) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const derivativeStore = useDerivativeStore()
 
       const { orders, pagination } = await indexerDerivativesApi.fetchOrders({
@@ -400,6 +410,8 @@ export const useDerivativeStore = defineStore('derivative', {
     async fetchSubaccountOrderHistory(
       options: undefined | ActivityFetchOptions
     ) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -434,6 +446,8 @@ export const useDerivativeStore = defineStore('derivative', {
       subaccountId: string
       options?: ActivityFetchOptions
     }) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const derivativeStore = useDerivativeStore()
 
       const filters = options?.filters
@@ -456,6 +470,8 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountConditionalOrders(marketIds?: string[]) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -483,6 +499,8 @@ export const useDerivativeStore = defineStore('derivative', {
     },
 
     async fetchSubaccountTrades(options?: undefined | ActivityFetchOptions) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const accountStore = useAccountStore()
       const derivativeStore = useDerivativeStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -514,6 +532,8 @@ export const useDerivativeStore = defineStore('derivative', {
       subaccountId: string
       options?: ActivityFetchOptions
     }) {
+      const indexerDerivativesApi = await getIndexerDerivativesApi()
+
       const derivativeStore = useDerivativeStore()
 
       const filters = options?.filters

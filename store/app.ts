@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 import { alchemyKey } from '@shared/wallet/alchemy'
-import { fetchGasPrice } from '@shared/services/ethGasPrice'
 import { GeneralException } from '@injectivelabs/exceptions'
+import { fetchGasPrice } from '@shared/Service/app/ethGasPrice'
 import {
   NETWORK,
   CHAIN_ID,
   DEFAULT_GAS_PRICE,
   ETHEREUM_CHAIN_ID
 } from '@shared/utils/constant'
-import { tendermintApi } from '@/app/Services'
+import { getTendermintApi } from '@/app/Services'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import {
   DEFAULT_SLIPPAGE,
@@ -25,8 +25,8 @@ import {
   OrderbookLayout,
   TradingChartInterval
 } from '@/types'
+import type { ChainId, EvmChainId } from '@injectivelabs/ts-types'
 import type { Modal, HelixCtaToast } from '@/types'
-import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
   modalsViewed: Modal[]
@@ -58,13 +58,13 @@ type AppStoreState = {
 
   gasPrice: string
   blockHeight: number
+  evmChainId: EvmChainId
+
   // User settings
   userState: UserBasedState
 
   // Dev Mode
   devMode: boolean | undefined
-
-  ethereumChainId: EthereumChainId
 }
 
 const initialStateFactory = (): AppStoreState => ({
@@ -72,7 +72,7 @@ const initialStateFactory = (): AppStoreState => ({
 
   // App Settings
   chainId: CHAIN_ID,
-  ethereumChainId: ETHEREUM_CHAIN_ID,
+  evmChainId: ETHEREUM_CHAIN_ID,
   gasPrice: DEFAULT_GAS_PRICE.toString(),
 
   // Dev Mode
@@ -136,6 +136,8 @@ export const useAppStore = defineStore('app', {
   },
   actions: {
     async fetchBlockHeight() {
+      const tendermintApi = await getTendermintApi()
+
       const appStore = useAppStore()
       const latestBlock = await tendermintApi.fetchLatestBlock()
 
