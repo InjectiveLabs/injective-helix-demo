@@ -76,7 +76,6 @@
     "date-fns-tz": "^2.0.0",
     "deepmerge": "^4.2.2",
     "embla-carousel-vue": "^8.6.0",
-    "floating-vue": "2.0.0-beta.24",
     "gsap": "^3.12.5",
     "html-to-image": "^1.11.11",
     "js-confetti": "^0.12.0",
