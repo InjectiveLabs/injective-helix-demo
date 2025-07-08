@@ -132,7 +132,6 @@ function getDenomPositionMap(positions: PositionV2[]) {
 export function useBalance() {
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
-  const exchangeStore = useExchangeStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
   const sharedTokenStore = useSharedTokenStore()
@@ -233,15 +232,16 @@ export function useBalance() {
   )
 
   const stakedAmount = computed(() => {
-    if (
-      !exchangeStore.feeDiscountAccountInfo ||
-      !exchangeStore.feeDiscountAccountInfo.accountInfo
-    ) {
+    if (accountStore.injDelegations.length === 0) {
       return ZERO_IN_BASE
     }
 
     return sharedToBalanceInTokenInBase({
-      value: exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
+      value: accountStore.injDelegations
+        .reduce((total, delegation) => {
+          return total.plus(delegation.balance.amount)
+        }, ZERO_IN_BASE)
+        .toFixed()
     })
   })
 

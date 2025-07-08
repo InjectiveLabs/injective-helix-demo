@@ -14,7 +14,7 @@ const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const stakedAmount = computed(() => {
+const feeDiscountStakedAmount = computed(() => {
   if (
     !exchangeStore.feeDiscountAccountInfo ||
     !exchangeStore.feeDiscountAccountInfo.accountInfo
@@ -29,12 +29,10 @@ const stakedAmount = computed(() => {
   )
 })
 
-const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
-  stakedAmount,
-  {
+const { valueToString: feeDiscountStakedAmountToFormat } =
+  useSharedBigNumberFormatter(feeDiscountStakedAmount, {
     decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+  })
 </script>
 
 <template>
@@ -50,7 +48,7 @@ const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
           <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
-            {{ stakedAmountToFormat }}
+            {{ feeDiscountStakedAmountToFormat }}
           </b>
           INJ
         </span>

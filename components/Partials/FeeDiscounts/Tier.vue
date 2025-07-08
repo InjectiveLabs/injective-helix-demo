@@ -34,7 +34,7 @@ const isUserTierLevel = computed(() => {
   )
 })
 
-const stakedAmount = computed(
+const feeDiscountStakedAmount = computed(
   () =>
     new BigNumberInBase(cosmosSdkDecToBigNumber(props.tier.stakedAmount || 0))
 )
@@ -84,12 +84,10 @@ const { valueToString: makerFeeDiscountToFormat } = useSharedBigNumberFormatter(
   }
 )
 
-const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
-  stakedAmount,
-  {
+const { valueToString: feeDiscountStakedAmountToFormat } =
+  useSharedBigNumberFormatter(feeDiscountStakedAmount, {
     decimalPlaces: 0
-  }
-)
+  })
 
 const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
   decimalPlaces: 0
@@ -116,7 +114,7 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
       </div>
     </td>
     <td class="h-8 text-right">
-      &#8805; {{ stakedAmountToFormat }}
+      &#8805; {{ feeDiscountStakedAmountToFormat }}
       <span class="text-xs text-coolGray-500"> INJ </span>
     </td>
     <td class="h-8 text-right">
