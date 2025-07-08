@@ -24,9 +24,7 @@ const props = withDefaults(
   {}
 )
 
-const labelToDisplay = ['hours', 'minutes', 'seconds']
-
-const now = ref(0)
+const now = useNow({ interval: 1000 })
 
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 
@@ -36,17 +34,10 @@ const countdown = computed(() => {
     end: endOfHour(now.value)
   })
 
-  return Object.entries(difference)
-    .map(([label, value]: [string, number]) => {
-      if (labelToDisplay.includes(label)) {
-        const valueToTwoDigits = value < 10 ? `0${value}` : `${value}`
+  const { hours = 0, minutes = 0, seconds = 0 } = difference
 
-        return valueToTwoDigits
-      }
-
-      return undefined
-    })
-    .filter((time) => time)
+  return [hours, minutes, seconds]
+    .map((value) => value.toString().padStart(2, '0'))
     .join(':')
 })
 
@@ -94,7 +85,6 @@ const { valueToString: annualizedFundingRateToString } =
 // )
 
 useIntervalFn(() => {
-  now.value = Date.now()
   const end = endOfHour(now.value)
   const shouldFetchNewFunding = differenceInSeconds(end, now.value) === 1
 
