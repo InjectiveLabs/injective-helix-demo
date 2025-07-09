@@ -78,8 +78,6 @@ export const useSwapStore = defineStore('swap', {
           queryAllRoutesResponse
         )
 
-      console.log({ routes })
-
       swapStore.swapRoutes = routes.filter(
         ({ sourceDenom, targetDenom }) =>
           !excludedSwapDenoms.includes(sourceDenom) &&

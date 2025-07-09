@@ -40,15 +40,15 @@ const {
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
-const isSwapEnabled = computed(() => {
-  return swapStore.routes.some(
+const isSwapEnabled = computed(() =>
+  swapStore.routes.some(
     (route) =>
       (route.targetDenom === market.value.baseDenom &&
         route.sourceDenom === market.value.quoteDenom) ||
       (route.targetDenom === market.value.quoteDenom &&
         route.sourceDenom === market.value.baseDenom)
   )
-})
+)
 
 const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit

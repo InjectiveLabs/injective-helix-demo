@@ -47,16 +47,15 @@ function pollJson() {
 function mountCachedJson() {
   jsonStore.fetchFullTokenList()
 
+  jsonStore.swapRoutes = swapRoutes.map((route) => ({
+    ...route,
+    sourceDenom: route.source_denom,
+    targetDenom: route.target_denom
+  }))
+
   jsonStore.verifiedDenoms = verifiedDenoms
   jsonStore.spotGridMarkets = spotGridMarkets
   jsonStore.expiryMarketMap = expiryMarketIdMap
-  jsonStore.swapRoutes = swapRoutes.map((route) => {
-    return {
-      ...route,
-      sourceDenom: route.source_denom,
-      targetDenom: route.target_denom
-    }
-  })
   jsonStore.restrictedCountries = restrictedCountries
   jsonStore.helixMarketCategory = marketCategoriesMap
   jsonStore.blacklistedAddresses = blacklistedAddresses
