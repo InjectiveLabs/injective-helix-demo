@@ -64,7 +64,12 @@ export const nuxtMetaTags = [
   },
   { hid: 'og:title', property: 'og:title', content: metaTags.title },
   { hid: 'og:site_name', property: 'og:site_name', content: metaTags.title },
-  { hid: 'title', property: 'title', content: metaTags.title }
+  { hid: 'title', property: 'title', content: metaTags.title },
+  {
+    hid: 'apple-itunes-app',
+    name: 'apple-itunes-app',
+    content: 'app-id=6737353178'
+  }
 ]
 
 export const pwaMetaTags = {
