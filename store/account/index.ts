@@ -405,6 +405,10 @@ export const useAccountStore = defineStore('account', {
       const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
+      if (!sharedWalletStore.injectiveAddress) {
+        return
+      }
+
       const { delegations } = await stakingApi.fetchDelegationsNoThrow({
         injectiveAddress: sharedWalletStore.injectiveAddress
       })
