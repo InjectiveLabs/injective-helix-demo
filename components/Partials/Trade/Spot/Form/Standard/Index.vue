@@ -13,7 +13,6 @@ import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const swapStore = useSwapStore()
-const jsonStore = useSharedJsonStore()
 
 const { setValues: setFormValues } = useForm<SpotTradeForm>()
 const spotFormValues = useFormValues<SpotTradeForm>()
