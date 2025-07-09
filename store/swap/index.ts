@@ -18,7 +18,7 @@ import type { TokenAndPriceAndDecimals } from '@/types'
 import type { Route, AtomicSwap, QuantityAndFees } from '@injectivelabs/sdk-ts'
 
 type SwapStoreState = {
-  routes: Route[]
+  swapRoutes: Route[]
   swapHistoryTotal: number
   swapHistory: AtomicSwap[]
   inputQuantity: QuantityAndFees
@@ -26,7 +26,7 @@ type SwapStoreState = {
 }
 
 const initialStateFactory = (): SwapStoreState => ({
-  routes: [],
+  swapRoutes: [],
   swapHistory: [],
   swapHistoryTotal: 0,
   outputQuantity: {} as QuantityAndFees,
@@ -36,6 +36,12 @@ const initialStateFactory = (): SwapStoreState => ({
 export const useSwapStore = defineStore('swap', {
   state: (): SwapStoreState => initialStateFactory(),
   getters: {
+    routes: (state: SwapStoreState) => {
+      const sharedJsonStore = useSharedJsonStore()
+
+      return IS_MAINNET ? sharedJsonStore.swapRoutes : state.swapRoutes
+    },
+
     isInputEntered: (state: SwapStoreState) => {
       if (
         !state.inputQuantity.resultQuantity &&
