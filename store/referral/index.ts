@@ -11,20 +11,21 @@ type ReferralStoreState = {
 }
 
 const initialStateFactory = (): ReferralStoreState => ({
+  feeRecipient: FEE_RECIPIENT,
   referralDetails: {
     invitees: [],
     referrerCode: '',
     referrerAddress: '',
     totalCommission: ZERO_IN_BASE,
     totalTradingVolume: ZERO_IN_BASE
-  },
-  feeRecipient: FEE_RECIPIENT
+  }
 })
 
 export const useReferralStore = defineStore('referral', {
   state: (): ReferralStoreState => initialStateFactory(),
   getters: {
-    isReferrer: (state) => !!state.referralDetails.referrerCode
+    isReferrer: (state) => !!state.referralDetails.referrerCode,
+    hasBeenReferred: (state) => state.feeRecipient !== FEE_RECIPIENT
   },
   actions: {
     registerInvitee,
