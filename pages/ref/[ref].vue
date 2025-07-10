@@ -17,6 +17,12 @@ const referralCode = computed(() =>
   typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
 )
 
+onWalletConnected(() => {
+  if (referralCode.value) {
+    checkReferralCode()
+  }
+})
+
 function checkReferralCode() {
   Promise.all([
     referralStore.fetchUserReferrer(),
@@ -50,12 +56,6 @@ function checkReferralCode() {
     })
     .catch($onError)
 }
-
-onWalletConnected(() => {
-  if (referralCode.value) {
-    checkReferralCode()
-  }
-})
 </script>
 
 <template>

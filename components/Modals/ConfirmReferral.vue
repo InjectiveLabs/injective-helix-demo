@@ -27,6 +27,12 @@ const referralCode = computed(() =>
   typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
 )
 
+onWalletConnected(() => {
+  if (sharedWalletStore.isUserConnected && hasApproved.value) {
+    checkJoinReferralEligibility()
+  }
+})
+
 function connectWallet() {
   modalStore.closeModal(Modal.ConfirmReferral)
 
@@ -125,12 +131,6 @@ function checkJoinReferralEligibility() {
     })
     .catch($onError)
 }
-
-onWalletConnected(() => {
-  if (sharedWalletStore.isUserConnected && hasApproved.value) {
-    checkJoinReferralEligibility()
-  }
-})
 </script>
 
 <template>
