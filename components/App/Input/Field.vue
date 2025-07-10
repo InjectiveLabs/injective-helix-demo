@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useIMask } from 'vue-imask'
-import type { FactoryOpts } from 'imask'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import type { FactoryOpts } from 'imask'
 
 const props = withDefaults(
   defineProps<{
@@ -28,8 +28,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
   blur: [value: string]
+  'update:modelValue': [value: string]
 }>()
 
 const appStore = useAppStore()
@@ -144,6 +144,7 @@ onMounted(() => {
         ref="el"
         type="text"
         :class="inputClass"
+        :cy-value="typed?.value || modelValue"
         v-bind="$attrs"
         :disabled="disabled"
         @blur="onBlur"

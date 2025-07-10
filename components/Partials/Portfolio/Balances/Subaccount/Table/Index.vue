@@ -145,11 +145,11 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
-        [BalanceTableColumn.Available]: ZERO_IN_BASE,
-        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value,
-        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
         [BalanceTableColumn.Total]: ZERO_IN_BASE,
-        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value
+        [BalanceTableColumn.Available]: ZERO_IN_BASE,
+        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
+        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value,
+        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value
       } as TransformedBalances,
       ...data.slice(1)
     ]

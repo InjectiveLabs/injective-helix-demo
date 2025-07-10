@@ -7,6 +7,7 @@ import type { SwapForm } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
+const sharedJsonStore = useSharedJsonStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { query } = useRoute()
