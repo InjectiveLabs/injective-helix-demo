@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { SharedDropdownOption } from '@shared/types'
-import { PerpetualMarketCyTags, PerpOrdersTradingBotsView } from '@/types'
+import {
+  BusEvents,
+  PerpetualMarketCyTags,
+  PerpOrdersTradingBotsView
+} from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
@@ -10,8 +14,8 @@ const lg = breakpoints['3xl']
 
 const props = withDefaults(
   defineProps<{
-    modelValue: PerpOrdersTradingBotsView
     positionsLength: number
+    modelValue: PerpOrdersTradingBotsView
   }>(),
   {}
 )
@@ -52,6 +56,12 @@ const options = computed<SharedDropdownOption[]>(() => [
     value: PerpOrdersTradingBotsView.TradeHistory
   }
 ])
+
+onMounted(() => {
+  useEventBus(BusEvents.GoToPerpOrdersView).on(() => {
+    view.value = PerpOrdersTradingBotsView.OpenOrders
+  })
+})
 </script>
 
 <template>
