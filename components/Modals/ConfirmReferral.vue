@@ -27,6 +27,12 @@ const referralCode = computed(() =>
   typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
 )
 
+onWalletConnected(() => {
+  if (sharedWalletStore.isUserConnected && hasApproved.value) {
+    checkJoinReferralEligibility()
+  }
+})
+
 function connectWallet() {
   modalStore.closeModal(Modal.ConfirmReferral)
 
@@ -111,21 +117,20 @@ function joinReferral() {
 }
 
 function checkJoinReferralEligibility() {
-  referralStore
-    .checkCodeAvailability(referralCode.value as string)
-    .then((referrerAddress) => {
-      if (referrerAddress !== sharedWalletStore.injectiveAddress) {
+  Promise.all([
+    referralStore.fetchUserReferrer(),
+    referralStore.checkCodeAvailability(referralCode.value as string)
+  ])
+    .then(([_, referrerAddress]) => {
+      if (
+        !referralStore.hasBeenReferred &&
+        referrerAddress !== sharedWalletStore.injectiveAddress
+      ) {
         joinReferral()
       }
     })
     .catch($onError)
 }
-
-onWalletConnected(() => {
-  if (sharedWalletStore.isUserConnected && hasApproved.value) {
-    checkJoinReferralEligibility()
-  }
-})
 </script>
 
 <template>
