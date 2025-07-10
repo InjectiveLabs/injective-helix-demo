@@ -82,6 +82,7 @@ function fetchUserPortfolio() {
     exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
+    accountStore.fetchInjDelegations(),
     accountStore.fetchSignerInjBalance(),
     accountStore.fetchAccountPortfolioBalances(),
 

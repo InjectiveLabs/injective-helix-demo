@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { UTableColumn, TransformedBalances, BalanceTableColumn } from '@/types'
+import { BalanceTableColumn } from '@/types'
+import type { BigNumberInBase } from '@injectivelabs/utils'
+import type { UTableColumn, TransformedBalances } from '@/types'
 
 const props = withDefaults(
   defineProps<{

@@ -41,7 +41,6 @@ export const useSwapStore = defineStore('swap', {
 
       return IS_MAINNET ? sharedJsonStore.swapRoutes : state.swapRoutes
     },
-
     isInputEntered: (state: SwapStoreState) => {
       if (
         !state.inputQuantity.resultQuantity &&
