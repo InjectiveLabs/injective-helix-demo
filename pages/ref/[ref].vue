@@ -18,15 +18,23 @@ const referralCode = computed(() =>
 )
 
 function checkReferralCode() {
-  referralStore
-    .checkCodeAvailability(referralCode.value as string)
-    .then((referrerAddress) => {
+  Promise.all([
+    referralStore.fetchUserReferrer(),
+    referralStore.checkCodeAvailability(referralCode.value as string)
+  ])
+    .then(([_, referrerAddress]) => {
       if (
         referrerAddress &&
         referrerAddress === sharedWalletStore.injectiveAddress
       ) {
         notificationStore.error({
           title: t('toast.referral.joinSelfReferralMessage')
+        })
+
+        router.push({ name: MainPage.Index })
+      } else if (referralStore.hasBeenReferred) {
+        notificationStore.error({
+          title: t('toast.referral.referralLinkExists')
         })
 
         router.push({ name: MainPage.Index })

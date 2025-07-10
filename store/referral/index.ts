@@ -7,18 +7,20 @@ import type { ReferralDetails } from '@injectivelabs/sdk-ts'
 
 type ReferralStoreState = {
   feeRecipient: string
+  hasBeenReferred: boolean
   referralDetails: ReferralDetails
 }
 
 const initialStateFactory = (): ReferralStoreState => ({
+  hasBeenReferred: false,
+  feeRecipient: FEE_RECIPIENT,
   referralDetails: {
     invitees: [],
     referrerCode: '',
     referrerAddress: '',
     totalCommission: ZERO_IN_BASE,
     totalTradingVolume: ZERO_IN_BASE
-  },
-  feeRecipient: FEE_RECIPIENT
+  }
 })
 
 export const useReferralStore = defineStore('referral', {
@@ -54,8 +56,18 @@ export const useReferralStore = defineStore('referral', {
           sharedWalletStore.authZOrInjectiveAddress
         )
 
+        if (response?.active) {
+          referralStore.$patch({
+            hasBeenReferred: true,
+            feeRecipient: response.referrer
+          })
+
+          return
+        }
+
         referralStore.$patch({
-          feeRecipient: response?.active ? response.referrer : FEE_RECIPIENT
+          hasBeenReferred: false,
+          feeRecipient: FEE_RECIPIENT
         })
       } catch {
         // silent error handling if user has no referrer

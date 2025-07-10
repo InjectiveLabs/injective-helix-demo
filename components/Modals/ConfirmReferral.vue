@@ -111,10 +111,15 @@ function joinReferral() {
 }
 
 function checkJoinReferralEligibility() {
-  referralStore
-    .checkCodeAvailability(referralCode.value as string)
-    .then((referrerAddress) => {
-      if (referrerAddress !== sharedWalletStore.injectiveAddress) {
+  Promise.all([
+    referralStore.fetchUserReferrer(),
+    referralStore.checkCodeAvailability(referralCode.value as string)
+  ])
+    .then(([_, referrerAddress]) => {
+      if (
+        !referralStore.hasBeenReferred &&
+        referrerAddress !== sharedWalletStore.injectiveAddress
+      ) {
         joinReferral()
       }
     })
