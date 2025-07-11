@@ -3,6 +3,9 @@ import { getMitoUrl } from '@shared/utils/network'
 import { VaultsCyTags } from '@/types'
 import type { LiquidityProvisionMitoCard } from '@/types'
 
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+
 const props = withDefaults(
   defineProps<{
     vault: LiquidityProvisionMitoCard
@@ -13,9 +16,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'update:selectedVaultUrl': [value: string]
 }>()
-
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
 
 const market = computed(
   () =>
@@ -42,7 +42,7 @@ function onSelectVault() {
     v-if="market"
     v-bind="{
       title: market.ticker,
-      description: $t(`liquidityProvision.item.type.${props.vault.type}`)
+      description: $t(`vault.item.${props.vault.type}`)
     }"
     @click="onSelectVault"
   >
@@ -57,7 +57,7 @@ function onSelectVault() {
     <template #content>
       <div class="min-w-0 truncate">
         <p class="text-coolGray-300 text-sm">
-          {{ $t('liquidityProvision.TVL') }}
+          {{ $t('vault.TVL') }}
         </p>
         <p
           class="text-xl font-semibold truncate"
@@ -69,7 +69,7 @@ function onSelectVault() {
 
       <div class="min-w-0 truncate">
         <p class="text-coolGray-300 text-sm">
-          {{ $t('liquidityProvision.APY') }}
+          {{ $t('vault.APY') }}
         </p>
         <p
           class="text-green-500 text-xl font-semibold truncate"

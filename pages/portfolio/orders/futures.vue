@@ -9,16 +9,15 @@ const options = [
     to: { name: PortfolioSubPage.OrdersFutures }
   },
   {
-    label: t('activity.advancedOrders'),
-
+    label: t('portfolio.advancedOrders'),
     to: { name: PortfolioSubPage.OrdersFuturesAdvancedOrders }
   },
   {
-    label: t('activity.orderHistory'),
+    label: t('portfolio.orderHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesOrderHistory }
   },
   {
-    label: t('activity.tradeHistory'),
+    label: t('portfolio.tradeHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesTradeHistory }
   }
 ]
@@ -27,7 +26,7 @@ const options = [
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.derivativeOrders') }}</h3>
+      <h3 class="portfolio-title">{{ $t('portfolio.derivativeOrders') }}</h3>
     </div>
 
     <div class="flex items-center">

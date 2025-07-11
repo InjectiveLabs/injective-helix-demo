@@ -75,7 +75,7 @@ function joinReferral() {
           timeout: MAX_TOAST_TIMEOUT,
           actions: [
             {
-              label: t('toast.portfolio.tradeNow'),
+              label: t('common.tradeNow'),
               callback: () => {
                 trackOnboardingUserBecomeReferee({
                   isPopupShown: true,

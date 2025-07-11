@@ -88,7 +88,7 @@ function onSlippageChange(value: string) {
       </p>
 
       <p v-else-if="isHighSlippage" class="text-orange-500 text-xs mt-1.5">
-        {{ $t('trade.slippageWarnings.tooHigh') }}
+        {{ $t('trade.slippageWarning') }}
       </p>
     </div>
 

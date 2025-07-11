@@ -128,7 +128,7 @@ function removeStrategy() {
         </p>
 
         <div>
-          <span>{{ $t('sgt.aproximateProfit') }}:</span>
+          <span>{{ $t('sgt.approximateProfit') }}:</span>
 
           <div
             :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"

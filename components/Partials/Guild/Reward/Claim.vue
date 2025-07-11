@@ -191,7 +191,7 @@ function onClaimRewards() {
           class="font-semibold text-sm"
           :class="{ 'text-blue-500': !hasUserClaimed && isReadyToClaim }"
         >
-          {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
+          {{ $t(`common.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
         </div>
       </AppButton>
     </div>

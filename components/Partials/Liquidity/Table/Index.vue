@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   TradingBotsSubPage,
   LiquidityRewardsPage,
   LiquidityTableColumn
 } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -17,20 +17,20 @@ const { rows } = useLiquidityTransformer(computed(() => props.campaigns))
 const columns = [
   {
     key: LiquidityTableColumn.Market,
-    label: t(`campaign.table.liquidity.${LiquidityTableColumn.Market}`)
+    label: t(`lpRewards.table.liquidity.${LiquidityTableColumn.Market}`)
   },
   {
     key: LiquidityTableColumn.Rewards,
-    label: t(`campaign.table.liquidity.${LiquidityTableColumn.Rewards}`)
+    label: t(`lpRewards.table.liquidity.${LiquidityTableColumn.Rewards}`)
   },
   {
     key: LiquidityTableColumn.ActiveBots,
-    label: t(`campaign.table.liquidity.${LiquidityTableColumn.ActiveBots}`),
+    label: t(`lpRewards.table.liquidity.${LiquidityTableColumn.ActiveBots}`),
     class: 'text-right rtl:text-left'
   },
   {
     key: LiquidityTableColumn.Volume,
-    label: t(`campaign.table.liquidity.${LiquidityTableColumn.Volume}`),
+    label: t(`lpRewards.table.liquidity.${LiquidityTableColumn.Volume}`),
     class: 'text-right rtl:text-left'
   },
   {
@@ -142,7 +142,7 @@ const columns = [
               query: { campaign: row.campaignId }
             }"
           >
-            {{ $t('campaign.rewardsDetails') }}
+            {{ $t('lpRewards.rewardsDetails') }}
           </NuxtLink>
 
           <NuxtLink
@@ -152,7 +152,7 @@ const columns = [
               query: { market: row.market?.slug }
             }"
           >
-            {{ $t('campaign.addLiquidity') }}
+            {{ $t('lpRewards.addLiquidity') }}
           </NuxtLink>
         </div>
       </template>

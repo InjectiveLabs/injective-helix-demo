@@ -51,7 +51,7 @@ withDefaults(
     <h5 class="text-coolGray-450 font-semibold">
       {{ $t('trade.price') }}
     </h5>
-    <span>{{ $t('home.market') }}</span>
+    <span>{{ $t('trade.market') }}</span>
   </div>
 
   <div v-else class="flex gap-4 justify-between mt-6">

@@ -52,7 +52,7 @@ function connectAuthZ() {
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
-      <span>{{ $t('authZ.viewGrantedFunctions') }}</span>
+      <span>{{ $t('portfolio.authZ.viewGrantedFunctions') }}</span>
     </div>
 
     <div class="flex-1 flex items-center p-2 justify-end">
@@ -80,7 +80,7 @@ function connectAuthZ() {
         class="text-nowrap px-2"
         @click.stop="connectAuthZ"
       >
-        {{ $t('authZ.connectAs') }}
+        {{ $t('portfolio.authZ.connectAs') }}
       </AppButton>
     </div>
   </div>

@@ -233,10 +233,10 @@ function confirm() {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-6">
           <SharedButton variant="outline" block @click="closeModal">
-            {{ $t('trade.rwa.cancel') }}
+            {{ $t('common.cancel') }}
           </SharedButton>
           <SharedButton block :disabled="!termsAccepted" @click="confirm">
-            {{ $t('trade.rwa.confirm') }}
+            {{ $t('common.confirm') }}
           </SharedButton>
         </div>
       </div>

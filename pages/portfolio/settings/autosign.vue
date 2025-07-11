@@ -83,7 +83,7 @@ function disconnectAutoSign() {
       </NuxtLink>
 
       <h3 class="portfolio-title">
-        {{ $t('autoSign.pageTitle') }}
+        {{ $t('portfolio.autoSign.pageTitle') }}
       </h3>
     </div>
 
@@ -91,31 +91,31 @@ function disconnectAutoSign() {
       <div class="flex flex-col p-4">
         <div class="max-w-xl text-xs mb-8 space-y-4 text-coolGray-350">
           <div>
-            <p>{{ $t('autoSign.content1.a') }}</p>
-            <p>{{ $t('autoSign.content1.b') }}</p>
+            <p>{{ $t('portfolio.autoSign.content1.description1') }}</p>
+            <p>{{ $t('portfolio.autoSign.content1.description2') }}</p>
           </div>
 
           <div>
             <p>
-              {{ $t('autoSign.content2.title') }}
+              {{ $t('portfolio.autoSign.content2.title') }}
             </p>
 
             <ul class="list-disc pl-4">
-              <li>{{ $t('autoSign.content2.a') }}</li>
-              <li>{{ $t('autoSign.content2.b') }}</li>
-              <li>{{ $t('autoSign.content2.c') }}</li>
+              <li>{{ $t('portfolio.autoSign.content2.description1') }}</li>
+              <li>{{ $t('portfolio.autoSign.content2.description2') }}</li>
+              <li>{{ $t('portfolio.autoSign.content2.description3') }}</li>
             </ul>
           </div>
 
           <div>
             <p>
-              {{ $t('autoSign.content3.title') }}
+              {{ $t('portfolio.autoSign.content3.title') }}
             </p>
 
             <ul class="list-disc pl-4">
-              <li>{{ $t('autoSign.content3.a') }}</li>
-              <li>{{ $t('autoSign.content3.b') }}</li>
-              <li>{{ $t('autoSign.content3.c') }}</li>
+              <li>{{ $t('portfolio.autoSign.content3.description1') }}</li>
+              <li>{{ $t('portfolio.autoSign.content3.description2') }}</li>
+              <li>{{ $t('portfolio.autoSign.content3.description3') }}</li>
             </ul>
           </div>
         </div>
@@ -131,9 +131,11 @@ function disconnectAutoSign() {
         <template v-else>
           <div class="flex items-center gap-6">
             <div>
-              <p class="text-sm font-medium">{{ $t('autoSign.title') }}</p>
+              <p class="text-sm font-medium">
+                {{ $t('portfolio.autoSign.title') }}
+              </p>
               <p class="text-xs text-coolGray-350">
-                {{ $t('autoSign.durationDescription') }}
+                {{ $t('portfolio.autoSign.durationDescription') }}
               </p>
             </div>
 

@@ -20,17 +20,19 @@ const { rows } = useFundingHistoryTransformer(
 const columns = [
   {
     key: FundingHistoryTableColumn.Time,
-    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Time}`),
+    label: t(
+      `portfolio.table.fundingHistory.${FundingHistoryTableColumn.Time}`
+    ),
     class: 'w-1/5'
   },
   {
     key: FundingHistoryTableColumn.Pair,
-    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Pair}`)
+    label: t(`portfolio.table.fundingHistory.${FundingHistoryTableColumn.Pair}`)
   },
   {
     key: FundingHistoryTableColumn.Payment,
     label: t(
-      `activity.table.fundingHistory.${FundingHistoryTableColumn.Payment}`
+      `portfolio.table.fundingHistory.${FundingHistoryTableColumn.Payment}`
     ),
     class: 'text-right'
   }

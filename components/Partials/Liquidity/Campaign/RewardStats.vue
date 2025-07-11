@@ -105,14 +105,14 @@ const rewardsFormatted = computed(() =>
 
 <template>
   <div v-if="campaignWithReward" class="bg-coolGray-850 rounded-md p-8">
-    <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
+    <h2 class="font-semibold mb-4">{{ $t('lpRewards.rewardStats') }}</h2>
 
     <div class="flex">
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
       >
         <div>
-          <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
+          <p class="text-xs uppercase pb-1">{{ $t('lpRewards.address') }}</p>
           <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
             <p class="text-blue-500 truncate">
               {{ sharedWalletStore.injectiveAddress }}
@@ -121,13 +121,13 @@ const rewardsFormatted = computed(() =>
         </div>
 
         <div>
-          <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
+          <p class="text-xs uppercase pb-1">{{ $t('lpRewards.volume') }}</p>
           <p class="text-sm">{{ volumeInUsdToString }} USD</p>
         </div>
 
         <div>
           <div class="text-xs uppercase pb-1 flex items-center space-x-2">
-            <p>{{ $t('campaign.rewards') }}</p>
+            <p>{{ $t('lpRewards.rewards') }}</p>
           </div>
           <div class="flex items-center justify-between gap-2">
             <div class="text-sm">
@@ -140,9 +140,7 @@ const rewardsFormatted = computed(() =>
 
         <div>
           <PartialsLiquidityCommonClaimButton
-            v-bind="{
-              campaign: props.campaign
-            }"
+            v-bind="{ campaign: props.campaign }"
           />
         </div>
       </div>

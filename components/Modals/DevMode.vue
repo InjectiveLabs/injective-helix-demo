@@ -125,7 +125,7 @@ function connectViaPrivateKey() {
   <AppModal v-model="modalStore.modals[Modal.DevMode]">
     <template #title>
       <h3 class="text-base">
-        {{ $t('devMode.connect') }}
+        {{ $t('common.connect') }}
       </h3>
     </template>
 
@@ -173,7 +173,7 @@ function connectViaPrivateKey() {
             :is-loading="status.isLoading()"
             @click="connect"
           >
-            {{ $t('devMode.connect') }}
+            {{ $t('common.connect') }}
           </AppButton>
         </div>
       </div>

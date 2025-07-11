@@ -40,38 +40,38 @@ const options = computed(() => {
     {
       value: PerpOrdersStandardView.Positions,
       description: `${positionStore.subaccountPositions.length}`,
-      display: `activity.${PerpOrdersStandardView.Positions}`
+      display: `trade.tab.${PerpOrdersStandardView.Positions}`
     },
     {
       value: PerpOrdersStandardView.Orders,
       description: `${derivativeStore.subaccountOrdersCount}`,
-      display: `activity.${PerpOrdersStandardView.Orders}`
+      display: `trade.tab.${PerpOrdersStandardView.Orders}`
     },
     {
       value: PerpOrdersStandardView.AdvancedOrders,
-      display: `activity.${PerpOrdersStandardView.AdvancedOrders}`,
+      display: `trade.tab.${PerpOrdersStandardView.AdvancedOrders}`,
       description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
       value: PerpOrdersStandardView.OrderHistory,
-      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
+      display: `trade.tab.${PerpOrdersStandardView.OrderHistory}`,
       description: `${derivativeStore.subaccountOrderHistoryCount}`
     },
     {
       value: PerpOrdersStandardView.TradeHistory,
       description: `${derivativeStore.subaccountTradesCount}`,
-      display: `activity.${PerpOrdersStandardView.TradeHistory}`
+      display: `trade.tab.${PerpOrdersStandardView.TradeHistory}`
     },
     {
       value: PerpOrdersStandardView.FundingHistory,
-      display: `activity.${PerpOrdersStandardView.FundingHistory}`
+      display: `trade.tab.${PerpOrdersStandardView.FundingHistory}`
     }
   ]
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
       value: PerpOrdersStandardView.Balances,
-      display: `activity.${PerpOrdersStandardView.Balances}`
+      display: `trade.tab.${PerpOrdersStandardView.Balances}`
     })
   }
 
@@ -115,7 +115,7 @@ onMounted(() => {
           class="px-2"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdown)"
         >
-          {{ $t(`activity.${selected?.value}`) }}
+          {{ $t(`trade.tab.${selected?.value}`) }}
           {{
             Number.isInteger(Number(selected?.description))
               ? `(${selected?.description || 0})`
@@ -128,7 +128,7 @@ onMounted(() => {
         <button
           :data-cy="`${PerpetualMarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
         >
-          {{ $t(`activity.${option.value}`) }}
+          {{ $t(`trade.tab.${option.value}`) }}
           {{
             Number.isInteger(Number(option.description))
               ? `(${option.description})`

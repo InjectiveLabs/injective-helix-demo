@@ -40,23 +40,23 @@ function onSubmit() {
   >
     <template #title>
       <h3 :data-cy="dataCyTag(SpotMarketCyTags.ExperimentalMarketLabel)">
-        {{ $t('marketNotOnHelix.title') }}
+        {{ $t('trade.marketNotOnHelix.title') }}
       </h3>
     </template>
 
     <div class="relative space-y-4">
       <p class="text-center text-sm text-coolGray-100">
-        {{ $t('marketNotOnHelix.description') }}
+        {{ $t('trade.marketNotOnHelix.description') }}
       </p>
 
       <i18n-t
-        keypath="marketNotOnHelix.description2"
+        keypath="trade.marketNotOnHelix.description2"
         class="text-sm text-center text-coolGray-100"
         tag="p"
       >
         <template #link>
           <NuxtLink :to="{ name: MainPage.Terms }" class="text-blue-500">
-            <span>{{ $t('marketNotOnHelix.termsAndCondition') }}</span>
+            <span>{{ $t('trade.marketNotOnHelix.termsAndCondition') }}</span>
           </NuxtLink>
         </template>
       </i18n-t>
@@ -67,7 +67,7 @@ function onSubmit() {
           :data-cy="dataCyTag(SpotMarketCyTags.IUnderstandButton)"
           @click="onSubmit"
         >
-          {{ $t('marketNotOnHelix.cta') }}
+          {{ $t('trade.marketNotOnHelix.cta') }}
         </AppButton>
       </div>
 
@@ -77,7 +77,7 @@ function onSubmit() {
       >
         <AppCheckbox v-model="isDoNoShowConfirmationAgain" class="mx-auto">
           <slot class="text-xs">
-            {{ $t('trade.confirmOrderModal.doNotShowThisConfirmationAgain') }}
+            {{ $t('trade.doNotShowThisConfirmationAgain') }}
           </slot>
         </AppCheckbox>
       </div>

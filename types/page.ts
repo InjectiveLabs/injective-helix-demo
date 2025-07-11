@@ -15,7 +15,6 @@ export enum MainPage {
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
   PrivacyPolicy = 'privacy-policy',
-  LiquidityProvision = 'liquidity-provision',
   TeslaCompetitionTerms = 'tesla-competition-terms',
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
   CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',

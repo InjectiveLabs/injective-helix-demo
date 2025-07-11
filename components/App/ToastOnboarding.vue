@@ -204,7 +204,7 @@ function showStartTradingToast() {
     key: HelixCtaToast.UserDoesntTrade,
     actions: [
       {
-        label: t('toast.portfolio.tradeNow'),
+        label: t('common.tradeNow'),
         callback: () => {
           router.push({ name: MainPage.Markets })
 

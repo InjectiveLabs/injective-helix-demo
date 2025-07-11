@@ -33,10 +33,9 @@ function onModalClose() {
     </template>
 
     <div class="relative">
-      <p
-        class="text-center text-sm text-coolGray-100"
-        v-text="$t('postOnlyMode.description')"
-      ></p>
+      <p class="text-center text-sm text-coolGray-100">
+        {{ $t('postOnlyMode.description') }}
+      </p>
 
       <div class="mt-6 flex items-center justify-center">
         <AppButton class="bg-blue-500 text-blue-900" @click="onModalClose">

@@ -175,9 +175,9 @@ function onClickStockTwitsCta() {
   <div
     v-if="bannerToDisplay && !isHideBanner"
     :class="[
-      'bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold',
       jsonStore.isPostUpgradeMode ? 'justify-center' : 'justify-between'
     ]"
+    class="'bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold'"
   >
     <div />
 
@@ -203,34 +203,35 @@ function onClickStockTwitsCta() {
           class="hover:opacity-80 underline cursor-pointer"
           @click="openNeptuneUsdtModal"
         >
-          {{ $t('trade.neptuneUsdt.here') }}
+          {{ $t('common.here') }}
         </NuxtLink>
       </template>
     </i18n-t>
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.OwnYourAssetCampaign"
-      keypath="banners.ownYourAssetCompetition"
       tag="p"
+      keypath="banners.leaderboard.currentCompetitionLink"
     >
       <template #linkDescription>
         <NuxtLink
           class="inline-flex font-semibold"
           :to="{ name: LeaderboardSubPage.Competition }"
         >
-          {{ $t('banners.ownYourAssetCompetitionLink') }}
+          {{ $t('banners.leaderboard.currentCompetitionTitle') }}
         </NuxtLink>
       </template>
     </i18n-t> -->
+
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.DeprecatedWallet"
+      tag="p"
       class="flex items-center gap-1"
       :keypath="
         sharedWalletStore.turnkeyInjectiveAddress
           ? 'banners.deprecatedWalletWithAddress'
           : 'banners.deprecatedWallet'
       "
-      tag="p"
     >
       <template #address>
         <div class="flex items-center gap-2">
@@ -246,8 +247,8 @@ function onClickStockTwitsCta() {
       <template #learnMore>
         <NuxtLink
           class="hover:opacity-80 underline cursor-pointer"
-          :to="DEPRECATED_WALLET_DOCS_LINK"
           target="_blank"
+          :to="DEPRECATED_WALLET_DOCS_LINK"
           @click="onClickStockTwitsCta"
         >
           {{ $t('common.learnMore') }}
@@ -257,9 +258,9 @@ function onClickStockTwitsCta() {
 
     <div
       v-if="
-        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade &&
         jsonStore.chainUpgradeConfig.proposalId &&
-        jsonStore.chainUpgradeConfig.proposalMsg
+        jsonStore.chainUpgradeConfig.proposalMsg &&
+        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade
       "
       class="flex items-center gap-1"
     >
@@ -277,14 +278,14 @@ function onClickStockTwitsCta() {
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.StockTwits"
-      keypath="banners.stockTwits"
       tag="p"
+      keypath="banners.stockTwits"
     >
       <template #learnMore>
         <NuxtLink
           class="hover:opacity-80 underline cursor-pointer"
-          to="https://docs.helixapp.com/getting-started"
           target="_blank"
+          to="https://docs.helixapp.com/getting-started"
           @click="onClickStockTwitsCta"
         >
           {{ $t('common.learnMore') }}
@@ -294,13 +295,13 @@ function onClickStockTwitsCta() {
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"
-      keypath="banners.postOnly"
       tag="p"
+      keypath="banners.postOnly"
     >
       <template #link>
         <NuxtLink
-          :to="NOTIFI_LINK"
           target="_blank"
+          :to="NOTIFI_LINK"
           class="hover:opacity-80 underline cursor-pointer"
         >
           {{ $t('banners.findOutMore') }}

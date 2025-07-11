@@ -223,7 +223,7 @@ watchDebounced(
           <div
             class="flex flex-col sm:flex-row items-start justify-end gap-1 flex-1 ml-2 sm:ml-0"
           >
-            <span>{{ $t('leaderboard.timeStamp') }}:</span>
+            <span>{{ $t('leaderboard.timestamp') }}:</span>
             <span>{{ timestamp }}</span>
           </div>
         </div>

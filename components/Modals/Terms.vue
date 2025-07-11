@@ -28,7 +28,7 @@ function closeModal() {
   <AppModal v-model="modalStore.modals[Modal.Terms]" v-bind="{ isXl: true }">
     <template #title>
       <h3>
-        {{ $t('Acknowledge Terms') }}
+        {{ $t('common.acknowledgeTerms') }}
       </h3>
     </template>
 

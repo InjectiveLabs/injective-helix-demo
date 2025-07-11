@@ -64,7 +64,7 @@ export const TRADING_OPTIONS = [
   },
   {
     to: { name: LeaderboardSubPage.Pnl },
-    label: 'navigation.leaderboard.title'
+    label: 'navigation.leaderboard'
   },
   {
     isOpenDepositModal: true,

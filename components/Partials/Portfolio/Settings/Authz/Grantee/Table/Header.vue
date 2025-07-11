@@ -18,15 +18,15 @@ const isDisabled = computed(
 <template>
   <div class="table-label p-2 flex">
     <div class="flex-1 p-2">
-      {{ $t('authZ.granteeAddress') }}
+      {{ $t('portfolio.authZ.granteeAddress') }}
     </div>
 
     <div class="flex-1 p-2">
-      {{ $t('authZ.grantedFunctions') }}
+      {{ $t('portfolio.authZ.grantedFunctions') }}
     </div>
 
     <div class="flex-1 p-2">
-      {{ $t('authZ.actions') }}
+      {{ $t('portfolio.authZ.actions') }}
     </div>
 
     <button
@@ -38,7 +38,7 @@ const isDisabled = computed(
       }"
       @click="openGranteeModal"
     >
-      + {{ $t('authZ.addGranteeAddress') }}
+      + {{ $t('portfolio.authZ.addGranteeAddress') }}
     </button>
   </div>
 

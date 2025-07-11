@@ -266,7 +266,7 @@ function closeModal() {
             @update:max="onAmountChange"
             @update:denom="onTokenChange"
           >
-            <span> {{ $t('account.amount') }} </span>
+            <span> {{ $t('common.amount') }} </span>
           </AppSelectToken>
         </div>
 
@@ -283,7 +283,7 @@ function closeModal() {
         @click="onSubaccountTransfer"
       >
         <span class="font-semibold">
-          {{ $t('account.transfer') }}
+          {{ $t('common.transfer') }}
         </span>
       </AppButton>
     </div>

@@ -1,92 +1,36 @@
 export default {
   home: {
-    title: 'Open Finance Reimagined',
     openFinance: 'Open Finance',
     description:
       'Secure, fast, gas-free on-chain trading with institutional liquidity',
-    reimagined: 'Reimagined',
     gasFees: 'Gas Fees',
-    trending: 'Trending',
-    tradeNow: 'Trade Now',
+    whyHelix: 'Why Helix?',
+    reimagined: 'Reimagined',
     latestNews: 'Latest News',
     totalVolume: 'Total Volume',
     totalMarkets: 'Total Markets',
-    mevResistant: 'MEV Resistant',
-    getStartedHome: 'Get Started',
-    viewAllMarkets: 'View all markets',
-    infiniteMarkets: 'Infinite Markets',
-    builtForTheCommunity: 'Built for the Community',
-    infrastructure: 'The Premier On-Chain Exchange Infrastructure',
-    tailoredSolutionsForEveryNeed: 'Tailored Solutions for Every Need',
-    builtForTheCommunityDescription: 'No investors, no VCs, no nonsense.',
-    unprecedentedAccessToGlobalMarkets:
-      'Unprecedented Access to Global Markets',
-    engage:
-      'Engage with performant decentralized exchange primitives, tokenized assets, and sophisticated Web3 markets with a plug-and-play suite of products powering the future of finance.',
-    unifiedLiquidity: 'Unified Liquidity',
-    unifiedLiquidityDescription:
-      'Helix uniquely aggregates unparalleled institutional grade liquidity, enabling anyone to leverage capital efficient financial markets on the world’s first fully decentralized orderbook network.',
-    utilizeBespoke:
-      'Utilize bespoke on-chain gateways to seamlessly interact with leading financial institutions, tokenized assets and sophisticated structured products.',
-    fast: 'Fast',
-    secure: 'Secure',
-    market: 'Market',
-    markets: 'Markets',
-    builtOn: 'Built on',
-    gasFree: 'Gas Free',
-    apiDocs: 'API Docs',
-    injective: 'INJECTIVE',
-    whyHelix: 'Why Helix?',
-    lastPrice: 'Last price',
-    newlyAdded: 'Newly added',
-    change24h: 'Change (24h)',
-    totalTrades: 'Total trades',
-    newToCrypto: 'New to Crypto',
     startTrading: 'Start Trading',
-    sevenDaysPrice: '7 days price',
-    documentation: 'Documentation',
-    interoperable: 'Interoperable',
-    tradingVolume: 'Trading volume',
     helixDocs: 'Helix Documentation',
-    startTradingNow: 'Start trading now',
-    whyTradeOnHelix: 'Why Trade on Helix',
-    howToBridge: 'Transfer assets to begin',
-    helixInstitutional: 'Helix Institutional',
-    experienceTrader: 'An Experienced Trader',
-    howToPurchaseTokens: 'Trade spot markets',
-    totalTradingVolume: 'Total trading volume',
     somethingIsBrewing: 'Something is brewing',
-    getStarted: 'Get Started in 3 Simple Steps',
-    institutionalTrader: 'An Institutional Trader',
-    startTradingNote: 'Start Trading on Helix Now',
-    InstitutionalGateways: 'Institutional Gateways',
-    accessTheFuture: 'Access The Future of Open Finance',
-    lowFees: 'Minimal fees for maximum benefits and rewards',
-    crossChainAssets: 'Cross-chain assets and novel markets',
-    howToPlaceStopOrders: 'Trade perpetuals with advanced orders',
-    decentralizedWithAdvancedTypeOrders:
-      'Decentralized exchange with advanced order types',
-    enjoySpotTrading:
-      'Enjoy trading spot and perpetual markets on the premier front-running resistant decentralized orderbook exchange using stop-loss and take-profit orders.',
-    zeroGasFees:
-      'Zero gas fees, low taker fees and highly competitive maker fee rebates for the best trading experience amongst all exchanges.',
-    seamlesslyTransferAssets:
-      'Seamlessly transfer assets from Ethereum and Cosmos networks to trade popular markets as well as unique markets not available elsewhere.',
+    builtForTheCommunity: 'Built for the Community',
+    builtForTheCommunityDescription: 'No investors, no VCs, no nonsense.',
+
     overview: {
       title: 'Why Helix?',
-      description: 'Built as top-tier exchange, but fully decentralized.',
+      lpRewardsTitle: 'LP Rewards',
       tradingBotsTitle: 'Trading Bots',
+      gasFreeTitle: 'Gas Free Trading',
+      tradeStocksTitle: 'Trade Stocks and RWAs',
+      lpRewardsDescription: 'Provide liquidity and get paid for it.',
+      description: 'Built as top-tier exchange, but fully decentralized.',
+      gasFreeDescription:
+        'Never worry about gas fees on Helix. Zero gas, always.',
       tradingBotsDescription:
         'Deploy advanced smart on-chain trading strategies in just a click.',
-      tradeStocksTitle: 'Trade Stocks and RWAs',
       tradeStocksDescription:
-        'Trade stocks and Real World Assets (RWAs) with crypto for faster, cheaper, and more transparent transactions.',
-      lpRewardsTitle: 'LP Rewards',
-      lpRewardsDescription: 'Provide liquidity and get paid for it.',
-      gasFreeTitle: 'Gas Free Trading',
-      gasFreeDescription:
-        'Never worry about gas fees on Helix. Zero gas, always.'
+        'Trade stocks and Real World Assets (RWAs) with crypto for faster, cheaper, and more transparent transactions.'
     },
+
     gettingStarted: {
       title: 'Getting started on Helix',
       injectiveBridge: 'Injective Bridge',
@@ -95,7 +39,6 @@ export default {
         'Bridge USDT and other assets into Helix via the {bridgeLink}.',
       gasRequirement:
         'Make sure you get at least 0.1 INJ to pay for the transaction fee.',
-      steps: 'Steps',
       step1: {
         title: 'Step 1',
         description: 'Visit the Injective Bridge and connect your wallet.'
@@ -113,9 +56,9 @@ export default {
         title: 'Step 4',
         description:
           'Once complete, return to Helix and check your Balances on the Portfolio page. You are ready to trade!'
-      },
-      cta: 'Go to Injective Bridge'
+      }
     },
+
     faq: {
       title: 'Frequently Asked Questions',
       or: 'or',
@@ -124,16 +67,16 @@ export default {
       here: 'here',
       fullstop: '.',
       accordion1: {
+        btc: 'Bitcoin (BTC)',
+        eth: 'Ethereum (ETH)',
+        inj: 'Injective (INJ)',
         title: 'What is a decentralized cryptocurrency exchange (DEX)?',
         content1:
           'A decentralized exchange (DEX) lets you trade cryptocurrencies like {btc}, {eth} and {inj} directly from your own wallet without intermediaries or custodians.',
         content2:
           'Unlike centralized exchanges (CEXs), DEXs are permissionless, fully transparent, and non-custodial.',
         content3:
-          'Helix is a leading DEX built on Injective, offering fast, gas-free, on-chain trading. You stay in control of your assets at all times.',
-        btc: 'Bitcoin (BTC)',
-        eth: 'Ethereum (ETH)',
-        inj: 'Injective (INJ)'
+          'Helix is a leading DEX built on Injective, offering fast, gas-free, on-chain trading. You stay in control of your assets at all times.'
       },
       accordion2: {
         title: 'What features does Helix offer?',
@@ -201,11 +144,11 @@ export default {
           'Alternatively, you can also deposit from different centralized exchanges like Binance, ByBit & more.'
       },
       accordion5: {
+        videoTutorialHere: 'video tutorial here',
         title: 'How do I trade cryptocurrencies on Helix?',
+        cta: 'Want a full walkthrough? Check out our step-by-step {tutorial}.',
         stepTitle:
           "Trading on Helix is fast, permissionless, and completely gas-free. Here's how to get started:",
-        videoTutorialHere: 'video tutorial here',
-        cta: 'Want a full walkthrough? Check out our step-by-step {tutorial}.',
         step1: {
           section1: 'Head to',
           section2: 'helixapp.com',
@@ -254,25 +197,5 @@ export default {
         }
       }
     }
-  },
-  footer: {
-    blog: 'Blog',
-    v2: ' Version 2.0',
-    support: 'Support',
-    docs: 'Helix Docs',
-    explorer: 'Explorer',
-    resources: 'Resources',
-    analytics: 'Analytics',
-    community: 'Community',
-    lpRewards: 'LP Rewards',
-    operational: 'Operational',
-    feeDiscounts: 'Fee Discounts',
-    institutional: 'Institutional',
-    privacyPolicy: 'Privacy Policy',
-    submitRequest: 'Submit A Request',
-    apiDocumentation: 'API Documentation',
-    termsAndConditions: 'Terms & Conditions',
-    helixProvides:
-      'Note: Helix is able to provide maker rebates across a number of markets as approved via the Injective DAO.'
   }
 }

@@ -70,15 +70,15 @@ const endDate = computed(() => {
   <div class="grid grid-cols-[1fr_auto] gap-4">
     <div class="space-y-4">
       <div class="flex items-center space-x-4">
-        <h1 class="text-3xl font-bold">{{ $t('campaign.title') }}</h1>
+        <h1 class="text-3xl font-bold">{{ $t('lpRewards.title') }}</h1>
         <div class="flex items-center space-x-2">
           <div class="w-2 h-2 rounded-full bg-green-500" />
-          <p>{{ $t('campaign.round', { round: props.round }) }}</p>
+          <p>{{ $t('lpRewards.round', { round: props.round }) }}</p>
         </div>
       </div>
 
       <div>
-        <p class="text-coolGray-300">{{ $t('campaign.description') }}</p>
+        <p class="text-coolGray-300">{{ $t('lpRewards.description') }}</p>
       </div>
 
       <div class="space-x-2 flex pb-6">
@@ -86,21 +86,21 @@ const endDate = computed(() => {
           v-if="sharedWalletStore.isUserConnected"
           :to="{ name: LiquidityRewardsPage.Dashboard }"
         >
-          <AppButton> {{ $t('campaign.myRewards') }}</AppButton>
+          <AppButton> {{ $t('lpRewards.myRewards') }}</AppButton>
         </NuxtLink>
 
         <NuxtLink
           to="https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-"
           target="_blank"
         >
-          <AppButton>{{ $t('campaign.campaignRules') }}</AppButton>
+          <AppButton>{{ $t('lpRewards.campaignRules') }}</AppButton>
         </NuxtLink>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
           <h3 class="text-sm font-semibold text-coolGray-400">
-            {{ $t('campaign.totalRewardsThisRound') }}
+            {{ $t('lpRewards.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
             <AppUsdAmount
@@ -113,13 +113,13 @@ const endDate = computed(() => {
         </div>
         <div>
           <h3 class="text-sm font-semibold text-coolGray-400">
-            {{ $t('campaign.totalVolume') }}
+            {{ $t('lpRewards.totalVolume') }}
           </h3>
           <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-coolGray-400">
-            {{ $t('campaign.endTimeForRound', { round: props.round }) }}
+            {{ $t('lpRewards.endTimeForRound', { round: props.round }) }}
           </h3>
           <p class="text-xl font-semibold">{{ endDate }} UTC</p>
         </div>

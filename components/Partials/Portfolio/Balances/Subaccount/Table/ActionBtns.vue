@@ -55,7 +55,7 @@ function onTransfer() {
             :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
             size="sm"
           >
-            {{ $t('account.deposit') }}
+            {{ $t('common.deposit') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
 
@@ -72,7 +72,7 @@ function onTransfer() {
             "
             size="sm"
           >
-            {{ $t('account.withdraw') }}
+            {{ $t('common.withdraw') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
 
@@ -84,7 +84,7 @@ function onTransfer() {
           }"
         >
           <AppButton variant="primary-outline" size="sm" class="py-2">
-            {{ $t('account.transfer') }}
+            {{ $t('common.transfer') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
       </template>
@@ -96,7 +96,7 @@ function onTransfer() {
           size="sm"
           @click="onFiatOnRamp"
         >
-          {{ $t('account.deposit') }}
+          {{ $t('common.deposit') }}
         </AppButton>
 
         <AppButton
@@ -105,7 +105,7 @@ function onTransfer() {
           size="sm"
           @click="onTransfer"
         >
-          {{ $t('account.transfer') }}
+          {{ $t('common.transfer') }}
         </AppButton>
       </template>
     </div>
@@ -123,7 +123,7 @@ function onTransfer() {
         :to="{ name: PortfolioSubPage.Subaccounts }"
         size="sm"
       >
-        {{ $t('account.transfer') }}
+        {{ $t('common.transfer') }}
       </AppButton>
     </NuxtLink>
   </div>

@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
-  UTableColumn,
   PortfolioSubPage,
   TradingInterface,
   TradingBotsSubPage,
   LiquidityRewardsPage,
-  TransformedLiquidity,
   LiquidityTableColumn
 } from '@/types'
+import type { UTableColumn, TransformedLiquidity } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -82,7 +81,7 @@ const filteredColumns = computed(() =>
               query: { campaign: campaign.campaignId }
             }"
           >
-            {{ $t('campaign.rewardsDetails') }}
+            {{ $t('lpRewards.rewardsDetails') }}
           </NuxtLink>
 
           <NuxtLink
@@ -92,7 +91,7 @@ const filteredColumns = computed(() =>
               query: { market: campaign.market?.slug }
             }"
           >
-            {{ $t('campaign.addLiquidity') }}
+            {{ $t('lpRewards.addLiquidity') }}
           </NuxtLink>
         </div>
       </div>

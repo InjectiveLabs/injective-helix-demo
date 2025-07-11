@@ -71,7 +71,7 @@ onMounted(() => {
           class="py-2 border-none text-base leading-5 font-semibold"
           @click="onCopyInjectiveAddress"
         >
-          {{ $t('onboarding.copy') }}
+          {{ $t('common.copy') }}
         </AppButton>
       </div>
     </div>

@@ -18,7 +18,7 @@ withDefaults(
         class="flex items-center gap-2 max-w-[300px] mt-6 mx-auto text-white"
       >
         <p class="text-sm font-medium leading-[18px]">
-          {{ $t('liquidityProvision.modal.redirect') }}
+          {{ $t('vault.modal.redirect') }}
         </p>
       </div>
 
@@ -31,7 +31,7 @@ withDefaults(
           class="w-full text-base leading-5 font-semibold text-black"
           variant="primary"
         >
-          {{ $t('liquidityProvision.modal.continueToMito') }}
+          {{ $t('vault.modal.continueToMito') }}
         </AppButton>
       </NuxtLink>
     </section>

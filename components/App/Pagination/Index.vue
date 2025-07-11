@@ -29,9 +29,7 @@ withDefaults(
   >
     <template #summary="{ from, to }">
       <span>
-        {{
-          $t('pagination.paginationPages', { from, to, totalCount: totalCount })
-        }}
+        {{ $t('pagination', { from, to, totalCount: totalCount }) }}
       </span>
     </template>
 

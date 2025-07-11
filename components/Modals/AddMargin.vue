@@ -128,7 +128,7 @@ const onSubmit = handleSubmit(() => {
   <AppModal v-model="modalStore.modals[Modal.AddMarginToPosition]">
     <template #title>
       <h3>
-        {{ $t('trade.add_margin_to_position_title') }}
+        {{ $t('trade.add_margin') }}
       </h3>
     </template>
 

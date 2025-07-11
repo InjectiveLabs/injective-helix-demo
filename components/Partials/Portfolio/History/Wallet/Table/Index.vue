@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  HistoryWalletTableColumn,
-  UiSubaccountTransactionWithToken
-} from '@/types'
+import { HistoryWalletTableColumn } from '@/types'
+import type { UiSubaccountTransactionWithToken } from '@/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -20,29 +18,31 @@ const { rows } = useHistoryWalletTransformer(computed(() => props.transactions))
 const columns = [
   {
     key: HistoryWalletTableColumn.Time,
-    label: t(`activity.table.historyWallet.${HistoryWalletTableColumn.Time}`)
+    label: t(`portfolio.table.historyWallet.${HistoryWalletTableColumn.Time}`)
   },
   {
     key: HistoryWalletTableColumn.Type,
-    label: t(`activity.table.historyWallet.${HistoryWalletTableColumn.Type}`)
+    label: t(`portfolio.table.historyWallet.${HistoryWalletTableColumn.Type}`)
   },
   {
     key: HistoryWalletTableColumn.Asset,
-    label: t(`activity.table.historyWallet.${HistoryWalletTableColumn.Asset}`)
+    label: t(`portfolio.table.historyWallet.${HistoryWalletTableColumn.Asset}`)
   },
   {
     key: HistoryWalletTableColumn.Amount,
-    label: t(`activity.table.historyWallet.${HistoryWalletTableColumn.Amount}`),
+    label: t(
+      `portfolio.table.historyWallet.${HistoryWalletTableColumn.Amount}`
+    ),
     class: 'text-right'
   },
   {
     key: HistoryWalletTableColumn.Origin,
-    label: t(`activity.table.historyWallet.${HistoryWalletTableColumn.Origin}`)
+    label: t(`portfolio.table.historyWallet.${HistoryWalletTableColumn.Origin}`)
   },
   {
     key: HistoryWalletTableColumn.Destination,
     label: t(
-      `activity.table.historyWallet.${HistoryWalletTableColumn.Destination}`
+      `portfolio.table.historyWallet.${HistoryWalletTableColumn.Destination}`
     )
   }
 ]

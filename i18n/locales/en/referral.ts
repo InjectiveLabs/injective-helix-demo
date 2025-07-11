@@ -36,10 +36,11 @@ export default {
       "The total commission you’ve earned from successful referrals. Rewards are credited based on your referrals' trading activity.",
     referralLinkAvailableDescription: `Your referral code ${siteFullUrl.origin}/ref/{referralCode} is available. Would you like to use this link?`,
     confirmReferralDescription: `You will be referred with ${siteFullUrl.origin}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.`,
+
     table: {
       [ReferralTableColumn.Wallets]: 'Wallets',
-      [ReferralTableColumn.Commission]: 'Commission',
-      [ReferralTableColumn.JoinDate]: 'Join Date'
+      [ReferralTableColumn.JoinDate]: 'Join Date',
+      [ReferralTableColumn.Commission]: 'Commission'
     },
     myStats: {
       title: 'My Stats',

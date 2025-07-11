@@ -165,7 +165,7 @@ const connect = handleSubmit(() => {
         size="lg"
         @click="connect"
       >
-        {{ $t('connect.connect') }}
+        {{ $t('common.connect') }}
       </AppButton>
     </div>
 
