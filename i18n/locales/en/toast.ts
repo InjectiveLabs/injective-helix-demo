@@ -77,7 +77,7 @@ export default {
     referral: {
       referralLinkCopied: 'Referral Link Copied',
       referralLinkExists:
-        'You have already created a referral code with this wallet',
+        'You have already applied another referral code to this wallet',
       referralLinkIsUnavailable: 'Referral Link is Unavailable',
       success: 'Your Code is Successfully Claimed. Explore Markets Now!',
       joinSelfReferralMessage:
