@@ -87,7 +87,7 @@ export default {
     dontShowAgain: "Don't Show Again",
     showMoreContext: 'Show more context',
     acknowledgeTerms: 'Acknowledge Terms',
-    pagination: 'From {from} to {to} total {totalCount}`',
+    pagination: 'From {from} to {to} total {totalCount}',
 
     [TimeDuration.Day]: 'Day',
     [TimeDuration.Hour]: 'Hour',

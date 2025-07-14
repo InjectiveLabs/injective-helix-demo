@@ -203,7 +203,7 @@ watch(
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
     >
-      {{ $t('swap.connect_wallet') }}
+      {{ $t('swap.connectWallet') }}
     </AppButton>
 
     <AppButton

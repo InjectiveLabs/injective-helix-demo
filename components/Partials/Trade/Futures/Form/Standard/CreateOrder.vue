@@ -487,7 +487,7 @@ function showAutosignCta() {
         </span>
 
         <span v-else-if="!hasEnoughLiquidity">
-          {{ $t('swap.insufficient_liquidity') }}
+          {{ $t('swap.insufficientLiquidity') }}
         </span>
 
         <span v-else>

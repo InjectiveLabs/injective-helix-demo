@@ -217,10 +217,10 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <div
             class="flex items-center justify-center text-coolGray-450 text-xs"
           >
-            {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
+            {{ $t('tradeAndEarn.pendingMaxCampaignRewards') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
-              :content="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
+              :content="$t('tradeAndEarn.pendingMaxCampaignRewardsTooltip')"
             />
           </div>
         </template>
@@ -248,7 +248,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             {{ $t('tradeAndEarn.myRewardPoints') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
-              :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
+              :content="$t('tradeAndEarn.myRewardPointsTooltip')"
             />
           </div>
         </template>
@@ -284,14 +284,14 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <a
             v-if="sharedWalletStore.isUserConnected"
             :href="hubUrl"
-            class="text-blue-500 flex justify-center"
             target="_blank"
+            class="text-blue-500 flex justify-center"
           >
             {{ $t('tradeAndEarn.stakeMore') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
               :content="
-                $t('tradeAndEarn.stake_total_to_receive_full_amount', {
+                $t('tradeAndEarn.stakeTotalToReceiveFullAmount', {
                   total: pendingEstimatedRewards.toFormat(2)
                 })
               "

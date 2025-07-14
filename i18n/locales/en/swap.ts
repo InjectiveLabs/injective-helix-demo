@@ -11,7 +11,7 @@ export default {
     maximumInput: 'Maximum Input',
     tolerance: 'Slippage Tolerance',
     minimumOutput: 'Minimum output',
-    connect_wallet: 'Connect Wallet',
+    connectWallet: 'Connect Wallet',
     expectedOutput: 'Expected output',
     viewTransaction: 'View Transaction',
     advancedSettings: 'Advanced Settings',
@@ -21,7 +21,7 @@ export default {
     swappedSuccessfully: 'Swapped successfully!',
     rateExpired: 'Rate expired. Click to Update',
     swapAmountTooLow: 'The swap amount is too low',
-    insufficient_liquidity: 'Insufficient Liquidity',
+    insufficientLiquidity: 'Insufficient Liquidity',
     pleaseTryAgain: 'Please reload page to try again.',
     tooltip:
       'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',

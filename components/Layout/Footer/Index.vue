@@ -70,6 +70,8 @@ const communityList = computed(() => [
         <span class="text-coolGray-500 text-xs">
           &copy; {{ new Date().getFullYear() }} Injective Foundation
         </span>
+
+        <!-- <LayoutFooterLocalizationSelector class="mt-4 block w-fit" /> -->
       </div>
 
       <div class="3md:col-span-2">
