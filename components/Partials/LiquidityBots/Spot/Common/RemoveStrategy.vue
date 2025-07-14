@@ -74,7 +74,7 @@ function removeStrategy() {
 
       notificationStore.update({
         title: t('toast.success'),
-        description: t('toast.sgt.tradingBotRemovedSuccessfully')
+        description: t('toast.tradingBots.tradingBotRemovedSuccessfully')
       })
 
       isOpen.value = true
@@ -106,7 +106,7 @@ function removeStrategy() {
 <template>
   <slot v-bind="{ status, removeStrategy }">
     <SharedButton :loading="status.isLoading()" @click="removeStrategy">
-      {{ $t('sgt.removeStrategy') }}
+      {{ $t('tradingBots.removeStrategy') }}
     </SharedButton>
   </slot>
 
@@ -119,16 +119,16 @@ function removeStrategy() {
       />
 
       <h3 class="text-xl font-bold">
-        {{ $t('sgt.strategyRemovalInitiated') }}
+        {{ $t('tradingBots.strategyRemovalInitiated') }}
       </h3>
 
       <div class="text-sm text-coolGray-400 space-y-4 mt-4">
         <p>
-          {{ $t('sgt.yourTradingStrategyIsBeingRemoved') }}
+          {{ $t('tradingBots.yourTradingStrategyIsBeingRemoved') }}
         </p>
 
         <div>
-          <span>{{ $t('sgt.approximateProfit') }}:</span>
+          <span>{{ $t('tradingBots.approximateProfit') }}:</span>
 
           <div
             :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"
@@ -152,7 +152,7 @@ function removeStrategy() {
           </div>
         </div>
 
-        <p>{{ $t('sgt.youCanCloseThisNotification') }}</p>
+        <p>{{ $t('tradingBots.youCanCloseThisNotification') }}</p>
       </div>
     </div>
 
@@ -161,7 +161,7 @@ function removeStrategy() {
       class="w-full mt-4"
       @click="isOpen = false"
     >
-      {{ $t('sgt.close') }}
+      {{ $t('common.close') }}
     </AppButton>
   </AppModal>
 </template>

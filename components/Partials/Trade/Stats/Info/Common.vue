@@ -71,7 +71,7 @@ const low = computed(() => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.market_volume_24h')">
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.marketVolume24h')">
     <p>
       <AppAmount
         v-bind="{

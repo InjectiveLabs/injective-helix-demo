@@ -48,13 +48,15 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
 <template>
   <div class="p-1 space-y-4">
     <div class="flex items-center gap-2">
-      <p class="text-xs text-coolGray-450">{{ $t('sgt.upperPriceStop') }}</p>
-      <AppTooltip :text="$t('sgt.upperPriceStopTooltip')" />
+      <p class="text-xs text-coolGray-450">
+        {{ $t('tradingBots.upperPriceStop') }}
+      </p>
+      <AppTooltip :text="$t('tradingBots.sgt.upperPriceStopTooltip')" />
     </div>
 
     <AppInputField
       v-model="takeProfitValue"
-      :placeholder="$t('sgt.upperPriceStop')"
+      :placeholder="$t('tradingBots.upperPriceStop')"
       class="placeholder:font-sans"
     />
     <p v-if="takeProfitErrorMessage" class="error-message">
@@ -66,18 +68,22 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
         v-model="buyBaseOnTakeProfitValue"
         class="!mt-2 !-mb-2 text-coolGray-450 font-medium"
       >
-        {{ $t('sgt.buySymbolOnStop', { symbol: market.baseToken.symbol }) }}
+        {{
+          $t('tradingBots.buySymbolOnStop', { symbol: market.baseToken.symbol })
+        }}
       </AppCheckbox>
     </div>
 
     <div class="flex items-center gap-2">
-      <p class="text-xs text-coolGray-450">{{ $t('sgt.lowerPriceStop') }}</p>
-      <AppTooltip :text="$t('sgt.lowerPriceStopTooltip')" />
+      <p class="text-xs text-coolGray-450">
+        {{ $t('tradingBots.lowerPriceStop') }}
+      </p>
+      <AppTooltip :text="$t('tradingBots.sgt.lowerPriceStopTooltip')" />
     </div>
 
     <AppInputField
       v-model="stopLossValue"
-      :placeholder="$t('sgt.lowerPriceStop')"
+      :placeholder="$t('tradingBots.lowerPriceStop')"
       class="placeholder:font-sans"
     />
 
@@ -87,7 +93,11 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
 
     <div class="!mt-2 !-mb-2 text-coolGray-450 font-medium">
       <AppCheckbox v-model="sellBaseOnStopLossValue">
-        {{ $t('sgt.sellAllSymbolOnStop', { symbol: market.baseToken.symbol }) }}
+        {{
+          $t('tradingBots.sellAllSymbolOnStop', {
+            symbol: market.baseToken.symbol
+          })
+        }}
       </AppCheckbox>
     </div>
   </div>

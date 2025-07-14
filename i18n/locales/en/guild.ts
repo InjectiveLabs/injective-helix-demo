@@ -55,8 +55,8 @@ export default {
       guildMasterBalance: 'Guild master current TIA balance',
 
       tab: {
-        rankByTVL: 'Rank by TIA balance',
-        rankByVolume: 'Rank by volume'
+        rankByVolume: 'Rank by volume',
+        rankByTVL: 'Rank by TIA balance'
       },
       table: {
         rank: 'Rank',
@@ -95,9 +95,9 @@ export default {
     },
 
     joinGuild: {
-      title: 'Join a guild on Helix',
       cta: 'Join Guild',
       maxCap: 'Max Capacity',
+      title: 'Join a guild on Helix',
       invitationCode: 'Get invitation code on Discord',
       description:
         'Join the guild "{name}" on Helix to earn a share of the rewards!'

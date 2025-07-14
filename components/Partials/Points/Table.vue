@@ -19,7 +19,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: PointsPeriod]
 }>()
 
-const columns = [
+const columns = computed(() => [
   {
     key: 'period',
     label: t('points.period'),
@@ -35,7 +35,7 @@ const columns = [
     label: t('points.points'),
     class: 'text-right'
   }
-]
+])
 
 const limit = 7
 const page = ref(1)

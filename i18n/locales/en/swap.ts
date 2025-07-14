@@ -1,8 +1,8 @@
 export default {
   swap: {
     fees: 'Fees',
-    swap: 'Swap',
     rate: 'Rate',
+    title: 'Swap',
     route: 'Route',
     youPay: 'You pay',
     youReceive: 'You receive',
@@ -16,15 +16,15 @@ export default {
     viewTransaction: 'View Transaction',
     advancedSettings: 'Advanced Settings',
     currentlyOffline: 'Currently offline',
+    swapTime: 'Swap ({swapTimeRemaining}s)',
     somethingWentWrong: 'Something went wrong.',
+    swappedSuccessfully: 'Swapped successfully!',
     rateExpired: 'Rate expired. Click to Update',
     swapAmountTooLow: 'The swap amount is too low',
-    swappedSuccessfully: 'Swapped successfully!',
     insufficient_liquidity: 'Insufficient Liquidity',
     pleaseTryAgain: 'Please reload page to try again.',
     tooltip:
       'Your transaction will be automatically cancelled if the price changes unfavorably by more than this percentage.',
-    swapTime: 'Swap ({swapTimeRemaining}s)',
     youHaveSwapped:
       'You have swapped {inputAmount} {inputTokenSymbol} to {outputAmount} {outputTokenSymbol}',
     priceWarning:

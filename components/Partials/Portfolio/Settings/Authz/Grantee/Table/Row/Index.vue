@@ -85,11 +85,11 @@ function revokeAll() {
           sharedWalletStore.isAutoSignEnabled
         "
         v-bind="{ status }"
-        :variant="'danger-ghost'"
-        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
         size="sm"
         disabled
+        variant="danger-ghost"
         class="text-nowrap px-2"
+        :tooltip="$t('portfolio.notAvailableinAuthZOrAutoSignMode')"
       >
         {{ $t('portfolio.authZ.revokeAll') }}
       </AppButton>
@@ -97,8 +97,8 @@ function revokeAll() {
       <AppButton
         v-else
         v-bind="{ status }"
-        :variant="'danger-ghost'"
         size="sm"
+        variant="danger-ghost"
         class="text-nowrap px-2"
         @click="revokeAll"
       >

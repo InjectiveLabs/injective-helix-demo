@@ -207,7 +207,7 @@ function toggle() {
 
         <template v-if="!isLimitAndPostOnly">
           <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.maker_taker_rate') }}</p>
+            <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
             <div class="flex-1 mx-2" />
             <p
               v-if="derivativeMarket"
@@ -239,7 +239,7 @@ function toggle() {
 
         <template v-else>
           <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.maker_rate') }}</p>
+            <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
             <div class="flex-1 mx-2" />
             <p v-if="derivativeMarket" class="text-white">
               {{ makerFeeRateToFixed }}%

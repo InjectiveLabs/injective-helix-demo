@@ -40,7 +40,7 @@ withDefaults(
           :class="`from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-sm font-semibold text-transparent px-2 py-1 rounded-md`"
         >
           {{
-            $t('liquidityBots.upToRewards', {
+            $t('tradingBots.liquidityBots.upToRewards', {
               amount: marketReward.amount,
               symbol: marketReward.symbol
             })

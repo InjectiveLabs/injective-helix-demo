@@ -67,9 +67,9 @@ const filteredColumns = computed(() =>
 
           <AppTooltip
             v-if="campaign.userHasActiveLegacyStrategy"
-            is-warning
-            :content="$t('sgt.legacyBotWarning')"
             is-lg
+            is-warning
+            :content="$t('lpRewards.legacyBotWarning')"
           />
         </div>
 

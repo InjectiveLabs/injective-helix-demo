@@ -42,6 +42,7 @@ export default {
     postOnly: 'Post Only',
     noTrades: 'No trades',
     noOrders: 'No orders',
+    notAvailableNA: 'N/A',
     avgPrice: 'Avg. Price',
     direction: 'Direction',
     orderbook: 'Orderbook',
@@ -50,11 +51,9 @@ export default {
     cancelled: 'Cancelled',
     markPrice: 'Mark Price',
     cancelAll: 'Cancel All',
+    addMargin: 'Add Margin',
+    viewOrder: 'View Order',
     'pro-chart': 'Pro Chart',
-    add_margin: 'Add Margin',
-    mark_price: 'Mark Price',
-    not_available_n_a: 'N/A',
-    view_order: 'View Order',
     allMarkets: 'All Markets',
     marketName: 'Market Name',
     takeProfit: 'Take Profit',
@@ -64,19 +63,18 @@ export default {
     reduceOnly: 'Reduce Only',
     profitLoss: 'Profit/Loss',
     balanceTitle: 'Available',
+    openOrders: 'Open Orders',
     reduce_only: 'Reduce-Only',
     'stop-limit': 'Stop-Limit',
-    entry_price: 'Entry price',
     derivatives: 'Derivatives',
-    open_orders: 'Open Orders',
     liquidation: 'Liquidation',
     tickerOnly: '{ticker} only',
     cancelOrder: 'Cancel Order',
     showHistory: 'Show History',
+    makerRate: 'Maker Fee Rate',
     maxLeverage: 'Max. Leverage',
     'stop-market': 'Stop-Market',
     confirmTpSl: 'Confirm TP/SL',
-    maker_rate: 'Maker Fee Rate',
     triggerPrice: 'Trigger Price',
     averagePrice: 'Average Price',
     'trading-bots': 'Trading Bots',
@@ -86,10 +84,11 @@ export default {
     closePosition: 'Close Position',
     estFeeRebate: 'Est. Fee Rebate',
     partialFilled: 'Partial Filled',
+    proceedAnyway: 'Proceed Anyway',
     stopLossLimit: 'Stop-Loss Limit',
+    searchMarket: 'Search Market...',
+    boostedMarkets: 'Market Rewards',
     priceDeviation: 'Price Deviation',
-    search_market: 'Search Market...',
-    boosted_markets: 'Market Rewards',
     pnlPercent: 'PnL% (Open Position)',
     stopLossMarket: 'Stop-Loss Market',
     cancelStopLoss: 'Cancel Stop Loss',
@@ -97,23 +96,23 @@ export default {
     partiallyFilled: 'Partially Filled',
     cancelAllOrders: 'Cancel all orders',
     takeProfitLimit: 'Take-Profit Limit',
+    enterYourAmount: 'Enter your amount',
     advancedSettings: 'Advanced Settings',
     totalVolume: 'Total Volume ({symbol})',
     stopLossQuantity: 'Stop Loss Quantity',
     takeProfitMarket: 'Take-Profit Market',
     cancelTakeProfit: 'Cancel Take Profit',
     availableAmount: 'Available: {amount}',
-    enter_your_amount: 'Enter your amount',
+    makerTakerRate: 'Maker/Taker Fee Rate',
+    slippageTolerance: 'Slippage Tolerance',
     previousMarkPrice: 'Previous Mark Price',
-    maker_taker_rate: 'Maker/Taker Fee Rate',
-    slippage_tolerance: 'Slippage Tolerance',
     totalQuantitySize: 'Total Quantity Size',
     marketsInformation: 'Markets Information',
     minLimitOrderSize: 'Min. Limit Order Size',
     bypassPriceWarning: 'Bypass Price Warning',
     totalQuantity: 'Total Quantity ({symbol})',
     takeProfitQuantity: 'Take Profit Quantity',
-    disqualified_markets: 'Disqualified Markets',
+    disqualifiedMarkets: 'Disqualified Markets',
     estLiquidationPrice: 'Est. Liquidation Price',
     stopLossTriggerPrice: 'Stop Loss Trigger Price',
     emptyAdvancedOrders: 'No Advanced Orders Found',
@@ -123,12 +122,11 @@ export default {
     minNotionalError: 'Minimum order value > {minNotional} {symbol}',
     doNotShowThisConfirmationAgain: 'Do not show this confirmation again',
     availableMarginTooltip: 'The available margin you can add to this position',
-
-    there_are_no_disqualified_markets_on_this_relayer:
+    thereAreNoDisqualifiedMarketsOnThisRelayer:
       'There are no disqualified markets on this relayer.',
     tensMultiplierRounded:
       'Automatically rounded down to the nearest multiple of {minTickSize}',
-    mark_price_invalid:
+    markPriceInvalid:
       'Please modify price, amount, or leverage to meet mark price requirement',
     eip712Warning:
       'Due to extremely high usage, gas-free transactions are currently unavailable',
@@ -142,13 +140,13 @@ export default {
       'Your transaction might be executed at a less desirable price if slippage % is set too high.',
     positionUsedTooltip:
       '{quantity} is being used for another order. You can cancel or modify any of your open orders.',
-    disqualified_markets_tooltip:
+    disqualifiedMarketsTooltip:
       'Markets that are disqualified from Trade & Earn. Trading activity in these markets will not earn any reward points.',
     worstPriceTooltip:
       "The worst price reflects the highest you'll pay when buying or the lowest you'll receive when selling, according to slippage tolerance.",
     chaseTooltip:
       'Click Chase to automatically modify this open limit order to the current best bid/ask price. You must have auto-sign enabled to use this feature.',
-    boosted_markets_tooltip:
+    boostedMarketsTooltip:
       'The reward rate for taker and maker orders in each market. For example: 3x maker pts means that trading fees paid by maker orders in this market will receive reward points equal to 3 times the value of trading fees.',
 
     tab: {
@@ -168,7 +166,9 @@ export default {
       nyseClosedTimes: 'NYSE trading hours',
       statusOfThisMarket: 'Status of this market',
       rwaClosedTimes: ' traditional RWA price feeds',
+      nyseClosedMarketRow: 'This market follows NYSE trading hours.',
       thisMayIncreaseYourTradingRisk: 'This may increase your trading risk.',
+      rwaClosedMarketRow: 'This market follows traditional RWA price feeds.',
       acknowledge:
         'I understand, I accept the risk, and I wish to proceed with my trade.',
       tradesCanBePlace:
@@ -181,21 +181,20 @@ export default {
     stats: {
       low: '24h Low',
       high: '24h High',
-      usd_value: 'USD Value',
+      usdValue: 'USD Value',
       marketCap: 'Market Cap',
       annualized: 'Annualized',
-      next_funding: 'Next Funding',
+      nextFunding: 'Next Funding',
       volumeInUsd: 'Volume USD (24h)',
-      market_volume_24h: 'Volume (24h)',
-      est_funding_rate: 'Est. Funding Rate',
-      // open_interest: 'Open Interest (USDT)',
-      usd_value_tooltip: 'The USD value based on the quote asset price',
+      marketVolume24h: 'Volume (24h)',
+      estFundingRate: 'Est. Funding Rate',
+      // openInterest: 'Open Interest (USDT)',
 
       marketCapTooltip:
         'The market cap is calculated by multiplying the current price by the current circulating supply. Some tokens on Injective have an infinite maximum supply.',
-      funding_rate_tooltip:
+      fundingRateTooltip:
         'Funding payments are based on the difference between the perpetual price and the spot price. If the rate is positive, longs pay shorts. If negative, shorts pay longs.',
-      mark_price_tooltip:
+      markPriceTooltip:
         'Used for margining, computing unrealised PNL and funding rates, liquidations, and TP/SL orders.'
     },
 
@@ -223,6 +222,7 @@ export default {
       depositToNeptune: 'Deposit to Neptune',
       percentageInReserve: '(15% in reserve)',
       automatedYields: 'Helix Automated Yields',
+      withdrawFromNeptune: 'Withdraw from Neptune',
       availableUsdt: '≈{peggyUsdt} USDT + {neptuneUsdt} Neptune USDT',
       apyTooltip:
         'This is the APY currently offered by Neptune on USDT deposits. This amount will change over time.',

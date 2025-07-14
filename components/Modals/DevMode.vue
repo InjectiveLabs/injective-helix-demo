@@ -155,14 +155,14 @@ function connectViaPrivateKey() {
             v-if="connectType === ConnectType.Address"
             v-model="address"
             wrapper-classes="py-2 px-1"
-            :placeholder="$t('devMode.enterInjectiveAddress')"
+            :placeholder="$t('common.modal.devMode.enterInjectiveAddress')"
           />
 
           <AppInput
             v-if="connectType === ConnectType.PrivateKey"
             v-model="privateKey"
             wrapper-classes="py-2 px-1"
-            :placeholder="$t('devMode.enterPrivateKey')"
+            :placeholder="$t('common.modal.devMode.enterPrivateKey')"
           />
         </div>
         <div class="w-full mt-6 text-center">

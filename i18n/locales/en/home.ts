@@ -3,6 +3,7 @@ export default {
     openFinance: 'Open Finance',
     description:
       'Secure, fast, gas-free on-chain trading with institutional liquidity',
+
     gasFees: 'Gas Fees',
     whyHelix: 'Why Helix?',
     reimagined: 'Reimagined',

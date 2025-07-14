@@ -13,7 +13,7 @@ const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
 
-const options = [
+const options = computed<SharedDropdownOption[]>(() => [
   {
     display: t('connect.ledgerLive'),
     value: LedgerDerivationPathType.LedgerLive
@@ -22,7 +22,7 @@ const options = [
     display: t('connect.ledgerLegacy'),
     value: LedgerDerivationPathType.LedgerMew
   }
-] as SharedDropdownOption[]
+])
 
 const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))

@@ -48,40 +48,40 @@ const formattedStrategies = computed(() =>
 const columns = computed(() => [
   {
     class: 'w-32',
-    label: t('sgt.startTime'),
+    label: t('tradingBots.startTime'),
     key: PortfolioTradingBotsRunningTableColumn.Time
   },
   {
-    label: t('sgt.market'),
+    label: t('trade.market'),
     key: PortfolioTradingBotsRunningTableColumn.Market
   },
   {
-    label: t('sgt.lowerBound'),
+    label: t('tradingBots.lowerBound'),
     key: PortfolioTradingBotsRunningTableColumn.LowerBound
   },
   {
-    label: t('sgt.upperBound'),
+    label: t('tradingBots.upperBound'),
     key: PortfolioTradingBotsRunningTableColumn.UpperBound
   },
   {
-    label: t('sgt.totalAmount'),
+    label: t('tradingBots.totalAmount'),
     key: PortfolioTradingBotsRunningTableColumn.TotalAmount
   },
   {
-    label: t('sgt.totalProfit'),
+    label: t('tradingBots.totalProfit'),
     key: PortfolioTradingBotsRunningTableColumn.TotalProfit
   },
   {
-    label: t('sgt.duration'),
+    label: t('tradingBots.duration'),
     key: PortfolioTradingBotsRunningTableColumn.Duration
   },
   {
-    label: t('sgt.details'),
+    label: t('common.details'),
     key: PortfolioTradingBotsRunningTableColumn.Details
   }
   // {
   //   key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
-  //   label: t('sgt.removeStrategy')
+  //   label: t('tradingBots.removeStrategy')
   // }
 ])
 
@@ -241,7 +241,7 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.moreInfo') }}
+          {{ t('tradingBots.moreInfo') }}
         </AppButton>
       </template>
 
@@ -270,7 +270,7 @@ function selectStrategy(
       </template> -->
 
       <template #empty-state>
-        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+        <CommonEmptyList :message="$t('tradingBots.noActiveStrategies')" />
       </template>
     </UTable>
 
@@ -286,7 +286,7 @@ function selectStrategy(
 
     <CommonEmptyList
       v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
-      :message="$t('sgt.noActiveStrategies')"
+      :message="$t('tradingBots.noActiveStrategies')"
     />
 
     <AppModal v-model="isOpen" v-bind="{ isSm: true }">

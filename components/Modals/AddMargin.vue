@@ -128,7 +128,7 @@ const onSubmit = handleSubmit(() => {
   <AppModal v-model="modalStore.modals[Modal.AddMarginToPosition]">
     <template #title>
       <h3>
-        {{ $t('trade.add_margin') }}
+        {{ $t('trade.addMargin') }}
       </h3>
     </template>
 
@@ -170,7 +170,7 @@ const onSubmit = handleSubmit(() => {
                   :label="$t('trade.amount')"
                   :max="Number(availableMarginToFixed)"
                   autofix
-                  :placeholder="$t('trade.enter_your_amount')"
+                  :placeholder="$t('trade.enterYourAmount')"
                   class="no-shadow"
                   data-cy="add-margin-modal-amount-input"
                   :decimals="4"
@@ -206,7 +206,7 @@ const onSubmit = handleSubmit(() => {
                   data-cy="add-margin-modal-execute-button"
                   @click="onSubmit"
                 >
-                  {{ $t('trade.add_margin') }}
+                  {{ $t('trade.addMargin') }}
                 </AppButton>
               </div>
             </div>

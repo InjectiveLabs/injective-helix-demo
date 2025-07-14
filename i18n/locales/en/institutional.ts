@@ -4,7 +4,6 @@ export default {
     talkToUs: 'Talk to us.',
     modalTitle: 'Get In Touch',
     getInTouch: 'Get in touch',
-    privacyPolicy: 'Privacy Policy',
     learnMore: 'Ready to learn More?',
     trustedByTheBest: 'Trusted by the best',
     heroTitle: 'Truly On-Chain Institutional Finance',
@@ -13,6 +12,13 @@ export default {
     whyFinancialInstitutionsChooseHelix:
       'Why financial institutions choose Helix',
     heroSubtitle:
-      'Engage with unlimited crypto assets, perpetuals, and structured products on the only fully decentralized network.'
+      'Engage with unlimited crypto assets, perpetuals, and structured products on the only fully decentralized network.',
+
+    form: {
+      email: 'Email',
+      company: 'Company',
+      lastName: 'Last Name',
+      firstName: 'First Name'
+    }
   }
 }

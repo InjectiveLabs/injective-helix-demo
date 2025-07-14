@@ -54,7 +54,7 @@ function onSlippageChange(value: string) {
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsSlippage)"
     >
       <p class="field-label">
-        {{ $t('trade.slippage_tolerance') }}
+        {{ $t('trade.slippageTolerance') }}
       </p>
 
       <AppTooltip v-bind="{ content: $t('trade.slippageTooltip') }">

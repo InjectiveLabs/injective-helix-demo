@@ -15,7 +15,7 @@ const props = withDefaults(
 
 const { rows } = useHistoryWalletTransformer(computed(() => props.transactions))
 
-const columns = [
+const columns = computed(() => [
   {
     key: HistoryWalletTableColumn.Time,
     label: t(`portfolio.table.historyWallet.${HistoryWalletTableColumn.Time}`)
@@ -45,7 +45,7 @@ const columns = [
       `portfolio.table.historyWallet.${HistoryWalletTableColumn.Destination}`
     )
   }
-]
+])
 </script>
 
 <template>

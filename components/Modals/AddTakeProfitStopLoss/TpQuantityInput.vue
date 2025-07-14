@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PerpetualMarketCyTags } from '@/types';
+import { PerpetualMarketCyTags } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
@@ -62,7 +62,7 @@ function onOptionUpdate(percentage: number) {
       v-if="isTpMarkPriceThresholdError"
       class="error-message first-letter:capitalize"
     >
-      {{ $t('trade.mark_price_invalid') }}
+      {{ $t('trade.markPriceInvalid') }}
     </p>
 
     <p

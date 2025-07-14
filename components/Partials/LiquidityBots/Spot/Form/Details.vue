@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { volatilityStrategyBounds } from '@/app/data/grid-strategy'
-import {
-  LiquidityBotField,
-  LiquidityBotForm,
+import { LiquidityBotField } from '@/types'
+import type { Status } from '@injectivelabs/utils'
+import type {
   LiquidityValues,
+  LiquidityBotForm,
   VolatilityStrategyType
 } from '@/types'
 
 defineProps<{
-  liquidityValues: LiquidityValues
   status: Status
+  liquidityValues: LiquidityValues
   lastTradedPrice: BigNumberInBase
 }>()
 
@@ -44,7 +45,7 @@ const trailingBounds = computed(() => {
         <div class="text-white space-y-2">
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('sgt.numberOfGrids') }}
+              {{ $t('tradingBots.numberOfGrids') }}
             </p>
 
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
@@ -56,7 +57,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('sgt.lowerPrice') }}
+              {{ $t('tradingBots.lowerPrice') }}
             </p>
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
@@ -71,7 +72,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('sgt.upperPrice') }}
+              {{ $t('tradingBots.upperPrice') }}
             </p>
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
@@ -86,7 +87,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center max-sm:hidden">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.trailingBoundaries') }}
+              {{ $t('tradingBots.liquidityBots.trailingBoundaries') }}
             </p>
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
@@ -107,7 +108,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center sm:hidden">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.trailingBoundaries') }}
+              {{ $t('tradingBots.liquidityBots.trailingBoundaries') }}
             </p>
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
@@ -118,7 +119,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center sm:hidden">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.trailingUpper') }}
+              {{ $t('tradingBots.liquidityBots.trailingUpper') }}
             </p>
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
@@ -132,7 +133,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center sm:hidden">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.trailingLower') }}
+              {{ $t('tradingBots.liquidityBots.trailingLower') }}
             </p>
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
@@ -146,7 +147,7 @@ const trailingBounds = computed(() => {
 
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.currentPrice') }}
+              {{ $t('tradingBots.currentPrice') }}
             </p>
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
@@ -163,14 +164,14 @@ const trailingBounds = computed(() => {
 
           <!-- <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.stopLoss') }}
+              {{ $t('trade.stopLoss') }}
             </p>
             <p class="font-semibold">ToDo</p>
           </div>
 
           <div class="flex justify-between items-center">
             <p class="text-xs text-coolGray-500">
-              {{ $t('liquidityBots.takeProfit') }}
+              {{ $t('trade.takeProfit') }}
             </p>
             <p class="font-semibold">ToDo</p>
           </div> -->

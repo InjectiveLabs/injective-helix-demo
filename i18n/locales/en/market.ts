@@ -3,13 +3,11 @@ import { MarketCategoryType } from '@/types'
 export default {
   markets: {
     vol: 'Vol',
-    cancel: 'Cancel',
     iAsset: 'iAsset',
     marketId: 'Market ID',
     showLowVol: 'Show low vol.',
     newMarkets: '🐤 New Markets',
     topGainers: '🚀 Top Gainers',
-    proceedAnyway: 'Proceed Anyway',
     closePositionWarningTitle: 'High price impact detected',
     indexMarketTooltip:
       'This market follows the {label}. More details can be found {link}.',

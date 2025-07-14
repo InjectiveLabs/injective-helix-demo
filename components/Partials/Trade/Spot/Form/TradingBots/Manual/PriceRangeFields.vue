@@ -91,11 +91,11 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
 <template>
   <div class="space-y-4 mb-4">
-    <p class="field-label">1. {{ $t('sgt.priceRange') }}</p>
+    <p class="field-label">1. {{ $t('tradingBots.priceRange') }}</p>
 
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-2">
-        <p class="text-xs text-coolGray-450">{{ $t('sgt.lower') }}</p>
+        <p class="text-xs text-coolGray-450">{{ $t('tradingBots.lower') }}</p>
         <AppInputField
           v-model="lowerPriceValue"
           :disabled="isDisabled"
@@ -107,7 +107,7 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
       </div>
 
       <div class="space-y-2">
-        <p class="text-xs text-coolGray-450">{{ $t('sgt.upper') }}</p>
+        <p class="text-xs text-coolGray-450">{{ $t('tradingBots.upper') }}</p>
         <AppInputField
           v-model="upperPriceValue"
           :disabled="isDisabled"

@@ -5,7 +5,7 @@ import { MainPage } from '@/types'
 const { t } = useLang()
 const route = useRoute()
 
-const resourcesList = [
+const resourcesList = computed(() => [
   {
     text: t('footer.institutional'),
     link: MainPage.Institutional
@@ -18,9 +18,9 @@ const resourcesList = [
     text: t('footer.privacyPolicy'),
     link: MainPage.PrivacyPolicy
   }
-]
+])
 
-const supportList = [
+const supportList = computed(() => [
   {
     text: t('footer.docs'),
     link: 'https://docs.helixapp.com/'
@@ -33,9 +33,9 @@ const supportList = [
     text: t('footer.termsAndConditions'),
     link: MainPage.Terms
   }
-]
+])
 
-const communityList = [
+const communityList = computed(() => [
   {
     text: t('footer.blog'),
     link: 'https://blog.helixapp.com/'
@@ -44,7 +44,7 @@ const communityList = [
     text: t('footer.explorer'),
     link: 'https://injscan.com/'
   }
-]
+])
 </script>
 
 <template>

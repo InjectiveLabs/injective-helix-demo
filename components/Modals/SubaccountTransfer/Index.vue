@@ -271,7 +271,7 @@ function closeModal() {
         </div>
 
         <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
-          {{ t('account.noAssetToTransfer') }}
+          {{ t('common.account.noAssetToTransfer') }}
         </div>
       </div>
 

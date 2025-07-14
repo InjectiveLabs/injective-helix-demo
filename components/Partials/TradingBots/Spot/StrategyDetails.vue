@@ -50,19 +50,21 @@ const percentagePnl = computed(() =>
   <div v-if="strategy" class="text-sm space-y-2">
     <div class="flex items-center justify-between">
       <p class="text-lg font-bold">
-        {{ $t('sgt.gridDetails') }}
+        {{ $t('tradingBots.gridDetails') }}
       </p>
       <div class="flex items-center gap-2">
         <div
           class="w-2 h-2 rounded-full"
           :class="strategy.isActive ? 'bg-green-500' : 'bg-red-500'"
         />
-        <p>{{ $t(`sgt.${strategy.strategyStatus}`) }}</p>
+        <p>{{ $t(`tradingBots.${strategy.strategyStatus}`) }}</p>
       </div>
     </div>
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.totalProfit') }}
+      </p>
 
       <div
         v-if="
@@ -98,7 +100,7 @@ const percentagePnl = computed(() =>
 
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.totalAmount') }}
+        {{ $t('tradingBots.totalAmount') }}
       </p>
 
       <div
@@ -125,9 +127,9 @@ const percentagePnl = computed(() =>
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
         <span v-if="strategy.isActive">
-          {{ $t('liquidityBots.currentBalance') }}
+          {{ $t('tradingBots.liquidityBots.currentBalance') }}
         </span>
-        <span v-else>{{ $t('liquidityBots.finalBalance') }}</span>
+        <span v-else>{{ $t('tradingBots.liquidityBots.finalBalance') }}</span>
       </p>
 
       <div
@@ -165,7 +167,9 @@ const percentagePnl = computed(() =>
     <div class="border-t border-coolGray-800 !my-4" />
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.timeCreated') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.liquidityBots.timeCreated') }}
+      </p>
 
       <div>
         {{ strategy.createdAtFormatted }}
@@ -173,7 +177,9 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.duration') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.liquidityBots.duration') }}
+      </p>
 
       <div>
         {{ strategy.durationFormatted }}
@@ -183,7 +189,7 @@ const percentagePnl = computed(() =>
     <div class="border-t border-coolGray-800 !my-4" />
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.priceRange') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.priceRange') }}</p>
       <div class="text-right">
         <PartialsLiquidityCommonDetailsPair
           v-bind="{
@@ -198,7 +204,7 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.initialAmount') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.initialAmount') }}</p>
       <div class="text-right">
         <PartialsLiquidityCommonDetailsPair
           v-bind="{
@@ -212,7 +218,7 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.initialEntryPrice') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.initialEntryPrice') }}</p>
       <div class="text-right">
         <SharedAmountFormatter
           :amount="strategy.executionPrice"
@@ -226,7 +232,7 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.numberOfGrids') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.numberOfGrids') }}</p>
       <div class="text-right">
         {{ strategy.numberOfGridLevels }}
       </div>
@@ -234,11 +240,11 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.takeProfit') }}</span>
+        <span>{{ $t('trade.takeProfit') }}</span>
       </span>
 
       <div>
-        <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
+        <span v-if="!strategy.takeProfit">{{ $t('common.disabled') }}</span>
         <span v-else class="capitalize">
           {{ strategy.takeProfit.exitPrice }} /
           {{ strategy.takeProfit.exitType }}
@@ -248,11 +254,11 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.stopLoss') }}</span>
+        <span>{{ $t('trade.stopLoss') }}</span>
       </span>
 
       <div>
-        <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
+        <span v-if="!strategy.stopLoss">{{ $t('common.disabled') }}</span>
         <span v-else class="capitalize">
           {{ strategy.stopLoss.exitPrice }} /
           {{ strategy.stopLoss.exitType }}
@@ -265,7 +271,7 @@ const percentagePnl = computed(() =>
       class="flex justify-between mb-2 text-sm"
     >
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.trailingUpper') }}
+        {{ $t('tradingBots.liquidityBots.trailingUpper') }}
       </p>
       <div class="text-right">
         {{ strategy.trailingUpper }}
@@ -277,7 +283,7 @@ const percentagePnl = computed(() =>
       class="flex justify-between mb-2 text-sm"
     >
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.trailingLower') }}
+        {{ $t('tradingBots.liquidityBots.trailingLower') }}
       </p>
       <div class="text-right">
         {{ strategy.trailingLower }}
@@ -286,16 +292,16 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">
-        {{ $t('sgt.gridMode') }}
+        {{ $t('tradingBots.gridMode') }}
       </p>
       <div class="text-right">
-        {{ $t(`sgt.modes.${strategy.strategyType}`) }}
+        {{ $t(`tradingBots.sgt.modes.${strategy.strategyType}`) }}
       </div>
     </div>
 
     <div v-if="strategy.stopReason" class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">
-        {{ $t('sgt.stopReason') }}
+        {{ $t('tradingBots.stopReason') }}
       </p>
       <div class="text-right">
         {{ $t(STOP_REASON_MAP[strategy.stopReason]) }}
@@ -326,7 +332,7 @@ const percentagePnl = computed(() =>
           class="w-full"
           @click="removeStrategy"
         >
-          {{ $t('sgt.removeStrategy') }}
+          {{ $t('tradingBots.removeStrategy') }}
         </AppButton>
       </PartialsLiquidityBotsSpotCommonRemoveStrategy>
     </div>

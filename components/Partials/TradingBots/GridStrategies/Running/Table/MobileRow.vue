@@ -80,7 +80,7 @@ function selectStrategy() {
             size="xs"
             @click="selectStrategy"
           >
-            {{ t('sgt.details') }}
+            {{ t('common.details') }}
           </AppButton>
           <PartialsLiquidityBotsSpotCommonRemoveStrategy
             v-bind="{
@@ -100,7 +100,7 @@ function selectStrategy() {
                 variant="danger-shade"
                 @click="removeStrategy"
               >
-                {{ t('sgt.removeStrategy') }}
+                {{ t('tradingBots.removeStrategy') }}
               </AppButton>
             </template>
           </PartialsLiquidityBotsSpotCommonRemoveStrategy>
@@ -186,7 +186,7 @@ function selectStrategy() {
         class="text-blue-500 hover:text-blue-500"
         @click="selectStrategy"
       >
-        {{ t('sgt.details') }}
+        {{ t('common.details') }}
       </AppButton>
     </template>
 

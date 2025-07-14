@@ -33,14 +33,18 @@ function closeModal() {
     </template>
 
     <div class="relative">
-      <i18n-t keypath="terms.disclaimerNote" tag="p" class="text-sm">
+      <i18n-t
+        keypath="common.modal.terms.disclaimerNote"
+        tag="p"
+        class="text-sm"
+      >
         <template #terms>
           <NuxtLink
             target="_blank"
             class="text-blue-500 hover:text-opacity-80"
             :to="{ name: MainPage.Terms }"
           >
-            {{ $t('terms.termsAndCondition') }}
+            {{ $t('common.modal.terms.termsAndCondition') }}
           </NuxtLink>
         </template>
 
@@ -50,29 +54,29 @@ function closeModal() {
             class="text-blue-500 hover:text-opacity-80"
             to="https://injectivelabs.org/privacy"
           >
-            {{ $t('terms.privacyPolicy') }}
+            {{ $t('common.modal.terms.privacyPolicy') }}
           </NuxtLink>
         </template>
       </i18n-t>
 
       <ul class="p-4 bg-coolGray-900 mt-6 text-xs text-coolGray-300 rounded-lg">
         <li class="font-bold text-coolGray-200">
-          {{ $t('terms.title') }}
+          {{ $t('common.modal.terms.title') }}
         </li>
         <li class="mt-2">
-          {{ $t('terms.acknowledge_1') }}
+          {{ $t('common.modal.terms.acknowledge_1') }}
         </li>
         <li class="mt-2">
-          {{ $t('terms.acknowledge_2') }}
+          {{ $t('common.modal.terms.acknowledge_2') }}
         </li>
         <li class="mt-2">
-          {{ $t('terms.acknowledge_3') }}
+          {{ $t('common.modal.terms.acknowledge_3') }}
         </li>
         <li class="mt-2">
-          {{ $t('terms.acknowledge_4') }}
+          {{ $t('common.modal.terms.acknowledge_4') }}
         </li>
         <li class="mt-2">
-          {{ $t('terms.acknowledge_5') }}
+          {{ $t('common.modal.terms.acknowledge_5') }}
         </li>
       </ul>
       <div class="mt-6 flex items-center justify-center gap-3">

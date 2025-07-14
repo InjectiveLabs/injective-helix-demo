@@ -3,9 +3,9 @@ import { PortfolioSubPage } from '@/types'
 
 const { t } = useLang()
 
-const options = [
+const options = computed(() => [
   {
-    label: t('trade.open_orders'),
+    label: t('trade.openOrders'),
     to: { name: PortfolioSubPage.OrdersFutures }
   },
   {
@@ -20,7 +20,7 @@ const options = [
     label: t('portfolio.tradeHistory'),
     to: { name: PortfolioSubPage.OrdersFuturesTradeHistory }
   }
-]
+])
 </script>
 
 <template>

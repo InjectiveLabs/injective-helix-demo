@@ -78,8 +78,8 @@ function incrementLimit() {
         @limit:increment="incrementLimit"
       />
 
-      <div class="mx-auto mt-6 leading-5">
-        <span>{{ $t('leaderboard.footer.onlyTop100') }}</span>
+      <div class="mt-6 leading-5">
+        <span>{{ $t('leaderboard.footer.onlyTop100') }}&nbsp;</span>
         <span v-if="!sharedWalletStore.isUserConnected">
           {{ $t('leaderboard.footer.onlyTop100Connect') }}
         </span>

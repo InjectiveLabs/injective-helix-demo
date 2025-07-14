@@ -19,7 +19,7 @@ const { t } = useLang()
 const chartEl = ref<null | HTMLElement>(null)
 let chart: ApexCharts
 
-const options: ApexOptions = {
+const options = computed<ApexOptions>(() => ({
   grid: { show: false },
   theme: { mode: 'dark' },
   dataLabels: { enabled: false },
@@ -60,10 +60,10 @@ const options: ApexOptions = {
       }
     }
   }
-}
+}))
 
 onMounted(() => {
-  chart = new ApexCharts(chartEl.value, options)
+  chart = new ApexCharts(chartEl.value, options.value)
   chart.render()
 })
 

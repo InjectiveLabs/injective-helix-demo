@@ -47,13 +47,13 @@ function closePosition() {
       >
         <UButton
           variant="outline"
-          :label="$t('markets.cancel')"
+          :label="$t('common.cancel')"
           class="flex-1 flex justify-center items-center py-3 px-6 max-sm:px-3 dark:text-white ring-primary-600 transition-colors"
           @click="closeModal"
         />
         <UButton
           class="flex-1 flex justify-center items-center py-3 px-6 max-sm:px-3 dark:text-white dark:bg-primary-600 dark:hover:bg-primary-500 transition-colors"
-          :label="$t('markets.proceedAnyway')"
+          :label="$t('trade.proceedAnyway')"
           @click="closePosition"
         />
       </div>

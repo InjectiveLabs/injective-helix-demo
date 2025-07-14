@@ -3,7 +3,7 @@ import { NuxtUiIcons } from '@shared/types'
 
 const { t } = useI18n()
 
-const faqList = [
+const faqList = computed(() => [
   {
     label: t('home.faq.accordion1.title'),
     slot: 'accordion-1'
@@ -28,7 +28,7 @@ const faqList = [
     label: t('home.faq.accordion6.title'),
     slot: 'accordion-6'
   }
-]
+])
 </script>
 
 <template>

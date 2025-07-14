@@ -125,7 +125,7 @@ function disconnectAutoSign() {
           size="sm"
           :disabled="true"
         >
-          {{ $t('common.notAvailableinAuthZMode') }}
+          {{ $t('portfolio.settings.notAvailableinAuthZMode') }}
         </AppButton>
 
         <template v-else>

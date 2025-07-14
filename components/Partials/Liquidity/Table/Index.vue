@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{ campaigns: Campaign[] }>(), {})
 
 const { rows } = useLiquidityTransformer(computed(() => props.campaigns))
 
-const columns = [
+const columns = computed(() => [
   {
     key: LiquidityTableColumn.Market,
     label: t(`lpRewards.table.liquidity.${LiquidityTableColumn.Market}`)
@@ -36,7 +36,7 @@ const columns = [
   {
     key: LiquidityTableColumn.Action
   }
-]
+])
 </script>
 
 <template>
@@ -78,9 +78,9 @@ const columns = [
 
             <AppTooltip
               v-if="row.userHasActiveLegacyStrategy"
-              is-warning
-              :content="$t('sgt.legacyBotWarning')"
               is-lg
+              is-warning
+              :content="$t('lpRewards.legacyBotWarning')"
             />
           </div>
         </div>
@@ -105,9 +105,9 @@ const columns = [
               <PartialsLiquidityCommonTokenAmount
                 v-if="reward.token"
                 v-bind="{
+                  index,
                   amount: reward.value,
-                  symbol: reward.token.symbol,
-                  index
+                  symbol: reward.token.symbol
                 }"
               />
             </template>

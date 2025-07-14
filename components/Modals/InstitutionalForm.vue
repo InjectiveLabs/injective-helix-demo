@@ -90,23 +90,27 @@ async function onSubmit() {
         <input
           v-model="firstNameValue"
           :class="classes"
-          placeholder="First Name*"
+          :placeholder="`${t('institutional.form.firstName')}*`"
         />
 
         <input
           v-model="lastNameValue"
           :class="classes"
-          placeholder="Last Name*"
+          :placeholder="`${t('institutional.form.lastName')}*`"
         />
 
         <input
           v-model="emailValue"
-          :class="classes"
-          placeholder="Email*"
           type="email"
+          :class="classes"
+          :placeholder="`${t('institutional.form.email')}*`"
         />
 
-        <input v-model="companyValue" :class="classes" placeholder="Company*" />
+        <input
+          v-model="companyValue"
+          :class="classes"
+          :placeholder="`${t('institutional.form.company')}*`"
+        />
       </div>
 
       <div class="mt-10">

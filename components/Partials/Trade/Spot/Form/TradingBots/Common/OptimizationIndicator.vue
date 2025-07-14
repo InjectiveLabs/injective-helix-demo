@@ -27,9 +27,11 @@ function onOptimizeBalance() {
     <div class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
         <p class="text-sm font-semibold">
-          {{ $t('sgt.optimization.balanceStability') }}
+          {{ $t('tradingBots.sgt.optimization.balanceStability') }}
         </p>
-        <AppTooltip :text="$t('sgt.optimization.balancedTooltip')" />
+        <AppTooltip
+          :text="$t('tradingBots.sgt.optimization.balancedTooltip')"
+        />
       </div>
 
       <UBadge :color="percentage <= 80 ? 'blue' : 'green'" variant="soft">
@@ -55,11 +57,11 @@ function onOptimizeBalance() {
         <UIcon :name="NuxtUiIcons.WarningOutline" class="mt-px size-4" />
         <div>
           <p class="text-xs">
-            {{ $t('sgt.optimization.balanceNeedsAdjusting') }}
+            {{ $t('tradingBots.sgt.optimization.balanceNeedsAdjusting') }}
           </p>
           <p class="text-xs text-gray-400">
             {{
-              $t('sgt.optimization.yourBalanceIsOffBy', {
+              $t('tradingBots.sgt.optimization.yourBalanceIsOffBy', {
                 percentage: offByPercentage
               })
             }}
@@ -71,10 +73,10 @@ function onOptimizeBalance() {
         <UIcon :name="NuxtUiIcons.CheckmarkOutline" class="mt-px size-4" />
         <div>
           <p class="text-xs">
-            {{ $t('sgt.optimization.balanceOptimized') }}
+            {{ $t('tradingBots.sgt.optimization.balanceOptimized') }}
           </p>
           <p class="text-xs text-gray-400">
-            {{ $t('sgt.optimization.yourBalanceIsOptimal') }}
+            {{ $t('tradingBots.sgt.optimization.yourBalanceIsOptimal') }}
           </p>
         </div>
       </div>
@@ -82,7 +84,7 @@ function onOptimizeBalance() {
 
     <div v-if="percentage <= 80 && hasEnoughFundsToRebalance" class="mt-3">
       <UButton size="xs" block variant="outline" @click="onOptimizeBalance">
-        {{ $t('sgt.optimization.optimizeBalance') }}
+        {{ $t('tradingBots.sgt.optimization.optimizeBalance') }}
       </UButton>
     </div>
   </div>

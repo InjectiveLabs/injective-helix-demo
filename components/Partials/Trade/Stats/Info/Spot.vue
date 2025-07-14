@@ -43,7 +43,7 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
 <template>
   <PartialsTradeStatsHeaderItem
     v-if="!isStableQuoteAsset"
-    :title="$t('trade.stats.usd_value')"
+    :title="$t('trade.stats.usdValue')"
   >
     <p>
       <AppUsdAmount

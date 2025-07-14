@@ -13,6 +13,7 @@ export default {
     transactionFinalized: 'Tx finalized in {duration} sec. {viewOnInjScan}',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
+
     account: {
       authZAdded: 'AuthZ account added',
       assetsTransferred: 'Assets transferred to your account',
@@ -62,6 +63,7 @@ export default {
       allAdvancedOrdersCancelled: 'All advanced orders cancelled',
       rwaMarketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
+
       neptuneUsdt: {
         success: {
           deposit: 'Neptune deposit successful',
@@ -96,8 +98,7 @@ export default {
       successfullyCreateGuild: 'Successfully created guild',
       copiedInvitationLink: 'Invitation code copied to your clipboard.'
     },
-    sgt: {
-      strategyRemoved: 'strategy removed successfully',
+    tradingBots: {
       tradingBotRemovedSuccessfully: 'Trading bot removed successfully',
       tradingBotCreatedSuccessfully: 'Trading bot created successfully'
     },

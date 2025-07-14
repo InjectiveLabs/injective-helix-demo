@@ -42,19 +42,11 @@ onMounted(() => {
 <template>
   <div class="text-center">
     <h2 class="font-semibold text-xl pt-2 text-white">
-      {{ $t('onboarding.depositInjNetworkAsset') }}
+      {{ $t('common.modal.onboarding.depositInjNetworkAsset') }}
     </h2>
 
     <p class="text-sm mt-4 text-white">
-      {{
-        $t(
-          `onboarding.${
-            isPortfolioBalancePage
-              ? 'depositNowDescription'
-              : 'fundsNeededDescription'
-          }`
-        )
-      }}
+      {{ $t('common.modal.onboarding.depositNowDescription') }}
     </p>
 
     <div class="max-w-[300px] mx-auto mt-8">
@@ -81,7 +73,7 @@ onMounted(() => {
         class="w-full text-base leading-5 py-2.5 font-semibold"
         @click="onPurchaseFunds"
       >
-        {{ $t('onboarding.qr.cta') }}
+        {{ $t('common.modal.onboarding.qr.cta') }}
       </AppButton>
 
       <PartialsCommonBridgeRedirection :denom="usdtToken.denom">
@@ -89,7 +81,7 @@ onMounted(() => {
           variant="primary-outline"
           class="w-full text-white hover:text-white text-base leading-5 py-2.5 font-semibold"
         >
-          {{ $t('onboarding.qr.bridge') }}
+          {{ $t('common.modal.onboarding.qr.bridge') }}
         </AppButton>
       </PartialsCommonBridgeRedirection>
     </div>

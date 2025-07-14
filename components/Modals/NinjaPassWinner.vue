@@ -58,16 +58,16 @@ function closeModal() {
   >
     <template #title>
       <h3 class="normal-case">
-        {{ $t('ninjaPass.congratulations') }}
+        {{ $t('common.modal.ninjaPass.congratulations') }}
       </h3>
     </template>
 
     <div class="flex flex-col">
       <span class="text-sm mb-4">
-        {{ $t('ninjaPass.title') }}
+        {{ $t('common.modal.ninjaPass.title') }}
       </span>
       <span class="text-sm">
-        {{ $t('ninjaPass.description') }}
+        {{ $t('common.modal.ninjaPass.description') }}
       </span>
 
       <div class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2 text-sm">
@@ -77,7 +77,7 @@ function closeModal() {
           class="bg-blue-500 py-2 h-10 rounded border flex items-center justify-center gap-2 cursor-pointer"
         >
           <span class="font-semibold text-blue-900">
-            {{ $t('ninjaPass.verifyNow') }}
+            {{ $t('common.modal.ninjaPass.verifyNow') }}
           </span>
           <UIcon
             :name="NuxtUiIcons.ExternalLink"
@@ -90,7 +90,7 @@ function closeModal() {
           @click="closeModal"
         >
           <span class="font-semibold text-blue-100">
-            {{ $t('ninjaPass.later') }}
+            {{ $t('common.modal.ninjaPass.later') }}
           </span>
         </button>
       </div>

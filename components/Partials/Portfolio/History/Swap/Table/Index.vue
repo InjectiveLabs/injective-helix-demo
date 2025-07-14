@@ -16,7 +16,7 @@ const props = withDefaults(
 
 const { rows } = useHistorySwapTransformer(computed(() => props.swaps))
 
-const columns = [
+const columns = computed(() => [
   {
     key: HistorySwapTableColumn.Time,
     label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Time}`)
@@ -40,7 +40,7 @@ const columns = [
   {
     key: HistorySwapTableColumn.Action
   }
-]
+])
 </script>
 
 <template>

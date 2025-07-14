@@ -100,10 +100,10 @@ useIntervalFn(() => {
   <PartialsTradeStatsHeaderItem class="xl:hidden 2xl:flex">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.mark_price_tooltip')"
+        :tooltip="$t('trade.stats.markPriceTooltip')"
         text-color-class="text-coolGray-400"
       >
-        {{ $t('trade.mark_price') }}
+        {{ $t('trade.markPrice') }}
       </CommonHeaderTooltip>
     </template>
 
@@ -122,7 +122,7 @@ useIntervalFn(() => {
   <!-- <PartialsTradeStatsHeaderItem
     v-if="openInterestBigNumber.gt(0)"
     class="xl:hidden 2xl:flex"
-    :title="$t('trade.stats.open_interest')"
+    :title="$t('trade.stats.openInterest')"
   >
     <AppUsdAmount
       v-bind="{
@@ -136,10 +136,10 @@ useIntervalFn(() => {
   <PartialsTradeStatsHeaderItem>
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.funding_rate_tooltip')"
+        :tooltip="$t('trade.stats.fundingRateTooltip')"
         text-color-class="text-coolGray-400"
       >
-        {{ $t('trade.stats.est_funding_rate') }}
+        {{ $t('trade.stats.estFundingRate') }}
       </CommonHeaderTooltip>
     </template>
 
@@ -176,7 +176,7 @@ useIntervalFn(() => {
     <span v-else class="lg:text-right block"> &mdash; </span>
   </PartialsTradeStatsHeaderItem>
 
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.next_funding')">
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.nextFunding')">
     <p class="lg:text-right">
       {{ countdown }}
     </p>

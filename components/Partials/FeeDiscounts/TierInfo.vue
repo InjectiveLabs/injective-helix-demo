@@ -67,7 +67,7 @@ const lastUpdateTimestamp = computed(() => {
         <span
           class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('feeDiscounts.my_fee_tier') }}
+          {{ $t('feeDiscounts.myFeeTier') }}
         </span>
         <span
           class="uppercase text-xl lg:text-2xl font-bold tracking-normal text-blue-500"
@@ -113,8 +113,8 @@ const lastUpdateTimestamp = computed(() => {
 
     <div class="mt-4">
       <span v-if="lastUpdateTimestamp" class="text-xs text-coolGray-400">
-        {{ $t('feeDiscounts.update_daily') }}.
-        {{ $t('feeDiscounts.last_updated_at') }} {{ lastUpdateTimestamp }}
+        {{ $t('feeDiscounts.updateDaily') }}.
+        {{ $t('feeDiscounts.lastUpdatedAt') }} {{ lastUpdateTimestamp }}
       </span>
       <span v-else class="text-xs text-coolGray-400">&mdash;</span>
     </div>

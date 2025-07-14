@@ -30,12 +30,12 @@ const emit = defineEmits<{
   'position:setLimitPrice': [value: string]
 }>()
 
-const partialOptions = [
+const partialOptions = computed(() => [
   { label: '25%', value: 25 },
   { label: '50%', value: 50 },
   { label: '75%', value: 75 },
   { label: t('common.max'), value: 100 }
-]
+])
 
 const isMarketPositionClose = ref(true)
 const status = reactive(new Status(StatusType.Idle))

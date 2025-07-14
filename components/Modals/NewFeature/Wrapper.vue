@@ -99,7 +99,7 @@ function onCloseModal() {
           class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >
-          {{ $t('banners.newFeature.close') }}
+          {{ $t('common.close') }}
         </AppButton>
       </div>
     </div>

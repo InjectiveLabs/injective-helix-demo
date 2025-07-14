@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const { t } = useLang()
 
-const options = [
+const options = computed(() => [
   {
     to: '/portfolio/orders/spot',
-    label: t('trade.open_orders')
+    label: t('trade.openOrders')
   },
   {
     label: t('trade.tab.orderHistory'),
@@ -14,7 +14,7 @@ const options = [
     label: t('trade.tab.tradeHistory'),
     to: '/portfolio/orders/spot/trade-history'
   }
-]
+])
 </script>
 
 <template>

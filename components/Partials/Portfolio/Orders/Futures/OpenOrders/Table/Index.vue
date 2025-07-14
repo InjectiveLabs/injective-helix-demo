@@ -239,7 +239,7 @@ const columns = computed(() => {
             class="text-coolGray-400"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
           >
-            {{ $t('trade.not_available_n_a') }}
+            {{ $t('trade.notAvailableNA') }}
           </span>
           <span
             v-else

@@ -33,6 +33,8 @@ export default {
     description: 'Earn rewards by trading different spot markets',
     rewardsPending:
       'LP Rewards Pending: Rewards for this pair are currently being processed. Funding may take up to a week after the round ends.',
+    legacyBotWarning:
+      "Warning: You're missing out on LP rewards! Stop your legacy market strategy and create a new one on the new market to start earning.",
     roundIsLive:
       '{round1} is now live! Check out the new markets added to this round! To claim your rewards from {round2} go to {myRewards} on the page.',
 

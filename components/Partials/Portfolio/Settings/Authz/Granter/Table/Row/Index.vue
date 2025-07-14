@@ -70,7 +70,7 @@ function connectAuthZ() {
         disabled
         size="sm"
       >
-        {{ $t('common.notAvailableinAutoSignMode') }}
+        {{ $t('portfolio.authZ.notAvailableinAutoSignMode') }}
       </AppButton>
 
       <AppButton

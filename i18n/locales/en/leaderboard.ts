@@ -2,9 +2,8 @@ import { LeaderboardSubPage, LeaderboardDuration } from '@/types'
 
 export default {
   leaderboard: {
-    title: 'Leaderboard',
-    helix: 'helixapp.com',
     myStats: 'My Stats',
+    title: 'Leaderboard',
     viewMore: 'View More',
     timestamp: 'Timestamp',
     startTrading: 'Start Trading',
@@ -17,6 +16,12 @@ export default {
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
     blocked:
       'Residents of the United States, the United Kingdom, and certain other countries listed in the official {terms} of the Competition are ineligible to participate in or win the Competition.',
+
+    tabs: {
+      [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
+      [LeaderboardSubPage.Competition]: 'Trading Competition',
+      [LeaderboardSubPage.PastCompetitions]: 'Past Competitions'
+    },
 
     pnl: {
       share: 'Share',
@@ -76,12 +81,6 @@ export default {
             "To comply with the Competition's Official {terms}, please provide your contact information for verification and prize delivery. Please also review and confirm your agreement to the {privacyPolicy} by clicking below."
         }
       }
-    },
-
-    tabs: {
-      [LeaderboardSubPage.Pnl]: 'PnL Leaderboard',
-      [LeaderboardSubPage.Competition]: 'Trading Competition',
-      [LeaderboardSubPage.PastCompetitions]: 'Past Competitions'
     },
 
     header: {

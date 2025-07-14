@@ -300,7 +300,7 @@ async function submit() {
               class="font-bold text-lg"
               :data-cy="dataCyTag(SwapCyTags.SwapHeaderLabel)"
             >
-              {{ $t('swap.swap') }}
+              {{ $t('swap.title') }}
             </h3>
 
             <PartialsSwapSlippageSelector />

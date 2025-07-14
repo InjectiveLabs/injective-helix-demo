@@ -90,9 +90,9 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
       </div>
       <input
         v-model="search"
-        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
-        placeholder="Filter by asset"
+        :placeholder="$t('portfolio.filters.byAsset')"
         :data-cy="dataCyTag(PortfolioCyTags.AssetSearch)"
+        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
       />
     </label>
 

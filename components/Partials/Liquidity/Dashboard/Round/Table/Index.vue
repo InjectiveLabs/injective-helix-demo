@@ -15,7 +15,7 @@ const { rows } = useLiquidityDashboardTransformer(
   computed(() => props.campaigns)
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: LiquidityDashboardTableColumn.Market,
     label: t(
@@ -45,7 +45,7 @@ const columns = [
     class: 'w-2/12',
     rowClass: 'flex justify-end'
   }
-]
+])
 </script>
 
 <template>

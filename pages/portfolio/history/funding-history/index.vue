@@ -103,7 +103,7 @@ async function handleLimitChange(limit: number) {
 
         <CommonEmptyList
           v-if="!activityStore.subaccountFundingHistory.length"
-          :message="$t('portfolio.emptyFundingHistory')"
+          :message="$t('portfolio.noFundingHistory')"
         />
       </template>
     </div>

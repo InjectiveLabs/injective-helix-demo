@@ -39,10 +39,10 @@ function onTradeNow() {
     >
       <div class="flex-1">
         <h2 class="text-lg lg:text-xl font-bold">
-          {{ $t('banners.iAssetsBanner.title') }}
+          {{ $t('banners.iAssets.title') }}
         </h2>
         <p class="max-lg:text-sm mt-3 font-medium">
-          {{ $t('banners.iAssetsBanner.description') }}
+          {{ $t('banners.iAssets.description') }}
         </p>
       </div>
 

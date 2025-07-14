@@ -31,7 +31,7 @@ function onEndBot() {
   ])
     .then(() =>
       notificationStore.update({
-        title: t('toast.sgt.tradingBotRemovedSuccessfully')
+        title: t('toast.tradingBots.tradingBotRemovedSuccessfully')
       })
     )
     .catch($onError)
@@ -53,28 +53,28 @@ function onCloseModal() {
   >
     <template #title>
       <h3>
-        {{ $t('account.subaccountTransfer') }}
+        {{ $t('common.account.subaccountTransfer') }}
       </h3>
     </template>
 
     <div>
       <div>
         <h3 class="mb-8 font-semibold">
-          {{ $t('sgt.accountEndBot') }}
+          {{ $t('portfolio.subaccounts.accountEndBot') }}
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <AppButton class="w-full" v-bind="{ status }" is-lg @click="onEndBot">
-            {{ $t('sgt.endBot') }}
+          <AppButton v-bind="{ status }" is-lg class="w-full" @click="onEndBot">
+            {{ $t('tradingBots.endBot') }}
           </AppButton>
 
           <AppButton
-            variant="danger-outline"
-            class="w-full"
             is-lg
+            class="w-full"
+            variant="danger-outline"
             @click="onCloseModal"
           >
-            {{ $t('sgt.cancel') }}
+            {{ $t('common.cancel') }}
           </AppButton>
         </div>
       </div>

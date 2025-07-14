@@ -17,7 +17,7 @@ const { rows } = useFundingHistoryTransformer(
   computed(() => props.fundingHistory)
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: FundingHistoryTableColumn.Time,
     label: t(
@@ -36,7 +36,7 @@ const columns = [
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>

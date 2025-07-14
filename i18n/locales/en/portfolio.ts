@@ -29,8 +29,11 @@ export default {
     fundingHistory: 'Funding History',
     advancedOrders: 'Advanced Orders',
     derivativeOrders: 'Derivative Orders',
+    noTransferHistory: 'No transfers found',
+    noFundingHistory: 'No funding history found',
     showUnverifiedAssets: 'Show unverified assets',
-    emptyFundingHistory: 'No funding history found',
+    notAvailableinAuthZOrAutoSignMode:
+      'Not available in Access Control Mode or Auto-Sign Mode',
 
     tab: {
       pnl: 'PNL',
@@ -64,19 +67,16 @@ export default {
 
     subaccounts: {
       addSubaccountOrTransfer: 'Add Subaccount / Transfer',
+      accountEndBot:
+        'To transfer funds to your main account, please stop your current Spot Grid Trading Bot. This action will automatically initiate the transfer of your funds.',
       description:
         'This is a secondary account linked to your main account for separate management and trading of digital assets. To activate it, you first need to transfer funds. Learn more about subaccounts in our FAQ.'
-    },
-
-    history: {
-      wallet: {
-        noHistory: 'No transfers found'
-      }
     },
 
     settings: {
       title: 'Settings',
       account: 'Account',
+      notAvailableinAuthZMode: 'Not available in Access Control Mode',
 
       preferences: {
         title: 'Preferences',
@@ -102,8 +102,11 @@ export default {
     },
 
     filters: {
-      cleanFilters: 'Clean Filters',
-      filterBySide: 'Filter by Side'
+      byType: 'Filter by Type',
+      bySide: 'Filter by Side',
+      byAsset: 'Filter by Asset',
+      byMarket: 'Filter by Market',
+      cleanFilters: 'Clean Filters'
     },
 
     connectMobile: {
@@ -161,7 +164,8 @@ export default {
       connectMobile: 'Connect Mobile Device',
       addNewGrantee: 'Add new grantee address',
       addGranteeAddress: 'Add grantee address',
-      viewGrantedFunctions: 'View granted functions'
+      viewGrantedFunctions: 'View granted functions',
+      notAvailableinAutoSignMode: 'Not available in Auto-Sign Mode'
     },
 
     autoSign: {
