@@ -9,7 +9,7 @@ import {
   DEFAULT_TRUNCATE_LENGTH,
   DEPRECATED_WALLET_DOCS_LINK
 } from '@/app/utils/constants'
-import { TradePage, UtmSource, NoticeBanner } from '@/types'
+import { TradePage, UtmSource, NoticeBanner, PointsS1Ended } from '@/types'
 
 type Banner = {
   id: string
@@ -19,9 +19,9 @@ type Banner = {
 
 const perpSettlePairs = [
   {
-    slug: 'jellyjelly-usdt-perp',
-    marketId:
-      '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
+    // slug: 'jellyjelly-usdt-perp',
+    // marketId:
+    //  '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
   }
 ]
 
