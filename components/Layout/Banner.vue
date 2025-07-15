@@ -96,7 +96,19 @@ const promotionalBanners = computed<Banner[]>(() => [
       sharedWalletStore.isUserConnected &&
       route.query.utm_source === UtmSource.StockTwits &&
       !appStore.userState.bannersViewed.includes(NoticeBanner.StockTwits)
+  },
+  {
+    id: NoticeBanner.PointsS1Ended,
+    shouldDisplay:
+      !appStore.userState.bannersViewed.includes(
+        NoticeBanner.PointsS1Ended
+      ) &&
+      isWithinInterval(now.value, {
+        end: new Date(1755269233000),
+        start: new Date(1752594440000)
+      })
   }
+  // }, 
   // {
   //   id: NoticeBanner.NeptuneUsdt,
   //   shouldDisplay:

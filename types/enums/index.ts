@@ -417,6 +417,7 @@ export enum NoticeBanner {
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
+  PointsS1Ended = 'points-s1-ended',
   DeprecatedWallet = 'deprecated-wallet',
   PerpSettleMarket = 'perp-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',

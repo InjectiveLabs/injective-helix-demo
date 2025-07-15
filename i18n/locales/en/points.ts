@@ -14,7 +14,7 @@ export default {
     myTotalPoints: 'My total points on Helix',
     paginationDetails: '{from}-{to} of {total}',
     description:
-      'Trade on Helix and earn points. Points are distributed every single day. For more information, see',
+      'Season 1 has ended. For more information on points, see',
 
     leagues: {
       [PointsLeague.Blue]: 'Blue Belt',
