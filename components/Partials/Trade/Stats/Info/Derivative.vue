@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
-import { endOfHour, intervalToDuration, differenceInSeconds } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
@@ -24,17 +23,20 @@ const props = withDefaults(
   {}
 )
 
-const now = useNow({ interval: 1000 })
-
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 
-const countdown = computed(() => {
-  const difference = intervalToDuration({
-    start: now.value,
-    end: endOfHour(now.value)
-  })
+const now = useNow({ interval: 1000 })
 
-  const { hours = 0, minutes = 0, seconds = 0 } = difference
+const countdown = computed(() => {
+  const nowTimestamp = Math.floor(now.value.getTime() / 1000)
+  const secondsInHour = 3600
+  const secondsSinceEpoch = nowTimestamp
+  const secondsToNextEpochHour =
+    secondsInHour - (secondsSinceEpoch % secondsInHour)
+
+  const hours = Math.floor(secondsToNextEpochHour / secondsInHour)
+  const minutes = Math.floor((secondsToNextEpochHour % secondsInHour) / 60)
+  const seconds = secondsToNextEpochHour % 60
 
   return [hours, minutes, seconds]
     .map((value) => value.toString().padStart(2, '0'))
@@ -84,16 +86,11 @@ const { valueToString: annualizedFundingRateToString } =
 //   )
 // )
 
-useIntervalFn(() => {
-  const end = endOfHour(now.value)
-  const shouldFetchNewFunding = differenceInSeconds(end, now.value) === 1
-
-  if (!shouldFetchNewFunding) {
-    return
+watch(countdown, (countdown) => {
+  if (countdown === '00:00:01') {
+    sharedDerivativeStore.fetchMarketsSummary()
   }
-
-  sharedDerivativeStore.fetchMarketsSummary()
-}, 1000)
+})
 </script>
 
 <template>
