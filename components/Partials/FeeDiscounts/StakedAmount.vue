@@ -42,7 +42,7 @@ const { valueToString: feeDiscountStakedAmountToFormat } =
         <span
           class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('feeDiscounts.my_staked_amount') }}
+          {{ $t('feeDiscounts.myStakedAmount') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
@@ -56,7 +56,7 @@ const { valueToString: feeDiscountStakedAmountToFormat } =
     </div>
     <div class="mt-4">
       <span class="text-xs text-coolGray-400">
-        {{ $t('feeDiscounts.current_apr') }}: ≈ {{ aprToFormat }}%
+        {{ $t('feeDiscounts.currentApr') }}: ≈ {{ aprToFormat }}%
       </span>
     </div>
   </div>

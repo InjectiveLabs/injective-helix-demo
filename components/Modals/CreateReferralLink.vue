@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { metaTags } from '@/nuxt-config/meta'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { errorMessages } from '@/plugins/validation'
 import { trackReferralCodeCreated } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 
+const siteFullUrl = useRequestURL()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -23,6 +25,8 @@ const {
 const referralInputRef = ref()
 const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
+
+const baseUrl = computed(() => siteFullUrl.origin || metaTags.url)
 
 const uppercaseReferralCode = computed({
   get: () => referralCode.value,
@@ -127,6 +131,9 @@ watch(
             keypath="referral.referralLinkAvailableDescription"
             class="text-sm text-coolGray-450 tracking-wide"
           >
+            <template #baseUrl>
+              <span class="text-white">{{ baseUrl }}</span>
+            </template>
             <template #referralCode>
               <span class="text-white font-bold">{{ referralCode }}</span>
             </template>

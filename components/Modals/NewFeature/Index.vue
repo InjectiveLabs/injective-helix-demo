@@ -23,7 +23,7 @@ const marketRoute = computed(() => {
 
 <template>
   <ModalsNewFeatureWrapper
-    v-bind="{ route1: marketRoute }"
+    v-bind="{ ctaRoute: marketRoute }"
     :modal="Modal.NewFeatureTradFiLaunch"
   >
     <template #image>
@@ -31,15 +31,15 @@ const marketRoute = computed(() => {
     </template>
 
     <template #title>
-      <i18n-t tag="div" keypath="banners.newFeature.title"> </i18n-t>
+      <span>{{ $t('banners.newFeature.title') }}</span>
     </template>
 
     <template #description>
-      <i18n-t tag="div" keypath="banners.newFeature.description"> </i18n-t>
+      <span>{{ $t('banners.newFeature.description') }}</span>
     </template>
 
-    <template #cta1>
-      <span>{{ $t('banners.newFeature.cta1') }}</span>
+    <template #cta>
+      <span>{{ $t('banners.newFeature.cta') }}</span>
     </template>
   </ModalsNewFeatureWrapper>
 </template>

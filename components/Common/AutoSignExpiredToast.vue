@@ -67,10 +67,10 @@ const { pause, resume } = useIntervalFn(() => {
             />
             <div class="space-y-1">
               <div class="leading-4 text-white font-semibold text-sm">
-                {{ $t('autoSign.expiredToast.title') }}
+                {{ $t('portfolio.autoSign.expiredToast.title') }}
               </div>
               <i18n-t
-                keypath="autoSign.expiredToast.description"
+                keypath="portfolio.autoSign.expiredToast.description"
                 tag="p"
                 class="leading-4 text-coolGray-300 text-sm"
               >
@@ -79,7 +79,7 @@ const { pause, resume } = useIntervalFn(() => {
                     class="text-blue-500 hover:opacity-80 hover:text-opacity-80 cursor-pointer"
                     :to="{ name: PortfolioSubPage.Settings }"
                   >
-                    {{ $t('autoSign.expiredToast.settings') }}
+                    {{ $t('portfolio.autoSign.expiredToast.settings') }}
                   </NuxtLink>
                 </template>
               </i18n-t>

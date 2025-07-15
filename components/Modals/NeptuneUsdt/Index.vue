@@ -169,7 +169,7 @@ function onUpdateMax({ amount }: { amount: string }) {
         ref="tokenSelectorRef"
         @update:max="onUpdateMax"
       >
-        <span> {{ $t('account.amount') }} </span>
+        <span> {{ $t('common.amount') }} </span>
       </AppSelectToken>
 
       <ModalsNeptuneUsdtSubmit

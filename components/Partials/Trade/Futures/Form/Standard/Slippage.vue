@@ -55,7 +55,7 @@ function onSlippageChange(value: string) {
   <div>
     <div class="flex items-center gap-2">
       <p class="field-label">
-        {{ $t('trade.slippage_tolerance') }}
+        {{ $t('trade.slippageTolerance') }}
       </p>
 
       <AppTooltip v-bind="{ content: $t('trade.slippageTooltip') }">
@@ -88,7 +88,7 @@ function onSlippageChange(value: string) {
       </p>
 
       <p v-else-if="isHighSlippage" class="text-orange-500 text-xs mt-1.5">
-        {{ $t('trade.slippageWarnings.tooHigh') }}
+        {{ $t('trade.slippageWarning') }}
       </p>
     </div>
 

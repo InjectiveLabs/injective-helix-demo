@@ -20,11 +20,11 @@ const strategyType = computed({
 <template>
   <div class="flex items-center text-coolGray-450 font-medium">
     <AppCheckbox v-model="strategyType">
-      {{ $t('sgt.geometric') }}
+      {{ $t('tradingBots.geometric') }}
     </AppCheckbox>
     <AppTooltip
       v-bind="{
-        content: $t('sgt.gridModeTooltip')
+        content: $t('tradingBots.sgt.gridModeTooltip')
       }"
     />
   </div>

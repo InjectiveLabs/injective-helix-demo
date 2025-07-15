@@ -8,7 +8,7 @@
   >
     <img src="/svg/check-circle.svg" class="max-w-[50px] w-full mx-auto" />
     <p class="text-2xl font-semibold">
-      {{ $t('onboarding.success') }}
+      {{ $t('common.modal.onboarding.success') }}
     </p>
   </div>
 </template>

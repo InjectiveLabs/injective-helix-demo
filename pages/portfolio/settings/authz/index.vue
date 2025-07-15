@@ -18,7 +18,7 @@ const authzGranteeExcludingActiveGridContracts = computed(() => {
     <div class="divide-y border-t">
       <CommonEmptyList
         v-if="authzGranteeExcludingActiveGridContracts.length === 0"
-        v-bind="{ message: $t('authZ.noGrants') }"
+        v-bind="{ message: $t('portfolio.authZ.noGrants') }"
       />
 
       <template v-else>

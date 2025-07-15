@@ -281,10 +281,10 @@ useIntervalFn(() => {
   <UContainer>
     <div class="flex flex-col gap-4 text-center items-center my-10">
       <h3 class="text-4xl lg:text-6xl font-bold">
-        {{ $t('liquidityBots.title') }}
+        {{ $t('tradingBots.liquidityBots.title') }}
       </h3>
       <p class="text-sm lg:text-xl">
-        {{ $t('liquidityBots.description') }}
+        {{ $t('tradingBots.liquidityBots.description') }}
       </p>
     </div>
 
@@ -293,10 +293,10 @@ useIntervalFn(() => {
     >
       <div>
         <p class="text-xl font-bold">
-          {{ $t('liquidityBots.setLiquidityBot') }}
+          {{ $t('tradingBots.liquidityBots.setLiquidityBot') }}
         </p>
         <p class="text-sm font-semibold my-4">
-          {{ $t('liquidityBots.selectPair') }}
+          {{ $t('tradingBots.liquidityBots.selectPair') }}
         </p>
 
         <USelectMenu
@@ -339,7 +339,7 @@ useIntervalFn(() => {
               :class="`from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-xs font-semibold text-transparent px-2 py-1 rounded-md`"
             >
               {{
-                $t('liquidityBots.upToRewards', {
+                $t('tradingBots.liquidityBots.upToRewards', {
                   amount: marketReward.amount,
                   symbol: marketReward.symbol
                 })
@@ -360,7 +360,7 @@ useIntervalFn(() => {
               class="from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-xs font-semibold text-transparent px-2 py-1 rounded-md ml-auto"
             >
               {{
-                $t('liquidityBots.upToRewards', {
+                $t('tradingBots.liquidityBots.upToRewards', {
                   amount: option.marketReward.amount,
                   symbol: option.marketReward.symbol
                 })

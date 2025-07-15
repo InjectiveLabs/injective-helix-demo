@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { Modal, MainPage, UiMarketWithToken, MarketCategoryType } from '@/types'
 import {
   isCountryRestricted,
   isCountryRestrictedForSpotMarket,
   isCountryRestrictedForPerpetualMarkets
 } from '@/app/data/geoip'
+import { Modal, MainPage, MarketCategoryType } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const modalStore = useSharedModalStore()
 const sharedGeoStore = useSharedGeoStore()
@@ -76,7 +77,7 @@ function closeModal() {
 
     <h3 class="text-center font-semibold text-lg mt-8">
       {{
-        $t(`marketRestricted.title.${isSpot ? 'spot' : 'perpetual'}`, {
+        $t(`trade.marketRestricted.title.${isSpot ? 'spot' : 'perpetual'}`, {
           symbol: market.baseToken.symbol
         })
       }}
@@ -85,9 +86,12 @@ function closeModal() {
     <div class="relative mt-2">
       <p class="text-center text-sm text-coolGray-450">
         {{
-          $t(`marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`, {
-            symbol: market.baseToken.symbol
-          })
+          $t(
+            `trade.marketRestricted.description.${isSpot ? 'spot' : 'perpetual'}`,
+            {
+              symbol: market.baseToken.symbol
+            }
+          )
         }}
       </p>
 
@@ -100,7 +104,7 @@ function closeModal() {
           }"
         >
           <AppButton class="w-full" @click="closeModal">
-            {{ $t('marketRestricted.cta') }}
+            {{ $t('trade.marketRestricted.cta') }}
           </AppButton>
         </NuxtLink>
 
@@ -115,7 +119,7 @@ function closeModal() {
           }"
         >
           <AppButton class="w-full" @click="closeModal">
-            {{ $t('marketRestricted.tradeSpot') }}
+            {{ $t('trade.marketRestricted.tradeSpot') }}
           </AppButton>
         </NuxtLink>
       </div>

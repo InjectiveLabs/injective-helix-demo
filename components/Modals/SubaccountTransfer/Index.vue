@@ -266,12 +266,12 @@ function closeModal() {
             @update:max="onAmountChange"
             @update:denom="onTokenChange"
           >
-            <span> {{ $t('account.amount') }} </span>
+            <span> {{ $t('common.amount') }} </span>
           </AppSelectToken>
         </div>
 
         <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
-          {{ t('account.noAssetToTransfer') }}
+          {{ t('common.account.noAssetToTransfer') }}
         </div>
       </div>
 
@@ -283,7 +283,7 @@ function closeModal() {
         @click="onSubaccountTransfer"
       >
         <span class="font-semibold">
-          {{ $t('account.transfer') }}
+          {{ $t('common.transfer') }}
         </span>
       </AppButton>
     </div>

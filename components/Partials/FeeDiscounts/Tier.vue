@@ -119,7 +119,7 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
     </td>
     <td class="h-8 text-right">
       <span class="text-coolGray-500 uppercase text-xs tracking-wider">
-        {{ $t('and') }}
+        {{ $t('common.and') }}
       </span>
     </td>
     <td class="h-8 text-right">

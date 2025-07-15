@@ -3,7 +3,11 @@ import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MarketKey, DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
+import {
+  MarketKey,
+  PerpetualMarketCyTags,
+  DerivativesTradeFormField
+} from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
@@ -128,7 +132,7 @@ function addTpSl() {
         <div class="space-y-2">
           <AppInputField
             v-model="takeProfitValue"
-            :placeholder="$t('trade.take_Profit')"
+            :placeholder="$t('trade.takeProfit')"
             class="placeholder:font-sans"
             :data-cy="dataCyTag(PerpetualMarketCyTags.TakeProfitInputField)"
           />
@@ -141,7 +145,7 @@ function addTpSl() {
         <div class="space-y-2">
           <AppInputField
             v-model="stopLossValue"
-            :placeholder="$t('trade.stop_Loss')"
+            :placeholder="$t('trade.stopLoss')"
             class="placeholder:font-sans"
             :data-cy="dataCyTag(PerpetualMarketCyTags.StopLossInputField)"
           />

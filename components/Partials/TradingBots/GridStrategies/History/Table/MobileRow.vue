@@ -3,13 +3,13 @@ import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import { PortfolioSpotTradingBotsHistoryTableColumn } from '@/types'
 import type {
   StopReason,
   UTableColumn,
-  DerivativeGridStrategyTransformed,
-  GridStrategyTransformed
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
-import { PortfolioSpotTradingBotsHistoryTableColumn } from '@/types'
 
 const { t } = useLang()
 
@@ -77,7 +77,7 @@ function selectStrategy() {
             size="xs"
             @click="selectStrategy"
           >
-            {{ t('sgt.details') }}
+            {{ t('common.details') }}
           </AppButton>
         </div>
       </div>
@@ -148,7 +148,7 @@ function selectStrategy() {
         class="text-blue-500 hover:text-blue-500"
         @click="selectStrategy"
       >
-        {{ t('sgt.details') }}
+        {{ t('common.details') }}
       </AppButton>
     </template>
 

@@ -188,7 +188,7 @@ function toggleShowMoreWallets() {
 
       <ul v-else class="divide-coolGray-800 border-coolGray-700 rounded-lg">
         <h1 class="text-xl text-center font-semibold">
-          {{ $t('connect.connect') }}
+          {{ $t('common.connect') }}
         </h1>
 
         <LayoutWalletSso

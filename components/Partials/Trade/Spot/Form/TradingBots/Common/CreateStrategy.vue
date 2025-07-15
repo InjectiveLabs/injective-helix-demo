@@ -344,7 +344,7 @@ async function createStrategy() {
     })
     .then(() => {
       notificationStore.update({
-        title: t('toast.sgt.tradingBotCreatedSuccessfully')
+        title: t('toast.tradingBots.tradingBotCreatedSuccessfully')
       })
     })
     .catch((e) => {
@@ -405,7 +405,7 @@ async function createStrategy() {
       <span v-else-if="sharedWalletStore.isAuthzWalletConnected">
         {{ $t('common.unauthorized') }}
       </span>
-      <span v-else>{{ $t('sgt.create') }}</span>
+      <span v-else>{{ $t('tradingBots.createStrategy') }}</span>
     </AppButton>
 
     <ModalsLiquiditySgtBalancedFees

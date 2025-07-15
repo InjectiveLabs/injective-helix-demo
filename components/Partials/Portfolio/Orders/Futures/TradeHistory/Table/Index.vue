@@ -23,7 +23,7 @@ const props = withDefaults(
 
 const { rows } = useFuturesTradeHistoryTransformer(computed(() => props.trades))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioFuturesTradeHistoryTableColumn.Time,
     label: t(
@@ -87,7 +87,7 @@ const columns = [
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>

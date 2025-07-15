@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import ApexChart, { ApexOptions } from 'apexcharts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { LiquidityValues, UiMarketWithToken } from '@/types'
-import { calculateGridLevels } from '@/app/data/grid-strategy'
+import ApexChart from 'apexcharts'
 import { colors } from '@/nuxt-config/tailwind'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { calculateGridLevels } from '@/app/data/grid-strategy'
+import type { ApexOptions } from 'apexcharts'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+import type { LiquidityValues, UiMarketWithToken } from '@/types'
 
 type OrderAnnotation = {
   y: number
   borderColor: string
   label: {
+    text?: string
+    offsetX?: number
+    position?: string
     borderColor: string
+    textAnchor?: string
     style: {
       color: string
       background: string
     }
-    text?: string
-    position?: string
-    offsetX?: number
-    textAnchor?: string
   }
 }
 
 const spotStore = useSpotStore()
 const exchangeStore = useExchangeStore()
+const { t } = useLang()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
@@ -108,10 +110,10 @@ const gridLevelsAnnotations = computed(() => {
           : colors.green[500],
       text:
         index === 0
-          ? `Lower Price: ${level}`
+          ? `${t('tradingBots.lowerBound')}: ${level}`
           : index === array.length - 1
-          ? `Upper Price: ${level}`
-          : undefined,
+            ? `${t('tradingBots.upperBound')}: ${level}`
+            : undefined,
       style: {
         color: '#000',
         background:
@@ -145,7 +147,7 @@ const trailingBoundAnnotation = computed(() => {
       opacity: 0.1,
       label: {
         borderColor: colors.green[500],
-        text: 'Trailing Bound',
+        text: t('tradingBots.trailingBound'),
 
         style: {
           background: colors.green[500],
@@ -196,7 +198,7 @@ const boundsAnnotations = computed(() => {
         textAnchor: 'end',
         offsetX: -10,
         borderColor: colors.red[500],
-        text: 'Grid Bound',
+        text: t('tradingBots.gridBound'),
         style: {
           background: colors.red[500],
           color: '#000'
@@ -212,7 +214,7 @@ const currentPriceAnnotation = computed(() => {
     borderColor: colors.blue[500],
     label: {
       borderColor: colors.blue[500],
-      text: 'Current Price',
+      text: t('tradingBots.currentPrice'),
       style: {
         background: colors.blue[500],
         color: '#000'
@@ -276,7 +278,7 @@ const options = computed<ApexOptions>(() => ({
 
   stroke: { width: 1, curve: 'straight' },
 
-  series: [{ data: priceSeries.value, name: 'Price' }],
+  series: [{ data: priceSeries.value, name: t('trade.price') }],
 
   annotations: {
     yaxis: [

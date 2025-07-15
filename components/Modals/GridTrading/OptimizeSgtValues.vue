@@ -40,18 +40,18 @@ const { valueToString: optimizedQuoteAmountToString } =
   >
     <template #title>
       <h3>
-        {{ $t('sgt.optimization.optimizeBalanceTitle') }}
+        {{ $t('tradingBots.sgt.optimization.optimizeBalanceTitle') }}
       </h3>
     </template>
     <div>
       <p class="text-sm">
-        {{ $t('sgt.optimization.optimizeBalanceBody') }}
+        {{ $t('tradingBots.sgt.optimization.optimizeBalanceBody') }}
       </p>
 
       <div class="flex justify-between items-center text-sm font-semibold mt-1">
         <p class="text-sm text-coolGray-400">
           {{
-            $t('sgt.optimization.adjustYourAvailableBalance', {
+            $t('tradingBots.sgt.optimization.adjustYourAvailableBalance', {
               base: props.market.baseToken.symbol.toUpperCase(),
               quote: props.market.quoteToken.symbol.toUpperCase()
             })
@@ -68,7 +68,7 @@ const { valueToString: optimizedQuoteAmountToString } =
     <template #footer>
       <div class="flex flex-col gap-2">
         <UButton size="sm" block @click="handleAdjust">
-          {{ $t('sgt.optimization.confirmAndAdjust') }}
+          {{ $t('tradingBots.sgt.optimization.confirmAndAdjust') }}
         </UButton>
         <UButton
           block

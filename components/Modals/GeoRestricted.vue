@@ -9,12 +9,16 @@ const modalStore = useSharedModalStore()
     <img src="/svg/GeoRestriction.svg" class="mx-auto mt-2" />
 
     <div class="text-center mt-8">
-      <h2 class="font-bold text-lg">{{ $t('geoRestricted.title') }}</h2>
+      <h2 class="font-bold text-lg">
+        {{ $t('common.modal.geoRestricted.title') }}
+      </h2>
       <p class="text-sm mt-4 text-coolGray-450">
-        {{ $t('geoRestricted.description') }}
+        {{ $t('common.modal.geoRestricted.description') }}
       </p>
 
-      <AppButton class="w-full mt-4">{{ $t('geoRestricted.cta') }}</AppButton>
+      <AppButton class="w-full mt-4">{{
+        $t('common.modal.geoRestricted.cta')
+      }}</AppButton>
     </div>
   </AppModal>
 </template>

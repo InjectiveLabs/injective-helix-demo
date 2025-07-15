@@ -49,7 +49,7 @@ async function createStrategy() {
     .createPerpStrategy(derivativeFormValues.value, market.value)
     .then(() => {
       notificationStore.update({
-        title: t('toast.sgt.tradingBotCreatedSuccessfully')
+        title: t('toast.tradingBots.tradingBotCreatedSuccessfully')
       })
     })
     .catch($onError)
@@ -74,7 +74,7 @@ async function createStrategy() {
         {{ $t('common.unauthorized') }}
       </span>
 
-      <span v-else>{{ $t('sgt.create') }}</span>
+      <span v-else>{{ $t('tradingBots.createStrategy') }}</span>
     </AppButton>
   </div>
 </template>

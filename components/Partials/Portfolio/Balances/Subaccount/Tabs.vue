@@ -66,7 +66,7 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
       <p
         class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2"
       >
-        <span>{{ $t('account.total') }}: </span>
+        <span>{{ $t('common.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
           <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
             <span>$</span>
@@ -90,9 +90,9 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
       </div>
       <input
         v-model="search"
-        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
-        placeholder="Filter by asset"
+        :placeholder="$t('portfolio.filters.byAsset')"
         :data-cy="dataCyTag(PortfolioCyTags.AssetSearch)"
+        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
       />
     </label>
 
@@ -105,7 +105,7 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
 
     <div class="flex items-center px-2 max-md:py-2 shrink-0 overflow-hidden">
       <AppCheckbox v-model="showUnverifiedAssets">
-        {{ $t('account.showUnverifiedAssets') }}
+        {{ $t('portfolio.showUnverifiedAssets') }}
       </AppCheckbox>
     </div>
   </div>

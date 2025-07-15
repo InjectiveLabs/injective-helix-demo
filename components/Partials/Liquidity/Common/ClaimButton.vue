@@ -60,17 +60,17 @@ function claimRewards() {
 
 <template>
   <UTooltip
+    :text="t('lpRewards.rewardsPending')"
     :prevent="campaign.isClaimable || campaign.endDate > Date.now()"
-    :text="t('campaign.rewardsPending')"
   >
     <AppButton
       :class="extraClass"
       v-bind="{ status }"
-      :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
+      :disabled="forceDisabled || campaign.userClaimed || !campaign.isClaimable"
       @click="claimRewards"
     >
-      <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
-      <span v-else>{{ $t('campaign.claim') }}</span>
+      <span v-if="campaign.userClaimed">{{ $t('common.claimed') }}</span>
+      <span v-else>{{ $t('common.claim') }}</span>
     </AppButton>
   </UTooltip>
 </template>

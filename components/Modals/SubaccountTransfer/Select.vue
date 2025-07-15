@@ -43,8 +43,10 @@ const sourceOptions = computed(() =>
       return {
         label:
           subaccountIdIndex === 0
-            ? t('account.mainSubaccount')
-            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('common.account.mainSubaccount')
+            : t('common.account.subaccountId', {
+                subaccountId: subaccountIdIndex
+              }),
         id: subaccountId
       }
     })
@@ -60,8 +62,10 @@ const destinationOptions = computed(() => {
       return {
         label:
           subaccountIdIndex === 0
-            ? t('account.mainSubaccount')
-            : t('account.subaccountId', { subaccountId: subaccountIdIndex }),
+            ? t('common.account.mainSubaccount')
+            : t('common.account.subaccountId', {
+                subaccountId: subaccountIdIndex
+              }),
         id: subaccountId
       }
     })
@@ -69,7 +73,7 @@ const destinationOptions = computed(() => {
   return [
     ...existingSubaccountIds,
     {
-      label: t('account.subaccountId', {
+      label: t('common.account.subaccountId', {
         subaccountId: newSubaccountIdIndex.value
       }),
       id: addBaseSubaccountIndexToAddress(

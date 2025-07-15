@@ -28,14 +28,14 @@ onMounted(() => {
       <div class="container mx-auto">
         <div class="w-full mx-auto xl:w-4/5 mt-6 max-xl:px-4">
           <h3 class="text-xl font-bold text-coolGray-200">
-            {{ $t(`feeDiscounts.page_title`) }}
+            {{ $t(`feeDiscounts.pageTitle`) }}
           </h3>
           <div class="mt-6 mb-8">
             <p class="text-sm font-normal mb-2">
-              {{ $t('feeDiscounts.page_description') }}
+              {{ $t('feeDiscounts.pageDescription') }}
             </p>
             <p class="text-sm text-blue-500 font-normal">
-              {{ $t('feeDiscounts.page_description_warning') }}
+              {{ $t('feeDiscounts.pageDescriptionWarning') }}
             </p>
           </div>
 

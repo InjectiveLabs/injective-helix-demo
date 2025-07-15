@@ -213,7 +213,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
       <CommonHeaderTooltip
-        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        v-bind="{ tooltip: $t('tradingBots.sgt.investmentTooltip') }"
         :popper="{
           placement: 'top',
           strategy: 'fixed',
@@ -224,7 +224,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
           3.
         </span>
         <span class="text-white font-semibold text-xs">
-          {{ $t('sgt.amount') }}
+          {{ $t('common.amount') }}
         </span>
       </CommonHeaderTooltip>
 
@@ -254,7 +254,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450">
-          {{ $t('sgt.available') }}: {{ baseDenomAmountToString }}
+          {{ $t('tradingBots.available') }}: {{ baseDenomAmountToString }}
         </div>
       </template>
     </AppInputField>
@@ -274,7 +274,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450">
-          {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
+          {{ $t('tradingBots.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>
     </AppInputField>

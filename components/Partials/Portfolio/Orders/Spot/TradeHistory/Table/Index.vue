@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SharedUiSpotTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
   LOW_FEE_AMOUNT_THRESHOLD,
@@ -7,6 +6,7 @@ import {
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { PortfolioSpotTradeHistoryTableColumn } from '@/types'
+import type { SharedUiSpotTrade } from '@shared/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{ trades: SharedUiSpotTrade[] }>(), {})
 
 const { rows } = useSpotTradeHistoryTransformer(computed(() => props.trades))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioSpotTradeHistoryTableColumn.Time,
     label: t(
@@ -72,7 +72,7 @@ const columns = [
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>

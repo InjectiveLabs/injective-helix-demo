@@ -9,22 +9,15 @@ const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
 
 const props = withDefaults(
-  defineProps<{ isCampaignOver?: boolean; now: number }>(),
-  { isCampaignOver: false }
+  defineProps<{ now: number; isCampaignOver?: boolean }>(),
+  {}
 )
 
 const status = reactive(new Status(StatusType.Idle))
 
 const isReadyToClaim = computed(() => props.now > GUILD_CAMPAIGN_END_DATE)
-
 const isTVLWinner = computed(() => campaignStore.guild?.rankByTvl === 1)
 const isVolumeWinner = computed(() => campaignStore.guild?.rankByVolume === 1)
-
-onWalletConnected(() => {
-  if (props.isCampaignOver && (isTVLWinner.value || isVolumeWinner.value)) {
-    confetti.showConfetti()
-  }
-})
 
 const countdown = computed(() => {
   const diffInSeconds = differenceInSeconds(GUILD_CAMPAIGN_END_DATE, props.now)
@@ -50,6 +43,12 @@ const countdown = computed(() => {
     return `${display}${value < 10 ? `0${value}` : `${value}`}${key.charAt(0)} `
   }, '')
 })
+
+onWalletConnected(() => {
+  if (props.isCampaignOver && (isTVLWinner.value || isVolumeWinner.value)) {
+    confetti.showConfetti()
+  }
+})
 </script>
 
 <template>
@@ -64,7 +63,7 @@ const countdown = computed(() => {
   >
     <div class="rounded-md p-8">
       <div class="flex items-center justify-between flex-wrap mb-4">
-        <h2 class="font-semibold">{{ $t('campaign.myRewards') }}</h2>
+        <h2 class="font-semibold">{{ $t('lpRewards.myRewards') }}</h2>
 
         <p
           v-if="!isReadyToClaim && countdown"

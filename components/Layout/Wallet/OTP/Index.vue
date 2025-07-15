@@ -52,11 +52,11 @@ function submit() {
 
 <template>
   <div class="px-4 py-2 flex items-center flex-col">
-    <h3>{{ $t('connect.connect') }}</h3>
+    <h3>{{ $t('common.connect') }}</h3>
 
     <img src="/svg/otp.svg" class="py-8" />
 
-    <p class="font-medium">{{ $t('connect.otp.description') }}</p>
+    <p class="font-medium">{{ $t('connect.otpDescription') }}</p>
 
     <div class="mt-6 mb-8">
       <div class="flex gap-2 justify-center">

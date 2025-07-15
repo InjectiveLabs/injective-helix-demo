@@ -216,10 +216,10 @@ const spotBoostedMarkets = computed(() => {
 
     <template #title>
       <div class="flex items-center justify-center text-coolGray-450 text-xs">
-        {{ $t('trade.boosted_markets') }}
+        {{ $t('trade.boostedMarkets') }}
         <AppTooltip
           class="ml-2 text-coolGray-450"
-          :content="$t('trade.boosted_markets_tooltip')"
+          :content="$t('trade.boostedMarketsTooltip')"
         />
       </div>
     </template>

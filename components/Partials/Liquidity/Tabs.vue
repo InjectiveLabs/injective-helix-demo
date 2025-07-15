@@ -14,12 +14,12 @@ const lastUpdated = computed(() =>
 <template>
   <div class="border-b flex justify-between items-center">
     <div>
-      <h2 class="text-sm p-2">{{ $t('campaign.allRewards') }}</h2>
+      <h2 class="text-sm p-2">{{ $t('lpRewards.allRewards') }}</h2>
     </div>
 
     <div>
       <p class="text-xs p-2">
-        {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
+        {{ $t('lpRewards.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>
   </div>

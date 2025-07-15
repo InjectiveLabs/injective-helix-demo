@@ -19,11 +19,11 @@ withDefaults(
 
 const route = useRoute()
 
-const activeCategoryOptions = Object.values(MarketCategoryType).map(
-  (value) => ({
+const activeCategoryOptions = computed(() =>
+  Object.values(MarketCategoryType).map((value) => ({
     label: t(`markets.filters.${value}`),
     value
-  })
+  }))
 )
 
 const search = ref('')
@@ -90,10 +90,10 @@ function resetCategory() {
               id="search-market"
               v-model="search"
               v-focus
-              :placeholder="$t('trade.search_market')"
               type="text"
-              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               autocomplete="off"
+              :placeholder="$t('trade.searchMarket')"
+              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               @update:model-value="resetCategory"
             />
           </label>

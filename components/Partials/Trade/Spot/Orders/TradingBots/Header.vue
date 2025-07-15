@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SharedDropdownOption } from '@shared/types'
-import { SpotOrdersTradingBotsView, SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags, SpotOrdersTradingBotsView } from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const spotStore = useSpotStore()
 const breakpoints = useSharedBreakpoints()
@@ -25,27 +25,27 @@ const view = useVModel(props, 'modelValue', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersTradingBotsView.ActiveStrategies}`,
+      display: `trade.tab.${SpotOrdersTradingBotsView.ActiveStrategies}`,
       value: SpotOrdersTradingBotsView.ActiveStrategies,
       description: `${gridStrategyStore.activeStrategies.length}`
     },
     {
-      display: `activity.${SpotOrdersTradingBotsView.RemovedStrategies}`,
+      display: `trade.tab.${SpotOrdersTradingBotsView.RemovedStrategies}`,
       value: SpotOrdersTradingBotsView.RemovedStrategies,
       description: `${gridStrategyStore.removedStrategies.length}`
     },
     {
-      display: `activity.${SpotOrdersTradingBotsView.Orders}`,
+      display: `trade.tab.${SpotOrdersTradingBotsView.Orders}`,
       value: SpotOrdersTradingBotsView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
-      display: `activity.${SpotOrdersTradingBotsView.OrderHistory}`,
+      display: `trade.tab.${SpotOrdersTradingBotsView.OrderHistory}`,
       value: SpotOrdersTradingBotsView.OrderHistory,
       description: `${spotStore.subaccountOrderHistory.length}`
     },
     {
-      display: `activity.${SpotOrdersTradingBotsView.TradeHistory}`,
+      display: `trade.tab.${SpotOrdersTradingBotsView.TradeHistory}`,
       value: SpotOrdersTradingBotsView.TradeHistory
     }
   ]

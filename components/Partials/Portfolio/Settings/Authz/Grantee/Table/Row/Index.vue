@@ -75,7 +75,7 @@ function revokeAll() {
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
-      <span> {{ $t('authZ.viewGrantedFunctions') }} </span>
+      <span> {{ $t('portfolio.authZ.viewGrantedFunctions') }} </span>
     </div>
 
     <div class="xs:flex-1 flex items-center p-2" @click.stop>
@@ -85,24 +85,24 @@ function revokeAll() {
           sharedWalletStore.isAutoSignEnabled
         "
         v-bind="{ status }"
-        :variant="'danger-ghost'"
-        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
         size="sm"
         disabled
+        variant="danger-ghost"
         class="text-nowrap px-2"
+        :tooltip="$t('portfolio.notAvailableinAuthZOrAutoSignMode')"
       >
-        {{ $t('authZ.revokeAll') }}
+        {{ $t('portfolio.authZ.revokeAll') }}
       </AppButton>
 
       <AppButton
         v-else
         v-bind="{ status }"
-        :variant="'danger-ghost'"
         size="sm"
+        variant="danger-ghost"
         class="text-nowrap px-2"
         @click="revokeAll"
       >
-        {{ $t('authZ.revokeAll') }}
+        {{ $t('portfolio.authZ.revokeAll') }}
       </AppButton>
     </div>
   </div>

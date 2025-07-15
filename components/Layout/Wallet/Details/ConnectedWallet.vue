@@ -119,7 +119,9 @@ function openQrCodeModal() {
           class="rounded px-2 py-1 flex items-center text-2xs bg-green-500 text-black gap-x-2 cursor-pointer"
         >
           <span class="underline font-semibold">
-            {{ $t('authZ.authZAs', { address: formattedAuthZAddress }) }}
+            {{
+              $t('portfolio.authZ.authZAs', { address: formattedAuthZAddress })
+            }}
           </span>
           <UIcon :name="NuxtUiIcons.ExternalLink2" />
         </NuxtLink>
@@ -129,7 +131,7 @@ function openQrCodeModal() {
           class="rounded px-2 py-1 flex items-center text-2xs bg-green-500 text-black gap-x-1"
         >
           <span class="underline font-semibold">
-            {{ $t('autoSign.title') }}
+            {{ $t('portfolio.autoSign.title') }}
           </span>
           <UIcon :name="NuxtUiIcons.RotateAuto" />
         </div>

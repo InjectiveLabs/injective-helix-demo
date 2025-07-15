@@ -15,12 +15,12 @@ const lastUpdated = computed(() =>
 <template>
   <div class="border-b flex justify-between items-end">
     <button class="border-b-2 border-blue-500 text-blue-500 -mb-[1px] p-2">
-      {{ $t('campaign.overall') }}
+      {{ $t('lpRewards.overall') }}
     </button>
 
     <div class="flex space-x-4 items-end mb-2">
       <p v-if="lastUpdated" class="text-coolGray-300 text-xs">
-        {{ $t('campaign.lastUpdated', { date: lastUpdated }) }}
+        {{ $t('lpRewards.lastUpdated', { date: lastUpdated }) }}
       </p>
     </div>
   </div>

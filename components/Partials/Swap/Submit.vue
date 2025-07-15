@@ -203,7 +203,7 @@ watch(
       class="w-full bg-blue-500 text-blue-900 font-semibold"
       @click="onConnect"
     >
-      {{ $t('trade.swap.connect_wallet') }}
+      {{ $t('swap.connectWallet') }}
     </AppButton>
 
     <AppButton
@@ -213,7 +213,7 @@ watch(
       class="w-full"
     >
       {{
-        $t('marketRestricted.swapCta', {
+        $t('trade.marketRestricted.swapCta', {
           symbol: restrictedTokenBasedOnUserGeoIP.token.symbol
         })
       }}
@@ -258,7 +258,7 @@ watch(
             "
             :data-cy="dataCyTag(SwapCyTags.WarningAmountTooLow)"
           >
-            {{ $t('trade.swap.swapAmountTooLow') }}
+            {{ $t('swap.swapAmountTooLow') }}
           </span>
 
           <span
@@ -277,11 +277,11 @@ watch(
           </span>
 
           <span v-else-if="swapTimeRemaining">
-            {{ $t('trade.swap.swapTime', { swapTimeRemaining }) }}
+            {{ $t('swap.swapTime', { swapTimeRemaining }) }}
           </span>
 
           <span v-else-if="showErrorState">
-            {{ $t('trade.swap.currentlyOffline') }}
+            {{ $t('swap.currentlyOffline') }}
           </span>
 
           <span
@@ -289,7 +289,7 @@ watch(
             class="flex items-center justify-center gap-1"
           >
             <span :data-cy="dataCyTag(SwapCyTags.WarningRateExpired)">
-              {{ $t('trade.swap.rateExpired') }}
+              {{ $t('swap.rateExpired') }}
             </span>
 
             <UIcon
@@ -300,7 +300,7 @@ watch(
           </span>
 
           <span v-else :data-cy="dataCyTag(SwapCyTags.EnterAmountButton)">
-            {{ $t('trade.swap.enterAmount') }}
+            {{ $t('swap.enterAmount') }}
           </span>
         </Transition>
       </div>

@@ -33,17 +33,17 @@ const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.Orders}`,
+      display: `trade.tab.${SpotOrdersStandardView.Orders}`,
       value: SpotOrdersStandardView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.OrderHistory}`,
+      display: `trade.tab.${SpotOrdersStandardView.OrderHistory}`,
       value: SpotOrdersStandardView.OrderHistory,
       description: `${spotStore.subaccountOrderHistoryCount}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.TradeHistory}`,
+      display: `trade.tab.${SpotOrdersStandardView.TradeHistory}`,
       value: SpotOrdersStandardView.TradeHistory,
       description: `${spotStore.subaccountTradesCount}`
     }
@@ -51,7 +51,7 @@ const options = computed(() => {
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
-      display: `activity.${SpotOrdersStandardView.Balances}`,
+      display: `trade.tab.${SpotOrdersStandardView.Balances}`,
       value: SpotOrdersStandardView.Balances
     })
   }

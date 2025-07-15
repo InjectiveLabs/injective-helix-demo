@@ -452,7 +452,7 @@ onMounted(() => {
       v-if="isMarkPriceThresholdError"
       class="error-message first-letter:capitalize"
     >
-      {{ $t('trade.mark_price_invalid') }}
+      {{ $t('trade.markPriceInvalid') }}
     </p>
 
     <p

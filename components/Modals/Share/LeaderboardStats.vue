@@ -3,7 +3,8 @@ import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, BusEvents, LeaderboardDuration } from '@/types'
+import { Modal, BusEvents } from '@/types'
+import type { LeaderboardDuration } from '@/types'
 
 const modalStore = useSharedModalStore()
 const { t } = useLang()
@@ -50,10 +51,10 @@ const statsModalTitle = computed(() =>
   props.isVolumeCampaign
     ? t('leaderboard.competition.tradingVolume')
     : props.selectedDuration
-    ? t('leaderboard.pnl.currentDuration', {
-        duration: t(`leaderboard.pnl.duration.${props.selectedDuration}`)
-      })
-    : t('leaderboard.pnl.tradingPnl')
+      ? t('leaderboard.pnl.currentDuration', {
+          duration: t(`leaderboard.pnl.duration.${props.selectedDuration}`)
+        })
+      : t('leaderboard.pnl.tradingPnl')
 )
 
 onMounted(() => {
@@ -186,7 +187,7 @@ watchDebounced(
           <div
             class="flex flex-col sm:flex-row items-start justify-end gap-1 flex-1 ml-2 sm:ml-0"
           >
-            <span>{{ $t('leaderboard.timeStamp') }}:</span>
+            <span>{{ $t('leaderboard.timestamp') }}:</span>
             <span>{{ timestamp }}</span>
           </div>
         </div>

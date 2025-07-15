@@ -16,7 +16,7 @@ const props = withDefaults(
 
 const { rows } = useFuturesOrderHistoryTransformer(computed(() => props.orders))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioFuturesOrderHistoryTableColumn.LastUpdated,
     label: t(
@@ -79,7 +79,7 @@ const columns = [
       `portfolio.table.futuresOrderHistory.${PortfolioFuturesOrderHistoryTableColumn.Status}`
     )
   }
-]
+])
 </script>
 
 <template>
@@ -202,7 +202,7 @@ const columns = [
         >
           <template v-if="row.order.isConditional">
             <span class="text-coolGray-500 font-semibold">
-              {{ $t('trade.mark_price') }}
+              {{ $t('trade.markPrice') }}
             </span>
 
             <div class="flex gap-2">

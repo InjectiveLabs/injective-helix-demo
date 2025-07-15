@@ -45,32 +45,32 @@ const columns = computed(() => {
   const columnArray = [
     {
       key: BalanceTableColumn.Assets,
-      label: t(`account.table.${BalanceTableColumn.Assets}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Assets}`),
       class: 'w-[16%]'
     },
     {
       key: BalanceTableColumn.Available,
-      label: t(`account.table.${BalanceTableColumn.Available}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Available}`),
       class: 'text-right w-[8%]'
     },
     {
       key: BalanceTableColumn.UsedOrReserved,
-      label: t(`account.table.${BalanceTableColumn.UsedOrReserved}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.UsedOrReserved}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.UnrealizedPnl,
-      label: t(`account.table.${BalanceTableColumn.UnrealizedPnl}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.UnrealizedPnl}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.Total,
-      label: t(`account.table.${BalanceTableColumn.Total}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Total}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.TotalUsd,
-      label: t(`account.table.${BalanceTableColumn.TotalUsd}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.TotalUsd}`),
       class: 'text-right w-[13%]'
     }
   ]
@@ -79,12 +79,12 @@ const columns = computed(() => {
     columnArray.push(
       {
         key: BalanceTableColumn.Staked,
-        label: t(`account.table.${BalanceTableColumn.Staked}`),
+        label: t(`portfolio.table.${BalanceTableColumn.Staked}`),
         class: ''
       },
       {
         key: BalanceTableColumn.StakedUsd,
-        label: t(`account.table.${BalanceTableColumn.StakedUsd}`),
+        label: t(`portfolio.table.${BalanceTableColumn.StakedUsd}`),
         class: ''
       }
     )
@@ -275,7 +275,7 @@ function toggleStakingRow() {
 
       <template #used-or-reserved-data="{ row }">
         <span v-if="row.isStakingRow" class="mr-1 text-coolGray-400">
-          {{ $t('trade.staked') }}:
+          {{ $t('portfolio.staked') }}:
         </span>
 
         <AppBalanceAmount

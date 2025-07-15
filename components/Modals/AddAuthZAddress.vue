@@ -66,7 +66,7 @@ function onOpenModal() {
   >
     <template #title>
       <h3>
-        {{ $t('authZ.addNewGrantee') }}
+        {{ $t('portfolio.authZ.addNewGrantee') }}
       </h3>
     </template>
 
