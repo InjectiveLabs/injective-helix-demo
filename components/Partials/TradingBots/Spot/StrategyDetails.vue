@@ -3,9 +3,9 @@ import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
 } from '@/app/utils/constants'
-import { StrategyStatus } from '@/types'
+import { StrategyStatus , SpotTradingBotsCyTags} from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 const jsonStore = useSharedJsonStore()
