@@ -3,6 +3,29 @@ import { MainPage } from '@/types'
 // https://apps.apple.com/us/app/helix-trade-with-control/id6737353178?itscg=30200&itsct=apps_box_link&mttnsubad=6737353178
 // https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile
 
+definePageMeta({
+  middleware: [
+    () => {
+      mobileOperatingSystem.value = getMobileOperatingSystem()
+
+      if (mobileOperatingSystem.value === 'iOS') {
+        return navigateTo(
+          'https://apps.apple.com/us/app/helix-trade-with-control/id6737353178?itscg=30200&itsct=apps_box_link&mttnsubad=6737353178',
+          { external: true }
+        )
+      }
+      if (mobileOperatingSystem.value === 'Android') {
+        return navigateTo(
+          'https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile',
+          { external: true }
+        )
+      }
+
+      return navigateTo({ name: MainPage.Index })
+    }
+  ]
+})
+
 const mobileOperatingSystem = ref('')
 
 function getMobileOperatingSystem() {
@@ -21,25 +44,6 @@ function getMobileOperatingSystem() {
 
   return 'unknown'
 }
-
-onMounted(() => {
-  mobileOperatingSystem.value = getMobileOperatingSystem()
-
-  if (mobileOperatingSystem.value === 'iOS') {
-    return navigateTo(
-      'https://apps.apple.com/us/app/helix-trade-with-control/id6737353178?itscg=30200&itsct=apps_box_link&mttnsubad=6737353178',
-      { external: true }
-    )
-  }
-  if (mobileOperatingSystem.value === 'Android') {
-    return navigateTo(
-      'https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile',
-      { external: true }
-    )
-  }
-
-  return navigateTo({ name: MainPage.Index })
-})
 </script>
 
 <template>
