@@ -11,6 +11,8 @@ export default {
       'Post-only mode active: Following the recent chain upgrade, new limit orders can be placed, but market orders and instant matches are unavailable for 2000 blocks. {link}',
     settlePerpMarketBanner:
       'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.',
+    pointsS1Ended:
+      'Helix Points Season 1 has wrapped up. Thank you for your participation, and stay tuned for more updates!',
 
     kado: {
       getStarted: 'Get started',

@@ -15,6 +15,7 @@ export enum MainPage {
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
   PrivacyPolicy = 'privacy-policy',
+  PointsS1Ended = 'points-s1-ended',
   TeslaCompetitionTerms = 'tesla-competition-terms',
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
   CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
