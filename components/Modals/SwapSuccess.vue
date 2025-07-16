@@ -11,7 +11,7 @@ const { $onError } = useNuxtApp()
 const props = withDefaults(defineProps<{ txHash: string }>(), {})
 
 const status: Status = reactive(new Status(StatusType.Idle))
-const swapInfo = ref(undefined as Record<string, string> | undefined)
+const swapInfo = ref(undefined as undefined | Record<string, string>)
 
 const isModalOpen = computed<boolean>(
   () => modalStore.modals[Modal.SwapSuccess]
@@ -61,12 +61,12 @@ watch(isModalOpen, (isModalOpen: boolean) => {
         />
 
         <h2 class="mb-1 text-2xl font-semibold leading-7">
-          {{ t('trade.swap.swappedSuccessfully') }}
+          {{ t('swap.swappedSuccessfully') }}
         </h2>
         <p class="text-coolGray-400">
           <span v-if="swapInfo">
             {{
-              $t('trade.swap.youHaveSwapped', {
+              $t('swap.youHaveSwapped', {
                 inputAmount: swapInfo?.inputAmount,
                 inputTokenSymbol: swapInfo?.inputTokenSymbol,
                 outputAmount: swapInfo?.outputAmount,
@@ -82,7 +82,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
             class="text-blue-500 hover:opacity-80 text-base leading-5"
             target="_blank"
           >
-            <span>{{ $t('trade.swap.viewTransaction') }}</span>
+            <span>{{ $t('swap.viewTransaction') }}</span>
           </NuxtLink>
         </div>
 
@@ -92,7 +92,7 @@ watch(isModalOpen, (isModalOpen: boolean) => {
             size="md"
             @click="onModalClose"
           >
-            {{ $t('trade.swap.backToSwap') }}
+            {{ $t('swap.backToSwap') }}
           </AppButton>
         </div>
       </div>

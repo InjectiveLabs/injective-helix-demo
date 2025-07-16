@@ -169,12 +169,12 @@ watchDebounced(
               :class="[showPrice ? 'visible' : 'invisible']"
             >
               <div class="flex flex-col gap-1">
-                <span class="capitalize">{{ $t('trade.entry_price') }}</span>
+                <span class="capitalize">{{ $t('trade.entryPrice') }}</span>
                 <span class="text-primary-400">{{ priceToFormat }}</span>
               </div>
 
               <div class="flex flex-col gap-1">
-                <span>{{ $t('trade.mark_price') }}</span>
+                <span>{{ $t('trade.markPrice') }}</span>
                 <span class="text-primary-400">{{ markPriceToFormat }}</span>
               </div>
             </div>
@@ -223,7 +223,7 @@ watchDebounced(
           <div
             class="flex flex-col sm:flex-row items-start justify-end gap-1 flex-1 ml-2 sm:ml-0"
           >
-            <span>{{ $t('leaderboard.timeStamp') }}:</span>
+            <span>{{ $t('leaderboard.timestamp') }}:</span>
             <span>{{ timestamp }}</span>
           </div>
         </div>

@@ -11,7 +11,7 @@ withDefaults(
   {}
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: ReferralTableColumn.Wallets,
     label: t(`referral.table.${ReferralTableColumn.Wallets}`)
@@ -26,7 +26,7 @@ const columns = [
     label: t(`referral.table.${ReferralTableColumn.JoinDate}`),
     class: 'text-center'
   }
-]
+])
 
 const { rows } = useReferralTransformer(
   computed(() => referralStore.referralDetails?.invitees || [])

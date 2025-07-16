@@ -77,9 +77,9 @@ function revoke() {
         variant="danger-ghost"
         size="sm"
         disabled
-        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
+        :tooltip="$t('portfolio.notAvailableinAuthZOrAutoSignMode')"
       >
-        {{ $t('authZ.revoke') }}
+        {{ $t('portfolio.authZ.revoke') }}
       </AppButton>
 
       <AppButton
@@ -89,7 +89,7 @@ function revoke() {
         :status="status"
         @click="revoke"
       >
-        {{ $t('authZ.revoke') }}
+        {{ $t('portfolio.authZ.revoke') }}
       </AppButton>
     </div>
   </div>

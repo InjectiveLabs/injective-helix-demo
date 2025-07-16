@@ -2,11 +2,8 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { valueSortFunction } from '@/app/utils/helpers'
-import {
-  MarketCyTags,
-  MarketsTableColumn,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
+import { MarketCyTags, MarketsTableColumn } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const appStore = useAppStore()
 const { t } = useLang()
@@ -19,7 +16,7 @@ const props = withDefaults(
   {}
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: MarketsTableColumn.Markets,
     label: t(`trade.table.markets.${MarketsTableColumn.Markets}`),
@@ -48,7 +45,7 @@ const columns = [
   {
     key: MarketsTableColumn.Action
   }
-]
+])
 
 const { rows } = useMarketTransformer(computed(() => props.sortedMarkets))
 

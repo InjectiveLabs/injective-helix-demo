@@ -82,7 +82,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
         class="flex items-center space-x-2"
       >
         <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-6 w-6 min-w-6" />
-        <p>{{ $t('campaign.title') }}</p>
+        <p>{{ $t('lpRewards.title') }}</p>
       </NuxtLink>
     </div>
 
@@ -102,7 +102,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
-          {{ $t('campaign.myRewards') }}
+          {{ $t('lpRewards.myRewards') }}
         </NuxtLink>
       </div>
     </div>
@@ -110,7 +110,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.rewardsRound') }}
+          {{ $t('lpRewards.rewardsRound') }}
         </p>
         <h3 class="text-xl font-semibold">
           {{ totalRewardsInUsdToString }} USD
@@ -131,7 +131,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
 
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.volume') }}
+          {{ $t('lpRewards.volume') }}
         </p>
         <h3 class="text-xl font-semibold">{{ volumeInUsdToString }} USD</h3>
       </div>

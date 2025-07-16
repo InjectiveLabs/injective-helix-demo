@@ -19,11 +19,11 @@ const modalStore = useSharedModalStore()
 
 const linkOptions = [
   {
-    label: 'authZ.grantee',
+    label: 'portfolio.authZ.grantee',
     to: { name: PortfolioSubPage.SettingsAuthz }
   },
   {
-    label: 'authZ.granter',
+    label: 'portfolio.authZ.granter',
     to: { name: PortfolioSubPage.SettingsAuthzGranter }
   }
 ]
@@ -46,7 +46,7 @@ function openGranteeModal() {
         </NuxtLink>
 
         <h3 class="portfolio-title">
-          {{ $t('authZ.title') }}
+          {{ $t('portfolio.authZ.title') }}
         </h3>
       </div>
 
@@ -67,7 +67,7 @@ function openGranteeModal() {
           class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
           @click="openGranteeModal"
         >
-          + {{ $t('authZ.connectMobile') }}
+          + {{ $t('portfolio.authZ.connectMobile') }}
         </AppButton>
       </div>
     </div>

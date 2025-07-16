@@ -135,7 +135,7 @@ const filteredColumns = computed(() =>
       >
         <template v-if="order.order.isConditional">
           <span class="text-coolGray-500 font-semibold">
-            {{ $t('trade.mark_price') }}
+            {{ $t('trade.markPrice') }}
           </span>
 
           <div class="flex gap-1">

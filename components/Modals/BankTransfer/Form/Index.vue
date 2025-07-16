@@ -201,7 +201,7 @@ function onWalletSelected(wallet: Wallet) {
       @update:max="onAmountChange"
       @update:denom="onTokenChange"
     >
-      <span> {{ $t('account.amount') }} </span>
+      <span> {{ $t('common.amount') }} </span>
     </AppSelectToken>
 
     <ModalsBankTransferFormMemo />

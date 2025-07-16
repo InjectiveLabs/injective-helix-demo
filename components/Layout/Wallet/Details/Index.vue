@@ -206,7 +206,7 @@ function toggleAutoSign() {
               </p>
 
               <div class="flex items-center space-x-1 text-2xs">
-                <div>{{ $t('account.staked') }}:</div>
+                <div>{{ $t('portfolio.staked') }}:</div>
                 <div>
                   <span>$</span>
                   <AppUsdAmount
@@ -221,7 +221,7 @@ function toggleAutoSign() {
 
               <div class="mt-5">
                 <AppButton class="w-full" size="md" @click="onFiatOnRamp">
-                  {{ $t('connect.deposit') }}
+                  {{ $t('common.deposit') }}
                 </AppButton>
               </div>
 

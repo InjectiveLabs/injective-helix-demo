@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { metaTags } from '@/nuxt-config/meta'
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
   MAX_TOAST_TIMEOUT,
@@ -13,6 +14,7 @@ import { Modal, MainPage, HelixCtaToast } from '@/types'
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const siteFullUrl = useRequestURL()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -22,6 +24,8 @@ const { $onError } = useNuxtApp()
 
 const hasApproved = ref(false)
 const status = reactive(new Status(StatusType.Idle))
+
+const baseUrl = computed(() => siteFullUrl.origin || metaTags.url)
 
 const referralCode = computed(() =>
   typeof route.params?.ref === 'string' ? route.params.ref.toUpperCase() : ''
@@ -75,7 +79,7 @@ function joinReferral() {
           timeout: MAX_TOAST_TIMEOUT,
           actions: [
             {
-              label: t('toast.portfolio.tradeNow'),
+              label: t('common.tradeNow'),
               callback: () => {
                 trackOnboardingUserBecomeReferee({
                   isPopupShown: true,
@@ -150,6 +154,9 @@ function checkJoinReferralEligibility() {
       keypath="referral.confirmReferralDescription"
       class="text-sm text-coolGray-450 tracking-wide text-center"
     >
+      <template #baseUrl>
+        <span class="text-white">{{ baseUrl }}</span>
+      </template>
       <template #referralCode>
         <span class="text-white font-bold">{{ referralCode }}</span>
       </template>

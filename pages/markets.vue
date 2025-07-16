@@ -140,9 +140,9 @@ function closeIAssetsBanner() {
               <input
                 v-model="search"
                 type="text"
-                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
+                :placeholder="$t('trade.searchMarket')"
                 :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
-                :placeholder="$t('trade.search_market')"
+                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
                 @update:model-value="resetCategory"
               />
 
@@ -157,8 +157,8 @@ function closeIAssetsBanner() {
             <div class="flex max-sm:hidden">
               <AppCheckbox
                 v-model="isLowVolumeMarketsVisible"
-                class="text-coolGray-450"
                 is-sm
+                class="text-coolGray-450"
               >
                 {{ $t('markets.showLowVol') }}
               </AppCheckbox>

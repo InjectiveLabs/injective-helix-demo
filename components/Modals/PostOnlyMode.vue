@@ -28,15 +28,14 @@ function onModalClose() {
   <AppModal v-bind="{ modelValue: isModalOpen }" @on:close="onModalClose">
     <template #title>
       <h3>
-        {{ $t('postOnlyMode.title') }}
+        {{ $t('common.modal.postOnlyMode.title') }}
       </h3>
     </template>
 
     <div class="relative">
-      <p
-        class="text-center text-sm text-coolGray-100"
-        v-text="$t('postOnlyMode.description')"
-      ></p>
+      <p class="text-center text-sm text-coolGray-100">
+        {{ $t('common.modal.postOnlyMode.description') }}
+      </p>
 
       <div class="mt-6 flex items-center justify-center">
         <AppButton class="bg-blue-500 text-blue-900" @click="onModalClose">

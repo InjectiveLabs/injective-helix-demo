@@ -110,7 +110,7 @@ export enum Breakpoint {
   Xxs = 'xxs'
 }
 
-export enum LiquidityProvisionTypeOption {
+export enum VaultTypeOption {
   All = 'All',
   Mito = 'Mito',
   Helix = 'Helix'
@@ -272,7 +272,7 @@ export enum SpotOrdersStandardView {
   OrderHistory = 'orderHistory'
 }
 
-export enum LiquidityProvisionType {
+export enum VaultType {
   MitoVault = 'mito-vault',
   InjectiveStaking = 'injective-staking',
   HelixSpotGridBot = 'helix-spot-grid-bot'
@@ -417,6 +417,7 @@ export enum NoticeBanner {
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
   TeslaCampaign = 'tesla-campaign',
+  PointsS1Ended = 'points-s1-ended',
   DeprecatedWallet = 'deprecated-wallet',
   PerpSettleMarket = 'perp-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',

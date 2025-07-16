@@ -1,26 +1,26 @@
 <script setup lang="ts">
 const { t } = useLang()
 
-const options = [
+const options = computed(() => [
   {
     to: '/portfolio/orders/spot',
-    label: t('trade.open_orders')
+    label: t('trade.openOrders')
   },
   {
-    label: t('activity.orderHistory'),
+    label: t('trade.tab.orderHistory'),
     to: '/portfolio/orders/spot/order-history'
   },
   {
-    label: t('activity.tradeHistory'),
+    label: t('trade.tab.tradeHistory'),
     to: '/portfolio/orders/spot/trade-history'
   }
-]
+])
 </script>
 
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.spotOrders') }}</h3>
+      <h3 class="portfolio-title">{{ $t('portfolio.spotOrders') }}</h3>
     </div>
 
     <div class="flex items-center">

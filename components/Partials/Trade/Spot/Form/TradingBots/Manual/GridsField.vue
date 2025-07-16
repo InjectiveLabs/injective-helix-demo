@@ -85,8 +85,8 @@ const { value: gridsValue, errorMessage } = useStringField({
   <div class="mb-4">
     <div class="space-y-2">
       <div class="field-label flex items-center space-x-2">
-        <span>2. {{ $t('sgt.numberOfGrids') }}</span>
-        <AppTooltip :content="$t('sgt.nOfGridsTooltip')" />
+        <span>2. {{ $t('tradingBots.numberOfGrids') }}</span>
+        <AppTooltip :content="$t('tradingBots.nOfGridsTooltip')" />
       </div>
       <AppInputField
         v-model="gridsValue"

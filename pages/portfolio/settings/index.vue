@@ -24,7 +24,7 @@ const preferencesList = computed(() => {
     },
     {
       type: SettingsPreferences.AutoSign,
-      title: t('portfolio.settings.preferences.autosign.title'),
+      title: t('portfolio.autoSign.title'),
       description: t('portfolio.settings.preferences.autosign.description'),
       tooltipText: t('portfolio.settings.preferences.autosign.tooltip'),
       tooltipLink: 'https://docs.helixapp.com/trading/auto-sign'
@@ -78,10 +78,10 @@ const preferencesList = computed(() => {
         >
           <div>
             <h3 class="font-medium text-sm text-white">
-              {{ $t('authZ.title') }}
+              {{ $t('portfolio.authZ.title') }}
             </h3>
             <p class="text-xs text-coolGray-350 mt-2">
-              {{ $t('authZ.description') }}
+              {{ $t('portfolio.authZ.description') }}
             </p>
           </div>
 

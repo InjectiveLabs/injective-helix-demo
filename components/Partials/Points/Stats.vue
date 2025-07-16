@@ -1,19 +1,7 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { format } from 'date-fns'
 
 const pointsStore = usePointsStore()
-
-const lastUpdated = computed(() => {
-  if (!pointsStore.accountPoints) {
-    return
-  }
-
-  return format(
-    new Date(pointsStore.accountPoints?.updatedAt),
-    'MMM dd HH:mm:ss'
-  )
-})
 
 const {
   valueToString: totalPointsToString,
@@ -87,10 +75,6 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
           </p>
         </div>
       </template>
-    </div>
-    <div v-if="lastUpdated" class="text-sm text-coolGray-500 mt-4">
-      <span>{{ $t('points.lastUpdatedAt') }}</span>
-      <span>{{ lastUpdated }}</span>
     </div>
   </section>
 </template>

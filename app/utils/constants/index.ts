@@ -166,12 +166,12 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
 )
 
 export const STOP_REASON_MAP = {
-  [StopReason.User]: 'sgt.user',
-  [StopReason.StopLoss]: 'sgt.stopLoss',
-  [StopReason.TakeProfit]: 'sgt.takeProfit',
-  [StopReason.InsufficientFunds]: 'sgt.insufficientFunds',
-  [StopReason.ExceededMaxRetries]: 'sgt.exceededMaxRetries',
-  [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
+  [StopReason.User]: 'tradingBots.user',
+  [StopReason.StopLoss]: 'trade.stopLoss',
+  [StopReason.TakeProfit]: 'trade.takeProfit',
+  [StopReason.InsufficientFunds]: 'tradingBots.insufficientFunds',
+  [StopReason.ExceededMaxRetries]: 'tradingBots.exceededMaxRetries',
+  [StopReason.Emergency]: 'tradingBots.marketConditionsNotSupported'
 }
 
 export const HELIX_MOBILE_CONNECT_SERVER_URL = import.meta.env

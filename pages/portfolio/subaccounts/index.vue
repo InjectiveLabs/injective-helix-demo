@@ -30,12 +30,12 @@ function openTransferModal() {
 
     <div class="p-4 flex justify-end">
       <AppButton
-        :tooltip="
-          isDisabled ? $t('common.notAvailableinAuthZOrAutoSignMode') : ''
-        "
-        :disabled="isDisabled"
         size="sm"
         class="space-x-2"
+        :disabled="isDisabled"
+        :tooltip="
+          isDisabled ? $t('portfolio.notAvailableinAuthZOrAutoSignMode') : ''
+        "
         @click="openTransferModal"
       >
         <UIcon :name="NuxtUiIcons.Plus" class="h-3.5 w-3.5 min-w-3.5" />
@@ -45,8 +45,8 @@ function openTransferModal() {
 
     <div class="divide-y border-y">
       <CommonSubaccountOptions
-        :include-bots-subaccounts="true"
         :show-low-balance="true"
+        :include-bots-subaccounts="true"
       >
         <template #default="{ subaccountOptions }">
           <PartialsPortfolioSubaccountsTable

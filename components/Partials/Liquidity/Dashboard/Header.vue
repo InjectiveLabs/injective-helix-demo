@@ -130,18 +130,18 @@ const volumeThisRound = computed(() =>
         class="flex items-center space-x-2"
       >
         <UIcon :name="NuxtUiIcons.ArrowLeft" class="w-6 h-6 min-w-6" />
-        <p>{{ $t('campaign.title') }}</p>
+        <p>{{ $t('lpRewards.title') }}</p>
       </NuxtLink>
     </div>
 
     <h3 class="text-3xl font-semibold my-4">
-      {{ $t('campaign.dashboardTitle') }}
+      {{ $t('lpRewards.dashboardTitle') }}
     </h3>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.totalRewardsOfRound', { round: currentRound }) }}
+          {{ $t('lpRewards.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
           <AppUsdAmount
@@ -154,13 +154,13 @@ const volumeThisRound = computed(() =>
       </div>
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.rewardsToClaim') }}
+          {{ $t('lpRewards.rewardsToClaim') }}
         </p>
         <h3 class="text-xl font-semibold">{{ rewardsToClaim }}</h3>
       </div>
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.volumeThisRound') }}
+          {{ $t('lpRewards.volumeThisRound') }}
         </p>
         <h3 class="text-xl font-semibold">
           <AppUsdAmount
@@ -173,7 +173,7 @@ const volumeThisRound = computed(() =>
       </div>
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.totalRewardsAllTime') }}
+          {{ $t('lpRewards.totalRewardsAllTime') }}
         </p>
         <h3 class="text-xl font-semibold">
           <AppUsdAmount

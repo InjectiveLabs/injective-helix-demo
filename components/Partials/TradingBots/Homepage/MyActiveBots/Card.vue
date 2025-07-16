@@ -65,7 +65,7 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
           </div>
 
           <div class="text-right">
-            <p class="text-gray-500 mb-1 text-xs">{{ $t('sgt.pnl') }}</p>
+            <p class="text-gray-500 mb-1 text-xs">{{ $t('common.pnl') }}</p>
             <p class="text-xl font-bold">
               <span
                 :class="

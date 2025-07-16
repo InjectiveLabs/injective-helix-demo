@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {
   MarketKey,
-  UiDerivativeMarket,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const { value: trigger, errorMessage } = useStringField({
   name: DerivativesTradeFormField.TriggerPrice,
@@ -16,7 +16,7 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 <template>
   <div v-if="market" class="space-y-2">
-    <p class="field-label">{{ $t('trade.trigger_price') }}</p>
+    <p class="field-label">{{ $t('trade.triggerPrice') }}</p>
 
     <AppInputField
       v-model="trigger"

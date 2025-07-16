@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags, PortfolioSpotOrderHistoryTableColumn } from '@/types'
+import type { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{ orders: SpotOrderHistory[] }>(), {})
 
 const { rows } = useSpotOrderHistoryTransformer(computed(() => props.orders))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioSpotOrderHistoryTableColumn.LastUpdated,
     label: t(
@@ -72,7 +72,7 @@ const columns = [
       `portfolio.table.spotOrderHistory.${PortfolioSpotOrderHistoryTableColumn.Status}`
     )
   }
-]
+])
 </script>
 
 <template>

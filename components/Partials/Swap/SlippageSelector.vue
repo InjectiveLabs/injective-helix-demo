@@ -57,11 +57,11 @@ function checkForInvalidSlippageValue() {
     <template #panel>
       <div class="p-4 max-w-sm">
         <h3 class="text-xs font-bold uppercase tracking-widest">
-          {{ $t('trade.swap.advancedSettings') }}
+          {{ $t('swap.advancedSettings') }}
         </h3>
         <div class="my-4 flex items-center gap-2">
-          <span class="text-xs">{{ $t('trade.swap.tolerance') }}</span>
-          <AppTooltip :content="$t('trade.swap.tooltip')" />
+          <span class="text-xs">{{ $t('swap.tolerance') }}</span>
+          <AppTooltip :content="$t('swap.tooltip')" />
         </div>
 
         <div class="flex items-center gap-2 max-xs:flex-wrap">

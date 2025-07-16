@@ -22,7 +22,9 @@ const exitType = computed({
   <div class="flex items-center text-coolGray-450 font-medium">
     <AppCheckbox v-model="exitType">
       {{
-        $t('sgt.sellSymbolUponTermination', { symbol: market.baseToken.symbol })
+        $t('tradingBots.sellSymbolUponTermination', {
+          symbol: market.baseToken.symbol
+        })
       }}
     </AppCheckbox>
   </div>

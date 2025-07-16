@@ -114,10 +114,10 @@ function setQuoteMax() {
   <div>
     <div class="sm:flex items-center justify-between">
       <p class="text-sm font-semibold">
-        {{ $t('liquidityBots.deposit') }}
+        {{ $t('tradingBots.liquidityBots.deposit') }}
       </p>
       <p class="text-sm text-coolGray-500 font-semibold">
-        {{ $t('liquidityBots.depositDescription') }}
+        {{ $t('tradingBots.liquidityBots.depositDescription') }}
       </p>
     </div>
 
@@ -130,7 +130,7 @@ function setQuoteMax() {
           <template #top>
             <div class="flex items-center justify-between pb-2">
               <p class="text-xs text-gray-400">
-                {{ $t('liquidityBots.depositAmount') }}
+                {{ $t('tradingBots.liquidityBots.depositAmount') }}
               </p>
               <div class="flex items-center gap-2">
                 <div
@@ -172,7 +172,7 @@ function setQuoteMax() {
           <template #top>
             <div class="flex items-center justify-between pb-2">
               <p class="text-xs text-gray-400">
-                {{ $t('liquidityBots.depositAmount') }}
+                {{ $t('tradingBots.liquidityBots.depositAmount') }}
               </p>
               <div class="flex items-center gap-2">
                 <div

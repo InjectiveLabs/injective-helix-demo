@@ -60,7 +60,7 @@ const value = computed({
   <AppTabSelect v-model="value" :options="options">
     <template #default>
       <div class="flex items-center max-lg:py-2">
-        <span v-if="!value">Filter By Type</span>
+        <span v-if="!value">{{ $t('portfolio.filters.byType') }}</span>
         <span v-else>{{ $t(`trade.${value}`) }}</span>
       </div>
     </template>

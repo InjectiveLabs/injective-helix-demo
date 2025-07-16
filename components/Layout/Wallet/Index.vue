@@ -49,7 +49,7 @@ function onWalletConnect() {
       "
       @click="onWalletConnect"
     >
-      <span>{{ $t('connect.connect') }}</span>
+      <span>{{ $t('common.connect') }}</span>
     </AppButton>
   </div>
 

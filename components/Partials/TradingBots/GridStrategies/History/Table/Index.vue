@@ -3,15 +3,15 @@ import {
   STOP_REASON_MAP,
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import type {
-  StopReason,
-  GridStrategyTransformed,
-  DerivativeGridStrategyTransformed
-} from '@/types'
 import {
   TradeSubPage,
   TradingInterface,
   PortfolioTradingBotsHistoryTableColumn
+} from '@/types'
+import type {
+  StopReason,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -21,7 +21,7 @@ const { t } = useLang()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<
-  DerivativeGridStrategyTransformed | GridStrategyTransformed | null
+  null | GridStrategyTransformed | DerivativeGridStrategyTransformed
 >(null)
 
 const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
@@ -45,45 +45,45 @@ const formattedStrategies = computed(() =>
 const columns = computed(() => [
   {
     key: PortfolioTradingBotsHistoryTableColumn.Time,
-    label: t('sgt.time'),
+    label: t('tradingBots.time'),
     class: 'w-32'
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Market,
-    label: t('sgt.market')
+    label: t('trade.market')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.LowerBound,
-    label: t('sgt.lowerBound')
+    label: t('tradingBots.lowerBound')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.UpperBound,
-    label: t('sgt.upperBound')
+    label: t('tradingBots.upperBound')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.TotalAmount,
-    label: t('sgt.totalAmount')
+    label: t('tradingBots.totalAmount')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.TotalProfit,
-    label: t('sgt.totalProfit')
+    label: t('tradingBots.totalProfit')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Duration,
-    label: t('sgt.duration')
+    label: t('tradingBots.duration')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Details,
-    label: t('sgt.details')
+    label: t('common.details')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.StopReason,
-    label: t('sgt.stopReason')
+    label: t('tradingBots.stopReason')
   }
 ])
 
 function selectStrategy(
-  strategy: DerivativeGridStrategyTransformed | GridStrategyTransformed
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
 ) {
   selectedStrategy.value = strategy
   isOpen.value = true
@@ -196,7 +196,7 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.details') }}
+          {{ t('common.details') }}
         </AppButton>
       </template>
 
@@ -207,7 +207,7 @@ function selectStrategy(
       </template>
 
       <template #empty-state>
-        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+        <CommonEmptyList :message="$t('tradingBots.noActiveStrategies')" />
       </template>
     </UTable>
 
@@ -223,7 +223,7 @@ function selectStrategy(
 
     <CommonEmptyList
       v-if="gridStrategyStore.removedDerivativeStrategies.length === 0 && !lg"
-      :message="$t('sgt.noStrategies')"
+      :message="$t('tradingBots.noStrategies')"
     />
 
     <AppModal v-model="isOpen" v-bind="{ isSm: true }">

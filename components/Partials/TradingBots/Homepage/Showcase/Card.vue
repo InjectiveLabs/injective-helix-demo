@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
+import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
+import type {
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
 } from '@/types'
-import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
 
 const props = withDefaults(
   defineProps<{
@@ -66,7 +66,7 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
     </div>
 
     <div class="mt-4">
-      <p class="text-gray-500 mb-1 text-xs">{{ $t('sgt.pnl') }}</p>
+      <p class="text-gray-500 mb-1 text-xs">{{ $t('common.pnl') }}</p>
       <p
         :class="[isPositivePnl ? 'text-green-500' : 'text-red-500']"
         class="text-2xl font-semibold"
@@ -113,7 +113,7 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
 
     <template #footer>
       <UButton block :to="to">
-        {{ $t('sgt.replicateStrategy') }}
+        {{ $t('tradingBots.replicateStrategy') }}
       </UButton>
     </template>
   </UCard>

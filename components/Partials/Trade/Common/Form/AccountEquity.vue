@@ -113,7 +113,7 @@ function onFiatOnRamp() {
       class="w-full"
       @click="onFiatOnRamp"
     >
-      {{ $t('account.deposit') }}
+      {{ $t('common.deposit') }}
     </AppButton>
   </div>
 </template>

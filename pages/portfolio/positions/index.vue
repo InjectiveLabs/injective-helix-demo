@@ -25,9 +25,9 @@ onSubaccountChange(fetchOrders)
 <template>
   <div>
     <div class="p-4">
-      <p class="portfolio-title">{{ $t('activity.positions') }}</p>
+      <p class="portfolio-title">{{ $t('portfolio.positions') }}</p>
       <p class="text-coolGray-300 mt-8 font-medium">
-        {{ $t('activity.positions') }}
+        {{ $t('portfolio.positions') }}
       </p>
     </div>
 

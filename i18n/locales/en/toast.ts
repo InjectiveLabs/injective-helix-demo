@@ -13,6 +13,7 @@ export default {
     transactionFinalized: 'Tx finalized in {duration} sec. {viewOnInjScan}',
     onramperSuccess:
       'Success! You bought {cryptoAmount} {crypto} for {fiatCurrency}. Tokens are on their way.',
+
     account: {
       authZAdded: 'AuthZ account added',
       assetsTransferred: 'Assets transferred to your account',
@@ -23,7 +24,6 @@ export default {
     },
     portfolio: {
       buyInj: 'Buy INJ',
-      tradeNow: 'Trade now',
       bridgeNow: 'Bridge now',
       bankTransferSuccessful: 'Transfer successful',
       startTradingInSeconds: 'Start Trading in Seconds!',
@@ -52,6 +52,8 @@ export default {
       positionClosed: 'Position closed',
       noLiquidity: 'Not enough liquidity',
       orderPlaced: 'Order placed successfully',
+      tpSuccessMessage: 'TP is set to {price}',
+      slSuccessMessage: 'SL is set to {price}',
       allOrdersCancelled: 'All orders cancelled',
       orderUpdated: 'Order updated successfully',
       slOrderCancelled: 'Stop loss order cancelled',
@@ -59,10 +61,9 @@ export default {
       tpOrderCancelled: 'Take profit order cancelled',
       advancedOrderCancelled: 'Advanced order cancelled',
       allAdvancedOrdersCancelled: 'All advanced orders cancelled',
-      tpSuccessMessage: 'TP is set to {price}',
-      slSuccessMessage: 'SL is set to {price}',
       rwaMarketClosedToast:
         'This market is currently closed. You may place a trade anyway, but beware of the risks involved.',
+
       neptuneUsdt: {
         success: {
           deposit: 'Neptune deposit successful',
@@ -76,10 +77,10 @@ export default {
     },
     referral: {
       referralLinkCopied: 'Referral Link Copied',
-      referralLinkExists:
-        'You have already applied another referral code to this wallet',
       referralLinkIsUnavailable: 'Referral Link is Unavailable',
       success: 'Your Code is Successfully Claimed. Explore Markets Now!',
+      referralLinkExists:
+        'You have already applied another referral code to this wallet',
       joinSelfReferralMessage:
         "Your referral code is valid, but you can't refer yourself. Share it with someone else!"
     },
@@ -97,15 +98,14 @@ export default {
       successfullyCreateGuild: 'Successfully created guild',
       copiedInvitationLink: 'Invitation code copied to your clipboard.'
     },
-    sgt: {
-      strategyRemoved: 'strategy removed successfully',
+    tradingBots: {
       tradingBotRemovedSuccessfully: 'Trading bot removed successfully',
       tradingBotCreatedSuccessfully: 'Trading bot created successfully'
     },
     stockTwits: {
+      startHere: 'Start here',
       title: '👋 New to Helix?',
-      description: 'Start trading crypto & tokenized stocks with ease.',
-      startHere: 'Start here'
+      description: 'Start trading crypto & tokenized stocks with ease.'
     }
   }
 }

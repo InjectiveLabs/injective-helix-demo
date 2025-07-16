@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { t } = useLang()
 
-const tutorialSteps = [
+const tutorialSteps = computed(() => [
   {
     num: '01',
     title: t('referral.referFriends.step1Title'),
@@ -20,7 +20,7 @@ const tutorialSteps = [
     image_url: '/images/referral/refer-friend3.webp',
     description: t('referral.referFriends.step3Description')
   }
-]
+])
 </script>
 
 <template>

@@ -39,10 +39,10 @@ function onTradeNow() {
     >
       <div class="flex-1">
         <h2 class="text-lg lg:text-xl font-bold">
-          {{ $t('markets.iAssetsBanner.title') }}
+          {{ $t('banners.iAssets.title') }}
         </h2>
         <p class="max-lg:text-sm mt-3 font-medium">
-          {{ $t('markets.iAssetsBanner.description') }}
+          {{ $t('banners.iAssets.description') }}
         </p>
       </div>
 
@@ -50,7 +50,7 @@ function onTradeNow() {
         class="max-lg:text-sm text-base py-3 border-0 font-semibold bg-[#B5CDFB] hover:bg-[#B5CDFB]/80"
         @click="onTradeNow"
       >
-        {{ $t('home.tradeNow') }}
+        {{ $t('common.tradeNow') }}
       </AppButton>
     </div>
   </div>

@@ -61,7 +61,7 @@ function onOpenTradingBotDetails() {
               :variant="isActive ? 'primary' : 'primary-cta'"
               :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
             >
-              {{ $t(`sgt.${type}`) }}
+              {{ $t(`tradingBots.${type}`) }}
             </AppButton>
           </template>
         </AppButtonSelect>

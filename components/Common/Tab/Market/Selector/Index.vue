@@ -45,7 +45,7 @@ const activeMarket = computed(() =>
     :class="wrapperClass"
     @click="openModal"
   >
-    <p v-if="!activeMarket">{{ 'Filter By Market' }}</p>
+    <p v-if="!activeMarket">{{ $t('portfolio.filters.byMarket') }}</p>
 
     <p v-else>
       {{ activeMarket?.ticker }}

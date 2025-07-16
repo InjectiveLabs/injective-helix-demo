@@ -67,7 +67,7 @@ async function handleLimitChange(limit: number) {
 <template>
   <div>
     <div class="p-4">
-      <h3 class="portfolio-title">{{ $t('activity.fundingHistory') }}</h3>
+      <h3 class="portfolio-title">{{ $t('portfolio.fundingHistory') }}</h3>
     </div>
 
     <div class="border-y divide-y">
@@ -103,7 +103,7 @@ async function handleLimitChange(limit: number) {
 
         <CommonEmptyList
           v-if="!activityStore.subaccountFundingHistory.length"
-          :message="$t('fundingHistory.emptyFundingHistory')"
+          :message="$t('portfolio.noFundingHistory')"
         />
       </template>
     </div>

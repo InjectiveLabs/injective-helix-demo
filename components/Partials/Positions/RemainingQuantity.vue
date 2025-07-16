@@ -55,7 +55,7 @@ async function onViewOrder() {
           class="text-blue-300 font-medium hover:opacity-70 transition-opacity cursor-pointer"
           @click="onViewOrder"
         >
-          {{ $t('trade.view_order') }}
+          {{ $t('trade.viewOrder') }}
         </span>
       </div>
     </template>

@@ -187,7 +187,7 @@ const columns = computed(() => {
       <template #leverage-data="{ row }">
         <div class="flex items-center p-2 justify-end">
           <span v-if="row.leverage.isNaN()" class="text-coolGray-400">
-            {{ $t('trade.not_available_n_a') }}
+            {{ $t('trade.notAvailableNA') }}
           </span>
           <span v-else> {{ row.leverage.toFormat(2) }} &times; </span>
         </div>
@@ -208,7 +208,7 @@ const columns = computed(() => {
       <template #trigger-condition-data="{ row }">
         <div class="flex items-center p-2 space-x-2 justify-end">
           <span class="text-coolGray-500 font-sans">
-            {{ $t('trade.mark_price') }}
+            {{ $t('trade.markPrice') }}
           </span>
 
           <span

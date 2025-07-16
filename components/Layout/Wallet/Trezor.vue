@@ -12,7 +12,7 @@ const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
-const options = [
+const options = computed<SharedDropdownOption[]>(() => [
   {
     display: t('connect.trezor'),
     value: Wallet.TrezorBip32
@@ -21,7 +21,7 @@ const options = [
     display: t('connect.trezorBip44'),
     value: Wallet.TrezorBip44
   }
-] as SharedDropdownOption[]
+])
 
 const wallet = ref<Wallet>(Wallet.TrezorBip32)
 const status = reactive(new Status(StatusType.Idle))
@@ -157,7 +157,7 @@ const connect = handleSubmit(() => {
         size="lg"
         @click="connect"
       >
-        {{ $t('connect.connect') }}
+        {{ $t('common.connect') }}
       </AppButton>
     </div>
 
