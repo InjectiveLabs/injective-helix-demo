@@ -18,11 +18,11 @@ type Banner = {
 }
 
 const perpSettlePairs = [
-  {
-    // slug: 'jellyjelly-usdt-perp',
-    // marketId:
-    //  '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
-  }
+  // {
+  //   slug: 'jellyjelly-usdt-perp',
+  //   marketId:
+  //    '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
+  // }
 ] as { slug: string; marketId: string }[]
 
 const route = useRoute()
