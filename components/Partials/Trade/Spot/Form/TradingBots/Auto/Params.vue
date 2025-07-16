@@ -14,7 +14,8 @@ import {
   MarketKey,
   GridStrategyType,
   InvestmentTypeGst,
-  SpotGridTradingField
+  SpotGridTradingField,
+  SpotTradingBotsCyTags
 } from '@/types'
 import type { UiMarketWithToken, SpotGridTradingForm } from '@/types'
 

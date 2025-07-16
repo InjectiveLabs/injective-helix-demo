@@ -8,7 +8,7 @@ import {
   GST_MIN_TRADING_SIZE_LOW,
   GST_MIN_TOTAL_AMOUNT_USD
 } from '@/app/utils/constants'
-import { MarketKey, InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField, SpotTradingBotsCyTags } from '@/types'
 import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const sharedTokenStore = useSharedTokenStore()
@@ -247,6 +247,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       v-model="baseAmount"
       placeholder="0.00"
       :disabled="isUpperBoundLtLastPrice || isDisabled"
+      :data-cy="dataCyTag(SpotTradingBotsCyTags.BaseDenomInputField)"
     >
       <template #right>
         <span class="text-sm text-white">{{ market.baseToken.symbol }}</span>
@@ -265,6 +266,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       v-model="quoteAmount"
       placeholder="0.00"
       :disabled="isLowerBoundGtLastPrice || isDisabled"
+      :data-cy="dataCyTag(SpotTradingBotsCyTags.QuoteDenomInputField)"
     >
       <template #right>
         <PartialsCommonBalanceDisplay

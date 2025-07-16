@@ -243,3 +243,16 @@ export enum LeaderBoardCyTags {
   rankAddress = 'rank-address',
   startTrading = 'start-trading'
 }
+
+export enum SpotTradingBotsCyTags {
+  BaseDenomInputField = 'base-denom-input-field',
+  QuoteDenomInputField = 'quote-denom-input-field',
+  GridNumber = 'grid-number',
+  NumberOfGridsLabel = 'number-of-grids-label',
+  NumberOfGridsValue = 'number-of-grids-value',
+  GridDetailsInitialQuoteSymbol = 'initial-quote-amount-symbol',
+  GridDetailsInitialQuoteAmount = 'initial-quote-amount-value',
+  GridDetailsInitialBaseSymbol = 'initial-base-amount-symbol',
+  GridDetailsInitialBaseAmount = 'initial-base-amount-value',
+  AdjustModal = 'adjust-modal'
+}
