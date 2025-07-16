@@ -15,7 +15,7 @@ onMounted(() => {
       scale: 1.2
     })
 
-    gsap.utils.toArray('.gsap-text').forEach((text, _i, arr) => {
+    gsap.utils.toArray('.gsap-element').forEach((text, _i, arr) => {
       gsap.to(text as HTMLElement, {
         scrollTrigger: {
           trigger: text as HTMLElement,
@@ -49,8 +49,11 @@ function goToWhyHelix() {
   <div
     class="lg:h-screen flex flex-col lg:justify-center max-lg:pt-10 relative gsap-section z-30"
   >
-    <div id="hero-section" class="max-w-4xl mx-auto w-full text-center">
-      <h1 id="hero-title" class="font-semibold gsap-text mb-10 lg:mb-5">
+    <div
+      id="hero-section"
+      class="max-w-4xl mx-auto w-full text-center flex flex-col items-center"
+    >
+      <h1 id="hero-title" class="font-semibold gsap-element mb-10 lg:mb-8">
         <p class="text-4xl lg:text-7xl">
           {{ $t('home.openFinance') + ' ' }}
         </p>
@@ -61,11 +64,11 @@ function goToWhyHelix() {
         </p>
       </h1>
 
-      <p id="hero-description" class="text-lg font-semibold gsap-text">
+      <p id="hero-description" class="text-lg gsap-element">
         {{ $t('home.description') }}
       </p>
 
-      <div class="flex justify-center gap-4 mt-14 lg:mt-10 gsap-text">
+      <div class="flex justify-center gap-4 my-14 lg:my-10 gsap-element">
         <NuxtLink
           :to="{ name: TradeSubPage.Spot, params: { slug: 'inj-usdt' } }"
         >
@@ -82,28 +85,8 @@ function goToWhyHelix() {
           {{ $t('home.whyHelix') }}
         </AppButton>
       </div>
-      <div class="flex justify-center items-center gap-4 mt-14 lg:mt-10">
-        <a
-          href="https://apps.apple.com/us/app/helix-trade-with-control/id6737353178"
-          target="_blank"
-        >
-          <img
-            src="/images/mobile/app-store.svg"
-            alt="Apple App Store"
-            class="h-10 md:h-12 lg:h-14"
-          />
-        </a>
-        <a
-          href="https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile"
-          target="_blank"
-        >
-          <img
-            src="/images/mobile/google-play.png"
-            alt="Google Play"
-            class="h-10 md:h-12 lg:h-14"
-          />
-        </a>
-      </div>
+
+      <PartialsHomeSectionsHeroMobileQRCode class="gsap-element" />
     </div>
   </div>
 </template>

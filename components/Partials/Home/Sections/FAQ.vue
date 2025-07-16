@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PortfolioSubPage } from '~/types'
 import { NuxtUiIcons } from '@shared/types'
 
 const { t } = useI18n()
@@ -65,186 +66,140 @@ const faqList = computed(() => [
       }"
     >
       <template #accordion-1>
-        <div>
-          <i18n-t
-            tag="p"
-            keypath="home.faq.accordion1.content1"
-            class="leading-tight"
-          >
-            <template #btc>
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures/btc-usdt-perp"
-              >
-                {{ $t('home.faq.accordion1.btc') }}
-              </NuxtLink>
-            </template>
-
-            <template #eth>
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures/eth-usdt-perp"
-              >
-                {{ $t('home.faq.accordion1.eth') }}
-              </NuxtLink>
-            </template>
-
-            <template #inj>
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures/inj-usdt-perp"
-              >
-                {{ $t('home.faq.accordion1.inj') }}
-              </NuxtLink>
-            </template>
-          </i18n-t>
-
-          <br />
-
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion1.content2') }}
-          </p>
-
-          <br />
-
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion1.content3') }}
-          </p>
-        </div>
+        <p>
+          {{ $t('home.faq.accordion1.description') }}
+        </p>
       </template>
 
       <template #accordion-2>
-        <div>
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion2.featureTitle') }}
-          </p>
+        <p>
+          {{ $t('home.faq.accordion2.description') }}
+        </p>
 
-          <br />
+        <br />
 
-          <ul class="faq-description-list">
-            <li>
-              {{ $t('home.faq.accordion2.feature1.section1') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/spot"
-              >
-                {{ $t('home.faq.accordion2.feature1.section2') }} </NuxtLink
-              >{{ $t('home.faq.fullstop') }}
-            </li>
-
-            <li>
-              {{ $t('home.faq.accordion2.feature2.section1') }}
-              <strong>{{ $t('home.faq.accordion2.feature2.section2') }}</strong>
-              {{ $t('home.faq.on') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures"
-                >{{ $t('home.faq.accordion2.feature2.section3') }}</NuxtLink
-              >, {{ $t('home.faq.accordion2.feature2.section4') }},
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures/stocks"
-                >{{ $t('home.faq.accordion2.feature2.section5') }}</NuxtLink
-              >, {{ $t('home.faq.and') }}
-              <strong>{{ $t('home.faq.accordion2.feature2.section6') }}</strong>
-              {{ $t('home.faq.accordion2.feature2.section7') }}
-            </li>
-
-            <li>
-              {{ $t('home.faq.accordion2.feature3.section1') }}
-              <strong>{{ $t('home.faq.accordion2.feature3.section2') }}</strong>
-              {{ $t('home.faq.accordion2.feature3.section3') }}
-            </li>
-
-            <li>
-              {{ $t('home.faq.accordion2.feature4.section1') }}
-              <strong>{{ $t('home.faq.accordion2.feature4.section2') }}</strong
-              >,
-              <strong>{{ $t('home.faq.accordion2.feature4.section3') }}</strong
-              >, {{ $t('home.faq.and') }}
-              <strong>{{ $t('home.faq.accordion2.feature4.section4') }}</strong>
-              {{ $t('home.faq.accordion2.feature4.section5') }}
-            </li>
-
-            <li>
-              {{ $t('home.faq.accordion2.feature5.section1') }}
-              <strong>{{ $t('home.faq.accordion2.feature5.section2') }}</strong>
-              {{ $t('home.faq.accordion2.feature5.section3') }}
-            </li>
-
-            <li>
-              {{ $t('home.faq.accordion2.feature6.section1') }}
-              <strong>{{ $t('home.faq.accordion2.feature6.section2') }}</strong>
-              {{ $t('home.faq.accordion2.feature6.section3') }}
-            </li>
-          </ul>
-        </div>
+        <ul class="faq-description-list">
+          <li>
+            <i18n-t tag="p" keypath="home.faq.accordion2.option1">
+              <template #settings>
+                <NuxtLink
+                  class="faq-link"
+                  :to="{ name: PortfolioSubPage.SettingsAuthz }"
+                >
+                  {{ $t('home.faq.accordion2.settings') }}
+                </NuxtLink>
+              </template>
+            </i18n-t>
+          </li>
+          <li>{{ $t('home.faq.accordion2.option2') }}</li>
+          <li>{{ $t('home.faq.accordion2.option3') }}</li>
+        </ul>
       </template>
 
       <template #accordion-3>
-        <div>
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion3.content1') }}
-          </p>
-
-          <br />
-
-          <i18n-t
-            tag="p"
-            keypath="home.faq.accordion3.content2"
-            class="leading-tight"
-          >
-            <template #here>
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://docs.helixapp.com/getting-started"
-              >
-                {{ $t('home.faq.here') }}
-              </NuxtLink>
-            </template>
-          </i18n-t>
-        </div>
+        <p>
+          {{ $t('home.faq.accordion3.description') }}
+        </p>
       </template>
 
       <template #accordion-4>
         <div>
           <p class="leading-tight">
-            {{ $t('home.faq.accordion4.optionTitle') }}
+            {{ $t('home.faq.accordion4.featureTitle') }}
           </p>
 
           <br />
 
           <ul class="faq-description-list">
             <li>
-              {{ $t('home.faq.accordion4.option1.section1') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://bridge.injective.network/fiat"
-              >
-                {{ $t('home.faq.accordion4.option1.section2') }}
-              </NuxtLink>
-              {{ $t('home.faq.accordion4.option1.section3') }}
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature1">
+                <template #spotMarkets>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/spot"
+                  >
+                    {{ $t('home.faq.accordion4.spotMarkets') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
             </li>
+
             <li>
-              {{ $t('home.faq.accordion4.option2.section1') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://bridge.injective.network"
-              >
-                {{ $t('home.faq.accordion4.option2.section2') }}
-              </NuxtLink>
-              {{ $t('home.faq.accordion4.option2.section3') }}
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature2">
+                <template #oneHundredLeverage>
+                  <strong>{{
+                    $t('home.faq.accordion4.oneHundredLeverage')
+                  }}</strong>
+                </template>
+
+                <template #perpetualMarkets>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/futures"
+                  >
+                    {{ $t('home.faq.accordion4.perpetualMarkets') }}
+                  </NuxtLink>
+                </template>
+
+                <template #stocks>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/futures/stocks"
+                  >
+                    {{ $t('home.faq.accordion4.stocks') }}
+                  </NuxtLink>
+                </template>
+
+                <template #commodities>
+                  <strong>{{ $t('home.faq.accordion4.commodities') }}</strong>
+                </template>
+              </i18n-t>
             </li>
-            <li>{{ $t('home.faq.accordion4.option3') }}</li>
+
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature3">
+                <template #tradingBots>
+                  <strong>{{ $t('home.faq.accordion4.tradingBots') }}</strong>
+                </template>
+              </i18n-t>
+            </li>
+
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature4">
+                <template #lpRewards>
+                  <strong>{{ $t('home.faq.accordion4.lpRewards') }}</strong>
+                </template>
+
+                <template #makerRebates>
+                  <strong>{{ $t('home.faq.accordion4.makerRebates') }}</strong>
+                </template>
+
+                <template #feeDiscounts>
+                  <strong>{{ $t('home.faq.accordion4.feeDiscounts') }}</strong>
+                </template>
+              </i18n-t>
+            </li>
+
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature5">
+                <template #autoSigning>
+                  <strong>{{ $t('home.faq.accordion4.autoSigning') }}</strong>
+                </template>
+              </i18n-t>
+            </li>
+
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion4.feature6">
+                <template #tradingCompetitions>
+                  <strong>
+                    {{ $t('home.faq.accordion4.tradingCompetitions') }}
+                  </strong>
+                </template>
+              </i18n-t>
+            </li>
           </ul>
         </div>
       </template>
@@ -252,54 +207,120 @@ const faqList = computed(() => [
       <template #accordion-5>
         <div>
           <p class="leading-tight">
-            {{ $t('home.faq.accordion5.stepTitle') }}
+            {{ $t('home.faq.accordion5.optionTitle') }}
+          </p>
+
+          <br />
+
+          <ul class="faq-description-list">
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion5.option1">
+                <template #fiatOnRamps>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://bridge.injective.network/fiat"
+                  >
+                    {{ $t('home.faq.accordion5.fiatOnRamps') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
+            </li>
+
+            <li>
+              <i18n-t tag="p" keypath="home.faq.accordion5.option2">
+                <template #injectiveBridge>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://bridge.injective.network/"
+                  >
+                    {{ $t('home.faq.accordion5.injectiveBridge') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
+            </li>
+
+            <li>{{ $t('home.faq.accordion5.option3') }}</li>
+          </ul>
+        </div>
+      </template>
+
+      <template #accordion-6>
+        <div>
+          <p class="leading-tight">
+            {{ $t('home.faq.accordion6.stepTitle') }}
           </p>
 
           <br />
 
           <ol class="faq-steps-list">
             <li>
-              {{ $t('home.faq.accordion5.step1.section1') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/"
-              >
-                {{ $t('home.faq.accordion5.step1.section2') }}
-              </NuxtLink>
-              {{ $t('home.faq.accordion5.step1.section3') }}
+              <i18n-t tag="p" keypath="home.faq.accordion6.step1">
+                <template #helix>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/"
+                  >
+                    {{ $t('home.faq.accordion6.helix') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
             </li>
+
             <li>
-              {{ $t('home.faq.accordion5.step2.section1') }}
-              <strong>{{ $t('home.faq.accordion5.step2.section2') }}</strong>
-              {{ $t('home.faq.or') }}
-              <strong>{{ $t('home.faq.accordion5.step2.section3') }}</strong
-              >{{ $t('home.faq.fullstop') }}
+              <i18n-t tag="p" keypath="home.faq.accordion6.step2">
+                <template #usdt>
+                  <strong>
+                    {{ $t('home.faq.accordion6.usdt') }}
+                  </strong>
+                </template>
+                <template #inj>
+                  <strong>
+                    {{ $t('home.faq.accordion6.inj') }}
+                  </strong>
+                </template>
+              </i18n-t>
             </li>
+
             <li>
-              {{ $t('home.faq.accordion5.step3.section1') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/spot"
-              >
-                {{ $t('home.faq.accordion5.step3.section2') }}
-              </NuxtLink>
-              {{ $t('home.faq.or') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/futures"
-                >{{ $t('home.faq.accordion5.step3.section3') }}
-              </NuxtLink>
-              {{ $t('home.faq.accordion5.step3.section4') }}
+              <i18n-t tag="p" keypath="home.faq.accordion6.step3">
+                <template #spot>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/spot"
+                  >
+                    {{ $t('home.faq.accordion6.spot') }}
+                  </NuxtLink>
+                </template>
+
+                <template #perpetual>
+                  <NuxtLink
+                    target="_blank"
+                    class="faq-link"
+                    to="https://helixapp.com/futures"
+                  >
+                    {{ $t('home.faq.accordion6.perpetual') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
             </li>
+
             <li>
-              {{ $t('home.faq.accordion5.step4.section1') }}
-              <strong>{{ $t('home.faq.accordion5.step4.section2') }}</strong>
-              {{ $t('home.faq.or') }}
-              <strong>{{ $t('home.faq.accordion5.step4.section3') }}</strong>
-              {{ $t('home.faq.accordion5.step4.section4') }}
+              <i18n-t tag="p" keypath="home.faq.accordion6.step4">
+                <template #limit>
+                  <strong>
+                    {{ $t('home.faq.accordion6.limit') }}
+                  </strong>
+                </template>
+                <template #marketOrder>
+                  <strong>
+                    {{ $t('home.faq.accordion6.marketOrder') }}
+                  </strong>
+                </template>
+              </i18n-t>
             </li>
           </ol>
 
@@ -307,8 +328,8 @@ const faqList = computed(() => [
 
           <i18n-t
             tag="p"
-            keypath="home.faq.accordion5.cta"
             class="leading-tight"
+            keypath="home.faq.accordion6.cta"
           >
             <template #tutorial>
               <NuxtLink
@@ -316,52 +337,10 @@ const faqList = computed(() => [
                 class="faq-link"
                 to="https://www.youtube.com/watch?v=uEhCbu8L2o0"
               >
-                {{ $t('home.faq.accordion5.videoTutorialHere') }}
+                {{ $t('home.faq.accordion6.videoTutorialHere') }}
               </NuxtLink>
             </template>
           </i18n-t>
-        </div>
-      </template>
-
-      <template #accordion-6>
-        <div>
-          <p class="leading-tight">
-            {{ $t('home.faq.accordion6.optionTitle') }}
-          </p>
-
-          <br />
-
-          <ul class="faq-description-list">
-            <li>
-              <strong>{{ $t('home.faq.accordion6.option1.section1') }} </strong
-              >:
-              {{ $t('home.faq.accordion6.option1.section2') }}
-            </li>
-            <li>
-              <strong>{{ $t('home.faq.accordion6.option2.section1') }} </strong
-              >:
-              {{ $t('home.faq.accordion6.option2.section2') }}
-            </li>
-            <li>
-              <strong>{{ $t('home.faq.accordion6.option3.section1') }} </strong
-              >:
-              {{ $t('home.faq.accordion6.option3.section2') }}
-            </li>
-            <li>
-              <strong>{{ $t('home.faq.accordion6.option4.section1') }} </strong
-              >:
-              {{ $t('home.faq.accordion6.option4.section2') }}
-              <NuxtLink
-                target="_blank"
-                class="faq-link"
-                to="https://helixapp.com/lp-rewards"
-              >
-                {{ $t('home.faq.accordion6.option4.section3') }}
-              </NuxtLink>
-
-              {{ $t('home.faq.accordion6.option4.section4') }}
-            </li>
-          </ul>
         </div>
       </template>
     </UAccordion>

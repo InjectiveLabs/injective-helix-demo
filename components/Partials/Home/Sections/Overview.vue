@@ -74,12 +74,12 @@ onMounted(() => {
   <div class="relative gsap-section">
     <img
       src="/svg/blurs/blur-1.svg"
-      class="absolute bottom-32 -right-[50%] -rotate-180 blur-xl"
+      class="absolute bottom-32 -right-[50%] -rotate-180 blur-xl pointer-events-none"
     />
 
     <img
       src="/svg/blurs/blur-1.svg"
-      class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl"
+      class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl pointer-events-none"
     />
 
     <div id="overview-section" class="relative max-lg:mt-28 lg:py-20">
@@ -99,9 +99,9 @@ onMounted(() => {
             v-for="item in overviewList"
             :key="`home-${item.type}`"
             v-model="activeType"
-            class="hover:text-white cursor-pointer flex text-coolGray-475 transition-colors"
-            :class="{ 'text-white': activeType === item.type }"
             :value="item.type"
+            :class="{ 'text-white': activeType === item.type }"
+            class="hover:text-white cursor-pointer flex text-coolGray-475 transition-colors"
           >
             <div class="flex-1 flex items-center">
               <div class="flex-1 space-y-2">
