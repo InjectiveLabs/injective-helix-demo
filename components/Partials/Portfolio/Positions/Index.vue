@@ -88,5 +88,6 @@ function resetSelectedPosition() {
   <ModalsSharePositionPnl
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 </template>

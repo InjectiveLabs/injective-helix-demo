@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
+import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const now = useNow({ interval: 1000 })
-const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
-const { $onError } = useNuxtApp()
+const sharedWalletStore = useSharedWalletStore()
 
 const props = withDefaults(
   defineProps<{
@@ -14,6 +14,10 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const emit = defineEmits<{
+  'on:close': []
+}>()
 
 const { market } = useDerivativePosition(computed(() => props.position))
 
@@ -52,11 +56,16 @@ const canvas = ref()
 const isDownloading = ref(false)
 const selectedCharacter = ref('char1')
 
-onWalletConnected(() => {
-  referralStore.fetchUserReferralDetails().catch($onError)
+onMounted(() => {
+  trackSharePnlDownload({
+    isModalShown: true,
+    isDownloadClicked: false,
+    walletAddress: sharedWalletStore.injectiveAddress
+  })
 })
 
 function onCloseModal() {
+  emit('on:close')
   modalStore.closeModal(Modal.SharePositionPnl)
 }
 
@@ -70,6 +79,12 @@ async function downloadImage() {
     link.download = `Position-PNL-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
+
+    trackSharePnlDownload({
+      isModalShown: true,
+      isDownloadClicked: true,
+      walletAddress: sharedWalletStore.injectiveAddress
+    })
 
     isDownloading.value = false
     onCloseModal()
@@ -93,6 +108,7 @@ function onOptionSelect(key: string) {
         width: 'max-sm:w-full sm:w-[560px] sm:max-w-full max-sm:h-full'
       }
     }"
+    @on:close="onCloseModal"
   >
     <h3 class="mb-5 text-xl sm:text-2xl font-semibold leading-none">
       {{ $t('trade.sharePnl') }}

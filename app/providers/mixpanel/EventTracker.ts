@@ -439,3 +439,19 @@ export const trackUtmStockTwitsBanner = ({
     'Utm Source Platform': utmSourcePlatform || '-'
   })
 }
+
+export const trackSharePnlDownload = ({
+  isModalShown,
+  walletAddress,
+  isDownloadClicked
+}: {
+  isModalShown: boolean
+  walletAddress: string
+  isDownloadClicked: boolean
+}) => {
+  mixpanelAnalytics.track(MixPanelEvent.SharePnlDownloaded, {
+    'Modal Shown': isModalShown,
+    'Wallet Address': walletAddress,
+    'Download Clicked': isDownloadClicked
+  })
+}
