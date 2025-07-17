@@ -534,7 +534,6 @@ export enum BusEvents {
   NotificationClosed = 'notification-closed',
   OrderbookSizeClick = 'orderbook-size-click',
   GoToPerpOrdersView = 'go-to-perp-orders-view',
-  SharePositionOpened = 'share-position-opened',
   OrderbookPriceClick = 'orderbook-price-click',
   AddMarginToPosition = 'add-margin-to-position',
   OpenTradingBotDetails = 'open-trading-bot-details',

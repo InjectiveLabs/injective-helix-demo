@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
-import { Modal, BusEvents, PerpOrdersTradingBotsView } from '@/types'
+import { Modal, PerpOrdersTradingBotsView } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
@@ -51,7 +51,6 @@ function addTakeProfitStopLoss(position: PositionV2) {
 function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
-  useEventBus(BusEvents.SharePositionOpened).emit()
 }
 
 function fetchStrategies() {
