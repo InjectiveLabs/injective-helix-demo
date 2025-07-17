@@ -38,8 +38,8 @@ function goToWhyHelix() {
 
   if (target) {
     gsap.to(window, {
-      scrollTo: { y: target, offsetY: lg.value ? 80 : 40 },
-      duration: 1
+      duration: 1,
+      scrollTo: { y: target, offsetY: lg.value ? 80 : 40 }
     })
   }
 }

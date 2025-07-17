@@ -4,6 +4,7 @@ import { NuxtUiIcons } from '@shared/types'
 
 <template>
   <div
+    id="mobile-section"
     class="relative z-10 py-10 px-8 lg:px-16 bg-[#131620] rounded-3xl overflow-hidden max-lg:mt-24 max-lg:max-w-[500px] max-lg:mx-auto"
   >
     <div class="lg:max-w-[470px] max-lg:mb-8">

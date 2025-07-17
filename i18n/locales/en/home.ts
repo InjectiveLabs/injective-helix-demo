@@ -71,31 +71,6 @@ export default {
       title: 'Frequently Asked Questions',
 
       accordion1: {
-        title: 'Is there a Helix Mobile app, and where can I get it?',
-        description:
-          'Helix Mobile is free on iOS (App Store) and Android (Google Play). Install the app, connect your wallet, and you’ll see the same markets and balances you see on the web version.'
-      },
-
-      accordion2: {
-        settings: 'settings',
-        description: 'You have three options:',
-        title: 'How do I connect my wallet on Helix Mobile?',
-
-        option1:
-          'Scan a QR code - open Helix Mobile, tap “Scan QR code on Helix web,” and point your camera at the QR code shown on the Helix web app in {settings}. (link to AuthZ module in ACM)',
-        option2:
-          'Use your existing social login - sign in with the same Google or Apple account you use on desktop and your wallet appears instantly.',
-        option3:
-          'Create a brand-new wallet - generate a fresh non-custodial wallet tied to your email if you’d like to start from scratch.'
-      },
-
-      accordion3: {
-        title: ' How does Helix Mobile keep my assets secure?',
-        description:
-          'The Helix Mobile app is fully non-custodial. Private keys stay on your device, transactions are signed locally, and you can add biometric two-factor verification in settings. Helix never holds your funds or seed phrase - security works exactly as it does on the web. For social login, keys are securely stored by Turnkey, the industry standard for key management.'
-      },
-
-      accordion4: {
         title: 'What features does Helix offer?',
         featureTitle:
           'Helix offers a seamless and powerful trading experience with advanced features and flexibility:',
@@ -125,7 +100,7 @@ export default {
           'Participate in frequent {tradingCompetitions} and unlock exclusive rewards.'
       },
 
-      accordion5: {
+      accordion2: {
         title: 'How do I get assets onto Helix?',
         optionTitle:
           'To start trading on Helix, you’ll first need to get assets like USDT or INJ on Injective:',
@@ -140,7 +115,7 @@ export default {
           'Alternatively, you can also deposit from different centralized exchanges like Binance, ByBit & more.'
       },
 
-      accordion6: {
+      accordion3: {
         title: 'How do I trade cryptocurrencies on Helix?',
         stepTitle:
           "Trading on Helix is fast, permissionless, and completely gas-free. Here's how to get started:",
@@ -159,6 +134,31 @@ export default {
         step3: 'Pick a {spot} or {perpetual} market you want to trade.',
         step4: 'Place a {limit} or {marketOrder} with just a few clicks.',
         cta: 'Want a full walkthrough? Check out our step-by-step {tutorial}.'
+      },
+
+      accordion4: {
+        title: 'Is there a Helix Mobile app, and where can I get it?',
+        description:
+          'Helix Mobile is free on iOS (App Store) and Android (Google Play). Install the app, connect your wallet, and you’ll see the same markets and balances you see on the web version.'
+      },
+
+      accordion5: {
+        settings: 'settings',
+        description: 'You have three options:',
+        title: 'How do I connect my wallet on Helix Mobile?',
+
+        option1:
+          'Scan a QR code - open Helix Mobile, tap “Scan QR code on Helix web,” and point your camera at the QR code shown on the Helix web app in {settings}. (link to AuthZ module in ACM)',
+        option2:
+          'Use your existing social login - sign in with the same Google or Apple account you use on desktop and your wallet appears instantly.',
+        option3:
+          'Create a brand-new wallet - generate a fresh non-custodial wallet tied to your email if you’d like to start from scratch.'
+      },
+
+      accordion6: {
+        title: ' How does Helix Mobile keep my assets secure?',
+        description:
+          'The Helix Mobile app is fully non-custodial. Private keys stay on your device, transactions are signed locally, and you can add biometric two-factor verification in settings. Helix never holds your funds or seed phrase - security works exactly as it does on the web. For social login, keys are securely stored by Turnkey, the industry standard for key management.'
       }
     }
   }
