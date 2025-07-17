@@ -191,7 +191,7 @@ function onUpdateMax({ amount }: { amount: string }) {
             target="_blank"
             class="hover:opacity-50 underline cursor-pointer"
           >
-            {{ $t('trade.neptuneUsdt.termsAndConditions') }}
+            {{ $t('footer.termsAndConditions') }}
           </NuxtLink>
         </template>
       </i18n-t>
