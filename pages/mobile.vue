@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import {
+  HELIX_APP_STORE_LINK,
+  HELIX_PLAY_STORE_LINK
+} from '@/app/data/marketInfo'
 import { MainPage } from '@/types'
 // https://apps.apple.com/us/app/helix-trade-with-control/id6737353178?itscg=30200&itsct=apps_box_link&mttnsubad=6737353178
 // https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile
@@ -9,16 +13,10 @@ definePageMeta({
       mobileOperatingSystem.value = getMobileOperatingSystem()
 
       if (mobileOperatingSystem.value === 'iOS') {
-        return navigateTo(
-          'https://apps.apple.com/us/app/helix-trade-with-control/id6737353178?itscg=30200&itsct=apps_box_link&mttnsubad=6737353178',
-          { external: true }
-        )
+        return navigateTo(HELIX_APP_STORE_LINK, { external: true })
       }
       if (mobileOperatingSystem.value === 'Android') {
-        return navigateTo(
-          'https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile',
-          { external: true }
-        )
+        return navigateTo(HELIX_PLAY_STORE_LINK, { external: true })
       }
 
       return navigateTo({ name: MainPage.Index })

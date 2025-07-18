@@ -24,7 +24,7 @@ function onAnimationReady(lottieKey: string) {
     <div v-for="item in overviewList" :key="item.type" class="embla__slide">
       <div class="embla__slide-content flex justify-center">
         <div
-          class="max-w-[480px] bg-[#131620] p-6 pb-0 flex flex-col gap-6 rounded-xl"
+          class="max-w-[480px] bg-[#141620] p-6 pb-0 flex flex-col gap-6 rounded-xl"
         >
           <div class="flex flex-col items-center">
             <NuxtLink v-if="item.link" :to="item.link">

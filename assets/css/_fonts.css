@@ -170,22 +170,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Poppins';
-  src: url('./../fonts/poppins-bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Poppins';
-  src: url('./../fonts/poppins-bold-italic.ttf') format('truetype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-
 .text-gradient {
   @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-200 to-blue-500;
 }

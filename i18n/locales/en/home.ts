@@ -64,7 +64,8 @@ export default {
     mobile: {
       usp1: 'Beginner Friendly',
       title: 'Trade Perps from Your Pocket',
-      usp2: 'Crypto, Stocks, Commodities, and FX'
+      usp2: 'Crypto, Stocks, Commodities, and FX',
+      downloadHelixMobile: 'Download Helix Mobile'
     },
 
     faq: {
@@ -137,18 +138,19 @@ export default {
       },
 
       accordion4: {
+        appStore: 'iOS (App Store)',
+        playStore: 'Android (Google Play)',
         title: 'Is there a Helix Mobile app, and where can I get it?',
         description:
-          'Helix Mobile is free on iOS (App Store) and Android (Google Play). Install the app, connect your wallet, and you’ll see the same markets and balances you see on the web version.'
+          'Helix Mobile is free on {appStore} and {playStore}. Install the app, connect your wallet, and you’ll see the same markets and balances you see on the web version.'
       },
 
       accordion5: {
-        settings: 'settings',
         description: 'You have three options:',
         title: 'How do I connect my wallet on Helix Mobile?',
 
         option1:
-          'Scan a QR code - open Helix Mobile, tap “Scan QR code on Helix web,” and point your camera at the QR code shown on the Helix web app in {settings}. (link to AuthZ module in ACM)',
+          'Scan a QR code - open Helix Mobile, tap “Scan QR code on Helix web,” and point your camera at the QR code shown on the Helix web app in settings. (link to AuthZ module in ACM)',
         option2:
           'Use your existing social login - sign in with the same Google or Apple account you use on desktop and your wallet appears instantly.',
         option3:

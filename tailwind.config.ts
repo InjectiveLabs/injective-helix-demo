@@ -97,7 +97,6 @@ export default <Partial<Config>>{
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
         mono: ['Azeret Mono', ...defaultTheme.fontFamily.mono],
-        poppins: ['Poppins'],
         rubik: ['Rubik One'],
         orbitron: ['Orbitron'],
         pingFang: ['PingFang SC'],

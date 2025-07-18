@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { PortfolioSubPage } from '~/types'
 import { NuxtUiIcons } from '@shared/types'
+import {
+  HELIX_APP_STORE_LINK,
+  HELIX_PLAY_STORE_LINK
+} from '@/app/data/marketInfo'
 
 const { t } = useI18n()
 
@@ -289,11 +292,7 @@ const faqList = computed(() => [
 
           <br />
 
-          <i18n-t
-            tag="p"
-            class="leading-tight"
-            keypath="home.faq.accordion3.cta"
-          >
+          <i18n-t tag="p" keypath="home.faq.accordion3.cta">
             <template #tutorial>
               <NuxtLink
                 target="_blank"
@@ -307,12 +306,28 @@ const faqList = computed(() => [
         </div>
       </template>
 
-      <!-- +====+ -->
-
       <template #accordion-4>
-        <p>
-          {{ $t('home.faq.accordion4.description') }}
-        </p>
+        <i18n-t tag="p" keypath="home.faq.accordion4.description">
+          <template #appStore>
+            <NuxtLink
+              target="_blank"
+              class="faq-link"
+              :to="HELIX_APP_STORE_LINK"
+            >
+              {{ $t('home.faq.accordion4.appStore') }}
+            </NuxtLink>
+          </template>
+
+          <template #playStore>
+            <NuxtLink
+              target="_blank"
+              class="faq-link"
+              :to="HELIX_PLAY_STORE_LINK"
+            >
+              {{ $t('home.faq.accordion4.playStore') }}
+            </NuxtLink>
+          </template>
+        </i18n-t>
       </template>
 
       <template #accordion-5>
@@ -323,18 +338,7 @@ const faqList = computed(() => [
         <br />
 
         <ul class="faq-description-list">
-          <li>
-            <i18n-t tag="p" keypath="home.faq.accordion5.option1">
-              <template #settings>
-                <NuxtLink
-                  class="faq-link"
-                  :to="{ name: PortfolioSubPage.SettingsAuthz }"
-                >
-                  {{ $t('home.faq.accordion5.settings') }}
-                </NuxtLink>
-              </template>
-            </i18n-t>
-          </li>
+          <li>{{ $t('home.faq.accordion5.option1') }}</li>
           <li>{{ $t('home.faq.accordion5.option2') }}</li>
           <li>{{ $t('home.faq.accordion5.option3') }}</li>
         </ul>

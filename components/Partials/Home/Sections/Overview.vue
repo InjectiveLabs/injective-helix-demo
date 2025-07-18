@@ -93,7 +93,7 @@ onMounted(() => {
         {{ $t('home.overview.description') }}
       </p>
 
-      <div class="flex max-lg:hidden mt-10 p-6 gap-16 bg-[#131620]">
+      <div class="flex max-lg:hidden mt-10 p-6 gap-16 bg-[#141620]">
         <div class="space-y-10 lg:space-y-12 flex-1">
           <SharedSelectorItem
             v-for="item in overviewList"

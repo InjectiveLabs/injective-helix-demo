@@ -12,7 +12,7 @@ function goToMobileSection() {
   if (target) {
     gsap.to(window, {
       duration: 1,
-      scrollTo: { y: target, offsetY: lg.value ? 100 : 80 }
+      scrollTo: { y: target, offsetY: lg.value ? 100 : 135 }
     })
   }
 }
@@ -25,7 +25,7 @@ function goToMobileSection() {
   >
     <SharedQRCode
       v-bind="{ text: mobileUrl }"
-      class="rounded-lg lg:w-24 lg:min-w-24 w-20 min-w-20"
+      class="rounded-lg lg:w-24 lg:min-w-24 w-20 min-w-20 !p-1"
     />
 
     <span class="font-medium text-left">
