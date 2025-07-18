@@ -61,6 +61,7 @@ export default {
     ready: 'Ready',
     claim: 'Claim',
     amount: 'Amount',
+    active: 'Active',
     enable: 'Enable',
     submit: 'Submit',
     search: 'Search',
