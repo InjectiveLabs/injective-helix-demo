@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { injToken, usdtToken } from '@shared/data/token'
-import { UI_DEFAULT_TOKEN_ASSET_DECIMALS } from '@/app/utils/constants'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
@@ -100,7 +99,7 @@ function onOpenBankTransferModal() {
               <CommonNumberCounter
                 v-bind="{
                   size: 14,
-                  decimals: UI_DEFAULT_TOKEN_ASSET_DECIMALS,
+                  decimals: DEFAULT_ASSET_DECIMALS,
                   value: accountTotalBalanceInInj.toNumber()
                 }"
               />

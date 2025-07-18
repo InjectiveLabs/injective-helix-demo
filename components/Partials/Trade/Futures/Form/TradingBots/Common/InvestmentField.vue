@@ -53,16 +53,11 @@ const gridThreshold = computed(() => {
   ).times(GST_MIN_TRADING_SIZE_LOW)
 })
 
-const {
-  valueToBigNumber: quoteDenomAmount,
-  valueToString: quoteDenomAmountToString
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: quoteDenomBalance.value?.availableBalance || 0,
-      decimalPlaces: quoteDenomBalance.value?.token.decimals
-    })
-  )
+const quoteDenomAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.availableBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
@@ -123,7 +118,12 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-500">
-          {{ $t('tradingBots.available') }}: {{ quoteDenomAmountToString }}
+          {{ $t('tradingBots.available') }}:
+          <SharedAmount
+            v-bind="{
+              amount: quoteDenomAmount
+            }"
+          />
         </div>
       </template>
     </AppInputField>

@@ -27,11 +27,6 @@ const mitoUrl = computed(
   () => `${getMitoUrl()}/vault/${props.vault.contractAddress}/`
 )
 
-const { valueToString: tvlToString } = useSharedBigNumberFormatter(
-  computed(() => props.vault.tvl),
-  { decimalPlaces: 0 }
-)
-
 function onSelectVault() {
   emit('update:selectedVaultUrl', mitoUrl.value)
 }
@@ -63,7 +58,14 @@ function onSelectVault() {
           class="text-xl font-semibold truncate"
           :data-cy="dataCyTag(VaultsCyTags.tvl)"
         >
-          ${{ tvlToString }}
+          <SharedAmountUsd
+            v-bind="{
+              amount: vault.tvl,
+              shouldAbbreviate: false
+            }"
+          >
+            <template #prefix>$</template>
+          </SharedAmountUsd>
         </p>
       </div>
 

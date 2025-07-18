@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MainPage } from '@/types'
 
 const exchangeStore = useExchangeStore()
@@ -13,7 +13,7 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({})
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS,
     shouldTruncate: true
   }
 )
@@ -21,7 +21,7 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS,
     shouldTruncate: true
   }
 )

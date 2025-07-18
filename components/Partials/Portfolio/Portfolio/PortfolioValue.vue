@@ -46,52 +46,56 @@ withDefaults(
         <span class="flex items-center gap-1">
           <p>{{ $t('portfolio.home.tradableBalance.title') }}:</p>
           <p class="flex">
-            <span>$</span>
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
                 roundingMode: BigNumber.ROUND_HALF_UP,
                 amount: aggregatedSubaccountTotalTradable.toFixed()
               }"
-            />
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </p>
         </span>
 
         <span class="flex items-center gap-1">
           <p>{{ $t('portfolio.home.stakedInj') }}:</p>
           <p class="flex">
-            <span>$</span>
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
-                roundingMode: BigNumber.ROUND_HALF_UP,
-                amount: stakedAmountInUsd.toFixed()
+                amount: stakedAmountInUsd.toFixed(),
+                roundingMode: BigNumber.ROUND_HALF_UP
               }"
-            />
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </p>
         </span>
 
         <span class="flex items-center gap-1">
           <p>{{ $t('portfolio.home.yieldBearingUsdt') }}:</p>
           <p class="flex">
-            <span>$</span>
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
                 roundingMode: BigNumber.ROUND_HALF_UP,
                 amount: neptuneBalanceInBigNumber.toFixed()
               }"
-            />
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </p>
         </span>
 
         <span class="flex items-center gap-1">
           <p>{{ $t('portfolio.home.unrealizedPositions') }}:</p>
           <p class="flex">
-            <span>$</span>
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
                 roundingMode: BigNumber.ROUND_HALF_UP,
                 amount: aggregatedSubaccountUnrealizedPnlInUsd.toFixed()
               }"
-            />
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </p>
         </span>
       </div>

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  UTableColumn,
-  LiquidityRewardsPage,
-  TransformedLiquidityDashboard,
-  LiquidityDashboardTableColumn
-} from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { LiquidityRewardsPage, LiquidityDashboardTableColumn } from '@/types'
+import type { UTableColumn, TransformedLiquidityDashboard } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -66,10 +62,12 @@ const filteredColumns = computed(() =>
 
     <template #volume-data>
       <div class="tracking-wider">
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: campaign.marketVolumeInUsd.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            hideDecimals: true,
+            shouldAbbreviate: false,
+            roundingMode: BigNumberInBase.ROUND_UP,
+            amount: campaign.marketVolumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -79,10 +77,10 @@ const filteredColumns = computed(() =>
     <template #rewards-data>
       <div class="text-right">
         <p class="font-semibold mb-1">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
-              amount: campaign.totalAmountInUsd.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              shouldAbbreviate: false,
+              amount: campaign.totalAmountInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {
+import { SpotMarketCyTags, PortfolioSpotOrderHistoryTableColumn } from '@/types'
+import type {
   UTableColumn,
-  SpotMarketCyTags,
-  TransformedPortfolioSpotOrderHistory,
-  PortfolioSpotOrderHistoryTableColumn
+  TransformedPortfolioSpotOrderHistory
 } from '@/types'
 
 const props = withDefaults(
@@ -82,10 +81,12 @@ const filteredColumns = computed(() =>
 
     <template #price-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.price.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
       </div>
@@ -93,10 +94,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.quantity.toFixed(),
-            decimalPlaces: order.quantityDecimals
+            decimals: order.quantityDecimals
           }"
         />
       </div>
@@ -104,10 +107,12 @@ const filteredColumns = computed(() =>
 
     <template #total-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.total.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
         <span class="text-coolGray-500 ml-1">
@@ -119,10 +124,12 @@ const filteredColumns = computed(() =>
     <template #trigger-condition-data>
       <span v-if="order.triggerPrice.eq(0)"> &mdash; </span>
       <span v-else :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: order.triggerPrice.toFixed(),
-            decimalPlaces: order.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: order.priceDecimals,
+            amount: order.triggerPrice.toFixed()
           }"
         />
       </span>

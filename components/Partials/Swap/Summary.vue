@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
-import {
-  MAX_QUOTE_DECIMALS,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { SwapCyTags, SwapFormField } from '@/types'
 import type { SwapForm } from '@/types'
 
@@ -116,9 +113,12 @@ defineExpose({
       >
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryMinOutput)">
-          <SharedAmountFormatter
-            :amount="minimumOutput"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: minimumOutput,
+              shouldAbbreviate: false
+            }"
           />
           {{ outputToken?.token.symbol }}
         </span>
@@ -127,9 +127,12 @@ defineExpose({
       <PartialsSwapSummaryRow v-else :title="$t('swap.maximumInput')">
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else>
-          <SharedAmountFormatter
-            :amount="maximumInput"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: maximumInput,
+              shouldAbbreviate: false
+            }"
           />
           {{ inputToken?.token.symbol }}
         </span>
@@ -138,10 +141,12 @@ defineExpose({
       <PartialsSwapSummaryRow :title="$t('swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryExpectedOutput)">
-          <SharedAmountFormatter
-            :amount="formValues[SwapFormField.OutputAmount] || '0'"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            :max-decimal-places="3"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: formValues[SwapFormField.OutputAmount] || '0'
+            }"
           />
           {{ outputToken?.token.symbol }}
         </span>

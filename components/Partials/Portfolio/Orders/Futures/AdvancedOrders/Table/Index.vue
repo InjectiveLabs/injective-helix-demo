@@ -157,10 +157,12 @@ const columns = computed(() => {
         <div class="flex items-center p-2 justify-end">
           <span v-if="row.isMarketOrder">{{ $t('trade.market') }}</span>
           <span v-else>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.price.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)
@@ -172,10 +174,12 @@ const columns = computed(() => {
 
       <template #amount-data="{ row }">
         <div class="flex items-center p-2 justify-end">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
             :data-cy="
               dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)
@@ -195,10 +199,12 @@ const columns = computed(() => {
 
       <template #total-data="{ row }">
         <div class="flex items-center p-2 justify-end">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.total.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
           <span class="ml-1">{{ row.market.quoteToken.symbol }}</span>
@@ -222,10 +228,12 @@ const columns = computed(() => {
           <span v-else class="text-white font-semibold"> &ge;</span>
 
           <span>
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.triggerPrice.toFixed(),
-                decimalPlaces: row.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.priceDecimals,
+                amount: row.triggerPrice.toFixed()
               }"
             />
           </span>

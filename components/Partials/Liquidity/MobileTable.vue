@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   PortfolioSubPage,
   TradingInterface,
@@ -99,10 +99,10 @@ const filteredColumns = computed(() =>
 
     <template #rewards-data>
       <p class="font-semibold text-sm mb-0.5">
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: campaign.totalRewardsInUsd.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            shouldAbbreviate: false,
+            amount: campaign.totalRewardsInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -130,10 +130,12 @@ const filteredColumns = computed(() =>
 
     <template #volume-data>
       <p>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: campaign.marketVolumeInUsd.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            hideDecimals: true,
+            shouldAbbreviate: false,
+            roundingMode: BigNumberInBase.ROUND_UP,
+            amount: campaign.marketVolumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>

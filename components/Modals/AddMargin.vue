@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
@@ -49,12 +48,10 @@ const quoteBalance = computed(() => {
   })
 })
 
-const {
-  valueToFixed: availableMarginToFixed,
-  valueToString: availableMarginToString
-} = useSharedBigNumberFormatter(quoteBalance, {
-  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-})
+const { valueToFixed: availableMarginToFixed } = useSharedBigNumberFormatter(
+  quoteBalance,
+  { decimalPlaces: DEFAULT_ASSET_DECIMALS }
+)
 
 const {
   value: amountValue,
@@ -150,7 +147,11 @@ const onSubmit = handleSubmit(() => {
                 class="flex items-center justify-center text-coolGray-200 text-base lg:text-xl"
                 data-cy="add-margin-modal-available-text-content"
               >
-                {{ availableMarginToString }}
+                <SharedAmount
+                  v-bind="{
+                    amount: quoteBalance
+                  }"
+                />
                 <PartialsCommonBalanceDisplay
                   v-bind="{
                     token: market.quoteToken,

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   MarketKey,
   DerivativeTradeTypes,
@@ -92,10 +89,11 @@ function toggle() {
             <span class="flex space-x-2">
               <span>&asymp;</span>
 
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  amount: marginWithFee.toFixed(),
-                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: marginWithFee.toFixed()
                 }"
               />
             </span>
@@ -110,11 +108,12 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
-                amount: margin.toFixed(),
-                decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+                useSubscript: true,
+                shouldAbbreviate: false,
+                amount: margin.toFixed()
               }"
               class="text-white"
             />
@@ -128,11 +127,13 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: totalNotional.toFixed(),
-                decimalPlaces: derivativeMarket.priceDecimals
+                decimals: derivativeMarket.priceDecimals
               }"
               class="text-white"
             />
@@ -146,11 +147,12 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.quantity') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
               v-bind="{
-                amount: quantity.toFixed(),
-                decimalPlaces: 4
+                useSubscript: true,
+                shouldAbbreviate: false,
+                amount: quantity.toFixed()
               }"
               class="text-white"
             />
@@ -169,11 +171,13 @@ function toggle() {
           </p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: worstPrice.toFixed(),
-                decimalPlaces: derivativeMarket.priceDecimals
+                decimals: derivativeMarket.priceDecimals
               }"
               class="text-white"
             />
@@ -188,13 +192,15 @@ function toggle() {
           <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
-            <AppAmount
+            <SharedAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
               "
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: estLiquidationPrice.toFixed(),
-                decimalPlaces: derivativeMarket.priceDecimals
+                decimals: derivativeMarket.priceDecimals
               }"
               class="text-white"
             />
@@ -222,11 +228,12 @@ function toggle() {
             <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
             <div class="flex-1 mx-2" />
             <p class="space-x-2 flex">
-              <AppAmount
+              <SharedAmount
                 :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
                 v-bind="{
-                  amount: feeAmount.toFixed(),
-                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: feeAmount.toFixed()
                 }"
                 class="text-white"
               />
@@ -250,10 +257,11 @@ function toggle() {
             <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
             <div class="flex-1 mx-2" />
             <p v-if="derivativeMarket" class="flex gap-x-2">
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  amount: feeAmount.toFixed(),
-                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: feeAmount.toFixed()
                 }"
                 class="text-white"
               />

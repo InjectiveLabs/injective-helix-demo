@@ -26,13 +26,11 @@ const explorerLink = `${getExplorerUrl()}/account/${
   props.campaignUser.accountAddress
 }`
 
-const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.campaignUser.score,
-      decimalPlaces: props.market.quoteToken.decimals
-    }).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
-  )
+const volumeInUsd = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.campaignUser.score,
+    decimalPlaces: props.market.quoteToken.decimals
+  }).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
 )
 
 const estRewardsInPercentage = computed(() => {
@@ -90,7 +88,17 @@ const rewardsFormatted = computed(() =>
       </div>
     </td>
     <td class="text-right">
-      <div class="p-3">{{ volumeInUsdToString }} USD</div>
+      <div class="p-3">
+        <SharedAmountUsd
+          v-bind="{
+            hideDecimals: true,
+            amount: volumeInUsd,
+            shouldAbbreviate: false,
+            roundingMode: BigNumberInBase.ROUND_UP
+          }"
+        />
+        USD
+      </div>
     </td>
     <td class="text-right">
       <div class="p-3">

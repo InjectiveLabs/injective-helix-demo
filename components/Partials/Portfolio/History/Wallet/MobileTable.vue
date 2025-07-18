@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import {
-  UTableColumn,
-  TransformedHistoryWallet,
-  HistoryWalletTableColumn
-} from '@/types'
+import { HistoryWalletTableColumn } from '@/types'
+import type { UTableColumn, TransformedHistoryWallet } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -56,10 +53,12 @@ const filteredColumns = computed(() =>
     <template #amount-data>
       <div class="flex items-center space-x-2">
         <span>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: transaction.amount.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
         /></span>
 

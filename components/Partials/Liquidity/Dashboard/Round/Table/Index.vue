@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityRewardsPage, LiquidityDashboardTableColumn } from '@/types'
 import type { Campaign } from '@injectivelabs/sdk-ts'
 
@@ -92,10 +92,12 @@ const columns = computed(() => [
 
       <template #volume-data="{ row }">
         <div class="tracking-wider text-sm">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
-              amount: row.marketVolumeInUsd.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              hideDecimals: true,
+              shouldAbbreviate: false,
+              roundingMode: BigNumberInBase.ROUND_UP,
+              amount: row.marketVolumeInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>
@@ -105,10 +107,10 @@ const columns = computed(() => [
       <template #rewards-data="{ row }">
         <div>
           <p class="font-semibold mb-1 text-sm">
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
-                amount: row.totalAmountInUsd.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                shouldAbbreviate: false,
+                amount: row.totalAmountInUsd.toFixed()
               }"
             />
             <span class="ml-1">USD</span>

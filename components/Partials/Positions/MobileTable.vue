@@ -143,9 +143,11 @@ function onSetPosition(value: TransformedPosition) {
             'line-through ': position.availableQuantity.lte(0)
           }"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              decimalPlaces: position.quantityDecimals,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: position.quantityDecimals,
               amount: position.availableQuantity.toFixed()
             }"
           />
@@ -160,10 +162,12 @@ function onSetPosition(value: TransformedPosition) {
     <template #entry-data>
       <div class="space-y-1 flex flex-col">
         <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: position.price.toFixed(),
-              decimalPlaces: position.priceDecimals
+              decimals: position.priceDecimals
             }"
           />
         </p>
@@ -172,10 +176,12 @@ function onSetPosition(value: TransformedPosition) {
 
     <template #mark-data>
       <div class="space-y-1 flex flex-col text-coolGray-475">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: position.markPrice.toFixed(),
-            decimalPlaces: position.priceDecimals
+            decimals: position.priceDecimals
           }"
         />
       </div>
@@ -194,10 +200,12 @@ function onSetPosition(value: TransformedPosition) {
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
             class="flex gap-1"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: position.pnl.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
             />
 
@@ -206,10 +214,12 @@ function onSetPosition(value: TransformedPosition) {
             }}</span>
           </p>
           <p class="flex">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: position.percentagePnl.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
             />
             %
@@ -230,7 +240,7 @@ function onSetPosition(value: TransformedPosition) {
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
           class="flex"
         >
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
               amount: position.quantityInUsd.toFixed()
             }"
@@ -242,10 +252,12 @@ function onSetPosition(value: TransformedPosition) {
     <template #margin-data>
       <div class="flex items-center space-x-2">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: position.margin.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
         </span>
@@ -260,10 +272,12 @@ function onSetPosition(value: TransformedPosition) {
 
     <template #liquidation-price-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: position.liquidationPrice.toFixed(),
-            decimalPlaces: position.priceDecimals
+            decimals: position.priceDecimals
           }"
         />
       </div>
@@ -271,10 +285,12 @@ function onSetPosition(value: TransformedPosition) {
 
     <template #leverage-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: position.effectiveLeverage.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
           }"
         />x
       </div>

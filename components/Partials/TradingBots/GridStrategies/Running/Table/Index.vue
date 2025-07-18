@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { MarketType } from '@injectivelabs/sdk-ts'
-import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   TradeSubPage,
   StrategyStatus,
@@ -168,10 +165,13 @@ function selectStrategy(
 
       <template #lowerBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.lowerBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.lowerBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -179,10 +179,13 @@ function selectStrategy(
 
       <template #upperBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.upperBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.upperBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -192,11 +195,14 @@ function selectStrategy(
         <div v-if="row.strategyStatus === StrategyStatus.Pending">&mdash;</div>
         <div v-else>
           <div class="flex items-center gap-1">
-            $
-            <AppUsdAmount
-              :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-              :amount="row.totalAmount.toFixed()"
-            />
+            <SharedAmountUsd
+              v-bind="{
+                shouldAbbreviate: false,
+                amount: row.totalAmount.toFixed()
+              }"
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </div>
         </div>
       </template>
@@ -218,12 +224,17 @@ function selectStrategy(
           }"
         >
           <div class="flex items-center gap-1">
-            <span>{{ row.isPositivePnl ? '+' : '' }}</span>
-            <SharedAmountFormatter
-              :max-decimal-places="3"
-              :amount="row.pnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <SharedAmount
+              v-bind="{
+                amount: row.pnl,
+                useSubscript: true,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span>{{ row.isPositivePnl ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
             {{ ' ' + row.market.quoteToken.symbol }}
           </div>
           <div>({{ row.percentagePnl }}%)</div>

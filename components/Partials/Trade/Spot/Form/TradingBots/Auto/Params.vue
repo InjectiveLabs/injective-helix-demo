@@ -157,20 +157,17 @@ const grids = computed(() =>
   marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
 )
 
-const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!lowerPrice.value || !upperPrice.value || !grids.value) {
-      return ZERO_IN_BASE
-    }
+const profitPerGrid = computed(() => {
+  if (!lowerPrice.value || !upperPrice.value || !grids.value) {
+    return ZERO_IN_BASE
+  }
 
-    const priceDifference = new BigNumberInBase(upperPrice.value)
-      .minus(lowerPrice.value)
-      .dividedBy(grids.value)
+  const priceDifference = new BigNumberInBase(upperPrice.value)
+    .minus(lowerPrice.value)
+    .dividedBy(grids.value)
 
-    return priceDifference.dividedBy(lowerPrice.value).times(100)
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+  return priceDifference.dividedBy(lowerPrice.value).times(100)
+})
 
 watch(
   () => [upperPrice.value, lowerPrice.value, grids.value],
@@ -239,7 +236,16 @@ onMounted(() => {
 
       <div class="flex justify-between">
         <p>{{ $t('tradingBots.profitGrid') }}</p>
-        <p class="text-white">{{ profitPerGridToString }}%</p>
+        <p class="text-white">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: profitPerGrid,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />%
+        </p>
       </div>
     </div>
 

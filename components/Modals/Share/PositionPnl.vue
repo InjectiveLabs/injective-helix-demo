@@ -3,7 +3,6 @@ import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
@@ -28,23 +27,6 @@ const { pnl, market, percentagePnl, price, markPrice, effectiveLeverage } =
   useDerivativePosition(computed(() => props.position))
 
 const now = useNow({ interval: 1000 })
-
-const { valueToString: markPriceToFormat } = useSharedBigNumberFormatter(
-  computed(() => markPrice.value),
-  {
-    decimalPlaces:
-      market.value?.quoteToken.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: priceToFormat } = useSharedBigNumberFormatter(
-  computed(() => price.value),
-  {
-    decimalPlaces:
-      market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
 
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
@@ -170,12 +152,26 @@ watchDebounced(
             >
               <div class="flex flex-col gap-1">
                 <span class="capitalize">{{ $t('trade.entryPrice') }}</span>
-                <span class="text-primary-400">{{ priceToFormat }}</span>
+                <span class="text-primary-400">
+                  <SharedAmountUsd
+                    v-bind="{
+                      amount: price,
+                      shouldAbbreviate: false
+                    }"
+                  />
+                </span>
               </div>
 
               <div class="flex flex-col gap-1">
                 <span>{{ $t('trade.markPrice') }}</span>
-                <span class="text-primary-400">{{ markPriceToFormat }}</span>
+                <span class="text-primary-400">
+                  <SharedAmountUsd
+                    v-bind="{
+                      amount: markPrice,
+                      shouldAbbreviate: false
+                    }"
+                  />
+                </span>
               </div>
             </div>
 

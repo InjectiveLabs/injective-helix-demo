@@ -272,9 +272,11 @@ function onClosePartialPosition() {
             }"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                decimalPlaces: row.quantityDecimals,
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.quantityDecimals,
                 amount: row.availableQuantity.toFixed()
               }"
             />
@@ -288,10 +290,12 @@ function onClosePartialPosition() {
       <template #entry-data="{ row }">
         <div class="flex items-center justify-end p-2 text-white">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.price.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </p>
@@ -301,10 +305,12 @@ function onClosePartialPosition() {
       <template #mark-data="{ row }">
         <div class="flex items-center justify-end p-2">
           <p>
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.markPrice.toFixed(),
-                decimalPlaces: row.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.priceDecimals,
+                amount: row.markPrice.toFixed()
               }"
               class="text-coolGray-475"
             />
@@ -325,10 +331,12 @@ function onClosePartialPosition() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
               class="flex gap-1"
             >
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.pnl.toFixed(),
-                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
               />
 
@@ -337,10 +345,12 @@ function onClosePartialPosition() {
               }}</span>
             </p>
             <p class="flex">
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.percentagePnl.toFixed(),
-                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
               />
               %
@@ -362,11 +372,11 @@ function onClosePartialPosition() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
               class="flex"
             >
-              <AppUsdAmount
+              <SharedAmountUsd
+                class="text-white"
                 v-bind="{
                   amount: row.quantityInUsd.toFixed()
                 }"
-                class="text-white"
               />
             </p>
           </div>
@@ -376,10 +386,12 @@ function onClosePartialPosition() {
       <template #margin-data="{ row }">
         <div class="flex items-center p-2 space-x-2 justify-end">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.margin.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
               class="text-white"
             />
@@ -399,12 +411,14 @@ function onClosePartialPosition() {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
         >
-          <AppAmount
-            v-bind="{
-              amount: row.liquidationPrice.toFixed(),
-              decimalPlaces: row.priceDecimals
-            }"
+          <SharedAmount
             class="text-white"
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.priceDecimals,
+              amount: row.liquidationPrice.toFixed()
+            }"
           />
         </div>
       </template>
@@ -414,12 +428,14 @@ function onClosePartialPosition() {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
         >
-          <AppAmount
-            v-bind="{
-              amount: row.effectiveLeverage.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-            }"
+          <SharedAmount
             class="text-white"
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: row.effectiveLeverage.toFixed(),
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />x
         </div>
       </template>

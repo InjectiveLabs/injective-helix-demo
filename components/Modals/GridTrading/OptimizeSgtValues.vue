@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { Modal, UiSpotMarket } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { Modal } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const modalStore = useSharedModalStore()
 
@@ -24,12 +26,6 @@ function handleAdjust() {
   emit('adjust:strategy')
   handleClose()
 }
-
-const { valueToString: optimizedBaseAmountToString } =
-  useSharedBigNumberFormatter(computed(() => props.optimizedBaseAmount))
-
-const { valueToString: optimizedQuoteAmountToString } =
-  useSharedBigNumberFormatter(computed(() => props.optimizedQuoteAmount))
 </script>
 
 <template>
@@ -59,8 +55,24 @@ const { valueToString: optimizedQuoteAmountToString } =
         </p>
 
         <p class="text-sm text-nowrap uppercase">
-          {{ optimizedBaseAmountToString }} {{ market.baseToken.symbol }} /
-          {{ optimizedQuoteAmountToString }} {{ market.quoteToken.symbol }}
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: optimizedBaseAmount,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+          {{ market.baseToken.symbol }} /
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: optimizedQuoteAmount,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />
+          {{ market.quoteToken.symbol }}
         </p>
       </div>
     </div>

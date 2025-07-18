@@ -3,7 +3,7 @@ import { format, utcToZonedTime } from 'date-fns-tz'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MAX_DECIMALS } from '@/app/utils/constants'
 
 const spotStore = useSpotStore()
 const campaignStore = useCampaignStore()
@@ -87,7 +87,7 @@ const totalRewardsInUsd = computed(() =>
 
       const amountInUsd = sharedToBalanceInTokenInBase({
         value: amount.toFixed(),
-        decimalPlaces: token?.decimals || 18
+        decimalPlaces: token?.decimals || UI_DEFAULT_MAX_DECIMALS
       }).times(sharedTokenStore.tokenUsdPrice(token))
 
       return sum.plus(amountInUsd)
@@ -150,8 +150,10 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.rewardsAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        <AppAmount
-          :amount="totalRewardsInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        <SharedAmountUsd
+          v-bind="{
+            amount: totalRewardsInUsd
+          }"
         />
         USD
       </span>
@@ -162,8 +164,12 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeAllTime') }}
       </span>
       <span class="text-xl font-semibold">
-        <AppAmount
-          :amount="volumeAllTime.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        <SharedAmountUsd
+          v-bind="{
+            hideDecimals: true,
+            amount: volumeAllTime,
+            roundingMode: BigNumberInBase.ROUND_UP
+          }"
         />
         USD
       </span>
@@ -174,8 +180,12 @@ const endDate = computed(() => {
         {{ $t('tradingBots.myLpRewards.volumeThisRound') }}
       </span>
       <span class="text-xl font-semibold">
-        <AppAmount
-          :amount="volumeThisRound.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+        <SharedAmountUsd
+          v-bind="{
+            hideDecimals: true,
+            amount: volumeThisRound,
+            roundingMode: BigNumberInBase.ROUND_UP
+          }"
         />
         USD
       </span>
@@ -194,8 +204,10 @@ const endDate = computed(() => {
   >
     <span>{{ $t('tradingBots.myLpRewards.totalEstRewards') }}</span>
     <span class="text-white">
-      <AppAmount
-        :amount="rewardsThisRoundInUsd.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS)"
+      <SharedAmountUsd
+        v-bind="{
+          amount: rewardsThisRoundInUsd
+        }"
       />
       USD
     </span>

@@ -7,12 +7,7 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const exchangeStore = useExchangeStore()
 const sharedParamStore = useSharedParamStore()
 
-const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
-  computed(() => sharedParamStore.apr.times(100)),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+const apr = computed(() => sharedParamStore.apr.times(100))
 
 const feeDiscountStakedAmount = computed(() => {
   if (
@@ -28,11 +23,6 @@ const feeDiscountStakedAmount = computed(() => {
     )
   )
 })
-
-const { valueToString: feeDiscountStakedAmountToFormat } =
-  useSharedBigNumberFormatter(feeDiscountStakedAmount, {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  })
 </script>
 
 <template>
@@ -48,7 +38,12 @@ const { valueToString: feeDiscountStakedAmountToFormat } =
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
           <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
-            {{ feeDiscountStakedAmountToFormat }}
+            <SharedAmount
+              v-bind="{
+                amount: feeDiscountStakedAmount,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
           </b>
           INJ
         </span>
@@ -56,7 +51,13 @@ const { valueToString: feeDiscountStakedAmountToFormat } =
     </div>
     <div class="mt-4">
       <span class="text-xs text-coolGray-400">
-        {{ $t('feeDiscounts.currentApr') }}: ≈ {{ aprToFormat }}%
+        {{ $t('feeDiscounts.currentApr') }}: ≈
+        <SharedAmount
+          v-bind="{
+            amount: apr,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
+        />%
       </span>
     </div>
   </div>

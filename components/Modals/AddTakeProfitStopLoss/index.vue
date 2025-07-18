@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Status,
   BigNumber,
@@ -8,11 +8,7 @@ import {
   BigNumberInBase
 } from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
-import {
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-  UI_DEFAULT_TOKEN_ASSET_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
   DerivativeTradeTypes,
@@ -112,7 +108,7 @@ const tpOrderTriggerPrice = computed(() =>
     ? sharedToBalanceInToken({
         value: existingTpOrder.value.triggerPrice,
         decimalPlaces:
-          market.value?.quoteToken.decimals || UI_DEFAULT_TOKEN_ASSET_DECIMALS
+          market.value?.quoteToken.decimals || DEFAULT_ASSET_DECIMALS
       })
     : undefined
 )
@@ -122,7 +118,7 @@ const slOrderTriggerPrice = computed(() =>
     ? sharedToBalanceInToken({
         value: existingSlOrder.value.triggerPrice,
         decimalPlaces:
-          market.value?.quoteToken.decimals || UI_DEFAULT_TOKEN_ASSET_DECIMALS
+          market.value?.quoteToken.decimals || DEFAULT_ASSET_DECIMALS
       })
     : undefined
 )
@@ -189,7 +185,7 @@ const {
   computed(() => new BigNumberInBase(availableQuantity.value)),
   {
     decimalPlaces: computed(
-      () => market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+      () => market.value?.quantityDecimals || DEFAULT_ASSET_DECIMALS
     )
   }
 )
@@ -434,7 +430,7 @@ function selectTpPartialOption(quantityPercentage: number) {
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(
-        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        market.value?.quantityDecimals || DEFAULT_ASSET_DECIMALS,
         BigNumber.ROUND_DOWN
       )
       .replace(/\.?0+$/, '')
@@ -447,7 +443,7 @@ function selectSlPartialOption(quantityPercentage: number) {
       .times(quantityPercentage)
       .dividedBy(100)
       .toFixed(
-        market.value?.quantityDecimals || UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
+        market.value?.quantityDecimals || DEFAULT_ASSET_DECIMALS,
         BigNumber.ROUND_DOWN
       )
       .replace(/\.?0+$/, '')

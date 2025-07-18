@@ -15,7 +15,8 @@ import {
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL,
-  DEFAULT_TRUNCATE_LENGTH
+  DEFAULT_TRUNCATE_LENGTH,
+  UI_DEFAULT_MAX_DECIMALS
 } from '@/app/utils/constants'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
@@ -108,13 +109,11 @@ const guildInvitationHash = computed(() =>
   })
 )
 
-const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: campaignStore.guild?.masterBalance || 0,
-      decimalPlaces: baseToken.value?.decimals || 18
-    })
-  )
+const guildMasterBalance = computed(() =>
+  sharedToBalanceInToken({
+    value: campaignStore.guild?.masterBalance || 0,
+    decimalPlaces: baseToken.value?.decimals || UI_DEFAULT_MAX_DECIMALS
+  })
 )
 
 onWalletConnected(() => {
@@ -270,7 +269,11 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   <div class="flex items-center flex-wrap gap-x-1">
                     <p>{{ $t('guild.leaderboard.guildMasterBalance') }}:</p>
                     <p class="font-semibold">
-                      {{ guildMasterBalance }}
+                      <SharedAmount
+                        v-bind="{
+                          amount: guildMasterBalance
+                        }"
+                      />
                       {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
                     </p>
                   </div>
