@@ -43,6 +43,7 @@ export default {
     noTrades: 'No trades',
     noOrders: 'No orders',
     notAvailableNA: 'N/A',
+    sharePnl: 'Share PNL',
     avgPrice: 'Avg. Price',
     direction: 'Direction',
     orderbook: 'Orderbook',
@@ -264,6 +265,12 @@ export default {
         'You are accessing a market available on Injective but not listed on Helix. Please check whether the Market ID is the one you would like to trade.',
       description2:
         'By proceeding, you acknowledge that you have read, that you agree to, and that you are bound by the Helix {0} as to any use you make of Helix'
+    },
+
+    sharePnlModal: {
+      markPrice: 'Mark price',
+      entryPrice: 'Entry price',
+      mobileDownloadNote: 'Download is available on desktop'
     },
 
     table: {

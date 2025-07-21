@@ -73,6 +73,7 @@ export default {
     claimed: 'Claimed',
     deposit: 'Deposit',
     confirm: 'Confirm',
+    download: 'Download',
     disabled: 'Disabled',
     inactive: 'inactive',
     transfer: 'Transfer',

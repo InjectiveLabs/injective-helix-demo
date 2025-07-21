@@ -392,19 +392,15 @@ const isSubmitButtonDisabled = computed(() => {
   )
 })
 
-function closeModal() {
+function onCloseModal() {
+  emit('on:close')
   modalStore.closeModal(Modal.AddTakeProfitStopLoss)
-  onCloseModal()
 }
 
 function onOpenModal() {
   resetForm()
   setupTpSlInputs()
   availableQuantity.value = props.position.quantity || '0'
-}
-
-function onCloseModal() {
-  emit('on:close')
 }
 
 function setupTpSlInputs() {
@@ -550,7 +546,7 @@ async function submitTpSl() {
     })
     .catch($onError)
     .finally(() => {
-      closeModal()
+      onCloseModal()
       status.setIdle()
     })
 }
