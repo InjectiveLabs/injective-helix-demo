@@ -221,3 +221,9 @@ export const MARKETS_INFO = [
 export const MARKETS_POWERED_BY_STORK = [
   '0xf99ac012c3e97f434fe0d0ba4948fef763635bb06de5e3c43abc7f1da7c427a8'
 ]
+
+export const HELIX_APP_STORE_LINK =
+  'https://apps.apple.com/us/app/helix-trade-with-control/id6737353178'
+
+export const HELIX_PLAY_STORE_LINK =
+  'https://play.google.com/store/apps/details?id=com.injectivelabs.helixmobile'
