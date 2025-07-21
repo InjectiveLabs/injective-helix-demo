@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
@@ -7,6 +8,7 @@ import type { PositionV2 } from '@injectivelabs/sdk-ts'
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
@@ -56,6 +58,13 @@ const canvas = ref()
 const isDownloading = ref(false)
 const selectedCharacter = ref('char1')
 
+const downloadIsUnsupported = computed(
+  () =>
+    !lg.value &&
+    (sharedWalletStore.wallet === Wallet.Keplr ||
+      sharedWalletStore.wallet === Wallet.Metamask)
+)
+
 onMounted(() => {
   trackSharePnlDownload({
     isModalShown: true,
@@ -67,6 +76,10 @@ onMounted(() => {
 function onCloseModal() {
   emit('on:close')
   modalStore.closeModal(Modal.SharePositionPnl)
+}
+
+function onOptionSelect(key: string) {
+  selectedCharacter.value = key
 }
 
 async function downloadImage() {
@@ -89,10 +102,6 @@ async function downloadImage() {
     isDownloading.value = false
     onCloseModal()
   })
-}
-
-function onOptionSelect(key: string) {
-  selectedCharacter.value = key
 }
 </script>
 
@@ -138,7 +147,12 @@ function onOptionSelect(key: string) {
     </div>
 
     <div class="flex justify-end">
+      <p v-if="downloadIsUnsupported" class="text-sm">
+        {{ $t('trade.sharePnlModal.mobileDownloadNote') }}
+      </p>
+
       <AppButton
+        v-else
         variant="primary"
         :is-loading="isDownloading"
         class="px-6 py-2 text-sm font-medium rounded-lg bg-azure-blue-350 hover:bg-azure-blue-350/80 transition-colors ring-0"
