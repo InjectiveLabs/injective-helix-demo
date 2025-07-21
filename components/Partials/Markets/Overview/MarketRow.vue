@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { SharedMarketType, SharedMarketChange } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
+import { MarketCyTags } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -42,26 +43,35 @@ const priceChangeClasses = computed(() => {
       </p>
     </div>
     <p class="flex flex-1 text-right text-xs">
-      <span class="mr-1">$</span>
-      <AppAmount
+      <SharedAmount
         v-bind="{
-          amount: market?.summary?.lastPrice || 0,
-          decimalPlaces: market.market.priceDecimals
+          useSubscript: true,
+          shouldAbbreviate: false,
+          decimals: market.market.priceDecimals,
+          amount: market?.summary?.lastPrice || 0
         }"
-      />
+      >
+        <template #prefix>
+          <span class="mr-1">$</span>
+        </template>
+      </SharedAmount>
     </p>
     <p
       class="flex flex-1 text-right text-xs justify-end"
       :class="priceChangeClasses"
     >
-      <span v-if="Number(market.summary.change) > 0">+</span>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: market.summary.change,
-          decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
         }"
-      />
-      %
+      >
+        <template #prefix>
+          <span v-if="Number(market.summary.change) > 0">+</span>
+        </template> </SharedAmount
+      >%
     </p>
   </NuxtLink>
 </template>

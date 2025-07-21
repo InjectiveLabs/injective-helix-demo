@@ -107,12 +107,14 @@ function onResetLimitField() {
       <p class="field-label">{{ $t('trade.limitPrice') }}</p>
 
       <div class="text-xs text-coolGray-450">
-        <span>~$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: limitPriceInUsdToFixed
           }"
-        />
+        >
+          <template #prefix>~$</template>
+        </SharedAmountUsd>
       </div>
     </div>
 

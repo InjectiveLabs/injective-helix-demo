@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { Status, StatusType } from '@injectivelabs/utils'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import {
   GUILD_DISCORD_LINK,
@@ -47,23 +47,22 @@ const { valueToString: minAmountToString } = useSharedBigNumberFormatter(
   computed(() => GUILD_MIN_AMOUNT)
 )
 
-const { valueToString: balanceToString, valueToBigNumber: balanceToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      const balance = activeSubaccountBalancesWithToken.value.find(
-        ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
-      )
-
-      if (!balance) {
-        return 0
-      }
-
-      return sharedToBalanceInToken({
-        value: balance.totalBalance,
-        decimalPlaces: balance.token.decimals
-      })
-    })
+const balance = computed(() => {
+  const balance = activeSubaccountBalancesWithToken.value.find(
+    ({ token }) => token.symbol.toUpperCase() === GUILD_BASE_TOKEN_SYMBOL
   )
+
+  if (!balance) {
+    return 0
+  }
+
+  return sharedToBalanceInToken({
+    value: balance.totalBalance,
+    decimalPlaces: balance.token.decimals
+  })
+})
+
+const balanceToBigNumber = computed(() => new BigNumberInBase(balance.value))
 
 const hasSufficientBalance = computed(() =>
   balanceToBigNumber.value.gte(GUILD_MIN_AMOUNT)
@@ -203,7 +202,14 @@ watch(
           }}
         </span>
         <div class="flex items-center font-semibold text-xs gap-1">
-          <span>{{ balanceToString }} {{ GUILD_BASE_TOKEN_SYMBOL }}</span>
+          <span>
+            <SharedAmount
+              v-bind="{
+                amount: balance
+              }"
+            />
+            {{ GUILD_BASE_TOKEN_SYMBOL }}
+          </span>
           <UIcon
             v-if="hasSufficientBalance"
             :name="NuxtUiIcons.Checkmark"

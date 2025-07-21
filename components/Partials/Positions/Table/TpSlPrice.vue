@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { PerpetualMarketCyTags } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
-import { PerpetualMarketCyTags } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 
@@ -38,29 +38,31 @@ function editTpSl() {
     <div class="flex items-center gap-2">
       <div class="text-xs flex flex-col items-end">
         <div class="flex items-center gap-1.5">
-          <AppAmount
-            v-if="tpTriggerPrice"
+          <SharedAmount
             v-bind="{
-              amount: tpTriggerPrice.toFixed(),
-              decimalPlaces: priceDecimals
+              useSubscript: true,
+              hideDecimals: true,
+              amount: tpTriggerPrice,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false
             }"
             :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableTPValue)"
           />
-          <span v-else> &mdash; </span>
 
           <span class="text-coolGray-450">{{ $t('trade.tp') }}</span>
         </div>
 
         <div class="flex items-center gap-1.5">
-          <AppAmount
-            v-if="slTriggerPrice"
+          <SharedAmount
             v-bind="{
-              amount: slTriggerPrice.toFixed(),
-              decimalPlaces: priceDecimals
+              useSubscript: true,
+              hideDecimals: true,
+              amount: slTriggerPrice,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false
             }"
             :data-cy="dataCyTag(PerpetualMarketCyTags.PositionsTableSLValue)"
           />
-          <span v-else> &mdash; </span>
 
           <span class="text-coolGray-450">{{ $t('trade.sl') }}</span>
         </div>

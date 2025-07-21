@@ -6,7 +6,7 @@ import {
   cosmosSdkDecToBigNumber,
   getExactDecimalsFromNumber
 } from '@injectivelabs/sdk-ts'
-import { UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
+import { UI_ZERO_DECIMAL, UI_MINIMAL_AMOUNT } from '@/app/utils/constants'
 import type { FeeDiscountTierInfo } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
@@ -77,27 +77,12 @@ const takerFeeDiscount = computed(() => {
   return takerDiscountRate
 })
 
-const { valueToString: makerFeeDiscountToFormat } = useSharedBigNumberFormatter(
-  makerFeeDiscount,
-  {
-    decimalPlaces: getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
-  }
+const makerFeeDiscountDecimals = computed(() =>
+  getExactDecimalsFromNumber(makerFeeDiscount.value.toNumber())
 )
 
-const { valueToString: feeDiscountStakedAmountToFormat } =
-  useSharedBigNumberFormatter(feeDiscountStakedAmount, {
-    decimalPlaces: 0
-  })
-
-const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
-  decimalPlaces: 0
-})
-
-const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
-  takerFeeDiscount,
-  {
-    decimalPlaces: getExactDecimalsFromNumber(takerFeeDiscount.value.toNumber())
-  }
+const takerFeeDiscountDecimals = computed(() =>
+  getExactDecimalsFromNumber(takerFeeDiscount.value.toNumber())
 )
 </script>
 
@@ -114,7 +99,15 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
       </div>
     </td>
     <td class="h-8 text-right">
-      &#8805; {{ feeDiscountStakedAmountToFormat }}
+      &#8805;
+      <SharedAmount
+        v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
+          decimals: UI_ZERO_DECIMAL,
+          amount: feeDiscountStakedAmount
+        }"
+      />
       <span class="text-xs text-coolGray-500"> INJ </span>
     </td>
     <td class="h-8 text-right">
@@ -123,10 +116,36 @@ const { valueToString: takerFeeDiscountToFormat } = useSharedBigNumberFormatter(
       </span>
     </td>
     <td class="h-8 text-right">
-      &#8805; {{ volumeToFormat }}
+      &#8805;
+      <SharedAmount
+        v-bind="{
+          amount: volume,
+          useSubscript: true,
+          shouldAbbreviate: false,
+          decimals: UI_ZERO_DECIMAL
+        }"
+      />
       <span class="text-xs text-coolGray-500"> USD </span>
     </td>
-    <td class="h-8 text-right">{{ makerFeeDiscountToFormat }}%</td>
-    <td class="h-8 text-right">{{ takerFeeDiscountToFormat }}%</td>
+    <td class="h-8 text-right">
+      <SharedAmount
+        v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
+          amount: makerFeeDiscount,
+          decimals: makerFeeDiscountDecimals
+        }"
+      />%
+    </td>
+    <td class="h-8 text-right">
+      <SharedAmount
+        v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
+          amount: takerFeeDiscount,
+          decimals: takerFeeDiscountDecimals
+        }"
+      />%
+    </td>
   </tr>
 </template>

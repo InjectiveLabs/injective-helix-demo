@@ -1,7 +1,13 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { GUILD_MAX_CAP, GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
+import {
+  GUILD_MAX_CAP,
+  GUILD_BASE_TOKEN_SYMBOL,
+  UI_DEFAULT_MAX_DECIMALS
+} from '@/app/utils/constants'
 
 const campaignStore = useCampaignStore()
 const { baseToken, quoteToken } = useGuild()
@@ -10,22 +16,18 @@ withDefaults(defineProps<{ isCampaignStarted?: boolean }>(), {
   isCampaignStarted: false
 })
 
-const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: campaignStore.guild?.totalTvl || 0,
-      decimalPlaces: baseToken.value?.decimals || 18
-    })
-  )
+const tvlScore = computed(() =>
+  sharedToBalanceInToken({
+    value: campaignStore.guild?.totalTvl || 0,
+    decimalPlaces: baseToken.value?.decimals || UI_DEFAULT_MAX_DECIMALS
+  })
 )
 
-const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: campaignStore.guild?.volumeScore || 0,
-      decimalPlaces: quoteToken.value?.decimals || 6
-    })
-  )
+const volumeScore = computed(() =>
+  sharedToBalanceInToken({
+    value: campaignStore.guild?.volumeScore || 0,
+    decimalPlaces: quoteToken.value?.decimals || DEFAULT_ASSET_DECIMALS
+  })
 )
 </script>
 
@@ -88,7 +90,13 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
         <p class="mt-3">
           <span v-if="!isCampaignStarted"> &mdash; </span>
           <span v-else>
-            {{ tvlScoreToString }}
+            <SharedAmount
+              v-bind="{
+                amount: tvlScore,
+                useSubscript: true,
+                shouldAbbreviate: false
+              }"
+            />
             {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
           </span>
         </p>
@@ -100,7 +108,17 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
         </p>
         <p class="mt-3">
           <span v-if="!isCampaignStarted"> &mdash; </span>
-          <span v-else>{{ volumeScoreToString }} USD</span>
+          <span v-else>
+            <SharedAmountUsd
+              v-bind="{
+                hideDecimals: true,
+                amount: volumeScore,
+                shouldAbbreviate: false,
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            />
+            USD
+          </span>
         </p>
       </div>
     </div>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MAX_DECIMALS } from '@/app/utils/constants'
 import { LiquidityRewardsPage } from '@/types'
 import type { Campaign } from '@injectivelabs/sdk-ts'
 
@@ -26,12 +25,12 @@ const totalRewardsThisRound = computed(() =>
     const rewardsPerCampaign = campaign.rewards.reduce((sum, reward) => {
       const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)!
 
-      const rewardInBase = sharedToBalanceInToken({
+      const rewardInBase = sharedToBalanceInTokenInBase({
         value: reward.amount,
         decimalPlaces: token.decimals
       })
 
-      const rewardInUsd = new BigNumberInBase(rewardInBase).times(
+      const rewardInUsd = rewardInBase.times(
         sharedTokenStore.tokenUsdPrice(token)
       )
 
@@ -43,20 +42,24 @@ const totalRewardsThisRound = computed(() =>
 )
 
 const totalVolume = computed(() =>
-  props.roundCampaigns
-    .reduce((totalScore, campaign) => {
-      const market = spotStore.marketByIdOrSlug(campaign.marketId)
+  props.roundCampaigns.reduce((totalScore, campaign) => {
+    const market = spotStore.marketByIdOrSlug(campaign.marketId)
 
-      if (!market) {
-        return totalScore
-      }
+    if (!market) {
+      return totalScore
+    }
 
-      const campaignVolumeInUsd = new BigNumberInWei(campaign.totalScore)
-        .toBase(market.quoteToken?.decimals || 18)
-        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken))
-      return totalScore.plus(campaignVolumeInUsd)
-    }, ZERO_IN_BASE)
-    .toFormat(UI_DEFAULT_MIN_DISPLAY_DECIMALS)
+    const campaignVolumeInBase = sharedToBalanceInTokenInBase({
+      value: campaign.totalScore,
+      decimalPlaces: market.quoteToken?.decimals || UI_DEFAULT_MAX_DECIMALS
+    })
+
+    const campaignVolumeInUsd = campaignVolumeInBase.times(
+      sharedTokenStore.tokenUsdPrice(market.quoteToken)
+    )
+
+    return totalScore.plus(campaignVolumeInUsd)
+  }, ZERO_IN_BASE)
 )
 
 const endDate = computed(() => {
@@ -103,8 +106,9 @@ const endDate = computed(() => {
             {{ $t('lpRewards.totalRewardsThisRound') }}
           </h3>
           <p class="text-xl font-semibold">
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
+                shouldAbbreviate: false,
                 amount: totalRewardsThisRound.toFixed()
               }"
             />
@@ -115,7 +119,17 @@ const endDate = computed(() => {
           <h3 class="text-sm font-semibold text-coolGray-400">
             {{ $t('lpRewards.totalVolume') }}
           </h3>
-          <p class="text-xl font-semibold">{{ totalVolume }} USD</p>
+          <p class="text-xl font-semibold">
+            <SharedAmountUsd
+              v-bind="{
+                hideDecimals: true,
+                shouldAbbreviate: false,
+                amount: totalVolume.toFixed(),
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            />
+            <span class="ml-1">USD</span>
+          </p>
         </div>
         <div>
           <h3 class="text-sm font-semibold text-coolGray-400">

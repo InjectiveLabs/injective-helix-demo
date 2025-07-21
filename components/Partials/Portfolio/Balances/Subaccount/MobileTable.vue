@@ -67,13 +67,15 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #available-data>
-      <AppBalanceAmount
-        v-bind="{ amount: balance[BalanceTableColumn.Available].toFixed() }"
+      <SharedAmount
+        v-bind="{
+          amount: balance[BalanceTableColumn.Available].toFixed()
+        }"
       />
     </template>
 
     <template #used-or-reserved-data>
-      <AppBalanceAmount
+      <SharedAmount
         v-bind="{
           showZeroAsEmDash: true,
           amount: balance[BalanceTableColumn.UsedOrReserved].toFixed()
@@ -82,7 +84,7 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #unrealized-pnl-data>
-      <AppBalanceAmount
+      <SharedAmount
         v-bind="{
           showZeroAsEmDash: true,
           amount: balance[BalanceTableColumn.UnrealizedPnl].toFixed()
@@ -91,7 +93,7 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #total-data>
-      <AppBalanceAmount
+      <SharedAmount
         v-bind="{
           amount: balance[BalanceTableColumn.Total].toFixed()
         }"
@@ -100,18 +102,21 @@ const filteredColumns = computed(() =>
 
     <template #total-usd-data>
       <div v-if="balance.isVerified">
-        <span>$</span>
-        <AppUsdBalanceAmount
+        <SharedAmountUsd
           v-bind="{
             amount: balance[BalanceTableColumn.TotalUsd].toFixed()
           }"
-        />
+        >
+          <template #prefix>
+            <span>$</span>
+          </template>
+        </SharedAmountUsd>
       </div>
       <span v-else>&mdash;</span>
     </template>
 
     <template #staked-data>
-      <AppBalanceAmount
+      <SharedAmount
         v-bind="{
           amount: stakedAmount.toFixed()
         }"
@@ -120,12 +125,15 @@ const filteredColumns = computed(() =>
 
     <template #staked-usd-data>
       <div>
-        <span>$</span>
-        <AppUsdBalanceAmount
+        <SharedAmountUsd
           v-bind="{
             amount: stakedAmountInUsd.toFixed()
           }"
-        />
+        >
+          <template #prefix>
+            <span>$</span>
+          </template>
+        </SharedAmountUsd>
       </div>
     </template>
   </AppMobileTable>

@@ -144,8 +144,9 @@ const volumeThisRound = computed(() =>
           {{ $t('lpRewards.totalRewardsOfRound', { round: currentRound }) }}
         </p>
         <h3 class="text-xl font-semibold">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
+              shouldAbbreviate: false,
               amount: rewardsThisRoundInUsd.toFixed()
             }"
           />
@@ -163,9 +164,12 @@ const volumeThisRound = computed(() =>
           {{ $t('lpRewards.volumeThisRound') }}
         </p>
         <h3 class="text-xl font-semibold">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
-              amount: volumeThisRound.toFixed()
+              hideDecimals: true,
+              shouldAbbreviate: false,
+              amount: volumeThisRound.toFixed(),
+              roundingMode: BigNumberInBase.ROUND_UP
             }"
           />
           <span class="ml-1">USD</span>
@@ -176,8 +180,9 @@ const volumeThisRound = computed(() =>
           {{ $t('lpRewards.totalRewardsAllTime') }}
         </p>
         <h3 class="text-xl font-semibold">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
+              shouldAbbreviate: false,
               amount: totalRewardsInUsd.toFixed()
             }"
           />

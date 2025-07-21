@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { UI_ZERO_DECIMAL } from '@/app/utils/constants'
 import { MainPage } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -20,8 +21,10 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.activeBots') }}
           </h2>
           <p class="text-2xl font-bold">
-            <AppAmount
-              :amount="gridStrategyStore.stats.activeTradingStrategies"
+            <SharedAmount
+              v-bind="{
+                amount: gridStrategyStore.stats.activeTradingStrategies
+              }"
             />
           </p>
         </div>
@@ -30,8 +33,10 @@ const gridStrategyStore = useGridStrategyStore()
             {{ $t('tradingBots.totalBotsCreated') }}
           </h2>
           <p class="text-2xl font-bold">
-            <AppAmount
-              :amount="gridStrategyStore.stats.totalTradingStrategiesCreated"
+            <SharedAmount
+              v-bind="{
+                amount: gridStrategyStore.stats.totalTradingStrategiesCreated
+              }"
             />
           </p>
         </div>
@@ -41,9 +46,11 @@ const gridStrategyStore = useGridStrategyStore()
           </h2>
           <p class="text-2xl font-bold">
             <span class="-mr-0.25">$</span>
-            <AppAmount
-              :decimal-places="0"
-              :amount="gridStrategyStore.stats.totalTvl"
+            <SharedAmount
+              v-bind="{
+                decimals: UI_ZERO_DECIMAL,
+                amount: gridStrategyStore.stats.totalTvl
+              }"
             />
           </p>
         </div>

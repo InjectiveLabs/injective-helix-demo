@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { usdtToken } from '@shared/data/token'
+import { DEFAULT_USD_DECIMALS } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  BigNumberInBase
+} from '@injectivelabs/utils'
 import { Modal, BusEvents } from '@/types'
 
 const route = useRoute()
@@ -17,32 +22,23 @@ const status = reactive(new Status(StatusType.Loading))
 
 const peggyUsdtBalance = computed(() =>
   sharedToBalanceInToken({
-    value: accountStore.balancesMap[usdtToken.denom],
     decimalPlaces: usdtToken.decimals,
-    fixedDecimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+    fixedDecimals: DEFAULT_USD_DECIMALS,
+    value: accountStore.balancesMap[usdtToken.denom]
   })
 )
 
-const { valueToBigNumber: neptuneBalanceInBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      sharedToBalanceInToken({
-        value: accountStore.neptuneUsdtInBankBalance,
-        decimalPlaces: usdtToken.decimals,
-        fixedDecimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-      })
-    )
-  )
+const neptuneBalance = computed(() =>
+  sharedToBalanceInToken({
+    decimalPlaces: usdtToken.decimals,
+    fixedDecimals: DEFAULT_USD_DECIMALS,
+    value: accountStore.neptuneUsdtInBankBalance
+  })
+)
 
-const { valueToString: neptuneLendingApyToString } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      new BigNumberInBase(accountStore.neptuneUsdtLendingApy).times(100)
-    ),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const neptuneLendingApy = computed(() =>
+  new BigNumberInBase(accountStore.neptuneUsdtLendingApy).times(100)
+)
 
 onMounted(() => {
   if (route.query.depositUsdt) {
@@ -108,7 +104,14 @@ function onOpenWithdrawalModal() {
           <span>
             {{ $t('trade.neptuneUsdt.apy') }}
           </span>
-          <span>{{ neptuneLendingApyToString }}%</span>
+          <span>
+            <SharedAmountUsd
+              v-bind="{
+                amount: neptuneLendingApy,
+                roundingMode: BigNumber.ROUND_HALF_UP
+              }"
+            />%
+          </span>
           <AppTooltip :text="$t('trade.neptuneUsdt.apyTooltip')">
             <UIcon :name="NuxtUiIcons.Info2" class="w-3.5 h-3.5" />
           </AppTooltip>
@@ -121,9 +124,13 @@ function onOpenWithdrawalModal() {
             {{ $t('trade.neptuneUsdt.available') }}
           </div>
           <div>
-            <div class="text-white">
-              {{ peggyUsdtBalance }} {{ usdtToken.symbol }}
-            </div>
+            <SharedAmount
+              class="text-white"
+              v-bind="{
+                amount: peggyUsdtBalance
+              }"
+            />
+            <span class="ml-1">{{ usdtToken.symbol }}</span>
           </div>
         </div>
 
@@ -132,10 +139,10 @@ function onOpenWithdrawalModal() {
             {{ $t('trade.neptuneUsdt.deposited') }}
           </div>
           <div>
-            <AppBalanceAmount
+            <SharedAmount
               class="text-white"
               v-bind="{
-                amount: neptuneBalanceInBigNumber.toFixed()
+                amount: neptuneBalance
               }"
             />
             <span class="ml-1">{{ usdtToken.symbol }}</span>

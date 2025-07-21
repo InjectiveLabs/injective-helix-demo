@@ -100,8 +100,9 @@ function onResetLimitField() {
 
       <div class="text-xs text-coolGray-450">
         <span>~$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: limitPriceInUsdToFixed
           }"
         />

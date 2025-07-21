@@ -103,10 +103,12 @@ function onSlippageChange(value: string) {
       </div>
 
       <p class="flex gap-2 text-xs">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: worstPrice.toFixed(),
-            decimalPlaces: spotMarket.priceDecimals
+            decimals: spotMarket.priceDecimals
           }"
           class="font-mono"
           :data-cy="dataCyTag(SpotMarketCyTags.SlippageWorstPrice)"

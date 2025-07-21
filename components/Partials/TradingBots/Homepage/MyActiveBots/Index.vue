@@ -125,10 +125,10 @@ onWalletConnected(() => {
         </h3>
         <p class="text-xs text-zinc-500">{{ $t('tradingBots.totalAssets') }}</p>
         <p class="text-xl font-bold">
-          <AppAmount
-            :amount="totalAssets.toFixed()"
-            :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-            :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+          <SharedAmountUsd
+            v-bind="{
+              amount: totalAssets.toFixed()
+            }"
           />
           <span> USD</span>
         </p>

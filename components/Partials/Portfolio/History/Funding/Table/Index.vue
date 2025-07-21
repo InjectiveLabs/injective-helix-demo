@@ -69,10 +69,12 @@ const columns = computed(() => [
               'text-red-500': row.total.lt(0)
             }"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.total.toFixed(),
-                decimalPlaces: usdtToken.decimals
+                decimals: usdtToken.decimals
               }"
             />
           </span>

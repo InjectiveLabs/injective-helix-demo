@@ -76,10 +76,12 @@ const columns = computed(() => [
       <template #amount-data="{ row }">
         <div class="p-2 flex items-center space-x-2 justify-end">
           <span>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.amount.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
           /></span>
 

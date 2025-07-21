@@ -8,8 +8,7 @@ import {
   MAXIMUM_RANKED_TRADERS,
   DEFAULT_TRUNCATE_LENGTH,
   MIN_COMPETITION_PNL_AMOUNT,
-  MAXIMUM_LEADERBOARD_STATS_RANK,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  MAXIMUM_LEADERBOARD_STATS_RANK
 } from '@/app/utils/constants'
 import { LeaderboardType } from '@/types'
 import type { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
@@ -59,17 +58,12 @@ const isShowRank = computed(() => {
   return isMoreThanMinimumPnL && isTop500
 })
 
-const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      props.campaign.type === LeaderboardType.Pnl
-        ? props.leader.pnl
-        : props.leader.volume
-    ),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const amount = computed(() =>
+  props.campaign.type === LeaderboardType.Pnl
+    ? props.leader.pnl
+    : props.leader.volume
+)
+const amountToBigNumber = computed(() => new BigNumberInBase(amount.value))
 
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
@@ -117,13 +111,19 @@ const entries = computed(() =>
             }}
           </div>
           <div class="font-medium text-sm">
-            <span v-if="campaign.type === LeaderboardType.Pnl">
-              {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
-            </span>
-            <span v-else>$</span>
-            <span>
-              {{ amountToFormat }}
-            </span>
+            <SharedAmountUsd
+              v-bind="{
+                amount,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span v-if="campaign.type === LeaderboardType.Pnl">
+                  {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
+                </span>
+                <span v-else>$</span>
+              </template>
+            </SharedAmountUsd>
           </div>
         </div>
 

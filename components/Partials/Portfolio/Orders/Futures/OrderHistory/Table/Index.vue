@@ -150,10 +150,12 @@ const columns = computed(() => [
             v-else
             :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryPrice)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.price.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </span>
@@ -165,10 +167,12 @@ const columns = computed(() => [
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryAmount)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -177,10 +181,12 @@ const columns = computed(() => [
       <template #total-data="{ row }">
         <div class="flex items-center p-2 justify-end">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryTotal)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.total.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </span>
@@ -216,9 +222,11 @@ const columns = computed(() => [
               </span>
               <span v-else class="text-white font-semibold">&ge;</span>
 
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  decimalPlaces: row.priceDecimals,
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  decimals: row.priceDecimals,
                   amount: row.triggerPrice.toFixed()
                 }"
               />

@@ -63,36 +63,14 @@ const executionPrice = computed(() => {
   }
 })
 
-const { valueToString: executionPriceToString } = useSharedBigNumberFormatter(
-  computed(() => executionPrice.value),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
+const priceDeviation = computed(() => {
+  const numerator = new BigNumberInBase(executionPrice.value).minus(
+    marketMarkPrice.value
+  )
+  const denominator = marketMarkPrice.value
 
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
-  computed(() => marketMarkPrice.value),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: priceDeviationToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    const numerator = new BigNumberInBase(executionPrice.value).minus(
-      marketMarkPrice.value
-    )
-    const denominator = marketMarkPrice.value
-
-    return Math.abs(numerator.div(denominator).toNumber()) * 100
-  }),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
+  return Math.abs(numerator.div(denominator).toNumber()) * 100
+})
 
 const priceLabel = computed(() => {
   const tradeType = derivativeFormValues.value[DerivativesTradeFormField.Type]
@@ -196,7 +174,14 @@ function confirm() {
             {{ $t('trade.previousMarkPrice') }}
           </span>
           <span class="font-semibold">
-            {{ markPriceToString }}
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: marketMarkPrice,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
             {{ derivativeMarket.quoteToken.symbol }}
           </span>
         </div>
@@ -209,7 +194,14 @@ function confirm() {
           </span>
 
           <span class="font-semibold">
-            {{ executionPriceToString }}
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: executionPrice,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
             {{ derivativeMarket.quoteToken.symbol }}
           </span>
         </div>
@@ -220,7 +212,16 @@ function confirm() {
           <span class="text-white/30 text-sm">{{
             $t('trade.priceDeviation')
           }}</span>
-          <span class="font-semibold"> {{ priceDeviationToString }}% </span>
+          <span class="font-semibold">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: priceDeviation,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />%
+          </span>
         </div>
       </div>
 

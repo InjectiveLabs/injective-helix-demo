@@ -172,10 +172,12 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.price.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
         </div>
@@ -186,10 +188,12 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -200,9 +204,11 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              decimalPlaces: row.quantityDecimals,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
           />
@@ -216,9 +222,11 @@ const columns = computed(() => {
               :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
               class="flex gap-1"
             >
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  decimalPlaces: row.quantityDecimals,
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  decimals: row.quantityDecimals,
                   amount: row.filledQuantity.toFixed()
                 }"
               />
@@ -234,10 +242,12 @@ const columns = computed(() => {
         <div class="flex items-center p-2 justify-end">
           <div class="space-y-1">
             <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.total.toFixed(),
-                  decimalPlaces: row.priceDecimals
+                  decimals: row.priceDecimals
                 }"
               />
               <span

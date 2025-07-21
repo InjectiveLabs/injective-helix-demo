@@ -36,10 +36,12 @@ withDefaults(
           'line-through': !isMarketPositionClose && row.availableQuantity.lte(0)
         }"
       >
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: availableQuantity.toFixed(),
-            decimalPlaces: row.quantityDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: row.quantityDecimals,
+            amount: availableQuantity.toFixed()
           }"
         />
         <span>{{ row.market.baseToken.symbol }}</span>
@@ -59,10 +61,12 @@ withDefaults(
       {{ $t('trade.markPrice') }}
     </h5>
 
-    <AppAmount
+    <SharedAmount
       v-bind="{
-        amount: row.markPrice.toFixed(),
-        decimalPlaces: row.priceDecimals
+        useSubscript: true,
+        shouldAbbreviate: false,
+        decimals: row.priceDecimals,
+        amount: row.markPrice.toFixed()
       }"
     />
   </div>

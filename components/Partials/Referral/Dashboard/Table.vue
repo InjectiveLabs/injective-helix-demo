@@ -65,7 +65,14 @@ const { rows } = useReferralTransformer(
 
       <template #commission-data="{ row }">
         <div class="p-2 max-xs:px-0 text-center text-green-500">
-          $<AppUsdAmount v-bind="{ amount: row.commission.toFixed() }" />
+          <SharedAmountUsd
+            v-bind="{
+              shouldAbbreviate: false,
+              amount: row.commission.toFixed()
+            }"
+          >
+            <template #prefix>$</template>
+          </SharedAmountUsd>
         </div>
       </template>
 

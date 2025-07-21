@@ -63,12 +63,16 @@ const columns = computed(() => [
 
     <template #total-usd-data="{ row }">
       <div class="items-center p-2 text-right break-all text-wrap">
-        <span class="mr-1">$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: row.balance.toFixed()
           }"
-        />
+        >
+          <template #prefix>
+            <span class="mr-1">$</span>
+          </template>
+        </SharedAmountUsd>
       </div>
     </template>
   </UTable>

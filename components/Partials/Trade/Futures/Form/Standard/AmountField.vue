@@ -2,12 +2,16 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   BigNumber,
   BigNumberInWei,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import {
+  ONE_IN_BASE,
+  ZERO_IN_BASE,
+  DEFAULT_ASSET_DECIMALS
+} from '@shared/utils/constant'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
@@ -119,7 +123,10 @@ const {
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
     )
-  })
+  }),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const { isMarkPriceThresholdError } = useMarkPriceThresholdError({

@@ -5,12 +5,9 @@ import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { Status, BigNumber, StatusType } from '@injectivelabs/utils'
 import { TRADING_MESSAGES } from '@/app/data/trade'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { trackGenericEvent } from '@/app/providers/mixpanel/EventTracker'
-import {
-  DEFAULT_TRUNCATE_LENGTH,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import {
   Modal,
   MainPage,
@@ -195,27 +192,28 @@ function toggleAutoSign() {
               </p>
 
               <p class="text-2xl font-semibold my-1 leading-6">
-                <span>$</span>
-                <AppUsdAmount
+                <SharedAmountUsd
                   v-bind="{
                     roundingMode: BigNumber.ROUND_HALF_UP,
-                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
                     amount: aggregatedSubaccountTotalBalanceInUsd.toFixed()
                   }"
-                />
+                >
+                  <template #prefix>$</template>
+                </SharedAmountUsd>
               </p>
 
               <div class="flex items-center space-x-1 text-2xs">
                 <div>{{ $t('portfolio.staked') }}:</div>
                 <div>
-                  <span>$</span>
-                  <AppUsdAmount
+                  <SharedAmountUsd
                     class="leading-5"
                     v-bind="{
                       amount: stakedAmountInUsd.toFixed(),
                       roundingMode: BigNumber.ROUND_HALF_UP
                     }"
-                  />
+                  >
+                    <template #prefix>$</template>
+                  </SharedAmountUsd>
                 </div>
               </div>
 

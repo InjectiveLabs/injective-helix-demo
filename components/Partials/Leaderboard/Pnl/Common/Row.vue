@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
-import {
-  DEFAULT_TRUNCATE_LENGTH,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { LeaderBoardCyTags } from '@/types'
 import type { LeaderboardRow } from '@injectivelabs/sdk-ts'
 
@@ -27,13 +25,7 @@ const formattedAddress = computed(() =>
   sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.leader.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const pnl = computed(() => new BigNumberInBase(props.leader.pnl))
 </script>
 
 <template>
@@ -82,7 +74,16 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         class="text-[13px] md:text-sm mr-4"
         :data-cy="dataCyTag(LeaderBoardCyTags.rankPnl)"
       >
-        {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
+        <SharedAmountUsd
+          v-bind="{
+            amount: pnl,
+            shouldAbbreviate: false
+          }"
+        >
+          <template #prefix>
+            {{ `${pnl.gte(0) ? '+' : ''}` }}
+          </template>
+        </SharedAmountUsd>
       </span>
     </div>
   </div>

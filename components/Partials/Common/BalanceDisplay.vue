@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { usdtToken } from '@shared/data/token'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   sharedToBalanceInToken,
   sharedStripTrillingZero
 } from '@shared/utils/formatter'
-import {
-  NEPTUNE_USDT_BUFFER,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const accountStore = useAccountStore()
 
@@ -37,7 +35,7 @@ const peggyUsdtBalance = computed(() =>
     sharedToBalanceInToken({
       value: accountStore.balancesMap[props.token.denom],
       decimalPlaces: props.token.decimals,
-      fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
+      fixedDecimals: DEFAULT_ASSET_DECIMALS
     })
   )
 )
@@ -49,7 +47,7 @@ const neptuneUsdtBalance = computed(() =>
         .times(1 - NEPTUNE_USDT_BUFFER)
         .toFixed(),
       decimalPlaces: props.token.decimals,
-      fixedDecimals: UI_DEFAULT_DISPLAY_DECIMALS
+      fixedDecimals: DEFAULT_ASSET_DECIMALS
     })
   )
 )
@@ -66,11 +64,11 @@ const isDisabled = computed(
         ...$attrs,
         isDisabled,
         isNotStyled: isDisabled,
+        classes: isDisabled ? 'cursor-text' : '',
         ui: {
           width: 'max-w-96',
           trigger: isAlignRight ? '' : 'inline-flex w-full'
-        },
-        classes: isDisabled ? 'cursor-text' : ''
+        }
       }"
     >
       <slot>
