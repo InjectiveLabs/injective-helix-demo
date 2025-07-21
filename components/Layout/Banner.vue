@@ -18,12 +18,13 @@ type Banner = {
 }
 
 const perpSettlePairs = [
-  // {
-  //   slug: 'jellyjelly-usdt-perp',
-  //   marketId:
-  //    '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
-  // }
-] as { slug: string; marketId: string }[]
+  {
+    slug: 'wti-usdt-perp',
+    marketId:
+      '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
+    newExpiryLaunch: true
+  }
+] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -193,7 +194,12 @@ function onClickStockTwitsCta() {
     <div />
 
     <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
-      {{ $t('banners.settlePerpMarketBanner') }}
+      <span v-if="perpSettlePairs[0] && perpSettlePairs[0].newExpiryLaunch">
+        {{ $t('banners.settlePerpMarketBannerNewLaunch') }}
+      </span>
+      <span v-else>
+        {{ $t('banners.settlePerpMarketBanner') }}
+      </span>
     </template>
 
     <!-- for future reference as per PR feedback -->
