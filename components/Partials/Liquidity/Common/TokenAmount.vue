@@ -20,9 +20,11 @@ const token = computed(() =>
     <p v-if="index > 0">+</p>
     <CommonTokenIcon is-sm v-bind="{ token }" />
     <p class="text-coolGray-400 text-xs flex">
-      <AppAmount
+      <SharedAmount
         v-bind="{
-          amount: amount
+          amount: amount,
+          useSubscript: true,
+          shouldAbbreviate: false
         }"
       />
       <span class="ml-1">{{ symbol }}</span>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 
+const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -11,6 +12,7 @@ function fetchOrders() {
 
   Promise.all([
     derivativeStore.fetchSubaccountOrders(),
+    referralStore.fetchUserReferralDetails(),
     derivativeStore.fetchSubaccountConditionalOrders()
   ])
     .catch($onError)

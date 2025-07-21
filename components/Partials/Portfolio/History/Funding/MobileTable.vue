@@ -54,10 +54,12 @@ const filteredColumns = computed(() =>
             'text-red-500': fundingHistory.total.lt(0)
           }"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              amount: fundingHistory.total.toFixed(),
-              decimalPlaces: usdtToken.decimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: usdtToken.decimals,
+              amount: fundingHistory.total.toFixed()
             }"
           />
         </span>

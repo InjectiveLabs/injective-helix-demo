@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { AccountBalance } from '@/types'
+import type { AccountBalance } from '@/types'
 
 const props = withDefaults(defineProps<{ balance: AccountBalance }>(), {})
 
@@ -22,10 +22,10 @@ const totalAmount = computed(() =>
         <div>
           <p class="text-sm font-semibold">{{ balance.token.symbol }}</p>
           <p class="text-coolGray-400">
-            <AppAmount
+            <SharedAmount
               v-bind="{
                 amount: totalAmount,
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
             />
           </p>
@@ -41,13 +41,13 @@ const totalAmount = computed(() =>
     </div>
     <div class="flex items-center">
       <span class="text-sm flex">
-        <span>$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            decimalPlaces: 18,
             amount: balance.totalBalanceInUsd
           }"
-        />
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
       </span>
     </div>
   </div>

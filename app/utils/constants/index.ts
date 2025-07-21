@@ -6,6 +6,7 @@ export * from './setup'
 export * from './campaign'
 
 export const UI_ZERO_DECIMAL = 0
+export const UI_DEFAULT_MAX_DECIMALS = 18
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS = 9

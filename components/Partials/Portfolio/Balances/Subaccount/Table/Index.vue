@@ -264,9 +264,11 @@ function toggleStakingRow() {
             value: row[BalanceTableColumn.Available].toFixed()
           }"
         >
-          <AppBalanceAmount
+          <SharedAmount
             class="text-white"
-            v-bind="{ amount: row[BalanceTableColumn.Available].toFixed() }"
+            v-bind="{
+              amount: row[BalanceTableColumn.Available].toFixed()
+            }"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
           />
         </PartialsCommonBalanceDisplay>
@@ -278,7 +280,7 @@ function toggleStakingRow() {
           {{ $t('portfolio.staked') }}:
         </span>
 
-        <AppBalanceAmount
+        <SharedAmount
           v-bind="{
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
@@ -288,7 +290,7 @@ function toggleStakingRow() {
       </template>
 
       <template #unrealized-pnl-data="{ row }">
-        <AppBalanceAmount
+        <SharedAmount
           v-if="!row.isStakingRow"
           v-bind="{
             showZeroAsEmDash: true,
@@ -300,7 +302,7 @@ function toggleStakingRow() {
       </template>
 
       <template #total-data="{ row }">
-        <AppBalanceAmount
+        <SharedAmount
           v-if="!row.isStakingRow"
           v-bind="{
             amount: row[BalanceTableColumn.Total].toFixed()
@@ -314,13 +316,16 @@ function toggleStakingRow() {
         <div :class="{ 'text-coolGray-400': row.isStakingRow }">
           <span v-if="!row.isVerified">&mdash;</span>
           <template v-else>
-            <span>$</span>
-            <AppUsdBalanceAmount
+            <SharedAmountUsd
               v-bind="{
                 amount: row[BalanceTableColumn.TotalUsd].toFixed()
               }"
               :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-            />
+            >
+              <template #prefix>
+                <span>$</span>
+              </template>
+            </SharedAmountUsd>
           </template>
         </div>
       </template>

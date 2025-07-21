@@ -85,10 +85,12 @@ const filteredColumns = computed(() =>
       <div class="flex items-center">
         <span v-if="trigger.isMarketOrder">{{ $t('trade.market') }}</span>
         <span v-else>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: trigger.price.toFixed(),
-              decimalPlaces: trigger.priceDecimals
+              decimals: trigger.priceDecimals
             }"
           />
         </span>
@@ -97,10 +99,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div class="flex items-center">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: trigger.quantity.toFixed(),
-            decimalPlaces: trigger.quantityDecimals
+            decimals: trigger.quantityDecimals
           }"
         />
       </div>
@@ -117,10 +121,12 @@ const filteredColumns = computed(() =>
 
     <template #total-data>
       <div class="flex items-center">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: trigger.total.toFixed(),
-            decimalPlaces: trigger.priceDecimals
+            decimals: trigger.priceDecimals
           }"
         />
         <span class="ml-1">{{ trigger.market.quoteToken.symbol }}</span>
@@ -145,10 +151,12 @@ const filteredColumns = computed(() =>
         <span v-else class="text-white font-semibold"> &ge;</span>
 
         <span>
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              amount: trigger.triggerPrice.toFixed(),
-              decimalPlaces: trigger.priceDecimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: trigger.priceDecimals,
+              amount: trigger.triggerPrice.toFixed()
             }"
           />
         </span>

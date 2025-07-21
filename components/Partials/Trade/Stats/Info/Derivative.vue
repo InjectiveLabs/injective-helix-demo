@@ -105,30 +105,18 @@ watch(countdown, (countdown) => {
     </template>
 
     <AppSpinner v-if="markPriceStatus.isLoading()" class="relative" is-sm />
-    <AppAmount
+    <SharedAmount
       v-else
       v-bind="{
         amount: markPrice,
-        decimalPlaces: market.priceDecimals
+        useSubscript: true,
+        shouldAbbreviate: false,
+        decimals: market.priceDecimals
       }"
     />
   </PartialsTradeStatsHeaderItem>
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
-
-  <!-- <PartialsTradeStatsHeaderItem
-    v-if="openInterestBigNumber.gt(0)"
-    class="xl:hidden 2xl:flex"
-    :title="$t('trade.stats.openInterest')"
-  >
-    <AppUsdAmount
-      v-bind="{
-        decimalPlaces: 0,
-        isShowNoDecimals: true,
-        amount: openInterestToFixed
-      }"
-    />
-  </PartialsTradeStatsHeaderItem> -->
 
   <PartialsTradeStatsHeaderItem>
     <template #title>
@@ -159,13 +147,18 @@ watch(countdown, (countdown) => {
           }"
           class="cursor-pointer flex"
         >
-          <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: fundingRateToFixed,
-              decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
             }"
-          />
+          >
+            <template #prefix>
+              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
+            </template>
+          </SharedAmount>
           <span>%</span>
         </span>
       </AppTooltip>

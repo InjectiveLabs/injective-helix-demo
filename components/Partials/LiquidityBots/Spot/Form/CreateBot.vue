@@ -190,8 +190,9 @@ async function createLiquidityBot() {
             }}</span>
             <div class="text-right">
               <div class="text-lg">
-                <span>$ </span>
-                <SharedUsdAmount :amount="totalUsd.toFixed()" />
+                <SharedUsdAmount :amount="totalUsd.toFixed()">
+                  <template #prefix>$ </template>
+                </SharedUsdAmount>
               </div>
               <div class="flex items-center gap-1 text-coolGray-500">
                 <div v-if="liquidityFormValues.baseAmount">

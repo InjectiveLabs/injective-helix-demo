@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getTradingBotLinkFromStrategy } from '@/app/utils/helpers'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import type {
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
@@ -55,10 +54,10 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
               {{ $t('tradingBots.assetsInBot') }}
             </p>
             <p class="text-xl font-bold">
-              <AppAmount
-                :amount="strategy.currentUsdValue.toFixed()"
-                :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-                :max-decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
+              <SharedAmountUsd
+                v-bind="{
+                  amount: strategy.currentUsdValue
+                }"
               />
               <span> USD</span>
             </p>

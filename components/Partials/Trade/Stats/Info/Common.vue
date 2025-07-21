@@ -3,6 +3,7 @@ import { dataCyTag } from '@shared/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { stableCoinSymbols } from '@/app/data/token'
+import { UI_ZERO_DECIMAL } from '@/app/utils/constants'
 import { SpotMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
@@ -73,10 +74,12 @@ const low = computed(() => {
 <template>
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.marketVolume24h')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: volume.toFixed(),
-          decimalPlaces: market.priceDecimals
+          decimals: UI_ZERO_DECIMAL
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
       />
@@ -93,10 +96,12 @@ const low = computed(() => {
         </p>
       </template>
       <div>
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: volumeInUsd.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: UI_ZERO_DECIMAL,
+            amount: volumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -106,10 +111,12 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.high')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: high.toFixed(),
-          decimalPlaces: market.priceDecimals
+          decimals: market.priceDecimals
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoHigh)"
       />
@@ -118,10 +125,12 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.low')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
           amount: low.toFixed(),
-          decimalPlaces: market.priceDecimals
+          shouldAbbreviate: false,
+          decimals: market.priceDecimals
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoLow)"
       />

@@ -69,13 +69,16 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
         <span>{{ $t('common.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
           <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
-            <span>$</span>
-            <AppUsdBalanceAmount
+            <SharedAmountUsd
               v-bind="{
                 amount: accountTotalBalanceInUsdToBigNumber.toFixed()
               }"
               :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-            />
+            >
+              <template #prefix>
+                <span>$</span>
+              </template>
+            </SharedAmountUsd>
           </span>
         </CommonSkeletonSubaccountAmount>
       </p>

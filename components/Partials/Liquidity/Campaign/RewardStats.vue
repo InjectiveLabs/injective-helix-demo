@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
@@ -41,17 +41,20 @@ const explorerLink = computed(() => {
   return `${getExplorerUrl()}/account/${sharedWalletStore.injectiveAddress}`
 })
 
-const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!campaignWithReward.value || !market.value) {
-      return 0
-    }
+const volumeInUsd = computed(() => {
+  if (!campaignWithReward.value || !market.value) {
+    return 0
+  }
 
-    return new BigNumberInWei(campaignWithReward.value.userScore)
-      .toBase(props.quoteDecimals)
-      .times(sharedTokenStore.tokenUsdPrice(market.value.quoteToken))
+  const scoreInBase = sharedToBalanceInTokenInBase({
+    value: campaignWithReward.value.userScore,
+    decimalPlaces: props.quoteDecimals
   })
-)
+
+  return scoreInBase.times(
+    sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
+  )
+})
 
 const estRewardsInPercentage = computed(() => {
   if (
@@ -122,7 +125,17 @@ const rewardsFormatted = computed(() =>
 
         <div>
           <p class="text-xs uppercase pb-1">{{ $t('lpRewards.volume') }}</p>
-          <p class="text-sm">{{ volumeInUsdToString }} USD</p>
+          <p class="text-sm">
+            <SharedAmountUsd
+              v-bind="{
+                hideDecimals: true,
+                amount: volumeInUsd,
+                shouldAbbreviate: false,
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            />
+            USD
+          </p>
         </div>
 
         <div>

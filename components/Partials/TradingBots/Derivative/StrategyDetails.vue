@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  STOP_REASON_MAP,
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { STOP_REASON_MAP } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
@@ -78,12 +74,17 @@ const percentagePnl = computed(() =>
               'text-coolGray-500': isZeroPnl
             }"
           >
-            <span>{{ isPositivePnl ? '+' : '' }}</span>
-            <SharedAmountFormatter
-              :max-decimal-places="3"
-              :amount="strategy.pnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: strategy.pnl,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span>{{ isPositivePnl ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
             <span>
               {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
                 percentagePnl
@@ -108,12 +109,14 @@ const percentagePnl = computed(() =>
         &mdash;
       </div>
       <div v-else>
-        $
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :amount="strategy.totalAmount.toFixed()"
-          :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-        />
+        <SharedAmountUsd
+          v-bind="{
+            shouldAbbreviate: false,
+            amount: strategy.totalAmount.toFixed()
+          }"
+        >
+          <template #prefix>$ </template>
+        </SharedAmountUsd>
         USD
       </div>
     </div>
@@ -131,10 +134,12 @@ const percentagePnl = computed(() =>
           &mdash;
         </span>
         <span v-else>
-          <SharedAmountFormatter
-            :amount="strategy.finalQuoteBalanceQuantity"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            :max-decimal-places="3"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: strategy.finalQuoteBalanceQuantity
+            }"
           />
           {{ strategy.market.quoteToken.symbol }}
         </span>
@@ -192,10 +197,12 @@ const percentagePnl = computed(() =>
     <!-- <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">{{ $t('tradingBots.initialEntryPrice') }}</p>
       <div class="text-right">
-        <SharedAmountFormatter
-          :amount="strategy.executionPrice"
-          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          :max-decimal-places="8"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: strategy.executionPrice
+          }"
         />
         <span class="text-coolGray-400 text-xs">
           {{ ' ' + strategy.market.quoteToken.symbol }}

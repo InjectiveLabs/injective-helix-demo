@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_GRID_THRESHOLD,
@@ -101,7 +102,10 @@ const {
       value: quoteDenomBalance.value?.availableBalance || 0,
       decimalPlaces: quoteDenomBalance.value?.token.decimals
     })
-  )
+  ),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const {
@@ -113,7 +117,10 @@ const {
       value: baseDenomBalance.value?.availableBalance || 0,
       decimalPlaces: baseDenomBalance.value?.token.decimals
     })
-  )
+  ),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const { value: baseAmount, errorMessage: baseAmountError } = useStringField({

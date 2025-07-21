@@ -62,10 +62,12 @@ const isStableCoinMarket = computed(() =>
             lastTradedPriceChange === SharedMarketChange.Increase
         }"
       >
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: lastTradedPrice.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: market.priceDecimals,
+            amount: lastTradedPrice.toFixed()
           }"
           :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         />
@@ -91,10 +93,9 @@ const isStableCoinMarket = computed(() =>
         v-if="!isStableCoinMarket && isSpot"
         class="flex items-center text-sm text-coolGray-350 border-b border-dashed border-coolGray-400 tracking-wider"
       >
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: lastTradedPriceInUsd.toFixed(),
-            decimalPlaces: market.priceDecimals
+            amount: lastTradedPriceInUsd.toFixed()
           }"
         />
         <span class="ml-1"> USD</span>
@@ -106,10 +107,12 @@ const isStableCoinMarket = computed(() =>
             tooltip: $t('trade.markPrice')
           }"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
               amount: markPrice,
-              decimalPlaces: market.priceDecimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: market.priceDecimals
             }"
             :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMarkPrice)"
           />

@@ -62,10 +62,13 @@ const trailingBounds = computed(() => {
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
-              <SharedAmountCollapsed
+              <SharedAmount
                 v-else
-                should-truncate
-                :amount="liquidityValues.lowerBound.toFixed()"
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.lowerBound.toFixed()
+                }"
               />
             </div>
           </div>
@@ -77,10 +80,13 @@ const trailingBounds = computed(() => {
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
-              <SharedAmountCollapsed
+              <SharedAmount
                 v-else
-                should-truncate
-                :amount="liquidityValues.upperBound.toFixed()"
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.upperBound.toFixed()
+                }"
               />
             </div>
           </div>
@@ -94,14 +100,20 @@ const trailingBounds = computed(() => {
             <div v-else class="font-semibold flex items-center gap-1">
               ±
               {{ trailingBounds }}% /
-              <SharedAmountCollapsed
-                should-truncate
-                :amount="liquidityValues.trailingUpperBound.toFixed()"
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.trailingUpperBound.toFixed()
+                }"
               />
               -
-              <SharedAmountCollapsed
-                should-truncate
-                :amount="liquidityValues.trailingLowerBound.toFixed()"
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.trailingLowerBound.toFixed()
+                }"
               />
             </div>
           </div>
@@ -124,9 +136,12 @@ const trailingBounds = computed(() => {
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
             <div v-else class="font-semibold flex items-center gap-1">
-              <SharedAmountCollapsed
-                should-truncate
-                :amount="liquidityValues.trailingUpperBound.toFixed()"
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.trailingUpperBound.toFixed()
+                }"
               />
             </div>
           </div>
@@ -138,9 +153,12 @@ const trailingBounds = computed(() => {
             <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
             <div v-else class="font-semibold flex items-center gap-1">
-              <SharedAmountCollapsed
-                should-truncate
-                :amount="liquidityValues.trailingLowerBound.toFixed()"
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: liquidityValues.trailingLowerBound.toFixed()
+                }"
               />
             </div>
           </div>
@@ -152,10 +170,13 @@ const trailingBounds = computed(() => {
             <div class="font-semibold">
               <USkeleton v-if="status.isLoading()" class="w-16 h-5" />
 
-              <SharedAmountCollapsed
+              <SharedAmount
                 v-else
-                should-truncate
-                :amount="lastTradedPrice.toFixed()"
+                v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: lastTradedPrice.toFixed()
+                }"
               />
             </div>
           </div>

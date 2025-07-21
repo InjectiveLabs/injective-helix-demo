@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { LiquidityBotField } from '@/types'
 import type { LiquidityBotForm, UiMarketWithToken } from '@/types'
 
@@ -140,10 +139,12 @@ function setQuoteMax() {
                   {{ $t('common.max') }}
                 </div>
                 <div class="text-xs text-primary">
-                  <SharedAmountFormatter
-                    :max-decimal-places="3"
-                    :amount="baseBalance"
-                    :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      amount: baseBalance,
+                      shouldAbbreviate: false
+                    }"
                   />
                 </div>
               </div>
@@ -182,10 +183,12 @@ function setQuoteMax() {
                   {{ $t('common.max') }}
                 </div>
                 <div class="text-xs text-primary">
-                  <SharedAmountFormatter
-                    :max-decimal-places="3"
-                    :amount="quoteBalance"
-                    :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      amount: quoteBalance,
+                      shouldAbbreviate: false
+                    }"
                   />
                 </div>
               </div>

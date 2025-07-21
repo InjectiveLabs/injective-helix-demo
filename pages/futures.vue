@@ -16,6 +16,7 @@ import type { UiDerivativeMarket } from '@/types'
 
 const route = useRoute()
 const jsonStore = useSharedJsonStore()
+const referralStore = useReferralStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -111,6 +112,7 @@ onWalletConnected(async () => {
   status.setLoading()
 
   Promise.all([
+    referralStore.fetchUserReferralDetails(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker

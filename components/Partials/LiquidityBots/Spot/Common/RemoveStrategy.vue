@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
@@ -138,10 +137,12 @@ function removeStrategy() {
             <span
               class="text-nowrap whitespace-nowrap *:text-nowrap *:whitespace-nowrap"
             >
-              <SharedAmountFormatter
-                :max-decimal-places="3"
-                :amount="currentPnl"
-                :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+              <SharedAmount
+                v-bind="{
+                  amount: currentPnl,
+                  useSubscript: true,
+                  shouldAbbreviate: false
+                }"
               />
             </span>
             <span>

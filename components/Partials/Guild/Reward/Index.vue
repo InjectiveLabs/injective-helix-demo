@@ -2,7 +2,10 @@
 import { differenceInSeconds } from 'date-fns'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { formatSecondsToDisplay } from '@/app/utils/formatters'
-import { GUILD_CAMPAIGN_END_DATE } from '@/app/utils/constants'
+import {
+  GUILD_CAMPAIGN_END_DATE,
+  UI_DEFAULT_MAX_DECIMALS
+} from '@/app/utils/constants'
 
 const confetti = useSharedConfetti()
 const campaignStore = useCampaignStore()
@@ -94,10 +97,10 @@ onWalletConnected(() => {
           v-bind="{
             now,
             isReadyToClaim,
-            decimals: baseToken?.decimals || 18,
             score: campaignStore.userGuildInfo.tvlScore,
-            percentage: campaignStore.userGuildInfo.tvlScorePercentage,
-            rewards: campaignStore.userGuildInfo.tvlReward
+            rewards: campaignStore.userGuildInfo.tvlReward,
+            decimals: baseToken?.decimals || UI_DEFAULT_MAX_DECIMALS,
+            percentage: campaignStore.userGuildInfo.tvlScorePercentage
           }"
         />
       </div>

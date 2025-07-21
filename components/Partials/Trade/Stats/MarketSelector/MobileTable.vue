@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { rwaMarketsInIAssets } from '@/app/data/market'
-import { abbreviateNumber } from '@/app/utils/formatters'
 import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
 import type { UTableColumn, TransformedMarketsSelector } from '@/types'
 
@@ -131,11 +131,13 @@ const toggleFavorite = () => {
     <template #last-price-data>
       <PartialsCommonMarketRedirection :market="market.market">
         <div class="truncate min-w-0 text-xs">
-          <AppAmount
+          <SharedAmount
             :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
             v-bind="{
-              amount: market[MarketsSelectorTableColumn.LastPrice],
-              decimalPlaces: market.market.priceDecimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: market.market.priceDecimals,
+              amount: market[MarketsSelectorTableColumn.LastPrice]
             }"
           />
         </div>
@@ -157,19 +159,15 @@ const toggleFavorite = () => {
     <template #market-volume-24h-data>
       <PartialsCommonMarketRedirection :market="market.market">
         <div class="truncate min-w-0 text-xs">
-          <span>$</span>
-          <span v-if="abbreviateNumber(market.volumeInUsdToFixed)">
-            {{ abbreviateNumber(market.volumeInUsdToFixed) }}
-          </span>
-          <span v-else>
-            <AppUsdAmount
-              v-bind="{
-                decimalPlaces: 0,
-                isShowNoDecimals: true,
-                amount: market.volumeInUsd.toFixed()
-              }"
-            />
-          </span>
+          <SharedAmountUsd
+            v-bind="{
+              hideDecimals: true,
+              amount: market.volumeInUsdToFixed,
+              roundingMode: BigNumberInBase.ROUND_UP
+            }"
+          >
+            <template #prefix>$</template>
+          </SharedAmountUsd>
         </div>
       </PartialsCommonMarketRedirection>
     </template>

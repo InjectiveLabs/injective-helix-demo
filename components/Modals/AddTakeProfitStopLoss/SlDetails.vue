@@ -56,12 +56,13 @@ function cancelSl() {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!stopLossValue"> &mdash;</span>
-        <AppAmount
-          v-else
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
             amount: stopLossValue,
-            decimalPlaces: market.priceDecimals
+            showZeroAsEmDash: true,
+            shouldAbbreviate: false,
+            decimals: market.priceDecimals
           }"
         />
       </span>
@@ -69,10 +70,12 @@ function cancelSl() {
 
     <template #quantity>
       <span class="inline-flex gap-1">
-        <AppAmount
+        <SharedAmount
           v-bind="{
             amount: slQuantity,
-            decimalPlaces: market.quantityDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: market.quantityDecimals
           }"
         />
         <span>{{ market.baseToken.symbol }}</span>
@@ -91,10 +94,12 @@ function cancelSl() {
           :class="[stopLossPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
           class="font-bold inline-flex gap-1"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: stopLossPnl.toFixed(),
-              decimalPlaces: market.priceDecimals
+              decimals: market.priceDecimals
             }"
           />
           <span>{{ market.quoteToken.symbol }}</span>

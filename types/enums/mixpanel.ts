@@ -15,6 +15,7 @@ export enum MixPanelEvent {
   PlaceOrderClicked = 'Place Order Clicked',
   LiteBridgeBridged = 'Lite Bridge Bridged',
   AutoSignCTAPopUp = 'Auto Sign CTA Pop Up',
+  SharePnlDownloaded = 'Share PnL Downloaded',
   AutoSignCTAEnabled = 'Auto Sign CTA Enabled',
   LiteBridgePageView = 'Lite Bridge Page View',
   ReferralCodeCreated = 'Referral Code Created',

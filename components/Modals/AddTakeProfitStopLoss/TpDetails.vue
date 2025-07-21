@@ -56,12 +56,13 @@ function cancelTp() {
   >
     <template #price>
       <span class="inline-flex">
-        <span v-if="!takeProfitValue"> &mdash;</span>
-        <AppAmount
-          v-else
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            showZeroAsEmDash: true,
+            shouldAbbreviate: false,
             amount: takeProfitValue,
-            decimalPlaces: market.priceDecimals
+            decimals: market.priceDecimals
           }"
         />
       </span>
@@ -69,10 +70,12 @@ function cancelTp() {
 
     <template #quantity>
       <span class="inline-flex gap-1">
-        <AppAmount
+        <SharedAmount
           v-bind="{
             amount: tpQuantity,
-            decimalPlaces: market.quantityDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: market.quantityDecimals
           }"
         />
         <span>{{ market.baseToken.symbol }}</span>
@@ -91,10 +94,12 @@ function cancelTp() {
           :class="[takeProfitPnl.gte(0) ? 'text-green-500' : 'text-red-500']"
           class="font-bold inline-flex gap-1"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              amount: takeProfitPnl.toFixed(),
-              decimalPlaces: market.priceDecimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: market.priceDecimals,
+              amount: takeProfitPnl.toFixed()
             }"
           />
           <span>{{ market.quoteToken.symbol }}</span>

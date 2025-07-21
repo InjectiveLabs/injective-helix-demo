@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Modal, BusEvents, PositionsFilterField } from '@/types'
+import { Modal, PositionsFilterField } from '@/types'
 import type { PositionsFilterForm } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
@@ -48,7 +48,6 @@ function addTakeProfitStopLoss(position: PositionV2) {
 function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
-  useEventBus(BusEvents.SharePositionOpened).emit()
 }
 
 function resetSelectedPosition() {
@@ -89,5 +88,6 @@ function resetSelectedPosition() {
   <ModalsSharePositionPnl
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 </template>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   DEFAULT_TRUNCATE_LENGTH,
@@ -26,13 +27,7 @@ const formattedAddress = computed(() =>
   sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.leader.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const pnlToBigNumber = computed(() => new BigNumberInBase(props.leader.pnl))
 </script>
 
 <template>
@@ -66,7 +61,18 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
             {{ $t('leaderboard.header.tradingPnl') }}
           </div>
           <div class="font-medium text-sm">
-            {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
+            <SharedAmount
+              v-bind="{
+                amount: leader.pnl,
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            >
+              <template #prefix>
+                {{ `${pnlToBigNumber.gte(0) ? '+' : ''}` }}
+              </template>
+            </SharedAmount>
           </div>
         </div>
       </div>

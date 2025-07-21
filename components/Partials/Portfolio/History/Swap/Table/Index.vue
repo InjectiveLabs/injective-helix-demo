@@ -70,10 +70,12 @@ const columns = computed(() => [
           />
 
           <div>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.sourceBalanceFormatted,
-                decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+                decimals: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
             />
             {{ row.sourceTokenWithBalance.token.symbol }}
@@ -92,10 +94,12 @@ const columns = computed(() => [
           />
 
           <div>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.destinationBalanceFormatted,
-                decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+                decimals: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
             />
             {{ row.destinationTokenWithBalance.token.symbol }}
@@ -117,7 +121,7 @@ const columns = computed(() => [
             v-for="({ amount, symbol }, index) in row.formattedFees"
             :key="`${amount}-${symbol}-${index}`"
           >
-            <AppAmount v-bind="{ amount }" />
+            <SharedAmount v-bind="{ amount }" />
             <span class="ml-1">{{ symbol }}</span>
           </div>
         </div>
