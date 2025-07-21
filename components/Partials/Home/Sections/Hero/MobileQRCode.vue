@@ -23,8 +23,8 @@ function goToMobileSection() {
     class="py-3.5 px-5 flex items-center gap-4 border border-white rounded-2xl max-w-96 cursor-pointer hover:bg-white/10 transition-colors"
     @click="goToMobileSection"
   >
-    <SharedQRCode
-      v-bind="{ text: mobileUrl }"
+    <PartialsCommonHelixQRCode
+      v-bind="{ qrLink: mobileUrl }"
       class="rounded-lg lg:w-24 lg:min-w-24 w-20 min-w-20 !p-1"
     />
 

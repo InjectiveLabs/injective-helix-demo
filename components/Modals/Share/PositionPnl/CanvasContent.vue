@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { metaTags } from '@/nuxt-config/meta'
-import { helixLogoBase64 } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
@@ -144,24 +143,11 @@ function updateScale() {
         </div>
 
         <div class="mt-8">
-          <SharedQRCode
-            v-bind="{
-              text: qrLink,
-              logo: helixLogoBase64,
-              imageOptions: { imageSize: 0.6, margin: 16 },
-              colorSettings: {
-                gradient: {
-                  type: 'radial',
-                  rotation: 0,
-                  colorStops: [
-                    { offset: 0.5, color: '#007CF6' },
-                    { offset: 1, color: '#40A9FF' }
-                  ]
-                }
-              }
-            }"
-            class="rounded-lg size-[72px] !p-1"
+          <PartialsCommonHelixQRCode
+            v-bind="{ qrLink }"
+            class="rounded-lg size-[80px] !p-1"
           />
+
           <p class="mt-1 text-xs font-semibold">{{ qrLink }}</p>
         </div>
       </div>
