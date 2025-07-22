@@ -18,12 +18,43 @@ type Banner = {
 }
 
 const perpSettlePairs = [
-  // {
-  //   slug: 'jellyjelly-usdt-perp',
-  //   marketId:
-  //    '0x515bb3ff6bf7429c65cc779ef78dd64f3c63e7329fe6042810e89a36498f1b48'
-  // }
-] as { slug: string; marketId: string }[]
+  {
+    slug: 'wti-usdt-perp',
+    marketId:
+      '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
+    newExpiryLaunch: true
+  },
+  {
+    slug: 'imcd-usdt-perp',
+    marketId:
+      '0x056fd86c5b8bde4a4f03552e281db86fc6c110a13a79b98b2011aa84bb0ec340',
+    newExpiryLaunch: false
+  },
+  {
+    slug: 'plume-usdt-perp',
+    marketId:
+      '0x3569a541bfae59b8a92215e3cb31133bff21455f1a18a1303df87fecab2839e4',
+    newExpiryLaunch: false
+  },
+  {
+    slug: 'launchcoin-usdt-perp',
+    marketId:
+      '0x99fb44dc75753727f89bad0e79b8b9d2a69ab3cf62730ac405cfd3611569dbc0',
+    newExpiryLaunch: false
+  },
+  {
+    slug: 'axl-usdt-perp',
+    marketId:
+      '0x4fe7aff4dd27be7cbb924336e7fe2d160387bb1750811cf165ce58d4c612aebb',
+    newExpiryLaunch: false
+  },
+  {
+    slug: 'sign-usdt-perp',
+    marketId:
+      '0xc6c7178a6f1fa18007f81e5c8dce85be3dbce97cca68ee97321de0daf7558c6a',
+    newExpiryLaunch: false
+  }
+] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -53,18 +84,23 @@ const deprecatedWarningBanner = computed<Banner[]>(() => [
   }
 ])
 
+const activePerpSettlePairs = computed(() =>
+  perpSettlePairs.find(
+    ({ slug, marketId }) =>
+      slug === route.params.slug || marketId === route.query.marketId
+  )
+)
+
 const perpMarketSettleBanners = computed<Banner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PerpSettleMarket,
     shouldDisplay:
       (route.name as string)?.startsWith(TradePage.Futures) &&
-      perpSettlePairs.some(
-        ({ slug, marketId }) =>
-          slug === route.params.slug || marketId === route.query.marketId
-      )
+      activePerpSettlePairs.value !== undefined
   }
 ])
+
 const chainUpgradeBanners = computed<Banner[]>(() => [
   {
     shouldPersist: true,
@@ -193,7 +229,12 @@ function onClickStockTwitsCta() {
     <div />
 
     <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
-      {{ $t('banners.settlePerpMarketBanner') }}
+      <span v-if="activePerpSettlePairs?.newExpiryLaunch">
+        {{ $t('banners.settlePerpMarketBannerNewLaunch') }}
+      </span>
+      <span v-else>
+        {{ $t('banners.settlePerpMarketBanner') }}
+      </span>
     </template>
 
     <!-- for future reference as per PR feedback -->
