@@ -14,7 +14,7 @@ export default {
     myTotalPoints: 'My total points on Helix',
     paginationDetails: '{from}-{to} of {total}',
     description:
-      'Season 1 has ended. For more information on points, see',
+      'Season 1 is officially closed. But don’t worry if you missed out! Stay tuned for upcoming opportunities.',
 
     leagues: {
       [PointsLeague.Blue]: 'Blue Belt',

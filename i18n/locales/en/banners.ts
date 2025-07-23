@@ -13,8 +13,6 @@ export default {
       'There is currently a governance proposal to force settle this market. You are encouraged to close open positions, or you will be force liquidated at the mark price at the time of settlement.',
     settlePerpMarketBannerNewLaunch:
       'There is currently a live governance proposal to force settle the WTI PERP market. You are encouraged to close open positions, or your position will be force settled at the mark price at the time of settlement. After this market is settled, a new expiry futures market will be launched.',
-    pointsS1Ended:
-      'Helix Points Season 1 has wrapped up. Thank you for your participation, and stay tuned for more updates!',
 
     kado: {
       getStarted: 'Get started',

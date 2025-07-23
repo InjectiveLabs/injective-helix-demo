@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { isWithinInterval } from 'date-fns'
 import { getHubUrl } from '@shared/utils/network'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
@@ -63,7 +62,6 @@ const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { copy } = useClipboard()
-const now = useNow({ interval: 1000 })
 
 const isHideBanner = ref(false)
 
@@ -132,24 +130,7 @@ const promotionalBanners = computed<Banner[]>(() => [
       sharedWalletStore.isUserConnected &&
       route.query.utm_source === UtmSource.StockTwits &&
       !appStore.userState.bannersViewed.includes(NoticeBanner.StockTwits)
-  },
-  {
-    id: NoticeBanner.PointsS1Ended,
-    shouldDisplay:
-      sharedWalletStore.isUserConnected &&
-      !appStore.userState.bannersViewed.includes(NoticeBanner.PointsS1Ended) &&
-      isWithinInterval(now.value, {
-        end: new Date(1755269233000),
-        start: new Date(1752594440000)
-      })
   }
-  // },
-  // {
-  //   id: NoticeBanner.NeptuneUsdt,
-  //   shouldDisplay:
-  //     !appStore.userState.bannersViewed.includes(NoticeBanner.NeptuneUsdt) &&
-  //     new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(0)
-  // }
 ])
 
 const bannerToDisplay = computed(
