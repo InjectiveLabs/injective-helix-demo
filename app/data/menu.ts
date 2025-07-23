@@ -17,10 +17,6 @@ export const getMoreMenu = () => [
     label: 'navigation.more.lpRewards'
   },
   {
-    to: { name: MainPage.Referral },
-    label: 'navigation.more.referral'
-  },
-  {
     isExternal: true,
     label: 'navigation.more.bridge',
     to: 'https://bridge.injective.network/'
@@ -33,6 +29,11 @@ export const getMoreMenu = () => [
     isExternal: true,
     label: 'navigation.more.olp',
     to: 'https://trading.injective.network/program/liquidity/'
+  },
+  {
+    isConnectedOnly: true,
+    to: { name: MainPage.Points },
+    label: 'navigation.points'
   },
   {
     isDesktopOnly: true,
@@ -72,10 +73,10 @@ export const TRADING_OPTIONS = [
   }
 ]
 
-export const POINTS_ITEM = {
+export const REFERRAL_ITEM = {
   isConnectedOnly: true,
-  label: 'navigation.points',
-  to: { name: MainPage.Points }
+  label: 'navigation.more.referral',
+  to: { name: MainPage.Referral }
 }
 
 export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
@@ -174,7 +175,7 @@ export const getMobileMenuItems = () =>
       children: PORTFOLIO_MENU_ITEMS
     },
     ...TRADING_OPTIONS,
-    POINTS_ITEM,
+    REFERRAL_ITEM,
     {
       isExpandable: true,
       children: getMoreMenu(),
