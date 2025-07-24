@@ -54,6 +54,7 @@ const time = computed(() =>
         v-bind="{
           amount: price,
           useSubscript: true,
+          noTrailingZeros: false,
           shouldAbbreviate: false,
           decimals: market.priceDecimals
         }"
