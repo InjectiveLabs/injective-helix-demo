@@ -195,6 +195,7 @@ function handlePriceClick() {
           <SharedAmount
             v-bind="{
               useSubscript: true,
+              noTrailingZeros: false,
               shouldAbbreviate: false,
               amount: record.avgPrice,
               decimals: market.priceDecimals
@@ -244,6 +245,7 @@ function handlePriceClick() {
           v-bind="{
             amount: price,
             useSubscript: true,
+            noTrailingZeros: false,
             shouldAbbreviate: false,
             decimals: priceDecimals
           }"

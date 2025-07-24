@@ -65,6 +65,7 @@ const isStableCoinMarket = computed(() =>
         <SharedAmount
           v-bind="{
             useSubscript: true,
+            noTrailingZeros: false,
             shouldAbbreviate: false,
             decimals: market.priceDecimals,
             amount: lastTradedPrice.toFixed()
@@ -111,6 +112,7 @@ const isStableCoinMarket = computed(() =>
             v-bind="{
               amount: markPrice,
               useSubscript: true,
+              noTrailingZeros: false,
               shouldAbbreviate: false,
               decimals: market.priceDecimals
             }"
