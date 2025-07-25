@@ -283,8 +283,9 @@ function handlePriceClick() {
         v-bind="{
           useSubscript: true,
           amount: record.volume,
+          noTrailingZeros: false,
           shouldAbbreviate: false,
-          decimals: UI_ZERO_DECIMAL
+          decimals: market.priceDecimals
         }"
       />
     </div>
