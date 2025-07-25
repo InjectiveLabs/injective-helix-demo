@@ -155,7 +155,7 @@ function handlePriceClick() {
               useSubscript: true,
               amount: record.volume,
               shouldAbbreviate: false,
-              decimals: UI_ZERO_DECIMAL
+              decimals: market.priceDecimals
             }"
           />
         </div>
@@ -168,8 +168,8 @@ function handlePriceClick() {
             v-bind="{
               useSubscript: true,
               shouldAbbreviate: false,
-              decimals: UI_ZERO_DECIMAL,
-              amount: record.totalVolume
+              amount: record.totalVolume,
+              decimals: market.priceDecimals
             }"
           />
         </div>
