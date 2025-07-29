@@ -1,4 +1,4 @@
-import { nuxtMetaTags, metaTags } from './meta'
+import { metaTags, nuxtMetaTags } from './meta'
 
 const meta = [
   { charset: 'utf-8' },
@@ -25,7 +25,14 @@ export default {
   link: [
     { rel: 'icon', type: 'image/png', href: '/favicon.png' },
     { rel: 'shortcut icon', type: 'image/png', href: '/favicon.png' },
-    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon.png' }
+    { rel: 'apple-touch-icon', type: 'image/png', href: '/favicon.png' },
+    {
+      as: 'font',
+      rel: 'preload',
+      type: 'font/woff2',
+      href: '/Inter.woff2',
+      crossorigin: 'anonymous'
+    } as Record<string, string>
   ],
   script: [
     {
