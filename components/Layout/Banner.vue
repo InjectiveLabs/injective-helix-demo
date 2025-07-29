@@ -342,21 +342,11 @@ function onClickStockTwitsCta() {
       </template>
     </i18n-t>
 
-    <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended"
-      tag="p"
-      keypath="banners.pointsS1Ended"
-    >
-      <template #link>
-        <NuxtLink
-          target="_blank"
-          to="https://docs.helixapp.com/points"
-          class="hover:opacity-80 underline cursor-pointer"
-        >
-          {{ $t('banners.pointsS1EndedLink') }}
-        </NuxtLink>
-      </template>
-    </i18n-t>
+    <template v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended">
+      <span>
+        {{ $t('banners.pointsS1Ended') }}
+      </span>
+    </template>
 
     <div v-if="bannerToDisplay.shouldPersist" />
 

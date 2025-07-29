@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_ZERO_DECIMAL, UI_DEFAULT_MAX_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MAX_DECIMALS } from '@/app/utils/constants'
 import { IsSpotKey, BusEvents, MarketKey, AggregationKey } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 import type { OrderbookFormattedRecord } from '@/types/worker'

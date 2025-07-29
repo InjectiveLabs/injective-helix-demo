@@ -81,6 +81,7 @@ export default {
     'trading-bots': 'Trading Bots',
     emptyOrders: 'No orders found',
     emptyTrades: 'No trades found',
+    noOpenOrders: 'No Open Orders',
     totalNotional: 'Total Notional',
     closePosition: 'Close Position',
     estFeeRebate: 'Est. Fee Rebate',
@@ -90,11 +91,14 @@ export default {
     searchMarket: 'Search Market...',
     boostedMarkets: 'Market Rewards',
     priceDeviation: 'Price Deviation',
+    noOrderHistory: 'No Order History',
+    noTradeHistory: 'No Trade History',
     pnlPercent: 'PnL% (Open Position)',
     stopLossMarket: 'Stop-Loss Market',
     cancelStopLoss: 'Cancel Stop Loss',
     availableMargin: 'Available Margin',
     partiallyFilled: 'Partially Filled',
+    noOpenPositions: 'No Open Positions',
     cancelAllOrders: 'Cancel all orders',
     takeProfitLimit: 'Take-Profit Limit',
     enterYourAmount: 'Enter your amount',
@@ -271,6 +275,13 @@ export default {
       markPrice: 'Mark price',
       entryPrice: 'Entry price',
       mobileDownloadNote: 'Download is available on desktop'
+    },
+
+    partialClosePositionModal: {
+      limitClose: 'Limit Close',
+      marketClose: 'Market Close',
+      marketTitle: 'Partial close position',
+      totalPositionSize: 'Total position size'
     },
 
     table: {

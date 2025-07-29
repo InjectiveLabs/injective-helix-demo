@@ -16,11 +16,10 @@ function selectLocale() {
 
 <template>
   <li
-    :class="{ 'text-brand-500': item.code === locale }"
-    class="flex items-center justify-between gap-2 p-2 w-full text-sm hover:bg-midnight rounded-lg cursor-pointer transition-all"
+    :class="{ 'text-blue-500': item.code === locale }"
+    class="flex items-center justify-between gap-2 p-2 w-full text-sm hover:bg-brand-800 rounded-lg cursor-pointer transition-all"
     @click="selectLocale"
   >
     {{ item.longName }}
-    <span v-if="item.code === locale" class="text-brand-500 text-sm"> • </span>
   </li>
 </template>
