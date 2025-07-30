@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { faucetService } from '@shared/Service'
 import { sharedBackupPromiseCall } from '@shared/utils/async'
 import {
   MsgGrant,
@@ -128,6 +129,7 @@ export const useAuthZStore = defineStore('authZ', {
     }) {
       const authZStore = useAuthZStore()
       const walletStore = useWalletStore()
+      const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
 
       if (!sharedWalletStore.isUserConnected) {
@@ -135,6 +137,16 @@ export const useAuthZStore = defineStore('authZ', {
       }
 
       await walletStore.validate()
+
+      if (!accountStore.hasBalance) {
+        try {
+          await faucetService.fundInjectiveAddress(
+            sharedWalletStore.injectiveAddress
+          )
+        } catch {
+          // silently throw error
+        }
+      }
 
       const messages = messageTypes.map((messageType) =>
         MsgGrant.fromJSON({
