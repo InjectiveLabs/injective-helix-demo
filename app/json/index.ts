@@ -29,7 +29,7 @@ import mainnetDerivativeGridMarkets from './grid/derivative/mainnet.json'
 import devnetDerivativeMarketIdMap from './marketMap/derivative/devnet.json'
 import testnetDerivativeMarketIdMap from './marketMap/derivative/testnet.json'
 import mainnetDerivativeMarketIdMap from './marketMap/derivative/mainnet.json'
-import { hardCodedDevnetTokens } from '@/app/data/token'
+import { hardCodedDevnetTokens } from './../../app/data/token'
 import type { Network } from '@injectivelabs/networks'
 
 const NETWORK: Network = import.meta.env.VITE_NETWORK as Network

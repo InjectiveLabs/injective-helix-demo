@@ -1,5 +1,3 @@
-import { unknownToken } from '@shared/data/token'
-
 export enum USDCSymbol {
   PeggyEthereum = 'USDC',
   WormholeEthereum = 'USDCet',
@@ -38,7 +36,7 @@ export const hardCodedDevnetTokens = [
     decimals: 6,
     symbol: 'KAVA',
     name: 'KAVA',
-    logo: unknownToken.logo,
+    logo: 'https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/6f015260-c589-499f-b692-a57964af9900/public',
     coinGeckoId: '',
     tokenType: 'symbol',
     denom: 'kava',
@@ -51,7 +49,7 @@ export const hardCodedDevnetTokens = [
     decimals: 6,
     symbol: 'UNI',
     name: 'UNI',
-    logo: unknownToken.logo,
+    logo: 'https://imagedelivery.net/lPzngbR8EltRfBOi_WYaXw/6f015260-c589-499f-b692-a57964af9900/public',
     coinGeckoId: '',
     tokenType: 'symbol',
     denom: 'uni',
