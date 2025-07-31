@@ -105,22 +105,11 @@ function resetSelectedPosition() {
 
 <template>
   <div class="p-4 lg:pb-8">
-    <div class="border-b">
-      <AppButtonSelect
-        v-for="value in Object.values(DerivativeTradeTypes)"
-        :key="value"
-        v-bind="{ value }"
-        v-model="orderType"
-        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
-        active-classes="border-b border-blue-550 text-white"
-        :data-cy="`${dataCyTag(
-          PerpetualMarketCyTags.DerivativeTradeType
-        )}-${value}`"
-        @click="onTradeTypeChange"
-      >
-        {{ $t(`trade.${value}`) }}
-      </AppButtonSelect>
-    </div>
+    <PartialsTradeFuturesFormStandardNavigation
+      v-model="orderType"
+      v-bind="{ worstPrice }"
+      @trade-type:change="onTradeTypeChange"
+    />
 
     <div class="flex mt-4 bg-brand-875 rounded-md">
       <AppButtonSelect
@@ -149,6 +138,8 @@ function resetSelectedPosition() {
         >
           <span>
             {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+            /
+            {{ $t(`trade.${side === TradeDirection.Long ? 'long' : 'short'}`) }}
           </span>
         </AppButton>
       </AppButtonSelect>
@@ -175,8 +166,6 @@ function resetSelectedPosition() {
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
       />
-
-      <PartialsTradeFuturesFormStandardLeverage v-bind="{ worstPrice }" />
     </div>
 
     <PartialsTradeFuturesFormStandardSlippage

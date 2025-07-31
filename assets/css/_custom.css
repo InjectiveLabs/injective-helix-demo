@@ -163,11 +163,11 @@
 
   @media screen and (min-width: 1681px) {
     .trade-layout-left {
-      grid-template-columns: 400px 336px 1fr;
+      grid-template-columns: 360px 336px 1fr;
     }
 
     .trade-layout-right {
-      grid-template-columns: 1fr 336px 400px;
+      grid-template-columns: 1fr 336px 360px;
     }
   }
 }

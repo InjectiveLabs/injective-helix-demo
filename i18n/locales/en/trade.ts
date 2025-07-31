@@ -54,7 +54,9 @@ export default {
     cancelAll: 'Cancel All',
     addMargin: 'Add Margin',
     viewOrder: 'View Order',
+    orderType: 'Order type',
     'pro-chart': 'Pro Chart',
+    placeOrder: 'Place Order',
     allMarkets: 'All Markets',
     marketName: 'Market Name',
     takeProfit: 'Take Profit',
@@ -180,8 +182,6 @@ export default {
         'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
     },
     stats: {
-      low: '24h Low',
-      high: '24h High',
       usdValue: 'USD Value',
       marketCap: 'Market Cap',
       annualized: 'Annualized',
@@ -271,6 +271,14 @@ export default {
       markPrice: 'Mark price',
       entryPrice: 'Entry price',
       mobileDownloadNote: 'Download is available on desktop'
+    },
+
+    leverageModal: {
+      title: 'Adjust leverage',
+      upTo: 'Up to {leverageAmount}x',
+      leverageAt: 'Leverage at {leverageAmount}x',
+      description:
+        'Higher leverage magnifies returns, but can also make it easier to get liquidated.'
     },
 
     table: {

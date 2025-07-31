@@ -553,6 +553,7 @@ export enum Modal {
   QrCode = 'qrcode',
   Connect = 'connect',
   DevMode = 'dev-mode',
+  Leverage = 'leverage',
   IAsset = 'iasset-modal',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',

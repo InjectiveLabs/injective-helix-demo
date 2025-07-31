@@ -53,22 +53,6 @@ const { valueToBigNumber: volume } = useSharedBigNumberFormatter(
       : props.market.priceDecimals
   }
 )
-
-const high = computed(() => {
-  if (!summary.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(summary.value.high)
-})
-
-const low = computed(() => {
-  if (!summary.value) {
-    return ZERO_IN_BASE
-  }
-
-  return new BigNumberInBase(summary.value.low)
-})
 </script>
 
 <template>
@@ -108,32 +92,4 @@ const low = computed(() => {
       </div>
     </PartialsTradeStatsHeaderItem>
   </div>
-
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.high')">
-    <p>
-      <SharedAmount
-        v-bind="{
-          useSubscript: true,
-          shouldAbbreviate: false,
-          amount: high.toFixed(),
-          decimals: market.priceDecimals
-        }"
-        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoHigh)"
-      />
-    </p>
-  </PartialsTradeStatsHeaderItem>
-
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.low')">
-    <p>
-      <SharedAmount
-        v-bind="{
-          useSubscript: true,
-          amount: low.toFixed(),
-          shouldAbbreviate: false,
-          decimals: market.priceDecimals
-        }"
-        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoLow)"
-      />
-    </p>
-  </PartialsTradeStatsHeaderItem>
 </template>
