@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOrdersTradingBotsView, UiSpotMarket } from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { SpotOrdersTradingBotsView } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -77,41 +78,20 @@ onUnmounted(() => {
       v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
     />
 
-    <template v-if="view === SpotOrdersTradingBotsView.Orders">
-      <PartialsPortfolioOrdersSpotOpenOrdersTable
-        v-if="spotStore.subaccountOrders.length"
-        :orders="spotStore.subaccountOrders"
-        is-trading-bots
-      />
+    <PartialsPortfolioOrdersSpotOpenOrdersTable
+      v-else-if="view === SpotOrdersTradingBotsView.Orders"
+      is-trading-bots
+      :orders="spotStore.subaccountOrders"
+    />
 
-      <CommonEmptyList
-        v-if="!spotStore.subaccountOrders.length"
-        v-bind="{ message: $t('trade.noOrders') }"
-      />
-    </template>
+    <PartialsPortfolioOrdersSpotOrderHistoryTable
+      v-else-if="view === SpotOrdersTradingBotsView.OrderHistory"
+      :orders="spotStore.subaccountOrderHistory"
+    />
 
-    <template v-else-if="view === SpotOrdersTradingBotsView.OrderHistory">
-      <PartialsPortfolioOrdersSpotOrderHistoryTable
-        v-if="spotStore.subaccountOrderHistory.length"
-        :orders="spotStore.subaccountOrderHistory"
-      />
-
-      <CommonEmptyList
-        v-if="!spotStore.subaccountOrderHistory.length"
-        v-bind="{ message: $t('trade.noOrders') }"
-      />
-    </template>
-
-    <template v-else-if="view === SpotOrdersTradingBotsView.TradeHistory">
-      <PartialsPortfolioOrdersSpotTradeHistoryTable
-        v-if="spotStore.subaccountTrades.length"
-        :trades="spotStore.subaccountTrades"
-      />
-
-      <CommonEmptyList
-        v-if="!spotStore.subaccountTrades.length"
-        v-bind="{ message: $t('trade.noTrades') }"
-      />
-    </template>
+    <PartialsPortfolioOrdersSpotTradeHistoryTable
+      v-else-if="view === SpotOrdersTradingBotsView.TradeHistory"
+      :trades="spotStore.subaccountTrades"
+    />
   </div>
 </template>

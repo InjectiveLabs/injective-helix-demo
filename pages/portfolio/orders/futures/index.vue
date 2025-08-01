@@ -42,12 +42,12 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 </script>
 
 <template>
-  <div class="divide-y border-y">
+  <div class="divide-y border-t">
     <PartialsPortfolioOrdersFuturesOpenOrdersTabs
       :is-trading-bots="accountStore.isSgtSubaccount"
     />
     <div class="overflow-x-auto">
-      <div class="lg:min-w-[1200px] divide-y border-b">
+      <div class="lg:min-w-[1200px] divide-y">
         <CommonSkeletonRow
           v-if="status.isLoading()"
           :height="57"
@@ -55,18 +55,11 @@ onSubaccountChange(fetchDerivativeOpenOrders)
           :columns="8"
         />
 
-        <template v-else>
-          <PartialsPortfolioOrdersFuturesOpenOrdersTable
-            v-if="filteredOrders.length"
-            :orders="filteredOrders"
-            :is-trading-bots="accountStore.isSgtSubaccount"
-          />
-
-          <CommonEmptyList
-            v-if="!filteredOrders.length"
-            :message="'No Open Orders'"
-          />
-        </template>
+        <PartialsPortfolioOrdersFuturesOpenOrdersTable
+          v-else
+          :orders="filteredOrders"
+          :is-trading-bots="accountStore.isSgtSubaccount"
+        />
       </div>
     </div>
   </div>

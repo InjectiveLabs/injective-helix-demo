@@ -43,7 +43,7 @@ function openTransferModal() {
       </AppButton>
     </div>
 
-    <div class="divide-y border-y">
+    <div class="divide-y border-t">
       <CommonSubaccountOptions
         :show-low-balance="true"
         :include-bots-subaccounts="true"

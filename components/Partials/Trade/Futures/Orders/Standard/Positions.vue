@@ -48,7 +48,6 @@ function resetSelectedPosition() {
 
 <template>
   <PartialsPositionsTable
-    v-if="filteredPositions.length"
     :positions="filteredPositions"
     :ui="{
       td: { color: 'dark:text-white' },
@@ -57,11 +56,6 @@ function resetSelectedPosition() {
     @margin:add="addMargin"
     @tpsl:add="addTakeProfitStopLoss"
     @position:share="onSharePosition"
-  />
-
-  <CommonEmptyList
-    v-if="!filteredPositions.length"
-    :message="'No Open Positions'"
   />
 
   <ModalsAddMargin

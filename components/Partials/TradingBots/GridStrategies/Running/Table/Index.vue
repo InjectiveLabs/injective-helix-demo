@@ -92,22 +92,26 @@ function selectStrategy(
 
 <template>
   <div>
+    <CommonEmptyList
+      v-if="gridStrategyStore.activeSpotStrategies.length === 0"
+      :message="$t('tradingBots.noActiveStrategies')"
+    />
     <UTable
-      v-if="lg"
+      v-else-if="lg"
+      :columns="columns"
+      :rows="formattedStrategies"
       :ui="{
         divide: 'dark:divide-cool-800',
         th: {
-          color: 'text-coolGray-400',
           size: 'text-xs',
-          font: 'font-normal'
+          font: 'font-normal',
+          color: 'text-coolGray-400'
         },
         td: {
-          color: 'text-white',
-          size: 'text-xs'
+          size: 'text-xs',
+          color: 'text-white'
         }
       }"
-      :rows="formattedStrategies"
-      :columns="columns"
     >
       <template #time-data="{ row }">
         <span class="p-2 text-xs">{{ row.createdAtFormatted }}</span>
@@ -116,13 +120,9 @@ function selectStrategy(
       <template #market-data="{ row }">
         <NuxtLink
           :to="{
-            name: row.isSpot ? TradeSubPage.Spot : TradeSubPage.Futures,
-            query: {
-              interface: TradingInterface.TradingBots
-            },
-            params: {
-              slug: row.market.slug
-            }
+            params: { slug: row.market.slug },
+            query: { interface: TradingInterface.TradingBots },
+            name: row.isSpot ? TradeSubPage.Spot : TradeSubPage.Futures
           }"
           class="flex items-center gap-2"
         >
@@ -279,10 +279,6 @@ function selectStrategy(
           </template>
         </PartialsLiquidityBotsSpotCommonRemoveStrategy>
       </template> -->
-
-      <template #empty-state>
-        <CommonEmptyList :message="$t('tradingBots.noActiveStrategies')" />
-      </template>
     </UTable>
 
     <template v-else>
@@ -294,11 +290,6 @@ function selectStrategy(
         @strategy:select="selectStrategy"
       />
     </template>
-
-    <CommonEmptyList
-      v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
-      :message="$t('tradingBots.noActiveStrategies')"
-    />
 
     <AppModal v-model="isOpen" v-bind="{ isSm: true }">
       <div class="pt-6">

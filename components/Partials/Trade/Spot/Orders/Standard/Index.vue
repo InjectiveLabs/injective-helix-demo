@@ -79,41 +79,20 @@ onUnmounted(() => {
         v-if="view === SpotOrdersStandardView.Balances"
       />
 
-      <template v-if="view === SpotOrdersStandardView.Orders">
-        <PartialsPortfolioOrdersSpotOpenOrdersTable
-          v-if="filteredOrders.length"
-          :orders="filteredOrders"
-        />
+      <PartialsPortfolioOrdersSpotOpenOrdersTable
+        v-else-if="view === SpotOrdersStandardView.Orders"
+        :orders="filteredOrders"
+      />
 
-        <CommonEmptyList
-          v-if="!filteredOrders.length"
-          v-bind="{ message: $t('trade.noOrders') }"
-        />
-      </template>
+      <PartialsPortfolioOrdersSpotOrderHistoryTable
+        v-else-if="view === SpotOrdersStandardView.OrderHistory"
+        :orders="spotStore.subaccountOrderHistory"
+      />
 
-      <template v-else-if="view === SpotOrdersStandardView.OrderHistory">
-        <PartialsPortfolioOrdersSpotOrderHistoryTable
-          v-if="spotStore.subaccountOrderHistory.length"
-          :orders="spotStore.subaccountOrderHistory"
-        />
-
-        <CommonEmptyList
-          v-if="!spotStore.subaccountOrderHistory.length"
-          v-bind="{ message: $t('trade.noOrders') }"
-        />
-      </template>
-
-      <template v-else-if="view === SpotOrdersStandardView.TradeHistory">
-        <PartialsPortfolioOrdersSpotTradeHistoryTable
-          v-if="spotStore.subaccountTrades.length"
-          :trades="spotStore.subaccountTrades"
-        />
-
-        <CommonEmptyList
-          v-if="!spotStore.subaccountTrades.length"
-          v-bind="{ message: $t('trade.noTrades') }"
-        />
-      </template>
+      <PartialsPortfolioOrdersSpotTradeHistoryTable
+        v-else-if="view === SpotOrdersStandardView.TradeHistory"
+        :trades="spotStore.subaccountTrades"
+      />
     </div>
   </div>
 </template>

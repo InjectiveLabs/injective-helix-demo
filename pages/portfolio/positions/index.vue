@@ -33,7 +33,7 @@ onSubaccountChange(fetchOrders)
       </p>
     </div>
 
-    <div class="border-y divide-y">
+    <div class="border-t divide-y">
       <CommonSkeletonRow
         v-if="status.isLoading()"
         :rows="10"

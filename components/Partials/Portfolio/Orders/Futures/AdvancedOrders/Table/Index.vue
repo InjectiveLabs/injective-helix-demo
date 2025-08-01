@@ -96,163 +96,160 @@ const columns = computed(() => {
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable :rows="rows" :columns="columns">
-      <template #market-data="{ row }">
-        <div class="flex items-center gap-1">
-          <PartialsCommonMarketRedirection
-            class="flex items-center space-x-2 p-2 font-sans"
-            v-bind="{ market: row.market }"
+  <CommonEmptyList
+    v-if="rows.length === 0"
+    :message="$t('trade.emptyAdvancedOrders')"
+  />
+
+  <UTable v-else-if="lg" :rows="rows" :columns="columns">
+    <template #market-data="{ row }">
+      <div class="flex items-center gap-1">
+        <PartialsCommonMarketRedirection
+          class="flex items-center space-x-2 p-2 font-sans"
+          v-bind="{ market: row.market }"
+        >
+          <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
+          <p
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableMarketTicker)
+            "
           >
-            <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-            <p
-              :data-cy="
-                dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableMarketTicker)
-              "
-            >
-              {{ row.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
+            {{ row.market.ticker }}
+          </p>
+        </PartialsCommonMarketRedirection>
 
-          <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
-            v-if="!xxl"
-            v-bind="{
-              trigger: row.trigger,
-              isAuthorized: row.isAuthorized,
-              isCancelable: row.isCancelable
-            }"
-          />
-        </div>
-      </template>
+        <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
+          v-if="!xxl"
+          v-bind="{
+            trigger: row.trigger,
+            isAuthorized: row.isAuthorized,
+            isCancelable: row.isCancelable
+          }"
+        />
+      </div>
+    </template>
 
-      <template #type-data="{ row }">
-        <div class="flex items-center p-2 font-sans">{{ row.type }}</div>
-      </template>
+    <template #type-data="{ row }">
+      <div class="flex items-center p-2 font-sans">{{ row.type }}</div>
+    </template>
 
-      <template #side-data="{ row }">
-        <div class="flex items-center p-2 font-sans">
-          <div>
-            <p
-              :class="{
-                'text-green-500': row.isBuy,
-                'text-red-500': !row.isBuy
-              }"
-              :data-cy="
-                dataCyTag(
-                  PerpetualMarketCyTags.AdvancedOrdersTableOrderDirection
-                )
-              "
-            >
-              {{ $t(`trade.${row.isBuy ? 'buy' : 'sell'}`) }}
-            </p>
-
-            <p v-if="row.isReduceOnly" class="text-coolGray-500">
-              {{ $t('trade.reduce_only') }}
-            </p>
-          </div>
-        </div>
-      </template>
-
-      <template #price-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
-          <span v-if="row.isMarketOrder">{{ $t('trade.market') }}</span>
-          <span v-else>
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: row.price.toFixed(),
-                decimals: row.priceDecimals
-              }"
-              :data-cy="
-                dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)
-              "
-            />
-          </span>
-        </div>
-      </template>
-
-      <template #amount-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.quantity.toFixed(),
-              decimals: row.quantityDecimals
+    <template #side-data="{ row }">
+      <div class="flex items-center p-2 font-sans">
+        <div>
+          <p
+            :class="{
+              'text-green-500': row.isBuy,
+              'text-red-500': !row.isBuy
             }"
             :data-cy="
-              dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)
+              dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableOrderDirection)
             "
-          />
-        </div>
-      </template>
+          >
+            {{ $t(`trade.${row.isBuy ? 'buy' : 'sell'}`) }}
+          </p>
 
-      <template #leverage-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
-          <span v-if="row.leverage.isNaN()" class="text-coolGray-400">
-            {{ $t('trade.notAvailableNA') }}
-          </span>
-          <span v-else> {{ row.leverage.toFormat(2) }} &times; </span>
+          <p v-if="row.isReduceOnly" class="text-coolGray-500">
+            {{ $t('trade.reduce_only') }}
+          </p>
         </div>
-      </template>
+      </div>
+    </template>
 
-      <template #total-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
+    <template #price-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <span v-if="row.isMarketOrder">{{ $t('trade.market') }}</span>
+        <span v-else>
           <SharedAmount
             v-bind="{
               useSubscript: true,
               shouldAbbreviate: false,
-              amount: row.total.toFixed(),
+              amount: row.price.toFixed(),
               decimals: row.priceDecimals
             }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTablePrice)"
           />
-          <span class="ml-1">{{ row.market.quoteToken.symbol }}</span>
-        </div>
-      </template>
+        </span>
+      </div>
+    </template>
 
-      <template #trigger-condition-data="{ row }">
-        <div class="flex items-center p-2 space-x-2 justify-end">
-          <span class="text-coolGray-500 font-sans">
-            {{ $t('trade.markPrice') }}
-          </span>
+    <template #amount-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.quantity.toFixed(),
+            decimals: row.quantityDecimals
+          }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedOrdersTableAmount)"
+        />
+      </div>
+    </template>
 
-          <span
-            v-if="
-              (row.isStopLoss && !row.isBuy) || (row.isTakeProfit && row.isBuy)
-            "
-            class="text-white font-semibold"
-          >
-            &le;
-          </span>
-          <span v-else class="text-white font-semibold"> &ge;</span>
+    <template #leverage-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <span v-if="row.leverage.isNaN()" class="text-coolGray-400">
+          {{ $t('trade.notAvailableNA') }}
+        </span>
+        <span v-else> {{ row.leverage.toFormat(2) }} &times; </span>
+      </div>
+    </template>
 
-          <span>
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                decimals: row.priceDecimals,
-                amount: row.triggerPrice.toFixed()
-              }"
-            />
-          </span>
-        </div>
-      </template>
+    <template #total-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.total.toFixed(),
+            decimals: row.priceDecimals
+          }"
+        />
+        <span class="ml-1">{{ row.market.quoteToken.symbol }}</span>
+      </div>
+    </template>
 
-      <template #action-data="{ row }">
-        <div class="p-2 flex justify-center">
-          <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
+    <template #trigger-condition-data="{ row }">
+      <div class="flex items-center p-2 space-x-2 justify-end">
+        <span class="text-coolGray-500 font-sans">
+          {{ $t('trade.markPrice') }}
+        </span>
+
+        <span
+          v-if="
+            (row.isStopLoss && !row.isBuy) || (row.isTakeProfit && row.isBuy)
+          "
+          class="text-white font-semibold"
+        >
+          &le;
+        </span>
+        <span v-else class="text-white font-semibold"> &ge;</span>
+
+        <span>
+          <SharedAmount
             v-bind="{
-              trigger: row.trigger,
-              isAuthorized: row.isAuthorized,
-              isCancelable: row.isCancelable
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.priceDecimals,
+              amount: row.triggerPrice.toFixed()
             }"
           />
-        </div>
-      </template>
-    </UTable>
-  </template>
+        </span>
+      </div>
+    </template>
+
+    <template #action-data="{ row }">
+      <div class="p-2 flex justify-center">
+        <PartialsPortfolioOrdersFuturesAdvancedOrdersTableCancelOrder
+          v-bind="{
+            trigger: row.trigger,
+            isAuthorized: row.isAuthorized,
+            isCancelable: row.isCancelable
+          }"
+        />
+      </div>
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPortfolioOrdersFuturesAdvancedOrdersMobileTable

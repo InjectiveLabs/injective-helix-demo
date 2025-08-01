@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { MarketKey, UiDerivativeMarket } from '@/types'
+import { MarketKey } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const derivativeStore = useDerivativeStore()
 
@@ -24,10 +25,5 @@ const filteredOrders = computed(() =>
 </script>
 
 <template>
-  <PartialsPortfolioOrdersFuturesOpenOrdersTable
-    v-if="filteredOrders.length"
-    :orders="filteredOrders"
-  />
-
-  <CommonEmptyList v-if="!filteredOrders.length" :message="'No Open Orders'" />
+  <PartialsPortfolioOrdersFuturesOpenOrdersTable :orders="filteredOrders" />
 </template>
