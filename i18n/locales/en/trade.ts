@@ -187,10 +187,9 @@ export default {
       usdValue: 'USD Value',
       marketCap: 'Market Cap',
       annualized: 'Annualized',
-      nextFunding: 'Next Funding',
       volumeInUsd: 'Volume USD (24h)',
       marketVolume24h: 'Volume (24h)',
-      estFundingRate: 'Est. Funding Rate',
+      fundingOrCountdown: 'Funding / Countdown',
       // openInterest: 'Open Interest (USDT)',
 
       marketCapTooltip:

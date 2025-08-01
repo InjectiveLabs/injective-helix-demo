@@ -2,12 +2,12 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { calculateLeverage } from '@/app/utils/formatters'
-import {
-  IsSpotKey,
-  CommonCyTags,
-  UiMarketWithToken,
-  UiDerivativeMarket
-} from '@/types'
+import { IsSpotKey, CommonCyTags, TradeSubPage } from '@/types'
+import type { UiMarketWithToken, UiDerivativeMarket } from '@/types'
+
+const route = useRoute()
+const isSpot = inject(IsSpotKey)
+const isLocked = useScrollLock(document.documentElement)
 
 const props = withDefaults(
   defineProps<{
@@ -21,11 +21,8 @@ const emit = defineEmits<{
   'update:isMarketOpen': [value: boolean]
 }>()
 
-const isSpot = inject(IsSpotKey)
-const isLocked = useScrollLock(document.documentElement)
-
-const el = ref<HTMLElement | null>(null)
-const toggleEl = ref<HTMLElement | null>(null)
+const el = ref<null | HTMLElement>(null)
+const toggleEl = ref<null | HTMLElement>(null)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -46,7 +43,7 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
     }
   )
 
-const isBiudlPerpMarket = computed(
+const isBuidlPerpMarket = computed(
   () => props.market.slug === 'buidl-usdt-perp'
 )
 
@@ -72,17 +69,23 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
 </script>
 
 <template>
-  <div class="xl:basis-[450px]">
+  <div
+    :class="[
+      route.name === TradeSubPage.Spot
+        ? '2xl:basis-[450px] max-2xl:border-b max-lg:border-0'
+        : '5xl:basis-[450px] max-5xl:border-b max-lg:border-0'
+    ]"
+  >
     <div
       ref="toggleEl"
-      class="flex max-xl:py-4 items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none h-full"
+      class="relative z-30 flex max-xl:py-4 items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none h-full"
       @click="toggleOpen"
     >
       <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!isBiudlPerpMarket"
+            :is-disabled="!isBuidlPerpMarket"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
@@ -104,7 +107,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="isBiudlPerpMarket" keypath="markets.buidlTooltip">
+              <i18n-t v-if="isBuidlPerpMarket" keypath="markets.buidlTooltip">
                 <template #docs>
                   <NuxtLink
                     target="_blank"
@@ -145,9 +148,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
         </div>
       </div>
 
-      <div
-        class="text-coolGray-400 max-lg:ml-auto max-xl:ml-12 xl:ml-auto flex items-center"
-      >
+      <div class="text-coolGray-400 ml-auto flex items-center">
         <div
           class="ml-10 mr-4 text-sm"
           :data-cy="dataCyTag(CommonCyTags.MarketDropdown)"
@@ -164,12 +165,17 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
 
     <div
       v-if="isMarketOpen"
-      class="absolute backdrop-blur-sm top-full z-30 w-screen left-0 flex"
+      class="absolute top-full z-30 w-screen left-0 flex"
       @keydown.escape="closeMarketSection"
     >
       <div
         ref="el"
-        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border pb-2 h-[calc(100vh-131px)] sm:h-[calc(100vh-272px)] lg:h-[calc(100vh-185px)] xl:h-[calc(100vh-140px)]"
+        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border h-[calc(100vh-131px)] sm:h-[calc(100vh-272px)] lg:h-[calc(100vh-203px)]"
+        :class="[
+          route.name === TradeSubPage.Spot
+            ? '2xl:h-[calc(100vh-140px)]'
+            : '5xl:h-[calc(100vh-140px)]'
+        ]"
         @click.stop
       >
         <PartialsTradeStatsMarketSelectorPanel v-bind="{ marketPriceMap }" />

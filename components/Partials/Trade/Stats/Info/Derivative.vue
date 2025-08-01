@@ -94,7 +94,7 @@ watch(countdown, (countdown) => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem class="xl:hidden 2xl:flex">
+  <PartialsTradeStatsHeaderItem class="lg:hidden xl:flex">
     <template #title>
       <CommonHeaderTooltip
         :tooltip="$t('trade.stats.markPriceTooltip')"
@@ -124,51 +124,51 @@ watch(countdown, (countdown) => {
         :tooltip="$t('trade.stats.fundingRateTooltip')"
         text-color-class="text-coolGray-400"
       >
-        {{ $t('trade.stats.estFundingRate') }}
+        {{ $t('trade.stats.fundingOrCountdown') }}
       </CommonHeaderTooltip>
     </template>
 
-    <div v-if="!fundingRateToBigNumber.isNaN()" class="lg:text-right block">
-      <AppTooltip
-        :ui="{
-          width: 'w-auto',
-          popper: {
-            placement: 'bottom'
-          }
-        }"
-        :content="`${$t('trade.stats.annualized')}: ${
-          fundingRateToBigNumber.gt(0) ? '+' : ''
-        }${annualizedFundingRateToString}%`"
-      >
-        <span
-          :class="{
-            'text-green-500': fundingRateToBigNumber.gte(0),
-            'text-red-500': fundingRateToBigNumber.lt(0)
+    <div class="flex gap-3 justify-end items-center">
+      <div v-if="!fundingRateToBigNumber.isNaN()">
+        <AppTooltip
+          :ui="{
+            width: 'w-auto',
+            popper: {
+              placement: 'bottom'
+            }
           }"
-          class="cursor-pointer flex"
+          :content="`${$t('trade.stats.annualized')}: ${
+            fundingRateToBigNumber.gt(0) ? '+' : ''
+          }${annualizedFundingRateToString}%`"
         >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: fundingRateToFixed,
-              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
+          <span
+            :class="{
+              'text-green-500': fundingRateToBigNumber.gte(0),
+              'text-red-500': fundingRateToBigNumber.lt(0)
             }"
+            class="cursor-pointer flex"
           >
-            <template #prefix>
-              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
-            </template>
-          </SharedAmount>
-          <span>%</span>
-        </span>
-      </AppTooltip>
-    </div>
-    <span v-else class="lg:text-right block"> &mdash; </span>
-  </PartialsTradeStatsHeaderItem>
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
+                amount: fundingRateToFixed,
+                decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
+              }"
+            >
+              <template #prefix>
+                <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
+            <span>%</span>
+          </span>
+        </AppTooltip>
+      </div>
+      <span v-else> &mdash; </span>
 
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.nextFunding')">
-    <p class="lg:text-right">
-      {{ countdown }}
-    </p>
+      <p class="tabular-nums">
+        {{ countdown }}
+      </p>
+    </div>
   </PartialsTradeStatsHeaderItem>
 </template>

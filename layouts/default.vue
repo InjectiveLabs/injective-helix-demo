@@ -128,16 +128,7 @@ watch(
 </script>
 
 <template>
-  <div
-    :class="[
-      'relative',
-      [TradeSubPage.Futures, TradeSubPage.Spot].includes(
-        route.name as TradeSubPage
-      )
-        ? 'min-h-vhMinusHeader'
-        : 'min-h-screen'
-    ]"
-  >
+  <div class="relative min-h-screen">
     <div :id="TURNKEY_CONTAINER_ID" class="opacity-0 h-0" />
     <LayoutNavbar />
 

@@ -47,14 +47,6 @@ body .vue-grid-item {
   touch-action: none;
 }
 
-.h-full-excluding-header {
-  height: calc(100% - var(--header-height));
-}
-
-.max-h-screen-excluding-header {
-  max-height: calc(100vh - var(--header-height));
-}
-
 .min-h-screen-excluding-header {
   min-height: calc(100vh - var(--header-height));
 }
@@ -65,14 +57,6 @@ body .vue-grid-item {
 
 .h-market-info {
   height: var(--market-info-height);
-}
-
-.h-screen-excluding-header-and-market-info {
-  height: calc(100vh - var(--header-height) - var(--market-info-height) - 4px);
-}
-
-.max-h-screen-excluding-header-and-market-info {
-  height: calc(100vh - var(--header-height) - var(--market-info-height) - 8px);
 }
 
 .top-market-info {

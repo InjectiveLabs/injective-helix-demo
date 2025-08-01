@@ -267,6 +267,10 @@ html.theme-dark .button-GwQQdU8S:hover {
   color: #282c39;
 }
 
+.layout__area--top {
+  border-bottom: 1px solid #1d2130;
+}
+
 html.theme-dark .chart-controls-bar {
   left: -5px !important;
   bottom: 8px !important;

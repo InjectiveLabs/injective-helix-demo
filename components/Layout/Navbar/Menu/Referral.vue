@@ -9,9 +9,9 @@ const sharedWalletStore = useSharedWalletStore()
   <div class="flex items-center max-lg:pr-2">
     <LayoutNavbarMenuItem
       v-if="!appStore.isCountryRestricted"
-      class="hidden lg:block px-4"
-      :class="{ 'px-8': sharedWalletStore.isUserConnected }"
+      class="hidden xl:block px-4"
       v-bind="{ item: REFERRAL_ITEM }"
+      :class="{ 'px-8': sharedWalletStore.isUserConnected }"
     />
 
     <LayoutWallet />

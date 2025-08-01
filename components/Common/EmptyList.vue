@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { TradeSubPage } from '~/types'
+import { TradeSubPage } from '@/types'
 
 const route = useRoute()
 const slots = useSlots()

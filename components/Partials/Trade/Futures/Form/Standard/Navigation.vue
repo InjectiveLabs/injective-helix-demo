@@ -41,7 +41,7 @@ function onLeverageUpdate(value: string) {
 <template>
   <div class="flex items-center justify-between gap-4">
     <span
-      class="rounded-lg py-2.5 px-6 text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
+      class="rounded-lg py-2.5 px-4 5xl:px-6 text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
       @click="openLeverageModal"
     >
       {{ $t('trade.leverageModal.leverageAt', { leverageAmount: leverage }) }}
