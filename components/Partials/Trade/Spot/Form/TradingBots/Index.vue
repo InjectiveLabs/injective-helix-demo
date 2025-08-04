@@ -2,11 +2,10 @@
 import {
   MarketKey,
   BusEvents,
-  UiSpotMarket,
   GridStrategyType,
-  InvestmentTypeGst,
-  SpotGridTradingForm
+  InvestmentTypeGst
 } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -59,7 +58,7 @@ function onOpenTradingBotDetails() {
           <template #default="{ isActive }">
             <AppButton
               :variant="isActive ? 'primary' : 'primary-cta'"
-              :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
+              :class="['w-full py-2 leading-relaxed focus-within:ring-0']"
             >
               {{ $t(`tradingBots.${type}`) }}
             </AppButton>

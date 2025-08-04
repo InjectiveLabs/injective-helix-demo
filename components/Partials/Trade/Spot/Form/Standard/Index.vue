@@ -119,7 +119,7 @@ function onOrderSideClicked() {
         @click="onOrderSideClicked"
       >
         <AppButton
-          :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
+          :class="['w-full py-2 leading-relaxed focus-within:ring-0']"
           :variant="
             side === orderSideValue
               ? side === OrderSide.Buy

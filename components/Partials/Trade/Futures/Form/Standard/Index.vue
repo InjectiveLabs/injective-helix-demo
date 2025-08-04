@@ -132,7 +132,7 @@ function resetSelectedPosition() {
                 : 'danger-cta'
           "
           :class="[
-            'w-full py-1.5 leading-relaxed focus-within:ring-0',
+            'w-full py-2 leading-relaxed focus-within:ring-0',
             side === TradeDirection.Long ? 'hover:bg-green-500' : ''
           ]"
         >
