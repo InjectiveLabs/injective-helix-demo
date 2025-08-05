@@ -46,12 +46,6 @@ export default defineNuxtConfig({
         name: 'En',
         longName: 'English',
         file: './i18n/locales/en.ts'
-      },
-      {
-        code: 'zh',
-        name: '中文',
-        longName: '中文',
-        file: './i18n/locales/cn.ts'
       }
     ]
   },
