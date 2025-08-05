@@ -443,6 +443,7 @@ export enum DerivativesTradeFormField {
   LimitPrice = 'limitPrice',
   ReduceOnly = 'reduceOnly',
   TakeProfit = 'takeProfit',
+  TempLeverage = 'tempLeverage',
   AmountOption = 'amountOption',
   TriggerPrice = 'triggerPrice',
   isTpSlEnabled = 'isTpSlEnabled',

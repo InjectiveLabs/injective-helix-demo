@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { Modal, DerivativeTradeTypes } from '@/types'
+import { Modal, DerivativeTradeTypes, DerivativesTradeFormField } from '@/types'
+import type { DerivativesTradeForm } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 
 const modalStore = useSharedModalStore()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const emit = defineEmits<{
   'trade-type:change': []
@@ -18,8 +20,6 @@ const props = withDefaults(
   {}
 )
 
-const leverage = ref('1')
-
 const orderType = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
@@ -32,10 +32,6 @@ function onTradeTypeChange() {
 function openLeverageModal() {
   modalStore.openModal(Modal.Leverage)
 }
-
-function onLeverageUpdate(value: string) {
-  leverage.value = value
-}
 </script>
 
 <template>
@@ -44,7 +40,12 @@ function onLeverageUpdate(value: string) {
       class="rounded-lg py-2.5 px-4 5xl:px-6 w-1/2 text-center text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
       @click="openLeverageModal"
     >
-      {{ $t('trade.leverageModal.leverageAt', { leverageAmount: leverage }) }}
+      {{
+        $t('trade.leverageModal.leverageAt', {
+          leverageAmount:
+            derivativeFormValues[DerivativesTradeFormField.Leverage]
+        })
+      }}
     </span>
 
     <div class="max-lg:w-1/2 max-lg:flex max-lg:justify-center">
@@ -84,9 +85,6 @@ function onLeverageUpdate(value: string) {
       </USelectMenu>
     </div>
 
-    <ModalsLeverage
-      v-bind="{ worstPrice }"
-      @leverage:update="onLeverageUpdate"
-    />
+    <ModalsLeverage v-bind="{ worstPrice }" />
   </div>
 </template>

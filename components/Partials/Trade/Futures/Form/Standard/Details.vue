@@ -50,13 +50,15 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   }
 )
 
-const isLimitAndPostOnly = computed(
+const isMakerFee = computed(
   () =>
     (derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
         DerivativeTradeTypes.Limit) ||
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
+      DerivativeTradeTypes.StopLimit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopMarket
 )
 
 function toggle() {
@@ -211,7 +213,7 @@ function toggle() {
           </p>
         </div>
 
-        <template v-if="!isLimitAndPostOnly">
+        <template v-if="!isMakerFee">
           <div class="flex items-center text-xs font-medium">
             <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
             <div class="flex-1 mx-2" />

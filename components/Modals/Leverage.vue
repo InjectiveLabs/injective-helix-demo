@@ -25,10 +25,6 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  'leverage:update': [value: string]
-}>()
-
 const previousLeverage = ref('0')
 
 const maxLeverageAvailable = computed(() =>
@@ -67,21 +63,26 @@ const maxLeverageAllowed = computed(() => {
   return new BigNumberInBase(maxLeverageAvailable.value)
 })
 
-const { value: leverage, errorMessage } = useStringField({
+const { value: leverage } = useStringField({
   name: DerivativesTradeFormField.Leverage,
+  initialValue: futuresLeveragePreference.value || UI_DEFAULT_LEVERAGE
+})
+
+const { value: tempLeverage, errorMessage } = useStringField({
+  name: DerivativesTradeFormField.TempLeverage,
   initialValue: futuresLeveragePreference.value || UI_DEFAULT_LEVERAGE,
   dynamicRule: computed(() => `maxLeverage:${maxLeverageAllowed.value}`)
 })
 
 function onCancel() {
-  leverage.value = previousLeverage.value
+  tempLeverage.value = previousLeverage.value
   modalStore.closeModal(Modal.Leverage)
 }
 
 function onConfirm() {
-  emit('leverage:update', leverage.value)
+  leverage.value = tempLeverage.value
+  appStore.setFuturesLeverage(tempLeverage.value)
   modalStore.closeModal(Modal.Leverage)
-  appStore.setFuturesLeverage(leverage.value)
 }
 
 function setPreviousLeverage() {
@@ -89,7 +90,6 @@ function setPreviousLeverage() {
 }
 
 onMounted(() => {
-  emit('leverage:update', leverage.value)
   appStore.setFuturesLeverage(leverage.value)
 })
 </script>
@@ -101,6 +101,7 @@ onMounted(() => {
       ui: { width: 'sm:min-w-sm sm:max-w-sm' }
     }"
     @on:open="setPreviousLeverage"
+    @on:close="onCancel"
   >
     <div>
       <h4 class="text-2xl max-sm:text-xl text-coolGray-200">
@@ -112,7 +113,7 @@ onMounted(() => {
       </p>
 
       <PartialsTradeFuturesFormStandardLeverage
-        v-model:leverage="leverage"
+        v-model:leverage="tempLeverage"
         v-bind="{
           worstPrice,
           errorMessage,

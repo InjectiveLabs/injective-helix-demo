@@ -164,7 +164,12 @@ function resetSelectedPosition() {
       />
 
       <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
+        v-bind="{
+          quantity,
+          worstPrice,
+          marginWithFee,
+          minimumAmountInQuote
+        }"
       />
     </div>
 
