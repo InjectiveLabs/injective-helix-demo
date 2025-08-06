@@ -141,7 +141,7 @@ function toggleAutoSign() {
           <div v-else class="flex items-center justify-center space-x-2">
             <UIcon
               :name="NuxtUiIcons.UserOutline"
-              class="w-4 h-4 rounded-md text-[#black]"
+              class="max-lg:size-[18px] size-4 rounded-md text-[#black]"
             />
           </div>
 
