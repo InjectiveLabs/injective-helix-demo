@@ -77,7 +77,7 @@ const percentageChangeStatus = computed(() => {
       <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
-        class="flex items-center lg:flex-col lg:items-end gap-2 lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
+        class="flex items-center lg:flex-col lg:items-end lg:gap-2 lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoPrice)"
       >
         <div class="flex items-center justify-between">
@@ -133,7 +133,7 @@ const percentageChangeStatus = computed(() => {
               percentageChangeStatus === SharedMarketChange.Decrease
           }"
         >
-          <span class="lg:hidden">/</span>
+          <span class="lg:hidden mx-1 text-coolGray-400">/</span>
           <span>
             <SharedAmount
               v-bind="{

@@ -78,7 +78,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
   >
     <div
       ref="toggleEl"
-      class="relative z-30 flex max-xl:py-4 items-center pr-4 border-r hover:bg-brand-875 cursor-pointer select-none h-full"
+      class="relative z-30 flex max-xl:py-4 items-center pr-4 hover:bg-brand-875 cursor-pointer select-none h-full"
       @click="toggleOpen"
     >
       <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />

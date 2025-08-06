@@ -130,14 +130,13 @@ watch(
       }}
     </AppButtonSelect>
 
-    <div class="flex items-center flex-1 justify-end px-2">
+    <div class="flex items-center flex-1 justify-end lg:pr-2 lg:pl-1.5">
       <AppCheckbox
         v-if="view !== SpotOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
-        :class="[xl ? 'text-sm' : 'text-xs']"
       >
-        <span>
+        <span :class="[xl ? 'text-sm' : 'text-xs max-sm:text-2xs']">
           {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
         </span>
       </AppCheckbox>

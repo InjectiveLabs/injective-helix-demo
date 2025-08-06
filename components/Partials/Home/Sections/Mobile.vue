@@ -50,7 +50,9 @@ import {
           </p>
         </div>
 
-        <div class="flex flex-wrap gap-4 lg:gap-6 mt-12 sm:mt-14">
+        <div
+          class="flex flex-wrap justify-center lg:justify-start gap-4 lg:gap-6 mt-12 sm:mt-14"
+        >
           <a target="_blank" :href="HELIX_APP_STORE_LINK">
             <img
               class="h-11 lg:h-12"
