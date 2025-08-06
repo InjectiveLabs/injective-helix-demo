@@ -12,6 +12,7 @@ import devnetSpotGridMarkets from './grid/spot/devnet.json'
 import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import testnetSpotGridMarkets from './grid/spot/testnet.json'
 import mainnetSpotGridMarkets from './grid/spot/mainnet.json'
+import { hardCodedDevnetTokens } from './../../app/data/token'
 import devnetCategoryMap from './marketMap/category/devnet.json'
 import devnetSpotMarketIdMap from './marketMap/spot/devnet.json'
 import restrictedCountriesJson from './restrictedCountries.json'
@@ -37,7 +38,7 @@ const IS_TESTNET: boolean = isTestnet(NETWORK)
 
 export const getTokens = () => {
   if (IS_DEVNET) {
-    return devnetTokens
+    return [...devnetTokens, ...hardCodedDevnetTokens]
   }
 
   if (IS_TESTNET) {
