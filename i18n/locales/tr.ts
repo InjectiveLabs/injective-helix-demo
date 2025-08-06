@@ -133,12 +133,14 @@ export default {
         cta: 'Tüm adımları görmek ister misiniz? Adım adım {tutorial} kılavuzumuza göz atın.'
       },
       accordion4: {
+        title: 'Helix Mobil uygulaması var mı ve nereden indirebilirim?',
         appStore: 'iOS (App Store)',
         playStore: 'Android (Google Play)',
         description:
           'Helix Mobile, {appStore} ve {playStore} üzerinden ücretsizdir. Uygulamayı kurun, cüzdanınızı bağlayın ve web sürümünde gördüğünüz piyasa ve bakiyeleri burada da görün.'
       },
       accordion5: {
+        title: 'Helix Mobil’de cüzdanımı nasıl bağlarım?',
         description: 'Üç seçeneğiniz var:',
         option1:
           "QR kodunu tarayın - Helix Mobile'ı açın, “Helix web üzerinde QR kodu tara”ya dokunun ve kameranızı Helix web uygulamasındaki ayarlarda gösterilen QR koduna doğrultun. (ACM'deki AuthZ modülüne bağlantı)",
@@ -148,6 +150,7 @@ export default {
           'Yeni bir cüzdan oluşturun - sıfırdan başlamak isterseniz e-posta adresinize bağlı yeni bir saklama dışı cüzdan oluşturun.'
       },
       accordion6: {
+        title: 'Helix Mobil varlıklarımı nasıl güvende tutuyor?',
         description:
           'Helix Mobil uygulaması tamamen gözetimsizdir. Özel anahtarlar cihazınızda kalır, işlemler yerel olarak imzalanır ve ayarlardan biyometrik iki faktörlü doğrulama ekleyebilirsiniz. Helix, fonlarınızı veya seed phrase’inizi asla tutmaz - güvenlik web sürümündekiyle birebir aynıdır. Sosyal girişler için anahtarlar, sektör standardı olan Turnkey tarafından güvenli bir şekilde saklanır.'
       }
@@ -1400,7 +1403,7 @@ export default {
     upperBound: 'Üst Sınır',
     gridNumber: 'Izgara Sayısı',
     stopReason: 'Durdurma Nedeni',
-    futuresGrid: 'Vadeli Izgarası',
+    futuresGrid: 'Vadeli Grid',
     totalProfit: 'Toplam Kar',
     volumeBoost: 'Hacim Artışı',
     totalAmount: 'Toplam Tutar',
@@ -1415,7 +1418,7 @@ export default {
     enableLpMode: 'LP Modunu Etkinleştir',
     trailingBound: 'Takip Eden Sınır',
     setUpNewBot: 'Yeni Bot Kur',
-    liquidityGrid: 'Likidite Izgarası',
+    liquidityGrid: 'Likidite Grid',
     topPerformers: 'En İyi Performans Gösterenler',
     initialAmount: 'Başlangıç Miktarı',
     numberOfGrids: 'Izgara Sayısı',
@@ -1465,7 +1468,7 @@ export default {
       "Gerçek zamanlı başarıdan öğrenin. Hangi stratejiler ve parametrelerin Helix'te şu anda en iyi sonuçları verdiğini görün. Bu verileri yaklaşımınızı geliştirmek veya kanıtlanmış performansa dayalı yeni bir bot başlatmak için kullanın.",
     botType: {
       spotGrid: 'Spot Grid',
-      futuresGrid: 'Vadeli Izgarası',
+      futuresGrid: 'Vadeli Grid',
       liquidityGrid: 'Hacim Artışı'
     },
     myLpRewards: {
@@ -1495,7 +1498,7 @@ export default {
       tabs: {
         liveSpotGrid: 'Canlı Spot Grid',
         spotGridHistory: 'Spot Izgara Geçmişi',
-        liveFuturesGrid: 'Canlı Vadeli Izgarası',
+        liveFuturesGrid: 'Canlı Vadeli Grid',
         futuresGridHistory: 'Vadeli Izgara Geçmişi'
       },
       modes: {

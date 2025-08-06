@@ -6,7 +6,7 @@ const emit = defineEmits<{
   'locale:update': [value: string]
 }>()
 
-const { locale } = useI18n()
+const { locale } = useLang()
 
 function selectLocale() {
   emit('on:click')

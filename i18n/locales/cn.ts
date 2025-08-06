@@ -22,7 +22,7 @@ export default {
       tradeStocksTitle: '交易股票和现实世界资产',
       lpRewardsDescription: '提供流动性并获得报酬。',
       description: '作为顶级交易所打造，但完全去中心化。',
-      gasFreeDescription: '永远无需担心 Helix 的 Gas 费用。始终零 Gas。',
+      gasFreeDescription: '永远无需担心 Helix 的 Gas 费用。始终无 Gas。',
       tradingBotsDescription: '只需单击即可部署先进的智能链上交易策略。',
       tradeStocksDescription:
         '使用加密货币交易股票和现实世界资产 (RWA)，实现更快、更便宜、更透明的交易。'
@@ -119,12 +119,14 @@ export default {
         cta: '想要完整的教程吗？查看我们的分步 {tutorial}。'
       },
       accordion4: {
+        title: '是否有 Helix Mobile App？我在哪里可以获取它？',
         appStore: 'iOS（应用商店）',
         playStore: 'Android（Google Play）',
         description:
           'Helix Mobile 在 {appStore} 和 {playStore} 上免费。安装应用并连接您的钱包，您就能看到与网页版相同的市场和余额。'
       },
       accordion5: {
+        title: '我该如何在 Helix Mobile 上连接钱包？',
         description: '您有三个选择：',
         option1:
           '扫描二维码 - 打开 Helix Mobile，点击“扫描 Helix 网页上的二维码”，然后将相机对准设置中 Helix 网页应用上显示的二维码。（链接到 ACM 中的 AuthZ 模块）',
@@ -134,6 +136,7 @@ export default {
           '创建一个全新的钱包 - 如果您想从头开始，请生成一个与您的电子邮件绑定的全新非托管钱包。'
       },
       accordion6: {
+        title: ' Helix Mobile 如何保证我的资产安全？',
         description:
           'Helix Mobile 应用完全非托管。私钥保留在您的设备上，交易在本地签名，您可以在设置中添加生物识别双因素验证。Helix 绝不会扣留您的资金或助记词——其安全性与网页端完全相同。对于社交登录，密钥由业界标准的密钥管理工具 Turnkey 安全存储。'
       }
@@ -1478,7 +1481,7 @@ export default {
       selectPair: '选择交易对',
       timeCreated: '创建时间',
       finalBalance: '最终余额',
-      depositAmount: '充值金额t',
+      depositAmount: '充值金额',
       trailingUpper: '追踪上限',
       trailingLower: '追踪下限',
       currentBalance: '当前余额',

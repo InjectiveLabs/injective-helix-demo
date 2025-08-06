@@ -65,7 +65,7 @@ function disconnect() {
           <div v-else class="flex items-center justify-center space-x-2">
             <UIcon
               :name="NuxtUiIcons.UserOutline"
-              class="lg:w-4 lg:h-4 w-5 h-5 rounded-md text-[#black]"
+              class="lg:w-4 lg:h-4 w-5 h-5 rounded-md text-black"
             />
           </div>
 

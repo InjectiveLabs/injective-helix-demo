@@ -8,7 +8,7 @@ import {
 const route = useRoute()
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
-const { locales, setLocale, localeCodes } = useI18n()
+const { locales, setLocale, localeCodes } = useLang()
 
 function onUpdateLocale(selectedLocale: string) {
   setLocale(selectedLocale as (typeof localeCodes.value)[number])

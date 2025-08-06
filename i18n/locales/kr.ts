@@ -5,7 +5,7 @@ export default {
       '가스비 없이 빠르고 안전하게, 기관급 유동성과 함께하는 온체인 거래의 새로운 기준',
     gasFees: '가스비',
     whyHelix: '왜 Helix인가요?',
-    reimagined: '재정의된',
+    reimagined: 'Reimagined',
     latestNews: '최신 소식',
     totalVolume: '총 거래량',
     totalMarkets: '전체 마켓',
@@ -128,12 +128,14 @@ export default {
         cta: '자세한 설명이 필요하신가요? 저희의 단계별 {tutorial}을 확인해보세요.'
       },
       accordion4: {
+        title: 'Helix 모바일 앱이 있나요? 어디에서 다운로드할 수 있나요?',
         appStore: 'IOS (App Store)',
         playStore: 'Android (Google Play)',
         description:
           'Helix 모바일은 {appStore} 및 {playStore}에서 무료로 제공됩니다. 앱을 설치하고 지갑을 연결하면 웹에서 보던 것과 동일한 시장 및 잔액을 확인할 수 있습니다.'
       },
       accordion5: {
+        title: 'Helix 모바일에서 지갑을 어떻게 연결하나요?',
         description: '세 가지 옵션이 있습니다:',
         option1:
           "QR 코드 스캔 - Helix 모바일을 열고 'Helix 웹에서 QR 코드 스캔'을 탭한 다음, 설정의 Helix 웹 앱에 표시된 QR 코드에 카메라를 맞추세요. (ACM의 AuthZ 모듈 링크)",
@@ -143,6 +145,7 @@ export default {
           '새 지갑 만들기 - 처음부터 시작하고 싶다면 이메일에 연결된 새로운 비수탁형 지갑을 생성하세요.'
       },
       accordion6: {
+        title: 'Helix 모바일은 내 자산을 어떻게 안전하게 보호하나요?',
         description:
           'Helix 모바일 앱은 완전한 비수탁형입니다. 개인 키는 사용자의 기기에 저장되고, 트랜잭션은 로컬에서 서명되며, 설정에서 생체 인식 2단계 인증을 추가할 수 있습니다. Helix는 절대로 사용자의 자금이나 시드 구문을 보관하지 않으며, 보안은 웹에서와 동일하게 작동합니다. 소셜 로그인의 경우, 키는 업계 표준 키 관리 솔루션인 Turnkey에 의해 안전하게 저장됩니다.'
       }
@@ -315,7 +318,7 @@ export default {
       buyInj: 'INJ 구매',
       bridgeNow: '지금 브릿지',
       bankTransferSuccessful: '전송 성공',
-      startTradingInSeconds: '몇 초 안에 트레이딩 시작!',
+      startTradingInSeconds: '단 몇 초면 트레이딩 시작!',
       readyToTrade: '트레이딩 준비 완료? 지금 마켓 탐색하기!',
       moveAssetsToInj: 'Ethereum에서 Injective로 자산 이동',
       discoverTrendingPairs: '인기 페어를 발견하고 트레이딩 시작',
@@ -1396,7 +1399,7 @@ export default {
     trailingBound: '추적 범위',
     setUpNewBot: '새 봇 설정',
     liquidityGrid: '유동성 Grid',
-    topPerformers: '상위 성과자',
+    topPerformers: '실시간 인기 전략 ',
     initialAmount: '초기 금액',
     numberOfGrids: 'Grid 개수',
     createStrategy: '전략 생성',
@@ -1409,7 +1412,7 @@ export default {
     noStrategies: '전략이 없습니다.',
     optimizedAmounts: '최적화된 금액',
     totalBotsCreated: '생성된 총 봇 수',
-    replicateStrategy: '전략 복제',
+    replicateStrategy: '전략 복사하기',
     buySymbolOnStop: '중단 시 {symbol} 매수',
     insufficientFunds: '자금 부족',
     approximateProfit: '대략적인 수익',
@@ -1442,7 +1445,7 @@ export default {
     description:
       'Helix의 자동화 거래를 위한 명령 센터입니다. 활성 봇을 모니터링하고, LP 보상을 추적하며, 다음 움직임을 위한 고성능 커뮤니티 전략을 발견하세요.',
     topPerformersDescription:
-      '실시간 성공에서 배우세요. 현재 Helix에서 최고의 결과를 내고 있는 전략과 매개변수를 확인하세요. 이 데이터를 사용하여 접근 방식을 개선하거나 검증된 성과를 기반으로 새 봇을 시작하세요.',
+      '지금 Helix에서 가장 높은 수익률을 기록 중인 전략과 설정을 확인하세요. 성공 데이터를 참고해 내 전략을 개선하거나, 검증된 결과를 바탕으로 새 봇을 시작해보세요.',
     botType: {
       spotGrid: '현물 Grid',
       futuresGrid: '선물 Grid',
@@ -1585,7 +1588,25 @@ export default {
       firstHourOfCampaign:
         '대회가 시작되었습니다. 리더보드는 {afterFirstHour}에 캠페인 통계를 표시하기 시작합니다.',
       additionalEntriesTooltip:
-        '이는 대회 중 하나 이상의 보너스 기간에 참여하여 얻은 보너스 참가 기회입니다.'
+        '이는 대회 중 하나 이상의 보너스 기간에 참여하여 얻은 보너스 참가 기회입니다.',
+      winnerModal: {
+        emailPlaceholder: '이메일 주소',
+        namePlaceholder: '이름과 성',
+        bannerDescription:
+          '축하합니다! 리더보드 대회에서 {prize} 에 당첨되셨습니다. 지금 클릭하여 상품 수령을 시작하세요!',
+        getStarted: {
+          cta: '시작하기',
+          title: '축하합니다!',
+          description:
+            '{competition} 의 당첨자 중 한 명으로 선정되셨습니다! {prize} 을 받기 위해 추가 정보를 입력해 주세요.'
+        },
+        contactInfo: {
+          cta: '확인',
+          title: '연락처 정보 필요',
+          description:
+            '대회의 공식 {terms} 을 준수하기 위해, 본인 확인 및 상품 전달을 위한 연락처 정보를 제공해 주세요. 아래를 클릭하여 {privacyPolicy}에 동의해 주세요.'
+        }
+      }
     },
     header: {
       rank: '순위',
