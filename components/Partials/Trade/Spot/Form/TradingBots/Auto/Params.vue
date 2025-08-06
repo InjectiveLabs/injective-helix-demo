@@ -14,8 +14,7 @@ import {
   MarketKey,
   GridStrategyType,
   InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotTradingBotsCyTags
+  SpotGridTradingField
 } from '@/types'
 import type { UiMarketWithToken, SpotGridTradingForm } from '@/types'
 
@@ -205,7 +204,7 @@ onMounted(() => {
       <p class="text-white">{{ $t('tradingBots.autoModeHeader') }}</p>
       <div>
         <a
-          class="text-blue-500 border border-b border-b-blue-500"
+          class="text-blue-500 border-b border-b-blue-500"
           href="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix"
           target="_blank"
         >

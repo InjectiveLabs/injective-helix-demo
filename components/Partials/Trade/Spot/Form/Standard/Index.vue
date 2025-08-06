@@ -77,7 +77,7 @@ function onOrderSideClicked() {
 <template>
   <div class="p-4 lg:pb-8">
     <div
-      class="border-b"
+      class="border-b max-lg:-mx-4 max-lg:-mt-2"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
     >
       <div class="flex items-center">
@@ -86,7 +86,7 @@ function onOrderSideClicked() {
           :key="value"
           v-bind="{ value }"
           v-model="orderTypeValue"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="max-lg:flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           active-classes="border-b border-blue-550 text-white"
         >
           {{ $t(`trade.${value}`) }}
@@ -94,7 +94,7 @@ function onOrderSideClicked() {
 
         <NuxtLink
           v-if="isSwapEnabled"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="max-lg:flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
             query: {

@@ -5,7 +5,6 @@ import { TURNKEY_CONTAINER_ID } from '@shared/utils/constant'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   MainPage,
-  TradeSubPage,
   InitialStatusKey,
   PortfolioStatusKey,
   LiquidityRewardsPage
@@ -143,7 +142,7 @@ watch(
         (initialStatus.isLoading() || jsonStatus.isLoading())
       "
     >
-      <main class="relative pb-6 pt-[56px] overflow-x-hidden">
+      <main class="relative md:pb-6 pt-[56px] overflow-x-hidden">
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&

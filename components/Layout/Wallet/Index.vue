@@ -41,7 +41,7 @@ function onWalletConnect() {
     />
 
     <AppButton
-      class="max-sm:px-1 max-sm:py-1 px-[18px] py-[5px] text-xs font-medium leading-5 border-none"
+      class="px-[18px] py-[5px] text-xs font-medium leading-5 border-none"
       variant="primary"
       :data-cy="commonCyTag(NavBarCyTags.WalletLoginButton)"
       :is-loading="
