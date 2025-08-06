@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { PortfolioSubPage, SettingsPreferences } from '@/types'
 
 const appStore = useAppStore()
+const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
 const preferencesList = computed(() => {
+  const isMagicOrTurnkeyWallet = [Wallet.Magic, Wallet.Turnkey].includes(
+    sharedWalletStore.wallet
+  )
+
   // note: temporarily comment thousands separator because https://injective-labs.atlassian.net/browse/IL-1650
   const list: Record<string, any> = [
     // {
@@ -27,7 +33,11 @@ const preferencesList = computed(() => {
       title: t('portfolio.autoSign.title'),
       description: t('portfolio.settings.preferences.autosign.description'),
       tooltipText: t('portfolio.settings.preferences.autosign.tooltip'),
-      tooltipLink: 'https://docs.helixapp.com/trading/auto-sign'
+      tooltipLink: 'https://docs.helixapp.com/trading/auto-sign',
+      isDisabled:
+        isMagicOrTurnkeyWallet ||
+        sharedWalletStore.isEip712 ||
+        sharedWalletStore.isAuthzWalletConnected
     }
   ]
 
@@ -59,6 +69,7 @@ const preferencesList = computed(() => {
         v-bind="{
           type: item.type,
           title: item.title,
+          isDisabled: item.isDisabled,
           description: item.description,
           tooltipText: item.tooltipText,
           tooltipLink: item.tooltipLink
