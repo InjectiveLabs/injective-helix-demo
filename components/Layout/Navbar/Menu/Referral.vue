@@ -6,7 +6,10 @@ const sharedWalletStore = useSharedWalletStore()
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div
+    class="flex items-center"
+    :class="{ 'max-lg:pr-2': !sharedWalletStore.isUserConnected }"
+  >
     <LayoutNavbarMenuItem
       v-if="!appStore.isCountryRestricted"
       class="hidden xl:block px-4"

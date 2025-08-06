@@ -134,7 +134,7 @@ const leverageNumber = computed({
         </p>
 
         <label
-          class="flex bg-[#1D2024] border border-[#42474E] rounded px-3 h-10 focus-within:focus-ring transition-all duration-300"
+          class="flex bg-brand-925 border border-[#42474E] rounded px-3 h-10 focus-within:focus-ring transition-all duration-300"
         >
           <input
             ref="el"

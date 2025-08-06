@@ -125,13 +125,9 @@ const isStopMarket = computed(
     DerivativeTradeTypes.StopMarket
 )
 
-const leveragedBalance = computed(() => {
-  const value = calculateAmountFromPercentage(100)
-
-  return value.isFinite()
-    ? value.toFixed(DEFAULT_ASSET_DECIMALS, BigNumber.ROUND_DOWN)
-    : '-'
-})
+const leveragedBalanceInBigNumber = computed(() =>
+  calculateAmountFromPercentage(100)
+)
 
 const { valueToBigNumber: quoteBalanceToBigNumber } =
   useSharedBigNumberFormatter(
@@ -431,7 +427,12 @@ onMounted(() => {
                 $t('trade.availableAmount', {
                   amount: isReduceOnly
                     ? activePositionQuantity
-                    : leveragedBalance
+                    : leveragedBalanceInBigNumber.isFinite()
+                      ? leveragedBalanceInBigNumber.toFixed(
+                          DEFAULT_ASSET_DECIMALS,
+                          BigNumber.ROUND_DOWN
+                        )
+                      : '&mdash;'
                 })
               }}
             </span>

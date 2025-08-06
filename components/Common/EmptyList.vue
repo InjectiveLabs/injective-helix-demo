@@ -15,9 +15,10 @@ withDefaults(
 
 const isTradePage = computed(
   () =>
-    route.name === TradeSubPage.Spot ||
-    route.name === TradeSubPage.Stocks ||
-    route.name === TradeSubPage.Futures
+    route.name &&
+    [TradeSubPage.Spot, TradeSubPage.Stocks, TradeSubPage.Futures].includes(
+      route.name as TradeSubPage
+    )
 )
 </script>
 

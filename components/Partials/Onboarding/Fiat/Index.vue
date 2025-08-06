@@ -4,7 +4,6 @@ import {
   trackQrCodeBuyFunds,
   trackQrCodePageView
 } from '@/app/providers/mixpanel/EventTracker'
-import { PortfolioSubPage } from '@/types'
 
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
@@ -15,10 +14,6 @@ const { copy } = useClipboard()
 const emit = defineEmits<{
   'funds:purchase': []
 }>()
-
-const isPortfolioBalancePage = computed(
-  () => route.name === PortfolioSubPage.Balances
-)
 
 const formattedAddress = computed(() =>
   sharedEllipsisFormatText(sharedWalletStore.injectiveAddress, 8)

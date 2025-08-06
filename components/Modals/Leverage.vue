@@ -25,7 +25,7 @@ const props = withDefaults(
   {}
 )
 
-const previousLeverage = ref('0')
+const previousLeverage = ref('1')
 
 const maxLeverageAvailable = computed(() =>
   calculateLeverage(market.value.initialMarginRatio).toFixed()
@@ -35,7 +35,9 @@ const futuresLeveragePreference = computed(() => {
   const leveragePreference =
     appStore.userState.preferences.futuresLeverage || '1'
 
-  const futuresLeverage = Math.round(parseFloat(leveragePreference) * 100) / 100
+  const futuresLeverage = new BigNumberInBase(leveragePreference)
+    .decimalPlaces(2)
+    .toNumber()
 
   return futuresLeverage > Number(maxLeverageAvailable.value)
     ? maxLeverageAvailable.value

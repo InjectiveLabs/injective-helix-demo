@@ -37,7 +37,7 @@ function openLeverageModal() {
 <template>
   <div class="flex items-center justify-between">
     <span
-      class="rounded-lg py-2.5 px-4 5xl:px-6 w-1/2 text-center text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
+      class="rounded-lg p-2.5 w-1/2 text-center text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
       @click="openLeverageModal"
     >
       {{
@@ -55,7 +55,7 @@ function openLeverageModal() {
         selected-icon=""
         :ui-menu="{
           ring: '',
-          background: 'dark:bg-[#1D2024]',
+          background: 'dark:bg-brand-925',
           option: { selected: '', base: 'capitalize dark:hover:bg-brand-875' }
         }"
         @change="onTradeTypeChange"
