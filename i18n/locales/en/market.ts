@@ -30,12 +30,5 @@ export default {
       [MarketCategoryType.RWA]: 'RWA',
       [MarketCategoryType.iAssets]: 'iAssets'
     }
-  },
-
-  partialClosePosition: {
-    limitClose: 'Limit Close',
-    marketClose: 'Market Close',
-    marketTitle: 'Partial close position',
-    totalPositionSize: 'Total position size'
   }
 }

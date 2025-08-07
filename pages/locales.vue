@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { copy } = useClipboard()
-const { locales, messages } = useI18n()
+const { locales, messages } = useLang()
 
 const hasCopied = ref(false)
 const selectedCode = ref(locales.value[0].code)

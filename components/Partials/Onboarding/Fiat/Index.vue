@@ -9,7 +9,7 @@ import { PortfolioSubPage } from '@/types'
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
-const { t } = useI18n()
+const { t } = useLang()
 const { copy } = useClipboard()
 
 const emit = defineEmits<{

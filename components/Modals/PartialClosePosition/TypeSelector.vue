@@ -31,7 +31,7 @@ function onClickLimitClose() {
       ]"
       @click="onClickMarketClose"
     >
-      {{ $t('partialClosePosition.marketClose') }}
+      {{ $t('trade.partialClosePositionModal.marketClose') }}
     </span>
 
     <span
@@ -43,7 +43,7 @@ function onClickLimitClose() {
       ]"
       @click="onClickLimitClose"
     >
-      {{ $t('partialClosePosition.limitClose') }}
+      {{ $t('trade.partialClosePositionModal.limitClose') }}
     </span>
   </div>
 </template>

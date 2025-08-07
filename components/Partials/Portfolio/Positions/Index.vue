@@ -71,7 +71,7 @@ function resetSelectedPosition() {
 
   <CommonEmptyList
     v-if="!filteredPosition.length"
-    :message="'No Positions Open'"
+    :message="$t('portfolio.noPositionsOpen')"
   />
 
   <ModalsAddMargin

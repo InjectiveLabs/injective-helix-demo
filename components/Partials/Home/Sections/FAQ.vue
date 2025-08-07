@@ -5,7 +5,7 @@ import {
   HELIX_PLAY_STORE_LINK
 } from '@/app/data/marketInfo'
 
-const { t } = useI18n()
+const { t } = useLang()
 
 const faqList = computed(() => [
   {

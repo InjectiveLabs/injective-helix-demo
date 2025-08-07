@@ -21,6 +21,8 @@ export enum MixPanelEvent {
   ReferralCodeCreated = 'Referral Code Created',
   UtmStockTwitsToast = 'Utm - Stock Twits Toast',
   UtmStockTwitsBanner = 'Utm - Stock Twits Banner',
+  ChangeSelectedLanguage = 'Change Selected Language',
+  InitialSelectedLanguage = 'Initial Selected Language',
   EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
   OnboardingUserDoesntTrade = 'Onboarding - User Doesnt Trade',
   CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',

@@ -54,13 +54,13 @@ function onEmailConnect() {
       <AppInput
         v-model="email"
         v-bind="{
+          disabled: isLoading,
           isTransparentBg: true,
-          placeholder: $t('connect.sso.email.placeholder'),
-          disabled: isLoading
+          placeholder: $t('connect.sso.email.placeholder')
         }"
       />
       <AppButton
-        class="disabled:border-coolGray-400 text-white"
+        class="disabled:border-coolGray-400 text-white whitespace-nowrap"
         v-bind="{
           disabled: !email || hasError || isLoading,
           variant: hasError ? 'primary-outline' : 'primary'

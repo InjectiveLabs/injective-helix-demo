@@ -10,6 +10,6 @@ const derivativeStore = useDerivativeStore()
 
   <CommonEmptyList
     v-if="!derivativeStore.subaccountTrades.length"
-    :message="'No Trade History'"
+    :message="$t('trade.noTradeHistory')"
   />
 </template>
