@@ -19,6 +19,7 @@ const props = withDefaults(
     description?: string
     tooltipText?: string
     tooltipLink?: string
+    isDisabled?: boolean
     type: SettingsPreferences
   }>(),
   { description: '', tooltipText: '', tooltipLink: '' }
@@ -43,6 +44,10 @@ const switchValue = computed({
 })
 
 function handleSwitchValueChange(value: any) {
+  if (props.isDisabled) {
+    return
+  }
+
   if (props.type === SettingsPreferences.ThousandsSeparators) {
     appStore.setUserState({
       ...appStore.userState,
@@ -146,6 +151,6 @@ function disconnectAutoSign() {
       </p>
     </div>
 
-    <AppSwitch v-model="switchValue" />
+    <AppSwitch v-model="switchValue" v-bind="{ isDisabled }" />
   </div>
 </template>
