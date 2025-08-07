@@ -107,7 +107,7 @@ const columns = computed(() => {
 <template>
   <CommonEmptyList
     v-if="rows.length === 0"
-    v-bind="{ message: $t('trade.noOpenOrders') }"
+    v-bind="{ message: $t('portfolio.noOpenOrders') }"
   />
 
   <UTable v-else-if="lg" :rows="rows" :columns="columns">

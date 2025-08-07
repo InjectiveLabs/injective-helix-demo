@@ -79,7 +79,6 @@ export default {
     triggerPrice: 'Trigger Price',
     averagePrice: 'Average Price',
     'trading-bots': 'Trading Bots',
-    noOpenOrders: 'No open orders',
     emptyOrders: 'No orders found',
     emptyTrades: 'No trades found',
     totalNotional: 'Total Notional',
@@ -91,14 +90,14 @@ export default {
     searchMarket: 'Search Market...',
     boostedMarkets: 'Market Rewards',
     priceDeviation: 'Price Deviation',
+    noOrderHistory: 'No Order History',
+    noTradeHistory: 'No Trade History',
     pnlPercent: 'PnL% (Open Position)',
-    noOrderHistory: 'No order history',
-    noTradeHistory: 'No trade history',
     stopLossMarket: 'Stop-Loss Market',
     cancelStopLoss: 'Cancel Stop Loss',
     availableMargin: 'Available Margin',
     partiallyFilled: 'Partially Filled',
-    noOpenPositions: 'No open positions',
+    noOpenPositions: 'No Open Positions',
     cancelAllOrders: 'Cancel all orders',
     takeProfitLimit: 'Take-Profit Limit',
     enterYourAmount: 'Enter your amount',
@@ -280,6 +279,13 @@ export default {
       leverageAt: 'Leverage at {leverageAmount}x',
       description:
         'Higher leverage magnifies returns, but can also make it easier to get liquidated.'
+    },
+
+    partialClosePositionModal: {
+      limitClose: 'Limit Close',
+      marketClose: 'Market Close',
+      marketTitle: 'Partial close position',
+      totalPositionSize: 'Total position size'
     },
 
     table: {

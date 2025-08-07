@@ -14,7 +14,7 @@ import type { UiDerivativeMarket } from '@/types'
 const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const derivativeFormValues = useFormValues()
-const { t } = useI18n()
+const { t } = useLang()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 

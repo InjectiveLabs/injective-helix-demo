@@ -17,42 +17,12 @@ type Banner = {
 }
 
 const perpSettlePairs = [
-  {
-    slug: 'wti-usdt-perp',
-    marketId:
-      '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
-    newExpiryLaunch: true
-  },
-  {
-    slug: 'imcd-usdt-perp',
-    marketId:
-      '0x056fd86c5b8bde4a4f03552e281db86fc6c110a13a79b98b2011aa84bb0ec340',
-    newExpiryLaunch: false
-  },
-  {
-    slug: 'plume-usdt-perp',
-    marketId:
-      '0x3569a541bfae59b8a92215e3cb31133bff21455f1a18a1303df87fecab2839e4',
-    newExpiryLaunch: false
-  },
-  {
-    slug: 'launchcoin-usdt-perp',
-    marketId:
-      '0x99fb44dc75753727f89bad0e79b8b9d2a69ab3cf62730ac405cfd3611569dbc0',
-    newExpiryLaunch: false
-  },
-  {
-    slug: 'axl-usdt-perp',
-    marketId:
-      '0x4fe7aff4dd27be7cbb924336e7fe2d160387bb1750811cf165ce58d4c612aebb',
-    newExpiryLaunch: false
-  },
-  {
-    slug: 'sign-usdt-perp',
-    marketId:
-      '0xc6c7178a6f1fa18007f81e5c8dce85be3dbce97cca68ee97321de0daf7558c6a',
-    newExpiryLaunch: false
-  }
+  // {
+  //   slug: 'wti-usdt-perp',
+  //   marketId:
+  //     '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
+  //   newExpiryLaunch: true
+  // }
 ] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
 const route = useRoute()
@@ -64,6 +34,7 @@ const { t } = useLang()
 const { copy } = useClipboard()
 
 const isHideBanner = ref(false)
+const bannersToHide = ref<NoticeBanner[]>([])
 
 const formattedTurnkeyInjectiveAddress = computed(() =>
   sharedEllipsisFormatText(
@@ -103,12 +74,14 @@ const chainUpgradeBanners = computed<Banner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PostChainUpgrade,
-    shouldDisplay: jsonStore.isPostUpgradeMode
+    shouldDisplay:
+      jsonStore.isPostUpgradeMode && sharedWalletStore.isUserConnected
   },
   {
     shouldPersist: true,
     id: NoticeBanner.UpcomingChainUpgrade,
-    shouldDisplay: jsonStore.hasUpcomingChainUpgrade
+    shouldDisplay:
+      jsonStore.hasUpcomingChainUpgrade && sharedWalletStore.isUserConnected
   }
 ])
 
@@ -140,7 +113,11 @@ const bannerToDisplay = computed(
       ...perpMarketSettleBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
-    ].filter((banner) => banner.shouldDisplay)[0]
+    ].filter(
+      (banner) =>
+        !bannersToHide.value.includes(banner.id as NoticeBanner) &&
+        banner.shouldDisplay
+    )[0]
 )
 
 watch(
@@ -167,6 +144,8 @@ watch(
 // }
 
 function onHideBanner() {
+  bannersToHide.value.push(bannerToDisplay.value?.id as NoticeBanner)
+
   if (!bannerToDisplay.value || bannerToDisplay.value?.shouldPersist) {
     return
   }
@@ -342,26 +321,13 @@ function onClickStockTwitsCta() {
       </template>
     </i18n-t>
 
-    <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended"
-      tag="p"
-      keypath="banners.pointsS1Ended"
-    >
-      <template #link>
-        <NuxtLink
-          target="_blank"
-          to="https://docs.helixapp.com/points"
-          class="hover:opacity-80 underline cursor-pointer"
-        >
-          {{ $t('banners.pointsS1EndedLink') }}
-        </NuxtLink>
-      </template>
-    </i18n-t>
-
-    <div v-if="bannerToDisplay.shouldPersist" />
+    <template v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended">
+      <span>
+        {{ $t('banners.pointsS1Ended') }}
+      </span>
+    </template>
 
     <UIcon
-      v-else
       :name="NuxtUiIcons.Close"
       class="h-4 w-4 min-w-4 hover:text-white"
       @click="onHideBanner"

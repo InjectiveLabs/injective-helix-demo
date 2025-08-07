@@ -50,8 +50,8 @@ onSubaccountChange(fetchDerivativeOpenOrders)
       <div class="lg:min-w-[1200px] divide-y">
         <CommonSkeletonRow
           v-if="status.isLoading()"
-          :height="57"
           :rows="10"
+          :height="57"
           :columns="8"
         />
 

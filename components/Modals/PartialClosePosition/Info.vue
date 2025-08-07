@@ -15,7 +15,7 @@ withDefaults(
 <template>
   <div class="flex gap-4 justify-between">
     <h5 class="text-coolGray-450 font-semibold">
-      {{ $t('partialClosePosition.totalPositionSize') }}
+      {{ $t('trade.partialClosePositionModal.totalPositionSize') }}
     </h5>
 
     <div

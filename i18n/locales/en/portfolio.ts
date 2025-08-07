@@ -26,6 +26,7 @@ export default {
     totalValue: 'Total Value',
     tradeHistory: 'Trade History',
     orderHistory: 'Order History',
+    noOpenOrders: 'No Open Orders',
     fundingHistory: 'Funding History',
     advancedOrders: 'Advanced Orders',
     derivativeOrders: 'Derivative Orders',

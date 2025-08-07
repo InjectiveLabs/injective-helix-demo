@@ -455,3 +455,15 @@ export const trackSharePnlDownload = ({
     'Download Clicked': isDownloadClicked
   })
 }
+
+export const trackInitialSelectedLanguage = (language: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.InitialSelectedLanguage, {
+    'Selected Language': language
+  })
+}
+
+export const trackChangeSelectedLanguage = (language: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.ChangeSelectedLanguage, {
+    'Selected Language': language
+  })
+}

@@ -52,6 +52,18 @@ export default defineNuxtConfig({
         name: '中文',
         longName: '中文',
         file: './i18n/locales/cn.ts'
+      },
+      {
+        code: 'kr',
+        name: 'Kr',
+        longName: '한국어',
+        file: './i18n/locales/kr.ts'
+      },
+      {
+        code: 'tr',
+        name: 'Tr',
+        longName: 'Türkçe',
+        file: './i18n/locales/tr.ts'
       }
     ]
   },
