@@ -2,20 +2,17 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+  calculateWorstPrice,
+  calculateTotalQuantity
+} from '@/app/utils/helpers'
 import {
   ONE_IN_BASE,
   ZERO_IN_BASE,
   DEFAULT_ASSET_DECIMALS
 } from '@shared/utils/constant'
-import {
-  calculateWorstPrice,
-  calculateTotalQuantity
-} from '@/app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
@@ -136,11 +133,11 @@ const { valueToBigNumber: quoteBalanceToBigNumber } =
         (balance) => balance.token.denom === market.value.quoteToken.denom
       )?.availableBalance
 
-      return new BigNumberInWei(balance || 0).toBase(
-        market.value.quoteToken.decimals
-      )
-    }),
-    { decimalPlaces: DEFAULT_ASSET_DECIMALS }
+      return sharedToBalanceInToken({
+        value: balance || 0,
+        decimalPlaces: market.value.quoteToken.decimals
+      })
+    })
   )
 
 const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
@@ -429,7 +426,9 @@ onMounted(() => {
                     ? activePositionQuantity
                     : leveragedBalanceInBigNumber.isFinite()
                       ? leveragedBalanceInBigNumber.toFixed(
-                          DEFAULT_ASSET_DECIMALS,
+                          typeValue === TradeAmountOption.Base
+                            ? DEFAULT_ASSET_DECIMALS
+                            : UI_DEFAULT_MIN_DISPLAY_DECIMALS,
                           BigNumber.ROUND_DOWN
                         )
                       : '&mdash;'

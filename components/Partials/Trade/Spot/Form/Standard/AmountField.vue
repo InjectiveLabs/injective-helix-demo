@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { usdtToken } from '@shared/data/token'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
 } from '@/app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
@@ -102,7 +105,13 @@ const {
       value: balance || 0,
       decimalPlaces: market.value.quoteToken.decimals
     })
-  })
+  }),
+  {
+    decimalPlaces:
+      market.value.quoteToken.denom === usdtToken.denom
+        ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        : DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const {
