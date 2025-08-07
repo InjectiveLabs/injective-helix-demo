@@ -190,7 +190,7 @@ async function validateSlippage() {
     <div>
       <div>
         <h4 class="text-xl capitalize text-coolGray-100 font-medium">
-          {{ $t('partialClosePosition.marketTitle') }}
+          {{ $t('trade.partialClosePositionModal.marketTitle') }}
         </h4>
 
         <ModalsPartialClosePositionTypeSelector
