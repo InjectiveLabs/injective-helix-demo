@@ -466,7 +466,7 @@ export const defineGlobalRules = () => {
 
   defineRule('validMemoValue', (value: string) => {
     if (!/^[a-z0-9 _-]+$/i.test(value)) {
-      return 'Only letters, numbers, underscores (_) and dashes (-) are allowed.'
+      return 'Invalid memo value'
     }
 
     return true
