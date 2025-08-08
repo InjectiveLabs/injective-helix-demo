@@ -129,7 +129,7 @@ export const defineGlobalRules = () => {
       getEthereumAddress(value)
 
       return true
-    } catch (error: any) {
+    } catch {
       return errorMessages.injAddress()
     }
   })
@@ -389,7 +389,7 @@ export const defineGlobalRules = () => {
     (
       _: string,
       [lower, upper, currentPrice, field, threshold]: string[]
-    ): boolean | string => {
+    ): string | boolean => {
       const currentPriceInBigNumber = new BigNumberInBase(currentPrice)
 
       const lowerThreshold = currentPriceInBigNumber.plus(
@@ -463,6 +463,14 @@ export const defineGlobalRules = () => {
       return true
     }
   )
+
+  defineRule('validMemoValue', (value: string) => {
+    if (!/^[a-z0-9 _-]+$/i.test(value)) {
+      return 'Only letters, numbers, underscores (_) and dashes (-) are allowed.'
+    }
+
+    return true
+  })
 }
 
 export default defineNuxtPlugin(() => {
