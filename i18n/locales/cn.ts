@@ -437,7 +437,9 @@ export default {
     cancelAll: '取消所有',
     addMargin: '追加保证金',
     viewOrder: '查看订单',
+    orderType: '订单类别',
     'pro-chart': '专业图表',
+    placeOrder: '下订单',
     allMarkets: '全部市场',
     marketName: '市场名称',
     takeProfit: '止盈',
@@ -565,6 +567,8 @@ export default {
       nextFunding: '下一次资金费率',
       volumeInUsd: '美元交易量（24 小时）',
       marketVolume24h: '交易量（24 小时）',
+      fundingOrCountdown: '资费 / 倒计时',
+
       marketCapTooltip:
         '市值通过当前价格乘以当前流通供应量计算得出。Injective 上部分代币没有最大供应量限制。',
       fundingRateTooltip:
@@ -637,6 +641,12 @@ export default {
       markPrice: '标记价格',
       entryPrice: '入场价格',
       mobileDownloadNote: '可在桌面上下载'
+    },
+    leverageModal: {
+      title: '调整杠杆',
+      upTo: '最高 {leverageAmount}x',
+      leverageAt: '调整杠杆为 {leverageAmount}x',
+      description: '高杠杆可以放大回报，但也可能更容易被清算。'
     },
     partialClosePositionModal: {
       limitClose: '限价平仓',
@@ -1715,6 +1725,7 @@ export default {
     withdraw: '提现',
     tradeNow: '立即交易',
     active: '运行中',
+    noItems: '无',
     download: '下载',
     ascending: '升序',
     learnMore: '了解更多',
