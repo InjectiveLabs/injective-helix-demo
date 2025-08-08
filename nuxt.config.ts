@@ -63,6 +63,13 @@ export default defineNuxtConfig({
     name: metaTags.description
   },
 
+  postcss: {
+    plugins: {
+      autoprefixer: {},
+      tailwindcss: {}
+    }
+  },
+
   colorMode: {
     fallback: 'dark',
     preference: 'dark',
