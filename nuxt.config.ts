@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     ...(isProduction && import.meta.env.NUXT_CLARITY_ID
       ? ['nuxt-clarity-analytics']
-      : [])
+    : [])
   ],
 
   imports: {

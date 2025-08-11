@@ -9,6 +9,10 @@
 @import './_animate.css';
 @import './_custom.css';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* @import './_inputs.css';
 @import './_tabs.css';
 @import './_slider.css';
@@ -26,7 +30,3 @@
 body {
   @apply dark:bg-brand-900;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
