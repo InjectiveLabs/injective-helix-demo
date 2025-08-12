@@ -222,6 +222,10 @@ export const MARKETS_POWERED_BY_STORK = [
   '0xf99ac012c3e97f434fe0d0ba4948fef763635bb06de5e3c43abc7f1da7c427a8'
 ]
 
+export const MARKETS_POWERED_BY_SQUARETOWER = [
+  '0xc4068b76801bf8988b5372c64d611ce2a477f85512e5ec55270c426176bc73e2'
+]
+
 export const HELIX_APP_STORE_LINK =
   'https://apps.apple.com/us/app/helix-trade-with-control/id6737353178'
 
