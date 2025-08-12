@@ -1,15 +1,15 @@
 import { SharedMarketChange } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
+import { calculateLeverage } from '@/app/utils/formatters'
 import {
   INDEX_MARKETS_INFO,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { calculateLeverage } from '@/app/utils/formatters'
-import {
+import { MarketsSelectorTableColumn } from '@/types'
+import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
+import type {
   UiDerivativeMarket,
-  MarketsSelectorTableColumn,
   UiMarketAndSummaryWithVolumeInUsd
 } from '@/types'
 
@@ -36,8 +36,7 @@ export function useMarketSelectorTransformer(
 
       const lastTradedPrice =
         marketPriceMap.value[item.market.marketId]?.toFixed() ||
-        item.summary?.lastPrice ||
-        0
+        (item.summary?.lastPrice || 0).toString()
 
       const fundingRate = formatFundingRate({
         info: perpetualMarket.perpetualMarketInfo,
@@ -66,6 +65,7 @@ export function useMarketSelectorTransformer(
         leverage,
         formattedChange,
         market: item.market,
+        summary: item.summary,
         volumeInUsd: item.volumeInUsd,
         volumeInUsdToFixed: item.volumeInUsd.toFixed(
           0,
@@ -76,7 +76,7 @@ export function useMarketSelectorTransformer(
         leverageToFixed: leverage.toFixed(0, BigNumberInBase.ROUND_DOWN),
         priceChangeClasses: priceChangeClassesMap[priceChangeClassKey] || '',
         [MarketsSelectorTableColumn.MarketChange24h]:
-          changeInBigNumber.toNumber(),
+          changeInBigNumber.toFixed(),
         [MarketsSelectorTableColumn.MarketVolume24h]:
           item.volumeInUsd.toNumber(),
         [MarketsSelectorTableColumn.Markets]:
