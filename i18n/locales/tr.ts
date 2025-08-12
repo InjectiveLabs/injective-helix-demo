@@ -720,10 +720,10 @@ export default {
     newMarkets: '🐤 Yeni Piyasalar',
     topGainers: '🚀 En Çok Kazananlar',
     closePositionWarningTitle: 'Yüksek fiyat etkisi tespit edildi',
+    docsTooltip:
+      'Bu ürün bir Endeks Perpetual’dür. Daha fazla bilgi için {docs}’e bakınız.',
     indexMarketTooltip:
       'Bu piyasa {label} değerini takip eder. Daha fazla detay için {link}’e bakınız.',
-    buidlTooltip:
-      'Bu ürün bir Endeks Perpetual’dür. Daha fazla bilgi için {docs}’e bakınız.',
     closePositionWarningDescription:
       'Bu açık pozisyonu piyasa emriyle kapatmak istenmeyen bir fiyatla sonuçlanabilir. Bunun yerine limit emirle kapatmayı düşünebilirsiniz.',
     '2024ElectionTooltip':

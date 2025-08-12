@@ -707,10 +707,10 @@ export default {
     newMarkets: '🐤 신규 마켓',
     topGainers: '🚀 상승률 상위',
     closePositionWarningTitle: '높은 가격 임팩트 감지됨',
+    docsTooltip:
+      '이 상품은 Index Perp입니다. 자세한 정보는 {docs}를 참조하세요.',
     indexMarketTooltip:
       '이 마켓은 {label}을 따릅니다. 자세한 내용은 {link}에서 확인할 수 있습니다.',
-    buidlTooltip:
-      '이 상품은 Index Perp입니다. 자세한 정보는 {docs}를 참조하세요.',
     closePositionWarningDescription:
       '시장가 주문으로 이 미결 포지션을 종료하면 불리한 실행 가격이 발생할 수 있습니다. 대신 지정가 주문으로 종료하는 것을 고려해보세요.',
     '2024ElectionTooltip':

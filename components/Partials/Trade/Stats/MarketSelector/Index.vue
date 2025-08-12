@@ -46,8 +46,11 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
     }
   )
 
-const isBiudlPerpMarket = computed(
-  () => props.market.slug === 'buidl-usdt-perp'
+const hasDocsTooltip = computed(
+  () =>
+    props.market.slug === 'buidl-usdt-perp' ||
+    // TODO: Update market slug to H100/USDT perp when it's live
+    props.market.slug === 'ton-usdt-perp'
 )
 
 const marketPriceMap = computed(() => ({
@@ -82,7 +85,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!isBiudlPerpMarket"
+            :is-disabled="!hasDocsTooltip"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
@@ -104,7 +107,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="isBiudlPerpMarket" keypath="markets.buidlTooltip">
+              <i18n-t v-if="hasDocsTooltip" keypath="markets.docsTooltip">
                 <template #docs>
                   <NuxtLink
                     target="_blank"
