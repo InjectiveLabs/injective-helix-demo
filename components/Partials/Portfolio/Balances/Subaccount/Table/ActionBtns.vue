@@ -17,8 +17,8 @@ const props = withDefaults(
   {}
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
 function onTransfer() {
@@ -94,7 +94,7 @@ function onTransfer() {
           class="max-lg:py-2 lg:w-full lg:leading-snug"
           :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
           size="sm"
-          @click="onFiatOnRamp"
+          @click="onDeposit"
         >
           {{ $t('common.deposit') }}
         </AppButton>

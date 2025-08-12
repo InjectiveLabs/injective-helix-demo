@@ -58,7 +58,7 @@ onMounted(() => trackOnramperSeen(sharedWalletStore.injectiveAddress))
 
 <template>
   <div
-    class="overflow-hidden max-w-[36rem] w-full sm:h-[630px] max-sm:h-[70vh] my-6"
+    class="overflow-hidden max-w-[36rem] w-full sm:h-[630px] max-sm:h-[70vh] my-7"
   >
     <iframe
       :src="onramperUrl"

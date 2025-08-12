@@ -1859,21 +1859,16 @@ export default {
           'Bu, size özel Injective etkinliklerine, ürünlerine, çekilişlere ve daha birçok sürprize giriş kapınız olacak.'
       },
       onboarding: {
+        buyInjWithCard: 'Kart ile INJ satın al',
         injectiveBridge: 'Injective Köprüsü',
         processing: 'Transferiniz işleniyor',
         closeAndContinue: 'Kapat ve devam et',
         success: 'İşleminiz onaylandı',
-        depositInjNetworkAsset: 'INJ Ağ Varlıklarını yatırın',
+        depositUsdtFromEthereum: "Ethereum'dan USDT yatırın",
         processingMessage:
           'İşlem beklenenden uzun sürüyor. Lütfen biraz bekleyin.',
-        depositNowDescription:
-          'INJ ağının desteklendiği her yerden, bazı borsalar dahil, INJ transferi yapabilirsiniz.',
         processingMessageInfo:
-          'Transferiniz arka planda işleniyor, bu modalı güvenle kapatabilirsiniz. Köprülenen miktarı bakiye sayfasında veya köprü geçmişinizi görüntüleyerek kontrol edebilirsiniz.',
-        qr: {
-          bridge: 'Köprü',
-          cta: 'Kart ile INJ satın al'
-        }
+          'Transferiniz arka planda işleniyor, bu modalı güvenle kapatabilirsiniz. Köprülenen miktarı bakiye sayfasında veya köprü geçmişinizi görüntüleyerek kontrol edebilirsiniz.'
       }
     }
   },
