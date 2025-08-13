@@ -3,8 +3,8 @@ import { Modal } from '@/types'
 
 enum View {
   Widget = 'widget',
-  Processing = 'processing',
-  Success = 'success'
+  Success = 'success',
+  Processing = 'processing'
 }
 
 const modalStore = useSharedModalStore()
@@ -55,7 +55,7 @@ function resetFiatPurchase() {
       <PartialsOnboardingLiteBridgeWidget
         v-if="view === View.Widget"
         @on:success="onSuccess"
-        @select:fiat="onSelectFiatPurchase"
+        @fiat:select="onSelectFiatPurchase"
       />
 
       <PartialsOnboardingLiteBridgeWidgetProcessing

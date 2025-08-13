@@ -28,7 +28,7 @@ const sharedWalletStore = useSharedWalletStore()
 
 const emit = defineEmits<{
   'on:success': []
-  'select:fiat': []
+  'fiat:select': []
 }>()
 
 const isUmd = true
@@ -42,17 +42,17 @@ useHead({
     {
       rel: 'stylesheet',
       href: IS_TESTNET
-        ? 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.11/dist/testnet/style.css'
-        : 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.11/dist/mainnet/style.css'
+        ? 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/testnet/style.css'
+        : 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/mainnet/style.css'
     }
   ],
   script: [
     {
       src: IS_TESTNET
-        ? `https://unpkg.com/lite-bridge-widget-injective-test@0.0.11/dist/testnet/index.${
+        ? `https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/testnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`
-        : `https://unpkg.com/lite-bridge-widget-injective-test@0.0.11/dist/mainnet/index.${
+        : `https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/mainnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`,
       type: 'module',
@@ -96,7 +96,7 @@ function mountWidget() {
 }
 
 function buyInjWithCard() {
-  emit('select:fiat')
+  emit('fiat:select')
 }
 </script>
 
