@@ -44,14 +44,11 @@ function resetFiatPurchase() {
     v-bind="{ isAlwaysOpen }"
     @on:open="resetFiatPurchase"
   >
-    <h4
-      v-if="!isFiatPurchase"
-      class="text-xl font-semibold mt-6 mb-8 text-center"
-    >
-      {{ $t('common.modal.onboarding.depositUsdtFromEthereum') }}
-    </h4>
-
     <template v-if="!isFiatPurchase">
+      <h4 class="text-xl font-semibold mt-6 mb-8 text-center">
+        {{ $t('common.modal.onboarding.depositUsdtFromEthereum') }}
+      </h4>
+
       <PartialsOnboardingLiteBridgeWidget
         v-if="view === View.Widget"
         @on:success="onSuccess"

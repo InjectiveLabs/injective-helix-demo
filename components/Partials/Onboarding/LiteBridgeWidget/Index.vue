@@ -103,8 +103,8 @@ function buyInjWithCard() {
 <template>
   <div class="min-h-[300px]" data-mode="dark">
     <AppHocLoading
-      wrapper-class="min-h-[300px] flex items-center justify-center"
       v-bind="{ status }"
+      wrapper-class="min-h-[300px] flex items-center justify-center"
     />
 
     <div
