@@ -42,8 +42,8 @@ const showNeptune = computed(() => {
   )
 })
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
 function onOpenBankTransferModal() {
@@ -145,7 +145,7 @@ function onOpenBankTransferModal() {
           </template>
 
           <template v-else>
-            <AppButton class="max-md:w-full" @click="onFiatOnRamp">
+            <AppButton class="max-md:w-full" @click="onDeposit">
               {{ $t('common.deposit') }}
             </AppButton>
 

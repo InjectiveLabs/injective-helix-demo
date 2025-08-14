@@ -182,8 +182,7 @@ watch(
           WalletConnectStatus.disconnecting
       "
     >
-      <ModalsOnboardingLiteBridge />
-      <ModalsOnboardingFiat />
+      <ModalsOnboarding />
       <ModalsDeprecatedMagic />
     </template>
 

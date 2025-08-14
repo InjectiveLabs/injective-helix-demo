@@ -23,7 +23,7 @@ function connect() {
 
 function onFiatOnRamp() {
   if (sharedWalletStore.isUserConnected) {
-    modalStore.openModal(Modal.FiatOnboard)
+    modalStore.openModal(Modal.Onboard)
   } else {
     connect()
   }
