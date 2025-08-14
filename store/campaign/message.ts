@@ -1,12 +1,12 @@
 import { msgBroadcaster } from '@shared/WalletService'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import { MsgExecuteContractCompat } from '@injectivelabs/sdk-ts'
+import { submitClaim } from '@/app/services/leaderboard'
+import { generateUniqueHash } from '@/app/utils/formatters'
 import {
   GUILD_HASH_CHAR_LIMIT,
   GUILD_CONTRACT_ADDRESS
 } from '@/app/utils/constants'
-import { delayPromiseCall } from '@/app/utils/async'
-import { generateUniqueHash } from '@/app/utils/formatters'
-import { submitClaim } from '@/app/services/leaderboard'
 
 export const claimReward = async (
   contractAddress: string,
@@ -78,13 +78,11 @@ export const createGuild = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  await delayPromiseCall(
-    () =>
-      Promise.all([
-        campaignStore.fetchGuildsByTVL(),
-        campaignStore.fetchGuildsByVolume()
-      ]),
-    3 * 1000
+  await sharedBackupPromiseCall(() =>
+    Promise.all([
+      campaignStore.fetchGuildsByTVL(),
+      campaignStore.fetchGuildsByVolume()
+    ])
   )
 }
 
@@ -118,9 +116,8 @@ export const joinGuild = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  await delayPromiseCall(
-    () => campaignStore.fetchGuildDetails({ guildId, skip: 0, limit }),
-    3 * 1000
+  await sharedBackupPromiseCall(() =>
+    campaignStore.fetchGuildDetails({ guildId, skip: 0, limit })
   )
 }
 
@@ -156,12 +153,10 @@ export const submitLeaderboardCompetitionClaim = async ({
     injectiveAddress
   })
 
-  await delayPromiseCall(
-    () =>
-      campaignStore.fetchLeaderboardCompetitionResults(
-        competitionName,
-        injectiveAddress
-      ),
-    2 * 1000
+  await sharedBackupPromiseCall(() =>
+    campaignStore.fetchLeaderboardCompetitionResults(
+      competitionName,
+      injectiveAddress
+    )
   )
 }

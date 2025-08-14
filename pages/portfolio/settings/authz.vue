@@ -1,16 +1,29 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { BusEvents, Modal, PortfolioSubPage } from '@/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { Modal, MainPage, BusEvents, PortfolioSubPage } from '@/types'
+
+definePageMeta({
+  middleware: [
+    () => {
+      const sharedWalletStore = useSharedWalletStore()
+
+      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+        return navigateTo({ name: MainPage.Index })
+      }
+    }
+  ]
+})
 
 const modalStore = useSharedModalStore()
 
 const linkOptions = [
   {
-    label: 'portfolio.settings.authz.grantee',
+    label: 'portfolio.authZ.grantee',
     to: { name: PortfolioSubPage.SettingsAuthz }
   },
   {
-    label: 'portfolio.settings.authz.granter',
+    label: 'portfolio.authZ.granter',
     to: { name: PortfolioSubPage.SettingsAuthzGranter }
   }
 ]
@@ -33,7 +46,7 @@ function openGranteeModal() {
         </NuxtLink>
 
         <h3 class="portfolio-title">
-          {{ $t('portfolio.settings.authz.title') }}
+          {{ $t('portfolio.authZ.title') }}
         </h3>
       </div>
 
@@ -54,7 +67,7 @@ function openGranteeModal() {
           class="flex-1 p-2 font-semibold cursor-pointer select-none text-left"
           @click="openGranteeModal"
         >
-          + {{ $t('portfolio.settings.authz.connectMobile') }}
+          + {{ $t('portfolio.authZ.connectMobile') }}
         </AppButton>
       </div>
     </div>
@@ -62,6 +75,7 @@ function openGranteeModal() {
     <div class="border-y">
       <NuxtPage />
     </div>
+
+    <ModalsConnectMobile />
   </div>
-  <ModalsConnectMobile />
 </template>

@@ -1,18 +1,19 @@
 export default {
   institutional: {
-    heroTitle: 'Truly On-Chain Institutional Finance',
-    heroSubtitle:
-      'Engage with unlimited crypto assets, perpetuals, and structured products on the only fully decentralized network.',
+    benefits: 'Benefits',
+    talkToUs: 'Talk to us.',
     modalTitle: 'Get In Touch',
-    modalDescription: 'Connect directly with the Helix Institutional team.',
     getInTouch: 'Get in touch',
     learnMore: 'Ready to learn More?',
-    talkToUs: 'Talk to us.',
     trustedByTheBest: 'Trusted by the best',
-    formSubmittedSuccesfuly: 'Form submitted Successfuly.',
-    benefits: 'Benefits',
+    heroTitle: 'Truly On-Chain Institutional Finance',
+    allRightsReserved: 'Injective Labs. All Rights Reserved.',
+    modalDescription: 'Connect directly with the Helix Institutional team.',
     whyFinancialInstitutionsChooseHelix:
       'Why financial institutions choose Helix',
+    heroSubtitle:
+      'Engage with unlimited crypto assets, perpetuals, and structured products on the only fully decentralized network.',
+
     permisionedMarketsTitle: 'Permissioned Markets',
     permisionedMarketsBody:
       'Helix uniquely provides a gateway to institutional grade permissioned markets, enabling you to seamlessly interact with professionally vetted counterparties.',
@@ -34,8 +35,12 @@ export default {
     superiorInfrastructureTitle: 'Superior Infrastructure',
     superiorInfrastructureBody:
       'Leverage Helix’s custom infrastructure designed to fit the needs of the most sophisticated financial institutions and traders.',
-    allRightsReserved: 'Injective Labs. All Rights Reserved.',
-    termsAndConditions: 'Terms And Conditions',
-    privacyPolicy: 'Privacy Policy'
+
+    form: {
+      email: 'Email',
+      company: 'Company',
+      lastName: 'Last Name',
+      firstName: 'First Name'
+    }
   }
 }

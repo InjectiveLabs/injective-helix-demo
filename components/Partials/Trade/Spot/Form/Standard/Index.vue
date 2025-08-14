@@ -6,15 +6,16 @@ import {
   BusEvents,
   MarketKey,
   TradeTypes,
-  UiSpotMarket,
-  SpotTradeForm,
-  SpotTradeFormField,
-  SpotMarketCyTags
+  SpotMarketCyTags,
+  SpotTradeFormField
 } from '@/types'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
+const swapStore = useSwapStore()
 
 const { setValues: setFormValues } = useForm<SpotTradeForm>()
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -38,6 +39,20 @@ const {
   slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
+
+const isSwapEnabled = computed(() =>
+  swapStore.routes.some(
+    (route) =>
+      (route.targetDenom === market.value.baseDenom &&
+        route.sourceDenom === market.value.quoteDenom) ||
+      (route.targetDenom === market.value.quoteDenom &&
+        route.sourceDenom === market.value.baseDenom)
+  )
+)
+
+const isLimit = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
 
 onMounted(() => {
   setFormValues(
@@ -78,6 +93,7 @@ function onOrderSideClicked() {
         </AppButtonSelect>
 
         <NuxtLink
+          v-if="isSwapEnabled"
           class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
@@ -110,8 +126,8 @@ function onOrderSideClicked() {
                 ? 'success'
                 : 'danger'
               : side === OrderSide.Buy
-              ? 'success-cta'
-              : 'danger-cta'
+                ? 'success-cta'
+                : 'danger-cta'
           "
         >
           {{ $t(`trade.${side}`) }}
@@ -133,7 +149,16 @@ function onOrderSideClicked() {
       />
     </div>
 
-    <PartialsTradeSpotFormStandardAdvancedSettings class="my-4" />
+    <PartialsTradeSpotFormStandardSlippage
+      v-if="!isLimit"
+      class="my-4"
+      v-bind="{ worstPrice }"
+    />
+
+    <PartialsTradeSpotFormStandardAdvancedSettings
+      v-if="isLimit"
+      class="my-4"
+    />
 
     <PartialsTradeSpotFormStandardDetails
       v-bind="{

@@ -2,9 +2,9 @@
 import { TokenType } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { stableCoinSymbols } from '@/app/data/token'
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const props = withDefaults(
   defineProps<{
@@ -23,32 +23,30 @@ const isStableQuoteAsset = computed(() =>
 
 const lastTradedPriceInUsd = computed(() =>
   spotLastTradedPrice.value.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 )
 
-const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
-  computed(() => {
-    const totalSupply = sharedToBalanceInTokenInBase({
-      decimalPlaces: props.market.baseToken.decimals,
-      value: tokenStore.supplyMap[props.market.baseToken.denom] || 0
-    })
-    const usdPrice = tokenStore.tokenUsdPrice(props.market.baseToken)
-
-    return new BigNumberInBase(usdPrice).times(totalSupply)
+const marketCap = computed(() => {
+  const totalSupply = sharedToBalanceInTokenInBase({
+    decimalPlaces: props.market.baseToken.decimals,
+    value: sharedTokenStore.supplyMap[props.market.baseToken.denom] || 0
   })
-)
+  const usdPrice = sharedTokenStore.tokenUsdPrice(props.market.baseToken)
+
+  return new BigNumberInBase(usdPrice).times(totalSupply)
+})
 </script>
 
 <template>
   <PartialsTradeStatsHeaderItem
     v-if="!isStableQuoteAsset"
-    :title="$t('trade.stats.usd_value')"
+    :title="$t('trade.stats.usdValue')"
   >
     <p>
-      <AppUsdAmount
+      <SharedAmountUsd
         v-bind="{
-          decimalPlaces: market.priceDecimals,
+          shouldAbbreviate: false,
           amount: lastTradedPriceInUsd.toFixed()
         }"
       />
@@ -75,13 +73,14 @@ const { valueToFixed: marketCapToFixed } = useSharedBigNumberFormatter(
     </template>
 
     <p>
-      <span>$</span>
-      <AppUsdAmount
+      <SharedAmountUsd
         v-bind="{
-          amount: marketCapToFixed,
-          decimalPlaces: market.priceDecimals
+          amount: marketCap,
+          shouldAbbreviate: false
         }"
-      />
+      >
+        <template #prefix>$</template>
+      </SharedAmountUsd>
     </p>
   </PartialsTradeStatsHeaderItem>
 </template>

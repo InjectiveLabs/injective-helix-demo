@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    extraClass?: string
     campaign: Campaign
+    extraClass?: string
     forceDisabled?: boolean
   }>(),
   {
@@ -35,18 +35,18 @@ function claimRewards() {
   campaignStore
     .claimReward(props.campaign.rewardContract, campaignId)
     .then(() => {
-      notificationStore.success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
+      notificationStore.update({
+        title: t('toast.success'),
+        description: t('toast.campaign.successfullyClaimedRewards')
       })
 
-      backupPromiseCall(() => campaignStore.fetchRound())
+      sharedBackupPromiseCall(() => campaignStore.fetchRound())
     })
     .catch((er) => {
       if ((er.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
+          title: t('toast.error'),
+          description: t('toast.campaign.errorAlreadyClaimed')
         })
       } else {
         $onError(er)
@@ -60,17 +60,17 @@ function claimRewards() {
 
 <template>
   <UTooltip
+    :text="t('lpRewards.rewardsPending')"
     :prevent="campaign.isClaimable || campaign.endDate > Date.now()"
-    :text="t('campaign.rewardsPending')"
   >
     <AppButton
       :class="extraClass"
       v-bind="{ status }"
-      :disabled="campaign.userClaimed || !campaign.isClaimable || forceDisabled"
+      :disabled="forceDisabled || campaign.userClaimed || !campaign.isClaimable"
       @click="claimRewards"
     >
-      <span v-if="campaign.userClaimed">{{ $t('campaign.claimed') }}</span>
-      <span v-else>{{ $t('campaign.claim') }}</span>
+      <span v-if="campaign.userClaimed">{{ $t('common.claimed') }}</span>
+      <span v-else>{{ $t('common.claim') }}</span>
     </AppButton>
   </UTooltip>
 </template>

@@ -2,8 +2,9 @@
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
 import { tokenToDecimalsOverrideMap } from '@/app/data/token'
+import { SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
 const swapStore = useSwapStore()
 const formValues = useFormValues<SwapForm>()
@@ -59,7 +60,7 @@ defineExpose({
 <template>
   <div>
     <div class="space-y-3">
-      <PartialsSwapSummaryRow :title="$t('trade.swap.route')">
+      <PartialsSwapSummaryRow :title="$t('swap.route')">
         <span v-if="orderedRouteTokensAndDecimals?.length === 0">
           &mdash;
         </span>
@@ -76,7 +77,7 @@ defineExpose({
         </div>
       </PartialsSwapSummaryRow>
 
-      <PartialsSwapSummaryRow :title="$t('trade.swap.rate')">
+      <PartialsSwapSummaryRow :title="$t('swap.rate')">
         <span v-if="isEmptyForm">&mdash;</span>
         <div
           v-else-if="orderedRouteTokensAndDecimals && inputToken && outputToken"
@@ -100,7 +101,7 @@ defineExpose({
         </div>
       </PartialsSwapSummaryRow>
 
-      <PartialsSwapSummaryRow :title="$t('trade.swap.fees')">
+      <PartialsSwapSummaryRow :title="$t('swap.fees')">
         <span v-if="isEmptyForm">&mdash;</span>
 
         <PartialsSwapFees v-else />
@@ -108,23 +109,45 @@ defineExpose({
 
       <PartialsSwapSummaryRow
         v-if="swapStore.isInputEntered"
-        :title="$t('trade.swap.minimumOutput')"
+        :title="$t('swap.minimumOutput')"
       >
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryMinOutput)">
-          {{ minimumOutput }} {{ outputToken?.token.symbol }}
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: minimumOutput,
+              shouldAbbreviate: false
+            }"
+          />
+          {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>
 
-      <PartialsSwapSummaryRow v-else :title="$t('trade.swap.maximumInput')">
+      <PartialsSwapSummaryRow v-else :title="$t('swap.maximumInput')">
         <span v-if="isEmptyForm">&mdash;</span>
-        <span v-else> {{ maximumInput }} {{ inputToken?.token.symbol }} </span>
+        <span v-else>
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: maximumInput,
+              shouldAbbreviate: false
+            }"
+          />
+          {{ inputToken?.token.symbol }}
+        </span>
       </PartialsSwapSummaryRow>
 
-      <PartialsSwapSummaryRow :title="$t('trade.swap.expectedOutput')">
+      <PartialsSwapSummaryRow :title="$t('swap.expectedOutput')">
         <span v-if="isEmptyForm">&mdash;</span>
         <span v-else :data-cy="dataCyTag(SwapCyTags.SwapSummaryExpectedOutput)">
-          {{ formValues[SwapFormField.OutputAmount] }}
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: formValues[SwapFormField.OutputAmount] || '0'
+            }"
+          />
           {{ outputToken?.token.symbol }}
         </span>
       </PartialsSwapSummaryRow>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {
   STOP_REASON_MAP,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import {
+import { PortfolioSpotTradingBotsHistoryTableColumn } from '@/types'
+import type {
   StopReason,
   UTableColumn,
-  DerivativeGridStrategyTransformed,
-  PortfolioSpotTradingBotsHistoryTableColumn,
-  GridStrategyTransformed
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
 const { t } = useLang()
@@ -58,7 +58,7 @@ function selectStrategy() {
     <template #header>
       <div class="flex items-center justify-between mb-4">
         <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 font-sans"
+          class="flex items-center space-x-2 font-mono"
           v-bind="{ market: strategy.market }"
           is-trading-bot-tab
         >
@@ -77,7 +77,7 @@ function selectStrategy() {
             size="xs"
             @click="selectStrategy"
           >
-            {{ t('sgt.details') }}
+            {{ t('common.details') }}
           </AppButton>
         </div>
       </div>
@@ -89,10 +89,13 @@ function selectStrategy() {
 
     <template #lowerBound-data>
       <div class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :decimal-places="2"
-          :amount="strategy.lowerBound"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            amount: strategy.lowerBound,
+            shouldAbbreviate: false,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
         />
         <span>{{ strategy.market.quoteToken.symbol }}</span>
       </div>
@@ -100,10 +103,13 @@ function selectStrategy() {
 
     <template #upperBound-data>
       <div class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :decimal-places="2"
-          :amount="strategy.upperBound"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: strategy.upperBound,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
         />
         <span>{{ strategy.market.quoteToken.symbol }}</span>
       </div>
@@ -111,11 +117,16 @@ function selectStrategy() {
 
     <template #totalAmount-data>
       <div class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :decimal-places="2"
-          :max-decimal-places="3"
-          :amount="strategy.totalAmount.toFixed()"
-        />
+        <SharedAmountUsd
+          v-bind="{
+            shouldAbbreviate: false,
+            amount: strategy.totalAmount.toFixed()
+          }"
+        >
+          <template #prefix>
+            <span>$</span>
+          </template>
+        </SharedAmountUsd>
       </div>
     </template>
 
@@ -125,12 +136,17 @@ function selectStrategy() {
         :class="strategy.isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
         <div class="flex items-center gap-1">
-          <span>{{ strategy.isPositivePnl ? '+' : '' }}</span>
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :amount="strategy.pnl"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          />
+          <SharedAmount
+            v-bind="{
+              amount: strategy.pnl,
+              useSubscript: true,
+              shouldAbbreviate: false
+            }"
+          >
+            <template #prefix>
+              <span>{{ strategy.isPositivePnl ? '+' : '' }}</span>
+            </template>
+          </SharedAmount>
           {{ ' ' + strategy.market.quoteToken.symbol }}
         </div>
         <div>({{ strategy.percentagePnl }}%)</div>
@@ -148,7 +164,7 @@ function selectStrategy() {
         class="text-blue-500 hover:text-blue-500"
         @click="selectStrategy"
       >
-        {{ t('sgt.details') }}
+        {{ t('common.details') }}
       </AppButton>
     </template>
 

@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { dataCyTag } from '@shared/utils'
 import { stableCoinSymbols } from '@/app/data/token'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { UI_ZERO_DECIMAL } from '@/app/utils/constants'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedTokenStore = useSharedTokenStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
@@ -19,12 +21,12 @@ const props = withDefaults(
 
 const summary = computed(() => {
   if (props.isSpot) {
-    return spotStore.marketsSummary.find(
+    return sharedSpotStore.marketsSummary.find(
       (market) => market.marketId === props.market.marketId
     )
   }
 
-  return derivativeStore.marketsSummary.find(
+  return sharedDerivativeStore.marketsSummary.find(
     (market) => market.marketId === props.market.marketId
   )
 })
@@ -34,7 +36,7 @@ const isStableQuoteAsset = computed(() =>
 )
 
 const volumeInUsd = computed(() =>
-  volume.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  volume.value.times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
 )
 
 const { valueToBigNumber: volume } = useSharedBigNumberFormatter(
@@ -70,12 +72,14 @@ const low = computed(() => {
 </script>
 
 <template>
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.market_volume_24h')">
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.marketVolume24h')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: volume.toFixed(),
-          decimalPlaces: market.priceDecimals
+          decimals: UI_ZERO_DECIMAL
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
       />
@@ -92,10 +96,12 @@ const low = computed(() => {
         </p>
       </template>
       <div>
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: volumeInUsd.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: UI_ZERO_DECIMAL,
+            amount: volumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -105,10 +111,12 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.high')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: high.toFixed(),
-          decimalPlaces: market.priceDecimals
+          decimals: market.priceDecimals
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoHigh)"
       />
@@ -117,10 +125,12 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.low')">
     <p>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
           amount: low.toFixed(),
-          decimalPlaces: market.priceDecimals
+          shouldAbbreviate: false,
+          decimals: market.priceDecimals
         }"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoLow)"
       />

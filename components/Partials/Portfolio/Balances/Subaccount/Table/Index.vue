@@ -4,11 +4,8 @@ import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenVerification } from '@injectivelabs/sdk-ts'
-import {
-  PortfolioCyTags,
-  BalanceTableColumn,
-  TransformedBalances
-} from '@/types'
+import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import type { TransformedBalances } from '@/types'
 
 const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
@@ -48,32 +45,32 @@ const columns = computed(() => {
   const columnArray = [
     {
       key: BalanceTableColumn.Assets,
-      label: t(`account.table.${BalanceTableColumn.Assets}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Assets}`),
       class: 'w-[16%]'
     },
     {
       key: BalanceTableColumn.Available,
-      label: t(`account.table.${BalanceTableColumn.Available}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Available}`),
       class: 'text-right w-[8%]'
     },
     {
       key: BalanceTableColumn.UsedOrReserved,
-      label: t(`account.table.${BalanceTableColumn.UsedOrReserved}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.UsedOrReserved}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.UnrealizedPnl,
-      label: t(`account.table.${BalanceTableColumn.UnrealizedPnl}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.UnrealizedPnl}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.Total,
-      label: t(`account.table.${BalanceTableColumn.Total}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Total}`),
       class: 'text-right'
     },
     {
       key: BalanceTableColumn.TotalUsd,
-      label: t(`account.table.${BalanceTableColumn.TotalUsd}`),
+      label: t(`portfolio.table.balance.${BalanceTableColumn.TotalUsd}`),
       class: 'text-right w-[13%]'
     }
   ]
@@ -82,12 +79,12 @@ const columns = computed(() => {
     columnArray.push(
       {
         key: BalanceTableColumn.Staked,
-        label: t(`account.table.${BalanceTableColumn.Staked}`),
+        label: t(`portfolio.table.${BalanceTableColumn.Staked}`),
         class: ''
       },
       {
         key: BalanceTableColumn.StakedUsd,
-        label: t(`account.table.${BalanceTableColumn.StakedUsd}`),
+        label: t(`portfolio.table.${BalanceTableColumn.StakedUsd}`),
         class: ''
       }
     )
@@ -105,7 +102,7 @@ const columns = computed(() => {
 })
 
 const sortedRows = computed(() => {
-  return rows.value.sort((balance1, balance2) => {
+  return [...rows.value].sort((balance1, balance2) => {
     if (balance1.token.denom === injToken.denom) {
       return -1
     }
@@ -148,11 +145,11 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
-        [BalanceTableColumn.Available]: ZERO_IN_BASE,
-        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value,
-        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
         [BalanceTableColumn.Total]: ZERO_IN_BASE,
-        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value
+        [BalanceTableColumn.Available]: ZERO_IN_BASE,
+        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
+        [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value,
+        [BalanceTableColumn.UsedOrReserved]: stakedAmount.value
       } as TransformedBalances,
       ...data.slice(1)
     ]
@@ -267,9 +264,11 @@ function toggleStakingRow() {
             value: row[BalanceTableColumn.Available].toFixed()
           }"
         >
-          <AppBalanceAmount
+          <SharedAmount
             class="text-white"
-            v-bind="{ amount: row[BalanceTableColumn.Available].toFixed() }"
+            v-bind="{
+              amount: row[BalanceTableColumn.Available].toFixed()
+            }"
             :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
           />
         </PartialsCommonBalanceDisplay>
@@ -278,10 +277,10 @@ function toggleStakingRow() {
 
       <template #used-or-reserved-data="{ row }">
         <span v-if="row.isStakingRow" class="mr-1 text-coolGray-400">
-          {{ $t('trade.staked') }}:
+          {{ $t('portfolio.staked') }}:
         </span>
 
-        <AppBalanceAmount
+        <SharedAmount
           v-bind="{
             showZeroAsEmDash: true,
             amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
@@ -291,7 +290,7 @@ function toggleStakingRow() {
       </template>
 
       <template #unrealized-pnl-data="{ row }">
-        <AppBalanceAmount
+        <SharedAmount
           v-if="!row.isStakingRow"
           v-bind="{
             showZeroAsEmDash: true,
@@ -303,7 +302,7 @@ function toggleStakingRow() {
       </template>
 
       <template #total-data="{ row }">
-        <AppBalanceAmount
+        <SharedAmount
           v-if="!row.isStakingRow"
           v-bind="{
             amount: row[BalanceTableColumn.Total].toFixed()
@@ -317,13 +316,16 @@ function toggleStakingRow() {
         <div :class="{ 'text-coolGray-400': row.isStakingRow }">
           <span v-if="!row.isVerified">&mdash;</span>
           <template v-else>
-            <span>$</span>
-            <AppUsdBalanceAmount
+            <SharedAmountUsd
               v-bind="{
                 amount: row[BalanceTableColumn.TotalUsd].toFixed()
               }"
               :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-            />
+            >
+              <template #prefix>
+                <span>$</span>
+              </template>
+            </SharedAmountUsd>
           </template>
         </div>
       </template>

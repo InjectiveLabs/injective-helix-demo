@@ -7,16 +7,16 @@ const { t } = useLang()
 
 const status = reactive(new Status(StatusType.Loading))
 
-const options = [
+const options = computed(() => [
   {
-    label: t('sgt.tabs.liveFuturesGrid'),
+    label: t('tradingBots.sgt.tabs.liveFuturesGrid'),
     to: '/portfolio/orders/futures-grid'
   },
   {
-    label: t('sgt.tabs.futuresGridHistory'),
+    label: t('tradingBots.sgt.tabs.futuresGridHistory'),
     to: '/portfolio/orders/futures-grid/history'
   }
-]
+])
 
 onWalletConnected(() => {
   status.setLoading()

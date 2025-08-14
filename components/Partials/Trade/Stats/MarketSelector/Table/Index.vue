@@ -3,13 +3,9 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { valueSortFunction } from '@/app/utils/helpers'
-import { abbreviateNumber } from '@/app/utils/formatters'
 import { UI_DEFAULT_FUNDING_RATE_DECIMALS } from '@/app/utils/constants'
-import {
-  MarketCyTags,
-  MarketsSelectorTableColumn,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
+import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const appStore = useAppStore()
 const isMobile = useIsMobile()
@@ -94,8 +90,6 @@ const columns = computed(() => {
   return columnList
 })
 
-const { sortedRows } = useSort(rows, columns)
-
 function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
   appStore.setUserState({
     ...appStore.userState,
@@ -150,11 +144,13 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
       <template #last-price-data="{ row }">
         <PartialsCommonMarketRedirection :market="row.market">
           <div class="flex justify-end truncate min-w-0 text-sm text-right">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
               v-bind="{
-                amount: row[MarketsSelectorTableColumn.LastPrice],
-                decimalPlaces: row.market.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.market.priceDecimals,
+                amount: row[MarketsSelectorTableColumn.LastPrice]
               }"
             />
           </div>
@@ -189,17 +185,24 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
               }"
               class="cursor-pointer flex"
             >
-              <span>
-                {{
-                  row[MarketsSelectorTableColumn.FundingRate].gt(0) ? '+' : ''
-                }}
-              </span>
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  amount: row[MarketsSelectorTableColumn.FundingRate].toFixed(),
-                  decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS,
+                  amount: row[MarketsSelectorTableColumn.FundingRate].toFixed()
                 }"
-              />
+              >
+                <template #prefix>
+                  <span>
+                    {{
+                      row[MarketsSelectorTableColumn.FundingRate].gt(0)
+                        ? '+'
+                        : ''
+                    }}
+                  </span>
+                </template>
+              </SharedAmount>
               <span>%</span>
             </span>
           </div>
@@ -210,60 +213,36 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
         <PartialsCommonMarketRedirection :market="row.market">
           <div class="flex items-center justify-end truncate min-w-0 text-sm">
             <span v-if="isMobile">
-              <span>$</span>
-              <span v-if="abbreviateNumber(row.volumeInUsdToFixed)">
-                {{ abbreviateNumber(row.volumeInUsdToFixed) }}
-              </span>
-              <span v-else>
-                <AppUsdAmount
-                  v-bind="{
-                    decimalPlaces: 0,
-                    isShowNoDecimals: true,
-                    amount: row.volumeInUsd.toFixed()
-                  }"
-                />
-              </span>
+              <SharedAmountUsd
+                v-bind="{
+                  hideDecimals: true,
+                  amount: row.volumeInUsdToFixed,
+                  roundingMode: BigNumberInBase.ROUND_UP
+                }"
+              >
+                <template #prefix>$</template>
+              </SharedAmountUsd>
             </span>
             <span v-else :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
-              <span>$</span>
-              <AppUsdAmount
+              <SharedAmountUsd
                 v-bind="{
-                  decimalPlaces: 0,
-                  isShowNoDecimals: true,
-                  amount: row.volumeInUsd.toFixed()
+                  hideDecimals: true,
+                  shouldAbbreviate: false,
+                  amount: row.volumeInUsd.toFixed(),
+                  roundingMode: BigNumberInBase.ROUND_UP
                 }"
-              />
+              >
+                <template #prefix>$</template>
+              </SharedAmountUsd>
             </span>
           </div>
         </PartialsCommonMarketRedirection>
       </template>
-
-      <!-- <template #open-interest-data="{ row }">
-        <PartialsCommonMarketRedirection :market="row.market">
-          <div
-            class="flex items-center justify-end flex-[2] truncate min-w-0 text-sm"
-          >
-            <span v-if="row[MarketsSelectorTableColumn.OpenInterest].isZero()">
-              &mdash;
-            </span>
-            <span v-else>
-              <span>$</span>
-              <AppUsdAmount
-                v-bind="{
-                  decimalPlaces: 0,
-                  isShowNoDecimals: true,
-                  amount: row[MarketsSelectorTableColumn.OpenInterest].toFixed()
-                }"
-              />
-            </span>
-          </div>
-        </PartialsCommonMarketRedirection>
-      </template> -->
     </UTable>
   </template>
   <template v-else>
     <PartialsTradeStatsMarketSelectorMobileTable
-      v-for="market in sortedRows"
+      v-for="market in rows"
       :key="market.market.marketId"
       v-bind="{ market, columns }"
       @mobile-table:click="toggleFavorite(market)"

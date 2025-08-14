@@ -1,31 +1,34 @@
 <script setup lang="ts">
+import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
 import { InitialStatusKey } from '@/types'
 
-// const appStore = useAppStore()
-const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
+const route = useRoute()
+const router = useRouter()
 const walletStore = useWalletStore()
 const sharedGeoStore = useSharedGeoStore()
 const isActiveTab = useDocumentVisibility()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
 const unknownTokenStatus = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
-  tokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
+onMounted(async () => {
+  handleGoogleOAuth()
+  sharedTokenStore.fetchSupply().finally(() => unknownTokenStatus.setIdle())
 
   Promise.all([
     walletStore.init(),
-    spotStore.fetchMarkets(),
-    derivativeStore.fetchMarkets(),
+    sharedSpotStore.fetchMarkets(),
     sharedGeoStore.fetchGeoLocation(),
-    tokenStore.fetchTokensUsdPriceMap()
+    sharedDerivativeStore.fetchMarkets(),
+    sharedTokenStore.fetchTokensUsdPriceMap()
   ])
     .catch($onError)
     .then(() => {
@@ -33,10 +36,9 @@ onMounted(() => {
         WalletTracker.trackWalletAddress(sharedWalletStore.injectiveAddress)
       }
     })
-    .finally(() => status.setIdle())
-
-  // Actions that should't block the app from loading
-  // Promise.all([appStore.fetchBlockHeight()])
+    .finally(() => {
+      status.setIdle()
+    })
 })
 
 onWalletInitialConnected(() => {
@@ -46,28 +48,39 @@ onWalletInitialConnected(() => {
   })
 })
 
-/**
- * Post only mode modal when we do chain upgrade
-watch(
-  () => appStore.blockHeight,
-  () => {
-    if (
-      appStore.blockHeight >= MAINNET_UPGRADE_BLOCK_HEIGHT &&
-      appStore.blockHeight <=
-        MAINNET_UPGRADE_BLOCK_HEIGHT + POST_ONLY_MODE_BLOCK_THRESHOLD
-    ) {
-      modalStore.openModal(Modal.PostOnlyMode)
-    }
+function handleGoogleOAuth() {
+  if (sharedWalletStore.isUserConnected) {
+    return
   }
-)
- */
+
+  if (!route.hash) {
+    return
+  }
+
+  const params = new URLSearchParams(route.hash.substring(1))
+  const idToken = params.get('id_token')
+
+  if (!idToken) {
+    return
+  }
+
+  router.replace({ hash: '' })
+
+  sharedWalletStore
+    .initTurnkeyGoogle(idToken)
+    .catch($onError)
+    .finally(() => {
+      sharedWalletStore.walletConnectStatus = WalletConnectStatus.idle
+    })
+}
+
 provide(InitialStatusKey, status)
 
 useIntervalFn(
   () =>
     Promise.all([
       streamProvider.healthCheck(),
-      tokenStore.fetchTokensUsdPriceMap()
+      sharedTokenStore.fetchTokensUsdPriceMap()
     ]),
   30 * 1000
 )

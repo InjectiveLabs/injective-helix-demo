@@ -7,16 +7,16 @@ const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
+  'on:close': []
   'transfer:success': []
-  close: []
 }>()
 
 const countdown = ref(60)
 const showMessage = ref(false)
 
 const formattedCountdown = computed(() => {
-  const minutes = Math.floor(countdown.value / 60)
   const seconds = countdown.value % 60
+  const minutes = Math.floor(countdown.value / 60)
 
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 })
@@ -50,8 +50,8 @@ watch(
   }
 )
 
-const handleClose = () => {
-  emit('close')
+const onClose = () => {
+  emit('on:close')
 }
 </script>
 
@@ -59,16 +59,16 @@ const handleClose = () => {
   <div class="flex flex-col items-center justify-center space-y-4 py-10">
     <img src="/svg/paper-plane.svg" class="max-w-[200px] w-full mx-auto" />
     <p class="text-xl font-semibold">
-      {{ $t('onboarding.processing') }}
+      {{ $t('common.modal.onboarding.processing') }}
     </p>
     <p class="text-2xl">{{ formattedCountdown }}s</p>
 
     <p v-if="showMessage" class="text-sm mt-2 text-center text-coolGray-500">
-      {{ $t('onboarding.processingMessage') }}
+      {{ $t('common.modal.onboarding.processingMessage') }}
     </p>
 
     <p class="text-sm text-coolGray-300">
-      <span>{{ $t('onboarding.processingMessageInfo') }}</span>
+      <span>{{ $t('common.modal.onboarding.processingMessageInfo') }}</span>
       {{ ' ' }}
       <NuxtLink
         class="text-blue-500 hover:underline"
@@ -76,13 +76,16 @@ const handleClose = () => {
         target="_blank"
         :to="getBridgeRedirectionUrl()"
       >
-        {{ $t('onboarding.injectiveBridge') }}.
+        {{ $t('common.modal.onboarding.injectiveBridge') }}.
       </NuxtLink>
     </p>
 
     <div class="w-full">
-      <AppButton class="mt-4 -mb-8 w-full" @click="handleClose">
-        {{ t('onboarding.closeAndContinue') }}
+      <AppButton
+        class="mt-4 -mb-8 w-full text-sm font-medium rounded-lg bg-azure-blue-350 hover:bg-azure-blue-350/80 transition-colors ring-0 border-0"
+        @click="onClose"
+      >
+        {{ t('common.modal.onboarding.closeAndContinue') }}
       </AppButton>
     </div>
   </div>

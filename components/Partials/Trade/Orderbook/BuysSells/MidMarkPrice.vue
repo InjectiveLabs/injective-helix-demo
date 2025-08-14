@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons, SharedMarketChange } from '@shared/types'
-import { stableCoinSymbols } from '~/app/data/token'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { stableCoinSymbols } from '@/app/data/token'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -13,7 +14,7 @@ const props = withDefaults(
   }
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const {
   lastTradedPrice: spotLastTradedPrice,
@@ -37,7 +38,9 @@ const lastTradedPrice = computed(() =>
 )
 
 const lastTradedPriceInUsd = computed(() =>
-  lastTradedPrice.value.times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+  lastTradedPrice.value.times(
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
+  )
 )
 
 const isStableCoinMarket = computed(() =>
@@ -52,7 +55,6 @@ const isStableCoinMarket = computed(() =>
     <div v-else class="flex items-center justify-center space-x-2">
       <span
         class="text-sm tracking-wider font-bold spacing"
-        :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         :class="{
           'text-red-500 ':
             lastTradedPriceChange === SharedMarketChange.Decrease,
@@ -60,11 +62,15 @@ const isStableCoinMarket = computed(() =>
             lastTradedPriceChange === SharedMarketChange.Increase
         }"
       >
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: lastTradedPrice.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            noTrailingZeros: false,
+            shouldAbbreviate: false,
+            decimals: market.priceDecimals,
+            amount: lastTradedPrice.toFixed()
           }"
+          :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMidMarkPrice)"
         />
       </span>
 
@@ -88,10 +94,9 @@ const isStableCoinMarket = computed(() =>
         v-if="!isStableCoinMarket && isSpot"
         class="flex items-center text-sm text-coolGray-350 border-b border-dashed border-coolGray-400 tracking-wider"
       >
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: lastTradedPriceInUsd.toFixed(),
-            decimalPlaces: market.priceDecimals
+            amount: lastTradedPriceInUsd.toFixed()
           }"
         />
         <span class="ml-1"> USD</span>
@@ -103,11 +108,15 @@ const isStableCoinMarket = computed(() =>
             tooltip: $t('trade.markPrice')
           }"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
               amount: markPrice,
-              decimalPlaces: market.priceDecimals
+              useSubscript: true,
+              noTrailingZeros: false,
+              shouldAbbreviate: false,
+              decimals: market.priceDecimals
             }"
+            :data-cy="dataCyTag(SpotMarketCyTags.OrderbookMarkPrice)"
           />
         </CommonHeaderTooltip>
       </span>

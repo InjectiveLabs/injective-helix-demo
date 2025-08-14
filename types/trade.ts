@@ -25,7 +25,7 @@ import type {
   DerivativeGridTradingField,
   ClosePositionLimitFormField,
   TakeProfitStopLossFormField
-} from '../types'
+} from '@/types'
 
 // TODO: Rename and move these to injective-ts
 export enum ConditionalOrderType {

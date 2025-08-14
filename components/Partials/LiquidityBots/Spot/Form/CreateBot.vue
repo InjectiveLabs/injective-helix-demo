@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { BotType, LiquidityBotField } from '@/types'
@@ -18,11 +17,11 @@ const props = withDefaults(
   {}
 )
 
-const toast = useToast()
-const tokenStore = useTokenStore()
 const jsonStore = useSharedJsonStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const validate = useValidateForm<LiquidityBotForm>()
 const formErrors = useFormErrors<LiquidityBotForm>()
 const liquidityFormValues = useFormValues<LiquidityBotForm>()
@@ -37,11 +36,11 @@ const totalUsd = computed(() =>
   new BigNumberInBase(
     liquidityFormValues.value[LiquidityBotField.BaseAmount] || 0
   )
-    .times(tokenStore.tokenUsdPrice(props.market.baseToken))
+    .times(sharedTokenStore.tokenUsdPrice(props.market.baseToken))
     .plus(
       new BigNumberInBase(
         liquidityFormValues.value[LiquidityBotField.QuoteAmount] || 0
-      ).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
+      ).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
     )
 )
 
@@ -91,7 +90,9 @@ async function createLiquidityBot() {
       EventTracker.trackCreateStrategy({
         isLiquidity: true,
         market: props.market.slug,
-        marketPrice: tokenStore.tokenUsdPrice(props.market.baseToken).toFixed(),
+        marketPrice: sharedTokenStore
+          .tokenUsdPrice(props.market.baseToken)
+          .toFixed(),
         formValues: {
           grids: String(props.liquidityValues.grids),
           lowerPrice: props.liquidityValues.lowerBound.toFixed(),
@@ -107,10 +108,9 @@ async function createLiquidityBot() {
 
       confirmationModal.value = false
 
-      toast.add({
-        title: t('sgt.success'),
-        icon: NuxtUiIcons.Checkmark,
-        description: t('sgt.gridStrategyCreatedSuccessfully')
+      notificationStore.update({
+        title: t('toast.success'),
+        description: t('toast.tradingBots.tradingBotCreatedSuccessfully')
       })
 
       status.setIdle()
@@ -127,11 +127,11 @@ async function createLiquidityBot() {
           lowerBound: props.liquidityValues.lowerBound.toFixed(),
           upperBound: props.liquidityValues.upperBound.toFixed(),
           baseAmount: liquidityFormValues.value[LiquidityBotField.BaseAmount]!,
-          quoteAmount: liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
+          quoteAmount:
+            liquidityFormValues.value[LiquidityBotField.QuoteAmount]!,
           upperTrailingBound:
             props.liquidityValues.trailingUpperBound.toFixed(),
-          lowerTrailingBound:
-            props.liquidityValues.trailingLowerBound.toFixed()
+          lowerTrailingBound: props.liquidityValues.trailingLowerBound.toFixed()
         })
       }
 
@@ -165,7 +165,7 @@ async function createLiquidityBot() {
       <span v-if="jsonStore.isPostUpgradeMode">
         {{ $t('trade.postOnlyWarning') }}
       </span>
-      <span v-else>{{ $t('liquidityBots.createBot') }}</span>
+      <span v-else>{{ $t('tradingBots.liquidityBots.createBot') }}</span>
     </AppButton>
 
     <AppModal
@@ -180,16 +180,19 @@ async function createLiquidityBot() {
 
       <div class="space-y-4 text-sm">
         <!-- <p class="text-gray-300 mb-6">
-          {{ $t('sgt.confirmationDescription') }}
+          {{ $t('tradingBots.confirmationDescription') }}
         </p> -->
 
         <div class="space-y-4">
           <div class="flex justify-between items-start">
-            <span class="text-gray-400">{{ $t('sgt.investment') }}</span>
+            <span class="text-gray-400">{{
+              $t('tradingBots.investment')
+            }}</span>
             <div class="text-right">
               <div class="text-lg">
-                <span>$ </span>
-                <SharedUsdAmount :amount="totalUsd.toFixed()" />
+                <SharedUsdAmount :amount="totalUsd.toFixed()">
+                  <template #prefix>$ </template>
+                </SharedUsdAmount>
               </div>
               <div class="flex items-center gap-1 text-coolGray-500">
                 <div v-if="liquidityFormValues.baseAmount">
@@ -206,17 +209,19 @@ async function createLiquidityBot() {
           </div>
 
           <div class="flex justify-between items-center">
-            <span class="text-gray-400">{{ $t('sgt.market') }}</span>
+            <span class="text-gray-400">{{ $t('trade.market') }}</span>
             <span>{{ market.ticker }}</span>
           </div>
 
           <div class="flex justify-between items-center">
-            <span class="text-gray-400">{{ $t('sgt.gridMode') }}</span>
-            <span>{{ $t('sgt.modes.arithmetic_lp') }}</span>
+            <span class="text-gray-400">{{ $t('tradingBots.gridMode') }}</span>
+            <span>{{ $t('tradingBots.sgt.modes.arithmetic_lp') }}</span>
           </div>
 
           <div class="flex justify-between items-center">
-            <span class="text-gray-400">{{ $t('sgt.priceRange') }}</span>
+            <span class="text-gray-400">{{
+              $t('tradingBots.priceRange')
+            }}</span>
             <span>
               {{ liquidityValues.lowerBound.toFixed() }}-{{
                 liquidityValues.upperBound.toFixed()
@@ -226,7 +231,7 @@ async function createLiquidityBot() {
 
           <div class="flex justify-between items-center">
             <span class="text-gray-400">{{
-              $t('sgt.trailingPriceRange')
+              $t('tradingBots.trailingPriceRange')
             }}</span>
             <span>
               {{ liquidityValues.trailingLowerBound.toFixed() }}-{{
@@ -236,13 +241,18 @@ async function createLiquidityBot() {
           </div>
 
           <div class="flex justify-between items-center">
-            <span class="text-gray-400">{{ $t('sgt.gridNumber') }}</span>
+            <span class="text-gray-400">{{
+              $t('tradingBots.gridNumber')
+            }}</span>
             <span>{{ liquidityValues.grids }}</span>
           </div>
         </div>
 
         <div class="mt-6 flex items-center">
-          <UCheckbox v-model="hasConfirmed" :label="$t('sgt.disclaimer')" />
+          <UCheckbox
+            v-model="hasConfirmed"
+            :label="$t('tradingBots.disclaimer')"
+          />
         </div>
 
         <SharedButton
@@ -255,7 +265,7 @@ async function createLiquidityBot() {
           }"
           @click="createLiquidityBot"
         >
-          {{ $t('sgt.confirm') }}
+          {{ $t('common.confirm') }}
         </SharedButton>
       </div>
     </AppModal>

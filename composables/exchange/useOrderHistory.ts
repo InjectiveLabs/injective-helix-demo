@@ -1,33 +1,35 @@
+import { format } from 'date-fns'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotOrderHistory, DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import {
   DATE_TIME_DISPLAY,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
+  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { UiSpotMarket, UiMarketWithToken } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type {
+  SpotOrderHistory,
+  DerivativeOrderHistory
+} from '@injectivelabs/sdk-ts'
 
 export function useOrderHistory(
-  order: Ref<DerivativeOrderHistory | SpotOrderHistory>,
+  order: Ref<SpotOrderHistory | DerivativeOrderHistory>,
   isSpot: boolean
 ) {
   const derivativeStore = useDerivativeStore()
   const spotStore = useSpotStore()
   const { t } = useLang()
 
-  const markets: UiMarketWithToken[] = isSpot
-    ? spotStore.markets
-    : derivativeStore.markets
-
   const market = computed(() =>
-    markets.find((m) => m.marketId === order.value.marketId)
+    isSpot
+      ? spotStore.marketByIdOrSlug(order.value.marketId)
+      : derivativeStore.marketByIdOrSlug(order.value.marketId)
   )
 
   const isMarketOrder = computed(
@@ -68,9 +70,10 @@ export function useOrderHistory(
             market.value.baseToken.decimals - market.value.quoteToken.decimals
           )
         )
-      : new BigNumberInWei(order.value.price).toBase(
-          market.value.quoteToken.decimals
-        )
+      : sharedToBalanceInTokenInBase({
+          value: order.value.price,
+          decimalPlaces: market.value.quoteToken.decimals
+        })
   })
 
   const triggerPrice = computed(() => {
@@ -78,9 +81,10 @@ export function useOrderHistory(
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(
-      (order.value as DerivativeOrderHistory).triggerPrice
-    ).toBase(market.value.quoteToken.decimals)
+    return sharedToBalanceInTokenInBase({
+      value: (order.value as DerivativeOrderHistory).triggerPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const margin = computed(() => {
@@ -88,9 +92,10 @@ export function useOrderHistory(
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(
-      (order.value as DerivativeOrderHistory).margin
-    ).toBase(market.value.quoteToken.decimals)
+    return sharedToBalanceInTokenInBase({
+      value: (order.value as DerivativeOrderHistory).margin,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const quantity = computed(() => {
@@ -99,9 +104,10 @@ export function useOrderHistory(
     }
 
     return isSpot
-      ? new BigNumberInWei(order.value.quantity).toBase(
-          (market.value as UiSpotMarket).baseToken.decimals
-        )
+      ? sharedToBalanceInTokenInBase({
+          value: order.value.quantity,
+          decimalPlaces: (market.value as UiSpotMarket).baseToken.decimals
+        })
       : new BigNumberInBase(order.value.quantity)
   })
 
@@ -109,9 +115,10 @@ export function useOrderHistory(
 
   const filledQuantity = computed(() => {
     return isSpot
-      ? new BigNumberInWei(order.value.filledQuantity).toBase(
-          (market.value as UiMarketWithToken).baseToken.decimals
-        )
+      ? sharedToBalanceInTokenInBase({
+          value: order.value.filledQuantity,
+          decimalPlaces: (market.value as UiSpotMarket).baseToken.decimals
+        })
       : new BigNumberInBase(order.value.filledQuantity)
   })
 
@@ -133,8 +140,8 @@ export function useOrderHistory(
     switch (order.value.orderType) {
       case OrderSide.TakeBuy:
       case OrderSide.StopBuy:
-      case OrderSide.Buy:
       case OrderSide.BuyPO:
+      case OrderSide.Buy:
         return true
       default:
         return false
@@ -170,17 +177,17 @@ export function useOrderHistory(
         : t('trade.limit')
 
     switch (order.value.orderType) {
-      case OrderSide.Buy:
-      case OrderSide.Sell:
-      case OrderSide.BuyPO:
-      case OrderSide.SellPO:
-        return executionType
       case OrderSide.TakeSell:
       case OrderSide.TakeBuy:
         return `${t('trade.takeProfit')} ${executionType}`
       case OrderSide.StopSell:
       case OrderSide.StopBuy:
         return `${t('trade.stopLoss')} ${executionType}`
+      case OrderSide.SellPO:
+      case OrderSide.BuyPO:
+      case OrderSide.Sell:
+      case OrderSide.Buy:
+        return executionType
       default:
         return ''
     }
@@ -190,18 +197,18 @@ export function useOrderHistory(
     const orderState = OrderState
 
     switch (order.value.state) {
-      case orderState.Booked:
-        return t('trade.open')
-      case orderState.PartialFilled:
-        return t('trade.partialFilled')
       case orderState.PartiallyFilled:
         return t('trade.partiallyFilled')
-      case orderState.Filled:
-        return t('trade.filled')
-      case orderState.Canceled:
-        return t('trade.cancelled')
+      case orderState.PartialFilled:
+        return t('trade.partialFilled')
       case orderState.Triggered:
         return t('trade.triggered')
+      case orderState.Canceled:
+        return t('trade.cancelled')
+      case orderState.Booked:
+        return t('trade.open')
+      case orderState.Filled:
+        return t('trade.filled')
       default: {
         return ''
       }

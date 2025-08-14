@@ -1,23 +1,23 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 import {
   MsgSend,
   MsgDeposit,
   MsgWithdraw,
-  TokenStatic,
   MsgExternalTransfer,
   denomAmountToChainDenomAmountToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { prepareOrderMessages } from '@/app/utils/msgs'
-import { backupPromiseCall } from '@/app/utils/async'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 export const deposit = async ({
   amount,
   token,
   subaccountId
 }: {
-  amount: BigNumberInBase
   token: TokenStatic
   subaccountId?: string
+  amount: BigNumberInBase
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -29,7 +29,7 @@ export const deposit = async ({
 
   await walletStore.validate()
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: token.denom,
     amount: denomAmountToChainDenomAmountToFixed({
       value: amount.toFixed(),
@@ -50,13 +50,13 @@ export const deposit = async ({
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, message]
+    messages: [...cw20Messages, message]
   })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
-      accountStore.fetchCw20Balances(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
     ])
   )
 }
@@ -66,9 +66,9 @@ export const withdraw = async ({
   token,
   subaccountId
 }: {
-  amount: BigNumberInBase
   token: TokenStatic
   subaccountId?: string
+  amount: BigNumberInBase
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -94,7 +94,9 @@ export const withdraw = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  await sharedBackupPromiseCall(() =>
+    accountStore.fetchAccountPortfolioBalances()
+  )
 }
 
 export const transfer = async ({
@@ -103,27 +105,30 @@ export const transfer = async ({
   memo,
   destination
 }: {
-  amount: string
   denom: string
   memo?: string
+  amount: string
   destination: string
 }) => {
-  const tokenStore = useTokenStore()
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
+  const sharedTokenStore = useSharedTokenStore()
   const sharedWalletStore = useSharedWalletStore()
 
   if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  const token = tokenStore.tokenByDenomOrSymbol(denom) as TokenStatic
+  const token = sharedTokenStore.tokenByDenomOrSymbol(denom) as TokenStatic
 
   await walletStore.validate()
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: token.denom,
-    amount: new BigNumberInBase(amount).toWei(token.decimals).toFixed()
+    amount: sharedToBalanceInWei({
+      value: amount,
+      decimalPlaces: token.decimals
+    }).toFixed()
   })
 
   const message = MsgSend.fromJSON({
@@ -131,19 +136,22 @@ export const transfer = async ({
     dstInjectiveAddress: destination,
     amount: {
       denom,
-      amount: new BigNumberInBase(amount).toWei(token.decimals).toFixed()
+      amount: sharedToBalanceInWei({
+        value: amount,
+        decimalPlaces: token.decimals
+      }).toFixed()
     }
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, message],
+    messages: [...cw20Messages, message],
     memo
   })
 
-  backupPromiseCall(() =>
+  sharedBackupPromiseCall(() =>
     Promise.all([
-      accountStore.fetchCw20Balances(),
-      accountStore.fetchAccountPortfolioBalances()
+      accountStore.fetchAccountPortfolioBalances(),
+      ...(cw20Messages.length > 0 ? [accountStore.fetchCw20Balances()] : [])
     ])
   )
 }
@@ -156,12 +164,12 @@ export const externalTransfer = async ({
   dstSubaccountId,
   token
 }: {
-  amount: BigNumberInBase
   denom: string
   memo?: string
+  token: TokenStatic
+  amount: BigNumberInBase
   srcSubaccountId: string
   dstSubaccountId: string
-  token: TokenStatic
 }) => {
   const walletStore = useWalletStore()
   const accountStore = useAccountStore()
@@ -185,7 +193,9 @@ export const externalTransfer = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages, memo })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  await sharedBackupPromiseCall(() =>
+    accountStore.fetchAccountPortfolioBalances()
+  )
 }
 
 export const withdrawToMain = async () => {
@@ -221,5 +231,7 @@ export const withdrawToMain = async () => {
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  await backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  await sharedBackupPromiseCall(() =>
+    accountStore.fetchAccountPortfolioBalances()
+  )
 }

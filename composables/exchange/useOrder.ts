@@ -1,12 +1,15 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
   UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { UiSpotMarket, UiMarketWithToken } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type {
+  SpotLimitOrder,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 
 export function useOrder(
   order: Ref<SpotLimitOrder | DerivativeLimitOrder>,
@@ -15,12 +18,10 @@ export function useOrder(
   const derivativeStore = useDerivativeStore()
   const spotStore = useSpotStore()
 
-  const markets: UiMarketWithToken[] = isSpot
-    ? spotStore.markets
-    : derivativeStore.markets
-
   const market = computed(() =>
-    markets.find((m) => m.marketId === order.value.marketId)
+    isSpot
+      ? spotStore.marketByIdOrSlug(order.value.marketId)
+      : derivativeStore.marketByIdOrSlug(order.value.marketId)
   )
 
   const priceDecimals = computed(() =>
@@ -54,8 +55,8 @@ export function useOrder(
     switch ((order.value as DerivativeLimitOrder).orderType) {
       case OrderSide.TakeBuy:
       case OrderSide.StopBuy:
-      case OrderSide.Buy:
       case OrderSide.BuyPO:
+      case OrderSide.Buy:
         return true
       default:
         return false

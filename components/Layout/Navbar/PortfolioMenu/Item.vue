@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { LocationAsRelativeRaw } from 'vue-router'
 import { NuxtUiIcons } from '@shared/types'
-import { MenuItem, NavChild, NavLink, PortfolioCyTags } from '@/types'
+import { PortfolioCyTags } from '@/types'
+import type { LocationAsRelativeRaw } from 'vue-router'
+import type { NavLink, MenuItem, NavChild } from '@/types'
 
 const route = useRoute()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(defineProps<{ item: MenuItem }>(), {})
 
@@ -29,6 +31,10 @@ const isActiveLink = computed(() => {
 })
 
 const isShowItem = computed(() => {
+  if (props.item.isDesktopOnly) {
+    return lg.value
+  }
+
   if (props.item.isConnectedOnly) {
     return sharedWalletStore.isUserConnected
   }
@@ -52,7 +58,7 @@ function closeMenu() {
       v-bind="{ label: item.label }"
     >
       <div
-        class="flex nav-menu items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 select-none cursor-pointer border border-transparent text-xs"
+        class="flex items-center space-x-3 p-3 rounded-md hover:bg-coolGray-800 cursor-pointer border border-transparent text-xs font-medium"
         @click="closeMenu"
       >
         <div class="flex-1">

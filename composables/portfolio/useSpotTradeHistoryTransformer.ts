@@ -1,13 +1,14 @@
 import { format } from 'date-fns'
-import { SharedUiSpotTrade } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { DATE_TIME_DISPLAY } from '@/app/utils/constants'
 import {
   TradeExecutionType,
-  PortfolioSpotTradeHistoryTableColumn,
-  TransformedPortfolioSpotTradeHistory
+  PortfolioSpotTradeHistoryTableColumn
 } from '@/types'
+import type { SharedUiSpotTrade } from '@shared/types'
+import type { TransformedPortfolioSpotTradeHistory } from '@/types'
 
 export function useSpotTradeHistoryTransformer(
   tradeList: ComputedRef<SharedUiSpotTrade[]>
@@ -24,9 +25,7 @@ export function useSpotTradeHistoryTransformer(
 
   const rows = computed(() =>
     tradeList.value.reduce((list, trade) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === trade.marketId
-      )
+      const market = spotStore.marketByIdOrSlug(trade.marketId)
 
       if (!market) {
         return list
@@ -34,7 +33,10 @@ export function useSpotTradeHistoryTransformer(
 
       const quantity = !trade.quantity
         ? ZERO_IN_BASE
-        : new BigNumberInWei(trade.quantity).toBase(market.baseToken.decimals)
+        : sharedToBalanceInTokenInBase({
+            value: trade.quantity,
+            decimalPlaces: market.baseToken.decimals
+          })
 
       const tradeExecutionType =
         tradeExecutionMap[trade.tradeExecutionType] || t('trade.limit')
@@ -55,7 +57,10 @@ export function useSpotTradeHistoryTransformer(
 
       const fee = !trade.fee
         ? ZERO_IN_BASE
-        : new BigNumberInWei(trade.fee).toBase(market.quoteToken.decimals)
+        : sharedToBalanceInTokenInBase({
+            value: trade.fee,
+            decimalPlaces: market.quoteToken.decimals
+          })
 
       list.push({
         trade,

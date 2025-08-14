@@ -3,10 +3,12 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { MarketKey, IsSpotKey, UiSpotMarket, PortfolioStatusKey } from '@/types'
+import { MarketKey, IsSpotKey, PortfolioStatusKey } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const route = useRoute()
 const spotStore = useSpotStore()
+const swapStore = useSwapStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
@@ -18,12 +20,10 @@ const portfolioStatus = inject(
   new Status(StatusType.Loading)
 )
 
-const market = computed(() =>
-  spotStore.markets.find(
-    (market) =>
-      market.slug === route.params.slug ||
-      market.marketId === route.query.marketId
-  )
+const market = computed(
+  () =>
+    spotStore.marketByIdOrSlug(route.params.slug as string) ||
+    spotStore.marketByIdOrSlug(route.query.marketId as string)
 )
 
 useSpotOrderbook(computed(() => market.value))
@@ -43,6 +43,7 @@ onMounted(async () => {
   status.setLoading()
 
   Promise.all([
+    swapStore.fetchRoutes(),
     spotStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker

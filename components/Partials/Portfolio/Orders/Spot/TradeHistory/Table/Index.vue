@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { SharedUiSpotTrade } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import {
-  LOW_FEE_AMOUNT_THRESHOLD,
-  UI_DEFAULT_FEE_MIN_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { PortfolioSpotTradeHistoryTableColumn } from '@/types'
+import type { SharedUiSpotTrade } from '@shared/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -15,7 +10,7 @@ const props = withDefaults(defineProps<{ trades: SharedUiSpotTrade[] }>(), {})
 
 const { rows } = useSpotTradeHistoryTransformer(computed(() => props.trades))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioSpotTradeHistoryTableColumn.Time,
     label: t(
@@ -72,7 +67,7 @@ const columns = [
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>
@@ -114,10 +109,12 @@ const columns = [
 
       <template #price-data="{ row }">
         <div class="flex items-center justify-end p-2">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.price.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
         </div>
@@ -125,10 +122,12 @@ const columns = [
 
       <template #amount-data="{ row }">
         <div class="flex items-center justify-end p-2">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -137,12 +136,9 @@ const columns = [
       <template #fee-data="{ row }">
         <div class="flex-1 flex items-center justify-end p-2">
           <p class="flex">
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.fee.toFixed(),
-                decimalPlaces: row.fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
-                  ? UI_DEFAULT_FEE_MIN_DECIMALS
-                  : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+                amount: row.fee.toFixed()
               }"
             />
             <span class="ml-1 text-coolGray-500">
@@ -154,10 +150,11 @@ const columns = [
 
       <template #total-data="{ row }">
         <div class="flex justify-end pr-2">
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              amount: row.total.toFixed(),
-              decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: row.total.toFixed()
             }"
           />
           <span class="ml-1 text-coolGray-500">

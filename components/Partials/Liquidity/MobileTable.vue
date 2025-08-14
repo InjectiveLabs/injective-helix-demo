@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  UTableColumn,
   PortfolioSubPage,
   TradingInterface,
   TradingBotsSubPage,
   LiquidityRewardsPage,
-  TransformedLiquidity,
   LiquidityTableColumn
 } from '@/types'
+import type { UTableColumn, TransformedLiquidity } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -68,9 +67,9 @@ const filteredColumns = computed(() =>
 
           <AppTooltip
             v-if="campaign.userHasActiveLegacyStrategy"
-            is-warning
-            :content="$t('sgt.legacyBotWarning')"
             is-lg
+            is-warning
+            :content="$t('lpRewards.legacyBotWarning')"
           />
         </div>
 
@@ -82,7 +81,7 @@ const filteredColumns = computed(() =>
               query: { campaign: campaign.campaignId }
             }"
           >
-            {{ $t('campaign.rewardsDetails') }}
+            {{ $t('lpRewards.rewardsDetails') }}
           </NuxtLink>
 
           <NuxtLink
@@ -92,7 +91,7 @@ const filteredColumns = computed(() =>
               query: { market: campaign.market?.slug }
             }"
           >
-            {{ $t('campaign.addLiquidity') }}
+            {{ $t('lpRewards.addLiquidity') }}
           </NuxtLink>
         </div>
       </div>
@@ -100,10 +99,10 @@ const filteredColumns = computed(() =>
 
     <template #rewards-data>
       <p class="font-semibold text-sm mb-0.5">
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: campaign.totalRewardsInUsd.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            shouldAbbreviate: false,
+            amount: campaign.totalRewardsInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>
@@ -131,10 +130,12 @@ const filteredColumns = computed(() =>
 
     <template #volume-data>
       <p>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: campaign.marketVolumeInUsd.toFixed(),
-            decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            hideDecimals: true,
+            shouldAbbreviate: false,
+            roundingMode: BigNumberInBase.ROUND_UP,
+            amount: campaign.marketVolumeInUsd.toFixed()
           }"
         />
         <span class="ml-1">USD</span>

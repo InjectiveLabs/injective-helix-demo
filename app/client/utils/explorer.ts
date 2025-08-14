@@ -12,8 +12,8 @@ const getAttributeValue = (attributes: Attribute, key: string) =>
 
 export const getSwapAmountAndTokenFromTxHash = async (
   txHash: string
-): Promise<Record<string, string> | undefined> => {
-  const tokenStore = useTokenStore()
+): Promise<undefined | Record<string, string>> => {
+  const sharedTokenStore = useSharedTokenStore()
 
   /* Wait 3 seconds for indexer to process the tsx */
   await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -51,8 +51,8 @@ export const getSwapAmountAndTokenFromTxHash = async (
     return
   }
 
-  const inputToken = tokenStore.tokenByDenomOrSymbol(inputDenom)
-  const outputToken = tokenStore.tokenByDenomOrSymbol(outputDenom)
+  const inputToken = sharedTokenStore.tokenByDenomOrSymbol(inputDenom)
+  const outputToken = sharedTokenStore.tokenByDenomOrSymbol(outputDenom)
 
   if (!inputToken || !outputToken) {
     return

@@ -23,11 +23,11 @@ const activeType = ref(FilterList.Boosted)
               :class="[isActive ? 'text-blue-500' : 'text-coolGray-500']"
             >
               <span v-if="filterType === FilterList.Boosted">
-                {{ t('trade.boosted_markets') }}
+                {{ t('trade.boostedMarkets') }}
               </span>
 
               <span v-if="filterType === FilterList.Disqualified">
-                {{ t('trade.disqualified_markets') }}
+                {{ t('trade.disqualifiedMarkets') }}
               </span>
             </span>
           </template>

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_AGGREGATION_DECIMALS } from '~/app/utils/constants'
-import {
-  UTableColumn,
-  TransformedHistorySwap,
-  HistorySwapTableColumn
-} from '@/types'
+import { UI_DEFAULT_AGGREGATION_DECIMALS } from '@/app/utils/constants'
+import { HistorySwapTableColumn } from '@/types'
+import type { UTableColumn, TransformedHistorySwap } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -61,10 +58,12 @@ const filteredColumns = computed(() =>
         />
 
         <div>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: swap.sourceBalanceFormatted,
-              decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+              decimals: UI_DEFAULT_AGGREGATION_DECIMALS
             }"
           />
           {{ swap.sourceTokenWithBalance.token.symbol }}
@@ -83,10 +82,12 @@ const filteredColumns = computed(() =>
         />
 
         <div>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: swap.destinationBalanceFormatted,
-              decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+              decimals: UI_DEFAULT_AGGREGATION_DECIMALS
             }"
           />
           {{ swap.destinationTokenWithBalance.token.symbol }}
@@ -107,7 +108,7 @@ const filteredColumns = computed(() =>
         v-for="({ amount, symbol }, index) in swap.formattedFees"
         :key="`swap-history-${amount}-${symbol}-${index}`"
       >
-        <AppAmount v-bind="{ amount }" />
+        <SharedAmount v-bind="{ amount }" />
         <span class="ml-1">{{ symbol }}</span>
       </div>
     </template>

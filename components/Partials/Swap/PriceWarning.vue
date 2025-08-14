@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { SwapForm, SwapFormField } from '@/types'
+import { SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const swapFormValues = useFormValues<SwapForm>()
 const { inputToken, outputToken } = useSwap(swapFormValues)
 
@@ -10,7 +12,7 @@ const SLIPPAGE = 15
 
 const inputAmountUsd = computed(() => {
   if (!inputToken.value) {
-    return new BigNumberInBase(0)
+    return ZERO_IN_BASE
   }
 
   const inputAmount = new BigNumberInBase(
@@ -18,7 +20,7 @@ const inputAmountUsd = computed(() => {
   )
 
   return inputAmount.multipliedBy(
-    tokenStore.tokenUsdPrice(inputToken.value.token)
+    sharedTokenStore.tokenUsdPrice(inputToken.value.token)
   )
 })
 
@@ -32,7 +34,7 @@ const outputAmountUsd = computed(() => {
   )
 
   return outputAmount.multipliedBy(
-    tokenStore.tokenUsdPrice(outputToken.value.token)
+    sharedTokenStore.tokenUsdPrice(outputToken.value.token)
   )
 })
 
@@ -62,7 +64,7 @@ const slippage = computed(() => {
     class="bg-red-500 bg-opacity-10 p-4 rounded-lg mb-6"
   >
     <p class="text-sm text-red-500 leading-4">
-      {{ $t('trade.swap.priceWarning', { symbol: outputToken?.token.symbol }) }}
+      {{ $t('swap.priceWarning', { symbol: outputToken?.token.symbol }) }}
     </p>
   </article>
 </template>

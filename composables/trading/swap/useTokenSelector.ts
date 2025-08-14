@@ -1,8 +1,8 @@
-import { Route } from '@injectivelabs/sdk-ts'
 import { injToken, usdtToken } from '@shared/data/token'
-import { SharedBalanceWithTokenAndPrice } from '@shared/types'
 import { SWAP_LOW_LIQUIDITY_SYMBOLS } from '@/app/data/token'
-import { AccountBalance } from '@/types'
+import type { AccountBalance } from '@/types'
+import type { Route } from '@injectivelabs/sdk-ts'
+import type { SharedBalanceWithTokenAndPrice } from '@shared/types'
 
 export function useSwapTokenSelector({
   balances,
@@ -15,13 +15,13 @@ export function useSwapTokenSelector({
 }) {
   const swapStore = useSwapStore()
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   const tradableTokenMaps = computed(() =>
     swapStore.routes
       .filter(({ steps }) =>
         steps.every((routeMarketId) =>
-          spotStore.markets.find(({ marketId }) => routeMarketId === marketId)
+          spotStore.marketByIdOrSlug(routeMarketId)
         )
       )
       .reduce(
@@ -29,25 +29,29 @@ export function useSwapTokenSelector({
           const inputBalance = balances.value.find(
             ({ denom }) => denom === route.sourceDenom
           )
-          const inputToken = tokenStore.tokenByDenomOrSymbol(route.sourceDenom)
+          const inputToken = sharedTokenStore.tokenByDenomOrSymbol(
+            route.sourceDenom
+          )
 
           const inputTokenWithBalance = {
             token: inputToken,
             denom: route.sourceDenom,
             balance: inputBalance?.availableBalance || '0',
-            usdPrice: tokenStore.tokenUsdPrice(inputToken)
+            usdPrice: sharedTokenStore.tokenUsdPrice(inputToken)
           } as SharedBalanceWithTokenAndPrice
 
           const outputBalance = balances.value.find(
             ({ denom }) => denom === route.targetDenom
           )
-          const outputToken = tokenStore.tokenByDenomOrSymbol(route.targetDenom)
+          const outputToken = sharedTokenStore.tokenByDenomOrSymbol(
+            route.targetDenom
+          )
 
           const outputTokenWithBalance = {
             token: outputToken,
             denom: route.targetDenom,
             balance: outputBalance?.availableBalance || '0',
-            usdPrice: tokenStore.tokenUsdPrice(outputToken)
+            usdPrice: sharedTokenStore.tokenUsdPrice(outputToken)
           } as SharedBalanceWithTokenAndPrice
 
           if (!inputTokenWithBalance.token || !outputTokenWithBalance.token) {
@@ -95,13 +99,13 @@ export function useSwapTokenSelector({
           const balance = balances.value.find(
             (balance) => balance.denom === denom
           )
-          const token = tokenStore.tokenByDenomOrSymbol(denom)
+          const token = sharedTokenStore.tokenByDenomOrSymbol(denom)
 
           return {
             token,
             denom,
             balance: balance?.availableBalance || '0',
-            usdPrice: tokenStore.tokenUsdPrice(token)
+            usdPrice: sharedTokenStore.tokenUsdPrice(token)
           }
         })
         .filter(

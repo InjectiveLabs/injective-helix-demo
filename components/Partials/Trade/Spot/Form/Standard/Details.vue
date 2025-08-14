@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   MarketKey,
   TradeTypes,
@@ -41,7 +38,7 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
     shouldTruncate: true,
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
@@ -49,7 +46,7 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
     shouldTruncate: true,
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
@@ -84,10 +81,11 @@ function toggle() {
           >
             <span class="flex space-x-2">
               <span>&asymp;</span>
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  amount: totalWithFee.toFixed(),
-                  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  amount: totalWithFee.toFixed()
                 }"
               />
             </span>
@@ -105,10 +103,12 @@ function toggle() {
             class="space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: quantity.toFixed(),
-                decimalPlaces: spotMarket.quantityDecimals
+                decimals: spotMarket.quantityDecimals
               }"
               class="text-white"
             />
@@ -127,10 +127,12 @@ function toggle() {
             class="space-x-2 flex text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: total.toFixed(),
-                decimalPlaces: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals
               }"
               class="text-white"
             />
@@ -148,10 +150,12 @@ function toggle() {
             class="space-x-2 flex"
             :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: worstPrice.toFixed(),
-                decimalPlaces: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals
               }"
               class="text-white"
             />
@@ -165,7 +169,7 @@ function toggle() {
           v-if="spotFormValues[SpotTradeFormField.Type] !== TradeTypes.Limit"
           class="flex items-center text-xs font-medium"
         >
-          <p class="text-coolGray-450">{{ $t('trade.maker_taker_rate') }}</p>
+          <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
           <div class="flex-1 mx-2" />
           <p
             v-if="spotMarket"
@@ -178,7 +182,7 @@ function toggle() {
 
         <template v-else>
           <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.maker_rate') }}</p>
+            <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
             <div class="flex-1 mx-2" />
             <p
               v-if="spotMarket"
@@ -197,9 +201,11 @@ function toggle() {
               class="gap-x-2 flex"
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsEstFeeRebate)"
             >
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  decimalPlaces: 18,
+                  decimals: 18,
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: feeAmount.toFixed()
                 }"
                 class="text-white"

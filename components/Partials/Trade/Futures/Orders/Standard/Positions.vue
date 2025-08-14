@@ -1,6 +1,7 @@
-<script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import { Modal, BusEvents, MarketKey, UiDerivativeMarket } from '@/types'
+<script lang="ts" setup>
+import { Modal, MarketKey } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
@@ -13,7 +14,7 @@ const props = withDefaults(
   {}
 )
 
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 
 const filteredPositions = computed(() =>
   positionStore.subaccountPositions.filter((position) => {
@@ -38,7 +39,10 @@ function addTakeProfitStopLoss(position: PositionV2) {
 function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
-  useEventBus(BusEvents.SharePositionOpened).emit()
+}
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
 }
 </script>
 
@@ -57,25 +61,23 @@ function onSharePosition(position: PositionV2) {
 
   <CommonEmptyList
     v-if="!filteredPositions.length"
-    :message="'No Open Positions'"
+    :message="$t('trade.noOpenPositions')"
   />
 
   <ModalsAddMargin
     v-if="selectedPosition"
-    v-bind="{
-      position: selectedPosition
-    }"
+    v-bind="{ position: selectedPosition }"
   />
 
   <ModalsAddTakeProfitStopLoss
     v-if="selectedPosition"
-    v-bind="{
-      position: selectedPosition
-    }"
+    v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 
   <ModalsSharePositionPnl
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 </template>

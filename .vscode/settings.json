@@ -9,5 +9,5 @@
     "typescriptreact",
     "javascriptreact"
   ],
-  "prettier.enable": false
+  "prettier.enable": true
 }

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { LiquidityBotField, LiquidityBotForm, UiMarketWithToken } from '@/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { LiquidityBotField } from '@/types'
+import type { LiquidityBotForm, UiMarketWithToken } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const formValues = useFormValues<LiquidityBotForm>()
 const { subaccountPortfolioBalanceMap } = useBalance()
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
     isSingleColumn?: boolean
+    market: UiMarketWithToken
   }>(),
   {}
 )
@@ -52,11 +52,11 @@ const totalAmountInUsd = computed(() => {
   )
 
   const baseInUsd = baseAmountInBigNumber.times(
-    tokenStore.tokenUsdPrice(props.market.baseToken)
+    sharedTokenStore.tokenUsdPrice(props.market.baseToken)
   )
 
   const quoteInUsd = quoteAmountInBigNumber.times(
-    tokenStore.tokenUsdPrice(props.market.quoteToken)
+    sharedTokenStore.tokenUsdPrice(props.market.quoteToken)
   )
 
   return baseInUsd.plus(quoteInUsd).toString()
@@ -113,10 +113,10 @@ function setQuoteMax() {
   <div>
     <div class="sm:flex items-center justify-between">
       <p class="text-sm font-semibold">
-        {{ $t('liquidityBots.deposit') }}
+        {{ $t('tradingBots.liquidityBots.deposit') }}
       </p>
       <p class="text-sm text-coolGray-500 font-semibold">
-        {{ $t('liquidityBots.depositDescription') }}
+        {{ $t('tradingBots.liquidityBots.depositDescription') }}
       </p>
     </div>
 
@@ -129,7 +129,7 @@ function setQuoteMax() {
           <template #top>
             <div class="flex items-center justify-between pb-2">
               <p class="text-xs text-gray-400">
-                {{ $t('liquidityBots.depositAmount') }}
+                {{ $t('tradingBots.liquidityBots.depositAmount') }}
               </p>
               <div class="flex items-center gap-2">
                 <div
@@ -139,10 +139,12 @@ function setQuoteMax() {
                   {{ $t('common.max') }}
                 </div>
                 <div class="text-xs text-primary">
-                  <SharedAmountFormatter
-                    :max-decimal-places="3"
-                    :amount="baseBalance"
-                    :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      amount: baseBalance,
+                      shouldAbbreviate: false
+                    }"
                   />
                 </div>
               </div>
@@ -171,7 +173,7 @@ function setQuoteMax() {
           <template #top>
             <div class="flex items-center justify-between pb-2">
               <p class="text-xs text-gray-400">
-                {{ $t('liquidityBots.depositAmount') }}
+                {{ $t('tradingBots.liquidityBots.depositAmount') }}
               </p>
               <div class="flex items-center gap-2">
                 <div
@@ -181,10 +183,12 @@ function setQuoteMax() {
                   {{ $t('common.max') }}
                 </div>
                 <div class="text-xs text-primary">
-                  <SharedAmountFormatter
-                    :max-decimal-places="3"
-                    :amount="quoteBalance"
-                    :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      amount: quoteBalance,
+                      shouldAbbreviate: false
+                    }"
                   />
                 </div>
               </div>

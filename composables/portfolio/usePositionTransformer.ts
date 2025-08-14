@@ -1,51 +1,54 @@
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { isTradingBotSubaccountId } from '@/app/utils/helpers'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
-import { PositionTableColumn, TransformedPosition } from '@/types'
-import { isTradingbotSubaccountId } from '@/app/utils/helpers'
+import { PositionTableColumn, ConditionalOrderSide } from '@/types'
+import type { TransformedPosition } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 export function usePositionTransformer(
   positionList: ComputedRef<PositionV2[]>
 ) {
   const authZStore = useAuthZStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
   const derivativeStore = useDerivativeStore()
   const gridStrategyStore = useGridStrategyStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const rows = computed(() =>
     positionList.value.reduce((list, position) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === position.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
       if (!market) {
         return list
       }
 
-      const margin = new BigNumberInWei(position.margin).toBase(
-        market.quoteToken.decimals
-      )
+      const margin = sharedToBalanceInTokenInBase({
+        value: position.margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const markPriceFromStream =
         derivativeStore.marketMarkPriceMap[market.marketId || '']
 
       const markPriceNotScaled = markPriceFromStream
         ? new BigNumberInBase(markPriceFromStream.price)
-        : new BigNumberInWei(position.markPrice).toBase(
-            market.quoteToken.decimals
-          )
+        : sharedToBalanceInTokenInBase({
+            value: position.markPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
 
       const markPrice = calculateScaledMarkPrice({
         market,
         markPriceNotScaled
       })
 
-      const price = new BigNumberInWei(position.entryPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: position.entryPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const pnl = new BigNumberInBase(position.quantity)
         .times(markPrice.minus(price))
@@ -53,13 +56,23 @@ export function usePositionTransformer(
 
       const quantity = new BigNumberInBase(position.quantity)
 
+      const usedQuantity = derivativeStore.subaccountOrders.reduce(
+        (sum, order) => {
+          return order.isReduceOnly && order.marketId === market.marketId
+            ? sum.plus(order.quantity)
+            : sum
+        },
+        ZERO_IN_BASE
+      )
+
       const percentagePnl = pnl.isNaN()
         ? ZERO_IN_BASE
         : new BigNumberInBase(pnl.dividedBy(margin).times(100))
 
-      const liquidationPriceData = new BigNumberInWei(
-        position.liquidationPrice
-      ).toBase(market.quoteToken.decimals)
+      const liquidationPriceData = sharedToBalanceInTokenInBase({
+        value: position.liquidationPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const liquidationPrice = liquidationPriceData.gt(0)
         ? liquidationPriceData
@@ -90,7 +103,35 @@ export function usePositionTransformer(
 
       const quantityInUsd = quantity
         .times(markPrice)
-        .times(tokenStore.tokenUsdPrice(market.quoteToken) || 0)
+        .times(sharedTokenStore.tokenUsdPrice(market.quoteToken) || 0)
+
+      const tpOrder = derivativeStore.subaccountConditionalOrders.find(
+        (order) =>
+          order.marketId === position.marketId &&
+          (order.orderType === ConditionalOrderSide.TakeBuy ||
+            order.orderType === ConditionalOrderSide.TakeSell)
+      )
+
+      const tpTriggerPrice = tpOrder
+        ? sharedToBalanceInTokenInBase({
+            value: tpOrder.triggerPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
+        : undefined
+
+      const slOrder = derivativeStore.subaccountConditionalOrders.find(
+        (order) =>
+          order.marketId === position.marketId &&
+          (order.orderType === ConditionalOrderSide.StopBuy ||
+            order.orderType === ConditionalOrderSide.StopSell)
+      )
+
+      const slTriggerPrice = slOrder
+        ? sharedToBalanceInTokenInBase({
+            value: slOrder.triggerPrice,
+            decimalPlaces: market.quoteToken.decimals
+          })
+        : undefined
 
       list.push({
         pnl,
@@ -98,8 +139,11 @@ export function usePositionTransformer(
         position,
         quantity,
         markPrice,
+        usedQuantity,
         percentagePnl,
         quantityInUsd,
+        tpTriggerPrice,
+        slTriggerPrice,
         liquidationPrice,
         effectiveLeverage,
         hasActiveStrategy,
@@ -109,8 +153,10 @@ export function usePositionTransformer(
         subaccountId: position.subaccountId,
         priceDecimals: market.priceDecimals,
         quantityDecimals: market.quantityDecimals,
+        hasTpSl: !!tpTriggerPrice || !!slTriggerPrice,
+        availableQuantity: quantity.minus(usedQuantity),
         hasReduceOnlyOrders: !!reduceOnlyCurrentOrders.length,
-        isTradingBotSubaccount: !!isTradingbotSubaccountId(
+        isTradingBotSubaccount: !!isTradingBotSubaccountId(
           position.subaccountId
         ),
         [PositionTableColumn.Market]: market,

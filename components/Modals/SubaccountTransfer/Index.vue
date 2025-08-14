@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { injToken } from '@shared/data/token'
-import { BigNumberInBase, Status } from '@injectivelabs/utils'
+import { Status, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, SubaccountTransferField, SubaccountTransferForm } from '@/types'
+import { Modal, SubaccountTransferField } from '@/types'
+import type { SubaccountTransferForm } from '@/types'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -128,9 +129,10 @@ function nonDefaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+      notificationStore.update({
+        title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)
@@ -150,9 +152,10 @@ function defaultSubaccountTransfer() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+      notificationStore.update({
+        title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)
@@ -172,9 +175,10 @@ function defaultSubaccountWithdraw() {
       token: formValues[SubaccountTransferField.Token]
     })
     .then(() => {
-      notificationStore.success({
-        title: t('account.transferToSubaccountSuccess')
+      notificationStore.update({
+        title: t('toast.account.transferToSubaccountSuccess')
       })
+
       resetForm()
     })
     .catch($onError)
@@ -262,12 +266,12 @@ function closeModal() {
             @update:max="onAmountChange"
             @update:denom="onTokenChange"
           >
-            <span> {{ $t('account.amount') }} </span>
+            <span> {{ $t('common.amount') }} </span>
           </AppSelectToken>
         </div>
 
         <div v-else class="mt-6 text-center text-coolGray-300 text-sm">
-          {{ t('account.noAssetToTransfer') }}
+          {{ t('common.account.noAssetToTransfer') }}
         </div>
       </div>
 
@@ -279,7 +283,7 @@ function closeModal() {
         @click="onSubaccountTransfer"
       >
         <span class="font-semibold">
-          {{ $t('account.transfer') }}
+          {{ $t('common.transfer') }}
         </span>
       </AppButton>
     </div>

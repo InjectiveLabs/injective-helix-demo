@@ -13,13 +13,13 @@ const { value: postOnlyValue } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2
+    <AppCheckbox
       v-model="postOnlyValue"
       class="w-full text-white"
       :disabled="jsonStore.isPostUpgradeMode"
       :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsPostOnly)"
     >
       {{ $t('trade.postOnly') }}
-    </AppCheckbox2>
+    </AppCheckbox>
   </div>
 </template>

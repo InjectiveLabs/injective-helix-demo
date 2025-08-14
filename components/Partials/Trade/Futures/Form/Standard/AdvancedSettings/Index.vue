@@ -7,9 +7,22 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 import type { DerivativesTradeForm } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 const jsonStore = useSharedJsonStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const emit = defineEmits<{
+  'tpsl:add': [position: PositionV2]
+}>()
+
+withDefaults(
+  defineProps<{
+    estLiquidationPrice: BigNumberInBase
+  }>(),
+  {}
+)
 
 const isOpen = ref(false)
 
@@ -21,6 +34,10 @@ const isLimit = computed(
 
 function toggle() {
   isOpen.value = !isOpen.value
+}
+
+function addTpSl(position: PositionV2) {
+  emit('tpsl:add', position)
 }
 </script>
 
@@ -71,19 +88,6 @@ function toggle() {
           "
         />
 
-        <PartialsTradeFuturesFormStandardAdvancedSettingsSlippage
-          v-if="
-            [
-              DerivativeTradeTypes.Market,
-              DerivativeTradeTypes.StopMarket
-            ].includes(
-              derivativeFormValues[
-                DerivativesTradeFormField.Type
-              ] as DerivativeTradeTypes
-            )
-          "
-        />
-
         <PartialsTradeFuturesFormStandardAdvancedSettingsTpSl
           v-if="
             [DerivativeTradeTypes.Market].includes(
@@ -92,6 +96,8 @@ function toggle() {
               ] as DerivativeTradeTypes
             )
           "
+          v-bind="{ estLiquidationPrice }"
+          @tpsl:add="addTpSl"
         />
       </div>
     </AppCollapse>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { BotType } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 enum ShowcaseTab {
   All = 'All',
@@ -35,7 +35,7 @@ const formattedStrategies = computed(() => [
   ...derivativeFormattedStrategies.value
 ])
 
-const items = [
+const items = computed(() => [
   {
     label: t('tradingBots.all'),
     value: ShowcaseTab.All
@@ -52,12 +52,12 @@ const items = [
     label: t('tradingBots.volumeBoost'),
     value: ShowcaseTab.Liquidity
   }
-]
+])
 
 const activeTab = computed({
-  get: () => items.findIndex((item) => item.value === selectedTab.value),
+  get: () => items.value.findIndex((item) => item.value === selectedTab.value),
   set: (value) => {
-    selectedTab.value = items[value].value
+    selectedTab.value = items.value[value].value
   }
 })
 

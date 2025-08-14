@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { isPgtSubaccountId, isSgtSubaccountId } from '@/app/utils/helpers'
-import { PortfolioCyTags, StrategyStatus } from '@/types'
+import { StrategyStatus, PortfolioCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +34,7 @@ const showUnverifiedAssets = computed({
 })
 
 const isGridTradingAccount = computed(() => {
-  const activeStrategy = gridStrategyStore.activeStrategies.find(
+  const activeStrategy = gridStrategyStore.strategies.find(
     ({ subaccountId }) => subaccountId === accountStore.subaccountId
   )
 
@@ -66,16 +66,19 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
       <p
         class="text-xs text-coolGray-300 px-4 max-lg:py-3 flex items-center space-x-2"
       >
-        <span>{{ $t('account.total') }}: </span>
+        <span>{{ $t('common.total') }}: </span>
         <CommonSkeletonSubaccountAmount>
           <span :data-cy="dataCyTag(PortfolioCyTags.SubAccountTotalBalance)">
-            <span>$</span>
-            <AppUsdBalanceAmount
+            <SharedAmountUsd
               v-bind="{
                 amount: accountTotalBalanceInUsdToBigNumber.toFixed()
               }"
               :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalValue)"
-            />
+            >
+              <template #prefix>
+                <span>$</span>
+              </template>
+            </SharedAmountUsd>
           </span>
         </CommonSkeletonSubaccountAmount>
       </p>
@@ -90,9 +93,9 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
       </div>
       <input
         v-model="search"
-        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
-        placeholder="Filter by asset"
+        :placeholder="$t('portfolio.filters.byAsset')"
         :data-cy="dataCyTag(PortfolioCyTags.AssetSearch)"
+        class="p-2 bg-transparent min-w-0 focus:outline-none flex-1 shrink-[2]"
       />
     </label>
 
@@ -104,9 +107,9 @@ const { valueToBigNumber: accountTotalBalanceInUsdToBigNumber } =
     </div>
 
     <div class="flex items-center px-2 max-md:py-2 shrink-0 overflow-hidden">
-      <AppCheckbox2 v-model="showUnverifiedAssets">
-        {{ $t('account.showUnverifiedAssets') }}
-      </AppCheckbox2>
+      <AppCheckbox v-model="showUnverifiedAssets">
+        {{ $t('portfolio.showUnverifiedAssets') }}
+      </AppCheckbox>
     </div>
   </div>
 </template>

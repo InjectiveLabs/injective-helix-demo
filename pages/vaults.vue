@@ -5,43 +5,27 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { MITO_VAULTS } from '@/app/data/liquidityProvision'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
-  MitoRegistrationMode,
-  LiquidityProvisionType,
-  LiquidityProvisionMitoCard,
-  LiquidityProvisionTypeOption,
-  VaultsCyTags
+  VaultType,
+  VaultsCyTags,
+  VaultTypeOption,
+  MitoRegistrationMode
 } from '@/types'
+import type { LiquidityProvisionMitoCard } from '@/types'
 
 const modalStore = useSharedModalStore()
 const liquidityProvisionStore = useLiquidityProvisionStore()
 const { $onError } = useNuxtApp()
 
 const selectedVaultUrl = ref('')
-const type = ref(LiquidityProvisionTypeOption.All)
+const type = ref(VaultTypeOption.All)
 const status = reactive(new Status(StatusType.Loading))
 
-onMounted(() => {
-  status.setLoading()
-
-  Promise.all([
-    liquidityProvisionStore.fetchMitoVaults(),
-    liquidityProvisionStore.fetchMitoStakingPools()
-  ])
-    .catch($onError)
-    .finally(() => status.setIdle())
-})
-
 const vaults = computed(() => {
-  if (
-    ![
-      LiquidityProvisionTypeOption.All,
-      LiquidityProvisionTypeOption.Mito
-    ].includes(type.value)
-  ) {
+  if (![VaultTypeOption.All, VaultTypeOption.Mito].includes(type.value)) {
     return []
   }
 
@@ -68,7 +52,7 @@ const vaults = computed(() => {
         tvl: vault.currentTvl,
         marketId: vault.marketId,
         vaultType: vault.vaultType,
-        type: LiquidityProvisionType.MitoVault,
+        type: VaultType.MitoVault,
         contractAddress: vault.contractAddress,
         isPermissionless:
           vault.registrationMode === MitoRegistrationMode.Permissionless
@@ -85,6 +69,17 @@ const vaults = computed(() => {
     })
 })
 
+onMounted(() => {
+  status.setLoading()
+
+  Promise.all([
+    liquidityProvisionStore.fetchMitoVaults(),
+    liquidityProvisionStore.fetchMitoStakingPools()
+  ])
+    .catch($onError)
+    .finally(() => status.setIdle())
+})
+
 function onSelectVault(vaultUrl: string) {
   selectedVaultUrl.value = vaultUrl
   modalStore.openModal(Modal.MitoRedirect)
@@ -98,10 +93,10 @@ function onSelectVault(vaultUrl: string) {
         class="text-2xl font-semibold"
         :data-cy="dataCyTag(VaultsCyTags.title)"
       >
-        {{ $t('liquidityProvision.title') }}
+        {{ $t('vault.title') }}
       </h2>
       <p class="text-coolGray-300 mt-2">
-        {{ $t('liquidityProvision.description') }}
+        {{ $t('vault.description') }}
       </p>
 
       <div
@@ -110,9 +105,7 @@ function onSelectVault(vaultUrl: string) {
         <PartialsLiquidityProvisionItemMitoVault
           v-for="vault in vaults"
           :key="`${vault.marketId}-${vault.type}`"
-          v-bind="{
-            vault
-          }"
+          v-bind="{ vault }"
           @update:selected-vault-url="onSelectVault"
         />
       </div>

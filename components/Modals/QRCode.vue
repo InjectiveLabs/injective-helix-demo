@@ -14,7 +14,7 @@ const formattedAddress = computed(() =>
 
 function onCopyAddress() {
   copy(sharedWalletStore.address)
-  notificationStore.success({ title: t('connect.copiedAddress') })
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
 }
 </script>
 

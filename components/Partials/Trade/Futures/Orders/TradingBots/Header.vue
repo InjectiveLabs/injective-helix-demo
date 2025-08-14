@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { SharedDropdownOption } from '@shared/types'
-import { PerpetualMarketCyTags, PerpOrdersTradingBotsView } from '@/types'
+import {
+  BusEvents,
+  PerpetualMarketCyTags,
+  PerpOrdersTradingBotsView
+} from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const breakpoints = useSharedBreakpoints()
 const derivativeStore = useDerivativeStore()
@@ -10,8 +14,8 @@ const lg = breakpoints['3xl']
 
 const props = withDefaults(
   defineProps<{
-    modelValue: PerpOrdersTradingBotsView
     positionsLength: number
+    modelValue: PerpOrdersTradingBotsView
   }>(),
   {}
 )
@@ -24,34 +28,40 @@ const view = useVModel(props, 'modelValue', emit)
 
 const options = computed<SharedDropdownOption[]>(() => [
   {
-    display: `activity.${PerpOrdersTradingBotsView.ActiveStrategies}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.ActiveStrategies}`,
     value: PerpOrdersTradingBotsView.ActiveStrategies,
     description: `${gridStrategyStore.activeStrategies.length}`
   },
   {
-    display: `activity.${PerpOrdersTradingBotsView.RemovedStrategies}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.RemovedStrategies}`,
     value: PerpOrdersTradingBotsView.RemovedStrategies,
     description: `${gridStrategyStore.removedStrategies.length}`
   },
   {
-    display: `activity.${PerpOrdersTradingBotsView.Positions}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.Positions}`,
     value: PerpOrdersTradingBotsView.Positions,
     description: `${props.positionsLength}`
   },
   {
-    display: `activity.${PerpOrdersTradingBotsView.OpenOrders}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.OpenOrders}`,
     value: PerpOrdersTradingBotsView.OpenOrders,
     description: `${derivativeStore.subaccountOrdersCount}`
   },
   {
-    display: `activity.${PerpOrdersTradingBotsView.OrderHistory}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.OrderHistory}`,
     value: PerpOrdersTradingBotsView.OrderHistory
   },
   {
-    display: `activity.${PerpOrdersTradingBotsView.TradeHistory}`,
+    display: `trade.tab.${PerpOrdersTradingBotsView.TradeHistory}`,
     value: PerpOrdersTradingBotsView.TradeHistory
   }
 ])
+
+onMounted(() => {
+  useEventBus(BusEvents.GoToPerpOrdersView).on(() => {
+    view.value = PerpOrdersTradingBotsView.OpenOrders
+  })
+})
 </script>
 
 <template>

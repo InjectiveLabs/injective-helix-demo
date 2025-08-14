@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import {
-  LOW_FEE_AMOUNT_THRESHOLD,
-  UI_DEFAULT_FEE_MIN_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
-import {
+import { PortfolioSpotTradeHistoryTableColumn } from '@/types'
+import type {
   UTableColumn,
-  TransformedPortfolioSpotTradeHistory,
-  PortfolioSpotTradeHistoryTableColumn
+  TransformedPortfolioSpotTradeHistory
 } from '@/types'
 
 const props = withDefaults(
@@ -72,31 +67,32 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #price-data>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: trade.price.toFixed(),
-          decimalPlaces: trade.priceDecimals
+          decimals: trade.priceDecimals
         }"
       />
     </template>
 
     <template #amount-data>
-      <AppAmount
+      <SharedAmount
         v-bind="{
+          useSubscript: true,
+          shouldAbbreviate: false,
           amount: trade.quantity.toFixed(),
-          decimalPlaces: trade.quantityDecimals
+          decimals: trade.quantityDecimals
         }"
       />
     </template>
 
     <template #fee-data>
       <p class="flex">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: trade.fee.toFixed(),
-            decimalPlaces: trade.fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
-              ? UI_DEFAULT_FEE_MIN_DECIMALS
-              : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+            amount: trade.fee.toFixed()
           }"
         />
         <span class="ml-1 text-coolGray-500">
@@ -107,10 +103,11 @@ const filteredColumns = computed(() =>
 
     <template #total-data>
       <div class="flex">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: trade.total.toFixed(),
-            decimalPlaces: UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: trade.total.toFixed()
           }"
         />
         <span class="ml-1 text-coolGray-500">

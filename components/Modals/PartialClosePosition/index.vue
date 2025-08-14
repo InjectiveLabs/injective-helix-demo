@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { indexerDerivativesApi } from '@shared/Service'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   Status,
   BigNumber,
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
-import { indexerDerivativesApi } from '@shared/Service'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
-import { Modal, BusEvents, TransformedPosition } from '@/types'
+import { Modal, BusEvents, PartialLimitField } from '@/types'
+import type { TransformedPosition } from '@/types'
 
 const modalStore = useSharedModalStore()
 const notificationStore = useSharedNotificationStore()
@@ -25,25 +27,21 @@ const emit = defineEmits<{
   'position:close': []
   'position:set': [value: undefined]
   'position:setQuantity': [value: string]
+  'position:setLimitPrice': [value: string]
 }>()
 
-const partialOptions = [
+const partialOptions = computed(() => [
   { label: '25%', value: 25 },
   { label: '50%', value: 50 },
   { label: '75%', value: 75 },
   { label: t('common.max'), value: 100 }
-]
+])
 
-const availableQuantity = ref('0')
+const isMarketPositionClose = ref(true)
 const status = reactive(new Status(StatusType.Idle))
 
-const {
-  valueToFixed: availableQuantityToFixed,
-  valueToString: availableQuantityToString,
-  valueToBigNumber: availableQuantityToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() => new BigNumberInBase(availableQuantity.value)),
-  { decimalPlaces: props.row.quantityDecimals }
+const availableQuantity = computed(() =>
+  isMarketPositionClose.value ? props.row.quantity : props.row.availableQuantity
 )
 
 const {
@@ -51,20 +49,110 @@ const {
   errorMessage: quantityErrorMessage,
   setValue: setQuantityValue
 } = useStringField({
-  name: 'positionQuantity',
-  rule: 'required',
+  name: PartialLimitField.PositionQuantity,
   dynamicRule: computed(
-    () => `maxValuePositionQuantity:${availableQuantityToFixed.value}`
+    () =>
+      `maxValuePositionQuantity:${availableQuantity.value.toFixed(
+        props.row.quantityDecimals
+      )}`
   )
 })
 
+const {
+  value: priceValue,
+  errorMessage: priceErrorMessage,
+  setValue: setPriceValue
+} = useStringField({
+  name: PartialLimitField.PositionPrice,
+  dynamicRule: computed(() => {
+    const formattedLiquidationPrice = props.row.liquidationPrice.toFixed(
+      props.row.priceDecimals
+    )
+
+    if (props.row.position.direction === TradeDirection.Long) {
+      return `minValue:${formattedLiquidationPrice}`
+    }
+
+    return `maxValue:${formattedLiquidationPrice}`
+  })
+})
+
+const isSubmitButtonDisabled = computed(() => {
+  const isQuantityInputError =
+    !!quantityErrorMessage.value ||
+    new BigNumberInBase(quantityValue.value).isNaN()
+
+  const isPriceInputError =
+    !!priceErrorMessage.value || new BigNumberInBase(priceValue.value).isNaN()
+
+  if (isMarketPositionClose.value) {
+    return isQuantityInputError
+  }
+
+  return (
+    isPriceInputError ||
+    isQuantityInputError ||
+    props.row.availableQuantity.lte(0)
+  )
+})
+
+function onSelectMarketPositionClose() {
+  isMarketPositionClose.value = true
+  setPriceValue('0')
+}
+
+function onSelectLimitPositionClose() {
+  isMarketPositionClose.value = false
+  setPriceValue(props.row.markPrice.toFixed(props.row.priceDecimals))
+}
+
+function onCloseModal() {
+  emit('position:set', undefined)
+  useEventBus(BusEvents.SetPositionStatusIdle).emit()
+}
+
 function selectPartialOption(quantityPercentage: number) {
   setQuantityValue(
-    availableQuantityToBigNumber.value
+    availableQuantity.value
       .times(quantityPercentage)
       .dividedBy(100)
-      .toFixed(props.row.quantityDecimals)
+      .toFixed(props.row.quantityDecimals, BigNumber.ROUND_DOWN)
   )
+}
+
+async function closePosition() {
+  try {
+    emit('position:setQuantity', quantityValue.value)
+    emit('position:setLimitPrice', priceValue.value)
+
+    if (!props.row.market) {
+      return false
+    }
+
+    if (props.row.pnl.isNaN()) {
+      notificationStore.error({ title: t('toast.trade.noLiquidity') })
+
+      return false
+    }
+
+    status.setLoading()
+
+    if (isMarketPositionClose.value) {
+      const isShowWarningModal = await validateSlippage()
+
+      if (isShowWarningModal) {
+        modalStore.openModal(Modal.ClosePositionWarning)
+
+        return
+      }
+    }
+
+    emit('position:close')
+  } catch {
+    useEventBus(BusEvents.SetPositionStatusIdle).emit()
+  } finally {
+    modalStore.closeModal(Modal.PartialClosePosition)
+  }
 }
 
 async function validateSlippage() {
@@ -92,47 +180,6 @@ async function validateSlippage() {
 
   return slippagePercentage.gt(5)
 }
-
-async function closePosition() {
-  try {
-    emit('position:setQuantity', quantityValue.value)
-
-    if (!props.row.market) {
-      return false
-    }
-
-    if (props.row.pnl.isNaN()) {
-      notificationStore.error({ title: t('trade.no_liquidity') })
-
-      return false
-    }
-
-    status.setLoading()
-
-    const isShowWarningModal = await validateSlippage()
-
-    if (isShowWarningModal) {
-      modalStore.openModal(Modal.ClosePositionWarning)
-
-      return
-    }
-
-    emit('position:close')
-  } catch (error) {
-    useEventBus(BusEvents.SetPositionStatusIdle).emit()
-  } finally {
-    modalStore.closeModal(Modal.PartialClosePosition)
-  }
-}
-
-function onCloseModal() {
-  emit('position:set', undefined)
-  useEventBus(BusEvents.SetPositionStatusIdle).emit()
-}
-
-onMounted(() => {
-  availableQuantity.value = props.row.position.quantity
-})
 </script>
 
 <template>
@@ -140,73 +187,94 @@ onMounted(() => {
     v-model="modalStore.modals[Modal.PartialClosePosition]"
     @on:close="onCloseModal"
   >
-    <template #title>
-      <p class="font-semibold">
-        {{ $t('partialPositionClose.marketTitle') }}
-      </p>
-    </template>
+    <div>
+      <div>
+        <h4 class="text-xl capitalize text-coolGray-100 font-medium">
+          {{ $t('trade.partialClosePositionModal.marketTitle') }}
+        </h4>
 
-    <div class="flex flex-col text-xs">
-      <div class="flex gap-4 justify-between border-b py-2">
-        <h5 class="text-coolGray-450 font-semibold">
-          {{ $t('partialPositionClose.totalPositionSize') }}:
-        </h5>
-        <span class="font-mono">
-          {{ availableQuantityToString }} {{ row.market.baseToken.symbol }}
-        </span>
+        <ModalsPartialClosePositionTypeSelector
+          v-bind="{ isMarketPositionClose }"
+          @limit-order:select="onSelectLimitPositionClose"
+          @market-order:select="onSelectMarketPositionClose"
+        />
       </div>
 
-      <div class="flex gap-4 justify-between border-b py-2">
-        <h5 class="text-coolGray-450 font-semibold">
-          {{ $t('partialPositionClose.marketPrice') }}:
-        </h5>
-        <span>{{ $t('home.market') }}</span>
-      </div>
+      <div class="flex flex-col text-sm">
+        <ModalsPartialClosePositionInfo
+          v-bind="{
+            row,
+            availableQuantity,
+            isMarketPositionClose
+          }"
+        />
 
-      <div class="flex flex-col gap-2 mt-4">
-        <h5 class="font-semibold">{{ $t('trade.quantity') }}</h5>
+        <div class="flex flex-col gap-2 mt-8">
+          <h5 class="font-semibold">{{ $t('trade.quantity') }}</h5>
 
-        <div class="relative">
-          <AppInputField
-            v-model="quantityValue"
-            v-bind="{
-              noStyle: true,
-              alignLeft: true,
-              placeholder: '0.00',
-              decimals: row.quantityDecimals,
-              inputClasses:
-                'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
-            }"
-          />
-
-          <div
-            class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
-          >
-            <ModalsPartialClosePositionOption
-              v-for="(option, index) in partialOptions"
-              :key="index"
-              v-bind="{ label: option.label, value: option.value }"
-              @option:update="selectPartialOption"
+          <div class="relative">
+            <AppInputField
+              v-model="quantityValue"
+              v-bind="{
+                noStyle: true,
+                alignLeft: true,
+                placeholder: '0.00',
+                decimals: row.quantityDecimals,
+                inputClasses:
+                  'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+              }"
             />
+
+            <div
+              class="flex gap-4 absolute right-3 top-1/2 -translate-y-1/2 bg-brand-875 p-1"
+            >
+              <ModalsPartialClosePositionOption
+                v-for="(option, index) in partialOptions"
+                :key="index"
+                v-bind="{ label: option.label, value: option.value }"
+                @option:update="selectPartialOption"
+              />
+            </div>
           </div>
+
+          <p v-if="quantityErrorMessage" class="error-message">
+            {{ quantityErrorMessage }}
+          </p>
         </div>
 
-        <p v-if="quantityErrorMessage" class="error-message">
-          {{ quantityErrorMessage }}
-        </p>
-      </div>
+        <div v-if="!isMarketPositionClose" class="flex flex-col gap-2 mt-8">
+          <h5 class="font-semibold">{{ $t('trade.price') }}</h5>
 
-      <AppButton
-        class="w-full mt-6"
-        v-bind="{
-          status,
-          disabled:
-            !!quantityErrorMessage || new BigNumberInBase(quantityValue).isNaN()
-        }"
-        @click="closePosition"
-      >
-        {{ $t('common.confirm') }}
-      </AppButton>
+          <div class="relative">
+            <AppInputField
+              v-model="priceValue"
+              v-bind="{
+                noStyle: true,
+                alignLeft: true,
+                placeholder: '0.00',
+                decimals: row.priceDecimals,
+                inputClasses:
+                  'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+              }"
+            />
+          </div>
+
+          <p v-if="priceErrorMessage" class="error-message">
+            {{ priceErrorMessage }}
+          </p>
+        </div>
+
+        <AppButton
+          class="mt-10 py-1.5 px-6 ml-auto"
+          v-bind="{
+            status,
+            disabled: isSubmitButtonDisabled
+          }"
+          @click="closePosition"
+        >
+          {{ $t('common.confirm') }}
+        </AppButton>
+      </div>
     </div>
   </AppModal>
 </template>

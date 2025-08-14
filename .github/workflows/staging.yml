@@ -9,7 +9,7 @@ jobs:
   staging:
     if: false
     name: 'Deploy to staging'
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     timeout-minutes: 30
     env:
       ## Public
@@ -51,12 +51,14 @@ jobs:
       VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
       VITE_BUGSNAG_KEY: ${{ secrets.VITE_BUGSNAG_KEY }}
       VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
+      VITE_TURNKEY_ORGID: ${{ secrets.VITE_TURNKEY_ORGID }}
       VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
       VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
       VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
       VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
       VITE_ONRAMPER_API_KEY_DEV: ${{ secrets.VITE_ONRAMPER_API_KEY_DEV }}
       VITE_ONRAMPER_API_KEY_PROD: ${{ secrets.VITE_ONRAMPER_API_KEY_PROD }}
+      VITE_TURNKEY_GOOGLE_CLIENT_ID: ${{ secrets.VITE_TURNKEY_GOOGLE_CLIENT_ID }}
       VITE_WALLET_CONNECT_PROJECT_ID: ${{ secrets.VITE_WALLET_CONNECT_PROJECT_ID }}
 
       VITE_GOOGLE_ANALYTICS_KEY: ${{ secrets.VITE_GOOGLE_ANALYTICS_KEY }}
@@ -80,7 +82,7 @@ jobs:
           fetch-depth: 0
 
       - name: Using Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: useblacksmith/setup-node@v5
         with:
           node-version: 20.x
 

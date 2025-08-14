@@ -48,7 +48,9 @@ async function createStrategy() {
   await gridStrategyStore
     .createPerpStrategy(derivativeFormValues.value, market.value)
     .then(() => {
-      notificationStore.success({ title: t('common.success') })
+      notificationStore.update({
+        title: t('toast.tradingBots.tradingBotCreatedSuccessfully')
+      })
     })
     .catch($onError)
     .finally(() => {
@@ -72,7 +74,7 @@ async function createStrategy() {
         {{ $t('common.unauthorized') }}
       </span>
 
-      <span v-else>{{ $t('sgt.create') }}</span>
+      <span v-else>{{ $t('tradingBots.createStrategy') }}</span>
     </AppButton>
   </div>
 </template>

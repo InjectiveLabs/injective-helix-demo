@@ -26,16 +26,17 @@ const filteredTopNavMenu = computed(() =>
 <template>
   <header
     :class="[
-      'w-full z-50 fixed top-0 left-0',
+      'w-full z-50 fixed top-0 left-0 px-4 md:px-6',
       route.name === MainPage.Index ? '' : 'bg-brand-900'
     ]"
+    class="overflow-x-hidden"
   >
     <div
       :class="['flex py-3', route.name === MainPage.Index ? '' : 'border-b']"
     >
       <NuxtLink
         to="/"
-        class="pl-6 pr-4 mr-4 flex justify-center items-center cursor-pointer"
+        class="pr-4 mr-4 flex justify-center items-center cursor-pointer"
       >
         <AssetLogo class="h-6 w-8 lg:h-8 lg:w-8 aspect-square" alt="Helix" />
       </NuxtLink>

@@ -6,10 +6,8 @@ import {
   DATE_TIME_DISPLAY,
   DEFAULT_TRUNCATE_LENGTH
 } from '@/app/utils/constants'
-import {
-  HistoryWalletTableColumn,
-  UiSubaccountTransactionWithToken
-} from '@/types'
+import { HistoryWalletTableColumn } from '@/types'
+import type { UiSubaccountTransactionWithToken } from '@/types'
 
 export function useHistoryWalletTransformer(
   transactionList: ComputedRef<UiSubaccountTransactionWithToken[]>
@@ -25,10 +23,10 @@ export function useHistoryWalletTransformer(
       const transferType =
         transaction.sender.startsWith('0x') &&
         transaction.receiver.startsWith('0x')
-          ? t('walletHistory.subaccountInternalTransferType')
+          ? t('portfolio.walletHistory.subaccountInternalTransferType')
           : transaction.sender.startsWith('0x')
-          ? t('walletHistory.subaccountWithdrawalType')
-          : t('walletHistory.subaccountDepositType')
+            ? t('portfolio.walletHistory.subaccountWithdrawalType')
+            : t('portfolio.walletHistory.subaccountDepositType')
 
       const amount = !transaction.amount
         ? ZERO_IN_BASE

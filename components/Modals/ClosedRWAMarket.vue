@@ -1,25 +1,26 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { rwaMarketsInIAssets } from '@/app/data/market'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
   MarketKey,
   RwaMarketField,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 const modalStore = useSharedModalStore()
 const derivativeFormValues = useFormValues()
-const { t } = useI18n()
+const { t } = useLang()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 useForm()
 
-const props = withDefaults(defineProps<{ worstPrice: String }>(), {})
+const props = withDefaults(defineProps<{ worstPrice: string }>(), {})
 const emit = defineEmits<{
   'terms:agreed': []
 }>()
@@ -34,63 +35,42 @@ const { marketMarkPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
-const isNyseMarket = computed(() =>
-  jsonStore.helixMarketCategoriesMap.iAssets.includes(
-    derivativeMarket.value.marketId
-  )
+const isRwaMarket = computed(
+  () =>
+    jsonStore.helixMarketCategoriesMap.rwa.includes(
+      derivativeMarket.value.marketId
+    ) || rwaMarketsInIAssets.includes(derivativeMarket.value.marketId)
 )
 
 const executionPrice = computed(() => {
   switch (derivativeFormValues.value[DerivativesTradeFormField.Type]) {
-    case DerivativeTradeTypes.Limit:
+    case DerivativeTradeTypes.StopMarket:
+      return (
+        derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || ''
+      )
+    case DerivativeTradeTypes.StopLimit:
       return (
         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || ''
       )
     case DerivativeTradeTypes.Market:
       return props.worstPrice
-    case DerivativeTradeTypes.StopLimit:
+    case DerivativeTradeTypes.Limit:
       return (
         derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || ''
-      )
-    case DerivativeTradeTypes.StopMarket:
-      return (
-        derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || ''
       )
     default:
       return props.worstPrice
   }
 })
 
-const { valueToString: executionPriceToString } = useSharedBigNumberFormatter(
-  computed(() => executionPrice.value),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
+const priceDeviation = computed(() => {
+  const numerator = new BigNumberInBase(executionPrice.value).minus(
+    marketMarkPrice.value
+  )
+  const denominator = marketMarkPrice.value
 
-const { valueToString: markPriceToString } = useSharedBigNumberFormatter(
-  computed(() => marketMarkPrice.value),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: priceDeviationToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    const numerator = new BigNumberInBase(executionPrice.value).minus(
-      marketMarkPrice.value
-    )
-    const denominator = marketMarkPrice.value
-
-    return Math.abs(numerator.div(denominator).toNumber()) * 100
-  }),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS,
-    displayAbsoluteDecimalPlace: true
-  }
-)
+  return Math.abs(numerator.div(denominator).toNumber()) * 100
+})
 
 const priceLabel = computed(() => {
   const tradeType = derivativeFormValues.value[DerivativesTradeFormField.Type]
@@ -150,22 +130,10 @@ function confirm() {
 
       <div class="mt-6 text-sm lg:text-base">
         <i18n-t
-          v-if="isNyseMarket"
-          keypath="trade.rwa.nyseMarketClosedTrade"
+          v-if="isRwaMarket"
+          keypath="trade.rwa.marketClosedTrade"
           tag="p"
         >
-          <template #nyseClosedTimes>
-            <NuxtLink
-              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
-              to="https://docs.pyth.network/price-feeds/market-hours"
-              target="_blank"
-            >
-              <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
-            </NuxtLink>
-          </template>
-        </i18n-t>
-
-        <i18n-t v-else keypath="trade.rwa.marketClosedTrade" tag="p">
           <template #marketClosedTimes>
             <NuxtLink
               class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
@@ -173,6 +141,18 @@ function confirm() {
               target="_blank"
             >
               <strong>{{ $t('trade.rwa.rwaClosedTimes') }}</strong>
+            </NuxtLink>
+          </template>
+        </i18n-t>
+
+        <i18n-t v-else keypath="trade.rwa.nyseMarketClosedTrade" tag="p">
+          <template #nyseClosedTimes>
+            <NuxtLink
+              class="opacity-75 cursor-pointer text-blue-500 hover:opacity-50"
+              to="https://docs.pyth.network/price-feeds/market-hours"
+              target="_blank"
+            >
+              <strong>{{ $t('trade.rwa.nyseClosedTimes') }}</strong>
             </NuxtLink>
           </template>
         </i18n-t>
@@ -194,7 +174,14 @@ function confirm() {
             {{ $t('trade.previousMarkPrice') }}
           </span>
           <span class="font-semibold">
-            {{ markPriceToString }}
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: marketMarkPrice,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
             {{ derivativeMarket.quoteToken.symbol }}
           </span>
         </div>
@@ -207,7 +194,14 @@ function confirm() {
           </span>
 
           <span class="font-semibold">
-            {{ executionPriceToString }}
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: executionPrice,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
             {{ derivativeMarket.quoteToken.symbol }}
           </span>
         </div>
@@ -218,7 +212,16 @@ function confirm() {
           <span class="text-white/30 text-sm">{{
             $t('trade.priceDeviation')
           }}</span>
-          <span class="font-semibold"> {{ priceDeviationToString }}% </span>
+          <span class="font-semibold">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: priceDeviation,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />%
+          </span>
         </div>
       </div>
 
@@ -231,10 +234,10 @@ function confirm() {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-6">
           <SharedButton variant="outline" block @click="closeModal">
-            {{ $t('trade.rwa.cancel') }}
+            {{ $t('common.cancel') }}
           </SharedButton>
           <SharedButton block :disabled="!termsAccepted" @click="confirm">
-            {{ $t('trade.rwa.confirm') }}
+            {{ $t('common.confirm') }}
           </SharedButton>
         </div>
       </div>

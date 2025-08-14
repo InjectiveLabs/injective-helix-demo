@@ -19,11 +19,11 @@ const tierLevelsWithZeroTierLevel = computed(
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('feeDiscounts.staked_amount') }}
+                {{ $t('feeDiscounts.stakedAmount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('feeDiscounts.staked_amount_tooltip')"
+                :content="$t('feeDiscounts.stakedAmountTooltip')"
               />
             </div>
           </th>
@@ -31,33 +31,33 @@ const tierLevelsWithZeroTierLevel = computed(
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('feeDiscounts.trading_volume') }}
+                {{ $t('feeDiscounts.tradingVolume') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('feeDiscounts.trading_volume_tooltip')"
+                :content="$t('feeDiscounts.tradingVolumeTooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('feeDiscounts.maker_rate_discount') }}
+                {{ $t('feeDiscounts.makerRateDiscount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('feeDiscounts.maker_rate_discount_tooltip')"
+                :content="$t('feeDiscounts.makerRateDiscountTooltip')"
               />
             </div>
           </th>
           <th class="text-right">
             <div class="flex items-center justify-end">
               <span>
-                {{ $t('feeDiscounts.taker_rate_discount') }}
+                {{ $t('feeDiscounts.takerRateDiscount') }}
               </span>
               <AppTooltip
                 class="ml-2"
-                :content="$t('feeDiscounts.taker_rate_discount_tooltip')"
+                :content="$t('feeDiscounts.takerRateDiscountTooltip')"
               />
             </div>
           </th>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
-import {
-  DEFAULT_TRUNCATE_LENGTH,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import { LeaderBoardCyTags } from '@/types'
+import type { LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -25,13 +25,7 @@ const formattedAddress = computed(() =>
   sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.leader.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const pnl = computed(() => new BigNumberInBase(props.leader.pnl))
 </script>
 
 <template>
@@ -52,7 +46,11 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
     </div>
 
     <div>
-      <span class="font-light font-mono">
+      <NuxtLink
+        target="_blank"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
+        class="font-light font-mono flex items-center gap-2 hover:text-white/70 transition-colors"
+      >
         <span class="lg:hidden text-xs lowercase">
           {{ formattedAddress }}
         </span>
@@ -63,7 +61,12 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         >
           {{ leader.account }}
         </span>
-      </span>
+
+        <UIcon
+          :class="[leader.rank > 3 ? 'size-4' : 'size-4 xl:size-[18px]']"
+          :name="NuxtUiIcons.ExternalLink2"
+        />
+      </NuxtLink>
     </div>
 
     <div>
@@ -71,7 +74,16 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         class="text-[13px] md:text-sm mr-4"
         :data-cy="dataCyTag(LeaderBoardCyTags.rankPnl)"
       >
-        {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
+        <SharedAmountUsd
+          v-bind="{
+            amount: pnl,
+            shouldAbbreviate: false
+          }"
+        >
+          <template #prefix>
+            {{ `${pnl.gte(0) ? '+' : ''}` }}
+          </template>
+        </SharedAmountUsd>
       </span>
     </div>
   </div>

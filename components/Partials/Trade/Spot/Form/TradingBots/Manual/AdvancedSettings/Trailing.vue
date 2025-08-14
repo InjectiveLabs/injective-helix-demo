@@ -55,17 +55,23 @@ const isEnabled = computed({
 
 <template>
   <div class="p-1 space-y-2">
-    <AppCheckbox2 v-model="isEnabled">
-      {{ $t('sgt.enableTrailing') }}
-    </AppCheckbox2>
+    <AppCheckbox v-model="isEnabled">
+      {{ $t('tradingBots.enableTrailing') }}
+    </AppCheckbox>
 
     <div v-if="isTrailingEnabled" class="space-y-2">
-      <AppInputField v-model="trailingUpper" :placeholder="$t('sgt.upper')" />
+      <AppInputField
+        v-model="trailingUpper"
+        :placeholder="$t('tradingBots.upper')"
+      />
       <p v-if="trailingUpperErrorMessage" class="error-message mt-2">
         {{ trailingUpperErrorMessage }}
       </p>
 
-      <AppInputField v-model="trailingLower" :placeholder="$t('sgt.lower')" />
+      <AppInputField
+        v-model="trailingLower"
+        :placeholder="$t('tradingBots.lower')"
+      />
       <p v-if="trailingLowerErrorMessage" class="error-message mt-2">
         {{ trailingLowerErrorMessage }}
       </p>

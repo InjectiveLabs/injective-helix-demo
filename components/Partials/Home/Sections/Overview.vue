@@ -1,35 +1,41 @@
 <script setup lang="ts">
+import { NuxtUiIcons } from '@shared/types'
+import { MainPage, TradeSubPage } from '@/types'
+
 enum OverviewSection {
-  AccountOverview = 'accountOverview',
+  GasFree = 'gasFree',
+  LpRewards = 'lpRewards',
   TradingBots = 'tradingBots',
-  Pnl = 'pnl',
-  GasFree = 'gasFree'
+  TradeStocks = 'tradeStocks'
 }
 
 const animationList = {
-  [OverviewSection.AccountOverview]: '1AccountOverview.json',
-  [OverviewSection.TradingBots]: '2TradingBots.json',
-  [OverviewSection.Pnl]: '3pnlAnalysis.json',
-  [OverviewSection.GasFree]: '4gasFees.json'
+  [OverviewSection.GasFree]: '4_gas_fees.json',
+  [OverviewSection.LpRewards]: '3_lp_rewards.json',
+  [OverviewSection.TradeStocks]: '2_trade_stocks.json',
+  [OverviewSection.TradingBots]: '1_trading_bots.json'
 }
 
-const activeType = ref(OverviewSection.AccountOverview)
+const activeType = ref(OverviewSection.TradingBots)
 
-const options = [
-  {
-    type: OverviewSection.AccountOverview,
-    title: 'home.overview.accountOverviewTitle',
-    description: 'home.overview.accountOverviewDescription'
-  },
+const overviewList = [
   {
     type: OverviewSection.TradingBots,
+    link: { name: MainPage.TradingBots },
     title: 'home.overview.tradingBotsTitle',
     description: 'home.overview.tradingBotsDescription'
   },
   {
-    type: OverviewSection.Pnl,
-    title: 'home.overview.pnlTitle',
-    description: 'home.overview.pnlDescription'
+    type: OverviewSection.TradeStocks,
+    link: { name: TradeSubPage.Stocks },
+    title: 'home.overview.tradeStocksTitle',
+    description: 'home.overview.tradeStocksDescription'
+  },
+  {
+    type: OverviewSection.LpRewards,
+    link: { name: MainPage.LpRewards },
+    title: 'home.overview.lpRewardsTitle',
+    description: 'home.overview.lpRewardsDescription'
   },
   {
     type: OverviewSection.GasFree,
@@ -51,12 +57,12 @@ onMounted(() => {
         pin: true,
         onUpdate: (self) => {
           if (self.progress === 1) {
-            activeType.value = options[options.length - 1].type
+            activeType.value = overviewList[overviewList.length - 1].type
             return
           }
 
-          const index = Math.floor(self.progress * options.length)
-          activeType.value = options[index].type
+          const index = Math.floor(self.progress * overviewList.length)
+          activeType.value = overviewList[index].type
         }
       }
     })
@@ -65,77 +71,75 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative lg:mb-16 gsap-section">
+  <div class="relative gsap-section">
     <img
       src="/svg/blurs/blur-1.svg"
-      class="absolute bottom-32 -right-[50%] -rotate-180 blur-xl"
+      class="absolute bottom-32 -right-[50%] -rotate-180 blur-xl pointer-events-none"
     />
 
     <img
       src="/svg/blurs/blur-1.svg"
-      class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl"
+      class="absolute -bottom-52 -left-[50%] -rotate-180 blur-xl pointer-events-none"
     />
 
-    <div id="overview-section" class="relative my-8 lg:py-20">
-      <div>
-        <div class="pb-4">
-          <h2
-            class="text-xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
+    <div id="overview-section" class="relative max-lg:mt-28 lg:py-20">
+      <h2
+        class="text-2xl lg:text-5xl pb-1 whitespace-pre-wrap text-center font-semibold text-white"
+      >
+        {{ $t('home.overview.title') }}
+      </h2>
+
+      <p class="text-center text-lg text-white mt-4">
+        {{ $t('home.overview.description') }}
+      </p>
+
+      <div class="flex max-lg:hidden mt-10 p-6 gap-16 bg-[#141620]">
+        <div class="space-y-10 lg:space-y-12 flex-1">
+          <SharedSelectorItem
+            v-for="item in overviewList"
+            :key="`home-${item.type}`"
+            v-model="activeType"
+            :value="item.type"
+            :class="{ 'text-white': activeType === item.type }"
+            class="hover:text-white cursor-pointer flex text-coolGray-475 transition-colors"
           >
-            <i18n-t keypath="home.overview.title">
-              <template #faster>
-                <span class="italic">{{ $t('home.overview.faster') }}</span>
-              </template>
-            </i18n-t>
-          </h2>
-          <p class="text-center text-lg text-white">
-            {{ $t('home.overview.experienceTrading') }}
-          </p>
+            <div class="flex-1 flex items-center">
+              <div class="flex-1 space-y-2">
+                <h2 class="text-2xl leading-8 font-semibold">
+                  {{ $t(item.title) }}
+                </h2>
+
+                <p class="text-lgleading-6min-h-12">
+                  {{ $t(item.description) }}
+                </p>
+              </div>
+
+              <NuxtLink
+                v-if="item.link"
+                :to="item.link"
+                class="p-2 inline-flex"
+              >
+                <UIcon class="size-6" :name="NuxtUiIcons.ExternalLink2" />
+              </NuxtLink>
+            </div>
+          </SharedSelectorItem>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-10">
-          <div class="space-y-12">
-            <SharedSelectorItem
-              v-for="item in options"
-              :key="`home-${item.type}`"
-              v-model="activeType"
-              class="hover:text-white cursor-pointer flex text-coolGray-475 transition-colors"
-              :class="{ 'text-white': activeType === item.type }"
-              :value="item.type"
-            >
-              <div class="flex-1 space-y-2 flex items-center space-x-6">
-                <div class="flex-1 space-y-2">
-                  <div class="flex items-center justify-between">
-                    <div class="flex justify-center items-center space-x-3">
-                      <h2
-                        class="text-xl xs:text-2xl xs:leading-8 font-semibold"
-                      >
-                        {{ $t(item.title) }}
-                      </h2>
-                    </div>
-                  </div>
-
-                  <p class="text-base lg:text-lg xs:leading-6 xs:min-h-12">
-                    {{ $t(item.description) }}
-                  </p>
-                </div>
-              </div>
-            </SharedSelectorItem>
-          </div>
-
-          <div class="flex justify-center items-center lg:ml-20">
-            <div class="max-lg:h-[400px]">
-              <Transition name="fade">
-                <CommonLottieAnimation
-                  :key="`home-${activeType}`"
-                  class="rounded-xl overflow-hidden"
-                  :name="animationList[activeType]"
-                />
-              </Transition>
-            </div>
-          </div>
+        <div class="flex justify-center items-center ml-20 min-w-[35%]">
+          <Transition name="fade" mode="out-in">
+            <CommonLottieAnimation
+              :key="`home-${activeType}`"
+              :name="animationList[activeType]"
+              class="rounded-xl overflow-hidden size-[360px]"
+            />
+          </Transition>
         </div>
       </div>
+
+      <PartialsHomeSectionsOverviewCarousel
+        class="hidden max-lg:block"
+        v-bind="{ overviewList, animationList }"
+      />
     </div>
   </div>
 </template>

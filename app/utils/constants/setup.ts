@@ -39,6 +39,10 @@ export const SWAP_CONTRACT_ADDRESS = IS_DEVNET
       ? 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
       : 'inj12yj3mtjarujkhcp6lg3klxjjfrx2v7v8yswgp9'
 
+export const FAUCET_ENDPOINT = IS_TESTNET
+  ? import.meta.env.VITE_FAUCET_TESTNET_API
+  : import.meta.env.VITE_FAUCET_MAINNET_API
+
 export const ONRAMPER_SIGNING_KEY =
   import.meta.env.VITE_ONRAMPER_SIGNING_KEY || ''
 export const IS_ONRAMPER_DEV_MODE =
@@ -50,4 +54,5 @@ export const BUGSNAG_KEY = import.meta.env.VITE_BUGSNAG_KEY || ''
 export const MIXPANEL_KEY = import.meta.env.VITE_MIXPANEL_KEY || ''
 export const FEE_RECIPIENT = import.meta.env.VITE_FEE_RECIPIENT || ''
 export const NEWSLETTER_API = import.meta.env.VITE_NEWSLETTER_API || ''
-export const SHEETDB_BEARER_TOKEN = import.meta.env.VITE_SHEETDB_BEARER || ''
+export const SHEETDB_BEARER_TOKEN =
+  import.meta.env.VITE_SHEETDB_BEARER_TOKEN || ''

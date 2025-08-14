@@ -1,19 +1,15 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
 import { Wallet, isCosmosWallet } from '@injectivelabs/wallet-base'
+import { getEip712TypedData } from '@/app/utils/wallet'
 import {
   CAMPAIGN_WINNER_MESSAGE,
   PAST_LEADERBOARD_CAMPAIGN_NAMES,
   CAMPAIGNS_WITH_ANNOUNCED_WINNERS,
   CAMPAIGNS_WITHOUT_WINNER_BANNER_OR_MODAL
 } from '@/app/data/campaign'
-import { getEip712TypedData } from '@/app/utils/wallet'
-import {
-  Modal,
-  MainPage,
-  CompetitionWinnerField,
-  CompetitionWinnerForm
-} from '@/types'
+import { Modal, MainPage, CompetitionWinnerField } from '@/types'
+import type { CompetitionWinnerForm } from '@/types'
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
@@ -48,7 +44,7 @@ const isShowBannerOrModal = computed(
 )
 
 const claimMessage = computed(() =>
-  sharedWalletStore.wallet !== Wallet.Magic
+  [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
     ? CAMPAIGN_WINNER_MESSAGE
     : JSON.stringify(
         getEip712TypedData(sharedWalletStore.address, CAMPAIGN_WINNER_MESSAGE)
@@ -123,13 +119,13 @@ async function onSubmit(signature: string) {
       wallet: sharedWalletStore.wallet,
       injectiveAddress: sharedWalletStore.injectiveAddress,
       ...(isCosmosWallet(sharedWalletStore.wallet) ||
-      sharedWalletStore.wallet === Wallet.Magic
+      [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
         ? { pubKey: accountStore.pubKey }
         : {})
     })
     .then(() => {
       notificationStore.success({
-        title: t('leaderboard.competition.winnerModal.receivedInformation')
+        title: t('toast.leaderboard.receivedInformation')
       })
     })
     .catch($onError)

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import { TokenSymbols } from '@/app/data/token'
-import { SwapForm, SwapFormField, SwapCyTags } from '@/types'
+import { SwapCyTags, SwapFormField } from '@/types'
+import type { SwapForm } from '@/types'
 
 const swapStore = useSwapStore()
 const setFormValues = useSetFormValues()
+const sharedJsonStore = useSharedJsonStore()
 const formValues = useFormValues<SwapForm>()
 const sharedWalletStore = useSharedWalletStore()
 const { query } = useRoute()
@@ -226,7 +228,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           @update:amount="getOutputQuantity"
           @update:denom="onInputDenomChange"
         >
-          <span>{{ $t('trade.swap.youPay') }}</span>
+          <span>{{ $t('swap.youPay') }}</span>
 
           <template #error>
             <div
@@ -269,7 +271,7 @@ function onMaxSelected({ amount }: { amount: string }) {
           @update:denom="onOutputDenomChange"
         >
           <span>
-            {{ $t('trade.swap.youReceive') }}
+            {{ $t('swap.youReceive') }}
           </span>
 
           <template #error>

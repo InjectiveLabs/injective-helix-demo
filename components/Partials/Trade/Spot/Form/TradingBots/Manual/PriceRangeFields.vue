@@ -4,13 +4,8 @@ import {
   GST_SINGLE_SIDED_THRESHOLD,
   GST_KAVA_SINGLE_SIDED_THRESHOLD
 } from '@/app/utils/constants'
-import {
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingForm,
-  SpotGridTradingField
-} from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -38,17 +33,18 @@ const { value: upperPriceValue, errorMessage: upperErrorMessage } =
         spotGridFormValues.value[SpotGridTradingField.LowerPrice] || 0
       }`
 
-      const singleSidedRule = `singleSided:@${
-        SpotGridTradingField.LowerPrice
-      },@${
-        SpotGridTradingField.UpperPrice
-      },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
-        marketUsesStableCoins.value
-          ? GST_KAVA_SINGLE_SIDED_THRESHOLD
-          : GST_SINGLE_SIDED_THRESHOLD
-      }`
+      // Temporary disabled single sided rule
+      // const singleSidedRule = `singleSided:@${
+      //   SpotGridTradingField.LowerPrice
+      // },@${
+      //   SpotGridTradingField.UpperPrice
+      // },${lastTradedPrice.value.toFixed()},${SpotGridTradingField.UpperPrice},${
+      //   marketUsesStableCoins.value
+      //     ? GST_KAVA_SINGLE_SIDED_THRESHOLD
+      //     : GST_SINGLE_SIDED_THRESHOLD
+      // }`
 
-      const rules = ['requiredSgt', greaterThanRule, singleSidedRule]
+      const rules = ['requiredSgt', greaterThanRule]
 
       if (
         spotGridFormValues.value[SpotGridTradingField.IsAssetRebalanceOn] &&
@@ -95,11 +91,11 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
 
 <template>
   <div class="space-y-4 mb-4">
-    <p class="field-label">1. {{ $t('sgt.priceRange') }}</p>
+    <p class="field-label">1. {{ $t('tradingBots.priceRange') }}</p>
 
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-2">
-        <p class="text-xs text-coolGray-450">{{ $t('sgt.lower') }}</p>
+        <p class="text-xs text-coolGray-450">{{ $t('tradingBots.lower') }}</p>
         <AppInputField
           v-model="lowerPriceValue"
           :disabled="isDisabled"
@@ -111,7 +107,7 @@ const { value: lowerPriceValue, errorMessage: lowerErrorMessage } =
       </div>
 
       <div class="space-y-2">
-        <p class="text-xs text-coolGray-450">{{ $t('sgt.upper') }}</p>
+        <p class="text-xs text-coolGray-450">{{ $t('tradingBots.upper') }}</p>
         <AppInputField
           v-model="upperPriceValue"
           :disabled="isDisabled"

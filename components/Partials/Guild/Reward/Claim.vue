@@ -1,23 +1,19 @@
 <script lang="ts" setup>
-import {
-  Status,
-  BigNumber,
-  StatusType,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { Coin } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import {
   GUILD_VOLUME_REWARD_CONTRACT,
-  GUILD_BALANCE_REWARD_CONTRACT
+  GUILD_BALANCE_REWARD_CONTRACT,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { RewardWithToken } from '@/types'
+import type { RewardWithToken } from '@/types'
+import type { Coin } from '@injectivelabs/sdk-ts'
 
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const sharedTokenStore = useSharedTokenStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 
 const props = withDefaults(
   defineProps<{
@@ -48,27 +44,18 @@ const hasReward = computed(() =>
   props.rewards.some(({ amount }) => new BigNumberInBase(amount).gt(0))
 )
 
-const { valueToString: scoreToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: props.score,
-      decimalPlaces: props.decimals
-    })
-  )
-)
-
-const { valueToString: percentageToString } = useSharedBigNumberFormatter(
-  computed(() => props.percentage),
-  {
-    roundingMode: BigNumber.ROUND_DOWN
-  }
+const score = computed(() =>
+  sharedToBalanceInToken({
+    value: props.score,
+    decimalPlaces: props.decimals
+  })
 )
 
 const rewardsWithToken = computed(
   () =>
     props.rewards
       .map((reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
         if (!token) {
           return undefined
@@ -104,9 +91,9 @@ function onClaimRewards() {
   campaignStore
     .claimReward(contractAddress)
     .then(() => {
-      notificationStore.success({
-        title: t('campaign.success'),
-        description: t('campaign.successfullyClaimedRewards')
+      notificationStore.update({
+        title: t('toast.success'),
+        description: t('toast.campaign.successfullyClaimedRewards')
       })
 
       hasUserClaimed.value = true
@@ -114,8 +101,8 @@ function onClaimRewards() {
     .catch((err: any) => {
       if ((err.originalMessage as string).includes('has already claimed')) {
         notificationStore.error({
-          title: t('campaign.error'),
-          description: t('campaign.errorAlreadyClaimed')
+          title: t('toast.error'),
+          description: t('toast.campaign.errorAlreadyClaimed')
         })
 
         return
@@ -157,7 +144,20 @@ function onClaimRewards() {
         </CommonHeaderTooltip>
       </p>
       <p class="text-sm leading-6">
-        {{ scoreToString }} USD ({{ percentageToString }}%)
+        <SharedAmountUsd
+          v-bind="{
+            amount: score,
+            shouldAbbreviate: false
+          }"
+        />
+        USD (<SharedAmount
+          v-bind="{
+            useSubscript: true,
+            amount: percentage,
+            shouldAbbreviate: false,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
+        />%)
       </p>
     </div>
 
@@ -191,7 +191,7 @@ function onClaimRewards() {
           class="font-semibold text-sm"
           :class="{ 'text-blue-500': !hasUserClaimed && isReadyToClaim }"
         >
-          {{ $t(`campaign.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
+          {{ $t(`common.${hasUserClaimed ? 'claimed' : 'claim'}`) }}
         </div>
       </AppButton>
     </div>

@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SharedDropdownOption } from '@shared/types'
-import {
-  MarketKey,
-  UiSpotMarket,
-  SpotOrdersStandardView,
-  SpotMarketCyTags
-} from '@/types'
+import { MarketKey, SpotMarketCyTags, SpotOrdersStandardView } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const isMobile = useIsMobile()
 const spotStore = useSpotStore()
@@ -37,17 +33,17 @@ const isTickerOnlyValue = useVModel(props, 'isTickerOnly', emit)
 const options = computed(() => {
   const items: SharedDropdownOption[] = [
     {
-      display: `activity.${SpotOrdersStandardView.Orders}`,
+      display: `trade.tab.${SpotOrdersStandardView.Orders}`,
       value: SpotOrdersStandardView.Orders,
       description: `${spotStore.subaccountOrdersCount}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.OrderHistory}`,
+      display: `trade.tab.${SpotOrdersStandardView.OrderHistory}`,
       value: SpotOrdersStandardView.OrderHistory,
       description: `${spotStore.subaccountOrderHistoryCount}`
     },
     {
-      display: `activity.${SpotOrdersStandardView.TradeHistory}`,
+      display: `trade.tab.${SpotOrdersStandardView.TradeHistory}`,
       value: SpotOrdersStandardView.TradeHistory,
       description: `${spotStore.subaccountTradesCount}`
     }
@@ -55,7 +51,7 @@ const options = computed(() => {
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
-      display: `activity.${SpotOrdersStandardView.Balances}`,
+      display: `trade.tab.${SpotOrdersStandardView.Balances}`,
       value: SpotOrdersStandardView.Balances
     })
   }
@@ -135,7 +131,7 @@ watch(
     </AppButtonSelect>
 
     <div class="flex items-center flex-1 justify-end px-2">
-      <AppCheckbox2
+      <AppCheckbox
         v-if="view !== SpotOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
@@ -144,14 +140,12 @@ watch(
         <span>
           {{ $t('trade.tickerOnly', { ticker: spotMarket.ticker }) }}
         </span>
-      </AppCheckbox2>
+      </AppCheckbox>
 
       <PartialsPortfolioOrdersSpotOpenOrdersCancelAllOrders
         v-if="view === SpotOrdersStandardView.Orders && !isMobile"
         v-bind="{ isTickerOnly }"
       />
     </div>
-
-    <div class="flex-1 lg:hidden" />
   </div>
 </template>

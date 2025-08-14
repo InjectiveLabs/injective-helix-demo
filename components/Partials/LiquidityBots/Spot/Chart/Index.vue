@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { TradingStrategy } from '@injectivelabs/sdk-ts'
-import { Status, BigNumberInBase } from '@injectivelabs/utils'
-import { LiquidityValues, UiMarketWithToken } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
+import type { LiquidityValues, UiMarketWithToken } from '@/types'
+import type { Status, BigNumberInBase } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
@@ -27,11 +27,13 @@ withDefaults(
     <div>
       <div class="flex justify-between items-center gap-1">
         <p class="text-2xl font-semibold flex gap-1.5 items-center">
-          <SharedAmountFormatter
-            :max-trailing-zeros="3"
-            :decimal-places="market.priceDecimals"
-            :max-decimal-places="market.priceDecimals"
-            :amount="lastTradedPrice.toFixed()"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: lastTradedPrice.toFixed(),
+              decimalPlaces: market.priceDecimals
+            }"
           />
           <span>{{ market.quoteToken.symbol }}</span>
         </p>
@@ -40,7 +42,7 @@ withDefaults(
           :class="`from-blue-500 to-blue-200 bg-gradient-to-r bg-clip-text text-sm font-semibold text-transparent px-2 py-1 rounded-md`"
         >
           {{
-            $t('liquidityBots.upToRewards', {
+            $t('tradingBots.liquidityBots.upToRewards', {
               amount: marketReward.amount,
               symbol: marketReward.symbol
             })

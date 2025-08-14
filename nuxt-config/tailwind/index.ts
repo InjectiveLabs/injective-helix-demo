@@ -36,9 +36,11 @@ export const colors = {
   },
 
   blue: {
+    333: '#9ECAFC',
     50: '#E8F3FD',
     100: '#D5EAFB',
     200: '#A7D2F6',
+    250: '#9ECAFC',
     300: '#7DBDF2',
     400: '#54A8ED',
     450: '#3399EC',
@@ -107,6 +109,7 @@ export const colors = {
     '100': '#d6f4ff',
     '200': '#b5edff',
     '300': '#83e4ff',
+    '350': '#80B5FF',
     '400': '#48d2ff',
     '500': '#1eb5ff',
     '600': '#0698ff',

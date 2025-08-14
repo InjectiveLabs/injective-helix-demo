@@ -1,23 +1,23 @@
 import { defineStore } from 'pinia'
 import { indexerDerivativesApi } from '@shared/Service'
-import { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
+import {
+  streamAccountPositions,
+  cancelAccountPositionsStream
+} from '@/store/position/stream'
 import {
   closePosition,
   closeAllPosition,
   addMarginToPosition,
   addMarginToSubaccountPosition
 } from '@/store/position/message'
-import {
-  streamAccountPositions,
-  cancelAccountPositionsStream
-} from '@/store/position/stream'
-import { ActivityFetchOptions } from '@/types'
+import type { ActivityFetchOptions } from '@/types'
+import type { Orderbook, PositionV2 } from '@injectivelabs/sdk-ts'
 
 type OrderBookMap = Record<string, Orderbook>
 
 type PositionStoreState = {
-  orderbooks: OrderBookMap
   positions: PositionV2[]
+  orderbooks: OrderBookMap
 }
 
 const initialStateFactory = (): PositionStoreState => ({

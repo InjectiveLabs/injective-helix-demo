@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const { value: tokenValue } = useStringField({
   name: 'token',
@@ -7,8 +7,8 @@ const { value: tokenValue } = useStringField({
 })
 
 const emit = defineEmits<{
-  'token:update': [market: string]
   'form:reset': []
+  'token:update': [market: string]
 }>()
 
 function onTokenChange(market: string) {
@@ -26,7 +26,7 @@ function onFormReset() {
 
     <div class="flex divide-x border-r">
       <CommonTabTokenSelector
-        v-bind="{ tokens: tokenStore.verifiedTokens }"
+        v-bind="{ tokens: sharedTokenStore.verifiedTokens }"
         v-model="tokenValue"
         @update:model-value="onTokenChange"
       />

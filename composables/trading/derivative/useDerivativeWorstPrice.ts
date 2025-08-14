@@ -37,7 +37,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       TradeAmountOption.Base
   )
 
-  const isStopOrder = computed(() =>
+  const isTriggerOrder = computed(() =>
     [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
       derivativeFormValues.value[
         DerivativesTradeFormField.Type
@@ -48,7 +48,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
   const feePercentage = computed(() =>
     (isLimitOrder.value &&
       derivativeFormValues.value[DerivativesTradeFormField.PostOnly]) ||
-    isStopOrder.value
+    isTriggerOrder.value
       ? market.value.makerFeeRate
       : market.value.takerFeeRate
   )
@@ -113,7 +113,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       slippagePercentage.value
     )
 
-    if (isStopOrder.value) {
+    if (isTriggerOrder.value) {
       return quantizeNumber(
         triggerPrice ? total.div(triggerPriceWithSlippage) : ZERO_IN_BASE,
         market.value.quantityTensMultiplier
@@ -173,7 +173,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       return quantizeNumber(worstPrice, market.value.priceTensMultiplier)
     }
 
-    if (isStopOrder.value) {
+    if (isTriggerOrder.value) {
       const priceWithSlippage = triggerPrice.times(slippagePercentage.value)
 
       return quantizeNumber(priceWithSlippage, market.value.priceTensMultiplier)
@@ -265,11 +265,11 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     quantity,
     feeAmount,
     worstPrice,
-    isStopOrder,
     isLimitOrder,
     feePercentage,
     totalNotional,
     marginWithFee,
+    isTriggerOrder,
     hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,

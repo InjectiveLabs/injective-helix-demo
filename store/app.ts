@@ -1,44 +1,48 @@
 import { defineStore } from 'pinia'
+import { alchemyKey } from '@shared/wallet/alchemy'
+import { fetchGasPrice } from '@shared/services/ethGasPrice'
+import { GeneralException } from '@injectivelabs/exceptions'
 import {
   NETWORK,
   CHAIN_ID,
   DEFAULT_GAS_PRICE,
   ETHEREUM_CHAIN_ID
 } from '@shared/utils/constant'
-import { alchemyKey } from '@shared/wallet/alchemy'
-import { fetchGasPrice } from '@shared/services/ethGasPrice'
-import { GeneralException } from '@injectivelabs/exceptions'
-import { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
-import {
-  isCountryRestrictedForSpotMarket,
-  isCountryRestrictedForPerpetualMarkets,
-  isCountryRestricted
-} from '@/app/data/geoip'
 import { tendermintApi } from '@/app/Services'
-import { DEFAULT_SLIPPAGE } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import {
-  Modal,
+  DEFAULT_SLIPPAGE,
+  DEFAULT_100_CHART_CANDLE_BAR_SPACING
+} from '@/app/utils/constants'
+import {
+  isCountryRestricted,
+  isCountryRestrictedForSpotMarket,
+  isCountryRestrictedForPerpetualMarkets
+} from '@/app/data/geoip'
+import {
   NoticeBanner,
   TradingLayout,
-  DontShowAgain,
   OrderbookLayout,
   TradingChartInterval
 } from '@/types'
+import type { Modal, HelixCtaToast } from '@/types'
+import type { ChainId, EthereumChainId } from '@injectivelabs/ts-types'
 
 export interface UserBasedState {
-  hasAcceptedTerms: boolean
   modalsViewed: Modal[]
-  bannersViewed: NoticeBanner[]
-  dontShowAgain: DontShowAgain[]
+  hasAcceptedTerms: boolean
   favoriteMarkets: string[]
+  bannersViewed: NoticeBanner[]
   marketSlippageIdMap: Record<string, string>
+  dontShowAgain: Array<Modal | NoticeBanner | HelixCtaToast>
 
   preferences: {
     isHideBalances: boolean
-    authZManagement: boolean
     futuresLeverage: string
+    authZManagement: boolean
+    selectedLanguage: string
     thousandsSeparator: boolean
+    chartZoomPreference: number
     tradingLayout: TradingLayout
     subaccountManagement: boolean
     orderbookLayout: OrderbookLayout
@@ -50,18 +54,18 @@ export interface UserBasedState {
 }
 
 type AppStoreState = {
-  blockHeight: number
-
   // App Settings
   chainId: ChainId
+
   gasPrice: string
-  ethereumChainId: EthereumChainId
+  blockHeight: number
+  // User settings
+  userState: UserBasedState
 
   // Dev Mode
   devMode: boolean | undefined
 
-  // User settings
-  userState: UserBasedState
+  ethereumChainId: EthereumChainId
 }
 
 const initialStateFactory = (): AppStoreState => ({
@@ -85,6 +89,7 @@ const initialStateFactory = (): AppStoreState => ({
     marketSlippageIdMap: {},
 
     preferences: {
+      selectedLanguage: '',
       futuresLeverage: '1',
       isHideBalances: false,
       authZManagement: false,
@@ -95,7 +100,8 @@ const initialStateFactory = (): AppStoreState => ({
       tradingLayout: TradingLayout.Left,
       skipExperimentalConfirmationModal: false,
       orderbookLayout: OrderbookLayout.Default,
-      tradingChartInterval: TradingChartInterval.D
+      tradingChartInterval: TradingChartInterval.D,
+      chartZoomPreference: DEFAULT_100_CHART_CANDLE_BAR_SPACING
     }
   }
 })
@@ -223,7 +229,31 @@ export const useAppStore = defineStore('app', {
       })
     },
 
-    setUserState(userState: Object) {
+    setChartZoomPreference(number: number) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          chartZoomPreference: number
+        }
+      })
+    },
+
+    setSelectedLanguage(selectedLocale: string) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          selectedLanguage: selectedLocale
+        }
+      })
+    },
+
+    setUserState(userState: object) {
       const appStore = useAppStore()
 
       // we have to use patch for values that we are caching in localStorage, this ensure that the payload is passed to the persistState function
@@ -242,11 +272,24 @@ export const useAppStore = defineStore('app', {
 
       const hasAcceptedTerms = appStore.userState.hasAcceptedTerms
 
+      const isIAssetBannerViewed = appStore.userState.bannersViewed.find(
+        (item) => item === NoticeBanner.IAssets
+      )
+
       appStore.$patch({
-        ...initialState
+        ...initialState,
+        userState: {
+          ...initialState.userState,
+          dontShowAgain: appStore.userState.dontShowAgain,
+          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : [],
+          preferences: {
+            ...appStore.userState.preferences,
+            selectedLanguage: appStore.userState.preferences.selectedLanguage
+          }
+        }
       })
 
-      appStore.userState = { ...initialState.userState, hasAcceptedTerms }
+      appStore.userState.hasAcceptedTerms = hasAcceptedTerms
     }
   }
 })

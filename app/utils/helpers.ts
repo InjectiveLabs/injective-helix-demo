@@ -1,30 +1,24 @@
 import crypto from 'crypto'
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
+import { intervalToDuration } from 'date-fns'
+import { SharedMarketType } from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { isDevnet, isTestnet } from '@injectivelabs/networks'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   NETWORK,
   ENDPOINTS,
   IS_MAINNET,
+  IS_TESTNET,
   ZERO_IN_BASE
 } from '@shared/utils/constant'
-import { intervalToDuration } from 'date-fns'
-import { SharedMarketType } from '@shared/types'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { PriceLevel } from '@injectivelabs/sdk-ts'
-import { isDevnet, isTestnet } from '@injectivelabs/networks'
 import { hexToString, stringToHex } from '@/app/utils/converters'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { OrderbookFormattedRecord } from '@/types/worker'
-import {
-  BotType,
-  MainPage,
+import { BotType, MainPage, TradeSubPage, TradingInterface } from '@/types'
+import type { PriceLevel } from '@injectivelabs/sdk-ts'
+import type { OrderbookFormattedRecord } from '@/types/worker'
+import type {
   GridMarket,
   UiSpotMarket,
-  TradeSubPage,
-  TradingInterface,
   UiMarketWithToken,
   GridStrategyTransformed,
   DerivativeGridStrategyTransformed
@@ -33,7 +27,7 @@ import {
 export const getDecimalsBasedOnNumber = (
   number: number | string | BigNumber,
   defaultDecimals = UI_DEFAULT_DISPLAY_DECIMALS
-): { number: BigNumberInBase; decimals: number } => {
+): { decimals: number; number: BigNumberInBase } => {
   const actualNumber = new BigNumber(number)
 
   if (actualNumber.gte(1e6)) {
@@ -57,20 +51,16 @@ export const getDecimalsBasedOnNumber = (
 }
 
 export const getChronosDatafeedEndpoint = (marketType: string): string => {
-  // Todo: Replace with actual endpoint once devops deploy this to production server
-  // return `https://k8s.mainnet.exchange.grpc-web.injective.network/api/chronos/v1/${marketType}`
-
   if (IS_MAINNET) {
-    // [US region] chart service - EU service is temp down
-    return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-    // return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    // return `https://k8s.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+    return `https://k8s.global.mainnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
   }
 
-  // if (IS_TESTNET) {
-  //   return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
-  // }
+  if (IS_TESTNET) {
+    return `https://k8s.testnet.chart.grpc-web.injective.network/api/chart/v1/${marketType}`
+  }
 
-  return `${ENDPOINTS.indexer}/api/chronos/v1/${marketType}`
+  return `${ENDPOINTS.indexer}/api/chart/v1/${marketType}`
 }
 
 export const getHubUrl = (): string => {
@@ -110,9 +100,10 @@ export function getMinQuantityTickSize(
   const spotMarket = market as UiSpotMarket
 
   return market.quoteToken && spotMarket.baseToken
-    ? new BigNumberInWei(market.minQuantityTickSize)
-        .toBase(spotMarket.baseToken.decimals)
-        .toFixed()
+    ? sharedToBalanceInToken({
+        value: market.minQuantityTickSize,
+        decimalPlaces: spotMarket.baseToken.decimals
+      })
     : ''
 }
 
@@ -165,7 +156,7 @@ export const isPgtSubaccountId = (subaccountId: string) => {
   )?.slug
 }
 
-export const isTradingbotSubaccountId = (subaccountId: string) => {
+export const isTradingBotSubaccountId = (subaccountId: string) => {
   return isSgtSubaccountId(subaccountId) || isPgtSubaccountId(subaccountId)
 }
 
@@ -236,17 +227,20 @@ export function getMinPriceTickSize(
   market: UiMarketWithToken
 ) {
   if (!isSpot) {
-    return new BigNumberInWei(market.minPriceTickSize)
-      .toBase(market.quoteToken.decimals)
-      .toFixed()
+    return sharedToBalanceInToken({
+      value: market.minPriceTickSize,
+      decimalPlaces: market.quoteToken.decimals
+    })
   }
 
   const spotMarket = market as UiSpotMarket
 
   return spotMarket.baseToken
-    ? new BigNumberInWei(market.minPriceTickSize)
-        .toBase(spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals)
-        .toFixed()
+    ? sharedToBalanceInToken({
+        value: market.minPriceTickSize,
+        decimalPlaces:
+          spotMarket.quoteToken.decimals - spotMarket.baseToken.decimals
+      })
     : ''
 }
 
@@ -281,8 +275,8 @@ export const getSgtInvalidRange = ({
   midPrice,
   minPriceTickSize
 }: {
-  midPrice: string | number
   levels: string | number
+  midPrice: string | number
   minPriceTickSize: string | number
 }) => {
   const midPriceInBigNumber = new BigNumberInBase(midPrice)
@@ -468,19 +462,19 @@ export const getCw20AddressFromDenom = (denom: string) => {
 }
 
 export const getDerivativeOrderTypeToSubmit = ({
+  isBuy,
   isPostOnly,
-  isStopOrder,
-  markPrice,
   triggerPrice,
-  isBuy
+  markPrice,
+  isTriggerOrder
 }: {
-  isStopOrder: boolean
-  triggerPrice: string
+  isBuy: boolean
   markPrice: string
   isPostOnly: boolean
-  isBuy: boolean
+  triggerPrice: string
+  isTriggerOrder: boolean
 }) => {
-  if (isStopOrder) {
+  if (isTriggerOrder) {
     const triggerPriceInBase = new BigNumberInBase(triggerPrice)
 
     return isBuy
@@ -488,8 +482,8 @@ export const getDerivativeOrderTypeToSubmit = ({
         ? OrderSide.TakeBuy
         : OrderSide.StopBuy
       : triggerPriceInBase.gt(markPrice)
-      ? OrderSide.TakeSell
-      : OrderSide.StopSell
+        ? OrderSide.TakeSell
+        : OrderSide.StopSell
   }
 
   switch (true) {
@@ -593,7 +587,7 @@ export const getTradingBotLinkFromStrategy = (
       }
 }
 
-export function generateOnramperSignature(
+export function generateOnRamperSignature(
   secretKey: string,
   data: string
 ): string {

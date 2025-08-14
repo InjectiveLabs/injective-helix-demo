@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    tokens: TokenStatic[]
     modelValue: string
+    tokens: TokenStatic[]
   }>(),
   {
     tokens: () => [],
@@ -39,7 +39,7 @@ const activeToken = computed(() =>
 
 <template>
   <div class="flex items-center tab-label px-8" @click="openModal">
-    <p v-if="!activeToken">{{ 'Filter By Asset' }}</p>
+    <p v-if="!activeToken">{{ $t('portfolio.filters.byAsset') }}</p>
 
     <p v-else>
       {{ activeToken?.symbol }}

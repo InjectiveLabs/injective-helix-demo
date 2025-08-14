@@ -34,7 +34,7 @@ function changeSubaccount(subaccountId: string) {
               )}`"
               @click="changeSubaccount(subaccountId.value)"
             >
-              {{ $t('account.subaccount') }}: {{ subaccountId.display }}
+              {{ $t('common.account.subaccount') }}: {{ subaccountId.display }}
             </button>
           </div>
         </template>

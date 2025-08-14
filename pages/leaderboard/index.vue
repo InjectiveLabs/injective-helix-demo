@@ -64,7 +64,7 @@ function fetchPnlLeaderboard() {
     <div
       class="flex flex-col md:flex-row mb-6 md:mb-10 items-start justify-between md:items-center max-md:space-y-4"
     >
-      <div class="bg-coolGray-825 rounded-[4px]">
+      <div class="bg-coolGray-825 rounded">
         <AppButtonSelect
           v-for="value in Object.values(LeaderboardDuration)"
           :key="value"

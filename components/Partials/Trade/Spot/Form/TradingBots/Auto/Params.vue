@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { pricesToEma } from '@/app/utils/helpers'
 import {
   GST_STABLE_GRIDS,
   SGT_STABLE_COINS,
@@ -9,15 +10,14 @@ import {
   GST_STABLE_UPPER_PERCENTAGE,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { pricesToEma } from '@/app/utils/helpers'
 import {
   MarketKey,
   GridStrategyType,
   InvestmentTypeGst,
-  UiMarketWithToken,
-  SpotGridTradingForm,
-  SpotGridTradingField
+  SpotGridTradingField,
+  SpotTradingBotsCyTags
 } from '@/types'
+import type { UiMarketWithToken, SpotGridTradingForm } from '@/types'
 
 const emit = defineEmits<{
   'update:tab': [GridStrategyType]
@@ -157,20 +157,17 @@ const grids = computed(() =>
   marketUsesStableCoins.value ? GST_STABLE_GRIDS : GST_DEFAULT_AUTO_GRIDS
 )
 
-const { valueToString: profitPerGridToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!lowerPrice.value || !upperPrice.value || !grids.value) {
-      return ZERO_IN_BASE
-    }
+const profitPerGrid = computed(() => {
+  if (!lowerPrice.value || !upperPrice.value || !grids.value) {
+    return ZERO_IN_BASE
+  }
 
-    const priceDifference = new BigNumberInBase(upperPrice.value)
-      .minus(lowerPrice.value)
-      .dividedBy(grids.value)
+  const priceDifference = new BigNumberInBase(upperPrice.value)
+    .minus(lowerPrice.value)
+    .dividedBy(grids.value)
 
-    return priceDifference.dividedBy(lowerPrice.value).times(100)
-  }),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+  return priceDifference.dividedBy(lowerPrice.value).times(100)
+})
 
 watch(
   () => [upperPrice.value, lowerPrice.value, grids.value],
@@ -205,46 +202,55 @@ onMounted(() => {
 <template>
   <div class="border-b pb-4 mb-6">
     <div class="text-xs space-y-2 pt-4 pb-2 leading-4">
-      <p class="text-white">{{ $t('sgt.autoModeHeader') }}</p>
+      <p class="text-white">{{ $t('tradingBots.autoModeHeader') }}</p>
       <div>
         <a
           class="text-blue-500 border border-b border-b-blue-500"
           href="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix"
           target="_blank"
         >
-          {{ $t('sgt.learnMore') }}
+          {{ $t('common.learnMore') }}
         </a>
       </div>
     </div>
 
     <div class="text-xs text-coolGray-450 space-y-4 py-4">
       <div class="flex justify-between">
-        <p>{{ $t('sgt.lowerPrice') }}</p>
+        <p>{{ $t('tradingBots.lowerPrice') }}</p>
         <p class="text-coolGray-450">
           <span class="text-white">{{ lowerPrice }}</span> USDT
         </p>
       </div>
 
       <div class="flex justify-between">
-        <p>{{ $t('sgt.upperPrice') }}</p>
+        <p>{{ $t('tradingBots.upperPrice') }}</p>
         <p class="text-coolGray-450">
           <span class="text-white">{{ upperPrice }}</span> USDT
         </p>
       </div>
 
       <div class="flex justify-between">
-        <p>{{ $t('sgt.gridNumber') }}</p>
+        <p>{{ $t('tradingBots.gridNumber') }}</p>
         <p class="text-white">{{ grids }}</p>
       </div>
 
       <div class="flex justify-between">
-        <p>{{ $t('sgt.profitGrid') }}</p>
-        <p class="text-white">{{ profitPerGridToString }}%</p>
+        <p>{{ $t('tradingBots.profitGrid') }}</p>
+        <p class="text-white">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: profitPerGrid,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
+          />%
+        </p>
       </div>
     </div>
 
     <button class="text-blue-550 text-xs" @click="copyToManual">
-      {{ $t('sgt.copyParametersToManual') }}
+      {{ $t('tradingBots.copyParametersToManual') }}
     </button>
   </div>
 </template>

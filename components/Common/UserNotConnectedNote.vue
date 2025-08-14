@@ -24,7 +24,7 @@ function onConnect() {
         data-cy="wallet-not-connected-warning-modal-connect-button"
         @click="onConnect"
       >
-        {{ $t('connect.connect') }}
+        {{ $t('common.connect') }}
       </AppButton>
     </div>
     <p v-else class="text-xs text-coolGray-400 py-4">

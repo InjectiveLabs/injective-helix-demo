@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const modalStore = useSharedModalStore()
 
 const {
@@ -15,7 +15,7 @@ const { valueToFixed: marginAndPnlToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
       (sum, { pnlPlusMargin, token }) => {
-        const usdPrice = tokenStore.tokenUsdPrice(token)
+        const usdPrice = sharedTokenStore.tokenUsdPrice(token)
         const usdValue = sharedToBalanceInToken({
           value: new BigNumberInBase(pnlPlusMargin).times(usdPrice).toFixed(),
           decimalPlaces: token.decimals
@@ -32,7 +32,7 @@ const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
       (sum, { pnl, token }) => {
-        const usdPrice = tokenStore.tokenUsdPrice(token)
+        const usdPrice = sharedTokenStore.tokenUsdPrice(token)
         const usdValue = sharedToBalanceInToken({
           value: new BigNumberInBase(pnl).times(usdPrice).toFixed(),
           decimalPlaces: token.decimals
@@ -53,8 +53,8 @@ const { valueToFixed: spotBalanceInUsdToFixed } = useSharedBigNumberFormatter(
   )
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 </script>
 
@@ -68,12 +68,15 @@ function onFiatOnRamp() {
       <p class="text-coolGray-450">{{ $t('trade.equity.spot') }}</p>
       <div class="flex-1 mx-2" />
       <p class="space-x-1">
-        $<AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: spotBalanceInUsdToFixed
           }"
           class="text-white"
-        />
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
         <span class="text-coolGray-450"> USD </span>
       </p>
     </div>
@@ -82,12 +85,15 @@ function onFiatOnRamp() {
       <p class="text-coolGray-450">{{ $t('trade.equity.perps') }}</p>
       <div class="flex-1 mx-2" />
       <p class="space-x-1">
-        $<AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: marginAndPnlToFixed
           }"
           class="text-white"
-        />
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
         <span class="text-coolGray-450"> USD </span>
       </p>
     </div>
@@ -96,12 +102,15 @@ function onFiatOnRamp() {
       <p class="text-coolGray-450">{{ $t('trade.equity.unrealizedPnl') }}</p>
       <div class="flex-1 mx-2" />
       <p class="space-x-1">
-        $<AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
-            amount: pnlToFixed
+            amount: pnlToFixed,
+            shouldAbbreviate: false
           }"
           class="text-white"
-        />
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
         <span class="text-coolGray-450"> USD </span>
       </p>
     </div>
@@ -111,9 +120,9 @@ function onFiatOnRamp() {
         variant: 'primary-outline'
       }"
       class="w-full"
-      @click="onFiatOnRamp"
+      @click="onDeposit"
     >
-      {{ $t('account.deposit') }}
+      {{ $t('common.deposit') }}
     </AppButton>
   </div>
 </template>

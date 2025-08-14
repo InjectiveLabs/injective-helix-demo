@@ -1,18 +1,16 @@
+import { format } from 'date-fns'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { format } from 'date-fns'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { DATE_TIME_DISPLAY } from '@/app/utils/constants'
-import {
-  UiSpotMarket,
-  PortfolioSpotOrderHistoryTableColumn,
-  TransformedPortfolioSpotOrderHistory
-} from '@/types'
+import { PortfolioSpotOrderHistoryTableColumn } from '@/types'
+import type { SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import type { TransformedPortfolioSpotOrderHistory } from '@/types'
 
 export function useSpotOrderHistoryTransformer(
   orderList: ComputedRef<SpotOrderHistory[]>
@@ -38,9 +36,7 @@ export function useSpotOrderHistoryTransformer(
 
   const rows = computed(() =>
     orderList.value.reduce((list, order) => {
-      const market = spotStore.markets.find(
-        (market) => market.marketId === order.marketId
-      )
+      const market = spotStore.marketByIdOrSlug(order.marketId)
 
       if (!market) {
         return list
@@ -50,9 +46,10 @@ export function useSpotOrderHistoryTransformer(
         order.direction === OrderSide.Buy ||
         orderSideList.includes(order.orderType as OrderSide)
 
-      const quantity = new BigNumberInWei(order.quantity).toBase(
-        (market as UiSpotMarket).baseToken.decimals
-      )
+      const quantity = sharedToBalanceInTokenInBase({
+        value: order.quantity,
+        decimalPlaces: market.baseToken.decimals
+      })
 
       const executionType =
         order.executionType === TradeExecutionType.Market
@@ -78,7 +75,10 @@ export function useSpotOrderHistoryTransformer(
               market.baseToken.decimals - market.quoteToken.decimals
             )
           )
-        : new BigNumberInWei(order.price).toBase(market.quoteToken.decimals)
+        : sharedToBalanceInTokenInBase({
+            value: order.price,
+            decimalPlaces: market.quoteToken.decimals
+          })
 
       const total = price.multipliedBy(quantity)
 

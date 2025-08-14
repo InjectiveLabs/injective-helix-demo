@@ -1,4 +1,4 @@
-import { LiquidityProvisionType } from './enums'
+import { VaultType } from './enums'
 
 export type LiquidityProvisionMitoCard = {
   apy: number
@@ -6,7 +6,7 @@ export type LiquidityProvisionMitoCard = {
   tvl: number
   marketId: string
   vaultType: string
-  type: LiquidityProvisionType
+  type: VaultType
   contractAddress: string
   isPermissionless: boolean
 }

@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { abbreviateNumber } from '@/app/utils/formatters'
-import {
-  MarketCyTags,
-  UTableColumn,
-  TransformedMarkets,
-  MarketsTableColumn
-} from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { MarketCyTags, MarketsTableColumn } from '@/types'
+import type { UTableColumn, TransformedMarkets } from '@/types'
 
 const appStore = useAppStore()
 
@@ -88,11 +84,13 @@ const toggleFavorite = () => {
         class="flex items-center"
       >
         <div class="w-full truncate">
-          <AppAmount
+          <SharedAmount
             :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
             v-bind="{
-              amount: market[MarketsTableColumn.LastPrice],
-              decimalPlaces: market.market.priceDecimals
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: market.market.priceDecimals,
+              amount: market[MarketsTableColumn.LastPrice]
             }"
           />
         </div>
@@ -121,19 +119,15 @@ const toggleFavorite = () => {
       >
         <div class="w-full flex items-center truncate">
           <div>
-            <span>$</span>
-            <span v-if="abbreviateNumber(market.volumeInUsd.toFixed())">
-              {{ abbreviateNumber(market.volumeInUsd.toFixed()) }}
-            </span>
-            <span v-else>
-              <AppUsdAmount
-                v-bind="{
-                  amount: market.volumeInUsd.toFixed(),
-                  isShowNoDecimals: true,
-                  decimalPlaces: 0
-                }"
-              />
-            </span>
+            <SharedAmountUsd
+              v-bind="{
+                hideDecimals: true,
+                amount: market.volumeInUsd.toFixed(),
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </div>
         </div>
       </PartialsCommonMarketRedirection>

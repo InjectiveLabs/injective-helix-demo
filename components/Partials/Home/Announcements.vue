@@ -19,12 +19,11 @@ onMounted(() => {
 
 <template>
   <AppHocLoading :status="status">
-    <div>
-      <div
-        class="text-center max-lg:mt-10 text-2xl sm:text-3xl font-semibold pb-4 sm:pb-8 bg-gradient-to-r from-white to-coolGray-400 bg-clip-text text-transparent"
-      >
+    <div class="max-lg:mt-24">
+      <h4 class="text-center text-2xl lg:text-3xl font-semibold pb-8 lg:pb-16">
         {{ $t('home.latestNews') }}
-      </div>
+      </h4>
+
       <div
         v-if="announcements.length > 0"
         class="grid gap-8 md:grid-cols-3 px-4"

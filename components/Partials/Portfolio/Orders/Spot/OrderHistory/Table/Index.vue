@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 import { SpotMarketCyTags, PortfolioSpotOrderHistoryTableColumn } from '@/types'
+import type { SpotOrderHistory } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{ orders: SpotOrderHistory[] }>(), {})
 
 const { rows } = useSpotOrderHistoryTransformer(computed(() => props.orders))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioSpotOrderHistoryTableColumn.LastUpdated,
     label: t(
@@ -72,7 +72,7 @@ const columns = [
       `portfolio.table.spotOrderHistory.${PortfolioSpotOrderHistoryTableColumn.Status}`
     )
   }
-]
+])
 </script>
 
 <template>
@@ -130,10 +130,12 @@ const columns = [
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.price.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
         </div>
@@ -144,10 +146,12 @@ const columns = [
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -158,10 +162,12 @@ const columns = [
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.total.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
           <span class="text-coolGray-500 ml-1">
@@ -177,10 +183,12 @@ const columns = [
             v-else
             :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.triggerPrice.toFixed(),
-                decimalPlaces: row.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.priceDecimals,
+                amount: row.triggerPrice.toFixed()
               }"
             />
           </span>

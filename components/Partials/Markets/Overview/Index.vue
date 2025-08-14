@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MARKETS_HISTORY_CHART_ONE_HOUR } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
+import { MarketCyTags } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
@@ -11,9 +12,7 @@ const props = withDefaults(
   defineProps<{
     markets: UiMarketAndSummaryWithVolumeInUsd[]
   }>(),
-  {
-    markets: () => []
-  }
+  {}
 )
 
 const hotMarkets = computed(() =>

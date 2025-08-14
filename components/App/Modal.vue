@@ -82,7 +82,7 @@ function onUpdateModelValue(value: boolean) {
     @update:model-value="onUpdateModelValue"
   >
     <template v-if="$slots.title" #header>
-      <div class="text-sm uppercase text-coolGray-100 font-semibold">
+      <div class="text-lg capitalize text-coolGray-100 font-medium">
         <slot name="title" />
       </div>
     </template>

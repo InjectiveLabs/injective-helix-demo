@@ -1,25 +1,25 @@
-import { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
+import { indexerGrpcArchiverApi } from '@/app/Services'
 import {
   fetchPnlLeaderboard,
   fetchCompetitionLeaderboard
 } from '@/store/leaderboard/pnlLeaderboard'
-import { indexerGrpcArchiverApi } from '@/app/Services'
-import { LeaderboardDuration } from '@/types'
+import { LeaderboardDuration, HistoricalPortfolioDuration } from '@/types'
+import type { PnlLeaderboard, VolLeaderboard } from '@injectivelabs/sdk-ts'
 
 type LeaderboardStoreState = {
   pnlLeaderboard?: PnlLeaderboard
   competitionLeaderboard?: PnlLeaderboard | VolLeaderboard
-  historicalBalance: {
-    time: number
-    value: number
-  }[]
-
   historicalPnl: {
     time: number
     value: number
   }[]
 
   historicalVolume: {
+    time: number
+    value: number
+  }[]
+
+  historicalBalance: {
     time: number
     value: number
   }[]
@@ -40,7 +40,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     fetchCompetitionLeaderboard,
 
     async fetchHistoricalBalance(
-      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
+      resolution: HistoricalPortfolioDuration = HistoricalPortfolioDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
@@ -63,7 +63,7 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     },
 
     async fetchHistoricalPnl(
-      resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
+      resolution: HistoricalPortfolioDuration = HistoricalPortfolioDuration.OneWeek
     ) {
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()

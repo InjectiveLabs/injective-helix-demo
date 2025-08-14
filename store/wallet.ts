@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia'
+import { faucetService } from '@shared/Service'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
+import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import {
   ErrorType,
   WalletException,
   GeneralException,
   UnspecifiedErrorCode
 } from '@injectivelabs/exceptions'
-import { Wallet } from '@injectivelabs/wallet-base'
-import { DEFAULT_BLOCK_TIMEOUT_HEIGHT } from '@injectivelabs/utils'
-import { walletStrategy, msgBroadcaster } from '@shared/WalletService'
 import { TRADING_MESSAGES } from '@/app/data/trade'
 import { isCountryRestricted } from '@/app/data/geoip'
-import { Modal } from '@/types'
 import { traceUserDetails } from '@/app/services/tracer'
+import { Modal } from '@/types'
 
 type WalletStoreState = {}
 
@@ -124,6 +125,10 @@ export const useWalletStore = defineStore('wallet', {
         })
       }
 
+      if (wallet === Wallet.Rainbow) {
+        await sharedWalletStore.connectRainbow()
+      }
+
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')
       modalStore.closeModal(Modal.Connect)
 
@@ -163,8 +168,36 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
-    async validate() {
+    async validateGas() {
+      const accountStore = useAccountStore()
       const sharedWalletStore = useSharedWalletStore()
+
+      if (!sharedWalletStore.isEip712 || accountStore.hasSufficientGas) {
+        return
+      }
+
+      await faucetService.fundInjectiveAddress(
+        sharedWalletStore.injectiveAddress
+      )
+      await accountStore.fetchSignerInjBalance()
+
+      if (accountStore.hasSufficientGas) {
+        return
+      }
+
+      throw new GeneralException(
+        new Error(
+          'Due to extremely high usage, gas-free transactions are currently unavailable. You need INJ to cover the transaction.'
+        )
+      )
+    },
+
+    async validate() {
+      const walletStore = useWalletStore()
+      const sharedWalletStore = useSharedWalletStore()
+
+      await sharedWalletStore.fetchWeb3GatewayStatus()
+      await walletStore.validateGas()
 
       const isAutoSignEnabled = !!sharedWalletStore.isAutoSignEnabled
 
@@ -202,6 +235,7 @@ export const useWalletStore = defineStore('wallet', {
       sharedWalletStore.logout()
       spotStore.resetSubaccount()
       derivativeStore.resetSubaccount()
+      gridStrategyStore.cancelGridStrategiesStream()
 
       exchangeStore.$patch({ feeDiscountAccountInfo: undefined })
       accountStore.$reset()
@@ -226,7 +260,7 @@ export const useWalletStore = defineStore('wallet', {
     async signArbitraryData(address: string, message: string) {
       const sharedWalletStore = useSharedWalletStore()
 
-      if (sharedWalletStore.wallet === Wallet.Magic) {
+      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
         return await walletStrategy.signEip712TypedData(
           message,
           sharedWalletStore.address

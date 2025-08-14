@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import {
-  BigNumber,
-  BigNumberInWei,
-  BigNumberInBase
-} from '@injectivelabs/utils'
-import { OrderbookFormattedRecord } from '@/types/worker'
-import {
-  IsSpotKey,
-  BusEvents,
-  MarketKey,
-  AggregationKey,
-  UiMarketWithToken
-} from '@/types'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MAX_DECIMALS } from '@/app/utils/constants'
+import { IsSpotKey, BusEvents, MarketKey, AggregationKey } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { OrderbookFormattedRecord } from '@/types/worker'
 
 const props = withDefaults(
   defineProps<{
-    isBuy?: boolean
     index?: number
+    isBuy?: boolean
     isActive?: boolean
     highestVolume: string
     record: OrderbookFormattedRecord
@@ -49,67 +42,29 @@ function getDecimals(number: string) {
   return number.split('.')[1]?.length ? number.split('.')[1].length : 0
 }
 
-const { valueToString: totalVolumeToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.totalVolume),
-  {
-    decimalPlaces: market.value.priceDecimals,
-    displayAbsoluteDecimalPlace: true
+const price = computed(() => {
+  if (aggregation.value < 0) {
+    return new BigNumberInBase(props.record.price).times(
+      new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
+    )
   }
+
+  return props.record.price
+})
+
+const priceDecimals = computed(() =>
+  props.record.price.split('.')[1]?.length
+    ? props.record.price.split('.')[1].length
+    : 0
 )
 
-const { valueToString: volumeToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.volume),
-  {
-    decimalPlaces: market.value.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
+const { valueToFixed: priceToFixed } = useSharedBigNumberFormatter(price, {
+  decimalPlaces: priceDecimals.value,
+  displayAbsoluteDecimalPlace: true
+})
 
-const { valueToString: priceToString, valueToFixed: priceToFixed } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      if (aggregation.value < 0) {
-        return new BigNumberInBase(props.record.price).times(
-          new BigNumberInBase(10).exponentiatedBy(-aggregation.value)
-        )
-      } else {
-        return props.record.price
-      }
-    }),
-    {
-      decimalPlaces: computed(() =>
-        props.record.price.split('.')[1]?.length
-          ? props.record.price.split('.')[1].length
-          : 0
-      ),
-      displayAbsoluteDecimalPlace: true
-    }
-  )
-
-const { valueToString: quantityToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.quantity),
-  {
-    decimalPlaces: computed(() =>
-      sharedGetExactDecimalsFromNumber(props.record.quantity)
-    ),
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: totalQuantityToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.totalQuantity),
-  {
-    decimalPlaces: market.value.quantityDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
-)
-
-const { valueToString: avgPriceToString } = useSharedBigNumberFormatter(
-  computed(() => props.record.avgPrice),
-  {
-    decimalPlaces: market.value.priceDecimals,
-    displayAbsoluteDecimalPlace: true
-  }
+const recordQuantityDecimals = computed(() =>
+  sharedGetExactDecimalsFromNumber(props.record.quantity)
 )
 
 watch(
@@ -132,16 +87,23 @@ const hasOrders = computed(() => {
   ]
 
   return orders.some((order) => {
-    const market = [...spotStore.markets, ...derivativeStore.markets].find(
-      ({ marketId }) => marketId === order.marketId
-    )
+    const isCurrentMarket = market.value.marketId === order.marketId
 
-    const priceInBase = new BigNumberInWei(Number(order.price)).toBase(
-      isSpot
-        ? (market?.quoteToken?.decimals || 6) -
-            (market?.baseToken?.decimals || 18)
-        : market?.quoteToken.decimals || 6
-    )
+    if (!isCurrentMarket) {
+      return
+    }
+
+    const orderMarket =
+      spotStore.marketByIdOrSlug(order.marketId) ||
+      derivativeStore.marketByIdOrSlug(order.marketId)
+
+    const priceInBase = sharedToBalanceInTokenInBase({
+      value: order.price,
+      decimalPlaces: isSpot
+        ? (orderMarket?.quoteToken?.decimals || DEFAULT_ASSET_DECIMALS) -
+          (orderMarket?.baseToken?.decimals || UI_DEFAULT_MAX_DECIMALS)
+        : orderMarket?.quoteToken.decimals || DEFAULT_ASSET_DECIMALS
+    })
 
     const isSameSide = order.orderSide === (props.isBuy ? 'buy' : 'sell')
 
@@ -187,22 +149,59 @@ function handlePriceClick() {
         class="text-xs font-sans whitespace-nowrap text-left grid grid-cols-[auto_auto] gap-x-4 gap-y-1"
       >
         <div class="text-coolGray-300 font-2xs">{{ $t('trade.volume') }}:</div>
-        <div class="text-right">{{ volumeToString }}</div>
+        <div class="text-right">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: record.volume,
+              shouldAbbreviate: false,
+              decimals: market.priceDecimals
+            }"
+          />
+        </div>
 
         <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalVolume', { symbol: market.quoteToken.symbol }) }}:
         </div>
-        <div class="text-right">{{ totalVolumeToString }}</div>
+        <div class="text-right">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: record.totalVolume,
+              decimals: market.priceDecimals
+            }"
+          />
+        </div>
 
         <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.totalQuantity', { symbol: market.baseToken.symbol }) }}:
         </div>
-        <div class="text-right">{{ totalQuantityToString }}</div>
+        <div class="text-right">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: record.totalQuantity,
+              decimals: market.quantityDecimals
+            }"
+          />
+        </div>
 
         <div class="text-coolGray-300 font-2xs">
           {{ $t('trade.avgPrice') }}:
         </div>
-        <div class="text-right">{{ avgPriceToString }}</div>
+        <div class="text-right">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              noTrailingZeros: false,
+              shouldAbbreviate: false,
+              amount: record.avgPrice,
+              decimals: market.priceDecimals
+            }"
+          />
+        </div>
       </div>
     </div>
 
@@ -241,7 +240,17 @@ function handlePriceClick() {
           'border-l-red-500': !isBuy
         }"
       />
-      <span>{{ priceToString }}</span>
+      <span>
+        <SharedAmount
+          v-bind="{
+            amount: price,
+            useSubscript: true,
+            noTrailingZeros: false,
+            shouldAbbreviate: false,
+            decimals: priceDecimals
+          }"
+        />
+      </span>
     </div>
 
     <div
@@ -255,7 +264,14 @@ function handlePriceClick() {
       @animationend="setQuantityFlashOff"
       @click="handlePriceClick"
     >
-      {{ quantityToString }}
+      <SharedAmount
+        v-bind="{
+          useSubscript: true,
+          amount: record.quantity,
+          shouldAbbreviate: false,
+          decimals: recordQuantityDecimals
+        }"
+      />
     </div>
 
     <div
@@ -263,7 +279,15 @@ function handlePriceClick() {
       class="flex-1 min-w-0 truncate pl-1 pr-2 relative text-right"
       @click="handlePriceClick"
     >
-      {{ volumeToString }}
+      <SharedAmount
+        v-bind="{
+          useSubscript: true,
+          amount: record.volume,
+          noTrailingZeros: false,
+          shouldAbbreviate: false,
+          decimals: market.priceDecimals
+        }"
+      />
     </div>
   </div>
 

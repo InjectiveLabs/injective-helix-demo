@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   StrategyStatus,
   PortfolioSpotTradingBotsRunningTableColumn
@@ -80,7 +80,7 @@ function selectStrategy() {
             size="xs"
             @click="selectStrategy"
           >
-            {{ t('sgt.details') }}
+            {{ t('common.details') }}
           </AppButton>
           <PartialsLiquidityBotsSpotCommonRemoveStrategy
             v-bind="{
@@ -100,7 +100,7 @@ function selectStrategy() {
                 variant="danger-shade"
                 @click="removeStrategy"
               >
-                {{ t('sgt.removeStrategy') }}
+                {{ t('tradingBots.removeStrategy') }}
               </AppButton>
             </template>
           </PartialsLiquidityBotsSpotCommonRemoveStrategy>
@@ -114,10 +114,13 @@ function selectStrategy() {
 
     <template #lowerBound-data>
       <div class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :decimal-places="2"
-          :amount="strategy.lowerBound"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            amount: strategy.lowerBound,
+            shouldAbbreviate: false,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
         />
         <span>{{ strategy.market.quoteToken.symbol }}</span>
       </div>
@@ -125,10 +128,13 @@ function selectStrategy() {
 
     <template #upperBound-data>
       <div class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :decimal-places="2"
-          :amount="strategy.upperBound"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            amount: strategy.upperBound,
+            shouldAbbreviate: false,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
         />
         <span>{{ strategy.market.quoteToken.symbol }}</span>
       </div>
@@ -142,11 +148,14 @@ function selectStrategy() {
         &mdash;
       </div>
       <div v-else class="flex items-center gap-1">
-        <SharedAmountFormatter
-          :decimal-places="2"
-          :max-decimal-places="3"
-          :amount="strategy.totalAmount.toFixed()"
-        />
+        <SharedAmountUsd
+          v-bind="{
+            shouldAbbreviate: false,
+            amount: strategy.totalAmount.toFixed()
+          }"
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
       </div>
     </template>
 
@@ -159,16 +168,21 @@ function selectStrategy() {
       </div>
       <div
         v-else
-        class="flex flex-col font-mono"
+        class="flex flex-col font-sans"
         :class="strategy.isPositivePnl ? 'text-green-500' : 'text-red-500'"
       >
         <div class="flex items-center gap-1">
-          <span>{{ strategy.isPositivePnl ? '+' : '' }}</span>
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :amount="strategy.pnl"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          />
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: strategy.pnl,
+              shouldAbbreviate: false
+            }"
+          >
+            <template #prefix>
+              <span>{{ strategy.isPositivePnl ? '+' : '' }}</span>
+            </template>
+          </SharedAmount>
           {{ ' ' + strategy.market.quoteToken.symbol }}
         </div>
         <div>({{ strategy.percentagePnl }}%)</div>
@@ -186,7 +200,7 @@ function selectStrategy() {
         class="text-blue-500 hover:text-blue-500"
         @click="selectStrategy"
       >
-        {{ t('sgt.details') }}
+        {{ t('common.details') }}
       </AppButton>
     </template>
 

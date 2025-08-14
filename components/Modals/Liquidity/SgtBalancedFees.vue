@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, UiSpotMarket } from '@/types'
+import { Modal } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 const props = withDefaults(
   defineProps<{
-    market: UiSpotMarket
     margin: string
+    market: UiSpotMarket
     baseAmount: BigNumberInBase
     quoteAmount: BigNumberInBase
   }>(),
@@ -14,8 +15,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'investment-type:set': []
   'strategy:create': []
+  'investment-type:set': []
 }>()
 
 const modalStore = useSharedModalStore()
@@ -53,13 +54,13 @@ function onChangeInvestmentType() {
 <template>
   <AppModal v-model="modalStore.modals[Modal.SgtBalancedFees]">
     <template #title>
-      <h3 class="text-white">{{ $t('sgt.saveOnFees') }}</h3>
+      <h3 class="text-white">{{ $t('tradingBots.saveOnFees') }}</h3>
     </template>
 
     <div>
       <p class="text-sm text-coolGray-450">
         {{
-          $t('sgt.balancedFeesMessage', {
+          $t('tradingBots.sgt.balancedFeesMessage', {
             quote: market.quoteToken.symbol,
             base: market.baseToken.symbol,
             quoteAmount: quoteAmountToString,
@@ -68,23 +69,25 @@ function onChangeInvestmentType() {
           })
         }}
         <NuxtLink
-          to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
           target="_blank"
           class="text-blue-550 hover:text-blue-300 font-semibold"
+          to="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix-"
         >
-          {{ $t('sgt.learnMoreHere') }}
+          {{ $t('tradingBots.learnMoreHere') }}
         </NuxtLink>
       </p>
 
       <div class="flex items-center justify-between mt-4">
-        <p class="text-coolGray-450">{{ $t('sgt.totalAmount') }}</p>
+        <p class="text-coolGray-450">{{ $t('tradingBots.totalAmount') }}</p>
         <p class="text-coolGray-450">
           <span class="text-white">{{ marginToString }}</span> USD
         </p>
       </div>
 
       <div class="flex justify-between">
-        <p class="text-coolGray-450">{{ $t('sgt.optimizedAmounts') }}</p>
+        <p class="text-coolGray-450">
+          {{ $t('tradingBots.optimizedAmounts') }}
+        </p>
 
         <div class="text-coolGray-450 text-right">
           <p>
@@ -101,7 +104,7 @@ function onChangeInvestmentType() {
       <div class="grid grid-cols-1 gap-2 mt-6">
         <AppButton class="w-full" size="lg" @click="onChangeInvestmentType">
           {{
-            $t('sgt.useFeeOptimizedAmounts', {
+            $t('tradingBots.useFeeOptimizedAmounts', {
               quote: market.quoteToken.symbol,
               base: market.baseToken.symbol
             })
@@ -114,7 +117,7 @@ function onChangeInvestmentType() {
           size="lg"
           @click="onCreateStrategy"
         >
-          {{ $t('sgt.keepOriginalAmounts') }}
+          {{ $t('tradingBots.keepOriginalAmounts') }}
         </AppButton>
       </div>
     </div>

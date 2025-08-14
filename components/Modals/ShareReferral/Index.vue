@@ -47,7 +47,7 @@ const referralLink = computed(
 function onCopyLink() {
   copy(referralLink.value).then(() =>
     notificationStore.success({
-      title: t('referral.referralLinkCopied')
+      title: t('toast.referral.referralLinkCopied')
     })
   )
 }
@@ -62,7 +62,7 @@ function onCopyLink() {
     }"
   >
     <template #title>
-      <h2 class="text-lg font-semibold leading-none capitalize">
+      <h2 class="leading-none capitalize">
         {{ $t('referral.shareModal.title') }}
       </h2>
     </template>
@@ -100,7 +100,7 @@ function onCopyLink() {
           v-for="(item, index) in actionButtons"
           :key="index"
           v-bind="{ item }"
-          @copyLink="onCopyLink"
+          @copy-link="onCopyLink"
         />
       </div>
     </div>

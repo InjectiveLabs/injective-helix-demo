@@ -29,12 +29,12 @@ function cancelAllOrders() {
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountOrders)
     .then(() =>
-      notificationStore.success({
-        title: t('common.success')
+      notificationStore.update({
+        title: t('toast.trade.allOrdersCancelled')
       })
     )
     .catch((e) => {
-      notificationStore.error({ title: t('common.error') })
+      notificationStore.error({ title: t('toast.error') })
       $onError(e)
     })
     .finally(() => {

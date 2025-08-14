@@ -1,16 +1,17 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { competitionVolumePerEntryMap } from '@/app/data/campaign'
 import {
   MAXIMUM_RANKED_TRADERS,
   DEFAULT_TRUNCATE_LENGTH,
   MIN_COMPETITION_PNL_AMOUNT,
-  MAXIMUM_LEADERBOARD_STATS_RANK,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  MAXIMUM_LEADERBOARD_STATS_RANK
 } from '@/app/utils/constants'
-import { competitionVolumePerEntryMap } from '@/app/data/campaign'
 import { LeaderboardType } from '@/types'
+import type { CampaignV2, LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -57,17 +58,12 @@ const isShowRank = computed(() => {
   return isMoreThanMinimumPnL && isTop500
 })
 
-const { valueToString: amountToFormat, valueToBigNumber: amountToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() =>
-      props.campaign.type === LeaderboardType.Pnl
-        ? props.leader.pnl
-        : props.leader.volume
-    ),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const amount = computed(() =>
+  props.campaign.type === LeaderboardType.Pnl
+    ? props.leader.pnl
+    : props.leader.volume
+)
+const amountToBigNumber = computed(() => new BigNumberInBase(amount.value))
 
 const entries = computed(() =>
   new BigNumberInBase(props.leader.volume)
@@ -92,7 +88,14 @@ const entries = computed(() =>
         {{ $t('leaderboard.header.address') }}
       </div>
 
-      <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+      <NuxtLink
+        target="_blank"
+        class="flex items-center gap-2"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
+      >
+        <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+        <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
+      </NuxtLink>
 
       <div class="flex justify-between mt-3 space-x-10">
         <div v-if="isShowRank" class="flex flex-col items-start gap-y-1">
@@ -108,13 +111,19 @@ const entries = computed(() =>
             }}
           </div>
           <div class="font-medium text-sm">
-            <span v-if="campaign.type === LeaderboardType.Pnl">
-              {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
-            </span>
-            <span v-else>$</span>
-            <span>
-              {{ amountToFormat }}
-            </span>
+            <SharedAmountUsd
+              v-bind="{
+                amount,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span v-if="campaign.type === LeaderboardType.Pnl">
+                  {{ `${amountToBigNumber.gte(0) ? '+' : ''}` }}
+                </span>
+                <span v-else>$</span>
+              </template>
+            </SharedAmountUsd>
           </div>
         </div>
 

@@ -41,7 +41,7 @@ const subaccountOptions = computed(() =>
   Object.keys(subaccountPortfolioBalanceMap.value)
     .map((value) => {
       if (getSubaccountIndex(value) === 0) {
-        return { display: `${t('account.main')}`, value }
+        return { display: `${t('common.account.main')}`, value }
       }
 
       if (isSgtSubaccountId(value)) {

@@ -1,16 +1,15 @@
+import { format } from 'date-fns'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { format } from 'date-fns'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import { DATE_TIME_DISPLAY } from '@/app/utils/constants'
-import {
-  PortfolioFuturesOrderHistoryTableColumn,
-  TransformedPortfolioFuturesOrderHistory
-} from '@/types'
+import { PortfolioFuturesOrderHistoryTableColumn } from '@/types'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
+import type { TransformedPortfolioFuturesOrderHistory } from '@/types'
 
 export function useFuturesOrderHistoryTransformer(
   orderList: ComputedRef<DerivativeOrderHistory[]>
@@ -29,9 +28,7 @@ export function useFuturesOrderHistoryTransformer(
 
   const rows = computed(() =>
     orderList.value.reduce((list, order) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === order.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(order.marketId)
 
       if (!market) {
         return list
@@ -49,13 +46,15 @@ export function useFuturesOrderHistoryTransformer(
 
       const quantity = new BigNumberInBase(order.quantity)
 
-      const triggerPrice = new BigNumberInWei(
-        (order as DerivativeOrderHistory).triggerPrice
-      ).toBase(market.quoteToken.decimals)
+      const triggerPrice = sharedToBalanceInTokenInBase({
+        value: (order as DerivativeOrderHistory).triggerPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
-      const margin = new BigNumberInWei(
-        (order as DerivativeOrderHistory).margin
-      ).toBase(market.quoteToken.decimals)
+      const margin = sharedToBalanceInTokenInBase({
+        value: (order as DerivativeOrderHistory).margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isReduceOnly =
         (order as DerivativeOrderHistory).isReduceOnly || margin.isZero()
@@ -88,9 +87,10 @@ export function useFuturesOrderHistoryTransformer(
 
       const type = typeMap[order.orderType as OrderSide] || ''
 
-      const price = new BigNumberInWei(order.price).toBase(
-        market.quoteToken.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: order.price,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const total = price.multipliedBy(quantity)
 

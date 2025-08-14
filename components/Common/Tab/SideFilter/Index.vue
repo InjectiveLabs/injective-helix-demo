@@ -44,7 +44,7 @@ const value = computed({
   >
     <template #default>
       <div class="flex items-center max-lg:py-2">
-        <span v-if="!value">{{ $t('portfolio.filters.filterBySide') }}</span>
+        <span v-if="!value">{{ $t('portfolio.filters.bySide') }}</span>
         <span v-else>{{ $t(`trade.${value}`) }}</span>
       </div>
     </template>

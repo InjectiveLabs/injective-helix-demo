@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SharedDropdownOption } from '@shared/types'
 import {
   MarketKey,
-  UiDerivativeMarket,
+  BusEvents,
   PerpetualMarketCyTags,
   PerpOrdersStandardView
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { SharedDropdownOption } from '@shared/types'
 
 const positionStore = usePositionStore()
 const breakpoints = useSharedBreakpoints()
@@ -39,38 +40,38 @@ const options = computed(() => {
     {
       value: PerpOrdersStandardView.Positions,
       description: `${positionStore.subaccountPositions.length}`,
-      display: `activity.${PerpOrdersStandardView.Positions}`
+      display: `trade.tab.${PerpOrdersStandardView.Positions}`
     },
     {
       value: PerpOrdersStandardView.Orders,
       description: `${derivativeStore.subaccountOrdersCount}`,
-      display: `activity.${PerpOrdersStandardView.Orders}`
+      display: `trade.tab.${PerpOrdersStandardView.Orders}`
     },
     {
       value: PerpOrdersStandardView.AdvancedOrders,
-      display: `activity.${PerpOrdersStandardView.AdvancedOrders}`,
+      display: `trade.tab.${PerpOrdersStandardView.AdvancedOrders}`,
       description: `${derivativeStore.subaccountConditionalOrdersCount}`
     },
     {
       value: PerpOrdersStandardView.OrderHistory,
-      display: `activity.${PerpOrdersStandardView.OrderHistory}`,
+      display: `trade.tab.${PerpOrdersStandardView.OrderHistory}`,
       description: `${derivativeStore.subaccountOrderHistoryCount}`
     },
     {
       value: PerpOrdersStandardView.TradeHistory,
       description: `${derivativeStore.subaccountTradesCount}`,
-      display: `activity.${PerpOrdersStandardView.TradeHistory}`
+      display: `trade.tab.${PerpOrdersStandardView.TradeHistory}`
     },
     {
       value: PerpOrdersStandardView.FundingHistory,
-      display: `activity.${PerpOrdersStandardView.FundingHistory}`
+      display: `trade.tab.${PerpOrdersStandardView.FundingHistory}`
     }
   ]
 
   if (sharedWalletStore.isUserConnected) {
     items.unshift({
       value: PerpOrdersStandardView.Balances,
-      display: `activity.${PerpOrdersStandardView.Balances}`
+      display: `trade.tab.${PerpOrdersStandardView.Balances}`
     })
   }
 
@@ -85,6 +86,12 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  useEventBus(BusEvents.GoToPerpOrdersView).on(() => {
+    view.value = PerpOrdersStandardView.Orders
+  })
+})
 </script>
 
 <template>
@@ -108,7 +115,7 @@ watch(
           class="px-2"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OrderDetailsDropdown)"
         >
-          {{ $t(`activity.${selected?.value}`) }}
+          {{ $t(`trade.tab.${selected?.value}`) }}
           {{
             Number.isInteger(Number(selected?.description))
               ? `(${selected?.description || 0})`
@@ -121,7 +128,7 @@ watch(
         <button
           :data-cy="`${PerpetualMarketCyTags.OrderDetailsDropdownOptions}-${option.value}`"
         >
-          {{ $t(`activity.${option.value}`) }}
+          {{ $t(`trade.tab.${option.value}`) }}
           {{
             Number.isInteger(Number(option.description))
               ? `(${option.description})`
@@ -150,7 +157,7 @@ watch(
     </AppButtonSelect>
 
     <div class="hidden sm:flex flex-1 items-center px-2 justify-end">
-      <AppCheckbox2
+      <AppCheckbox
         v-if="view !== PerpOrdersStandardView.Balances"
         v-model="isTickerOnlyValue"
         is-plain
@@ -163,7 +170,7 @@ watch(
         <span class="hidden 3xl:block 4xl:hidden">
           {{ derivativeMarket.ticker }}
         </span>
-      </AppCheckbox2>
+      </AppCheckbox>
 
       <PartialsPortfolioOrdersFuturesOpenOrdersCancelAllOrders
         v-if="view === PerpOrdersStandardView.Orders"

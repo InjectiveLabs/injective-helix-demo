@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import {
-  Modal,
-  BusEvents,
-  UiDerivativeMarket,
-  PerpOrdersTradingBotsView
-} from '@/types'
 import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
+import { Modal, PerpOrdersTradingBotsView } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
@@ -24,7 +20,7 @@ const props = withDefaults(
 
 const view = ref(PerpOrdersTradingBotsView.ActiveStrategies)
 const status = reactive(new Status(StatusType.Loading))
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 const { $onError } = useNuxtApp()
 
 onWalletConnected(fetchStrategies)
@@ -55,7 +51,6 @@ function addTakeProfitStopLoss(position: PositionV2) {
 function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
-  useEventBus(BusEvents.SharePositionOpened).emit()
 }
 
 function fetchStrategies() {
@@ -68,7 +63,7 @@ function fetchStrategies() {
   Promise.all([
     gridStrategyStore.fetchAllStrategies(),
     positionStore.fetchPositions(),
-    derivativeStore.fetchOrdersForSubaccount({
+    derivativeStore.fetchSecondarySubaccountOrders({
       marketIds: [props.market.marketId],
       subaccountId: pgtSubaccount.value
     }),
@@ -83,6 +78,10 @@ function fetchStrategies() {
     .finally(() => {
       status.setIdle()
     })
+}
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
 }
 </script>
 
@@ -130,22 +129,20 @@ function fetchStrategies() {
 
     <ModalsAddMargin
       v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
+      v-bind="{ position: selectedPosition }"
       is-pgt
     />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"
-      v-bind="{
-        position: selectedPosition
-      }"
+      v-bind="{ position: selectedPosition }"
+      @on:close="resetSelectedPosition"
     />
 
     <ModalsSharePositionPnl
       v-if="selectedPosition"
       v-bind="{ position: selectedPosition }"
+      @on:close="resetSelectedPosition"
     />
   </div>
 </template>

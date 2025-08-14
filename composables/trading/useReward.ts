@@ -1,12 +1,12 @@
-import type { Ref } from 'vue'
-import { PointsMultiplier } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UiMarketWithToken } from '@/types'
+import type { Ref } from 'vue'
+import type { UiMarketWithToken } from '@/types'
+import type { PointsMultiplier } from '@injectivelabs/sdk-ts'
 
-export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
-  const spotStore = useSpotStore()
-  const derivativeStore = useDerivativeStore()
+export function useTradeReward(market?: Ref<undefined | UiMarketWithToken>) {
   const exchangeStore = useExchangeStore()
+  const sharedSpotStore = useSharedSpotStore()
+  const sharedDerivativeStore = useSharedDerivativeStore()
 
   const rewardsCampaign = computed(() => {
     if (!exchangeStore.tradingRewardsCampaign) {
@@ -131,7 +131,9 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
       )
 
     const DEFAULT_POINTS_MULTIPLIER = '1000000000000000000'
-    const nonBoostedDerivativesMarketsPointsMap = [...derivativeStore.markets]
+    const nonBoostedDerivativesMarketsPointsMap = [
+      ...sharedDerivativeStore.marketsWithToken
+    ]
       .filter(
         (derivativeMarket) =>
           !derivativeBoostedMarketIdList.value.includes(
@@ -171,7 +173,7 @@ export function useTradeReward(market?: Ref<UiMarketWithToken | undefined>) {
     )
 
     const DEFAULT_POINTS_MULTIPLIER = new BigNumberInBase(1).toWei().toFixed()
-    const nonBoostedSpotMarketsPointsMap = [...spotStore.markets]
+    const nonBoostedSpotMarketsPointsMap = [...sharedSpotStore.marketsWithToken]
       .filter(
         (spotMarket) =>
           !spotBoostedMarketIdList.value.includes(spotMarket.marketId) &&

@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { isWithinInterval } from 'date-fns'
-import { usdtToken } from '@shared/data/token'
 import { getHubUrl } from '@shared/utils/network'
+import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
 import {
-  BusEvents,
-  TradePage,
-  NoticeBanner,
-  PortfolioSubPage,
-  LeaderboardSubPage
-} from '@/types'
+  DEFAULT_TRUNCATE_LENGTH,
+  DEPRECATED_WALLET_DOCS_LINK
+} from '@/app/utils/constants'
+import { TradePage, UtmSource, NoticeBanner } from '@/types'
 
 type Banner = {
   id: string
@@ -19,96 +16,137 @@ type Banner = {
   shouldPersist?: boolean
 }
 
-const ftmPairs = [
-  {
-    slug: 'omni-usdt-perp',
-    marketId:
-      '0x4d42425fc3ccd6b61b8c4ad61134ab3cf21bdae1b665317eff671cfab79f4387'
-  }
-]
+const perpSettlePairs = [
+  // {
+  //   slug: 'wti-usdt-perp',
+  //   marketId:
+  //     '0x12ea31cc591984150dd2341f593c0bd3e57e3e057e8bd692806b7ac092ac529c',
+  //   newExpiryLaunch: true
+  // }
+] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
 const route = useRoute()
 const appStore = useAppStore()
-const accountStore = useAccountStore()
 const jsonStore = useSharedJsonStore()
 const sharedWalletStore = useSharedWalletStore()
-const now = useNow({ interval: 1000 })
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
+const { copy } = useClipboard()
 
 const isHideBanner = ref(false)
+const bannersToHide = ref<NoticeBanner[]>([])
 
-const ftmBanners = computed<Banner[]>(() => [
+const formattedTurnkeyInjectiveAddress = computed(() =>
+  sharedEllipsisFormatText(
+    sharedWalletStore.turnkeyInjectiveAddress,
+    DEFAULT_TRUNCATE_LENGTH
+  )
+)
+
+const deprecatedWarningBanner = computed<Banner[]>(() => [
   {
-    shouldPersist: true,
-    id: NoticeBanner.FTMSettleMarket,
+    id: NoticeBanner.DeprecatedWallet,
     shouldDisplay:
-      (route.name as string)?.startsWith(TradePage.Futures) &&
-      ftmPairs.some(
-        ({ slug, marketId }) =>
-          slug === route.params.slug || marketId === route.query.marketId
-      )
+      sharedWalletStore.isUserConnected &&
+      sharedWalletStore.wallet === Wallet.Magic,
+    shouldPersist: true
   }
 ])
+
+const activePerpSettlePairs = computed(() =>
+  perpSettlePairs.find(
+    ({ slug, marketId }) =>
+      slug === route.params.slug || marketId === route.query.marketId
+  )
+)
+
+const perpMarketSettleBanners = computed<Banner[]>(() => [
+  {
+    shouldPersist: true,
+    id: NoticeBanner.PerpSettleMarket,
+    shouldDisplay:
+      (route.name as string)?.startsWith(TradePage.Futures) &&
+      activePerpSettlePairs.value !== undefined
+  }
+])
+
 const chainUpgradeBanners = computed<Banner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PostChainUpgrade,
-    shouldDisplay: jsonStore.isPostUpgradeMode
+    shouldDisplay:
+      jsonStore.isPostUpgradeMode && sharedWalletStore.isUserConnected
   },
   {
     shouldPersist: true,
     id: NoticeBanner.UpcomingChainUpgrade,
-    shouldDisplay: jsonStore.hasUpcomingChainUpgrade
+    shouldDisplay:
+      jsonStore.hasUpcomingChainUpgrade && sharedWalletStore.isUserConnected
   }
 ])
 
 const promotionalBanners = computed<Banner[]>(() => [
+  // {
+  //   id: NoticeBanner.OwnYourAssetCampaign,
+  //   shouldDisplay:
+  //     !appStore.userState.bannersViewed.includes(
+  //       NoticeBanner.OwnYourAssetCampaign
+  //     ) &&
+  //     isWithinInterval(now.value, {
+  //       end: new Date(1733497200000),
+  //       start: new Date(1732633200000)
+  //     })
+  // },
   {
-    // todo: replace this banner with new UX after Ned comes back with the design
-    shouldPersist: true,
-    id: NoticeBanner.AuthzConnected,
-    shouldDisplay: sharedWalletStore.isAuthzWalletConnected
-  },
-  {
-    id: NoticeBanner.OwnYourAssetCampaign,
+    id: NoticeBanner.StockTwits,
     shouldDisplay:
-      !appStore.userState.bannersViewed.includes(
-        NoticeBanner.OwnYourAssetCampaign
-      ) &&
-      isWithinInterval(now.value, {
-        end: new Date(1733497200000),
-        start: new Date(1732633200000)
-      })
-  },
-  {
-    id: NoticeBanner.NeptuneUsdt,
-    shouldDisplay:
-      !appStore.userState.bannersViewed.includes(NoticeBanner.NeptuneUsdt) &&
-      new BigNumberInBase(accountStore.balancesMap[usdtToken.denom]).gt(0)
+      sharedWalletStore.isUserConnected &&
+      route.query.utm_source === UtmSource.StockTwits &&
+      !appStore.userState.bannersViewed.includes(NoticeBanner.StockTwits)
   }
 ])
 
 const bannerToDisplay = computed(
   () =>
     [
-      ...ftmBanners.value,
+      ...deprecatedWarningBanner.value,
+      ...perpMarketSettleBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
-    ].filter((banner) => banner.shouldDisplay)[0]
+    ].filter(
+      (banner) =>
+        !bannersToHide.value.includes(banner.id as NoticeBanner) &&
+        banner.shouldDisplay
+    )[0]
 )
 
-function openNeptuneUsdtModal() {
-  useEventBus(BusEvents.NeptuneUsdt).emit()
-  onHideBanner()
-}
+watch(
+  () => bannerToDisplay.value?.id,
+  (id) => {
+    if (id === NoticeBanner.StockTwits) {
+      const routeQuery = route.query
+
+      trackUtmStockTwitsBanner({
+        isBannerShown: true,
+        walletType: sharedWalletStore.wallet,
+        utmMedium: routeQuery?.utm_medium as string,
+        utmCampaign: routeQuery?.utm_campaign as string,
+        utmSourcePlatform: routeQuery?.utm_source_platform as string
+      })
+    }
+  },
+  { immediate: true }
+)
+
+// function openNeptuneUsdtModal() {
+//   useEventBus(BusEvents.NeptuneUsdt).emit()
+//   onHideBanner()
+// }
 
 function onHideBanner() {
-  isHideBanner.value = true
+  bannersToHide.value.push(bannerToDisplay.value?.id as NoticeBanner)
 
-  if (!bannerToDisplay.value) {
-    return
-  }
-
-  if (bannerToDisplay.value.shouldPersist) {
+  if (!bannerToDisplay.value || bannerToDisplay.value?.shouldPersist) {
     return
   }
 
@@ -116,8 +154,26 @@ function onHideBanner() {
     ...appStore.userState,
     bannersViewed: [
       ...appStore.userState.bannersViewed,
-      bannerToDisplay.value.id
+      bannerToDisplay.value?.id
     ]
+  })
+}
+
+function onCopyAddress() {
+  copy(sharedWalletStore.turnkeyInjectiveAddress)
+  notificationStore.success({ title: t('toast.copiedAddressToClipboard') })
+}
+
+function onClickStockTwitsCta() {
+  const routeQuery = route.query
+
+  trackUtmStockTwitsBanner({
+    isCtaClicked: true,
+    isBannerShown: true,
+    walletType: sharedWalletStore.wallet,
+    utmMedium: routeQuery?.utm_medium as string,
+    utmCampaign: routeQuery?.utm_campaign as string,
+    utmSourcePlatform: routeQuery?.utm_source_platform as string
   })
 }
 </script>
@@ -125,15 +181,24 @@ function onHideBanner() {
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm justify-between relative z-40 font-semibold"
+    :class="[
+      jsonStore.isPostUpgradeMode ? 'justify-center' : 'justify-between'
+    ]"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold"
   >
     <div />
 
-    <template v-if="bannerToDisplay.id === NoticeBanner.FTMSettleMarket">
-      {{ $t('banners.ftmSettleMarket') }}
+    <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
+      <span v-if="activePerpSettlePairs?.newExpiryLaunch">
+        {{ $t('banners.settlePerpMarketBannerNewLaunch') }}
+      </span>
+      <span v-else>
+        {{ $t('banners.settlePerpMarketBanner') }}
+      </span>
     </template>
 
-    <i18n-t
+    <!-- for future reference as per PR feedback -->
+    <!-- <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.NeptuneUsdt"
       tag="p"
       keypath="trade.neptuneUsdt.banner"
@@ -150,41 +215,64 @@ function onHideBanner() {
           class="hover:opacity-80 underline cursor-pointer"
           @click="openNeptuneUsdtModal"
         >
-          {{ $t('trade.neptuneUsdt.here') }}
+          {{ $t('common.here') }}
         </NuxtLink>
       </template>
     </i18n-t>
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.OwnYourAssetCampaign"
-      keypath="banners.ownYourAssetCompetition"
       tag="p"
+      keypath="banners.leaderboard.currentCompetitionLink"
     >
       <template #linkDescription>
         <NuxtLink
           class="inline-flex font-semibold"
           :to="{ name: LeaderboardSubPage.Competition }"
         >
-          {{ $t('banners.ownYourAssetCompetitionLink') }}
+          {{ $t('banners.leaderboard.currentCompetitionTitle') }}
         </NuxtLink>
       </template>
-    </i18n-t>
+    </i18n-t> -->
 
     <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.AuthzConnected"
-      keypath="banners.authz"
+      v-if="bannerToDisplay.id === NoticeBanner.DeprecatedWallet"
       tag="p"
+      class="flex items-center gap-1"
+      :keypath="
+        sharedWalletStore.turnkeyInjectiveAddress
+          ? 'banners.deprecatedWalletWithAddress'
+          : 'banners.deprecatedWallet'
+      "
     >
       <template #address>
-        <strong>{{ sharedWalletStore.authZOrInjectiveAddress }}</strong>
+        <div class="flex items-center gap-2">
+          <span>{{ formattedTurnkeyInjectiveAddress }}</span>
+          <UIcon
+            :name="NuxtUiIcons.Copy2"
+            class="hover:text-white h-4 w-4"
+            @click.stop="onCopyAddress"
+          />
+        </div>
+      </template>
+
+      <template #learnMore>
+        <NuxtLink
+          class="hover:opacity-80 underline cursor-pointer"
+          target="_blank"
+          :to="DEPRECATED_WALLET_DOCS_LINK"
+          @click="onClickStockTwitsCta"
+        >
+          {{ $t('common.learnMore') }}
+        </NuxtLink>
       </template>
     </i18n-t>
 
     <div
       v-if="
-        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade &&
         jsonStore.chainUpgradeConfig.proposalId &&
-        jsonStore.chainUpgradeConfig.proposalMsg
+        jsonStore.chainUpgradeConfig.proposalMsg &&
+        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade
       "
       class="flex items-center gap-1"
     >
@@ -201,14 +289,31 @@ function onHideBanner() {
     </div>
 
     <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"
-      keypath="banners.postOnly"
+      v-if="bannerToDisplay.id === NoticeBanner.StockTwits"
       tag="p"
+      keypath="banners.stockTwits"
+    >
+      <template #learnMore>
+        <NuxtLink
+          class="hover:opacity-80 underline cursor-pointer"
+          target="_blank"
+          to="https://docs.helixapp.com/getting-started"
+          @click="onClickStockTwitsCta"
+        >
+          {{ $t('common.learnMore') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
+
+    <i18n-t
+      v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"
+      tag="p"
+      keypath="banners.postOnly"
     >
       <template #link>
         <NuxtLink
-          :to="NOTIFI_LINK"
           target="_blank"
+          :to="NOTIFI_LINK"
           class="hover:opacity-80 underline cursor-pointer"
         >
           {{ $t('banners.findOutMore') }}
@@ -216,15 +321,13 @@ function onHideBanner() {
       </template>
     </i18n-t>
 
-    <UIcon
-      v-if="bannerToDisplay.id === NoticeBanner.AuthzConnected"
-      :name="NuxtUiIcons.Exit"
-      class="text-blue-900 h-6 w-6 min-w-6"
-      @click="sharedWalletStore.resetAuthZ()"
-    />
+    <template v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended">
+      <span>
+        {{ $t('banners.pointsS1Ended') }}
+      </span>
+    </template>
 
     <UIcon
-      v-else
       :name="NuxtUiIcons.Close"
       class="h-4 w-4 min-w-4 hover:text-white"
       @click="onHideBanner"

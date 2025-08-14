@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 import {
   PerpetualMarketCyTags,
   PortfolioFuturesOrderHistoryTableColumn
 } from '@/types'
+import type { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -16,7 +16,7 @@ const props = withDefaults(
 
 const { rows } = useFuturesOrderHistoryTransformer(computed(() => props.orders))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioFuturesOrderHistoryTableColumn.LastUpdated,
     label: t(
@@ -79,7 +79,7 @@ const columns = [
       `portfolio.table.futuresOrderHistory.${PortfolioFuturesOrderHistoryTableColumn.Status}`
     )
   }
-]
+])
 </script>
 
 <template>
@@ -150,10 +150,12 @@ const columns = [
             v-else
             :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryPrice)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.price.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </span>
@@ -165,10 +167,12 @@ const columns = [
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryAmount)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -177,10 +181,12 @@ const columns = [
       <template #total-data="{ row }">
         <div class="flex items-center p-2 justify-end">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryTotal)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.total.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </span>
@@ -202,7 +208,7 @@ const columns = [
         >
           <template v-if="row.order.isConditional">
             <span class="text-coolGray-500 font-semibold">
-              {{ $t('trade.mark_price') }}
+              {{ $t('trade.markPrice') }}
             </span>
 
             <div class="flex gap-2">
@@ -216,9 +222,11 @@ const columns = [
               </span>
               <span v-else class="text-white font-semibold">&ge;</span>
 
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  decimalPlaces: row.priceDecimals,
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  decimals: row.priceDecimals,
                   amount: row.triggerPrice.toFixed()
                 }"
               />

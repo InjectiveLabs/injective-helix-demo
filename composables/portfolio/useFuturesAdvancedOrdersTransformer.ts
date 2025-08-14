@@ -1,18 +1,17 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import {
   MsgType,
   OrderSide,
   OrderState,
   TradeExecutionType
 } from '@injectivelabs/ts-types'
-import { DerivativeOrderHistory } from '@injectivelabs/sdk-ts'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  PortfolioFuturesAdvancedOrdersTableColumn,
-  TransformedPortfolioFuturesAdvancedOrders
-} from '@/types'
+import { PortfolioFuturesAdvancedOrdersTableColumn } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import type { TransformedPortfolioFuturesAdvancedOrders } from '@/types'
 
 export function useFuturesAdvancedOrdersTransformer(
-  triggerList: ComputedRef<DerivativeOrderHistory[]>
+  triggerList: ComputedRef<DerivativeLimitOrder[]>
 ) {
   const authZStore = useAuthZStore()
   const derivativeStore = useDerivativeStore()
@@ -28,9 +27,7 @@ export function useFuturesAdvancedOrdersTransformer(
 
   const rows = computed(() =>
     triggerList.value.reduce((list, trigger) => {
-      const market = derivativeStore.markets.find(
-        (market) => market.marketId === trigger.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(trigger.marketId)
 
       if (!market) {
         return list
@@ -52,13 +49,15 @@ export function useFuturesAdvancedOrdersTransformer(
 
       const type = typeMap[trigger.orderType as OrderSide] || ''
 
-      const price = new BigNumberInWei(trigger.price).toBase(
-        market.quoteToken.decimals
-      )
+      const price = sharedToBalanceInTokenInBase({
+        value: trigger.price,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
-      const margin = new BigNumberInWei(trigger.margin).toBase(
-        market.quoteToken.decimals
-      )
+      const margin = sharedToBalanceInTokenInBase({
+        value: trigger.margin,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isReduceOnly = trigger.isReduceOnly || margin.isZero()
 
@@ -71,16 +70,17 @@ export function useFuturesAdvancedOrdersTransformer(
         : new BigNumberInBase(price.times(quantity).dividedBy(margin))
 
       const isBuy =
-        trigger.direction === OrderSide.Buy ||
+        [OrderSide.Buy, OrderSide.BuyPO].includes(trigger.orderSide) ||
         orderSideList.includes(trigger.orderType as OrderSide)
 
       const isStopLoss =
         trigger.orderType === OrderSide.StopBuy ||
         trigger.orderType === OrderSide.StopSell
 
-      const triggerPrice = new BigNumberInWei(trigger.triggerPrice).toBase(
-        market.quoteToken.decimals
-      )
+      const triggerPrice = sharedToBalanceInTokenInBase({
+        value: trigger.triggerPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
 
       const isTakeProfit =
         trigger.orderType === OrderSide.TakeBuy ||

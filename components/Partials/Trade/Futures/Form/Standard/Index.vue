@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
+  Modal,
   MarketKey,
   BusEvents,
-  UiDerivativeMarket,
   DerivativeTradeTypes,
-  DerivativesTradeForm,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const appStore = useAppStore()
+const modalStore = useSharedModalStore()
 
 const { setValues: setFormValues } = useForm<DerivativesTradeForm>()
+const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
+
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 
 const { value: orderType } = useStringField({
   name: DerivativesTradeFormField.Type,
@@ -37,6 +43,20 @@ const {
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
 
+const estLiquidationPrice = computed(() => {
+  const isBuy =
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
+
+  return calculateLiquidationPrice({
+    price: worstPrice.value.toFixed(),
+    quantity: quantity.value.toFixed(),
+    notionalWithLeverage: margin.value.toFixed(),
+    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
+    market: market.value
+  })
+})
+
 onMounted(() => {
   setFormValues(
     {
@@ -48,16 +68,9 @@ onMounted(() => {
   )
 })
 
-function onOrderSideChange() {
-  if (
-    ![DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
-      orderType.value as DerivativeTradeTypes
-    )
-  ) {
-    return
-  }
-
-  useEventBus(BusEvents.OrderSideToggled).emit()
+function addTpSl(position: PositionV2) {
+  selectedPosition.value = position
+  modalStore.openModal(Modal.AddTakeProfitStopLoss)
 }
 
 function onTradeTypeChange() {
@@ -71,6 +84,22 @@ function onTradeTypeChange() {
     },
     false
   )
+}
+
+function onOrderSideChange() {
+  if (
+    ![DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+      orderType.value as DerivativeTradeTypes
+    )
+  ) {
+    return
+  }
+
+  useEventBus(BusEvents.OrderSideToggled).emit()
+}
+
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
 }
 </script>
 
@@ -110,8 +139,8 @@ function onTradeTypeChange() {
                 ? 'success'
                 : 'danger'
               : side === TradeDirection.Long
-              ? 'success-cta'
-              : 'danger-cta'
+                ? 'success-cta'
+                : 'danger-cta'
           "
           :class="[
             'w-full py-1.5 leading-relaxed focus-within:ring-0',
@@ -147,14 +176,26 @@ function onTradeTypeChange() {
         v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
       />
 
-      <PartialsTradeFuturesFormStandardLeverage
-        v-bind="{
-          worstPrice
-        }"
-      />
+      <PartialsTradeFuturesFormStandardLeverage v-bind="{ worstPrice }" />
     </div>
 
-    <PartialsTradeFuturesFormStandardAdvancedSettings />
+    <PartialsTradeFuturesFormStandardSlippage
+      v-if="
+        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+          derivativeFormValues[
+            DerivativesTradeFormField.Type
+          ] as DerivativeTradeTypes
+        )
+      "
+      v-bind="{ worstPrice }"
+      class="mt-4"
+    />
+
+    <PartialsTradeFuturesFormStandardAdvancedSettings
+      class="mt-4"
+      v-bind="{ estLiquidationPrice }"
+      @tpsl:add="addTpSl"
+    />
 
     <PartialsTradeFuturesFormStandardDetails
       v-bind="{
@@ -163,7 +204,8 @@ function onTradeTypeChange() {
         feeAmount,
         worstPrice,
         marginWithFee,
-        totalNotional
+        totalNotional,
+        estLiquidationPrice
       }"
     />
 
@@ -180,5 +222,11 @@ function onTradeTypeChange() {
     />
 
     <PartialsTradeCommonFormAccountEquity />
+
+    <ModalsAddTakeProfitStopLoss
+      v-if="selectedPosition"
+      v-bind="{ position: selectedPosition }"
+      @on:close="resetSelectedPosition"
+    />
   </div>
 </template>

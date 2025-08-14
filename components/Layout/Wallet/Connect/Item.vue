@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Wallet } from '@injectivelabs/wallet-base'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import { WalletOption } from '@/types'
+import type { WalletOption } from '@/types'
 
-const toast = useToast()
 const walletStore = useWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 
@@ -21,6 +21,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  'deprecatedSso:show': []
   'selectedHardwareWallet:toggle': [wallet: Wallet | undefined]
 }>()
 
@@ -29,6 +30,13 @@ const hardwareWallets = [Wallet.Ledger, Wallet.TrezorBip32]
 function handleConnect() {
   if (props.isBackButton) {
     emit('selectedHardwareWallet:toggle', undefined)
+
+    return
+  }
+
+  if (props.walletOption.wallet === Wallet.Magic) {
+    emit('deprecatedSso:show')
+
     return
   }
 
@@ -48,8 +56,8 @@ function handleConnect() {
   walletStore
     .connect({ wallet: props.walletOption.wallet })
     .then(() =>
-      toast.add({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {
@@ -100,9 +108,12 @@ function handleConnect() {
 
       <p class="text-xs text-coolGray-500">
         <span v-if="hardwareWallets.includes(walletOption.wallet)">
-          {{ $t(`connect.${'connectUsingHardware'}`) }}
+          {{ $t('connect.connectUsingHardware') }}
         </span>
-        <span v-else>{{ $t(`connect.${'connectUsingBrowser'}`) }}</span>
+        <span v-else-if="walletOption.wallet === Wallet.Magic">
+          {{ $t('connect.connectDeprecatedSSO') }}
+        </span>
+        <span v-else>{{ $t('connect.connectUsingBrowser') }}</span>
       </p>
     </div>
 

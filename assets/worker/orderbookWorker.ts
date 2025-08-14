@@ -1,15 +1,14 @@
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   sharedToBalanceInWei,
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
-import { PriceLevel } from '@injectivelabs/sdk-ts'
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import {
-  WorkerMessageType,
+import { WorkerMessageType, WorkerMessageResponseType } from '@/types/worker'
+import type { PriceLevel } from '@injectivelabs/sdk-ts'
+import type {
   OrderbookWorkerResult,
   OrderbookWorkerMessage,
-  OrderbookFormattedRecord,
-  WorkerMessageResponseType
+  OrderbookFormattedRecord
 } from '@/types/worker'
 
 function priceLevelsToMap({
@@ -260,11 +259,41 @@ self.addEventListener(
     }
 
     switch (type) {
+      case WorkerMessageType.Aggregation:
+        sendReplaceOrderbook()
+        break
+
       case WorkerMessageType.WorstPrice:
         sendWorstPrice(data.quantity)
         break
 
-      case WorkerMessageType.Aggregation:
+      case WorkerMessageType.Stream:
+        preFetchBuyRecords.push({
+          sequence: data.sequence,
+          records: data.orderbook.buys
+        })
+        preFetchSellRecords.push({
+          sequence: data.sequence,
+          records: data.orderbook.sells
+        })
+
+        priceLevelsToMap({
+          isBuy: true,
+          priceMap: buys,
+          isSpot: data.isSpot,
+          priceLevels: data.orderbook.buys,
+          baseDecimals: data.baseDecimals,
+          quoteDecimals: data.quoteDecimals
+        })
+        priceLevelsToMap({
+          isBuy: false,
+          priceMap: sells,
+          isSpot: data.isSpot,
+          priceLevels: data.orderbook.sells,
+          baseDecimals: data.baseDecimals,
+          quoteDecimals: data.quoteDecimals
+        })
+
         sendReplaceOrderbook()
         break
 
@@ -330,36 +359,6 @@ self.addEventListener(
             (record) => record.sequence >= data.sequence
           )
         }
-
-        sendReplaceOrderbook()
-        break
-
-      case WorkerMessageType.Stream:
-        preFetchBuyRecords.push({
-          sequence: data.sequence,
-          records: data.orderbook.buys
-        })
-        preFetchSellRecords.push({
-          sequence: data.sequence,
-          records: data.orderbook.sells
-        })
-
-        priceLevelsToMap({
-          isBuy: true,
-          priceMap: buys,
-          isSpot: data.isSpot,
-          priceLevels: data.orderbook.buys,
-          baseDecimals: data.baseDecimals,
-          quoteDecimals: data.quoteDecimals
-        })
-        priceLevelsToMap({
-          isBuy: false,
-          priceMap: sells,
-          isSpot: data.isSpot,
-          priceLevels: data.orderbook.sells,
-          baseDecimals: data.baseDecimals,
-          quoteDecimals: data.quoteDecimals
-        })
 
         sendReplaceOrderbook()
         break

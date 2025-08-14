@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-  MarketKey,
-  SpotGridTradingField,
-  SpotGridTradingForm,
-  UiSpotMarket
-} from '@/types'
+import { MarketKey, SpotGridTradingField } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -51,9 +47,16 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
 
 <template>
   <div class="p-1 space-y-4">
+    <div class="flex items-center gap-2">
+      <p class="text-xs text-coolGray-450">
+        {{ $t('tradingBots.upperPriceStop') }}
+      </p>
+      <AppTooltip :text="$t('tradingBots.sgt.upperPriceStopTooltip')" />
+    </div>
+
     <AppInputField
       v-model="takeProfitValue"
-      :placeholder="$t('trade.takeProfit')"
+      :placeholder="$t('tradingBots.upperPriceStop')"
       class="placeholder:font-sans"
     />
     <p v-if="takeProfitErrorMessage" class="error-message">
@@ -61,17 +64,26 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
     </p>
 
     <div class="!mt-2 !-mb-2">
-      <AppCheckbox2
+      <AppCheckbox
         v-model="buyBaseOnTakeProfitValue"
         class="!mt-2 !-mb-2 text-coolGray-450 font-medium"
       >
-        {{ $t('sgt.buySymbolOnStop', { symbol: market.baseToken.symbol }) }}
-      </AppCheckbox2>
+        {{
+          $t('tradingBots.buySymbolOnStop', { symbol: market.baseToken.symbol })
+        }}
+      </AppCheckbox>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p class="text-xs text-coolGray-450">
+        {{ $t('tradingBots.lowerPriceStop') }}
+      </p>
+      <AppTooltip :text="$t('tradingBots.sgt.lowerPriceStopTooltip')" />
     </div>
 
     <AppInputField
       v-model="stopLossValue"
-      :placeholder="$t('trade.stopLoss')"
+      :placeholder="$t('tradingBots.lowerPriceStop')"
       class="placeholder:font-sans"
     />
 
@@ -80,9 +92,13 @@ const { value: sellBaseOnStopLossValue } = useBooleanField({
     </p>
 
     <div class="!mt-2 !-mb-2 text-coolGray-450 font-medium">
-      <AppCheckbox2 v-model="sellBaseOnStopLossValue">
-        {{ $t('sgt.sellAllSymbolOnStop', { symbol: market.baseToken.symbol }) }}
-      </AppCheckbox2>
+      <AppCheckbox v-model="sellBaseOnStopLossValue">
+        {{
+          $t('tradingBots.sellAllSymbolOnStop', {
+            symbol: market.baseToken.symbol
+          })
+        }}
+      </AppCheckbox>
     </div>
   </div>
 </template>

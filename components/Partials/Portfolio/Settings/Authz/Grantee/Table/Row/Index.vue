@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {
-  GenericAuthorization,
-  GrantAuthorizationType,
-  GrantAuthorizationWithDecodedAuthorization
-} from '@injectivelabs/sdk-ts'
 import { NuxtUiIcons } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { GrantAuthorizationType } from '@injectivelabs/sdk-ts'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
+import type {
+  GenericAuthorization,
+  GrantAuthorizationWithDecodedAuthorization
+} from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +19,8 @@ const props = withDefaults(
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const isOpen = ref(false)
@@ -45,6 +47,9 @@ function revokeAll() {
         )
         .map((grant) => (grant.authorization as GenericAuthorization).msg)
     })
+    .then(() => {
+      notificationStore.update({ title: t('toast.success') })
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -70,7 +75,7 @@ function revokeAll() {
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </span>
 
-      <span> {{ $t('portfolio.settings.authz.viewGrantedFunctions') }} </span>
+      <span> {{ $t('portfolio.authZ.viewGrantedFunctions') }} </span>
     </div>
 
     <div class="xs:flex-1 flex items-center p-2" @click.stop>
@@ -80,24 +85,24 @@ function revokeAll() {
           sharedWalletStore.isAutoSignEnabled
         "
         v-bind="{ status }"
-        :variant="'danger-ghost'"
-        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
         size="sm"
         disabled
+        variant="danger-ghost"
         class="text-nowrap px-2"
+        :tooltip="$t('portfolio.notAvailableinAuthZOrAutoSignMode')"
       >
-        {{ $t('portfolio.settings.authz.revokeAll') }}
+        {{ $t('portfolio.authZ.revokeAll') }}
       </AppButton>
 
       <AppButton
         v-else
         v-bind="{ status }"
-        :variant="'danger-ghost'"
         size="sm"
+        variant="danger-ghost"
         class="text-nowrap px-2"
         @click="revokeAll"
       >
-        {{ $t('portfolio.settings.authz.revokeAll') }}
+        {{ $t('portfolio.authZ.revokeAll') }}
       </AppButton>
     </div>
   </div>

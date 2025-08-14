@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { SharedUiDerivativeTrade } from '@shared/types'
-import {
-  LOW_FEE_AMOUNT_THRESHOLD,
-  UI_DEFAULT_FEE_MIN_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import {
   PerpetualMarketCyTags,
   PortfolioFuturesTradeHistoryTableColumn
 } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -22,7 +17,7 @@ const props = withDefaults(
 
 const { rows } = useFuturesTradeHistoryTransformer(computed(() => props.trades))
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioFuturesTradeHistoryTableColumn.Time,
     label: t(
@@ -73,13 +68,20 @@ const columns = [
     class: 'text-right'
   },
   {
+    key: PortfolioFuturesTradeHistoryTableColumn.Pnl,
+    label: t(
+      `portfolio.table.futuresTradeHistory.${PortfolioFuturesTradeHistoryTableColumn.Pnl}`
+    ),
+    class: 'text-right'
+  },
+  {
     key: PortfolioFuturesTradeHistoryTableColumn.Total,
     label: t(
       `portfolio.table.futuresTradeHistory.${PortfolioFuturesTradeHistoryTableColumn.Total}`
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>
@@ -137,10 +139,12 @@ const columns = [
           class="flex items-center justify-end p-2"
           :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryPrice)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.price.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
         </div>
@@ -151,10 +155,12 @@ const columns = [
           class="flex items-center justify-end p-2"
           :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryAmount)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -163,12 +169,9 @@ const columns = [
       <template #fee-data="{ row }">
         <div class="flex-1 flex items-center justify-end p-2">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.fee.toFixed(),
-                decimalPlaces: row.fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
-                  ? UI_DEFAULT_FEE_MIN_DECIMALS
-                  : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+                amount: row.fee.toFixed()
               }"
             />
           </span>
@@ -178,13 +181,37 @@ const columns = [
         </div>
       </template>
 
+      <template #pnl-data="{ row }">
+        <div
+          class="flex-1 flex items-center justify-end p-2"
+          :class="{
+            'text-red-500': row.pnl.lt(0),
+            'text-green-500': row.pnl.gt(0)
+          }"
+        >
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false,
+              amount: row.pnl.toFixed()
+            }"
+          />
+          <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
+            {{ row.market.quoteToken.symbol }}
+          </span>
+        </div>
+      </template>
+
       <template #total-data="{ row }">
         <div class="flex justify-end pr-2">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.total.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </span>

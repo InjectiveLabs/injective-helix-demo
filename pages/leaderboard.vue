@@ -2,7 +2,7 @@
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCountryRestrictedForLeaderboard } from '@/app/data/geoip'
 import { UPCOMING_LEADERBOARD_CAMPAIGN_NAME } from '@/app/data/campaign'
-import { MainPage, LeaderboardSubPage, LeaderBoardCyTags } from '@/types'
+import { MainPage, LeaderBoardCyTags, LeaderboardSubPage } from '@/types'
 
 const route = useRoute()
 const campaignStore = useCampaignStore()
@@ -80,7 +80,9 @@ function fetchCampaigns() {
       class="bg-[url('/images/leaderboard/pnl-bg.webp')] h-[1155px] w-full bg-center bg-contain -top-[100px] opacity-70 absolute"
     />
 
-    <div class="container lg:px-[120px] mx-auto text-center relative">
+    <div
+      class="container lg:px-[120px] max-lg:px-4 mx-auto text-center relative"
+    >
       <AppHocLoading v-bind="{ status, isFullScreen: true }">
         <section class="flex flex-col space-y-2 pt-12 pb-7 md:py-40">
           <div
@@ -98,21 +100,23 @@ function fetchCampaigns() {
           <div
             class="flex flex-col md:flex-row flex-wrap gap-3 max-md:space-y-4 justify-between mb-6 md:mb-10"
           >
-            <div class="max-md:text-left overflow-x-auto max-sm:max-w-full">
+            <div
+              class="max-md:flex max-md:gap-4 max-md:flex-wrap overflow-x-auto max-sm:max-w-full"
+            >
               <NuxtLink
                 v-for="page in leaderboardSubpages"
                 :key="page.pageName"
                 :to="page.isDisabled ? '' : { name: page.pageName }"
-                class="capitalize max-md:mr-4 md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
+                class="capitalize md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
                 :class="{
-                  'text-coolGray-200': route.name !== page.pageName,
-                  'pointer-events-none text-coolGray-600': page.isDisabled
+                  'hidden': page.isDisabled,
+                  'text-coolGray-200': route.name !== page.pageName
                 }"
               >
                 <span
-                  class="py-2"
+                  class="pb-2"
                   :class="{
-                    'border-b-4 border-blue-500 text-blue-500 inline-block mx-2':
+                    'border-b-4 border-blue-500 text-blue-500 inline-block':
                       route.name === page.pageName
                   }"
                   :data-cy="dataCyTag(LeaderBoardCyTags.pageName)"

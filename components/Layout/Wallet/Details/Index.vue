@@ -1,12 +1,10 @@
 <script lang="ts" setup>
+import { BigNumber } from '@injectivelabs/utils'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
+import { DEFAULT_TRUNCATE_LENGTH } from '@/app/utils/constants'
 import * as WalletTracker from '@/app/providers/mixpanel/WalletTracker'
-import {
-  DEFAULT_TRUNCATE_LENGTH,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 import { Modal, MainPage, PortfolioSubPage } from '@/types'
 
 const route = useRoute()
@@ -14,6 +12,7 @@ const router = useRouter()
 const walletStore = useWalletStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 const { stakedAmountInUsd, aggregatedSubaccountTotalBalanceInUsd } =
   useBalance()
 
@@ -26,8 +25,8 @@ const formattedAddress = computed(() =>
   )
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
 function disconnect() {
@@ -46,10 +45,14 @@ function disconnect() {
 
 <template>
   <div class="flex items-center min-h-[22px]">
-    <UPopover mode="hover" :ui="{ base: 'overflow-visible' }">
+    <UPopover
+      :key="lg ? 'lg' : 'mobile'"
+      :mode="lg ? 'hover' : 'click'"
+      :ui="{ base: 'overflow-visible' }"
+    >
       <template #default>
         <div
-          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-4 rounded-lg"
+          class="font-medium text-xs cursor-pointer flex items-center justify-center lg:justify-start w-8 h-8 lg:w-auto lg:px-6 rounded-lg"
         >
           <AppSpinner
             v-if="
@@ -62,17 +65,8 @@ function disconnect() {
           <div v-else class="flex items-center justify-center space-x-2">
             <UIcon
               :name="NuxtUiIcons.UserOutline"
-              class="w-4 h-4 rounded-md text-[#black]"
+              class="lg:w-4 lg:h-4 w-5 h-5 rounded-md text-white"
             />
-            <div
-              v-if="sharedWalletStore.isAutoSignEnabled"
-              class="bg-white px-1 py-0.5 rounded flex items-center justify-center"
-            >
-              <UIcon
-                :name="NuxtUiIcons.RotateAuto"
-                class="w-4 h-4 rounded-md text-black"
-              />
-            </div>
           </div>
 
           <span class="hidden lg:block lg:ml-2">
@@ -86,26 +80,29 @@ function disconnect() {
           class="flex flex-col gap-4 min-w-[310px] sm:min-w-[356px] rounded-lg bg-brand-900 backdrop-blur-sm border border-brand-800"
         >
           <div class="rounded-lg">
-            <div class="flex flex-col py-3 px-4 border-b">
-              <div class="flex justify-between pb-2">
-                <div class="flex items-center gap-2">
-                  <p class="text-sm font-semibold text-coolGray-200 mb-1">
-                    {{ $t('navigation.myAccount') }}
-                  </p>
+            <div class="flex flex-col py-5 px-4 border-b">
+              <div class="flex justify-between pb-5">
+                <p class="text-sm font-semibold text-coolGray-200">
+                  {{ $t('navigation.myAccount') }}
+                </p>
 
-                  <NuxtLink :to="{ name: PortfolioSubPage.Settings }">
+                <div class="flex items-center gap-x-4">
+                  <NuxtLink
+                    :to="{ name: PortfolioSubPage.Settings }"
+                    class="leading-4"
+                  >
                     <UIcon
-                      :name="NuxtUiIcons.Settings"
-                      class="h-4 w-4 min-w-4 text-white hover:text-blue-500"
+                      :name="NuxtUiIcons.SettingsOutline"
+                      class="h-4 w-4 min-w-4 mt-0.5 text-white hover:text-blue-500"
                     />
                   </NuxtLink>
+
+                  <UIcon
+                    :name="NuxtUiIcons.ExitOutline"
+                    class="h-5 w-5 min-w-5 text-white hover:text-blue-500"
+                    @click="disconnect"
+                  />
                 </div>
-                <span
-                  class="text-blue-500 hover:text-opacity-80 cursor-pointer text-xs font-medium"
-                  @click="disconnect"
-                >
-                  {{ $t('navigation.disconnect') }}
-                </span>
               </div>
               <LayoutWalletDetailsConnectedWallet
                 :wallet="sharedWalletStore.wallet"
@@ -113,40 +110,39 @@ function disconnect() {
             </div>
 
             <div class="text-white p-4">
-              <p class="text-xs text-coolGray-400">
+              <p class="text-2xs text-coolGray-450 font-medium">
                 {{ $t('portfolio.totalValue') }}
               </p>
 
-              <p class="text-2xl font-semibold mb-2 mt-0">
-                <span>$</span>
-                <AppUsdAmount
+              <p class="text-2xl font-semibold my-1 leading-6">
+                <SharedAmountUsd
                   v-bind="{
-                    amount: aggregatedSubaccountTotalBalanceInUsd.toFixed(),
-                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                    roundingMode: BigNumber.ROUND_HALF_UP,
+                    amount: aggregatedSubaccountTotalBalanceInUsd.toFixed()
                   }"
-                />
+                >
+                  <template #prefix>$</template>
+                </SharedAmountUsd>
               </p>
 
-              <div class="flex items-center space-x-1 text-sm">
-                <UIcon
-                  :name="NuxtUiIcons.PottedPlant"
-                  class="max-sm:h-4 max-sm:w-4 h-5 w-5 hidden sm:block"
-                />
-                <div>{{ $t('account.staked') }}:</div>
+              <div class="flex items-center space-x-1 text-2xs">
+                <div>{{ $t('portfolio.staked') }}:</div>
                 <div>
-                  <span>$</span>
-                  <AppUsdAmount
+                  <SharedAmountUsd
                     class="leading-5"
                     v-bind="{
-                      amount: stakedAmountInUsd.toFixed()
+                      amount: stakedAmountInUsd.toFixed(),
+                      roundingMode: BigNumber.ROUND_HALF_UP
                     }"
-                  />
+                  >
+                    <template #prefix>$</template>
+                  </SharedAmountUsd>
                 </div>
               </div>
 
-              <div class="mt-6">
-                <AppButton class="w-full" size="md" @click="onFiatOnRamp">
-                  {{ $t('connect.deposit') }}
+              <div class="mt-5">
+                <AppButton class="w-full" size="md" @click="onDeposit">
+                  {{ $t('common.deposit') }}
                 </AppButton>
               </div>
 
@@ -158,6 +154,8 @@ function disconnect() {
         </div>
       </template>
     </UPopover>
+
+    <LayoutWalletDetailsAutosign />
 
     <ModalsQRCode />
   </div>

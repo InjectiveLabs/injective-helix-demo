@@ -20,7 +20,7 @@ watch(
   { immediate: true }
 )
 
-useIntervalFn(jsonStore.fetchChainUpgradeConfig, 10 * 1000)
+useIntervalFn(jsonStore.fetchChainUpgradeConfig, 10 * 1000, { immediate: true })
 </script>
 
 <template>

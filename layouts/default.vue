@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { usdtToken } from '@shared/data/token'
-import { Wallet } from '@injectivelabs/wallet-base'
+import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
+import { TURNKEY_CONTAINER_ID } from '@shared/utils/constant'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
-  Modal,
   MainPage,
   TradeSubPage,
   InitialStatusKey,
@@ -14,17 +12,16 @@ import {
 } from '@/types'
 
 const route = useRoute()
-const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
 const jsonStore = useSharedJsonStore()
 const accountStore = useAccountStore()
 const referralStore = useReferralStore()
-const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
 const gridStrategyStore = useGridStrategyStore()
 const sharedWalletStore = useSharedWalletStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 const { $onError } = useNuxtApp()
 
 const initialStatus = inject(InitialStatusKey, new Status(StatusType.Loading))
@@ -54,15 +51,20 @@ onWalletConnected(async () => {
 
   Promise.all([
     fetchUserPortfolio(),
-    spotStore.fetchMarketsSummary(),
     referralStore.fetchUserReferrer(),
-    derivativeStore.fetchMarketsSummary()
+    sharedSpotStore.fetchMarketsSummary(),
+    sharedDerivativeStore.fetchMarketsSummary()
   ])
-    .then(checkOnboarding)
     .catch($onError)
     .finally(() => {
       portfolioStatus.setIdle()
       fetchSubaccountStream()
+
+      if (!sharedWalletStore.injectiveAddress) {
+        return
+      }
+
+      gridStrategyStore.streamGridStrategies()
     })
 })
 
@@ -80,7 +82,8 @@ function fetchUserPortfolio() {
     exchangeStore.initFeeDiscounts(),
 
     accountStore.fetchCw20Balances(),
-    accountStore.fetchErc20Balances(),
+    accountStore.fetchInjDelegations(),
+    accountStore.fetchSignerInjBalance(),
     accountStore.fetchAccountPortfolioBalances(),
 
     positionStore.fetchPositions(),
@@ -102,42 +105,13 @@ function fetchSubaccountStream() {
   })
 }
 
-function checkOnboarding() {
-  if (!sharedWalletStore.isUserConnected) {
-    return
-  }
-
-  if (route.query.bridge === 'true') {
-    modalStore.openModal(Modal.LiteBridge)
-
-    return
-  }
-
-  if (
-    !accountStore.hasBalance &&
-    sharedWalletStore.isUserConnected &&
-    sharedWalletStore.wallet === Wallet.Metamask &&
-    Number(accountStore.erc20BalancesMap[usdtToken.denom]?.balance || 0) > 0
-  ) {
-    modalStore.closeModal(Modal.Connect)
-    modalStore.openModal(Modal.LiteBridge)
-
-    return
-  }
-
-  if (!accountStore.hasBalance) {
-    modalStore.closeModal(Modal.Connect)
-    modalStore.openModal(Modal.FiatOnboard)
-  }
-}
-
 provide(PortfolioStatusKey, portfolioStatus)
 
 useIntervalFn(
   () =>
     Promise.all([
-      spotStore.fetchMarketsSummary(),
-      derivativeStore.fetchMarketsSummary()
+      sharedSpotStore.fetchMarketsSummary(),
+      sharedDerivativeStore.fetchMarketsSummary()
     ]),
   30 * 1000
 )
@@ -164,7 +138,11 @@ watch(
         : 'min-h-screen'
     ]"
   >
+    <div :id="TURNKEY_CONTAINER_ID" class="opacity-0 h-0" />
     <LayoutNavbar />
+
+    <PartialsHomeGradientBg v-if="route.name === MainPage.Index" />
+    <LayoutBanner class="sticky top-[56px]" />
 
     <AppHocLoading
       is-helix
@@ -174,9 +152,7 @@ watch(
         (initialStatus.isLoading() || jsonStatus.isLoading())
       "
     >
-      <main class="relative pb-6 pt-[56px]">
-        <LayoutBanner />
-
+      <main class="relative pb-6 pt-[56px] overflow-x-hidden">
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&
@@ -206,8 +182,8 @@ watch(
           WalletConnectStatus.disconnecting
       "
     >
-      <ModalsOnboardingLiteBridge />
-      <ModalsOnboardingFiat />
+      <ModalsOnboarding />
+      <ModalsDeprecatedMagic />
     </template>
 
     <LayoutFooter v-if="showFooter" />
@@ -215,32 +191,15 @@ watch(
 
     <div id="modals" />
 
-    <SharedNotifications
-      class="z-[1110] fixed inset-0 flex flex-col gap-2 justify-end items-end p-6 pointer-events-none"
-    >
-      <template #default="{ notification }">
-        <SharedNotification
-          :notification="notification"
-          class="pointer-events-auto bg-brand-900"
-          wrapper-class="bg-brand-900 border-brand-700 border"
-        >
-          <template v-if="notification.isTemplateString" #custom>
-            <PartialsNotificationsCustom :title="notification.title" />
-          </template>
-          <template #close="{ closeNotification }">
-            <UIcon
-              :name="NuxtUiIcons.CloseBold"
-              class="min-w-4 hover:text-blue-500 text-white w-4 h-4"
-              @click="closeNotification"
-            />
-          </template>
-        </SharedNotification>
-      </template>
-    </SharedNotifications>
-
-    <UNotifications />
+    <Teleport to="body">
+      <AppNotifications
+        class="z-[1110] fixed top-14 right-4 flex items-end flex-col gap-2 pointer-events-none"
+      />
+    </Teleport>
 
     <CommonAutoSignExpiredToast />
     <AppJsonPoll @on:loaded="onJsonLoaded" />
+
+    <AppToastOnboarding v-if="portfolioStatus.isIdle()" />
   </div>
 </template>

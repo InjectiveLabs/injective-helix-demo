@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import {
   STOP_REASON_MAP,
-  UI_DEFAULT_DISPLAY_DECIMALS
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import {
-  StopReason,
   TradeSubPage,
   TradingInterface,
-  GridStrategyTransformed,
-  DerivativeGridStrategyTransformed,
   PortfolioTradingBotsHistoryTableColumn
+} from '@/types'
+import type {
+  StopReason,
+  GridStrategyTransformed,
+  DerivativeGridStrategyTransformed
 } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -19,7 +21,7 @@ const { t } = useLang()
 
 const isOpen = ref(false)
 const selectedStrategy = ref<
-  DerivativeGridStrategyTransformed | GridStrategyTransformed | null
+  null | GridStrategyTransformed | DerivativeGridStrategyTransformed
 >(null)
 
 const { formattedStrategies: spotFormattedStrategies } = useSpotGridStrategies(
@@ -43,45 +45,45 @@ const formattedStrategies = computed(() =>
 const columns = computed(() => [
   {
     key: PortfolioTradingBotsHistoryTableColumn.Time,
-    label: t('sgt.time'),
+    label: t('tradingBots.time'),
     class: 'w-32'
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Market,
-    label: t('sgt.market')
+    label: t('trade.market')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.LowerBound,
-    label: t('sgt.lowerBound')
+    label: t('tradingBots.lowerBound')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.UpperBound,
-    label: t('sgt.upperBound')
+    label: t('tradingBots.upperBound')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.TotalAmount,
-    label: t('sgt.totalAmount')
+    label: t('tradingBots.totalAmount')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.TotalProfit,
-    label: t('sgt.totalProfit')
+    label: t('tradingBots.totalProfit')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Duration,
-    label: t('sgt.duration')
+    label: t('tradingBots.duration')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.Details,
-    label: t('sgt.details')
+    label: t('common.details')
   },
   {
     key: PortfolioTradingBotsHistoryTableColumn.StopReason,
-    label: t('sgt.stopReason')
+    label: t('tradingBots.stopReason')
   }
 ])
 
 function selectStrategy(
-  strategy: DerivativeGridStrategyTransformed | GridStrategyTransformed
+  strategy: GridStrategyTransformed | DerivativeGridStrategyTransformed
 ) {
   selectedStrategy.value = strategy
   isOpen.value = true
@@ -131,10 +133,13 @@ function selectStrategy(
 
       <template #lowerBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.lowerBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.lowerBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -142,10 +147,13 @@ function selectStrategy(
 
       <template #upperBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.upperBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.upperBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -153,17 +161,22 @@ function selectStrategy(
 
       <template #totalAmount-data="{ row }">
         <div class="flex items-center gap-1">
-          <span>$</span>
-          <AppUsdAmount
-            :decimal-places="4"
-            :amount="row.totalAmount.toFixed()"
-          />
+          <SharedAmountUsd
+            v-bind="{
+              shouldAbbreviate: false,
+              amount: row.totalAmount.toFixed()
+            }"
+          >
+            <template #prefix>
+              <span>$</span>
+            </template>
+          </SharedAmountUsd>
         </div>
       </template>
 
       <template #totalProfit-data="{ row }">
         <div
-          class="flex flex-col font-mono"
+          class="flex flex-col font-sans"
           :class="{
             'text-green-500': row.isPositivePnl,
             'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
@@ -171,12 +184,17 @@ function selectStrategy(
           }"
         >
           <div class="flex items-center gap-1">
-            <span>{{ row.isPositivePnl ? '+' : '' }}</span>
-            <SharedAmountFormatter
-              :max-decimal-places="3"
-              :amount="row.pnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <SharedAmount
+              v-bind="{
+                amount: row.pnl,
+                useSubscript: true,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span>{{ row.isPositivePnl ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
             {{ ' ' + row.market.quoteToken.symbol }}
           </div>
           <div>({{ row.percentagePnl }}%)</div>
@@ -194,7 +212,7 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.details') }}
+          {{ t('common.details') }}
         </AppButton>
       </template>
 
@@ -205,7 +223,7 @@ function selectStrategy(
       </template>
 
       <template #empty-state>
-        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+        <CommonEmptyList :message="$t('tradingBots.noActiveStrategies')" />
       </template>
     </UTable>
 
@@ -221,7 +239,7 @@ function selectStrategy(
 
     <CommonEmptyList
       v-if="gridStrategyStore.removedDerivativeStrategies.length === 0 && !lg"
-      :message="$t('sgt.noStrategies')"
+      :message="$t('tradingBots.noStrategies')"
     />
 
     <AppModal v-model="isOpen" v-bind="{ isSm: true }">

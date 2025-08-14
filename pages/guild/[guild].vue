@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import {
-  sharedToBalanceInToken,
-  sharedEllipsisFormatText
-} from '@shared/utils/formatter'
 import { format } from 'date-fns'
 import { NuxtUiIcons } from '@shared/types'
 import { getExplorerUrl } from '@shared/utils/network'
 import { Status, StatusType } from '@injectivelabs/utils'
+import {
+  sharedToBalanceInToken,
+  sharedEllipsisFormatText
+} from '@shared/utils/formatter'
+import { guildDescriptionMap } from '@/app/data/campaign'
+import { generateUniqueHash } from '@/app/utils/formatters'
 import {
   GUILD_MAX_CAP,
   GUILD_MIN_AMOUNT,
   GUILD_ENCODE_KEY,
   GUILD_HASH_CHAR_LIMIT,
   GUILD_BASE_TOKEN_SYMBOL,
-  DEFAULT_TRUNCATE_LENGTH
+  DEFAULT_TRUNCATE_LENGTH,
+  UI_DEFAULT_MAX_DECIMALS
 } from '@/app/utils/constants'
-import { guildDescriptionMap } from '@/app/data/campaign'
-import { generateUniqueHash } from '@/app/utils/formatters'
 import { Modal, MainPage, GuildSortBy } from '@/types'
 
 const route = useRoute()
@@ -108,13 +109,11 @@ const guildInvitationHash = computed(() =>
   })
 )
 
-const { valueToString: guildMasterBalance } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: campaignStore.guild?.masterBalance || 0,
-      decimalPlaces: baseToken.value?.decimals || 18
-    })
-  )
+const guildMasterBalance = computed(() =>
+  sharedToBalanceInToken({
+    value: campaignStore.guild?.masterBalance || 0,
+    decimalPlaces: baseToken.value?.decimals || UI_DEFAULT_MAX_DECIMALS
+  })
 )
 
 onWalletConnected(() => {
@@ -154,7 +153,7 @@ function fetchGuildDetails({ skip = 0 }: { skip: number }) {
 
 function onCopyInvitationLink() {
   copy(guildInvitationHash.value)
-  notificationStore.success({ title: t('guild.toast.copiedInvitationLink') })
+  notificationStore.success({ title: t('toast.guild.copiedInvitationLink') })
 }
 
 function onRefresh() {
@@ -270,7 +269,11 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                   <div class="flex items-center flex-wrap gap-x-1">
                     <p>{{ $t('guild.leaderboard.guildMasterBalance') }}:</p>
                     <p class="font-semibold">
-                      {{ guildMasterBalance }}
+                      <SharedAmount
+                        v-bind="{
+                          amount: guildMasterBalance
+                        }"
+                      />
                       {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
                     </p>
                   </div>
@@ -393,7 +396,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.TVL"
                         :value="GuildSortBy.TVL"
-                        @sortBy:changed="onRefresh"
+                        @sort-by:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{
@@ -417,7 +420,7 @@ useIntervalFn(() => (now.value = Date.now()), 1000)
                         class="justify-end px-1.5"
                         :is-ascending="sortBy !== GuildSortBy.Volume"
                         :value="GuildSortBy.Volume"
-                        @sortBy:changed="onRefresh"
+                        @sort-by:changed="onRefresh"
                       >
                         <CommonHeaderTooltip
                           v-bind="{

@@ -1,34 +1,20 @@
 import { NuxtUiIcons } from '@shared/types'
-import { getExplorerUrl } from '@shared/utils/network'
 import {
   MainPage,
-  MenuItem,
   TradeSubPage,
   PortfolioSubPage,
   LeaderboardSubPage
 } from '@/types'
+import type { MenuItem } from '@/types'
 
 export const getMoreMenu = () => [
   {
-    isConnectedOnly: true,
-    isOpenDepositModal: true,
-    label: 'navigation.deposit'
+    label: 'navigation.swap',
+    to: { name: MainPage.Swap }
   },
   {
     to: { name: MainPage.LpRewards },
     label: 'navigation.more.lpRewards'
-  },
-  {
-    label: 'navigation.referral',
-    to: { name: MainPage.Referral }
-  },
-  {
-    to: { name: MainPage.FeeDiscounts },
-    label: 'navigation.more.tradingDiscounts'
-  },
-  {
-    to: { name: MainPage.Institutional },
-    label: 'navigation.more.institutional'
   },
   {
     isExternal: true,
@@ -36,19 +22,8 @@ export const getMoreMenu = () => [
     to: 'https://bridge.injective.network/'
   },
   {
-    isExternal: true,
-    to: getExplorerUrl(),
-    label: 'navigation.more.explorer'
-  },
-  {
-    isExternal: true,
-    label: 'navigation.more.apiDocs',
-    to: 'https://api.injective.exchange/'
-  },
-  {
-    isExternal: true,
-    label: 'navigation.more.docs',
-    to: 'https://docs.helixapp.com/'
+    to: { name: MainPage.Vaults },
+    label: 'navigation.more.vaults'
   },
   {
     isExternal: true,
@@ -56,9 +31,15 @@ export const getMoreMenu = () => [
     to: 'https://trading.injective.network/program/liquidity/'
   },
   {
-    isExternal: true,
-    label: 'footer.blog',
-    to: 'https://blog.helixapp.com/'
+    isConnectedOnly: true,
+    to: { name: MainPage.Points },
+    label: 'navigation.points'
+  },
+  {
+    isDesktopOnly: true,
+    isConnectedOnly: true,
+    label: 'navigation.settings',
+    to: { name: PortfolioSubPage.Settings }
   }
 ]
 
@@ -75,22 +56,27 @@ export const TRADING_OPTIONS = [
     }
   },
   {
-    label: 'navigation.vaults',
-    to: { name: MainPage.Vaults }
-  },
-  {
     label: 'navigation.tradingBots',
     to: { name: MainPage.TradingBots }
   },
   {
+    label: 'navigation.stocks',
+    to: { name: TradeSubPage.Stocks }
+  },
+  {
     to: { name: LeaderboardSubPage.Pnl },
-    label: 'navigation.leaderboard.title'
+    label: 'navigation.leaderboard'
+  },
+  {
+    isOpenDepositModal: true,
+    label: 'navigation.more.deposit'
   }
 ]
 
-export const POINTS_ITEM = {
-  label: 'navigation.points',
-  to: { name: MainPage.Points }
+export const REFERRAL_ITEM = {
+  isConnectedOnly: true,
+  label: 'navigation.more.referral',
+  to: { name: MainPage.Referral }
 }
 
 export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
@@ -189,7 +175,7 @@ export const getMobileMenuItems = () =>
       children: PORTFOLIO_MENU_ITEMS
     },
     ...TRADING_OPTIONS,
-    POINTS_ITEM,
+    REFERRAL_ITEM,
     {
       isExpandable: true,
       children: getMoreMenu(),

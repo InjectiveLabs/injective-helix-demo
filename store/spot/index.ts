@@ -1,26 +1,7 @@
 import { defineStore } from 'pinia'
-import {
-  SpotMarket,
-  SpotLimitOrder,
-  SpotOrderHistory
-} from '@injectivelabs/sdk-ts'
-import {
-  SharedUiSpotTrade,
-  SharedUiMarketSummary,
-  SharedUiOrderbookWithSequence
-} from '@shared/types'
-import {
-  OrderSide,
-  TradeExecutionSide,
-  TradeExecutionType
-} from '@injectivelabs/ts-types'
-import {
-  toUiSpotMarket,
-  toUiMarketSummary,
-  toZeroUiMarketSummary
-} from '@shared/transformer/market'
-import { MARKET_IDS_TO_HIDE } from '@shared/data/market'
-import { spotCacheApi, indexerSpotApi } from '@shared/Service'
+import { indexerSpotApi } from '@shared/Service'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
   cancelOrder,
   submitChase,
@@ -40,28 +21,33 @@ import {
   streamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import { combineOrderbookRecords } from '@/app/utils/market'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
-import { UiSpotMarket, UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import type { UiMarketAndSummary, ActivityFetchOptions } from '@/types'
+import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import type {
+  OrderSide,
+  TradeExecutionSide,
+  TradeExecutionType
+} from '@injectivelabs/ts-types'
+import type {
+  SharedUiSpotTrade,
+  SharedUiSpotMarket,
+  SharedUiOrderbookWithSequence
+} from '@shared/types'
 
 type SpotStoreState = {
-  markets: UiSpotMarket[]
-  marketIdsFromQuery: string[]
-  marketsSummary: SharedUiMarketSummary[]
-  orderbook?: SharedUiOrderbookWithSequence
   trades: SharedUiSpotTrade[]
-  subaccountTrades: SharedUiSpotTrade[]
+  marketIdsFromQuery: string[]
   subaccountTradesCount: number
-  subaccountOrders: SpotLimitOrder[]
   subaccountOrdersCount: number
-  subaccountOrderHistory: SpotOrderHistory[]
+  subaccountOrders: SpotLimitOrder[]
   subaccountOrderHistoryCount: number
+  subaccountTrades: SharedUiSpotTrade[]
+  orderbook?: SharedUiOrderbookWithSequence
+  subaccountOrderHistory: SpotOrderHistory[]
 }
 
 const initialStateFactory = (): SpotStoreState => ({
-  markets: [],
   marketIdsFromQuery: [],
-  marketsSummary: [],
   orderbook: undefined,
   trades: [],
   subaccountTrades: [],
@@ -78,10 +64,24 @@ export const useSpotStore = defineStore('spot', {
     buys: (state) => state.orderbook?.buys || [],
     sells: (state) => state.orderbook?.sells || [],
 
+    marketByIdOrSlug:
+      () =>
+      (marketIdOrSlug: string): undefined | SharedUiSpotMarket => {
+        const sharedSpotStore = useSharedSpotStore()
+
+        const market = sharedSpotStore.marketsWithToken.find(
+          (market) =>
+            market.marketId === marketIdOrSlug || market.slug === marketIdOrSlug
+        )
+
+        return market as SharedUiSpotMarket
+      },
+
     activeMarketIds: (state) => {
       const jsonStore = useSharedJsonStore()
+      const sharedSpotStore = useSharedSpotStore()
 
-      return state.markets
+      return sharedSpotStore.marketsWithToken
         .filter(
           ({ marketId }) =>
             state.marketIdsFromQuery.includes(marketId) ||
@@ -90,41 +90,52 @@ export const useSpotStore = defineStore('spot', {
         .map((m) => m.marketId)
     },
 
-    tradeableDenoms: (state) => [
-      ...state.markets.reduce((denoms, market) => {
-        if (!market.isVerified) {
+    tradableDenoms: () => {
+      const sharedSpotStore = useSharedSpotStore()
+
+      return [
+        ...sharedSpotStore.marketsWithToken.reduce((denoms, market) => {
+          if (!market.isVerified) {
+            return denoms
+          }
+
+          denoms.add(market.baseDenom)
+          denoms.add(market.quoteDenom)
+
           return denoms
-        }
+        }, new Set() as Set<string>)
+      ]
+    },
 
-        denoms.add(market.baseDenom)
-        denoms.add(market.quoteDenom)
+    unverifiedDenoms: () => {
+      const sharedSpotStore = useSharedSpotStore()
 
-        return denoms
-      }, new Set() as Set<string>)
-    ],
+      return [
+        ...sharedSpotStore.marketsWithToken.reduce((denoms, market) => {
+          if (market.isVerified) {
+            return denoms
+          }
 
-    unverifiedDenoms: (state) => [
-      ...state.markets.reduce((denoms, market) => {
-        if (market.isVerified) {
+          denoms.add(market.baseDenom)
+          denoms.add(market.quoteDenom)
+
           return denoms
-        }
+        }, new Set() as Set<string>)
+      ]
+    },
 
-        denoms.add(market.baseDenom)
-        denoms.add(market.quoteDenom)
+    marketsWithSummary: () => {
+      const sharedSpotStore = useSharedSpotStore()
 
-        return denoms
-      }, new Set() as Set<string>)
-    ],
-
-    marketsWithSummary: (state) =>
-      state.markets
+      return sharedSpotStore.marketsWithToken
         .map((market) => ({
           market,
-          summary: state.marketsSummary.find(
+          summary: sharedSpotStore.marketsSummary.find(
             (summary) => summary.marketId === market.marketId
           )
         }))
-        .filter((summary) => summary) as UiMarketAndSummary[]
+        .filter(({ summary }) => summary) as UiMarketAndSummary[]
+    }
   },
   actions: {
     submitChase,
@@ -150,84 +161,6 @@ export const useSpotStore = defineStore('spot', {
 
       spotStore.$patch({
         marketIdsFromQuery: [...spotStore.marketIdsFromQuery, marketIdFromQuery]
-      })
-
-      await spotStore.fetchMarkets()
-    },
-
-    async fetchMarkets() {
-      const spotStore = useSpotStore()
-      const tokenStore = useTokenStore()
-      const jsonStore = useSharedJsonStore()
-
-      const markets = await spotCacheApi.fetchMarkets()
-
-      const marketsFromQuery = spotStore.marketIdsFromQuery
-        .map((marketId) => markets.find((m) => m.marketId === marketId))
-        .filter((market) => market) as SpotMarket[]
-
-      if (marketsFromQuery.length !== 0) {
-        await tokenStore.appendUnknownTokensList([
-          ...marketsFromQuery.map((m) => m.baseDenom),
-          ...marketsFromQuery.map((m) => m.quoteDenom)
-        ])
-      }
-
-      const uiMarkets = markets
-        .map((market) => {
-          const baseToken = tokenStore.tokenByDenomOrSymbol(market.baseDenom)
-          const quoteToken = tokenStore.tokenByDenomOrSymbol(market.quoteDenom)
-
-          if (!baseToken || !quoteToken) {
-            return undefined
-          }
-
-          const formattedMarket = toUiSpotMarket({
-            market,
-            baseToken,
-            quoteToken
-          })
-
-          return {
-            ...formattedMarket,
-            isVerified: jsonStore.verifiedSpotMarketIds.includes(
-              market.marketId
-            )
-          }
-        })
-        .filter(
-          (market) => market && !MARKET_IDS_TO_HIDE.includes(market.marketId)
-        ) as UiSpotMarket[]
-
-      spotStore.$patch({
-        markets: uiMarkets.sort((spotA, spotB) => {
-          const spotAIndex =
-            jsonStore.verifiedSpotSlugs.indexOf(spotA.slug) || 1
-          const spotBIndex =
-            jsonStore.verifiedSpotSlugs.indexOf(spotB.slug) || 1
-
-          return spotAIndex - spotBIndex
-        })
-      })
-    },
-
-    async fetchMarketsSummary() {
-      const spotStore = useSpotStore()
-
-      const marketsSummaries = (await spotCacheApi.fetchMarketsSummary()) || []
-
-      const uiMarketSummaries = marketsSummaries.map((marketSummary) => {
-        const marketExistInStore = spotStore.markets.some(
-          (market) => market.marketId === marketSummary.marketId
-        )
-
-        return marketExistInStore
-          ? toUiMarketSummary(marketSummary)
-          : toZeroUiMarketSummary(marketSummary.marketId)
-      })
-
-      spotStore.$patch({
-        marketsSummary: uiMarketSummaries
       })
     },
 
@@ -261,8 +194,8 @@ export const useSpotStore = defineStore('spot', {
       subaccountId,
       marketIds
     }: {
-      subaccountId: string
       marketIds: string[]
+      subaccountId: string
     }) {
       const spotStore = useSpotStore()
       const sharedWalletStore = useSharedWalletStore()

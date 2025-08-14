@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { Wallet } from '@injectivelabs/wallet-base'
 import {
-  UTableColumn,
   PerpetualMarketCyTags,
-  TransformedPortfolioFuturesOpenOrders,
   PortfolioFuturesOpenOrdersTableColumn
+} from '@/types'
+import type {
+  UTableColumn,
+  TransformedPortfolioFuturesOpenOrders
 } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
@@ -55,6 +58,9 @@ const filteredColumns = computed(() =>
 
         <div class="flex space-x-2">
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+            v-if="
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+            "
             v-bind="{
               order: order.order,
               isBuy: order.isBuy,
@@ -97,10 +103,12 @@ const filteredColumns = computed(() =>
 
     <template #price-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersPrice)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.price.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
       </div>
@@ -108,10 +116,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersAmount)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.quantity.toFixed(),
-            decimalPlaces: order.quantityDecimals
+            decimals: order.quantityDecimals
           }"
           class="inline-block"
         />
@@ -120,9 +130,11 @@ const filteredColumns = computed(() =>
 
     <template #unfilled-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersUnfilled)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            decimalPlaces: order.quantityDecimals,
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
           class="inline-block"
@@ -132,9 +144,11 @@ const filteredColumns = computed(() =>
 
     <template #filled-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersFilled)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            decimalPlaces: order.quantityDecimals,
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: order.quantityDecimals,
             amount: order.filledQuantity.toFixed()
           }"
         />
@@ -147,7 +161,7 @@ const filteredColumns = computed(() =>
         class="text-coolGray-400"
         :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
       >
-        {{ $t('trade.not_available_n_a') }}
+        {{ $t('trade.notAvailableNA') }}
       </span>
       <span
         v-else
@@ -159,10 +173,12 @@ const filteredColumns = computed(() =>
 
     <template #total-data>
       <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.total.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
         <span class="text-coolGray-500 ml-1">

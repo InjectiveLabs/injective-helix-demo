@@ -2,19 +2,13 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
-import { SwapForm, SwapCyTags } from '@/types'
+import { SwapCyTags } from '@/types'
+import type { SwapForm } from '@/types'
 
 const showFeeBreakdown = ref(false)
 const formValues = useFormValues<SwapForm>()
 
 const { swapRoutesFees, totalFee } = useSwapFee(formValues)
-
-const { valueToString: totalFeeToFormat } = useSharedBigNumberFormatter(
-  totalFee,
-  {
-    decimalPlaces: MAX_QUOTE_DECIMALS
-  }
-)
 
 function toggleShowFeeBreakdown() {
   showFeeBreakdown.value = !showFeeBreakdown.value
@@ -30,7 +24,15 @@ function toggleShowFeeBreakdown() {
     <div>
       <div class="flex items-center gap-1 justify-end mb-1">
         <span :data-cy="dataCyTag(SwapCyTags.SwapSummaryFees)">
-          {{ `~$${totalFeeToFormat}` }}
+          <SharedAmount
+            v-bind="{
+              amount: totalFee,
+              shouldAbbreviate: false,
+              decimals: MAX_QUOTE_DECIMALS
+            }"
+          >
+            <template #prefix>{{ `~$` }}</template>
+          </SharedAmount>
         </span>
       </div>
 
