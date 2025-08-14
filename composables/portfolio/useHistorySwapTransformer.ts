@@ -1,20 +1,20 @@
 import { format } from 'date-fns'
-import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { getExplorerUrl } from '@shared/utils/network'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { convertCoinToBalancesWithToken } from '@/app/utils/formatters'
 import { DATE_TIME_DISPLAY, MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import { HistorySwapTableColumn } from '@/types'
+import type { AtomicSwap } from '@injectivelabs/sdk-ts'
 
 export function useHistorySwapTransformer(swapList: ComputedRef<AtomicSwap[]>) {
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   const rows = computed(() => {
     return swapList.value.map((swap) => {
       const routeDenoms = swap.route.split('-')
 
       const routeSymbols = routeDenoms.reduce((symbols, denom) => {
-        const token = tokenStore.tokenByDenomOrSymbol(denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(denom)
 
         if (!token) {
           return [...symbols]
@@ -24,7 +24,7 @@ export function useHistorySwapTransformer(swapList: ComputedRef<AtomicSwap[]>) {
       }, [] as string[])
 
       const formattedFees = swap.fees.map(({ denom, amount }) => {
-        const token = tokenStore.tokenByDenomOrSymbol(denom)
+        const token = sharedTokenStore.tokenByDenomOrSymbol(denom)
 
         const amountInToken = sharedToBalanceInToken({
           value: amount,

@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  STOP_REASON_MAP,
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { STOP_REASON_MAP } from '@/app/utils/constants'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
@@ -43,66 +39,84 @@ const percentagePnl = computed(() =>
   <div v-if="strategy" class="text-sm space-y-2">
     <div class="flex items-center justify-between">
       <p class="text-lg font-bold">
-        {{ $t('sgt.gridDetails') }}
+        {{ $t('tradingBots.gridDetails') }}
       </p>
       <div class="flex items-center gap-2">
         <div
           class="w-2 h-2 rounded-full"
           :class="strategy.isActive ? 'bg-green-500' : 'bg-red-500'"
         />
-        <p>{{ $t(`sgt.${strategy.strategyStatus}`) }}</p>
+        <p>{{ $t(`tradingBots.${strategy.strategyStatus}`) }}</p>
       </div>
     </div>
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.totalProfit') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.totalProfit') }}
+      </p>
 
-      <div
-        class="font-bold"
-        :class="{
-          'text-green-500': isPositivePnl,
-          'text-red-500': !isPositivePnl && !isZeroPnl,
-          'text-coolGray-500': isZeroPnl
-        }"
-      >
+      <div class="font-bold flex">
         <span
-          v-if="strategy.strategyStatus === StrategyStatus.Pending"
+          v-if="
+            new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
+            strategy.strategyStatus === StrategyStatus.Pending
+          "
           class="text-coolGray-400"
         >
           &mdash;
         </span>
 
         <template v-else>
-          <span>{{ isPositivePnl ? '+' : '' }}</span>
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :amount="strategy.pnl"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          />
-          <span>
-            {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
-              percentagePnl
-            }}%)
-          </span>
+          <div
+            :class="{
+              'text-green-500': isPositivePnl,
+              'text-red-500': !isPositivePnl && !isZeroPnl,
+              'text-coolGray-500': isZeroPnl
+            }"
+          >
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                amount: strategy.pnl,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span>{{ isPositivePnl ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
+            <span>
+              {{ ' ' + strategy.market.quoteToken.symbol }} / ({{
+                percentagePnl
+              }}%)
+            </span>
+          </div>
         </template>
       </div>
     </div>
 
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.totalAmount') }}
+        {{ $t('tradingBots.totalAmount') }}
       </p>
 
-      <div v-if="strategy.strategyStatus === StrategyStatus.Pending">
+      <div
+        v-if="
+          new BigNumberInBase(strategy.percentagePnl).lte(-99) ||
+          strategy.strategyStatus === StrategyStatus.Pending
+        "
+      >
         &mdash;
       </div>
       <div v-else>
-        $
-        <SharedAmountFormatter
-          :max-decimal-places="3"
-          :amount="strategy.totalAmount.toFixed()"
-          :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-        />
+        <SharedAmountUsd
+          v-bind="{
+            shouldAbbreviate: false,
+            amount: strategy.totalAmount.toFixed()
+          }"
+        >
+          <template #prefix>$ </template>
+        </SharedAmountUsd>
         USD
       </div>
     </div>
@@ -110,9 +124,9 @@ const percentagePnl = computed(() =>
     <div class="flex items-center justify-between">
       <p class="text-coolGray-400">
         <span v-if="strategy.isActive">
-          {{ $t('liquidityBots.currentBalance') }}
+          {{ $t('tradingBots.liquidityBots.currentBalance') }}
         </span>
-        <span v-else>{{ $t('liquidityBots.finalBalance') }}</span>
+        <span v-else>{{ $t('tradingBots.liquidityBots.finalBalance') }}</span>
       </p>
 
       <div>
@@ -120,10 +134,12 @@ const percentagePnl = computed(() =>
           &mdash;
         </span>
         <span v-else>
-          <SharedAmountFormatter
-            :amount="strategy.finalQuoteBalanceQuantity"
-            :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            :max-decimal-places="3"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: strategy.finalQuoteBalanceQuantity
+            }"
           />
           {{ strategy.market.quoteToken.symbol }}
         </span>
@@ -133,7 +149,9 @@ const percentagePnl = computed(() =>
     <div class="border-t border-coolGray-800 !my-4" />
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.timeCreated') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.liquidityBots.timeCreated') }}
+      </p>
 
       <div>
         {{ strategy.createdAtFormatted }}
@@ -141,7 +159,9 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex items-center justify-between">
-      <p class="text-coolGray-400">{{ $t('liquidityBots.duration') }}</p>
+      <p class="text-coolGray-400">
+        {{ $t('tradingBots.liquidityBots.duration') }}
+      </p>
 
       <div>
         {{ strategy.durationFormatted }}
@@ -151,7 +171,7 @@ const percentagePnl = computed(() =>
     <div class="border-t border-coolGray-800 !my-4" />
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.priceRange') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.priceRange') }}</p>
       <div class="text-right">
         <PartialsLiquidityCommonDetailsPair
           v-bind="{
@@ -166,7 +186,7 @@ const percentagePnl = computed(() =>
     </div>
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.initialAmount') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.initialAmount') }}</p>
       <div class="text-right">
         {{ strategy.initialQuoteBalanceQuantity }}
         {{ strategy.market.quoteToken.symbol }}
@@ -175,12 +195,14 @@ const percentagePnl = computed(() =>
 
     <!-- TODO: Uncomment When we have the data from indexer -->
     <!-- <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.initialEntryPrice') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.initialEntryPrice') }}</p>
       <div class="text-right">
-        <SharedAmountFormatter
-          :amount="strategy.executionPrice"
-          :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-          :max-decimal-places="8"
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: strategy.executionPrice
+          }"
         />
         <span class="text-coolGray-400 text-xs">
           {{ ' ' + strategy.market.quoteToken.symbol }}
@@ -189,7 +211,7 @@ const percentagePnl = computed(() =>
     </div> -->
 
     <div class="flex justify-between mb-2 text-sm">
-      <p class="text-coolGray-400">{{ $t('sgt.numberOfGrids') }}</p>
+      <p class="text-coolGray-400">{{ $t('tradingBots.numberOfGrids') }}</p>
       <div class="text-right">
         {{ strategy.numberOfGridLevels }}
       </div>
@@ -199,11 +221,11 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.takeProfit') }}</span>
+        <span>{{ $t('trade.takeProfit') }}</span>
       </span>
 
       <div>
-        <span v-if="!strategy.takeProfit">{{ $t('sgt.disabled') }}</span>
+        <span v-if="!strategy.takeProfit">{{ $t('common.disabled') }}</span>
         <span v-else>
           {{ strategy.takeProfit.exitPrice }}
         </span>
@@ -212,11 +234,11 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-4 text-sm">
       <span class="text-coolGray-400 flex items-center space-x-2">
-        <span>{{ $t('sgt.stopLoss') }}</span>
+        <span>{{ $t('trade.stopLoss') }}</span>
       </span>
 
       <div>
-        <span v-if="!strategy.stopLoss">{{ $t('sgt.disabled') }}</span>
+        <span v-if="!strategy.stopLoss">{{ $t('common.disabled') }}</span>
         <span v-else>
           {{ strategy.stopLoss.exitPrice }}
         </span>
@@ -228,7 +250,7 @@ const percentagePnl = computed(() =>
       class="flex justify-between mb-2 text-sm"
     >
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.trailingUpper') }}
+        {{ $t('tradingBots.liquidityBots.trailingUpper') }}
       </p>
       <div class="text-right">
         {{ strategy.trailingUpper }}
@@ -240,7 +262,7 @@ const percentagePnl = computed(() =>
       class="flex justify-between mb-2 text-sm"
     >
       <p class="text-coolGray-400">
-        {{ $t('liquidityBots.trailingLower') }}
+        {{ $t('tradingBots.liquidityBots.trailingLower') }}
       </p>
       <div class="text-right">
         {{ strategy.trailingLower }}
@@ -249,16 +271,16 @@ const percentagePnl = computed(() =>
 
     <div class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">
-        {{ $t('sgt.gridMode') }}
+        {{ $t('tradingBots.gridMode') }}
       </p>
       <div class="text-right">
-        {{ $t(`sgt.modes.${strategy.strategyType}`) }}
+        {{ $t(`tradingBots.sgt.modes.${strategy.strategyType}`) }}
       </div>
     </div>
 
     <div v-if="strategy.stopReason" class="flex justify-between mb-2 text-sm">
       <p class="text-coolGray-400">
-        {{ $t('sgt.stopReason') }}
+        {{ $t('tradingBots.stopReason') }}
       </p>
       <div class="text-right">
         {{ $t(STOP_REASON_MAP[strategy.stopReason]) }}
@@ -293,7 +315,7 @@ const percentagePnl = computed(() =>
           class="w-full"
           @click="removeStrategy"
         >
-          {{ $t('sgt.removeStrategy') }}
+          {{ $t('tradingBots.removeStrategy') }}
         </AppButton>
       </PartialsLiquidityBotsSpotCommonRemoveStrategy>
     </div>

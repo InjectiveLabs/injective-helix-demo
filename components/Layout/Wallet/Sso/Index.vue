@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { MagicProvider } from '@injectivelabs/wallet-base'
 import { NuxtUiIcons, WalletConnectStatus } from '@shared/types'
 
 const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
 
 const emit = defineEmits<{
-  'set:magicStatusLoading': []
+  'opt:show': []
+  'sso:setLoading': []
 }>()
 
 const { value: email, errors: emailErrors } = useStringField({
@@ -20,20 +21,24 @@ const isLoading = computed(
 )
 
 function onGoogleConnect() {
-  emit('set:magicStatusLoading')
+  emit('sso:setLoading')
 
-  sharedWalletStore.connectMagic(MagicProvider.Google)
+  sharedWalletStore
+    .connectTurnkeyGoogle()
+    .catch($onError)
+    .finally(() => {
+      sharedWalletStore.walletConnectStatus = WalletConnectStatus.idle
+    })
 }
 
 function onEmailConnect() {
-  emit('set:magicStatusLoading')
-
-  sharedWalletStore.connectMagic(MagicProvider.Email, email.value)
+  emit('opt:show')
+  sharedWalletStore.getEmailTurnkeyOTP(email.value).catch($onError)
 }
 </script>
 
 <template>
-  <div>
+  <section>
     <button
       class="bg-black text-coolGray-200 hover:bg-coolGray-950 border-coolGray-600 border w-full rounded-lg p-4 mb-4"
       size="lg"
@@ -41,7 +46,7 @@ function onEmailConnect() {
     >
       <div class="flex items-center gap-2 w-full">
         <Icon :name="NuxtUiIcons.GoogleColor" class="w-6 h-6 min-w-6" />
-        <span class="font-semibold">{{ $t('connect.magic.google.cta') }}</span>
+        <span class="font-semibold">{{ $t('connect.sso.google.cta') }}</span>
       </div>
     </button>
 
@@ -49,25 +54,25 @@ function onEmailConnect() {
       <AppInput
         v-model="email"
         v-bind="{
+          disabled: isLoading,
           isTransparentBg: true,
-          placeholder: $t('connect.magic.email.placeholder'),
-          disabled: isLoading
+          placeholder: $t('connect.sso.email.placeholder')
         }"
       />
       <AppButton
-        class="disabled:border-coolGray-400 text-white"
+        class="disabled:border-coolGray-400 text-white whitespace-nowrap"
         v-bind="{
           disabled: !email || hasError || isLoading,
           variant: hasError ? 'primary-outline' : 'primary'
         }"
         @click="onEmailConnect"
       >
-        {{ $t('connect.magic.email.cta') }}
+        {{ $t('connect.sso.email.cta') }}
       </AppButton>
     </div>
 
     <span v-if="hasError" class="capitalize-phrase text-red-500 text-sm mt-2">
       {{ emailErrors[0] }}
     </span>
-  </div>
+  </section>
 </template>

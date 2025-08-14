@@ -11,6 +11,7 @@ export const extractField = (data: any, field: string, arrayIndex: number) => {
 export const defaultConfiguration = () => {
   return {
     exchanges: [],
+    supports_marks: true,
     supports_search: true,
     supports_group_request: false,
     supported_resolutions: [
@@ -26,7 +27,6 @@ export const defaultConfiguration = () => {
       '1D',
       '1W'
     ],
-    supports_marks: false,
     supports_timescale_marks: false
   }
 }
@@ -94,7 +94,7 @@ export class Datafeed {
     _onDataCallback: Function,
     _resolution: any
   ) {
-    throw new Error('Marks not supported')
+    _onDataCallback([])
   }
 
   getTimescaleMarks(

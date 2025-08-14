@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { getMitoUrl } from '@shared/utils/network'
-import { LiquidityProvisionMitoCard, VaultsCyTags } from '@/types'
+import { VaultsCyTags } from '@/types'
+import type { LiquidityProvisionMitoCard } from '@/types'
+
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
@@ -13,22 +17,14 @@ const emit = defineEmits<{
   'update:selectedVaultUrl': [value: string]
 }>()
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
-
-const market = computed(() =>
-  [...derivativeStore.markets, ...spotStore.markets].find(
-    (market) => market.marketId === props.vault.marketId
-  )
+const market = computed(
+  () =>
+    spotStore.marketByIdOrSlug(props.vault.marketId) ||
+    derivativeStore.marketByIdOrSlug(props.vault.marketId)
 )
 
 const mitoUrl = computed(
   () => `${getMitoUrl()}/vault/${props.vault.contractAddress}/`
-)
-
-const { valueToString: tvlToString } = useSharedBigNumberFormatter(
-  computed(() => props.vault.tvl),
-  { decimalPlaces: 0 }
 )
 
 function onSelectVault() {
@@ -41,7 +37,7 @@ function onSelectVault() {
     v-if="market"
     v-bind="{
       title: market.ticker,
-      description: $t(`liquidityProvision.item.type.${props.vault.type}`)
+      description: $t(`vault.item.${props.vault.type}`)
     }"
     @click="onSelectVault"
   >
@@ -56,19 +52,26 @@ function onSelectVault() {
     <template #content>
       <div class="min-w-0 truncate">
         <p class="text-coolGray-300 text-sm">
-          {{ $t('liquidityProvision.TVL') }}
+          {{ $t('vault.TVL') }}
         </p>
         <p
           class="text-xl font-semibold truncate"
           :data-cy="dataCyTag(VaultsCyTags.tvl)"
         >
-          ${{ tvlToString }}
+          <SharedAmountUsd
+            v-bind="{
+              amount: vault.tvl,
+              shouldAbbreviate: false
+            }"
+          >
+            <template #prefix>$</template>
+          </SharedAmountUsd>
         </p>
       </div>
 
       <div class="min-w-0 truncate">
         <p class="text-coolGray-300 text-sm">
-          {{ $t('liquidityProvision.APY') }}
+          {{ $t('vault.APY') }}
         </p>
         <p
           class="text-green-500 text-xl font-semibold truncate"

@@ -1,33 +1,32 @@
 import { defineStore } from 'pinia'
+import { IS_MAINNET } from '@shared/utils/constant'
+import { wasmApi, indexerSpotApi } from '@shared/Service'
 import {
-  Route,
-  AtomicSwap,
   QueryAllRoutes,
-  QuantityAndFees,
   QueryInputQuantity,
   QueryOutputQuantity,
   SwapQueryTransformer,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { indexerSpotApi, wasmApi } from '@shared/Service'
+import { excludedSwapDenoms } from '@/app/data/swap'
+import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import {
   submitAtomicOrder,
   submitAtomicOrderExactOutput
 } from '@/store/swap/message'
-import { excludedSwapDenoms } from '@/app/data/swap'
-import { SWAP_CONTRACT_ADDRESS } from '@/app/utils/constants'
-import { TokenAndPriceAndDecimals } from '@/types'
+import type { TokenAndPriceAndDecimals } from '@/types'
+import type { Route, AtomicSwap, QuantityAndFees } from '@injectivelabs/sdk-ts'
 
 type SwapStoreState = {
-  routes: Route[]
-  swapHistory: AtomicSwap[]
+  swapRoutes: Route[]
   swapHistoryTotal: number
-  outputQuantity: QuantityAndFees
+  swapHistory: AtomicSwap[]
   inputQuantity: QuantityAndFees
+  outputQuantity: QuantityAndFees
 }
 
 const initialStateFactory = (): SwapStoreState => ({
-  routes: [],
+  swapRoutes: [],
   swapHistory: [],
   swapHistoryTotal: 0,
   outputQuantity: {} as QuantityAndFees,
@@ -37,6 +36,11 @@ const initialStateFactory = (): SwapStoreState => ({
 export const useSwapStore = defineStore('swap', {
   state: (): SwapStoreState => initialStateFactory(),
   getters: {
+    routes: (state: SwapStoreState) => {
+      const sharedJsonStore = useSharedJsonStore()
+
+      return IS_MAINNET ? sharedJsonStore.swapRoutes : state.swapRoutes
+    },
     isInputEntered: (state: SwapStoreState) => {
       if (
         !state.inputQuantity.resultQuantity &&
@@ -56,23 +60,11 @@ export const useSwapStore = defineStore('swap', {
       const swapStore = useSwapStore()
       const jsonStore = useSharedJsonStore()
 
+      if (IS_MAINNET) {
+        return
+      }
+
       if (jsonStore.swapRoutes.length) {
-        const routes = jsonStore.swapRoutes.map((route) => {
-          return {
-            steps: route.steps,
-            sourceDenom: route.source_denom,
-            targetDenom: route.target_denom
-          }
-        })
-
-        swapStore.$patch((state) => {
-          state.routes = routes.filter(
-            ({ sourceDenom, targetDenom }) =>
-              !excludedSwapDenoms.includes(sourceDenom) &&
-              !excludedSwapDenoms.includes(targetDenom)
-          )
-        })
-
         return
       }
 
@@ -86,13 +78,11 @@ export const useSwapStore = defineStore('swap', {
           queryAllRoutesResponse
         )
 
-      swapStore.$patch((state) => {
-        state.routes = routes.filter(
-          ({ sourceDenom, targetDenom }) =>
-            !excludedSwapDenoms.includes(sourceDenom) &&
-            !excludedSwapDenoms.includes(targetDenom)
-        )
-      })
+      swapStore.swapRoutes = routes.filter(
+        ({ sourceDenom, targetDenom }) =>
+          !excludedSwapDenoms.includes(sourceDenom) &&
+          !excludedSwapDenoms.includes(targetDenom)
+      )
     },
 
     async fetchOutputQuantity({

@@ -42,7 +42,7 @@ withDefaults(
           }"
           :data-cy="dataCyTag(PortfolioCyTags.SubAccountDropdown)"
         >
-          {{ $t('account.subaccount') }}: {{ activeSubaccountLabel }}
+          {{ $t('common.account.subaccount') }}: {{ activeSubaccountLabel }}
         </span>
 
         <div

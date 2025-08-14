@@ -1,18 +1,19 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
 import { LedgerDerivationPathType } from '@injectivelabs/wallet-ledger'
+import type { SharedDropdownOption } from '@shared/types'
 
 const walletStore = useWalletStore()
-const toast = useSharedNotificationStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 const { handleSubmit } = useForm()
 
-const options = [
+const options = computed<SharedDropdownOption[]>(() => [
   {
     display: t('connect.ledgerLive'),
     value: LedgerDerivationPathType.LedgerLive
@@ -21,7 +22,7 @@ const options = [
     display: t('connect.ledgerLegacy'),
     value: LedgerDerivationPathType.LedgerMew
   }
-] as SharedDropdownOption[]
+])
 
 const path = ref<LedgerDerivationPathType>(LedgerDerivationPathType.LedgerLive)
 const status = reactive(new Status(StatusType.Idle))
@@ -75,8 +76,8 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      toast.success({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {
@@ -164,7 +165,7 @@ const connect = handleSubmit(() => {
         size="lg"
         @click="connect"
       >
-        {{ $t('connect.connect') }}
+        {{ $t('common.connect') }}
       </AppButton>
     </div>
 

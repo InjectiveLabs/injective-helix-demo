@@ -1,26 +1,18 @@
 <script lang="ts" setup>
-import { TokenStatic } from '@injectivelabs/sdk-ts'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
     isSm?: boolean
     isXl?: boolean
+    balance?: string
+    token: TokenStatic
     isLoading?: boolean
     isLgTokenIcon?: boolean
     isShowTokenName?: boolean
     isBalanceVisible?: boolean
-
-    token: TokenStatic
-
-    balance?: string
   }>(),
   {
-    isSm: false,
-    isXl: false,
-    isLoading: false,
-    isLgTokenIcon: false,
-    isShowTokenName: false,
-    isBalanceVisible: false,
     balance: ''
   }
 )
@@ -40,10 +32,6 @@ const classes = computed(() => {
 
   return 'text-base'
 })
-
-const { valueToString: balanceToString } = useSharedBigNumberFormatter(
-  computed(() => props.balance)
-)
 
 function click() {
   emit('click', props.token.denom)
@@ -66,6 +54,12 @@ function click() {
       </div>
     </div>
     <AppSpinner v-if="isLoading" class="relative" is-sm />
-    <div v-else-if="isBalanceVisible">{{ balanceToString }}</div>
+    <div v-else-if="isBalanceVisible">
+      <SharedAmount
+        v-bind="{
+          amount: balance
+        }"
+      />
+    </div>
   </div>
 </template>

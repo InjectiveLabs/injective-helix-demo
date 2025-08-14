@@ -2,8 +2,9 @@
 import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, BusEvents, LeaderboardDuration } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { Modal, BusEvents } from '@/types'
+import type { LeaderboardDuration } from '@/types'
 
 const modalStore = useSharedModalStore()
 const { t } = useLang()
@@ -33,16 +34,7 @@ const showSelectors = ref(true)
 
 const now = useNow({ interval: 1000 })
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.pnl),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
-
-const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(
-  computed(() => props.volume),
-  { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-)
+const pnlToBigNumber = computed(() => new BigNumberInBase(props.pnl))
 
 const timestamp = computed(() => format(now.value, TIMESTAMP_FORMAT))
 
@@ -50,10 +42,10 @@ const statsModalTitle = computed(() =>
   props.isVolumeCampaign
     ? t('leaderboard.competition.tradingVolume')
     : props.selectedDuration
-    ? t('leaderboard.pnl.currentDuration', {
-        duration: t(`leaderboard.pnl.duration.${props.selectedDuration}`)
-      })
-    : t('leaderboard.pnl.tradingPnl')
+      ? t('leaderboard.pnl.currentDuration', {
+          duration: t(`leaderboard.pnl.duration.${props.selectedDuration}`)
+        })
+      : t('leaderboard.pnl.tradingPnl')
 )
 
 onMounted(() => {
@@ -137,7 +129,16 @@ watchDebounced(
             v-if="isVolumeCampaign"
             class="flex items-end gap-2 xs:gap-8 font-semibold flex-wrap text-3xl md:text-5xl leading-[3rem] truncate text-green-500"
           >
-            ${{ volumeToFormat }}
+            <SharedAmountUsd
+              v-bind="{
+                amount: volume,
+                hideDecimals: true,
+                shouldAbbreviate: false,
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </div>
 
           <div
@@ -148,7 +149,14 @@ watchDebounced(
               'text-red-500': pnlToBigNumber.lt(0)
             }"
           >
-            ${{ pnlToFormat }}
+            <SharedAmountUsd
+              v-bind="{
+                amount: pnl,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </div>
 
           <div
@@ -186,7 +194,7 @@ watchDebounced(
           <div
             class="flex flex-col sm:flex-row items-start justify-end gap-1 flex-1 ml-2 sm:ml-0"
           >
-            <span>{{ $t('leaderboard.timeStamp') }}:</span>
+            <span>{{ $t('leaderboard.timestamp') }}:</span>
             <span>{{ timestamp }}</span>
           </div>
         </div>

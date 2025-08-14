@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { LiquidityRewardsPage, LiquidityDashboardTableColumn } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -15,18 +15,18 @@ const { rows } = useLiquidityDashboardTransformer(
   computed(() => props.campaigns)
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: LiquidityDashboardTableColumn.Market,
     label: t(
-      `campaign.table.dashboard.${LiquidityDashboardTableColumn.Market}`
+      `lpRewards.table.dashboard.${LiquidityDashboardTableColumn.Market}`
     ),
     class: 'w-4/12'
   },
   {
     key: LiquidityDashboardTableColumn.Volume,
     label: t(
-      `campaign.table.dashboard.${LiquidityDashboardTableColumn.Volume}`
+      `lpRewards.table.dashboard.${LiquidityDashboardTableColumn.Volume}`
     ),
     class: 'w-3/12'
   },
@@ -34,9 +34,9 @@ const columns = [
     key: LiquidityDashboardTableColumn.Rewards,
     label: props.isActive
       ? t(
-          `campaign.table.dashboard.${LiquidityDashboardTableColumn.EstRewards}`
+          `lpRewards.table.dashboard.${LiquidityDashboardTableColumn.EstRewards}`
         )
-      : t(`campaign.table.dashboard.${LiquidityDashboardTableColumn.Rewards}`),
+      : t(`lpRewards.table.dashboard.${LiquidityDashboardTableColumn.Rewards}`),
     class: 'w-3/12'
   },
 
@@ -45,7 +45,7 @@ const columns = [
     class: 'w-2/12',
     rowClass: 'flex justify-end'
   }
-]
+])
 </script>
 
 <template>
@@ -92,10 +92,12 @@ const columns = [
 
       <template #volume-data="{ row }">
         <div class="tracking-wider text-sm">
-          <AppUsdAmount
+          <SharedAmountUsd
             v-bind="{
-              amount: row.marketVolumeInUsd.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              hideDecimals: true,
+              shouldAbbreviate: false,
+              roundingMode: BigNumberInBase.ROUND_UP,
+              amount: row.marketVolumeInUsd.toFixed()
             }"
           />
           <span class="ml-1">USD</span>
@@ -105,10 +107,10 @@ const columns = [
       <template #rewards-data="{ row }">
         <div>
           <p class="font-semibold mb-1 text-sm">
-            <AppUsdAmount
+            <SharedAmountUsd
               v-bind="{
-                amount: row.totalAmountInUsd.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                shouldAbbreviate: false,
+                amount: row.totalAmountInUsd.toFixed()
               }"
             />
             <span class="ml-1">USD</span>
@@ -133,7 +135,7 @@ const columns = [
 
       <template #empty-state>
         <div class="flex flex-col justify-center items-center py-10">
-          <CommonEmptyList :message="t('campaign.noActiveCampaigns')" />
+          <CommonEmptyList :message="t('lpRewards.noActiveCampaigns')" />
         </div>
       </template>
     </UTable>

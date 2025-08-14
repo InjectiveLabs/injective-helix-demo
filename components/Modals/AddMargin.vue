@@ -1,30 +1,27 @@
 <script lang="ts" setup>
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
-
-const props = withDefaults(
-  defineProps<{
-    position: PositionV2
-    isPgt?: boolean
-  }>(),
-  {
-    isPgt: false
-  }
-)
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
-const notificationStore = useSharedNotificationStore()
 const { handleSubmit, resetForm } = useForm()
 const { activeSubaccountBalancesWithToken } = useBalance()
+
+const props = withDefaults(
+  defineProps<{
+    isPgt?: boolean
+    position: PositionV2
+  }>(),
+  {}
+)
 
 const status = reactive(new Status(StatusType.Idle))
 
@@ -33,9 +30,7 @@ const market = computed(() => {
     return
   }
 
-  return derivativeStore.markets.find(
-    (market) => market.marketId === props.position?.marketId
-  )
+  return derivativeStore.marketByIdOrSlug(props.position?.marketId)
 })
 
 const quoteBalance = computed(() => {
@@ -53,12 +48,10 @@ const quoteBalance = computed(() => {
   })
 })
 
-const {
-  valueToFixed: availableMarginToFixed,
-  valueToString: availableMarginToString
-} = useSharedBigNumberFormatter(quoteBalance, {
-  decimalPlaces: UI_DEFAULT_PRICE_DISPLAY_DECIMALS
-})
+const { valueToFixed: availableMarginToFixed } = useSharedBigNumberFormatter(
+  quoteBalance,
+  { decimalPlaces: DEFAULT_ASSET_DECIMALS }
+)
 
 const {
   value: amountValue,
@@ -74,7 +67,7 @@ function onMaxClicked() {
   setAmountValue(availableMarginToFixed.value)
 }
 
-function onModalClose() {
+function onCloseModal() {
   modalStore.closeModal(Modal.AddMarginToPosition)
 }
 
@@ -95,8 +88,10 @@ const onSubmit = handleSubmit(() => {
       })
       .then(() => {
         resetForm()
-        notificationStore.success({ title: t('trade.success_added_margin') })
-        onModalClose()
+        notificationStore.update({
+          title: t('toast.trade.successAddedMargin')
+        })
+        onCloseModal()
       })
       .catch($onError)
       .finally(() => {
@@ -114,8 +109,10 @@ const onSubmit = handleSubmit(() => {
     })
     .then(() => {
       resetForm()
-      notificationStore.success({ title: t('trade.success_added_margin') })
-      onModalClose()
+      notificationStore.update({
+        title: t('toast.trade.successAddedMargin')
+      })
+      onCloseModal()
     })
     .catch($onError)
     .finally(() => {
@@ -128,7 +125,7 @@ const onSubmit = handleSubmit(() => {
   <AppModal v-model="modalStore.modals[Modal.AddMarginToPosition]">
     <template #title>
       <h3>
-        {{ $t('trade.add_margin_to_position_title') }}
+        {{ $t('trade.addMargin') }}
       </h3>
     </template>
 
@@ -150,7 +147,11 @@ const onSubmit = handleSubmit(() => {
                 class="flex items-center justify-center text-coolGray-200 text-base lg:text-xl"
                 data-cy="add-margin-modal-available-text-content"
               >
-                {{ availableMarginToString }}
+                <SharedAmount
+                  v-bind="{
+                    amount: quoteBalance
+                  }"
+                />
                 <PartialsCommonBalanceDisplay
                   v-bind="{
                     token: market.quoteToken,
@@ -170,7 +171,7 @@ const onSubmit = handleSubmit(() => {
                   :label="$t('trade.amount')"
                   :max="Number(availableMarginToFixed)"
                   autofix
-                  :placeholder="$t('trade.enter_your_amount')"
+                  :placeholder="$t('trade.enterYourAmount')"
                   class="no-shadow"
                   data-cy="add-margin-modal-amount-input"
                   :decimals="4"
@@ -206,7 +207,7 @@ const onSubmit = handleSubmit(() => {
                   data-cy="add-margin-modal-execute-button"
                   @click="onSubmit"
                 >
-                  {{ $t('trade.add_margin') }}
+                  {{ $t('trade.addMargin') }}
                 </AppButton>
               </div>
             </div>

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    markets: UiMarketWithToken[]
-    modelValue: string
+    modelValue?: string
     wrapperClass?: string
+    markets?: UiMarketWithToken[]
   }>(),
   {
-    markets: () => [],
     modelValue: '',
-    wrapperClass: ''
+    wrapperClass: '',
+    markets: () => []
   }
 )
 
@@ -45,7 +45,7 @@ const activeMarket = computed(() =>
     :class="wrapperClass"
     @click="openModal"
   >
-    <p v-if="!activeMarket">{{ 'Filter By Market' }}</p>
+    <p v-if="!activeMarket">{{ $t('portfolio.filters.byMarket') }}</p>
 
     <p v-else>
       {{ activeMarket?.ticker }}

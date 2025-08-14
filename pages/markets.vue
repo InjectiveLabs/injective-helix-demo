@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCyTags, MarketCategoryType } from '@/types'
+import { PartialsMarketsIAssetsBanner } from '#components'
+import { MarketCyTags, NoticeBanner, MarketCategoryType } from '@/types'
 
 const route = useRoute()
+const appStore = useAppStore()
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const { sm } = useSharedBreakpoints()
 
 const search = ref('')
 const activeCategory = ref(setCategoryFromQuery())
-const isLowVolumeMarketsVisible = ref(false)
+const isLowVolumeMarketsVisible = ref(!IS_MAINNET)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary]
     .map(({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       return {
@@ -29,6 +32,32 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     })
     .filter(({ summary }) => summary)
 )
+
+onMounted(() => {
+  if (route.query.category) {
+    Object.keys(MarketCategoryType).forEach((category) => {
+      if (
+        category.toLowerCase() ===
+        route.query?.category?.toString()?.toLowerCase()
+      ) {
+        activeCategory.value =
+          MarketCategoryType[category as keyof typeof MarketCategoryType]
+      }
+    })
+  }
+})
+
+function resetSearch() {
+  search.value = ''
+}
+
+function resetCategory() {
+  if (activeCategory.value === MarketCategoryType.All) {
+    return
+  }
+
+  activeCategory.value = MarketCategoryType.All
+}
 
 function setCategoryFromQuery() {
   if (
@@ -42,16 +71,11 @@ function setCategoryFromQuery() {
   return MarketCategoryType.All
 }
 
-function resetSearch() {
-  search.value = ''
-}
-
-function resetCategory() {
-  if (activeCategory.value === MarketCategoryType.All) {
-    return
-  }
-
-  activeCategory.value = MarketCategoryType.All
+function closeIAssetsBanner() {
+  appStore.setUserState({
+    ...appStore.userState,
+    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.IAssets]
+  })
 }
 </script>
 
@@ -68,6 +92,11 @@ function resetCategory() {
       <PartialsMarketsOverview
         v-bind="{ markets: marketsWithSummaryAndVolumeInUsd }"
         class="mt-8"
+      />
+
+      <PartialsMarketsIAssetsBanner
+        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.IAssets)"
+        @banner:close="closeIAssetsBanner"
       />
 
       <div class="max-w-full mt-4 lg:mb-2">
@@ -92,8 +121,9 @@ function resetCategory() {
                     variant="primary"
                     size="xs"
                     :class="[
-                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
-                      isActive ? 'opacity-100' : 'opacity-50'
+                      isActive ? 'opacity-100' : 'opacity-50',
+                      value === MarketCategoryType.iAssets ? '' : 'capitalize',
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
                     ]"
                   >
                     {{ $t(`markets.filters.${value}`) }}
@@ -110,9 +140,9 @@ function resetCategory() {
               <input
                 v-model="search"
                 type="text"
-                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
+                :placeholder="$t('trade.searchMarket')"
                 :data-cy="dataCyTag(MarketCyTags.MarketSearch)"
-                :placeholder="$t('trade.search_market')"
+                class="focus:outline-none bg-transparent p-1 px-3 w-full text-sm"
                 @update:model-value="resetCategory"
               />
 
@@ -125,13 +155,13 @@ function resetCategory() {
             </label>
 
             <div class="flex max-sm:hidden">
-              <AppCheckbox2
+              <AppCheckbox
                 v-model="isLowVolumeMarketsVisible"
-                class="text-coolGray-450"
                 is-sm
+                class="text-coolGray-450"
               >
                 {{ $t('markets.showLowVol') }}
-              </AppCheckbox2>
+              </AppCheckbox>
             </div>
           </div>
         </div>

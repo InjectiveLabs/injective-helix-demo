@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import {
+import { Status, StatusType } from '@injectivelabs/utils'
+import { GrantAuthorizationType } from '@injectivelabs/sdk-ts'
+import type {
   GenericAuthorization,
-  GrantAuthorizationType,
   GrantAuthorizationWithDecodedAuthorization
 } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
 
 const authZStore = useAuthZStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 
 const props = withDefaults(
@@ -28,6 +30,8 @@ const authorizationFormatted = computed(() => {
   ) {
     return props.grant.authorization.msg.split('.').reverse()[0]
   }
+
+  return ''
 })
 
 function revoke() {
@@ -51,6 +55,9 @@ function revoke() {
       grantee: props.grant.grantee,
       messageTypes: [(props.grant.authorization as GenericAuthorization).msg]
     })
+    .then(() => {
+      notificationStore.update({ title: t('toast.success') })
+    })
     .catch($onError)
     .finally(() => status.setIdle())
 }
@@ -70,9 +77,9 @@ function revoke() {
         variant="danger-ghost"
         size="sm"
         disabled
-        :tooltip="$t('common.notAvailableinAuthZOrAutoSignMode')"
+        :tooltip="$t('portfolio.notAvailableinAuthZOrAutoSignMode')"
       >
-        {{ $t('portfolio.settings.authz.revoke') }}
+        {{ $t('portfolio.authZ.revoke') }}
       </AppButton>
 
       <AppButton
@@ -82,7 +89,7 @@ function revoke() {
         :status="status"
         @click="revoke"
       >
-        {{ $t('portfolio.settings.authz.revoke') }}
+        {{ $t('portfolio.authZ.revoke') }}
       </AppButton>
     </div>
   </div>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
+import { Wallet } from '@injectivelabs/wallet-base'
 import {
   PortfolioSubPage,
   PerpetualMarketCyTags,
   PortfolioFuturesOpenOrdersTableColumn
 } from '@/types'
+import type { DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
 
 const breakpoints = useSharedBreakpoints()
 const sharedWalletStore = useSharedWalletStore()
@@ -14,10 +15,8 @@ const { lg } = useSharedBreakpoints()
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
-  defineProps<{ orders: DerivativeLimitOrder[]; isTradingBots?: boolean }>(),
-  {
-    isTradingBots: false
-  }
+  defineProps<{ isTradingBots?: boolean; orders: DerivativeLimitOrder[] }>(),
+  {}
 )
 
 const { rows } = useFuturesOpenOrdersTransformer(
@@ -85,7 +84,10 @@ const columns = computed(() => {
     }
   ]
 
-  if (!props.isTradingBots) {
+  if (
+    !props.isTradingBots &&
+    ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+  ) {
     baseColumns.push({
       key: PortfolioFuturesOpenOrdersTableColumn.Chase,
       label: t(
@@ -114,7 +116,7 @@ const columns = computed(() => {
     <UTable :rows="rows" :columns="columns">
       <template #chase-header>
         <NuxtLink
-          :to="{ name: PortfolioSubPage.SettingsAutosign }"
+          :to="{ name: PortfolioSubPage.Settings }"
           class="flex justify-center space-x-2 items-center"
         >
           <p>
@@ -179,10 +181,12 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersPrice)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.price.toFixed(),
-              decimalPlaces: row.priceDecimals
+              decimals: row.priceDecimals
             }"
           />
         </div>
@@ -193,10 +197,12 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersAmount)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: row.quantity.toFixed(),
-              decimalPlaces: row.quantityDecimals
+              decimals: row.quantityDecimals
             }"
           />
         </div>
@@ -207,9 +213,11 @@ const columns = computed(() => {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersUnfilled)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              decimalPlaces: row.quantityDecimals,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.quantityDecimals,
               amount: row.unfilledQuantity.toFixed()
             }"
           />
@@ -221,9 +229,11 @@ const columns = computed(() => {
           class="flex flex-col items-end p-2 justify-center"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersFilled)"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              decimalPlaces: row.quantityDecimals,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.quantityDecimals,
               amount: row.filledQuantity.toFixed()
             }"
           />
@@ -237,7 +247,7 @@ const columns = computed(() => {
             class="text-coolGray-400"
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersLeverageNa)"
           >
-            {{ $t('trade.not_available_n_a') }}
+            {{ $t('trade.notAvailableNA') }}
           </span>
           <span
             v-else
@@ -252,10 +262,12 @@ const columns = computed(() => {
         <div class="flex items-center p-2 justify-end">
           <div class="space-y-1">
             <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenOrdersTotal)">
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.total.toFixed(),
-                  decimalPlaces: row.priceDecimals
+                  decimals: row.priceDecimals
                 }"
               />
               <span class="text-coolGray-500 ml-2">

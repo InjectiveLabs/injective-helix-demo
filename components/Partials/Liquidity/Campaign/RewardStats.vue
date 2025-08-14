@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_MAX_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
     totalScore: string
-    quoteDecimals: number
     campaign: Campaign
+    quoteDecimals: number
   }>(),
   {}
 )
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const campaignStore = useCampaignStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const campaignWithReward = computed(() =>
@@ -30,28 +30,31 @@ const campaignWithReward = computed(() =>
 )
 
 const market = computed(() =>
-  spotStore.markets.find(({ marketId }) => marketId === props.campaign.marketId)
+  spotStore.marketByIdOrSlug(props.campaign.marketId)
 )
 
 const explorerLink = computed(() => {
-  if (!sharedWalletStore.address) {
+  if (!sharedWalletStore.isUserConnected) {
     return
   }
 
-  return `${getExplorerUrl()}/account/${sharedWalletStore.address}`
+  return `${getExplorerUrl()}/account/${sharedWalletStore.injectiveAddress}`
 })
 
-const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
-  computed(() => {
-    if (!campaignWithReward.value || !market.value) {
-      return 0
-    }
+const volumeInUsd = computed(() => {
+  if (!campaignWithReward.value || !market.value) {
+    return 0
+  }
 
-    return new BigNumberInWei(campaignWithReward.value.userScore)
-      .toBase(props.quoteDecimals)
-      .times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+  const scoreInBase = sharedToBalanceInTokenInBase({
+    value: campaignWithReward.value.userScore,
+    decimalPlaces: props.quoteDecimals
   })
-)
+
+  return scoreInBase.times(
+    sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
+  )
+})
 
 const estRewardsInPercentage = computed(() => {
   if (
@@ -72,15 +75,15 @@ const rewards = computed(() => {
   }
 
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+    const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
     const amount = sharedToBalanceInTokenInBase({
       value: reward.amount,
-      decimalPlaces: token?.decimals || 18
+      decimalPlaces: token?.decimals
     }).multipliedBy(estRewardsInPercentage.value)
 
     const amountInUsd = token
-      ? amount.times(tokenStore.tokenUsdPrice(token))
+      ? amount.times(sharedTokenStore.tokenUsdPrice(token))
       : ZERO_IN_BASE
 
     return {
@@ -105,29 +108,39 @@ const rewardsFormatted = computed(() =>
 
 <template>
   <div v-if="campaignWithReward" class="bg-coolGray-850 rounded-md p-8">
-    <h2 class="font-semibold mb-4">{{ $t('campaign.rewardStats') }}</h2>
+    <h2 class="font-semibold mb-4">{{ $t('lpRewards.rewardStats') }}</h2>
 
     <div class="flex">
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-4 flex-1"
       >
         <div>
-          <p class="text-xs uppercase pb-1">{{ $t('campaign.address') }}</p>
+          <p class="text-xs uppercase pb-1">{{ $t('lpRewards.address') }}</p>
           <NuxtLink :to="explorerLink" target="_blank" class="text-sm">
             <p class="text-blue-500 truncate">
-              {{ sharedWalletStore.address }}
+              {{ sharedWalletStore.injectiveAddress }}
             </p>
           </NuxtLink>
         </div>
 
         <div>
-          <p class="text-xs uppercase pb-1">{{ $t('campaign.volume') }}</p>
-          <p class="text-sm">{{ volumeInUsdToString }} USD</p>
+          <p class="text-xs uppercase pb-1">{{ $t('lpRewards.volume') }}</p>
+          <p class="text-sm">
+            <SharedAmountUsd
+              v-bind="{
+                hideDecimals: true,
+                amount: volumeInUsd,
+                shouldAbbreviate: false,
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            />
+            USD
+          </p>
         </div>
 
         <div>
           <div class="text-xs uppercase pb-1 flex items-center space-x-2">
-            <p>{{ $t('campaign.rewards') }}</p>
+            <p>{{ $t('lpRewards.rewards') }}</p>
           </div>
           <div class="flex items-center justify-between gap-2">
             <div class="text-sm">
@@ -140,9 +153,7 @@ const rewardsFormatted = computed(() =>
 
         <div>
           <PartialsLiquidityCommonClaimButton
-            v-bind="{
-              campaign: props.campaign
-            }"
+            v-bind="{ campaign: props.campaign }"
           />
         </div>
       </div>

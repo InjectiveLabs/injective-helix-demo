@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { BINANCE_DEPOSIT_ADDRESS } from '@shared/utils/constant'
-import { BankTransferField, BankTransferForm } from '@/types'
+import { BankTransferField } from '@/types'
+import type { BankTransferForm } from '@/types'
 
 const bankTransferFormValues = useFormValues() as Ref<BankTransferForm>
 
@@ -16,7 +17,9 @@ const {
 } = useStringField({
   name: BankTransferField.MemoValue,
   rule: '',
-  dynamicRule: computed(() => (memoRequired.value ? 'required' : ''))
+  dynamicRule: computed(() =>
+    memoRequired.value ? 'required|validMemoValue' : ''
+  )
 })
 
 function onUpdateMemoRequired() {
@@ -47,29 +50,28 @@ watch(
         {{ $t('portfolio.bankTransfer.memo.title') }}
       </div>
 
-      <AppCheckbox2
+      <AppCheckbox
         v-model="memoRequired"
         :disabled="
           bankTransferFormValues[BankTransferField.Address] ===
           BINANCE_DEPOSIT_ADDRESS
         "
-        @update:modelValue="onUpdateMemoRequired"
+        @update:model-value="onUpdateMemoRequired"
       >
         <div class="text-xs leading-4 tracking-wide text-coolGray-200">
           {{ $t('portfolio.bankTransfer.memo.required') }}
         </div>
-      </AppCheckbox2>
+      </AppCheckbox>
     </div>
 
     <div
       v-if="memoRequired"
-      class="p-2 py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md"
+      class="mt-2 py-3 max-h-xs space-y-3 bg-coolGray-950 rounded-md border border-brand-700"
     >
       <AppInput
         v-model="memo"
         v-bind="{
-          placeholder: $t('portfolio.bankTransfer.memo.placeholder'),
-          wrapperClass: 'mt-2'
+          placeholder: $t('portfolio.bankTransfer.memo.placeholder')
         }"
       />
     </div>

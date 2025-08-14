@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { SharedMarketType } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
   Modal,
   BusEvents,
   MarketKey,
+  HelixCtaToast,
+  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   IsRWAMarketOpenKey,
@@ -103,7 +107,8 @@ const isBuy = computed(
 const currentFormValues = computed(
   () =>
     ({
-      [DerivativesTradeFormField.Leverage]: UI_DEFAULT_LEVERAGE,
+      [DerivativesTradeFormField.Leverage]:
+        derivativeFormValues.value[DerivativesTradeFormField.Leverage],
       [DerivativesTradeFormField.Type]:
         derivativeFormValues.value[DerivativesTradeFormField.Type],
       [DerivativesTradeFormField.Side]:
@@ -122,7 +127,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isStopOrder: [
+    isTriggerOrder: [
       DerivativeTradeTypes.StopLimit,
       DerivativeTradeTypes.StopMarket
     ].includes(
@@ -274,8 +279,8 @@ async function submitLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -313,8 +318,8 @@ function submitMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -356,8 +361,8 @@ function submitStopLimitOrder() {
       reduceOnly: isOrderTypeReduceOnly.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -399,8 +404,8 @@ function submitStopMarketOrder() {
       price: new BigNumberInBase(props.worstPrice)
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -420,6 +425,47 @@ function submitStopMarketOrder() {
 
       status.setIdle()
     })
+}
+
+function showAutosignCta() {
+  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+    return
+  }
+
+  if (!derivativeStore.subaccountTradesCount) {
+    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
+    notificationStore.success({
+      title: t('toast.portfolio.autoSign.enable.title'),
+      description: t('toast.portfolio.autoSign.enable.description'),
+      icon: NuxtUiIcons.RotateAuto,
+      timeout: MAX_TOAST_TIMEOUT,
+      key: HelixCtaToast.EnableAutoSign,
+      actions: [
+        {
+          label: t('common.enable'),
+          callback: () => {
+            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
+
+            sharedWalletStore
+              .connectAutoSign(
+                TRADING_MESSAGES
+                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+              )
+              .then(() => {
+                notificationStore.update({
+                  title: t('toast.portfolio.autoSign.enabledToast.title'),
+                  description: t(
+                    'toast.portfolio.autoSign.enabledToast.description'
+                  )
+                })
+              })
+              .catch($onError)
+              .finally(() => status.setIdle())
+          }
+        }
+      ]
+    })
+  }
 }
 </script>
 
@@ -441,7 +487,7 @@ function submitStopMarketOrder() {
         </span>
 
         <span v-else-if="!hasEnoughLiquidity">
-          {{ $t('trade.swap.insufficient_liquidity') }}
+          {{ $t('swap.insufficientLiquidity') }}
         </span>
 
         <span v-else>

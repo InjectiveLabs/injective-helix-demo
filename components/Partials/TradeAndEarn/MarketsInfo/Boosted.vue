@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { PointsMultiplierWithMarketTicker } from '@/types'
+import type { PointsMultiplierWithMarketTicker } from '@/types'
 
-const spotStore = useSpotStore()
 const jsonStore = useSharedJsonStore()
 const exchangeStore = useExchangeStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const {
   spotBoostedMarketIdList,
@@ -20,25 +20,26 @@ const derivativeBoostedMarkets = computed(() => {
   const derivativeMarketsBoosts = derivativeBoostedMultiplierList.value
   const disqualifiedMarketIds = disqualifiedMarketIdsList.value
 
-  const derivativeMarketsTickerBasedOnIds = derivativeStore.markets
-    .filter(
-      (derivativeMarket) =>
-        derivativeMarketIds.includes(derivativeMarket.marketId) ||
-        [
-          ...jsonStore.expiryMarketIds,
-          ...jsonStore.verifiedDerivativeMarketIds
-        ].includes(derivativeMarket.marketId)
-    )
-    .sort(
-      (a, b) =>
-        derivativeMarketIds.indexOf(a.marketId) -
-        derivativeMarketIds.indexOf(b.marketId)
-    )
-    .map((m) => ({
-      ticker: m.ticker,
-      slug: m.slug,
-      index: derivativeMarketIds.indexOf(m.marketId)
-    }))
+  const derivativeMarketsTickerBasedOnIds =
+    sharedDerivativeStore.marketsWithToken
+      .filter(
+        (derivativeMarket) =>
+          derivativeMarketIds.includes(derivativeMarket.marketId) ||
+          [
+            ...jsonStore.expiryMarketIds,
+            ...jsonStore.verifiedDerivativeMarketIds
+          ].includes(derivativeMarket.marketId)
+      )
+      .sort(
+        (a, b) =>
+          derivativeMarketIds.indexOf(a.marketId) -
+          derivativeMarketIds.indexOf(b.marketId)
+      )
+      .map((m) => ({
+        ticker: m.ticker,
+        slug: m.slug,
+        index: derivativeMarketIds.indexOf(m.marketId)
+      }))
 
   const derivatives = derivativeMarketsTickerBasedOnIds.reduce(
     (records, market) => {
@@ -58,7 +59,7 @@ const derivativeBoostedMarkets = computed(() => {
     [] as PointsMultiplierWithMarketTicker[]
   )
 
-  const nonBoostedDerivatives = [...derivativeStore.markets]
+  const nonBoostedDerivatives = [...sharedDerivativeStore.marketsWithToken]
     .filter(
       (derivative) =>
         !derivativeMarketIds.includes(derivative.marketId) &&
@@ -95,7 +96,7 @@ const spotBoostedMarkets = computed(() => {
   const spotMarketIds = spotBoostedMarketIdList.value
   const spotMarketsBoosts = spotBoostedMultiplierList.value
 
-  const spotMarketsTickerBasedOnIds = spotStore.markets
+  const spotMarketsTickerBasedOnIds = sharedSpotStore.marketsWithToken
     .filter(
       (spotMarket) =>
         spotMarketIds.includes(spotMarket.marketId) ||
@@ -126,7 +127,7 @@ const spotBoostedMarkets = computed(() => {
     ]
   }, [] as PointsMultiplierWithMarketTicker[])
 
-  const nonBoostedSpot = [...spotStore.markets]
+  const nonBoostedSpot = [...sharedSpotStore.marketsWithToken]
     .filter(
       (spotMarket) =>
         !spotMarketIds.includes(spotMarket.marketId) &&
@@ -215,10 +216,10 @@ const spotBoostedMarkets = computed(() => {
 
     <template #title>
       <div class="flex items-center justify-center text-coolGray-450 text-xs">
-        {{ $t('trade.boosted_markets') }}
+        {{ $t('trade.boostedMarkets') }}
         <AppTooltip
           class="ml-2 text-coolGray-450"
-          :content="$t('trade.boosted_markets_tooltip')"
+          :content="$t('trade.boostedMarketsTooltip')"
         />
       </div>
     </template>

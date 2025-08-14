@@ -1,11 +1,12 @@
-import type { IntervalOption } from '@/types'
-import { StopReason } from '@/types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
+import { StopReason } from '@/types'
+import type { IntervalOption } from '@/types'
 
 export * from './setup'
 export * from './campaign'
 
 export const UI_ZERO_DECIMAL = 0
+export const UI_DEFAULT_MAX_DECIMALS = 18
 export const UI_DEFAULT_MIN_DISPLAY_DECIMALS = 2
 export const UI_DEFAULT_DISPLAY_DECIMALS = 4
 export const UI_DEFAULT_LOW_PRICE_DISPLAY_DECIMALS = 9
@@ -56,24 +57,12 @@ export const DATE_TIME_DISPLAY = 'dd MMM HH:mm:ss'
 
 export const VPN_PROXY_VALIDATION_PERIOD = 7 /* 7 days */
 
-export const ETH_COIN_GECKO_ID = 'ethereum'
-export const USDT_COIN_GECKO_ID = 'tether'
-export const USDC_COIN_GECKO_ID = 'usd-coin'
-export const UST_COIN_GECKO_ID = 'terrausd'
-export const QUOTE_DENOMS_GECKO_IDS = [
-  ETH_COIN_GECKO_ID,
-  USDT_COIN_GECKO_ID,
-  USDC_COIN_GECKO_ID
-]
-export const BTC_COIN_GECKO_ID = 'bitcoin'
 export const HIDDEN_BALANCE_DISPLAY = '********'
 export const SMALL_BALANCE_THRESHOLD = '10'
 export const LOW_VOLUME_MARKET_THRESHOLD = 1000
 export const LOW_FEE_AMOUNT_THRESHOLD = 0.0001
 export const UI_DEFAULT_FEE_MIN_DECIMALS = 8
 
-export const ONE_IN_BASE = new BigNumberInBase(1)
-export const USDT_DECIMALS = 6
 export const UI_DEFAULT_PAGINATION_LIMIT_COUNT = 10
 export const UI_MINIMAL_ABBREVIATION_FLOOR = 1_000_000
 
@@ -132,6 +121,7 @@ export const MAXIMUM_LEADERBOARD_STATS_RANK = 100
 export const MAXIMUM_RANKED_TRADERS = 500
 export const MIN_LEADERBOARD_PNL_AMOUNT = 50
 export const MIN_COMPETITION_PNL_AMOUNT = 0.01
+export const DEFAULT_MIN_GAS = 1_000_000_000_000_000 // 0.001 INJ
 
 export const intervalOptions: IntervalOption[] = [
   { label: '1m', value: { resolution: 1, countback: 30 * 32 } },
@@ -177,16 +167,16 @@ export const LEGACY_MARKET_TO_CURRENT_MARKET_ID_MAP = Object.entries(
 )
 
 export const STOP_REASON_MAP = {
-  [StopReason.User]: 'sgt.user',
-  [StopReason.StopLoss]: 'sgt.stopLoss',
-  [StopReason.TakeProfit]: 'sgt.takeProfit',
-  [StopReason.InsufficientFunds]: 'sgt.insufficientFunds',
-  [StopReason.ExceededMaxRetries]: 'sgt.exceededMaxRetries',
-  [StopReason.Emergency]: 'sgt.marketConditionsNotSupported'
+  [StopReason.User]: 'tradingBots.user',
+  [StopReason.StopLoss]: 'trade.stopLoss',
+  [StopReason.TakeProfit]: 'trade.takeProfit',
+  [StopReason.InsufficientFunds]: 'tradingBots.insufficientFunds',
+  [StopReason.ExceededMaxRetries]: 'tradingBots.exceededMaxRetries',
+  [StopReason.Emergency]: 'tradingBots.marketConditionsNotSupported'
 }
 
-export const CONNECT_SERVER_URL =
-  'https://k8s.mainnet.eu.helix-server.injective.network/api'
+export const HELIX_MOBILE_CONNECT_SERVER_URL = import.meta.env
+  .VITE_HELIX_MOBILE_CONNECT_SERVER_URL
 
 export const LIGHT_CHART_MARKET_IDS = [
   '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82' // AIX/USDT PERP
@@ -195,8 +185,17 @@ export const LIGHT_CHART_MARKET_IDS = [
 export const INDEX_MARKETS_INFO = [
   {
     label: '$AIX Index',
-    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index',
+    link: 'https://docs.helixapp.com/trading/perpetuals/helix-ai-index-aix',
     marketId:
       '0xe5bfc48fc29146d756c9dac69f096d56cc4fc5ae75c98c1ad045c3356d14eb82'
   }
 ]
+
+export const DEFAULT_100_CHART_CANDLE_BAR_SPACING = 9.2
+export const CHART_ZOOM_FALLBACK_NUMBER = 0.5
+
+export const MAX_LIMIT_ORDER_LINES = 3
+export const MAX_TOAST_TIMEOUT = 10 * 24 * 60 * 60 * 1000 // 10 days
+
+export const DEPRECATED_WALLET_DOCS_LINK =
+  'https://docs.helixapp.com/getting-started/sign-up/google-account-wallet'

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { PerpetualMarket } from '@injectivelabs/sdk-ts'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
-import { differenceInSeconds, endOfHour, intervalToDuration } from 'date-fns'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { UiMarketWithToken, MarkPriceStatusKey } from '@/types'
+import { MarkPriceStatusKey } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
 
-const derivativeStore = useDerivativeStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const markPriceStatus = inject(
   MarkPriceStatusKey,
@@ -23,29 +23,23 @@ const props = withDefaults(
   {}
 )
 
-const labelToDisplay = ['hours', 'minutes', 'seconds']
-
-const now = ref(0)
-
 const { markPrice } = useDerivativeLastPrice(computed(() => props.market))
 
+const now = useNow({ interval: 1000 })
+
 const countdown = computed(() => {
-  const difference = intervalToDuration({
-    start: now.value,
-    end: endOfHour(now.value)
-  })
+  const nowTimestamp = Math.floor(now.value.getTime() / 1000)
+  const secondsInHour = 3600
+  const secondsSinceEpoch = nowTimestamp
+  const secondsToNextEpochHour =
+    secondsInHour - (secondsSinceEpoch % secondsInHour)
 
-  return Object.entries(difference)
-    .map(([label, value]: [string, number]) => {
-      if (labelToDisplay.includes(label)) {
-        const valueToTwoDigits = value < 10 ? `0${value}` : `${value}`
+  const hours = Math.floor(secondsToNextEpochHour / secondsInHour)
+  const minutes = Math.floor((secondsToNextEpochHour % secondsInHour) / 60)
+  const seconds = secondsToNextEpochHour % 60
 
-        return valueToTwoDigits
-      }
-
-      return undefined
-    })
-    .filter((time) => time)
+  return [hours, minutes, seconds]
+    .map((value) => value.toString().padStart(2, '0'))
     .join(':')
 })
 
@@ -92,68 +86,56 @@ const { valueToString: annualizedFundingRateToString } =
 //   )
 // )
 
-useIntervalFn(() => {
-  now.value = Date.now()
-  const end = endOfHour(now.value)
-  const shouldFetchNewFunding = differenceInSeconds(end, now.value) === 1
-
-  if (!shouldFetchNewFunding) {
-    return
+watch(countdown, (countdown) => {
+  if (countdown === '00:00:01') {
+    sharedDerivativeStore.fetchMarketsSummary()
   }
-
-  derivativeStore.fetchMarketsSummary()
-}, 1000)
+})
 </script>
 
 <template>
   <PartialsTradeStatsHeaderItem class="xl:hidden 2xl:flex">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.mark_price_tooltip')"
+        :tooltip="$t('trade.stats.markPriceTooltip')"
         text-color-class="text-coolGray-400"
       >
-        {{ $t('trade.mark_price') }}
+        {{ $t('trade.markPrice') }}
       </CommonHeaderTooltip>
     </template>
 
     <AppSpinner v-if="markPriceStatus.isLoading()" class="relative" is-sm />
-    <AppAmount
+    <SharedAmount
       v-else
       v-bind="{
         amount: markPrice,
-        decimalPlaces: market.priceDecimals
+        useSubscript: true,
+        shouldAbbreviate: false,
+        decimals: market.priceDecimals
       }"
     />
   </PartialsTradeStatsHeaderItem>
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
 
-  <!-- <PartialsTradeStatsHeaderItem
-    v-if="openInterestBigNumber.gt(0)"
-    class="xl:hidden 2xl:flex"
-    :title="$t('trade.stats.open_interest')"
-  >
-    <AppUsdAmount
-      v-bind="{
-        decimalPlaces: 0,
-        isShowNoDecimals: true,
-        amount: openInterestToFixed
-      }"
-    />
-  </PartialsTradeStatsHeaderItem> -->
-
   <PartialsTradeStatsHeaderItem>
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.funding_rate_tooltip')"
+        :tooltip="$t('trade.stats.fundingRateTooltip')"
         text-color-class="text-coolGray-400"
       >
-        {{ $t('trade.stats.est_funding_rate') }}
+        {{ $t('trade.stats.estFundingRate') }}
       </CommonHeaderTooltip>
     </template>
 
     <div v-if="!fundingRateToBigNumber.isNaN()" class="lg:text-right block">
       <AppTooltip
+        :ui="{
+          width: 'w-auto',
+          popper: {
+            placement: 'bottom'
+          }
+        }"
         :content="`${$t('trade.stats.annualized')}: ${
           fundingRateToBigNumber.gt(0) ? '+' : ''
         }${annualizedFundingRateToString}%`"
@@ -165,13 +147,18 @@ useIntervalFn(() => {
           }"
           class="cursor-pointer flex"
         >
-          <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: fundingRateToFixed,
-              decimalPlaces: UI_DEFAULT_FUNDING_RATE_DECIMALS
+              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
             }"
-          />
+          >
+            <template #prefix>
+              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
+            </template>
+          </SharedAmount>
           <span>%</span>
         </span>
       </AppTooltip>
@@ -179,7 +166,7 @@ useIntervalFn(() => {
     <span v-else class="lg:text-right block"> &mdash; </span>
   </PartialsTradeStatsHeaderItem>
 
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.next_funding')">
+  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.nextFunding')">
     <p class="lg:text-right">
       {{ countdown }}
     </p>

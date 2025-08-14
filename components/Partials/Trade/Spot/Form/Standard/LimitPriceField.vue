@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
-
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MarketKey,
   BusEvents,
-  UiSpotMarket,
-  SpotTradeForm,
   SpotMarketCyTags,
   SpotTradeFormField
 } from '@/types'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
-const tokenStore = useTokenStore()
 const orderbookStore = useOrderbookStore()
+const sharedTokenStore = useSharedTokenStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -50,7 +48,7 @@ const hasClickedLimitField = ref(false)
 const { valueToFixed: limitPriceInUsdToFixed } = useSharedBigNumberFormatter(
   computed(() =>
     new BigNumberInBase(limitValue.value || 0).times(
-      tokenStore.tokenUsdPrice(market.value.quoteToken)
+      sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
     )
   )
 )
@@ -102,8 +100,9 @@ function onResetLimitField() {
 
       <div class="text-xs text-coolGray-450">
         <span>~$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: limitPriceInUsdToFixed
           }"
         />

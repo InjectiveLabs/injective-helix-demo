@@ -1,4 +1,17 @@
-import {
+import type { BigNumberInBase } from '@injectivelabs/utils'
+import type {
+  UiSpotMarket,
+  UiMarketWithToken,
+  UiDerivativeMarket,
+  UiSubaccountTransactionWithToken
+} from '@/types'
+import type {
+  SharedUiSpotTrade,
+  SharedUiMarketSummary,
+  SharedBalanceWithToken,
+  SharedUiDerivativeTrade
+} from '@shared/types'
+import type {
   Campaign,
   PositionV2,
   TokenStatic,
@@ -7,19 +20,6 @@ import {
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  SharedUiSpotTrade,
-  SharedUiMarketSummary,
-  SharedBalanceWithToken,
-  SharedUiDerivativeTrade
-} from '@shared/types'
-import {
-  UiSpotMarket,
-  UiMarketWithToken,
-  UiDerivativeMarket,
-  UiSubaccountTransactionWithToken
-} from '@/types'
 
 export enum BalanceTableColumn {
   Total = 'total',
@@ -164,6 +164,7 @@ export enum PortfolioFuturesOrderHistoryTableColumn {
 
 export enum PortfolioFuturesTradeHistoryTableColumn {
   Fee = 'fee',
+  Pnl = 'pnl',
   Time = 'time',
   Type = 'type',
   Side = 'side',
@@ -275,10 +276,10 @@ export interface TransformedMarkets {
   priceChangeClasses: string
   volumeInUsd: BigNumberInBase
   summary: SharedUiMarketSummary
+  [MarketsTableColumn.Markets]: string
   [MarketsTableColumn.LastPrice]: number
   [MarketsTableColumn.MarketChange24h]: number
   [MarketsTableColumn.MarketVolume24h]: number
-  [MarketsTableColumn.Markets]: string
 }
 
 export interface TransformedMarketsSelector {
@@ -290,12 +291,12 @@ export interface TransformedMarketsSelector {
   volumeInUsdToFixed: string
   priceChangeClasses: string
   volumeInUsd: BigNumberInBase
-  [MarketsSelectorTableColumn.MarketVolume24h]: number
   [MarketsSelectorTableColumn.Markets]: string
   [MarketsSelectorTableColumn.LastPrice]: string
-  [MarketsSelectorTableColumn.FundingRate]: BigNumberInBase
+  [MarketsSelectorTableColumn.MarketVolume24h]: number
   // [MarketsSelectorTableColumn.OpenInterest]: BigNumberInBase
   [MarketsSelectorTableColumn.MarketChange24h]: string
+  [MarketsSelectorTableColumn.FundingRate]: BigNumberInBase
 }
 
 export interface TransformedHistorySwap {
@@ -304,18 +305,18 @@ export interface TransformedHistorySwap {
   routeSymbols: string[]
   sourceBalanceFormatted: string
   destinationBalanceFormatted: string
-  formattedFees: Array<Record<string, string>>
-  sourceTokenWithBalance: SharedBalanceWithToken | null | undefined
-  destinationTokenWithBalance: SharedBalanceWithToken | null | undefined
   [HistorySwapTableColumn.Time]: string
+  formattedFees: Array<Record<string, string>>
+  sourceTokenWithBalance: null | undefined | SharedBalanceWithToken
+  destinationTokenWithBalance: null | undefined | SharedBalanceWithToken
 }
 
 export interface TransformedHistoryWallet {
   transferType: string
   formattedOrigin: string
   formattedDestination: string
-  transaction: UiSubaccountTransactionWithToken
   [HistoryWalletTableColumn.Time]: string
+  transaction: UiSubaccountTransactionWithToken
   [HistoryWalletTableColumn.Amount]: BigNumberInBase
 }
 
@@ -331,8 +332,8 @@ export interface TransformedLiquidity {
   totalRewardsInUsd: BigNumberInBase
   marketVolumeInUsd: BigNumberInBase
   userHasActiveLegacyStrategy: boolean
-  rewardsWithToken: { value: string; token: TokenStatic | undefined }[]
   [LiquidityTableColumn.Market]: UiSpotMarket
+  rewardsWithToken: { value: string; token: undefined | TokenStatic }[]
 }
 
 export interface TransformedLiquidityDashboard {
@@ -341,15 +342,16 @@ export interface TransformedLiquidityDashboard {
   campaignId: string
   totalAmountInUsd: BigNumberInBase
   marketVolumeInUsd: BigNumberInBase
+  [LiquidityDashboardTableColumn.Market]: UiSpotMarket
   [LiquidityDashboardTableColumn.Rewards]: {
-    amount: BigNumberInBase
     symbol: string
+    amount: BigNumberInBase
     amountInUsd: BigNumberInBase
   }[]
-  [LiquidityDashboardTableColumn.Market]: UiSpotMarket
 }
 
 export interface TransformedPosition {
+  hasTpSl: boolean
   pnl: BigNumberInBase
   position: PositionV2
   subaccountId: string
@@ -360,15 +362,19 @@ export interface TransformedPosition {
   markPrice: BigNumberInBase
   hasActiveStrategy: boolean
   hasReduceOnlyOrders: boolean
+  usedQuantity: BigNumberInBase
   percentagePnl: BigNumberInBase
   quantityInUsd: BigNumberInBase
   isLimitOrderAuthorized: boolean
   isTradingBotSubaccount: boolean
   isMarketOrderAuthorized: boolean
+  tpTriggerPrice?: BigNumberInBase
+  slTriggerPrice?: BigNumberInBase
   liquidationPrice: BigNumberInBase
+  availableQuantity: BigNumberInBase
   effectiveLeverage: BigNumberInBase
-  reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   [PositionTableColumn.Margin]: BigNumberInBase
+  reduceOnlyCurrentOrders: DerivativeLimitOrder[]
   [PositionTableColumn.Market]: UiDerivativeMarket
 }
 
@@ -471,6 +477,7 @@ export interface TransformedPortfolioFuturesTradeHistory {
   trade: SharedUiDerivativeTrade
   [PortfolioFuturesTradeHistoryTableColumn.Time]: string
   [PortfolioFuturesTradeHistoryTableColumn.Fee]: BigNumberInBase
+  [PortfolioFuturesTradeHistoryTableColumn.Pnl]: BigNumberInBase
   [PortfolioFuturesTradeHistoryTableColumn.Total]: BigNumberInBase
   [PortfolioFuturesTradeHistoryTableColumn.Price]: BigNumberInBase
 }
@@ -487,7 +494,7 @@ export interface TransformedPortfolioFuturesAdvancedOrders {
   quantityDecimals: number
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  trigger: DerivativeOrderHistory
+  trigger: DerivativeLimitOrder
   [PortfolioFuturesAdvancedOrdersTableColumn.Type]: string
   [PortfolioFuturesAdvancedOrdersTableColumn.Total]: BigNumberInBase
   [PortfolioFuturesAdvancedOrdersTableColumn.Price]: BigNumberInBase

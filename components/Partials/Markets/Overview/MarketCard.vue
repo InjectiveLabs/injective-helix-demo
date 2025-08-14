@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  SharedMarketType,
-  SharedMarketChange,
-  SharedUiMarketHistory
-} from '@shared/types'
-import { UI_DEFAULT_PRICE_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { UiMarketAndSummaryWithVolumeInUsd, MarketCyTags } from '@/types'
+import { SharedMarketType, SharedMarketChange } from '@shared/types'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { getFormattedMarketsHistoryChartData } from '@/app/utils/market'
+import { MarketCyTags } from '@/types'
+import type { SharedUiMarketHistory } from '@shared/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const exchangeStore = useExchangeStore()
 
@@ -77,10 +75,6 @@ const to = computed(() =>
     ? { name: 'spot-slug', params: { slug: props.market.market.slug } }
     : { name: 'futures-slug', params: { slug: props.market.market.slug } }
 )
-
-const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
-  decimalPlaces: 2
-})
 </script>
 
 <template>
@@ -120,11 +114,12 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
             market.summary.lastPriceChange === SharedMarketChange.Decrease
         }"
       >
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: lastTradedPrice.toFixed(),
-            decimalPlaces:
-              market?.market.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+            decimals: market?.market.priceDecimals || DEFAULT_ASSET_DECIMALS
           }"
         />
       </p>
@@ -138,7 +133,16 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
           'text-red-500': change.lt(0)
         }"
       >
-        {{ change.gt(0) ? '+' : '' }}{{ changeToFormat }}%
+        <SharedAmount
+          v-bind="{
+            amount: change,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
+        >
+          <template #prefix>
+            {{ change.gt(0) ? '+' : '' }}
+          </template> </SharedAmount
+        >%
       </span>
     </div>
 
@@ -147,10 +151,12 @@ const { valueToString: changeToFormat } = useSharedBigNumberFormatter(change, {
       data-cy="market-card-volume-usd-text-content"
     >
       {{ $t('markets.vol') }}
-      <AppUsdAmount
+      <SharedAmountUsd
         v-bind="{
+          hideDecimals: true,
+          shouldAbbreviate: false,
           amount: market.volumeInUsd.toFixed(),
-          decimalPlaces: 2
+          roundingMode: BigNumberInBase.ROUND_UP
         }"
         class="mx-0.5"
       />

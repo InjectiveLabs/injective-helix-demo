@@ -20,7 +20,7 @@ const { t } = useLang()
 function copyAddress() {
   copy(props.address).then(() =>
     notificationStore.success({
-      title: t('connect.addressCopied')
+      title: t('toast.addressCopied')
     })
   )
 }

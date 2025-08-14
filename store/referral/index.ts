@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { ReferralDetails } from '@injectivelabs/sdk-ts'
 import { FEE_RECIPIENT } from '@/app/utils/constants'
 import { indexerGrpcReferralApi } from '@/app/Services'
 import { registerInvitee, createReferralLink } from '@/store/referral/message'
+import type { ReferralDetails } from '@injectivelabs/sdk-ts'
 
 type ReferralStoreState = {
   feeRecipient: string
@@ -11,20 +11,21 @@ type ReferralStoreState = {
 }
 
 const initialStateFactory = (): ReferralStoreState => ({
+  feeRecipient: FEE_RECIPIENT,
   referralDetails: {
     invitees: [],
     referrerCode: '',
     referrerAddress: '',
     totalCommission: ZERO_IN_BASE,
     totalTradingVolume: ZERO_IN_BASE
-  },
-  feeRecipient: FEE_RECIPIENT
+  }
 })
 
 export const useReferralStore = defineStore('referral', {
   state: (): ReferralStoreState => initialStateFactory(),
   getters: {
-    isReferrer: (state) => !!state.referralDetails.referrerCode
+    isReferrer: (state) => !!state.referralDetails.referrerCode,
+    hasBeenReferred: (state) => state.feeRecipient !== FEE_RECIPIENT
   },
   actions: {
     registerInvitee,
@@ -32,12 +33,11 @@ export const useReferralStore = defineStore('referral', {
 
     async checkCodeAvailability(referralCode: string) {
       try {
-        const response = await indexerGrpcReferralApi.fetchReferrerByCode(
-          referralCode
-        )
+        const response =
+          await indexerGrpcReferralApi.fetchReferrerByCode(referralCode)
 
         return response
-      } catch (e: any) {
+      } catch {
         return ''
       }
     },
@@ -58,7 +58,7 @@ export const useReferralStore = defineStore('referral', {
         referralStore.$patch({
           feeRecipient: response?.active ? response.referrer : FEE_RECIPIENT
         })
-      } catch (e: any) {
+      } catch {
         // silent error handling if user has no referrer
         referralStore.$patch({ feeRecipient: FEE_RECIPIENT })
       }
@@ -78,7 +78,7 @@ export const useReferralStore = defineStore('referral', {
         )
 
         referralStore.$patch({ referralDetails: response || {} })
-      } catch (e: any) {
+      } catch {
         // silent error handling if user is not an invitee
         referralStore.$patch({ referralDetails: {} })
       }

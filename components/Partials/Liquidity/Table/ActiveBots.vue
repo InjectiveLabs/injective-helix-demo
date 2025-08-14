@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarket } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 const campaignStore = useCampaignStore()

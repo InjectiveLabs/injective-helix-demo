@@ -20,7 +20,8 @@
           >
             https://helixapp.com/
           </NuxtLink>
-          AND ANY RELATED SERVICES ARE NOT OFFERED TO AND MAY NOT BE USED BY:
+          AND ANY RELATED SERVICES, INCLUDING BUT NOT LIMITED TO MOBILE
+          APPLICATIONS, ARE NOT OFFERED TO AND MAY NOT BE USED BY:
         </p>
 
         <p>
@@ -89,8 +90,8 @@
             https://helixapp.com
           </NuxtLink>
           (collectively with any materials and services available therein, and
-          successor website(s) or application(s) thereto, the
-          &ldquo;Site&rdquo;).
+          successor website(s) or application(s) thereto, including but not
+          limited to mobile applications, the &ldquo;Site&rdquo;).
         </p>
 
         <p>

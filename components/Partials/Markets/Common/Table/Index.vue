@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { valueSortFunction } from '@/app/utils/helpers'
-import {
-  MarketCyTags,
-  MarketsTableColumn,
-  UiMarketAndSummaryWithVolumeInUsd
-} from '@/types'
+import { MarketCyTags, MarketsTableColumn } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const appStore = useAppStore()
 const { t } = useLang()
@@ -19,7 +17,7 @@ const props = withDefaults(
   {}
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: MarketsTableColumn.Markets,
     label: t(`trade.table.markets.${MarketsTableColumn.Markets}`),
@@ -48,7 +46,7 @@ const columns = [
   {
     key: MarketsTableColumn.Action
   }
-]
+])
 
 const { rows } = useMarketTransformer(computed(() => props.sortedMarkets))
 
@@ -94,11 +92,13 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
           class="flex items-center"
         >
           <div class="w-full flex justify-end truncate">
-            <AppAmount
+            <SharedAmount
               :data-cy="dataCyTag(MarketCyTags.MarketLastPrice)"
               v-bind="{
-                amount: row[MarketsTableColumn.LastPrice],
-                decimalPlaces: row.market.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.market.priceDecimals,
+                amount: row[MarketsTableColumn.LastPrice]
               }"
             />
           </div>
@@ -127,14 +127,16 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
         >
           <div class="w-full flex items-center justify-end truncate">
             <span :data-cy="dataCyTag(MarketCyTags.MarketVolume)">
-              <span>$</span>
-              <AppUsdAmount
+              <SharedAmountUsd
                 v-bind="{
+                  hideDecimals: true,
+                  shouldAbbreviate: false,
                   amount: row.volumeInUsd.toFixed(),
-                  isShowNoDecimals: true,
-                  decimalPlaces: 0
+                  roundingMode: BigNumberInBase.ROUND_UP
                 }"
-              />
+              >
+                <template #prefix>$</template>
+              </SharedAmountUsd>
             </span>
           </div>
         </PartialsCommonMarketRedirection>

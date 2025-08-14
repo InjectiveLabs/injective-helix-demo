@@ -1,16 +1,13 @@
-import {
-  PositionV2,
-  TokenStatic,
-  TokenVerification
-} from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { injToken, usdtToken } from '@shared/data/token'
 import { TradeDirection } from '@injectivelabs/ts-types'
+import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { NEPTUNE_USDT_BUFFER } from '@/app/utils/constants'
 import { getCw20AddressFromDenom } from '@/app/utils/helpers'
-import {
+import type { PositionV2, TokenStatic } from '@injectivelabs/sdk-ts'
+import type {
   AccountBalance,
   SubaccountBalance,
   SubaccountBalanceWithInOrder
@@ -76,13 +73,13 @@ function calculateDefaultSubaccountBalance(
 }
 
 function getDenomPositionMap(positions: PositionV2[]) {
-  const tokenStore = useTokenStore()
   const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   return positions.reduce(
     (list, position) => {
       const quoteToken =
-        tokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
+        sharedTokenStore.tokenByDenomOrSymbol(position.denom) || usdtToken
       const markPrice = derivativeStore.marketMarkPriceMap[position.marketId]
         ?.price
         ? sharedToBalanceInWei({
@@ -123,8 +120,8 @@ function getDenomPositionMap(positions: PositionV2[]) {
     {} as Record<
       string,
       {
-        pnl: BigNumberInBase
         token: TokenStatic
+        pnl: BigNumberInBase
         margin: BigNumberInBase
         pnlPlusMargin: BigNumberInBase
       }
@@ -134,18 +131,17 @@ function getDenomPositionMap(positions: PositionV2[]) {
 
 export function useBalance() {
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
   const accountStore = useAccountStore()
-  const exchangeStore = useExchangeStore()
   const positionStore = usePositionStore()
   const derivativeStore = useDerivativeStore()
+  const sharedTokenStore = useSharedTokenStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const subaccountPortfolioBalanceMap = computed(() => {
-    const tradeableDenoms = [
+    const tradableDenoms = [
       ...new Set([
-        ...spotStore.tradeableDenoms,
-        ...derivativeStore.tradeableDenoms
+        ...derivativeStore.tradableDenoms,
+        ...spotStore.tradableDenoms
       ])
     ]
 
@@ -170,14 +166,14 @@ export function useBalance() {
           ...subaccountIdBalanceMap,
           [subaccountId]: subaccountBalances
             .map((balance) => {
-              const token = tokenStore.tokenByDenomOrSymbol(balance.denom)
+              const token = sharedTokenStore.tokenByDenomOrSymbol(balance.denom)
 
               if (!token || !balance) {
                 return undefined
               }
 
-              const usdPrice = tokenStore.tokenUsdPrice(token)
-              const isVerified = tradeableDenoms.includes(balance.denom)
+              const usdPrice = sharedTokenStore.tokenUsdPrice(token)
+              const isVerified = tradableDenoms.includes(balance.denom)
               const unrealizedPnlAndMargin = new BigNumberInBase(
                 subaccountPositionPnlDenomMap[balance.denom]?.pnlPlusMargin || 0
               )
@@ -190,6 +186,11 @@ export function useBalance() {
                 decimalPlaces: token.decimals
               }).toFixed()
 
+              const unrealizedPnlAndMarginInUsd = sharedToBalanceInTokenInBase({
+                value: unrealizedPnlAndMargin.times(usdPrice).toFixed(),
+                decimalPlaces: token.decimals
+              }).toFixed()
+
               return {
                 ...balance,
                 token,
@@ -197,6 +198,7 @@ export function useBalance() {
                 isVerified,
                 totalBalanceInUsd,
                 denom: token.denom,
+                unrealizedPnlAndMarginInUsd,
                 totalBalance: totalBalance.toFixed(),
                 unrealizedPnl: unrealizedPnlAndMargin.toFixed()
               }
@@ -230,20 +232,21 @@ export function useBalance() {
   )
 
   const stakedAmount = computed(() => {
-    if (
-      !exchangeStore.feeDiscountAccountInfo ||
-      !exchangeStore.feeDiscountAccountInfo.accountInfo
-    ) {
+    if (accountStore.injDelegations.length === 0) {
       return ZERO_IN_BASE
     }
 
     return sharedToBalanceInTokenInBase({
-      value: exchangeStore.feeDiscountAccountInfo.accountInfo.stakedAmount
+      value: accountStore.injDelegations
+        .reduce((total, delegation) => {
+          return total.plus(delegation.balance.amount)
+        }, ZERO_IN_BASE)
+        .toFixed()
     })
   })
 
   const stakedAmountInUsd = computed(() => {
-    const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+    const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
     if (!injUsdPrice) {
       return ZERO_IN_BASE
@@ -267,15 +270,18 @@ export function useBalance() {
     return totalBalanceInUsd
   })
 
+  const aggregatedSubaccountTotalBalance = computed(() => {
+    return Object.keys(subaccountPortfolioBalanceMap.value).reduce(
+      (balances, subaccountId) => [
+        ...balances,
+        ...subaccountPortfolioBalanceMap.value[subaccountId]
+      ],
+      [] as AccountBalance[]
+    )
+  })
+
   const aggregatedSubaccountTotalBalanceInUsd = computed(() => {
-    return Object.keys(subaccountPortfolioBalanceMap.value)
-      .reduce(
-        (balances, subaccountId) => [
-          ...balances,
-          ...subaccountPortfolioBalanceMap.value[subaccountId]
-        ],
-        [] as AccountBalance[]
-      )
+    return aggregatedSubaccountTotalBalance.value
       .reduce((total, balance) => {
         if (!balance) {
           return total
@@ -290,6 +296,23 @@ export function useBalance() {
       .plus(stakedAmountInUsd.value)
   })
 
+  const aggregatedSubaccountUnrealizedPnlInUsd = computed(() => {
+    const aggregatedUnrealizedPnlInUsd =
+      aggregatedSubaccountTotalBalance.value.reduce((total, balance) => {
+        if (!balance) {
+          return total
+        }
+
+        if (balance.token.tokenVerification !== TokenVerification.Verified) {
+          return total
+        }
+
+        return total.plus(balance.unrealizedPnlAndMarginInUsd)
+      }, ZERO_IN_BASE)
+
+    return aggregatedUnrealizedPnlInUsd
+  })
+
   return {
     stakedAmount,
     stakedAmountInUsd,
@@ -298,6 +321,7 @@ export function useBalance() {
     activeSubaccountBalancesWithToken,
     activeSubaccountPositionPnlDenomMap,
     aggregatedSubaccountTotalBalanceInUsd,
+    aggregatedSubaccountUnrealizedPnlInUsd,
     activeSubaccountTradableBalancesWithToken
   }
 }

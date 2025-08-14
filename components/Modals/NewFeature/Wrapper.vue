@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { RouteLocationNamedRaw } from 'vue-router'
 import { NuxtUiIcons } from '@shared/types'
 import { Modal, MainPage } from '@/types'
+import type { RouteLocationNamedRaw } from 'vue-router'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -10,14 +10,10 @@ const modalStore = useSharedModalStore()
 const props = withDefaults(
   defineProps<{
     modal: Modal
-    route1?: RouteLocationNamedRaw
-    route2?: RouteLocationNamedRaw
+    ctaRoute?: RouteLocationNamedRaw
   }>(),
   {
-    route1: () => ({
-      name: MainPage.Index
-    }),
-    route2: () => ({
+    ctaRoute: () => ({
       name: MainPage.Index
     })
   }
@@ -90,29 +86,20 @@ function onCloseModal() {
         </div>
 
         <NuxtLink
-          v-if="$slots.cta1"
+          v-if="$slots.cta"
+          :to="ctaRoute"
           class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
-          :to="route1"
           @click="onCloseModal"
         >
-          <slot name="cta1" />
-        </NuxtLink>
-
-        <NuxtLink
-          v-if="$slots.cta2"
-          class="font-semibold whitespace-nowrap w-full text-sm text-blue-900 bg-blue-500 rounded p-3 block leading-4 mt-4"
-          :to="route2"
-          @click="onCloseModal"
-        >
-          <slot name="cta2" />
+          <slot name="cta" />
         </NuxtLink>
 
         <AppButton
-          v-if="!($slots.cta1 || $slots.cta2)"
+          v-if="!$slots.cta1"
           class="flex items-center justify-center font-semibold whitespace-nowrap w-full text-sm bg-blue-500 text-blue-900 rounded p-3 mt-6"
           @click="onCloseModal"
         >
-          {{ $t('banners.newFeature.close') }}
+          {{ $t('common.close') }}
         </AppButton>
       </div>
     </div>

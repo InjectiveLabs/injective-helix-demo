@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { MarketCategoryType, UiMarketAndSummaryWithVolumeInUsd } from '@/types'
+import { MarketCategoryType } from '@/types'
+import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 withDefaults(
   defineProps<{

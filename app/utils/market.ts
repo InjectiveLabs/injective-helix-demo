@@ -4,11 +4,7 @@ import { deprecatedMarkets } from '@/app/data/market'
 import { TradeSubPage } from '@/types'
 import type { SharedUiMarketHistory } from '@shared/types'
 import type { MarketRoute, UiMarketWithToken } from '@/types'
-import type {
-  PriceLevel,
-  DerivativeMarket,
-  ExpiryFuturesMarket
-} from '@injectivelabs/sdk-ts'
+import type { PriceLevel, ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel
@@ -82,23 +78,6 @@ export const getFormattedMarketsHistoryChartData = (
 
     return [xAxisTime, yAxisHolcAveragePrice]
   })
-}
-
-export const marketIsInactive = (market: DerivativeMarket) => {
-  const HIDDEN_MARKET_TICKERS = [
-    'LUNA/UST PERP',
-    'STX/USDT PERP',
-    'BAYC/WETH PERP',
-    'OSMO/USDT PERP',
-    'ETH/USDT 19SEP22',
-    'BONK/USDT PERP',
-    '1000PEPE/USDT PERP',
-    'TIA/USDT-30NOV2023',
-    'ETH/USDTkv PERP',
-    'BTC/USDTkv PERP'
-  ]
-
-  return !HIDDEN_MARKET_TICKERS.includes(market.ticker)
 }
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {

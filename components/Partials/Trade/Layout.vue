@@ -1,104 +1,13 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-base'
-import { TRADING_MESSAGES } from '@/app/data/trade'
-import { BusEvents, DontShowAgain, UiMarketWithToken } from '@/types'
-
-const toast = useToast()
-const appStore = useAppStore()
-const accountStore = useAccountStore()
-const sharedWalletStore = useSharedWalletStore()
-const gridStrategyStore = useGridStrategyStore()
-const { $onError } = useNuxtApp()
-const { t } = useLang()
+import type { UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
     isSpot?: boolean
     market: UiMarketWithToken
   }>(),
-  {
-    isSpot: false
-  }
+  {}
 )
-
-function connectAutoSign() {
-  sharedWalletStore
-    .connectAutoSign(
-      TRADING_MESSAGES
-      // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
-    )
-    .then(() => {
-      useEventBus(BusEvents.AutoSignConnected).emit()
-
-      toast.add({
-        title: t('portfolio.settings.autoSign.enabledToast.title'),
-        description: t('portfolio.settings.autoSign.enabledToast.description')
-      })
-    })
-    .catch($onError)
-}
-
-function dontShowAutoSignAgain() {
-  appStore.$patch({
-    userState: {
-      ...appStore.userState,
-      dontShowAgain: [
-        ...appStore.userState.dontShowAgain,
-        DontShowAgain.AutoSign
-      ]
-    }
-  })
-}
-
-let timeout: NodeJS.Timeout | undefined
-
-onWalletConnected(() => {
-  if (!sharedWalletStore.isUserConnected) {
-    return
-  }
-
-  clearTimeout(timeout)
-
-  timeout = setTimeout(() => {
-    if (
-      accountStore.hasBalance &&
-      !sharedWalletStore.isAutoSignEnabled &&
-      !sharedWalletStore.isAuthzWalletConnected &&
-      sharedWalletStore.isUserConnected &&
-      !appStore.userState.dontShowAgain?.includes(DontShowAgain.AutoSign) &&
-      sharedWalletStore.wallet !== Wallet.Magic
-    ) {
-      toast.add({
-        title: t('portfolio.settings.autoSign.enable'),
-        description: t('portfolio.settings.autoSign.allowsYouToTrade'),
-        actions: [
-          {
-            label: t('common.enable'),
-            variant: 'soft',
-            color: 'primary',
-            click: connectAutoSign
-          },
-          {
-            label: t('common.dontShowAgain'),
-            variant: 'soft',
-            color: 'red',
-            click: dontShowAutoSignAgain
-          }
-        ]
-      })
-    }
-  }, 8000)
-})
-
-onUnmounted(() => {
-  if (timeout) {
-    clearTimeout(timeout)
-  }
-})
-
-useIntervalFn(() => {
-  gridStrategyStore.fetchAllStrategies()
-}, 10000)
 </script>
 
 <template>

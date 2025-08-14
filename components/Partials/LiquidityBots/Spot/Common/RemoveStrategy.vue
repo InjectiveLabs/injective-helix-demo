@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
 import { MarketType } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '~/app/utils/constants'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
@@ -12,10 +10,10 @@ const props = defineProps<{
   strategy: TradingStrategy
 }>()
 
-const toast = useToast()
 const spotStore = useSpotStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
+const notificationStore = useSharedNotificationStore()
 const { $onError } = useNuxtApp()
 const { t } = useLang()
 
@@ -60,7 +58,7 @@ function removeStrategy() {
         ])
       } else {
         Promise.all([
-          derivativeStore.fetchOrdersForSubaccount({
+          derivativeStore.fetchSecondarySubaccountOrders({
             subaccountId,
             marketIds: [marketId]
           }),
@@ -73,10 +71,9 @@ function removeStrategy() {
         ])
       }
 
-      toast.add({
-        title: t('sgt.success'),
-        icon: NuxtUiIcons.Checkmark,
-        description: t('sgt.gridStrategyRemovedSuccessfully')
+      notificationStore.update({
+        title: t('toast.success'),
+        description: t('toast.tradingBots.tradingBotRemovedSuccessfully')
       })
 
       isOpen.value = true
@@ -85,8 +82,8 @@ function removeStrategy() {
       gridStrategyStore.$patch((state) => {
         state.strategies = state.strategies.map((strategy) => {
           if (
-            strategy.contractAddress !== props.strategy.contractAddress &&
-            strategy.subaccountId !== props.strategy.subaccountId
+            strategy.createdAt === props.strategy.createdAt &&
+            strategy.subaccountId === props.strategy.subaccountId
           ) {
             return {
               ...strategy,
@@ -108,7 +105,7 @@ function removeStrategy() {
 <template>
   <slot v-bind="{ status, removeStrategy }">
     <SharedButton :loading="status.isLoading()" @click="removeStrategy">
-      {{ $t('sgt.removeStrategy') }}
+      {{ $t('tradingBots.removeStrategy') }}
     </SharedButton>
   </slot>
 
@@ -120,27 +117,34 @@ function removeStrategy() {
         class="w-6 h-6 mx-auto mb-4"
       />
 
-      <h3 class="text-xl font-bold">Strategy Removal Initiated</h3>
+      <h3 class="text-xl font-bold">
+        {{ $t('tradingBots.strategyRemovalInitiated') }}
+      </h3>
 
       <div class="text-sm text-coolGray-400 space-y-4 mt-4">
         <p>
-          {{ $t('sgt.yourTradingStrategyIsBeingRemoved') }}
+          {{ $t('tradingBots.yourTradingStrategyIsBeingRemoved') }}
         </p>
 
         <div>
-          <span>{{ $t('sgt.aproximateProfit') }}:</span>
+          <span>{{ $t('tradingBots.approximateProfit') }}:</span>
 
           <div
             :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 
-            <SharedAmountFormatter
-              class="text-nowrap whitespace-nowrap"
-              :max-decimal-places="3"
-              :amount="currentPnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <span
+              class="text-nowrap whitespace-nowrap *:text-nowrap *:whitespace-nowrap"
+            >
+              <SharedAmount
+                v-bind="{
+                  amount: currentPnl,
+                  useSubscript: true,
+                  shouldAbbreviate: false
+                }"
+              />
+            </span>
             <span>
               (
               {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
@@ -149,7 +153,7 @@ function removeStrategy() {
           </div>
         </div>
 
-        <p>{{ $t('sgt.youCanCloseThisNotification') }}</p>
+        <p>{{ $t('tradingBots.youCanCloseThisNotification') }}</p>
       </div>
     </div>
 
@@ -158,7 +162,7 @@ function removeStrategy() {
       class="w-full mt-4"
       @click="isOpen = false"
     >
-      {{ $t('sgt.close') }}
+      {{ $t('common.close') }}
     </AppButton>
   </AppModal>
 </template>

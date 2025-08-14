@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
 import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE,
@@ -7,16 +9,10 @@ import {
   GST_MIN_TRADING_SIZE_LOW,
   GST_MIN_TOTAL_AMOUNT_USD
 } from '@/app/utils/constants'
-import { MARKETS_WITH_LOW_TRADING_SIZE } from '@/app/data/grid-strategy'
-import {
-  MarketKey,
-  UiSpotMarket,
-  InvestmentTypeGst,
-  SpotGridTradingField,
-  SpotGridTradingForm
-} from '@/types'
+import { MarketKey, InvestmentTypeGst, SpotGridTradingField, SpotTradingBotsCyTags } from '@/types'
+import type { UiSpotMarket, SpotGridTradingForm } from '@/types'
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const spotFormValues = useFormValues<SpotGridTradingForm>()
 
@@ -25,10 +21,7 @@ const props = withDefaults(
     isAuto?: boolean
     isDisabled?: boolean
   }>(),
-  {
-    isAuto: false,
-    isDisabled: false
-  }
+  {}
 )
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
@@ -49,18 +42,16 @@ const accountBalance = computed(
     ]
 )
 
-const quoteDenomBalance = computed(
-  () =>
-    accountBalance.value?.find(
-      (balance) => balance.denom === market.value.quoteDenom
-    )
+const quoteDenomBalance = computed(() =>
+  accountBalance.value?.find(
+    (balance) => balance.denom === market.value.quoteDenom
+  )
 )
 
-const baseDenomBalance = computed(
-  () =>
-    accountBalance.value?.find(
-      (balance) => balance.denom === market.value.baseDenom
-    )
+const baseDenomBalance = computed(() =>
+  accountBalance.value?.find(
+    (balance) => balance.denom === market.value.baseDenom
+  )
 )
 
 const gridThreshold = computed(() => {
@@ -111,7 +102,10 @@ const {
       value: quoteDenomBalance.value?.availableBalance || 0,
       decimalPlaces: quoteDenomBalance.value?.token.decimals
     })
-  )
+  ),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const {
@@ -123,7 +117,10 @@ const {
       value: baseDenomBalance.value?.availableBalance || 0,
       decimalPlaces: baseDenomBalance.value?.token.decimals
     })
-  )
+  ),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const { value: baseAmount, errorMessage: baseAmountError } = useStringField({
@@ -137,11 +134,11 @@ const { value: baseAmount, errorMessage: baseAmountError } = useStringField({
 
     const baseAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.baseToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       market.value.baseToken.symbol
@@ -178,11 +175,11 @@ const { value: quoteAmount, errorMessage: quoteAmountError } = useStringField({
 
     const baseAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.BaseInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.baseToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.baseToken))
 
     const quoteAmount = new BigNumberInBase(
       spotFormValues.value[SpotGridTradingField.QuoteInvestmentAmount] || 0
-    ).times(tokenStore.tokenUsdPrice(market.value.quoteToken))
+    ).times(sharedTokenStore.tokenUsdPrice(market.value.quoteToken))
 
     const minBaseAndQuoteAmountRule = `minBaseAndQuoteAmountSgt:${baseAmount.toFixed()},${quoteAmount.toFixed()},${gridThreshold.value.toFixed()},${
       market.value.baseToken.symbol
@@ -223,7 +220,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
       <CommonHeaderTooltip
-        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        v-bind="{ tooltip: $t('tradingBots.sgt.investmentTooltip') }"
         :popper="{
           placement: 'top',
           strategy: 'fixed',
@@ -234,7 +231,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
           3.
         </span>
         <span class="text-white font-semibold text-xs">
-          {{ $t('sgt.amount') }}
+          {{ $t('common.amount') }}
         </span>
       </CommonHeaderTooltip>
 
@@ -257,6 +254,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       v-model="baseAmount"
       placeholder="0.00"
       :disabled="isUpperBoundLtLastPrice || isDisabled"
+      :data-cy="dataCyTag(SpotTradingBotsCyTags.BaseDenomInputField)"
     >
       <template #right>
         <span class="text-sm text-white">{{ market.baseToken.symbol }}</span>
@@ -264,7 +262,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450">
-          {{ $t('sgt.available') }}: {{ baseDenomAmountToString }}
+          {{ $t('tradingBots.available') }}: {{ baseDenomAmountToString }}
         </div>
       </template>
     </AppInputField>
@@ -275,6 +273,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
       v-model="quoteAmount"
       placeholder="0.00"
       :disabled="isLowerBoundGtLastPrice || isDisabled"
+      :data-cy="dataCyTag(SpotTradingBotsCyTags.QuoteDenomInputField)"
     >
       <template #right>
         <PartialsCommonBalanceDisplay
@@ -284,7 +283,7 @@ watch([isLowerBoundGtLastPrice, isUpperBoundLtLastPrice], () => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450">
-          {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
+          {{ $t('tradingBots.available') }}: {{ quoteDenomAmountToString }}
         </div>
       </template>
     </AppInputField>

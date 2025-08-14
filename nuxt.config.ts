@@ -1,6 +1,7 @@
 import { head, hooks } from './nuxt-config'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
+const isProduction = process.env.NODE_ENV === 'production'
 
 export default defineNuxtConfig({
   hooks,
@@ -23,7 +24,14 @@ export default defineNuxtConfig({
     server: false
   },
 
-  modules: ['@funken-studio/sitemap-nuxt-3', '@nuxt/ui', '@nuxt/eslint'],
+  modules: [
+    '@funken-studio/sitemap-nuxt-3',
+    '@nuxt/ui',
+    '@nuxt/eslint',
+    ...(isProduction && import.meta.env.NUXT_CLARITY_ID
+      ? ['nuxt-clarity-analytics']
+      : [])
+  ],
 
   imports: {
     dirs: ['composables/**', 'store/*.ts', 'store/**/index.ts']
@@ -32,7 +40,32 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'en',
     strategy: 'no_prefix',
-    locales: [{ code: 'en', file: './i18n/locales/en.ts' }]
+    locales: [
+      {
+        code: 'en',
+        name: 'En',
+        longName: 'English',
+        file: './i18n/locales/en.ts'
+      },
+      {
+        code: 'zh',
+        name: '中文',
+        longName: '中文',
+        file: './i18n/locales/cn.ts'
+      },
+      {
+        code: 'kr',
+        name: 'Kr',
+        longName: '한국어',
+        file: './i18n/locales/kr.ts'
+      },
+      {
+        code: 'tr',
+        name: 'Tr',
+        longName: 'Türkçe',
+        file: './i18n/locales/tr.ts'
+      }
+    ]
   },
 
   extends: [

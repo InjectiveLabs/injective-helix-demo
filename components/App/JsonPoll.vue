@@ -14,6 +14,7 @@ import {
 } from '@/app/json'
 
 const jsonStore = useSharedJsonStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const emit = defineEmits<{
   'on:loaded': []
@@ -38,12 +39,20 @@ function pollJson() {
     jsonStore.fetchBlacklistedAddresses(),
     jsonStore.fetchVerifiedSpotMarketMap(),
     jsonStore.fetchDerivativeGridMarkets(),
+    sharedWalletStore.fetchWeb3GatewayStatus(),
     jsonStore.fetchVerifiedDerivativeMarketMap()
   ])
 }
 
 function mountCachedJson() {
-  jsonStore.swapRoutes = swapRoutes
+  jsonStore.fetchFullTokenList()
+
+  jsonStore.swapRoutes = swapRoutes.map((route) => ({
+    ...route,
+    sourceDenom: route.source_denom,
+    targetDenom: route.target_denom
+  }))
+
   jsonStore.verifiedDenoms = verifiedDenoms
   jsonStore.spotGridMarkets = spotGridMarkets
   jsonStore.expiryMarketMap = expiryMarketIdMap
@@ -55,7 +64,7 @@ function mountCachedJson() {
   jsonStore.verifiedDerivativeMarketMap = verifiedDerivateMarketIdMap
 }
 
-useIntervalFn(pollJson, JSON_POLL_INTERVAL)
+useIntervalFn(pollJson, JSON_POLL_INTERVAL) // 10 mins
 </script>
 
 <template>

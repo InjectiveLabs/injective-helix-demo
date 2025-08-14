@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
-  MarketKey,
-  UiDerivativeMarket,
-  DerivativeGridTradingForm,
-  DerivativeGridTradingField
-} from '@/types'
-import {
   GST_GRID_THRESHOLD,
   GST_MIN_TRADING_SIZE_LOW,
   PGT_MIN_TRADING_SIZE_LOW
 } from '@/app/utils/constants'
+import { MarketKey, DerivativeGridTradingField } from '@/types'
+import type { UiDerivativeMarket, DerivativeGridTradingForm } from '@/types'
 
 const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
@@ -36,11 +32,10 @@ const accountBalance = computed(
     ]
 )
 
-const quoteDenomBalance = computed(
-  () =>
-    accountBalance.value?.find(
-      (balance) => balance.denom === market.value.quoteDenom
-    )
+const quoteDenomBalance = computed(() =>
+  accountBalance.value?.find(
+    (balance) => balance.denom === market.value.quoteDenom
+  )
 )
 
 const gridThreshold = computed(() => {
@@ -58,16 +53,11 @@ const gridThreshold = computed(() => {
   ).times(GST_MIN_TRADING_SIZE_LOW)
 })
 
-const {
-  valueToBigNumber: quoteDenomAmount,
-  valueToString: quoteDenomAmountToString
-} = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: quoteDenomBalance.value?.availableBalance || 0,
-      decimalPlaces: quoteDenomBalance.value?.token.decimals
-    })
-  )
+const quoteDenomAmount = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: quoteDenomBalance.value?.availableBalance || 0,
+    decimalPlaces: quoteDenomBalance.value?.token.decimals
+  })
 )
 
 const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
@@ -92,7 +82,7 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
   <div v-if="market" class="space-y-4">
     <div class="flex justify-between items-center">
       <CommonHeaderTooltip
-        v-bind="{ tooltip: $t('sgt.investmentTooltip') }"
+        v-bind="{ tooltip: $t('tradingBots.sgt.investmentTooltip') }"
         :popper="{
           placement: 'top',
           strategy: 'fixed',
@@ -103,7 +93,7 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
           3.
         </span>
         <span class="text-white font-semibold text-xs">
-          {{ $t('sgt.amount') }}
+          {{ $t('common.amount') }}
         </span>
       </CommonHeaderTooltip>
 
@@ -128,7 +118,12 @@ const { value: marginAmount, errorMessage: marginAmountError } = useStringField(
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-500">
-          {{ $t('sgt.available') }}: {{ quoteDenomAmountToString }}
+          {{ $t('tradingBots.available') }}:
+          <SharedAmount
+            v-bind="{
+              amount: quoteDenomAmount
+            }"
+          />
         </div>
       </template>
     </AppInputField>

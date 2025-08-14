@@ -7,14 +7,9 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 const exchangeStore = useExchangeStore()
 const sharedParamStore = useSharedParamStore()
 
-const { valueToString: aprToFormat } = useSharedBigNumberFormatter(
-  computed(() => sharedParamStore.apr.times(100)),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
+const apr = computed(() => sharedParamStore.apr.times(100))
 
-const stakedAmount = computed(() => {
+const feeDiscountStakedAmount = computed(() => {
   if (
     !exchangeStore.feeDiscountAccountInfo ||
     !exchangeStore.feeDiscountAccountInfo.accountInfo
@@ -28,13 +23,6 @@ const stakedAmount = computed(() => {
     )
   )
 })
-
-const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
-  stakedAmount,
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
-)
 </script>
 
 <template>
@@ -44,13 +32,18 @@ const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
         <span
           class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('feeDiscounts.my_staked_amount') }}
+          {{ $t('feeDiscounts.myStakedAmount') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
           <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
-            {{ stakedAmountToFormat }}
+            <SharedAmount
+              v-bind="{
+                amount: feeDiscountStakedAmount,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />
           </b>
           INJ
         </span>
@@ -58,7 +51,13 @@ const { valueToString: stakedAmountToFormat } = useSharedBigNumberFormatter(
     </div>
     <div class="mt-4">
       <span class="text-xs text-coolGray-400">
-        {{ $t('feeDiscounts.current_apr') }}: ≈ {{ aprToFormat }}%
+        {{ $t('feeDiscounts.currentApr') }}: ≈
+        <SharedAmount
+          v-bind="{
+            amount: apr,
+            decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+          }"
+        />%
       </span>
     </div>
   </div>

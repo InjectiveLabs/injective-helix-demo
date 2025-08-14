@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import {
-  derivativeTypeToExecutionTypes,
-  derivativeTypeToOrderType
+  derivativeTypeToOrderType,
+  derivativeTypeToExecutionTypes
 } from '@/app/utils/trade'
-import {
+import { SpotOrderHistoryFilterField } from '@/types'
+import type {
   OrderTypeFilter,
   ConditionalOrderSide,
-  SpotOrderHistoryFilterForm,
-  SpotOrderHistoryFilterField
+  SpotOrderHistoryFilterForm
 } from '@/types'
 
 const derivativeStore = useDerivativeStore()
@@ -27,8 +27,10 @@ const filteredAdvancedOrders = computed(() =>
       : true
 
     const isPartOfType = formValues[SpotOrderHistoryFilterField.Type]
-      ? derivativeTypeToOrderType(
-          formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
+      ? (
+          derivativeTypeToOrderType(
+            formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
+          ) || []
         ).includes(advancedOrders.orderType as ConditionalOrderSide)
       : true
 
@@ -40,7 +42,7 @@ const filteredAdvancedOrders = computed(() =>
 
     const isPartOfSide = formValues[SpotOrderHistoryFilterField.Side]
       ? formValues[SpotOrderHistoryFilterField.Side] ===
-        advancedOrders.direction
+        advancedOrders.orderSide
       : true
 
     return (

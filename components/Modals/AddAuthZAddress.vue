@@ -40,7 +40,11 @@ async function grantAuthorization() {
       grantee: addressValue.value,
       messageTypes: msgs.value
     })
-    .then(() => notificationStore.success({ title: t('common.success') }))
+    .then(() =>
+      notificationStore.update({
+        title: t('toast.account.authZAdded')
+      })
+    )
     .catch($onError)
     .finally(() => {
       status.setIdle()
@@ -62,7 +66,7 @@ function onOpenModal() {
   >
     <template #title>
       <h3>
-        {{ $t('portfolio.settings.authz.addNewGrantee') }}
+        {{ $t('portfolio.authZ.addNewGrantee') }}
       </h3>
     </template>
 

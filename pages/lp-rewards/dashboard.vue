@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
 import { LiquidityRewardsPage } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const router = useRouter()
 const campaignStore = useCampaignStore()
@@ -46,7 +46,7 @@ watch(
 
     <h3 class="text-lg font-semibold my-6">
       {{
-        $t('campaign.myRewardsCount', {
+        $t('lpRewards.myRewardsCount', {
           rewards: campaignStore.campaignsWithUserRewards.length
         })
       }}

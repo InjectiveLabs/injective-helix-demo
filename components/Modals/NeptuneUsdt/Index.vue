@@ -5,7 +5,8 @@ import { NEPTUNE_USDT_CW20_CONTRACT } from '@injectivelabs/sdk-ts'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { neptuneService } from '@/app/Services'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { Modal, MainPage, NeptuneUsdtForm, NeptuneUsdtField } from '@/types'
+import { Modal, MainPage, NeptuneUsdtField } from '@/types'
+import type { NeptuneUsdtForm } from '@/types'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -87,11 +88,12 @@ async function onSubmit() {
     props.isLend ? formValues[NeptuneUsdtField.Amount] : withdrawAmount.value
   )
     .then(() => {
-      notificationStore.success({
+      notificationStore.update({
         title: t(
-          `trade.neptuneUsdt.success.${props.isLend ? 'deposit' : 'withdraw'}`
+          `toast.trade.neptuneUsdt.success.${props.isLend ? 'deposit' : 'withdraw'}`
         )
       })
+
       resetForm()
       closeModal()
     })
@@ -167,7 +169,7 @@ function onUpdateMax({ amount }: { amount: string }) {
         ref="tokenSelectorRef"
         @update:max="onUpdateMax"
       >
-        <span> {{ $t('account.amount') }} </span>
+        <span> {{ $t('common.amount') }} </span>
       </AppSelectToken>
 
       <ModalsNeptuneUsdtSubmit
@@ -189,7 +191,7 @@ function onUpdateMax({ amount }: { amount: string }) {
             target="_blank"
             class="hover:opacity-50 underline cursor-pointer"
           >
-            {{ $t('trade.neptuneUsdt.termsAndConditions') }}
+            {{ $t('footer.termsAndConditions') }}
           </NuxtLink>
         </template>
       </i18n-t>

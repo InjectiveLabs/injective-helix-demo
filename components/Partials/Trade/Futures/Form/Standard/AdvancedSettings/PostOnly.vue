@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField } from '@/types'
+import { DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 
@@ -12,12 +12,13 @@ const { value: postOnly } = useBooleanField({
 
 <template>
   <div>
-    <AppCheckbox2
+    <AppCheckbox
       v-model="postOnly"
       :disabled="jsonStore.isPostUpgradeMode"
       class="text-white"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox)"
     >
       {{ $t('trade.postOnly') }}
-    </AppCheckbox2>
+    </AppCheckbox>
   </div>
 </template>

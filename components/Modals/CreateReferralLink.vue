@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { metaTags } from '@/nuxt-config/meta'
 import { Status, StatusType } from '@injectivelabs/utils'
+import { errorMessages } from '@/plugins/validation'
 import { trackReferralCodeCreated } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import { errorMessages } from '@/plugins/validation'
 
+const siteFullUrl = useRequestURL()
 const referralStore = useReferralStore()
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -23,6 +25,8 @@ const {
 const referralInputRef = ref()
 const isLinkAvailable = ref(false)
 const status = reactive(new Status(StatusType.Idle))
+
+const baseUrl = computed(() => siteFullUrl.origin || metaTags.url)
 
 const uppercaseReferralCode = computed({
   get: () => referralCode.value,
@@ -45,7 +49,7 @@ function checkAvailability() {
         isLinkAvailable.value = true
       } else {
         notificationStore.error({
-          title: t('referral.referralLinkIsUnavailable')
+          title: t('toast.referral.referralLinkIsUnavailable')
         })
       }
     })
@@ -68,6 +72,8 @@ function generateLink() {
         referralCode: referralCode.value,
         refereeAddress: sharedWalletStore.injectiveAddress
       })
+
+      notificationStore.update({ title: t('toast.success') })
 
       modalStore.openModal(Modal.ShareReferral)
       resetData()
@@ -125,6 +131,9 @@ watch(
             keypath="referral.referralLinkAvailableDescription"
             class="text-sm text-coolGray-450 tracking-wide"
           >
+            <template #baseUrl>
+              <span class="text-white">{{ baseUrl }}</span>
+            </template>
             <template #referralCode>
               <span class="text-white font-bold">{{ referralCode }}</span>
             </template>
@@ -176,9 +185,9 @@ watch(
             isNoPadding: true,
             disabled: status.isLoading(),
             placeholder: $t('referral.createReferralLinkPlaceholder'),
-            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28 ',
+            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28',
             wrapperClasses:
-              'bg-brand-875 p-4 border border-brand-725 rounded text-sm text-coolGray-475 font-mono overflow-auto'
+              'bg-brand-875 p-4 border border-brand-725 rounded text-sm text-coolGray-475 overflow-auto font-mono'
           }"
         >
           <template #prefix>

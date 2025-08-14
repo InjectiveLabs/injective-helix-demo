@@ -1,4 +1,7 @@
-import { TradingStrategy, MarketType } from '@injectivelabs/sdk-ts'
+import { streamGridStrategies } from './stream'
+import { MarketType } from '@injectivelabs/sdk-ts'
+import { indexerGrpcTradingApi } from '@/app/Services'
+import { cancelGridStrategiesStream } from '@/app/client/streams/grid-strategies'
 import {
   removeStrategy,
   createPerpStrategy,
@@ -7,13 +10,14 @@ import {
   removeSubaccountDeposits,
   removeStrategyForSubaccount
 } from '@/store/gridStrategy/message'
-import { indexerGrpcTradingApi } from '@/app/Services'
-import { UiSpotMarket, StrategyStatus, StrategyPerformance } from '@/types'
+import { StrategyStatus, StrategyPerformance } from '@/types'
+import type { UiSpotMarket } from '@/types'
+import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
 type GridStrategyStoreState = {
-  spotMarket: UiSpotMarket | undefined
-  strategies: TradingStrategy[]
   stats: any
+  strategies: TradingStrategy[]
+  spotMarket: undefined | UiSpotMarket
 }
 
 const initialStateFactory = (): GridStrategyStoreState => ({
@@ -26,12 +30,14 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   state: () => initialStateFactory(),
   getters: {
     activeStrategies: (state) => {
-      const spotStore = useSpotStore()
-      const derivativeStore = useDerivativeStore()
+      const sharedSpotStore = useSharedSpotStore()
+      const sharedDerivativeStore = useSharedDerivativeStore()
 
       const marketIds = new Set([
-        ...spotStore.markets.map(({ marketId }) => marketId),
-        ...derivativeStore.markets.map(({ marketId }) => marketId)
+        ...sharedDerivativeStore.marketsWithToken.map(
+          ({ marketId }) => marketId
+        ),
+        ...sharedSpotStore.marketsWithToken.map(({ marketId }) => marketId)
       ])
 
       return state.strategies.filter((strategy) => {
@@ -47,7 +53,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     activeSpotStrategies: (state) => {
-      const spotStore = useSpotStore()
+      const sharedSpotStore = useSharedSpotStore()
 
       return state.strategies.filter((strategy) => {
         const isActive = [
@@ -55,7 +61,7 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
           StrategyStatus.Pending
         ].includes(strategy.state as StrategyStatus)
         const isSpot = strategy.marketType === MarketType.Spot
-        const isMarketInSpotStore = spotStore.markets.some(
+        const isMarketInSpotStore = sharedSpotStore.marketsWithToken.some(
           ({ marketId }) => strategy.marketId === marketId
         )
 
@@ -64,9 +70,10 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     activeDerivativeStrategies: (state) => {
-      const derivativeStore = useDerivativeStore()
+      const sharedDerivativeStore = useSharedDerivativeStore()
+
       const derivativeMarketIds = new Set(
-        derivativeStore.markets.map(({ marketId }) => marketId)
+        sharedDerivativeStore.markets.map(({ marketId }) => marketId)
       )
 
       return state.strategies.filter((strategy) => {
@@ -86,12 +93,12 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     removedStrategies: (state) => {
-      const spotStore = useSpotStore()
-      const derivativeStore = useDerivativeStore()
+      const sharedSpotStore = useSharedSpotStore()
+      const sharedDerivativeStore = useSharedDerivativeStore()
 
       const marketIds = new Set([
-        ...spotStore.markets.map(({ marketId }) => marketId),
-        ...derivativeStore.markets.map(({ marketId }) => marketId)
+        ...sharedDerivativeStore.markets.map(({ marketId }) => marketId),
+        ...sharedSpotStore.markets.map(({ marketId }) => marketId)
       ])
 
       return state.strategies.filter(
@@ -102,9 +109,9 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     removedSpotStrategies: (state) => {
-      const spotStore = useSpotStore()
+      const sharedSpotStore = useSharedSpotStore()
       const spotMarketIds = new Set(
-        spotStore.markets.map(({ marketId }) => marketId)
+        sharedSpotStore.marketsWithToken.map(({ marketId }) => marketId)
       )
 
       return state.strategies.filter(
@@ -116,9 +123,10 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
     },
 
     removedDerivativeStrategies: (state) => {
-      const derivativeStore = useDerivativeStore()
+      const sharedDerivativeStore = useSharedDerivativeStore()
+
       const derivativeMarketIds = new Set(
-        derivativeStore.markets.map(({ marketId }) => marketId)
+        sharedDerivativeStore.markets.map(({ marketId }) => marketId)
       )
 
       return state.strategies.filter(
@@ -132,10 +140,13 @@ export const useGridStrategyStore = defineStore('gridStrategy', {
   actions: {
     removeStrategy,
     createPerpStrategy,
+    streamGridStrategies,
     createSpotGridStrategy,
     createSpotLiquidityBot,
     removeSubaccountDeposits,
+    cancelGridStrategiesStream,
     removeStrategyForSubaccount,
+
     async fetchStrategies(marketId?: string) {
       const sharedWalletStore = useSharedWalletStore()
 

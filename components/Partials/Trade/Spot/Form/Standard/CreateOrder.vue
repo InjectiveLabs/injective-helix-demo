@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { SharedMarketType } from '@shared/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
 import { MsgType, OrderSide } from '@injectivelabs/ts-types'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
+import { TRADING_MESSAGES } from '@/app/data/trade'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import {
-  Modal,
   BusEvents,
   MarketKey,
   TradeTypes,
+  HelixCtaToast,
+  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   SpotTradeFormField
@@ -19,7 +23,6 @@ const authZStore = useAuthZStore()
 const formErrors = useFormErrors()
 const validate = useValidateForm()
 const jsonStore = useSharedJsonStore()
-const modalStore = useSharedModalStore()
 const resetForm = useResetForm<SpotTradeForm>()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
@@ -170,8 +173,8 @@ function submitMarketOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -210,8 +213,8 @@ function submitLimitOrder() {
       orderSide: orderTypeToSubmit.value
     })
     .then(() => {
-      modalStore.openModal(Modal.IAsset)
-      notificationStore.success({ title: t('trade.order_placed') })
+      notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      showAutosignCta()
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -231,6 +234,47 @@ function submitLimitOrder() {
       status.setIdle()
     })
 }
+
+function showAutosignCta() {
+  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+    return
+  }
+
+  if (!spotStore.subaccountTradesCount) {
+    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
+    notificationStore.success({
+      title: t('toast.portfolio.autoSign.enable.title'),
+      description: t('toast.portfolio.autoSign.enable.description'),
+      icon: NuxtUiIcons.RotateAuto,
+      timeout: MAX_TOAST_TIMEOUT,
+      key: HelixCtaToast.EnableAutoSign,
+      actions: [
+        {
+          label: t('common.enable'),
+          callback: () => {
+            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
+
+            sharedWalletStore
+              .connectAutoSign(
+                TRADING_MESSAGES
+                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
+              )
+              .then(() => {
+                notificationStore.update({
+                  title: t('toast.portfolio.autoSign.enabledToast.title'),
+                  description: t(
+                    'toast.portfolio.autoSign.enabledToast.description'
+                  )
+                })
+              })
+              .catch($onError)
+              .finally(() => status.setIdle())
+          }
+        }
+      ]
+    })
+  }
+}
 </script>
 
 <template>
@@ -247,7 +291,7 @@ function submitLimitOrder() {
       </span>
 
       <span v-else-if="!hasEnoughLiquidity">
-        {{ $t('trade.swap.insufficient_liquidity') }}
+        {{ $t('swap.insufficientLiquidity') }}
       </span>
 
       <span v-else>

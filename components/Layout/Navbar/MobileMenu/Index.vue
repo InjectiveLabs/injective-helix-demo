@@ -44,7 +44,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
 
 <template>
   <div
-    class="flex items-center pr-2 lg:hidden"
+    class="flex items-center lg:hidden"
     :class="{ 'ml-2': sharedWalletStore.isAuthzWalletConnected }"
   >
     <button
@@ -59,7 +59,7 @@ const isLockedDoc = useScrollLock(document.documentElement)
     <Transition name="menu-fade-in" mode="out-in">
       <div
         v-if="isOpen"
-        class="fixed inset-0 bg-black/20 z-50 backdrop-blur-sm mobile-menu"
+        class="fixed inset-0 bg-black/20 z-[60] backdrop-blur-sm mobile-menu"
         @click="close"
       >
         <div

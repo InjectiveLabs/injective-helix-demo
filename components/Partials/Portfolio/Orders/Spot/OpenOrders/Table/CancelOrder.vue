@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotMarketCyTags } from '@/types'
+import type { SpotLimitOrder } from '@injectivelabs/sdk-ts'
 
 const spotStore = useSpotStore()
 const notificationStore = useSharedNotificationStore()
@@ -31,7 +31,9 @@ function cancelOrder() {
   spotStore
     .cancelOrder(props.order)
     .then(() => {
-      notificationStore.success({ title: t('trade.order_success_canceling') })
+      notificationStore.update({
+        title: t('toast.trade.orderCancelled')
+      })
     })
     .catch($onError)
     .finally(() => status.setIdle())

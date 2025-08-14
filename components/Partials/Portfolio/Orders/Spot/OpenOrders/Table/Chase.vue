@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { SpotLimitOrder, DerivativeLimitOrder } from '@injectivelabs/sdk-ts'
-import { UiSpotMarket, UiDerivativeMarket } from '@/types'
+import type { UiSpotMarket, UiDerivativeMarket } from '@/types'
+import type {
+  SpotLimitOrder,
+  DerivativeLimitOrder
+} from '@injectivelabs/sdk-ts'
 
 const spotStore = useSpotStore()
 const orderbookStore = useOrderbookStore()
@@ -43,7 +46,7 @@ function chase() {
         price: new BigNumberInBase(price)
       })
       .then(() => {
-        notificationStore.success({ title: t('trade.orderUpdated') })
+        notificationStore.update({ title: t('toast.trade.orderUpdated') })
       })
       .catch($onError)
       .finally(() => {
@@ -57,7 +60,7 @@ function chase() {
         price: new BigNumberInBase(price)
       })
       .then(() => {
-        notificationStore.success({ title: t('trade.orderUpdated') })
+        notificationStore.update({ title: t('toast.trade.orderUpdated') })
       })
       .catch($onError)
       .finally(() => {

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { MarketType } from '@injectivelabs/sdk-ts'
-import {
-  UI_DEFAULT_DISPLAY_DECIMALS,
-  UI_DEFAULT_MIN_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   TradeSubPage,
   StrategyStatus,
@@ -48,40 +45,40 @@ const formattedStrategies = computed(() =>
 const columns = computed(() => [
   {
     class: 'w-32',
-    label: t('sgt.startTime'),
+    label: t('tradingBots.startTime'),
     key: PortfolioTradingBotsRunningTableColumn.Time
   },
   {
-    label: t('sgt.market'),
+    label: t('trade.market'),
     key: PortfolioTradingBotsRunningTableColumn.Market
   },
   {
-    label: t('sgt.lowerBound'),
+    label: t('tradingBots.lowerBound'),
     key: PortfolioTradingBotsRunningTableColumn.LowerBound
   },
   {
-    label: t('sgt.upperBound'),
+    label: t('tradingBots.upperBound'),
     key: PortfolioTradingBotsRunningTableColumn.UpperBound
   },
   {
-    label: t('sgt.totalAmount'),
+    label: t('tradingBots.totalAmount'),
     key: PortfolioTradingBotsRunningTableColumn.TotalAmount
   },
   {
-    label: t('sgt.totalProfit'),
+    label: t('tradingBots.totalProfit'),
     key: PortfolioTradingBotsRunningTableColumn.TotalProfit
   },
   {
-    label: t('sgt.duration'),
+    label: t('tradingBots.duration'),
     key: PortfolioTradingBotsRunningTableColumn.Duration
   },
   {
-    label: t('sgt.details'),
+    label: t('common.details'),
     key: PortfolioTradingBotsRunningTableColumn.Details
   }
   // {
   //   key: PortfolioTradingBotsRunningTableColumn.RemoveStrategy,
-  //   label: t('sgt.removeStrategy')
+  //   label: t('tradingBots.removeStrategy')
   // }
 ])
 
@@ -168,10 +165,13 @@ function selectStrategy(
 
       <template #lowerBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.lowerBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.lowerBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -179,10 +179,13 @@ function selectStrategy(
 
       <template #upperBound-data="{ row }">
         <div class="flex items-center gap-1">
-          <SharedAmountFormatter
-            :max-decimal-places="3"
-            :decimal-places="2"
-            :amount="row.upperBound"
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: row.upperBound,
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />
           <span>{{ row.market.quoteToken.symbol }}</span>
         </div>
@@ -192,11 +195,14 @@ function selectStrategy(
         <div v-if="row.strategyStatus === StrategyStatus.Pending">&mdash;</div>
         <div v-else>
           <div class="flex items-center gap-1">
-            $
-            <AppUsdAmount
-              :decimal-places="UI_DEFAULT_MIN_DISPLAY_DECIMALS"
-              :amount="row.totalAmount.toFixed()"
-            />
+            <SharedAmountUsd
+              v-bind="{
+                shouldAbbreviate: false,
+                amount: row.totalAmount.toFixed()
+              }"
+            >
+              <template #prefix>$</template>
+            </SharedAmountUsd>
           </div>
         </div>
       </template>
@@ -210,7 +216,7 @@ function selectStrategy(
         />
         <div
           v-else
-          class="flex flex-col font-mono"
+          class="flex flex-col font-sans"
           :class="{
             'text-green-500': row.isPositivePnl,
             'text-red-500': !row.isPositivePnl && !row.isZeroPnl,
@@ -218,12 +224,17 @@ function selectStrategy(
           }"
         >
           <div class="flex items-center gap-1">
-            <span>{{ row.isPositivePnl ? '+' : '' }}</span>
-            <SharedAmountFormatter
-              :max-decimal-places="3"
-              :amount="row.pnl"
-              :decimal-places="UI_DEFAULT_DISPLAY_DECIMALS"
-            />
+            <SharedAmount
+              v-bind="{
+                amount: row.pnl,
+                useSubscript: true,
+                shouldAbbreviate: false
+              }"
+            >
+              <template #prefix>
+                <span>{{ row.isPositivePnl ? '+' : '' }}</span>
+              </template>
+            </SharedAmount>
             {{ ' ' + row.market.quoteToken.symbol }}
           </div>
           <div>({{ row.percentagePnl }}%)</div>
@@ -241,7 +252,7 @@ function selectStrategy(
           class="text-blue-500 hover:text-blue-500"
           @click="selectStrategy(row)"
         >
-          {{ t('sgt.moreInfo') }}
+          {{ t('tradingBots.moreInfo') }}
         </AppButton>
       </template>
 
@@ -270,7 +281,7 @@ function selectStrategy(
       </template> -->
 
       <template #empty-state>
-        <CommonEmptyList :message="$t('sgt.noActiveStrategies')" />
+        <CommonEmptyList :message="$t('tradingBots.noActiveStrategies')" />
       </template>
     </UTable>
 
@@ -286,7 +297,7 @@ function selectStrategy(
 
     <CommonEmptyList
       v-if="gridStrategyStore.activeSpotStrategies.length === 0 && !lg"
-      :message="$t('sgt.noActiveStrategies')"
+      :message="$t('tradingBots.noActiveStrategies')"
     />
 
     <AppModal v-model="isOpen" v-bind="{ isSm: true }">

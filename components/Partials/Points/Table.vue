@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_ZERO_DECIMAL,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { PointsPeriod } from '@/types'
 
 const { t } = useLang()
@@ -19,7 +22,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: PointsPeriod]
 }>()
 
-const columns = [
+const columns = computed(() => [
   {
     key: 'period',
     label: t('points.period'),
@@ -35,7 +38,7 @@ const columns = [
     label: t('points.points'),
     class: 'text-right'
   }
-]
+])
 
 const limit = 7
 const page = ref(1)
@@ -159,11 +162,12 @@ function onNext() {
 
       <template #volume-data="{ row }">
         <span v-show="row.volume" class="flex justify-end">
-          <AppAmount
+          <SharedAmount
             v-if="row.volumeInBigNumber.gte(1)"
             v-bind="{
-              amount: row.volumeInBigNumber.toFixed(),
-              decimalPlaces: 0
+              shouldAbbreviate: false,
+              decimals: UI_ZERO_DECIMAL,
+              amount: row.volumeInBigNumber.toFixed()
             }"
           />
           <span v-else>{{ '< 1' }}</span>
@@ -173,11 +177,12 @@ function onNext() {
 
       <template #points-data="{ row }">
         <span v-show="row.points" class="flex justify-end">
-          <AppAmount
+          <SharedAmount
             v-if="row.pointsInBigNumber.gte(1)"
             v-bind="{
               amount: row.points,
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              shouldAbbreviate: false,
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
           <span v-else>{{ '< 1' }}</span>

@@ -15,7 +15,7 @@ export enum MainPage {
   TradeAndEarn = 'trade-and-earn',
   Institutional = 'institutional',
   PrivacyPolicy = 'privacy-policy',
-  LiquidityProvision = 'liquidity-provision',
+  PointsS1Ended = 'points-s1-ended',
   TeslaCompetitionTerms = 'tesla-competition-terms',
   LikeAGCompetitionTerms = 'like-a-g-competition-terms',
   CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
@@ -41,11 +41,16 @@ export enum TradePage {
 }
 
 export enum TradeSubPage {
+  Stocks = 'stocks',
   Spot = 'spot-slug',
   Market = 'market-market',
   Futures = 'futures-slug',
   Perpetual = 'perpetual-perpetual',
   Derivatives = 'derivatives-derivative'
+}
+
+export enum TradeSubPagePath {
+  Stocks = '/futures/stocks'
 }
 
 export enum LiquidityRewardsPage {
@@ -65,9 +70,7 @@ export enum PortfolioSubPage {
   HistoryWallet = 'portfolio-history-wallet',
   SettingsAuthz = 'portfolio-settings-authz',
   OrdersSpotGrid = 'portfolio-orders-spot-grid',
-  SettingsAutosign = 'portfolio-settings-autosign',
   OrdersFuturesGrid = 'portfolio-orders-futures-grid',
-  SettingsPreferences = 'portfolio-settings-preferences',
   SettingsAuthzGranter = 'portfolio-settings-authz-granter',
   HistoryFundingHistory = 'portfolio-history-funding-history',
   OrdersSpotTradeHistory = 'portfolio-orders-spot-trade-history',

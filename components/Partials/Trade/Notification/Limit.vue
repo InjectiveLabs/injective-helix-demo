@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import {
-  SpotTrade,
-  TradeDirection,
-  DerivativeTrade
-} from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { BusEvents } from '@/types'
+import type { SpotTrade, DerivativeTrade } from '@injectivelabs/sdk-ts'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivateStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 
@@ -18,10 +15,6 @@ const props = withDefaults(
     isSpot?: boolean
   }>(),
   {}
-)
-
-const markets = computed(() =>
-  props.isSpot ? spotStore.markets : derivateStore.markets
 )
 
 onMounted(() => {
@@ -35,9 +28,9 @@ onMounted(() => {
 })
 
 function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
-  const market = markets.value.find(
-    ({ marketId }) => marketId === trade.marketId
-  )
+  const market =
+    spotStore.marketByIdOrSlug(trade.marketId) ||
+    derivateStore.marketByIdOrSlug(trade.marketId)
 
   if (!market) {
     return
@@ -61,27 +54,24 @@ function addSuccessfulTradeToast(trade: SpotTrade | DerivativeTrade) {
       })
 
   const usdPrice = new BigNumberInBase(
-    tokenStore.tokenUsdPrice(market.quoteToken)
-  ).times(price)
+    sharedTokenStore.tokenUsdPrice(market.quoteToken)
+  )
+    .times(price)
+    .toFixed(market.priceDecimals)
 
   notificationStore.success({
     title:
       trade.tradeDirection === TradeDirection.Buy
-        ? t('trade.tradeToast.bought', {
+        ? t('toast.trade.tradeToast.bought', {
             quantity,
             usdPrice,
-            symbol: market.baseToken.symbol,
-            usdPriceDecimals: market.priceDecimals,
-            quantityDecimals: market.quantityDecimals
+            symbol: market.baseToken.symbol
           })
-        : t('trade.tradeToast.sold', {
+        : t('toast.trade.tradeToast.sold', {
             quantity,
             usdPrice,
-            symbol: market.baseToken.symbol,
-            usdPriceDecimals: market.priceDecimals,
-            quantityDecimals: market.quantityDecimals
-          }),
-    isTemplateString: true
+            symbol: market.baseToken.symbol
+          })
   })
 }
 </script>

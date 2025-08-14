@@ -1,18 +1,19 @@
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
+import { orderSideToOrderType } from '@shared/transformer/trade'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import {
-  PositionV2,
   MsgCancelDerivativeOrder,
   MsgIncreasePositionMargin,
   MsgCreateDerivativeMarketOrder,
   derivativeMarginToChainMarginToFixed,
   derivativeQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { orderSideToOrderType } from '@shared/transformer/trade'
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/msgs'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
 import { getRoundedLiquidationPrice } from '@/app/client/utils/derivatives'
-import { UiDerivativeMarket, ConditionalOrderSide } from '@/types'
+import { ConditionalOrderSide } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 export const closePosition = async ({
   quantity,
@@ -29,9 +30,7 @@ export const closePosition = async ({
   const derivativeStore = useDerivativeStore()
   const sharedWalletStore = useSharedWalletStore()
 
-  const market = derivativeStore.markets.find(
-    (m) => m.marketId === position.marketId
-  )
+  const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
   if (
     !market ||
@@ -121,7 +120,7 @@ export const closePosition = async ({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages: msgs })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  sharedBackupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const closeAllPosition = async (positions: PositionV2[]) => {
@@ -143,9 +142,7 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
 
   const formattedPositions = positions
     .map((position) => {
-      const market = derivativeStore.markets.find(
-        (m) => m.marketId === position.marketId
-      )
+      const market = derivativeStore.marketByIdOrSlug(position.marketId)
 
       if (!market) {
         return undefined
@@ -197,15 +194,15 @@ export const closeAllPosition = async (positions: PositionV2[]) => {
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
 
-  backupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
+  sharedBackupPromiseCall(() => accountStore.fetchAccountPortfolioBalances())
 }
 
 export const addMarginToPosition = async ({
   market,
   amount
 }: {
-  market: UiDerivativeMarket
   amount: BigNumberInBase
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -228,7 +225,7 @@ export const addMarginToPosition = async ({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: market.quoteDenom,
     amount: amountToFixed
   })
@@ -242,7 +239,7 @@ export const addMarginToPosition = async ({
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, increasePositionMessage]
+    messages: [...cw20Messages, increasePositionMessage]
   })
 }
 
@@ -252,10 +249,10 @@ export const addMarginToSubaccountPosition = async ({
   fromSubaccountId,
   toSubaccountId
 }: {
-  market: UiDerivativeMarket
+  toSubaccountId: string
   amount: BigNumberInBase
   fromSubaccountId: string
-  toSubaccountId: string
+  market: UiDerivativeMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()

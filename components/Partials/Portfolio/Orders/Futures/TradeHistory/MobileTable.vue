@@ -2,15 +2,12 @@
 import { dataCyTag } from '@shared/utils'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
-  LOW_FEE_AMOUNT_THRESHOLD,
-  UI_DEFAULT_FEE_MIN_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
-import {
-  UTableColumn,
   PerpetualMarketCyTags,
-  TransformedPortfolioFuturesTradeHistory,
   PortfolioFuturesTradeHistoryTableColumn
+} from '@/types'
+import type {
+  UTableColumn,
+  TransformedPortfolioFuturesTradeHistory
 } from '@/types'
 
 const props = withDefaults(
@@ -87,10 +84,12 @@ const filteredColumns = computed(() =>
 
     <template #price-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryPrice)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: trade.price.toFixed(),
-            decimalPlaces: trade.priceDecimals
+            decimals: trade.priceDecimals
           }"
         />
       </div>
@@ -98,10 +97,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryAmount)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: trade.quantity.toFixed(),
-            decimalPlaces: trade.quantityDecimals
+            decimals: trade.quantityDecimals
           }"
         />
       </div>
@@ -110,12 +111,9 @@ const filteredColumns = computed(() =>
     <template #fee-data>
       <div class="flex items-center">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              amount: trade.fee.toFixed(),
-              decimalPlaces: trade.fee.abs().lt(LOW_FEE_AMOUNT_THRESHOLD)
-                ? UI_DEFAULT_FEE_MIN_DECIMALS
-                : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+              amount: trade.fee.toFixed()
             }"
           />
         </span>
@@ -125,13 +123,37 @@ const filteredColumns = computed(() =>
       </div>
     </template>
 
+    <template #pnl-data>
+      <div
+        class="flex items-center"
+        :class="{
+          'text-red-500': trade.pnl.lt(0),
+          'text-green-500': trade.pnl.gt(0)
+        }"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            showZeroAsEmDash: true,
+            shouldAbbreviate: false,
+            amount: trade.pnl.toFixed()
+          }"
+        />
+        <span v-if="!trade.pnl.isZero()" class="ml-1 text-coolGray-500">
+          {{ trade.market.quoteToken.symbol }}
+        </span>
+      </div>
+    </template>
+
     <template #total-data>
       <div class="flex">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: trade.total.toFixed(),
-              decimalPlaces: trade.priceDecimals
+              decimals: trade.priceDecimals
             }"
           />
         </span>

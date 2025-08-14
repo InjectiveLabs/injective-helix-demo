@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { SubAccount, PortfolioSubaccountsTableColumn } from '@/types'
+import { PortfolioSubaccountsTableColumn } from '@/types'
+import type { SubAccount } from '@/types'
 
 const { t } = useLang()
 const { subaccountPortfolioBalanceMap } = useBalance()
@@ -16,7 +17,7 @@ const { rows } = useSubaccountsTransformer(
   computed(() => subaccountPortfolioBalanceMap.value)
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: PortfolioSubaccountsTableColumn.Name,
     label: t(
@@ -37,14 +38,14 @@ const columns = [
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>
   <UTable :rows="rows" :columns="columns" :ui="{ base: 'w-full' }">
     <template #name-data="{ row }">
       <div class="items-center p-2 break-all text-wrap">
-        {{ $t('account.subaccount') }} {{ row.display }}
+        {{ $t('common.account.subaccount') }} {{ row.display }}
       </div>
     </template>
 
@@ -62,12 +63,16 @@ const columns = [
 
     <template #total-usd-data="{ row }">
       <div class="items-center p-2 text-right break-all text-wrap">
-        <span class="mr-1">$</span>
-        <AppUsdAmount
+        <SharedAmountUsd
           v-bind="{
+            shouldAbbreviate: false,
             amount: row.balance.toFixed()
           }"
-        />
+        >
+          <template #prefix>
+            <span class="mr-1">$</span>
+          </template>
+        </SharedAmountUsd>
       </div>
     </template>
   </UTable>

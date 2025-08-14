@@ -1,6 +1,6 @@
 export enum MixPanelStatus {
-  Success = 'Success',
-  Error = 'Error'
+  Error = 'Error',
+  Success = 'Success'
 }
 
 export enum MixPanelEvent {
@@ -14,15 +14,26 @@ export enum MixPanelEvent {
   RefereeLoggedIn = 'Referee Logged In',
   PlaceOrderClicked = 'Place Order Clicked',
   LiteBridgeBridged = 'Lite Bridge Bridged',
+  AutoSignCTAPopUp = 'Auto Sign CTA Pop Up',
+  SharePnlDownloaded = 'Share PnL Downloaded',
+  AutoSignCTAEnabled = 'Auto Sign CTA Enabled',
   LiteBridgePageView = 'Lite Bridge Page View',
   ReferralCodeCreated = 'Referral Code Created',
+  UtmStockTwitsToast = 'Utm - Stock Twits Toast',
+  UtmStockTwitsBanner = 'Utm - Stock Twits Banner',
+  ChangeSelectedLanguage = 'Change Selected Language',
+  InitialSelectedLanguage = 'Initial Selected Language',
   EndGridTradingBotClicked = 'End Grid Trading Bot Clicked',
-  CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked'
+  OnboardingUserDoesntTrade = 'Onboarding - User Doesnt Trade',
+  CreateGridTradingBotClicked = 'Create Grid Trading Bot Clicked',
+  OnboardingUserWithNoAssets = 'Onboarding - User With No Assets',
+  OnboardingUserBecomeReferee = 'Onboarding - User Become Referee',
+  OnboardingWalletEmptyWithEvmAssets = 'Onboarding - Wallet Empty With EVM Assets'
 }
 
 export enum MixPanelCounter {
-  CreateOrderCount = 'Create Order Count',
   SwapCount = 'Swap Count',
+  CreateOrderCount = 'Create Order Count',
   CreateStrategyCount = 'Create Strategy Count'
 }
 
@@ -37,8 +48,8 @@ export enum MixPanelOrderSide {
 }
 
 export enum MixPanelOrderType {
-  Market = 'Market',
   Limit = 'Limit',
-  StopMarket = 'Stop Market',
-  StopLimit = 'Stop Limit'
+  Market = 'Market',
+  StopLimit = 'Stop Limit',
+  StopMarket = 'Stop Market'
 }

@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
 import plugin from 'tailwindcss/plugin'
 import { colors } from './nuxt-config/tailwind'
+import defaultTheme from 'tailwindcss/defaultTheme'
+import type { Config } from 'tailwindcss'
 
 const extraSizings = {
   btn: '6rem',

@@ -45,7 +45,7 @@ const balancesSorted = computed(() => {
             :options="
               subaccountOptions.map((option) => ({
                 value: option.value,
-                label: `${$t('account.subaccount')} ${option.display}`
+                label: `${$t('common.account.subaccount')} ${option.display}`
               }))
             "
           />

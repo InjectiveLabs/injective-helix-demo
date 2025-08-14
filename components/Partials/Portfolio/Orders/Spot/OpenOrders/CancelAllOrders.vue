@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { MsgType } from '@injectivelabs/ts-types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UiSpotMarket, MarketKey } from '@/types'
+import { MarketKey } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 const spotStore = useSpotStore()
 const authZStore = useAuthZStore()
@@ -45,8 +46,8 @@ function cancelAllOrders() {
   spotStore
     .batchCancelOrder(filteredOrders.value)
     .then(() =>
-      notificationStore.success({
-        title: t('common.success')
+      notificationStore.update({
+        title: t('toast.trade.allOrdersCancelled')
       })
     )
     .catch($onError)

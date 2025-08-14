@@ -2,7 +2,14 @@
 import { SpotOrderHistoryFilterField } from '@/types'
 
 const appStore = useAppStore()
-const spotStore = useSpotStore()
+const sharedSpotStore = useSharedSpotStore()
+
+const emit = defineEmits<{
+  'form:reset': []
+  'type:update': [type: string]
+  'side:update': [side: string]
+  'market:update': [market: string]
+}>()
 
 const { value: marketValue } = useStringField({
   name: SpotOrderHistoryFilterField.Market
@@ -15,13 +22,6 @@ const { value: sideValue } = useStringField({
 const { value: typeValue } = useStringField({
   name: SpotOrderHistoryFilterField.Type
 })
-
-const emit = defineEmits<{
-  'market:update': [market: string]
-  'type:update': [type: string]
-  'side:update': [side: string]
-  'form:reset': []
-}>()
 
 function onMarketChange(market: string) {
   emit('market:update', market)
@@ -45,14 +45,15 @@ function onFormReset() {
     <CommonSubaccountTabSelector
       v-bind="{
         includeBotsSubaccounts:
-          appStore.userState.preferences.showGridTradingSubaccounts
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
       }"
       wrapper-class="w-full py-4"
     />
 
     <CommonTabMarketSelector
       v-model="marketValue"
-      v-bind="{ markets: spotStore.markets }"
+      v-bind="{ markets: sharedSpotStore.marketsWithToken }"
       @update:model-value="onMarketChange"
     />
     <CommonTabTypeFilter

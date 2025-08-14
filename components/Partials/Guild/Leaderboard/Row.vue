@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { sharedToBalanceInToken } from '@shared/utils/formatter'
-import { Guild, GuildCampaignSummary } from '@injectivelabs/sdk-ts'
-import { GUILD_BASE_TOKEN_SYMBOL } from '@/app/utils/constants'
+import {
+  GUILD_BASE_TOKEN_SYMBOL,
+  UI_DEFAULT_MAX_DECIMALS
+} from '@/app/utils/constants'
 import { CampaignSubPage } from '@/types'
+import type { Guild, GuildCampaignSummary } from '@injectivelabs/sdk-ts'
 
 const { baseToken, quoteToken } = useGuild()
 
@@ -11,10 +16,10 @@ const props = withDefaults(
   defineProps<{
     rank: number
     guild: Guild
-    summary?: GuildCampaignSummary
     isVolume?: boolean
     isMyGuild?: boolean
     isCampaignStarted?: boolean
+    summary?: GuildCampaignSummary
   }>(),
   {
     summary: undefined,
@@ -32,22 +37,18 @@ const startDate = computed(() => {
   return format(props.summary.startTime, 'MMM dd')
 })
 
-const { valueToString: tvlScoreToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: props.guild.tvlScore,
-      decimalPlaces: baseToken.value?.decimals || 18
-    })
-  )
+const tvlScore = computed(() =>
+  sharedToBalanceInToken({
+    value: props.guild.tvlScore,
+    decimalPlaces: baseToken.value?.decimals || UI_DEFAULT_MAX_DECIMALS
+  })
 )
 
-const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInToken({
-      value: props.guild.volumeScore,
-      decimalPlaces: quoteToken.value?.decimals || 6
-    })
-  )
+const volumeScore = computed(() =>
+  sharedToBalanceInToken({
+    value: props.guild.volumeScore,
+    decimalPlaces: quoteToken.value?.decimals || DEFAULT_ASSET_DECIMALS
+  })
 )
 </script>
 
@@ -92,9 +93,25 @@ const { valueToString: volumeScoreToString } = useSharedBigNumberFormatter(
         <span v-else>&mdash;</span>
       </template>
       <template v-else>
-        <div v-if="isVolume" class="p-3">{{ volumeScoreToString }} USD</div>
+        <div v-if="isVolume" class="p-3">
+          <SharedAmountUsd
+            v-bind="{
+              hideDecimals: true,
+              amount: volumeScore,
+              shouldAbbreviate: false,
+              roundingMode: BigNumberInBase.ROUND_UP
+            }"
+          />
+          USD
+        </div>
         <div v-else class="p-3">
-          {{ tvlScoreToString }}
+          <SharedAmount
+            v-bind="{
+              amount: tvlScore,
+              useSubscript: true,
+              shouldAbbreviate: false
+            }"
+          />
           {{ baseToken?.symbol || GUILD_BASE_TOKEN_SYMBOL }}
         </div>
       </template>

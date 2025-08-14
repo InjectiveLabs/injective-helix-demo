@@ -1,7 +1,5 @@
 import { ReferralTableColumn } from '@/types'
 
-const siteFullUrl = useRequestURL()
-
 export default {
   referral: {
     share: 'Share',
@@ -13,13 +11,11 @@ export default {
     confirmReferral: 'Confirm Referral',
     referralDetails: 'Referral Details',
     scanToJoin: 'Scan to Join Helix or',
-    joinTheWaitlist: 'Join the Waitlist',
     yourReferralLink: 'Your Referral Link',
     checkAvailability: 'Check Availability',
     affiliatedAddress: 'Affiliated Address',
     startEarningToday: 'Start earning today',
     createReferralLinkPlaceholder: 'BULLISH',
-    referralLinkCopied: 'Referral Link Copied',
     customReferralCode: 'Custom Referral Code',
     chooseDifferentLink: 'Choose Different Link',
     dashboardTitle: 'Refer Traders, Earn Rewards',
@@ -27,36 +23,24 @@ export default {
     lettersAndNumbersOnly: 'letters and numbers only',
     confirmAndGenerateLink: 'Confirm and Generate Link',
     createReferralLinkTitle: 'Create Your Referral Link',
-    referralLinkIsUnavailable: 'Referral Link is Unavailable',
     trackYourReferrals: 'Track your referrals and earned commissions',
     shareYourReferralLink: 'Share your referral link and invite friends.',
     referralCodeMaxLengthMessage: 'Referral code can be up to 32 characters',
     dashboardSubtitle:
       'Refer users to earn rewards. Affiliates earn greater rewards.',
-    success: `You've successfully affiliated with ${siteFullUrl.origin}/ref/{referralCode}.`,
-    joinSelfReferralMessage:
-      "Your referral code is valid, but you can't refer yourself. Share it with someone else!",
     createReferralLinkSubtitle:
       'Choose a unique link that will be used to track your referrals. Make it memorable and easy to share.',
     rewardsTooltipContent:
       "The total commission you’ve earned from successful referrals. Rewards are credited based on your referrals' trading activity.",
-    referralLinkAvailableDescription: `Your referral code ${siteFullUrl.origin}/ref/{referralCode} is available. Would you like to use this link?`,
-    confirmReferralDescription: `You will be referred with ${siteFullUrl.origin}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.`,
-    beta: {
-      title: 'This Feature is in Closed Beta',
-      description:
-        'This feature is still in beta, and it looks like you don’t have access just yet. But great things are worth the wait!',
-      ctaTitle1: 'Unlock Exclusive Referrals Access',
-      ctaDescription1:
-        'Sign up now for exclusive access to our referral feature and start earning on every trade.',
-      ctaTitle2: 'Explore Our Community',
-      ctaDescription2:
-        'Connect with like-minded pioneers. Your next big opportunity is just around the corner!'
-    },
+    referralLinkAvailableDescription:
+      'Your referral code {baseUrl}/ref/{referralCode} is available. Would you like to use this link?',
+    confirmReferralDescription:
+      'You will be referred with {baseUrl}/ref/{referralCode}. Please confirm if you would like to be affiliated with this address.',
+
     table: {
       [ReferralTableColumn.Wallets]: 'Wallets',
-      [ReferralTableColumn.Commission]: 'Commission',
-      [ReferralTableColumn.JoinDate]: 'Join Date'
+      [ReferralTableColumn.JoinDate]: 'Join Date',
+      [ReferralTableColumn.Commission]: 'Commission'
     },
     myStats: {
       title: 'My Stats',

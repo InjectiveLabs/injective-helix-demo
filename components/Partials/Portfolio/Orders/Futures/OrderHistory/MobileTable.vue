@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {
-  UTableColumn,
   PerpetualMarketCyTags,
-  TransformedPortfolioFuturesOrderHistory,
   PortfolioFuturesOrderHistoryTableColumn
+} from '@/types'
+import type {
+  UTableColumn,
+  TransformedPortfolioFuturesOrderHistory
 } from '@/types'
 
 const props = withDefaults(
@@ -91,10 +93,12 @@ const filteredColumns = computed(() =>
         v-else
         :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryPrice)"
       >
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.price.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
       </span>
@@ -102,10 +106,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryAmount)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.quantity.toFixed(),
-            decimalPlaces: order.quantityDecimals
+            decimals: order.quantityDecimals
           }"
         />
       </div>
@@ -114,10 +120,12 @@ const filteredColumns = computed(() =>
     <template #total-data>
       <div class="flex items-center">
         <span :data-cy="dataCyTag(PerpetualMarketCyTags.OrderHistoryTotal)">
-          <AppAmount
+          <SharedAmount
             v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
               amount: order.total.toFixed(),
-              decimalPlaces: order.priceDecimals
+              decimals: order.priceDecimals
             }"
           />
         </span>
@@ -135,7 +143,7 @@ const filteredColumns = computed(() =>
       >
         <template v-if="order.order.isConditional">
           <span class="text-coolGray-500 font-semibold">
-            {{ $t('trade.mark_price') }}
+            {{ $t('trade.markPrice') }}
           </span>
 
           <div class="flex gap-1">
@@ -149,9 +157,11 @@ const filteredColumns = computed(() =>
             </span>
             <span v-else class="text-white font-semibold">&ge;</span>
 
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                decimalPlaces: order.priceDecimals,
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: order.priceDecimals,
                 amount: order.triggerPrice.toFixed()
               }"
             />

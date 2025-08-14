@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { UiDerivativeMarket } from '@/types'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { PerpetualMarketCyTags } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 
 withDefaults(
   defineProps<{
@@ -22,11 +24,14 @@ withDefaults(
     <div class="flex justify-between items-center border-b py-2">
       <p>{{ $t('trade.entryPrice') }}:</p>
       <p>
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: entryPrice.toFixed(),
-            decimalPlaces: market.priceDecimals
+            decimals: market.priceDecimals
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormEntryPrice)"
         />
       </p>
     </div>
@@ -34,11 +39,14 @@ withDefaults(
     <div class="flex justify-between items-center border-b py-2">
       <p>{{ $t('trade.markPrice') }}:</p>
       <p>
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: markPriceNotScaled.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: market.priceDecimals,
+            amount: markPriceNotScaled.toFixed()
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormMarkPrice)"
         />
       </p>
     </div>
@@ -46,25 +54,32 @@ withDefaults(
     <div class="flex justify-between items-center border-b py-2">
       <p>{{ $t('trade.estLiquidationPrice') }}:</p>
       <p>
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            amount: liquidationPrice.toFixed(),
-            decimalPlaces: market.priceDecimals
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: market.priceDecimals,
+            amount: liquidationPrice.toFixed()
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormEstLiqPrice)"
         />
       </p>
     </div>
 
     <div class="flex justify-between items-center border-b py-2">
       <p>{{ $t('trade.totalQuantitySize') }}:</p>
-      <p>
-        <AppAmount
+      <div class="flex items-center gap-1">
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: availableQuantityToFixed,
-            decimalPlaces: market.priceDecimals
+            decimals: market.quantityDecimals || DEFAULT_ASSET_DECIMALS
           }"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormTotalQtySize)"
         />
-      </p>
+        <span>{{ market.baseToken.symbol }}</span>
+      </div>
     </div>
 
     <div class="flex justify-between items-center border-b py-2">
@@ -74,6 +89,7 @@ withDefaults(
           'text-green-500': position.direction === TradeDirection.Long,
           'text-red-500': position.direction === TradeDirection.Short
         }"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormTradeDirection)"
       >
         {{ $t(`trade.${position.direction}`) }}
       </p>

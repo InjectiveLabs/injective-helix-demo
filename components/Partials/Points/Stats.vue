@@ -1,39 +1,10 @@
 <script lang="ts" setup>
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { format } from 'date-fns'
-
 const pointsStore = usePointsStore()
 
-const lastUpdated = computed(() => {
-  if (!pointsStore.accountPoints) {
-    return
-  }
-
-  return format(
-    new Date(pointsStore.accountPoints?.updatedAt),
-    'MMM dd HH:mm:ss'
-  )
-})
-
-const {
-  valueToString: totalPointsToString,
-  valueToBigNumber: totalPointsToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() => pointsStore.accountPoints?.totalPoints || '0'),
-  {
-    shouldTruncate: true,
-    roundingMode: BigNumberInBase.ROUND_DOWN
-  }
+const totalPoints = computed(
+  () => pointsStore.accountPoints?.totalPoints || '0'
 )
-
-const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => pointsStore.accountPoints?.rank || '0'),
-    {
-      shouldTruncate: true,
-      roundingMode: BigNumberInBase.ROUND_DOWN
-    }
-  )
+const rank = computed(() => pointsStore.accountPoints?.rank || '0')
 </script>
 
 <template>
@@ -48,8 +19,14 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          <span v-if="totalPointsToBigNumber.isZero()">&mdash;</span>
-          <span v-else>{{ totalPointsToString }}</span>
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              amount: totalPoints,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false
+            }"
+          />
         </p>
       </div>
 
@@ -64,10 +41,14 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
         <p
           class="text-[56px] max-xs:text-5xl max-lg:text-[42px] max-xl:text-5xl tracking-tight font-medium"
         >
-          <span v-if="rankToBigNumber.isZero()"> &mdash; </span>
-          <span v-else>
-            {{ rankToString }}
-          </span>
+          <SharedAmount
+            v-bind="{
+              amount: rank,
+              useSubscript: true,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false
+            }"
+          />
         </p>
       </div>
 
@@ -87,10 +68,6 @@ const { valueToString: rankToString, valueToBigNumber: rankToBigNumber } =
           </p>
         </div>
       </template>
-    </div>
-    <div v-if="lastUpdated" class="text-sm text-coolGray-500 mt-4">
-      <span>{{ $t('points.lastUpdatedAt') }}</span>
-      <span>{{ lastUpdated }}</span>
     </div>
   </section>
 </template>

@@ -1,9 +1,9 @@
 import { GEO_IP_RESTRICTIONS_ENABLED } from '@shared/utils/constant'
 
-export const restrictedHelixCountries = ['CA', 'GB']
-export const restrictedSpotMarketsCountries = ['US']
-export const restrictedPerpetualMarketsCountries = ['US']
-export const restrictedLeaderboardCountries = [
+export const restrictedHelixCountries: string[] = ['CA', 'GB']
+export const restrictedSpotMarketsCountries: string[] = []
+export const restrictedPerpetualMarketsCountries: string[] = ['US']
+export const restrictedLeaderboardCountries: string[] = [
   ...restrictedPerpetualMarketsCountries
 ]
 export const disallowedSpotMarketDenomOrSymbol = [
@@ -29,8 +29,8 @@ export const isCountryRestricted = (country: string) => {
   }
 
   return [
-    ...jsonStore.restrictedCountries,
-    ...restrictedHelixCountries
+    ...restrictedHelixCountries,
+    ...jsonStore.restrictedCountries
   ].includes(country)
 }
 

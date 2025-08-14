@@ -2,77 +2,55 @@ import { Wallet } from '@injectivelabs/wallet-base'
 
 export default {
   connect: {
-    wallet: 'Wallet',
-    walletAddress: 'Wallet Address',
-    address: 'Address',
-    close: 'Close',
-    connect: 'Connect',
     beta: 'Beta',
-    signUp: 'Sign Up',
-    login: 'Log In',
-    getStarted: 'Get Started',
-    getStartedDescription:
-      'Connect your wallet or sign up with SSO to get started.',
+    wallet: 'Wallet',
+    trezor: 'Trezor',
+    address: 'Address',
+    ledgerLive: 'Ledger Live',
+    trezorBip44: 'Trezor Bip44',
+    getAddresses: 'Get addresses',
+    ledgerLegacy: 'Ledger Legacy',
+    walletAddress: 'Wallet Address',
+    connectWallet: 'Connect Wallet',
+    derivationPath: 'Derivation Path',
     showMoreWallets: 'Show more wallets',
     showLessWallets: 'Show fewer wallets',
-    deposit: 'Deposit',
-    connectedAs: 'Connected as',
-    connectWallet: 'Connect Wallet',
-    connectToWallet: 'Connect to Wallet',
-    connectUsingBrowser: 'Connect using browser wallet',
-    connectUsingHardware: 'Connect using hardware wallet',
-    connectUsingLedger: 'Connect using Ledger',
-    connectUsingLedgerNote:
-      'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
-    connectUsingWalletConnect:
-      'Connect using WalletConnect (mobile and desktop wallets)',
-    addressCopied: 'Address Copied',
-    copiedAddress: 'Address copied to your clipboard',
-    getAddresses: 'Get addresses',
+    injectiveAddress: 'Injective Address',
     getMoreAddresses: 'Get more addresses',
-    getAddressNote: 'We are getting your addresses, please wait ...',
-    derivationPath: 'Derivation Path',
-    download: 'download',
-    ledger: 'Ledger',
-    ledgerLive: 'Ledger Live',
-    ledgerLegacy: 'Ledger Legacy',
-    trezor: 'Trezor',
-    trezorBip44: 'Trezor Bip44',
-    logout: 'Logout',
-    metamask: 'Metamask',
-    walletConnect: 'WalletConnect',
-    open: 'open',
-    keplr: 'Keplr',
-    connectUsingKeplr: 'Connect using Keplr',
-    selectAddressToConnect: 'Select address to connect',
     selectDerivationPath: 'Select Derivation Path',
-    successfullyConnected: 'Successfully Connected',
-    switchToEthereumAddress: 'Switch to Ethereum Address',
-    switchToInjectiveAddress: 'Switch to Injective Address',
-    trezorConnectionNote:
-      "Note: At this point there is no support for Trezor - please don't use Trezor (including Metamask's Trezor integration) as it might cause your funds being stuck on Injective.",
+    connectUsingBrowser: 'Connect using browser wallet',
+    selectAddressToConnect: 'Select address to connect',
+    connectUsingHardware: 'Connect using hardware wallet',
+    connectDeprecatedSSO: 'Connect using deprecated login',
+    qrTitle: 'Deposit only INJ network assets to this address',
+    otpDescription: 'Enter your one time code to verify your email',
+    getAddressNote: 'We are getting your addresses, please wait ...',
     pleaseConnectToYourWallet:
       'Please connect to your wallet to see more details',
     pleaseConnectToYourWalletCta:
       'Please connect to your wallet to start trading on Injective!',
-    highlyExperimental: 'Highly Experimental!',
-
-    connectUsingTorus: 'One-click login with',
-    Trezor: 'Trezor',
-    connectUsingTrezor: 'Connect using Trezor',
     connectUsingTrezorNote:
       'Note: To ensure smooth process while connecting your Trezor Hardware Wallet, please ensure you are running the on latest Chrome version, have your Trezor device connected and unlocked.',
+    connectUsingLedgerNote:
+      'Note: To ensure smooth process while connecting your Ledger Hardware Wallet, please ensure you are running the on latest Chrome version, have your Ledger device connected, unlocked and your Ethereum app open.',
 
-    qrTitle: 'Deposit only INJ network assets to this address',
-
-    magic: {
+    sso: {
       google: {
-        cta: 'Sign up with Google'
+        cta: 'Sign in with Google'
       },
       email: {
-        placeholder: 'Your email address',
-        cta: 'Continue'
+        cta: 'Continue',
+        placeholder: 'Your email address'
       }
+    },
+
+    deprecate: {
+      cta: 'Migrate Wallet',
+      title: 'Action required: migrate your wallet',
+      description:
+        'We are upgrading our wallet provider and your current one is being deprecated. We strongly encourage you to migrate your wallet by following this',
+      migrateDescription:
+        'We’ve upgraded how you sign in to make things faster, simpler, and more secure. To continue using Helix, please connect your updated wallet to move your assets over. It only takes a moment, and your funds are always safe.'
     },
 
     option: {
@@ -81,11 +59,13 @@ export default {
       [Wallet.Ninji]: 'Ninji',
       [Wallet.Ledger]: 'Ledger',
       [Wallet.Phantom]: 'Phantom',
+      [Wallet.Rainbow]: 'Rainbow',
       [Wallet.Metamask]: 'Metamask',
       [Wallet.TrezorBip32]: 'Trezor',
       [Wallet.TrezorBip44]: 'Trezor Bip44',
       [Wallet.OkxWallet]: 'OKX Wallet',
       [Wallet.BitGet]: 'Bitget Wallet',
+      [Wallet.Magic]: '"Legacy login"',
       [Wallet.TrustWallet]: 'Trust Wallet',
       [Wallet.Cosmostation]: 'Cosmostation',
       [Wallet.WalletConnect]: 'Wallet Connect'

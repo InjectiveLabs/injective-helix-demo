@@ -1,33 +1,29 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { usdtToken } from '@shared/data/token'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import {
-  BTC_COIN_GECKO_ID,
-  UI_DEFAULT_TOKEN_ASSET_DECIMALS
-} from '@/app/utils/constants'
+import { injToken, usdtToken } from '@shared/data/token'
+import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
-const tokenStore = useTokenStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
 
-const accountTotalBalanceInBtc = computed(() => {
-  const btcUsdPrice = tokenStore.tokenUsdPriceByCoinGeckoId(BTC_COIN_GECKO_ID)
+const accountTotalBalanceInInj = computed(() => {
+  const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
-  if (!btcUsdPrice) {
+  if (!injUsdPrice) {
     return ZERO_IN_BASE
   }
 
-  return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(btcUsdPrice)
+  return aggregatedSubaccountTotalBalanceInUsd.value.dividedBy(injUsdPrice)
 })
 
-const shoWNeptune = computed(() => {
+const showNeptune = computed(() => {
   if (sharedWalletStore.isAuthzWalletConnected) {
     return false
   }
@@ -35,6 +31,7 @@ const shoWNeptune = computed(() => {
   const hasNeptuneUsdtBalance = new BigNumberInBase(
     accountStore.neptuneUsdtInBankBalance
   ).gt(0)
+
   const hasPeggyUsdtBalance = new BigNumberInBase(
     accountStore.balancesMap[usdtToken.denom]
   ).gt(0)
@@ -45,12 +42,12 @@ const shoWNeptune = computed(() => {
   )
 })
 
-function onOpenBankTransferModal() {
-  modalStore.openModal(Modal.BankTransfer)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onOpenBankTransferModal() {
+  modalStore.openModal(Modal.BankTransfer)
 }
 </script>
 
@@ -67,7 +64,7 @@ function onFiatOnRamp() {
             {{ $t('portfolio.balances.netWorth') }}
           </p>
           <div class="flex items-center space-x-4">
-            <p class="text-2xl font-semibold flex items-center space-x-2 h-12">
+            <p class="text-2xl flex items-center space-x-1 h-12">
               <span>$</span>
               <CommonSkeletonSubaccountAmount
                 :size="34"
@@ -100,21 +97,25 @@ function onFiatOnRamp() {
             <span>≈</span>
             <CommonSkeletonSubaccountAmount>
               <CommonNumberCounter
-                :decimals="UI_DEFAULT_TOKEN_ASSET_DECIMALS"
                 v-bind="{
-                  value: accountTotalBalanceInBtc.toNumber(),
-                  size: 14
+                  size: 14,
+                  decimals: DEFAULT_ASSET_DECIMALS,
+                  value: accountTotalBalanceInInj.toNumber()
                 }"
               />
             </CommonSkeletonSubaccountAmount>
-            <span class="pb-[2px]">{{ $t('common.BTC') }}</span>
+            <span class="pb-[2px]">{{ injToken.symbol }}</span>
           </p>
         </div>
 
         <div
           class="flex space-y-2 max-md:flex-col md:items-center md:space-x-2 md:space-y-0 max-lg:mt-3"
         >
-          <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
+          <template
+            v-if="
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+            "
+          >
             <PartialsCommonBridgeRedirection
               v-bind="{
                 isDeposit: true
@@ -144,7 +145,7 @@ function onFiatOnRamp() {
           </template>
 
           <template v-else>
-            <AppButton class="max-md:w-full" @click="onFiatOnRamp">
+            <AppButton class="max-md:w-full" @click="onDeposit">
               {{ $t('common.deposit') }}
             </AppButton>
 
@@ -160,10 +161,10 @@ function onFiatOnRamp() {
         </div>
       </div>
 
-      <PartialsPortfolioBalancesNeptuneUsdt v-if="shoWNeptune" />
+      <PartialsPortfolioBalancesNeptuneUsdt v-if="showNeptune" />
 
       <PartialsPortfolioBalancesSubaccount
-        :class="[shoWNeptune ? 'lg:mt-7' : 'lg:mt-12']"
+        :class="[showNeptune ? 'lg:mt-7' : 'lg:mt-12']"
       />
     </div>
 

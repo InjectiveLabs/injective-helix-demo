@@ -1,6 +1,8 @@
+import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
+import { orderSideToOrderType } from '@shared/transformer/trade'
 import {
-  SpotLimitOrder,
-  SpotOrderHistory,
   MsgCancelSpotOrder,
   MsgBatchUpdateOrders,
   MsgCreateSpotLimitOrder,
@@ -9,13 +11,10 @@ import {
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { orderSideToOrderType } from '@shared/transformer/trade'
-import { backupPromiseCall } from '@/app/utils/async'
-import { prepareOrderMessages } from '@/app/utils/msgs'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
-import { UiSpotMarket } from '@/types'
+import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
+import type { UiSpotMarket } from '@/types'
+import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
 
 const fetchBalances = (
   {
@@ -27,7 +26,7 @@ const fetchBalances = (
   const spotStore = useSpotStore()
   const accountStore = useAccountStore()
 
-  return backupPromiseCall(() =>
+  return sharedBackupPromiseCall(() =>
     Promise.all([
       spotStore.fetchSubaccountOrders(),
       accountStore.fetchAccountPortfolioBalances(),
@@ -94,10 +93,10 @@ export const submitLimitOrder = async ({
   quantity,
   orderSide
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
-  quantity: BigNumberInBase
   market: UiSpotMarket
+  price: BigNumberInBase
+  quantity: BigNumberInBase
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -139,9 +138,9 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const isBuy = [OrderSide.BuyPO, OrderSide.Buy].includes(orderSide)
+  const isBuy = [OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: isBuy ? market.quoteDenom : market.baseDenom,
     amount: isBuy
       ? new BigNumberInBase(priceToFixed).times(quantityToFixed).toFixed()
@@ -149,11 +148,11 @@ export const submitLimitOrder = async ({
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, orderMessage]
+    messages: [...cw20Messages, orderMessage]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -164,9 +163,9 @@ export const submitMarketOrder = async ({
   orderSide
 }: {
   orderSide: OrderSide
+  market: UiSpotMarket
   price: BigNumberInBase
   quantity: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -198,7 +197,7 @@ export const submitMarketOrder = async ({
     baseDecimals: market.baseToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: orderSide === OrderSide.Buy ? market.quoteDenom : market.baseDenom,
     amount:
       orderSide === OrderSide.Buy
@@ -220,11 +219,11 @@ export const submitMarketOrder = async ({
   })
 
   await sharedWalletStore.broadcastWithFeeDelegation({
-    messages: [...cw20ConvertMessage, orderMessage]
+    messages: [...cw20Messages, orderMessage]
   })
 
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }
 
@@ -235,11 +234,11 @@ export const submitStopLimitOrder = async ({
   orderSide,
   triggerPrice
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
+  market: UiSpotMarket
+  price: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -295,11 +294,11 @@ export const submitStopMarketOrder = async ({
   orderSide,
   triggerPrice
 }: {
-  price: BigNumberInBase
   orderSide: OrderSide
+  market: UiSpotMarket
+  price: BigNumberInBase
   quantity: BigNumberInBase
   triggerPrice: BigNumberInBase
-  market: UiSpotMarket
 }) => {
   const appStore = useAppStore()
   const walletStore = useWalletStore()
@@ -353,8 +352,8 @@ export async function submitChase({
   market,
   price
 }: {
-  order: SpotLimitOrder
   market: UiSpotMarket
+  order: SpotLimitOrder
   price: BigNumberInBase
 }) {
   const appStore = useAppStore()
@@ -368,7 +367,7 @@ export async function submitChase({
     quoteDecimals: market.quoteToken.decimals
   })
 
-  const cw20ConvertMessage = prepareOrderMessages({
+  const cw20Messages = prepareNeptuneWithdrawMessage({
     denom:
       order.orderSide === OrderSide.Buy ? market.quoteDenom : market.baseDenom,
     amount:
@@ -387,14 +386,14 @@ export async function submitChase({
         orderHash: order.orderHash
       }
     ],
-    ...cw20ConvertMessage,
+    ...cw20Messages,
     spotOrdersToCreate: [
       {
         marketId: market.marketId,
         feeRecipient: referralStore.feeRecipient,
         price: priceToFixed,
         triggerPrice: '0',
-        quantity: order.quantity,
+        quantity: order.unfilledQuantity,
         orderType: orderSideToChaseOrderType(order.orderSide)
       }
     ]
@@ -408,6 +407,6 @@ export async function submitChase({
 
   await sharedWalletStore.broadcastWithFeeDelegation({ messages })
   await fetchBalances({
-    shouldFetchCw20Balances: cw20ConvertMessage.length > 0
+    shouldFetchCw20Balances: cw20Messages.length > 0
   })
 }

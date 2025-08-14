@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-import {
-  CampaignRewardPool,
-  cosmosSdkDecToBigNumber
-} from '@injectivelabs/sdk-ts'
 import { format } from 'date-fns'
-import { injToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { injToken, usdtToken } from '@shared/data/token'
+import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
+import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
+import { getHubUrl } from '@/app/utils/helpers'
 import {
-  USDT_DECIMALS,
   DATE_TIME_DISPLAY,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_CAPPED_TRADE_AND_EARN_REWARDS
 } from '@/app/utils/constants'
-import { getHubUrl } from '@/app/utils/helpers'
+import type { CampaignRewardPool } from '@injectivelabs/sdk-ts'
 
-const tokenStore = useTokenStore()
 const exchangeStore = useExchangeStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { rewardsCampaign } = useTradeReward()
 
@@ -31,7 +29,7 @@ const props = withDefaults(
 const hubUrl = `${getHubUrl()}/staking`
 
 const injUsdPrice = computed(() => {
-  const injUsdPrice = tokenStore.tokenUsdPrice(injToken)
+  const injUsdPrice = sharedTokenStore.tokenUsdPrice(injToken)
 
   return injUsdPrice || ZERO_IN_BASE
 })
@@ -121,9 +119,10 @@ const pendingTradeRewardPoints = computed(() => {
 })
 
 const pendingTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(pendingTradeRewardPoints.value).toBase(
-    USDT_DECIMALS
-  )
+  return sharedToBalanceInTokenInBase({
+    value: pendingTradeRewardPoints.value.toFixed(),
+    decimalPlaces: usdtToken.decimals
+  })
 })
 
 const totalPendingTradeRewardPoints = computed(() => {
@@ -143,9 +142,10 @@ const totalPendingTradeRewardPoints = computed(() => {
 })
 
 const totalPendingTradeRewardPointsFactored = computed(() => {
-  return new BigNumberInWei(totalPendingTradeRewardPoints.value).toBase(
-    USDT_DECIMALS
-  )
+  return sharedToBalanceInTokenInBase({
+    value: totalPendingTradeRewardPoints.value.toFixed(),
+    decimalPlaces: usdtToken.decimals
+  })
 })
 
 const pendingEstimatedRewards = computed(() => {
@@ -217,10 +217,10 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <div
             class="flex items-center justify-center text-coolGray-450 text-xs"
           >
-            {{ $t('tradeAndEarn.pending_max_campaign_rewards') }}
+            {{ $t('tradeAndEarn.pendingMaxCampaignRewards') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
-              :content="$t('tradeAndEarn.pending_max_campaign_rewards_tooltip')"
+              :content="$t('tradeAndEarn.pendingMaxCampaignRewardsTooltip')"
             />
           </div>
         </template>
@@ -248,7 +248,7 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
             {{ $t('tradeAndEarn.myRewardPoints') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
-              :content="$t('tradeAndEarn.myRewardPoints_tooltip')"
+              :content="$t('tradeAndEarn.myRewardPointsTooltip')"
             />
           </div>
         </template>
@@ -284,14 +284,14 @@ const pendingEstimatedRewardsCappedInUsd = computed(() =>
           <a
             v-if="sharedWalletStore.isUserConnected"
             :href="hubUrl"
-            class="text-blue-500 flex justify-center"
             target="_blank"
+            class="text-blue-500 flex justify-center"
           >
             {{ $t('tradeAndEarn.stakeMore') }}
             <AppTooltip
               class="ml-2 text-coolGray-450"
               :content="
-                $t('tradeAndEarn.stake_total_to_receive_full_amount', {
+                $t('tradeAndEarn.stakeTotalToReceiveFullAmount', {
                   total: pendingEstimatedRewards.toFormat(2)
                 })
               "

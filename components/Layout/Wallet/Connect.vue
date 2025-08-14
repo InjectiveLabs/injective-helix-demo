@@ -5,7 +5,7 @@ import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
 import { isCosmosStationWalletInstalled } from '@injectivelabs/wallet-cosmostation'
-import { WalletOption } from '@/types'
+import type { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -13,10 +13,12 @@ const emits = defineEmits<{
   'modal:closed': []
 }>()
 
+const showOtp = ref(false)
 const isShowMoreWallets = ref(false)
+const showDeprecatedSso = ref(false)
 const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
-const magicStatus = reactive(new Status(StatusType.Idle))
+const ssoStatus = reactive(new Status(StatusType.Idle))
 
 const popularOptions = computed(
   () =>
@@ -36,9 +38,9 @@ const popularOptions = computed(
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.BitGet,
-            downloadLink: !sharedWalletStore.bitGetInstalled
-              ? 'https://web3.bitget.com/en/wallet-download'
+            wallet: Wallet.Leap,
+            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
+              ? 'https://www.leapwallet.io/downloads'
               : undefined
           }
     ].filter((option) => option) as WalletOption[]
@@ -48,19 +50,25 @@ const options = computed(
   () =>
     [
       {
-        wallet: Wallet.OkxWallet,
-        downloadLink: !sharedWalletStore.okxWalletInstalled
-          ? 'https://www.okx.com/web3'
+        wallet: Wallet.Rainbow,
+        downloadLink: !sharedWalletStore.rainbowInstalled
+          ? 'https://rainbow.me/download'
           : undefined
       },
       IS_DEVNET
         ? undefined
         : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
+            wallet: Wallet.BitGet,
+            downloadLink: !sharedWalletStore.bitGetInstalled
+              ? 'https://web3.bitget.com/en/wallet-download'
               : undefined
           },
+      {
+        wallet: Wallet.OkxWallet,
+        downloadLink: !sharedWalletStore.okxWalletInstalled
+          ? 'https://www.okx.com/web3'
+          : undefined
+      },
       { wallet: Wallet.Ledger },
       { wallet: Wallet.TrezorBip32 },
       {
@@ -69,10 +77,7 @@ const options = computed(
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      {
-        beta: true,
-        wallet: Wallet.Phantom
-      },
+      { wallet: Wallet.Phantom },
       IS_DEVNET
         ? undefined
         : {
@@ -88,7 +93,8 @@ const options = computed(
           ? 'https://www.cosmostation.io/wallet'
           : undefined
       },
-      { wallet: Wallet.WalletConnect }
+      { wallet: Wallet.WalletConnect },
+      { wallet: Wallet.Magic }
       // Disabled for now
       // {
       //   wallet: Wallet.TrustWallet,
@@ -100,8 +106,12 @@ const options = computed(
 )
 
 onMounted(() => {
+  showOtp.value = false
+  showDeprecatedSso.value = false
+
   Promise.all([
     sharedWalletStore.checkIsBitGetInstalled(),
+    sharedWalletStore.checkIsRainbowInstalled(),
     sharedWalletStore.checkIsMetamaskInstalled(),
     sharedWalletStore.checkIsOkxWalletInstalled(),
     sharedWalletStore.checkIsTrustWalletInstalled(),
@@ -112,19 +122,26 @@ onMounted(() => {
 watch(
   () => sharedWalletStore.walletConnectStatus,
   (status: WalletConnectStatus) => {
-    if (status === WalletConnectStatus.idle) {
-      magicStatus.setIdle()
-    }
-
     if (status === WalletConnectStatus.connected) {
-      magicStatus.setIdle()
-      emits('modal:closed')
+      onCloseModal()
     }
   }
 )
 
-function onSetMagicStatusLoading() {
-  magicStatus.setLoading()
+function onCloseModal() {
+  emits('modal:closed')
+}
+
+function onShowOtp() {
+  showOtp.value = true
+}
+
+function setSsoStatusLoading() {
+  ssoStatus.setLoading()
+}
+
+function onShowDeprecatedSso() {
+  showDeprecatedSso.value = true
 }
 
 function onWalletModalTypeChange(wallet?: Wallet) {
@@ -137,8 +154,11 @@ function toggleShowMoreWallets() {
 </script>
 
 <template>
-  <AppHocLoading wrapper-class="p-32" v-bind="{ status: magicStatus }">
-    <div class="py-4 -mt-6 -mb-4">
+  <AppHocLoading wrapper-class="p-32" v-bind="{ status: ssoStatus }">
+    <LayoutWalletOTP v-if="showOtp" @sso:set-loading="setSsoStatusLoading" />
+    <LayoutWalletDeprecatedSSO v-else-if="showDeprecatedSso" />
+
+    <div v-else class="py-4 -mt-6 -mb-4">
       <div v-if="selectedWallet === Wallet.Ledger" class="space-y-4">
         <LayoutWalletConnectItem
           is-back-button
@@ -168,12 +188,13 @@ function toggleShowMoreWallets() {
 
       <ul v-else class="divide-coolGray-800 border-coolGray-700 rounded-lg">
         <h1 class="text-xl text-center font-semibold">
-          {{ $t('connect.connect') }}
+          {{ $t('common.connect') }}
         </h1>
 
         <LayoutWalletSso
           class="my-6"
-          @set:magicStatusLoading="onSetMagicStatusLoading"
+          @opt:show="onShowOtp"
+          @sso:set-loading="onCloseModal"
         />
 
         <div class="flex items-center justify-center">
@@ -184,9 +205,12 @@ function toggleShowMoreWallets() {
 
         <div class="space-y-2">
           <LayoutWalletConnectItem
-            v-for="walletOption in isShowMoreWallets ? options : popularOptions"
+            v-for="walletOption in isShowMoreWallets
+              ? [...popularOptions, ...options]
+              : popularOptions"
             :key="walletOption.wallet"
             v-bind="{ walletOption }"
+            @deprecated-sso:show="onShowDeprecatedSso"
             @selected-hardware-wallet:toggle="onWalletModalTypeChange"
           />
         </div>

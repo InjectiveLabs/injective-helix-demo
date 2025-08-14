@@ -9,7 +9,7 @@ const authZStore = useAuthZStore()
     <div class="divide-y border-y overflow-x-auto">
       <CommonEmptyList
         v-if="authZStore.granteeGrantsByAddress.length === 0"
-        v-bind="{ message: $t('portfolio.settings.authz.noGrants') }"
+        v-bind="{ message: $t('portfolio.authZ.noGrants') }"
       />
 
       <template v-else>

@@ -1,76 +1,55 @@
 <script setup lang="ts">
-import ApexCharts, { ApexOptions } from 'apexcharts'
+import ApexCharts from 'apexcharts'
+import { colors } from '@/nuxt-config/tailwind'
 import { BigNumber } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { colors } from '@/nuxt-config/tailwind'
+import type { ApexOptions } from 'apexcharts'
 
 const props = withDefaults(
   defineProps<{
-    series: number[][]
-    isProfit: boolean
     label?: string
+    isProfit?: boolean
+    series: number[][]
   }>(),
-  {
-    isProfit: false,
-    label: 'trade.amount'
-  }
+  { label: 'trade.amount' }
 )
 
 const { t } = useLang()
 
-const chartEl = ref<HTMLElement | null>(null)
+const chartEl = ref<null | HTMLElement>(null)
 let chart: ApexCharts
 
-const options: ApexOptions = {
+const options = computed<ApexOptions>(() => ({
+  grid: { show: false },
+  theme: { mode: 'dark' },
+  dataLabels: { enabled: false },
   series: [
     {
-      name: t(props.label),
       data: props.series,
-      color: props.isProfit ? colors.green[500] : colors.red[500]
+      name: t(props.label),
+      color: colors.blue[300]
     }
   ],
-
   chart: {
-    type: 'area',
+    type: 'line',
     height: 350,
-    background: 'transparent',
-    toolbar: {
-      show: false
-    },
-    zoom: {
-      enabled: false
-    }
+    zoom: { enabled: false },
+    toolbar: { show: false },
+    background: 'transparent'
   },
-
-  theme: {
-    mode: 'dark'
-  },
-
   plotOptions: {
-    area: {
-      fillTo: 'origin'
-    }
+    area: { fillTo: 'origin' }
   },
-
-  dataLabels: {
-    enabled: false
-  },
-
   stroke: {
-    show: true,
     width: 2,
-    colors: [props.isProfit ? colors.green[500] : colors.red[500]],
-    curve: 'monotoneCubic'
+    curve: 'smooth',
+    colors: [colors.blue[300]]
   },
-
-  grid: {
-    borderColor: colors.brand[875]
-  },
-
   xaxis: {
-    type: 'datetime'
+    type: 'datetime',
+    axisTicks: { show: false },
+    axisBorder: { show: false }
   },
-
   yaxis: {
     opposite: true,
     labels: {
@@ -80,37 +59,30 @@ const options: ApexOptions = {
         )}`
       }
     }
-  },
-
-  fill: {
-    type: 'gradient',
-    gradient: {
-      shadeIntensity: 1,
-
-      colorStops: [
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 30,
-          opacity: 0.5
-        },
-        {
-          color: props.isProfit ? colors.green[500] : colors.red[500],
-          offset: 90,
-          opacity: 0
-        }
-      ]
-    }
   }
-}
+}))
 
 onMounted(() => {
-  chart = new ApexCharts(chartEl.value, options)
+  chart = new ApexCharts(chartEl.value, options.value)
   chart.render()
 })
 
 onUnmounted(() => {
   chart.destroy()
 })
+
+watch(
+  () => props.series,
+  (newSeries) => {
+    chart?.updateSeries([
+      {
+        data: newSeries,
+        name: t(props.label),
+        color: colors.blue[300]
+      }
+    ])
+  }
+)
 </script>
 
 <template>

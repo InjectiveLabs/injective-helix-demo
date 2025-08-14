@@ -7,16 +7,16 @@ const gridStrategyStore = useGridStrategyStore()
 const status = reactive(new Status(StatusType.Loading))
 const { $onError } = useNuxtApp()
 
-const options = [
+const options = computed(() => [
   {
-    label: t('sgt.tabs.liveSpotGrid'),
+    label: t('tradingBots.sgt.tabs.liveSpotGrid'),
     to: '/portfolio/orders/spot-grid'
   },
   {
-    label: t('sgt.tabs.spotGridHistory'),
+    label: t('tradingBots.sgt.tabs.spotGridHistory'),
     to: '/portfolio/orders/spot-grid/history'
   }
-]
+])
 
 onWalletConnected(() => {
   status.setLoading()

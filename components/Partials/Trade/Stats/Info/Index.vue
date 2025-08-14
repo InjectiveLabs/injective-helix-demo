@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   NuxtUiIcons,
   SharedMarketType,
   SharedMarketChange
 } from '@shared/types'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { dataCyTag } from '@shared/utils'
-import { UiMarketWithToken, SpotMarketCyTags } from '@/types'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { SpotMarketCyTags } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-const spotStore = useSpotStore()
-const derivativeStore = useDerivativeStore()
+const sharedSpotStore = useSharedSpotStore()
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const props = withDefaults(
   defineProps<{
@@ -29,12 +32,12 @@ const { lastTradedPrice: derivativeLastTradedPrice } = useDerivativeLastPrice(
 
 const summary = computed(() => {
   if (isSpot.value) {
-    return spotStore.marketsSummary.find(
+    return sharedSpotStore.marketsSummary.find(
       (market) => market.marketId === props.market.marketId
     )
   }
 
-  return derivativeStore.marketsSummary.find(
+  return sharedDerivativeStore.marketsSummary.find(
     (market) => market.marketId === props.market.marketId
   )
 })
@@ -43,26 +46,25 @@ const lastTradedPrice = computed(() =>
   isSpot.value ? spotLastTradedPrice.value : derivativeLastTradedPrice.value
 )
 
+const change = computed(() => {
+  if (!summary.value || !summary.value.change) {
+    return ZERO_IN_BASE
+  }
+
+  return summary.value.change
+})
+
+const changeToBigNumber = computed(() => new BigNumberInBase(change.value))
+
 const percentageChangeStatus = computed(() => {
-  if (change.value.eq(0)) {
+  if (changeToBigNumber.value.eq(0)) {
     return SharedMarketChange.NoChange
   }
 
-  return change.value.gt(0)
+  return changeToBigNumber.value.gt(0)
     ? SharedMarketChange.Increase
     : SharedMarketChange.Decrease
 })
-
-const { valueToString: changeToFormat, valueToBigNumber: change } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      if (!summary.value || !summary.value.change) {
-        return ZERO_IN_BASE
-      }
-
-      return summary.value.change
-    })
-  )
 </script>
 
 <template>
@@ -104,10 +106,12 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
                     percentageChangeStatus === SharedMarketChange.Decrease
                 }"
               />
-              <AppAmount
+              <SharedAmount
                 v-bind="{
-                  amount: lastTradedPrice.toFixed(),
-                  decimalPlaces: market.priceDecimals
+                  useSubscript: true,
+                  shouldAbbreviate: false,
+                  decimals: market.priceDecimals,
+                  amount: lastTradedPrice.toFixed()
                 }"
                 class="leading-none"
               />
@@ -116,7 +120,7 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
         </div>
 
         <div
-          v-if="!change.isNaN()"
+          v-if="!changeToBigNumber.isNaN()"
           class="leading-none text-xs"
           :class="{
             'text-green-500':
@@ -128,7 +132,17 @@ const { valueToString: changeToFormat, valueToBigNumber: change } =
           }"
         >
           <span class="lg:hidden">/</span>
-          <span> {{ changeToFormat }}% </span>
+          <span>
+            <SharedAmount
+              v-bind="{
+                amount: change,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            />%
+          </span>
         </div>
       </article>
     </section>

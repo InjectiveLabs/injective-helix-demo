@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
-import { AtomicSwap } from '@injectivelabs/sdk-ts'
 import { UI_DEFAULT_AGGREGATION_DECIMALS } from '@/app/utils/constants'
 import { HistorySwapTableColumn } from '@/types'
+import type { AtomicSwap } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -16,31 +16,31 @@ const props = withDefaults(
 
 const { rows } = useHistorySwapTransformer(computed(() => props.swaps))
 
-const columns = [
+const columns = computed(() => [
   {
     key: HistorySwapTableColumn.Time,
-    label: t(`activity.table.historySwap.${HistorySwapTableColumn.Time}`)
+    label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Time}`)
   },
   {
     key: HistorySwapTableColumn.Outgoing,
-    label: t(`activity.table.historySwap.${HistorySwapTableColumn.Outgoing}`)
+    label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Outgoing}`)
   },
   {
     key: HistorySwapTableColumn.Incoming,
-    label: t(`activity.table.historySwap.${HistorySwapTableColumn.Incoming}`)
+    label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Incoming}`)
   },
   {
     key: HistorySwapTableColumn.Route,
-    label: t(`activity.table.historySwap.${HistorySwapTableColumn.Route}`)
+    label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Route}`)
   },
   {
     key: HistorySwapTableColumn.Fee,
-    label: t(`activity.table.historySwap.${HistorySwapTableColumn.Fee}`)
+    label: t(`portfolio.table.historySwap.${HistorySwapTableColumn.Fee}`)
   },
   {
     key: HistorySwapTableColumn.Action
   }
-]
+])
 </script>
 
 <template>
@@ -70,10 +70,12 @@ const columns = [
           />
 
           <div>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.sourceBalanceFormatted,
-                decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+                decimals: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
             />
             {{ row.sourceTokenWithBalance.token.symbol }}
@@ -92,10 +94,12 @@ const columns = [
           />
 
           <div>
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.destinationBalanceFormatted,
-                decimalPlaces: UI_DEFAULT_AGGREGATION_DECIMALS
+                decimals: UI_DEFAULT_AGGREGATION_DECIMALS
               }"
             />
             {{ row.destinationTokenWithBalance.token.symbol }}
@@ -117,7 +121,7 @@ const columns = [
             v-for="({ amount, symbol }, index) in row.formattedFees"
             :key="`${amount}-${symbol}-${index}`"
           >
-            <AppAmount v-bind="{ amount }" />
+            <SharedAmount v-bind="{ amount }" />
             <span class="ml-1">{{ symbol }}</span>
           </div>
         </div>

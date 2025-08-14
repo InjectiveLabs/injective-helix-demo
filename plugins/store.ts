@@ -1,15 +1,17 @@
-import {
+import { defineNuxtPlugin } from '#imports'
+import { StatusType } from '@injectivelabs/utils'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { isThrownException } from '@injectivelabs/exceptions'
+import { localStorage } from '@/app/Services'
+import { DEFAULT_100_CHART_CANDLE_BAR_SPACING } from '@/app/utils/constants'
+import { TradingLayout, OrderbookLayout, TradingChartInterval } from '@/types'
+import type { ThrownException } from '@injectivelabs/exceptions'
+import type {
   StateTree,
   PiniaPluginContext,
   SubscriptionCallback,
   SubscriptionCallbackMutationPatchObject
 } from 'pinia'
-import { StatusType } from '@injectivelabs/utils'
-import { Wallet } from '@injectivelabs/wallet-base'
-import { isThrownException, ThrownException } from '@injectivelabs/exceptions'
-import { defineNuxtPlugin } from '#imports'
-import { localStorage } from '@/app/Services'
-import { OrderbookLayout, TradingLayout, TradingChartInterval } from '@/types'
 
 const stateToPersist = {
   app: {
@@ -30,7 +32,8 @@ const stateToPersist = {
         tradingLayout: TradingLayout.Left,
         skipExperimentalConfirmationModal: false,
         orderbookLayout: OrderbookLayout.Default,
-        tradingChartInterval: TradingChartInterval.D
+        tradingChartInterval: TradingChartInterval.D,
+        chartZoomPreference: DEFAULT_100_CHART_CANDLE_BAR_SPACING
       }
     }
   },
@@ -51,11 +54,12 @@ const stateToPersist = {
     walletConnectStatus: '',
     hwAddresses: '',
     wallet: Wallet.Metamask,
+    session: '',
     address: '',
     addresses: '',
     injectiveAddress: '',
     addressConfirmation: '',
-    session: '',
+    turnkeyInjectiveAddress: '',
 
     authZ: {
       address: '',
@@ -83,6 +87,7 @@ const actionsThatSetAppStateToBusy = [
   'campaign/joinGuild',
   'campaign/createGuild',
   'campaign/claimReward',
+  'spot/submitChase',
   'spot/batchCancelOrder',
   'spot/submitLimitOrder',
   'account/withdrawToMain',
@@ -97,6 +102,7 @@ const actionsThatSetAppStateToBusy = [
   'authZ/grantAuthorization',
   'authZ/revokeAuthorization',
   'position/closeAllPosition',
+  'derivative/submitChase',
   'derivative/submitTpSlOrder',
   'derivative/batchCancelOrder',
   'derivative/submitLimitOrder',
@@ -153,6 +159,7 @@ const persistState = (
   }, {})
 
   const existingState = (localStorage.get('state') || {}) as any
+
   localStorage.set('state', {
     ...stateToPersist,
     ...existingState,

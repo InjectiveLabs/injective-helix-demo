@@ -2,11 +2,11 @@ import { SharedMarketChange } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedToBalanceInWei } from '@shared/utils/formatter'
-import { UiMarketWithToken } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
-export function useSpotLastPrice(market: Ref<UiMarketWithToken | undefined>) {
+export function useSpotLastPrice(market: Ref<undefined | UiMarketWithToken>) {
   const spotStore = useSpotStore()
-  const tokenStore = useTokenStore()
+  const sharedTokenStore = useSharedTokenStore()
 
   const latestTrade = computed(() => {
     if (spotStore.trades.length === 0) {
@@ -72,7 +72,7 @@ export function useSpotLastPrice(market: Ref<UiMarketWithToken | undefined>) {
     }
 
     return lastTradedPrice.value.times(
-      tokenStore.tokenUsdPrice(market.value.quoteToken)
+      sharedTokenStore.tokenUsdPrice(market.value.quoteToken)
     )
   })
 

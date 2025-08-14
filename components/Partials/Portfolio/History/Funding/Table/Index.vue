@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { FundingPayment } from '@injectivelabs/sdk-ts'
-import { USDT_DECIMALS } from '@/app/utils/constants'
+import { usdtToken } from '@shared/data/token'
 import { FundingHistoryTableColumn } from '@/types'
+import type { FundingPayment } from '@injectivelabs/sdk-ts'
 
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -17,24 +17,26 @@ const { rows } = useFundingHistoryTransformer(
   computed(() => props.fundingHistory)
 )
 
-const columns = [
+const columns = computed(() => [
   {
     key: FundingHistoryTableColumn.Time,
-    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Time}`),
+    label: t(
+      `portfolio.table.fundingHistory.${FundingHistoryTableColumn.Time}`
+    ),
     class: 'w-1/5'
   },
   {
     key: FundingHistoryTableColumn.Pair,
-    label: t(`activity.table.fundingHistory.${FundingHistoryTableColumn.Pair}`)
+    label: t(`portfolio.table.fundingHistory.${FundingHistoryTableColumn.Pair}`)
   },
   {
     key: FundingHistoryTableColumn.Payment,
     label: t(
-      `activity.table.fundingHistory.${FundingHistoryTableColumn.Payment}`
+      `portfolio.table.fundingHistory.${FundingHistoryTableColumn.Payment}`
     ),
     class: 'text-right'
   }
-]
+])
 </script>
 
 <template>
@@ -67,10 +69,12 @@ const columns = [
               'text-red-500': row.total.lt(0)
             }"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.total.toFixed(),
-                decimalPlaces: USDT_DECIMALS
+                decimals: usdtToken.decimals
               }"
             />
           </span>

@@ -3,8 +3,7 @@ import { intervalToDuration } from 'date-fns'
 import { usdtToken } from '@shared/data/token'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { cosmosSdkDecToBigNumber } from '@injectivelabs/sdk-ts'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { UI_MINIMAL_ABBREVIATION_FLOOR } from '@/app/utils/constants'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 
 const exchangeStore = useExchangeStore()
 
@@ -24,17 +23,6 @@ const volume = computed(() => {
   )
 
   return new BigNumberInWei(volume).toBase(usdtToken.decimals)
-})
-
-const shouldAbbreviateVolume = computed(() =>
-  volume.value.gte(UI_MINIMAL_ABBREVIATION_FLOOR)
-)
-
-const { valueToString: volumeToFormat } = useSharedBigNumberFormatter(volume, {
-  decimalPlaces: shouldAbbreviateVolume.value ? 0 : 2,
-  abbreviationFloor: shouldAbbreviateVolume.value
-    ? UI_MINIMAL_ABBREVIATION_FLOOR
-    : undefined
 })
 
 const daysPassed = computed(() => {
@@ -66,13 +54,20 @@ const daysPassed = computed(() => {
         <span
           class="text-coolGray-500 uppercase tracking-wide text-xs mb-2 font-semibold whitespace-nowrap"
         >
-          {{ $t('feeDiscounts.my_trading_volume') }}
+          {{ $t('feeDiscounts.myTradingVolume') }}
         </span>
         <span
           class="uppercase text-xs lg:text-base text-coolGray-500 font-bold tracking-widest whitespace-nowrap"
         >
           <b class="text-xl lg:text-2xl font-bold text-white tracking-normal">
-            {{ volumeToFormat }}
+            <SharedAmountUsd
+              v-bind="{
+                amount: volume,
+                hideDecimals: true,
+                shouldAbbreviate: false,
+                roundingMode: BigNumberInBase.ROUND_UP
+              }"
+            />
           </b>
           USD
         </span>
@@ -80,7 +75,7 @@ const daysPassed = computed(() => {
     </div>
     <div class="mt-4">
       <span class="text-xs text-coolGray-400">
-        {{ $t('feeDiscounts.in_past_days', { days: daysPassed }) }}
+        {{ $t('feeDiscounts.inPastDays', { days: daysPassed }) }}
       </span>
     </div>
   </div>

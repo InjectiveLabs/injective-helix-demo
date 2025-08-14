@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import {
-  UTableColumn,
-  SpotMarketCyTags,
-  TransformedPortfolioSpotOpenOrders,
-  PortfolioSpotOpenOrdersTableColumn
-} from '@/types'
+import { Wallet } from '@injectivelabs/wallet-base'
+import { SpotMarketCyTags, PortfolioSpotOpenOrdersTableColumn } from '@/types'
+import type { UTableColumn, TransformedPortfolioSpotOpenOrders } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -59,7 +56,10 @@ const filteredColumns = computed(() =>
 
         <div class="flex space-x-2">
           <PartialsPortfolioOrdersSpotOpenOrdersTableChase
-            v-if="!isTradingBots"
+            v-if="
+              !isTradingBots &&
+              ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+            "
             v-bind="{
               order: order.order,
               isBuy: order.isBuy,
@@ -98,10 +98,12 @@ const filteredColumns = computed(() =>
 
     <template #price-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.price.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
       </div>
@@ -109,10 +111,12 @@ const filteredColumns = computed(() =>
 
     <template #amount-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.quantity.toFixed(),
-            decimalPlaces: order.quantityDecimals
+            decimals: order.quantityDecimals
           }"
         />
       </div>
@@ -120,9 +124,11 @@ const filteredColumns = computed(() =>
 
     <template #unfilled-data>
       <div :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
-            decimalPlaces: order.quantityDecimals,
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: order.quantityDecimals,
             amount: order.unfilledQuantity.toFixed()
           }"
         />
@@ -135,9 +141,11 @@ const filteredColumns = computed(() =>
           :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
           class="flex gap-1"
         >
-          <AppAmount
+          <SharedAmount
             v-bind="{
-              decimalPlaces: order.quantityDecimals,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: order.quantityDecimals,
               amount: order.filledQuantity.toFixed()
             }"
           />
@@ -150,10 +158,12 @@ const filteredColumns = computed(() =>
 
     <template #total-amount-data>
       <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
-        <AppAmount
+        <SharedAmount
           v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
             amount: order.total.toFixed(),
-            decimalPlaces: order.priceDecimals
+            decimals: order.priceDecimals
           }"
         />
         <span

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 import { TradeDirection } from '@injectivelabs/ts-types'
-import { BigNumberInBase, BigNumberInWei } from '@injectivelabs/utils'
-import { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
-import { UiMarketWithToken, UiTrade } from '@/types'
+import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
+import type { UiTrade, UiMarketWithToken } from '@/types'
+import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
@@ -36,17 +36,6 @@ const quantity = computed(() =>
       )
 )
 
-const { valueToString: priceToFormat } = useSharedBigNumberFormatter(price, {
-  decimalPlaces: props.market.priceDecimals
-})
-
-const { valueToString: quantityToFormat } = useSharedBigNumberFormatter(
-  quantity,
-  {
-    decimalPlaces: props.market.quantityDecimals
-  }
-)
-
 const time = computed(() =>
   props.trade.executedAt ? format(props.trade.executedAt, 'HH:mm:ss') : ''
 )
@@ -61,11 +50,26 @@ const time = computed(() =>
         'text-red-500': trade.tradeDirection === TradeDirection.Sell
       }"
     >
-      {{ priceToFormat }}
+      <SharedAmount
+        v-bind="{
+          amount: price,
+          useSubscript: true,
+          noTrailingZeros: false,
+          shouldAbbreviate: false,
+          decimals: market.priceDecimals
+        }"
+      />
     </div>
 
     <div class="flex-1 min-w-0 truncate text-center">
-      {{ quantityToFormat }}
+      <SharedAmount
+        v-bind="{
+          amount: quantity,
+          useSubscript: true,
+          shouldAbbreviate: false,
+          decimals: market.quantityDecimals
+        }"
+      />
     </div>
 
     <div class="flex-1 min-w-0 truncate text-coolGray-500 text-right">

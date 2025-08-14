@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { PositionV2 } from '@injectivelabs/sdk-ts'
-import {
-  Modal,
-  BusEvents,
-  PositionsFilterField,
-  PositionsFilterForm
-} from '@/types'
+import { Modal, PositionsFilterField } from '@/types'
+import type { PositionsFilterForm } from '@/types'
+import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 const accountStore = useAccountStore()
@@ -13,7 +9,7 @@ const positionStore = usePositionStore()
 const gridStrategyStore = useGridStrategyStore()
 const { values } = useForm<PositionsFilterForm>()
 
-const selectedPosition = ref<PositionV2 | undefined>(undefined)
+const selectedPosition = ref<undefined | PositionV2>(undefined)
 
 const filteredPosition = computed(() =>
   positionStore.positions.filter((position) => {
@@ -32,6 +28,13 @@ const filteredPosition = computed(() =>
   })
 )
 
+const hasActiveStrategy = computed(
+  () =>
+    !!gridStrategyStore.activeDerivativeStrategies.find(
+      (strategy) => strategy.subaccountId === accountStore.subaccountId
+    )
+)
+
 function addMargin(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.AddMarginToPosition)
@@ -45,14 +48,11 @@ function addTakeProfitStopLoss(position: PositionV2) {
 function onSharePosition(position: PositionV2) {
   selectedPosition.value = position
   modalStore.openModal(Modal.SharePositionPnl)
-  useEventBus(BusEvents.SharePositionOpened).emit()
 }
 
-const hasActiveStrategy = computed(() => {
-  return !!gridStrategyStore.activeDerivativeStrategies.find(
-    (strategy) => strategy.subaccountId === accountStore.subaccountId
-  )
-})
+function resetSelectedPosition() {
+  selectedPosition.value = undefined
+}
 </script>
 
 <template>
@@ -71,25 +71,23 @@ const hasActiveStrategy = computed(() => {
 
   <CommonEmptyList
     v-if="!filteredPosition.length"
-    :message="'No Positions Open'"
+    :message="$t('portfolio.noPositionsOpen')"
   />
 
   <ModalsAddMargin
     v-if="selectedPosition"
-    v-bind="{
-      position: selectedPosition
-    }"
+    v-bind="{ position: selectedPosition }"
   />
 
   <ModalsAddTakeProfitStopLoss
     v-if="selectedPosition"
-    v-bind="{
-      position: selectedPosition
-    }"
+    v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 
   <ModalsSharePositionPnl
     v-if="selectedPosition"
     v-bind="{ position: selectedPosition }"
+    @on:close="resetSelectedPosition"
   />
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOpenOrdersFilterForm } from '@/types/forms'
 import { SpotOpenOrdersFilterField } from '@/types'
+import type { SpotOpenOrdersFilterForm } from '@/types/forms'
 
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
@@ -65,7 +65,5 @@ onSubaccountChange(fetchSubaccountOrders)
         </template>
       </div>
     </div>
-
-    <PartialsLiquidityCommonTradingBotsModalTrigger />
   </div>
 </template>

@@ -1,29 +1,35 @@
 <script setup lang="ts">
+import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
   BigNumber,
-  BigNumberInBase,
-  BigNumberInWei
+  BigNumberInWei,
+  BigNumberInBase
 } from '@injectivelabs/utils'
-import { dataCyTag } from '@shared/utils'
-import { TradeDirection } from '@injectivelabs/ts-types'
+import {
+  ONE_IN_BASE,
+  ZERO_IN_BASE,
+  DEFAULT_ASSET_DECIMALS
+} from '@shared/utils/constant'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
 } from '@/app/utils/helpers'
-import { ONE_IN_BASE } from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
+  MarketCyTags,
   TradeAmountOption,
-  UiDerivativeMarket,
-  DerivativesTradeForm,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
 const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
+const derivativeStore = useDerivativeStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
 const validateLimitField = useValidateField(
@@ -74,10 +80,35 @@ const isBuy = computed(
     TradeDirection.Long
 )
 
+const isReduceOnly = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
+)
+
 const activePosition = computed(() =>
   positionStore.subaccountPositions.find(
     (position) => position.marketId === market.value.marketId
   )
+)
+
+const activePositionQuantity = computed(() => {
+  const positionQuantity = activePosition.value?.quantity || 0
+
+  const reduceOnlyOrderAmount = derivativeStore.subaccountOrders.reduce(
+    (sum, order) => {
+      return order.isReduceOnly && order.marketId === market.value.marketId
+        ? sum.plus(order.quantity)
+        : sum
+    },
+    ZERO_IN_BASE
+  )
+
+  return new BigNumberInBase(positionQuantity)
+    .minus(reduceOnlyOrderAmount)
+    .toFixed()
+})
+
+const selectedSymbol = computed(
+  () => options.find((item) => item.id === typeValue.value)?.label || ''
 )
 
 const {
@@ -92,7 +123,10 @@ const {
     return new BigNumberInWei(balance || 0).toBase(
       market.value.quoteToken.decimals
     )
-  })
+  }),
+  {
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
@@ -123,8 +157,8 @@ const {
   name: DerivativesTradeFormField.Amount,
   initialValue: '',
   dynamicRule: computed(() => {
-    if (derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]) {
-      const maxAmount = activePosition.value?.quantity
+    if (isReduceOnly.value) {
+      const maxAmount = activePositionQuantity.value
 
       return `insufficientBalanceCustom:${props.quantity.toFixed()},${maxAmount}`
     } else {
@@ -141,9 +175,6 @@ const {
 })
 
 async function setFromPercentage(percentage: number) {
-  const isReduceOnly =
-    derivativeFormValues.value[DerivativesTradeFormField.ReduceOnly]
-
   const isLimit =
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
       DerivativeTradeTypes.Limit ||
@@ -174,11 +205,11 @@ async function setFromPercentage(percentage: number) {
     derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 
   if (
-    isReduceOnly &&
-    typeValue.value === TradeAmountOption.Base &&
-    activePosition.value
+    isReduceOnly.value &&
+    activePositionQuantity.value &&
+    typeValue.value === TradeAmountOption.Base
   ) {
-    amountValue.value = new BigNumberInBase(activePosition.value?.quantity)
+    amountValue.value = new BigNumberInBase(activePositionQuantity.value)
       .times(percentage)
       .div(100)
       .toFixed(market.value.quantityDecimals, BigNumber.ROUND_DOWN)
@@ -187,14 +218,14 @@ async function setFromPercentage(percentage: number) {
   }
 
   if (
-    isReduceOnly &&
-    typeValue.value === TradeAmountOption.Quote &&
-    activePosition.value
+    isReduceOnly.value &&
+    activePositionQuantity.value &&
+    typeValue.value === TradeAmountOption.Quote
   ) {
-    const records = isBuy ? orderbookStore.sells : orderbookStore.buys
+    const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
     const { worstPrice } = calculateWorstPrice(
-      activePosition.value.quantity,
+      activePositionQuantity.value,
       records
     )
 
@@ -214,8 +245,8 @@ async function setFromPercentage(percentage: number) {
       : executionPrice.times(1 - Number(slippage) / 100)
 
     const totalNotional = isLimit
-      ? limitPrice.times(activePosition.value.quantity)
-      : executionPriceWithSlippage.times(activePosition.value.quantity)
+      ? limitPrice.times(activePositionQuantity.value)
+      : executionPriceWithSlippage.times(activePositionQuantity.value)
 
     amountValue.value = totalNotional
       .times(percentage)
@@ -297,7 +328,7 @@ async function setFromPercentage(percentage: number) {
     return
   }
 
-  const records = isBuy ? orderbookStore.sells : orderbookStore.buys
+  const records = isBuy.value ? orderbookStore.sells : orderbookStore.buys
 
   const { worstPrice } = calculateTotalQuantity(
     maxMargin.times(leverage).toFixed(),
@@ -358,10 +389,41 @@ onMounted(() => {
       <template #right>
         <USelectMenu
           v-model="typeValue"
-          :options="options"
-          variant="none"
-          value-attribute="id"
-        />
+          v-bind="{
+            options,
+            variant: 'none',
+            valueAttribute: 'id',
+            uiMenu: { width: 'w-auto' },
+            popper: { offsetDistance: 12 }
+          }"
+        >
+          <div
+            class="flex items-center gap-2"
+            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
+          >
+            <span>
+              {{ selectedSymbol }}
+            </span>
+
+            <UIcon
+              :name="NuxtUiIcons.ChevronDown"
+              class="size-3 transition-all text-gray-500 -mb-0.5"
+            />
+          </div>
+
+          <template #option="{ option }">
+            <span
+              class="mr-1"
+              :data-cy="
+                option.id === TradeAmountOption.Base
+                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
+                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
+              "
+            >
+              {{ option.label }}
+            </span>
+          </template>
+        </USelectMenu>
       </template>
 
       <template #bottom>
@@ -373,15 +435,19 @@ onMounted(() => {
             <span>
               {{
                 $t('trade.availableAmount', {
-                  amount: quoteBalanceToString
+                  amount: isReduceOnly
+                    ? activePositionQuantity
+                    : quoteBalanceToString
                 })
               }}
             </span>
 
             <PartialsCommonBalanceDisplay
               v-bind="{
-                token: market.quoteToken,
-                value: market.quoteToken.symbol
+                token: isReduceOnly ? market.baseToken : market.quoteToken,
+                value: isReduceOnly
+                  ? market.baseToken.symbol
+                  : market.quoteToken.symbol
               }"
             />
           </div>
@@ -393,7 +459,7 @@ onMounted(() => {
       v-if="isMarkPriceThresholdError"
       class="error-message first-letter:capitalize"
     >
-      {{ $t('trade.mark_price_invalid') }}
+      {{ $t('trade.markPriceInvalid') }}
     </p>
 
     <p

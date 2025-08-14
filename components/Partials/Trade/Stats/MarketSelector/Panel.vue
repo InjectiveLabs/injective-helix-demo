@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketCategoryType } from '@/types'
+import { TradeSubPagePath, MarketCategoryType } from '@/types'
 
 const spotStore = useSpotStore()
-const tokenStore = useTokenStore()
 const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
 const { t } = useLang()
 const { sm } = useSharedBreakpoints()
 
@@ -16,22 +17,24 @@ withDefaults(
   {}
 )
 
-const activeCategoryOptions = Object.values(MarketCategoryType).map(
-  (value) => ({
+const route = useRoute()
+
+const activeCategoryOptions = computed(() =>
+  Object.values(MarketCategoryType).map((value) => ({
     label: t(`markets.filters.${value}`),
     value
-  })
+  }))
 )
 
 const search = ref('')
-const isLowVolumeMarketsVisible = ref(false)
+const isLowVolumeMarketsVisible = ref(!IS_MAINNET)
 const activeCategory = ref(MarketCategoryType.All)
 
 const marketsWithSummaryAndVolumeInUsd = computed(() =>
   [...spotStore.marketsWithSummary, ...derivativeStore.marketsWithSummary].map(
     ({ market, summary }) => {
       const quoteTokenUsdPrice = new BigNumberInBase(
-        tokenStore.tokenUsdPrice(market.quoteToken)
+        sharedTokenStore.tokenUsdPrice(market.quoteToken)
       )
 
       return {
@@ -42,6 +45,24 @@ const marketsWithSummaryAndVolumeInUsd = computed(() =>
     }
   )
 )
+
+onMounted(() => {
+  if (route.query.category) {
+    Object.keys(MarketCategoryType).forEach((category) => {
+      if (
+        category.toLowerCase() ===
+        route.query?.category?.toString()?.toLowerCase()
+      ) {
+        activeCategory.value =
+          MarketCategoryType[category as keyof typeof MarketCategoryType]
+      }
+    })
+  }
+
+  if (route.path.startsWith(TradeSubPagePath.Stocks)) {
+    activeCategory.value = MarketCategoryType.iAssets
+  }
+})
 
 function resetSearch() {
   search.value = ''
@@ -69,10 +90,10 @@ function resetCategory() {
               id="search-market"
               v-model="search"
               v-focus
-              :placeholder="$t('trade.search_market')"
               type="text"
-              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               autocomplete="off"
+              :placeholder="$t('trade.searchMarket')"
+              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
               @update:model-value="resetCategory"
             />
           </label>
@@ -96,8 +117,11 @@ function resetCategory() {
                     variant="primary"
                     size="xs"
                     :class="[
-                      'bg-opacity-20 text-blue-550 border-0 tracking-wider capitalize font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500',
-                      isActive ? 'opacity-100' : 'opacity-50'
+                      isActive ? 'opacity-100' : 'opacity-50',
+                      category.value === MarketCategoryType.iAssets
+                        ? ''
+                        : 'capitalize',
+                      'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
                     ]"
                   >
                     {{ $t(`markets.filters.${category.value}`) }}
@@ -108,9 +132,9 @@ function resetCategory() {
             </template>
           </div>
 
-          <AppCheckbox2 v-model="isLowVolumeMarketsVisible" no-wrap>
+          <AppCheckbox v-model="isLowVolumeMarketsVisible" no-wrap>
             {{ $t('markets.showLowVol') }}
-          </AppCheckbox2>
+          </AppCheckbox>
         </div>
       </div>
     </div>

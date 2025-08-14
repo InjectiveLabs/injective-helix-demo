@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { backupPromiseCall } from '@/app/utils/async'
+import { sharedBackupPromiseCall } from '@shared/utils/async'
 
 const derivativeStore = useDerivativeStore()
 const status = reactive(new Status(StatusType.Idle))
@@ -14,18 +14,18 @@ function cancelAllAdvancedOrders() {
   derivativeStore
     .batchCancelOrder(derivativeStore.subaccountConditionalOrders)
     .then(() =>
-      notificationStore.success({
-        title: t('common.success')
+      notificationStore.update({
+        title: t('toast.trade.allAdvancedOrdersCancelled')
       })
     )
     .catch((e) => {
       $onError(e)
-      notificationStore.error({ title: t('common.error') })
+      notificationStore.error({ title: t('toast.error') })
     })
     .finally(() => {
       status.setIdle()
 
-      backupPromiseCall(async () => {
+      sharedBackupPromiseCall(async () => {
         await derivativeStore.fetchSubaccountConditionalOrders()
       })
     })

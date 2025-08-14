@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { UiSpotMarket, InvestmentTypeGst } from '@/types'
+import { InvestmentTypeGst } from '@/types'
+import type { UiSpotMarket } from '@/types'
 
 withDefaults(
   defineProps<{
-    market: UiSpotMarket
     threshold: string
+    market: UiSpotMarket
     investmentType?: InvestmentTypeGst
   }>(),
   {
@@ -19,20 +20,20 @@ withDefaults(
     text-color-class="text-coolGray-450"
     border-color-class="border-coolGray-450"
     :tooltip="
-      $t('sgt.minInvestmentTooltip', {
+      $t('tradingBots.sgt.minInvestmentTooltip', {
         amount: threshold,
         assets:
           investmentType === InvestmentTypeGst.Base
             ? $t('common.base')
             : investmentType === InvestmentTypeGst.Quote
-            ? $t('common.quote')
-            : $t('common.baseAndQuote')
+              ? $t('common.quote')
+              : $t('common.baseAndQuote')
       })
     "
   >
     <span v-if="investmentType === InvestmentTypeGst.Base">
       {{
-        $t('sgt.minInvestmentDescription', {
+        $t('tradingBots.minInvestmentDescription', {
           symbols: market.baseToken.symbol,
           amount: threshold
         })
@@ -41,7 +42,7 @@ withDefaults(
 
     <span v-else-if="investmentType === InvestmentTypeGst.Quote">
       {{
-        $t('sgt.minInvestmentDescription', {
+        $t('tradingBots.minInvestmentDescription', {
           symbols: market.quoteToken.symbol,
           amount: threshold
         })
@@ -50,7 +51,7 @@ withDefaults(
 
     <span v-else>
       {{
-        $t('sgt.minInvestmentDescription', {
+        $t('tradingBots.minInvestmentDescription', {
           symbols: `${market.baseToken.symbol} + ${market.quoteToken.symbol}`,
           amount: threshold
         })

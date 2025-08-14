@@ -17,7 +17,10 @@ definePageMeta({
 const swapStore = useSwapStore()
 const spotStore = useSpotStore()
 const modalStore = useSharedModalStore()
+const sharedSpotStore = useSharedSpotStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
 const {
   validate,
@@ -47,7 +50,9 @@ const {
 const { totalFee } = useSwapFee(computed(() => formValues))
 
 const showErrorState = computed(
-  () => swapStore.routes.length === 0 || spotStore.markets.length === 0
+  () =>
+    swapStore.routes.length === 0 ||
+    sharedSpotStore.marketsWithToken.length === 0
 )
 
 const hasInputAmount = computed(() =>
@@ -248,6 +253,7 @@ async function submit() {
 
       await nextTick()
 
+      notificationStore.update({ title: t('toast.success') })
       modalStore.openModal(Modal.SwapSuccess)
     })
     .catch((error: ThrownException) => {
@@ -294,7 +300,7 @@ async function submit() {
               class="font-bold text-lg"
               :data-cy="dataCyTag(SwapCyTags.SwapHeaderLabel)"
             >
-              {{ $t('trade.swap.swap') }}
+              {{ $t('swap.title') }}
             </h3>
 
             <PartialsSwapSlippageSelector />
@@ -329,10 +335,10 @@ async function submit() {
             <UIcon :name="NuxtUiIcons.CloudSlash" class="h-10 w-10" />
 
             <div>
-              {{ $t('trade.swap.somethingWentWrong') }}
+              {{ $t('swap.somethingWentWrong') }}
             </div>
             <div>
-              {{ $t('trade.swap.pleaseTryAgain') }}
+              {{ $t('swap.pleaseTryAgain') }}
             </div>
           </div>
 

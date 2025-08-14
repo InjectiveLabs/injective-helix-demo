@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
-
-const jsonStore = useSharedJsonStore()
-const breakpoints = useSharedBreakpoints()
-const { t } = useLang()
-const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
@@ -19,14 +17,9 @@ const props = withDefaults(
     ui?: Record<string, any>
   }>(),
   {
-    isTradingBots: false,
     ui: () => ({
-      td: {
-        font: 'font-sans'
-      },
-      th: {
-        base: 'whitespace-nowrap'
-      }
+      td: { font: 'font-sans' },
+      th: { base: 'whitespace-nowrap' }
     })
   }
 )
@@ -38,14 +31,20 @@ const emit = defineEmits<{
 }>()
 
 const appStore = useAppStore()
+const jsonStore = useSharedJsonStore()
 const positionStore = usePositionStore()
+const breakpoints = useSharedBreakpoints()
+const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
+const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 const { rows } = usePositionTransformer(computed(() => props.positions))
 
 const sixXl = breakpoints['6xl']
 
 const selectedPositionQuantity = ref('0')
+const selectedPositionLimitPrice = ref(ZERO_IN_BASE)
 const selectedPositionDetails = ref<undefined | TransformedPosition>()
 
 const columns = computed(() => {
@@ -136,6 +135,10 @@ function setSelectedPositionQuantity(quantity: string) {
   selectedPositionQuantity.value = quantity
 }
 
+function setSelectedPositionLimitPrice(price: string) {
+  selectedPositionLimitPrice.value = new BigNumberInBase(price || 0)
+}
+
 function setSelectedPosition(value: undefined | TransformedPosition) {
   selectedPositionDetails.value = value
 }
@@ -158,19 +161,51 @@ function onClosePartialPosition() {
     return
   }
 
-  positionStore
-    .closePosition({
-      quantity: selectedPositionQuantity.value,
-      position: selectedPositionDetails.value.position,
-      availablePositionQuantity: selectedPositionDetails.value.quantity
-    })
-    .then(() =>
-      notificationStore.success({ title: t('trade.position_closed') })
-    )
-    .catch($onError)
-    .finally(() => {
-      setPositionStatusIdle()
-    })
+  if (selectedPositionLimitPrice.value.isZero()) {
+    positionStore
+      .closePosition({
+        quantity: selectedPositionQuantity.value,
+        position: selectedPositionDetails.value.position,
+        availablePositionQuantity: selectedPositionDetails.value.quantity
+      })
+      .then(() =>
+        notificationStore.update({ title: t('toast.trade.positionClosed') })
+      )
+      .catch($onError)
+      .finally(() => {
+        setPositionStatusIdle()
+      })
+  } else {
+    const isBuy =
+      selectedPositionDetails.value.position.direction === TradeDirection.Long
+
+    let orderTypeToSubmit = OrderSide.Buy
+
+    if (jsonStore.isPostUpgradeMode) {
+      orderTypeToSubmit = isBuy ? OrderSide.SellPO : OrderSide.BuyPO
+    } else {
+      orderTypeToSubmit = isBuy ? OrderSide.Sell : OrderSide.Buy
+    }
+
+    derivativeStore
+      .submitLimitOrder({
+        reduceOnly: true,
+        orderSide: orderTypeToSubmit,
+        margin: selectedPositionDetails.value.margin,
+        market: selectedPositionDetails.value.market,
+        quantity: new BigNumberInBase(selectedPositionQuantity.value),
+        price: new BigNumberInBase(selectedPositionLimitPrice.value.toFixed())
+      })
+      .then(() =>
+        notificationStore.update({ title: t('toast.trade.orderPlaced') })
+      )
+      .catch($onError)
+      .finally(() => {
+        setPositionStatusIdle()
+      })
+  }
+
+  return
 }
 </script>
 
@@ -193,6 +228,9 @@ function onClosePartialPosition() {
 
           <PartialsPositionsTableClosePositionButton
             v-if="!sixXl && !isTradingBots"
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.PositionsTableClosePositionButton)
+            "
             v-bind="{ row }"
             @position:set="setSelectedPosition"
           />
@@ -216,15 +254,30 @@ function onClosePartialPosition() {
       </template>
 
       <template #contracts-data="{ row }">
-        <div class="flex items-center justify-end p-2 text-white">
+        <div
+          class="flex items-center justify-end gap-1 p-2"
+          :class="[
+            row.availableQuantity.lte(0) ? 'text-coolGray-500' : 'text-white'
+          ]"
+        >
+          <PartialsPositionsRemainingQuantity
+            v-if="row.usedQuantity.gt(0)"
+            v-bind="{ market: row.market, usedQuantity: row.usedQuantity }"
+          />
+
           <p
-            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
             class="flex gap-1"
+            :class="{
+              'line-through ': row.availableQuantity.lte(0)
+            }"
+            :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosAmount)"
           >
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.quantity.toFixed(),
-                decimalPlaces: row.quantityDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.quantityDecimals,
+                amount: row.availableQuantity.toFixed()
               }"
             />
             {{
@@ -237,10 +290,12 @@ function onClosePartialPosition() {
       <template #entry-data="{ row }">
         <div class="flex items-center justify-end p-2 text-white">
           <p :data-cy="dataCyTag(PerpetualMarketCyTags.OpenEntryPrice)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.price.toFixed(),
-                decimalPlaces: row.priceDecimals
+                decimals: row.priceDecimals
               }"
             />
           </p>
@@ -250,10 +305,12 @@ function onClosePartialPosition() {
       <template #mark-data="{ row }">
         <div class="flex items-center justify-end p-2">
           <p>
-            <AppAmount
+            <SharedAmount
               v-bind="{
-                amount: row.markPrice.toFixed(),
-                decimalPlaces: row.priceDecimals
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.priceDecimals,
+                amount: row.markPrice.toFixed()
               }"
               class="text-coolGray-475"
             />
@@ -274,10 +331,12 @@ function onClosePartialPosition() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
               class="flex gap-1"
             >
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.pnl.toFixed(),
-                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
               />
 
@@ -286,10 +345,12 @@ function onClosePartialPosition() {
               }}</span>
             </p>
             <p class="flex">
-              <AppAmount
+              <SharedAmount
                 v-bind="{
+                  useSubscript: true,
+                  shouldAbbreviate: false,
                   amount: row.percentagePnl.toFixed(),
-                  decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                  decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 }"
               />
               %
@@ -311,11 +372,11 @@ function onClosePartialPosition() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosTotalValue)"
               class="flex"
             >
-              <AppUsdAmount
+              <SharedAmountUsd
+                class="text-white"
                 v-bind="{
                   amount: row.quantityInUsd.toFixed()
                 }"
-                class="text-white"
               />
             </p>
           </div>
@@ -325,10 +386,12 @@ function onClosePartialPosition() {
       <template #margin-data="{ row }">
         <div class="flex items-center p-2 space-x-2 justify-end">
           <span :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosMargin)">
-            <AppAmount
+            <SharedAmount
               v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
                 amount: row.margin.toFixed(),
-                decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
               }"
               class="text-white"
             />
@@ -348,12 +411,14 @@ function onClosePartialPosition() {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLiquidationPrice)"
         >
-          <AppAmount
-            v-bind="{
-              amount: row.liquidationPrice.toFixed(),
-              decimalPlaces: row.priceDecimals
-            }"
+          <SharedAmount
             class="text-white"
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              decimals: row.priceDecimals,
+              amount: row.liquidationPrice.toFixed()
+            }"
           />
         </div>
       </template>
@@ -363,48 +428,36 @@ function onClosePartialPosition() {
           class="flex items-center p-2 justify-end"
           :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosLeverage)"
         >
-          <AppAmount
-            v-bind="{
-              amount: row.effectiveLeverage.toFixed(),
-              decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-            }"
+          <SharedAmount
             class="text-white"
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: row.effectiveLeverage.toFixed(),
+              decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+            }"
           />x
         </div>
       </template>
 
       <template #tp-or-sl-data="{ row }">
         <div class="flex items-center p-2 justify-center">
-          <AppTooltip
-            :ui="{ width: 'w-auto' }"
-            :content="$t('trade.postOnlyWarning')"
-            :is-disabled="!jsonStore.isPostUpgradeMode"
-          >
-            <button
-              :disabled="
-                appStore.isCountryRestricted || jsonStore.isPostUpgradeMode
-              "
-              class="flex p-2 focus-visible:outline-none"
-              @click="addTpSl(row.position)"
-            >
-              <div
-                class="flex rounded-full transition"
-                :class="{
-                  'hover:bg-coolGray-600': !appStore.isCountryRestricted
-                }"
-              >
-                <UIcon
-                  :name="NuxtUiIcons.CirclePlus"
-                  class="h-6 w-6 min-w-6"
-                  :class="{
-                    'text-coolGray-700':
-                      appStore.isCountryRestricted ||
-                      jsonStore.isPostUpgradeMode
-                  }"
-                />
-              </div>
-            </button>
-          </AppTooltip>
+          <PartialsPositionsTableTpSlPrice
+            v-if="row.hasTpSl"
+            v-bind="{
+              position: row.position,
+              priceDecimals: row.priceDecimals,
+              tpTriggerPrice: row.tpTriggerPrice,
+              slTriggerPrice: row.slTriggerPrice
+            }"
+            @tpsl:update="addTpSl"
+          />
+
+          <PartialsPositionsTableTpSlButton
+            v-else
+            v-bind="{ position: row.position }"
+            @tpsl:add="addTpSl"
+          />
         </div>
       </template>
 
@@ -423,10 +476,10 @@ function onClosePartialPosition() {
       :key="`${position.position.marketId}-${position.position.subaccountId}-${position.position.entryPrice}`"
       :is-trading-bots="isTradingBots"
       v-bind="{ position, columns }"
+      @tpsl:add="addTpSl"
+      @margin:add="addMargin"
+      @position:share="sharePosition"
       @position:set="setSelectedPosition"
-      @tpsl:add="addTpSl(position.position)"
-      @margin:add="addMargin(position.position)"
-      @position:share="sharePosition(position.position)"
     />
   </template>
 
@@ -441,5 +494,6 @@ function onClosePartialPosition() {
     @position:set="setSelectedPosition"
     @position:close="onClosePartialPosition"
     @position:set-quantity="setSelectedPositionQuantity"
+    @position:set-limit-price="setSelectedPositionLimitPrice"
   />
 </template>

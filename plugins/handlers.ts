@@ -1,15 +1,16 @@
-/* eslint-disable no-console */
+import { CtaToast } from '@shared/types'
+import { defineNuxtPlugin } from '#imports'
+import { StatusCodes } from 'http-status-codes'
+import { BUGSNAG_KEY, IS_PRODUCTION } from '@shared/utils/constant'
 import {
   ErrorType,
-  ThrownException,
   isThrownException,
   GRPC_REQUEST_FAILED,
   TransactionException,
-  GrpcUnaryRequestException
+  GrpcUnaryRequestException,
+  TurnkeyWalletSessionException
 } from '@injectivelabs/exceptions'
-import { StatusCodes } from 'http-status-codes'
-import { IS_PRODUCTION, BUGSNAG_KEY } from '@shared/utils/constant'
-import { defineNuxtPlugin } from '#imports'
+import type { ThrownException } from '@injectivelabs/exceptions'
 
 const reportToUser = (error: ThrownException) => {
   const notificationStore = useSharedNotificationStore()
@@ -27,9 +28,8 @@ const reportToUser = (error: ThrownException) => {
     error.contextCode === GRPC_REQUEST_FAILED
   ) {
     return notificationStore.error({
-      title: 'The product is experiencing higher than usual demand',
-      description:
-        'Hang tight, engineers are doing their best to improve the performance and efficiency.'
+      title: 'High demand detected',
+      description: 'Engineers are improving performance and efficiency.'
     })
   }
 
@@ -103,6 +103,19 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const errorHandler = (error: ThrownException) => {
+    const sharedWalletStore = useSharedWalletStore()
+    const notificationStore = useSharedNotificationStore()
+
+    if (error.name === TurnkeyWalletSessionException.errorClass) {
+      sharedWalletStore.logout()
+    }
+
+    notificationStore.close(CtaToast.Telemetry)
+
+    if (error.name === TurnkeyWalletSessionException.errorClass) {
+      sharedWalletStore.logout()
+    }
+
     if (!isThrownException(error)) {
       return reportUnknownErrorToBugsnag(error)
     }

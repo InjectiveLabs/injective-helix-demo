@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { SharedMarketType, SharedMarketStatus } from '@shared/types'
-import { deprecatedMarkets } from '@/app/data/market'
 import { LOW_VOLUME_MARKET_THRESHOLD } from '@/app/utils/constants'
+import {
+  deprecatedMarkets,
+  marketsToHideFromSelection
+} from '@/app/data/market'
 import { MarketHeaderType, MarketCategoryType } from '@/types'
 import type {
   UiMarketWithToken,
@@ -153,6 +156,10 @@ function onSortBy(value: MarketHeaderType) {
 }
 
 function verifyMarketIsPartOfType(market: UiMarketWithToken) {
+  if (marketsToHideFromSelection.includes(market.marketId)) {
+    return false
+  }
+
   if (props.activeCategory === MarketCategoryType.All) {
     return true
   }
@@ -191,12 +198,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
     )
   }
 
-  if (props.activeCategory === MarketCategoryType.Layer2) {
-    return (jsonStore.helixMarketCategoriesMap.layer2 || []).includes(
-      market.marketId
-    )
-  }
-
   if (props.activeCategory === MarketCategoryType.DeFi) {
     return (jsonStore.helixMarketCategoriesMap.defi || []).includes(
       market.marketId
@@ -205,12 +206,6 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
 
   if (props.activeCategory === MarketCategoryType.AI) {
     return (jsonStore.helixMarketCategoriesMap.ai || []).includes(
-      market.marketId
-    )
-  }
-
-  if (props.activeCategory === MarketCategoryType.Meme) {
-    return (jsonStore.helixMarketCategoriesMap.meme || []).includes(
       market.marketId
     )
   }

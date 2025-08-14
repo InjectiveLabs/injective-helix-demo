@@ -25,7 +25,7 @@ const url = computed(() => {
         <span
           class="text-sm md:text-lg text-blue-500 font-medium whitespace-nowrap"
         >
-          {{ $t('banners.kado.tryNow') }}
+          {{ $t('banners.kado.getStarted') }}
         </span>
 
         <UIcon

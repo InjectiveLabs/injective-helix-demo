@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
@@ -11,12 +12,12 @@ import {
   BusEvents,
   MarketKey,
   TradeTypes,
-  UiSpotMarket,
-  SpotTradeForm,
+  MarketCyTags,
   SpotMarketCyTags,
   TradeAmountOption,
   SpotTradeFormField
 } from '@/types'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const orderbookStore = useOrderbookStore()
 const spotFormValues = useFormValues<SpotTradeForm>()
@@ -66,6 +67,10 @@ const decimals = computed(() =>
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+)
+
+const selectedSymbol = computed(
+  () => options.find((item) => item.id === typeValue.value)?.label || ''
 )
 
 const {
@@ -305,10 +310,41 @@ onMounted(() => {
       <template #right>
         <USelectMenu
           v-model="typeValue"
-          :options="options"
-          variant="none"
-          value-attribute="id"
-        />
+          v-bind="{
+            options,
+            variant: 'none',
+            valueAttribute: 'id',
+            uiMenu: { width: 'w-auto' },
+            popper: { offsetDistance: 12 }
+          }"
+        >
+          <div
+            class="flex items-center gap-2"
+            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
+          >
+            <span>
+              {{ selectedSymbol }}
+            </span>
+
+            <UIcon
+              :name="NuxtUiIcons.ChevronDown"
+              class="size-3 transition-all text-gray-500 -mb-0.5"
+            />
+          </div>
+
+          <template #option="{ option }">
+            <span
+              class="mr-1"
+              :data-cy="
+                option.id === TradeAmountOption.Base
+                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
+                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
+              "
+            >
+              {{ option.label }}
+            </span>
+          </template>
+        </USelectMenu>
       </template>
 
       <template #bottom>

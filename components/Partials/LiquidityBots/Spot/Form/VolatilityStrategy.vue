@@ -8,29 +8,29 @@ const { value: selectedStrategy } = useStringField({
   initialValue: VolatilityStrategyType.Passive
 })
 
-const options = [
+const options = computed(() => [
   {
-    label: t('liquidityBots.passive'),
+    label: t('tradingBots.liquidityBots.passive'),
     value: VolatilityStrategyType.Passive,
     img: '/svg/liquidity_passive.svg'
   },
   {
-    label: t('liquidityBots.moderate'),
+    label: t('tradingBots.liquidityBots.moderate'),
     value: VolatilityStrategyType.Moderate,
     img: '/svg/liquidity_moderate.svg'
   },
   {
-    label: t('liquidityBots.aggressive'),
+    label: t('tradingBots.liquidityBots.aggressive'),
     value: VolatilityStrategyType.Aggressive,
     img: '/svg/liquidity_aggressive.svg'
   }
-]
+])
 </script>
 
 <template>
   <div>
     <p class="text-sm font-semibold">
-      {{ $t('liquidityBots.volatilityStrategy') }}
+      {{ $t('tradingBots.liquidityBots.volatilityStrategy') }}
     </p>
 
     <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">

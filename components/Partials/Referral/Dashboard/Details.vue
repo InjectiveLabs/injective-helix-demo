@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 
 const siteFullUrl = useRequestURL()
@@ -33,7 +32,7 @@ const referralLink = computed(
 function copyReferral() {
   copy(referralLink.value).then(() =>
     notificationStore.success({
-      title: t('referral.referralLinkCopied')
+      title: t('toast.referral.referralLinkCopied')
     })
   )
 }
@@ -121,13 +120,14 @@ function shareReferralLink() {
                 v-if="item.isUsdValue"
                 class="text-2xl font-semibold break-all relative z-[3]"
               >
-                $<AppUsdAmount
+                <SharedAmountUsd
                   v-bind="{
-                    amount: item.value.toFixed(),
-                    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                    shouldAbbreviate: false,
+                    amount: item.value.toFixed()
                   }"
-                />
-                USD
+                >
+                  <template #prefix>$</template>
+                </SharedAmountUsd>
               </span>
               <p v-else class="text-2xl font-semibold relative z-[3]">
                 {{ item.value }}

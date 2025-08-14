@@ -7,14 +7,16 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   IsSpotKey,
   MarketKey,
+  TradeSubPagePath,
   IsRWAMarketOpenKey,
   PortfolioStatusKey,
-  UiDerivativeMarket,
   MarkPriceStatusKey
 } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 const route = useRoute()
 const jsonStore = useSharedJsonStore()
+const referralStore = useReferralStore()
 const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const gridStrategyStore = useGridStrategyStore()
@@ -30,13 +32,34 @@ const portfolioStatus = inject(
 const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
-const market = computed(() =>
-  derivativeStore.markets.find(
-    (market) =>
-      market.slug === route.params.slug ||
-      market.marketId === route.query.marketId
+const market = computed(() => {
+  const iAssetsMarkets = derivativeStore.marketsWithSummary.reduce(
+    (acc, { market }) => {
+      if (
+        (jsonStore?.helixMarketCategoriesMap?.iAssets || []).includes(
+          market.marketId
+        )
+      ) {
+        acc.push(market as UiDerivativeMarket)
+      }
+
+      return acc
+    },
+    [] as UiDerivativeMarket[]
   )
-)
+
+  if (
+    iAssetsMarkets.length > 0 &&
+    route.path.startsWith(TradeSubPagePath.Stocks)
+  ) {
+    return iAssetsMarkets[0]
+  }
+
+  return (
+    derivativeStore.marketByIdOrSlug(route.params.slug as string) ||
+    derivativeStore.marketByIdOrSlug(route.query.marketId as string)
+  )
+})
 
 useDerivativeOrderbook(computed(() => market.value))
 
@@ -60,7 +83,7 @@ onMounted(async () => {
 
   if (!isRWAMarketOpenStatus) {
     notificationStore.warning({
-      title: t('trade.rwa.marketClosedToast')
+      title: t('toast.trade.rwaMarketClosedToast')
     })
   }
 
@@ -73,15 +96,23 @@ onWalletConnected(async () => {
   }
 
   if (!market.value) {
-    return navigateTo({
-      name: 'futures-slug',
-      params: { slug: 'btc-usdt-perp' }
-    })
+    const routeQuery = route.query
+
+    if (!route.path.startsWith(TradeSubPagePath.Stocks)) {
+      return navigateTo({
+        name: 'futures-slug',
+        params: { slug: 'btc-usdt-perp' },
+        ...(routeQuery && { query: routeQuery })
+      })
+    } else {
+      return
+    }
   }
 
   status.setLoading()
 
   Promise.all([
+    referralStore.fetchUserReferralDetails(),
     derivativeStore.fetchTrades({
       marketId: market.value.marketId,
       executionSide: TradeExecutionSide.Taker
@@ -113,8 +144,8 @@ onWalletConnected(async () => {
     marketIds: [
       ...new Set([
         market.value.marketId,
-        ...positionStore.positions.map(({ marketId }) => marketId),
-        ...gridStrategyStore.strategies.map(({ marketId }) => marketId)
+        ...gridStrategyStore.strategies.map(({ marketId }) => marketId),
+        ...positionStore.positions.map(({ marketId }) => marketId)
       ])
     ]
   })
@@ -136,7 +167,6 @@ useHead({
 })
 
 onUnmounted(() => {
-  derivativeStore.reset()
   derivativeStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
 })

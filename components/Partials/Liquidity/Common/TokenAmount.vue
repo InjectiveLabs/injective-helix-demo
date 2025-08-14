@@ -1,16 +1,18 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
+    index: number
     amount: string
     symbol: string
-    index: number
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 
-const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
+const token = computed(() =>
+  sharedTokenStore.tokenByDenomOrSymbol(props.symbol)
+)
 </script>
 
 <template>
@@ -18,9 +20,11 @@ const token = computed(() => tokenStore.tokenByDenomOrSymbol(props.symbol))
     <p v-if="index > 0">+</p>
     <CommonTokenIcon is-sm v-bind="{ token }" />
     <p class="text-coolGray-400 text-xs flex">
-      <AppAmount
+      <SharedAmount
         v-bind="{
-          amount: amount
+          amount: amount,
+          useSubscript: true,
+          shouldAbbreviate: false
         }"
       />
       <span class="ml-1">{{ symbol }}</span>

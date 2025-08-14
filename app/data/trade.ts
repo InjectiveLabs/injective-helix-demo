@@ -1,10 +1,10 @@
+import { usdtToken } from '@shared/data/token'
+import { MsgType } from '@injectivelabs/ts-types'
+import { SWAP_CONTRACT_ADDRESS } from '../utils/constants'
 import {
   NEPTUNE_USDT_CW20_CONTRACT,
   ContractExecutionCompatAuthz
 } from '@injectivelabs/sdk-ts'
-import { MsgType } from '@injectivelabs/ts-types'
-import { usdtToken } from '@shared/data/token'
-import { SWAP_CONTRACT_ADDRESS } from '../utils/constants'
 
 export const TRADING_MESSAGES = [
   MsgType.MsgCancelSpotOrder,

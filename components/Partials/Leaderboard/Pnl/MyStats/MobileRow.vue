@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { LeaderboardRow } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
+import { getExplorerUrl } from '@shared/utils/network'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { sharedEllipsisFormatText } from '@shared/utils/formatter'
 import {
   DEFAULT_TRUNCATE_LENGTH,
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
+import type { LeaderboardRow } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
@@ -24,13 +27,7 @@ const formattedAddress = computed(() =>
   sharedEllipsisFormatText(props.leader.account, DEFAULT_TRUNCATE_LENGTH)
 )
 
-const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
-  useSharedBigNumberFormatter(
-    computed(() => props.leader.pnl),
-    {
-      decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-    }
-  )
+const pnlToBigNumber = computed(() => new BigNumberInBase(props.leader.pnl))
 </script>
 
 <template>
@@ -49,7 +46,14 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
         {{ $t('leaderboard.header.address') }}
       </div>
 
-      <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+      <NuxtLink
+        target="_blank"
+        class="flex items-center gap-2"
+        :to="`${getExplorerUrl()}/account/${leader.account}`"
+      >
+        <div class="font-medium text-sm leading-5">{{ formattedAddress }}</div>
+        <UIcon class="size-4" :name="NuxtUiIcons.ExternalLink2" />
+      </NuxtLink>
 
       <div class="flex justify-between mt-3">
         <div class="flex flex-col items-start gap-y-1">
@@ -57,7 +61,18 @@ const { valueToString: pnlToFormat, valueToBigNumber: pnlToBigNumber } =
             {{ $t('leaderboard.header.tradingPnl') }}
           </div>
           <div class="font-medium text-sm">
-            {{ `${pnlToBigNumber.gte(0) ? '+' : ''}${pnlToFormat}` }}
+            <SharedAmount
+              v-bind="{
+                amount: leader.pnl,
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+              }"
+            >
+              <template #prefix>
+                {{ `${pnlToBigNumber.gte(0) ? '+' : ''}` }}
+              </template>
+            </SharedAmount>
           </div>
         </div>
       </div>

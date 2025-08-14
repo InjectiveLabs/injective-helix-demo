@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { SpotOpenOrdersFilterField } from '@/types'
 
+const sharedDerivativeStore = useSharedDerivativeStore()
+
 const emit = defineEmits<{
-  'market:update': [market: string]
   'form:reset': []
+  'market:update': [market: string]
 }>()
 
 const { value: marketValue } = useStringField({
   name: SpotOpenOrdersFilterField.Market,
   rule: ''
 })
-
-const derivativeStore = useDerivativeStore()
 
 function onMarketChange(market: string) {
   emit('market:update', market)
@@ -24,11 +24,13 @@ function onFormReset() {
 
 <template>
   <div class="h-header flex">
-    <CommonSubaccountTabSelector />
+    <CommonSubaccountTabSelector
+      v-bind="{ includeBotsSubaccounts: true, showLowBalance: true }"
+    />
 
     <div class="flex divide-x border-r">
       <CommonTabMarketSelector
-        v-bind="{ markets: derivativeStore.markets }"
+        v-bind="{ markets: sharedDerivativeStore.marketsWithToken }"
         v-model="marketValue"
         @update:model-value="onMarketChange"
       />

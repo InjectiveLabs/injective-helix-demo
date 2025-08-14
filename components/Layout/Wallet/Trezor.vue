@@ -1,17 +1,18 @@
 <script lang="ts" setup>
+import { NuxtUiIcons } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { getEthereumAddress } from '@injectivelabs/sdk-ts'
-import { SharedDropdownOption, NuxtUiIcons } from '@shared/types'
+import type { SharedDropdownOption } from '@shared/types'
 
-const toast = useToast()
 const walletStore = useWalletStore()
 const sharedWalletStore = useSharedWalletStore()
+const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
 const { handleSubmit } = useForm()
 
-const options = [
+const options = computed<SharedDropdownOption[]>(() => [
   {
     display: t('connect.trezor'),
     value: Wallet.TrezorBip32
@@ -20,7 +21,7 @@ const options = [
     display: t('connect.trezorBip44'),
     value: Wallet.TrezorBip44
   }
-] as SharedDropdownOption[]
+])
 
 const wallet = ref<Wallet>(Wallet.TrezorBip32)
 const status = reactive(new Status(StatusType.Idle))
@@ -64,8 +65,8 @@ const connect = handleSubmit(() => {
       address: address.value
     })
     .then(() =>
-      toast.add({
-        title: t('connect.successfullyConnected')
+      notificationStore.success({
+        title: t('toast.connectedSuccessfully')
       })
     )
     .catch((e) => {
@@ -156,7 +157,7 @@ const connect = handleSubmit(() => {
         size="lg"
         @click="connect"
       >
-        {{ $t('connect.connect') }}
+        {{ $t('common.connect') }}
       </AppButton>
     </div>
 

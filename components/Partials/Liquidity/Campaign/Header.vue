@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { Campaign } from '@injectivelabs/sdk-ts'
+import { NuxtUiIcons } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   sharedToBalanceInToken,
   sharedToBalanceInTokenInBase
 } from '@shared/utils/formatter'
-import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { LiquidityRewardsPage, UiMarketWithToken } from '@/types'
+import { LiquidityRewardsPage } from '@/types'
+import type { UiMarketWithToken } from '@/types'
+import type { Campaign } from '@injectivelabs/sdk-ts'
 
 const props = withDefaults(
   defineProps<{
-    market: UiMarketWithToken
     campaign: Campaign
+    market: UiMarketWithToken
   }>(),
   {}
 )
 
-const tokenStore = useTokenStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 
 const rewardsWithToken = computed(() => {
   return props.campaign.rewards.map((reward) => {
-    const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+    const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
     return {
       token,
@@ -35,41 +35,32 @@ const rewardsWithToken = computed(() => {
   })
 })
 
-const { valueToString: totalRewardsInUsdToString } =
-  useSharedBigNumberFormatter(
-    computed(() => {
-      return props.campaign.rewards.reduce((total, reward) => {
-        const token = tokenStore.tokenByDenomOrSymbol(reward.denom)
+const totalRewardsInUsd = computed(() => {
+  return props.campaign.rewards.reduce((total, reward) => {
+    const token = sharedTokenStore.tokenByDenomOrSymbol(reward.denom)
 
-        if (!token) {
-          return total
-        }
+    if (!token) {
+      return total
+    }
 
-        const rewardInBase = sharedToBalanceInToken({
-          value: reward.amount,
-          decimalPlaces: token.decimals
-        })
+    const rewardInBase = sharedToBalanceInTokenInBase({
+      value: reward.amount,
+      decimalPlaces: token.decimals
+    })
 
-        const rewardInUsd = new BigNumberInBase(rewardInBase).times(
-          tokenStore.tokenUsdPrice(token)
-        )
+    const rewardInUsd = rewardInBase.times(
+      sharedTokenStore.tokenUsdPrice(token)
+    )
 
-        return total.plus(rewardInUsd)
-      }, ZERO_IN_BASE)
-    }),
-    { decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS }
-  )
+    return total.plus(rewardInUsd)
+  }, ZERO_IN_BASE)
+})
 
-const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
-  computed(() =>
-    sharedToBalanceInTokenInBase({
-      value: props.campaign.totalScore,
-      decimalPlaces: props.market.quoteToken.decimals
-    }).times(tokenStore.tokenUsdPrice(props.market.quoteToken))
-  ),
-  {
-    decimalPlaces: UI_DEFAULT_MIN_DISPLAY_DECIMALS
-  }
+const volumeInUsd = computed(() =>
+  sharedToBalanceInTokenInBase({
+    value: props.campaign.totalScore,
+    decimalPlaces: props.market.quoteToken.decimals
+  }).times(sharedTokenStore.tokenUsdPrice(props.market.quoteToken))
 )
 </script>
 
@@ -81,7 +72,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
         class="flex items-center space-x-2"
       >
         <UIcon :name="NuxtUiIcons.ArrowLeft" class="h-6 w-6 min-w-6" />
-        <p>{{ $t('campaign.title') }}</p>
+        <p>{{ $t('lpRewards.title') }}</p>
       </NuxtLink>
     </div>
 
@@ -101,7 +92,7 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
           :to="{ name: LiquidityRewardsPage.Dashboard }"
           class="block leading-5 py-2 px-5 font-semibold whitespace-nowrap bg-blue-500 text-blue-900 border-blue-500 hover:bg-blue-600 border rounded-lg"
         >
-          {{ $t('campaign.myRewards') }}
+          {{ $t('lpRewards.myRewards') }}
         </NuxtLink>
       </div>
     </div>
@@ -109,10 +100,16 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.rewardsRound') }}
+          {{ $t('lpRewards.rewardsRound') }}
         </p>
         <h3 class="text-xl font-semibold">
-          {{ totalRewardsInUsdToString }} USD
+          <SharedAmountUsd
+            v-bind="{
+              shouldAbbreviate: false,
+              amount: totalRewardsInUsd
+            }"
+          />
+          USD
         </h3>
         <div class="flex items-center space-x-2">
           <template v-for="(reward, index) in rewardsWithToken" :key="index">
@@ -130,9 +127,19 @@ const { valueToString: volumeInUsdToString } = useSharedBigNumberFormatter(
 
       <div class="border rounded-md p-4">
         <p class="text-xs uppercase text-coolGray-500 mb-2">
-          {{ $t('campaign.volume') }}
+          {{ $t('lpRewards.volume') }}
         </p>
-        <h3 class="text-xl font-semibold">{{ volumeInUsdToString }} USD</h3>
+        <h3 class="text-xl font-semibold">
+          <SharedAmountUsd
+            v-bind="{
+              hideDecimals: true,
+              amount: volumeInUsd,
+              shouldAbbreviate: false,
+              roundingMode: BigNumberInBase.ROUND_UP
+            }"
+          />
+          USD
+        </h3>
       </div>
     </div>
   </div>

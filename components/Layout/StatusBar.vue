@@ -1,22 +1,36 @@
 <script setup lang="ts">
 import { TradeSubPage } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
-const tokenStore = useTokenStore()
+const spotStore = useSpotStore()
+const derivativeStore = useDerivativeStore()
+const sharedTokenStore = useSharedTokenStore()
+const sharedWalletStore = useSharedWalletStore()
 
 const markets = ref<[string, number][]>([])
 
 const isLoaded = computed(
-  () => Object.keys(tokenStore.tokenUsdPriceMap).length > 0
+  () => Object.keys(sharedTokenStore.tokenUsdPriceMap).length > 0
 )
+
+const tradableTokens = computed(() => {
+  const denoms = [
+    ...new Set([...derivativeStore.tradableDenoms, ...spotStore.tradableDenoms])
+  ]
+
+  return denoms
+    .map((denom) => sharedTokenStore.tokenByDenomOrSymbol(denom))
+    .filter((token) => token) as TokenStatic[]
+})
 
 onMounted(async () => {
   await until(isLoaded).toBe(true)
 
-  markets.value = tokenStore.tradeableTokens
+  markets.value = tradableTokens.value
     .map<[string, number]>((token) => [
       token.symbol,
-      tokenStore.tokenUsdPrice(token)
+      sharedTokenStore.tokenUsdPrice(token)
     ])
     .filter(([_, price]) => Number(price) > 0.001)
     .sort(() => Math.random() - 0.5)
@@ -35,7 +49,10 @@ onMounted(async () => {
           : 'border-t'
       ]"
     >
-      <div class="w-2 h-2 rounded-full bg-green-500 mr-2" />
+      <div
+        class="w-2 h-2 rounded-full mr-2"
+        :class="[sharedWalletStore.isEip712 ? 'bg-orange-500' : 'bg-green-500']"
+      />
       <div class="divide-x-2 border-white flex">
         <div class="px-2">
           {{ $t('footer.operational') }}

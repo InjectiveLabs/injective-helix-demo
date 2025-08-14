@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { UiDerivativeMarket } from '@/types'
+import { PerpetualMarketCyTags } from '@/types';
+import type { UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
-    isTpDisabled: boolean
     market: UiDerivativeMarket
     takeProfitErrorMessage?: string
   }>(),
@@ -30,7 +30,6 @@ const takeProfitValue = computed({
     </h5>
 
     <AppInputField
-      v-if="!isTpDisabled"
       v-model="takeProfitValue"
       v-bind="{
         noStyle: true,
@@ -38,11 +37,16 @@ const takeProfitValue = computed({
         placeholder: '0.00',
         decimals: market.priceDecimals,
         inputClasses:
-          'placeholder-coolGray-450 text-sm font-mono p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
+          'placeholder-coolGray-450 text-sm p-4 ring-[#181E31] dark:bg-brand-875 dark:rounded-lg'
       }"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlEditFormTakeProfitTriggerPrice)"
     />
 
-    <p v-if="takeProfitErrorMessage" class="error-message">
+    <p
+      v-if="takeProfitErrorMessage"
+      class="error-message"
+      :data-cy="dataCyTag(PerpetualMarketCyTags.TpSlFormTakeProfitErrorMessage)"
+    >
       {{ takeProfitErrorMessage }}
     </p>
   </div>

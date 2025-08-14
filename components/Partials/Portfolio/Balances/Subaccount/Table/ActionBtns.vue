@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Modal, BusEvents, PortfolioSubPage } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -17,8 +17,8 @@ const props = withDefaults(
   {}
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
 function onTransfer() {
@@ -38,7 +38,11 @@ function onTransfer() {
         isTablePopover ? 'lg:flex-col lg:gap-1.5' : 'lg:gap-2'
       ]"
     >
-      <template v-if="sharedWalletStore.wallet !== Wallet.Magic">
+      <template
+        v-if="
+          ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+        "
+      >
         <PartialsCommonBridgeRedirection
           v-if="isBridgable"
           v-bind="{
@@ -51,7 +55,7 @@ function onTransfer() {
             :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
             size="sm"
           >
-            {{ $t('account.deposit') }}
+            {{ $t('common.deposit') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
 
@@ -68,7 +72,7 @@ function onTransfer() {
             "
             size="sm"
           >
-            {{ $t('account.withdraw') }}
+            {{ $t('common.withdraw') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
 
@@ -80,7 +84,7 @@ function onTransfer() {
           }"
         >
           <AppButton variant="primary-outline" size="sm" class="py-2">
-            {{ $t('account.transfer') }}
+            {{ $t('common.transfer') }}
           </AppButton>
         </PartialsCommonBridgeRedirection>
       </template>
@@ -90,9 +94,9 @@ function onTransfer() {
           class="max-lg:py-2 lg:w-full lg:leading-snug"
           :variant="lg && isTablePopover ? 'primary-ghost' : 'primary'"
           size="sm"
-          @click="onFiatOnRamp"
+          @click="onDeposit"
         >
-          {{ $t('account.deposit') }}
+          {{ $t('common.deposit') }}
         </AppButton>
 
         <AppButton
@@ -101,7 +105,7 @@ function onTransfer() {
           size="sm"
           @click="onTransfer"
         >
-          {{ $t('account.transfer') }}
+          {{ $t('common.transfer') }}
         </AppButton>
       </template>
     </div>
@@ -119,7 +123,7 @@ function onTransfer() {
         :to="{ name: PortfolioSubPage.Subaccounts }"
         size="sm"
       >
-        {{ $t('account.transfer') }}
+        {{ $t('common.transfer') }}
       </AppButton>
     </NuxtLink>
   </div>

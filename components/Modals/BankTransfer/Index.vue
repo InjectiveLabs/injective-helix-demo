@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { injToken } from '@shared/data/token'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { BusEvents, Modal, BankTransferField } from '@/types'
+import { Modal, BusEvents, BankTransferField } from '@/types'
 
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
@@ -59,8 +59,8 @@ async function onSubmit() {
       memo: transferFormValues[BankTransferField.MemoValue]
     })
     .then(() => {
-      notificationStore.success({
-        title: t('portfolio.bankTransfer.successful')
+      notificationStore.update({
+        title: t('toast.portfolio.bankTransferSuccessful')
       })
       resetForm()
       closeModal()

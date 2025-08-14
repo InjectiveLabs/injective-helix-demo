@@ -30,7 +30,7 @@ function onViewDetails() {
       />
 
       <AppButton v-else class="w-full" @click="onViewDetails">
-        {{ $t('sgt.viewDetails') }}
+        {{ $t('tradingBots.viewDetails') }}
       </AppButton>
     </div>
   </div>

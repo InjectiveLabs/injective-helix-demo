@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
-import { SpotOpenOrdersFilterField, SpotOpenOrdersFilterForm } from '@/types'
+import { SpotOpenOrdersFilterField } from '@/types'
+import type { SpotOpenOrdersFilterForm } from '@/types'
 
 const accountStore = useAccountStore()
 const derivativeStore = useDerivativeStore()
@@ -49,8 +50,8 @@ onSubaccountChange(fetchDerivativeOpenOrders)
       <div class="lg:min-w-[1200px] divide-y border-b">
         <CommonSkeletonRow
           v-if="status.isLoading()"
-          :height="57"
           :rows="10"
+          :height="57"
           :columns="8"
         />
 
@@ -63,7 +64,7 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 
           <CommonEmptyList
             v-if="!filteredOrders.length"
-            :message="'No Open Orders'"
+            :message="$t('trade.noOpenOrders')"
           />
         </template>
       </div>

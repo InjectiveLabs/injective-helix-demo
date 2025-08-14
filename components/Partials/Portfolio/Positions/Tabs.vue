@@ -2,9 +2,7 @@
 import { PositionsFilterField } from '@/types'
 
 const appStore = useAppStore()
-const derivativeStore = useDerivativeStore()
-
-const markets = computed(() => derivativeStore.markets)
+const sharedDerivativeStore = useSharedDerivativeStore()
 
 const { value: marketValue } = useStringField({
   name: PositionsFilterField.Market
@@ -18,12 +16,17 @@ const { value: sideValue } = useStringField({
 <template>
   <div class="lg:h-header lg:flex lg:divide-x">
     <CommonSubaccountTabSelector
-      :include-bots-subaccounts="
-        appStore.userState.preferences.showGridTradingSubaccounts
-      "
+      v-bind="{
+        includeBotsSubaccounts:
+          appStore.userState.preferences.showGridTradingSubaccounts,
+        showLowBalance: true
+      }"
     />
 
-    <CommonTabMarketSelector v-model="marketValue" v-bind="{ markets }" />
+    <CommonTabMarketSelector
+      v-model="marketValue"
+      v-bind="{ markets: sharedDerivativeStore.marketsWithToken }"
+    />
     <CommonTabSideFilter v-model="sideValue" />
     <CommonTabFormReset />
 
