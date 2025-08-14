@@ -155,21 +155,16 @@ export default {
       },
 
       onboarding: {
+        buyInjWithCard: 'Buy INJ with Card',
         injectiveBridge: 'Injective Bridge',
         processing: 'Processing your transfer',
         closeAndContinue: 'Close and continue',
         success: 'Your transaction has been confirmed',
-        depositInjNetworkAsset: 'Deposit INJ Network Assets',
+        depositUsdtFromEthereum: 'Deposit USDT from Ethereum',
         processingMessage:
           'Processing is taking more than usual. Please wait for a while.',
-        depositNowDescription:
-          'You can transfer INJ from anywhere the INJ network is supported, including some exchanges.',
         processingMessageInfo:
-          'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the ',
-        qr: {
-          bridge: 'Bridge',
-          cta: 'Buy INJ with Card'
-        }
+          'Your transfer is being processed in the background, and you can safely close this modal. You can check the bridged amount on the balances page or by viewing your bridge history on the '
       }
     }
   },

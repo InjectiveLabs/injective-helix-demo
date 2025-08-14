@@ -1836,21 +1836,16 @@ export default {
           '이는 독점적인 Injective 이벤트, 제품, 경품 및 더 많은 놀라움에 대한 게이트웨이 역할을 할 것입니다.'
       },
       onboarding: {
+        buyInjWithCard: '카드로 INJ 구매',
         injectiveBridge: 'Injective 브릿지',
         processing: '전송 처리 중',
         closeAndContinue: '닫고 계속',
         success: '거래가 확인되었습니다',
-        depositInjNetworkAsset: 'INJ 네트워크 자산 입금',
+        depositUsdtFromEthereum: '이더리움에서 USDT 입금',
         processingMessage:
           '처리가 평소보다 오래 걸리고 있습니다. 잠시만 기다려주세요.',
-        depositNowDescription:
-          '일부 거래소를 포함하여 INJ 네트워크가 지원되는 어디서든 INJ를 전송할 수 있습니다.',
         processingMessageInfo:
-          '전송이 백그라운드에서 처리되고 있으며 이 모달을 안전하게 닫을 수 있습니다. 잔액 페이지에서 브릿지된 금액을 확인하거나 브릿지 내역을 확인할 수 있습니다 ',
-        qr: {
-          bridge: '브릿지',
-          cta: '카드로 INJ 구매'
-        }
+          '전송이 백그라운드에서 처리되고 있으며 이 모달을 안전하게 닫을 수 있습니다. 잔액 페이지에서 브릿지된 금액을 확인하거나 브릿지 내역을 확인할 수 있습니다 '
       }
     }
   },

@@ -53,8 +53,8 @@ const { valueToFixed: spotBalanceInUsdToFixed } = useSharedBigNumberFormatter(
   )
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 </script>
 
@@ -120,7 +120,7 @@ function onFiatOnRamp() {
         variant: 'primary-outline'
       }"
       class="w-full"
-      @click="onFiatOnRamp"
+      @click="onDeposit"
     >
       {{ $t('common.deposit') }}
     </AppButton>
