@@ -68,15 +68,16 @@ export const TRADING_OPTIONS = [
     label: 'navigation.leaderboard'
   },
   {
-    isOpenDepositModal: true,
-    label: 'navigation.more.deposit'
+    isConnectedOnly: true,
+    label: 'navigation.more.referral',
+    to: { name: MainPage.Referral }
   }
 ]
 
-export const REFERRAL_ITEM = {
-  isConnectedOnly: true,
-  label: 'navigation.more.referral',
-  to: { name: MainPage.Referral }
+export const FEATURED_NAV_ITEM = {
+  children: [],
+  isOpenDepositModal: true,
+  label: 'navigation.more.deposit'
 }
 
 export const PORTFOLIO_MENU_ITEMS: MenuItem[] = [
@@ -175,7 +176,7 @@ export const getMobileMenuItems = () =>
       children: PORTFOLIO_MENU_ITEMS
     },
     ...TRADING_OPTIONS,
-    REFERRAL_ITEM,
+    FEATURED_NAV_ITEM,
     {
       isExpandable: true,
       children: getMoreMenu(),
