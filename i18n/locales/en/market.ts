@@ -11,7 +11,7 @@ export default {
     closePositionWarningTitle: 'High price impact detected',
     indexMarketTooltip:
       'This market follows the {label}. More details can be found {link}.',
-    buidlTooltip:
+    docsTooltip:
       'This product is an Index Perp. For more information, please refer to the {docs}.',
     closePositionWarningDescription:
       'Closing this open position with a market order may result in an unfavorable execution price. You may want to consider closing with a limit order instead.',

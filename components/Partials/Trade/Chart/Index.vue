@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { MARKETS_POWERED_BY_STORK } from '@/app/data/marketInfo'
+import {
+  MARKETS_POWERED_BY_STORK,
+  MARKETS_POWERED_BY_SQUARETOWER
+} from '@/app/data/marketInfo'
 import { intervalOptions, LIGHT_CHART_MARKET_IDS } from '@/app/utils/constants'
 import type { UiMarketWithToken } from '@/types'
 import { ChartViewOption, BusEvents, SpotMarketCyTags } from '@/types'
@@ -29,6 +32,10 @@ function setInterval(index: string) {
 
 const isStorkPowered = computed(() =>
   MARKETS_POWERED_BY_STORK.includes(props.market.marketId)
+)
+
+const isSquaretowerPowered = computed(() =>
+  MARKETS_POWERED_BY_SQUARETOWER.includes(props.market.marketId)
 )
 
 const isLightChartMarket = computed(() =>
@@ -71,6 +78,17 @@ const isLightChartMarket = computed(() =>
                 class="size-4 rounded"
               />
             </a>
+          </div>
+
+          <div v-if="isSquaretowerPowered" class="flex items-center">
+            <NuxtLink
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://squaretower.xyz/"
+              class="text-green-400 text-xs font-semibold px-4 py-2 hover:text-white"
+            >
+              Powered By Squaretower
+            </NuxtLink>
           </div>
         </div>
       </div>

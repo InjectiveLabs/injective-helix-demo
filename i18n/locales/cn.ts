@@ -686,8 +686,8 @@ export default {
     newMarkets: '🐤 新市场',
     topGainers: '🚀 涨幅榜',
     closePositionWarningTitle: '检测到较大价格冲击',
+    docsTooltip: '本产品为指数永续合约。详细信息请参考 {docs}。',
     indexMarketTooltip: '该市场跟踪 {label}。更多详情请见 {link}。',
-    buidlTooltip: '本产品为指数永续合约。详细信息请参考 {docs}。',
     closePositionWarningDescription:
       '使用市价单平仓可能导致不利的成交价格。建议考虑使用限价单进行平仓。',
     '2024ElectionTooltip':
