@@ -48,14 +48,13 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
 
 const hasDocsTooltip = computed(
   () =>
-    // TODO: Update market slug to H100/USDT perp when it's live
     props.market.slug === 'ton-usdt-perp' ||
+    props.market.slug === 'h100-usdt-perp' ||
     props.market.slug === 'buidl-usdt-perp'
 )
 
 const docsUrl = computed(() => {
-  // TODO: Update market slug to H100/USDT perp when it's live
-  if (props.market.slug === 'ton-usdt-perp') {
+  if (props.market.slug === 'h100-usdt-perp') {
     return 'https://docs.helixapp.com/trading/perpetuals/nvidia-h100-hourly-perp-h100'
   }
 

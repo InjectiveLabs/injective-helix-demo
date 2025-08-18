@@ -223,8 +223,7 @@ export const MARKETS_POWERED_BY_STORK = [
 ]
 
 export const MARKETS_POWERED_BY_SQUARETOWER = [
-  // TODO: Update market ID when it's live
-  '0xc4068b76801bf8988b5372c64d611ce2a477f85512e5ec55270c426176bc73e2'
+  '0x56cb0ef0b9d59125373112523b0adfc446dff989268547fa1a3379a6f98f5efd'
 ]
 
 export const HELIX_APP_STORE_LINK =
