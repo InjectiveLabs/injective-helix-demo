@@ -39,4 +39,4 @@ jobs:
         run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git pull'
 
       - name: Build app
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines && yarn clean-up && yarn generate'
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && pnpm install && pnpm clean-up && pnpm generate'

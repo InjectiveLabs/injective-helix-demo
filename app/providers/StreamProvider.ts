@@ -1,13 +1,12 @@
-/* eslint-disable no-console */
 import { differenceInSeconds } from 'date-fns'
+import { StreamType } from '@/types'
 import type { StreamStatusResponse } from '@injectivelabs/ts-types'
-import {
+import type { portfolioStream } from '@/app/client/streams/bank'
+import type { spotMarketStream } from '@/app/client/streams/spot'
+import type {
   oracleStream,
   derivativesMarketStream
 } from '@/app/client/streams/derivatives'
-import { portfolioStream } from '@/app/client/streams/bank'
-import { spotMarketStream } from '@/app/client/streams/spot'
-import { StreamType } from '@/types'
 
 type StreamFn =
   | typeof oracleStream.streamOraclePrices
@@ -54,7 +53,7 @@ const streamRefreshInterval: Partial<Record<StreamType, number>> = {
 export class StreamProvider {
   public streamManager: Map<
     StreamType,
-    { fn: Function; stream: Stream; args: any; updatedAt: number }
+    { args: any; fn: Function; stream: Stream; updatedAt: number }
   >
 
   private reconnectCount: Record<string, number> = {}
@@ -63,7 +62,7 @@ export class StreamProvider {
     this.streamManager = new Map()
   }
 
-  subscribe({ fn, key, args }: { fn: StreamFn; key: StreamType; args: any }) {
+  subscribe({ fn, key, args }: { args: any; fn: StreamFn; key: StreamType }) {
     if (this.streamManager.has(key)) {
       return
     }
@@ -105,6 +104,25 @@ export class StreamProvider {
     })
   }
 
+  public healthCheck() {
+    ;[...this.streamManager.keys()].forEach((key) => {
+      const stream = this.streamManager.get(key)
+
+      if (stream) {
+        const inactiveTimeInSeconds = differenceInSeconds(
+          new Date(),
+          stream.updatedAt
+        )
+        const refreshInterval =
+          streamRefreshInterval[key] || DEFAULT_REFRESH_INTERVAL
+
+        if (inactiveTimeInSeconds >= refreshInterval) {
+          this.reconnect(key)
+        }
+      }
+    })
+  }
+
   cancel(key: StreamType) {
     if (!this.exists(key)) {
       return
@@ -119,6 +137,17 @@ export class StreamProvider {
       stream.stream.unsubscribe()
     })
     this.streamManager = new Map()
+  }
+
+  private reconnectOnTimeout(key: StreamType, status?: StreamStatusResponse) {
+    if (this.getReconnectCount(key) <= MAX_RECONNECTION) {
+      setTimeout(() => {
+        this.reconnect(key)
+        this.incrementReconnectCount(key)
+      }, 1000)
+    } else if (status) {
+      console.error(JSON.stringify({ status }))
+    }
   }
 
   private reconnect(key: StreamType) {
@@ -138,46 +167,16 @@ export class StreamProvider {
     })
   }
 
-  private exists(key: StreamType) {
-    return this.streamManager.has(key)
+  private incrementReconnectCount(key: string) {
+    return (this.reconnectCount[key] = (this.reconnectCount[key] || 0) + 1)
   }
 
   private getReconnectCount(key: string) {
     return this.reconnectCount[key] || 0
   }
 
-  private incrementReconnectCount(key: string) {
-    return (this.reconnectCount[key] = (this.reconnectCount[key] || 0) + 1)
-  }
-
-  private reconnectOnTimeout(key: StreamType, status?: StreamStatusResponse) {
-    if (this.getReconnectCount(key) <= MAX_RECONNECTION) {
-      setTimeout(() => {
-        this.reconnect(key)
-        this.incrementReconnectCount(key)
-      }, 1000)
-    } else if (status) {
-      console.error(JSON.stringify({ status }))
-    }
-  }
-
-  public healthCheck() {
-    ;[...this.streamManager.keys()].forEach((key) => {
-      const stream = this.streamManager.get(key)
-
-      if (stream) {
-        const inactiveTimeInSeconds = differenceInSeconds(
-          new Date(),
-          stream.updatedAt
-        )
-        const refreshInterval =
-          streamRefreshInterval[key] || DEFAULT_REFRESH_INTERVAL
-
-        if (inactiveTimeInSeconds >= refreshInterval) {
-          this.reconnect(key)
-        }
-      }
-    })
+  private exists(key: StreamType) {
+    return this.streamManager.has(key)
   }
 }
 

@@ -1,9 +1,11 @@
-import { exchangeApi } from '@shared/Service'
-import { indexerGrpcCampaignApi } from '@/app/Services'
+import { getExchangeApi } from '@shared/Service'
+import { getIndexerGrpcCampaignApi } from '@/app/Services'
 import { GUILD_CONTRACT_ADDRESS } from '@/app/utils/constants'
 import { GuildSortBy } from '@/types'
 
 export const fetchUserIsOptedOutOfRewards = async () => {
+  const exchangeApi = await getExchangeApi()
+
   const campaignStore = useCampaignStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -21,6 +23,8 @@ export const fetchUserIsOptedOutOfRewards = async () => {
 }
 
 export const fetchGuildsByTVL = async () => {
+  const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
   const campaignStore = useCampaignStore()
 
   const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
@@ -36,6 +40,8 @@ export const fetchGuildsByTVL = async () => {
 }
 
 export const fetchGuildsByVolume = async () => {
+  const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
   const campaignStore = useCampaignStore()
 
   const { guilds, summary } = await indexerGrpcCampaignApi.fetchGuilds({
@@ -51,6 +57,8 @@ export const fetchGuildsByVolume = async () => {
 }
 
 export const fetchUserGuildInfo = async () => {
+  const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
   const campaignStore = useCampaignStore()
   const sharedWalletStore = useSharedWalletStore()
 
@@ -84,6 +92,8 @@ export const fetchGuildDetails = async ({
   sortBy?: string
   guildId: string
 }) => {
+  const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
   const campaignStore = useCampaignStore()
 
   const { members, guildInfo, paging } =
@@ -114,6 +124,8 @@ export const pollGuildDetails = async ({
   sortBy: string
   guildId: string
 }) => {
+  const indexerGrpcCampaignApi = await getIndexerGrpcCampaignApi()
+
   const campaignStore = useCampaignStore()
 
   const { members, guildInfo, paging } =

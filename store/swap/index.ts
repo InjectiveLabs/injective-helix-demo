@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { IS_MAINNET } from '@shared/utils/constant'
-import { wasmApi, indexerSpotApi } from '@shared/Service'
+import { getWasmApi, getIndexerSpotApi } from '@shared/Service'
 import {
   QueryAllRoutes,
   QueryInputQuantity,
@@ -14,8 +14,8 @@ import {
   submitAtomicOrder,
   submitAtomicOrderExactOutput
 } from '@/store/swap/message'
-import type { TokenAndPriceAndDecimals } from '@/types'
 import type { Route, AtomicSwap, QuantityAndFees } from '@injectivelabs/sdk-ts'
+import type { TokenAndPriceAndDecimals } from '@/types'
 
 type SwapStoreState = {
   swapRoutes: Route[]
@@ -57,6 +57,8 @@ export const useSwapStore = defineStore('swap', {
     submitAtomicOrderExactOutput,
 
     async fetchRoutes() {
+      const wasmApi = await getWasmApi()
+
       const swapStore = useSwapStore()
       const jsonStore = useSharedJsonStore()
 
@@ -94,6 +96,8 @@ export const useSwapStore = defineStore('swap', {
       inputToken: TokenAndPriceAndDecimals
       outputToken: TokenAndPriceAndDecimals
     }) {
+      const wasmApi = await getWasmApi()
+
       const swapStore = useSwapStore()
 
       /* Reset */
@@ -133,6 +137,8 @@ export const useSwapStore = defineStore('swap', {
       inputToken: TokenAndPriceAndDecimals
       outputToken: TokenAndPriceAndDecimals
     }) {
+      const wasmApi = await getWasmApi()
+
       const swapStore = useSwapStore()
 
       /* Reset */
@@ -169,6 +175,8 @@ export const useSwapStore = defineStore('swap', {
       skip?: number
       limit?: number
     } = {}) {
+      const indexerSpotApi = await getIndexerSpotApi()
+
       const swapStore = useSwapStore()
       const sharedWalletStore = useSharedWalletStore()
 

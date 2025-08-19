@@ -2,12 +2,8 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { calculateLeverage } from '@/app/utils/formatters'
-import {
-  IsSpotKey,
-  CommonCyTags,
-  UiMarketWithToken,
-  UiDerivativeMarket
-} from '@/types'
+import { IsSpotKey, CommonCyTags } from '@/types'
+import type { UiMarketWithToken, UiDerivativeMarket } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -24,8 +20,8 @@ const emit = defineEmits<{
 const isSpot = inject(IsSpotKey)
 const isLocked = useScrollLock(document.documentElement)
 
-const el = ref<HTMLElement | null>(null)
-const toggleEl = ref<HTMLElement | null>(null)
+const el = ref<null | HTMLElement>(null)
+const toggleEl = ref<null | HTMLElement>(null)
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -79,7 +75,9 @@ function closeMarketSection() {
   emit('update:isMarketOpen', false)
 }
 
-onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
+onClickOutside(el, closeMarketSection, {
+  ignore: [toggleEl]
+})
 </script>
 
 <template>
