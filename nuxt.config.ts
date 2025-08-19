@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     ...(isProduction && import.meta.env.NUXT_CLARITY_ID
       ? ['nuxt-clarity-analytics']
-    : [])
+      : [])
   ],
 
   imports: {
@@ -48,6 +48,18 @@ export default defineNuxtConfig({
         name: '中文',
         longName: '中文',
         file: './cn.ts'
+      },
+      {
+        code: 'kr',
+        name: 'Kr',
+        longName: '한국어',
+        file: './kr.ts'
+      },
+      {
+        code: 'tr',
+        name: 'Tr',
+        longName: 'Türkçe',
+        file: './tr.ts'
       }
     ]
   },
@@ -55,7 +67,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui'
-      : 'github:InjectiveLabs/injective-ui#feat/pnpm-build-ts'
+      : 'github:InjectiveLabs/injective-ui#master'
   ],
   // @ts-ignore
   site: {

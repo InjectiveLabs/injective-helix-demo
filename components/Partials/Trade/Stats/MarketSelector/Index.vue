@@ -42,9 +42,20 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
     }
   )
 
-const isBiudlPerpMarket = computed(
-  () => props.market.slug === 'buidl-usdt-perp'
+const hasDocsTooltip = computed(
+  () =>
+    props.market.slug === 'ton-usdt-perp' ||
+    props.market.slug === 'h100-usdt-perp' ||
+    props.market.slug === 'buidl-usdt-perp'
 )
+
+const docsUrl = computed(() => {
+  if (props.market.slug === 'h100-usdt-perp') {
+    return 'https://docs.helixapp.com/trading/perpetuals/nvidia-h100-hourly-perp-h100'
+  }
+
+  return 'https://docs.trading.injective.network/learn/index-perps'
+})
 
 const marketPriceMap = computed(() => ({
   [props.market.marketId]: isSpot
@@ -80,7 +91,7 @@ onClickOutside(el, closeMarketSection, {
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!isBiudlPerpMarket"
+            :is-disabled="!hasDocsTooltip"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
@@ -102,12 +113,12 @@ onClickOutside(el, closeMarketSection, {
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="isBiudlPerpMarket" keypath="markets.buidlTooltip">
+              <i18n-t v-if="hasDocsTooltip" keypath="markets.docsTooltip">
                 <template #docs>
                   <NuxtLink
+                    :to="docsUrl"
                     target="_blank"
                     class="text-blue-500 hover:text-opacity-90"
-                    to="https://docs.trading.injective.network/learn/index-perps"
                   >
                     {{ $t('common.docs') }}
                   </NuxtLink>

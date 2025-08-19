@@ -197,20 +197,6 @@ export const trackLiteBridgeBridged = ({
   })
 }
 
-export const trackQrCodePageView = (wallet: string, error?: string) => {
-  mixpanelAnalytics.track(MixPanelEvent.QrCodePageView, {
-    Wallet: wallet,
-    ...formatStatus(error)
-  })
-}
-
-export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
-  mixpanelAnalytics.track(MixPanelEvent.QrCodeBuyFunds, {
-    Wallet: wallet,
-    ...formatStatus(error)
-  })
-}
-
 export const trackTradingBotError = ({
   grids,
   wallet,
@@ -453,5 +439,17 @@ export const trackSharePnlDownload = ({
     'Modal Shown': isModalShown,
     'Wallet Address': walletAddress,
     'Download Clicked': isDownloadClicked
+  })
+}
+
+export const trackInitialSelectedLanguage = (language: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.InitialSelectedLanguage, {
+    'Selected Language': language
+  })
+}
+
+export const trackChangeSelectedLanguage = (language: string) => {
+  mixpanelAnalytics.track(MixPanelEvent.ChangeSelectedLanguage, {
+    'Selected Language': language
   })
 }

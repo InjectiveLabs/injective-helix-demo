@@ -40,6 +40,7 @@ export interface UserBasedState {
     isHideBalances: boolean
     futuresLeverage: string
     authZManagement: boolean
+    selectedLanguage: string
     thousandsSeparator: boolean
     chartZoomPreference: number
     tradingLayout: TradingLayout
@@ -88,6 +89,7 @@ const initialStateFactory = (): AppStoreState => ({
     marketSlippageIdMap: {},
 
     preferences: {
+      selectedLanguage: '',
       futuresLeverage: '1',
       isHideBalances: false,
       authZManagement: false,
@@ -241,6 +243,18 @@ export const useAppStore = defineStore('app', {
       })
     },
 
+    setSelectedLanguage(selectedLocale: string) {
+      const appStore = useAppStore()
+
+      appStore.setUserState({
+        ...appStore.userState,
+        preferences: {
+          ...appStore.userState.preferences,
+          selectedLanguage: selectedLocale
+        }
+      })
+    },
+
     setUserState(userState: object) {
       const appStore = useAppStore()
 
@@ -269,7 +283,11 @@ export const useAppStore = defineStore('app', {
         userState: {
           ...initialState.userState,
           dontShowAgain: appStore.userState.dontShowAgain,
-          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : []
+          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : [],
+          preferences: {
+            ...appStore.userState.preferences,
+            selectedLanguage: appStore.userState.preferences.selectedLanguage
+          }
         }
       })
 

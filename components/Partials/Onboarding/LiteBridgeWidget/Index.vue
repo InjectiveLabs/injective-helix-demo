@@ -16,8 +16,9 @@ declare global {
           wallet: string
           address: string
         }
-        onSuccess: (args: any) => any
         mock?: boolean
+        onSuccess: (args: any) => any
+        onBalanceFetched: (args: any) => any
       }
     ) => () => void
   }
@@ -25,10 +26,9 @@ declare global {
 
 const sharedWalletStore = useSharedWalletStore()
 
-withDefaults(defineProps<{ widgetClass?: string }>(), { widgetClass: '' })
-
 const emit = defineEmits<{
-  success: []
+  'on:success': []
+  'fiat:select': []
 }>()
 
 const isUmd = true
@@ -42,17 +42,17 @@ useHead({
     {
       rel: 'stylesheet',
       href: IS_TESTNET
-        ? 'https://unpkg.com/lite-bridge-widget-injective-test/dist/testnet/style.css'
-        : 'https://unpkg.com/lite-bridge-widget-injective-test/dist/mainnet/style.css'
+        ? 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/testnet/style.css'
+        : 'https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/mainnet/style.css'
     }
   ],
   script: [
     {
       src: IS_TESTNET
-        ? `https://unpkg.com/lite-bridge-widget-injective-test/dist/testnet/index.${
+        ? `https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/testnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`
-        : `https://unpkg.com/lite-bridge-widget-injective-test/dist/mainnet/index.${
+        : `https://unpkg.com/lite-bridge-widget-injective-test@0.0.12/dist/mainnet/index.${
             isUmd ? 'umd' : 'es'
           }.js`,
       type: 'module',
@@ -87,21 +87,41 @@ function mountWidget() {
         symbol: 'USDT'
       })
 
-      emit('success')
+      emit('on:success')
+    },
+    onBalanceFetched: () => {
+      status.setIdle()
     }
   })
+}
 
-  status.setIdle()
+function buyInjWithCard() {
+  emit('fiat:select')
 }
 </script>
 
 <template>
   <div class="min-h-[300px]" data-mode="dark">
     <AppHocLoading
-      wrapper-class="min-h-[300px]  flex items-center justify-center"
       v-bind="{ status }"
+      wrapper-class="min-h-[300px] flex items-center justify-center"
     />
 
-    <div id="widget-container" :class="widgetClass"></div>
+    <div
+      class="p-6 border border-[#42474E] rounded-lg"
+      :class="{ 'h-0 opacity-0 pointer-events-none': status.isLoading() }"
+    >
+      <div id="widget-container" />
+
+      <div class="mt-5">
+        <AppButton
+          variant="primary"
+          class="w-full px-4 py-2.5 text-sm font-medium rounded-lg bg-azure-blue-350 hover:bg-azure-blue-350/80 transition-colors ring-0 border-0"
+          @click="buyInjWithCard"
+        >
+          {{ $t('common.modal.onboarding.buyInjWithCard') }}
+        </AppButton>
+      </div>
+    </div>
   </div>
 </template>

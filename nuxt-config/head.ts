@@ -30,7 +30,7 @@ export default {
       as: 'font',
       rel: 'preload',
       type: 'font/woff2',
-      href: '/Inter.woff2',
+      href: '/Inter-Regular.woff2',
       crossorigin: 'anonymous'
     } as Record<string, string>
   ],
