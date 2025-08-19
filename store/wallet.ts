@@ -72,16 +72,21 @@ export const useWalletStore = defineStore('wallet', {
       const modalStore = useSharedModalStore()
       const sharedWalletStore = useSharedWalletStore()
 
-      if (wallet === Wallet.Metamask) {
-        await sharedWalletStore.connectMetamask()
+      if (
+        [
+          Wallet.Rabby,
+          Wallet.BitGet,
+          Wallet.Rainbow,
+          Wallet.Phantom,
+          Wallet.Metamask,
+          Wallet.OkxWallet
+        ].includes(wallet)
+      ) {
+        await sharedWalletStore.connectEvmWallet(wallet)
       }
 
-      if (wallet === Wallet.Keplr) {
-        await sharedWalletStore.connectKeplr()
-      }
-
-      if (wallet === Wallet.Leap) {
-        await sharedWalletStore.connectLeap()
+      if ([Wallet.Leap, Wallet.Keplr, Wallet.Ninji].includes(wallet)) {
+        await sharedWalletStore.connectCosmosWallet(wallet)
       }
 
       if ([Wallet.Ledger, Wallet.LedgerLegacy].includes(wallet) && address) {
@@ -89,14 +94,6 @@ export const useWalletStore = defineStore('wallet', {
           wallet,
           address
         })
-      }
-
-      if (wallet === Wallet.Phantom) {
-        await sharedWalletStore.connectPhantomWallet()
-      }
-
-      if (wallet === Wallet.Ninji) {
-        await sharedWalletStore.connectNinji()
       }
 
       if (wallet === Wallet.Cosmostation) {
@@ -110,23 +107,11 @@ export const useWalletStore = defineStore('wallet', {
         await sharedWalletStore.connectTrezor({ wallet, address })
       }
 
-      if (wallet === Wallet.BitGet) {
-        await sharedWalletStore.connectBitGet()
-      }
-
-      if (wallet === Wallet.OkxWallet) {
-        await sharedWalletStore.connectOkxWallet()
-      }
-
       if (wallet === Wallet.WalletConnect) {
         await sharedWalletStore.connectWalletConnect()
         await msgBroadcaster.setOptions({
           txTimeout: DEFAULT_BLOCK_TIMEOUT_HEIGHT * 5
         })
-      }
-
-      if (wallet === Wallet.Rainbow) {
-        await sharedWalletStore.connectRainbow()
       }
 
       accountStore.updateSubaccount(sharedWalletStore.defaultSubaccountId || '')

@@ -169,9 +169,9 @@ const persistState = (
   })
 }
 
-function piniaStoreSubscriber({ store }: PiniaPluginContext) {
+function piniaStoreSubscriber({ store, pinia }: PiniaPluginContext) {
   const localState = localStorage.get('state') as any
-  const sharedWalletStore = useSharedWalletStore()
+  const sharedWalletStore = useSharedWalletStore(pinia)
   const { $onError } = useNuxtApp()
 
   if (localState[store.$id]) {

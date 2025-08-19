@@ -132,10 +132,10 @@ function priceMapToAggregatedArray({
       const bPrice = new BigNumberInBase(b[0])
 
       if (isBuy) {
-        return bPrice.comparedTo(aPrice)
+        return bPrice.comparedTo(aPrice) as number
       }
 
-      return aPrice.comparedTo(bPrice)
+      return aPrice.comparedTo(bPrice) as number
     }
   )
 

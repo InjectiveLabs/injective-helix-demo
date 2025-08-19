@@ -7,8 +7,8 @@ import { MAX_QUOTE_DECIMALS } from '@/app/utils/constants'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
 import { errorMap, mapErrorToMessage } from '@/app/client/utils/swap'
 import { Modal, SwapCyTags, SwapFormField } from '@/types'
-import type { SwapForm } from '@/types'
 import type { ThrownException } from '@injectivelabs/exceptions'
+import type { SwapForm } from '@/types'
 
 definePageMeta({
   middleware: ['swap']

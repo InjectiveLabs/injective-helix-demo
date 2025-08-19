@@ -1,4 +1,4 @@
-import { indexerGrpcArchiverApi } from '@/app/Services'
+import { getIndexerGrpcArchiverApi } from '@/app/Services'
 import {
   fetchPnlLeaderboard,
   fetchCompetitionLeaderboard
@@ -42,6 +42,8 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalBalance(
       resolution: HistoricalPortfolioDuration = HistoricalPortfolioDuration.OneWeek
     ) {
+      const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -65,6 +67,8 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalPnl(
       resolution: HistoricalPortfolioDuration = HistoricalPortfolioDuration.OneWeek
     ) {
+      const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -88,6 +92,8 @@ export const useLeaderboardStore = defineStore('leaderboard', {
     async fetchHistoricalVolume(
       resolution: LeaderboardDuration = LeaderboardDuration.OneWeek
     ) {
+      const indexerGrpcArchiverApi = await getIndexerGrpcArchiverApi()
+
       const leaderboardStore = useLeaderboardStore()
       const sharedWalletStore = useSharedWalletStore()
 

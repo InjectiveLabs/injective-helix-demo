@@ -6,7 +6,7 @@ import {
   MsgRevoke,
   getGenericAuthorizationFromMessageType
 } from '@injectivelabs/sdk-ts'
-import { authZApi } from '@/app/Services'
+import { getAuthZApi } from '@/app/Services'
 import type { MsgType } from '@injectivelabs/ts-types'
 import type { GrantAuthorizationWithDecodedAuthorization } from '@injectivelabs/sdk-ts'
 
@@ -88,6 +88,8 @@ export const useAuthZStore = defineStore('authZ', {
   },
   actions: {
     async fetchGrants() {
+      const authZApi = await getAuthZApi()
+
       const authZStore = useAuthZStore()
       const sharedWalletStore = useSharedWalletStore()
 
