@@ -5,7 +5,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { MarkPriceStatusKey } from '@/types'
+import { MarkPriceStatusKey, PerpetualMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
 
@@ -152,11 +152,20 @@ watch(countdown, (countdown) => {
               useSubscript: true,
               shouldAbbreviate: false,
               amount: fundingRateToFixed,
-              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
+              decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS,
+              dataCy: dataCyTag(PerpetualMarketCyTags.TradeStatsInfoFundingRate)
             }"
           >
             <template #prefix>
-              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
+              <span
+                :data-cy="
+                  dataCyTag(
+                    PerpetualMarketCyTags.TradeStatsInfoFundingRateSymbol
+                  )
+                "
+              >
+                {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span
+              >
             </template>
           </SharedAmount>
           <span>%</span>
