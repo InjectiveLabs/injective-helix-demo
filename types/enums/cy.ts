@@ -53,7 +53,7 @@ export enum SwapCyTags {
 
 export enum TradeCyTags {
   Aggregation = 'aggregation',
-  AggregationSelector = 'aggregation-selector',
+  AggregationSelector = 'aggregation-selector'
 }
 
 export enum SpotMarketCyTags {
@@ -198,6 +198,7 @@ export enum PerpetualMarketCyTags {
   TpSlFormTakeProfitQtyError = 'tpsl-take-profit-qty-error',
   AdvancedOrdersTableAmount = 'advanced-orders-table-amount',
   PartialClosePositionOption = 'partial-close-position-option',
+  TradeStatsInfoFundingRate = 'trade-stats-info-funding-rate',
   TpSlFormStopLossQtyErrorMessage = 'tpsl-stop-loss-qty-error',
   DetailsEstLiquidationPrice = 'details-est-liquidation-price',
   TpSlFormStopLossTriggerPrice = 'tpsl-stop-loss-trigger-price',
@@ -205,6 +206,7 @@ export enum PerpetualMarketCyTags {
   PositionsTableEditTpSlButton = 'positions-table-edit-tpsl-button',
   TpSlEditFormTakeProfitTriggerPrice = 'tpsl-take-profit-trigger-price',
   AdvancedOrdersTableMarketTicker = 'advanced-orders-table-market-ticker',
+  TradeStatsInfoFundingRateSymbol = 'trade-stats-info-funding-rate-symbol',
   AdvancedSettingsPostOnlyCheckbox = 'advanced-settings-post-only-checkbox',
   AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction',
   PositionsTableClosePositionButton = 'positions-table-close-position-button',
