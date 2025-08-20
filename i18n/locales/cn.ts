@@ -291,8 +291,7 @@ export default {
     connectedSuccessfully: '已成功连接 ',
     copiedAddressToClipboard: '地址已成功复制至剪贴簿',
     formSubmittedSuccessfully: '表单已成功提交。',
-    transactionFinalized:
-      '{viewOnInjScan}交易在 {duration} 秒内完成。{viewOnInjScan}',
+    transactionFinalized: '交易在 {duration} 秒内完成。{viewOnInjScan}',
     onramperSuccess:
       '成功！您以 {fiatCurrency} 购买了 {cryptoAmount} 枚 {crypto} 代币。代币正在发送中。',
     account: {
