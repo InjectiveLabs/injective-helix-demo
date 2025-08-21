@@ -206,7 +206,6 @@ export enum PerpetualMarketCyTags {
   PositionsTableEditTpSlButton = 'positions-table-edit-tpsl-button',
   TpSlEditFormTakeProfitTriggerPrice = 'tpsl-take-profit-trigger-price',
   AdvancedOrdersTableMarketTicker = 'advanced-orders-table-market-ticker',
-  TradeStatsInfoFundingRateSymbol = 'trade-stats-info-funding-rate-symbol',
   AdvancedSettingsPostOnlyCheckbox = 'advanced-settings-post-only-checkbox',
   AdvancedOrdersTableOrderDirection = 'advanced-orders-table-order-direction',
   PositionsTableClosePositionButton = 'positions-table-close-position-button',

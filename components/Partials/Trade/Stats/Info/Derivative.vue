@@ -152,20 +152,13 @@ watch(countdown, (countdown) => {
               useSubscript: true,
               shouldAbbreviate: false,
               amount: fundingRateToFixed,
+              cyValue: fundingRateToFixed,
               decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS,
               dataCy: dataCyTag(PerpetualMarketCyTags.TradeStatsInfoFundingRate)
             }"
           >
             <template #prefix>
-              <span
-                :data-cy="
-                  dataCyTag(
-                    PerpetualMarketCyTags.TradeStatsInfoFundingRateSymbol
-                  )
-                "
-              >
-                {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span
-              >
+              <span> {{ fundingRateToBigNumber.gt(0) ? '+' : '' }}</span>
             </template>
           </SharedAmount>
           <span>%</span>
