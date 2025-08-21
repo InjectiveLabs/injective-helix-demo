@@ -4,7 +4,7 @@ import { NuxtUiIcons } from '@shared/types'
 import { valueSortFunction } from '@/app/utils/helpers'
 import { UI_DEFAULT_FUNDING_RATE_DECIMALS } from '@/app/utils/constants'
 import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const appStore = useAppStore()
