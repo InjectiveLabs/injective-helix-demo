@@ -4,6 +4,8 @@ import {
   StreamOperation,
   TradeExecutionSide
 } from '@injectivelabs/ts-types'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
   streamTrades as grpcStreamsTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -18,8 +20,6 @@ import {
   streamSubaccountOrderHistory as grpcStreamsSubaccountOrderHistory,
   cancelSubaccountOrderHistoryStream as grpcCancelSubaccountOrderHistoryStream
 } from '@/app/client/streams/derivatives'
-import { combineOrderbookRecords } from '@/app/utils/market'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
@@ -141,10 +141,10 @@ export const streamSubaccountOrderHistory = ({
       }
 
       switch (order.state) {
-        case OrderState.Booked:
-        case OrderState.Filled:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Filled: {
           const subaccountOrderHistory = [
             order,
             ...derivativeStore.subaccountOrderHistory.filter(
@@ -280,15 +280,15 @@ export const streamSubaccountOrders = ({
 
       const isConditional = [
         OrderSide.TakeBuy,
-        OrderSide.TakeSell,
         OrderSide.StopBuy,
+        OrderSide.TakeSell,
         OrderSide.StopSell
       ].includes(order.orderType as OrderSide)
 
       switch (order.state) {
-        case OrderState.Booked:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked: {
           if (isConditional) {
             const subaccountConditionalOrders = [
               order,

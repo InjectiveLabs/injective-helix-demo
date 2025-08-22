@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { NuxtUiIcons } from '@shared/types'
 import { getHubUrl } from '@shared/utils/network'
+import { format, subDays, isAfter } from 'date-fns'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
 import {
   DEFAULT_TRUNCATE_LENGTH,
@@ -28,8 +29,10 @@ const perpSettlePairs = [
 const route = useRoute()
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
+const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
+const now = useNow({ interval: 1000 })
 const { t } = useLang()
 const { copy } = useClipboard()
 
@@ -59,6 +62,35 @@ const activePerpSettlePairs = computed(() =>
       slug === route.params.slug || marketId === route.query.marketId
   )
 )
+
+const expiryFutureSettlementTimestamp = computed(() => {
+  if (!(route.name as string)?.startsWith(TradePage.Futures)) {
+    return undefined
+  }
+
+  const market = derivativeStore.marketByIdOrSlug(route.params.slug as string)
+
+  if (
+    !market ||
+    market.subType !== SharedMarketType.Futures ||
+    !market?.expiryFuturesMarketInfo?.expirationTimestamp
+  ) {
+    return undefined
+  }
+
+  return market.expiryFuturesMarketInfo.expirationTimestamp
+})
+
+const expiryFutureBanner = computed(() => [
+  {
+    id: NoticeBanner.ExpiryFutures,
+    shouldPersist: true,
+    shouldDisplay:
+      expiryFutureSettlementTimestamp.value &&
+      isAfter(now.value, subDays(expiryFutureSettlementTimestamp.value, 30))
+    // todo: change 30 days to 4 days before launch
+  }
+])
 
 const perpMarketSettleBanners = computed<Banner[]>(() => [
   {
@@ -110,6 +142,7 @@ const bannerToDisplay = computed(
   () =>
     [
       ...deprecatedWarningBanner.value,
+      ...expiryFutureBanner.value,
       ...perpMarketSettleBanners.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
@@ -324,6 +357,24 @@ function onClickStockTwitsCta() {
     <template v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended">
       <span>
         {{ $t('banners.pointsS1Ended') }}
+      </span>
+    </template>
+
+    <template
+      v-if="
+        bannerToDisplay.id === NoticeBanner.ExpiryFutures &&
+        expiryFutureSettlementTimestamp
+      "
+    >
+      <span>
+        {{
+          $t('banners.expiryFuturesBanner', {
+            date: format(
+              expiryFutureSettlementTimestamp * 1000,
+              "HH:mm 'on' MM/dd"
+            )
+          })
+        }}
       </span>
     </template>
 
