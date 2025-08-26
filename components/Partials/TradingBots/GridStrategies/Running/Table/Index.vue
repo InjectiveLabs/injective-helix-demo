@@ -91,7 +91,7 @@ function selectStrategy(
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <UTable
       v-if="lg"
       :ui="{

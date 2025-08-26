@@ -87,20 +87,23 @@ export default defineAppConfig({
     },
 
     table: {
-      base: 'border-b border-coolGray-800',
-      divide: 'dark:divide-coolGray-800',
+      wrapper: 'h-full overflow-auto',
       tbody: 'dark:divide-coolGray-800',
+      divide: 'dark:divide-coolGray-800',
+      base: 'border-b border-coolGray-800',
+      thead:
+        'dark:bg-brand-900 sticky top-0 z-[1] after:absolute after:bottom-0 after:w-full after:h-[1px] after:bg-coolGray-800',
       th: {
-        base: 'whitespace-nowrap',
         padding: 'p-4',
-        color: 'dark:text-coolGray-400',
+        size: 'text-xs',
         font: 'font-normal',
-        size: 'text-xs'
+        base: 'whitespace-nowrap',
+        color: 'dark:text-coolGray-400'
       },
       td: {
         padding: 'p-2',
-        color: 'dark:text-slate-50',
-        size: 'text-xs'
+        size: 'text-xs',
+        color: 'dark:text-slate-50'
       },
       default: {
         sortButton: {
