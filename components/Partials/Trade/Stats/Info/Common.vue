@@ -74,17 +74,19 @@ const low = computed(() => {
 <template>
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.marketVolume24h')">
     <p>
-      <SharedAmount
-        v-bind="{
-          useSubscript: true,
-          shouldAbbreviate: false,
-          amount: volume.toFixed(),
-          decimals: UI_ZERO_DECIMAL
-        }"
-        :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
-      />
-
-      {{ market.quoteToken.symbol }}
+      <span v-if="volume.isNaN()"> &mdash; </span>
+      <template v-else>
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: volume.toFixed(),
+            decimals: UI_ZERO_DECIMAL
+          }"
+          :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
+        />
+        <span>{{ market.quoteToken.symbol }}</span>
+      </template>
     </p>
   </PartialsTradeStatsHeaderItem>
 
@@ -96,7 +98,9 @@ const low = computed(() => {
         </p>
       </template>
       <div>
+        <span v-if="volumeInUsd.isNaN()"> &mdash; </span>
         <SharedAmount
+          v-else
           v-bind="{
             useSubscript: true,
             shouldAbbreviate: false,
@@ -111,7 +115,9 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.high')">
     <p>
+      <span v-if="high.isNaN()"> &mdash; </span>
       <SharedAmount
+        v-else
         v-bind="{
           useSubscript: true,
           shouldAbbreviate: false,
@@ -125,7 +131,9 @@ const low = computed(() => {
 
   <PartialsTradeStatsHeaderItem :title="$t('trade.stats.low')">
     <p>
+      <span v-if="low.isNaN()"> &mdash; </span>
       <SharedAmount
+        v-else
         v-bind="{
           useSubscript: true,
           amount: low.toFixed(),
