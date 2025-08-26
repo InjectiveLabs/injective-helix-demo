@@ -11,7 +11,7 @@ const showUnverifiedAssets = ref(false)
     />
 
     <div class="overflow-x-auto">
-      <div class="lg:min-w-[1100px] divide-y border-b">
+      <div class="lg:min-w-[1100px] divide-y">
         <PartialsPortfolioBalancesSubaccountTable
           v-bind="{ search, showUnverifiedAssets }"
         />
