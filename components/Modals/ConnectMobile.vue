@@ -25,7 +25,10 @@ const qrCodeText = JSON.stringify({
 const tradingMessages = [
   ...TRADING_MESSAGES,
   MsgType.MsgSend,
-  MsgType.MsgExecuteContractCompat
+  // Needed for swaps and grid strategies
+  MsgType.MsgExecuteContractCompat,
+  // Needed for grid strategies
+  MsgType.MsgGrant
 ]
 
 const mobileAddress = ref()
