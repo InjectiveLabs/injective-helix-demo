@@ -1549,8 +1549,8 @@ packages:
     resolution: {integrity: sha512-HjA8x/U/Q78HRRe19yh8HVKoZ+Iaoo3YZjakJYxR+rw52NHo6jM+VE9b8+7ygkCFXl/EHID5wh/MkXaE/jGyYw==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
-  '@keplr-wallet/types@0.12.267':
-    resolution: {integrity: sha512-XjC7P7l3qSAFGBkd01P88AkdZ5hX00sNovnyuEI1lKGCBuf2adBydkZtLhVrJaT9m0GvvJjXjmfi6TCTAqhxYg==}
+  '@keplr-wallet/types@0.12.268':
+    resolution: {integrity: sha512-QoBTLLHCvIpZxyXUWc9hjX3fA9qyLRuqnb2HuKhjeM3EcIyL/cyrc39mG1RhEs/vufjzx1g114v8c/jpFcm7IQ==}
     peerDependencies:
       starknet: ^7
 
@@ -1643,8 +1643,8 @@ packages:
     resolution: {integrity: sha512-fLgJnDOXFmuVlB38rUN5SmU7hAFQcCjrg3Vrxz67KTY7YHFnSNEKvX4avmEBdOI0yTCxZjwMCFEqsC8k2+Wd3g==}
     engines: {node: '>=16.0.0'}
 
-  '@metamask/utils@11.4.2':
-    resolution: {integrity: sha512-TygCcGmUbhmpxjYMm+mx68kRiJ80jYV54/Aa8gUFBv4cTX7ulX2XZKr8CJoJAw3K3FN5ZvCRmU0IzWZFaonwhA==}
+  '@metamask/utils@11.5.0':
+    resolution: {integrity: sha512-fgPTBWyFhGp8VZ5HsWniY5qZIb9DfusRB8ssw8unGIomICCK+cnEcV2xajhpPJ6QPH62y1KyVHF+VbXKrgilLA==}
     engines: {node: ^18.18 || ^20.14 || >=22}
 
   '@miyaneee/rollup-plugin-json5@1.2.0':
@@ -11718,7 +11718,7 @@ snapshots:
       '@injectivelabs/ts-types': 1.16.10
       '@injectivelabs/utils': 1.16.10
       '@injectivelabs/wallet-base': 1.16.10(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(utf-8-validate@5.0.10)
-      '@keplr-wallet/types': 0.12.267(starknet@7.6.4)
+      '@keplr-wallet/types': 0.12.268(starknet@7.6.4)
       eventemitter3: 5.0.1
     transitivePeerDependencies:
       - '@types/react'
@@ -11780,7 +11780,7 @@ snapshots:
       '@injectivelabs/ts-types': 1.16.10
       '@injectivelabs/utils': 1.16.10
       '@injectivelabs/wallet-base': 1.16.10(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(utf-8-validate@5.0.10)
-      '@keplr-wallet/types': 0.12.267(starknet@7.6.4)
+      '@keplr-wallet/types': 0.12.268(starknet@7.6.4)
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
@@ -12229,7 +12229,7 @@ snapshots:
       '@json-rpc-tools/types': 1.7.6
       '@pedrouid/environment': 1.0.1
 
-  '@keplr-wallet/types@0.12.267(starknet@7.6.4)':
+  '@keplr-wallet/types@0.12.268(starknet@7.6.4)':
     dependencies:
       long: 4.0.0
       starknet: 7.6.4
@@ -12366,7 +12366,7 @@ snapshots:
   '@metamask/abi-utils@3.0.0':
     dependencies:
       '@metamask/superstruct': 3.2.1
-      '@metamask/utils': 11.4.2
+      '@metamask/utils': 11.5.0
     transitivePeerDependencies:
       - supports-color
 
@@ -12375,7 +12375,7 @@ snapshots:
       '@ethereumjs/rlp': 4.0.1
       '@ethereumjs/util': 8.1.0
       '@metamask/abi-utils': 3.0.0
-      '@metamask/utils': 11.4.2
+      '@metamask/utils': 11.5.0
       '@scure/base': 1.1.9
       ethereum-cryptography: 2.2.1
       tweetnacl: 1.0.3
@@ -12384,15 +12384,16 @@ snapshots:
 
   '@metamask/superstruct@3.2.1': {}
 
-  '@metamask/utils@11.4.2':
+  '@metamask/utils@11.5.0':
     dependencies:
       '@ethereumjs/tx': 4.2.0
       '@metamask/superstruct': 3.2.1
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.12
+      '@types/lodash': 4.17.20
       debug: 4.4.1
-      lodash.memoize: 4.1.2
+      lodash: 4.17.21
       pony-cause: 2.1.11
       semver: 7.7.2
       uuid: 9.0.1
