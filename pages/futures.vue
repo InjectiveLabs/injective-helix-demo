@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SharedMarketStatus } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
@@ -107,6 +108,13 @@ onWalletConnected(async () => {
     } else {
       return
     }
+  }
+
+  if (market.value.marketStatus !== SharedMarketStatus.Active) {
+    return navigateTo({
+      name: 'futures-slug',
+      params: { slug: 'btc-usdt-perp' }
+    })
   }
 
   status.setLoading()

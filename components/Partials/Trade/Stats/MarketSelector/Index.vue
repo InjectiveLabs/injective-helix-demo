@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { IsSpotKey, CommonCyTags } from '@/types'
 import type { UiMarketWithToken, UiDerivativeMarket } from '@/types'
@@ -44,12 +44,17 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
 
 const hasDocsTooltip = computed(
   () =>
+    props.market.subType === SharedMarketType.Futures ||
     props.market.slug === 'ton-usdt-perp' ||
     props.market.slug === 'h100-usdt-perp' ||
     props.market.slug === 'buidl-usdt-perp'
 )
 
 const docsUrl = computed(() => {
+  if (props.market.subType === SharedMarketType.Futures) {
+    return 'https://docs.helixapp.com/trading/expiry-futures'
+  }
+
   if (props.market.slug === 'h100-usdt-perp') {
     return 'https://docs.helixapp.com/trading/perpetuals/nvidia-h100-hourly-perp-h100'
   }
@@ -113,7 +118,19 @@ onClickOutside(el, closeMarketSection, {
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="hasDocsTooltip" keypath="markets.docsTooltip">
+              <i18n-t v-if="hasDocsTooltip" keypath="markets.expiryDocsTooltip">
+                <template #docs>
+                  <NuxtLink
+                    :to="docsUrl"
+                    target="_blank"
+                    class="text-blue-500 hover:text-opacity-90"
+                  >
+                    {{ $t('common.docs') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
+
+              <i18n-t v-else-if="hasDocsTooltip" keypath="markets.docsTooltip">
                 <template #docs>
                   <NuxtLink
                     :to="docsUrl"
