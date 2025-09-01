@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import {
@@ -86,6 +87,10 @@ const { valueToString: annualizedFundingRateToString } =
 //   )
 // )
 
+const isExpiryMarket = computed(
+  () => props.market.subType === SharedMarketType.Futures
+)
+
 watch(countdown, (countdown) => {
   if (countdown === '00:00:01') {
     sharedDerivativeStore.fetchMarketsSummary()
@@ -118,7 +123,7 @@ watch(countdown, (countdown) => {
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
 
-  <PartialsTradeStatsHeaderItem>
+  <PartialsTradeStatsHeaderItem v-if="!isExpiryMarket">
     <template #title>
       <CommonHeaderTooltip
         :tooltip="$t('trade.stats.fundingRateTooltip')"
@@ -168,7 +173,10 @@ watch(countdown, (countdown) => {
     <span v-else class="lg:text-right block"> &mdash; </span>
   </PartialsTradeStatsHeaderItem>
 
-  <PartialsTradeStatsHeaderItem :title="$t('trade.stats.nextFunding')">
+  <PartialsTradeStatsHeaderItem
+    :title="$t('trade.stats.nextFunding')"
+    v-if="!isExpiryMarket"
+  >
     <p class="lg:text-right">
       {{ countdown }}
     </p>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SharedMarketStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
 import { TradeExecutionSide } from '@injectivelabs/ts-types'
 import { roundDustAmount } from '@/app/utils/formatters'
@@ -36,7 +37,10 @@ onMounted(async () => {
     await spotStore.appendMarketId(route.query.marketId as string)
   }
 
-  if (!market.value) {
+  if (
+    !market.value ||
+    market.value.marketStatus !== SharedMarketStatus.Active
+  ) {
     return navigateTo({ name: 'spot-slug', params: { slug: 'inj-usdt' } })
   }
 

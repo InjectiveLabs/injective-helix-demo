@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui'
-      : 'github:InjectiveLabs/injective-ui#master'
+      : 'github:InjectiveLabs/injective-ui#chore/remove-active-market-filter-condition'
   ],
   // @ts-ignore
   site: {

@@ -2,8 +2,9 @@
 import { MarketKey, OrderbookStatusKey } from '@/types'
 
 const orderbookStore = useOrderbookStore()
-const orderbookStatus = inject(OrderbookStatusKey)
+
 const market = inject(MarketKey)
+const orderbookStatus = inject(OrderbookStatusKey)
 </script>
 
 <template>
