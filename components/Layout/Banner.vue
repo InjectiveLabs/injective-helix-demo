@@ -2,7 +2,7 @@
 import { getHubUrl } from '@shared/utils/network'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
-import { format, subDays, isAfter, isBefore } from 'date-fns'
+import { format, isBefore } from 'date-fns'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
 import {
@@ -87,7 +87,6 @@ const expiryFutureBanner = computed(() => [
     shouldPersist: true,
     shouldDisplay:
       expiryFutureSettlementTimestamp.value &&
-      isAfter(now.value, subDays(expiryFutureSettlementTimestamp.value, 30)) &&
       isBefore(now.value, expiryFutureSettlementTimestamp.value * 1000)
   }
 ])
