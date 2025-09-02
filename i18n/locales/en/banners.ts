@@ -16,7 +16,7 @@ export default {
     pointsS1Ended:
       'Helix Points Season 1 has wrapped up. Thank you for your participation, and stay tuned for more updates!',
     expiryFuturesBanner:
-      'This expiry futures pair will settle at {date}. Please close any positions before then or you will be force settled at the mark price at the time of settlement.',
+      'This is an expiry futures trading pair, which will settle at {date}. Any positions open after this time will be force settled at the mark price at the time of settlement.',
 
     kado: {
       getStarted: 'Get started',

@@ -42,16 +42,24 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
     }
   )
 
+const isExpiryMarket = computed(
+  () =>
+    !!(props.market as UiDerivativeMarket)?.expiryFuturesMarketInfo
+      ?.expirationTimestamp
+)
+
 const hasDocsTooltip = computed(
   () =>
-    props.market.subType === SharedMarketType.Futures ||
     props.market.slug === 'ton-usdt-perp' ||
     props.market.slug === 'h100-usdt-perp' ||
     props.market.slug === 'buidl-usdt-perp'
 )
 
 const docsUrl = computed(() => {
-  if (props.market.subType === SharedMarketType.Futures) {
+  if (
+    (props.market as UiDerivativeMarket)?.expiryFuturesMarketInfo &&
+    props.market.subType === SharedMarketType.Futures
+  ) {
     return 'https://docs.helixapp.com/trading/expiry-futures'
   }
 
@@ -96,7 +104,7 @@ onClickOutside(el, closeMarketSection, {
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!hasDocsTooltip"
+            :is-disabled="!hasDocsTooltip && !isExpiryMarket"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
@@ -118,7 +126,7 @@ onClickOutside(el, closeMarketSection, {
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="hasDocsTooltip" keypath="markets.expiryDocsTooltip">
+              <i18n-t v-if="isExpiryMarket" keypath="markets.expiryDocsTooltip">
                 <template #docs>
                   <NuxtLink
                     :to="docsUrl"
