@@ -106,7 +106,7 @@ jobs:
 
       - name: Generate GitHub Release Notes
         id: release_notes
-        uses: ThomasRalee/github-release-notes@main
+        uses: InjectiveLabs/github-fe/actions/release-note@master
         with:
           previous_tag: ${{ env.current_version }}
           repo_url: 'https://github.com/InjectiveLabs/injective-helix'
@@ -173,31 +173,12 @@ jobs:
       release_notes: ${{ steps.release_notes.outputs.release_notes }}
 
   notify-slack-on-deployment:
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     needs: mainnet-release
     steps:
       - name: 'Notify Slack'
-        id: notify_slack
-        run: |
-          if [ "${{ needs.mainnet-release.outputs.release_notes }}" != "No new commits" ]; then
-            payload='{
-              "text": "'"<!here> 🚀 Helix deployed to Mainnet!\nView the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.\nThe commits deployed are:\n${{ needs.mainnet-release.outputs.release_notes }}"'",
-              "attachments": [
-                {
-                  "text": "Helix deployed to Mainnet ✅",
-                  "color": "#22bb33"
-                }
-              ]
-            }'
-          else
-            payload='{
-              "text": "'"<!here> 🚀 Helix Rebuilt on Mainnet! Good guys, close your eyes! 🛠️😄."'",
-              "attachments": [
-                {
-                  "text": "View the deployment results on Github: https://github.com/InjectiveLabs/injective-helix/actions/runs/${{ github.run_id }}.",
-                  "color": "#22bb33"
-                }
-              ]
-            }'
-          fi
-          curl -X POST -H 'Content-type: application/json' --data "${payload}" ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+        uses: InjectiveLabs/github-fe/actions/prod-deployment-notification@master
+        with:
+          project-name: 'Helix'
+          webhook-url: ${{ secrets.PRODUCTION_CHANNEL_WEBHOOK_URL }}
+          release-notes: ${{ needs.mainnet-release.outputs.release_notes }}
