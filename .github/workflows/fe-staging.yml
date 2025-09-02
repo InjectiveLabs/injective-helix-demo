@@ -5,7 +5,7 @@ on:
     inputs:
       network:
         description: 'Select deployment network'
-        required: true
+        required: false
         default: 'Mainnet'
         type: choice
         options:
@@ -13,7 +13,7 @@ on:
           - Testnet
           - Devnet
       branch:
-        description: 'Branch to deploy from'
+        description: 'Branch to deploy from (cannot be: dev, testnet, staging, master)'
         required: true
         type: string
       description:
