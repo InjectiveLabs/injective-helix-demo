@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { formatFundingRate } from '@shared/transformer/market/fundingRate'
 import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
-import { MarkPriceStatusKey } from '@/types'
+import { MarkPriceStatusKey, PerpetualMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
 
@@ -86,6 +87,10 @@ const { valueToString: annualizedFundingRateToString } =
 //   )
 // )
 
+const isExpiryMarket = computed(
+  () => props.market.subType === SharedMarketType.Futures
+)
+
 watch(countdown, (countdown) => {
   if (countdown === '00:00:01') {
     sharedDerivativeStore.fetchMarketsSummary()
@@ -118,7 +123,7 @@ watch(countdown, (countdown) => {
 
   <PartialsTradeStatsInfoCommon v-bind="{ market }" />
 
-  <PartialsTradeStatsHeaderItem>
+  <PartialsTradeStatsHeaderItem v-if="!isExpiryMarket">
     <template #title>
       <CommonHeaderTooltip
         :tooltip="$t('trade.stats.fundingRateTooltip')"
@@ -152,8 +157,12 @@ watch(countdown, (countdown) => {
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
+                cyValue: fundingRateToFixed,
                 amount: fundingRateToFixed,
-                decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS
+                decimals: UI_DEFAULT_FUNDING_RATE_DECIMALS,
+                dataCy: dataCyTag(
+                  PerpetualMarketCyTags.TradeStatsInfoFundingRate
+                )
               }"
             >
               <template #prefix>

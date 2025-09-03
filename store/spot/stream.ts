@@ -3,6 +3,8 @@ import {
   StreamOperation,
   TradeExecutionSide
 } from '@injectivelabs/ts-types'
+import { combineOrderbookRecords } from '@/app/utils/market'
+import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import {
   streamTrades as grpcStreamTrades,
   cancelTradesStream as grpcCancelTradesStream,
@@ -15,8 +17,6 @@ import {
   streamSubaccountOrderHistory as grpcStreamSubaccountOrderHistory,
   cancelSubaccountOrdersHistoryStream as grpcCancelSubaccountOrdersHistoryStream
 } from '@/app/client/streams/spot'
-import { combineOrderbookRecords } from '@/app/utils/market'
-import { TRADE_MAX_SUBACCOUNT_ARRAY_SIZE } from '@/app/utils/constants'
 import { BusEvents, TradeExecutionType } from '@/types'
 
 export const cancelTradesStream = grpcCancelTradesStream
@@ -140,9 +140,9 @@ export const streamSubaccountOrders = ({
       }
 
       switch (order.state) {
-        case OrderState.Booked:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked: {
           const subaccountOrders = [
             order,
             ...spotStore.subaccountOrders.filter(
@@ -200,10 +200,10 @@ export const streamSubaccountOrderHistory = ({
       }
 
       switch (order.state) {
-        case OrderState.Booked:
-        case OrderState.Filled:
+        case OrderState.PartialFilled:
         case OrderState.Unfilled:
-        case OrderState.PartialFilled: {
+        case OrderState.Booked:
+        case OrderState.Filled: {
           const subaccountOrderHistory = [
             order,
             ...spotStore.subaccountOrderHistory.filter(

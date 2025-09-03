@@ -197,20 +197,6 @@ export const trackLiteBridgeBridged = ({
   })
 }
 
-export const trackQrCodePageView = (wallet: string, error?: string) => {
-  mixpanelAnalytics.track(MixPanelEvent.QrCodePageView, {
-    Wallet: wallet,
-    ...formatStatus(error)
-  })
-}
-
-export const trackQrCodeBuyFunds = (wallet: string, error?: string) => {
-  mixpanelAnalytics.track(MixPanelEvent.QrCodeBuyFunds, {
-    Wallet: wallet,
-    ...formatStatus(error)
-  })
-}
-
 export const trackTradingBotError = ({
   grids,
   wallet,

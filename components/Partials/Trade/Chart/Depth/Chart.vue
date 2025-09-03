@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { OrderbookFormattedRecord } from '@/types/worker'
 import { colors } from '@/nuxt-config/tailwind'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import type { OrderbookFormattedRecord } from '@/types/worker'
 
 const HEIGHT = 550
 const MOBILE_HEIGHT = 450
@@ -11,10 +11,10 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
 const props = withDefaults(
   defineProps<{
+    symbol?: string
+    priceDecimals?: number
     buys: OrderbookFormattedRecord[]
     sells: OrderbookFormattedRecord[]
-    priceDecimals?: number
-    symbol?: string
   }>(),
   {
     priceDecimals: 2,
@@ -22,11 +22,11 @@ const props = withDefaults(
   }
 )
 
-const canvasEl = ref<HTMLCanvasElement | null>(null)
-const containerEl = ref<HTMLDivElement | null>(null)
-const tooltipEl = ref<HTMLDivElement | null>(null)
+const canvasEl = ref<null | HTMLCanvasElement>(null)
+const containerEl = ref<null | HTMLDivElement>(null)
+const tooltipEl = ref<null | HTMLDivElement>(null)
 
-let ctx: CanvasRenderingContext2D | null = null
+let ctx: null | CanvasRenderingContext2D = null
 
 let isTooltipShown = false
 

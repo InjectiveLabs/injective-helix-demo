@@ -7,7 +7,7 @@ const accountStore = useAccountStore()
 const { t } = useLang()
 
 const emit = defineEmits<{
-  close: []
+  'on:close': []
   'transfer:success': []
 }>()
 
@@ -15,8 +15,8 @@ const countdown = ref(60)
 const showMessage = ref(false)
 
 const formattedCountdown = computed(() => {
-  const minutes = Math.floor(countdown.value / 60)
   const seconds = countdown.value % 60
+  const minutes = Math.floor(countdown.value / 60)
 
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 })
@@ -50,8 +50,8 @@ watch(
   }
 )
 
-const handleClose = () => {
-  emit('close')
+const onClose = () => {
+  emit('on:close')
 }
 </script>
 
@@ -81,7 +81,10 @@ const handleClose = () => {
     </p>
 
     <div class="w-full">
-      <AppButton class="mt-4 -mb-8 w-full" @click="handleClose">
+      <AppButton
+        class="mt-4 -mb-8 w-full text-sm font-medium rounded-lg bg-azure-blue-350 hover:bg-azure-blue-350/80 transition-colors ring-0 border-0"
+        @click="onClose"
+      >
         {{ t('common.modal.onboarding.closeAndContinue') }}
       </AppButton>
     </div>

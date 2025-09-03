@@ -2,15 +2,15 @@ import { defineStore } from 'pinia'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { sharedGetToken } from '@shared/utils/helper'
 import { toUiMarketHistory } from '@shared/transformer/market'
-import { exchangeApi, indexerRestMarketChronosApi } from '@shared/Service'
+import { getExchangeApi, getIndexerRestMarketChronosApi } from '@shared/Service'
 import type { SharedUiMarketHistory } from '@shared/types'
-import type { TradingRewardsCampaign } from '@/app/client/types/exchange'
 import type {
   TokenStatic,
   ExchangeParams,
   FeeDiscountSchedule,
   FeeDiscountAccountInfo
 } from '@injectivelabs/sdk-ts'
+import type { TradingRewardsCampaign } from '@/app/client/types/exchange'
 
 type ExchangeStoreState = {
   params?: ExchangeParams
@@ -50,6 +50,8 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchParams() {
+      const exchangeApi = await getExchangeApi()
+
       const exchangeStore = useExchangeStore()
 
       exchangeStore.$patch({
@@ -58,6 +60,8 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchFeeDiscountSchedule() {
+      const exchangeApi = await getExchangeApi()
+
       const exchangeStore = useExchangeStore()
 
       const feeDiscountSchedule = await exchangeApi.fetchFeeDiscountSchedule()
@@ -92,6 +96,8 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchFeeDiscountAccountInfo() {
+      const exchangeApi = await getExchangeApi()
+
       const exchangeStore = useExchangeStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -112,6 +118,8 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchTradingRewardsCampaign() {
+      const exchangeApi = await getExchangeApi()
+
       const exchangeStore = useExchangeStore()
 
       const tradingRewardsCampaign =
@@ -147,8 +155,9 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchTradeRewardPoints() {
-      const exchangeStore = useExchangeStore()
+      const exchangeApi = await getExchangeApi()
 
+      const exchangeStore = useExchangeStore()
       const sharedWalletStore = useSharedWalletStore()
 
       if (!sharedWalletStore.isUserConnected) {
@@ -163,6 +172,8 @@ export const useExchangeStore = defineStore('exchange', {
     },
 
     async fetchPendingTradeRewardPoints() {
+      const exchangeApi = await getExchangeApi()
+
       const exchangeStore = useExchangeStore()
       const sharedWalletStore = useSharedWalletStore()
 
@@ -243,7 +254,7 @@ export const useExchangeStore = defineStore('exchange', {
             ...marketsHistoryToUiMarketsHistory
           ]
         })
-      } catch (e) {
+      } catch {
         // don't do anything for now
       }
     },
@@ -257,6 +268,8 @@ export const useExchangeStore = defineStore('exchange', {
       resolution: number
       marketIds: string[]
     }) {
+      const indexerRestMarketChronosApi = await getIndexerRestMarketChronosApi()
+
       const exchangeStore = useExchangeStore()
 
       if (exchangeStore.marketsHistory.length > 0 || marketIds.length === 0) {
@@ -280,7 +293,7 @@ export const useExchangeStore = defineStore('exchange', {
             ...marketsHistoryToUiMarketsHistory
           ]
         })
-      } catch (e) {
+      } catch {
         // don't do anything for now
       }
     },
@@ -294,6 +307,8 @@ export const useExchangeStore = defineStore('exchange', {
       resolution: number
       marketIds: string[]
     }) {
+      const indexerRestMarketChronosApi = await getIndexerRestMarketChronosApi()
+
       const exchangeStore = useExchangeStore()
 
       try {
@@ -310,7 +325,7 @@ export const useExchangeStore = defineStore('exchange', {
         exchangeStore.$patch({
           marketsHistory: [...marketsHistoryToUiMarketsHistory]
         })
-      } catch (e) {
+      } catch {
         // don't do anything for now
       }
     },

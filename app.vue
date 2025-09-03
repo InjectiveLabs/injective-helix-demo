@@ -25,9 +25,9 @@ onMounted(async () => {
 
   Promise.all([
     walletStore.init(),
-    sharedSpotStore.fetchMarkets(),
+    sharedSpotStore.fetchAllMarkets(),
     sharedGeoStore.fetchGeoLocation(),
-    sharedDerivativeStore.fetchMarkets(),
+    sharedDerivativeStore.fetchAllMarkets(),
     sharedTokenStore.fetchTokensUsdPriceMap()
   ])
     .catch($onError)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { REFERRAL_ITEM } from '@/app/data/menu'
+import { FEATURED_NAV_ITEM } from '@/app/data/menu'
 
 const appStore = useAppStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -12,8 +12,8 @@ const sharedWalletStore = useSharedWalletStore()
   >
     <LayoutNavbarMenuItem
       v-if="!appStore.isCountryRestricted"
-      class="hidden xl:block px-4"
-      v-bind="{ item: REFERRAL_ITEM }"
+      class="hidden lg:block px-4"
+      v-bind="{ item: FEATURED_NAV_ITEM }"
       :class="{ 'px-8': sharedWalletStore.isUserConnected }"
     />
 

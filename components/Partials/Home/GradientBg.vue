@@ -1,27 +1,28 @@
 <script setup lang="ts">
-const isLoaded = ref(false)
+const videoRef = ref<null | HTMLVideoElement>(null)
 
 onMounted(() => {
-  const video = document.createElement('video')
-  video.src = '/helix_bg.mp4'
-  video.autoplay = true
-  video.loop = true
-  video.muted = true
-  video.playsInline = true
-  video.onloadeddata = () => {
-    isLoaded.value = true
+  const source = document.createElement('source')
+  source.src = '/helix_bg.mp4'
+  source.type = 'video/mp4'
+
+  if (videoRef.value) {
+    videoRef.value.appendChild(source)
+    videoRef.value.load()
   }
 })
 </script>
+
 <template>
-  <div v-if="isLoaded" class="absolute h-screen inset-0 w-full animate-fade-in">
+  <div class="absolute h-screen inset-0 w-full animate-fade-in">
     <video
-      class="absolute inset-0 w-full h-full object-cover"
-      src="/helix_bg.mp4"
-      autoplay
+      ref="videoRef"
       loop
       muted
+      autoplay
       playsinline
+      poster="/helix-bg-poster.webp"
+      class="absolute inset-0 w-full h-full object-cover"
     />
     <div
       class="absolute inset-0 bg-gradient-to-t w-full h-screen from-[#00001A] to-transparent"

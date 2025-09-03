@@ -86,63 +86,63 @@ function resetSelectedPosition() {
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PartialsTradeFuturesOrdersTradingBotsHeader
-      v-bind="{
-        positionsLength: positions.length
-      }"
       v-model="view"
+      v-bind="{ positionsLength: positions.length }"
     />
 
-    <PartialsTradingBotsGridStrategiesRunningTable
-      v-if="view === PerpOrdersTradingBotsView.ActiveStrategies"
-    />
+    <div class="w-full h-screenMinusHeader">
+      <PartialsTradingBotsGridStrategiesRunningTable
+        v-if="view === PerpOrdersTradingBotsView.ActiveStrategies"
+      />
 
-    <PartialsTradingBotsGridStrategiesHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.RemovedStrategies"
-    />
+      <PartialsTradingBotsGridStrategiesHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.RemovedStrategies"
+      />
 
-    <PartialsPositionsTable
-      v-else-if="view === PerpOrdersTradingBotsView.Positions"
-      v-bind="{ positions }"
-      is-trading-bots
-      @margin:add="addMargin"
-      @tpsl:add="addTakeProfitStopLoss"
-      @position:share="onSharePosition"
-    />
+      <PartialsPositionsTable
+        v-else-if="view === PerpOrdersTradingBotsView.Positions"
+        v-bind="{ positions, isTradingBots: true }"
+        @margin:add="addMargin"
+        @tpsl:add="addTakeProfitStopLoss"
+        @position:share="onSharePosition"
+      />
 
-    <PartialsPortfolioOrdersFuturesOpenOrdersTable
-      v-else-if="view === PerpOrdersTradingBotsView.OpenOrders"
-      v-bind="{ orders: derivativeStore.subaccountOrders }"
-      is-trading-bots
-    />
+      <PartialsPortfolioOrdersFuturesOpenOrdersTable
+        v-else-if="view === PerpOrdersTradingBotsView.OpenOrders"
+        v-bind="{
+          isTradingBots: true,
+          orders: derivativeStore.subaccountOrders
+        }"
+      />
 
-    <PartialsPortfolioOrdersFuturesOrderHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.OrderHistory"
-      v-bind="{ orders: derivativeStore.subaccountOrderHistory }"
-    />
+      <PartialsPortfolioOrdersFuturesOrderHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.OrderHistory"
+        v-bind="{ orders: derivativeStore.subaccountOrderHistory }"
+      />
 
-    <PartialsPortfolioOrdersFuturesTradeHistoryTable
-      v-else-if="view === PerpOrdersTradingBotsView.TradeHistory"
-      v-bind="{ trades: derivativeStore.subaccountTrades }"
-    />
+      <PartialsPortfolioOrdersFuturesTradeHistoryTable
+        v-else-if="view === PerpOrdersTradingBotsView.TradeHistory"
+        v-bind="{ trades: derivativeStore.subaccountTrades }"
+      />
 
-    <ModalsAddMargin
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      is-pgt
-    />
+      <ModalsAddMargin
+        v-if="selectedPosition"
+        v-bind="{ isPgt: true, position: selectedPosition }"
+      />
 
-    <ModalsAddTakeProfitStopLoss
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      @on:close="resetSelectedPosition"
-    />
+      <ModalsAddTakeProfitStopLoss
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
+        @on:close="resetSelectedPosition"
+      />
 
-    <ModalsSharePositionPnl
-      v-if="selectedPosition"
-      v-bind="{ position: selectedPosition }"
-      @on:close="resetSelectedPosition"
-    />
+      <ModalsSharePositionPnl
+        v-if="selectedPosition"
+        v-bind="{ position: selectedPosition }"
+        @on:close="resetSelectedPosition"
+      />
+    </div>
   </div>
 </template>

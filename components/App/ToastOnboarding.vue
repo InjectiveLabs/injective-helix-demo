@@ -145,7 +145,7 @@ function showMoveAssetsToInjToast() {
         label: t('toast.portfolio.bridgeNow'),
         callback: () => {
           if (isUsdtExist) {
-            modalStore.openModal(Modal.LiteBridge)
+            modalStore.openModal(Modal.Onboard)
           } else {
             window.open(getBridgeUrl(), '_blank')
           }
@@ -176,7 +176,7 @@ function showGetCryptoToast() {
       {
         label: t('toast.portfolio.buyInj'),
         callback: () => {
-          modalStore.openModal(Modal.FiatOnboard)
+          modalStore.openModal(Modal.Onboard)
 
           useEventBus(BusEvents.OpenOnramper).emit()
 

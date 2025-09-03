@@ -248,12 +248,12 @@ export default {
       swapCta: '{symbol} is not available in your region.',
       title: {
         spot: '{symbol} Restricted',
-        perpetual: 'Perpetual Trading Restricted'
+        perpetual: 'Futures Trading Restricted'
       },
       description: {
         spot: '{symbol} is not available in your region due to regulatory restrictions.',
         perpetual:
-          'Perpetual contracts are not available in your region due to regulatory restrictions. However, you can still trade on the spot market.'
+          'Futures contracts are not available in your region due to regulatory restrictions. However, you can still trade spot markets.'
       }
     },
 

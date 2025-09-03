@@ -1,17 +1,18 @@
 import { Status, StatusType } from '@injectivelabs/utils'
-import { indexerDerivativesApi, indexerSpotApi } from '@shared/Service'
-// eslint-disable-next-line
+import { getIndexerSpotApi, getIndexerDerivativesApi } from '@shared/Service'
 import OrderbookWorker from '@/assets/worker/orderbookWorker?worker'
 import {
   BusEvents,
   AggregationKey,
-  UiMarketWithToken,
+  WorkerMessageType,
   OrderbookWorkerKey,
   OrderbookStatusKey,
-  WorkerMessageType,
-  OrderbookWorkerResult,
-  OrderbookWorkerMessage,
   WorkerMessageResponseType
+} from '@/types'
+import type {
+  UiMarketWithToken,
+  OrderbookWorkerResult,
+  OrderbookWorkerMessage
 } from '@/types'
 
 interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
@@ -19,7 +20,7 @@ interface OrderbookWorker extends Omit<Worker, 'postMessage'> {
 }
 
 export function useDerivativeOrderbook(
-  market: ComputedRef<UiMarketWithToken | undefined>
+  market: ComputedRef<undefined | UiMarketWithToken>
 ) {
   const isSpot = false
 
@@ -27,7 +28,7 @@ export function useDerivativeOrderbook(
 }
 
 export function useSpotOrderbook(
-  market: ComputedRef<UiMarketWithToken | undefined>
+  market: ComputedRef<undefined | UiMarketWithToken>
 ) {
   const isSpot = true
 
@@ -35,7 +36,7 @@ export function useSpotOrderbook(
 }
 
 export function useOrderbook(
-  market: ComputedRef<UiMarketWithToken | undefined>,
+  market: ComputedRef<undefined | UiMarketWithToken>,
   isSpot: boolean
 ) {
   const orderbookStore = useOrderbookStore()
@@ -43,7 +44,7 @@ export function useOrderbook(
   const aggregation = ref(market.value?.priceDecimals || 0)
   const orderbookStatus = reactive(new Status(StatusType.Loading))
 
-  const worker = shallowRef<OrderbookWorker | null>(null)
+  const worker = shallowRef<null | OrderbookWorker>(null)
 
   onMounted(() => {
     if (typeof Worker !== 'undefined') {
@@ -73,57 +74,57 @@ export function useOrderbook(
   })
 
   function fetchSpotOrderbook() {
-    if (!market.value) {
+    const currentMarket = market.value
+
+    if (!currentMarket) {
       return
     }
 
-    indexerSpotApi.fetchOrderbookV2(market.value.marketId).then((data) => {
-      if (!market.value) {
-        return
-      }
-
-      orderbookStatus.setIdle()
-
-      worker.value?.postMessage({
-        type: WorkerMessageType.Fetch,
-        data: {
-          isSpot: true,
-          orderbook: data,
-          sequence: data.sequence,
-          aggregation: aggregation.value,
-          baseDecimals: market.value.baseToken.decimals,
-          quoteDecimals: market.value.quoteToken.decimals
-        }
-      })
-    })
-  }
-
-  function fetchDerivativeOrderbook() {
-    if (!market.value) {
-      return
-    }
-
-    indexerDerivativesApi
-      .fetchOrderbookV2(market.value.marketId)
-      .then((data) => {
-        if (!market.value) {
-          return
-        }
-
+    getIndexerSpotApi().then((indexerSpotApi) => {
+      indexerSpotApi.fetchOrderbookV2(currentMarket.marketId).then((data) => {
         orderbookStatus.setIdle()
 
         worker.value?.postMessage({
           type: WorkerMessageType.Fetch,
           data: {
-            isSpot: false,
+            isSpot: true,
             orderbook: data,
             sequence: data.sequence,
             aggregation: aggregation.value,
-            baseDecimals: market.value.baseToken.decimals,
-            quoteDecimals: market.value.quoteToken.decimals
+            baseDecimals: currentMarket.baseToken.decimals,
+            quoteDecimals: currentMarket.quoteToken.decimals
           }
         })
       })
+    })
+  }
+
+  function fetchDerivativeOrderbook() {
+    const currentMarket = market.value
+
+    if (!currentMarket) {
+      return
+    }
+
+    getIndexerDerivativesApi().then((indexerDerivativesApi) => {
+      indexerDerivativesApi
+        .fetchOrderbookV2(currentMarket.marketId)
+        .then((data) => {
+          orderbookStatus.setIdle()
+
+          worker.value?.postMessage({
+            type: WorkerMessageType.Fetch,
+            data: {
+              isSpot: false,
+              orderbook: data,
+              sequence: data.sequence,
+              aggregation: aggregation.value,
+              baseDecimals: currentMarket.baseToken.decimals,
+              quoteDecimals: currentMarket.quoteToken.decimals
+            }
+          })
+        })
+    })
   }
 
   function fetchAndStreamSpot(market: UiMarketWithToken) {

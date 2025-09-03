@@ -67,31 +67,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <PartialsTradeSpotOrdersTradingBotsHeader v-model="view" />
 
-    <PartialsTradingBotsGridStrategiesRunningTable
-      v-if="view === SpotOrdersTradingBotsView.ActiveStrategies"
-    />
+    <div class="w-full h-screenMinusHeader">
+      <PartialsTradingBotsGridStrategiesRunningTable
+        v-if="view === SpotOrdersTradingBotsView.ActiveStrategies"
+      />
 
-    <PartialsTradingBotsGridStrategiesHistoryTable
-      v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
-    />
+      <PartialsTradingBotsGridStrategiesHistoryTable
+        v-else-if="view === SpotOrdersTradingBotsView.RemovedStrategies"
+      />
 
-    <PartialsPortfolioOrdersSpotOpenOrdersTable
-      v-else-if="view === SpotOrdersTradingBotsView.Orders"
-      is-trading-bots
-      :orders="spotStore.subaccountOrders"
-    />
+      <PartialsPortfolioOrdersSpotOpenOrdersTable
+        v-else-if="view === SpotOrdersTradingBotsView.Orders"
+        is-trading-bots
+        :orders="spotStore.subaccountOrders"
+      />
 
-    <PartialsPortfolioOrdersSpotOrderHistoryTable
-      v-else-if="view === SpotOrdersTradingBotsView.OrderHistory"
-      :orders="spotStore.subaccountOrderHistory"
-    />
+      <PartialsPortfolioOrdersSpotOrderHistoryTable
+        v-else-if="view === SpotOrdersTradingBotsView.OrderHistory"
+        :orders="spotStore.subaccountOrderHistory"
+      />
 
-    <PartialsPortfolioOrdersSpotTradeHistoryTable
-      v-else-if="view === SpotOrdersTradingBotsView.TradeHistory"
-      :trades="spotStore.subaccountTrades"
-    />
+      <PartialsPortfolioOrdersSpotTradeHistoryTable
+        v-else-if="view === SpotOrdersTradingBotsView.TradeHistory"
+        :trades="spotStore.subaccountTrades"
+      />
+    </div>
   </div>
 </template>

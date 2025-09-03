@@ -291,8 +291,7 @@ export default {
     connectedSuccessfully: '已成功连接 ',
     copiedAddressToClipboard: '地址已成功复制至剪贴簿',
     formSubmittedSuccessfully: '表单已成功提交。',
-    transactionFinalized:
-      '{viewOnInjScan}交易在 {duration} 秒内完成。{viewOnInjScan}',
+    transactionFinalized: '交易在 {duration} 秒内完成。{viewOnInjScan}',
     onramperSuccess:
       '成功！您以 {fiatCurrency} 购买了 {cryptoAmount} 枚 {crypto} 代币。代币正在发送中。',
     account: {
@@ -694,8 +693,8 @@ export default {
     newMarkets: '🐤 新市场',
     topGainers: '🚀 涨幅榜',
     closePositionWarningTitle: '检测到较大价格冲击',
+    docsTooltip: '本产品为指数永续合约。详细信息请参考 {docs}。',
     indexMarketTooltip: '该市场跟踪 {label}。更多详情请见 {link}。',
-    buidlTooltip: '本产品为指数永续合约。详细信息请参考 {docs}。',
     closePositionWarningDescription:
       '使用市价单平仓可能导致不利的成交价格。建议考虑使用限价单进行平仓。',
     '2024ElectionTooltip':
@@ -1794,20 +1793,15 @@ export default {
           '该通行证可作为你参与 Injective 独家活动、产品、空投等惊喜的入场券。'
       },
       onboarding: {
+        buyInjWithCard: '使用银行卡购买 INJ',
         injectiveBridge: 'Injective 跨链桥',
         processing: '转账处理中',
         closeAndContinue: '关闭并继续',
         success: '交易已确认',
-        depositInjNetworkAsset: '存入 INJ 网络资产',
+        depositUsdtFromEthereum: '从以太坊存入 USDT',
         processingMessage: '处理时间超出预期，请耐心等待',
-        depositNowDescription:
-          '您可以从支持 Injective 网络的任意平台转入 INJ，包括部分交易所。',
         processingMessageInfo:
-          '您的转账正在后台处理中，可安全关闭此窗口。你可在余额页查看桥接金额，或在此查看跨链桥历史记录：',
-        qr: {
-          bridge: '跨链桥',
-          cta: '使用银行卡购买 INJ'
-        }
+          '您的转账正在后台处理中，可安全关闭此窗口。你可在余额页查看桥接金额，或在此查看跨链桥历史记录：'
       }
     }
   },

@@ -36,7 +36,10 @@ jobs:
           END
 
       - name: Check out the source
-        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git pull'
+        run: ssh devnet 'cd "'$SOURCE_DIR'" && git stash && git stash clear && git pull'
+
+      - name: Flush pnpm cache
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && pnpm store prune && rm -rf node_modules && rm pnpm-lock.yaml'
 
       - name: Build app
-        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && yarn install --force --ignore-engines && yarn clean-up && yarn generate'
+        run: ssh devnet 'source $HOME/.nvm/nvm.sh && cd "'$SOURCE_DIR'" && pnpm store prune && pnpm install && pnpm clean-up && pnpm generate'

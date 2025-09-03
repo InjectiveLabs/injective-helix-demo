@@ -729,10 +729,10 @@ export default {
     newMarkets: '🐤 Yeni Piyasalar',
     topGainers: '🚀 En Çok Kazananlar',
     closePositionWarningTitle: 'Yüksek fiyat etkisi tespit edildi',
+    docsTooltip:
+      'Bu ürün bir Endeks Perpetual’dür. Daha fazla bilgi için {docs}’e bakınız.',
     indexMarketTooltip:
       'Bu piyasa {label} değerini takip eder. Daha fazla detay için {link}’e bakınız.',
-    buidlTooltip:
-      'Bu ürün bir Endeks Perpetual’dür. Daha fazla bilgi için {docs}’e bakınız.',
     closePositionWarningDescription:
       'Bu açık pozisyonu piyasa emriyle kapatmak istenmeyen bir fiyatla sonuçlanabilir. Bunun yerine limit emirle kapatmayı düşünebilirsiniz.',
     '2024ElectionTooltip':
@@ -1868,21 +1868,16 @@ export default {
           'Bu, size özel Injective etkinliklerine, ürünlerine, çekilişlere ve daha birçok sürprize giriş kapınız olacak.'
       },
       onboarding: {
+        buyInjWithCard: 'Kart ile INJ satın al',
         injectiveBridge: 'Injective Köprüsü',
         processing: 'Transferiniz işleniyor',
         closeAndContinue: 'Kapat ve devam et',
         success: 'İşleminiz onaylandı',
-        depositInjNetworkAsset: 'INJ Ağ Varlıklarını yatırın',
+        depositUsdtFromEthereum: "Ethereum'dan USDT yatırın",
         processingMessage:
           'İşlem beklenenden uzun sürüyor. Lütfen biraz bekleyin.',
-        depositNowDescription:
-          'INJ ağının desteklendiği her yerden, bazı borsalar dahil, INJ transferi yapabilirsiniz.',
         processingMessageInfo:
-          'Transferiniz arka planda işleniyor, bu modalı güvenle kapatabilirsiniz. Köprülenen miktarı bakiye sayfasında veya köprü geçmişinizi görüntüleyerek kontrol edebilirsiniz.',
-        qr: {
-          bridge: 'Köprü',
-          cta: 'Kart ile INJ satın al'
-        }
+          'Transferiniz arka planda işleniyor, bu modalı güvenle kapatabilirsiniz. Köprülenen miktarı bakiye sayfasında veya köprü geçmişinizi görüntüleyerek kontrol edebilirsiniz.'
       }
     }
   },

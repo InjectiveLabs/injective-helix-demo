@@ -74,7 +74,7 @@ onUnmounted(() => {
     class="w-full h-screenMinusHeader"
     :data-cy="dataCyTag(SpotMarketCyTags.OrderDetailsTable)"
   >
-    <div class="overflow-x-auto divide-y h-full">
+    <div class="divide-y h-full">
       <PartialsTradeCommonOrdersBalances
         v-if="view === SpotOrdersStandardView.Balances"
       />

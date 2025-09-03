@@ -91,7 +91,7 @@ function selectStrategy(
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <CommonEmptyList
       v-if="gridStrategyStore.activeSpotStrategies.length === 0"
       :message="$t('tradingBots.noActiveStrategies')"

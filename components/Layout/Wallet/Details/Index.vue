@@ -25,8 +25,8 @@ const formattedAddress = computed(() =>
   )
 )
 
-function onFiatOnRamp() {
-  modalStore.openModal(Modal.FiatOnboard)
+function onDeposit() {
+  modalStore.openModal(Modal.Onboard)
 }
 
 function disconnect() {
@@ -141,7 +141,7 @@ function disconnect() {
               </div>
 
               <div class="mt-5">
-                <AppButton class="w-full" size="md" @click="onFiatOnRamp">
+                <AppButton class="w-full" size="md" @click="onDeposit">
                   {{ $t('common.deposit') }}
                 </AppButton>
               </div>

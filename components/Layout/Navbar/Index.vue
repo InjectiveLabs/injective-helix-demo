@@ -49,7 +49,7 @@ const filteredTopNavMenu = computed(() =>
 
       <div class="flex-1" />
 
-      <LayoutNavbarMenuReferral />
+      <LayoutNavbarMenuFeatured />
       <LayoutNavbarMobileMenu />
     </div>
   </header>

@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
+import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { calculateLeverage } from '@/app/utils/formatters'
 import { IsSpotKey, CommonCyTags, TradeSubPage } from '@/types'
 import type { UiMarketWithToken, UiDerivativeMarket } from '@/types'
-
-const route = useRoute()
-const isSpot = inject(IsSpotKey)
-const isLocked = useScrollLock(document.documentElement)
 
 const props = withDefaults(
   defineProps<{
@@ -20,6 +16,10 @@ const props = withDefaults(
 const emit = defineEmits<{
   'update:isMarketOpen': [value: boolean]
 }>()
+
+const route = useRoute()
+const isSpot = inject(IsSpotKey)
+const isLocked = useScrollLock(document.documentElement)
 
 const el = ref<null | HTMLElement>(null)
 const toggleEl = ref<null | HTMLElement>(null)
@@ -43,9 +43,33 @@ const { valueToBigNumber: leverageToBigNumber, valueToFixed: leverageToFixed } =
     }
   )
 
-const isBuidlPerpMarket = computed(
-  () => props.market.slug === 'buidl-usdt-perp'
+const isExpiryMarket = computed(
+  () =>
+    !!(props.market as UiDerivativeMarket)?.expiryFuturesMarketInfo
+      ?.expirationTimestamp
 )
+
+const hasDocsTooltip = computed(
+  () =>
+    props.market.slug === 'ton-usdt-perp' ||
+    props.market.slug === 'h100-usdt-perp' ||
+    props.market.slug === 'buidl-usdt-perp'
+)
+
+const docsUrl = computed(() => {
+  if (
+    (props.market as UiDerivativeMarket)?.expiryFuturesMarketInfo &&
+    props.market.subType === SharedMarketType.Futures
+  ) {
+    return 'https://docs.helixapp.com/trading/expiry-futures'
+  }
+
+  if (props.market.slug === 'h100-usdt-perp') {
+    return 'https://docs.helixapp.com/trading/perpetuals/nvidia-h100-hourly-perp-h100'
+  }
+
+  return 'https://docs.trading.injective.network/learn/index-perps'
+})
 
 const marketPriceMap = computed(() => ({
   [props.market.marketId]: isSpot
@@ -65,7 +89,9 @@ function closeMarketSection() {
   emit('update:isMarketOpen', false)
 }
 
-onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
+onClickOutside(el, closeMarketSection, {
+  ignore: [toggleEl]
+})
 </script>
 
 <template>
@@ -88,7 +114,7 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
       <div class="flex items-center space-x-2 justify-center relative">
         <div>
           <CommonHeaderTooltip
-            :is-disabled="!isBuidlPerpMarket"
+            :is-disabled="!hasDocsTooltip && !isExpiryMarket"
             :popper="{
               placement: 'top',
               strategy: 'fixed',
@@ -110,12 +136,24 @@ onClickOutside(el, closeMarketSection, { ignore: [toggleEl] })
             </span>
 
             <template #customTooltip>
-              <i18n-t v-if="isBuidlPerpMarket" keypath="markets.buidlTooltip">
+              <i18n-t v-if="isExpiryMarket" keypath="markets.expiryDocsTooltip">
                 <template #docs>
                   <NuxtLink
+                    :to="docsUrl"
                     target="_blank"
                     class="text-blue-500 hover:text-opacity-90"
-                    to="https://docs.trading.injective.network/learn/index-perps"
+                  >
+                    {{ $t('common.docs') }}
+                  </NuxtLink>
+                </template>
+              </i18n-t>
+
+              <i18n-t v-else-if="hasDocsTooltip" keypath="markets.docsTooltip">
+                <template #docs>
+                  <NuxtLink
+                    :to="docsUrl"
+                    target="_blank"
+                    class="text-blue-500 hover:text-opacity-90"
                   >
                     {{ $t('common.docs') }}
                   </NuxtLink>

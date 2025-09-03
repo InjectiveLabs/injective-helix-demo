@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { WalletConnectStatus } from '@shared/types'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { TURNKEY_CONTAINER_ID } from '@shared/utils/constant'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   MainPage,
@@ -128,7 +127,6 @@ watch(
 
 <template>
   <div class="relative min-h-screen">
-    <div :id="TURNKEY_CONTAINER_ID" class="opacity-0 h-0" />
     <LayoutNavbar />
 
     <PartialsHomeGradientBg v-if="route.name === MainPage.Index" />
@@ -172,8 +170,7 @@ watch(
           WalletConnectStatus.disconnecting
       "
     >
-      <ModalsOnboardingLiteBridge />
-      <ModalsOnboardingFiat />
+      <ModalsOnboarding />
       <ModalsDeprecatedMagic />
     </template>
 

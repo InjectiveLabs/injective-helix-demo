@@ -1,7 +1,8 @@
 import { Modal } from '@/types'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const appStore = useAppStore()
+  const { $pinia } = useNuxtApp()
+  const appStore = useAppStore($pinia)
   const modalStore = useSharedModalStore()
   const sharedWalletStore = useSharedWalletStore()
 
