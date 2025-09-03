@@ -224,6 +224,7 @@ export const useExchangeStore = defineStore('exchange', {
       marketIds: string[]
     }) {
       const exchangeStore = useExchangeStore()
+      const indexerRestMarketChronosApi = await getIndexerRestMarketChronosApi()
 
       const marketHistoryAlreadyExists = marketIds.every((marketId) => {
         return exchangeStore.marketsHistory.find(

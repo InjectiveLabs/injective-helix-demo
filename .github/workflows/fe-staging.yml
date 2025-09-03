@@ -5,7 +5,7 @@ on:
     inputs:
       network:
         description: 'Select deployment network'
-        required: true
+        required: false
         default: 'Mainnet'
         type: choice
         options:
@@ -13,7 +13,7 @@ on:
           - Testnet
           - Devnet
       branch:
-        description: 'Branch to deploy from'
+        description: 'Branch to deploy from (cannot be: dev, testnet, staging, master)'
         required: true
         type: string
       description:
@@ -71,6 +71,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check protected branches before proceeding
+      - name: Validate branch
+        run: |
+          BRANCH_NAME="${{ github.event.inputs.branch }}"
+
+          # Define protected branches
+          PROTECTED_BRANCHES=("dev" "testnet" "staging" "master")
+
+          for protected in "${PROTECTED_BRANCHES[@]}"; do
+            if [ "$BRANCH_NAME" = "$protected" ]; then
+              echo "❌ ERROR: Cannot deploy from protected branch '$BRANCH_NAME'"
+              exit 1
+            fi
+          done
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -133,21 +148,6 @@ jobs:
         env:
           NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      # Check protected branches before proceeding
-      - name: Check protected branches
-        run: |
-          BRANCH_NAME="${{ github.event.inputs.branch }}"
-
-          # Define protected branches
-          PROTECTED_BRANCHES=("dev" "testnet" "staging" "master")
-
-          for protected in "${PROTECTED_BRANCHES[@]}"; do
-            if [ "$BRANCH_NAME" = "$protected" ]; then
-              echo "❌ ERROR: Cannot deploy from protected branch '$BRANCH_NAME'"
-              exit 1
-            fi
-          done
 
       # Replace the extracted steps with the reusable action
       - name: Send deployment notification
