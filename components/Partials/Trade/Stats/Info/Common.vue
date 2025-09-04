@@ -85,7 +85,7 @@ const low = computed(() => {
           }"
           :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
         />
-        <span>{{ market.quoteToken.symbol }}</span>
+        <span class="ml-1">{{ market.quoteToken.symbol }}</span>
       </template>
     </p>
   </PartialsTradeStatsHeaderItem>
