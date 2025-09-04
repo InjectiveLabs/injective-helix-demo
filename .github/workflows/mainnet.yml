@@ -86,6 +86,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
 
       - name: Using Node ${{ matrix.node-version }}
         uses: useblacksmith/setup-node@v5
