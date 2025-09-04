@@ -416,6 +416,7 @@ export enum NoticeBanner {
   IAssets = 'i-assets',
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
+  MKRMigration = 'mkr-migration',
   ExpiryFutures = 'expiry-futures',
   TeslaCampaign = 'tesla-campaign',
   PointsS1Ended = 'points-s1-ended',

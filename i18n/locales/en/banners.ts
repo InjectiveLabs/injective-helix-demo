@@ -18,6 +18,9 @@ export default {
     expiryFuturesBanner:
       'This is an expiry futures trading pair, which will settle at {date}. Any positions open after this time will be force settled at the mark price at the time of settlement.',
 
+    mkrExpiry:
+      'As part of the migration from MKR to SKY, this pair will be force settled (pending governance) on September 14. Any positions still open on that date will be force settled at the mark price at the time of settlement.',
+
     kado: {
       getStarted: 'Get started',
       title: 'Introducing Helix 2.0! Discover a whole new trading experience.'
