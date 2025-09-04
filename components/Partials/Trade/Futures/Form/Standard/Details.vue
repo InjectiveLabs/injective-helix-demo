@@ -80,7 +80,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
+        <div class="flex items-center text-xs">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -126,71 +126,6 @@ function toggle() {
         </div>
 
         <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: totalNotional.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.quantity') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: quantity.toFixed()
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{
-                derivativeMarket.baseToken.overrideSymbol ||
-                derivativeMarket.baseToken.symbol
-              }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">
-            {{ $t('trade.averagePrice') }}
-          </p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: worstPrice.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
           <div class="flex-1 mx-2" />
           <p class="space-x-2 flex">
@@ -225,25 +160,6 @@ function toggle() {
               {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
             </p>
           </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
-            <div class="flex-1 mx-2" />
-            <p class="space-x-2 flex">
-              <SharedAmount
-                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              <span class="text-coolGray-450">
-                {{ derivativeMarket.quoteToken.symbol }}
-              </span>
-            </p>
-          </div>
         </template>
 
         <template v-else>
@@ -252,22 +168,6 @@ function toggle() {
             <div class="flex-1 mx-2" />
             <p v-if="derivativeMarket" class="text-white">
               {{ makerFeeRateToFixed }}%
-            </p>
-          </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="flex gap-x-2">
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              {{ derivativeMarket.quoteToken.symbol }}
             </p>
           </div>
         </template>

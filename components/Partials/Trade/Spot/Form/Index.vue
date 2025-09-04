@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import {
   MarketKey,
   UiSpotMarket,
@@ -16,14 +17,16 @@ const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 const options = computed(() => [
   {
     value: TradingInterface.Standard,
-    disabled: false
+    disabled: false,
+    icon: NuxtUiIcons.CandlestickChart
   },
   {
     value: TradingInterface.TradingBots,
     disabled:
       jsonStore.spotGridMarkets.find(
         ({ slug }) => slug === spotMarket.value.slug
-      ) === undefined
+      ) === undefined,
+    icon: NuxtUiIcons.Robot2
   }
 ])
 
@@ -45,14 +48,15 @@ onMounted(() => {
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingMode)"
     >
       <AppButtonSelect
-        v-for="{ value, disabled } in options"
+        v-for="{ icon, value, disabled } in options"
         :key="value"
         v-model="queryTradingMode"
         v-bind="{ value, disabled }"
-        class="font-bold text-sm flex justify-center items-center px-6 border-r last:border-r-0 text-coolGray-450 flex-1"
+        class="font-bold text-sm flex flex-col gap-1 justify-center items-center px-6 border-r last:border-r-0 text-coolGray-450 flex-1"
         active-classes="bg-brand-875 text-white"
       >
-        {{ $t(`trade.${value}`) }}
+        <UIcon :name="icon" class="size-5 min-w-5" />
+        <span class="leading-none">{{ $t(`trade.${value}`) }}</span>
       </AppButtonSelect>
     </div>
 

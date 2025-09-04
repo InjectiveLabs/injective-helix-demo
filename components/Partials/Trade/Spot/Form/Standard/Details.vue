@@ -71,7 +71,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
+        <div class="flex items-center text-xs">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -90,75 +90,6 @@ function toggle() {
               />
             </span>
 
-            <span class="text-coolGray-450">
-              {{ spotMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.amount') }}</p>
-          <div class="flex-1 mx-2" />
-          <p
-            class="space-x-2 flex"
-            :data-cy="dataCyTag(SpotMarketCyTags.DetailsAmount)"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: quantity.toFixed(),
-                decimals: spotMarket.quantityDecimals
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{ spotMarket.baseToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">
-            {{ spotMarket.quoteToken.symbol }} {{ $t('trade.amount') }}
-          </p>
-          <div class="flex-1 mx-2" />
-          <p
-            class="space-x-2 flex text-white"
-            :data-cy="dataCyTag(SpotMarketCyTags.DetailsStableAmount)"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: total.toFixed(),
-                decimals: spotMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-
-            <span class="text-coolGray-450">
-              {{ spotMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.price') }}</p>
-          <div class="flex-1 mx-2" />
-          <p
-            class="space-x-2 flex"
-            :data-cy="dataCyTag(SpotMarketCyTags.DetailsPrice)"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: worstPrice.toFixed(),
-                decimals: spotMarket.priceDecimals
-              }"
-              class="text-white"
-            />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
             </span>
@@ -190,27 +121,6 @@ function toggle() {
               :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerFeeRate)"
             >
               {{ makerFeeRateToFixed }}%
-            </p>
-          </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p
-              v-if="spotMarket"
-              class="gap-x-2 flex"
-              :data-cy="dataCyTag(SpotMarketCyTags.DetailsEstFeeRebate)"
-            >
-              <SharedAmount
-                v-bind="{
-                  decimals: 18,
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              <span class="text-coolGray-450">USDT</span>
             </p>
           </div>
         </template>

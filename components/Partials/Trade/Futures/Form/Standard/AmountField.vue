@@ -157,7 +157,7 @@ const { isMarkPriceThresholdError } = useMarkPriceThresholdError({
 
 const { value: typeValue } = useStringField({
   name: DerivativesTradeFormField.AmountOption,
-  initialValue: TradeAmountOption.Base
+  initialValue: TradeAmountOption.Quote
 })
 
 const {
@@ -355,13 +355,7 @@ onMounted(() => {
 
 <template>
   <div ref="el" class="space-y-2">
-    <div class="flex justify-between items-center">
-      <p class="field-label">{{ $t('trade.amount') }}</p>
-
-      <PartialsTradeCommonFormPercentage
-        @percentage:change="setFromPercentage"
-      />
-    </div>
+    <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField
       v-bind="{ decimals }"
@@ -478,5 +472,7 @@ onMounted(() => {
         })
       }}
     </p>
+
+    <PartialsTradeCommonFormPercentage @percentage:change="setFromPercentage" />
   </div>
 </template>
