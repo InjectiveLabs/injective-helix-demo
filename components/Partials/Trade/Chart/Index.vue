@@ -65,32 +65,31 @@ const isLightChartMarket = computed(() =>
           {{ $t(`trade.${label}`) }}
         </AppButtonSelect>
 
-          <div v-if="isStorkPowered" class="flex items-center">
-            <a
+        <div v-if="isStorkPowered" class="flex items-center">
+          <a
             class="flex justify-center items-center text-coolGray-500 text-2xs font-semibold px-4 space-x-2 hover:text-white py-2"
-              href="https://www.stork.network/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <p>Powered By Stork</p>
-              <img
-                src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
-                alt=""
-                class="size-4 rounded"
-              />
-            </a>
-          </div>
+            href="https://www.stork.network/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <p>Powered By Stork</p>
+            <img
+              src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
+              alt=""
+              class="size-4 rounded"
+            />
+          </a>
+        </div>
 
-          <div v-if="isSquaretowerPowered" class="flex items-center">
-            <NuxtLink
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://squaretower.xyz/"
-              class="text-green-400 text-xs font-semibold px-4 py-2 hover:text-white"
-            >
-              Powered By Squaretower
-            </NuxtLink>
-          </div>
+        <div v-if="isSquaretowerPowered" class="flex items-center">
+          <NuxtLink
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://squaretower.xyz/"
+            class="text-green-400 text-xs font-semibold px-4 py-2 hover:text-white"
+          >
+            Powered By Squaretower
+          </NuxtLink>
         </div>
       </div>
     </div>
