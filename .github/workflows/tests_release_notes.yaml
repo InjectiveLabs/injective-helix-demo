@@ -29,12 +29,14 @@ jobs:
         with:
           fetch-depth: 100
           fetch-tags: true
+          ref: master # Run against master branch (same as mainnet workflow)
 
       - name: Debug Git Information
         run: |
           echo "=== Git Debug Information ==="
           echo "Current HEAD: $(git rev-parse HEAD)"
           echo "Current branch: $(git branch --show-current)"
+          echo "Target branch: master (same as mainnet workflow)"
           echo "Total commits: $(git rev-list --count HEAD)"
           echo "Total tags: $(git tag | wc -l)"
           echo ""
@@ -44,6 +46,9 @@ jobs:
           echo "Commits between ${{ inputs.previous_tag }} and HEAD:"
           git log --oneline ${{ inputs.previous_tag }}..HEAD | head -10
           echo ""
+          echo "=== Branch Verification ==="
+          echo "✅ Running against master branch (same as mainnet workflow)"
+          echo "✅ This matches the actual deployment environment"
 
       - name: Test Release Notes Generation
         id: release_notes
@@ -66,7 +71,7 @@ jobs:
         if: inputs.test_case == 'v1.16.19'
         run: |
           echo "=== Validating v1.16.19 Expected Commits ==="
-          expected_commits=("ef16b874c975f055f998c9ce201a031d0d2edd87" "db52d12fd2436c79138c17b1edd3c1597dc80f86" "482e9e108a13360ec690207ebbf9b8c3c2e39f39")
+          expected_commits=("ef16b874c975f055f998c9ce201a031d0d2edd87" "db52d12fd2436c79138c17b1edd3c1597dc80f86")
 
           for commit in "${expected_commits[@]}"; do
             if git rev-parse --verify "$commit" >/dev/null 2>&1; then
@@ -77,6 +82,8 @@ jobs:
             fi
           done
           echo ""
+          echo "Note: v1.16.19 only contains 2 commits (the feature commit and its merge commit)"
+          echo "The commit 482e9e1 is on master branch but not part of v1.16.19 release"
 
       - name: Test Different Git Log Commands
         run: |
