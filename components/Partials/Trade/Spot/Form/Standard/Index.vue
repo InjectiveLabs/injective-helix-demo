@@ -36,7 +36,6 @@ const {
   worstPrice,
   totalWithFee,
   feePercentage,
-  slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
@@ -149,12 +148,6 @@ function onOrderSideClicked() {
       />
     </div>
 
-    <PartialsTradeSpotFormStandardSlippage
-      v-if="!isLimit"
-      class="my-4"
-      v-bind="{ worstPrice }"
-    />
-
     <PartialsTradeSpotFormStandardAdvancedSettings
       v-if="isLimit"
       class="my-4"
@@ -163,12 +156,12 @@ function onOrderSideClicked() {
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
         total,
+        isLimit,
         quantity,
         feeAmount,
         worstPrice,
-        feePercentage,
         totalWithFee,
-        slippagePercentage
+        feePercentage
       }"
     />
 

@@ -3,36 +3,42 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
+  Modal,
   MarketKey,
-  TradeTypes,
   SpotMarketCyTags,
+  SpotTradeForm,
   SpotTradeFormField
 } from '@/types'
-import type { SpotTradeForm } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
+
+const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{
+    isLimit: boolean
     total: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
     worstPrice: BigNumberInBase
     totalWithFee: BigNumberInBase
     feePercentage: BigNumberInBase
-    slippagePercentage: BigNumberInBase
   }>(),
   {}
 )
 const spotMarket = inject(MarketKey)
 
-const spotFormValues = useFormValues<SpotTradeForm>()
-
 const isOpen = ref(true)
+
+const spotFormValues = useFormValues<SpotTradeForm>()
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: spotMarket?.value?.takerFeeRate,
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
 })
+
+const slippagePercentage = computed(
+  () => spotFormValues.value[SpotTradeFormField.Slippage] || 0
+)
 
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
@@ -53,6 +59,10 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
 function toggle() {
   isOpen.value = !isOpen.value
 }
+
+function openSlippageModal() {
+  modalStore.openModal(Modal.SpotSlippage)
+}
 </script>
 
 <template>
@@ -71,7 +81,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -97,9 +107,34 @@ function toggle() {
         </div>
 
         <div
-          v-if="spotFormValues[SpotTradeFormField.Type] !== TradeTypes.Limit"
-          class="flex items-center text-xs font-medium"
+          v-if="!isLimit"
+          class="flex justify-between items-center text-xs font-medium"
         >
+          <p class="text-coolGray-450" @click="openSlippageModal">
+            {{ $t('trade.slippage') }}
+          </p>
+
+          <UPopover
+            mode="hover"
+            :popper="{ placement: 'top', strategy: 'fixed' }"
+          >
+            <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
+              {{
+                $t('trade.slippageEstimate', {
+                  max: slippagePercentage,
+                  estimate: slippagePercentage
+                })
+              }}
+            </p>
+            <template #panel>
+              <p class="text-xs text-coolGray-200 max-w-xs p-1">
+                {{ $t('trade.slippageTooltip') }}
+              </p>
+            </template>
+          </UPopover>
+        </div>
+
+        <div v-if="!isLimit" class="flex items-center text-xs font-medium">
           <CommonHeaderTooltip
             :tooltip="
               $t('trade.makerTakerRateTooltip', {
@@ -135,5 +170,7 @@ function toggle() {
         </template>
       </div>
     </AppCollapse>
+
+    <ModalsSpotSlippage />
   </div>
 </template>

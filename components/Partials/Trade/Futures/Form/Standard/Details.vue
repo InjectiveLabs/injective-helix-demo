@@ -3,6 +3,7 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
+  Modal,
   MarketKey,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
@@ -11,10 +12,11 @@ import {
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
-const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{
+    enableSlippage: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
@@ -26,8 +28,15 @@ withDefaults(
   {}
 )
 
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+
 const isOpen = ref(true)
+
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const slippagePercentage = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+)
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: derivativeMarket?.value?.takerFeeRate,
@@ -64,6 +73,10 @@ const isMakerFee = computed(
 function toggle() {
   isOpen.value = !isOpen.value
 }
+
+function openSlippageModal() {
+  modalStore.openModal(Modal.FuturesSlippage)
+}
 </script>
 
 <template>
@@ -80,7 +93,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -104,6 +117,34 @@ function toggle() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
+        </div>
+
+        <div
+          v-if="enableSlippage"
+          class="flex justify-between items-center text-xs font-medium"
+        >
+          <p class="text-coolGray-450" @click="openSlippageModal">
+            {{ $t('trade.slippage') }}
+          </p>
+
+          <UPopover
+            mode="hover"
+            :popper="{ placement: 'top', strategy: 'fixed' }"
+          >
+            <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
+              {{
+                $t('trade.slippageEstimate', {
+                  max: slippagePercentage,
+                  estimate: slippagePercentage
+                })
+              }}
+            </p>
+            <template #panel>
+              <p class="text-xs text-coolGray-200 max-w-xs p-1">
+                {{ $t('trade.slippageTooltip') }}
+              </p>
+            </template>
+          </UPopover>
         </div>
 
         <div class="flex items-center text-xs font-medium">
@@ -182,5 +223,7 @@ function toggle() {
         </template>
       </div>
     </AppCollapse>
+
+    <ModalsFuturesSlippage />
   </div>
 </template>

@@ -37,6 +37,7 @@ export default {
     advanced: 'Advanced',
     leverage: 'Leverage',
     standard: 'Standard',
+    slippage: 'Slippage',
     addTpSl: 'Add TP/SL',
     tickSize: 'Tick Size',
     stopLoss: 'Stop Loss',
@@ -121,7 +122,9 @@ export default {
     estLiquidationPrice: 'Est. Liquidation Price',
     stopLossTriggerPrice: 'Stop Loss Trigger Price',
     emptyAdvancedOrders: 'No Advanced Orders Found',
+    slippageEstimate: 'Est: {estimate}% / Max: {max}%',
     takeProfitTriggerPrice: 'Take Profit Trigger Price',
+    slippageTooltip: 'Click to adjust slippage tolerance',
     modifyTakeProfitStopLoss: 'Modify Take Profit / Stop Loss',
     postOnlyWarning: 'Temporarily post-only due to chain upgrade',
     minNotionalError: 'Minimum order value > {minNotional} {symbol}',
@@ -137,8 +140,6 @@ export default {
       'Maker orders pay {makerFeeRate}% fee. Taker orders pay {takerFeeRate}% fee.',
     eip712Warning:
       'Due to extremely high usage, gas-free transactions are currently unavailable',
-    slippageTooltip:
-      'Slippage tolerance is the maximum price change allowed before a trade is canceled.',
     stopLossDetails:
       'When Mark Price reaches {price}, it will trigger a Stop Loss Market order for {quantity}.',
     takeProfitDetails:

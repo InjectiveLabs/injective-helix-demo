@@ -57,6 +57,14 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
+const enableSlippage = computed(() =>
+  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
 onMounted(() => {
   setFormValues(
     {
@@ -190,18 +198,6 @@ function openLeverageModal() {
       />
     </div>
 
-    <PartialsTradeFuturesFormStandardSlippage
-      v-if="
-        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-          derivativeFormValues[
-            DerivativesTradeFormField.Type
-          ] as DerivativeTradeTypes
-        )
-      "
-      v-bind="{ worstPrice }"
-      class="mt-4"
-    />
-
     <PartialsTradeFuturesFormStandardAdvancedSettings
       class="mt-4"
       v-bind="{ estLiquidationPrice }"
@@ -216,6 +212,7 @@ function openLeverageModal() {
         worstPrice,
         marginWithFee,
         totalNotional,
+        enableSlippage,
         estLiquidationPrice
       }"
     />
