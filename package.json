@@ -125,9 +125,10 @@
       "error-ex": "1.3.2",
       "magic-sdk": "29.1.0",
       "bignumber.js": "9.1.2",
-      "@solana/web3.js": "1.98.0",
+      "simple-swizzle": "0.2.2",
       "rpc-websockets": "9.0.4",
       "@ethereumjs/tx": "^4.1.1",
+      "@solana/web3.js": "1.98.0",
       "@cosmjs/crypto>libsodium-wrappers-sumo": "npm:@bangjelkoski/noop"
     }
   }
