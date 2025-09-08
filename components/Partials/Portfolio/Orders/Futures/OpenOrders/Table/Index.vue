@@ -127,7 +127,12 @@ const columns = computed(() => {
             }}
           </p>
 
-          <AppTooltip v-bind="{ content: $t('trade.chaseTooltip') }" />
+          <AppTooltip
+            v-bind="{
+              placement: 'bottom',
+              content: $t('trade.chaseTooltip')
+            }"
+          />
         </NuxtLink>
       </template>
 
