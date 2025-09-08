@@ -34,6 +34,7 @@ export default {
     markets: 'Markets',
     details: 'Details',
     quantity: 'Quantity',
+    advanced: 'Advanced',
     leverage: 'Leverage',
     standard: 'Standard',
     addTpSl: 'Add TP/SL',
@@ -132,6 +133,8 @@ export default {
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     markPriceInvalid:
       'Please modify price, amount, or leverage to meet mark price requirement',
+    makerTakerRateTooltip:
+      'Maker orders pay {makerFeeRate}% fee. Taker orders pay {takerFeeRate}% fee.',
     eip712Warning:
       'Due to extremely high usage, gas-free transactions are currently unavailable',
     slippageTooltip:
@@ -279,6 +282,12 @@ export default {
       leverageAt: 'Leverage at {leverageAmount}x',
       description:
         'Higher leverage magnifies returns, but can also make it easier to get liquidated.'
+    },
+
+    slippageModal: {
+      title: 'Adjust max slippage',
+      description:
+        'Set the maximum slippage you are willing to accept. If the price changes by more than this percentage, your order will not be executed.'
     },
 
     partialClosePositionModal: {

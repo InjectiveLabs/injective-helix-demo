@@ -1,11 +1,6 @@
 <script lang="ts" setup>
 import { NuxtUiIcons } from '@shared/types'
-import { Modal, DerivativeTradeTypes, DerivativesTradeFormField } from '@/types'
-import type { DerivativesTradeForm } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
-
-const modalStore = useSharedModalStore()
-const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+import { DerivativeTradeTypes } from '@/types'
 
 const emit = defineEmits<{
   'trade-type:change': []
@@ -15,9 +10,16 @@ const emit = defineEmits<{
 const props = withDefaults(
   defineProps<{
     modelValue: string
-    worstPrice: BigNumberInBase
   }>(),
   {}
+)
+
+const basicTradeTypes = [
+  DerivativeTradeTypes.Limit,
+  DerivativeTradeTypes.Market
+]
+const advancedTradeTypes = Object.values(DerivativeTradeTypes).filter(
+  (type) => !basicTradeTypes.includes(type)
 )
 
 const orderType = computed({
@@ -25,54 +27,62 @@ const orderType = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
+const isAdvancedSelected = computed(() =>
+  advancedTradeTypes.includes(orderType.value as DerivativeTradeTypes)
+)
+
 function onTradeTypeChange() {
   emit('trade-type:change')
 }
 
-function openLeverageModal() {
-  modalStore.openModal(Modal.Leverage)
+function onTypeSelect(type: DerivativeTradeTypes) {
+  orderType.value = type
+  onTradeTypeChange()
 }
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
-    <span
-      class="rounded-lg p-2.5 w-1/2 text-center text-sm font-medium bg-[#124A73] hover:bg-[#124A73]/80 text-[#CFE5FF] transition-colors cursor-pointer"
-      @click="openLeverageModal"
-    >
-      {{
-        $t('trade.leverageModal.leverageAt', {
-          leverageAmount:
-            derivativeFormValues[DerivativesTradeFormField.Leverage]
-        })
-      }}
-    </span>
-
-    <div class="max-lg:w-1/2 max-lg:flex max-lg:justify-center">
-      <USelectMenu
-        v-model="orderType"
-        :options="Object.values(DerivativeTradeTypes)"
-        selected-icon=""
-        :ui-menu="{
-          ring: '',
-          background: 'dark:bg-brand-925',
-          option: { selected: '', base: 'capitalize dark:hover:bg-brand-875' }
-        }"
-        @change="onTradeTypeChange"
+  <div class="border-b max-lg:-mx-4 max-lg:-mt-2">
+    <div class="flex items-center">
+      <AppButtonSelect
+        v-for="type in basicTradeTypes"
+        :key="type"
+        :value="type"
+        :model-value="orderType"
+        active-classes="border-b border-blue-550 text-white"
+        class="flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+        @click="onTypeSelect(type)"
       >
-        <template #default="{ open: isOpen }">
-          <div>
-            <span class="text-xs font-semibold text-coolGray-200">
-              {{ $t('trade.orderType') }}
-            </span>
+        {{ $t(`trade.${type}`) }}
+      </AppButtonSelect>
 
+      <div class="flex-1">
+        <USelectMenu
+          :model-value="isAdvancedSelected ? orderType : ''"
+          :options="advancedTradeTypes"
+          selected-icon=""
+          :ui-menu="{
+            ring: '',
+            background: 'dark:bg-brand-925',
+            option: { selected: '', base: 'capitalize dark:hover:bg-brand-875' }
+          }"
+          @update:model-value="onTypeSelect"
+        >
+          <template #default="{ open: isOpen }">
             <div
-              class="flex items-center text-coolGray-300 hover:text-white transition-colors"
+              :class="[
+                'flex items-center justify-center text-xs font-medium px-4 py-2 transition-colors cursor-pointer',
+                isAdvancedSelected
+                  ? 'border-b border-blue-550 text-white'
+                  : 'text-coolGray-450 hover:text-white'
+              ]"
             >
-              <span
-                class="capitalize font-medium w-[101px] 5xl:w-[108px] max-5xl:text-sm"
-              >
-                {{ orderType }}
+              <span class="capitalize mr-1 whitespace-nowrap">
+                {{
+                  isAdvancedSelected
+                    ? $t(`trade.${orderType}`)
+                    : $t('trade.advanced')
+                }}
               </span>
               <UIcon
                 :name="NuxtUiIcons.ArrowDown2"
@@ -80,11 +90,9 @@ function openLeverageModal() {
                 class="size-2.5 transition-transform"
               />
             </div>
-          </div>
-        </template>
-      </USelectMenu>
+          </template>
+        </USelectMenu>
+      </div>
     </div>
-
-    <ModalsLeverage v-bind="{ worstPrice }" />
   </div>
 </template>

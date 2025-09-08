@@ -101,13 +101,16 @@ function onOrderSideChange() {
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
+
+function openLeverageModal() {
+  modalStore.openModal(Modal.Leverage)
+}
 </script>
 
 <template>
   <div class="p-4 lg:pb-8">
     <PartialsTradeFuturesFormStandardNavigation
       v-model="orderType"
-      v-bind="{ worstPrice }"
       @trade-type:change="onTradeTypeChange"
     />
 
@@ -146,6 +149,20 @@ function resetSelectedPosition() {
     </div>
 
     <div class="space-y-4 pt-4">
+      <AppButton
+        variant="primary-outline"
+        is-full-width
+        class="rounded-lg p-2.5 w-full text-sm font-medium"
+        @click="openLeverageModal"
+      >
+        {{
+          $t('trade.leverageModal.leverageAt', {
+            leverageAmount:
+              derivativeFormValues[DerivativesTradeFormField.Leverage]
+          })
+        }}
+      </AppButton>
+
       <PartialsTradeFuturesFormStandardTriggerField
         v-if="
           [
@@ -222,5 +239,7 @@ function resetSelectedPosition() {
       v-bind="{ position: selectedPosition }"
       @on:close="resetSelectedPosition"
     />
+
+    <ModalsLeverage v-bind="{ worstPrice }" />
   </div>
 </template>

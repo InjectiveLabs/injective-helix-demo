@@ -150,7 +150,16 @@ function toggle() {
 
         <template v-if="!isMakerFee">
           <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
+            <CommonHeaderTooltip
+              :tooltip="
+                $t('trade.makerTakerRateTooltip', {
+                  makerFeeRate: makerFeeRateToFixed,
+                  takerFeeRate: takerFeeRateToFixed
+                })
+              "
+            >
+              <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
+            </CommonHeaderTooltip>
             <div class="flex-1 mx-2" />
             <p
               v-if="derivativeMarket"

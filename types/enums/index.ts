@@ -557,6 +557,7 @@ export enum Modal {
   Onboard = 'onboard',
   DevMode = 'dev-mode',
   Leverage = 'leverage',
+  Slippage = 'slippage',
   IAsset = 'iasset-modal',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
