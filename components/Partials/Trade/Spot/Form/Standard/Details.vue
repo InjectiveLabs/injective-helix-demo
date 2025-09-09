@@ -5,8 +5,9 @@ import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
-  SpotMarketCyTags,
+  UiSpotMarket,
   SpotTradeForm,
+  SpotMarketCyTags,
   SpotTradeFormField
 } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
@@ -36,8 +37,16 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
 })
 
-const slippagePercentage = computed(
-  () => spotFormValues.value[SpotTradeFormField.Slippage] || 0
+const { estimatedSlippage } = useSpotEstimatedSlippage(
+  computed(() => spotMarket?.value as UiSpotMarket)
+)
+
+const { valueToFixed: slippagePercentage } = useSharedBigNumberFormatter(
+  computed(() => spotFormValues.value[SpotTradeFormField.Slippage] || 0),
+  {
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
@@ -119,12 +128,30 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              {{
-                $t('trade.slippageEstimate', {
-                  max: slippagePercentage,
-                  estimate: slippagePercentage
-                })
-              }}
+              <i18n-t
+                keypath="trade.slippageEstimate"
+                class="text-xs text-coolGray-400"
+              >
+                <template #max>
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      shouldAbbreviate: false,
+                      amount: slippagePercentage
+                    }"
+                  />
+                </template>
+                <template #estimate>
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      showZeroAsEmDash: true,
+                      shouldAbbreviate: false,
+                      amount: estimatedSlippage || 0
+                    }"
+                  />
+                </template>
+              </i18n-t>
             </p>
             <template #panel>
               <p class="text-xs text-coolGray-200 max-w-xs p-1">

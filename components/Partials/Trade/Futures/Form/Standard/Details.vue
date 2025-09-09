@@ -11,6 +11,7 @@ import {
 } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 
 const modalStore = useSharedModalStore()
 
@@ -34,6 +35,10 @@ const isOpen = ref(true)
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
+const { estimatedSlippage } = useDerivativeEstimatedSlippage(
+  computed(() => derivativeMarket?.value as UiDerivativeMarket)
+)
+
 const slippagePercentage = computed(
   () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 )
@@ -46,7 +51,7 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS,
     shouldTruncate: true
   }
 )
@@ -54,7 +59,7 @@ const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS,
     shouldTruncate: true
   }
 )
@@ -132,12 +137,30 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              {{
-                $t('trade.slippageEstimate', {
-                  max: slippagePercentage,
-                  estimate: slippagePercentage
-                })
-              }}
+              <i18n-t
+                keypath="trade.slippageEstimate"
+                class="text-xs text-coolGray-400"
+              >
+                <template #max>
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      shouldAbbreviate: false,
+                      amount: slippagePercentage
+                    }"
+                  />
+                </template>
+                <template #estimate>
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      showZeroAsEmDash: true,
+                      shouldAbbreviate: false,
+                      amount: estimatedSlippage || 0
+                    }"
+                  />
+                </template>
+              </i18n-t>
             </p>
             <template #panel>
               <p class="text-xs text-coolGray-200 max-w-xs p-1">
