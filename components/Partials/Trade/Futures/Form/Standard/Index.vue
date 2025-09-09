@@ -57,6 +57,14 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
+const enableSlippage = computed(() =>
+  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
 onMounted(() => {
   setFormValues(
     {
@@ -101,13 +109,16 @@ function onOrderSideChange() {
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
+
+function openLeverageModal() {
+  modalStore.openModal(Modal.Leverage)
+}
 </script>
 
 <template>
   <div class="p-4 lg:pb-8">
     <PartialsTradeFuturesFormStandardNavigation
       v-model="orderType"
-      v-bind="{ worstPrice }"
       @trade-type:change="onTradeTypeChange"
     />
 
@@ -146,6 +157,20 @@ function resetSelectedPosition() {
     </div>
 
     <div class="space-y-4 pt-4">
+      <AppButton
+        is-full-width
+        variant="primary-outline"
+        class="rounded-lg p-2.5 w-full text-sm font-medium"
+        @click="openLeverageModal"
+      >
+        {{
+          $t('trade.leverageModal.leverageAt', {
+            leverageAmount:
+              derivativeFormValues[DerivativesTradeFormField.Leverage]
+          })
+        }}
+      </AppButton>
+
       <PartialsTradeFuturesFormStandardTriggerField
         v-if="
           [
@@ -173,18 +198,6 @@ function resetSelectedPosition() {
       />
     </div>
 
-    <PartialsTradeFuturesFormStandardSlippage
-      v-if="
-        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-          derivativeFormValues[
-            DerivativesTradeFormField.Type
-          ] as DerivativeTradeTypes
-        )
-      "
-      v-bind="{ worstPrice }"
-      class="mt-4"
-    />
-
     <PartialsTradeFuturesFormStandardAdvancedSettings
       class="mt-4"
       v-bind="{ estLiquidationPrice }"
@@ -199,6 +212,7 @@ function resetSelectedPosition() {
         worstPrice,
         marginWithFee,
         totalNotional,
+        enableSlippage,
         estLiquidationPrice
       }"
     />
@@ -222,5 +236,7 @@ function resetSelectedPosition() {
       v-bind="{ position: selectedPosition }"
       @on:close="resetSelectedPosition"
     />
+
+    <ModalsLeverage v-bind="{ worstPrice }" />
   </div>
 </template>

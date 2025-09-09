@@ -36,7 +36,6 @@ const {
   worstPrice,
   totalWithFee,
   feePercentage,
-  slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
@@ -86,7 +85,7 @@ function onOrderSideClicked() {
           :key="value"
           v-bind="{ value }"
           v-model="orderTypeValue"
-          class="max-lg:flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           active-classes="border-b border-blue-550 text-white"
         >
           {{ $t(`trade.${value}`) }}
@@ -94,7 +93,7 @@ function onOrderSideClicked() {
 
         <NuxtLink
           v-if="isSwapEnabled"
-          class="max-lg:flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
             query: {
@@ -149,12 +148,6 @@ function onOrderSideClicked() {
       />
     </div>
 
-    <PartialsTradeSpotFormStandardSlippage
-      v-if="!isLimit"
-      class="my-4"
-      v-bind="{ worstPrice }"
-    />
-
     <PartialsTradeSpotFormStandardAdvancedSettings
       v-if="isLimit"
       class="my-4"
@@ -163,12 +156,12 @@ function onOrderSideClicked() {
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
         total,
+        isLimit,
         quantity,
         feeAmount,
         worstPrice,
-        feePercentage,
         totalWithFee,
-        slippagePercentage
+        feePercentage
       }"
     />
 
