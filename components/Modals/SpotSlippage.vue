@@ -13,12 +13,11 @@ const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 const defaultSlippage = DEFAULT_SLIPPAGE.toFixed()
 const previousSlippage = ref(defaultSlippage)
 
-const currentSlippageValue = computed(() => {
-  return (
+const currentSlippageValue = computed(
+  () =>
     appStore.userState.marketSlippageIdMap[spotMarket.value.marketId] ||
     DEFAULT_SLIPPAGE.toFixed()
-  )
-})
+)
 
 const { value: slippage } = useStringField({
   name: SpotTradeFormField.Slippage,

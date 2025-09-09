@@ -13,12 +13,11 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const defaultSlippage = DEFAULT_SLIPPAGE.toFixed()
 const previousSlippage = ref(defaultSlippage)
 
-const currentSlippageValue = computed(() => {
-  return (
+const currentSlippageValue = computed(
+  () =>
     appStore.userState.marketSlippageIdMap[derivativeMarket.value.marketId] ||
     DEFAULT_SLIPPAGE.toFixed()
-  )
-})
+)
 
 const { value: slippage } = useStringField({
   name: DerivativesTradeFormField.Slippage,
@@ -27,8 +26,8 @@ const { value: slippage } = useStringField({
 
 const { value: tempSlippage, errorMessage } = useStringField({
   rule: 'slippage',
-  name: DerivativesTradeFormField.TempSlippage,
-  initialValue: currentSlippageValue.value
+  initialValue: currentSlippageValue.value,
+  name: DerivativesTradeFormField.TempSlippage
 })
 
 const isHighSlippage = computed(() =>

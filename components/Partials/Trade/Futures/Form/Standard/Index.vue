@@ -158,8 +158,8 @@ function openLeverageModal() {
 
     <div class="space-y-4 pt-4">
       <AppButton
-        variant="primary-outline"
         is-full-width
+        variant="primary-outline"
         class="rounded-lg p-2.5 w-full text-sm font-medium"
         @click="openLeverageModal"
       >

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
@@ -11,7 +11,6 @@ import {
 } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
-import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 
 const modalStore = useSharedModalStore()
 

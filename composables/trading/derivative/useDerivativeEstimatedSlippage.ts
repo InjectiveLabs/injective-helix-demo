@@ -1,9 +1,9 @@
-import { TradeDirection } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import {
-  DerivativeTradeTypes,
   TradeAmountOption,
+  DerivativeTradeTypes,
   DerivativesTradeFormField
 } from '@/types'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
