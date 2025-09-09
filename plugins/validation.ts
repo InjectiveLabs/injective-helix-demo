@@ -101,6 +101,10 @@ export const defineGlobalRules = () => {
           return 'amount is required'
         }
 
+        if (field.toLowerCase().includes('leverage')) {
+          return 'Leverage is required'
+        }
+
         if (field.toLowerCase().includes('positionquantity')) {
           return 'Invalid amount: Please enter a valid quantity greater than zero.'
         }
