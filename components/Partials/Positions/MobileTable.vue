@@ -2,7 +2,10 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UTableColumn, TransformedPosition } from '@/types'
@@ -202,10 +205,9 @@ function onSetPosition(value: TransformedPosition) {
           >
             <SharedAmount
               v-bind="{
-                useSubscript: true,
                 shouldAbbreviate: false,
                 amount: position.pnl.toFixed(),
-                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_DISPLAY_DECIMALS
               }"
             />
 

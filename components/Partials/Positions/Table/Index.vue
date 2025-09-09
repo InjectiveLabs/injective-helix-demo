@@ -5,7 +5,10 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_DISPLAY_DECIMALS,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
 import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
@@ -337,10 +340,9 @@ function onClosePartialPosition() {
           >
             <SharedAmount
               v-bind="{
-                useSubscript: true,
                 shouldAbbreviate: false,
                 amount: row.pnl.toFixed(),
-                decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                decimals: UI_DEFAULT_DISPLAY_DECIMALS
               }"
             />
 

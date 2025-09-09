@@ -12,7 +12,7 @@ function setPercentage(percentage: string) {
 </script>
 
 <template>
-  <div class="flex gap-1">
+  <div class="flex gap-4">
     <AppButtonSelect
       v-for="percentage in [25, 50, 75, 100]"
       :key="percentage"
