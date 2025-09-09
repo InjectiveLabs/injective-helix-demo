@@ -151,13 +151,14 @@ function openSlippageModal() {
                 </template>
                 <template #estimate>
                   <SharedAmount
+                    v-if="estimatedSlippage !== undefined"
                     v-bind="{
                       useSubscript: true,
-                      showZeroAsEmDash: true,
                       shouldAbbreviate: false,
                       amount: estimatedSlippage || 0
                     }"
                   />
+                  <span v-else>&mdash;</span>
                 </template>
               </i18n-t>
             </p>
