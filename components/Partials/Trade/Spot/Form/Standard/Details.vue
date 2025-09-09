@@ -37,10 +37,6 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
 })
 
-const { estimatedSlippage } = useSpotEstimatedSlippage(
-  computed(() => spotMarket?.value as UiSpotMarket)
-)
-
 const { valueToFixed: slippagePercentage } = useSharedBigNumberFormatter(
   computed(() => spotFormValues.value[SpotTradeFormField.Slippage] || 0),
   {
@@ -140,17 +136,6 @@ function openSlippageModal() {
                       amount: slippagePercentage
                     }"
                   />
-                </template>
-                <template #estimate>
-                  <SharedAmount
-                    v-if="estimatedSlippage !== undefined"
-                    v-bind="{
-                      useSubscript: true,
-                      shouldAbbreviate: false,
-                      amount: estimatedSlippage || 0
-                    }"
-                  />
-                  <span v-else>&mdash;</span>
                 </template>
               </i18n-t>
             </p>

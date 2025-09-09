@@ -34,10 +34,6 @@ const isOpen = ref(true)
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
-const { estimatedSlippage } = useDerivativeEstimatedSlippage(
-  computed(() => derivativeMarket?.value as UiDerivativeMarket)
-)
-
 const slippagePercentage = computed(
   () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
 )
@@ -148,17 +144,6 @@ function openSlippageModal() {
                       amount: slippagePercentage
                     }"
                   />
-                </template>
-                <template #estimate>
-                  <SharedAmount
-                    v-if="estimatedSlippage !== undefined"
-                    v-bind="{
-                      useSubscript: true,
-                      shouldAbbreviate: false,
-                      amount: estimatedSlippage || 0
-                    }"
-                  />
-                  <span v-else>&mdash;</span>
                 </template>
               </i18n-t>
             </p>
