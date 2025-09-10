@@ -16,6 +16,7 @@ const { activeSubaccountBalancesWithToken } = useBalance()
 const props = withDefaults(
   defineProps<{
     isTradingBots?: boolean
+    isPortfolioPage?: boolean
     orders: SpotLimitOrder[]
   }>(),
   {}
@@ -79,6 +80,7 @@ const columns = computed(() => {
 
   if (
     !props.isTradingBots &&
+    !props.isPortfolioPage &&
     ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
   ) {
     baseColumns.push({
