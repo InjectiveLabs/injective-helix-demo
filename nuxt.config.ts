@@ -24,6 +24,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
     ...(isProduction && import.meta.env.NUXT_CLARITY_ID
       ? ['nuxt-clarity-analytics']
       : [])

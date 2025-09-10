@@ -7,6 +7,7 @@ withDefaults(
     icon?: string
     isLg?: boolean
     content?: string
+    placement?: string
     isWarning?: boolean
     isDisabled?: boolean
     contentClass?: string
@@ -17,6 +18,7 @@ withDefaults(
     ui: () => ({}),
     isWarning: false,
     contentClass: '',
+    placement: 'top',
     isDisabled: false,
     icon: NuxtUiIcons.Info
   }
@@ -29,7 +31,7 @@ withDefaults(
     :text="content"
     :ui="{
       popper: {
-        placement: 'top'
+        placement
       },
       ...ui
     }"

@@ -63,6 +63,17 @@ const activePerpSettlePairs = computed(() =>
   )
 )
 
+const mkrMigrationBanner = computed<Banner[]>(() => [
+  {
+    id: NoticeBanner.MKRMigration,
+    shouldDisplay:
+      route.params.slug === 'mkr-usdt-perp' ||
+      route.query.marketId ===
+        '0x142d0fa4506b5f404bcfdd54567797ff6767dce07afaedc90d379665f09f0520',
+    shouldPersist: true
+  }
+])
+
 const expiryFutureSettlementTimestamp = computed(() => {
   if (!(route.name as string)?.startsWith(TradePage.Futures)) {
     return undefined
@@ -140,6 +151,7 @@ const promotionalBanners = computed<Banner[]>(() => [
 const bannerToDisplay = computed(
   () =>
     [
+      ...mkrMigrationBanner.value,
       ...deprecatedWarningBanner.value,
       ...expiryFutureBanner.value,
       ...perpMarketSettleBanners.value,
@@ -356,6 +368,12 @@ function onClickStockTwitsCta() {
     <template v-if="bannerToDisplay.id === NoticeBanner.PointsS1Ended">
       <span>
         {{ $t('banners.pointsS1Ended') }}
+      </span>
+    </template>
+
+    <template v-if="bannerToDisplay.id === NoticeBanner.MKRMigration">
+      <span>
+        {{ $t('banners.mkrExpiry') }}
       </span>
     </template>
 
