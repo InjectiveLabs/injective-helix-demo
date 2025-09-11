@@ -10,17 +10,17 @@ const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const options = computed(() => [
   {
-    value: TradingInterface.Standard,
     disabled: false,
+    value: TradingInterface.Standard,
     icon: NuxtUiIcons.CandlestickChart
   },
   {
+    icon: NuxtUiIcons.Robot2,
     value: TradingInterface.TradingBots,
     disabled:
       jsonStore.derivativeGridMarkets.find(
         ({ slug }) => slug === derivativeMarket.value.slug
-      ) === undefined,
-    icon: NuxtUiIcons.Robot2
+      ) === undefined
   }
 ])
 

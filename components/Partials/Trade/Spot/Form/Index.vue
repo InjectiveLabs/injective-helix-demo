@@ -16,17 +16,17 @@ const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
 const options = computed(() => [
   {
-    value: TradingInterface.Standard,
     disabled: false,
+    value: TradingInterface.Standard,
     icon: NuxtUiIcons.CandlestickChart
   },
   {
+    icon: NuxtUiIcons.Robot2,
     value: TradingInterface.TradingBots,
     disabled:
       jsonStore.spotGridMarkets.find(
         ({ slug }) => slug === spotMarket.value.slug
-      ) === undefined,
-    icon: NuxtUiIcons.Robot2
+      ) === undefined
   }
 ])
 

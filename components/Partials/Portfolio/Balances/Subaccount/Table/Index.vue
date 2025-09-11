@@ -193,8 +193,8 @@ function toggleStakingRow() {
     :columns="columns"
     :ui="{
       th: {
-        color: `dark:text-coolGray-400 ${props.tableHeaderClass}`,
-        base: 'leading-5'
+        base: 'leading-5',
+        color: `dark:text-coolGray-400 ${props.tableHeaderClass}`
       },
       td: { padding: 'p-4', base: 'text-right' }
     }"
@@ -221,23 +221,23 @@ function toggleStakingRow() {
 
           <SharedIcon
             v-if="row.isVerified"
-            name="check-shield"
             is-md
+            name="check-shield"
             class="text-green-500 ml-2"
           />
 
           <AppButton
             v-if="row.token.denom === injToken.denom"
-            variant="primary-ghost"
             size="xs"
+            variant="primary-ghost"
             class="text-coolGray-400 hover:bg-transparent hover:text-white focus-within:ring-0"
             @click="toggleStakingRow"
           >
             <UIcon
+              class="size-4"
               :name="
                 showStakingRow ? NuxtUiIcons.ChevronUp : NuxtUiIcons.ChevronDown
               "
-              class="size-4"
             />
           </AppButton>
         </div>
@@ -246,9 +246,9 @@ function toggleStakingRow() {
           <div class="rounded-lg p-2 bg-brand-800 min-w-28">
             <PartialsPortfolioBalancesSubaccountTableActionBtns
               v-if="!row.isStakingRow"
-              is-table-popover
               v-bind="{
                 token: row.token,
+                isTablePopover: true,
                 isVerified: row.isVerified,
                 isBridgable: row.isBridgable
               }"

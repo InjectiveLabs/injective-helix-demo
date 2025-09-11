@@ -105,8 +105,8 @@ const columns = computed(() => {
     <template #market-data="{ row }">
       <div class="flex items-center gap-1">
         <PartialsCommonMarketRedirection
-          class="flex items-center space-x-2 p-2 font-sans"
           v-bind="{ market: row.market }"
+          class="flex items-center space-x-2 p-2 font-sans"
         >
           <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
           <p

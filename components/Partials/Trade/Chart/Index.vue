@@ -57,9 +57,9 @@ const isLightChartMarket = computed(() =>
           :key="label"
           v-model="view"
           :value="label"
-          class="max-lg:flex-1 text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
-          :data-cy="`${dataCyTag(SpotMarketCyTags.ChartHeader)}-${label}`"
           active-classes="text-white border-blue-550"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.ChartHeader)}-${label}`"
+          class="max-lg:flex-1 text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
           @update:model-value="onUpdateChart"
         >
           {{ $t(`trade.${label}`) }}
@@ -67,16 +67,16 @@ const isLightChartMarket = computed(() =>
 
         <div v-if="isStorkPowered" class="flex items-center">
           <a
-            class="flex justify-center items-center text-coolGray-500 text-2xs font-semibold px-4 space-x-2 hover:text-white py-2"
-            href="https://www.stork.network/"
             target="_blank"
             rel="noopener noreferrer"
+            href="https://www.stork.network/"
+            class="flex justify-center items-center text-coolGray-500 text-2xs font-semibold px-4 space-x-2 hover:text-white py-2"
           >
             <p>Powered By Stork</p>
             <img
-              src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
-              alt=""
+              alt="Stork"
               class="size-4 rounded"
+              src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
             />
           </a>
         </div>

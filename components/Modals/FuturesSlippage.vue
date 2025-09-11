@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MAX_SLIPPAGE, DEFAULT_SLIPPAGE } from '@/app/utils/constants'
+import {
+  MAX_SLIPPAGE,
+  DEFAULT_SLIPPAGE,
+  HIGH_SLIPPAGE_THRESHOLD
+} from '@/app/utils/constants'
 import { Modal, MarketKey, DerivativesTradeFormField } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 
@@ -13,10 +16,14 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const defaultSlippage = DEFAULT_SLIPPAGE.toFixed()
 const previousSlippage = ref(defaultSlippage)
 
+const isHighSlippage = computed(() =>
+  new BigNumberInBase(tempSlippage.value).gt(HIGH_SLIPPAGE_THRESHOLD)
+)
+
 const currentSlippageValue = computed(
   () =>
     appStore.userState.marketSlippageIdMap[derivativeMarket.value.marketId] ||
-    DEFAULT_SLIPPAGE.toFixed()
+    defaultSlippage
 )
 
 const { value: slippage } = useStringField({
@@ -29,10 +36,6 @@ const { value: tempSlippage, errorMessage } = useStringField({
   initialValue: currentSlippageValue.value,
   name: DerivativesTradeFormField.TempSlippage
 })
-
-const isHighSlippage = computed(() =>
-  new BigNumberInBase(tempSlippage.value).gt(5)
-)
 
 function onCancel() {
   tempSlippage.value = previousSlippage.value
@@ -90,10 +93,10 @@ function setPreviousSlippage() {
           v-model="tempSlippage"
           v-bind="{
             min: 0,
-            max: 50,
             decimals: 2,
             noStyle: true,
             alignLeft: true,
+            max: MAX_SLIPPAGE.toNumber(),
             wrapperClass:
               'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4'
           }"

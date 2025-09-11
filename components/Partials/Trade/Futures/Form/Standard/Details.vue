@@ -46,16 +46,16 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: DEFAULT_ASSET_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: DEFAULT_ASSET_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 

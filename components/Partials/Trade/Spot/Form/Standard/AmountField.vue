@@ -46,12 +46,12 @@ const props = withDefaults(
 
 const options = [
   {
-    label: market.value.quoteToken.symbol || '',
-    id: TradeAmountOption.Quote
+    id: TradeAmountOption.Quote,
+    label: market.value.quoteToken.symbol || ''
   },
   {
-    label: market.value.baseToken.symbol || '',
-    id: TradeAmountOption.Base
+    id: TradeAmountOption.Base,
+    label: market.value.baseToken.symbol || ''
   }
 ]
 

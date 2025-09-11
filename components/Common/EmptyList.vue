@@ -25,8 +25,8 @@ const isTradePage = computed(
 <template>
   <div class="h-full w-full flex flex-col items-center py-6">
     <p
+      class="text-coolGray-475 capitalize"
       :class="[
-        'text-coolGray-475 capitalize',
         slots.default ? 'mb-6' : '',
         isTradePage ? 'text-xs' : 'text-sm'
       ]"

@@ -56,7 +56,7 @@ function onTypeSelect(type: DerivativeTradeTypes) {
         {{ $t(`trade.${type}`) }}
       </AppButtonSelect>
 
-      <div class="flex-1">
+      <div class="flex-1 flex justify-center">
         <USelectMenu
           :model-value="isAdvancedSelected ? orderType : ''"
           :options="advancedTradeTypes"

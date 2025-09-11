@@ -93,7 +93,6 @@ function onOrderSideClicked() {
 
         <NuxtLink
           v-if="isSwapEnabled"
-          class="flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
             query: {
@@ -101,6 +100,7 @@ function onOrderSideClicked() {
               from: market.quoteDenom
             }
           }"
+          class="flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
         >
           {{ $t(`navigation.swap`) }}
         </NuxtLink>
@@ -118,7 +118,7 @@ function onOrderSideClicked() {
         @click="onOrderSideClicked"
       >
         <AppButton
-          :class="['w-full py-2 leading-relaxed focus-within:ring-0']"
+          class="w-full py-2 leading-relaxed focus-within:ring-0"
           :variant="
             side === orderSideValue
               ? side === OrderSide.Buy

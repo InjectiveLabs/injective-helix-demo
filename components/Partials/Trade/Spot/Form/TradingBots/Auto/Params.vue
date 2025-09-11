@@ -204,9 +204,9 @@ onMounted(() => {
       <p class="text-white">{{ $t('tradingBots.autoModeHeader') }}</p>
       <div>
         <a
+          target="_blank"
           class="text-blue-500 border-b border-b-blue-500"
           href="https://helixapp.zendesk.com/hc/en-us/articles/8057142539023-Spot-Grid-Trading-on-Helix"
-          target="_blank"
         >
           {{ $t('common.learnMore') }}
         </a>

@@ -12,7 +12,7 @@ const sharedWalletStore = useSharedWalletStore()
   >
     <LayoutNavbarMenuItem
       v-if="!appStore.isCountryRestricted"
-      class="hidden lg:block px-4"
+      class="hidden xl:block px-4"
       v-bind="{ item: FEATURED_NAV_ITEM }"
       :class="{ 'px-8': sharedWalletStore.isUserConnected }"
     />
