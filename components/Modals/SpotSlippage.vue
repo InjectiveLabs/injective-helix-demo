@@ -47,8 +47,7 @@ function onConfirm() {
   const slippageInBigNumber = new BigNumberInBase(tempSlippage.value)
 
   const finalSlippage =
-    slippageInBigNumber.gt(MAX_SLIPPAGE) ||
-    slippageInBigNumber.lt(DEFAULT_SLIPPAGE)
+    slippageInBigNumber.gt(MAX_SLIPPAGE) || slippageInBigNumber.lt(0)
       ? DEFAULT_SLIPPAGE.toFixed()
       : tempSlippage.value
 
