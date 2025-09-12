@@ -15,7 +15,11 @@ const { lg } = useSharedBreakpoints()
 const { activeSubaccountBalancesWithToken } = useBalance()
 
 const props = withDefaults(
-  defineProps<{ isTradingBots?: boolean; orders: DerivativeLimitOrder[] }>(),
+  defineProps<{
+    isTradingBots?: boolean
+    isPortfolioPage?: boolean
+    orders: DerivativeLimitOrder[]
+  }>(),
   {}
 )
 
@@ -86,6 +90,7 @@ const columns = computed(() => {
 
   if (
     !props.isTradingBots &&
+    !props.isPortfolioPage &&
     ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
   ) {
     baseColumns.push({

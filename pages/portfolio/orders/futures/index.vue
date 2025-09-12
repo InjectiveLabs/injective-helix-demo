@@ -57,8 +57,11 @@ onSubaccountChange(fetchDerivativeOpenOrders)
 
         <PartialsPortfolioOrdersFuturesOpenOrdersTable
           v-else
-          :orders="filteredOrders"
-          :is-trading-bots="accountStore.isSgtSubaccount"
+          v-bind="{
+            isPortfolioPage: true,
+            orders: filteredOrders,
+            isTradingBots: accountStore.isSgtSubaccount
+          }"
         />
       </div>
     </div>
