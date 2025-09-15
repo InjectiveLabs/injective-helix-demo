@@ -1,22 +1,29 @@
 <script lang="ts" setup>
 import { metaTags } from '@/nuxt-config/meta'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { SharedUiDerivativeMarket } from '@shared/types'
 
 const referralStore = useReferralStore()
 
 const props = withDefaults(
   defineProps<{
     isLoading?: boolean
-    position: PositionV2
     selectedCharacter: string
+    content: {
+      ticker: string
+      pnl: BigNumberInBase
+      price: BigNumberInBase
+      direction: TradeDirection
+      markPrice: BigNumberInBase
+      percentagePnl: BigNumberInBase
+      market: SharedUiDerivativeMarket
+      effectiveLeverage: BigNumberInBase
+    }
   }>(),
   {}
 )
-
-const { pnl, market, percentagePnl, price, markPrice, effectiveLeverage } =
-  useDerivativePosition(computed(() => props.position))
 
 const cardWidth = 512
 const cardHeight = 365
@@ -24,7 +31,7 @@ const cardHeight = 365
 const scale = ref(1)
 
 const marketPriceDecimals = computed(
-  () => market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  () => props.content.market?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
 const qrLink = computed(() => {
@@ -75,37 +82,40 @@ function updateScale() {
         <div class="flex items-center gap-2 mt-3 mb-4">
           <CommonTokenIcon
             class="w-5 h-5 min-w-5"
-            v-bind="{ token: market?.baseToken }"
+            v-bind="{ token: content.market?.baseToken }"
           />
 
           <span class="text-sm">
-            {{ position.ticker }}
+            {{ content.ticker }}
           </span>
 
           <div
             class="py-0.5 px-2 flex items-center gap-1 rounded text-xs font-semibold tracking-wide"
             :class="[
-              position.direction === TradeDirection.Long
+              content.direction === TradeDirection.Long
                 ? 'text-green-500 bg-green-500/30'
                 : 'text-red-500 bg-red-500/30'
             ]"
           >
-            <span v-if="position.direction === TradeDirection.Long">
+            <span v-if="content.direction === TradeDirection.Long">
               {{ $t('trade.long') }}
             </span>
             <span v-else>{{ $t('trade.short') }}</span>
-            <span>{{ effectiveLeverage.toFormat(2) }}&times;</span>
+            <span>{{ content.effectiveLeverage.toFormat(2) }}&times;</span>
           </div>
         </div>
 
         <span
           class="font-bold text-2xl md:text-[32px] block leading-tight"
           :class="{
-            'text-red-500': pnl.lt(0),
-            'text-green-500': pnl.gte(0)
+            'text-red-500': content.pnl.lt(0),
+            'text-green-500': content.pnl.gte(0)
           }"
         >
-          {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
+          {{
+            (content.percentagePnl.gte(0) ? '+' : '') +
+            content.percentagePnl.toFormat(2)
+          }}%
         </span>
 
         <span>{{ $t('common.pnl') }}</span>
@@ -117,9 +127,9 @@ function updateScale() {
             </span>
             <SharedAmount
               v-bind="{
-                amount: price,
-                noTrailingZeros: price.lt(1),
-                decimals: price.gte(1)
+                amount: content.price,
+                noTrailingZeros: content.price.lt(1),
+                decimals: content.price.gte(1)
                   ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
                   : marketPriceDecimals
               }"
@@ -132,9 +142,9 @@ function updateScale() {
             </span>
             <SharedAmount
               v-bind="{
-                amount: markPrice,
-                noTrailingZeros: price.lt(1),
-                decimals: price.gte(1)
+                amount: content.markPrice,
+                noTrailingZeros: content.price.lt(1),
+                decimals: content.price.gte(1)
                   ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
                   : marketPriceDecimals
               }"

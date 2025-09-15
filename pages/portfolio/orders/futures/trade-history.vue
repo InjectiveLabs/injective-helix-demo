@@ -4,11 +4,13 @@ import {
   derivativeTypeToOrderType,
   derivativeTypeToTradeType
 } from '@/app/utils/trade'
-import { SpotOrderHistoryFilterField } from '@/types'
+import { Modal, SpotOrderHistoryFilterField } from '@/types'
 import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
+import { SharedUiDerivativeTrade } from '@shared/types'
 
 const route = useRoute()
 const router = useRouter()
+const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -19,6 +21,8 @@ const { limit, page, skip } = usePagination({
 const { values: formValues } = useForm<SpotOrderHistoryFilterForm>()
 
 const status = reactive(new Status(StatusType.Loading))
+
+const selectedTrade = ref<undefined | SharedUiDerivativeTrade>(undefined)
 
 function fetchDerivativeTradeHistory() {
   status.setLoading()
@@ -51,6 +55,15 @@ function fetchDerivativeTradeHistory() {
     .finally(() => {
       status.setIdle()
     })
+}
+
+function resetSelectedTrade() {
+  selectedTrade.value = undefined
+}
+
+function onShareTrade(trade: SharedUiDerivativeTrade) {
+  selectedTrade.value = trade
+  modalStore.openModal(Modal.SharePositionPnl)
 }
 
 async function handlePageChange(page: number) {
@@ -109,6 +122,7 @@ onSubaccountChange(fetchData)
       <PartialsPortfolioOrdersFuturesTradeHistoryTable
         v-if="derivativeStore.subaccountTrades.length"
         :trades="derivativeStore.subaccountTrades"
+        @trade:share="onShareTrade"
       />
 
       <AppPagination
@@ -129,4 +143,10 @@ onSubaccountChange(fetchData)
       />
     </template>
   </div>
+
+  <ModalsSharePnlDerivativeTrade
+    v-if="selectedTrade"
+    v-bind="{ trade: selectedTrade }"
+    @on:close="resetSelectedTrade"
+  />
 </template>

@@ -3,7 +3,7 @@ import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
@@ -12,7 +12,7 @@ const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    position: PositionV2
+    trade: SharedUiDerivativeTrade
   }>(),
   {}
 )
@@ -21,7 +21,11 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
-const { market } = useDerivativePosition(computed(() => props.position))
+const { pnl, price, market, markPrice, percentagePnl, effectiveLeverage } =
+  useTrade(
+    computed(() => props.trade),
+    false
+  )
 
 const characterList = [
   {
@@ -75,7 +79,7 @@ onMounted(() => {
 
 function onCloseModal() {
   emit('on:close')
-  modalStore.closeModal(Modal.SharePositionPnl)
+  modalStore.closeModal(Modal.ShareTradePnl)
 }
 
 function onOptionSelect(key: string) {
@@ -89,7 +93,7 @@ async function downloadImage() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Position-PNL-${now.value}.jpeg`
+    link.download = `Trade-PNL-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
@@ -107,7 +111,7 @@ async function downloadImage() {
 
 <template>
   <AppModal
-    v-model="modalStore.modals[Modal.SharePositionPnl]"
+    v-model="modalStore.modals[Modal.ShareTradePnl]"
     v-bind="{
       isLg: true,
       isAlwaysOpen: isDownloading,
@@ -124,9 +128,16 @@ async function downloadImage() {
     </h3>
 
     <section v-if="market" ref="canvas">
-      <ModalsSharePositionPnlCanvasContent
+      <ModalsSharePnlCanvasContent
         v-bind="{
-          position,
+          content: {
+            market,
+            pnl: trade.pnl,
+            price: price,
+            markPrice: trade.markPrice,
+            percentagePnl: trade.percentagePnl,
+            effectiveLeverage: trade.effectiveLeverage
+          },
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter
         }"
@@ -134,7 +145,7 @@ async function downloadImage() {
     </section>
 
     <div class="flex gap-5 mt-6 mb-10 flex-wrap">
-      <ModalsSharePositionPnlCharacterOption
+      <ModalsSharePnlCharacterOption
         v-for="character in characterList"
         :key="character.key"
         v-bind="{

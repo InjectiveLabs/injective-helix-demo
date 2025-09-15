@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
   PerpetualMarketCyTags,
@@ -14,6 +15,10 @@ const props = withDefaults(
   defineProps<{ trades: SharedUiDerivativeTrade[] }>(),
   {}
 )
+
+const emit = defineEmits<{
+  'trade:share': [trade: SharedUiDerivativeTrade]
+}>()
 
 const { rows } = useFuturesTradeHistoryTransformer(computed(() => props.trades))
 
@@ -82,6 +87,10 @@ const columns = computed(() => [
     class: 'text-right'
   }
 ])
+
+function shareTrade(trade: SharedUiDerivativeTrade) {
+  emit('trade:share', trade)
+}
 </script>
 
 <template>
@@ -182,24 +191,32 @@ const columns = computed(() => [
       </template>
 
       <template #pnl-data="{ row }">
-        <div
-          class="flex-1 flex items-center justify-end p-2"
-          :class="{
-            'text-red-500': row.pnl.lt(0),
-            'text-green-500': row.pnl.gt(0)
-          }"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              showZeroAsEmDash: true,
-              shouldAbbreviate: false,
-              amount: row.pnl.toFixed()
+        <div class="flex items-center p-2 justify-end space-x-1">
+          <div
+            class="flex-1 flex items-center justify-end p-2"
+            :class="{
+              'text-red-500': row.pnl.lt(0),
+              'text-green-500': row.pnl.gt(0)
             }"
+          >
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                showZeroAsEmDash: true,
+                shouldAbbreviate: false,
+                amount: row.pnl.toFixed()
+              }"
+            />
+            <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
+              {{ row.market.quoteToken.symbol }}
+            </span>
+          </div>
+          <UIcon
+            v-if="!row.pnl.isZero()"
+            :name="NuxtUiIcons.Share"
+            class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
+            @click="shareTrade(row.trade)"
           />
-          <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
-            {{ row.market.quoteToken.symbol }}
-          </span>
         </div>
       </template>
 

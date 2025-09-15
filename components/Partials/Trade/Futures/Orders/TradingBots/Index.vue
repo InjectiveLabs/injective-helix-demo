@@ -138,7 +138,7 @@ function resetSelectedPosition() {
         @on:close="resetSelectedPosition"
       />
 
-      <ModalsSharePositionPnl
+      <ModalsSharePnlPosition
         v-if="selectedPosition"
         v-bind="{ position: selectedPosition }"
         @on:close="resetSelectedPosition"
