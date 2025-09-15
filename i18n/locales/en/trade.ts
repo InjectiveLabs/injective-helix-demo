@@ -280,7 +280,7 @@ export default {
     partialClosePositionModal: {
       limitClose: 'Limit Close',
       marketClose: 'Market Close',
-      marketTitle: 'Partial close position',
+      marketTitle: 'Close position',
       totalPositionSize: 'Total position size'
     },
 
