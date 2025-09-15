@@ -152,7 +152,7 @@ export const useAppStore = defineStore('app', {
       const appStore = useAppStore()
 
       appStore.$patch({
-        gasPrice: await fetchGasPrice(NETWORK, { alchemyKey })
+        gasPrice: await fetchGasPrice()
       })
     },
 
