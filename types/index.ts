@@ -3,11 +3,11 @@ import type { Wallet } from '@injectivelabs/wallet-base'
 import type { OrderSide } from '@injectivelabs/ts-types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { PointsMultiplier } from '@injectivelabs/sdk-ts'
-import type { NoticeBanner, TradeExecutionType } from '@/types'
 import type {
   SharedDropdownOption,
   SharedSubaccountBalanceWithToken
 } from '@shared/types'
+import type { NoticeBanner, TradeExecutionType } from '@/types'
 
 export type MenuItem = NavLink | NavChild
 
@@ -33,12 +33,6 @@ export interface DropdownOption extends SharedDropdownOption {
 
 export interface NavChild extends MenuItemBase {
   children: Array<NavLink | NavChild>
-}
-
-export type WalletOption = {
-  beta?: boolean
-  wallet: Wallet
-  downloadLink?: string
 }
 
 export interface AmplitudeTrackerUser {
