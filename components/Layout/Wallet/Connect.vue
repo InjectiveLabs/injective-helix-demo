@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import { IS_DEVNET } from '@shared/utils/constant'
 import { WalletConnectStatus } from '@shared/types'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
-import { isCosmosStationWalletInstalled } from '@injectivelabs/wallet-cosmostation'
-import type { WalletOption } from '@/types'
 
 const sharedWalletStore = useSharedWalletStore()
 
@@ -20,103 +16,16 @@ const selectedWallet = ref<Wallet | undefined>(undefined)
 const status = reactive(new Status(StatusType.Loading))
 const ssoStatus = reactive(new Status(StatusType.Idle))
 
-const popularOptions = computed(
-  () =>
-    [
-      {
-        wallet: Wallet.Keplr,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Keplr)
-          ? 'https://www.keplr.app/download'
-          : undefined
-      },
-      {
-        wallet: Wallet.Metamask,
-        downloadLink: !sharedWalletStore.metamaskInstalled
-          ? 'https://metamask.io/download'
-          : undefined
-      },
-      IS_DEVNET
-        ? undefined
-        : {
-            wallet: Wallet.Leap,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Leap)
-              ? 'https://www.leapwallet.io/downloads'
-              : undefined
-          }
-    ].filter((option) => option) as WalletOption[]
-)
-
-const options = computed(
-  () =>
-    [
-      {
-        wallet: Wallet.Rainbow,
-        downloadLink: !sharedWalletStore.rainbowInstalled
-          ? 'https://rainbow.me/download'
-          : undefined
-      },
-      IS_DEVNET
-        ? undefined
-        : {
-            wallet: Wallet.BitGet,
-            downloadLink: !sharedWalletStore.bitGetInstalled
-              ? 'https://web3.bitget.com/en/wallet-download'
-              : undefined
-          },
-      {
-        wallet: Wallet.OkxWallet,
-        downloadLink: !sharedWalletStore.okxWalletInstalled
-          ? 'https://www.okx.com/web3'
-          : undefined
-      },
-      { wallet: Wallet.Ledger },
-      { wallet: Wallet.TrezorBip32 },
-      {
-        wallet: Wallet.Cosmostation,
-        downloadLink: !isCosmosWalletInstalled(Wallet.Cosmostation)
-          ? 'https://www.cosmostation.io/wallet'
-          : undefined
-      },
-      { wallet: Wallet.Phantom },
-      IS_DEVNET
-        ? undefined
-        : {
-            beta: true,
-            wallet: Wallet.Ninji,
-            downloadLink: !isCosmosWalletInstalled(Wallet.Ninji)
-              ? 'https://ninji.xyz/#download'
-              : undefined
-          },
-      {
-        wallet: Wallet.Cosmostation,
-        downloadLink: !isCosmosStationWalletInstalled()
-          ? 'https://www.cosmostation.io/wallet'
-          : undefined
-      },
-      { wallet: Wallet.WalletConnect },
-      { wallet: Wallet.Magic }
-      // Disabled for now
-      // {
-      //   wallet: Wallet.TrustWallet,
-      //   downloadLink: !sharedWalletStore.trustWalletInstalled
-      //     ? 'https://trustwallet.com/browser-extension/'
-      //     : undefined
-      // },
-    ].filter((option) => option) as WalletOption[]
-)
+const { popularOptions, options, validateWalletExtensionInstalled } =
+  useSharedWalletOptions()
 
 onMounted(() => {
   showOtp.value = false
   showDeprecatedSso.value = false
 
-  Promise.all([
-    sharedWalletStore.checkIsBitGetInstalled(),
-    sharedWalletStore.checkIsRainbowInstalled(),
-    sharedWalletStore.checkIsMetamaskInstalled(),
-    sharedWalletStore.checkIsOkxWalletInstalled(),
-    sharedWalletStore.checkIsTrustWalletInstalled(),
-    sharedWalletStore.checkIsPhantomWalletInstalled()
-  ]).finally(() => status.setIdle())
+  Promise.all([validateWalletExtensionInstalled()]).finally(() =>
+    status.setIdle()
+  )
 })
 
 watch(

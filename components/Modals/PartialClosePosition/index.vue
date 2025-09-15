@@ -245,7 +245,7 @@ async function validateSlippage() {
         </div>
 
         <div v-if="!isMarketPositionClose" class="flex flex-col gap-2 mt-8">
-          <h5 class="font-semibold">{{ $t('trade.price') }}</h5>
+          <h5 class="font-semibold">{{ $t('trade.limitPrice') }}</h5>
 
           <div class="relative">
             <AppInputField

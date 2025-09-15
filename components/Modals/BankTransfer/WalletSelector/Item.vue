@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { Wallet } from '@injectivelabs/wallet-base'
-import { WalletOption } from '@/types'
+import { SharedWalletOption } from '@shared/types'
 
 const props = withDefaults(
   defineProps<{
-    walletOption: WalletOption
+    walletOption: SharedWalletOption
   }>(),
   {}
 )
