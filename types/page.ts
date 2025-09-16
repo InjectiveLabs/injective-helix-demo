@@ -45,7 +45,6 @@ export enum TradeSubPage {
   Spot = 'spot-slug',
   Market = 'market-market',
   Futures = 'futures-slug',
-  Perpetual = 'perpetual-perpetual',
   Derivatives = 'derivatives-derivative'
 }
 

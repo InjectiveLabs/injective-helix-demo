@@ -8,9 +8,10 @@ import {
   SharedMarketChange
 } from '@shared/types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import { SpotMarketCyTags } from '@/types'
+import { TradeSubPage, SpotMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
+const route = useRoute()
 const sharedSpotStore = useSharedSpotStore()
 const sharedDerivativeStore = useSharedDerivativeStore()
 
@@ -69,13 +70,14 @@ const percentageChangeStatus = computed(() => {
 
 <template>
   <div
-    class="lg:flex max-lg:text-xs max-lg:p-1 max-lg:divide-y max-lg:[&>*]:p-1 lg:space-x-8"
+    class="lg:flex max-lg:text-xs max-lg:divide-y max-lg:[&>*]:p-1 lg:space-x-8"
+    :class="[route.name === TradeSubPage.Spot ? 'max-2xl:p-1' : 'max-5xl:p-1']"
   >
     <section class="flex p-2 2xl:px-0 3xl:p-2 justify-between">
       <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
-        class="flex items-center lg:flex-col lg:items-end lg:justify-between lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
+        class="flex items-center lg:flex-col lg:items-end lg:gap-2 lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoPrice)"
       >
         <div class="flex items-center justify-between">
@@ -131,7 +133,7 @@ const percentageChangeStatus = computed(() => {
               percentageChangeStatus === SharedMarketChange.Decrease
           }"
         >
-          <span class="lg:hidden">/</span>
+          <span class="lg:hidden mx-1 text-coolGray-400">/</span>
           <span>
             <SharedAmount
               v-bind="{

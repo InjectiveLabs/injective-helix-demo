@@ -25,13 +25,5 @@ const filteredOrders = computed(() =>
 </script>
 
 <template>
-  <PartialsPortfolioOrdersFuturesOpenOrdersTable
-    v-if="filteredOrders.length"
-    :orders="filteredOrders"
-  />
-
-  <CommonEmptyList
-    v-if="!filteredOrders.length"
-    :message="$t('trade.noOpenOrders')"
-  />
+  <PartialsPortfolioOrdersFuturesOpenOrdersTable :orders="filteredOrders" />
 </template>

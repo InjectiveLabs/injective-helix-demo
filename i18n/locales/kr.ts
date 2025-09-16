@@ -449,7 +449,9 @@ export default {
     cancelAll: '전체 취소',
     addMargin: '마진 추가',
     viewOrder: '주문 보기',
+    orderType: '주문 종류',
     'pro-chart': 'Pro 차트',
+    placeOrder: '주문 실행',
     allMarkets: '전체 마켓',
     marketName: '마켓명',
     takeProfit: '익절매',
@@ -501,7 +503,6 @@ export default {
     availableAmount: '사용 가능: {amount}',
     makerTakerRate: '메이커/테이커 수수료율',
     sharePnl: '손익 공유',
-    noOpenOrders: '진행 중인 주문 없음',
     noOrderHistory: '주문 내역 없음',
     noTradeHistory: '거래 내역 없음',
     noOpenPositions: '진행 중인 포지션 없음',
@@ -585,7 +586,8 @@ export default {
       nextFunding: '다음 펀딩',
       volumeInUsd: '거래량 USD (24시간)',
       marketVolume24h: '거래량 (24시간)',
-      estFundingRate: '예상 펀딩 비율',
+      fundingOrCountdown: '펀딩 / 카운트다운',
+
       marketCapTooltip:
         '시가총액은 현재 가격에 현재 유통 공급량을 곱하여 계산됩니다. Injective의 일부 토큰은 최대 공급량이 무한대입니다.',
       fundingRateTooltip:
@@ -659,6 +661,13 @@ export default {
       markPrice: '시장 평균가',
       entryPrice: '진입 가격',
       mobileDownloadNote: '다운로드는 데스크톱에서 가능합니다'
+    },
+    leverageModal: {
+      title: '레버리지 설정',
+      upTo: '최대 {leverageAmount}배',
+      leverageAt: '현재 레버리지: {leverageAmount}배',
+      description:
+        '레버리지가 높을수록 수익률이 커질 수 있으나, 손실 및 청산 위험도 증가합니다.'
     },
     partialClosePositionModal: {
       limitClose: '지정가 종료',
@@ -1012,7 +1021,6 @@ export default {
     noOpenOrders: '진행 중인 주문 없음',
     fundingHistory: '펀딩 내역',
     advancedOrders: '고급 주문',
-    noPositionsOpen: '진행 중인 포지션 없음',
     derivativeOrders: '파생상품 주문',
     noTransferHistory: '전송 내역이 없습니다',
     noFundingHistory: '펀딩 내역이 없습니다',
@@ -1768,6 +1776,7 @@ export default {
     withdraw: '출금',
     tradeNow: '지금 거래',
     active: '활성',
+    noItems: '표시할 항목이 없습니다',
     download: '다운로드',
     ascending: '오름차순',
     learnMore: '더 알아보기',

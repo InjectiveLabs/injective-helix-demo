@@ -73,6 +73,7 @@ export default defineI18nLocale(() => ({
     claimed: 'Claimed',
     deposit: 'Deposit',
     confirm: 'Confirm',
+    noItems: 'No Items',
     download: 'Download',
     disabled: 'Disabled',
     inactive: 'inactive',

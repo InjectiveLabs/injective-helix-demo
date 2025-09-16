@@ -29,7 +29,6 @@ export default {
     noOpenOrders: 'No Open Orders',
     fundingHistory: 'Funding History',
     advancedOrders: 'Advanced Orders',
-    noPositionsOpen: 'No Positions Open',
     derivativeOrders: 'Derivative Orders',
     noTransferHistory: 'No transfers found',
     noFundingHistory: 'No funding history found',

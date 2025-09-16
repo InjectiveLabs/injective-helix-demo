@@ -59,18 +59,19 @@ function closeAllMenus() {
   <div v-if="isShowItem">
     <LayoutNavbarMenuDepositItem
       v-if="item.isOpenDepositModal"
+      class="lg:hidden xl:block"
       v-bind="{ label: item.label }"
     />
 
     <NuxtLink
       v-else-if="!item.isExpandable"
       :to="(item as NavLink).to"
-      class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
       :class="{
         'text-blue-550': isActiveLink
       }"
       :target="item.isExternal ? '_blank' : '_self'"
       :data-cy="`${commonCyTag(NavBarCyTags.NavbarMenuItems)}-${item.label}`"
+      class="px-3 py-1.5 hover:text-blue-550 flex items-center text-xs cursor-pointer select-none text-white"
       @click="closeAllMenus"
     >
       <p class="font-medium">{{ $t(item.label) }}</p>

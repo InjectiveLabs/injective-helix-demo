@@ -93,7 +93,7 @@ function resetCategory() {
               type="text"
               autocomplete="off"
               :placeholder="$t('trade.searchMarket')"
-              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent"
+              class="p-1 focus:outline-none placeholder:text-coolGray-600 flex-1 !bg-transparent max-lg:text-sm"
               @update:model-value="resetCategory"
             />
           </label>
