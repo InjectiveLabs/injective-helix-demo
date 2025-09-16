@@ -44,7 +44,7 @@ onMounted(() => {
   <div
     class="lg:flex relative border-b max-lg:divide-y"
     :class="[
-      route.name === TradeSubPage.Spot ? 'max-2xl:flex-col' : 'max-5xl:flex-col'
+      route.name === TradeSubPage.Spot ? 'max-2xl:flex-col' : 'max-3xl:flex-col'
     ]"
     :data-cy="dataCyTag(SpotMarketCyTags.TradeStats)"
   >

@@ -69,7 +69,7 @@ const { valueToBigNumber: volume } = useSharedBigNumberFormatter(
           }"
           :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoVol)"
         />
-        <span>{{ market.quoteToken.symbol }}</span>
+        <span class="ml-1">{{ market.quoteToken.symbol }}</span>
       </template>
     </p>
   </PartialsTradeStatsHeaderItem>
