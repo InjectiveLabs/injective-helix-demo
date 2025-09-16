@@ -70,7 +70,7 @@ async function handleLimitChange(limit: number) {
       <h3 class="portfolio-title">{{ $t('portfolio.fundingHistory') }}</h3>
     </div>
 
-    <div class="border-y divide-y">
+    <div class="border-t divide-y">
       <PartialsPortfolioHistoryFundingTabs
         @market:update="fetchFundingHistory"
         @form:reset="fetchFundingHistory"

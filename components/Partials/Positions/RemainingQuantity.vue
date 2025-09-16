@@ -45,7 +45,7 @@ async function onViewOrder() {
 
     <template #panel>
       <div
-        class="flex flex-col gap-2 text-xs text-coolGray-200 max-w-80 py-3 px-4 rounded-xl bg-[#1D2024] tracking-wide"
+        class="flex flex-col gap-2 text-xs text-coolGray-200 max-w-80 py-3 px-4 rounded-xl bg-brand-925 tracking-wide"
       >
         <p class="whitespace-normal">
           {{ $t('trade.positionUsedTooltip', { quantity: getUsedQuantity }) }}

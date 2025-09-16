@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { Status, StatusType } from '@injectivelabs/utils'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BotType } from '@/types'
 
 const gridStrategyStore = useGridStrategyStore()
@@ -153,9 +152,7 @@ onWalletConnected(() => {
           v-if="filteredStrategies.length === 0"
           class="flex flex-col justify-center items-center py-10"
         >
-          <div class="lg:pr-48">
-            <CommonEmptyList :message="t('tradingBots.noActiveBots')" />
-          </div>
+          <CommonEmptyList :message="t('tradingBots.noActiveBots')" />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">

@@ -157,6 +157,7 @@ export type DerivativesTradeForm = {
   [DerivativesTradeFormField.LimitPrice]: string
   [DerivativesTradeFormField.TakeProfit]: string
   [DerivativesTradeFormField.ReduceOnly]: boolean
+  [DerivativesTradeFormField.TempLeverage]: string
   [DerivativesTradeFormField.Side]: TradeDirection
   [DerivativesTradeFormField.TriggerPrice]: string
   [DerivativesTradeFormField.isTpSlEnabled]: boolean

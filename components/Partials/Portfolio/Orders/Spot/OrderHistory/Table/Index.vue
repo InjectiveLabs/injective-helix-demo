@@ -76,135 +76,135 @@ const columns = computed(() => [
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable :rows="rows" :columns="columns">
-      <template #last-updated-data="{ row }">
-        <div
-          class="flex items-center p-2 font-sans"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTimestamp)"
-        >
-          {{ row.timestamp }}
-        </div>
-      </template>
+  <CommonEmptyList
+    v-if="rows.length === 0"
+    v-bind="{ message: $t('trade.noOrderHistory') }"
+  />
 
-      <template #market-data="{ row }">
-        <PartialsCommonMarketRedirection
-          :market="row.market"
-          class="flex items-center space-x-2 p-2 font-sans"
-        >
-          <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-          <p :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryMarketTicker)">
-            {{ row.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
-      </template>
+  <UTable v-else-if="lg" :rows="rows" :columns="columns">
+    <template #last-updated-data="{ row }">
+      <div
+        class="flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTimestamp)"
+      >
+        {{ row.timestamp }}
+      </div>
+    </template>
 
-      <template #type-data="{ row }">
-        <div
-          class="flex items-center p-2 font-sans"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryType)"
-        >
-          {{ row.type }}
-        </div>
-      </template>
+    <template #market-data="{ row }">
+      <PartialsCommonMarketRedirection
+        :market="row.market"
+        class="flex items-center space-x-2 p-2 font-sans"
+      >
+        <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
+        <p :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryMarketTicker)">
+          {{ row.market.ticker }}
+        </p>
+      </PartialsCommonMarketRedirection>
+    </template>
 
-      <template #side-data="{ row }">
-        <div class="flex items-center p-2">
-          <span
-            :class="{
-              'text-green-500': row.isBuy,
-              'text-red-500': !row.isBuy
-            }"
-            class="font-sans"
-            :data-cy="`${dataCyTag(SpotMarketCyTags.OrderHistorySide)}-${
-              row.order.direction
-            }`"
-          >
-            {{ $t(`trade.${row.order.direction}`) }}
-          </span>
-        </div>
-      </template>
+    <template #type-data="{ row }">
+      <div
+        class="flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryType)"
+      >
+        {{ row.type }}
+      </div>
+    </template>
 
-      <template #price-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)"
+    <template #side-data="{ row }">
+      <div class="flex items-center p-2">
+        <span
+          :class="{
+            'text-green-500': row.isBuy,
+            'text-red-500': !row.isBuy
+          }"
+          class="font-sans"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.OrderHistorySide)}-${
+            row.order.direction
+          }`"
         >
+          {{ $t(`trade.${row.order.direction}`) }}
+        </span>
+      </div>
+    </template>
+
+    <template #price-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryPrice)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.price.toFixed(),
+            decimals: row.priceDecimals
+          }"
+        />
+      </div>
+    </template>
+
+    <template #amount-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.quantity.toFixed(),
+            decimals: row.quantityDecimals
+          }"
+        />
+      </div>
+    </template>
+
+    <template #total-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.total.toFixed(),
+            decimals: row.priceDecimals
+          }"
+        />
+        <span class="text-coolGray-500 ml-1">
+          {{ row.market?.quoteToken.symbol }}
+        </span>
+      </div>
+    </template>
+
+    <template #trigger-condition-data="{ row }">
+      <div class="flex justify-center items-center p-2">
+        <span v-if="row.triggerPrice.eq(0)"> &mdash; </span>
+        <span v-else :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)">
           <SharedAmount
             v-bind="{
               useSubscript: true,
               shouldAbbreviate: false,
-              amount: row.price.toFixed(),
-              decimals: row.priceDecimals
+              decimals: row.priceDecimals,
+              amount: row.triggerPrice.toFixed()
             }"
           />
-        </div>
-      </template>
+        </span>
+      </div>
+    </template>
 
-      <template #amount-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryAmount)"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.quantity.toFixed(),
-              decimals: row.quantityDecimals
-            }"
-          />
-        </div>
-      </template>
-
-      <template #total-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTotal)"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.total.toFixed(),
-              decimals: row.priceDecimals
-            }"
-          />
-          <span class="text-coolGray-500 ml-1">
-            {{ row.market?.quoteToken.symbol }}
-          </span>
-        </div>
-      </template>
-
-      <template #trigger-condition-data="{ row }">
-        <div class="flex justify-center items-center p-2">
-          <span v-if="row.triggerPrice.eq(0)"> &mdash; </span>
-          <span
-            v-else
-            :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryTrigger)"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                decimals: row.priceDecimals,
-                amount: row.triggerPrice.toFixed()
-              }"
-            />
-          </span>
-        </div>
-      </template>
-
-      <template #status-data="{ row }">
-        <div
-          class="flex items-center p-2 font-sans"
-          :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryStatus)"
-        >
-          {{ row.orderStatus }}
-        </div>
-      </template>
-    </UTable>
-  </template>
+    <template #status-data="{ row }">
+      <div
+        class="flex items-center p-2 font-sans"
+        :data-cy="dataCyTag(SpotMarketCyTags.OrderHistoryStatus)"
+      >
+        {{ row.orderStatus }}
+      </div>
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPortfolioOrdersSpotOrderHistoryMobileTable

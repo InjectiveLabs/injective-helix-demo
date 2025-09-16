@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-  OrderbookLayout,
-  OrderbookViewOption,
-  UiMarketWithToken,
-  SpotMarketCyTags
-} from '@/types'
+import { OrderbookLayout, SpotMarketCyTags, OrderbookViewOption } from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 withDefaults(
   defineProps<{
@@ -41,7 +37,7 @@ function setOrderbookLayout(layout: OrderbookLayout) {
 
 <template>
   <div class="pb-2" :data-cy="dataCyTag(SpotMarketCyTags.OrderbookGrid)">
-    <div class="h-subHeader border-b-2 flex items-center pr-2">
+    <div class="h-subHeader flex items-center pr-2">
       <AppButtonSelect
         v-for="value in Object.values(OrderbookViewOption)"
         :key="value"

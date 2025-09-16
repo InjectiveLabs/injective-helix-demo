@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { usdtToken } from '@shared/data/token'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { formatAmountToAllowableAmount } from '@injectivelabs/sdk-ts'
 import {
   calculateWorstPrice,
   calculateTotalQuantity
 } from '@/app/utils/helpers'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
@@ -43,12 +46,12 @@ const props = withDefaults(
 
 const options = [
   {
-    label: market.value.baseToken.symbol || '',
-    id: TradeAmountOption.Base
+    id: TradeAmountOption.Quote,
+    label: market.value.quoteToken.symbol || ''
   },
   {
-    label: market.value.quoteToken.symbol || '',
-    id: TradeAmountOption.Quote
+    id: TradeAmountOption.Base,
+    label: market.value.baseToken.symbol || ''
   }
 ]
 
@@ -56,7 +59,7 @@ const isShowTensMultiplierNote = ref(false)
 
 const { value: typeValue } = useStringField({
   name: SpotTradeFormField.AmountOption,
-  initialValue: TradeAmountOption.Base
+  initialValue: TradeAmountOption.Quote
 })
 
 const decimals = computed(() =>
@@ -73,20 +76,22 @@ const selectedSymbol = computed(
   () => options.find((item) => item.id === typeValue.value)?.label || ''
 )
 
-const {
-  valueToString: baseBalanceToString,
-  valueToBigNumber: baseBalanceToBigNumber
-} = useSharedBigNumberFormatter(
-  computed(() => {
-    const balance = activeSubaccountBalancesWithToken.value.find(
-      (balance) => balance.token.denom === market.value.baseToken.denom
-    )?.availableBalance
+const baseBalance = computed(() => {
+  const balance = activeSubaccountBalancesWithToken.value.find(
+    (balance) => balance.token.denom === market.value.baseToken.denom
+  )?.availableBalance
 
-    return sharedToBalanceInToken({
-      value: balance || 0,
-      decimalPlaces: market.value.baseToken.decimals
-    })
+  return sharedToBalanceInToken({
+    value: balance || 0,
+    decimalPlaces: market.value.baseToken.decimals
   })
+})
+
+const { valueToString: baseBalanceToString } =
+  useSharedBigNumberFormatter(baseBalance)
+
+const baseBalanceToBigNumber = computed(
+  () => new BigNumberInBase(baseBalance.value)
 )
 
 const {
@@ -102,7 +107,13 @@ const {
       value: balance || 0,
       decimalPlaces: market.value.quoteToken.decimals
     })
-  })
+  }),
+  {
+    decimalPlaces:
+      market.value.quoteToken.denom === usdtToken.denom
+        ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+        : DEFAULT_ASSET_DECIMALS
+  }
 )
 
 const {
@@ -285,13 +296,7 @@ onMounted(() => {
 
 <template>
   <div ref="el" class="space-y-2">
-    <div class="flex justify-between items-end">
-      <p class="field-label">{{ $t('trade.amount') }}</p>
-
-      <PartialsTradeCommonFormPercentage
-        @percentage:change="setFromPercentage"
-      />
-    </div>
+    <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField
       v-bind="{
@@ -349,7 +354,7 @@ onMounted(() => {
 
       <template #bottom>
         <div class="text-right text-xs text-coolGray-450 pt-2 pb-1">
-          <div v-if="isBuy" class="space-x-2 flex items-center justify-end">
+          <div v-if="isBuy" class="space-x-1 flex items-center justify-end">
             <span :data-cy="dataCyTag(SpotMarketCyTags.TokenBuyBalance)">{{
               $t('trade.availableAmount', {
                 amount: quoteBalanceToString
@@ -363,14 +368,19 @@ onMounted(() => {
             />
           </div>
 
-          <div v-else class="space-x-2">
-            <span :data-cy="dataCyTag(SpotMarketCyTags.TokenSellBalance)">
+          <div
+            v-else
+            class="space-x-1"
+            :data-cy="dataCyTag(SpotMarketCyTags.TokenSellBalance)"
+          >
+            <span>
               {{
                 $t('trade.availableAmount', {
-                  amount: `${baseBalanceToString} ${market.baseToken.symbol}`
+                  amount: `${baseBalanceToString}`
                 })
               }}
             </span>
+            <span>{{ market.baseToken.symbol }}</span>
           </div>
         </div>
       </template>
@@ -398,5 +408,7 @@ onMounted(() => {
         })
       }}
     </div>
+
+    <PartialsTradeCommonFormPercentage @percentage:change="setFromPercentage" />
   </div>
 </template>

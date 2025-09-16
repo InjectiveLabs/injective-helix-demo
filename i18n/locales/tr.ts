@@ -456,7 +456,9 @@ export default {
     cancelAll: 'Tümünü İptal Et',
     addMargin: 'Marjin Ekle',
     viewOrder: 'Emri Görüntüle',
+    orderType: 'Emir türü',
     'pro-chart': 'Pro Grafik',
+    placeOrder: 'Emir Ver',
     allMarkets: 'Tüm Piyasalar',
     marketName: 'Piyasa Adı',
     takeProfit: 'Kâr Al',
@@ -508,7 +510,6 @@ export default {
     availableAmount: 'Kullanılabilir: {amount}',
     makerTakerRate: 'Maker/Taker Komisyon Oranı',
     sharePnl: 'PNL Paylaş',
-    noOpenOrders: 'Açık Emir Yok',
     noOrderHistory: 'Emir Geçmişi Yok',
     noTradeHistory: 'İşlem Geçmişi Yok',
     noOpenPositions: 'Açık Pozisyon Yok',
@@ -598,7 +599,8 @@ export default {
       nextFunding: 'Sonraki Fonlama',
       volumeInUsd: 'Hacim USD (24s)',
       marketVolume24h: 'Hacim (24s)',
-      estFundingRate: 'Tahmini Fonlama Oranı',
+      fundingOrCountdown: 'Fonlama / Geri Sayım',
+
       marketCapTooltip:
         'Piyasa değeri, güncel fiyat ile dolaşımdaki arzın çarpımıyla hesaplanır. Injective’daki bazı tokenlerin maksimum arzı sonsuzdur.',
       fundingRateTooltip:
@@ -672,6 +674,13 @@ export default {
       markPrice: 'Gösterge fiyat',
       entryPrice: 'Giriş fiyatı',
       mobileDownloadNote: 'İndirme sadece masaüstünde mevcut'
+    },
+    leverageModal: {
+      title: 'Kaldıraç Ayarla',
+      upTo: 'En fazla {leverageAmount}x',
+      leverageAt: 'Kaldıraç {leverageAmount}x seviyesinde',
+      description:
+        'Yüksek kaldıraç getirileri artırabilir, ancak tasfiye olma riskini de yükseltir.'
     },
     partialClosePositionModal: {
       limitClose: 'Limit Kapat',
@@ -1029,7 +1038,6 @@ export default {
     noOpenOrders: 'Açık Emir Yok',
     fundingHistory: 'Fonlama Geçmişi',
     advancedOrders: 'Gelişmiş Emirler',
-    noPositionsOpen: 'Açık Pozisyon Yok',
     derivativeOrders: 'Türev Emirleri',
     noTransferHistory: 'Transfer bulunamadı',
     noFundingHistory: 'Fonlama geçmişi bulunamadı',
@@ -1791,6 +1799,7 @@ export default {
     withdraw: 'Çek',
     tradeNow: 'Şimdi Al-Sat',
     active: 'Aktif',
+    noItems: 'Öğe Yok',
     download: 'İndir',
     ascending: 'Artan',
     learnMore: 'Daha fazla bilgi',

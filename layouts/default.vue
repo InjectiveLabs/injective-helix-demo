@@ -4,7 +4,6 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { mixpanelAnalytics } from '@/app/providers/mixpanel/BaseTracker'
 import {
   MainPage,
-  TradeSubPage,
   InitialStatusKey,
   PortfolioStatusKey,
   LiquidityRewardsPage
@@ -127,16 +126,7 @@ watch(
 </script>
 
 <template>
-  <div
-    :class="[
-      'relative',
-      [TradeSubPage.Futures, TradeSubPage.Spot].includes(
-        route.name as TradeSubPage
-      )
-        ? 'min-h-vhMinusHeader'
-        : 'min-h-screen'
-    ]"
-  >
+  <div class="relative min-h-screen">
     <LayoutNavbar />
 
     <PartialsHomeGradientBg v-if="route.name === MainPage.Index" />
@@ -150,7 +140,7 @@ watch(
         (initialStatus.isLoading() || jsonStatus.isLoading())
       "
     >
-      <main class="relative pb-6 pt-[56px] overflow-x-hidden">
+      <main class="relative md:pb-6 pt-[56px] overflow-x-hidden">
         <ModalsCompetitionWinner
           v-if="
             sharedWalletStore.isUserConnected &&

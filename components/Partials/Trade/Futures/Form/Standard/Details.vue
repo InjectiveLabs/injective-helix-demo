@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
+  Modal,
   MarketKey,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
@@ -11,10 +12,11 @@ import {
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 
-const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{
+    enableSlippage: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
@@ -26,8 +28,15 @@ withDefaults(
   {}
 )
 
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
+
 const isOpen = ref(true)
+
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const slippagePercentage = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+)
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: derivativeMarket?.value?.takerFeeRate,
@@ -37,30 +46,36 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
 const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => makerFeeRate.value.times(100)),
   {
-    decimalPlaces: UI_DEFAULT_DISPLAY_DECIMALS,
-    shouldTruncate: true
+    shouldTruncate: true,
+    decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
 )
 
-const isLimitAndPostOnly = computed(
+const isMakerFee = computed(
   () =>
     (derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
         DerivativeTradeTypes.Limit) ||
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
+      DerivativeTradeTypes.StopLimit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopMarket
 )
 
 function toggle() {
   isOpen.value = !isOpen.value
+}
+
+function openSlippageModal() {
+  modalStore.openModal(Modal.FuturesSlippage)
 }
 </script>
 
@@ -78,7 +93,7 @@ function toggle() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs border-b pb-2">
+        <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
           <div class="flex-1 mx-2" />
 
@@ -104,6 +119,42 @@ function toggle() {
           </p>
         </div>
 
+        <div
+          v-if="enableSlippage"
+          class="flex justify-between items-center text-xs font-medium"
+        >
+          <p class="text-coolGray-450" @click="openSlippageModal">
+            {{ $t('trade.slippage') }}
+          </p>
+
+          <UPopover
+            mode="hover"
+            :popper="{ placement: 'top', strategy: 'fixed' }"
+          >
+            <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
+              <i18n-t
+                keypath="trade.slippageEstimate"
+                class="text-xs text-coolGray-400"
+              >
+                <template #max>
+                  <SharedAmount
+                    v-bind="{
+                      useSubscript: true,
+                      shouldAbbreviate: false,
+                      amount: slippagePercentage
+                    }"
+                  />
+                </template>
+              </i18n-t>
+            </p>
+            <template #panel>
+              <p class="text-xs text-coolGray-200 max-w-xs p-1">
+                {{ $t('trade.slippageTooltip') }}
+              </p>
+            </template>
+          </UPopover>
+        </div>
+
         <div class="flex items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
           <div class="flex-1 mx-2" />
@@ -117,71 +168,6 @@ function toggle() {
               }"
               class="text-white"
             />
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.totalNotional') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotalNotional)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: totalNotional.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{ derivativeMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.quantity') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsQty)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: quantity.toFixed()
-              }"
-              class="text-white"
-            />
-            <span class="text-coolGray-450">
-              {{
-                derivativeMarket.baseToken.overrideSymbol ||
-                derivativeMarket.baseToken.symbol
-              }}
-            </span>
-          </p>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">
-            {{ $t('trade.averagePrice') }}
-          </p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
-            <SharedAmount
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsAvgPrice)"
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: worstPrice.toFixed(),
-                decimals: derivativeMarket.priceDecimals
-              }"
-              class="text-white"
-            />
-
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
@@ -211,9 +197,18 @@ function toggle() {
           </p>
         </div>
 
-        <template v-if="!isLimitAndPostOnly">
+        <template v-if="!isMakerFee">
           <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
+            <CommonHeaderTooltip
+              :tooltip="
+                $t('trade.makerTakerRateTooltip', {
+                  makerFeeRate: makerFeeRateToFixed,
+                  takerFeeRate: takerFeeRateToFixed
+                })
+              "
+            >
+              <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
+            </CommonHeaderTooltip>
             <div class="flex-1 mx-2" />
             <p
               v-if="derivativeMarket"
@@ -221,25 +216,6 @@ function toggle() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)"
             >
               {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
-            </p>
-          </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.fee') }}</p>
-            <div class="flex-1 mx-2" />
-            <p class="space-x-2 flex">
-              <SharedAmount
-                :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsFee)"
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              <span class="text-coolGray-450">
-                {{ derivativeMarket.quoteToken.symbol }}
-              </span>
             </p>
           </div>
         </template>
@@ -252,24 +228,10 @@ function toggle() {
               {{ makerFeeRateToFixed }}%
             </p>
           </div>
-
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.estFeeRebate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="flex gap-x-2">
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: feeAmount.toFixed()
-                }"
-                class="text-white"
-              />
-              {{ derivativeMarket.quoteToken.symbol }}
-            </p>
-          </div>
         </template>
       </div>
     </AppCollapse>
+
+    <ModalsFuturesSlippage />
   </div>
 </template>

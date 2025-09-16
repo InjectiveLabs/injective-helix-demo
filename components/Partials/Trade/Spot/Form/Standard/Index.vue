@@ -36,7 +36,6 @@ const {
   worstPrice,
   totalWithFee,
   feePercentage,
-  slippagePercentage,
   minimumAmountInQuote
 } = useSpotWorstPrice(market)
 
@@ -77,7 +76,7 @@ function onOrderSideClicked() {
 <template>
   <div class="p-4 lg:pb-8">
     <div
-      class="border-b"
+      class="border-b max-lg:-mx-4 max-lg:-mt-2"
       :data-cy="dataCyTag(SpotMarketCyTags.SpotTradingType)"
     >
       <div class="flex items-center">
@@ -86,7 +85,7 @@ function onOrderSideClicked() {
           :key="value"
           v-bind="{ value }"
           v-model="orderTypeValue"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
+          class="flex-1 text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           active-classes="border-b border-blue-550 text-white"
         >
           {{ $t(`trade.${value}`) }}
@@ -94,7 +93,6 @@ function onOrderSideClicked() {
 
         <NuxtLink
           v-if="isSwapEnabled"
-          class="text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
           :to="{
             name: MainPage.Swap,
             query: {
@@ -102,6 +100,7 @@ function onOrderSideClicked() {
               from: market.quoteDenom
             }
           }"
+          class="flex-1 text-center text-xs font-medium text-coolGray-450 px-4 py-2 hover:text-white"
         >
           {{ $t(`navigation.swap`) }}
         </NuxtLink>
@@ -119,7 +118,7 @@ function onOrderSideClicked() {
         @click="onOrderSideClicked"
       >
         <AppButton
-          :class="['w-full py-1.5 leading-relaxed focus-within:ring-0']"
+          class="w-full py-2 leading-relaxed focus-within:ring-0"
           :variant="
             side === orderSideValue
               ? side === OrderSide.Buy
@@ -149,12 +148,6 @@ function onOrderSideClicked() {
       />
     </div>
 
-    <PartialsTradeSpotFormStandardSlippage
-      v-if="!isLimit"
-      class="my-4"
-      v-bind="{ worstPrice }"
-    />
-
     <PartialsTradeSpotFormStandardAdvancedSettings
       v-if="isLimit"
       class="my-4"
@@ -163,12 +156,12 @@ function onOrderSideClicked() {
     <PartialsTradeSpotFormStandardDetails
       v-bind="{
         total,
+        isLimit,
         quantity,
         feeAmount,
         worstPrice,
-        feePercentage,
         totalWithFee,
-        slippagePercentage
+        feePercentage
       }"
     />
 

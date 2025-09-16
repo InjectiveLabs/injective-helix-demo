@@ -491,9 +491,7 @@ function showAutosignCta() {
         </span>
 
         <span v-else>
-          {{ $t(`trade.${isBuy ? 'buy' : 'sell'}`) }}
-          /
-          {{ $t(`trade.${isBuy ? 'long' : 'short'}`) }}
+          {{ $t('trade.placeOrder') }}
         </span>
       </AppButton>
 

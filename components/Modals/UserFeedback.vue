@@ -23,7 +23,6 @@ function init() {
       TradeSubPage.Spot,
       TradeSubPage.Market,
       TradeSubPage.Futures,
-      TradeSubPage.Perpetual,
       TradeSubPage.Derivatives
     ]
 
