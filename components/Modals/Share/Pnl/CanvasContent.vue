@@ -19,7 +19,7 @@ const props = withDefaults(
       markPrice: BigNumberInBase
       percentagePnl: BigNumberInBase
       market: SharedUiDerivativeMarket
-      effectiveLeverage: BigNumberInBase
+      effectiveLeverage?: BigNumberInBase
     }
   }>(),
   {}
@@ -101,7 +101,9 @@ function updateScale() {
               {{ $t('trade.long') }}
             </span>
             <span v-else>{{ $t('trade.short') }}</span>
-            <span>{{ content.effectiveLeverage.toFormat(2) }}&times;</span>
+            <span v-if="content.effectiveLeverage"
+              >{{ content.effectiveLeverage.toFormat(2) }}&times;</span
+            >
           </div>
         </div>
 

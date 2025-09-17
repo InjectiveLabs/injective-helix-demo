@@ -3,7 +3,10 @@ import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import type { SharedUiDerivativeTrade } from '@shared/types'
+import type {
+  SharedUiDerivativeTrade,
+  SharedUiDerivativeMarket
+} from '@shared/types'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
@@ -21,11 +24,9 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
-const { pnl, price, market, markPrice, percentagePnl, effectiveLeverage } =
-  useTrade(
-    computed(() => props.trade),
-    false
-  )
+const { pnl, price, market, entryPrice, percentagePnl } = useTrade(
+  computed(() => props.trade)
+)
 
 const characterList = [
   {
@@ -131,12 +132,13 @@ async function downloadImage() {
       <ModalsSharePnlCanvasContent
         v-bind="{
           content: {
-            market,
-            pnl: trade.pnl,
-            price: price,
-            markPrice: trade.markPrice,
-            percentagePnl: trade.percentagePnl,
-            effectiveLeverage: trade.effectiveLeverage
+            pnl,
+            percentagePnl,
+            markPrice: price,
+            price: entryPrice,
+            ticker: market.ticker,
+            direction: trade.tradeDirection,
+            market: market as SharedUiDerivativeMarket
           },
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter

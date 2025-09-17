@@ -63,7 +63,7 @@ function resetSelectedTrade() {
 
 function onShareTrade(trade: SharedUiDerivativeTrade) {
   selectedTrade.value = trade
-  modalStore.openModal(Modal.SharePositionPnl)
+  modalStore.openModal(Modal.ShareTradePnl)
 }
 
 async function handlePageChange(page: number) {
