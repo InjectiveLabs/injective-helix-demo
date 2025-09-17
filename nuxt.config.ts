@@ -69,7 +69,7 @@ export default defineNuxtConfig({
   extends: [
     isLocalLayer
       ? '../injective-ui'
-      : 'github:InjectiveLabs/injective-ui#master'
+      : 'github:InjectiveLabs/injective-ui#feat/tree-shaking'
   ],
   // @ts-ignore
   site: {
