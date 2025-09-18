@@ -55,7 +55,7 @@ async function handleLimitChange(limit: number) {
       <h3 class="portfolio-title">{{ $t('portfolio.swaps') }}</h3>
     </div>
 
-    <div class="border-y divide-y">
+    <div class="border-t divide-y">
       <CommonSkeletonRow
         v-if="status.isLoading()"
         :rows="10"

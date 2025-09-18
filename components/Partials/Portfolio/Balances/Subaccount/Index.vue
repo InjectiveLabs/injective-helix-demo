@@ -4,7 +4,7 @@ const showUnverifiedAssets = ref(false)
 </script>
 
 <template>
-  <div class="border-y divide-y">
+  <div class="border-t divide-y">
     <PartialsPortfolioBalancesSubaccountTabs
       v-model:search="search"
       v-model:show-unverified-assets="showUnverifiedAssets"

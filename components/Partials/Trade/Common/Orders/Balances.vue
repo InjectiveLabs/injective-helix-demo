@@ -1,7 +1,5 @@
-<script setup lang="ts">
-const search = ref('')
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <PartialsPortfolioBalancesSubaccountTable v-bind="{ search }" />
+  <PartialsPortfolioBalancesSubaccountTable />
 </template>

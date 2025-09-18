@@ -53,17 +53,6 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
       : market.value.takerFeeRate
   )
 
-  const feePercentageWithLeverage = computed(() => {
-    const leverage =
-      derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
-
-    const feeWithLeverage = new BigNumberInBase(feePercentage.value).times(
-      leverage
-    )
-
-    return new BigNumberInBase(1).plus(feeWithLeverage)
-  })
-
   const slippagePercentage = computed(() => {
     const slippagePercentage = new BigNumberInBase(
       derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
@@ -115,7 +104,7 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
 
     if (isTriggerOrder.value) {
       return quantizeNumber(
-        triggerPrice ? total.div(triggerPriceWithSlippage) : ZERO_IN_BASE,
+        triggerPrice.gt(0) ? total.div(triggerPriceWithSlippage) : ZERO_IN_BASE,
         market.value.quantityTensMultiplier
       )
     }
@@ -273,7 +262,6 @@ export function useDerivativeWorstPrice(market: Ref<UiDerivativeMarket>) {
     hasEnoughLiquidity,
     minimumAmountInQuote,
     totalNotionalWithFee,
-    feePercentageWithLeverage,
     isNotionalLessThanMinNotional
   }
 }

@@ -6,7 +6,7 @@ import { isCosmosWalletInstalled } from '@injectivelabs/wallet-cosmos'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { BankTransferField } from '@/types'
-import type { WalletOption } from '@/types'
+import type { SharedWalletOption } from '@shared/types'
 
 const accountStore = useAccountStore()
 const sharedTokenStore = useSharedTokenStore()
@@ -32,7 +32,7 @@ const walletOptions = computed(
           ? 'https://metamask.io/download'
           : undefined
       }
-    ].filter((option) => option) as WalletOption[]
+    ].filter((option) => option) as SharedWalletOption[]
 )
 
 const { value: denomValue } = useStringField({

@@ -34,14 +34,14 @@ export default {
     markets: 'Markets',
     details: 'Details',
     quantity: 'Quantity',
+    advanced: 'Advanced',
     leverage: 'Leverage',
     standard: 'Standard',
+    slippage: 'Slippage',
     addTpSl: 'Add TP/SL',
     tickSize: 'Tick Size',
     stopLoss: 'Stop Loss',
     postOnly: 'Post Only',
-    noTrades: 'No trades',
-    noOrders: 'No orders',
     notAvailableNA: 'N/A',
     sharePnl: 'Share PNL',
     avgPrice: 'Avg. Price',
@@ -54,7 +54,9 @@ export default {
     cancelAll: 'Cancel All',
     addMargin: 'Add Margin',
     viewOrder: 'View Order',
+    orderType: 'Order type',
     'pro-chart': 'Pro Chart',
+    placeOrder: 'Place Order',
     allMarkets: 'All Markets',
     marketName: 'Market Name',
     takeProfit: 'Take Profit',
@@ -81,12 +83,12 @@ export default {
     'trading-bots': 'Trading Bots',
     emptyOrders: 'No orders found',
     emptyTrades: 'No trades found',
-    noOpenOrders: 'No Open Orders',
     totalNotional: 'Total Notional',
     closePosition: 'Close Position',
     estFeeRebate: 'Est. Fee Rebate',
     partialFilled: 'Partial Filled',
     proceedAnyway: 'Proceed Anyway',
+    slippageEstimate: 'Max: {max}%',
     stopLossLimit: 'Stop-Loss Limit',
     searchMarket: 'Search Market...',
     boostedMarkets: 'Market Rewards',
@@ -122,6 +124,7 @@ export default {
     stopLossTriggerPrice: 'Stop Loss Trigger Price',
     emptyAdvancedOrders: 'No Advanced Orders Found',
     takeProfitTriggerPrice: 'Take Profit Trigger Price',
+    slippageTooltip: 'Click to adjust slippage tolerance',
     modifyTakeProfitStopLoss: 'Modify Take Profit / Stop Loss',
     postOnlyWarning: 'Temporarily post-only due to chain upgrade',
     minNotionalError: 'Minimum order value > {minNotional} {symbol}',
@@ -133,10 +136,10 @@ export default {
       'Automatically rounded down to the nearest multiple of {minTickSize}',
     markPriceInvalid:
       'Please modify price, amount, or leverage to meet mark price requirement',
+    makerTakerRateTooltip:
+      'Maker orders pay {makerFeeRate}% fee. Taker orders pay {takerFeeRate}% fee.',
     eip712Warning:
       'Due to extremely high usage, gas-free transactions are currently unavailable',
-    slippageTooltip:
-      'Slippage tolerance is the maximum price change allowed before a trade is canceled.',
     stopLossDetails:
       'When Mark Price reaches {price}, it will trigger a Stop Loss Market order for {quantity}.',
     takeProfitDetails:
@@ -184,15 +187,12 @@ export default {
         'All markets on Helix can be traded 24/7. It should be noted that this market follows {marketClosedTimes}. Markets are closed between 5pm (ET) Friday and 5pm (ET) Sunday, on CME trading holidays, and between 5pm (ET) and 6pm (ET) Monday to Thursday.'
     },
     stats: {
-      low: '24h Low',
-      high: '24h High',
       usdValue: 'USD Value',
       marketCap: 'Market Cap',
       annualized: 'Annualized',
-      nextFunding: 'Next Funding',
       volumeInUsd: 'Volume USD (24h)',
       marketVolume24h: 'Volume (24h)',
-      estFundingRate: 'Est. Funding Rate',
+      fundingOrCountdown: 'Funding / Countdown',
       // openInterest: 'Open Interest (USDT)',
 
       marketCapTooltip:
@@ -277,10 +277,24 @@ export default {
       mobileDownloadNote: 'Download is available on desktop'
     },
 
+    leverageModal: {
+      title: 'Adjust leverage',
+      upTo: 'Up to {leverageAmount}x',
+      leverageAt: 'Leverage at {leverageAmount}x',
+      description:
+        'Higher leverage magnifies returns, but can also make it easier to get liquidated.'
+    },
+
+    slippageModal: {
+      title: 'Adjust max slippage',
+      description:
+        'Set the maximum slippage you are willing to accept. If the price changes by more than this percentage, your order will not be executed.'
+    },
+
     partialClosePositionModal: {
       limitClose: 'Limit Close',
       marketClose: 'Market Close',
-      marketTitle: 'Partial close position',
+      marketTitle: 'Close position',
       totalPositionSize: 'Total position size'
     },
 

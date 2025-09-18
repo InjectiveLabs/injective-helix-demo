@@ -107,192 +107,195 @@ const columns = computed(() => {
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable :rows="rows" :columns="columns">
-      <template #chase-header>
-        <NuxtLink
-          :to="{ name: PortfolioSubPage.Settings }"
-          class="flex justify-center space-x-2 items-center"
+  <CommonEmptyList
+    v-if="rows.length === 0"
+    v-bind="{ message: $t('portfolio.noOpenOrders') }"
+  />
+
+  <UTable v-else-if="lg" :rows="rows" :columns="columns">
+    <template #chase-header>
+      <NuxtLink
+        :to="{ name: PortfolioSubPage.Settings }"
+        class="flex justify-center space-x-2 items-center"
+      >
+        <p>
+          {{
+            $t(
+              `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
+            )
+          }}
+        </p>
+
+        <AppTooltip
+          v-bind="{ placement: 'bottom', content: $t('trade.chaseTooltip') }"
+        />
+      </NuxtLink>
+    </template>
+
+    <template #market-data="{ row }">
+      <div class="flex items-center gap-1">
+        <PartialsCommonMarketRedirection
+          :market="row.market"
+          class="flex items-center space-x-2 p-2 font-sans"
         >
-          <p>
-            {{
-              $t(
-                `portfolio.table.spotOpenOrder.${PortfolioSpotOpenOrdersTableColumn.Chase}`
-              )
-            }}
-          </p>
-
-          <AppTooltip
-            v-bind="{ placement: 'bottom', content: $t('trade.chaseTooltip') }"
-          />
-        </NuxtLink>
-      </template>
-
-      <template #market-data="{ row }">
-        <div class="flex items-center gap-1">
-          <PartialsCommonMarketRedirection
-            :market="row.market"
-            class="flex items-center space-x-2 p-2 font-sans"
-          >
-            <CommonTokenIcon :token="row.market.baseToken" />
-            <p
-              :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderMarketTicker)}-${
-                row.market.ticker
-              }`"
-            >
-              {{ row.market.ticker }}
-            </p>
-          </PartialsCommonMarketRedirection>
-
-          <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
-            v-if="row.orderFillable && !xl && !isTradingBots"
-            v-bind="{
-              order: row.order,
-              isAuthorized: row.isAuthorized
-            }"
-          />
-        </div>
-      </template>
-
-      <template #side-data="{ row }">
-        <div class="flex items-center p-2">
-          <span
-            class="font-sans"
-            :class="{
-              'text-green-500': row.isBuy,
-              'text-red-500': !row.isBuy
-            }"
-            :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderSide)}-${
-              row.order.orderSide
+          <CommonTokenIcon :token="row.market.baseToken" />
+          <p
+            :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderMarketTicker)}-${
+              row.market.ticker
             }`"
           >
-            {{ $t('trade.' + row.order.orderSide) }}
-          </span>
-        </div>
-      </template>
+            {{ row.market.ticker }}
+          </p>
+        </PartialsCommonMarketRedirection>
 
-      <template #price-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)"
+        <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
+          v-if="row.orderFillable && !xl && !isTradingBots"
+          v-bind="{
+            order: row.order,
+            isAuthorized: row.isAuthorized
+          }"
+        />
+      </div>
+    </template>
+
+    <template #side-data="{ row }">
+      <div class="flex items-center p-2">
+        <span
+          class="font-sans"
+          :class="{
+            'text-green-500': row.isBuy,
+            'text-red-500': !row.isBuy
+          }"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.OpenOrderSide)}-${
+            row.order.orderSide
+          }`"
         >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.price.toFixed(),
-              decimals: row.priceDecimals
-            }"
-          />
-        </div>
-      </template>
+          {{ $t('trade.' + row.order.orderSide) }}
+        </span>
+      </div>
+    </template>
 
-      <template #amount-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.quantity.toFixed(),
-              decimals: row.quantityDecimals
-            }"
-          />
-        </div>
-      </template>
+    <template #price-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderPrice)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.price.toFixed(),
+            decimals: row.priceDecimals
+          }"
+        />
+      </div>
+    </template>
 
-      <template #unfilled-data="{ row }">
-        <div
-          class="flex items-center p-2 justify-end"
-          :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              decimals: row.quantityDecimals,
-              amount: row.unfilledQuantity.toFixed()
-            }"
-          />
-        </div>
-      </template>
+    <template #amount-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderQty)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.quantity.toFixed(),
+            decimals: row.quantityDecimals
+          }"
+        />
+      </div>
+    </template>
 
-      <template #filled-data="{ row }">
-        <div class="flex flex-col items-end p-2 justify-center">
-          <div>
-            <p
-              :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
-              class="flex gap-1"
+    <template #unfilled-data="{ row }">
+      <div
+        class="flex items-center p-2 justify-end"
+        :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderUnfilledQty)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            decimals: row.quantityDecimals,
+            amount: row.unfilledQuantity.toFixed()
+          }"
+        />
+      </div>
+    </template>
+
+    <template #filled-data="{ row }">
+      <div class="flex flex-col items-end p-2 justify-center">
+        <div>
+          <p
+            :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderFilledQty)"
+            class="flex gap-1"
+          >
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
+                decimals: row.quantityDecimals,
+                amount: row.filledQuantity.toFixed()
+              }"
+            />
+          </p>
+          <p class="text-coolGray-500">
+            {{ row.filledQuantityPercentageToFormat }}%
+          </p>
+        </div>
+      </div>
+    </template>
+
+    <template #total-amount-data="{ row }">
+      <div class="flex items-center p-2 justify-end">
+        <div class="space-y-1">
+          <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                shouldAbbreviate: false,
+                amount: row.total.toFixed(),
+                decimals: row.priceDecimals
+              }"
+            />
+            <span
+              class="text-coolGray-500 ml-1"
+              :data-cy="
+                dataCyTag(SpotMarketCyTags.OpenOrderTotalAmtTokenSymbol)
+              "
             >
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  decimals: row.quantityDecimals,
-                  amount: row.filledQuantity.toFixed()
-                }"
-              />
-            </p>
-            <p class="text-coolGray-500">
-              {{ row.filledQuantityPercentageToFormat }}%
-            </p>
-          </div>
+              {{ row.market.quoteToken.symbol }}
+            </span>
+          </p>
         </div>
-      </template>
+      </div>
+    </template>
 
-      <template #total-amount-data="{ row }">
-        <div class="flex items-center p-2 justify-end">
-          <div class="space-y-1">
-            <p :data-cy="dataCyTag(SpotMarketCyTags.OpenOrderTotalAmt)">
-              <SharedAmount
-                v-bind="{
-                  useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: row.total.toFixed(),
-                  decimals: row.priceDecimals
-                }"
-              />
-              <span
-                class="text-coolGray-500 ml-1"
-                :data-cy="
-                  dataCyTag(SpotMarketCyTags.OpenOrderTotalAmtTokenSymbol)
-                "
-              >
-                {{ row.market.quoteToken.symbol }}
-              </span>
-            </p>
-          </div>
-        </div>
-      </template>
+    <template #chase-data="{ row }">
+      <div class="p-2 flex items-center justify-center">
+        <PartialsPortfolioOrdersSpotOpenOrdersTableChase
+          v-bind="{
+            order: row.order,
+            isBuy: row.isBuy,
+            market: row.market,
+            isDisabled:
+              !sharedWalletStore.isAutoSignEnabled || row.insufficientBalance
+          }"
+        />
+      </div>
+    </template>
 
-      <template #chase-data="{ row }">
-        <div class="p-2 flex items-center justify-center">
-          <PartialsPortfolioOrdersSpotOpenOrdersTableChase
-            v-bind="{
-              order: row.order,
-              isBuy: row.isBuy,
-              market: row.market,
-              isDisabled:
-                !sharedWalletStore.isAutoSignEnabled || row.insufficientBalance
-            }"
-          />
-        </div>
-      </template>
-
-      <template #action-data="{ row }">
-        <div v-if="row.orderFillable" class="p-2 flex justify-center">
-          <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
-            v-bind="{
-              order: row.order,
-              isAuthorized: row.isAuthorized
-            }"
-          />
-        </div>
-      </template>
-    </UTable>
-  </template>
+    <template #action-data="{ row }">
+      <div v-if="row.orderFillable" class="p-2 flex justify-center">
+        <PartialsPortfolioOrdersSpotOpenOrdersTableCancelOrder
+          v-bind="{
+            order: row.order,
+            isAuthorized: row.isAuthorized
+          }"
+        />
+      </div>
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPortfolioOrdersSpotOpenOrdersMobileTable

@@ -14,8 +14,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'update:modelValue': [value: number]
   mouseup: []
+  'update:modelValue': [value: number]
 }>()
 
 const leverageBreakpoints = computed(() => {
@@ -38,7 +38,7 @@ const sliderTrackStyle = computed(() => {
     100
 
   return {
-    background: `linear-gradient(to right, #40A9FF 0%, #40A9FF ${bgLocationValue}%, #181E31 ${bgLocationValue}%, #181E31 100%)`
+    background: `linear-gradient(to right, #80B5FF 0%, #80B5FF ${bgLocationValue}%, #144A74 ${bgLocationValue}%, #144A74 100%)`
   }
 })
 
@@ -68,8 +68,8 @@ function onChange() {
     class="leverage__slider-container relative max-w-[640px] opacity-85 hover:opacity-100 transition-opacity"
   >
     <div
-      class="leverage-slider-track absolute z-[1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-full"
       :style="sliderTrackStyle"
+      class="leverage-slider-track absolute z-[1] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-full"
     />
 
     <span
@@ -80,21 +80,21 @@ function onChange() {
         `breakpoint--${index + 1}`,
         [
           leverageAmount < leverage
-            ? 'bg-coolGray-975 border-[#181E31] w-3 h-3'
-            : 'bg-blue-500 border-[#181E31] w-3.5 h-3.5'
+            ? 'bg-brand-900 border-[#144A74] w-3 h-3'
+            : 'bg-azure-blue-350 border-brand-900 w-3.5 h-3.5'
         ]
       ]"
     />
 
     <input
       v-model="leverageAmount"
-      class="leverage-slider relative z-[3] cursor-pointer appearance-none w-full h-[7px] outline-none bg-transparent"
       type="range"
+      :step="step"
       :min="minLeverage"
       :max="maxLeverage"
-      :step="step"
-      @mouseup="onMouseUp"
+      class="leverage-slider relative z-[3] cursor-pointer appearance-none w-full h-[7px] outline-none bg-transparent"
       @change="onChange"
+      @mouseup="onMouseUp"
     />
   </div>
 </template>
@@ -103,10 +103,10 @@ function onChange() {
 .leverage-slider-track {
   background: linear-gradient(
     to right,
-    #40a9ff 0%,
-    #40a9ff 25%,
-    #181e31 25%,
-    #181e31 100%
+    #80b5ff 0%,
+    #80b5ff 25%,
+    #144a74 25%,
+    #144a74 100%
   );
 }
 
@@ -119,11 +119,11 @@ function onChange() {
 }
 
 .leverage-slider::-webkit-slider-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-500 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-azure-blue-350 border-2 border-solid border-brand-900 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-slider::-moz-range-thumb {
-  @apply appearance-none w-[22px] h-[22px] bg-blue-500 border-2 border-solid border-coolGray-975 rotate-45 rounded -mt-1.5;
+  @apply appearance-none w-[22px] h-[22px] bg-azure-blue-350 border-2 border-solid border-brand-900 rotate-45 rounded -mt-1.5;
 }
 
 .leverage-breakpoint.breakpoint--1 {
@@ -144,29 +144,5 @@ function onChange() {
 
 .leverage-breakpoint.breakpoint--5 {
   @apply left-[95%];
-}
-
-@screen xs {
-  .leverage-breakpoint.breakpoint--5 {
-    @apply left-[97%];
-  }
-}
-
-@screen md {
-  .leverage-breakpoint.breakpoint--5 {
-    @apply left-[98%];
-  }
-}
-
-@screen lg {
-  .leverage-breakpoint.breakpoint--5 {
-    @apply left-[93%];
-  }
-}
-
-@screen 4xl {
-  .leverage-breakpoint.breakpoint--5 {
-    @apply left-[95%];
-  }
 }
 </style>

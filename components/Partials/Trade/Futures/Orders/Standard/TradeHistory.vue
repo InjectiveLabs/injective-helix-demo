@@ -4,12 +4,6 @@ const derivativeStore = useDerivativeStore()
 
 <template>
   <PartialsPortfolioOrdersFuturesTradeHistoryTable
-    v-if="derivativeStore.subaccountTrades.length"
     :trades="derivativeStore.subaccountTrades"
-  />
-
-  <CommonEmptyList
-    v-if="!derivativeStore.subaccountTrades.length"
-    :message="$t('trade.noTradeHistory')"
   />
 </template>

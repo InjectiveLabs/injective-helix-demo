@@ -72,7 +72,7 @@ function openGranteeModal() {
       </div>
     </div>
 
-    <div class="border-y">
+    <div class="border-t">
       <NuxtPage />
     </div>
 

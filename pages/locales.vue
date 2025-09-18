@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type LocaleMessage from 'vue-i18n'
 const { copy } = useClipboard()
 const { locales, messages } = useLang()
 
@@ -45,6 +46,7 @@ function deepClone(obj: Record<string, any>) {
 }
 
 function findMissingLocales(lang: string) {
+  // @ts-ignore
   selectedCode.value = lang
 
   if (lang === 'en') {
@@ -52,7 +54,8 @@ function findMissingLocales(lang: string) {
   } else {
     differences.value = compareLocales(
       messages.value['en'],
-      messages.value[lang]
+      // @ts-ignore
+      messages.value[langWithType]
     )
   }
 }

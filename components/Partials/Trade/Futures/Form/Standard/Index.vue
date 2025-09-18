@@ -57,6 +57,14 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
+const enableSlippage = computed(() =>
+  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
 onMounted(() => {
   setFormValues(
     {
@@ -101,26 +109,18 @@ function onOrderSideChange() {
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
+
+function openLeverageModal() {
+  modalStore.openModal(Modal.Leverage)
+}
 </script>
 
 <template>
   <div class="p-4 lg:pb-8">
-    <div class="border-b">
-      <AppButtonSelect
-        v-for="value in Object.values(DerivativeTradeTypes)"
-        :key="value"
-        v-bind="{ value }"
-        v-model="orderType"
-        class="text-xs font-medium capitalize px-3 py-2 text-coolGray-400"
-        active-classes="border-b border-blue-550 text-white"
-        :data-cy="`${dataCyTag(
-          PerpetualMarketCyTags.DerivativeTradeType
-        )}-${value}`"
-        @click="onTradeTypeChange"
-      >
-        {{ $t(`trade.${value}`) }}
-      </AppButtonSelect>
-    </div>
+    <PartialsTradeFuturesFormStandardNavigation
+      v-model="orderType"
+      @trade-type:change="onTradeTypeChange"
+    />
 
     <div class="flex mt-4 bg-brand-875 rounded-md">
       <AppButtonSelect
@@ -143,18 +143,34 @@ function resetSelectedPosition() {
                 : 'danger-cta'
           "
           :class="[
-            'w-full py-1.5 leading-relaxed focus-within:ring-0',
+            'w-full py-2 leading-relaxed focus-within:ring-0',
             side === TradeDirection.Long ? 'hover:bg-green-500' : ''
           ]"
         >
           <span>
             {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
+            /
+            {{ $t(`trade.${side === TradeDirection.Long ? 'long' : 'short'}`) }}
           </span>
         </AppButton>
       </AppButtonSelect>
     </div>
 
     <div class="space-y-4 pt-4">
+      <AppButton
+        is-full-width
+        variant="primary-outline"
+        class="rounded-lg p-2.5 w-full text-sm font-medium"
+        @click="openLeverageModal"
+      >
+        {{
+          $t('trade.leverageModal.leverageAt', {
+            leverageAmount:
+              derivativeFormValues[DerivativesTradeFormField.Leverage]
+          })
+        }}
+      </AppButton>
+
       <PartialsTradeFuturesFormStandardTriggerField
         v-if="
           [
@@ -173,23 +189,14 @@ function resetSelectedPosition() {
       />
 
       <PartialsTradeFuturesFormStandardAmountField
-        v-bind="{ marginWithFee, quantity, minimumAmountInQuote, worstPrice }"
+        v-bind="{
+          quantity,
+          worstPrice,
+          marginWithFee,
+          minimumAmountInQuote
+        }"
       />
-
-      <PartialsTradeFuturesFormStandardLeverage v-bind="{ worstPrice }" />
     </div>
-
-    <PartialsTradeFuturesFormStandardSlippage
-      v-if="
-        [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-          derivativeFormValues[
-            DerivativesTradeFormField.Type
-          ] as DerivativeTradeTypes
-        )
-      "
-      v-bind="{ worstPrice }"
-      class="mt-4"
-    />
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
       class="mt-4"
@@ -205,6 +212,7 @@ function resetSelectedPosition() {
         worstPrice,
         marginWithFee,
         totalNotional,
+        enableSlippage,
         estLiquidationPrice
       }"
     />
@@ -228,5 +236,7 @@ function resetSelectedPosition() {
       v-bind="{ position: selectedPosition }"
       @on:close="resetSelectedPosition"
     />
+
+    <ModalsLeverage v-bind="{ worstPrice }" />
   </div>
 </template>

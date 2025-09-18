@@ -4,8 +4,8 @@ import {
   MARKETS_POWERED_BY_SQUARETOWER
 } from '@/app/data/marketInfo'
 import { intervalOptions, LIGHT_CHART_MARKET_IDS } from '@/app/utils/constants'
+import { BusEvents, ChartViewOption, SpotMarketCyTags } from '@/types'
 import type { UiMarketWithToken } from '@/types'
-import { ChartViewOption, BusEvents, SpotMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -44,52 +44,52 @@ const isLightChartMarket = computed(() =>
 </script>
 
 <template>
-  <div class="flex max-lg:h-[500px] h-full flex-col">
-    <div class="flex lg:flex-row justify-between">
-      <div class="h-subHeader border-b w-full">
-        <div
-          class="flex h-subHeader w-full xl:w-[450px]"
-          :data-cy="dataCyTag(SpotMarketCyTags.ChartHeader)"
+  <div class="flex max-lg:h-[675px] h-full flex-col">
+    <PartialsTradeStats v-bind="{ market }" />
+
+    <div class="h-subHeader border-b w-full">
+      <div
+        class="flex h-subHeader w-full xl:w-[450px]"
+        :data-cy="dataCyTag(SpotMarketCyTags.ChartHeader)"
+      >
+        <AppButtonSelect
+          v-for="label in viewOptions"
+          :key="label"
+          v-model="view"
+          :value="label"
+          active-classes="text-white border-blue-550"
+          :data-cy="`${dataCyTag(SpotMarketCyTags.ChartHeader)}-${label}`"
+          class="max-lg:flex-1 text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
+          @update:model-value="onUpdateChart"
         >
-          <AppButtonSelect
-            v-for="label in viewOptions"
-            :key="label"
-            v-model="view"
-            :value="label"
-            class="text-xs font-medium capitalize px-6 py-2 border-b-2 text-coolGray-400"
-            :data-cy="`${dataCyTag(SpotMarketCyTags.ChartHeader)}-${label}`"
-            active-classes="text-white border-blue-550"
-            @update:modelValue="onUpdateChart"
+          {{ $t(`trade.${label}`) }}
+        </AppButtonSelect>
+
+        <div v-if="isStorkPowered" class="flex items-center">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.stork.network/"
+            class="flex justify-center items-center text-coolGray-500 text-2xs font-semibold px-4 space-x-2 hover:text-white py-2"
           >
-            {{ $t(`trade.${label}`) }}
-          </AppButtonSelect>
+            <p>Powered By Stork</p>
+            <img
+              alt="Stork"
+              class="size-4 rounded"
+              src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
+            />
+          </a>
+        </div>
 
-          <div v-if="isStorkPowered" class="flex items-center">
-            <a
-              class="flex justify-center items-center text-coolGray-500 text-xs font-semibold px-4 space-x-2 hover:text-white py-2"
-              href="https://www.stork.network/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <p>Powered By Stork</p>
-              <img
-                src="https://pbs.twimg.com/profile_images/1874876547363950592/gYOWy9ZJ_400x400.png"
-                alt=""
-                class="size-4 rounded"
-              />
-            </a>
-          </div>
-
-          <div v-if="isSquaretowerPowered" class="flex items-center">
-            <NuxtLink
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://squaretower.xyz/"
-              class="text-green-400 text-xs font-semibold px-4 py-2 hover:text-white"
-            >
-              Powered By Squaretower
-            </NuxtLink>
-          </div>
+        <div v-if="isSquaretowerPowered" class="flex items-center">
+          <NuxtLink
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://squaretower.xyz/"
+            class="text-green-400 text-xs font-semibold px-4 py-2 hover:text-white"
+          >
+            Powered By Squaretower
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -128,7 +128,6 @@ const isLightChartMarket = computed(() =>
       v-else-if="view === ChartViewOption.Chart"
       v-bind="{ market, isSpot }"
     />
-
     <PartialsTradeChartDepth v-else-if="view === ChartViewOption.Depth" />
     <PartialsTradeChartInfo v-else />
   </div>

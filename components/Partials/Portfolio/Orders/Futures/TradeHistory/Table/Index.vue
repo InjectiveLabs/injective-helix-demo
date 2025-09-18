@@ -94,151 +94,152 @@ function shareTrade(trade: SharedUiDerivativeTrade) {
 </script>
 
 <template>
-  <template v-if="lg">
-    <UTable :rows="rows" :columns="columns">
-      <template #time-data="{ row }">
-        <div
-          class="flex items-center p-2"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTimestamp)"
+  <CommonEmptyList
+    v-if="rows.length === 0"
+    :message="$t('trade.noTradeHistory')"
+  />
+
+  <UTable v-else-if="lg" :rows="rows" :columns="columns">
+    <template #time-data="{ row }">
+      <div
+        class="flex items-center p-2"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTimestamp)"
+      >
+        {{ row.time }}
+      </div>
+    </template>
+
+    <template #market-data="{ row }">
+      <PartialsCommonMarketRedirection
+        :market="row.market"
+        class="flex items-center space-x-2 p-2 font-sans"
+      >
+        <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
+        <p :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryMarketTicker)">
+          {{ row.market.ticker }}
+        </p>
+      </PartialsCommonMarketRedirection>
+    </template>
+
+    <template #type-data="{ row }">
+      <div class="flex items-center p-2">
+        <span
+          class="font-sans"
+          :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTradeType)"
         >
-          {{ row.time }}
-        </div>
-      </template>
+          {{ row.tradeExecutionType }}
+        </span>
+      </div>
+    </template>
 
-      <template #market-data="{ row }">
-        <PartialsCommonMarketRedirection
-          :market="row.market"
-          class="flex items-center space-x-2 p-2 font-sans"
-        >
-          <CommonTokenIcon v-bind="{ token: row.market.baseToken }" />
-          <p
-            :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryMarketTicker)"
-          >
-            {{ row.market.ticker }}
-          </p>
-        </PartialsCommonMarketRedirection>
-      </template>
+    <template #side-data="{ row }">
+      <div
+        class="flex items-center p-2 font-sans"
+        :class="{
+          'text-green-500': row.trade.tradeDirection === TradeDirection.Buy,
+          'text-red-500': row.trade.tradeDirection === TradeDirection.Sell
+        }"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTradeSide)"
+      >
+        {{ $t(`trade.${row.trade.tradeDirection}`) }}
+      </div>
+    </template>
 
-      <template #type-data="{ row }">
-        <div class="flex items-center p-2">
-          <span
-            class="font-sans"
-            :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTradeType)"
-          >
-            {{ row.tradeExecutionType }}
-          </span>
-        </div>
-      </template>
-
-      <template #side-data="{ row }">
-        <div
-          class="flex items-center p-2 font-sans"
-          :class="{
-            'text-green-500': row.trade.tradeDirection === TradeDirection.Buy,
-            'text-red-500': row.trade.tradeDirection === TradeDirection.Sell
+    <template #price-data="{ row }">
+      <div
+        class="flex items-center justify-end p-2"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryPrice)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.price.toFixed(),
+            decimals: row.priceDecimals
           }"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTradeSide)"
-        >
-          {{ $t(`trade.${row.trade.tradeDirection}`) }}
-        </div>
-      </template>
+        />
+      </div>
+    </template>
 
-      <template #price-data="{ row }">
+    <template #amount-data="{ row }">
+      <div
+        class="flex items-center justify-end p-2"
+        :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryAmount)"
+      >
+        <SharedAmount
+          v-bind="{
+            useSubscript: true,
+            shouldAbbreviate: false,
+            amount: row.quantity.toFixed(),
+            decimals: row.quantityDecimals
+          }"
+        />
+      </div>
+    </template>
+
+    <template #fee-data="{ row }">
+      <div class="flex-1 flex items-center justify-end p-2">
+        <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
+          <SharedAmount
+            v-bind="{
+              amount: row.fee.toFixed()
+            }"
+          />
+        </span>
+        <span class="ml-1 text-coolGray-500">
+          {{ row.market.quoteToken.symbol }}
+        </span>
+      </div>
+    </template>
+
+    <template #pnl-data="{ row }">
+      <div class="flex items-center p-2 justify-end space-x-1">
         <div
-          class="flex items-center justify-end p-2"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryPrice)"
+          class="flex-1 flex items-center justify-end p-2"
+          :class="{
+            'text-red-500': row.pnl.lt(0),
+            'text-green-500': row.pnl.gt(0)
+          }"
         >
           <SharedAmount
             v-bind="{
               useSubscript: true,
+              showZeroAsEmDash: true,
               shouldAbbreviate: false,
-              amount: row.price.toFixed(),
-              decimals: row.priceDecimals
+              amount: row.pnl.toFixed()
             }"
           />
-        </div>
-      </template>
-
-      <template #amount-data="{ row }">
-        <div
-          class="flex items-center justify-end p-2"
-          :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryAmount)"
-        >
-          <SharedAmount
-            v-bind="{
-              useSubscript: true,
-              shouldAbbreviate: false,
-              amount: row.quantity.toFixed(),
-              decimals: row.quantityDecimals
-            }"
-          />
-        </div>
-      </template>
-
-      <template #fee-data="{ row }">
-        <div class="flex-1 flex items-center justify-end p-2">
-          <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryFee)">
-            <SharedAmount
-              v-bind="{
-                amount: row.fee.toFixed()
-              }"
-            />
-          </span>
-          <span class="ml-1 text-coolGray-500">
+          <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
             {{ row.market.quoteToken.symbol }}
           </span>
         </div>
-      </template>
+        <UIcon
+          v-if="!row.pnl.isZero()"
+          :name="NuxtUiIcons.Share"
+          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
+          @click="shareTrade(row.trade)"
+        />
+      </div>
+    </template>
 
-      <template #pnl-data="{ row }">
-        <div class="flex items-center p-2 justify-end space-x-1">
-          <div
-            class="flex-1 flex items-center justify-end p-2"
-            :class="{
-              'text-red-500': row.pnl.lt(0),
-              'text-green-500': row.pnl.gt(0)
+    <template #total-data="{ row }">
+      <div class="flex justify-end pr-2">
+        <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: row.total.toFixed(),
+              decimals: row.priceDecimals
             }"
-          >
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                showZeroAsEmDash: true,
-                shouldAbbreviate: false,
-                amount: row.pnl.toFixed()
-              }"
-            />
-            <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
-              {{ row.market.quoteToken.symbol }}
-            </span>
-          </div>
-          <UIcon
-            v-if="!row.pnl.isZero()"
-            :name="NuxtUiIcons.Share"
-            class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-            @click="shareTrade(row.trade)"
           />
-        </div>
-      </template>
-
-      <template #total-data="{ row }">
-        <div class="flex justify-end pr-2">
-          <span :data-cy="dataCyTag(PerpetualMarketCyTags.TradeHistoryTotal)">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                shouldAbbreviate: false,
-                amount: row.total.toFixed(),
-                decimals: row.priceDecimals
-              }"
-            />
-          </span>
-          <span class="ml-1 text-coolGray-500">
-            {{ row.market?.quoteToken.symbol }}
-          </span>
-        </div>
-      </template>
-    </UTable>
-  </template>
+        </span>
+        <span class="ml-1 text-coolGray-500">
+          {{ row.market?.quoteToken.symbol }}
+        </span>
+      </div>
+    </template>
+  </UTable>
 
   <template v-else>
     <PartialsPortfolioOrdersFuturesTradeHistoryMobileTable
