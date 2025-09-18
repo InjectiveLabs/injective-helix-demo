@@ -96,8 +96,9 @@ onClickOutside(el, closeMarketSection, {
 
 <template>
   <div
-    class="max-3xl:border-b max-lg:border-0"
+    class="max-lg:border-0"
     :class="[
+      isExpiryMarket ? 'max-3xl:border-b' : 'max-4xl:border-b',
       route.name === TradeSubPage.Spot
         ? '2xl:basis-[450px]'
         : '5xl:basis-[450px]'

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { SharedMarketType } from '@shared/types'
 import {
   TradeSubPage,
   SpotMarketCyTags,
@@ -8,7 +9,7 @@ import {
 } from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     market: UiMarketWithToken
   }>(),
@@ -21,6 +22,22 @@ const breakpoints = useSharedBreakpoints()
 const sm = breakpoints.sm
 
 const isMarketOpen = ref(false)
+
+const isExpiryMarket = computed(
+  () => props.market.subType === SharedMarketType.Futures
+)
+
+const flexColClass = computed(() => {
+  if (route.name === TradeSubPage.Spot) {
+    return 'max-2xl:flex-col'
+  }
+
+  if (isExpiryMarket.value) {
+    return 'max-3xl:flex-col'
+  }
+
+  return 'max-4xl:flex-col'
+})
 
 onMounted(() => {
   if (route.query.category) {
@@ -42,17 +59,15 @@ onMounted(() => {
 
 <template>
   <div
+    :class="[flexColClass]"
     class="lg:flex relative border-b max-lg:divide-y"
-    :class="[
-      route.name === TradeSubPage.Spot ? 'max-2xl:flex-col' : 'max-3xl:flex-col'
-    ]"
     :data-cy="dataCyTag(SpotMarketCyTags.TradeStats)"
   >
     <PartialsTradeStatsMarketSelector
       v-model:is-market-open="isMarketOpen"
       v-bind="{ market }"
-      class="max-3xl:h-header"
       :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsMarketSelector)"
+      :class="isExpiryMarket ? 'max-3xl:h-header' : 'max-4xl:h-header'"
     />
 
     <PartialsTradeStatsInfo
