@@ -86,14 +86,14 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
       return ZERO_IN_BASE
     }
 
-    if (trade.value.tradeDirection === TradeDirection.Long) {
+    if (trade.value.tradeDirection === TradeDirection.Sell) {
       return new BigNumberInBase(
-        price.value.minus(pnl.value.dividedBy(quantity.value))
+        price.value.minus(pnl.value.plus(fee.value).dividedBy(quantity.value))
       )
     }
 
     return new BigNumberInBase(
-      price.value.plus(pnl.value.dividedBy(quantity.value))
+      price.value.plus(pnl.value.minus(fee.value).dividedBy(quantity.value))
     )
   })
 
@@ -102,14 +102,12 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
       return ZERO_IN_BASE
     }
 
-    const entryPositionValue = quantity.value.times(entryPrice.value)
-    if (entryPositionValue.isZero()) {
+    const denominator = price.value.times(quantity.value).plus(fee.value.abs())
+    if (denominator.isZero()) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInBase(
-      pnl.value.dividedBy(entryPositionValue).times(100)
-    )
+    return new BigNumberInBase(pnl.value.dividedBy(denominator).times(100))
   })
 
   const tradeExecutionType = computed<string>(() => {

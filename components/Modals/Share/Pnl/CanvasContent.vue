@@ -41,6 +41,10 @@ const qrLink = computed(() => {
   return referralLink || metaTags.url
 })
 
+const isActiveOrClosedLong = computed(() =>
+  [TradeDirection.Long, TradeDirection.Sell].includes(props.content.direction)
+)
+
 onMounted(() => {
   updateScale()
   window.addEventListener('resize', updateScale)
@@ -92,12 +96,12 @@ function updateScale() {
           <div
             class="py-0.5 px-2 flex items-center gap-1 rounded text-xs font-semibold tracking-wide"
             :class="[
-              content.direction === TradeDirection.Long
+              isActiveOrClosedLong
                 ? 'text-green-500 bg-green-500/30'
                 : 'text-red-500 bg-red-500/30'
             ]"
           >
-            <span v-if="content.direction === TradeDirection.Long">
+            <span v-if="isActiveOrClosedLong">
               {{ $t('trade.long') }}
             </span>
             <span v-else>{{ $t('trade.short') }}</span>
