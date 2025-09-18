@@ -96,18 +96,16 @@ onClickOutside(el, closeMarketSection, {
 
 <template>
   <div
+    class="max-3xl:border-b max-lg:border-0"
     :class="[
       route.name === TradeSubPage.Spot
-        ? '2xl:basis-[450px] max-2xl:border-b max-lg:border-0'
-        : '5xl:basis-[450px] max-5xl:border-b max-lg:border-0'
+        ? '2xl:basis-[450px]'
+        : '5xl:basis-[450px]'
     ]"
   >
     <div
       ref="toggleEl"
-      :class="[
-        route.name === TradeSubPage.Spot ? '2xl:border-r' : '5xl:border-r'
-      ]"
-      class="relative z-30 flex max-xl:py-4 items-center pr-4 hover:bg-brand-875 cursor-pointer select-none h-full"
+      class="relative z-30 flex max-xl:py-4 items-center pr-4 hover:bg-brand-875 cursor-pointer select-none h-full 2xl:border-r"
       @click="toggleOpen"
     >
       <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />

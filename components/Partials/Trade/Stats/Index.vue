@@ -51,7 +51,7 @@ onMounted(() => {
     <PartialsTradeStatsMarketSelector
       v-model:is-market-open="isMarketOpen"
       v-bind="{ market }"
-      class="lg:h-header"
+      class="max-3xl:h-header"
       :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsMarketSelector)"
     />
 
