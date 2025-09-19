@@ -49,7 +49,7 @@ const isLightChartMarket = computed(() =>
 
     <div class="h-subHeader border-b w-full">
       <div
-        class="flex h-subHeader w-full xl:w-[450px]"
+        class="flex h-subHeader w-full"
         :data-cy="dataCyTag(SpotMarketCyTags.ChartHeader)"
       >
         <AppButtonSelect

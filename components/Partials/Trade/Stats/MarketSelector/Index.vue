@@ -98,15 +98,15 @@ onClickOutside(el, closeMarketSection, {
   <div
     class="max-lg:border-0"
     :class="[
-      isExpiryMarket ? 'max-3xl:border-b' : 'max-4xl:border-b',
-      route.name === TradeSubPage.Spot
-        ? '2xl:basis-[450px]'
-        : '5xl:basis-[450px]'
+      route.name === TradeSubPage.Spot ? 'max-lg:border-b' : 'max-2xl:border-b'
     ]"
   >
     <div
       ref="toggleEl"
-      class="relative z-30 flex max-xl:py-4 items-center pr-4 hover:bg-brand-875 cursor-pointer select-none h-full 2xl:border-r"
+      class="relative z-30 flex max-xl:py-4 items-center pr-4 hover:bg-brand-875 cursor-pointer select-none h-full"
+      :class="[
+        route.name === TradeSubPage.Spot ? 'lg:border-r' : '2xl:border-r'
+      ]"
       @click="toggleOpen"
     >
       <CommonTokenIcon class="mx-4" v-bind="{ token: market.baseToken }" />
@@ -121,7 +121,7 @@ onClickOutside(el, closeMarketSection, {
             }"
           >
             <span
-              class="tracking-wider font-bold text-base"
+              class="tracking-wider font-bold text-base lg:whitespace-nowrap"
               :data-cy="dataCyTag(CommonCyTags.MarketPair)"
             >
               {{ market.ticker }}
@@ -174,31 +174,27 @@ onClickOutside(el, closeMarketSection, {
           </CommonHeaderTooltip>
 
           <div class="flex items-center gap-1">
-            <p class="text-coolGray-400 text-xs">{{ market.baseToken.name }}</p>
+            <p class="text-coolGray-400 text-xs lg:whitespace-nowrap">
+              {{ market.baseToken.name }}
+            </p>
             <PartialsTradeStatsCategoryChip v-bind="{ market }" />
           </div>
         </div>
 
-        <div class="absolute left-full">
-          <UIcon
-            v-if="market.isVerified"
-            :name="NuxtUiIcons.CheckShieldOutline"
-            class="text-green-500 w-5 h-5 min-w-5"
-          />
-        </div>
+        <UIcon
+          v-if="market.isVerified"
+          :name="NuxtUiIcons.CheckShieldOutline"
+          class="text-green-500 size-5 min-w-5"
+        />
       </div>
 
-      <div class="text-coolGray-400 ml-auto flex items-center">
-        <div
-          class="ml-10 mr-4 text-sm"
-          :data-cy="dataCyTag(CommonCyTags.MarketDropdown)"
-        >
-          {{ $t('trade.allMarkets') }}
-        </div>
-
+      <div
+        class="text-coolGray-400 ml-auto flex items-center"
+        :class="[route.name === TradeSubPage.Spot ? 'lg:ml-6' : '2xl:ml-6']"
+      >
         <UIcon
           :name="NuxtUiIcons.ChevronLeft2"
-          class="h-3 w-3 min-w-3 -rotate-90"
+          class="size-3 min-w-3 -rotate-90"
         />
       </div>
     </div>
@@ -210,11 +206,11 @@ onClickOutside(el, closeMarketSection, {
     >
       <div
         ref="el"
-        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border h-[calc(100vh-131px)] sm:h-[calc(100vh-272px)] lg:h-[calc(100vh-203px)]"
+        class="basis-[1000px] w-full min-w-0 overflow-y-auto bg-brand-900 border"
         :class="[
           route.name === TradeSubPage.Spot
-            ? '2xl:h-[calc(100vh-140px)]'
-            : '5xl:h-[calc(100vh-140px)]'
+            ? 'h-[calc(100vh-166px)] lg:h-[calc(100vh-139px)]'
+            : 'h-[calc(100vh-230px)] lg:h-[calc(100vh-203px)] 2xl:h-[calc(100vh-139px)]'
         ]"
         @click.stop
       >

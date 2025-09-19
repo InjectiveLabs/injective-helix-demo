@@ -108,7 +108,7 @@ watch(countdown, (countdown) => {
           popper: { strategy: 'fixed', placement: 'bottom' }
         }"
       >
-        {{ $t('trade.markPrice') }}
+        <span class="whitespace-nowrap">{{ $t('trade.markPrice') }}</span>
       </CommonHeaderTooltip>
     </template>
 
@@ -135,7 +135,9 @@ watch(countdown, (countdown) => {
           popper: { strategy: 'fixed', placement: 'bottom' }
         }"
       >
-        {{ $t('trade.stats.fundingOrCountdown') }}
+        <span class="whitespace-nowrap">{{
+          $t('trade.stats.fundingOrCountdown')
+        }}</span>
       </CommonHeaderTooltip>
     </template>
 
