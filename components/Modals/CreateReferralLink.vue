@@ -185,7 +185,7 @@ watch(
             isNoPadding: true,
             disabled: status.isLoading(),
             placeholder: $t('referral.createReferralLinkPlaceholder'),
-            inputClasses: 'placeholder-coolGray-475 w-auto max-sm:min-w-28',
+            inputClasses: 'placeholder-coolGray-475 max-sm:min-w-28',
             wrapperClasses:
               'bg-brand-875 p-4 border border-brand-725 rounded text-sm text-coolGray-475 overflow-auto font-mono'
           }"
