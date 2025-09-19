@@ -115,9 +115,9 @@ onClickOutside(el, closeMarketSection, {
           <CommonHeaderTooltip
             :is-disabled="!hasDocsTooltip && !isExpiryMarket"
             :popper="{
-              placement: 'top',
               strategy: 'fixed',
-              offsetDistance: -40
+              offsetDistance: 20,
+              placement: 'bottom'
             }"
           >
             <span

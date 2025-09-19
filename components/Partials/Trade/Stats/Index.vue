@@ -72,9 +72,12 @@ onMounted(() => {
 
     <PartialsTradeStatsInfo
       v-show="!isMarketOpen || sm"
-      v-bind="{ market }"
-      class="pl-2 relative z-30"
-      :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfo)"
+      class="pl-2"
+      :class="{ 'relative z-30': isMarketOpen }"
+      v-bind="{
+        market,
+        dataCy: dataCyTag(SpotMarketCyTags.TradeStatsInfo)
+      }"
     />
 
     <div
