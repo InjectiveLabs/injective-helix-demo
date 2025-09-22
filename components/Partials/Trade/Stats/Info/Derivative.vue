@@ -102,10 +102,13 @@ watch(countdown, (countdown) => {
   <PartialsTradeStatsHeaderItem class="lg:hidden xl:flex">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.markPriceTooltip')"
-        text-color-class="text-coolGray-400"
+        v-bind="{
+          textColorClass: 'text-coolGray-400',
+          tooltip: $t('trade.stats.markPriceTooltip'),
+          popper: { strategy: 'fixed', placement: 'bottom' }
+        }"
       >
-        {{ $t('trade.markPrice') }}
+        <span class="whitespace-nowrap">{{ $t('trade.markPrice') }}</span>
       </CommonHeaderTooltip>
     </template>
 
@@ -126,10 +129,15 @@ watch(countdown, (countdown) => {
   <PartialsTradeStatsHeaderItem v-if="!isExpiryMarket">
     <template #title>
       <CommonHeaderTooltip
-        :tooltip="$t('trade.stats.fundingRateTooltip')"
-        text-color-class="text-coolGray-400"
+        v-bind="{
+          textColorClass: 'text-coolGray-400',
+          tooltip: $t('trade.stats.fundingRateTooltip'),
+          popper: { strategy: 'fixed', placement: 'bottom' }
+        }"
       >
-        {{ $t('trade.stats.fundingOrCountdown') }}
+        <span class="whitespace-nowrap">{{
+          $t('trade.stats.fundingOrCountdown')
+        }}</span>
       </CommonHeaderTooltip>
     </template>
 

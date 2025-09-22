@@ -70,14 +70,14 @@ const percentageChangeStatus = computed(() => {
 
 <template>
   <div
-    class="lg:flex max-lg:text-xs max-lg:divide-y max-lg:[&>*]:p-1 lg:space-x-8"
-    :class="[route.name === TradeSubPage.Spot ? 'max-2xl:p-1' : 'max-5xl:p-1']"
+    class="bg-brand-900 lg:flex max-lg:text-xs max-lg:divide-y max-lg:[&>*]:p-1 lg:space-x-8 overflow-x-hidden"
+    :class="{ 'max-2xl:p-1': route.name !== TradeSubPage.Spot }"
   >
-    <section class="flex p-2 2xl:px-0 3xl:p-2 justify-between">
+    <section class="flex p-2 2xl:px-0 justify-between">
       <p class="text-coolGray-400 lg:hidden">{{ $t('trade.price') }}</p>
 
       <article
-        class="flex items-center lg:flex-col lg:items-end lg:gap-2 lg:px-2 lg:py-0.5 2xl:pr-0 3xl:pr-2"
+        class="flex items-center lg:flex-col lg:items-end lg:gap-2 lg:px-2 lg:py-0.5 2xl:pr-0"
         :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfoPrice)"
       >
         <div class="flex items-center justify-between">
