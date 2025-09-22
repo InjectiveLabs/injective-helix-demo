@@ -9,6 +9,7 @@ const referralStore = useReferralStore()
 
 const props = withDefaults(
   defineProps<{
+    isTrade?: boolean
     isLoading?: boolean
     selectedCharacter: string
     content: {
@@ -143,7 +144,10 @@ function updateScale() {
           </div>
 
           <div class="flex flex-col gap-1">
-            <span class="text-coolGray-450 font-medium">
+            <span v-if="isTrade" class="text-coolGray-450 font-medium">
+              {{ $t('trade.sharePnlModal.exitPrice') }}
+            </span>
+            <span v-if="!isTrade" class="text-coolGray-450 font-medium">
               {{ $t('trade.sharePnlModal.markPrice') }}
             </span>
             <SharedAmount
