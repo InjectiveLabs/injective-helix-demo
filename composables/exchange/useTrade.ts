@@ -5,8 +5,7 @@ import { TradeExecutionType } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
-  UI_DEFAULT_PRICE_DISPLAY_DECIMALS,
-  UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import type { SharedUiDerivativeTrade } from '@shared/types'
 
@@ -16,12 +15,6 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
 
   const market = computed(() =>
     derivativeStore.marketByIdOrSlug(trade.value.marketId)
-  )
-
-  const quantityDecimals = computed(() =>
-    market.value
-      ? market.value.quantityDecimals
-      : UI_DEFAULT_AMOUNT_DISPLAY_DECIMALS
   )
 
   const price = computed(() => {
@@ -39,9 +32,7 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(trade.value.executionQuantity).toBase(
-      quantityDecimals.value
-    )
+    return new BigNumberInBase(trade.value.executionQuantity)
   })
 
   const total = computed(() => quantity.value.times(price.value))
@@ -140,7 +131,6 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
     entryPrice,
     percentagePnl,
     priceDecimals,
-    quantityDecimals,
     tradeExecutionType
   }
 }
