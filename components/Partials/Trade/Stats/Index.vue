@@ -43,23 +43,26 @@ onMounted(() => {
 <template>
   <div
     class="lg:flex relative border-b max-lg:divide-y"
-    :class="[
-      route.name === TradeSubPage.Spot ? 'max-2xl:flex-col' : 'max-5xl:flex-col'
-    ]"
+    :class="{
+      'max-2xl:flex-col': route.name !== TradeSubPage.Spot
+    }"
     :data-cy="dataCyTag(SpotMarketCyTags.TradeStats)"
   >
     <PartialsTradeStatsMarketSelector
       v-model:is-market-open="isMarketOpen"
       v-bind="{ market }"
-      class="lg:h-header"
+      class="max-2xl:h-header"
       :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsMarketSelector)"
     />
 
     <PartialsTradeStatsInfo
       v-show="!isMarketOpen || sm"
-      v-bind="{ market }"
-      class="pl-2 relative z-30"
-      :data-cy="dataCyTag(SpotMarketCyTags.TradeStatsInfo)"
+      class="pl-2"
+      :class="{ 'relative z-30': isMarketOpen }"
+      v-bind="{
+        market,
+        dataCy: dataCyTag(SpotMarketCyTags.TradeStatsInfo)
+      }"
     />
 
     <div
