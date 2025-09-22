@@ -65,7 +65,8 @@ const marketCap = computed(() => {
       <CommonHeaderTooltip
         v-bind="{
           textColorClass: 'text-coolGray-400',
-          tooltip: $t('trade.stats.marketCapTooltip')
+          tooltip: $t('trade.stats.marketCapTooltip'),
+          popper: { strategy: 'fixed', placement: 'bottom' }
         }"
       >
         {{ $t('trade.stats.marketCap') }}
