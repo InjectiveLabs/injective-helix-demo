@@ -5,8 +5,8 @@ import {
   derivativeTypeToTradeType
 } from '@/app/utils/trade'
 import { Modal, SpotOrderHistoryFilterField } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
-import { SharedUiDerivativeTrade } from '@shared/types'
 
 const route = useRoute()
 const router = useRouter()

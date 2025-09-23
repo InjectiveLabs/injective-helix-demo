@@ -4,7 +4,7 @@ import { addressAndMarketSlugToSubaccountId } from '@/app/utils/helpers'
 import { Modal, PerpOrdersTradingBotsView } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
-import { SharedUiDerivativeTrade } from '@shared/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const modalStore = useSharedModalStore()
 const positionStore = usePositionStore()
