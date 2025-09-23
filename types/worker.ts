@@ -1,12 +1,16 @@
-import { OrderbookWithSequence } from '@injectivelabs/sdk-ts'
+import type { OrderbookWithSequence } from '@injectivelabs/sdk-ts'
+
+export interface OrderbookWorkerType extends Omit<Worker, 'postMessage'> {
+  postMessage(message: OrderbookWorkerMessage): void
+}
 
 export type OrderbookFormattedRecord = {
   price: string
-  quantity: string
   volume: string
+  quantity: string
+  avgPrice: string
   totalVolume: string
   totalQuantity: string
-  avgPrice: string
 }
 
 // Send Message
@@ -14,7 +18,8 @@ export type OrderbookFormattedRecord = {
 export enum WorkerMessageType {
   Fetch = 'fetch',
   Stream = 'stream',
-  WorstPrice = 'worstPrice',
+  Quantity = 'quantity',
+  Notional = 'notional',
   Aggregation = 'aggregation'
 }
 
@@ -22,22 +27,33 @@ type sendFetchOrStreamType = {
   type: WorkerMessageType.Fetch | WorkerMessageType.Stream
   data: {
     isSpot: boolean
-    orderbook: OrderbookWithSequence
+    sequence: number
+    aggregation: number
     baseDecimals: number
     quoteDecimals: number
-    aggregation: number
-    sequence: number
+    orderbook: OrderbookWithSequence
   }
 }
 
-type sendWorstPriceType = {
-  type: WorkerMessageType.WorstPrice
+type sendQuantityType = {
+  type: WorkerMessageType.Quantity
   data: {
-    isSpot: boolean
     isBuy: boolean
+    isSpot: boolean
+    quantity: string
     baseDecimals: number
     quoteDecimals: number
-    quantity: string
+  }
+}
+
+type sendNotionalType = {
+  type: WorkerMessageType.Notional
+  data: {
+    isBuy: boolean
+    isSpot: boolean
+    notional: string
+    baseDecimals: number
+    quoteDecimals: number
   }
 }
 
@@ -45,23 +61,25 @@ type sendAggregation = {
   type: WorkerMessageType.Aggregation
   data: {
     isSpot: boolean
+    aggregation: number
     baseDecimals: number
     quoteDecimals: number
-    aggregation: number
   }
 }
 
 export type OrderbookWorkerMessage =
-  | sendFetchOrStreamType
-  | sendWorstPriceType
   | sendAggregation
+  | sendQuantityType
+  | sendNotionalType
+  | sendFetchOrStreamType
 
 // Receive Message
 
 export enum WorkerMessageResponseType {
   ReplaceOrderbook = 'replaceOrderbook',
   RefetchOrderbook = 'refetchOrderbook',
-  WorstPrice = 'worstPrice'
+  ReceiveQuantityInfo = 'receiveQuantityInfo',
+  ReceiveNotionalInfo = 'receiveNotionalInfo'
 }
 
 type ReplaceOrderbookType = {
@@ -75,18 +93,31 @@ type ReplaceOrderbookType = {
 }
 
 type RefetchOrderbookType = {
-  messageType: WorkerMessageResponseType.RefetchOrderbook
   data: undefined
+  messageType: WorkerMessageResponseType.RefetchOrderbook
 }
 
-type WorstPriceType = {
-  messageType: WorkerMessageResponseType.WorstPrice
+type ReceiveQuantityInfoType = {
+  messageType: WorkerMessageResponseType.ReceiveQuantityInfo
   data: {
+    bestPrice: string
     worstPrice: string
+    averagePrice: string
+  }
+}
+
+type ReceiveNotionalInfoType = {
+  messageType: WorkerMessageResponseType.ReceiveNotionalInfo
+  data: {
+    quantity: string
+    bestPrice: string
+    worstPrice: string
+    averagePrice: string
   }
 }
 
 export type OrderbookWorkerResult =
   | ReplaceOrderbookType
   | RefetchOrderbookType
-  | WorstPriceType
+  | ReceiveQuantityInfoType
+  | ReceiveNotionalInfoType

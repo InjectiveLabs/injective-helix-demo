@@ -249,12 +249,39 @@ self.addEventListener(
       }
     }
 
-    function sendWorstPrice(worstPrice: string) {
+    function calculateNotionalInfo(_data: {
+      isBuy: boolean
+      isSpot: boolean
+      notional: string
+      baseDecimals: number
+      quoteDecimals: number
+    }) {
       self.postMessage({
-        messageType: WorkerMessageResponseType.WorstPrice,
+        messageType: WorkerMessageResponseType.ReceiveNotionalInfo,
         data: {
-          worstPrice
+          quantity: '1',
+          bestPrice: '2',
+          worstPrice: '3',
+          averagePrice: '4'
         }
+      } as OrderbookWorkerResult)
+    }
+
+    function calculateQuantityInfo(_data: {
+      isBuy: boolean
+      isSpot: boolean
+      quantity: string
+      baseDecimals: number
+      quoteDecimals: number
+    }) {
+      // TODO:
+      // calculate Notional
+      // calculate worst price
+      //calcualte average price
+
+      self.postMessage({
+        messageType: WorkerMessageResponseType.ReceiveQuantityInfo,
+        data: { averagePrice: '1', worstPrice: '2', bestPrice: '3' }
       } as OrderbookWorkerResult)
     }
 
@@ -263,8 +290,14 @@ self.addEventListener(
         sendReplaceOrderbook()
         break
 
-      case WorkerMessageType.WorstPrice:
-        sendWorstPrice(data.quantity)
+      case WorkerMessageType.Quantity:
+        console.log('Quantity', data)
+        calculateQuantityInfo(data)
+        break
+
+      case WorkerMessageType.Notional:
+        console.log('Notional', data)
+        calculateNotionalInfo(data)
         break
 
       case WorkerMessageType.Stream:
