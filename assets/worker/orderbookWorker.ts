@@ -249,39 +249,185 @@ self.addEventListener(
       }
     }
 
-    function calculateNotionalInfo(_data: {
+    function calculateNotionalInfo({
+      isBuy,
+      isSpot: _isSpot,
+      notional,
+      baseDecimals: _baseDecimals,
+      quoteDecimals: _quoteDecimals
+    }: {
       isBuy: boolean
       isSpot: boolean
       notional: string
       baseDecimals: number
       quoteDecimals: number
     }) {
+      // When buying, we consume from sells (starting from lowest price)
+      // When selling, we consume from buys (starting from highest price)
+      const recordsMap = isBuy ? sells : buys
+
+      const sortedArray = Array.from(recordsMap.entries()).sort((a, b) => {
+        const aPrice = new BigNumberInBase(a[0])
+        const bPrice = new BigNumberInBase(b[0])
+        // For buying: sort sells ascending (lowest price first)
+        // For selling: sort buys descending (highest price first)
+        return isBuy ? aPrice.comparedTo(bPrice) : bPrice.comparedTo(aPrice)
+      })
+
+      if (sortedArray.length === 0) {
+        self.postMessage({
+          messageType: WorkerMessageResponseType.ReceiveNotionalInfo,
+          data: {
+            quantity: '0',
+            worstPrice: '0',
+            averagePrice: '0',
+            bestPrice: '0'
+          }
+        } as OrderbookWorkerResult)
+        return
+      }
+
+      let worstPrice = '0'
+      let totalQuantity = 0 // Total quantity we can get
+      let totalNotionalUsed = 0 // Total notional value used
+      let remainingNotional = new BigNumberInBase(notional)
+      const bestPrice = sortedArray[0][0]
+
+      for (const record of sortedArray) {
+        const recordPrice = new BigNumberInBase(record[0])
+        const recordQuantity = new BigNumberInBase(record[1])
+
+        // Calculate how much quantity we can get with remaining notional at this price
+        const maxQuantityAtThisPrice = remainingNotional.dividedBy(recordPrice)
+
+        // Check if we can get all the quantity we need from this price level
+        if (maxQuantityAtThisPrice.isLessThanOrEqualTo(recordQuantity)) {
+          // We can fill the rest of our notional with this price level
+          const quantityToGet = maxQuantityAtThisPrice.toNumber()
+          const notionalToUse = remainingNotional.toNumber()
+          remainingNotional = new BigNumberInBase(0)
+          totalQuantity += quantityToGet
+          totalNotionalUsed += notionalToUse
+          worstPrice = recordPrice.toFixed()
+          break
+        } else {
+          // We need to consume this entire price level and continue
+          const quantityToGet = recordQuantity.toNumber()
+          const notionalToUse = recordPrice
+            .multipliedBy(recordQuantity)
+            .toNumber()
+          totalQuantity += quantityToGet
+          totalNotionalUsed += notionalToUse
+          remainingNotional = remainingNotional.minus(
+            recordPrice.multipliedBy(recordQuantity)
+          )
+          worstPrice = recordPrice.toFixed()
+        }
+      }
+
+      // Calculate average price based on total notional used and total quantity
+      const averagePrice =
+        totalQuantity > 0 ? totalNotionalUsed / totalQuantity : 0
+
+      // Check if we have enough liquidity to spend the entire notional
+      const enoughLiquidity = remainingNotional.isLessThanOrEqualTo(0)
+
       self.postMessage({
         messageType: WorkerMessageResponseType.ReceiveNotionalInfo,
         data: {
-          quantity: '1',
-          bestPrice: '2',
-          worstPrice: '3',
-          averagePrice: '4'
+          quantity: new BigNumberInBase(notional)
+            .dividedBy(worstPrice)
+            .toFixed(),
+          worstPrice,
+          averagePrice: String(averagePrice),
+          bestPrice,
+          enoughLiquidity
         }
       } as OrderbookWorkerResult)
     }
 
-    function calculateQuantityInfo(_data: {
+    function calculateQuantityInfo({
+      isBuy,
+      isSpot: _isSpot,
+      quantity,
+      baseDecimals: _baseDecimals,
+      quoteDecimals: _quoteDecimals
+    }: {
       isBuy: boolean
       isSpot: boolean
       quantity: string
       baseDecimals: number
       quoteDecimals: number
     }) {
-      // TODO:
-      // calculate Notional
-      // calculate worst price
-      //calcualte average price
+      // When buying, we consume from sells (starting from lowest price)
+      // When selling, we consume from buys (starting from highest price)
+      const recordsMap = isBuy ? sells : buys
+
+      const sortedArray = Array.from(recordsMap.entries()).sort((a, b) => {
+        const aPrice = new BigNumberInBase(a[0])
+        const bPrice = new BigNumberInBase(b[0])
+        // For buying: sort sells ascending (lowest price first)
+        // For selling: sort buys descending (highest price first)
+        return isBuy ? aPrice.comparedTo(bPrice) : bPrice.comparedTo(aPrice)
+      })
+
+      if (sortedArray.length === 0) {
+        self.postMessage({
+          messageType: WorkerMessageResponseType.ReceiveQuantityInfo,
+          data: {
+            worstPrice: '0',
+            averagePrice: '0',
+            bestPrice: '0',
+            enoughLiquidity: false
+          }
+        } as OrderbookWorkerResult)
+        return
+      }
+
+      let worstPrice = '0'
+      let totalVolume = 0 // Total cost/value
+      let totalQuantityFilled = 0
+      let remainingQuantity = new BigNumberInBase(quantity)
+      const bestPrice = sortedArray[0][0]
+
+      for (const record of sortedArray) {
+        const recordPrice = new BigNumberInBase(record[0])
+        const recordQuantity = new BigNumberInBase(record[1])
+
+        // Check if we can fully fill the remaining quantity with this record
+        if (remainingQuantity.isLessThanOrEqualTo(recordQuantity)) {
+          // We can fill the rest of our order with this price level
+          const quantityToFill = remainingQuantity.toNumber()
+          remainingQuantity = new BigNumberInBase(0)
+          totalVolume += recordPrice.toNumber() * quantityToFill
+          totalQuantityFilled += quantityToFill
+          worstPrice = recordPrice.toFixed()
+          break
+        } else {
+          // We need to consume this entire price level and continue
+          const quantityToFill = recordQuantity.toNumber()
+          totalVolume += recordPrice.toNumber() * quantityToFill
+          totalQuantityFilled += quantityToFill
+          remainingQuantity = remainingQuantity.minus(recordQuantity)
+          worstPrice = recordPrice.toFixed()
+        }
+      }
+
+      // Calculate average price based on filled quantity
+      const averagePrice =
+        totalQuantityFilled > 0 ? totalVolume / totalQuantityFilled : 0
+
+      // Check if we have enough liquidity to fill the entire order
+      const enoughLiquidity = remainingQuantity.isLessThanOrEqualTo(0)
 
       self.postMessage({
         messageType: WorkerMessageResponseType.ReceiveQuantityInfo,
-        data: { averagePrice: '1', worstPrice: '2', bestPrice: '3' }
+        data: {
+          worstPrice,
+          averagePrice: String(averagePrice),
+          bestPrice,
+          enoughLiquidity
+        }
       } as OrderbookWorkerResult)
     }
 

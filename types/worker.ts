@@ -103,6 +103,7 @@ type ReceiveQuantityInfoType = {
     bestPrice: string
     worstPrice: string
     averagePrice: string
+    enoughLiquidity: boolean
   }
 }
 
@@ -113,6 +114,7 @@ type ReceiveNotionalInfoType = {
     bestPrice: string
     worstPrice: string
     averagePrice: string
+    enoughLiquidity: boolean
   }
 }
 
