@@ -246,6 +246,7 @@ function shareTrade(trade: SharedUiDerivativeTrade) {
       v-for="trade in rows"
       :key="`${trade.trade.orderHash}-${trade.trade.tradeId}`"
       v-bind="{ trade, columns }"
+      @trade:share="shareTrade"
     />
   </template>
 </template>
