@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { metaTags } from '@/nuxt-config/meta'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import type { SharedUiDerivativeMarket } from '@shared/types'
+import type { SharePnlContent } from '@/types'
 
 const referralStore = useReferralStore()
 
@@ -11,17 +10,8 @@ const props = withDefaults(
   defineProps<{
     isTrade?: boolean
     isLoading?: boolean
+    content: SharePnlContent
     selectedCharacter: string
-    content: {
-      ticker: string
-      pnl: BigNumberInBase
-      price: BigNumberInBase
-      direction: TradeDirection
-      markPrice: BigNumberInBase
-      percentagePnl: BigNumberInBase
-      market: SharedUiDerivativeMarket
-      effectiveLeverage?: BigNumberInBase
-    }
   }>(),
   {}
 )
