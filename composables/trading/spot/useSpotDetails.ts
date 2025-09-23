@@ -39,6 +39,10 @@ export function useSpotDetails({
   const feeAmount = ref<string>('0')
   const totalNotional = ref<string>('0')
   const enoughLiquidity = ref<boolean>(false)
+  const calculatedNotional = ref<string>('0')
+  const bestPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
+  const worstPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
+  const averagePrice = ref<BigNumberInBase>(ZERO_IN_BASE)
 
   const _quantity = computed({
     get: () => {
@@ -86,12 +90,6 @@ export function useSpotDetails({
     }
   })
 
-  const calculatedNotional = ref<string>('0')
-
-  const bestPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
-  const worstPrice = ref<BigNumberInBase>(ZERO_IN_BASE)
-  const averagePrice = ref<BigNumberInBase>(ZERO_IN_BASE)
-
   const slippagePrice = computed(() => {
     if (isBuy.value) {
       return bestPrice.value.times(
@@ -106,7 +104,7 @@ export function useSpotDetails({
 
   const estSlippagePercentage = computed(() => {
     if (bestPrice.value.isZero() || worstPrice.value.isZero()) {
-      return new BigNumberInBase(0)
+      return new BigNumberInBase(0).toFixed(2)
     }
 
     if (isBuy.value) {
@@ -124,7 +122,13 @@ export function useSpotDetails({
   })
 
   const feePercentage = computed(() => {
-    return new BigNumberInBase(market.value.takerFeeRate)
+    return new BigNumberInBase(market.value.takerFeeRate) // TODO: add maker fee rate
+  })
+
+  const slippageWarning = computed(() => {
+    return new BigNumberInBase(estSlippagePercentage.value)
+      .div(100)
+      .gt(slippagePercentage.value)
   })
 
   worker.value.addEventListener('message', (ev) => {
@@ -192,6 +196,7 @@ export function useSpotDetails({
     notional: _notional,
     quantity: _quantity,
     enoughLiquidity,
-    estSlippagePercentage
+    estSlippagePercentage,
+    slippageWarning
   }
 }

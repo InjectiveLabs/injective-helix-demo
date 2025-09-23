@@ -5,6 +5,8 @@ const props = defineProps<{
   market: UiSpotMarket
 }>()
 
+const slippagePercentage = computed(() => '0.01')
+
 const {
   quantity,
   notional,
@@ -16,12 +18,38 @@ const {
   bestPrice,
   worstPrice,
   enoughLiquidity,
-  estSlippagePercentage
+  estSlippagePercentage,
+  slippageWarning
 } = useSpotDetails({
   isBuy: computed(() => true),
   market: computed(() => props.market),
-  slippagePercentage: computed(() => '0.01')
+  slippagePercentage
 })
+
+const tableData = computed(() => [
+  { label: 'Quantity', value: quantity },
+  { label: 'Notional', value: notional },
+  {
+    label: 'Slippage Percentage',
+    value: `${(Number(slippagePercentage.value) * 100).toFixed(2)} %`
+  },
+  {
+    label: 'Estimated Slippage Percentage',
+    value: `${estSlippagePercentage.value} %`
+  },
+  {
+    label: 'Slippage Warning',
+    value: slippageWarning
+  },
+  { label: 'Best Price', value: bestPrice },
+  { label: 'Average Price', value: averagePrice },
+  { label: 'Worst Price', value: worstPrice },
+  { label: 'Slippage Price', value: slippagePrice },
+  { label: 'Calculated Notional', value: calculatedNotional },
+  { label: 'Fee Amount', value: feeAmount },
+  { label: 'Total Notional', value: totalNotional },
+  { label: 'Enough Liquidity', value: enoughLiquidity }
+])
 </script>
 
 <template>
@@ -36,55 +64,9 @@ const {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Quantity</td>
-          <td>{{ quantity }}</td>
-        </tr>
-        <tr>
-          <td>Notional</td>
-          <td>{{ notional }}</td>
-        </tr>
-        <tr>
-          <td>Average Price</td>
-          <td>{{ averagePrice }}</td>
-        </tr>
-        <tr>
-          <td>Best Price</td>
-          <td>{{ bestPrice }}</td>
-        </tr>
-        <tr>
-          <td>Worst Price</td>
-          <td>{{ worstPrice }}</td>
-        </tr>
-        <tr>
-          <td>Fee Amount</td>
-          <td>{{ feeAmount }}</td>
-        </tr>
-        <tr>
-          <td>Total Notional</td>
-          <td>{{ totalNotional }}</td>
-        </tr>
-        <tr>
-          <td>Fee Amount</td>
-          <td>{{ feeAmount }}</td>
-        </tr>
-        <tr>
-          <td>Enough Liquidity</td>
-          <td>{{ enoughLiquidity }}</td>
-        </tr>
-
-        <tr>
-          <td>Slippage Price</td>
-          <td>{{ slippagePrice }}</td>
-        </tr>
-
-        <tr>
-          <td>Calculated Notional</td>
-          <td>{{ calculatedNotional }}</td>
-        </tr>
-        <tr>
-          <td>Estimated Slippage Percentage</td>
-          <td>{{ estSlippagePercentage }} %</td>
+        <tr v-for="item in tableData" :key="item.label">
+          <td>{{ item.label }}</td>
+          <td>{{ item.value }}</td>
         </tr>
       </tbody>
     </table>
