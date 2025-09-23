@@ -20,7 +20,8 @@ export enum WorkerMessageType {
   Stream = 'stream',
   Quantity = 'quantity',
   Notional = 'notional',
-  Aggregation = 'aggregation'
+  Aggregation = 'aggregation',
+  ClearValue = 'clearValue'
 }
 
 type sendFetchOrStreamType = {
@@ -35,7 +36,7 @@ type sendFetchOrStreamType = {
   }
 }
 
-type sendQuantityType = {
+export type sendQuantityType = {
   type: WorkerMessageType.Quantity
   data: {
     isBuy: boolean
@@ -46,7 +47,7 @@ type sendQuantityType = {
   }
 }
 
-type sendNotionalType = {
+export type sendNotionalType = {
   type: WorkerMessageType.Notional
   data: {
     isBuy: boolean
@@ -67,12 +68,17 @@ type sendAggregation = {
   }
 }
 
+type sendClearValueType = {
+  data: undefined
+  type: WorkerMessageType.ClearValue
+}
+
 export type OrderbookWorkerMessage =
   | sendAggregation
   | sendQuantityType
   | sendNotionalType
+  | sendClearValueType
   | sendFetchOrStreamType
-
 // Receive Message
 
 export enum WorkerMessageResponseType {

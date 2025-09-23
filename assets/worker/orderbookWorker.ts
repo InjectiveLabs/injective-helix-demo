@@ -6,6 +6,8 @@ import {
 import { WorkerMessageType, WorkerMessageResponseType } from '@/types/worker'
 import type { PriceLevel } from '@injectivelabs/sdk-ts'
 import type {
+  sendNotionalType,
+  sendQuantityType,
   OrderbookWorkerResult,
   OrderbookWorkerMessage,
   OrderbookFormattedRecord
@@ -193,6 +195,9 @@ const sells = new Map<string, string>()
 
 let preFetchBuyRecords: { sequence: number; records: PriceLevel[] }[] = []
 let preFetchSellRecords: { sequence: number; records: PriceLevel[] }[] = []
+
+let lastReceivedQuantityOrAmount: null | sendQuantityType | sendNotionalType =
+  null
 
 function aggregatePrice({
   isBuy,
@@ -436,13 +441,23 @@ self.addEventListener(
         sendReplaceOrderbook()
         break
 
+      case WorkerMessageType.ClearValue:
+        lastReceivedQuantityOrAmount = null
+        break
+
       case WorkerMessageType.Quantity:
-        console.log('Quantity', data)
         calculateQuantityInfo(data)
+        lastReceivedQuantityOrAmount = {
+          type: WorkerMessageType.Quantity,
+          data
+        }
         break
 
       case WorkerMessageType.Notional:
-        console.log('Notional', data)
+        lastReceivedQuantityOrAmount = {
+          type: WorkerMessageType.Notional,
+          data
+        }
         calculateNotionalInfo(data)
         break
 
@@ -474,6 +489,16 @@ self.addEventListener(
         })
 
         sendReplaceOrderbook()
+
+        if (lastReceivedQuantityOrAmount) {
+          if (
+            lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity
+          ) {
+            calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
+          } else {
+            calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
+          }
+        }
         break
 
       case WorkerMessageType.Fetch:
@@ -537,6 +562,16 @@ self.addEventListener(
           preFetchSellRecords = preFetchSellRecords.filter(
             (record) => record.sequence >= data.sequence
           )
+        }
+
+        if (lastReceivedQuantityOrAmount) {
+          if (
+            lastReceivedQuantityOrAmount.type === WorkerMessageType.Quantity
+          ) {
+            calculateQuantityInfo(lastReceivedQuantityOrAmount.data)
+          } else {
+            calculateNotionalInfo(lastReceivedQuantityOrAmount.data)
+          }
         }
 
         sendReplaceOrderbook()

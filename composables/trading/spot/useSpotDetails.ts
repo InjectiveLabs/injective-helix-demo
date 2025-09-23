@@ -174,6 +174,13 @@ export function useSpotDetails({
     }
   })
 
+  onUnmounted(() => {
+    worker.value?.postMessage({
+      type: WorkerMessageType.ClearValue,
+      data: undefined
+    })
+  })
+
   return {
     feeAmount,
     bestPrice,
