@@ -93,7 +93,7 @@ function selectStrategy(
 <template>
   <div class="h-full">
     <CommonEmptyList
-      v-if="gridStrategyStore.removedDerivativeStrategies.length === 0"
+      v-if="formattedStrategies.length === 0"
       :message="$t('tradingBots.noStrategies')"
     />
     <UTable
