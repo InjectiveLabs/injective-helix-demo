@@ -1,11 +1,24 @@
-export const getColorClassForPnlPercentage = (percentage: number) => {
-  if (percentage > 0) {
-    return 'text-green-500'
+import type { BigNumberInBase } from '@injectivelabs/utils'
+import type { ChangeColorClassOptions } from '@/types'
+
+export const getColorClassForChange = (
+  value: BigNumberInBase,
+  options: ChangeColorClassOptions = {}
+) => {
+  const { zeroClass, positiveClass, negativeClass } = {
+    zeroClass: '',
+    negativeClass: 'text-red-500',
+    positiveClass: 'text-green-500',
+    ...options
   }
 
-  if (percentage < 0) {
-    return 'text-red-500'
+  if (value.gt(0)) {
+    return positiveClass
   }
 
-  return 'text-coolGray-400'
+  if (value.lt(0)) {
+    return negativeClass
+  }
+
+  return zeroClass
 }

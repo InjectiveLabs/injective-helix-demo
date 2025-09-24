@@ -137,10 +137,7 @@ function shareTrade() {
       <div class="flex items-center space-x-1">
         <div
           class="flex items-center"
-          :class="{
-            'text-red-500': trade.pnl.lt(0),
-            'text-green-500': trade.pnl.gt(0)
-          }"
+          :class="getColorClassForChange(trade.pnl)"
         >
           <SharedAmount
             v-bind="{
