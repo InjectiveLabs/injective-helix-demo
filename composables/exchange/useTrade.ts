@@ -1,8 +1,8 @@
 import { format } from 'date-fns'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { TradeExecutionType } from '@injectivelabs/ts-types'
-import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import {
   DATE_TIME_DISPLAY,
   UI_DEFAULT_PRICE_DISPLAY_DECIMALS
@@ -22,9 +22,10 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(trade.value.executionPrice).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInTokenInBase({
+      value: trade.value.executionPrice,
+      decimalPlaces: market.value.quoteToken.decimals
+    })
   })
 
   const quantity = computed(() => {
@@ -56,9 +57,7 @@ export function useTrade(trade: Ref<SharedUiDerivativeTrade>) {
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInWei(trade.value.fee).toBase(
-      market.value.quoteToken.decimals
-    )
+    return sharedToBalanceInTokenInBase({ value: trade.value.fee })
   })
 
   const pnl = computed(() => {

@@ -150,7 +150,7 @@ function onOrderSideClicked() {
 
     <PartialsTradeSpotFormStandardAdvancedSettings
       v-if="isLimit"
-      class="my-4"
+      class="mt-4"
     />
 
     <PartialsTradeSpotFormStandardDetails
@@ -163,6 +163,7 @@ function onOrderSideClicked() {
         totalWithFee,
         feePercentage
       }"
+      class="my-4"
     />
 
     <PartialsTradeSpotFormStandardCreateOrder
