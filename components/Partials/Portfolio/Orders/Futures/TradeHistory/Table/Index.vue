@@ -213,11 +213,10 @@ function shareTrade(trade: SharedUiDerivativeTrade) {
             {{ row.market.quoteToken.symbol }}
           </span>
         </div>
-        <UIcon
+        <PartialsPortfolioOrdersFuturesTradeHistoryTableShare
           v-if="!row.pnl.isZero()"
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="shareTrade(row.trade)"
+          :trade="row.trade"
+          @trade:share="shareTrade"
         />
       </div>
     </template>
