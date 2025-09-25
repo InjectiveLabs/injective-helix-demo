@@ -8,7 +8,11 @@ definePageMeta({
     () => {
       const sharedWalletStore = useSharedWalletStore()
 
-      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+      if (
+        ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+          sharedWalletStore.wallet
+        )
+      ) {
         return navigateTo({ name: MainPage.Index })
       }
     }

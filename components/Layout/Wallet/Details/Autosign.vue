@@ -74,7 +74,11 @@ function toggleAutoSign() {
 
 <template>
   <div
-    v-if="![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)"
+    v-if="
+      !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+        sharedWalletStore.wallet
+      )
+    "
     class="mx-3 w-6 h-6 items-center justify-center flex lg:hidden xl:flex"
   >
     <AppSpinner v-if="status.isLoading()" is-sm is-white />

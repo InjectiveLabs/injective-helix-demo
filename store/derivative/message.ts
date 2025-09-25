@@ -17,12 +17,12 @@ import {
   createCancelTpSlOrderMsgs,
   prepareNeptuneWithdrawMessage
 } from '@/app/utils/msgs'
-import type { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 import type {
   Msgs,
   PositionV2,
   DerivativeLimitOrder
 } from '@injectivelabs/sdk-ts'
+import type { UIDerivativeOrder, UiDerivativeMarket } from '@/types'
 
 const fetchBalances = (
   {
@@ -375,7 +375,9 @@ export const submitMarketOrder = async ({
 
   if (shouldCreateConditionalOrders) {
     // To exist a position with conditional orders: long position = sell, short position = buy
-    const isExitOrderBuy = ![OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
+    const isExitOrderBuy = !(
+      [OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]
+    ).includes(orderSide)
 
     const tpMessage = createTpSlMessage({
       market,

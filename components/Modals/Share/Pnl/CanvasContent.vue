@@ -33,7 +33,9 @@ const qrLink = computed(() => {
 })
 
 const isActiveOrClosedLong = computed(() =>
-  [TradeDirection.Long, TradeDirection.Sell].includes(props.content.direction)
+  ([TradeDirection.Long, TradeDirection.Sell] as TradeDirection[]).includes(
+    props.content.direction
+  )
 )
 
 onMounted(() => {

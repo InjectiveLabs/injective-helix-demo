@@ -40,7 +40,9 @@ function onTransfer() {
     >
       <template
         v-if="
-          ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+          !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+            sharedWalletStore.wallet
+          )
         "
       >
         <PartialsCommonBridgeRedirection

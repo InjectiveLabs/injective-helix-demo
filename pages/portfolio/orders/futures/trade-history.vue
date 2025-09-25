@@ -6,7 +6,11 @@ import {
 } from '@/app/utils/trade'
 import { Modal, SpotOrderHistoryFilterField } from '@/types'
 import type { SharedUiDerivativeTrade } from '@shared/types'
-import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
+import type {
+  OrderTypeFilter,
+  TradeExecutionType,
+  SpotOrderHistoryFilterForm
+} from '@/types'
 
 const route = useRoute()
 const router = useRouter()
@@ -34,7 +38,7 @@ function fetchDerivativeTradeHistory() {
 
   const executionTypes = derivativeTypeToTradeType(
     formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
-  )
+  ) as TradeExecutionType[]
   const orderTypes = derivativeTypeToOrderType(
     formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
   )

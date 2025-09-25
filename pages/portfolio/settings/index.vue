@@ -8,9 +8,9 @@ const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
 const preferencesList = computed(() => {
-  const isMagicOrTurnkeyWallet = [Wallet.Magic, Wallet.Turnkey].includes(
-    sharedWalletStore.wallet
-  )
+  const isMagicOrTurnkeyWallet = (
+    [Wallet.Magic, Wallet.Turnkey] as Wallet[]
+  ).includes(sharedWalletStore.wallet)
 
   // note: temporarily comment thousands separator because https://injective-labs.atlassian.net/browse/IL-1650
   const list: Record<string, any> = [
