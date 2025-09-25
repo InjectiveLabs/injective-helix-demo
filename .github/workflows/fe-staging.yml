@@ -163,6 +163,51 @@ jobs:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-user-token: ${{ secrets.SLACK_USER_TOKEN }}
 
+      # Trigger helix dapp-tests workflow with staging URL and timestamp
+      - name: Trigger helix dapp-tests workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
+          
+          # Prepare the payload
+          PAYLOAD=$(jq -n \
+            --arg staging_url "${{ steps.netlify_deploy.outputs.staging_url }}" \
+            --arg timestamp "${{ steps.deployment_notification.outputs.message_ts }}" \
+            '{
+              "event_type": "run-helix-tests-staging",
+              "client_payload": {
+                "staging_url": $staging_url,
+                "timestamp": $timestamp
+              }
+            }')
+          
+          echo "Sending repository_dispatch to InjectiveLabs/dapp-tests"
+          echo "Payload: $PAYLOAD"
+          
+          # Make the repository_dispatch API call
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            "https://api.github.com/repos/InjectiveLabs/dapp-tests/dispatches")
+          
+          # Extract HTTP status code and response body
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          RESPONSE_BODY=$(echo "$RESPONSE" | head -n -1)
+          
+          echo "Response HTTP Code: $HTTP_CODE"
+          echo "Response Body: $RESPONSE_BODY"
+          
+          if [ "$HTTP_CODE" = "204" ]; then
+            echo "Successfully triggered dapp-tests workflow"
+          else
+            echo "Failed to trigger dapp-tests workflow"
+            echo "Error details: $RESPONSE_BODY"
+            # Don't fail the entire workflow, just log the error
+            exit 0
+          fi
+
       # Optional: Use the outputs from the action
       - name: Deployment Summary
         if: always()
