@@ -5,7 +5,6 @@ import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
-  UiSpotMarket,
   SpotTradeForm,
   SpotMarketCyTags,
   SpotTradeFormField

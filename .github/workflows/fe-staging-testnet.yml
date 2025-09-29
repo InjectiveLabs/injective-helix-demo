@@ -3,15 +3,6 @@ name: Frontend Staging Deployment
 on:
   workflow_dispatch:
     inputs:
-      network:
-        description: 'Select deployment network'
-        required: false
-        default: 'Mainnet'
-        type: choice
-        options:
-          - Mainnet
-          - Testnet
-          - Devnet
       branch:
         description: 'Branch to deploy from (cannot be: dev, testnet, staging, master)'
         required: true
@@ -23,10 +14,10 @@ on:
         default: 'Manual deployment via workflow dispatch'
 
 env:
-  VITE_ENV: mainnet
-  VITE_NETWORK: mainnetSentry
-  VITE_CHAIN_ID: injective-1
-  VITE_ETHEREUM_CHAIN_ID: 1
+  VITE_ENV: testnet
+  VITE_NETWORK: testnetSentry
+  VITE_CHAIN_ID: injective-888
+  VITE_ETHEREUM_CHAIN_ID: 11155111
 
   VITE_PRODUCT: helix
   VITE_SHOW_REDEEM_VOUCHER: true
@@ -114,27 +105,6 @@ jobs:
           sudo apt update
           sudo apt install gh
 
-      - name: Set environment variables based on network
-        id: set_env
-        run: |
-          NETWORK="${{ github.event.inputs.network }}"
-
-          if [ "$NETWORK" = "Testnet" ]; then
-            echo "VITE_ENV=testnet" >> $GITHUB_ENV
-            echo "VITE_NETWORK=testnetSentry" >> $GITHUB_ENV
-            echo "VITE_CHAIN_ID=injective-888" >> $GITHUB_ENV
-            echo "VITE_ETHEREUM_CHAIN_ID=11155111" >> $GITHUB_ENV
-            echo "network_display=Testnet" >> $GITHUB_ENV
-          elif [ "$NETWORK" = "Devnet" ]; then
-            echo "VITE_ENV=devnet" >> $GITHUB_ENV
-            echo "VITE_NETWORK=devnet" >> $GITHUB_ENV
-            echo "VITE_CHAIN_ID=injective-777" >> $GITHUB_ENV
-            echo "VITE_ETHEREUM_CHAIN_ID=11155111" >> $GITHUB_ENV
-            echo "network_display=Devnet" >> $GITHUB_ENV
-          else
-            echo "network_display=Mainnet" >> $GITHUB_ENV
-          fi
-
       - name: Build app
         run: |
           pnpm install
@@ -164,28 +134,29 @@ jobs:
         uses: InjectiveLabs/github-fe/actions/fe-staging-notification@master
         with:
           repo: 'Helix'
-          network: ${{ env.network_display }}
+          network: 'Testnet'
           description: ${{ github.event.inputs.description || 'Staging deployment' }}
           staging_url: ${{ steps.netlify_deploy.outputs.staging_url }}
+          slack-channel: 'test-automation-results'
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-user-token: ${{ secrets.SLACK_USER_TOKEN }}
 
-      # Trigger helix dapp-tests workflow with staging URL and timestamp
-      - name: Trigger helix dapp-tests workflow
-        if: steps.deployment_notification.outputs.message_ts != ''
-        run: |
-          echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
+      # Trigger helix dapp-tests workflow with staging URL and timestamp [Full mode]
+      # - name: Trigger helix dapp-tests workflow
+      #   if: steps.deployment_notification.outputs.message_ts != ''
+      #   run: |
+      #     echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
 
-          gh workflow run "Helix Dapp Tests" \
-            --repo InjectiveLabs/dapp-tests \
-            --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
-            --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
+      #     gh workflow run "Helix Dapp Tests" \
+      #       --repo InjectiveLabs/dapp-tests \
+      #       --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
+      #       --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
 
-          echo "✅ Successfully triggered dapp-tests workflow"
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
+      #     echo "✅ Successfully triggered dapp-tests workflow"
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
       # Optional: Use the outputs from the action
+
       - name: Deployment Summary
         if: always()
         run: |
@@ -206,18 +177,3 @@ jobs:
             echo "Slack message timestamp: ${{ steps.deployment_notification.outputs.message_ts }}"
             echo "Created new Slack message"
           fi
-
-      # Trigger fe-staging-testnet workflow
-      - name: Trigger fe-staging-testnet workflow
-        if: steps.deployment_notification.outputs.message_ts != ''
-        run: |
-          echo "Triggering fe-staging-testnet workflow"
-
-          gh workflow run "Frontend Staging Deployment" \
-            --repo InjectiveLabs/injective-helix \
-            --field branch="${{ github.event.inputs.branch }}" \
-            --field description="Triggered from main staging deployment - ${{ github.event.inputs.description }}"
-
-          echo "✅ Successfully triggered fe-staging-testnet workflow"
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
