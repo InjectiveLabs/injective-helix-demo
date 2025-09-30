@@ -39,10 +39,9 @@ function fetchDerivativeTradeHistory() {
     formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
   )
 
-  referralStore.fetchUserReferralDetails()
-
-  derivativeStore
-    .fetchSubaccountTrades({
+  Promise.all([
+    referralStore.fetchUserReferralDetails(),
+    derivativeStore.fetchSubaccountTrades({
       pagination: {
         skip: skip.value,
         limit: limit.value
@@ -54,6 +53,7 @@ function fetchDerivativeTradeHistory() {
         direction: formValues[SpotOrderHistoryFilterField.Side] as any
       }
     })
+  ])
     .catch($onError)
     .finally(() => {
       status.setIdle()
