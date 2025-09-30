@@ -228,10 +228,9 @@ function onSetPosition(value: TransformedPosition) {
           </p>
         </div>
 
-        <UIcon
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="sharePosition"
+        <PartialsPositionsTableShare
+          :position="position.position"
+          @position:share="sharePosition"
         />
       </div>
     </template>

@@ -152,11 +152,10 @@ function shareTrade() {
           </span>
         </div>
 
-        <UIcon
+        <PartialsPortfolioOrdersFuturesTradeHistoryTableShare
           v-if="!trade.pnl.isZero()"
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="shareTrade"
+          :trade="trade.trade"
+          @trade:share="shareTrade"
         />
       </div>
     </template>

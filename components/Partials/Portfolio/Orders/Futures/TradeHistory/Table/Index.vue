@@ -210,6 +210,7 @@ function shareTrade(trade: SharedUiDerivativeTrade) {
             {{ row.market.quoteToken.symbol }}
           </span>
         </div>
+
         <PartialsPortfolioOrdersFuturesTradeHistoryTableShare
           v-if="!row.pnl.isZero()"
           :trade="row.trade"
