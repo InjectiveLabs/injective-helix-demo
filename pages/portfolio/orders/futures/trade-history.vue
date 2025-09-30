@@ -11,6 +11,7 @@ import type { OrderTypeFilter, SpotOrderHistoryFilterForm } from '@/types'
 const route = useRoute()
 const router = useRouter()
 const modalStore = useSharedModalStore()
+const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
 const { $onError } = useNuxtApp()
 
@@ -37,6 +38,8 @@ function fetchDerivativeTradeHistory() {
   const orderTypes = derivativeTypeToOrderType(
     formValues[SpotOrderHistoryFilterField.Type] as OrderTypeFilter
   )
+
+  referralStore.fetchUserReferralDetails()
 
   derivativeStore
     .fetchSubaccountTrades({
