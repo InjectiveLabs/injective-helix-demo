@@ -73,10 +73,11 @@ export const getIndexerGrpcReferralApi = async () =>
 export const getIndexerGrpcArchiverApi = async () =>
   lazyImportSdkTs<IndexerGrpcArchiverApi>({
     className: 'IndexerGrpcArchiverApi',
+    // TODO: change to mainnet when ready
     endpoint: IS_MAINNET
-      ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
+      ? 'https://k8s.mainnet.staging.archiver.grpc-web.injective.network'
       : IS_TESTNET
-        ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
+        ? 'https://k8s.testnet.staging.archiver.grpc-web.injective.network'
         : ENDPOINTS.indexer
   })
 

@@ -15,7 +15,7 @@
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
     "start": "nuxi start",
-    "postinstall": "pnpm update '@injectivelabs/*' --latest && pnpm fetch:data && pnpm github:version",
+    "postinstall": "pnpm fetch:data && pnpm github:version",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "analyze": "NODE_OPTIONS=--max-old-space-size=30720 ANALYZE_BUNDLE=true nuxi build --analyze",
@@ -36,7 +36,7 @@
     "@injectivelabs/exceptions": "1.16.12",
     "@injectivelabs/networks": "1.16.12",
     "@injectivelabs/nuxt-bugsnag": "0.0.12",
-    "@injectivelabs/sdk-ts": "1.16.12",
+    "@injectivelabs/sdk-ts": "link:../../../../.pnpm-global/5/node_modules/@injectivelabs/sdk-ts",
     "@injectivelabs/ts-types": "1.16.12",
     "@injectivelabs/utils": "1.16.12",
     "@injectivelabs/wallet-base": "1.16.12",
@@ -129,7 +129,8 @@
       "rpc-websockets": "9.0.4",
       "@ethereumjs/tx": "^4.1.1",
       "@solana/web3.js": "1.98.0",
-      "@cosmjs/crypto>libsodium-wrappers-sumo": "npm:@bangjelkoski/noop"
+      "@cosmjs/crypto>libsodium-wrappers-sumo": "npm:@bangjelkoski/noop",
+      "@injectivelabs/sdk-ts": "link:../../../../.pnpm-global/5/node_modules/@injectivelabs/sdk-ts"
     }
   }
 }
