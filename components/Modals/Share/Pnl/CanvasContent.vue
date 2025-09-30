@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { metaTags } from '@/nuxt-config/meta'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import type { SharePnlContent } from '@/types'
@@ -8,7 +9,6 @@ const referralStore = useReferralStore()
 
 const props = withDefaults(
   defineProps<{
-    isTrade?: boolean
     isLoading?: boolean
     content: SharePnlContent
     selectedCharacter: string
@@ -134,15 +134,21 @@ function updateScale() {
           </div>
 
           <div class="flex flex-col gap-1">
-            <span v-if="isTrade" class="text-coolGray-450 font-medium">
+            <span
+              v-if="content.exitPrice"
+              class="text-coolGray-450 font-medium"
+            >
               {{ $t('trade.sharePnlModal.exitPrice') }}
             </span>
-            <span v-if="!isTrade" class="text-coolGray-450 font-medium">
+            <span
+              v-else-if="content.markPrice"
+              class="text-coolGray-450 font-medium"
+            >
               {{ $t('trade.sharePnlModal.markPrice') }}
             </span>
             <SharedAmount
               v-bind="{
-                amount: content.markPrice,
+                amount: content.exitPrice || content.markPrice || ZERO_IN_BASE,
                 noTrailingZeros: content.price.lt(1),
                 decimals: content.price.gte(1)
                   ? UI_DEFAULT_MIN_DISPLAY_DECIMALS

@@ -131,13 +131,12 @@ async function downloadImage() {
     <section v-if="market" ref="canvas">
       <ModalsSharePnlCanvasContent
         v-bind="{
-          isTrade: true,
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter,
           content: {
             pnl,
             percentagePnl,
-            markPrice: price,
+            exitPrice: price,
             price: entryPrice,
             ticker: market.ticker,
             direction: trade.tradeDirection,

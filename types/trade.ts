@@ -119,7 +119,8 @@ export type SharePnlContent = {
   pnl: BigNumberInBase
   price: BigNumberInBase
   direction: TradeDirection
-  markPrice: BigNumberInBase
+  markPrice?: BigNumberInBase
+  exitPrice?: BigNumberInBase
   percentagePnl: BigNumberInBase
   market: SharedUiDerivativeMarket
   effectiveLeverage?: BigNumberInBase
