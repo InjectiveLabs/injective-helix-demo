@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
-import { Modal } from '@/types'
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
+import { Modal } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
@@ -24,11 +25,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'on:close': []
 }>()
-
-const currentTokenPriceToBigNumber = computed(
-  () => new BigNumberInBase(sharedTokenStore.tokenUsdPrice(props.token))
-)
-const roiData = archiverStore.spotROIByBaseDenom(props.token.denom)
 
 const characterList = [
   {
@@ -66,6 +62,17 @@ const isDownloading = ref(false)
 const selectedCharacter = ref('char1')
 
 const ticker = computed(() => `${props.token.symbol} SPOT`)
+
+const currentTokenPriceToBigNumber = computed(
+  () => new BigNumberInBase(sharedTokenStore.tokenUsdPrice(props.token))
+)
+const roiData = computed(() =>
+  archiverStore.spotROIByBaseDenom(props.token.denom)
+)
+
+const priceDecimals = computed(
+  () => props.token.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+)
 
 const downloadIsUnsupported = computed(
   () =>
@@ -136,16 +143,62 @@ async function downloadImage() {
       <ModalsSharePnlCanvasContent
         v-bind="{
           isLoading: isDownloading,
-          selectedCharacter: selectedCharacter,
-          content: {
-            ticker,
-            baseToken: token,
-            markPrice: currentTokenPriceToBigNumber,
-            price: roiData?.averageEntryPrice || ZERO_IN_BASE,
-            roiPercentage: roiData?.roiPercentage || ZERO_IN_BASE
-          }
+          selectedCharacter: selectedCharacter
         }"
-      />
+      >
+        <template #icon>
+          <CommonTokenIcon
+            class="size-5 min-w-5"
+            v-bind="{ token: props.token }"
+          />
+        </template>
+
+        <template #ticker>{{ ticker }}</template>
+
+        <template #performance>
+          <span
+            :class="{
+              'text-red-500': roiData?.roiPercentage.lt(0),
+              'text-green-500': roiData?.roiPercentage.gte(0)
+            }"
+          >
+            {{
+              (roiData?.roiPercentage.gte(0) ? '+' : '') +
+              roiData?.roiPercentage.toFormat(2)
+            }}%
+          </span>
+        </template>
+
+        <template #performanceLabel>{{ $t('common.roi') }}</template>
+
+        <template #entryPrice>
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              noTrailingZeros: roiData?.averageEntryPrice.lt(1),
+              amount: roiData?.averageEntryPrice || ZERO_IN_BASE,
+              decimals: roiData?.averageEntryPrice.gte(1)
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : priceDecimals
+            }"
+          />
+        </template>
+
+        <template #markPrice>
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              shouldAbbreviate: false,
+              amount: currentTokenPriceToBigNumber,
+              noTrailingZeros: currentTokenPriceToBigNumber.lt(1),
+              decimals: currentTokenPriceToBigNumber.gte(1)
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : priceDecimals
+            }"
+          />
+        </template>
+      </ModalsSharePnlCanvasContent>
     </section>
 
     <div class="flex gap-5 mt-6 mb-10 flex-wrap">

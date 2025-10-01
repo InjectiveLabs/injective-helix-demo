@@ -2,7 +2,6 @@ import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import type {
   ExitType,
-  TokenStatic,
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
@@ -113,19 +112,6 @@ export type ChangeColorClassOptions = {
 
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
   volumeInUsd: BigNumberInBase
-}
-
-export type SharePnlContent = {
-  ticker: string
-  pnl?: BigNumberInBase
-  baseToken: TokenStatic
-  price: BigNumberInBase
-  direction?: TradeDirection
-  markPrice?: BigNumberInBase
-  exitPrice?: BigNumberInBase
-  percentagePnl?: BigNumberInBase
-  roiPercentage?: BigNumberInBase
-  effectiveLeverage?: BigNumberInBase
 }
 
 export type ClosePositionLimitForm = {

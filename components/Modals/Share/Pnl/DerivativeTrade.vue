@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
+import { TradeDirection } from '@injectivelabs/ts-types'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
+import {
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+  UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { Modal } from '@/types'
-import type {
-  SharedUiDerivativeTrade,
-  SharedUiDerivativeMarket
-} from '@shared/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
@@ -62,6 +64,10 @@ const characterList = [
 const canvas = ref()
 const isDownloading = ref(false)
 const selectedCharacter = ref('char1')
+
+const priceDecimals = computed(
+  () => market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
+)
 
 const downloadIsUnsupported = computed(
   () =>
@@ -133,17 +139,59 @@ async function downloadImage() {
         v-bind="{
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter,
-          content: {
-            pnl,
-            percentagePnl,
-            exitPrice: price,
-            price: entryPrice,
-            ticker: market.ticker,
-            baseToken: market.baseToken,
-            direction: trade.tradeDirection
-          }
+          isLong: trade.tradeDirection === TradeDirection.Sell
         }"
-      />
+      >
+        <template #icon>
+          <CommonTokenIcon
+            class="size-5 min-w-5"
+            v-bind="{ token: market.baseToken }"
+          />
+        </template>
+
+        <template #ticker>{{ market.ticker }}</template>
+
+        <template #performance>
+          <span
+            :class="{
+              'text-red-500': pnl.lt(0),
+              'text-green-500': pnl.gte(0)
+            }"
+          >
+            {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
+          </span>
+        </template>
+
+        <template #performanceLabel>{{ $t('common.pnl') }}</template>
+
+        <template #entryPrice>
+          <SharedAmount
+            v-bind="{
+              amount: entryPrice,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              noTrailingZeros: entryPrice.lt(1),
+              decimals: entryPrice.gte(1)
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : priceDecimals
+            }"
+          />
+        </template>
+
+        <template #exitPrice>
+          <SharedAmount
+            v-bind="{
+              amount: price,
+              useSubscript: true,
+              shouldAbbreviate: false,
+              noTrailingZeros: price.lt(1),
+              decimals: price.gte(1)
+                ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
+                : priceDecimals
+            }"
+          />
+        </template>
+      </ModalsSharePnlCanvasContent>
     </section>
 
     <div class="flex gap-5 mt-6 mb-10 flex-wrap">
