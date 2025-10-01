@@ -21,7 +21,8 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
-const { market } = useDerivativePosition(computed(() => props.position))
+const { pnl, price, market, markPrice, percentagePnl, effectiveLeverage } =
+  useDerivativePosition(computed(() => props.position))
 
 const characterList = [
   {
@@ -124,9 +125,18 @@ async function downloadImage() {
     </h3>
 
     <section v-if="market" ref="canvas">
-      <ModalsSharePositionPnlCanvasContent
+      <ModalsSharePnlCanvasContent
         v-bind="{
-          position,
+          content: {
+            pnl,
+            price,
+            market,
+            markPrice,
+            percentagePnl,
+            effectiveLeverage,
+            ticker: position.ticker,
+            direction: position.direction
+          },
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter
         }"
@@ -134,7 +144,7 @@ async function downloadImage() {
     </section>
 
     <div class="flex gap-5 mt-6 mb-10 flex-wrap">
-      <ModalsSharePositionPnlCharacterOption
+      <ModalsSharePnlCharacterOption
         v-for="character in characterList"
         :key="character.key"
         v-bind="{

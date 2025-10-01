@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
   PerpetualMarketCyTags,
@@ -14,6 +15,10 @@ const props = withDefaults(
   defineProps<{ trades: SharedUiDerivativeTrade[] }>(),
   {}
 )
+
+const emit = defineEmits<{
+  'trade:share': [trade: SharedUiDerivativeTrade]
+}>()
 
 const { rows } = useFuturesTradeHistoryTransformer(computed(() => props.trades))
 
@@ -82,6 +87,10 @@ const columns = computed(() => [
     class: 'text-right'
   }
 ])
+
+function shareTrade(trade: SharedUiDerivativeTrade) {
+  emit('trade:share', trade)
+}
 </script>
 
 <template>
@@ -184,24 +193,28 @@ const columns = computed(() => [
     </template>
 
     <template #pnl-data="{ row }">
-      <div
-        class="flex-1 flex items-center justify-end p-2"
-        :class="{
-          'text-red-500': row.pnl.lt(0),
-          'text-green-500': row.pnl.gt(0)
-        }"
-      >
-        <SharedAmount
-          v-bind="{
-            useSubscript: true,
-            showZeroAsEmDash: true,
-            shouldAbbreviate: false,
-            amount: row.pnl.toFixed()
-          }"
+      <div class="flex items-center p-2 justify-end space-x-1">
+        <div
+          class="flex-1 flex items-center justify-end p-2"
+          :class="getColorClassForChange(row.pnl)"
+        >
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false,
+              amount: row.pnl.toFixed()
+            }"
+          />
+          <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
+            {{ row.market.quoteToken.symbol }}
+          </span>
+        </div>
+        <PartialsPortfolioOrdersFuturesTradeHistoryTableShare
+          v-if="!row.pnl.isZero()"
+          :trade="row.trade"
+          @trade:share="shareTrade"
         />
-        <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
-          {{ row.market.quoteToken.symbol }}
-        </span>
       </div>
     </template>
 
@@ -229,6 +242,7 @@ const columns = computed(() => [
       v-for="trade in rows"
       :key="`${trade.trade.orderHash}-${trade.trade.tradeId}`"
       v-bind="{ trade, columns }"
+      @trade:share="shareTrade"
     />
   </template>
 </template>

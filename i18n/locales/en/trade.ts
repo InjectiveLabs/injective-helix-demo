@@ -273,6 +273,7 @@ export default {
 
     sharePnlModal: {
       markPrice: 'Mark price',
+      exitPrice: 'Exit price',
       entryPrice: 'Entry price',
       mobileDownloadNote: 'Download is available on desktop'
     },
