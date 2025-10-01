@@ -363,10 +363,9 @@ function onClosePartialPosition() {
           </p>
         </div>
 
-        <UIcon
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="sharePosition(row.position)"
+        <PartialsPositionsTableShare
+          :position="row.position"
+          @position:share="sharePosition"
         />
       </div>
     </template>

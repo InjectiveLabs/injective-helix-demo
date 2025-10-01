@@ -576,6 +576,7 @@ export enum Modal {
   GeoRestricted = 'geo-restricted',
   ShareReferral = 'share-referral',
   ConnectMobile = 'connect-mobile',
+  ShareTradePnl = 'share-trade-pnl',
   SgtBalancedFees = 'sgtBalancedFees',
   FuturesSlippage = 'futures-slippage',
   ConfirmReferral = 'confirm-referral',

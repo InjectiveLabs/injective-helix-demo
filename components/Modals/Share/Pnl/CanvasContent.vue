@@ -2,21 +2,19 @@
 import { metaTags } from '@/nuxt-config/meta'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { SharePnlContent } from '@/types'
 
 const referralStore = useReferralStore()
 
 const props = withDefaults(
   defineProps<{
+    isTrade?: boolean
     isLoading?: boolean
-    position: PositionV2
+    content: SharePnlContent
     selectedCharacter: string
   }>(),
   {}
 )
-
-const { pnl, market, percentagePnl, price, markPrice, effectiveLeverage } =
-  useDerivativePosition(computed(() => props.position))
 
 const cardWidth = 512
 const cardHeight = 365
@@ -24,7 +22,7 @@ const cardHeight = 365
 const scale = ref(1)
 
 const marketPriceDecimals = computed(
-  () => market.value?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  () => props.content.market?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
 const qrLink = computed(() => {
@@ -33,6 +31,10 @@ const qrLink = computed(() => {
 
   return referralLink || metaTags.url
 })
+
+const isActiveOrClosedLong = computed(() =>
+  [TradeDirection.Long, TradeDirection.Sell].includes(props.content.direction)
+)
 
 onMounted(() => {
   updateScale()
@@ -75,37 +77,42 @@ function updateScale() {
         <div class="flex items-center gap-2 mt-3 mb-4">
           <CommonTokenIcon
             class="w-5 h-5 min-w-5"
-            v-bind="{ token: market?.baseToken }"
+            v-bind="{ token: content.market?.baseToken }"
           />
 
           <span class="text-sm">
-            {{ position.ticker }}
+            {{ content.ticker }}
           </span>
 
           <div
             class="py-0.5 px-2 flex items-center gap-1 rounded text-xs font-semibold tracking-wide"
             :class="[
-              position.direction === TradeDirection.Long
+              isActiveOrClosedLong
                 ? 'text-green-500 bg-green-500/30'
                 : 'text-red-500 bg-red-500/30'
             ]"
           >
-            <span v-if="position.direction === TradeDirection.Long">
+            <span v-if="isActiveOrClosedLong">
               {{ $t('trade.long') }}
             </span>
             <span v-else>{{ $t('trade.short') }}</span>
-            <span>{{ effectiveLeverage.toFormat(2) }}&times;</span>
+            <span v-if="content.effectiveLeverage"
+              >{{ content.effectiveLeverage.toFormat(2) }}&times;</span
+            >
           </div>
         </div>
 
         <span
           class="font-bold text-2xl md:text-[32px] block leading-tight"
           :class="{
-            'text-red-500': pnl.lt(0),
-            'text-green-500': pnl.gte(0)
+            'text-red-500': content.pnl.lt(0),
+            'text-green-500': content.pnl.gte(0)
           }"
         >
-          {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
+          {{
+            (content.percentagePnl.gte(0) ? '+' : '') +
+            content.percentagePnl.toFormat(2)
+          }}%
         </span>
 
         <span>{{ $t('common.pnl') }}</span>
@@ -117,9 +124,9 @@ function updateScale() {
             </span>
             <SharedAmount
               v-bind="{
-                amount: price,
-                noTrailingZeros: price.lt(1),
-                decimals: price.gte(1)
+                amount: content.price,
+                noTrailingZeros: content.price.lt(1),
+                decimals: content.price.gte(1)
                   ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
                   : marketPriceDecimals
               }"
@@ -127,14 +134,17 @@ function updateScale() {
           </div>
 
           <div class="flex flex-col gap-1">
-            <span class="text-coolGray-450 font-medium">
+            <span v-if="isTrade" class="text-coolGray-450 font-medium">
+              {{ $t('trade.sharePnlModal.exitPrice') }}
+            </span>
+            <span v-if="!isTrade" class="text-coolGray-450 font-medium">
               {{ $t('trade.sharePnlModal.markPrice') }}
             </span>
             <SharedAmount
               v-bind="{
-                amount: markPrice,
-                noTrailingZeros: price.lt(1),
-                decimals: price.gte(1)
+                amount: content.markPrice,
+                noTrailingZeros: content.price.lt(1),
+                decimals: content.price.gte(1)
                   ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
                   : marketPriceDecimals
               }"

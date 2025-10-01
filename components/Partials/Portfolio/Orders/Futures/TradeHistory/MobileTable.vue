@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/sdk-ts'
 import {
   PerpetualMarketCyTags,
   PortfolioFuturesTradeHistoryTableColumn
 } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 import type {
   UTableColumn,
   TransformedPortfolioFuturesTradeHistory
@@ -18,6 +20,10 @@ const props = withDefaults(
   {}
 )
 
+const emit = defineEmits<{
+  'trade:share': [trade: SharedUiDerivativeTrade]
+}>()
+
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
     if (column.key === PortfolioFuturesTradeHistoryTableColumn.Market) {
@@ -29,6 +35,10 @@ const filteredColumns = computed(() =>
     return list
   }, [] as UTableColumn[])
 )
+
+function shareTrade() {
+  emit('trade:share', props.trade.trade)
+}
 </script>
 
 <template>
@@ -124,24 +134,30 @@ const filteredColumns = computed(() =>
     </template>
 
     <template #pnl-data>
-      <div
-        class="flex items-center"
-        :class="{
-          'text-red-500': trade.pnl.lt(0),
-          'text-green-500': trade.pnl.gt(0)
-        }"
-      >
-        <SharedAmount
-          v-bind="{
-            useSubscript: true,
-            showZeroAsEmDash: true,
-            shouldAbbreviate: false,
-            amount: trade.pnl.toFixed()
-          }"
+      <div class="flex items-center space-x-1">
+        <div
+          class="flex items-center"
+          :class="getColorClassForChange(trade.pnl)"
+        >
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false,
+              amount: trade.pnl.toFixed()
+            }"
+          />
+          <span v-if="!trade.pnl.isZero()" class="ml-1 text-coolGray-500">
+            {{ trade.market.quoteToken.symbol }}
+          </span>
+        </div>
+
+        <UIcon
+          v-if="!trade.pnl.isZero()"
+          :name="NuxtUiIcons.Share"
+          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
+          @click="shareTrade"
         />
-        <span v-if="!trade.pnl.isZero()" class="ml-1 text-coolGray-500">
-          {{ trade.market.quoteToken.symbol }}
-        </span>
       </div>
     </template>
 

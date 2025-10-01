@@ -104,8 +104,25 @@ export type MaxAmountOnOrderbook = {
   totalQuantity: BigNumberInBase
 }
 
+export type ChangeColorClassOptions = {
+  zeroClass?: string
+  positiveClass?: string
+  negativeClass?: string
+}
+
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
   volumeInUsd: BigNumberInBase
+}
+
+export type SharePnlContent = {
+  ticker: string
+  pnl: BigNumberInBase
+  price: BigNumberInBase
+  direction: TradeDirection
+  markPrice: BigNumberInBase
+  percentagePnl: BigNumberInBase
+  market: SharedUiDerivativeMarket
+  effectiveLeverage?: BigNumberInBase
 }
 
 export type ClosePositionLimitForm = {
