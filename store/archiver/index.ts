@@ -17,39 +17,65 @@ const initialStateFactory = (): ArchiverStoreState => ({
 export const useArchiverStore = defineStore('archiver', {
   state: (): ArchiverStoreState => initialStateFactory(),
   getters: {
-    spotAverageEntries: (state) => state.spotAverageEntries,
-    spotROIByMarketId: (state) => (marketId: string) => {
-      const spotStore = useSpotStore()
+    spotROIByBaseDenom: (state) => (baseDenom: string) => {
+      const sharedSpotStore = useSharedSpotStore()
+      const sharedTokenStore = useSharedTokenStore()
 
-      const market = spotStore.marketByIdOrSlug(marketId)
-      const averageEntry = state.spotAverageEntries[marketId]
+      const token = sharedTokenStore.tokenByDenomOrSymbol(baseDenom)
 
-      if (!market || !averageEntry) {
+      if (!token) {
         return
       }
 
-      const { lastTradedPriceInUsd: markPriceInUsd } = useSpotLastPrice(
-        computed(() => market)
+      const currentPrice = sharedTokenStore.tokenUsdPrice(token)
+
+      if (!currentPrice) {
+        return
+      }
+
+      const markets = sharedSpotStore.marketsWithToken.filter(
+        (market) => market.baseDenom === baseDenom
       )
 
-      if (!markPriceInUsd.value || !averageEntry.averageEntryPrice) {
+      let totalQuantity = new BigNumberInBase(0)
+      let totalCostBasis = new BigNumberInBase(0)
+
+      for (const market of markets) {
+        const averageEntry = state.spotAverageEntries[market.marketId]
+
+        if (!averageEntry) {
+          continue
+        }
+
+        const quantity = new BigNumberInBase(averageEntry.quantity || 0)
+        const usdValue = new BigNumberInBase(averageEntry.usdValue || 0)
+
+        if (quantity.isZero() || usdValue.isZero()) {
+          continue
+        }
+
+        totalQuantity = totalQuantity.plus(quantity)
+        totalCostBasis = totalCostBasis.plus(usdValue)
+      }
+
+      if (totalCostBasis.isZero() || totalQuantity.isZero()) {
         return
       }
 
-      const entryPrice = new BigNumberInBase(averageEntry.averageEntryPrice)
-      const currentPrice = markPriceInUsd.value
+      const averageEntryPrice = totalCostBasis.dividedBy(totalQuantity)
+      const currentValue = totalQuantity.multipliedBy(currentPrice)
 
-      if (entryPrice.isZero()) {
-        return
-      }
-
-      const roi = currentPrice
-        .minus(entryPrice)
-        .dividedBy(entryPrice)
+      const absolutePnl = currentValue.minus(totalCostBasis)
+      const roiPercentage = absolutePnl
+        .dividedBy(totalCostBasis)
         .multipliedBy(100)
-
-      return roi
-    }
+            
+      return {
+        absolutePnl,
+        roiPercentage,
+        averageEntryPrice,
+      }
+    },
   },
   actions: {
     streamSpotAverageEntries,

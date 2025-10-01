@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
-import { ZERO_IN_BASE } from '@shared/utils/constant'
+import {
+  ZERO_IN_BASE,
+  DEFAULT_PERCENTAGE_DECIMALS
+} from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { TokenVerification } from '@injectivelabs/sdk-ts'
+import { TokenStatic, TokenVerification } from '@injectivelabs/sdk-ts'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 import type { TransformedBalances } from '@/types'
 
+const accountStore = useAccountStore()
 const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -29,6 +33,10 @@ const props = withDefaults(
   }
 )
 
+const emit = defineEmits<{
+  'balance:share': [token: TokenStatic]
+}>()
+
 const { rows } = useBalanceTransformer(
   computed(() =>
     props.showUnverifiedAssets
@@ -40,6 +48,8 @@ const { rows } = useBalanceTransformer(
 const fourXl = breakpoints['4xl']
 
 const showStakingRow = ref(false)
+
+const showPnlAndRoi = computed(() => !accountStore.hasMultipleSubaccounts)
 
 const columns = computed(() => {
   const columnArray = [
@@ -59,8 +69,8 @@ const columns = computed(() => {
       class: 'text-right'
     },
     {
-      key: BalanceTableColumn.UnrealizedPnl,
-      label: t(`portfolio.table.balance.${BalanceTableColumn.UnrealizedPnl}`),
+      key: BalanceTableColumn.Pnl,
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Pnl}`),
       class: 'text-right'
     },
     {
@@ -79,12 +89,12 @@ const columns = computed(() => {
     columnArray.push(
       {
         key: BalanceTableColumn.Staked,
-        label: t(`portfolio.table.${BalanceTableColumn.Staked}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.Staked}`),
         class: ''
       },
       {
         key: BalanceTableColumn.StakedUsd,
-        label: t(`portfolio.table.${BalanceTableColumn.StakedUsd}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.StakedUsd}`),
         class: ''
       }
     )
@@ -145,9 +155,9 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
+        [BalanceTableColumn.Pnl]: ZERO_IN_BASE,
         [BalanceTableColumn.Total]: ZERO_IN_BASE,
         [BalanceTableColumn.Available]: ZERO_IN_BASE,
-        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
         [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value,
         [BalanceTableColumn.UsedOrReserved]: stakedAmount.value
       } as TransformedBalances,
@@ -178,6 +188,10 @@ const filteredRows = computed(() =>
 
 function toggleStakingRow() {
   showStakingRow.value = !showStakingRow.value
+}
+
+function shareBalance(token: TokenStatic) {
+  emit('balance:share', token)
 }
 </script>
 
@@ -292,15 +306,40 @@ function toggleStakingRow() {
       />
     </template>
 
-    <template #unrealized-pnl-data="{ row }">
-      <SharedAmount
-        v-if="!row.isStakingRow"
-        v-bind="{
-          showZeroAsEmDash: true,
-          amount: row[BalanceTableColumn.UnrealizedPnl].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
-      />
+    <template #pnl-data="{ row }">
+      <div
+        v-if="!row.isStakingRow && showPnlAndRoi"
+        class="flex items-center space-x-1 justify-end"
+      >
+        <SharedAmountUsd
+          v-if="!row[BalanceTableColumn.Pnl].isZero()"
+          v-bind="{
+            amount: row[BalanceTableColumn.Pnl].toFixed()
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
+          :class="getColorClassForChange(row[BalanceTableColumn.Pnl])"
+        >
+          <template #prefix>$</template>
+        </SharedAmountUsd>
+        <span v-else>&mdash;</span>
+
+        <template v-if="!row.roiPercentage.isZero(0)">
+          <span :class="getColorClassForChange(row.roiPercentage)">
+            (<SharedAmount
+              v-bind="{
+                amount: row.roiPercentage,
+                decimals: DEFAULT_PERCENTAGE_DECIMALS
+              }"
+            />%)
+          </span>
+
+          <PartialsPortfolioBalancesSubaccountTableShare
+            :token="row.token"
+            @balance:share="shareBalance"
+          />
+        </template>
+      </div>
+      <span v-else-if="!showPnlAndRoi">&mdash;</span>
       <span v-else />
     </template>
 
@@ -350,7 +389,14 @@ function toggleStakingRow() {
     <PartialsPortfolioBalancesSubaccountMobileTable
       v-for="balance in filteredRows"
       :key="balance.token.denom"
-      v-bind="{ balance, columns, stakedAmount, stakedAmountInUsd }"
+      v-bind="{
+        balance,
+        columns,
+        stakedAmount,
+        showPnlAndRoi,
+        stakedAmountInUsd
+      }"
+      @balance:share="shareBalance"
     />
   </template>
 </template>

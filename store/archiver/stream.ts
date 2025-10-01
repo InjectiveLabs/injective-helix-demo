@@ -30,8 +30,6 @@ export const streamSpotAverageEntries = ({
         return
       }
 
-      console.log('OOOOOOOOO> averageEntry', averageEntry)
-
       switch (operation) {
         case StreamOperation.Update:
           archiverStore.$patch({

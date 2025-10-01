@@ -8,6 +8,7 @@ import { Modal } from '@/types'
 
 const appStore = useAppStore()
 const accountStore = useAccountStore()
+const archiverStore = useArchiverStore()
 const modalStore = useSharedModalStore()
 const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -49,6 +50,14 @@ function onDeposit() {
 function onOpenBankTransferModal() {
   modalStore.openModal(Modal.BankTransfer)
 }
+
+onWalletConnected(() => {
+  archiverStore.streamSpotAverageEntries({
+    account: sharedWalletStore.injectiveAddress
+  })
+})
+
+onUnmounted(() => archiverStore.cancelSpotAverageEntriesStream())
 </script>
 
 <template>

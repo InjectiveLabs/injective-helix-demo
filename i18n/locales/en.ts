@@ -47,6 +47,7 @@ export default defineI18nLocale(() => ({
     and: 'and',
     pnl: 'PnL',
     max: 'Max',
+    roi: 'ROI',
     docs: 'docs',
     back: 'Back',
     base: 'Base',

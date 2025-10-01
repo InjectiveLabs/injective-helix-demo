@@ -28,8 +28,6 @@ export const streamSpotAverageEntries = ({
     ...(onResetCallback && { onResetCallback })
   }
 
-  console.log('XXXXXXXXXXXX> SUBSCRIBE', account)
-
   streamProvider.subscribe({
     fn: streamFn,
     args: streamFnArgs,

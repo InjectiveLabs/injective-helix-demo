@@ -2,6 +2,7 @@ import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import type {
   ExitType,
+  TokenStatic,
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
@@ -116,13 +117,14 @@ export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
 
 export type SharePnlContent = {
   ticker: string
-  pnl: BigNumberInBase
+  pnl?: BigNumberInBase
+  baseToken: TokenStatic
   price: BigNumberInBase
-  direction: TradeDirection
+  direction?: TradeDirection
   markPrice?: BigNumberInBase
   exitPrice?: BigNumberInBase
-  percentagePnl: BigNumberInBase
-  market: SharedUiDerivativeMarket
+  percentagePnl?: BigNumberInBase
+  roiPercentage?: BigNumberInBase
   effectiveLeverage?: BigNumberInBase
 }
 

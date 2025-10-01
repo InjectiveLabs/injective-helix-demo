@@ -130,11 +130,11 @@ async function downloadImage() {
           content: {
             pnl,
             price,
-            market,
             markPrice,
             percentagePnl,
             effectiveLeverage,
             ticker: position.ticker,
+            baseToken: market.baseToken,
             direction: position.direction
           },
           isLoading: isDownloading,

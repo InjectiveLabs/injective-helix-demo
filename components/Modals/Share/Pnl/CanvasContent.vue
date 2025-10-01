@@ -22,7 +22,7 @@ const cardHeight = 365
 const scale = ref(1)
 
 const marketPriceDecimals = computed(
-  () => props.content.market?.priceDecimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
+  () => props.content.baseToken.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
 )
 
 const qrLink = computed(() => {
@@ -32,9 +32,15 @@ const qrLink = computed(() => {
   return referralLink || metaTags.url
 })
 
-const isActiveOrClosedLong = computed(() =>
-  [TradeDirection.Long, TradeDirection.Sell].includes(props.content.direction)
-)
+const isActiveOrClosedLong = computed(() => {
+  if (!props.content.direction) {
+    return false
+  }
+
+  return [TradeDirection.Long, TradeDirection.Sell].includes(
+    props.content.direction
+  )
+})
 
 onMounted(() => {
   updateScale()
@@ -77,7 +83,7 @@ function updateScale() {
         <div class="flex items-center gap-2 mt-3 mb-4">
           <CommonTokenIcon
             class="w-5 h-5 min-w-5"
-            v-bind="{ token: content.market?.baseToken }"
+            v-bind="{ token: content.baseToken }"
           />
 
           <span class="text-sm">
@@ -85,6 +91,7 @@ function updateScale() {
           </span>
 
           <div
+            v-if="content.direction"
             class="py-0.5 px-2 flex items-center gap-1 rounded text-xs font-semibold tracking-wide"
             :class="[
               isActiveOrClosedLong
@@ -102,20 +109,37 @@ function updateScale() {
           </div>
         </div>
 
-        <span
-          class="font-bold text-2xl md:text-[32px] block leading-tight"
-          :class="{
-            'text-red-500': content.pnl.lt(0),
-            'text-green-500': content.pnl.gte(0)
-          }"
-        >
-          {{
-            (content.percentagePnl.gte(0) ? '+' : '') +
-            content.percentagePnl.toFormat(2)
-          }}%
-        </span>
+        <template v-if="content.roiPercentage">
+          <span
+            class="font-bold text-2xl md:text-[32px] block leading-tight"
+            :class="{
+              'text-red-500': content.roiPercentage.lt(0),
+              'text-green-500': content.roiPercentage.gte(0)
+            }"
+          >
+            {{
+              (content.roiPercentage.gte(0) ? '+' : '') +
+              content.roiPercentage.toFormat(2)
+            }}%
+          </span>
+          <span>{{ $t('common.roi') }}</span>
+        </template>
+        <template v-else-if="content.pnl && content.percentagePnl">
+          <span
+            class="font-bold text-2xl md:text-[32px] block leading-tight"
+            :class="{
+              'text-red-500': content.pnl.lt(0),
+              'text-green-500': content.pnl.gte(0)
+            }"
+          >
+            {{
+              (content.percentagePnl.gte(0) ? '+' : '') +
+              content.percentagePnl.toFormat(2)
+            }}%
+          </span>
 
-        <span>{{ $t('common.pnl') }}</span>
+          <span>{{ $t('common.pnl') }}</span>
+        </template>
 
         <div class="flex gap-3 text-sm mt-6">
           <div class="flex flex-col gap-1">

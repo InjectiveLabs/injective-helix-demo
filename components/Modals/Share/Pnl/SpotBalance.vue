@@ -3,19 +3,20 @@ import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import { Modal } from '@/types'
-import type {
-  SharedUiDerivativeTrade,
-  SharedUiDerivativeMarket
-} from '@shared/types'
+import { TokenStatic } from '@injectivelabs/sdk-ts'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
+const archiverStore = useArchiverStore()
+const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { lg } = useSharedBreakpoints()
 
 const props = withDefaults(
   defineProps<{
-    trade: SharedUiDerivativeTrade
+    token: TokenStatic
   }>(),
   {}
 )
@@ -24,9 +25,10 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
-const { pnl, price, market, entryPrice, percentagePnl } = useTrade(
-  computed(() => props.trade)
+const currentTokenPriceToBigNumber = computed(
+  () => new BigNumberInBase(sharedTokenStore.tokenUsdPrice(props.token))
 )
+const roiData = archiverStore.spotROIByBaseDenom(props.token.denom)
 
 const characterList = [
   {
@@ -63,6 +65,8 @@ const canvas = ref()
 const isDownloading = ref(false)
 const selectedCharacter = ref('char1')
 
+const ticker = computed(() => `${props.token.symbol} SPOT`)
+
 const downloadIsUnsupported = computed(
   () =>
     !lg.value &&
@@ -80,7 +84,7 @@ onMounted(() => {
 
 function onCloseModal() {
   emit('on:close')
-  modalStore.closeModal(Modal.ShareTradePnl)
+  modalStore.closeModal(Modal.ShareBalancePnl)
 }
 
 function onOptionSelect(key: string) {
@@ -94,7 +98,7 @@ async function downloadImage() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Trade-PNL-${now.value}.jpeg`
+    link.download = `Spot-PNL-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
@@ -112,7 +116,7 @@ async function downloadImage() {
 
 <template>
   <AppModal
-    v-model="modalStore.modals[Modal.ShareTradePnl]"
+    v-model="modalStore.modals[Modal.ShareBalancePnl]"
     v-bind="{
       isLg: true,
       isAlwaysOpen: isDownloading,
@@ -128,19 +132,17 @@ async function downloadImage() {
       {{ $t('trade.sharePnl') }}
     </h3>
 
-    <section v-if="market" ref="canvas">
+    <section ref="canvas">
       <ModalsSharePnlCanvasContent
         v-bind="{
           isLoading: isDownloading,
           selectedCharacter: selectedCharacter,
           content: {
-            pnl,
-            percentagePnl,
-            exitPrice: price,
-            price: entryPrice,
-            ticker: market.ticker,
-            baseToken: market.baseToken,
-            direction: trade.tradeDirection
+            ticker,
+            baseToken: token,
+            markPrice: currentTokenPriceToBigNumber,
+            price: roiData?.averageEntryPrice || ZERO_IN_BASE,
+            roiPercentage: roiData?.roiPercentage || ZERO_IN_BASE
           }
         }"
       />
