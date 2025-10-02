@@ -90,11 +90,8 @@
     "vue-imask": "7.6.1"
   },
   "devDependencies": {
-    "@bangjelkoski/node-stdlib-browser": "^0.0.1",
-    "@bangjelkoski/vite-plugin-node-polyfills": "^0.0.2",
     "@commitlint/cli": "19.8.1",
     "@commitlint/config-conventional": "19.8.1",
-    "@injectivelabs/node-globals-polyfill": "0.1.6",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/test-utils": "3.19.2",
     "@nuxt/typescript-build": "^3.0.1",
@@ -118,7 +115,8 @@
     "ts-node": "^10.9.2",
     "typescript": "5.8.3",
     "vite-tsconfig-paths": "5.1.4",
-    "vue-tsc": "3.0.5"
+    "vue-tsc": "3.0.5",
+    "@metamask/eth-sig-util": "^8.2.0"
   },
   "pnpm": {
     "overrides": {

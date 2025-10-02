@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Status, StatusType } from '@injectivelabs/utils'
 import { SpotOrderHistoryFilterField } from '@/types'
+import type { TradeExecutionType } from '@/types'
 import type { SpotOrderHistoryFilterForm } from '@/types'
-import type { TradeDirection, TradeExecutionType } from '@injectivelabs/sdk-ts'
+import type { TradeDirection } from '@injectivelabs/sdk-ts'
 
 const route = useRoute()
 const router = useRouter()

@@ -46,7 +46,11 @@ const reportToUser = (error: ThrownException) => {
 }
 
 const reportToBugSnag = (error: ThrownException) => {
-  if ([ErrorType.Unspecified, ErrorType.WalletError].includes(error.type)) {
+  if (
+    ([ErrorType.Unspecified, ErrorType.WalletError] as ErrorType[]).includes(
+      error.type
+    )
+  ) {
     console.warn(error.toCompactError().message)
     console.error(error)
 

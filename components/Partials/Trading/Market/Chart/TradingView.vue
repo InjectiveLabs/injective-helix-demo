@@ -325,9 +325,9 @@ function modifyLimitOrderLines() {
         return
       }
 
-      const themeColor = [OrderSide.Buy, OrderSide.BuyPO].includes(
-        order.orderSide
-      )
+      const themeColor = (
+        [OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]
+      ).includes(order.orderSide)
         ? '#0EE29B'
         : '#F3164D'
 

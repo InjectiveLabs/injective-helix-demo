@@ -1,10 +1,11 @@
 import { SharedMarketType } from '@shared/types'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { SECONDS_IN_A_DAY } from '@shared/utils/constant'
 import { deprecatedMarkets } from '@/app/data/market'
 import { TradeSubPage } from '@/types'
 import type { SharedUiMarketHistory } from '@shared/types'
-import type { MarketRoute, UiMarketWithToken } from '@/types'
 import type { PriceLevel, ExpiryFuturesMarket } from '@injectivelabs/sdk-ts'
+import type { MarketRoute, UiMarketWithToken } from '@/types'
 
 interface PriceLevelMap {
   [price: string]: PriceLevel

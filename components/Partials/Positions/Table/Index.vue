@@ -182,7 +182,7 @@ function onClosePartialPosition() {
     const isBuy =
       selectedPositionDetails.value.position.direction === TradeDirection.Long
 
-    let orderTypeToSubmit = OrderSide.Buy
+    let orderTypeToSubmit = OrderSide.Buy as OrderSide
 
     if (jsonStore.isPostUpgradeMode) {
       orderTypeToSubmit = isBuy ? OrderSide.SellPO : OrderSide.BuyPO
