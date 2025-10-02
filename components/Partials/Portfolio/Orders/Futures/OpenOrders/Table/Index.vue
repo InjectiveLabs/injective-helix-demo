@@ -91,7 +91,9 @@ const columns = computed(() => {
   if (
     !props.isTradingBots &&
     !props.isPortfolioPage &&
-    ![Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)
+    !([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+      sharedWalletStore.wallet
+    )
   ) {
     baseColumns.push({
       key: PortfolioFuturesOpenOrdersTableColumn.Chase,

@@ -278,12 +278,14 @@ export const streamSubaccountOrders = ({
         return
       }
 
-      const isConditional = [
-        OrderSide.TakeBuy,
-        OrderSide.StopBuy,
-        OrderSide.TakeSell,
-        OrderSide.StopSell
-      ].includes(order.orderType as OrderSide)
+      const isConditional = (
+        [
+          OrderSide.TakeBuy,
+          OrderSide.StopBuy,
+          OrderSide.TakeSell,
+          OrderSide.StopSell
+        ] as OrderSide[]
+      ).includes(order.orderType as OrderSide)
 
       switch (order.state) {
         case OrderState.PartialFilled:

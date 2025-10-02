@@ -23,7 +23,7 @@ export function useFuturesAdvancedOrdersTransformer(
     OrderSide.BuyPO,
     OrderSide.TakeBuy,
     OrderSide.StopBuy
-  ]
+  ] as OrderSide[]
 
   const rows = computed(() =>
     triggerList.value.reduce((list, trigger) => {
@@ -70,8 +70,9 @@ export function useFuturesAdvancedOrdersTransformer(
         : new BigNumberInBase(price.times(quantity).dividedBy(margin))
 
       const isBuy =
-        [OrderSide.Buy, OrderSide.BuyPO].includes(trigger.orderSide) ||
-        orderSideList.includes(trigger.orderType as OrderSide)
+        ([OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]).includes(
+          trigger.orderSide
+        ) || orderSideList.includes(trigger.orderType as OrderSide)
 
       const isStopLoss =
         trigger.orderType === OrderSide.StopBuy ||

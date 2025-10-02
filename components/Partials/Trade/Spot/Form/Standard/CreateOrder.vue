@@ -236,7 +236,11 @@ function submitLimitOrder() {
 }
 
 function showAutosignCta() {
-  if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+  if (
+    ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+      sharedWalletStore.wallet
+    )
+  ) {
     return
   }
 
