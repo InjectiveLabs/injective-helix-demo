@@ -20,7 +20,7 @@ export const TRADING_MESSAGES = [
   MsgType.MsgCreateDerivativeMarketOrder,
   MsgType.MsgBatchCancelDerivativeOrders,
   MsgType.MsgBatchCreateDerivativeLimitOrders
-]
+] as MsgType[]
 
 const limit: ContractExecutionCompatAuthz['params']['limit'] = {
   maxCalls: 1000,

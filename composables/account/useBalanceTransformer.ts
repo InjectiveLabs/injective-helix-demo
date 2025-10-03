@@ -45,8 +45,9 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         isInjDenom || isVerifiedIbcToken || isVerifiedErc20Token
 
       const hasNoActionButtons = accountStore.isDefaultSubaccount
-        ? [Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet) &&
-          !isBridgable
+        ? ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+            sharedWalletStore.wallet
+          ) && !isBridgable
         : accountStore.isSgtSubaccount
 
       const availableAmount = sharedToBalanceInTokenInBase({

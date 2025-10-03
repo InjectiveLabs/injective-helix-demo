@@ -32,7 +32,7 @@ export function useSpotOrderHistoryTransformer(
     OrderSide.BuyPO,
     OrderSide.TakeBuy,
     OrderSide.StopBuy
-  ]
+  ] as OrderSide[]
 
   const rows = computed(() =>
     orderList.value.reduce((list, order) => {
