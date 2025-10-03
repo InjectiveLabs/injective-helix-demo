@@ -80,7 +80,8 @@ export const useWalletStore = defineStore('wallet', {
             Wallet.Rainbow,
             Wallet.Phantom,
             Wallet.Metamask,
-            Wallet.OkxWallet
+            Wallet.OkxWallet,
+            Wallet.TrustWallet
           ] as Wallet[]
         ).includes(wallet)
       ) {

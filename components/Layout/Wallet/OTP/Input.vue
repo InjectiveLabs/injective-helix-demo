@@ -94,7 +94,7 @@ defineExpose({
     type="text"
     max-length="1"
     pattern="[0-9]*"
-    autocomplete="off"
+    autocomplete="one-time-code"
     inputmode="numeric"
     class="w-10 h-12 text-center text-2xl border border-gray-600 rounded focus:outline-none focus:border-blue-500 bg-transparent font-semibold"
     @input="onInput"
