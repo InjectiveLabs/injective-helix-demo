@@ -18,7 +18,7 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
-const { pnl, price, market, entryPrice, percentagePnl } = useTrade(
+const { price, market, entryPrice, percentagePnl } = useTrade(
   computed(() => props.trade)
 )
 
@@ -58,12 +58,7 @@ function onClose() {
         <template #ticker>{{ market.ticker }}</template>
 
         <template #performance>
-          <span
-            :class="{
-              'text-red-500': pnl.lt(0),
-              'text-green-500': pnl.gte(0)
-            }"
-          >
+          <span :class="getColorClassForChange(percentagePnl)">
             {{ (percentagePnl.gte(0) ? '+' : '') + percentagePnl.toFormat(2) }}%
           </span>
         </template>

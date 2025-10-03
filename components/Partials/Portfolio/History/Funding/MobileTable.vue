@@ -49,10 +49,11 @@ const filteredColumns = computed(() =>
       <div class="text-right space-x-2 flex justify-end">
         <span
           class="inline-block"
-          :class="{
-            'text-green-500': fundingHistory.total.gte(0),
-            'text-red-500': fundingHistory.total.lt(0)
-          }"
+          :class="
+            getColorClassForChange(fundingHistory.total, {
+              zeroClass: 'text-green-500'
+            })
+          "
         >
           <SharedAmount
             v-bind="{

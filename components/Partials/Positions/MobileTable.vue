@@ -194,10 +194,7 @@ function onSetPosition(value: TransformedPosition) {
       <div class="flex items-center space-x-1">
         <div
           class="space-y-1 text-right"
-          :class="{
-            'text-green-500': position.pnl.gte(0),
-            'text-red-500': position.pnl.lt(0)
-          }"
+          :class="getColorClassForChange(position.pnl)"
         >
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"

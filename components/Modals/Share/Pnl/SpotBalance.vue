@@ -63,10 +63,9 @@ function onClose() {
 
         <template #performance>
           <span
-            :class="{
-              'text-red-500': roiData?.roiPercentage.lt(0),
-              'text-green-500': roiData?.roiPercentage.gte(0)
-            }"
+            :class="
+              getColorClassForChange(roiData?.roiPercentage || ZERO_IN_BASE)
+            "
           >
             {{
               (roiData?.roiPercentage.gte(0) ? '+' : '') +

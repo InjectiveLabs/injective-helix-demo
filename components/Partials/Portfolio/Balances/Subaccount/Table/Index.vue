@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { TokenVerification } from '@injectivelabs/sdk-ts'
 import {
   ZERO_IN_BASE,
   DEFAULT_PERCENTAGE_DECIMALS
 } from '@shared/utils/constant'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { TokenStatic, TokenVerification } from '@injectivelabs/sdk-ts'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { TransformedBalances } from '@/types'
 
 const accountStore = useAccountStore()
@@ -49,7 +50,8 @@ const fourXl = breakpoints['4xl']
 
 const showStakingRow = ref(false)
 
-const showPnlAndRoi = computed(() => !accountStore.hasMultipleSubaccounts)
+// TODO: set back to only one subaccount
+const showPnlAndRoi = computed(() => !!accountStore.hasMultipleSubaccounts)
 
 const columns = computed(() => {
   const columnArray = [
