@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { toBigNumber } from '@injectivelabs/utils'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import {
   streamSpotAverageEntries,
   cancelSpotAverageEntriesStream
@@ -37,8 +38,8 @@ export const useArchiverStore = defineStore('archiver', {
         (market) => market.baseDenom === baseDenom
       )
 
-      let totalQuantity = new BigNumberInBase(0)
-      let totalCostBasis = new BigNumberInBase(0)
+      let totalQuantity = ZERO_IN_BASE
+      let totalCostBasis = ZERO_IN_BASE
 
       for (const market of markets) {
         const averageEntry = state.spotAverageEntries[market.marketId]
@@ -47,8 +48,8 @@ export const useArchiverStore = defineStore('archiver', {
           continue
         }
 
-        const quantity = new BigNumberInBase(averageEntry.quantity || 0)
-        const usdValue = new BigNumberInBase(averageEntry.usdValue || 0)
+        const quantity = toBigNumber(averageEntry.quantity || 0)
+        const usdValue = toBigNumber(averageEntry.usdValue || 0)
 
         if (quantity.isZero() || usdValue.isZero()) {
           continue
@@ -69,24 +70,30 @@ export const useArchiverStore = defineStore('archiver', {
       const roiPercentage = absolutePnl
         .dividedBy(totalCostBasis)
         .multipliedBy(100)
-            
+
       return {
         absolutePnl,
         roiPercentage,
-        averageEntryPrice,
+        averageEntryPrice
       }
-    },
+    }
   },
   actions: {
     streamSpotAverageEntries,
     cancelSpotAverageEntriesStream,
 
+    setSpotAverageEntry(averageEntry: SpotAverageEntry) {
+      this.spotAverageEntries[averageEntry.marketId] = averageEntry
+    },
+
+    deleteSpotAverageEntry(marketId: string) {
+      delete this.spotAverageEntries[marketId]
+    },
+
     reset() {
-      const archiverStore = useArchiverStore()
+      cancelSpotAverageEntriesStream()
 
-      const { spotAverageEntries } = initialStateFactory()
-
-      archiverStore.$patch({ spotAverageEntries })
+      this.$reset()
     }
   }
 })

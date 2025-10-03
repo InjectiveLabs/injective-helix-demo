@@ -1,4 +1,4 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { toBigNumber } from '@injectivelabs/utils'
 import { StreamOperation } from '@injectivelabs/ts-types'
 import {
   streamSpotAverageEntries as grpcStreamSpotAverageEntries,
@@ -24,20 +24,18 @@ export const streamSpotAverageEntries = ({
         return
       }
 
-      const quantity = new BigNumberInBase(averageEntry.quantity)
-
-      if (quantity.isZero()) {
-        return
-      }
-
       switch (operation) {
-        case StreamOperation.Update:
-          archiverStore.$patch({
-            spotAverageEntries: {
-              ...archiverStore.spotAverageEntries,
-              [averageEntry.marketId]: averageEntry
-            }
-          })
+        case StreamOperation.Update: {
+          const quantity = toBigNumber(averageEntry.quantity)
+
+          if (quantity.isZero()) {
+            archiverStore.deleteSpotAverageEntry(averageEntry.marketId)
+            return
+          }
+
+          archiverStore.setSpotAverageEntry(averageEntry)
+          break
+        }
       }
     }
   })
