@@ -7,8 +7,8 @@ import { ZERO_IN_BASE, DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { Modal } from '@/types'
 
 const appStore = useAppStore()
+const spotStore = useSpotStore()
 const accountStore = useAccountStore()
-const archiverStore = useArchiverStore()
 const modalStore = useSharedModalStore()
 const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
@@ -52,12 +52,12 @@ function onOpenBankTransferModal() {
 }
 
 onWalletConnected(() => {
-  archiverStore.streamSpotAverageEntries({
+  spotStore.streamAccountAverageEntries({
     account: sharedWalletStore.injectiveAddress
   })
 })
 
-onUnmounted(() => archiverStore.cancelSpotAverageEntriesStream())
+onUnmounted(() => spotStore.cancelAccountAverageEntriesStream())
 </script>
 
 <template>

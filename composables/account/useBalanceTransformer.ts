@@ -9,7 +9,6 @@ import type { AccountBalance } from '@/types'
 
 export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
   const accountStore = useAccountStore()
-  const archiverStore = useArchiverStore()
   const sharedWalletStore = useSharedWalletStore()
 
   const rows = computed(() => {
@@ -67,15 +66,8 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         decimalPlaces: balance.token.decimals
       })
 
-
-      const roiData = archiverStore.spotROIByBaseDenom(balance.token.denom)
-
-      const absolutePnl = roiData?.absolutePnl || ZERO_IN_BASE
-      const roiPercentage = roiData?.roiPercentage || ZERO_IN_BASE
-
       return {
         isBridgable,
-        roiPercentage,
         hasNoActionButtons,
         isStakingRow: false,
         token: balance.token,
@@ -83,7 +75,7 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         [BalanceTableColumn.Available]: availableAmount.eq(0)
           ? ZERO_IN_BASE
           : availableAmount,
-        [BalanceTableColumn.Pnl]: absolutePnl,
+        [BalanceTableColumn.Pnl]: ZERO_IN_BASE,
         [BalanceTableColumn.UsedOrReserved]: usedOrReserved.eq(0)
           ? ZERO_IN_BASE
           : usedOrReserved,

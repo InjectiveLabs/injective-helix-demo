@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
-import { DEFAULT_PERCENTAGE_DECIMALS } from '@shared/utils/constant'
 import { BalanceTableColumn } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { TokenStatic } from '@injectivelabs/sdk-ts'
+import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UTableColumn, TransformedBalances } from '@/types'
 
 const props = withDefaults(
@@ -95,35 +94,13 @@ function shareBalance() {
     </template>
 
     <template #pnl-data>
-      <div v-if="showPnlAndRoi" class="flex items-center space-x-1">
-        <SharedAmountUsd
-          v-if="!balance[BalanceTableColumn.Pnl].isZero()"
-          v-bind="{
-            amount: balance[BalanceTableColumn.Pnl].toFixed()
-          }"
-          :class="getColorClassForChange(balance[BalanceTableColumn.Pnl])"
-        >
-          <template #prefix>$</template>
-        </SharedAmountUsd>
-        <span v-else>&mdash;</span>
-
-        <template v-if="!balance.roiPercentage.isZero()">
-          <span :class="getColorClassForChange(balance.roiPercentage)">
-            (<SharedAmount
-              v-bind="{
-                amount: balance.roiPercentage,
-                decimals: DEFAULT_PERCENTAGE_DECIMALS
-              }"
-            />%)
-          </span>
-
-          <PartialsPortfolioBalancesSubaccountTableShare
-            :token="balance.token"
-            @balance:share="shareBalance"
-          />
-        </template>
-      </div>
-      <span v-else>&mdash;</span>
+      <PartialsPortfolioBalancesSubaccountTablePnlCell
+        v-bind="{
+          isMobile: true,
+          token: balance.token
+        }"
+        @balance:share="shareBalance"
+      />
     </template>
 
     <template #total-data>

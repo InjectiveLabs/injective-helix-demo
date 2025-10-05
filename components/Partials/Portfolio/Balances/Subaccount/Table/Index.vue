@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { injToken } from '@shared/data/token'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenVerification } from '@injectivelabs/sdk-ts'
-import {
-  ZERO_IN_BASE,
-  DEFAULT_PERCENTAGE_DECIMALS
-} from '@shared/utils/constant'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { TransformedBalances } from '@/types'
@@ -309,39 +306,13 @@ function shareBalance(token: TokenStatic) {
     </template>
 
     <template #pnl-data="{ row }">
-      <div
-        v-if="!row.isStakingRow && showPnlAndRoi"
-        class="flex items-center space-x-1 justify-end"
-      >
-        <SharedAmountUsd
-          v-if="!row[BalanceTableColumn.Pnl].isZero()"
-          v-bind="{
-            amount: row[BalanceTableColumn.Pnl].toFixed()
-          }"
-          :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
-          :class="getColorClassForChange(row[BalanceTableColumn.Pnl])"
-        >
-          <template #prefix>$</template>
-        </SharedAmountUsd>
-        <span v-else>&mdash;</span>
-
-        <template v-if="!row.roiPercentage.isZero(0)">
-          <span :class="getColorClassForChange(row.roiPercentage)">
-            (<SharedAmount
-              v-bind="{
-                amount: row.roiPercentage,
-                decimals: DEFAULT_PERCENTAGE_DECIMALS
-              }"
-            />%)
-          </span>
-
-          <PartialsPortfolioBalancesSubaccountTableShare
-            :token="row.token"
-            @balance:share="shareBalance"
-          />
-        </template>
-      </div>
-      <span v-else-if="!showPnlAndRoi">&mdash;</span>
+      <PartialsPortfolioBalancesSubaccountTablePnlCell
+        v-if="!row.isStakingRow"
+        v-bind="{
+          token: row.token
+        }"
+        @balance:share="shareBalance"
+      />
       <span v-else />
     </template>
 

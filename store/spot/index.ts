@@ -15,13 +15,19 @@ import {
   streamOrderbookUpdate,
   streamSubaccountTrades,
   streamSubaccountOrders,
+  streamAccountAverageEntries,
   cancelOrderbookUpdateStream,
   cancelSubaccountOrdersStream,
   cancelSubaccountTradesStream,
   streamSubaccountOrderHistory,
+  cancelAccountAverageEntriesStream,
   cancelSubaccountOrdersHistoryStream
 } from '@/store/spot/stream'
-import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import type {
+  SpotLimitOrder,
+  SpotAverageEntry,
+  SpotOrderHistory
+} from '@injectivelabs/sdk-ts'
 import type {
   OrderSide,
   TradeExecutionSide,
@@ -44,6 +50,7 @@ type SpotStoreState = {
   subaccountTrades: SharedUiSpotTrade[]
   orderbook?: SharedUiOrderbookWithSequence
   subaccountOrderHistory: SpotOrderHistory[]
+  accountAverageEntries: Record<string, SpotAverageEntry>
 }
 
 const initialStateFactory = (): SpotStoreState => ({
@@ -55,7 +62,8 @@ const initialStateFactory = (): SpotStoreState => ({
   subaccountOrders: [] as SpotLimitOrder[],
   subaccountOrdersCount: 0,
   subaccountOrderHistory: [] as SpotOrderHistory[],
-  subaccountOrderHistoryCount: 0
+  subaccountOrderHistoryCount: 0,
+  accountAverageEntries: {}
 })
 
 export const useSpotStore = defineStore('spot', {
@@ -144,8 +152,10 @@ export const useSpotStore = defineStore('spot', {
     streamOrderbookUpdate,
     streamSubaccountOrders,
     streamSubaccountTrades,
+    streamAccountAverageEntries,
     cancelOrderbookUpdateStream,
     streamSubaccountOrderHistory,
+    cancelAccountAverageEntriesStream,
 
     cancelOrder,
     cancelSubaccountOrdersStream,
@@ -403,6 +413,14 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
+    setSpotAverageEntry(averageEntry: SpotAverageEntry) {
+      this.accountAverageEntries[averageEntry.marketId] = averageEntry
+    },
+
+    deleteSpotAverageEntry(marketId: string) {
+      delete this.accountAverageEntries[marketId]
+    },
+
     cancelSubaccountStream() {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
@@ -424,6 +442,7 @@ export const useSpotStore = defineStore('spot', {
       const {
         subaccountOrders,
         subaccountTrades,
+        accountAverageEntries,
         subaccountOrdersCount,
         subaccountTradesCount,
         subaccountOrderHistory,
@@ -435,6 +454,7 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         subaccountOrders,
         subaccountTrades,
+        accountAverageEntries,
         subaccountTradesCount,
         subaccountOrdersCount,
         subaccountOrderHistory,

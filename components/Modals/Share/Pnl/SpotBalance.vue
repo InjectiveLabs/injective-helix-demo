@@ -5,7 +5,6 @@ import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { Modal } from '@/types'
 import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
-const archiverStore = useArchiverStore()
 const sharedTokenStore = useSharedTokenStore()
 
 const props = withDefaults(
@@ -21,12 +20,14 @@ const emit = defineEmits<{
 
 const ticker = computed(() => `${props.token.symbol} SPOT`)
 
+const currentTokenPrice = computed(() =>
+  sharedTokenStore.tokenUsdPrice(props.token)
+)
 const currentTokenPriceToBigNumber = computed(
-  () => new BigNumberInBase(sharedTokenStore.tokenUsdPrice(props.token))
+  () => new BigNumberInBase(currentTokenPrice.value)
 )
-const roiData = computed(() =>
-  archiverStore.spotROIByBaseDenom(props.token.denom)
-)
+
+const spotRoi = useSpotRoi(props.token)
 
 const priceDecimals = computed(
   () => props.token.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -40,8 +41,8 @@ function onClose() {
 <template>
   <ModalsSharePnlBase
     v-bind="{
-      modal: Modal.ShareBalancePnl,
-      filenamePrefix: 'Spot-PNL'
+      filenamePrefix: 'Spot-PNL',
+      modal: Modal.ShareBalancePnl
     }"
     @on:close="onClose"
   >
@@ -64,12 +65,12 @@ function onClose() {
         <template #performance>
           <span
             :class="
-              getColorClassForChange(roiData?.roiPercentage || ZERO_IN_BASE)
+              getColorClassForChange(spotRoi?.roiPercentage || ZERO_IN_BASE)
             "
           >
             {{
-              (roiData?.roiPercentage.gte(0) ? '+' : '') +
-              roiData?.roiPercentage.toFormat(2)
+              (spotRoi?.roiPercentage?.gte(0) ? '+' : '') +
+              spotRoi?.roiPercentage?.toFormat(2)
             }}%
           </span>
         </template>
@@ -80,9 +81,9 @@ function onClose() {
           <SharedAmount
             v-bind="{
               shouldAbbreviate: false,
-              noTrailingZeros: roiData?.averageEntryPrice.lt(1),
-              amount: roiData?.averageEntryPrice || ZERO_IN_BASE,
-              decimals: roiData?.averageEntryPrice.gte(1)
+              noTrailingZeros: spotRoi?.averageEntryPrice?.lt(1),
+              amount: spotRoi?.averageEntryPrice || ZERO_IN_BASE,
+              decimals: spotRoi?.averageEntryPrice?.gte(1)
                 ? UI_DEFAULT_MIN_DISPLAY_DECIMALS
                 : priceDecimals
             }"

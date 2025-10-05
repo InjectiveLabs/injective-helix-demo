@@ -261,7 +261,6 @@ export interface TransformedBalances {
   isBridgable: boolean
   isStakingRow: boolean
   hasNoActionButtons: boolean
-  roiPercentage: BigNumberInBase
   [BalanceTableColumn.Pnl]: BigNumberInBase
   [BalanceTableColumn.Total]: BigNumberInBase
   [BalanceTableColumn.TotalUsd]: BigNumberInBase
