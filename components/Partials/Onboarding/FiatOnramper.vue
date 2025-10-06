@@ -10,10 +10,16 @@ import {
 const siteFullUrl = useRequestURL()
 const sharedWalletStore = useSharedWalletStore()
 
-const onramperUrl = computed(() => {
+const onramperUrl = ref('')
+
+const generateOnramperUrl = async () => {
   const siteUrl = siteFullUrl?.href || 'https://helixapp.com'
   const signContent = `wallets=inj_injective:${sharedWalletStore.injectiveAddress}`
-  const signature = generateOnRamperSignature(ONRAMPER_SIGNING_KEY, signContent)
+
+  const signature = await generateOnRamperSignature(
+    ONRAMPER_SIGNING_KEY,
+    signContent
+  )
 
   const theme = {
     themeName: 'dark',
@@ -31,29 +37,32 @@ const onramperUrl = computed(() => {
     successRedirectUrl: `${siteUrl}?onramper_status=success`
   }
 
-  const onramperUrl = new URL(
+  const onramperUrlObj = new URL(
     `https://buy.onramper.${IS_ONRAMPER_DEV_MODE ? 'dev' : 'com'}`
   )
 
-  onramperUrl.searchParams.set(
+  onramperUrlObj.searchParams.set(
     'wallets',
     `inj_injective:${sharedWalletStore.injectiveAddress}`
   )
 
   for (const [key, value] of Object.entries(options)) {
-    onramperUrl.searchParams.set(key, value.toString())
+    onramperUrlObj.searchParams.set(key, value.toString())
   }
 
   for (const [key, value] of Object.entries(theme)) {
-    onramperUrl.searchParams.set(key, value.replace('#', ''))
+    onramperUrlObj.searchParams.set(key, value.replace('#', ''))
   }
 
-  const signedUrl = `${onramperUrl.toString()}&signature=${signature}`
+  const signedUrl = `${onramperUrlObj.toString()}&signature=${signature}`
 
-  return signedUrl
+  onramperUrl.value = signedUrl
+}
+
+onMounted(async () => {
+  await generateOnramperUrl()
+  trackOnramperSeen(sharedWalletStore.injectiveAddress)
 })
-
-onMounted(() => trackOnramperSeen(sharedWalletStore.injectiveAddress))
 </script>
 
 <template>
