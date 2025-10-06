@@ -454,6 +454,8 @@ export default defineI18nLocale(() => {
       'stop-limit': '限价止损',
       derivatives: '衍生品',
       liquidation: '强平',
+      slippage: '滑点',
+      advanced: '进阶设置',
       tickerOnly: '仅 {ticker}',
       cancelOrder: '取消订单',
       showHistory: '查看历史记录',
@@ -471,6 +473,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: '预估手续费返佣',
       partialFilled: '部分成交',
       proceedAnyway: '仍要执行',
+      slippageEstimate: '最高：{max}%',
       stopLossLimit: '限价止损',
       searchMarket: '搜索市场...',
       boostedMarkets: '奖励市场',
@@ -517,6 +520,8 @@ export default defineI18nLocale(() => {
       markPriceInvalid: '请修改价格、数量或杠杆以符合标记价格要求',
       eip712Warning: '由于网络使用量激增，当前暂停免 Gas 签名交易',
       slippageTooltip: '滑点容差是指在取消交易前允许的最大价格变动',
+      makerTakerRateTooltip:
+        '挂单支付 {makerFeeRate}% 手续费。吃单支付 {takerFeeRate}% 手续费。',
       stopLossDetails:
         '当标记价格达到 {price} 时，将触发数量为 {quantity} 的市价止损订单',
       takeProfitDetails:
@@ -531,6 +536,11 @@ export default defineI18nLocale(() => {
         '点击追价可将当前限价订单修改为最新最佳买一/卖一价格。启用自动签名后可使用该功能',
       boostedMarketsTooltip:
         '奖励市场中挂单和吃单可获得奖励积分。例如“3x maker pts”表示挂单交易将获得手续费价值 3 倍的奖励积分',
+      slippageModal: {
+        title: '调整最大滑点',
+        description:
+          '设置您愿意接受的最大滑点。如果价格变动超过此百分比，您的订单将不会被执行。'
+      },
       tab: {
         orders: '订单',
         balances: '余额',
@@ -640,6 +650,7 @@ export default defineI18nLocale(() => {
       },
       sharePnlModal: {
         markPrice: '标记价格',
+        exitPrice: '退出价格',
         entryPrice: '入场价格',
         mobileDownloadNote: '可在桌面上下载'
       },
@@ -696,6 +707,7 @@ export default defineI18nLocale(() => {
       topGainers: '🚀 涨幅榜',
       closePositionWarningTitle: '检测到较大价格冲击',
       docsTooltip: '本产品为指数永续合约。详细信息请参考 {docs}。',
+      expiryDocsTooltip: '本产品为到期期货合约。更多信息，请参阅 {docs}。',
       indexMarketTooltip: '该市场跟踪 {label}。更多详情请见 {link}。',
       closePositionWarningDescription:
         '使用市价单平仓可能导致不利的成交价格。建议考虑使用限价单进行平仓。',
@@ -766,6 +778,7 @@ export default defineI18nLocale(() => {
         leap: 'Leap',
         keplr: 'Keplr',
         ninji: 'Ninji',
+        rabby: 'Rabby',
         ledger: 'Ledger',
         phantom: 'Phantom',
         rainbow: 'Rainbow',
@@ -815,6 +828,10 @@ export default defineI18nLocale(() => {
         '目前，WTI PERP 市场正在实施一项强制结算治理提案。建议您立即平仓，否则您的仓位将按结算时的标记价格强制结算。该市场结算完成后，将推出一个新的到期期货市场。',
       pointsS1Ended:
         'Helix 积分第一赛季已结束。感谢您的参与，敬请期待更多更新！',
+      expiryFuturesBanner:
+        '这是一个到期期货交易对，将于 {date} 结算。此时间之后的任何未平仓仓位将按结算时的标记价格强制结算。',
+      mkrExpiry:
+        '作为从 MKR 迁移到 SKY 的一部分，该货币对将于 9 月 14 日强制结算（待治理）。该日期仍未平仓的任何头寸将按照结算时的标记价格强制结算。',
       kado: {
         getStarted: '立即开始',
         title: 'Helix 2.0 全新上线！探索焕然一新的交易体验。'
