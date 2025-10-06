@@ -19,8 +19,7 @@ const emit = defineEmits<{
 
 const spotRoi = useSpotRoi(props.token)
 
-// TODO: set back to only one subaccount
-const showPnlAndRoi = computed(() => !!accountStore.hasMultipleSubaccounts)
+const showPnlAndRoi = computed(() => !accountStore.hasMultipleSubaccounts)
 
 function shareBalance(token: TokenStatic) {
   emit('balance:share', token)
