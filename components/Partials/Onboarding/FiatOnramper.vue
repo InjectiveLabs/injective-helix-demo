@@ -12,7 +12,7 @@ const sharedWalletStore = useSharedWalletStore()
 
 const onramperUrl = ref('')
 
-const generateOnramperUrl = async () => {
+async function generateOnramperUrl() {
   const siteUrl = siteFullUrl?.href || 'https://helixapp.com'
   const signContent = `wallets=inj_injective:${sharedWalletStore.injectiveAddress}`
 
