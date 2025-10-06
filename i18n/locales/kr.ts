@@ -470,6 +470,8 @@ export default defineI18nLocale(() => {
       'stop-limit': '스탑-지정가',
       derivatives: '파생상품',
       liquidation: '청산',
+      slippage: '슬리피지',
+      advanced: '고급 설정',
       tickerOnly: '{ticker} 전용',
       cancelOrder: '주문 취소',
       showHistory: '내역 보기',
@@ -487,6 +489,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: '예상 수수료 리베이트',
       partialFilled: '부분 체결',
       proceedAnyway: '계속 진행',
+      slippageEstimate: '최대: {max}%',
       stopLossLimit: '손절매 지정가',
       searchMarket: '마켓 검색...',
       boostedMarkets: '마켓 보상',
@@ -537,6 +540,8 @@ export default defineI18nLocale(() => {
         '사용량이 매우 많아 현재 가스비 없는 거래를 이용할 수 없습니다',
       slippageTooltip:
         '슬리피지 허용 범위는 거래가 취소되기 전에 허용되는 최대 가격 변동입니다.',
+      makerTakerRateTooltip:
+        '메이커 주문은 {makerFeeRate}%의 수수료가 부과됩니다. 테이커 주문은 {takerFeeRate}%의 수수료가 부과됩니다.',
       stopLossDetails:
         '마크 가격이 {price}에 도달하면 {quantity}에 대한 손절매 시장가 주문이 트리거됩니다.',
       takeProfitDetails:
@@ -553,6 +558,11 @@ export default defineI18nLocale(() => {
         '추격을 클릭하여 이 미체결 지정가 주문을 현재 최적 매수/매도 가격으로 자동 수정하세요. 이 기능을 사용하려면 자동 서명이 활성화되어 있어야 합니다.',
       boostedMarketsTooltip:
         '각 마켓에서 테이커 및 메이커 주문에 대한 보상 비율입니다. 예: 3x 메이커 포인트는 이 마켓에서 메이커 주문이 지불한 거래 수수료가 거래 수수료 가치의 3배에 해당하는 보상 포인트를 받는다는 의미입니다.',
+      slippageModal: {
+        title: '최대 슬리피지 조정',
+        description:
+          '허용 가능한 최대 슬리피지를 설정하세요. 가격이 이 비율보다 더 변동하면 주문이 실행되지 않습니다.'
+      },
       tab: {
         orders: '주문',
         balances: '잔액',
@@ -664,6 +674,7 @@ export default defineI18nLocale(() => {
       },
       sharePnlModal: {
         markPrice: '시장 평균가',
+        exitPrice: '출구 가격',
         entryPrice: '진입 가격',
         mobileDownloadNote: '다운로드는 데스크톱에서 가능합니다'
       },
@@ -723,6 +734,8 @@ export default defineI18nLocale(() => {
       closePositionWarningTitle: '높은 가격 임팩트 감지됨',
       docsTooltip:
         '이 상품은 Index Perp입니다. 자세한 정보는 {docs}를 참조하세요.',
+      expiryDocsTooltip:
+        '이 상품은 만기 선물 계약입니다. 자세한 내용은 {docs}를 참조하세요.',
       indexMarketTooltip:
         '이 마켓은 {label}을 따릅니다. 자세한 내용은 {link}에서 확인할 수 있습니다.',
       closePositionWarningDescription:
@@ -795,6 +808,7 @@ export default defineI18nLocale(() => {
         leap: 'Leap',
         keplr: 'Keplr',
         ninji: 'Ninji',
+        rabby: 'Rabby',
         ledger: 'Ledger',
         phantom: 'Phantom',
         rainbow: 'Rainbow',
@@ -847,6 +861,10 @@ export default defineI18nLocale(() => {
         '현재 WTI PERP 마켓을 강제 청산하기 위한 거버넌스 제안이 진행 중입니다. 오픈 포지션을 정리하는 것을 권장하며, 그렇지 않을 경우 청산 시점의 시장 평균가로 포지션이 강제 청산됩니다. 이 마켓이 청산된 후, 새로운 만기 선물 마켓이 출시될 예정입니다.',
       pointsS1Ended:
         'Helix 포인트 시즌 1이 종료되었습니다. 참여해 주셔서 감사하며, 더 많은 업데이트를 기대해 주세요!',
+      expiryFuturesBanner:
+        '이 거래쌍은 {date}에 결제되는 만기 선물입니다. 해당 시점 이후의 모든 미청산 포지션은 결제 시점의 마크 가격으로 강제 결제됩니다.',
+      mkrExpiry:
+        'MKR에서 SKY로의 전환 과정의 일환으로, 이 거래쌍은 9월 14일(거버넌스 승인 대기 중)에 강제 결제됩니다. 해당 날짜에 미청산된 모든 포지션은 결제 시점의 마크 가격으로 강제 결제됩니다.',
       kado: {
         getStarted: '시작하기',
         title: 'Helix 2.0 소개! 완전히 새로운 트레이딩 경험을 발견하세요.'

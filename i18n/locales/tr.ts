@@ -481,6 +481,8 @@ export default defineI18nLocale(() => {
       'stop-limit': 'Zararı Durdur-Limit',
       derivatives: 'Türevler',
       liquidation: 'Tasfiye',
+      advanced: 'Gelişmiş',
+      slippage: 'Slippage',
       tickerOnly: 'Sadece {ticker}',
       cancelOrder: 'Emri İptal Et',
       showHistory: 'Geçmişi Göster',
@@ -498,6 +500,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: 'Tahmini Komisyon İadesi',
       partialFilled: 'Kısmen Dolduruldu',
       proceedAnyway: 'Yine de Devam Et',
+      slippageEstimate: 'Maks: {max}%',
       stopLossLimit: 'Zararı Durdur Limiti',
       searchMarket: 'Piyasa Ara...',
       boostedMarkets: 'Piyasa Ödülleri',
@@ -551,6 +554,8 @@ export default defineI18nLocale(() => {
         'Yoğun kullanım nedeniyle, gazsız işlemler şu anda kullanılamıyor',
       slippageTooltip:
         'Slipaj toleransı, işlem iptal edilmeden önce izin verilen maksimum fiyat değişimidir.',
+      makerTakerRateTooltip:
+        'Maker emirleri {makerFeeRate}% ücret öder. Taker emirleri {takerFeeRate}% ücret öder.',
       stopLossDetails:
         'Mark Fiyat {price} olduğunda, {quantity} için Zararı Durdur Piyasa emri tetiklenecek.',
       takeProfitDetails:
@@ -568,6 +573,11 @@ export default defineI18nLocale(() => {
       boostedMarketsTooltip:
         'Her piyasadaki taker ve maker emirleri için ödül oranı. Örneğin: 3x maker pts, bu piyasada maker emirleri için ödenen işlem ücretlerinin 3 katı ödül puanı alınacağı anlamına gelir.',
 
+      slippageModal: {
+        title: 'Maksimum slippage ayarla',
+        description:
+          'Kabul etmeyi düşündüğünüz maksimum slippage değerini belirleyin. Fiyat bu yüzdeden daha fazla değişirse, emriniz gerçekleştirilmeyecektir.'
+      },
       tab: {
         orders: 'Emirler',
         balances: 'Bakiyeler',
@@ -680,6 +690,7 @@ export default defineI18nLocale(() => {
       },
       sharePnlModal: {
         markPrice: 'Gösterge fiyat',
+        exitPrice: 'Çıkış fiyatı',
         entryPrice: 'Giriş fiyatı',
         mobileDownloadNote: 'İndirme sadece masaüstünde mevcut'
       },
@@ -739,6 +750,8 @@ export default defineI18nLocale(() => {
       closePositionWarningTitle: 'Yüksek fiyat etkisi tespit edildi',
       docsTooltip:
         'Bu ürün bir Endeks Perpetual’dür. Daha fazla bilgi için {docs}’e bakınız.',
+      expiryDocsTooltip:
+        'Bu ürün bir Vade Sonu Vadeli İşlem sözleşmesidir. Daha fazla bilgi için lütfen {docs} adresine bakın.',
       indexMarketTooltip:
         'Bu piyasa {label} değerini takip eder. Daha fazla detay için {link}’e bakınız.',
       closePositionWarningDescription:
@@ -813,6 +826,7 @@ export default defineI18nLocale(() => {
         leap: 'Leap',
         keplr: 'Keplr',
         ninji: 'Ninji',
+        rabby: 'Rabby',
         ledger: 'Ledger',
         phantom: 'Phantom',
         rainbow: 'Rainbow',
@@ -865,6 +879,10 @@ export default defineI18nLocale(() => {
         'There is currently a live governance proposal to force settle the WTI PERP market. You are encouraged to close open positions, or your position will be force settled at the mark price at the time of settlement. After this market is settled, a new expiry futures market will be launched.',
       pointsS1Ended:
         'Helix Puanları 1. Sezon sona erdi. Katılımınız için teşekkürler, daha fazla güncelleme için bizi takipte kalın!',
+      expiryFuturesBanner:
+        'Bu bir vade sonu vadeli işlem işlem çiftidir ve {date} tarihinde sonlandırılacaktır. Bu zamandan sonra açık kalan tüm pozisyonlar, vade sonundaki işaret fiyatı üzerinden zorunlu olarak kapatılacaktır.',
+      mkrExpiry:
+        'MKR’den SKY’a geçişin bir parçası olarak, bu işlem çifti (yönetim onayına bağlı olarak) 14 Eylül’de zorunlu olarak kapatılacaktır. O tarihte hâlâ açık olan tüm pozisyonlar, vade sonundaki işaret fiyatı üzerinden zorunlu olarak kapatılacaktır.',
 
       kado: {
         getStarted: 'Başlayın',
