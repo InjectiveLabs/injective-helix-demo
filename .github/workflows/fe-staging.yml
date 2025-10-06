@@ -214,7 +214,7 @@ jobs:
         run: |
           echo "Triggering fe-staging-testnet workflow"
 
-          gh workflow run "Frontend Staging Deployment" \
+          gh workflow run "Frontend Staging Deployment - Testnet" \
             --repo InjectiveLabs/injective-helix \
             --field branch="${{ github.event.inputs.branch }}" \
             --field description="Triggered from main staging deployment - ${{ github.event.inputs.description }}"
