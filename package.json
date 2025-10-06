@@ -15,7 +15,7 @@
     "dev:local": "LOCAL_LAYER=true nuxi dev",
     "build": "nuxi build",
     "start": "nuxi start",
-    "postinstall": "pnpm fetch:data && pnpm github:version",
+    "postinstall": "pnpm update '@injectivelabs/*' --latest && pnpm fetch:data && pnpm github:version",
     "generate": "NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "generateNoSourceMap": "BUILD_SOURCEMAP=false NODE_OPTIONS=--max-old-space-size=30720 nuxt generate",
     "analyze": "NODE_OPTIONS=--max-old-space-size=30720 ANALYZE_BUNDLE=true nuxi build --analyze",

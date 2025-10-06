@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { TokenStatic } from '@injectivelabs/sdk-ts'
 import { Modal } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 
 const modalStore = useSharedModalStore()
 
 const search = ref('')
 const showUnverifiedAssets = ref(false)
 
-const selectedToken = ref<TokenStatic | undefined>(undefined)
+const selectedToken = ref<undefined | TokenStatic>(undefined)
 
 function resetSelectedTrade() {
   selectedToken.value = undefined
