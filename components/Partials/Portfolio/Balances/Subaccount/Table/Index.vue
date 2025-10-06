@@ -268,22 +268,24 @@ function shareBalance(token: TokenStatic) {
     </template>
 
     <template #available-data="{ row }">
-      <PartialsCommonBalanceDisplay
-        v-if="!row.isStakingRow"
-        v-bind="{
-          token: row.token,
-          isAlignRight: true,
-          value: row[BalanceTableColumn.Available].toFixed()
-        }"
-      >
-        <SharedAmount
-          class="text-white"
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <PartialsCommonBalanceDisplay
           v-bind="{
-            amount: row[BalanceTableColumn.Available].toFixed()
+            token: row.token,
+            isAlignRight: true,
+            value: row[BalanceTableColumn.Available].toFixed()
           }"
-          :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
-        />
-      </PartialsCommonBalanceDisplay>
+        >
+          <SharedAmount
+            class="text-white"
+            v-bind="{
+              amount: row[BalanceTableColumn.Available].toFixed()
+            }"
+            :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
+          />
+        </PartialsCommonBalanceDisplay>
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
@@ -292,41 +294,47 @@ function shareBalance(token: TokenStatic) {
         {{ $t('portfolio.staked') }}:
       </span>
 
-      <SharedAmount
-        v-bind="{
-          showZeroAsEmDash: true,
-          amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
-      />
+      <CommonHideBalanceInfo>
+        <SharedAmount
+          v-bind="{
+            showZeroAsEmDash: true,
+            amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
+        />
+      </CommonHideBalanceInfo>
     </template>
 
     <template #pnl-data="{ row }">
-      <PartialsPortfolioBalancesSubaccountTablePnlCell
-        v-if="!row.isStakingRow"
-        v-bind="{
-          token: row.token
-        }"
-        @balance:share="shareBalance"
-      />
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <PartialsPortfolioBalancesSubaccountTablePnlCell
+          v-bind="{
+            token: row.token
+          }"
+          @balance:share="shareBalance"
+        />
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
     <template #total-data="{ row }">
-      <SharedAmount
-        v-if="!row.isStakingRow"
-        v-bind="{
-          amount: row[BalanceTableColumn.Total].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
-      />
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <SharedAmount
+          v-bind="{
+            amount: row[BalanceTableColumn.Total].toFixed()
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
+        />
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
     <template #total-usd-data="{ row }">
       <div :class="{ 'text-coolGray-400': row.isStakingRow }">
         <span v-if="!row.isVerified">&mdash;</span>
-        <template v-else>
+        <CommonHideBalanceInfo v-else>
           <SharedAmountUsd
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd].toFixed()
@@ -337,7 +345,7 @@ function shareBalance(token: TokenStatic) {
               <span>$</span>
             </template>
           </SharedAmountUsd>
-        </template>
+        </CommonHideBalanceInfo>
       </div>
     </template>
 
