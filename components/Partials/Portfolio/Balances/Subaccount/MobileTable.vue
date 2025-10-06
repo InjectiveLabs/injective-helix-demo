@@ -7,7 +7,6 @@ import type { UTableColumn, TransformedBalances } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    showPnlAndRoi: boolean
     columns: UTableColumn[]
     balance: TransformedBalances
     stakedAmount: BigNumberInBase

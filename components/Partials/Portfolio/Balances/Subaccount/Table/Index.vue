@@ -8,7 +8,6 @@ import { PortfolioCyTags, BalanceTableColumn } from '@/types'
 import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { TransformedBalances } from '@/types'
 
-const accountStore = useAccountStore()
 const breakpoints = useSharedBreakpoints()
 const { t } = useLang()
 const { lg } = useSharedBreakpoints()
@@ -46,9 +45,6 @@ const { rows } = useBalanceTransformer(
 const fourXl = breakpoints['4xl']
 
 const showStakingRow = ref(false)
-
-// TODO: set back to only one subaccount
-const showPnlAndRoi = computed(() => !!accountStore.hasMultipleSubaccounts)
 
 const columns = computed(() => {
   const columnArray = [
@@ -366,7 +362,6 @@ function shareBalance(token: TokenStatic) {
         balance,
         columns,
         stakedAmount,
-        showPnlAndRoi,
         stakedAmountInUsd
       }"
       @balance:share="shareBalance"
