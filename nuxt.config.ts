@@ -1,4 +1,5 @@
 import { head, hooks } from './nuxt-config'
+import { defineNuxtConfig } from 'nuxt/config'
 
 const isLocalLayer = process.env.LOCAL_LAYER === 'true'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -96,79 +97,81 @@ export default defineNuxtConfig({
 
   vite: {
     resolve: {
-      alias: [
-        {
-          find: '@shared/services/ethGasPrice',
-          replacement: new URL(
-            './injective-ui/Service/app/ethGasPrice/index.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/services',
-          replacement: new URL(
-            './injective-ui/Service/app',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/wallet/alchemy',
-          replacement: new URL(
-            './injective-ui/wallet/alchemy.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/Service',
-          replacement: new URL(
-            './injective-ui/Service/index.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/utils/constant',
-          replacement: new URL(
-            './injective-ui/utils/constant/index.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/types',
-          replacement: new URL(
-            './injective-ui/types/index.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/transformer/trade',
-          replacement: new URL(
-            './injective-ui/transformer/trade/index.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/utils/async',
-          replacement: new URL(
-            './injective-ui/utils/async.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared/utils/helper',
-          replacement: new URL(
-            './injective-ui/utils/helper.ts',
-            import.meta.url
-          ).pathname
-        },
-        {
-          find: '@shared',
-          replacement: new URL('./injective-ui', import.meta.url).pathname
-        },
-        {
-          find: '@injective-ui',
-          replacement: new URL('./injective-ui', import.meta.url).pathname
-        }
-      ]
+      alias: isLocalLayer
+        ? [
+            {
+              find: '@shared/services/ethGasPrice',
+              replacement: new URL(
+                './injective-ui/Service/app/ethGasPrice/index.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/services',
+              replacement: new URL(
+                './injective-ui/Service/app',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/wallet/alchemy',
+              replacement: new URL(
+                './injective-ui/wallet/alchemy.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/Service',
+              replacement: new URL(
+                './injective-ui/Service/index.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/utils/constant',
+              replacement: new URL(
+                './injective-ui/utils/constant/index.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/types',
+              replacement: new URL(
+                './injective-ui/types/index.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/transformer/trade',
+              replacement: new URL(
+                './injective-ui/transformer/trade/index.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/utils/async',
+              replacement: new URL(
+                './injective-ui/utils/async.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared/utils/helper',
+              replacement: new URL(
+                './injective-ui/utils/helper.ts',
+                import.meta.url
+              ).pathname
+            },
+            {
+              find: '@shared',
+              replacement: new URL('./injective-ui', import.meta.url).pathname
+            },
+            {
+              find: '@injective-ui',
+              replacement: new URL('./injective-ui', import.meta.url).pathname
+            }
+          ]
+        : []
     }
   }
 })

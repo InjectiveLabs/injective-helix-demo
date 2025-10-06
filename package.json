@@ -9,6 +9,7 @@
     "buffer": true
   },
   "scripts": {
+    "layer:fetch": "npx -y giget gh:InjectiveLabs/injective-ui/layer injective-ui --force",
     "fetch:data": "ts-node -P tsconfig-script.json ./scripts/marketMap.ts && ts-node -P tsconfig-script.json ./scripts/tokens.ts && ts-node -P tsconfig-script.json ./scripts/restriction.ts && ts-node -P tsconfig-script.json ./scripts/swap.ts && ts-node -P tsconfig-script.json ./scripts/denom.ts",
     "github:version": "ts-node -P tsconfig-script.json ./scripts/github.ts",
     "dev": "nuxi dev",

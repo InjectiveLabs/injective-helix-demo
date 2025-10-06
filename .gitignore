@@ -103,6 +103,9 @@ sw.*
 # Vendor files
 /public/vendor
 
+# Local injected UI layer (do not commit vendored layer)
+injective-ui/
+
 tsconfig.tsbuildinfo
 
 # testing
