@@ -177,7 +177,7 @@ jobs:
         run: |
           echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
 
-          gh workflow run "Helix Dapp Tests" \
+          gh workflow run "Helix Functional Tests - UI - Custom" \
             --repo InjectiveLabs/dapp-tests \
             --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
             --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
