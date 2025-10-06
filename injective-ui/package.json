@@ -1,0 +1,88 @@
+{
+  "name": "@injectivelabs/ui-layer",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepare": "husky",
+    "todo:": "add && pnpm prepare below",
+    "postinstall": "pnpm upgrade '@injectivelabs/*' --latest && pnpm prepare below"
+  },
+  "dependencies": {
+    "@bangjelkoski/ens-validation": "^0.1.1",
+    "@injectivelabs/exceptions": "1.16.16",
+    "@injectivelabs/networks": "1.16.16",
+    "@injectivelabs/nuxt-bugsnag": "0.0.12",
+    "@injectivelabs/sdk-ts": "1.16.16",
+    "@injectivelabs/ts-types": "1.16.16",
+    "@injectivelabs/utils": "1.16.16",
+    "@injectivelabs/wallet-base": "1.16.16",
+    "@injectivelabs/wallet-core": "1.16.16",
+    "@injectivelabs/wallet-cosmos": "1.16.16",
+    "@injectivelabs/wallet-cosmos-strategy": "1.16.16",
+    "@injectivelabs/wallet-cosmostation": "1.16.16",
+    "@injectivelabs/wallet-evm": "1.16.16",
+    "@injectivelabs/wallet-ledger": "1.16.16",
+    "@injectivelabs/wallet-magic": "1.16.16",
+    "@injectivelabs/wallet-private-key": "1.16.16",
+    "@injectivelabs/wallet-strategy": "1.16.16",
+    "@injectivelabs/wallet-trezor": "1.16.16",
+    "@injectivelabs/wallet-turnkey": "1.16.16",
+    "@injectivelabs/wallet-wallet-connect": "1.16.16",
+    "@metamask/eth-sig-util": "^8.2.0",
+    "@nuxt/kit": "3.18.1",
+    "@nuxt/ui": "2.22.1",
+    "@nuxtjs/i18n": "9.5.6",
+    "@pinia/nuxt": "0.11.2",
+    "@types/canvas-confetti": "^1.6.4",
+    "@vuepic/vue-datepicker": "^5.4.0",
+    "@vueuse/integrations": "13.7.0",
+    "@vueuse/nuxt": "13.7.0",
+    "canvas-confetti": "^1.6.0",
+    "ethers": "^6.13.7",
+    "js-confetti": "^0.12.0",
+    "nuxt": "3.18.1",
+    "nuxt-vitalizer": "0.10.0",
+    "qr-code-generator-vue3": "^1.4.21",
+    "vee-validate": "4.15.1",
+    "vue-gtag": "2.0.1",
+    "vue-hotjar": "1.4.0",
+    "vue-imask": "7.6.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@nuxt/eslint": "1.9.0",
+    "@nuxt/test-utils": "^3.19.1",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "9.33.0",
+    "eslint-plugin-perfectionist": "4.15.0",
+    "happy-dom": "^18.0.1",
+    "husky": "9.1.7",
+    "lint-staged": "16.1.5",
+    "playwright-core": "^1.53.1",
+    "prettier": "3.6.2",
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,vue}": [
+      "eslint --max-warnings 0 --no-ignore --fix"
+    ]
+  },
+  "pnpm": {
+    "overrides": {
+      "error-ex": "1.3.2",
+      "simple-swizzle": "0.2.2",
+      "@solana/web3.js": "1.98.0",
+      "bignumber.js": "9.1.2",
+      "rpc-websockets": "9.0.4",
+      "crypto-js": "4.2.0"
+    }
+  }
+}

@@ -70,7 +70,7 @@ export default defineNuxtConfig({
 
   extends: [
     isLocalLayer
-      ? '../injective-ui/layer'
+      ? './injective-ui'
       : 'github:InjectiveLabs/injective-ui/layer#master'
   ],
 
@@ -79,7 +79,7 @@ export default defineNuxtConfig({
     gzip: true,
     hostname:
       process.env.VITE_BASE_URL &&
-      !process.env.VITE_BASE_URL.includes('localhost')
+        !process.env.VITE_BASE_URL.includes('localhost')
         ? process.env.VITE_BASE_URL
         : 'https://helixapp.com'
   },
@@ -92,5 +92,83 @@ export default defineNuxtConfig({
     hid: 'nuxt-color-mode-script',
     storageKey: 'nuxt-color-mode',
     globalName: '__NUXT_COLOR_MODE__'
+  },
+
+  vite: {
+    resolve: {
+      alias: [
+        {
+          find: '@shared/services/ethGasPrice',
+          replacement: new URL(
+            './injective-ui/Service/app/ethGasPrice/index.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/services',
+          replacement: new URL(
+            './injective-ui/Service/app',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/wallet/alchemy',
+          replacement: new URL(
+            './injective-ui/wallet/alchemy.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/Service',
+          replacement: new URL(
+            './injective-ui/Service/index.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/utils/constant',
+          replacement: new URL(
+            './injective-ui/utils/constant/index.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/types',
+          replacement: new URL(
+            './injective-ui/types/index.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/transformer/trade',
+          replacement: new URL(
+            './injective-ui/transformer/trade/index.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/utils/async',
+          replacement: new URL(
+            './injective-ui/utils/async.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared/utils/helper',
+          replacement: new URL(
+            './injective-ui/utils/helper.ts',
+            import.meta.url
+          ).pathname
+        },
+        {
+          find: '@shared',
+          replacement: new URL('./injective-ui', import.meta.url).pathname
+        },
+        {
+          find: '@injective-ui',
+          replacement: new URL('./injective-ui', import.meta.url).pathname
+        }
+      ]
+    }
   }
 })

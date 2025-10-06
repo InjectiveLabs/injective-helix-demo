@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Amount/Index.vue > default behavior > small number with "<" > formats small number -0.0000001 with "<" 1`] = `"<span><span>-</span><span>&lt;0.000001</span></span>"`;
+
+exports[`Amount/Index.vue > default behavior > small number with "<" > formats small number 0.000000000001 with "<" 1`] = `"<span><!--v-if--><span>&lt;0.000001</span></span>"`;
+
+exports[`Amount/Index.vue > default behavior > small number with "<" > formats small number 0.000000000001234 with "<" 1`] = `"<span><!--v-if--><span>&lt;0.000001</span></span>"`;
+
+exports[`Amount/Index.vue > default behavior > small number with "<" > formats small number 0.0000001 with "<" 1`] = `"<span><!--v-if--><span>&lt;0.000001</span></span>"`;
+
+exports[`Amount/Index.vue > default behavior > small number with "<" > formats small number 1.000000000001234 with "<" 1`] = `"<span><!--v-if--><span>1</span></span>"`;

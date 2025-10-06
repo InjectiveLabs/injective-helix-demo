@@ -1,5 +1,5 @@
 import { SharedMarketType } from '@shared/types'
-import { BigNumberInBase, SECONDS_IN_A_DAY } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { deprecatedMarkets } from '@/app/data/market'
 import { TradeSubPage } from '@/types'
 import type { SharedUiMarketHistory } from '@shared/types'
@@ -82,7 +82,7 @@ export const getFormattedMarketsHistoryChartData = (
 
 export const marketHasRecentlyExpired = (market: ExpiryFuturesMarket) => {
   const now = Date.now() / 1000
-  const secondsInADay = SECONDS_IN_A_DAY.toNumber()
+  const secondsInADay = 86400
 
   if (!market) {
     return false
