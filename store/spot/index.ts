@@ -421,6 +421,10 @@ export const useSpotStore = defineStore('spot', {
       delete this.accountAverageEntries[marketId]
     },
 
+    resetSpotAverageEntries() {
+      this.accountAverageEntries = {}
+    },
+
     cancelSubaccountStream() {
       cancelSubaccountOrdersStream()
       cancelSubaccountTradesStream()
@@ -442,7 +446,6 @@ export const useSpotStore = defineStore('spot', {
       const {
         subaccountOrders,
         subaccountTrades,
-        accountAverageEntries,
         subaccountOrdersCount,
         subaccountTradesCount,
         subaccountOrderHistory,
@@ -454,7 +457,6 @@ export const useSpotStore = defineStore('spot', {
       spotStore.$patch({
         subaccountOrders,
         subaccountTrades,
-        accountAverageEntries,
         subaccountTradesCount,
         subaccountOrdersCount,
         subaccountOrderHistory,

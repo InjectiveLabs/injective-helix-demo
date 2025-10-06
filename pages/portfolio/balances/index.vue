@@ -52,12 +52,28 @@ function onOpenBankTransferModal() {
 }
 
 onWalletConnected(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
   spotStore.streamAccountAverageEntries({
     account: sharedWalletStore.injectiveAddress
   })
 })
 
-onUnmounted(() => spotStore.cancelAccountAverageEntriesStream())
+onWalletDisconnected(() => {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  spotStore.resetSpotAverageEntries()
+  spotStore.cancelAccountAverageEntriesStream()
+})
+
+onUnmounted(() => {
+  spotStore.resetSpotAverageEntries()
+  spotStore.cancelAccountAverageEntriesStream()
+})
 </script>
 
 <template>
