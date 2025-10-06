@@ -11,6 +11,7 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const swapStore = useSwapStore()
 const positionStore = usePositionStore()
+const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
@@ -95,6 +96,8 @@ onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
     return
   }
+
+  referralStore.fetchUserReferralDetails()
 
   spotStore.streamAccountAverageEntries({
     account: sharedWalletStore.injectiveAddress

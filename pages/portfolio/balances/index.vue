@@ -10,6 +10,7 @@ const appStore = useAppStore()
 const spotStore = useSpotStore()
 const accountStore = useAccountStore()
 const modalStore = useSharedModalStore()
+const referralStore = useReferralStore()
 const sharedTokenStore = useSharedTokenStore()
 const sharedWalletStore = useSharedWalletStore()
 const { aggregatedSubaccountTotalBalanceInUsd } = useBalance()
@@ -55,6 +56,8 @@ onWalletConnected(() => {
   if (!sharedWalletStore.isUserConnected) {
     return
   }
+
+  referralStore.fetchUserReferralDetails()
 
   spotStore.streamAccountAverageEntries({
     account: sharedWalletStore.injectiveAddress
