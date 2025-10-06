@@ -1,11 +1,11 @@
 import { IndexerGrpcArchiverStream } from '@injectivelabs/sdk-ts'
+import { HELIX_ENDPOINTS } from '@/app/utils/constants'
 import { streamProvider } from '@/app/providers/StreamProvider'
 import { StreamType } from '@/types'
 import type { SpotAverageEntriesStreamCallback } from '@injectivelabs/sdk-ts'
 
-// TODO: change to mainnet when ready
 export const archiverStream = new IndexerGrpcArchiverStream(
-  'https://k8s.mainnet.staging.archiver.grpc-web.injective.network'
+  HELIX_ENDPOINTS.archiver
 )
 
 export const cancelSpotAverageEntriesStream = () => {

@@ -23,7 +23,15 @@ const NINJA_PASS_ENDPOINT: string =
   import.meta.env.VITE_NINJA_PASS_ENDPOINT ||
   'https://api.ninjapass.injective.dev'
 
+// TODO: change to mainnet when ready
+const ARCHIVER_ENDPOINT = IS_MAINNET
+  ? 'https://k8s.mainnet.staging.archiver.grpc-web.injective.network'
+  : IS_TESTNET
+    ? 'https://k8s.testnet.staging.archiver.grpc-web.injective.network'
+    : ENDPOINTS.indexer
+
 export const HELIX_ENDPOINTS = {
+  archiver: ARCHIVER_ENDPOINT,
   campaign: CAMPAIGN_ENDPOINT,
   ninjaPass: NINJA_PASS_ENDPOINT
 }
