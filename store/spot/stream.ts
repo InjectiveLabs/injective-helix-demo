@@ -337,11 +337,11 @@ export const streamAccountAverageEntries = ({
           const quantity = new BigNumberInBase(averageEntry.quantity)
 
           if (quantity.isZero()) {
-            spotStore.deleteSpotAverageEntry(averageEntry.marketId)
+            spotStore.deleteAccountAverageEntry(averageEntry.marketId)
             return
           }
 
-          spotStore.setSpotAverageEntry(averageEntry)
+          spotStore.setAccountAverageEntry(averageEntry)
           break
         }
       }

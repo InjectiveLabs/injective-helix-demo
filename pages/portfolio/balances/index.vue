@@ -66,12 +66,12 @@ onWalletDisconnected(() => {
     return
   }
 
-  spotStore.resetSpotAverageEntries()
+  spotStore.resetAccountAverageEntries()
   spotStore.cancelAccountAverageEntriesStream()
 })
 
 onUnmounted(() => {
-  spotStore.resetSpotAverageEntries()
+  spotStore.resetAccountAverageEntries()
   spotStore.cancelAccountAverageEntriesStream()
 })
 </script>

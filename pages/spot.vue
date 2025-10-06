@@ -107,13 +107,12 @@ onWalletDisconnected(() => {
   }
 
   spotStore.cancelAccountAverageEntriesStream()
-  spotStore.resetSpotAverageEntries()
+  spotStore.resetAccountAverageEntries()
 })
 
 onUnmounted(() => {
   spotStore.reset()
   spotStore.cancelTradesStream()
-  spotStore.resetSpotAverageEntries()
   spotStore.cancelAccountAverageEntriesStream()
   derivativeStore.cancelMarketsMarkPrices()
 })

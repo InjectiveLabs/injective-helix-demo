@@ -413,15 +413,15 @@ export const useSpotStore = defineStore('spot', {
       })
     },
 
-    setSpotAverageEntry(averageEntry: SpotAverageEntry) {
+    setAccountAverageEntry(averageEntry: SpotAverageEntry) {
       this.accountAverageEntries[averageEntry.marketId] = averageEntry
     },
 
-    deleteSpotAverageEntry(marketId: string) {
+    deleteAccountAverageEntry(marketId: string) {
       delete this.accountAverageEntries[marketId]
     },
 
-    resetSpotAverageEntries() {
+    resetAccountAverageEntries() {
       this.accountAverageEntries = {}
     },
 
@@ -467,14 +467,20 @@ export const useSpotStore = defineStore('spot', {
     reset() {
       const spotStore = useSpotStore()
 
-      const { trades, orderbook, subaccountOrders, subaccountTrades } =
-        initialStateFactory()
+      const {
+        trades,
+        orderbook,
+        subaccountOrders,
+        subaccountTrades,
+        accountAverageEntries
+      } = initialStateFactory()
 
       spotStore.$patch({
         trades,
         orderbook,
         subaccountOrders,
-        subaccountTrades
+        subaccountTrades,
+        accountAverageEntries
       })
     }
   }
