@@ -155,12 +155,12 @@ watch(countdown, (countdown) => {
           }${annualizedFundingRateToString}%`"
         >
           <span
+            class="cursor-pointer flex"
             :class="
               getColorClassForChange(fundingRateToBigNumber, {
                 zeroClass: 'text-green-500'
               })
             "
-            class="cursor-pointer flex"
           >
             <SharedAmount
               v-bind="{

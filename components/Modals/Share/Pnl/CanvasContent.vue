@@ -68,10 +68,10 @@ function updateScale() {
         </div>
 
         <div class="flex items-center gap-2 mt-3 mb-4">
-          <slot name="icon"></slot>
+          <slot name="icon" />
 
           <span class="text-sm">
-            <slot name="ticker"></slot>
+            <slot name="ticker" />
           </span>
 
           <div
@@ -91,7 +91,7 @@ function updateScale() {
 
         <span v-if="$slots.performance">
           <span class="font-bold text-2xl md:text-[32px] block leading-tight">
-            <slot name="performance"></slot>
+            <slot name="performance" />
           </span>
           <slot name="performanceLabel">{{ $t('common.pnl') }}</slot>
         </span>
@@ -101,21 +101,21 @@ function updateScale() {
             <span class="text-coolGray-450 font-medium">
               {{ $t('trade.sharePnlModal.entryPrice') }}
             </span>
-            <slot name="entryPrice"></slot>
+            <slot name="entryPrice" />
           </div>
 
           <div v-if="$slots.exitPrice" class="flex flex-col gap-1">
             <span class="text-coolGray-450 font-medium">
               {{ $t('trade.sharePnlModal.exitPrice') }}
             </span>
-            <slot name="exitPrice"></slot>
+            <slot name="exitPrice" />
           </div>
 
           <div v-if="$slots.markPrice" class="flex flex-col gap-1">
             <span class="text-coolGray-450 font-medium">
               {{ $t('trade.sharePnlModal.markPrice') }}
             </span>
-            <slot name="markPrice"></slot>
+            <slot name="markPrice" />
           </div>
         </div>
 

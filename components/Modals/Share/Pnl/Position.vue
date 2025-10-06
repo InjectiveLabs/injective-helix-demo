@@ -42,9 +42,9 @@ function onClose() {
       <ModalsSharePnlCanvasContent
         v-if="market"
         v-bind="{
-          leverage: effectiveLeverage,
+          selectedCharacter,
           isLoading: isDownloading,
-          selectedCharacter: selectedCharacter,
+          leverage: effectiveLeverage,
           isLong: position.direction === TradeDirection.Long
         }"
       >

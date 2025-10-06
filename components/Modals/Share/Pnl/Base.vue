@@ -4,10 +4,10 @@ import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
 import type { Modal } from '@/types'
 
-const { lg } = useSharedBreakpoints()
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
+const { lg } = useSharedBreakpoints()
 
 const props = defineProps<{
   modal: Modal

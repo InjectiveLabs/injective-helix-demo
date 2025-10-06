@@ -22,6 +22,10 @@ const { price, market, entryPrice, percentagePnl } = useTrade(
   computed(() => props.trade)
 )
 
+const isClosedLongPosition = computed(
+  () => props.trade.tradeDirection === TradeDirection.Sell
+)
+
 const priceDecimals = computed(
   () => market.value?.priceDecimals || UI_DEFAULT_PRICE_DISPLAY_DECIMALS
 )
@@ -43,9 +47,9 @@ function onClose() {
       <ModalsSharePnlCanvasContent
         v-if="market"
         v-bind="{
+          selectedCharacter,
           isLoading: isDownloading,
-          selectedCharacter: selectedCharacter,
-          isLong: trade.tradeDirection === TradeDirection.Sell
+          isLong: isClosedLongPosition
         }"
       >
         <template #icon>

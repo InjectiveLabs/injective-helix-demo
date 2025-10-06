@@ -18,6 +18,8 @@ const emit = defineEmits<{
   'on:close': []
 }>()
 
+const spotRoi = useSpotRoi(props.token)
+
 const ticker = computed(() => `${props.token.symbol} SPOT`)
 
 const currentTokenPrice = computed(() =>
@@ -26,8 +28,6 @@ const currentTokenPrice = computed(() =>
 const currentTokenPriceToBigNumber = computed(
   () => new BigNumberInBase(currentTokenPrice.value)
 )
-
-const spotRoi = useSpotRoi(props.token)
 
 const priceDecimals = computed(
   () => props.token.decimals || UI_DEFAULT_MIN_DISPLAY_DECIMALS
@@ -49,8 +49,8 @@ function onClose() {
     <template #canvas="{ isDownloading, selectedCharacter }">
       <ModalsSharePnlCanvasContent
         v-bind="{
-          isLoading: isDownloading,
-          selectedCharacter: selectedCharacter
+          selectedCharacter,
+          isLoading: isDownloading
         }"
       >
         <template #icon>
@@ -64,13 +64,12 @@ function onClose() {
 
         <template #performance>
           <span
-            :class="
-              getColorClassForChange(spotRoi?.roiPercentage || ZERO_IN_BASE)
-            "
+            v-if="spotRoi"
+            :class="getColorClassForChange(spotRoi.roiPercentage)"
           >
             {{
-              (spotRoi?.roiPercentage?.gte(0) ? '+' : '') +
-              spotRoi?.roiPercentage?.toFormat(2)
+              (spotRoi.roiPercentage.gte(0) ? '+' : '') +
+              spotRoi.roiPercentage.toFormat(2)
             }}%
           </span>
         </template>
