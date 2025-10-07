@@ -895,22 +895,16 @@ export default defineI18nLocale(() => {
         currentCompetitionTitle:
           'Helix에서 거래하고 {linkDescription}에서 여러분의 몫을 차지하세요',
         gwagon: {
-          blog: '블로그',
-          ended: '종료됨',
           title: 'Trade Like a G',
           description:
             'G-Wagon을 얻을 기회를 위해 거래하세요! 10월 1일 14:00 UTC부터 10월 22일 14:00 UTC까지, 2대의 G-Wagon 중 하나를 얻을 기회를 위해 거래하세요. 하나는 최고 PnL 트레이더에게, 다른 하나는 행운의 추첨 당첨자에게 제공됩니다. 10달러의 거래량마다 한 번의 참가 기회를 얻습니다. 자세한 내용은 {blog}를 방문하세요.'
         },
         tesla: {
-          blog: '블로그',
-          ended: '종료됨',
           title: 'Tesla를 획득하세요!',
           description:
             'Tesla를 얻을 기회를 위해 거래하세요! 11월 26일 15:00 UTC부터 12월 6일 15:00 UTC까지, PnL 기준 상위 트레이더가 Tesla Model 3를 획득합니다. 자세한 내용은 {blog}를 방문하세요.'
         },
         ownYourAsset: {
-          blog: '블로그',
-          ended: '종료됨',
           title: '자산을 소유하고, 미래를 통제하세요.',
           description:
             'Helix에서 $50K 상금 풀의 몫을 두고 경쟁하세요. 2025년 2월 21일 오후 6시 UTC부터 2025년 3월 3일 오후 6시 UTC까지, 무작위 추첨을 통해 $50k 상금 풀에서 $1,000을 얻을 기회를 위해 거래할 수 있습니다. $1,000의 거래량마다 한 번의 참가 기회를 얻습니다. 자세한 내용은 {blog}를 방문하세요'
@@ -1771,6 +1765,8 @@ export default defineI18nLocale(() => {
       docs: '문서',
       back: '뒤로',
       base: '기본',
+      blog: '블로그',
+      ended: '종료됨',
       copy: '복사',
       here: '여기',
       link: '링크',

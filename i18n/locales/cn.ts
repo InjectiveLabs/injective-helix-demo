@@ -862,22 +862,16 @@ export default defineI18nLocale(() => {
         currentCompetitionTitle:
           '参与 Helix 交易挑战，争夺属于您的 {linkDescription}',
         gwagon: {
-          blog: 'blog',
-          ended: '已结束',
           title: 'Trade Like a G',
           description:
             '参与交易赢取 G-Wagon！活动时间为 10 月 1 日 14:00 UTC 至 10 月 22 日 14:00 UTC，两位幸运用户将分别获得一辆 G-Wagon：一辆奖励给 PnL 最高的交易员，另一辆将通过抽奖送出。每 $10 的交易量即可获得一次抽奖资格。更多详情请访问 {blog}。'
         },
         tesla: {
-          blog: 'blog',
-          ended: '已结束',
           title: '赢取一辆特斯拉！',
           description:
             '参与交易赢取特斯拉！活动时间为 11 月 26 日 15:00 UTC 至 12 月 6 日 15:00 UTC，PnL 最高的交易员将赢得一辆 Tesla Model 3。更多详情请访问 {blog}。'
         },
         ownYourAsset: {
-          blog: 'blog',
-          ended: '已结束',
           title: '掌控资产，把握未来。',
           description:
             '参与 Helix 交易挑战，瓜分 $50,000 奖池。活动时间为 2025 年 2 月 21 日 18:00 UTC 至 3 月 3 日 18:00 UTC。每累计 $1,000 的交易量可获得一次抽奖资格，赢取 $1,000。更多详情请访问 {blog}'
@@ -1719,6 +1713,8 @@ export default defineI18nLocale(() => {
       docs: '文档',
       back: '返回',
       base: '基础资产',
+      blog: 'blog',
+      ended: '已结束',
       copy: '复制',
       here: '这里',
       link: '链接',

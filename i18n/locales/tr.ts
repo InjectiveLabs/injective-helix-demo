@@ -914,22 +914,16 @@ export default defineI18nLocale(() => {
         currentCompetitionTitle:
           'Helix’te işlem yapın ve {linkDescription} ödül havuzundan payınızı kazanın',
         gwagon: {
-          blog: 'blog',
-          ended: 'Sona Erdi',
           title: 'Bir G Gibi İşlem Yap',
           description:
             'Bir G-Wagon kazanma şansı için işlem yapın! 1 Ekim 14:00 UTC’den 22 Ekim 14:00 UTC’ye kadar, en yüksek PnL işlemcisi ve şanslı çekiliş kazananı olmak üzere iki G-Wagon’dan birini kazanma şansı yakalayın. Her 10$ işlem hacmi bir giriş hakkı kazandırır. Daha fazla detay için {blog}’a bakın.'
         },
         tesla: {
-          blog: 'blog',
-          ended: 'Sona Erdi',
           title: 'Tesla Kazanın!',
           description:
             'Tesla kazanma şansı için işlem yapın! 26 Kasım 15:00 UTC’den 6 Aralık 15:00 UTC’ye kadar, en yüksek PnL işlemcisi Tesla Model 3 kazanacak. Daha fazla detay için {blog}’a bakın.'
         },
         ownYourAsset: {
-          blog: 'blog',
-          ended: 'Sona Erdi',
           title: 'Varlıklarınızı Sahiplenin, Geleceğinizi Kontrol Edin.',
           description:
             'Helix’te 50.000$ ödül havuzundan payınızı almak için yarışın. 21 Şubat 2025 18:00 UTC’den 3 Mart 2025 18:00 UTC’ye kadar, 50.000$ ödül havuzundan 1.000$ kazanma şansı için işlem yapabilirsiniz. Her 1.000$ işlem hacmi bir giriş hakkı sağlar. Daha fazla detay için {blog}’a bakın.'
@@ -1799,6 +1793,8 @@ export default defineI18nLocale(() => {
       docs: 'dokümanlar',
       back: 'Geri',
       base: 'Temel',
+      blog: 'blog',
+      ended: 'Sona Erdi',
       copy: 'Kopyala',
       here: 'burada',
       link: 'bağlantı',
