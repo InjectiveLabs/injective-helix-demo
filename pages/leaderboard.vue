@@ -109,7 +109,7 @@ function fetchCampaigns() {
                 :to="page.isDisabled ? '' : { name: page.pageName }"
                 class="capitalize md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
                 :class="{
-                  'hidden': page.isDisabled,
+                  hidden: page.isDisabled,
                   'text-coolGray-200': route.name !== page.pageName
                 }"
               >

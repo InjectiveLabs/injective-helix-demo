@@ -685,9 +685,9 @@ export const FIRST_CAMPAIGN_NAME =
 export const SECOND_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
 export const THIRD_CAMPAIGN_NAME =
   'Own Your Assets, Control Your Future Giveaway'
+export const FORTH_CAMPAIGN_NAME = 'Oct 7 Test'
 
-export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
-  'Own Your Assets, Control Your Future Giveaway'
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = 'Oct 7 Test'
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
