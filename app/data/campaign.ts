@@ -789,4 +789,4 @@ export const competitionVolumePerEntryMap: Record<string, number> = {
   [THIRD_CAMPAIGN_NAME]: 1000
 }
 
-export const CAMPAIGNS_TO_HIDE = ['oct 7 test'] as string[]
+export const CAMPAIGNS_TO_HIDE = ['test oct 7'] as string[]
