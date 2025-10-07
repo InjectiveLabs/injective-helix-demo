@@ -858,9 +858,6 @@ export default defineI18nLocale(() => {
           '首次实现链上交易最大规模的上市股票，统一指数接入。全天候 24/7 访问传统金融市场，最低手续费，最高 25 倍杠杆，仅在 Helix。'
       },
       leaderboard: {
-        currentCompetitionLink: 'Helix 奖池高达 $50K！',
-        currentCompetitionTitle:
-          '参与 Helix 交易挑战，争夺属于您的 {linkDescription}',
         gwagon: {
           title: 'Trade Like a G',
           description:
@@ -1524,7 +1521,7 @@ export default defineI18nLocale(() => {
       privacyPolicy: '隐私政策',
       rulesTermsAndConditions: '规则、条款与条件',
       refresh: '排行榜每小时整点更新一次',
-      description: 'Helix 根据链上交易盈利情况（PnL）对交易员进行排名',
+      description: 'Helix 根据链上交易盈利情况对交易员进行排名',
       tradeAndWin: '还没有上榜？快来 Helix 交易赢取排名吧！',
       blocked:
         '美国、英国及官方 {terms} 中列出的其他部分国家/地区的居民无法参与或赢得本次竞赛。',
@@ -1558,7 +1555,6 @@ export default defineI18nLocale(() => {
         currentLeader: '当前领先者',
         competitionDuration: '剩余时间： {duration}',
         noVolumeData: '暂无交易竞赛结果',
-        termsAndConditionsApply: '适用的用户条款',
         checkBackLater: '请稍后回来查看您是否获胜！',
         competitionBeginning: '竞赛即将开始...',
         noPastCompetition: '当前暂无往期竞赛。',

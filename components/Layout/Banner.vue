@@ -2,14 +2,14 @@
 import { getHubUrl } from '@shared/utils/network'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { NOTIFI_LINK } from '@shared/utils/constant'
-import { format, isBefore } from 'date-fns'
+import { format, isBefore, isWithinInterval } from 'date-fns'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
 import {
   DEFAULT_TRUNCATE_LENGTH,
   DEPRECATED_WALLET_DOCS_LINK
 } from '@/app/utils/constants'
-import { TradePage, UtmSource, NoticeBanner } from '@/types'
+import { TradePage, UtmSource, NoticeBanner, LeaderboardSubPage } from '@/types'
 
 type Banner = {
   id: string
@@ -128,17 +128,17 @@ const chainUpgradeBanners = computed<Banner[]>(() => [
 ])
 
 const promotionalBanners = computed<Banner[]>(() => [
-  // {
-  //   id: NoticeBanner.OwnYourAssetCampaign,
-  //   shouldDisplay:
-  //     !appStore.userState.bannersViewed.includes(
-  //       NoticeBanner.OwnYourAssetCampaign
-  //     ) &&
-  //     isWithinInterval(now.value, {
-  //       end: new Date(1733497200000),
-  //       start: new Date(1732633200000)
-  //     })
-  // },
+  {
+    id: NoticeBanner.VolumeVictoryCampaign,
+    shouldDisplay:
+      !appStore.userState.bannersViewed.includes(
+        NoticeBanner.VolumeVictoryCampaign
+      ) &&
+      isWithinInterval(now.value, {
+        end: new Date(1761242400000), // Thursday, October 23, 2025 6:00:00 PM UTC
+        start: new Date(1760032800000) // Thursday, October 9, 2025 6:00:00 PM UTC
+      })
+  },
   {
     id: NoticeBanner.StockTwits,
     shouldDisplay:
@@ -262,22 +262,22 @@ function onClickStockTwitsCta() {
           {{ $t('common.here') }}
         </NuxtLink>
       </template>
-    </i18n-t>
+    </i18n-t> -->
 
     <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.OwnYourAssetCampaign"
+      v-if="bannerToDisplay.id === NoticeBanner.VolumeVictoryCampaign"
       tag="p"
-      keypath="banners.leaderboard.currentCompetitionLink"
+      keypath="banners.leaderboard.currentCompetitionTitle"
     >
       <template #linkDescription>
         <NuxtLink
-          class="inline-flex font-semibold"
+          class="inline-flex font-semibold hover:text-black/70 underline transition-colors"
           :to="{ name: LeaderboardSubPage.Competition }"
         >
-          {{ $t('banners.leaderboard.currentCompetitionTitle') }}
+          {{ $t('banners.leaderboard.currentCompetitionLink') }}
         </NuxtLink>
       </template>
-    </i18n-t> -->
+    </i18n-t>
 
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.DeprecatedWallet"

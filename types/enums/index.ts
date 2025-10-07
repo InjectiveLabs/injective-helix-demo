@@ -425,7 +425,7 @@ export enum NoticeBanner {
   PerpSettleMarket = 'perp-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',
   UpcomingChainUpgrade = 'upcoming-chain-upgrade',
-  OwnYourAssetCampaign = 'own-your-asset-campaign'
+  VolumeVictoryCampaign = 'volume-victory-campaign'
 }
 
 export enum SpotGridMessages {

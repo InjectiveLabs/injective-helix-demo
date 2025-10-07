@@ -81,12 +81,12 @@ function fetchCampaigns() {
     />
 
     <div
-      class="container lg:px-[120px] max-lg:px-4 mx-auto text-center relative"
+      class="container lg:px-24 3xl:px-[120px] max-lg:px-4 mx-auto text-center relative"
     >
       <AppHocLoading v-bind="{ status, isFullScreen: true }">
         <section class="flex flex-col space-y-2 pt-12 pb-7 md:py-40">
           <div
-            class="uppercase font-rubik font-black text-3xl md:text-6xl"
+            class="uppercase font-black text-3xl md:text-6xl tracking-[3.6px]"
             :data-cy="dataCyTag(LeaderBoardCyTags.title)"
           >
             {{ $t('leaderboard.title') }}

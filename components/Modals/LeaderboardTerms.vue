@@ -3,6 +3,7 @@ import { Modal, LeaderboardSubPage } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+const { sm } = useSharedBreakpoints()
 
 const isModalOpen = computed(
   () =>
@@ -30,12 +31,12 @@ function onConfirm() {
 
 <template>
   <AppModal
-    v-bind="{ isXl: true, modelValue: isModalOpen }"
+    v-bind="{ isXl: true, modelValue: isModalOpen, isHideCloseButton: sm }"
     @on:close="onCancel"
   >
     <div class="relative">
-      <PartialsLeaderboardTermsOwnYourAsset
-        class="max-h-[350px] overflow-scroll"
+      <PartialsLeaderboardTermsVolumeVictory
+        class="max-h-[350px] sm:max-h-[550px] overflow-scroll"
       />
 
       <div class="mt-6 flex items-center justify-center gap-3">

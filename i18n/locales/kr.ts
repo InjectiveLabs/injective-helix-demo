@@ -891,9 +891,6 @@ export default defineI18nLocale(() => {
           '처음으로 하나의 통합된 지수를 통해 최대 규모의 상장 주식을 온체인에서 거래하세요. Helix에서만 최저 수수료와 최대 25배 레버리지로 24/7 TradFi에 액세스하세요.'
       },
       leaderboard: {
-        currentCompetitionLink: 'Helix에서 $50K 상금 풀!',
-        currentCompetitionTitle:
-          'Helix에서 거래하고 {linkDescription}에서 여러분의 몫을 차지하세요',
         gwagon: {
           title: 'Trade Like a G',
           description:
@@ -1568,7 +1565,7 @@ export default defineI18nLocale(() => {
       rulesTermsAndConditions: '규칙, 이용약관',
       refresh: '리더보드는 매시 정각에 새로고침됩니다',
       description:
-        'Helix는 온체인 거래 PnL을 기준으로 상위 트레이더를 순위를 매깁니다',
+        'Helix는 온체인 거래 을 기준으로 상위 트레이더를 순위를 매깁니다',
       tradeAndWin:
         '아직 리더보드에 없으신가요? Helix에서 수익성 있는 거래를 하여 자리를 차지하세요!',
       blocked:
@@ -1603,7 +1600,6 @@ export default defineI18nLocale(() => {
         currentLeader: '현재 선두',
         competitionDuration: '남은 시간: {duration}',
         noVolumeData: '트레이딩 대회 결과가 없습니다',
-        termsAndConditionsApply: '이용약관이 적용됩니다',
         checkBackLater: '당첨 여부를 확인하려면 나중에 다시 확인해주세요!',
         competitionBeginning: '대회가 곧 시작됩니다...',
         noPastCompetition: '현재 과거 대회가 없습니다.',

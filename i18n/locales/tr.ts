@@ -910,9 +910,6 @@ export default defineI18nLocale(() => {
           'Büyük halka açık hisse senetlerini ilk kez tek entegre bir endeks üzerinden zincir üzerinde işlem yapın. En düşük ücretler ve 25X’e kadar kaldıraç ile TradFi’ya 7/24 erişim sadece Helix’te.'
       },
       leaderboard: {
-        currentCompetitionLink: 'Helix’te 50.000$ ödül havuzu!',
-        currentCompetitionTitle:
-          'Helix’te işlem yapın ve {linkDescription} ödül havuzundan payınızı kazanın',
         gwagon: {
           title: 'Bir G Gibi İşlem Yap',
           description:
@@ -1592,7 +1589,7 @@ export default defineI18nLocale(() => {
       rulesTermsAndConditions: 'Kurallar, Şartlar ve Koşullar',
       refresh: 'Liderlik tablosu her saat başında yenilenir',
       description:
-        "Helix, en iyi Trader’ları zincir üstü ticaret PnL'lerine göre sıralar",
+        "Helix, en iyi Trader’ları zincir üstü ticaret'lerine göre sıralar",
       tradeAndWin:
         'Henüz liderlik tablosunda değil misin? Kazanan işlemler yaparak yerini al!',
       blocked:
@@ -1627,7 +1624,6 @@ export default defineI18nLocale(() => {
         currentLeader: 'Mevcut lider',
         competitionDuration: 'Kalan Süre: {duration}',
         noVolumeData: 'Ticaret yarışması sonucu bulunamadı',
-        termsAndConditionsApply: 'Şartlar ve koşullar geçerlidir',
         checkBackLater:
           'Kazandınız mı görmek için daha sonra tekrar kontrol edin!',
         competitionBeginning: 'Yarışma başlamak üzere...',

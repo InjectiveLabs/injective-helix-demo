@@ -38,8 +38,8 @@ function fetchLeaderboard() {
   ]
 
   if (
-    CAMPAIGNS_WITH_ANNOUNCED_WINNERS.includes(props.campaign.name) &&
-    route.name === LeaderboardSubPage.PastCompetitions
+    route.name === LeaderboardSubPage.PastCompetitions &&
+    CAMPAIGNS_WITH_ANNOUNCED_WINNERS.includes(props.campaign.name)
   ) {
     promises.push(
       campaignStore.fetchLeaderboardCompetitionResults(

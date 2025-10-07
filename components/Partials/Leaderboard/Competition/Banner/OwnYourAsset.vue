@@ -62,7 +62,7 @@ const isEndedCampaign = computed(() => {
         :to="{ name: MainPage.OwnYourAssetCompetitionTerms }"
         class="text-left text-xs xl:text-sm hover:text-blue-500 hover:border-b-blue-500 opacity-70"
       >
-        {{ $t('leaderboard.competition.termsAndConditionsApply') }}
+        {{ $t('leaderboard.competition.rulesTermsAndConditionsApply') }}
       </NuxtLink>
     </div>
 
