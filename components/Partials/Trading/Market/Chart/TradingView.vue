@@ -63,8 +63,10 @@ const showTradeHistory = computed({
   set: (value) => {
     if (!value) {
       setupChartMarkers(true)
+      clearAllOrderLines()
     } else {
       setupChartMarkers()
+      modifyLimitOrderLines()
     }
   }
 })
@@ -279,6 +281,10 @@ function clearAllOrderLines() {
 }
 
 function modifyLimitOrderLines() {
+  if (!showTradeHistory.value) {
+    return
+  }
+
   nextTick(() => {
     const updatedOrderLinesId: string[] = []
     const chart = tradingView.value.view?.chart()
