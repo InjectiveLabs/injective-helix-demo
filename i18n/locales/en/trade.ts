@@ -4,6 +4,7 @@ export default {
   trade: {
     tp: 'TP',
     sl: 'SL',
+    mid: 'Mid',
     fee: 'Fee',
     buy: 'Buy',
     max: 'Max',
