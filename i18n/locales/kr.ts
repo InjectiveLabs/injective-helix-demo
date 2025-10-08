@@ -474,7 +474,7 @@ export default defineI18nLocale(() => {
       advanced: '고급 설정',
       tickerOnly: '{ticker} 전용',
       cancelOrder: '주문 취소',
-      showHistory: '내역 보기',
+      showOrders: '주문 표시',
       makerRate: '메이커 수수료율',
       maxLeverage: '최대 레버리지',
       'stop-market': '스탑-시장가',

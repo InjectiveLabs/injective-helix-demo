@@ -485,7 +485,7 @@ export default defineI18nLocale(() => {
       slippage: 'Slippage',
       tickerOnly: 'Sadece {ticker}',
       cancelOrder: 'Emri İptal Et',
-      showHistory: 'Geçmişi Göster',
+      showOrders: 'Siparişleri Göster',
       makerRate: 'Maker Komisyon Oranı',
       maxLeverage: 'Maks. Kaldıraç',
       'stop-market': 'Zararı Durdur-Piyasa',
