@@ -6,16 +6,17 @@ import { getIndexerGrpcCampaignApi } from '@/app/Services'
 import { ADMIN_UI_SMART_CONTRACT } from '@/app/utils/constants'
 import { fetchLeaderboardCompetitionResults } from '@/app/services/leaderboard'
 import {
-  LP_CAMPAIGNS,
-  campaignNameOverrideMap,
-  PAST_LEADERBOARD_CAMPAIGN_NAMES
-} from '@/app/data/campaign'
-import {
   joinGuild,
   createGuild,
   claimReward,
   submitLeaderboardCompetitionClaim
 } from '@/store/campaign/message'
+import {
+  LP_CAMPAIGNS,
+  CAMPAIGNS_TO_HIDE,
+  campaignNameOverrideMap,
+  PAST_LEADERBOARD_CAMPAIGN_NAMES
+} from '@/app/data/campaign'
 import {
   pollGuildDetails,
   fetchGuildsByTVL,
@@ -295,7 +296,11 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pnlOrVolumeCampaigns = campaigns.reduce(
+      const filteredCampaigns = campaigns.filter(
+        ({ name }) => !CAMPAIGNS_TO_HIDE.includes(name.trim().toLowerCase())
+      )
+
+      const pnlOrVolumeCampaigns = filteredCampaigns.reduce(
         (pnlOrVolumeCampaigns, campaign) => {
           if (
             ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
@@ -338,7 +343,11 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pnlOrVolumeCampaigns = campaigns.reduce(
+      const filteredCampaigns = campaigns.filter(
+        ({ name }) => !CAMPAIGNS_TO_HIDE.includes(name.trim().toLowerCase())
+      )
+
+      const pnlOrVolumeCampaigns = filteredCampaigns.reduce(
         (pnlOrVolumeCampaigns, campaign) => {
           if (
             ![LeaderboardType.Pnl, LeaderboardType.Volume].includes(
@@ -387,7 +396,11 @@ export const useCampaignStore = defineStore('campaign', {
         return
       }
 
-      const pastPnlOrVolumeCampaigns = campaigns.reduce(
+      const filteredCampaigns = campaigns.filter(
+        ({ name }) => !CAMPAIGNS_TO_HIDE.includes(name.trim().toLowerCase())
+      )
+
+      const pastPnlOrVolumeCampaigns = filteredCampaigns.reduce(
         (pastPnlOrVolumeCampaigns, campaign) => {
           const campaignName =
             campaignNameOverrideMap[campaign.name] || campaign.name

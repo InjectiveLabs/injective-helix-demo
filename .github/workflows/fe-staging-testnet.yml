@@ -1,4 +1,4 @@
-name: Frontend Staging Deployment
+name: Frontend Staging Deployment - Testnet
 
 on:
   workflow_dispatch:

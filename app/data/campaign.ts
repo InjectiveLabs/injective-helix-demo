@@ -1,5 +1,5 @@
 import { IS_TESTNET } from '@shared/utils/constant'
-import { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
+import type { Epoch, CampaignRound, CampaignWithScAndRound } from '@/types'
 
 export const thumbnailMap = {
   1: '/guild/thumbnail/shield.svg',
@@ -788,3 +788,5 @@ export const competitionVolumePerEntryMap: Record<string, number> = {
   [FIRST_CAMPAIGN_NAME]: 10,
   [THIRD_CAMPAIGN_NAME]: 1000
 }
+
+export const CAMPAIGNS_TO_HIDE: string[] = ['test oct 7', 'test oct 8']
