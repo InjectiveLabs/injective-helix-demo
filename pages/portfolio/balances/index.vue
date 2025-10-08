@@ -60,7 +60,7 @@ onWalletConnected(() => {
   referralStore.fetchUserReferralDetails()
 
   spotStore.streamAccountAverageEntries({
-    account: sharedWalletStore.injectiveAddress
+    account: sharedWalletStore.authZOrInjectiveAddress
   })
 })
 

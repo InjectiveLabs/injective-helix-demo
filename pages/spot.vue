@@ -100,7 +100,7 @@ onWalletConnected(() => {
   referralStore.fetchUserReferralDetails()
 
   spotStore.streamAccountAverageEntries({
-    account: sharedWalletStore.injectiveAddress
+    account: sharedWalletStore.authZOrInjectiveAddress
   })
 })
 
@@ -116,8 +116,8 @@ onWalletDisconnected(() => {
 onUnmounted(() => {
   spotStore.reset()
   spotStore.cancelTradesStream()
-  spotStore.cancelAccountAverageEntriesStream()
   derivativeStore.cancelMarketsMarkPrices()
+  spotStore.cancelAccountAverageEntriesStream()
 })
 
 provide(IsSpotKey, true)
