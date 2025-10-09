@@ -51,30 +51,29 @@ export default {
     },
 
     leaderboard: {
-      currentCompetitionLink: '$50K prize pool on Helix!',
+      currentCompetitionLink: 'See more',
       currentCompetitionTitle:
-        'Trade on Helix and compete for your share of a {linkDescription}',
+        'Join the Helix Trading Campaign - $25K in prizes, October 9–23! {linkDescription}',
 
       gwagon: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Trade Like a G',
         description:
           'Trade for a chance to win a G-Wagon! From October 1st at 14:00 UTC to October 22nd at 14:00 UTC, trade for your chance to claim one of two G-Wagons—one for the top PnL trader and another for a lucky giveaway winner. Every $10 in trading volume earns an entry. For more details, visit the {blog}.'
       },
       tesla: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Win a Tesla!',
         description:
           'Trade for a chance to win a Tesla! From November 26th at 15:00 UTC to December 6th at 15:00 UTC, the top trader by PnL will win a Tesla Model 3. For more details, visit the {blog}.'
       },
       ownYourAsset: {
-        blog: 'blog',
-        ended: 'Ended',
         title: 'Own Your Assets, Control Your Future.',
         description:
           'Compete for your share of a $50K prize pool on Helix. From February 21st, 2025 at 6pm UTC to March 3rd, 2025 at 6pm UTC, you can trade for a chance to win $1,000 from a $50k prize pool, through a random draw. Every $1,000 in trading volume earns an entry. For more details, visit the {blog}'
+      },
+      volumeVictory: {
+        title: 'Volume = Victory',
+        description:
+          'Every $1,000 traded on the Everything Exchange brings you closer to a slice of the $25k prize pool.'
       }
     }
   }

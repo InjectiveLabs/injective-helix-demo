@@ -11,8 +11,7 @@ export default {
     privacyPolicy: 'Privacy Policy',
     rulesTermsAndConditions: 'Rules, Terms, and Conditions',
     refresh: 'The leaderboard refreshes at the top of each hour',
-    description:
-      'Helix ranks the top traders based on their on-chain trading PnL',
+    description: 'Helix ranks the top traders based on their on-chain trading',
     tradeAndWin:
       'Not on the leaderboard yet?  Make winning trades on Helix to claim your spot!',
     blocked:
@@ -50,7 +49,7 @@ export default {
       currentLeader: 'Current leader',
       competitionDuration: 'Time Remaining: {duration}',
       noVolumeData: 'No trading competition results found',
-      termsAndConditionsApply: 'Terms and conditions apply',
+      rulesTermsAndConditionsApply: 'Rules, Terms, and Conditions Apply',
       checkBackLater: "Check back soon to see if you've won!",
       competitionBeginning: 'The competition is about to begin...',
       noPastCompetition: 'There are no past competitions at this time.',

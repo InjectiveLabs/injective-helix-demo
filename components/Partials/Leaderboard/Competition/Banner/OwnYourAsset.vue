@@ -29,7 +29,7 @@ const isEndedCampaign = computed(() => {
       v-if="isEndedCampaign"
       class="absolute top-2 right-2 sm:top-3 sm:right-3 py-0.5 sm:py-1 px-1 sm:px-2 bg-coolGray-650 rounded uppercase text-xs sm:text-sm font-semibold"
     >
-      {{ $t('banners.leaderboard.ownYourAsset.ended') }}
+      {{ $t('common.ended') }}
     </div>
 
     <div
@@ -51,7 +51,7 @@ const isEndedCampaign = computed(() => {
               target="_blank"
               class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
             >
-              {{ $t('banners.leaderboard.ownYourAsset.blog') }}
+              {{ $t('common.blog') }}
             </NuxtLink>
           </template>
         </i18n-t>
@@ -62,7 +62,7 @@ const isEndedCampaign = computed(() => {
         :to="{ name: MainPage.OwnYourAssetCompetitionTerms }"
         class="text-left text-xs xl:text-sm hover:text-blue-500 hover:border-b-blue-500 opacity-70"
       >
-        {{ $t('leaderboard.competition.termsAndConditionsApply') }}
+        {{ $t('leaderboard.competition.rulesTermsAndConditionsApply') }}
       </NuxtLink>
     </div>
 
