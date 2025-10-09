@@ -458,7 +458,7 @@ export default defineI18nLocale(() => {
       advanced: '进阶设置',
       tickerOnly: '仅 {ticker}',
       cancelOrder: '取消订单',
-      showHistory: '查看历史记录',
+      showOrders: '显示订单',
       makerRate: '挂单费率',
       maxLeverage: '最大杠杆',
       'stop-market': '市价止损',
