@@ -81,12 +81,12 @@ function fetchCampaigns() {
     />
 
     <div
-      class="container lg:px-[120px] max-lg:px-4 mx-auto text-center relative"
+      class="container lg:px-24 3xl:px-[120px] max-lg:px-4 mx-auto text-center relative"
     >
       <AppHocLoading v-bind="{ status, isFullScreen: true }">
         <section class="flex flex-col space-y-2 pt-12 pb-7 md:py-40">
           <div
-            class="uppercase font-rubik font-black text-3xl md:text-6xl"
+            class="uppercase font-black text-3xl md:text-6xl tracking-[3.6px]"
             :data-cy="dataCyTag(LeaderBoardCyTags.title)"
           >
             {{ $t('leaderboard.title') }}
@@ -109,7 +109,7 @@ function fetchCampaigns() {
                 :to="page.isDisabled ? '' : { name: page.pageName }"
                 class="capitalize md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
                 :class="{
-                  'hidden': page.isDisabled,
+                  hidden: page.isDisabled,
                   'text-coolGray-200': route.name !== page.pageName
                 }"
               >

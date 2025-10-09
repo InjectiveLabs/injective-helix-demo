@@ -474,7 +474,7 @@ export default defineI18nLocale(() => {
       advanced: '고급 설정',
       tickerOnly: '{ticker} 전용',
       cancelOrder: '주문 취소',
-      showHistory: '내역 보기',
+      showOrders: '주문 표시',
       makerRate: '메이커 수수료율',
       maxLeverage: '최대 레버리지',
       'stop-market': '스탑-시장가',
@@ -891,26 +891,17 @@ export default defineI18nLocale(() => {
           '처음으로 하나의 통합된 지수를 통해 최대 규모의 상장 주식을 온체인에서 거래하세요. Helix에서만 최저 수수료와 최대 25배 레버리지로 24/7 TradFi에 액세스하세요.'
       },
       leaderboard: {
-        currentCompetitionLink: 'Helix에서 $50K 상금 풀!',
-        currentCompetitionTitle:
-          'Helix에서 거래하고 {linkDescription}에서 여러분의 몫을 차지하세요',
         gwagon: {
-          blog: '블로그',
-          ended: '종료됨',
           title: 'Trade Like a G',
           description:
             'G-Wagon을 얻을 기회를 위해 거래하세요! 10월 1일 14:00 UTC부터 10월 22일 14:00 UTC까지, 2대의 G-Wagon 중 하나를 얻을 기회를 위해 거래하세요. 하나는 최고 PnL 트레이더에게, 다른 하나는 행운의 추첨 당첨자에게 제공됩니다. 10달러의 거래량마다 한 번의 참가 기회를 얻습니다. 자세한 내용은 {blog}를 방문하세요.'
         },
         tesla: {
-          blog: '블로그',
-          ended: '종료됨',
           title: 'Tesla를 획득하세요!',
           description:
             'Tesla를 얻을 기회를 위해 거래하세요! 11월 26일 15:00 UTC부터 12월 6일 15:00 UTC까지, PnL 기준 상위 트레이더가 Tesla Model 3를 획득합니다. 자세한 내용은 {blog}를 방문하세요.'
         },
         ownYourAsset: {
-          blog: '블로그',
-          ended: '종료됨',
           title: '자산을 소유하고, 미래를 통제하세요.',
           description:
             'Helix에서 $50K 상금 풀의 몫을 두고 경쟁하세요. 2025년 2월 21일 오후 6시 UTC부터 2025년 3월 3일 오후 6시 UTC까지, 무작위 추첨을 통해 $50k 상금 풀에서 $1,000을 얻을 기회를 위해 거래할 수 있습니다. $1,000의 거래량마다 한 번의 참가 기회를 얻습니다. 자세한 내용은 {blog}를 방문하세요'
@@ -1574,7 +1565,7 @@ export default defineI18nLocale(() => {
       rulesTermsAndConditions: '규칙, 이용약관',
       refresh: '리더보드는 매시 정각에 새로고침됩니다',
       description:
-        'Helix는 온체인 거래 PnL을 기준으로 상위 트레이더를 순위를 매깁니다',
+        'Helix는 온체인 거래 을 기준으로 상위 트레이더를 순위를 매깁니다',
       tradeAndWin:
         '아직 리더보드에 없으신가요? Helix에서 수익성 있는 거래를 하여 자리를 차지하세요!',
       blocked:
@@ -1609,7 +1600,6 @@ export default defineI18nLocale(() => {
         currentLeader: '현재 선두',
         competitionDuration: '남은 시간: {duration}',
         noVolumeData: '트레이딩 대회 결과가 없습니다',
-        termsAndConditionsApply: '이용약관이 적용됩니다',
         checkBackLater: '당첨 여부를 확인하려면 나중에 다시 확인해주세요!',
         competitionBeginning: '대회가 곧 시작됩니다...',
         noPastCompetition: '현재 과거 대회가 없습니다.',
@@ -1771,6 +1761,8 @@ export default defineI18nLocale(() => {
       docs: '문서',
       back: '뒤로',
       base: '기본',
+      blog: '블로그',
+      ended: '종료됨',
       copy: '복사',
       here: '여기',
       link: '링크',
