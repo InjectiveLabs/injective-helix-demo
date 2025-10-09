@@ -33,7 +33,7 @@ const isEndedCampaign = computed(() => {
       v-if="isEndedCampaign"
       class="absolute top-2 right-2 sm:top-3 sm:right-3 py-0.5 sm:py-1 px-1 sm:px-2 bg-coolGray-650 rounded uppercase text-xs sm:text-sm font-semibold"
     >
-      {{ $t('banners.leaderboard.tesla.ended') }}
+      {{ $t('common.ended') }}
     </div>
     <div
       class="relative px-6 xl:px-10 flex flex-col space-y-4 xl:space-y-6 items-start py-6 xl:pt-12 flex-1 tracking-[0.4px]"
@@ -58,7 +58,7 @@ const isEndedCampaign = computed(() => {
               to="https://blog.helixapp.com/en/turkey-day-tesla-giveaway/"
               class="border-b border-b-white hover:text-blue-500 hover:border-b-blue-500"
             >
-              {{ $t('banners.leaderboard.tesla.blog') }}
+              {{ $t('common.blog') }}
             </NuxtLink>
           </template>
         </i18n-t>
@@ -69,7 +69,7 @@ const isEndedCampaign = computed(() => {
         :to="{ name: MainPage.TeslaCompetitionTerms }"
         class="text-left text-xs xl:text-sm hover:text-blue-500 hover:border-b-blue-500 font-pingFang opacity-70"
       >
-        {{ $t('leaderboard.competition.termsAndConditionsApply') }}
+        {{ $t('leaderboard.competition.rulesTermsAndConditionsApply') }}
       </NuxtLink>
     </div>
 

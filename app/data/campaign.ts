@@ -680,14 +680,16 @@ export const LP_CAMPAIGNS = CAMPAIGN_LP_ROUNDS.reduce<CampaignWithScAndRound[]>(
   []
 )
 
+// =============== Leaderboard ===============
+
 export const FIRST_CAMPAIGN_NAME =
   'Helix Like a G Trading Competition Leaderboard'
 export const SECOND_CAMPAIGN_NAME = 'Turkey Day Tesla Giveaway'
 export const THIRD_CAMPAIGN_NAME =
   'Own Your Assets, Control Your Future Giveaway'
+export const FOURTH_CAMPAIGN_NAME = 'Volume = Victory'
 
-export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME =
-  'Own Your Assets, Control Your Future Giveaway'
+export const UPCOMING_LEADERBOARD_CAMPAIGN_NAME = 'Volume = Victory'
 
 export const additionalEntriesMap: Record<string, Record<string, number>> = {
   [FIRST_CAMPAIGN_NAME]: {
@@ -778,15 +780,19 @@ export const CAMPAIGNS_WITH_ANNOUNCED_WINNERS = [
 ] as string[]
 
 export const CAMPAIGNS_WITHOUT_WINNER_BANNER_OR_MODAL = [
-  THIRD_CAMPAIGN_NAME
+  THIRD_CAMPAIGN_NAME,
+  FOURTH_CAMPAIGN_NAME
 ] as string[]
 
 export const checkIsCampaignWithEntries = (campaignName: string) =>
-  [FIRST_CAMPAIGN_NAME, THIRD_CAMPAIGN_NAME].includes(campaignName)
+  [FIRST_CAMPAIGN_NAME, THIRD_CAMPAIGN_NAME, FOURTH_CAMPAIGN_NAME].includes(
+    campaignName
+  )
 
 export const competitionVolumePerEntryMap: Record<string, number> = {
   [FIRST_CAMPAIGN_NAME]: 10,
-  [THIRD_CAMPAIGN_NAME]: 1000
+  [THIRD_CAMPAIGN_NAME]: 1000,
+  [FOURTH_CAMPAIGN_NAME]: 1000
 }
 
 export const CAMPAIGNS_TO_HIDE: string[] = ['test oct 7', 'test oct 8']

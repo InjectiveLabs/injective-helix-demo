@@ -15,17 +15,17 @@ withDefaults(
 </script>
 
 <template>
-  <PartialsLeaderboardCompetitionGwagonBanner
+  <PartialsLeaderboardCompetitionBannerGwagon
     v-if="selectedCampaign.name === FIRST_CAMPAIGN_NAME"
     v-bind="{ campaign: selectedCampaign }"
   />
 
-  <PartialsLeaderboardCompetitionTeslaBanner
+  <PartialsLeaderboardCompetitionBannerTesla
     v-if="selectedCampaign.name === SECOND_CAMPAIGN_NAME"
     v-bind="{ campaign: selectedCampaign }"
   />
 
-  <PartialsLeaderboardCompetitionOwnYourAssetBanner
+  <PartialsLeaderboardCompetitionBannerOwnYourAsset
     v-if="selectedCampaign.name === THIRD_CAMPAIGN_NAME"
     v-bind="{ campaign: selectedCampaign }"
   />

@@ -35,22 +35,29 @@ export const fetchCompetitionLeaderboard = async ({
   const leaderboardStore = useLeaderboardStore()
 
   if (type === LeaderboardType.Pnl) {
-    leaderboardStore.$patch({
-      competitionLeaderboard: await indexerGrpcArchiverApi.fetchPnlLeaderboard({
+    const pnlLeaderboardData = await indexerGrpcArchiverApi.fetchPnlLeaderboard(
+      {
         account,
         endDate: duration.endDate,
         startDate: duration.startDate
-      })
+      }
+    )
+
+    leaderboardStore.$patch({
+      competitionLeaderboard: pnlLeaderboardData
     })
 
     return
   }
 
-  leaderboardStore.$patch({
-    competitionLeaderboard: await indexerGrpcArchiverApi.fetchVolLeaderboard({
+  const volumeLeaderboardData =
+    await indexerGrpcArchiverApi.fetchVolLeaderboard({
       account,
       endDate: duration.endDate,
       startDate: duration.startDate
     })
+
+  leaderboardStore.$patch({
+    competitionLeaderboard: volumeLeaderboardData
   })
 }

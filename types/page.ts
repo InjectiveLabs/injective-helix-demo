@@ -16,15 +16,16 @@ export enum MainPage {
   Institutional = 'institutional',
   PrivacyPolicy = 'privacy-policy',
   PointsS1Ended = 'points-s1-ended',
-  TeslaCompetitionTerms = 'tesla-competition-terms',
-  LikeAGCompetitionTerms = 'like-a-g-competition-terms',
-  CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
-  CompetitionPrivacyPolicyGwagon = 'competition-privacy-policy-gwagon',
-  OwnYourAssetCompetitionTerms = 'own-your-assets-competition-terms',
-  CompetitionPrivacyPolicyOwnYourAsset = 'competition-privacy-policy-own-your-assets',
   TradingBotsLiquidityBots = 'trading-bots-liquidity-bots',
   TradingBotsLiquidityBotsSpot = 'trading-bots-liquidity-bots-spot',
-  TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history'
+  TradingBotsLiquidityBotsSpotHistory = 'trading-bots-liquidity-bots-spot-history',
+  TeslaCompetitionTerms = 'tesla-competition-terms',
+  LikeAGCompetitionTerms = 'like-a-g-competition-terms',
+  OwnYourAssetCompetitionTerms = 'own-your-assets-competition-terms',
+  VolumeVictoryCompetitionTerms = 'volume-victory-competition-terms',
+  CompetitionPrivacyPolicyTesla = 'competition-privacy-policy-tesla',
+  CompetitionPrivacyPolicyGwagon = 'competition-privacy-policy-gwagon',
+  CompetitionPrivacyPolicyOwnYourAsset = 'competition-privacy-policy-own-your-assets'
 }
 
 export enum CampaignSubPage {
