@@ -5,6 +5,7 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { TokenVerification } from '@injectivelabs/sdk-ts'
 import { PortfolioCyTags, BalanceTableColumn } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { TransformedBalances } from '@/types'
 
 const breakpoints = useSharedBreakpoints()
@@ -28,6 +29,10 @@ const props = withDefaults(
     tableHeaderClass: ''
   }
 )
+
+const emit = defineEmits<{
+  'balance:share': [token: TokenStatic]
+}>()
 
 const { rows } = useBalanceTransformer(
   computed(() =>
@@ -59,8 +64,8 @@ const columns = computed(() => {
       class: 'text-right'
     },
     {
-      key: BalanceTableColumn.UnrealizedPnl,
-      label: t(`portfolio.table.balance.${BalanceTableColumn.UnrealizedPnl}`),
+      key: BalanceTableColumn.Pnl,
+      label: t(`portfolio.table.balance.${BalanceTableColumn.Pnl}`),
       class: 'text-right'
     },
     {
@@ -79,12 +84,12 @@ const columns = computed(() => {
     columnArray.push(
       {
         key: BalanceTableColumn.Staked,
-        label: t(`portfolio.table.${BalanceTableColumn.Staked}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.Staked}`),
         class: ''
       },
       {
         key: BalanceTableColumn.StakedUsd,
-        label: t(`portfolio.table.${BalanceTableColumn.StakedUsd}`),
+        label: t(`portfolio.table.balance.${BalanceTableColumn.StakedUsd}`),
         class: ''
       }
     )
@@ -145,9 +150,9 @@ const rowsData = computed(() => {
       {
         token: injToken,
         isStakingRow: true,
+        [BalanceTableColumn.Pnl]: ZERO_IN_BASE,
         [BalanceTableColumn.Total]: ZERO_IN_BASE,
         [BalanceTableColumn.Available]: ZERO_IN_BASE,
-        [BalanceTableColumn.UnrealizedPnl]: ZERO_IN_BASE,
         [BalanceTableColumn.TotalUsd]: stakedAmountInUsd.value,
         [BalanceTableColumn.UsedOrReserved]: stakedAmount.value
       } as TransformedBalances,
@@ -178,6 +183,10 @@ const filteredRows = computed(() =>
 
 function toggleStakingRow() {
   showStakingRow.value = !showStakingRow.value
+}
+
+function shareBalance(token: TokenStatic) {
+  emit('balance:share', token)
 }
 </script>
 
@@ -259,22 +268,24 @@ function toggleStakingRow() {
     </template>
 
     <template #available-data="{ row }">
-      <PartialsCommonBalanceDisplay
-        v-if="!row.isStakingRow"
-        v-bind="{
-          token: row.token,
-          isAlignRight: true,
-          value: row[BalanceTableColumn.Available].toFixed()
-        }"
-      >
-        <SharedAmount
-          class="text-white"
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <PartialsCommonBalanceDisplay
           v-bind="{
-            amount: row[BalanceTableColumn.Available].toFixed()
+            token: row.token,
+            isAlignRight: true,
+            value: row[BalanceTableColumn.Available].toFixed()
           }"
-          :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
-        />
-      </PartialsCommonBalanceDisplay>
+        >
+          <SharedAmount
+            class="text-white"
+            v-bind="{
+              amount: row[BalanceTableColumn.Available].toFixed()
+            }"
+            :data-cy="dataCyTag(PortfolioCyTags.BalanceAvailableAmount)"
+          />
+        </PartialsCommonBalanceDisplay>
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
@@ -283,42 +294,47 @@ function toggleStakingRow() {
         {{ $t('portfolio.staked') }}:
       </span>
 
-      <SharedAmount
-        v-bind="{
-          showZeroAsEmDash: true,
-          amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
-      />
+      <CommonHideBalanceInfo>
+        <SharedAmount
+          v-bind="{
+            showZeroAsEmDash: true,
+            amount: row[BalanceTableColumn.UsedOrReserved].toFixed()
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceInUseOrReservedAmount)"
+        />
+      </CommonHideBalanceInfo>
     </template>
 
-    <template #unrealized-pnl-data="{ row }">
-      <SharedAmount
-        v-if="!row.isStakingRow"
-        v-bind="{
-          showZeroAsEmDash: true,
-          amount: row[BalanceTableColumn.UnrealizedPnl].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceUnrealisedPnl)"
-      />
+    <template #pnl-data="{ row }">
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <PartialsPortfolioBalancesSubaccountTablePnlCell
+          v-bind="{
+            token: row.token
+          }"
+          @balance:share="shareBalance"
+        />
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
     <template #total-data="{ row }">
-      <SharedAmount
-        v-if="!row.isStakingRow"
-        v-bind="{
-          amount: row[BalanceTableColumn.Total].toFixed()
-        }"
-        :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
-      />
+      <CommonHideBalanceInfo v-if="!row.isStakingRow">
+        <SharedAmount
+          v-bind="{
+            amount: row[BalanceTableColumn.Total].toFixed()
+          }"
+          :data-cy="dataCyTag(PortfolioCyTags.BalanceTotalAmount)"
+        />
+      </CommonHideBalanceInfo>
+
       <span v-else />
     </template>
 
     <template #total-usd-data="{ row }">
       <div :class="{ 'text-coolGray-400': row.isStakingRow }">
         <span v-if="!row.isVerified">&mdash;</span>
-        <template v-else>
+        <CommonHideBalanceInfo v-else>
           <SharedAmountUsd
             v-bind="{
               amount: row[BalanceTableColumn.TotalUsd].toFixed()
@@ -329,7 +345,7 @@ function toggleStakingRow() {
               <span>$</span>
             </template>
           </SharedAmountUsd>
-        </template>
+        </CommonHideBalanceInfo>
       </div>
     </template>
 
@@ -350,7 +366,13 @@ function toggleStakingRow() {
     <PartialsPortfolioBalancesSubaccountMobileTable
       v-for="balance in filteredRows"
       :key="balance.token.denom"
-      v-bind="{ balance, columns, stakedAmount, stakedAmountInUsd }"
+      v-bind="{
+        balance,
+        columns,
+        stakedAmount,
+        stakedAmountInUsd
+      }"
+      @balance:share="shareBalance"
     />
   </template>
 </template>

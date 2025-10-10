@@ -114,17 +114,6 @@ export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
   volumeInUsd: BigNumberInBase
 }
 
-export type SharePnlContent = {
-  ticker: string
-  pnl: BigNumberInBase
-  price: BigNumberInBase
-  direction: TradeDirection
-  markPrice: BigNumberInBase
-  percentagePnl: BigNumberInBase
-  market: SharedUiDerivativeMarket
-  effectiveLeverage?: BigNumberInBase
-}
-
 export type ClosePositionLimitForm = {
   [ClosePositionLimitFormField.Price]: string
   [ClosePositionLimitFormField.Quantity]: string

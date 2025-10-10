@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SharedUiDerivativeTrade } from '@shared/types'
 import { Modal } from '@/types'
+import type { SharedUiDerivativeTrade } from '@shared/types'
 
 const modalStore = useSharedModalStore()
 const derivativeStore = useDerivativeStore()

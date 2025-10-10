@@ -194,10 +194,7 @@ function onSetPosition(value: TransformedPosition) {
       <div class="flex items-center space-x-1">
         <div
           class="space-y-1 text-right"
-          :class="{
-            'text-green-500': position.pnl.gte(0),
-            'text-red-500': position.pnl.lt(0)
-          }"
+          :class="getColorClassForChange(position.pnl)"
         >
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
@@ -228,10 +225,9 @@ function onSetPosition(value: TransformedPosition) {
           </p>
         </div>
 
-        <UIcon
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="sharePosition"
+        <PartialsPositionsTableShare
+          :position="position.position"
+          @position:share="sharePosition"
         />
       </div>
     </template>

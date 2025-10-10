@@ -7,8 +7,8 @@ import {
   UI_DEFAULT_FUNDING_RATE_DECIMALS
 } from '@/app/utils/constants'
 import { MarkPriceStatusKey, PerpetualMarketCyTags } from '@/types'
-import type { UiMarketWithToken } from '@/types'
 import type { PerpetualMarket } from '@injectivelabs/sdk-ts'
+import type { UiMarketWithToken } from '@/types'
 
 const sharedDerivativeStore = useSharedDerivativeStore()
 
@@ -155,11 +155,12 @@ watch(countdown, (countdown) => {
           }${annualizedFundingRateToString}%`"
         >
           <span
-            :class="{
-              'text-green-500': fundingRateToBigNumber.gte(0),
-              'text-red-500': fundingRateToBigNumber.lt(0)
-            }"
             class="cursor-pointer flex"
+            :class="
+              getColorClassForChange(fundingRateToBigNumber, {
+                zeroClass: 'text-green-500'
+              })
+            "
           >
             <SharedAmount
               v-bind="{
