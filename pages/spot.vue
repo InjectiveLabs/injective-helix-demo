@@ -11,7 +11,9 @@ const route = useRoute()
 const spotStore = useSpotStore()
 const swapStore = useSwapStore()
 const positionStore = usePositionStore()
+const referralStore = useReferralStore()
 const derivativeStore = useDerivativeStore()
+const sharedWalletStore = useSharedWalletStore()
 const { $onError } = useNuxtApp()
 
 const status = reactive(new Status(StatusType.Loading))
@@ -90,10 +92,32 @@ useHead({
   })
 })
 
+onWalletConnected(() => {
+  if (!sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  referralStore.fetchUserReferralDetails()
+
+  spotStore.streamAccountAverageEntries({
+    account: sharedWalletStore.authZOrInjectiveAddress
+  })
+})
+
+onWalletDisconnected(() => {
+  if (sharedWalletStore.isUserConnected) {
+    return
+  }
+
+  spotStore.cancelAccountAverageEntriesStream()
+  spotStore.resetAccountAverageEntries()
+})
+
 onUnmounted(() => {
   spotStore.reset()
   spotStore.cancelTradesStream()
   derivativeStore.cancelMarketsMarkPrices()
+  spotStore.cancelAccountAverageEntriesStream()
 })
 
 provide(IsSpotKey, true)

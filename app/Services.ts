@@ -73,11 +73,7 @@ export const getIndexerGrpcReferralApi = async () =>
 export const getIndexerGrpcArchiverApi = async () =>
   lazyImportSdkTs<IndexerGrpcArchiverApi>({
     className: 'IndexerGrpcArchiverApi',
-    endpoint: IS_MAINNET
-      ? 'https://k8s.mainnet.archiver.grpc-web.injective.network'
-      : IS_TESTNET
-        ? 'https://k8s.testnet.archiver.grpc-web.injective.network'
-        : ENDPOINTS.indexer
+    endpoint: HELIX_ENDPOINTS.archiver
   })
 
 export const getIndexerRestLeaderboardChronosApi = async () =>

@@ -206,10 +206,11 @@ function shareTrade(trade: SharedUiDerivativeTrade) {
               amount: row.pnl.toFixed()
             }"
           />
-          <span v-if="!row.pnl.isZero(0)" class="ml-1 text-coolGray-500">
+          <span v-if="!row.pnl.isZero()" class="ml-1 text-coolGray-500">
             {{ row.market.quoteToken.symbol }}
           </span>
         </div>
+
         <PartialsPortfolioOrdersFuturesTradeHistoryTableShare
           v-if="!row.pnl.isZero()"
           :trade="row.trade"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { usdtToken } from '@shared/data/token'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import { HistoricalPortfolioDuration } from '@/types'
 
@@ -18,7 +18,9 @@ const {
 const selectedDuration = ref(HistoricalPortfolioDuration.OneMonth)
 const status = reactive(new Status(StatusType.Loading))
 
-const isProfit = computed(() => percentageChange.value > 0)
+const percentageChangeToBigNumber = computed(
+  () => new BigNumberInBase(percentageChange.value)
+)
 
 const balanceSeries = computed(() => {
   const lastSeriesCount =
@@ -126,10 +128,11 @@ function fetchBalance() {
           />
 
           <p
-            :class="{
-              'text-red-500': !isProfit,
-              'text-green-500': isProfit
-            }"
+            :class="
+              getColorClassForChange(percentageChangeToBigNumber, {
+                zeroClass: 'text-red-500'
+              })
+            "
           >
             <span class="text-sm flex items-center space-x-1">
               <CommonNumberCounter
@@ -164,9 +167,9 @@ function fetchBalance() {
     <PartialsPortfolioPortfolioAreaChart
       v-else
       v-bind="{
-        isProfit,
         series: balanceSeries,
-        label: 'common.value'
+        label: 'common.value',
+        isProfit: percentageChangeToBigNumber.gt(0)
       }"
     />
   </div>

@@ -66,11 +66,6 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         decimalPlaces: balance.token.decimals
       })
 
-      const unrealizedPnl = sharedToBalanceInTokenInBase({
-        value: balance.unrealizedPnl,
-        decimalPlaces: balance.token.decimals
-      })
-
       return {
         isBridgable,
         hasNoActionButtons,
@@ -80,9 +75,7 @@ export function useBalanceTransformer(balances: Ref<AccountBalance[]>) {
         [BalanceTableColumn.Available]: availableAmount.eq(0)
           ? ZERO_IN_BASE
           : availableAmount,
-        [BalanceTableColumn.UnrealizedPnl]: unrealizedPnl.eq(0)
-          ? ZERO_IN_BASE
-          : unrealizedPnl,
+        [BalanceTableColumn.Pnl]: ZERO_IN_BASE,
         [BalanceTableColumn.UsedOrReserved]: usedOrReserved.eq(0)
           ? ZERO_IN_BASE
           : usedOrReserved,

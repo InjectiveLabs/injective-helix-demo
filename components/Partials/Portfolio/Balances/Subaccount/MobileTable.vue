@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { injToken } from '@shared/data/token'
 import { BalanceTableColumn } from '@/types'
+import type { TokenStatic } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { UTableColumn, TransformedBalances } from '@/types'
 
@@ -13,6 +14,10 @@ const props = withDefaults(
   }>(),
   {}
 )
+
+const emit = defineEmits<{
+  'balance:share': [token: TokenStatic]
+}>()
 
 const filteredColumns = computed(() =>
   props.columns.reduce((list, column) => {
@@ -32,6 +37,10 @@ const filteredColumns = computed(() =>
     return list
   }, [] as UTableColumn[])
 )
+
+function shareBalance() {
+  emit('balance:share', props.balance.token)
+}
 </script>
 
 <template>
@@ -83,12 +92,13 @@ const filteredColumns = computed(() =>
       />
     </template>
 
-    <template #unrealized-pnl-data>
-      <SharedAmount
+    <template #pnl-data>
+      <PartialsPortfolioBalancesSubaccountTablePnlCell
         v-bind="{
-          showZeroAsEmDash: true,
-          amount: balance[BalanceTableColumn.UnrealizedPnl].toFixed()
+          isMobile: true,
+          token: balance.token
         }"
+        @balance:share="shareBalance"
       />
     </template>
 

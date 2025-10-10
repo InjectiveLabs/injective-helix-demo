@@ -3,6 +3,7 @@ import { StreamType } from '@/types'
 import type { StreamStatusResponse } from '@injectivelabs/ts-types'
 import type { portfolioStream } from '@/app/client/streams/bank'
 import type { spotMarketStream } from '@/app/client/streams/spot'
+import type { archiverStream } from '@/app/client/streams/archiver'
 import type {
   oracleStream,
   derivativesMarketStream
@@ -15,6 +16,7 @@ type StreamFn =
   | typeof spotMarketStream.streamSpotTrades
   | typeof spotMarketStream.streamSpotOrderbook
   | typeof portfolioStream.streamAccountPortfolio
+  | typeof archiverStream.streamSpotAverageEntries
   | typeof spotMarketStream.streamSpotOrderHistory
   | typeof oracleStream.streamOraclePricesByMarkets
   | typeof spotMarketStream.streamSpotOrderbookUpdate
