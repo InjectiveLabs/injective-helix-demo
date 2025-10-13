@@ -1625,8 +1625,7 @@ export default defineI18nLocale(() => {
       competition: {
         winner: 'Kazanan',
         unranked: 'Sıralanmamış',
-        currentLeaderMobile: '🔥',
-        currentLeaderFlame: '🔥🔥',
+        currentLeaderFlame: '🔥',
         keepGoing: 'Devam et 💪',
         tradingVolume: 'Ticaret Hacmi',
         currentLeader: 'Mevcut lider',
