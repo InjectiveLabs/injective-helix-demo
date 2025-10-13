@@ -100,7 +100,7 @@ const isShowRank = computed(() => {
           </div>
 
           <div v-if="leader.rank === 1">
-            {{ $t('leaderboard.competition.currentLeaderMobile') }}
+            {{ $t('leaderboard.competition.currentLeaderFlame') }}
           </div>
         </div>
 
@@ -132,12 +132,9 @@ const isShowRank = computed(() => {
               <div>
                 {{ $t('leaderboard.competition.currentLeader') }}
               </div>
-              <div class="-mt-[2px] text-sm">
+              <div class="-mt-[2px] text-sm ml-1.5">
                 {{ $t('leaderboard.competition.currentLeaderFlame') }}
               </div>
-            </div>
-            <div class="2xl:hidden">
-              {{ $t('leaderboard.competition.currentLeaderMobile') }}
             </div>
           </div>
         </div>

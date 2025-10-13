@@ -11,8 +11,7 @@ const props = withDefaults(
     isHideAmount?: boolean
   }>(),
   {
-    campaign: undefined,
-    isHideAmount: false
+    campaign: undefined
   }
 )
 
@@ -41,87 +40,52 @@ const isCampaignWithEntries = computed(() =>
     </div>
 
     <template v-if="!isMobile">
-      <div v-if="!isHideAmount" class="w-full">
-        <span>
-          <span class="hidden lg:block">
-            {{
-              $t(
-                `leaderboard.header.${
-                  campaign.type === LeaderboardType.Volume
-                    ? 'allMarketsVolume'
-                    : 'tradingPnl'
-                }`
-              )
-            }}
-          </span>
-          <span class="lg:hidden">
-            {{
-              $t(
-                `leaderboard.header.${
-                  campaign.type === LeaderboardType.Volume
-                    ? 'volume'
-                    : 'tradingPnl'
-                }`
-              )
-            }}/
-          </span>
-        </span>
+      <div
+        v-if="!isHideAmount || campaign.type === LeaderboardType.Volume"
+        class="w-full"
+      >
+        {{
+          $t(
+            `leaderboard.header.${
+              campaign.type === LeaderboardType.Volume
+                ? 'allMarketsVolume'
+                : 'tradingPnl'
+            }`
+          )
+        }}
       </div>
       <div v-else />
 
-      <div v-if="isCampaignWithEntries">
-        <div class="lg:mr-2">
-          <span class="block md:hidden xl:block">
-            {{ $t('leaderboard.header.numberOfEntries') }}
-          </span>
-          <span class="hidden md:block xl:hidden">
-            {{ $t('leaderboard.header.entries') }}
-          </span>
-        </div>
-      </div>
+      <template v-if="isCampaignWithEntries">
+        <span class="block md:hidden xl:block">
+          {{ $t('leaderboard.header.numberOfEntries') }}
+        </span>
+        <span class="hidden md:block xl:hidden">
+          {{ $t('leaderboard.header.entries') }}
+        </span>
+      </template>
     </template>
 
-    <template v-else>
-      <div>
-        <div>
-          <span>
-            <span class="hidden lg:block">
-              {{
-                $t(
-                  `leaderboard.header.${
-                    campaign.type === LeaderboardType.Volume
-                      ? 'allMarketsVolume'
-                      : 'tradingPnl'
-                  }`
-                )
-              }}
-            </span>
-            <span class="lg:hidden">
-              {{
-                $t(
-                  `leaderboard.header.${
-                    campaign.type === LeaderboardType.Volume
-                      ? 'volume'
-                      : 'tradingPnl'
-                  }`
-                )
-              }}
-            </span>
-            <span v-if="isCampaignWithEntries">/</span>
-          </span>
-        </div>
+    <div v-else>
+      <span>
+        {{
+          $t(
+            `leaderboard.header.${
+              campaign.type === LeaderboardType.Volume ? 'volume' : 'tradingPnl'
+            }`
+          )
+        }}
+        <template v-if="isCampaignWithEntries">/</template>
+      </span>
 
-        <div v-if="isCampaignWithEntries">
-          <div class="lg:mr-2">
-            <span class="block md:hidden xl:block">
-              {{ $t('leaderboard.header.numberOfEntries') }}
-            </span>
-            <span class="hidden md:block xl:hidden">
-              {{ $t('leaderboard.header.entries') }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </template>
+      <template v-if="isCampaignWithEntries">
+        <span class="block md:hidden xl:block">
+          {{ $t('leaderboard.header.numberOfEntries') }}
+        </span>
+        <span class="hidden md:block xl:hidden">
+          {{ $t('leaderboard.header.entries') }}
+        </span>
+      </template>
+    </div>
   </div>
 </template>

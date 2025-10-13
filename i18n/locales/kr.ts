@@ -1601,8 +1601,7 @@ export default defineI18nLocale(() => {
       competition: {
         winner: '우승자',
         unranked: '순위 없음',
-        currentLeaderMobile: '🔥',
-        currentLeaderFlame: '🔥🔥',
+        currentLeaderFlame: '🔥',
         keepGoing: '계속 화이팅 💪',
         tradingVolume: '거래량',
         currentLeader: '현재 선두',

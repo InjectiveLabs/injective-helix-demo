@@ -42,8 +42,7 @@ export default {
     competition: {
       winner: 'Winner',
       unranked: 'Unranked',
-      currentLeaderMobile: '🔥',
-      currentLeaderFlame: '🔥🔥',
+      currentLeaderFlame: '🔥',
       keepGoing: 'Keep going 💪',
       tradingVolume: 'Trading Volume',
       currentLeader: 'Current leader',
