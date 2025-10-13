@@ -101,13 +101,13 @@ function fetchCampaigns() {
             class="flex flex-col md:flex-row flex-wrap gap-3 max-md:space-y-4 justify-between mb-6 md:mb-10"
           >
             <div
-              class="max-md:flex max-md:gap-4 max-md:flex-wrap overflow-x-auto max-sm:max-w-full"
+              class="flex gap-4 md:gap-8 max-md:flex-wrap overflow-x-auto max-sm:max-w-full"
             >
               <NuxtLink
                 v-for="page in leaderboardSubpages"
                 :key="page.pageName"
                 :to="page.isDisabled ? '' : { name: page.pageName }"
-                class="capitalize md:px-4 text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
+                class="capitalize text-sm md:text-lg font-semibold whitespace-nowrap leading-6"
                 :class="{
                   hidden: page.isDisabled,
                   'text-coolGray-200': route.name !== page.pageName
