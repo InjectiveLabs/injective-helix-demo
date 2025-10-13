@@ -910,6 +910,9 @@ export default defineI18nLocale(() => {
           'Büyük halka açık hisse senetlerini ilk kez tek entegre bir endeks üzerinden zincir üzerinde işlem yapın. En düşük ücretler ve 25X’e kadar kaldıraç ile TradFi’ya 7/24 erişim sadece Helix’te.'
       },
       leaderboard: {
+        currentCompetitionLink: 'Daha fazlasını gör',
+        currentCompetitionTitle:
+          'Helix Alım-Satım Kampanyasına Katıl – 25.000$ ödül seni bekliyor! 9-23 Ekim {linkDescription}',
         gwagon: {
           title: 'Bir G Gibi İşlem Yap',
           description:
@@ -924,6 +927,11 @@ export default defineI18nLocale(() => {
           title: 'Varlıklarınızı Sahiplenin, Geleceğinizi Kontrol Edin.',
           description:
             'Helix’te 50.000$ ödül havuzundan payınızı almak için yarışın. 21 Şubat 2025 18:00 UTC’den 3 Mart 2025 18:00 UTC’ye kadar, 50.000$ ödül havuzundan 1.000$ kazanma şansı için işlem yapabilirsiniz. Her 1.000$ işlem hacmi bir giriş hakkı sağlar. Daha fazla detay için {blog}’a bakın.'
+        },
+        volumeVictory: {
+          title: 'Hacim = Zafer',
+          description:
+            "Everything Exchange'de yapılan her 1.000 $'lık işlem seni 25.000 $ ödül havuzundaki payına bir adım daha yaklaştırır."
         }
       }
     },
@@ -1624,6 +1632,8 @@ export default defineI18nLocale(() => {
         currentLeader: 'Mevcut lider',
         competitionDuration: 'Kalan Süre: {duration}',
         noVolumeData: 'Ticaret yarışması sonucu bulunamadı',
+        rulesTermsAndConditionsApply:
+          'Kurallar, Şartlar ve Koşullar Geçerlidir',
         checkBackLater:
           'Kazandınız mı görmek için daha sonra tekrar kontrol edin!',
         competitionBeginning: 'Yarışma başlamak üzere...',
