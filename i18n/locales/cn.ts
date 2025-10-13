@@ -858,6 +858,10 @@ export default defineI18nLocale(() => {
           '首次实现链上交易最大规模的上市股票，统一指数接入。全天候 24/7 访问传统金融市场，最低手续费，最高 25 倍杠杆，仅在 Helix。'
       },
       leaderboard: {
+        currentCompetitionLink: '了解更多',
+        currentCompetitionTitle:
+          '加入 Helix 交易活动 - 赢取 2.5 万美元奖金，10 月 9 日至 23 日！{linkDescription}',
+
         gwagon: {
           title: 'Trade Like a G',
           description:
@@ -872,6 +876,11 @@ export default defineI18nLocale(() => {
           title: '掌控资产，把握未来。',
           description:
             '参与 Helix 交易挑战，瓜分 $50,000 奖池。活动时间为 2025 年 2 月 21 日 18:00 UTC 至 3 月 3 日 18:00 UTC。每累计 $1,000 的交易量可获得一次抽奖资格，赢取 $1,000。更多详情请访问 {blog}'
+        },
+        volumeVictory: {
+          title: '交易量 = 胜利',
+          description:
+            '在 Everything Exchange 上每交易 1,000 美元，您就更接近 25,000 美元奖金池。'
         }
       }
     },
@@ -1555,6 +1564,7 @@ export default defineI18nLocale(() => {
         currentLeader: '当前领先者',
         competitionDuration: '剩余时间： {duration}',
         noVolumeData: '暂无交易竞赛结果',
+        rulesTermsAndConditionsApply: '适用规则、条款和条件',
         checkBackLater: '请稍后回来查看您是否获胜！',
         competitionBeginning: '竞赛即将开始...',
         noPastCompetition: '当前暂无往期竞赛。',

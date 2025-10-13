@@ -51,7 +51,7 @@ function incrementLimit() {
         class="text-sm my-1 items-center rounded-lg"
         :class="{
           'bg-coolGray-825 py-4 text-white': leader.rank > 1,
-          'bg-[#F3C211] py-5 text-coolGray-1100': leader.rank === 1
+          'bg-[#DAA520] py-5 text-coolGray-1100': leader.rank === 1
         }"
       />
 

@@ -891,6 +891,9 @@ export default defineI18nLocale(() => {
           '처음으로 하나의 통합된 지수를 통해 최대 규모의 상장 주식을 온체인에서 거래하세요. Helix에서만 최저 수수료와 최대 25배 레버리지로 24/7 TradFi에 액세스하세요.'
       },
       leaderboard: {
+        currentCompetitionLink: '자세히 보기',
+        currentCompetitionTitle:
+          'Helix 트레이딩 캠페인에 참여하세요 — 총상금 $25,000, 진행 기간: 10월 9일–23일! {linkDescription}',
         gwagon: {
           title: 'Trade Like a G',
           description:
@@ -905,6 +908,11 @@ export default defineI18nLocale(() => {
           title: '자산을 소유하고, 미래를 통제하세요.',
           description:
             'Helix에서 $50K 상금 풀의 몫을 두고 경쟁하세요. 2025년 2월 21일 오후 6시 UTC부터 2025년 3월 3일 오후 6시 UTC까지, 무작위 추첨을 통해 $50k 상금 풀에서 $1,000을 얻을 기회를 위해 거래할 수 있습니다. $1,000의 거래량마다 한 번의 참가 기회를 얻습니다. 자세한 내용은 {blog}를 방문하세요'
+        },
+        volumeVictory: {
+          title: '거래량이 곧 승리',
+          description:
+            'Everything Exchange에서 $1,000 거래할 때마다 $25,000 상금 풀에 더 가까워집니다.'
         }
       }
     },
@@ -1600,6 +1608,7 @@ export default defineI18nLocale(() => {
         currentLeader: '현재 선두',
         competitionDuration: '남은 시간: {duration}',
         noVolumeData: '트레이딩 대회 결과가 없습니다',
+        rulesTermsAndConditionsApply: '규칙, 약관 및 조건이 적용됩니다',
         checkBackLater: '당첨 여부를 확인하려면 나중에 다시 확인해주세요!',
         competitionBeginning: '대회가 곧 시작됩니다...',
         noPastCompetition: '현재 과거 대회가 없습니다.',
