@@ -120,19 +120,8 @@ function onResetLimitField() {
 
 <template>
   <div v-if="market" class="space-y-2">
-    <div class="flex justify-between items-center">
+    <div class="flex items-center">
       <p class="field-label">{{ $t('trade.limitPrice') }}</p>
-
-      <div class="text-xs text-coolGray-450">
-        <SharedAmountUsd
-          v-bind="{
-            shouldAbbreviate: false,
-            amount: limitPriceInUsdToFixed
-          }"
-        >
-          <template #prefix>~$</template>
-        </SharedAmountUsd>
-      </div>
     </div>
 
     <AppInputField
