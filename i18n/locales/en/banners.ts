@@ -1,5 +1,6 @@
 export default {
   banners: {
+    docs: 'docs',
     findOutMore: 'Find out more',
     stockTwits:
       'Want to learn how to place a trade or how trading tokenized stocks works? → {learnMore}',
@@ -17,6 +18,9 @@ export default {
       'Helix Points Season 1 has wrapped up. Thank you for your participation, and stay tuned for more updates!',
     expiryFuturesBanner:
       'This is an expiry futures trading pair, which will settle at {date}. Any positions open after this time will be force settled at the mark price at the time of settlement.',
+
+    prelaunchFuturesBanner:
+      'This pair is a pre-launch perpetual futures (PLF) market. Beware of the risks involved. See the {docs} for more info.',
 
     mkrExpiry:
       'As part of the migration from MKR to SKY, this pair will be force settled (pending governance) on September 14. Any positions still open on that date will be force settled at the mark price at the time of settlement.',
