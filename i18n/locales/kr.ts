@@ -831,12 +831,7 @@ export default defineI18nLocale(() => {
       period: '기간',
       points: '포인트',
       volume: '거래량',
-      totalPoints: '총 포인트',
-      lastUpdatedAt: '마지막 업데이트 ',
-      myTotalPoints: 'Helix에서의 총 포인트',
       paginationDetails: '{from}-{to} / 총 {total}',
-      description:
-        '시즌 1이 종료되었습니다. 포인트에 대한 자세한 정보는 확인하세요',
       leagues: {
         blue: '블루 벨트',
         black: '블랙 벨트',

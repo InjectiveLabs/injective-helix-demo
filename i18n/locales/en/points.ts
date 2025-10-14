@@ -9,12 +9,16 @@ export default {
     period: 'Period',
     points: 'Points',
     volume: 'Volume',
-    totalPoints: 'Total Points',
-    lastUpdatedAt: 'Last updated at ',
-    myTotalPoints: 'My total points on Helix',
+    bonusPoints: 'Bonus Points',
     paginationDetails: '{from}-{to} of {total}',
-    description:
-      'Season 1 is officially closed. But don’t worry if you missed out! Stay tuned for upcoming opportunities.',
+    totalPointsPlusBonus: 'Total Points + Bonus',
+    subtitle: 'The Helix Points Bonus Has Arrived',
+    season1Points: 'Season 1 Points (From start until July 15, 2025)',
+    description1: 'Season 1 of Helix Points officially ended on July 15, 2025.',
+    description2:
+      'To show appreciation for loyal users, Helix has been quietly tracking bonus points for active traders behind the scenes. We’ve also granted extra rewards to users liquidated during volatile market periods in recognition of their trading activity.',
+    description3:
+      'Stay tuned for more updates through the official Helix website and social channels.',
 
     leagues: {
       [PointsLeague.Blue]: 'Blue Belt',

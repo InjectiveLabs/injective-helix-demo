@@ -5,31 +5,8 @@ import { Status, StatusType } from '@injectivelabs/utils'
 import { PointsLeague } from '@/types'
 
 const pointsStore = usePointsStore()
+const sharedWalletStore = useSharedWalletStore()
 const now = useNow({ interval: 1000 })
-
-const leagueBgList = {
-  [PointsLeague.Blue]: 'blue-belt-bg',
-  [PointsLeague.Black]: 'black-belt-bg',
-  [PointsLeague.White]: 'white-belt-bg',
-  [PointsLeague.Orange]: 'orange-belt-bg',
-  [PointsLeague.Purple]: 'purple-belt-bg'
-}
-
-const beltImageList = {
-  [PointsLeague.Blue]: 'blue-belt',
-  [PointsLeague.Black]: 'black-belt',
-  [PointsLeague.White]: 'white-belt',
-  [PointsLeague.Orange]: 'orange-belt',
-  [PointsLeague.Purple]: 'purple-belt'
-}
-
-const unionImageList = {
-  [PointsLeague.Blue]: 'blue-union',
-  [PointsLeague.Black]: 'black-union',
-  [PointsLeague.White]: 'white-union',
-  [PointsLeague.Orange]: 'orange-union',
-  [PointsLeague.Purple]: 'purple-union'
-}
 
 const canvas = ref()
 const status = reactive(new Status(StatusType.Idle))
@@ -39,13 +16,18 @@ const league = computed(
     (pointsStore?.accountPoints?.league as PointsLeague) || PointsLeague.White
 )
 
-const leagueBg = computed(() => leagueBgList[league.value])
-const beltImage = computed(() => beltImageList[league.value])
-const unionImage = computed(() => unionImageList[league.value])
+const dotColor = computed(() => {
+  // todo fred: get confirmed color list from design/product
+  const colorList = {
+    [PointsLeague.Blue]: '#679AFF',
+    [PointsLeague.Black]: '#679AFF',
+    [PointsLeague.White]: '#679AFF',
+    [PointsLeague.Orange]: '#679AFF',
+    [PointsLeague.Purple]: '#679AFF'
+  }
 
-const totalPoints = computed(
-  () => pointsStore.accountPoints?.totalPoints || '0'
-)
+  return colorList[league.value]
+})
 
 const rank = computed(() => pointsStore.accountPoints?.rank || '0')
 
@@ -68,85 +50,58 @@ async function downloadImage() {
 
 <template>
   <div
-    class="flex flex-col justify-between w-[420px] h-[394px] max-xs:w-full rounded-lg overflow-hidden bg-black text-white relative"
+    ref="canvas"
+    :style="{ backgroundImage: 'url(/images/points/s2-bg.png)' }"
+    class="flex items-center justify-between p-4 bg-cover bg-center bg-no-repeat w-full max-w-[390px] aspect-[1/0.45] rounded-2xl bg-black text-white"
   >
-    <div
-      ref="canvas"
-      class="flex flex-col flex-1 items-center pt-16 bg-cover bg-center bg-no-repeat"
-      :style="{
-        backgroundImage: `url('/images/points/${leagueBg}.png')`
-      }"
-    >
-      <AssetLogo class="w-auto h-10" alt="Helix" />
+    <div class="flex items-center">
+      <span
+        class="size-12 rounded-full"
+        :style="{ backgroundColor: dotColor }"
+      />
 
-      <p class="text-xl mt-4">
-        {{ $t('points.myTotalPoints') }}
-      </p>
-      <p class="text-5xl font-bold mt-2 mb-12">
-        <SharedAmount
-          v-bind="{
-            amount: totalPoints,
-            showZeroAsEmDash: true,
-            shouldAbbreviate: false
-          }"
-        />
-      </p>
+      <div class="ml-4 mr-6">
+        <p class="text-sm">{{ $t('points.level') }}</p>
+        <p class="font-medium">
+          {{
+            $t(
+              `points.leagues.${
+                pointsStore?.accountPoints?.league || PointsLeague.White
+              }`
+            )
+          }}
+        </p>
+      </div>
 
-      <div class="relative flex justify-between w-full px-[88px] max-xs:px-8">
-        <img
-          :src="`/images/points/level/${unionImage}.png`"
-          class="h-20 w-full absolute z-[1] top-[calc(50%-10px)] -translate-y-1/2 left-0"
-        />
+      <div>
+        <p class="text-sm">
+          {{ $t('points.rank') }}
+        </p>
 
-        <div class="relative z-[2] flex items-center gap-3">
-          <img :src="`/images/points/level/${beltImage}.png`" class="w-10" />
-          <div>
-            <p>{{ $t('points.level') }}</p>
-            <p class="text-sm font-bold">
-              {{
-                $t(
-                  `points.leagues.${
-                    pointsStore?.accountPoints?.league || PointsLeague.White
-                  }`
-                )
-              }}
-            </p>
-          </div>
-        </div>
-
-        <div class="relative z-[2] text-right">
-          <p>
-            {{ $t('points.rank') }}
-          </p>
-
-          <p class="font-bold">
-            <SharedAmount
-              v-bind="{
-                amount: rank,
-                showZeroAsEmDash: true,
-                shouldAbbreviate: false
-              }"
-            />
-          </p>
-        </div>
+        <p class="font-medium">
+          <SharedAmount
+            v-bind="{
+              amount: rank,
+              showZeroAsEmDash: true,
+              shouldAbbreviate: false
+            }"
+          />
+        </p>
       </div>
     </div>
 
-    <div class="absolute bottom-0 right-0 flex justify-end p-4">
-      <AppButton
-        variant="primary-outline"
-        :class="[
-          'bottom-4 right-4 flex justify-center items-center gap-2 w-[115px] h-10 rounded-lg text-white p-2',
-          status.isLoading() ? '[&>span]:hidden' : ''
-        ]"
-        :is-loading="status.isLoading()"
-        @click="downloadImage"
-      >
-        <p class="text-sm leading-none font-medium">
-          {{ $t('points.share') }}
-        </p>
-        <UIcon :name="NuxtUiIcons.Download2" class="size-5" />
-      </AppButton>
-    </div>
+    <AppButton
+      v-if="status.isIdle() && sharedWalletStore.isUserConnected"
+      variant="primary-outline"
+      :class="[
+        'flex justify-center items-center gap-2 w-[115px] h-10 rounded-lg !text-azure-blue-350 p-2 border-[#8C9199]'
+      ]"
+      @click="downloadImage"
+    >
+      <UIcon class="size-5" :name="NuxtUiIcons.Download2" />
+      <p class="text-sm leading-none font-medium mr-2">
+        {{ $t('points.share') }}
+      </p>
+    </AppButton>
   </div>
 </template>
