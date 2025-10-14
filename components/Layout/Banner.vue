@@ -26,6 +26,14 @@ const perpSettlePairs = [
   // }
 ] as { slug: string; marketId: string; newExpiryLaunch: boolean }[]
 
+const preLaunchMarketPairs = [
+  {
+    slug: 'mon-usdt-perp',
+    marketId:
+      '0xf90a62bb82fdce5ae1a1388227999a78d24546541fd7c586e1e0d3f150eaf385'
+  }
+] as { slug: string; marketId: string }[]
+
 const route = useRoute()
 const appStore = useAppStore()
 const jsonStore = useSharedJsonStore()
@@ -102,13 +110,26 @@ const expiryFutureBanner = computed(() => [
   }
 ])
 
-const perpMarketSettleBanners = computed<Banner[]>(() => [
+const perpMarketSettleBanner = computed<Banner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PerpSettleMarket,
     shouldDisplay:
       (route.name as string)?.startsWith(TradePage.Futures) &&
       activePerpSettlePairs.value !== undefined
+  }
+])
+
+const activePreLaunchFuturesBanner = computed<Banner[]>(() => [
+  {
+    shouldPersist: true,
+    id: NoticeBanner.PreLaunchFutures,
+    shouldDisplay:
+      (route.name as string)?.startsWith(TradePage.Futures) &&
+      preLaunchMarketPairs.some(
+        ({ slug, marketId }) =>
+          slug === route.params.slug || marketId === route.query.marketId
+      )
   }
 ])
 
@@ -154,7 +175,8 @@ const bannerToDisplay = computed(
       ...mkrMigrationBanner.value,
       ...deprecatedWarningBanner.value,
       ...expiryFutureBanner.value,
-      ...perpMarketSettleBanners.value,
+      ...perpMarketSettleBanner.value,
+      ...activePreLaunchFuturesBanner.value,
       ...chainUpgradeBanners.value,
       ...promotionalBanners.value
     ].filter(
@@ -361,6 +383,22 @@ function onClickStockTwitsCta() {
           class="hover:opacity-80 underline cursor-pointer"
         >
           {{ $t('banners.findOutMore') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
+
+    <i18n-t
+      v-if="bannerToDisplay.id === NoticeBanner.PreLaunchFutures"
+      tag="p"
+      keypath="banners.prelaunchFuturesBanner"
+    >
+      <template #docs>
+        <NuxtLink
+          target="_blank"
+          to="https://docs.helixapp.com/trading/pre-launch-futures"
+          class="hover:opacity-80 underline cursor-pointer"
+        >
+          {{ $t('banners.docs') }}
         </NuxtLink>
       </template>
     </i18n-t>
