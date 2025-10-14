@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import { intervalToDuration } from 'date-fns'
 import { SharedMarketType } from '@shared/types'
 import { OrderSide } from '@injectivelabs/ts-types'
@@ -587,12 +586,26 @@ export const getTradingBotLinkFromStrategy = (
       }
 }
 
-export function generateOnRamperSignature(
+export async function generateOnRamperSignature(
   secretKey: string,
   data: string
-): string {
-  const hmac = crypto.createHmac('sha256', secretKey)
-  hmac.update(data)
+): Promise<string> {
+  const encoder = new TextEncoder()
+  const messageData = encoder.encode(data)
+  const keyData = encoder.encode(secretKey)
 
-  return hmac.digest('hex')
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageData)
+
+  const hashArray = Array.from(new Uint8Array(signature))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+
+  return hashHex
 }

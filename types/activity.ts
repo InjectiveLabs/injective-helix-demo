@@ -1,30 +1,30 @@
-import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
-import { PaginationOption } from '@injectivelabs/sdk-ts'
-import {
-  ConditionalOrderSide,
+import type { PaginationOption } from '@injectivelabs/sdk-ts'
+import type { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
+import type {
+  ActivityField,
   TradeExecutionType,
-  ActivityField
+  ConditionalOrderSide
 } from '@/types'
 
 export type ActivityForm = Record<ActivityField, any>
 
 export type ActivityFormValue = {
-  field: ActivityField
   value: string
+  field: ActivityField
 }
 
 export interface FilterOptions {
+  denom?: string
   marketIds?: string[]
-  direction?: TradeDirection
   orderSide?: OrderSide
+  isConditional?: boolean
+  direction?: TradeDirection
   orderTypes?: ConditionalOrderSide[]
   executionTypes?: TradeExecutionType[]
-  denom?: string
-  isConditional?: boolean
 }
 
 export interface ActivityFetchOptions {
+  subaccountId?: string
   filters?: FilterOptions
   pagination?: PaginationOption
-  subaccountId?: string
 }

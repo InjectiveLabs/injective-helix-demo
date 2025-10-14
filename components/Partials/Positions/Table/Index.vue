@@ -10,8 +10,8 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { BusEvents, PositionTableColumn, PerpetualMarketCyTags } from '@/types'
-import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { TransformedPosition } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -182,7 +182,7 @@ function onClosePartialPosition() {
     const isBuy =
       selectedPositionDetails.value.position.direction === TradeDirection.Long
 
-    let orderTypeToSubmit = OrderSide.Buy
+    let orderTypeToSubmit = OrderSide.Buy as OrderSide
 
     if (jsonStore.isPostUpgradeMode) {
       orderTypeToSubmit = isBuy ? OrderSide.SellPO : OrderSide.BuyPO
@@ -329,10 +329,9 @@ function onClosePartialPosition() {
       <div class="flex items-center p-2 justify-end space-x-1">
         <div
           class="space-y-1 text-right"
-          :class="{
-            'text-green-500': row.pnl.gte(0),
-            'text-red-500': row.pnl.lt(0)
-          }"
+          :class="
+            getColorClassForChange(row.pnl, { zeroClass: 'text-green-500' })
+          "
         >
           <p
             :data-cy="dataCyTag(PerpetualMarketCyTags.OpenPosUnrealizedPnl)"
@@ -363,10 +362,9 @@ function onClosePartialPosition() {
           </p>
         </div>
 
-        <UIcon
-          :name="NuxtUiIcons.Share"
-          class="text-coolGray-500 hover:text-coolGray-400 w-4 h-4 min-w-4"
-          @click="sharePosition(row.position)"
+        <PartialsPositionsTableShare
+          :position="row.position"
+          @position:share="sharePosition"
         />
       </div>
     </template>

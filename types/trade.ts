@@ -104,6 +104,12 @@ export type MaxAmountOnOrderbook = {
   totalQuantity: BigNumberInBase
 }
 
+export type ChangeColorClassOptions = {
+  zeroClass?: string
+  positiveClass?: string
+  negativeClass?: string
+}
+
 export interface UiMarketAndSummaryWithVolumeInUsd extends UiMarketAndSummary {
   volumeInUsd: BigNumberInBase
 }

@@ -77,7 +77,9 @@ const limitOrders = computed(() => {
 
   const buyOrders = filteredOrders
     .filter((order) =>
-      [OrderSide.Buy, OrderSide.BuyPO].includes(order.orderSide)
+      ([OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]).includes(
+        order.orderSide
+      )
     )
     .sort((a, b) => {
       const aPrice = getFormattedPriceInBigNumber(a.price)
@@ -92,7 +94,9 @@ const limitOrders = computed(() => {
 
   const sellOrders = filteredOrders
     .filter((order) =>
-      [OrderSide.Sell, OrderSide.SellPO].includes(order.orderSide)
+      ([OrderSide.Sell, OrderSide.SellPO] as OrderSide[]).includes(
+        order.orderSide
+      )
     )
     .sort((a, b) => {
       const aPrice = getFormattedPriceInBigNumber(a.price)
@@ -173,7 +177,9 @@ function onOrderChange({
   newPrice: string
   order: SpotLimitOrder | DerivativeLimitOrder
 }) {
-  const isBuy = [OrderSide.Buy, OrderSide.BuyPO].includes(order.orderSide)
+  const isBuy = ([OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]).includes(
+    order.orderSide
+  )
 
   const isInvalidPrice =
     (isBuy && priceReference.value.lte(newPrice)) ||

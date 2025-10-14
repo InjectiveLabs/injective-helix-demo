@@ -22,8 +22,8 @@ const totalUsers = computed(
       (m: any) => m.marketId === props.strategy.marketId
     )?.activeTradingStrategies || 0
 )
-const isPositivePnl = computed(() =>
-  new BigNumberInBase(props.strategy.strategy.pnlPerc).gt(0)
+const pnlToBigNumber = computed(
+  () => new BigNumberInBase(props.strategy.strategy.pnlPerc)
 )
 
 const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
@@ -68,10 +68,12 @@ const to = computed(() => getTradingBotLinkFromStrategy(props.strategy))
     <div class="mt-4">
       <p class="text-gray-500 mb-1 text-xs">{{ $t('common.pnl') }}</p>
       <p
-        :class="[isPositivePnl ? 'text-green-500' : 'text-red-500']"
+        :class="
+          getColorClassForChange(pnlToBigNumber, { zeroClass: 'text-red-500' })
+        "
         class="text-2xl font-semibold"
       >
-        <span v-if="isPositivePnl"> + </span>
+        <span v-if="pnlToBigNumber.gt(0)"> + </span>
         {{ props.strategy.strategy.pnlPerc }}
         %
       </p>

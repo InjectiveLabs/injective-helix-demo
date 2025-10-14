@@ -1,11 +1,8 @@
 <script lang="ts" setup>
-import type LocaleMessage from 'vue-i18n'
-const { copy } = useClipboard()
-const { locales, messages } = useLang()
-
-const hasCopied = ref(false)
-const selectedCode = ref(locales.value[0].code)
-const differences = ref<Record<string, any>>({})
+import enFile from '@/i18n/locales/en'
+import cnFile from '@/i18n/locales/cn'
+import krFile from '@/i18n/locales/kr'
+import trFile from '@/i18n/locales/tr'
 
 definePageMeta({
   middleware: [
@@ -16,6 +13,20 @@ definePageMeta({
     }
   ]
 })
+
+const { locales } = useI18n()
+const { copy } = useClipboard()
+
+const messages = {
+  en: enFile('en'),
+  zh: cnFile('zh'),
+  kr: krFile('kr'),
+  tr: trFile('tr')
+}
+
+const hasCopied = ref(false)
+const selectedCode = ref(locales.value[0].code)
+const differences = ref<Record<string, any>>({})
 
 onMounted(() => {
   findMissingLocales(locales.value[1].code)
@@ -31,6 +42,16 @@ function copyContent() {
   }, 3000)
 }
 
+function findMissingLocales(lang: keyof typeof messages) {
+  selectedCode.value = lang
+
+  if (lang === 'en') {
+    differences.value = messages['en']
+  } else {
+    differences.value = compareLocales(messages['en'], messages[lang])
+  }
+}
+
 function deepClone(obj: Record<string, any>) {
   if (typeof obj !== 'object' || obj === null) {
     return obj
@@ -43,21 +64,6 @@ function deepClone(obj: Record<string, any>) {
   }
 
   return clone
-}
-
-function findMissingLocales(lang: string) {
-  // @ts-ignore
-  selectedCode.value = lang
-
-  if (lang === 'en') {
-    differences.value = messages.value['en']
-  } else {
-    differences.value = compareLocales(
-      messages.value['en'],
-      // @ts-ignore
-      messages.value[langWithType]
-    )
-  }
 }
 
 function compareLocales(

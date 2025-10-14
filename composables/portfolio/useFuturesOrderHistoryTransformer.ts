@@ -39,7 +39,8 @@ export function useFuturesOrderHistoryTransformer(
         OrderSide.BuyPO,
         OrderSide.TakeBuy,
         OrderSide.StopBuy
-      ]
+      ] as OrderSide[]
+
       const isBuy =
         order.direction === OrderSide.Buy ||
         orderSideList.includes(order.orderType as OrderSide)

@@ -2,26 +2,21 @@
 import { toJpeg } from 'html-to-image'
 import { Wallet } from '@injectivelabs/wallet-base'
 import { trackSharePnlDownload } from '@/app/providers/mixpanel/EventTracker'
-import { Modal } from '@/types'
-import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { Modal } from '@/types'
 
 const now = useNow({ interval: 1000 })
 const modalStore = useSharedModalStore()
 const sharedWalletStore = useSharedWalletStore()
 const { lg } = useSharedBreakpoints()
 
-const props = withDefaults(
-  defineProps<{
-    position: PositionV2
-  }>(),
-  {}
-)
+const props = defineProps<{
+  modal: Modal
+  filenamePrefix: string
+}>()
 
 const emit = defineEmits<{
   'on:close': []
 }>()
-
-const { market } = useDerivativePosition(computed(() => props.position))
 
 const characterList = [
   {
@@ -75,7 +70,7 @@ onMounted(() => {
 
 function onCloseModal() {
   emit('on:close')
-  modalStore.closeModal(Modal.SharePositionPnl)
+  modalStore.closeModal(props.modal)
 }
 
 function onOptionSelect(key: string) {
@@ -89,7 +84,7 @@ async function downloadImage() {
 
   toJpeg(canvas.value).then((dataUrl) => {
     const link = document.createElement('a')
-    link.download = `Position-PNL-${now.value}.jpeg`
+    link.download = `${props.filenamePrefix}-${now.value}.jpeg`
     link.href = dataUrl
     link.click()
 
@@ -107,7 +102,7 @@ async function downloadImage() {
 
 <template>
   <AppModal
-    v-model="modalStore.modals[Modal.SharePositionPnl]"
+    v-model="modalStore.modals[modal]"
     v-bind="{
       isLg: true,
       isAlwaysOpen: isDownloading,
@@ -123,18 +118,12 @@ async function downloadImage() {
       {{ $t('trade.sharePnl') }}
     </h3>
 
-    <section v-if="market" ref="canvas">
-      <ModalsSharePositionPnlCanvasContent
-        v-bind="{
-          position,
-          isLoading: isDownloading,
-          selectedCharacter: selectedCharacter
-        }"
-      />
+    <section ref="canvas">
+      <slot name="canvas" v-bind="{ isDownloading, selectedCharacter }" />
     </section>
 
     <div class="flex gap-5 mt-6 mb-10 flex-wrap">
-      <ModalsSharePositionPnlCharacterOption
+      <ModalsSharePnlCharacterOption
         v-for="character in characterList"
         :key="character.key"
         v-bind="{

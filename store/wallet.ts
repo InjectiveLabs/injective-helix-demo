@@ -73,35 +73,39 @@ export const useWalletStore = defineStore('wallet', {
       const sharedWalletStore = useSharedWalletStore()
 
       if (
-        [
-          Wallet.Rabby,
-          Wallet.BitGet,
-          Wallet.Rainbow,
-          Wallet.Phantom,
-          Wallet.Metamask,
-          Wallet.OkxWallet
-        ].includes(wallet)
+        (
+          [
+            Wallet.Rabby,
+            Wallet.BitGet,
+            Wallet.Rainbow,
+            Wallet.Phantom,
+            Wallet.Metamask,
+            Wallet.OkxWallet,
+            Wallet.TrustWallet
+          ] as Wallet[]
+        ).includes(wallet)
       ) {
         await sharedWalletStore.connectEvmWallet(wallet)
       }
 
-      if ([Wallet.Leap, Wallet.Keplr, Wallet.Ninji].includes(wallet)) {
+      if (([Wallet.Leap, Wallet.Keplr] as Wallet[]).includes(wallet)) {
         await sharedWalletStore.connectCosmosWallet(wallet)
       }
 
-      if ([Wallet.Ledger, Wallet.LedgerLegacy].includes(wallet) && address) {
+      if (
+        ([Wallet.Ledger, Wallet.LedgerLegacy] as Wallet[]).includes(wallet) &&
+        address
+      ) {
         await sharedWalletStore.connectLedger({
           wallet,
           address
         })
       }
 
-      if (wallet === Wallet.Cosmostation) {
-        await sharedWalletStore.connectCosmosStation()
-      }
-
       if (
-        [Wallet.TrezorBip32, Wallet.TrezorBip44].includes(wallet) &&
+        ([Wallet.TrezorBip32, Wallet.TrezorBip44] as Wallet[]).includes(
+          wallet
+        ) &&
         address
       ) {
         await sharedWalletStore.connectTrezor({ wallet, address })
@@ -245,7 +249,11 @@ export const useWalletStore = defineStore('wallet', {
     async signArbitraryData(address: string, message: string) {
       const sharedWalletStore = useSharedWalletStore()
 
-      if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+      if (
+        ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+          sharedWalletStore.wallet
+        )
+      ) {
         return await walletStrategy.signEip712TypedData(
           message,
           sharedWalletStore.address

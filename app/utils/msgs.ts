@@ -304,21 +304,25 @@ export const createCancelTpSlOrderMsgs = ({
 
   const shouldAutoCancelTpSlOnLong =
     position.direction === TradeDirection.Long &&
-    [
-      OrderSide.Sell,
-      OrderSide.SellPO,
-      OrderSide.TakeSell,
-      OrderSide.StopSell
-    ].includes(orderSide)
+    (
+      [
+        OrderSide.Sell,
+        OrderSide.SellPO,
+        OrderSide.TakeSell,
+        OrderSide.StopSell
+      ] as OrderSide[]
+    ).includes(orderSide)
 
   const shouldAutoCancelTpSlOnShort =
     position.direction === TradeDirection.Short &&
-    [
-      OrderSide.Buy,
-      OrderSide.BuyPO,
-      OrderSide.TakeBuy,
-      OrderSide.StopBuy
-    ].includes(orderSide)
+    (
+      [
+        OrderSide.Buy,
+        OrderSide.BuyPO,
+        OrderSide.TakeBuy,
+        OrderSide.StopBuy
+      ] as OrderSide[]
+    ).includes(orderSide)
 
   const shouldAutoCancelTpSl =
     shouldAutoCancelTpSlOnLong || shouldAutoCancelTpSlOnShort

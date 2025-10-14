@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { valueSortFunction } from '@/app/utils/helpers'
 import { UI_DEFAULT_FUNDING_RATE_DECIMALS } from '@/app/utils/constants'
 import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiMarketAndSummaryWithVolumeInUsd } from '@/types'
 
 const appStore = useAppStore()
@@ -177,12 +177,12 @@ function toggleFavorite(item: UiMarketAndSummaryWithVolumeInUsd) {
             </span>
             <span
               v-else
-              :class="{
-                'text-green-500':
-                  row[MarketsSelectorTableColumn.FundingRate].gte(0),
-                'text-red-500':
-                  row[MarketsSelectorTableColumn.FundingRate].lt(0)
-              }"
+              :class="
+                getColorClassForChange(
+                  row[MarketsSelectorTableColumn.FundingRate],
+                  { zeroClass: 'text-green-500' }
+                )
+              "
               class="cursor-pointer flex"
             >
               <SharedAmount

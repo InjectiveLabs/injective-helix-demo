@@ -22,13 +22,7 @@ const { formattedStrategies: strategies } = useDerivativeGridStrategies(
 
 const strategy = computed(() => strategies.value[0])
 
-const isPositivePnl = computed(() =>
-  new BigNumberInBase(strategy.value.pnl).gt(0)
-)
-
-const isZeroPnl = computed(() =>
-  new BigNumberInBase(strategy.value.pnl).isZero()
-)
+const pnlToBigNumber = computed(() => new BigNumberInBase(strategy.value.pnl))
 
 const percentagePnl = computed(() =>
   new BigNumberInBase(strategy.value.percentagePnl).toFormat(2)
@@ -68,11 +62,11 @@ const percentagePnl = computed(() =>
 
         <template v-else>
           <div
-            :class="{
-              'text-green-500': isPositivePnl,
-              'text-red-500': !isPositivePnl && !isZeroPnl,
-              'text-coolGray-500': isZeroPnl
-            }"
+            :class="
+              getColorClassForChange(pnlToBigNumber, {
+                zeroClass: 'text-coolGray-500'
+              })
+            "
           >
             <SharedAmount
               v-bind="{
@@ -82,7 +76,7 @@ const percentagePnl = computed(() =>
               }"
             >
               <template #prefix>
-                <span>{{ isPositivePnl ? '+' : '' }}</span>
+                <span>{{ pnlToBigNumber.gt(0) ? '+' : '' }}</span>
               </template>
             </SharedAmount>
             <span>

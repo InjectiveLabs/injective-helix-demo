@@ -92,10 +92,7 @@ const endDate = computed(() => {
           <AppButton> {{ $t('lpRewards.myRewards') }}</AppButton>
         </NuxtLink>
 
-        <NuxtLink
-          to="https://helixapp.zendesk.com/hc/en-us/articles/8258846181647-Share-30-000-TIA-in-TIA-Spot-Trading-Challenge-"
-          target="_blank"
-        >
+        <NuxtLink to="https://docs.helixapp.com/lp-rewards" target="_blank">
           <AppButton>{{ $t('lpRewards.campaignRules') }}</AppButton>
         </NuxtLink>
       </div>

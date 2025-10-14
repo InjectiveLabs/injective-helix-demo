@@ -4,6 +4,7 @@ export default {
   trade: {
     tp: 'TP',
     sl: 'SL',
+    mid: 'Mid',
     fee: 'Fee',
     buy: 'Buy',
     max: 'Max',
@@ -56,6 +57,7 @@ export default {
     viewOrder: 'View Order',
     orderType: 'Order type',
     'pro-chart': 'Pro Chart',
+    showOrders: 'Show Orders',
     placeOrder: 'Place Order',
     allMarkets: 'All Markets',
     marketName: 'Market Name',
@@ -73,7 +75,6 @@ export default {
     liquidation: 'Liquidation',
     tickerOnly: '{ticker} only',
     cancelOrder: 'Cancel Order',
-    showHistory: 'Show History',
     makerRate: 'Maker Fee Rate',
     maxLeverage: 'Max. Leverage',
     'stop-market': 'Stop-Market',
@@ -273,6 +274,7 @@ export default {
 
     sharePnlModal: {
       markPrice: 'Mark price',
+      exitPrice: 'Exit price',
       entryPrice: 'Entry price',
       mobileDownloadNote: 'Download is available on desktop'
     },

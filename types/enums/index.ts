@@ -424,8 +424,9 @@ export enum NoticeBanner {
   DeprecatedWallet = 'deprecated-wallet',
   PerpSettleMarket = 'perp-settle-market',
   PostChainUpgrade = 'post-chain-upgrade',
+  PreLaunchFutures = 'pre-launch-futures',
   UpcomingChainUpgrade = 'upcoming-chain-upgrade',
-  OwnYourAssetCampaign = 'own-your-asset-campaign'
+  VolumeVictoryCampaign = 'volume-victory-campaign'
 }
 
 export enum SpotGridMessages {
@@ -513,6 +514,7 @@ export enum StreamType {
   GridStrategies = 'grid-strategies',
   DerivativesTrades = 'derivatives-trades',
   SubaccountBalances = 'subaccount-balances',
+  SpotAverageEntries = 'spot-average-entries',
   SpotOrderbookUpdate = 'spot-orderbook-update',
   SpotSubaccountOrders = 'spot-subaccount-orders',
   SpotSubaccountTrades = 'spot-subaccount-trades',
@@ -576,9 +578,11 @@ export enum Modal {
   GeoRestricted = 'geo-restricted',
   ShareReferral = 'share-referral',
   ConnectMobile = 'connect-mobile',
+  ShareTradePnl = 'share-trade-pnl',
   SgtBalancedFees = 'sgtBalancedFees',
   FuturesSlippage = 'futures-slippage',
   ConfirmReferral = 'confirm-referral',
+  ShareBalancePnl = 'share-balance-pnl',
   ClosedRWAMarket = 'closed-rwa-market',
   NinjaPassWinner = 'ninja-pass-winner',
   MarketRestricted = 'market-restricted',

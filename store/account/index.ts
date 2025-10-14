@@ -352,7 +352,11 @@ export const useAccountStore = defineStore('account', {
       const sharedWalletStore = useSharedWalletStore()
 
       try {
-        if ([Wallet.Magic, Wallet.Turnkey].includes(sharedWalletStore.wallet)) {
+        if (
+          ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
+            sharedWalletStore.wallet
+          )
+        ) {
           const accountDetails = await getAccountDetails(address)
           const publicKeyBase64 = accountDetails.pubKey.key
 

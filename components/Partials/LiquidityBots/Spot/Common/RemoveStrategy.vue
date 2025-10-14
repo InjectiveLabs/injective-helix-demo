@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MarketType } from '@injectivelabs/sdk-ts'
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { StrategyStatus } from '@/types'
 import type { TradingStrategy } from '@injectivelabs/sdk-ts'
 
@@ -130,7 +130,12 @@ function removeStrategy() {
           <span>{{ $t('tradingBots.approximateProfit') }}:</span>
 
           <div
-            :class="getColorClassForPnlPercentage(Number(currentPnlPercentage))"
+            :class="
+              getColorClassForChange(
+                new BigNumberInBase(currentPnlPercentage),
+                { zeroClass: 'text-coolGray-400' }
+              )
+            "
           >
             {{ Number(currentPnlPercentage) > 0 ? '+' : '' }}
 

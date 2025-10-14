@@ -13,8 +13,8 @@ import {
 } from '@injectivelabs/sdk-ts'
 import { orderSideToChaseOrderType } from '@/app/utils/trade'
 import { prepareNeptuneWithdrawMessage } from '@/app/utils/msgs'
-import type { UiSpotMarket } from '@/types'
 import type { SpotLimitOrder, SpotOrderHistory } from '@injectivelabs/sdk-ts'
+import type { UiSpotMarket } from '@/types'
 
 const fetchBalances = (
   {
@@ -138,7 +138,9 @@ export const submitLimitOrder = async ({
     orderType: orderSideToOrderType(orderSide)
   })
 
-  const isBuy = [OrderSide.Buy, OrderSide.BuyPO].includes(orderSide)
+  const isBuy = ([OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]).includes(
+    orderSide
+  )
 
   const cw20Messages = prepareNeptuneWithdrawMessage({
     denom: isBuy ? market.quoteDenom : market.baseDenom,

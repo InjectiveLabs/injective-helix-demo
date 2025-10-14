@@ -133,12 +133,7 @@ onWalletConnected(() => {
         </p>
         <p class="text-xs text-zinc-500">{{ $t('tradingBots.totalPnl') }}</p>
         <p class="text-xl font-bold">
-          <span
-            :class="{
-              'text-green-500': totalPnl.gt(0),
-              'text-red-500': totalPnl.lt(0)
-            }"
-          >
+          <span :class="getColorClassForChange(totalPnl)">
             {{ totalPnl.toFixed(2) }}%
           </span>
         </p>

@@ -47,10 +47,11 @@ env:
   VITE_FAUCET_MAINNET_API: ${{ secrets.VITE_FAUCET_MAINNET_API }}
 
   VITE_HOTJAR_KEY: ${{ secrets.VITE_HOTJAR_KEY }}
-  VITE_ALCHEMY_KEY: ${{ secrets.VITE_ALCHEMY_KEY }}
   VITE_MIXPANEL_KEY: ${{ secrets.VITE_MIXPANEL_KEY }}
   VITE_TURNKEY_ORGID: ${{ secrets.VITE_TURNKEY_ORGID }}
   VITE_MAGIC_APK_KEY: ${{ secrets.VITE_MAGIC_APK_KEY }}
+  VITE_ALCHEMY_KEY: ${{ secrets.VITE_STAGING_ALCHEMY_KEY }}
+  VITE_ALCHEMY_SEPOLIA_KEY: ${{ secrets.VITE_STAGING_ALCHEMY_KEY }}
   VITE_COINGECKO_API_KEY: ${{ secrets.VITE_COINGECKO_API_KEY }}
   VITE_SHEETDB_BEARER_TOKEN: ${{ secrets.VITE_SHEETDB_BEARER_TOKEN }}
   VITE_ONRAMPER_SIGNING_KEY: ${{ secrets.VITE_ONRAMPER_SIGNING_KEY }}
@@ -106,6 +107,13 @@ jobs:
 
       - name: Install Netlify CLI
         run: npm install netlify-cli@17.36.4 -g
+
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
 
       - name: Set environment variables based on network
         id: set_env
@@ -163,6 +171,21 @@ jobs:
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-user-token: ${{ secrets.SLACK_USER_TOKEN }}
 
+      # Trigger helix dapp-tests workflow with staging URL and timestamp
+      - name: Trigger helix dapp-tests workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
+
+          gh workflow run "Helix Functional Tests - UI - Custom" \
+            --repo InjectiveLabs/dapp-tests \
+            --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
+            --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
+
+          echo "✅ Successfully triggered dapp-tests workflow"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       # Optional: Use the outputs from the action
       - name: Deployment Summary
         if: always()
@@ -184,3 +207,18 @@ jobs:
             echo "Slack message timestamp: ${{ steps.deployment_notification.outputs.message_ts }}"
             echo "Created new Slack message"
           fi
+
+      # Trigger fe-staging-testnet workflow
+      - name: Trigger fe-staging-testnet workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering fe-staging-testnet workflow"
+
+          gh workflow run "Frontend Staging Deployment - Testnet" \
+            --repo InjectiveLabs/injective-helix \
+            --field branch="${{ github.event.inputs.branch }}" \
+            --field description="Triggered from main staging deployment - ${{ github.event.inputs.description }}"
+
+          echo "✅ Successfully triggered fe-staging-testnet workflow"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

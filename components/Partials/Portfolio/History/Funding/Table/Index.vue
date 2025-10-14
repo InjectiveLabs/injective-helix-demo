@@ -64,10 +64,9 @@ const columns = computed(() => [
         <div class="p-2 text-right space-x-2 flex justify-end">
           <span
             class="inline-block"
-            :class="{
-              'text-green-500': row.total.gte(0),
-              'text-red-500': row.total.lt(0)
-            }"
+            :class="
+              getColorClassForChange(row.total, { zeroClass: 'text-green-500' })
+            "
           >
             <SharedAmount
               v-bind="{

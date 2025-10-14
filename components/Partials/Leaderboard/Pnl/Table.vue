@@ -38,10 +38,15 @@ function incrementLimit() {
       <PartialsLeaderboardPnlCommonRow
         v-for="leader in formattedPnlLeaderboard"
         :key="leader.rank"
-        v-bind="{
-          leader
+        v-bind="{ leader }"
+        class="text-sm my-1 items-center rounded-lg"
+        :class="{
+          'bg-[#AAA]': leader.rank === 2,
+          'bg-[#F3C211]': leader.rank === 1,
+          'bg-[#BD7B31]': leader.rank === 3,
+          'py-5 text-black font-medium': leader.rank <= 3,
+          'bg-coolGray-825 py-4 text-white': leader.rank > 3
         }"
-        class="text-sm my-1 items-center rounded-lg bg-coolGray-825 py-4 text-white"
       />
 
       <PartialsLeaderboardTableBottomGradient

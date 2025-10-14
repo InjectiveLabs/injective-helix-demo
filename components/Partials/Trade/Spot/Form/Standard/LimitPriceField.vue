@@ -83,6 +83,23 @@ function setLimitPriceToTopOfOrderbook() {
       : orderbookStore.lowestSellPrice
 }
 
+function setLimitPriceToMid() {
+  if (!orderbookStore.highestBuyPrice || !orderbookStore.lowestSellPrice) {
+    return
+  }
+
+  const midValue = new BigNumberInBase(orderbookStore.highestBuyPrice)
+    .plus(orderbookStore.lowestSellPrice)
+    .dividedBy(2)
+
+  if (midValue.isNaN()) {
+    return
+  }
+
+  hasClickedLimitField.value = true
+  limitValue.value = midValue.toFixed(market.value.priceDecimals)
+}
+
 function onResetLimitField() {
   if (hasClickedLimitField.value) {
     return
@@ -95,18 +112,8 @@ function onResetLimitField() {
 
 <template>
   <div v-if="market" ref="el" class="space-y-2">
-    <div class="flex justify-between items-center">
+    <div class="flex items-center">
       <p class="field-label">{{ $t('trade.limitPrice') }}</p>
-
-      <div class="text-xs text-coolGray-450">
-        <span>~$</span>
-        <SharedAmountUsd
-          v-bind="{
-            shouldAbbreviate: false,
-            amount: limitPriceInUsdToFixed
-          }"
-        />
-      </div>
     </div>
 
     <AppInputField
@@ -119,9 +126,14 @@ function onResetLimitField() {
       @click="onResetLimitField"
     >
       <template #right>
-        <span class="text-sm flex items-center text-white">
-          {{ market.quoteToken.symbol }}
-        </span>
+        <div class="flex items-center text-sm">
+          <span
+            class="text-azure-blue-350 cursor-pointer font-semibold uppercase"
+            @click.prevent.stop="setLimitPriceToMid"
+          >
+            {{ $t('trade.mid') }}
+          </span>
+        </div>
       </template>
     </AppInputField>
 

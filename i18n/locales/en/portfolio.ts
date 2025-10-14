@@ -229,10 +229,10 @@ export default {
         [BalanceTableColumn.Total]: 'Total',
         [BalanceTableColumn.Assets]: 'Assets',
         [BalanceTableColumn.Staked]: 'Staked',
+        [BalanceTableColumn.Pnl]: 'PnL (ROI %)',
         [BalanceTableColumn.Available]: 'Available',
         [BalanceTableColumn.StakedUsd]: 'Staked (USD)',
         [BalanceTableColumn.TotalUsd]: 'Total Value (USD)',
-        [BalanceTableColumn.UnrealizedPnl]: 'Unrealized PnL',
         [BalanceTableColumn.UsedOrReserved]: 'In Use/Reserved'
       },
       spotOpenOrder: {

@@ -127,11 +127,7 @@ const to = computed(() =>
       <span
         class="text-xs"
         data-cy="market-card-change_24h-text-content"
-        :class="{
-          'text-green-500': change.gt(0),
-          'text-white': change.eq(0),
-          'text-red-500': change.lt(0)
-        }"
+        :class="getColorClassForChange(change, { zeroClass: 'text-white' })"
       >
         <SharedAmount
           v-bind="{
