@@ -17,7 +17,7 @@ const rank = computed(() => pointsStore.accountPoints?.rank || '0')
   >
     <div class="flex flex-col max-sm:gap-2 flex-1 bg-brand-925 rounded-2xl p-6">
       <h4 class="text-coolGray-375 text-[22px] max-sm:text-lg">
-        {{ $t('points.totalPointsPlusBonus') }}
+        {{ $t('points.totalPoints') }}
       </h4>
       <p class="text-3xl max-sm:text-2xl">
         <SharedAmount

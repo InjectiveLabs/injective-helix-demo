@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { Status, StatusType } from '@injectivelabs/utils'
+import { NuxtUiIcons } from '@shared/types'
 import { PointsPeriod } from '@/types'
 
-const { $onError } = useNuxtApp()
 const pointsStore = usePointsStore()
 const sharedWalletStore = useSharedWalletStore()
+const { $onError } = useNuxtApp()
+const { lg } = useSharedBreakpoints()
 
+const isSeeMoreDescription = ref(false)
 const selectedPeriod = ref(PointsPeriod.Day)
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
@@ -38,6 +41,10 @@ useIntervalFn(() => {
   ])
 }, 60 * 1000)
 
+function toggleIsSeeMoreDescription() {
+  isSeeMoreDescription.value = !isSeeMoreDescription.value
+}
+
 function fetchAccountPoints() {
   fetchStatus.setLoading()
 
@@ -62,15 +69,24 @@ function fetchAccountPoints() {
         {{ $t('points.subtitle') }}
       </h6>
 
-      <p class="tracking-wide max-sm:text-sm mb-6">
-        {{ $t('points.description1') }}
-      </p>
-      <p class="tracking-wide max-sm:text-sm mb-6">
-        {{ $t('points.description2') }}
-      </p>
-      <p class="tracking-wide max-sm:text-sm">
-        {{ $t('points.description3') }}
-      </p>
+      <i18n-t
+        tag="p"
+        keypath="points.description1"
+        class="tracking-wide max-sm:text-sm"
+      >
+        <template #seeMore>
+          <span
+            v-if="!isSeeMoreDescription"
+            class="text-azure-blue-350 hover:opacity-80 transition-opacity cursor-pointer"
+            @click="toggleIsSeeMoreDescription"
+          >
+            {{ $t('points.seeMore') }}
+          </span>
+          <template v-else>
+            {{ $t('points.description2') }}
+          </template>
+        </template>
+      </i18n-t>
     </div>
 
     <PartialsPointsStats v-bind="{ totalPoints }" />
@@ -91,9 +107,24 @@ function fetchAccountPoints() {
 
       <div class="w-96 max-lg:w-full flex flex-col gap-8">
         <div class="p-4 bg-brand-925 rounded-2xl">
-          <h6 class="text-coolGray-375 text-[22px] max-sm:text-lg max-sm:mb-2">
-            {{ $t('points.season1Points') }}
-          </h6>
+          <div class="flex gap-2 items-center max-sm:mb-2">
+            <h6 class="text-coolGray-375 text-[22px] max-sm:text-lg">
+              {{ $t('points.season1Points') }}
+            </h6>
+            <UPopover
+              :popper="{ placement: 'top' }"
+              :mode="lg ? 'hover' : 'click'"
+            >
+              <UIcon :name="NuxtUiIcons.Info2" class="size-6 coolGray-375" />
+              <template #panel>
+                <span
+                  class="flex flex-col gap-2 text-xs py-1 px-2 rounded bg-[#2D3135] tracking-wide"
+                >
+                  {{ $t('points.seasonOneTooltipContent') }}
+                </span>
+              </template>
+            </UPopover>
+          </div>
           <p class="text-3xl max-sm:text-2xl">
             <SharedAmount
               v-bind="{

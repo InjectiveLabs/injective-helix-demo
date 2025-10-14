@@ -8,6 +8,14 @@ const pointsStore = usePointsStore()
 const sharedWalletStore = useSharedWalletStore()
 const now = useNow({ interval: 1000 })
 
+const beltImageList = {
+  [PointsLeague.Blue]: 'blue-belt',
+  [PointsLeague.Black]: 'black-belt',
+  [PointsLeague.White]: 'white-belt',
+  [PointsLeague.Orange]: 'orange-belt',
+  [PointsLeague.Purple]: 'purple-belt'
+}
+
 const canvas = ref()
 const status = reactive(new Status(StatusType.Idle))
 
@@ -15,19 +23,6 @@ const league = computed(
   () =>
     (pointsStore?.accountPoints?.league as PointsLeague) || PointsLeague.White
 )
-
-const dotColor = computed(() => {
-  // todo fred: get confirmed color list from design/product
-  const colorList = {
-    [PointsLeague.Blue]: '#679AFF',
-    [PointsLeague.Black]: '#679AFF',
-    [PointsLeague.White]: '#679AFF',
-    [PointsLeague.Orange]: '#679AFF',
-    [PointsLeague.Purple]: '#679AFF'
-  }
-
-  return colorList[league.value]
-})
 
 const rank = computed(() => pointsStore.accountPoints?.rank || '0')
 
@@ -55,9 +50,9 @@ async function downloadImage() {
     class="flex items-center justify-between p-4 bg-cover bg-center bg-no-repeat w-full max-w-[390px] aspect-[1/0.45] rounded-2xl bg-black text-white"
   >
     <div class="flex items-center">
-      <span
-        class="size-12 rounded-full"
-        :style="{ backgroundColor: dotColor }"
+      <img
+        class="w-14"
+        :src="`/images/points/level/${beltImageList[league]}.png`"
       />
 
       <div class="ml-4 mr-6">
