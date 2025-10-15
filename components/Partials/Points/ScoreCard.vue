@@ -47,7 +47,7 @@ async function downloadImage() {
   <div
     ref="canvas"
     :style="{ backgroundImage: 'url(/images/points/s2-bg.png)' }"
-    class="flex items-center justify-between p-4 bg-cover bg-center bg-no-repeat w-full max-w-[390px] aspect-[1/0.45] rounded-2xl bg-black text-white"
+    class="flex items-center justify-between p-4 bg-cover bg-center bg-no-repeat w-full max-w-[390px] aspect-[1/0.46] rounded-2xl bg-black text-white"
   >
     <div class="flex items-center">
       <img

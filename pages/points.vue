@@ -115,7 +115,10 @@ function fetchAccountPoints() {
               :popper="{ placement: 'top' }"
               :mode="lg ? 'hover' : 'click'"
             >
-              <UIcon :name="NuxtUiIcons.Info2" class="size-6 coolGray-375" />
+              <UIcon
+                :name="NuxtUiIcons.Info2"
+                class="size-5 text-coolGray-375"
+              />
               <template #panel>
                 <span
                   class="flex flex-col gap-2 text-xs py-1 px-2 rounded bg-[#2D3135] tracking-wide"
