@@ -31,6 +31,11 @@ const preLaunchMarketPairs = [
     slug: 'mon-usdt-perp',
     marketId:
       '0xf90a62bb82fdce5ae1a1388227999a78d24546541fd7c586e1e0d3f150eaf385'
+  },
+  {
+    slug: 'apr-usdt-perp',
+    marketId:
+      '0xefae35bb70165a67953413cdd429a61a04feb9c3275edc2334adb1c8e693f3d8'
   }
 ] as { slug: string; marketId: string }[]
 
