@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import { SharedMarketType } from '@shared/types'
-import { OrderSide } from '@injectivelabs/ts-types'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { MAX_LIMIT_ORDER_LINES } from '@/app/utils/constants'
+import {
+  MAX_LIMIT_ORDER_LINES,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
+import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { TradingChartInterval } from '@/types'
 import type {
   SpotLimitOrder,
@@ -12,11 +17,14 @@ import type {
 import type {
   UiSpotMarket,
   UiMarketWithToken,
-  UiDerivativeMarket
+  UiDerivativeMarket,
+  ChartPosition
 } from '@/types'
 
 const appStore = useAppStore()
 const spotStore = useSpotStore()
+const accountStore = useAccountStore()
+const positionStore = usePositionStore()
 const derivativeStore = useDerivativeStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
@@ -118,6 +126,68 @@ const historicalTrades = computed(() => {
     : derivativeStore.subaccountTrades
 
   return tradesData.filter((trade) => trade.marketId === props.market.marketId)
+})
+
+const currentMarketPosition = computed<ChartPosition | undefined>(() => {
+  if (props.isSpot) {
+    return undefined
+  }
+
+  const currentPosition = positionStore.positions.find(
+    (position) =>
+      position.marketId === props.market.marketId &&
+      position.subaccountId === accountStore.subaccountId
+  )
+
+  const market = derivativeStore.marketByIdOrSlug(
+    currentPosition?.marketId || ''
+  )
+
+  if (!market || !currentPosition) {
+    return undefined
+  }
+
+  const markPriceFromStream =
+    derivativeStore.marketMarkPriceMap[market.marketId]
+
+  const markPriceNotScaled = markPriceFromStream
+    ? new BigNumberInBase(markPriceFromStream.price)
+    : sharedToBalanceInTokenInBase({
+        value: currentPosition.markPrice,
+        decimalPlaces: market.quoteToken.decimals
+      })
+
+  const markPrice = calculateScaledMarkPrice({
+    market,
+    markPriceNotScaled
+  })
+
+  const price = sharedToBalanceInTokenInBase({
+    value: currentPosition.entryPrice,
+    decimalPlaces: market.quoteToken.decimals
+  })
+
+  const margin = sharedToBalanceInTokenInBase({
+    value: currentPosition.margin,
+    decimalPlaces: market.quoteToken.decimals
+  })
+
+  const pnl = new BigNumberInBase(currentPosition.quantity)
+    .times(markPrice.minus(price))
+    .times(currentPosition.direction === TradeDirection.Long ? 1 : -1)
+
+  const percentagePnl = pnl.isNaN()
+    ? '0'
+    : new BigNumberInBase(pnl.dividedBy(margin).times(100)).toFixed(
+        UI_DEFAULT_MIN_DISPLAY_DECIMALS,
+        BigNumberInBase.ROUND_DOWN
+      )
+
+  return {
+    ...currentPosition,
+    pnl,
+    percentagePnl
+  }
 })
 
 function onReady() {
@@ -235,6 +305,7 @@ function onOrderChange({
           datafeedEndpoint,
           historicalTrades,
           orders: limitOrders,
+          currentMarketPosition,
           interval:
             appStore.userState.preferences.tradingChartInterval ||
             TradingChartInterval.D

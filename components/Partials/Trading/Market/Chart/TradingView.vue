@@ -1,14 +1,26 @@
 <script lang="ts" setup>
+import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumberInWei, BigNumberInBase } from '@injectivelabs/utils'
 import config from '@/app/trading-view/config'
 import { widget as TradingViewWidget } from '@/assets/js/chart/charting_library.esm'
 import {
   CHART_ZOOM_FALLBACK_NUMBER,
-  DEFAULT_100_CHART_CANDLE_BAR_SPACING
+  DEFAULT_100_CHART_CANDLE_BAR_SPACING,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
-import { BusEvents, TradingInterface, TradingChartInterval } from '@/types'
-import type { UiTrade, UiSpotMarket, UiDerivativeMarket } from '@/types'
+import {
+  BusEvents,
+  TradingInterface,
+  TradingChartInterval,
+  ConditionalOrderSide
+} from '@/types'
+import type {
+  UiTrade,
+  UiSpotMarket,
+  UiDerivativeMarket,
+  ChartPosition
+} from '@/types'
 import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import type {
   SpotLimitOrder,
@@ -17,6 +29,7 @@ import type {
 
 const route = useRoute()
 const appStore = useAppStore()
+const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
@@ -27,6 +40,7 @@ const props = withDefaults(
     interval: string
     datafeedEndpoint: string
     historicalTrades: UiTrade[]
+    currentMarketPosition?: ChartPosition
     market: UiSpotMarket | UiDerivativeMarket
     orders?: SpotLimitOrder[] | DerivativeLimitOrder[]
   }>(),
@@ -53,32 +67,70 @@ const containerId = `tv_chart_container-${window.crypto
   .getRandomValues(new Uint32Array(1))[0]
   .toString()}`
 
+const tpOrderline = ref()
+const slOrderline = ref()
+const positionLine = ref()
 const widgetOptions = ref<any>({})
+const setPositionLineInterval = ref()
 const isFromSubaccountTradeStream = ref(false)
-const orderLines = ref<Record<string, any>>({})
+const limitOrderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
 const showTradeHistory = computed({
   get: () => true,
   set: (value) => {
     if (!value) {
+      clearLimitOrderlines()
+      setupTpOrderline(true)
+      setupSlOrderline(true)
+      setupPositionLine(true)
       setupChartMarkers(true)
-      clearAllOrderLines()
     } else {
+      setupTpOrderline()
+      setupSlOrderline()
+      setupPositionLine()
       setupChartMarkers()
       modifyLimitOrderLines()
     }
   }
 })
 
-watch(
-  () => props.historicalTrades,
-  () => {
-    setupChartMarkers()
-  }
+const tpOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      (order.orderType === ConditionalOrderSide.TakeBuy ||
+        order.orderType === ConditionalOrderSide.TakeSell) &&
+      order.marketId === props.currentMarketPosition?.marketId
+  )
+)
+
+const slOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      (order.orderType === ConditionalOrderSide.StopBuy ||
+        order.orderType === ConditionalOrderSide.StopSell) &&
+      order.marketId === props.currentMarketPosition?.marketId
+  )
 )
 
 watch(() => props.orders, modifyLimitOrderLines, { deep: true })
+
+watch(
+  () => props.historicalTrades,
+  () => setupChartMarkers()
+)
+
+watch(
+  () => tpOrder.value,
+  () => setupTpOrderline(),
+  { deep: true }
+)
+
+watch(
+  () => tpOrder.value,
+  () => setupSlOrderline(),
+  { deep: true }
+)
 
 onMounted(() => {
   widgetOptions.value = config({
@@ -96,6 +148,8 @@ onMounted(() => {
 
     nextTick(() => {
       tradingView.value.view = tradingWidget
+      setupTpOrderline()
+      setupSlOrderline()
       modifyLimitOrderLines()
     })
 
@@ -139,6 +193,8 @@ onMounted(() => {
         })
 
         setupChartMarkers()
+        setupPositionLine()
+
         emit('ready')
       }, 100)
     }
@@ -152,6 +208,69 @@ onMounted(() => {
     }, 1000)
   })
 })
+
+function setupPositionLine(isHide?: boolean) {
+  setupPositionLineInChart(isHide)
+
+  if (isHide) {
+    clearInterval(setPositionLineInterval.value)
+    setPositionLineInterval.value = undefined
+
+    return
+  }
+
+  setPositionLineInterval.value = setInterval(
+    () => setupPositionLineInChart(),
+    5 * 1000
+  )
+}
+
+async function setupPositionLineInChart(isHide?: boolean) {
+  const tradingViewChart = tradingView.value?.view?.chart()
+
+  if (!props.currentMarketPosition) {
+    return
+  }
+
+  const pnl = props.currentMarketPosition?.pnl || ZERO_IN_BASE
+  const formattedPnl = pnl?.isNegative()
+    ? `- $${pnl.abs().toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)}`
+    : pnl.toFixed(UI_DEFAULT_MIN_DISPLAY_DECIMALS, BigNumberInBase.ROUND_DOWN)
+
+  const formattedEntryPrice = sharedToBalanceInTokenInBase({
+    value: props.currentMarketPosition.entryPrice,
+    decimalPlaces: props.market.quoteToken.decimals
+  }).toFixed(props.market.priceDecimals, BigNumberInBase.ROUND_DOWN)
+
+  if (!positionLine.value) {
+    positionLine.value = await tradingViewChart.createPositionLine()
+
+    positionLine.value
+      .setLineStyle(2)
+      .setExtendLeft(true)
+      .setPrice(formattedEntryPrice)
+      .setText(`${t('common.pnl')} ${formattedPnl}`)
+      .setQuantity(`${props.currentMarketPosition?.percentagePnl}%`)
+      .setLineColor('#40A9FF')
+      .setBodyTextColor('#40A9FF')
+      .setBodyBorderColor('#40A9FF')
+      .setBodyBackgroundColor('#14151A')
+      .setQuantityBorderColor('#40A9FF')
+      .setQuantityBackgroundColor('#14151A')
+
+    return
+  } else if (isHide) {
+    positionLine.value?.remove()
+    positionLine.value = undefined
+
+    return
+  }
+
+  positionLine.value
+    .setPrice(formattedEntryPrice)
+    .setText(`PNL ${formattedPnl}`)
+    .setQuantity(`${props.currentMarketPosition?.percentagePnl}%`)
+}
 
 function setupChartMarkers(isHide?: boolean, interval?: TradingChartInterval) {
   const tradingViewChart = tradingView.value?.view?.chart()
@@ -270,14 +389,14 @@ function triggerMarkersUpdate() {
   }
 }
 
-function clearAllOrderLines() {
-  Object.values(orderLines.value).forEach((orderLine) => {
+function clearLimitOrderlines() {
+  Object.values(limitOrderLines.value).forEach((orderLine) => {
     nextTick(() => {
       toRaw(orderLine).remove()
     })
   })
 
-  orderLines.value = {}
+  limitOrderLines.value = {}
 }
 
 function modifyLimitOrderLines() {
@@ -289,7 +408,7 @@ function modifyLimitOrderLines() {
     const updatedOrderLinesId: string[] = []
     const chart = tradingView.value.view?.chart()
 
-    clearAllOrderLines()
+    clearLimitOrderlines()
 
     if (!chart || route.query?.interface === TradingInterface.TradingBots) {
       return
@@ -319,17 +438,7 @@ function modifyLimitOrderLines() {
       ).toFixed(props.market.quantityDecimals)
 
       const uid = order.orderHash || order.cid
-      const existingOrderLine = orderLines.value[uid]
-      const orderLine =
-        existingOrderLine || chart.createOrderLine({ disableUndo: true })
-
-      if (existingOrderLine) {
-        orderLine.setQuantity(
-          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
-        )
-
-        return
-      }
+      const orderLine = chart.createOrderLine({ disableUndo: true })
 
       const themeColor = (
         [OrderSide.Buy, OrderSide.BuyPO] as OrderSide[]
@@ -337,25 +446,26 @@ function modifyLimitOrderLines() {
         ? '#0EE29B'
         : '#F3164D'
 
-      orderLine.setLineStyle(2)
-      orderLine.setPrice(formattedPrice)
-      orderLine.setBodyTextColor(themeColor)
-      orderLine.setLineColor(themeColor)
-      orderLine.setBodyBackgroundColor('#14151A')
-      orderLine.setBodyBorderColor(themeColor)
-      orderLine.setQuantityBackgroundColor('#14151A')
-      orderLine.setQuantityBorderColor(themeColor)
-      orderLine.setCancelButtonBackgroundColor('#14151A')
-      orderLine.setCancelButtonIconColor(themeColor)
-      orderLine.setCancelButtonBorderColor(themeColor)
-      orderLine.setQuantity(
-        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
-      )
-      orderLine.setText(
-        `${t('trade.limit')} ${t(
-          `trade.${order.orderSide}`
-        ).toUpperCase()} @ ${formattedPrice}`
-      )
+      orderLine
+        .setLineStyle(2)
+        .setPrice(formattedPrice)
+        .setLineColor(themeColor)
+        .setBodyTextColor(themeColor)
+        .setBodyBorderColor(themeColor)
+        .setBodyBackgroundColor('#14151A')
+        .setQuantityBorderColor(themeColor)
+        .setQuantityBackgroundColor('#14151A')
+        .setCancelButtonIconColor(themeColor)
+        .setCancelButtonBorderColor(themeColor)
+        .setCancelButtonBackgroundColor('#14151A')
+        .setQuantity(
+          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+        )
+        .setText(
+          `${t('trade.limit')} ${t(
+            `trade.${order.orderSide}`
+          ).toUpperCase()} @ ${formattedPrice}`
+        )
 
       orderLine.onMove?.(() => {
         const newPrice = orderLine.getPrice()
@@ -366,7 +476,7 @@ function modifyLimitOrderLines() {
           ).toUpperCase()} @ ${newPrice.toFixed(props.market.priceDecimals)}`
         )
 
-        delete orderLines.value[uid]
+        delete limitOrderLines.value[uid]
 
         emit('order:change', {
           order,
@@ -374,7 +484,7 @@ function modifyLimitOrderLines() {
         })
 
         // temp orderline
-        orderLines.value[`${newPrice}-${order.quantity}`] = orderLine
+        limitOrderLines.value[`${newPrice}-${order.quantity}`] = orderLine
         orderLine.setCancellable(false)
         orderLine.setCancelButtonIconColor('#14151A')
       })
@@ -385,22 +495,119 @@ function modifyLimitOrderLines() {
         })
 
         toRaw(orderLine).remove()
-        delete orderLines.value[uid]
+        delete limitOrderLines.value[uid]
       })
 
-      orderLines.value[uid] = orderLine
+      limitOrderLines.value[uid] = orderLine
       updatedOrderLinesId.push(uid)
     })
+  })
+}
 
-    // remove outdated lines
-    Object.keys(orderLines.value).forEach((uid) => {
-      if (!updatedOrderLinesId.includes(uid)) {
-        nextTick(() => {
-          toRaw(orderLines.value[uid]).remove()
-          delete orderLines.value[uid]
-        })
+function setupTpOrderline(isHide?: boolean) {
+  setupTpSlBaseOrderline(isHide, true)
+}
+
+function setupSlOrderline(isHide?: boolean) {
+  setupTpSlBaseOrderline(isHide)
+}
+
+function setupTpSlBaseOrderline(isHide?: boolean, isTakeProfit?: boolean) {
+  nextTick(() => {
+    const chart = tradingView.value.view?.chart()
+
+    if (!chart) {
+      return
+    }
+
+    const selectedOrder = isTakeProfit ? tpOrder.value : slOrder.value
+    const selectedOrderline = isTakeProfit
+      ? tpOrderline.value
+      : slOrderline.value
+
+    const formattedTriggerPrice = sharedToBalanceInTokenInBase({
+      value: selectedOrder?.triggerPrice || '0',
+      decimalPlaces: props.market.quoteToken.decimals
+    }).toFixed(props.market.priceDecimals)
+
+    const formattedUnfilledQuantity = new BigNumberInBase(
+      selectedOrder?.quantity || '0'
+    ).toFixed(props.market.quantityDecimals)
+
+    const tpSlText = isTakeProfit
+      ? `${t('trade.tpPrice')} >`
+      : `${t('trade.slPrice')} <`
+
+    console.log({ selectedOrder, selectedOrderline })
+
+    if (isHide || (!selectedOrder && selectedOrderline)) {
+      toRaw(selectedOrderline).remove()
+
+      if (isTakeProfit) {
+        tpOrderline.value = undefined
+        return
       }
+
+      slOrderline.value = undefined
+
+      return
+    } else if (selectedOrderline) {
+      selectedOrderline
+        .setPrice(formattedTriggerPrice)
+        .setText(`${tpSlText} ${formattedTriggerPrice}`)
+        .setQuantity(
+          `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+        )
+
+      return
+    }
+
+    const orderLine = chart.createOrderLine({ disableUndo: true })
+
+    const themeColor =
+      props.currentMarketPosition?.direction === TradeDirection.Long
+        ? '#F3164D'
+        : '#0EE29B'
+
+    orderLine
+      .setLineStyle(2)
+      .setPrice(formattedTriggerPrice)
+      .setLineColor(themeColor)
+      .setBodyTextColor(themeColor)
+      .setBodyBorderColor(themeColor)
+      .setBodyBackgroundColor('#14151A')
+      .setQuantityBorderColor(themeColor)
+      .setQuantityBackgroundColor('#14151A')
+      .setCancelButtonIconColor(themeColor)
+      .setCancelButtonBorderColor(themeColor)
+      .setCancelButtonBackgroundColor('#14151A')
+      .setText(`${tpSlText} ${formattedTriggerPrice}`)
+      .setQuantity(
+        `${formattedUnfilledQuantity} ${props.market?.baseToken?.symbol}`
+      )
+
+    orderLine.onCancel?.(() => {
+      // todo fred: when alpha sprint begins
+      // emit('tp:close', {
+      //   order
+      // })
+
+      toRaw(orderLine).remove()
+
+      if (isTakeProfit) {
+        delete tpOrderline.value
+        return
+      }
+
+      delete slOrderline.value
     })
+
+    if (isTakeProfit) {
+      tpOrderline.value = undefined
+      return
+    }
+
+    slOrderline.value = undefined
   })
 }
 
