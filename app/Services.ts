@@ -30,7 +30,7 @@ export const getAbacusGrpcApi = async () =>
   lazyImportSdkTs<AbacusGrpcApi>({
     className: 'AbacusGrpcApi',
     endpoint: IS_MAINNET
-      ? 'https://k8s.mainnet.eu.abacus.injective.network/grpc' // 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
+      ? 'https://testing.abacus.injective.cooking/grpc' // 'https://k8s.mainnet.eu.abacus.injective.network/grpc' // 'https://k8s.mainnet.eu.abacus.grpc-web.injective.network/grpc'
       : 'https://abacus.injective.cooking/grpc'
   })
 

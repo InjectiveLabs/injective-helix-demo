@@ -16,6 +16,9 @@ export type AccountPoints = {
   league: string
   updatedAt: string
   totalPoints: string
+  pointsBonus: number
+  pointsSeason1: number
+  totalPointsPrecise: number
 }
 
 export type HistoricalPoints = {

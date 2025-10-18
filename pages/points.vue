@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Status, StatusType } from '@injectivelabs/utils'
+import { Status, StatusType, toBigNumber } from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { PointsPeriod } from '@/types'
 
@@ -13,8 +13,16 @@ const selectedPeriod = ref(PointsPeriod.Day)
 const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
-const totalPoints = computed(
-  () => pointsStore.accountPoints?.totalPoints || '0'
+const totalPoints = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(0)
+)
+
+const pointsSeason1 = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(0)
+)
+
+const bonusPoints = computed(() =>
+  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(0)
 )
 
 onWalletConnected(() => {
@@ -132,7 +140,7 @@ function fetchAccountPoints() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: totalPoints,
+                amount: pointsSeason1,
                 showZeroAsEmDash: true,
                 shouldAbbreviate: false
               }"
@@ -148,7 +156,7 @@ function fetchAccountPoints() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: totalPoints,
+                amount: bonusPoints,
                 showZeroAsEmDash: true,
                 shouldAbbreviate: false
               }"
