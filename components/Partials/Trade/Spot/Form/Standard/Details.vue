@@ -5,27 +5,19 @@ import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
+  UiSpotMarket,
   SpotTradeForm,
   SpotMarketCyTags,
-  SpotTradeFormField
+  SpotTradeFormField,
+  TradeAmountOption,
+  TradeTypes
 } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
+import { OrderSide } from '@injectivelabs/ts-types'
 
+const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
-withDefaults(
-  defineProps<{
-    isLimit: boolean
-    total: BigNumberInBase
-    quantity: BigNumberInBase
-    feeAmount: BigNumberInBase
-    worstPrice: BigNumberInBase
-    totalWithFee: BigNumberInBase
-    feePercentage: BigNumberInBase
-  }>(),
-  {}
-)
-const spotMarket = inject(MarketKey)
+const spotMarket = inject(MarketKey) as ComputedRef<UiSpotMarket>
 
 const isOpen = ref(true)
 
@@ -34,6 +26,33 @@ const spotFormValues = useFormValues<SpotTradeForm>()
 const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: spotMarket?.value?.takerFeeRate,
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
+})
+
+const isLimit = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
+
+const {
+  quantity,
+  notional,
+  calculatedNotional,
+  feeAmount,
+  slippagePrice,
+  totalNotional,
+  averagePrice,
+  bestPrice,
+  worstPrice,
+  enoughLiquidity,
+  estSlippagePercentage,
+  slippageWarning
+} = useSpotDetails({
+  market: computed(() => spotMarket.value),
+  slippagePercentage: computed(
+    () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
+  ),
+  isBuy: computed(
+    () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+  )
 })
 
 const { valueToFixed: slippagePercentage } = useSharedBigNumberFormatter(
@@ -57,6 +76,24 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   {
     shouldTruncate: true,
     decimalPlaces: DEFAULT_ASSET_DECIMALS
+  }
+)
+
+watch(
+  [
+    () => spotFormValues.value[SpotTradeFormField.Amount],
+    () => spotFormValues.value[SpotTradeFormField.AmountOption],
+    () => spotFormValues.value[SpotTradeFormField.Type],
+    () => spotFormValues.value[SpotTradeFormField.Side]
+  ],
+  ([amount, amountOption]) => {
+    const option = amountOption || TradeAmountOption.Base
+
+    if (option === TradeAmountOption.Base) {
+      quantity.value = amount || '0'
+    } else {
+      notional.value = amount || '0'
+    }
   }
 )
 
@@ -85,9 +122,8 @@ function openSlippageModal() {
 
     <AppCollapse v-bind="{ isOpen }">
       <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs font-medium">
+        <div class="flex justify-between items-center text-xs font-medium">
           <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
-          <div class="flex-1 mx-2" />
 
           <p
             class="flex space-x-2 text-white"
@@ -98,8 +134,8 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: totalWithFee.toFixed()
+                  amount: totalNotional,
+                  shouldAbbreviate: false
                 }"
               />
             </span>
@@ -123,20 +159,39 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <i18n-t
-                keypath="trade.slippageEstimate"
-                class="text-xs text-coolGray-400"
-              >
-                <template #max>
-                  <SharedAmount
-                    v-bind="{
-                      useSubscript: true,
-                      shouldAbbreviate: false,
-                      amount: slippagePercentage
-                    }"
-                  />
-                </template>
-              </i18n-t>
+              <span v-if="enoughLiquidity">
+                <i18n-t
+                  keypath="trade.estSlippage"
+                  class="text-xs text-coolGray-400 mx-1"
+                >
+                  <template #estSlippage>
+                    <SharedAmount
+                      v-bind="{
+                        useSubscript: true,
+                        shouldAbbreviate: false,
+                        amount: estSlippagePercentage
+                      }"
+                    />
+                  </template>
+                </i18n-t>
+                /
+              </span>
+              <span>
+                <i18n-t
+                  keypath="trade.maxSlippage"
+                  class="text-xs text-coolGray-400"
+                >
+                  <template #max>
+                    <SharedAmount
+                      v-bind="{
+                        useSubscript: true,
+                        shouldAbbreviate: false,
+                        amount: slippagePercentage
+                      }"
+                    />
+                  </template>
+                </i18n-t>
+              </span>
             </p>
             <template #panel>
               <p class="text-xs text-coolGray-200 max-w-xs p-1">
@@ -146,7 +201,10 @@ function openSlippageModal() {
           </UPopover>
         </div>
 
-        <div v-if="!isLimit" class="flex items-center text-xs font-medium">
+        <div
+          v-if="!isLimit"
+          class="flex justify-between items-center text-xs font-medium"
+        >
           <CommonHeaderTooltip
             :tooltip="
               $t('trade.makerTakerRateTooltip', {
@@ -157,7 +215,6 @@ function openSlippageModal() {
           >
             <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
           </CommonHeaderTooltip>
-          <div class="flex-1 mx-2" />
           <p
             v-if="spotMarket"
             class="text-white"
@@ -167,19 +224,171 @@ function openSlippageModal() {
           </p>
         </div>
 
-        <template v-else>
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p
-              v-if="spotMarket"
-              class="text-white"
-              :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerFeeRate)"
-            >
-              {{ makerFeeRateToFixed }}%
-            </p>
-          </div>
-        </template>
+        <div
+          v-else
+          class="flex justify-between items-center text-xs font-medium"
+        >
+          <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
+          <p
+            v-if="spotMarket"
+            class="text-white"
+            :data-cy="dataCyTag(SpotMarketCyTags.DetailsMakerFeeRate)"
+          >
+            {{ makerFeeRateToFixed }}%
+          </p>
+        </div>
+      </div>
+
+      <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Quantity</p>
+
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: quantity,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.baseToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Notional</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: notional,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Calculated Notional</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: calculatedNotional,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Fee Amount</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: feeAmount,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Slippage Price</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: slippagePrice,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Worst Price</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: worstPrice.toFixed(),
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Average Price</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: averagePrice.toFixed(),
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Best Price</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: bestPrice.toFixed(),
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ spotMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Enough Liquidity</p>
+          <p class="text-white">
+            {{ enoughLiquidity ? 'Yes' : 'No' }}
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Slippage Warning</p>
+          <p class="text-white">
+            {{ slippageWarning ? 'Yes' : 'No' }}
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Est Slippage Percentage</p>
+          <p class="text-white">{{ estSlippagePercentage }} %</p>
+        </div>
       </div>
     </AppCollapse>
 

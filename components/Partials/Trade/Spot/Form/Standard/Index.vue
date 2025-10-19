@@ -53,7 +53,11 @@ const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
+const isReady = ref(false)
+
 onMounted(() => {
+  isReady.value = true
+
   setFormValues(
     {
       [SpotTradeFormField.Slippage]: appStore.slippageByMarketId(
@@ -153,18 +157,7 @@ function onOrderSideClicked() {
       class="mt-4"
     />
 
-    <PartialsTradeSpotFormStandardDetails
-      v-bind="{
-        total,
-        isLimit,
-        quantity,
-        feeAmount,
-        worstPrice,
-        totalWithFee,
-        feePercentage
-      }"
-      class="my-4"
-    />
+    <PartialsTradeSpotFormStandardDetails v-if="isReady" class="my-4" />
 
     <PartialsTradeSpotFormStandardCreateOrder
       v-bind="{
