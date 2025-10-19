@@ -133,7 +133,7 @@ function openSlippageModal() {
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
               <i18n-t
-                keypath="trade.slippageEstimate"
+                keypath="trade.maxSlippage"
                 class="text-xs text-coolGray-400"
               >
                 <template #max>
