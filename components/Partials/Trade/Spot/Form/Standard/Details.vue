@@ -35,16 +35,16 @@ const isLimit = computed(
 const {
   quantity,
   notional,
-  calculatedNotional,
   feeAmount,
-  slippagePrice,
-  totalNotional,
-  averagePrice,
   bestPrice,
   worstPrice,
+  averagePrice,
+  slippagePrice,
+  totalNotional,
   enoughLiquidity,
-  estSlippagePercentage,
-  slippageWarning
+  slippageWarning,
+  calculatedNotional,
+  estSlippagePercentage
 } = useSpotDetails({
   market: computed(() => spotMarket.value),
   slippagePercentage: computed(
@@ -249,7 +249,8 @@ function openSlippageModal() {
                 amount: quantity,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                decimals: spotMarket.quantityDecimals
               }"
             />
             <span class="text-coolGray-450">
@@ -278,10 +279,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: calculatedNotional,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: calculatedNotional
               }"
             />
             <span class="text-coolGray-450">
@@ -307,13 +308,45 @@ function openSlippageModal() {
           </p>
         </div>
 
+        <hr class="border-white/30" />
+
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Est Slippage Percentage</p>
+          <p class="text-white flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: estSlippagePercentage
+              }"
+            />%
+            <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
+          </p>
+        </div>
+
+        <div class="flex justify-between items-center text-xs font-medium">
+          <p class="text-yellow-600/90">Slippage Tolerance</p>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: slippagePercentage
+              }"
+            />%
+            <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
+          </p>
+        </div>
+
         <div class="flex justify-between items-center text-xs font-medium">
           <p class="text-yellow-600/90">Slippage Price</p>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: slippagePrice,
                 useSubscript: true,
+                amount: slippagePrice,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
@@ -323,16 +356,18 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
+
         <hr class="border-white/30" />
         <div class="flex justify-between items-center text-xs font-medium">
           <p class="text-yellow-600/90">Worst Price</p>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: worstPrice.toFixed(),
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: worstPrice.toFixed(),
+                decimals: spotMarket.priceDecimals
               }"
             />
             <span class="text-coolGray-450">
@@ -345,10 +380,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: averagePrice.toFixed(),
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: averagePrice.toFixed()
               }"
             />
             <span class="text-coolGray-450">
@@ -361,10 +396,11 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: bestPrice.toFixed(),
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: bestPrice.toFixed(),
+                decimals: spotMarket.priceDecimals
               }"
             />
             <span class="text-coolGray-450">
@@ -384,10 +420,6 @@ function openSlippageModal() {
           <p class="text-white">
             {{ slippageWarning ? 'Yes' : 'No' }}
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Est Slippage Percentage</p>
-          <p class="text-white">{{ estSlippagePercentage }} %</p>
         </div>
       </div>
     </AppCollapse>

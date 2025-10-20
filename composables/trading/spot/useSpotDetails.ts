@@ -1,5 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
+import { quantizeNumber } from '@/app/utils/helpers'
 import {
   WorkerMessageType,
   OrderbookWorkerKey,
@@ -78,7 +79,7 @@ export function useSpotDetails({
         data: {
           isSpot: true,
           isBuy: isBuy.value,
-          notional: notionalMinusFee.toString(),
+          notional: notionalMinusFee.toFixed(),
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals
         }
@@ -137,18 +138,21 @@ export function useSpotDetails({
         safeAmount(quantity.value)
       )
 
-      calculatedNotional.value = calculatedNotionalInBase.toString()
+      calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
       feeAmount.value = calculatedNotionalInBase
         .times(feePercentage.value)
-        .toString()
+        .toFixed()
 
-      notional.value = calculatedNotionalInBase.plus(feeAmount.value).toString()
+      notional.value = calculatedNotionalInBase.plus(feeAmount.value).toFixed()
       totalNotional.value = notional.value
     }
 
     if (messageType === WorkerMessageResponseType.ReceiveNotionalInfo) {
-      quantity.value = data.quantity
+      quantity.value = quantizeNumber(
+        new BigNumberInBase(data.quantity),
+        market.value.quantityTensMultiplier
+      ).toFixed()
       enoughLiquidity.value = data.enoughLiquidity
       bestPrice.value = new BigNumberInBase(data.bestPrice)
       worstPrice.value = new BigNumberInBase(data.worstPrice)
@@ -158,15 +162,15 @@ export function useSpotDetails({
         safeAmount(quantity.value)
       )
 
-      calculatedNotional.value = calculatedNotionalInBase.toString()
+      calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
       feeAmount.value = calculatedNotionalInBase
         .times(feePercentage.value)
-        .toString()
+        .toFixed()
 
       totalNotional.value = calculatedNotionalInBase
         .plus(feeAmount.value)
-        .toString()
+        .toFixed()
     }
   })
 
