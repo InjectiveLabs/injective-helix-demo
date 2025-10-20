@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { OrderbookWorkerKey, UiSpotMarket } from '~/types'
+import { UiSpotMarket } from '~/types'
 
 const props = defineProps<{
   market: UiSpotMarket
 }>()
+
+const isBuy = ref(true)
 
 const slippagePercentage = computed(() => '0.01')
 
 const {
   quantity,
   notional,
-  calculatedNotional,
+  bestPrice,
   feeAmount,
+  worstPrice,
+  averagePrice,
   slippagePrice,
   totalNotional,
-  averagePrice,
-  bestPrice,
-  worstPrice,
   enoughLiquidity,
-  estSlippagePercentage,
-  slippageWarning
+  slippageWarning,
+  calculatedNotional,
+  estSlippagePercentage
 } = useSpotDetails({
-  isBuy: computed(() => true),
-  market: computed(() => props.market),
-  slippagePercentage
+  slippagePercentage,
+  isBuy: computed(() => isBuy.value),
+  market: computed(() => props.market)
 })
 
 const tableData = computed(() => [
@@ -35,7 +37,7 @@ const tableData = computed(() => [
   },
   {
     label: 'Estimated Slippage Percentage',
-    value: `${estSlippagePercentage.value} %`
+    value: `${(Number(estSlippagePercentage.value) * 100).toFixed(8)} %`
   },
   {
     label: 'Slippage Warning',
@@ -72,6 +74,14 @@ const tableData = computed(() => [
     </table>
 
     <div>
+      <fieldset>
+        <legend>Order Type</legend>
+        <label class="flex items-center gap-2">
+          <input v-model="isBuy" type="checkbox" />
+          <span>{{ isBuy ? 'Buy' : 'Sell' }}</span>
+        </label>
+      </fieldset>
+
       <fieldset>
         <legend>Quantity</legend>
         <input v-model="quantity" type="number" />

@@ -101,18 +101,10 @@ export function useSpotDetails({
     }
 
     if (isBuy.value) {
-      return new BigNumberInBase(worstPrice.value)
-        .div(bestPrice.value)
-        .minus(1)
-        .times(100)
-        .toFixed(8)
+      return new BigNumberInBase(worstPrice.value).div(bestPrice.value).minus(1)
     }
 
-    return new BigNumberInBase(bestPrice.value)
-      .div(worstPrice.value)
-      .minus(1)
-      .times(100)
-      .toFixed(8)
+    return new BigNumberInBase(bestPrice.value).div(worstPrice.value).minus(1)
   })
 
   const feePercentage = computed(() => {
@@ -120,9 +112,9 @@ export function useSpotDetails({
   })
 
   const slippageWarning = computed(() => {
-    return new BigNumberInBase(estSlippagePercentage.value)
-      .div(100)
-      .gt(slippagePercentage.value)
+    return new BigNumberInBase(estSlippagePercentage.value).gt(
+      slippagePercentage.value
+    )
   })
 
   worker.value.addEventListener('message', (ev) => {
