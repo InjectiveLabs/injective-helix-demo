@@ -127,8 +127,7 @@
       "rpc-websockets": "9.0.4",
       "@ethereumjs/tx": "^4.1.1",
       "@solana/web3.js": "1.98.0",
-      "@cosmjs/crypto>libsodium-wrappers-sumo": "npm:@bangjelkoski/noop",
-      "@injectivelabs/sdk-ts": "link:../../../.pnpm-global/5/node_modules/@injectivelabs/sdk-ts"
+      "@cosmjs/crypto>libsodium-wrappers-sumo": "npm:@bangjelkoski/noop"
     }
   }
 }
