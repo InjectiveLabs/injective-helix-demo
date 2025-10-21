@@ -849,12 +849,7 @@ export default defineI18nLocale(() => {
       period: 'Dönem',
       points: 'Puanlar',
       volume: 'Hacim',
-      totalPoints: 'Toplam Puan',
-      lastUpdatedAt: 'Son güncelleme: ',
-      myTotalPoints: 'Helix üzerindeki toplam puanım',
       paginationDetails: '{from}-{to} / {total}',
-      description:
-        '1. Sezon sona erdi. Puanlar hakkında daha fazla bilgi için bakınız',
       leagues: {
         blue: 'Mavi Kuşak',
         black: 'Siyah Kuşak',
