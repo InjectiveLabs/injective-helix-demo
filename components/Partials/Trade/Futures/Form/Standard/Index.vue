@@ -43,6 +43,8 @@ const {
   minimumAmountInQuote
 } = useDerivativeWorstPrice(market)
 
+const isReady = ref(false)
+
 const estLiquidationPrice = computed(() => {
   const isBuy =
     derivativeFormValues.value[DerivativesTradeFormField.Side] ===
@@ -66,6 +68,8 @@ const enableSlippage = computed(() =>
 )
 
 onMounted(() => {
+  isReady.value = true
+
   setFormValues(
     {
       [DerivativesTradeFormField.Slippage]: appStore.slippageByMarketId(
@@ -205,6 +209,7 @@ function openLeverageModal() {
     />
 
     <PartialsTradeFuturesFormStandardDetails
+      v-if="isReady"
       v-bind="{
         margin,
         quantity,
