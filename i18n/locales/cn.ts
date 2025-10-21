@@ -801,11 +801,7 @@ export default defineI18nLocale(() => {
       period: '周期',
       points: '积分',
       volume: '交易量',
-      totalPoints: '总积分',
-      lastUpdatedAt: '最近更新时间：',
-      myTotalPoints: '我在 Helix 的总积分',
       paginationDetails: '{from}-{to} 共 {total}',
-      description: '第一赛季已结束。有关积分的更多信息，请参见',
       leagues: {
         blue: '蓝带',
         black: '黑带',

@@ -101,16 +101,16 @@ function onNext() {
 
 <template>
   <div
-    class="w-full flex-1 flex flex-col justify-between bg-[#1d2130] rounded-lg overflow-hidden"
+    class="w-full flex-1 flex flex-col justify-between bg-brand-925 rounded-lg overflow-hidden"
   >
     <UTable
       :rows="rows"
       :columns="columns"
       :ui="{
         ...(isEmpty ? { wrapper: 'flex-grow' } : {}),
-        base: 'h-full',
         divide: 'dark:divide-y-0',
         tbody: 'dark:divide-y-0',
+        tr: { base: 'h-[50px]' },
         th: {
           padding: 'py-3 px-2',
           size: 'text-sm',
@@ -123,7 +123,7 @@ function onNext() {
           font: 'font-medium',
           padding: 'py-3 px-2',
           color: 'dark:text-white',
-          base: 'bg-[#1d2130] leading-none'
+          base: 'bg-brand-925 leading-none'
         }
       }"
     >
@@ -162,15 +162,14 @@ function onNext() {
 
       <template #volume-data="{ row }">
         <span v-show="row.volume" class="flex justify-end">
-          <SharedAmount
-            v-if="row.volumeInBigNumber.gte(1)"
+          <SharedAmountUsd
             v-bind="{
               shouldAbbreviate: false,
-              decimals: UI_ZERO_DECIMAL,
               amount: row.volumeInBigNumber.toFixed()
             }"
-          />
-          <span v-else>{{ '< 1' }}</span>
+          >
+            <template #prefix>$</template>
+          </SharedAmountUsd>
         </span>
         <span v-if="rows.length === 1" class="block w-full h-10" />
       </template>
@@ -185,7 +184,7 @@ function onNext() {
               decimals: UI_DEFAULT_MIN_DISPLAY_DECIMALS
             }"
           />
-          <span v-else>{{ '< 1' }}</span>
+          <span v-else>< 1</span>
         </span>
         <span v-if="rows.length === 1" class="block w-full h-10" />
       </template>
@@ -193,7 +192,7 @@ function onNext() {
 
     <div
       v-if="!isEmpty"
-      class="flex items-center justify-end bg-[#1d2130] py-4 px-0.5"
+      class="flex items-center justify-end bg-brand-925 py-4 px-0.5"
     >
       <p class="text-sm text-white font-medium mr-2">
         {{

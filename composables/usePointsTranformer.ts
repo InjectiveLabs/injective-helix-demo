@@ -1,6 +1,6 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { format, startOfISOWeek, addDays, addWeeks } from 'date-fns'
-import { HistoricalPoints, TransformedPointsHistory } from '@/types'
+import { format, addDays, addWeeks, startOfISOWeek } from 'date-fns'
+import type { HistoricalPoints, TransformedPointsHistory } from '@/types'
 
 const DATE_FORMAT = 'MMM dd, yyyy'
 
