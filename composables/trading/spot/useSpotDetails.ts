@@ -15,10 +15,16 @@ import type {
 export function useSpotDetails({
   isBuy,
   market,
+  isPostOnly,
+  isLimitOrder,
+  triggerPrice,
   slippagePercentage
 }: {
   isBuy: ComputedRef<boolean>
+  isPostOnly: ComputedRef<boolean>
   market: ComputedRef<UiSpotMarket>
+  triggerPrice: ComputedRef<string>
+  isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
 }) {
   function safeAmount(value: string) {
@@ -50,6 +56,35 @@ export function useSpotDetails({
     set: (value) => {
       quantity.value = value
 
+      if (isLimitOrder.value) {
+        const quantityInBase = new BigNumberInBase(safeAmount(value))
+        const triggerPriceInBase = new BigNumberInBase(
+          safeAmount(triggerPrice.value)
+        )
+
+        bestPrice.value = triggerPriceInBase
+        worstPrice.value = triggerPriceInBase
+        averagePrice.value = triggerPriceInBase
+
+        const calculatedNotionalInBase =
+          quantityInBase.times(triggerPriceInBase)
+
+        calculatedNotional.value = calculatedNotionalInBase.toFixed()
+
+        feeAmount.value = calculatedNotionalInBase
+          .times(feePercentage.value)
+          .toFixed()
+
+        notional.value = calculatedNotionalInBase
+          .plus(feeAmount.value)
+          .toFixed()
+        totalNotional.value = notional.value
+
+        enoughLiquidity.value = true
+
+        return
+      }
+
       worker.value?.postMessage({
         type: WorkerMessageType.Quantity,
         data: {
@@ -69,6 +104,42 @@ export function useSpotDetails({
       notional.value = value
 
       const notionalInBase = new BigNumberInBase(safeAmount(value))
+
+      if (isLimitOrder.value) {
+        const triggerPriceInBase = new BigNumberInBase(
+          safeAmount(triggerPrice.value)
+        )
+
+        bestPrice.value = triggerPriceInBase
+        worstPrice.value = triggerPriceInBase
+        averagePrice.value = triggerPriceInBase
+
+        const calculatedQuantity = triggerPriceInBase.isZero()
+          ? ZERO_IN_BASE
+          : notionalInBase.div(triggerPriceInBase)
+
+        quantity.value = quantizeNumber(
+          calculatedQuantity,
+          market.value.quantityTensMultiplier
+        ).toFixed()
+
+        const calculatedNotionalInBase =
+          triggerPriceInBase.times(calculatedQuantity)
+
+        calculatedNotional.value = calculatedNotionalInBase.toFixed()
+
+        feeAmount.value = calculatedNotionalInBase
+          .times(feePercentage.value)
+          .toFixed()
+
+        totalNotional.value = calculatedNotionalInBase
+          .plus(feeAmount.value)
+          .toFixed()
+
+        enoughLiquidity.value = true
+
+        return
+      }
 
       const notionalMinusFee = notionalInBase.minus(
         notionalInBase.times(feePercentage.value)
@@ -97,25 +168,27 @@ export function useSpotDetails({
 
   const estSlippagePercentage = computed(() => {
     if (bestPrice.value.isZero() || worstPrice.value.isZero()) {
-      return ZERO_IN_BASE.toFixed(8)
+      return ZERO_IN_BASE
     }
 
     if (isBuy.value) {
-      return new BigNumberInBase(worstPrice.value).div(bestPrice.value).minus(1)
+      return worstPrice.value.div(bestPrice.value).minus(1)
     }
 
-    return new BigNumberInBase(bestPrice.value).div(worstPrice.value).minus(1)
+    return bestPrice.value.div(worstPrice.value).minus(1)
   })
 
   const feePercentage = computed(() => {
-    return new BigNumberInBase(market.value.takerFeeRate) // TODO: add maker fee rate
+    if (isLimitOrder.value && isPostOnly.value) {
+      return ZERO_IN_BASE
+    }
+
+    return new BigNumberInBase(market.value.takerFeeRate)
   })
 
-  const slippageWarning = computed(() => {
-    return new BigNumberInBase(estSlippagePercentage.value).gt(
-      slippagePercentage.value
-    )
-  })
+  const slippageWarning = computed(() =>
+    estSlippagePercentage.value.gt(slippagePercentage.value)
+  )
 
   worker.value.addEventListener('message', (ev) => {
     const { data, messageType } = ev.data as OrderbookWorkerResult

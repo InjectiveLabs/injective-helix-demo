@@ -47,11 +47,20 @@ const {
   estSlippagePercentage
 } = useSpotDetails({
   market: computed(() => spotMarket.value),
+  triggerPrice: computed(
+    () => spotFormValues.value[SpotTradeFormField.Price] || '0'
+  ),
   slippagePercentage: computed(
     () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
   ),
+  isPostOnly: computed(
+    () => spotFormValues.value[SpotTradeFormField.PostOnly] || false
+  ),
   isBuy: computed(
     () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+  ),
+  isLimitOrder: computed(
+    () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
   )
 })
 
@@ -84,7 +93,9 @@ watch(
     () => spotFormValues.value[SpotTradeFormField.Amount],
     () => spotFormValues.value[SpotTradeFormField.AmountOption],
     () => spotFormValues.value[SpotTradeFormField.Type],
-    () => spotFormValues.value[SpotTradeFormField.Side]
+    () => spotFormValues.value[SpotTradeFormField.Side],
+    () => spotFormValues.value[SpotTradeFormField.Price],
+    () => spotFormValues.value[SpotTradeFormField.PostOnly]
   ],
   ([amount, amountOption]) => {
     const option = amountOption || TradeAmountOption.Base
@@ -307,56 +318,55 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
+        <template v-if="!isLimit">
+          <hr class="border-white/30" />
+          <div class="flex justify-between items-center text-xs font-medium">
+            <p class="text-yellow-600/90">Est Slippage Percentage</p>
+            <p class="text-white flex space-x-2">
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  noTrailingZeros: false,
+                  shouldAbbreviate: false,
+                  amount: estSlippagePercentage
+                }"
+              />%
+              <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
+            </p>
+          </div>
 
-        <hr class="border-white/30" />
+          <div class="flex justify-between items-center text-xs font-medium">
+            <p class="text-yellow-600/90">Slippage Tolerance</p>
+            <p class="flex space-x-2">
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  noTrailingZeros: false,
+                  shouldAbbreviate: false,
+                  amount: slippagePercentage
+                }"
+              />%
+              <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
+            </p>
+          </div>
 
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Est Slippage Percentage</p>
-          <p class="text-white flex space-x-2">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                noTrailingZeros: false,
-                shouldAbbreviate: false,
-                amount: estSlippagePercentage
-              }"
-            />%
-            <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
-          </p>
-        </div>
-
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Slippage Tolerance</p>
-          <p class="flex space-x-2">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                noTrailingZeros: false,
-                shouldAbbreviate: false,
-                amount: slippagePercentage
-              }"
-            />%
-            <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
-          </p>
-        </div>
-
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Slippage Price</p>
-          <p class="flex space-x-2">
-            <SharedAmount
-              v-bind="{
-                useSubscript: true,
-                amount: slippagePrice,
-                noTrailingZeros: false,
-                shouldAbbreviate: false
-              }"
-            />
-            <span class="text-coolGray-450">
-              {{ spotMarket.quoteToken.symbol }}
-            </span>
-          </p>
-        </div>
-
+          <div class="flex justify-between items-center text-xs font-medium">
+            <p class="text-yellow-600/90">Slippage Price</p>
+            <p class="flex space-x-2">
+              <SharedAmount
+                v-bind="{
+                  useSubscript: true,
+                  amount: slippagePrice,
+                  noTrailingZeros: false,
+                  shouldAbbreviate: false
+                }"
+              />
+              <span class="text-coolGray-450">
+                {{ spotMarket.quoteToken.symbol }}
+              </span>
+            </p>
+          </div>
+        </template>
         <hr class="border-white/30" />
         <div class="flex justify-between items-center text-xs font-medium">
           <p class="text-yellow-600/90">Worst Price</p>
@@ -381,7 +391,6 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                noTrailingZeros: false,
                 shouldAbbreviate: false,
                 amount: averagePrice.toFixed()
               }"
@@ -408,19 +417,21 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
-        <hr class="border-white/30" />
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Enough Liquidity</p>
-          <p class="text-white">
-            {{ enoughLiquidity ? 'Yes' : 'No' }}
-          </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Slippage Warning</p>
-          <p class="text-white">
-            {{ slippageWarning ? 'Yes' : 'No' }}
-          </p>
-        </div>
+        <template v-if="!isLimit">
+          <hr class="border-white/30" />
+          <div class="flex justify-between items-center text-xs font-medium">
+            <p class="text-yellow-600/90">Enough Liquidity</p>
+            <p class="text-white">
+              {{ enoughLiquidity ? 'Yes' : 'No' }}
+            </p>
+          </div>
+          <div class="flex justify-between items-center text-xs font-medium">
+            <p class="text-yellow-600/90">Slippage Warning</p>
+            <p class="text-white">
+              {{ slippageWarning ? 'Yes' : 'No' }}
+            </p>
+          </div>
+        </template>
       </div>
     </AppCollapse>
 
