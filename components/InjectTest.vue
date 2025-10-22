@@ -25,7 +25,7 @@ const {
 } = useSpotDetails({
   slippagePercentage,
   isPostOnly: computed(() => false),
-  triggerPrice: computed(() => '0'),
+  limitPrice: computed(() => '0'),
   isBuy: computed(() => isBuy.value),
   isLimitOrder: computed(() => false),
   market: computed(() => props.market)

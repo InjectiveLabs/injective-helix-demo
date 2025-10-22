@@ -47,7 +47,7 @@ const {
   estSlippagePercentage
 } = useSpotDetails({
   market: computed(() => spotMarket.value),
-  triggerPrice: computed(
+  limitPrice: computed(
     () => spotFormValues.value[SpotTradeFormField.Price] || '0'
   ),
   slippagePercentage: computed(

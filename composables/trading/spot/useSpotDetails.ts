@@ -15,15 +15,15 @@ import type {
 export function useSpotDetails({
   isBuy,
   market,
+  limitPrice,
   isPostOnly,
   isLimitOrder,
-  triggerPrice,
   slippagePercentage
 }: {
   isBuy: ComputedRef<boolean>
+  limitPrice: ComputedRef<string>
   isPostOnly: ComputedRef<boolean>
   market: ComputedRef<UiSpotMarket>
-  triggerPrice: ComputedRef<string>
   isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
 }) {
@@ -58,16 +58,15 @@ export function useSpotDetails({
 
       if (isLimitOrder.value) {
         const quantityInBase = new BigNumberInBase(safeAmount(value))
-        const triggerPriceInBase = new BigNumberInBase(
-          safeAmount(triggerPrice.value)
+        const limitPriceInBase = new BigNumberInBase(
+          safeAmount(limitPrice.value)
         )
 
-        bestPrice.value = triggerPriceInBase
-        worstPrice.value = triggerPriceInBase
-        averagePrice.value = triggerPriceInBase
+        bestPrice.value = limitPriceInBase
+        worstPrice.value = limitPriceInBase
+        averagePrice.value = limitPriceInBase
 
-        const calculatedNotionalInBase =
-          quantityInBase.times(triggerPriceInBase)
+        const calculatedNotionalInBase = quantityInBase.times(limitPriceInBase)
 
         calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
@@ -106,17 +105,17 @@ export function useSpotDetails({
       const notionalInBase = new BigNumberInBase(safeAmount(value))
 
       if (isLimitOrder.value) {
-        const triggerPriceInBase = new BigNumberInBase(
-          safeAmount(triggerPrice.value)
+        const limitPriceInBase = new BigNumberInBase(
+          safeAmount(limitPrice.value)
         )
 
-        bestPrice.value = triggerPriceInBase
-        worstPrice.value = triggerPriceInBase
-        averagePrice.value = triggerPriceInBase
+        bestPrice.value = limitPriceInBase
+        worstPrice.value = limitPriceInBase
+        averagePrice.value = limitPriceInBase
 
-        const calculatedQuantity = triggerPriceInBase.isZero()
+        const calculatedQuantity = limitPriceInBase.isZero()
           ? ZERO_IN_BASE
-          : notionalInBase.div(triggerPriceInBase)
+          : notionalInBase.div(limitPriceInBase)
 
         quantity.value = quantizeNumber(
           calculatedQuantity,
@@ -124,7 +123,7 @@ export function useSpotDetails({
         ).toFixed()
 
         const calculatedNotionalInBase =
-          triggerPriceInBase.times(calculatedQuantity)
+          limitPriceInBase.times(calculatedQuantity)
 
         calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
