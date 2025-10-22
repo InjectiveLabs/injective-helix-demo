@@ -211,12 +211,6 @@ function openLeverageModal() {
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
       v-bind="{
-        margin,
-        quantity,
-        feeAmount,
-        worstPrice,
-        marginWithFee,
-        totalNotional,
         enableSlippage,
         estLiquidationPrice
       }"

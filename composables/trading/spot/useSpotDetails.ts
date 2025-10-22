@@ -104,6 +104,10 @@ export function useSpotDetails({
 
       const notionalInBase = new BigNumberInBase(safeAmount(value))
 
+      const notionalMinusFee = notionalInBase.minus(
+        notionalInBase.times(feePercentage.value)
+      )
+
       if (isLimitOrder.value) {
         const limitPriceInBase = new BigNumberInBase(
           safeAmount(limitPrice.value)
@@ -115,15 +119,18 @@ export function useSpotDetails({
 
         const calculatedQuantity = limitPriceInBase.isZero()
           ? ZERO_IN_BASE
-          : notionalInBase.div(limitPriceInBase)
+          : notionalMinusFee.div(limitPriceInBase)
 
-        quantity.value = quantizeNumber(
+        const calculatedQuantityQuantized = quantizeNumber(
           calculatedQuantity,
           market.value.quantityTensMultiplier
-        ).toFixed()
+        )
 
-        const calculatedNotionalInBase =
-          limitPriceInBase.times(calculatedQuantity)
+        quantity.value = calculatedQuantityQuantized.toFixed()
+
+        const calculatedNotionalInBase = limitPriceInBase.times(
+          calculatedQuantityQuantized
+        )
 
         calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
@@ -139,10 +146,6 @@ export function useSpotDetails({
 
         return
       }
-
-      const notionalMinusFee = notionalInBase.minus(
-        notionalInBase.times(feePercentage.value)
-      )
 
       worker.value?.postMessage({
         type: WorkerMessageType.Notional,

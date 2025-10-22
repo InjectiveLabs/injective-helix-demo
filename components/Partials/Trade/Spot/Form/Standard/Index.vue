@@ -157,7 +157,18 @@ function onOrderSideClicked() {
       class="mt-4"
     />
 
-    <PartialsTradeSpotFormStandardDetails v-if="isReady" class="my-4" />
+    <PartialsTradeSpotFormStandardDetails
+      v-if="isReady"
+      class="my-4"
+      v-bind="{
+        total,
+        quantity,
+        feeAmount,
+        worstPrice,
+        totalWithFee,
+        feePercentage
+      }"
+    />
 
     <PartialsTradeSpotFormStandardCreateOrder
       v-bind="{

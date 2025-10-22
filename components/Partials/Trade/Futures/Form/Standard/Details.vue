@@ -20,12 +20,6 @@ const modalStore = useSharedModalStore()
 withDefaults(
   defineProps<{
     enableSlippage: boolean
-    margin: BigNumberInBase
-    quantity: BigNumberInBase
-    feeAmount: BigNumberInBase
-    worstPrice: BigNumberInBase
-    totalNotional: BigNumberInBase
-    marginWithFee: BigNumberInBase
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
@@ -40,11 +34,21 @@ const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const isLimit = computed(
   () =>
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-    DerivativeTradeTypes.Limit
+      DerivativeTradeTypes.Limit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopLimit
 )
 
 const slippagePercentage = computed(
   () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+)
+
+const isTriggerOrder = computed(() =>
+  [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
 )
 
 const {
@@ -63,12 +67,13 @@ const {
   calculatedNotional: detailsCalculatedNotional,
   estSlippagePercentage: detailsEstSlippagePercentage
 } = useDerivativeDetails({
+  isTriggerOrder,
   market: computed(() => derivativeMarket.value),
-  triggerPrice: computed(
+  limitPrice: computed(
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
   ),
-  stopTriggerPrice: computed(
+  triggerPrice: computed(
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
   ),
@@ -90,14 +95,9 @@ const {
   isLimitOrder: computed(
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit
-  ),
-  isTriggerOrder: computed(() =>
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
-      derivativeFormValues.value[
-        DerivativesTradeFormField.Type
-      ] as DerivativeTradeTypes
-    )
+        DerivativeTradeTypes.Limit ||
+      derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+        DerivativeTradeTypes.StopLimit
   )
 })
 
@@ -143,7 +143,18 @@ watch(
     () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice],
     () => derivativeFormValues.value[DerivativesTradeFormField.PostOnly]
   ],
-  ([amount, amountOption]) => {
+  ([amount, amountOption, type, side, limitPrice, triggerPrice, postOnly]) => {
+    console.log(
+      '===',
+      amount,
+      amountOption,
+      type,
+      side,
+      limitPrice,
+      triggerPrice,
+      postOnly
+    )
+
     const option = amountOption || TradeAmountOption.Base
 
     if (option === TradeAmountOption.Base) {
@@ -192,7 +203,7 @@ function openSlippageModal() {
                 v-bind="{
                   useSubscript: true,
                   shouldAbbreviate: false,
-                  amount: marginWithFee.toFixed()
+                  amount: detailsMarginWithFee.toFixed()
                 }"
               />
             </span>
@@ -216,20 +227,39 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <i18n-t
-                keypath="trade.maxSlippage"
-                class="text-xs text-coolGray-400"
-              >
-                <template #max>
-                  <SharedAmount
-                    v-bind="{
-                      useSubscript: true,
-                      shouldAbbreviate: false,
-                      amount: slippagePercentage
-                    }"
-                  />
-                </template>
-              </i18n-t>
+              <span v-if="detailsEnoughLiquidity && !isTriggerOrder">
+                <i18n-t
+                  keypath="trade.estSlippage"
+                  class="text-xs text-coolGray-400 mx-1"
+                >
+                  <template #estSlippage>
+                    <SharedAmount
+                      v-bind="{
+                        useSubscript: false,
+                        shouldAbbreviate: false,
+                        amount: detailsEstSlippagePercentage
+                      }"
+                    />
+                  </template>
+                </i18n-t>
+                /
+              </span>
+              <span>
+                <i18n-t
+                  keypath="trade.maxSlippage"
+                  class="text-xs text-coolGray-400"
+                >
+                  <template #max>
+                    <SharedAmount
+                      v-bind="{
+                        useSubscript: true,
+                        shouldAbbreviate: false,
+                        amount: slippagePercentage
+                      }"
+                    />
+                  </template>
+                </i18n-t>
+              </span>
             </p>
             <template #panel>
               <p class="text-xs text-coolGray-200 max-w-xs p-1">
@@ -248,7 +278,7 @@ function openSlippageModal() {
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
-                amount: margin.toFixed()
+                amount: detailsMargin.toFixed()
               }"
               class="text-white"
             />
@@ -433,7 +463,10 @@ function openSlippageModal() {
         </div>
         <template v-if="!isLimit">
           <hr class="border-white/30" />
-          <div class="flex justify-between items-center text-xs font-medium">
+          <div
+            v-if="!isTriggerOrder"
+            class="flex justify-between items-center text-xs font-medium"
+          >
             <p class="text-yellow-600/90">Est Slippage Percentage</p>
             <p class="text-white flex space-x-2">
               <SharedAmount
@@ -534,7 +567,7 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
-        <template v-if="!isLimit">
+        <template v-if="!isLimit && !isTriggerOrder">
           <hr class="border-white/30" />
           <div class="flex justify-between items-center text-xs font-medium">
             <p class="text-yellow-600/90">Enough Liquidity</p>
