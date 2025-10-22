@@ -68,6 +68,10 @@ const {
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
   ),
+  stopTriggerPrice: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
+  ),
   leverage: computed(
     () => derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
   ),
@@ -87,6 +91,13 @@ const {
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
       DerivativeTradeTypes.Limit
+  ),
+  isTriggerOrder: computed(() =>
+    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+      derivativeFormValues.value[
+        DerivativesTradeFormField.Type
+      ] as DerivativeTradeTypes
+    )
   )
 })
 
@@ -129,6 +140,7 @@ watch(
     () => derivativeFormValues.value[DerivativesTradeFormField.Type],
     () => derivativeFormValues.value[DerivativesTradeFormField.Side],
     () => derivativeFormValues.value[DerivativesTradeFormField.LimitPrice],
+    () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice],
     () => derivativeFormValues.value[DerivativesTradeFormField.PostOnly]
   ],
   ([amount, amountOption]) => {

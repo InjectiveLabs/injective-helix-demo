@@ -19,6 +19,8 @@ export function useDerivativeDetails({
   isPostOnly,
   triggerPrice,
   isLimitOrder,
+  isTriggerOrder,
+  stopTriggerPrice,
   slippagePercentage
 }: {
   isBuy: ComputedRef<boolean>
@@ -26,6 +28,8 @@ export function useDerivativeDetails({
   isPostOnly: ComputedRef<boolean>
   triggerPrice: ComputedRef<string>
   isLimitOrder: ComputedRef<boolean>
+  isTriggerOrder: ComputedRef<boolean>
+  stopTriggerPrice: ComputedRef<string>
   market: ComputedRef<UiDerivativeMarket>
   slippagePercentage: ComputedRef<string>
 }) {
@@ -87,6 +91,43 @@ export function useDerivativeDetails({
         return
       }
 
+      if (isTriggerOrder.value) {
+        const quantityInBase = new BigNumberInBase(safeAmount(value))
+        const stopTriggerPriceInBase = new BigNumberInBase(
+          safeAmount(stopTriggerPrice.value)
+        )
+        const slippageInBase = new BigNumberInBase(
+          safeAmount(slippagePercentage.value)
+        )
+
+        const slippageFactor = isBuy.value
+          ? ONE_IN_BASE.plus(slippageInBase)
+          : ONE_IN_BASE.minus(slippageInBase)
+
+        const priceWithSlippage = stopTriggerPriceInBase.times(slippageFactor)
+
+        bestPrice.value = stopTriggerPriceInBase
+        worstPrice.value = priceWithSlippage
+        averagePrice.value = priceWithSlippage
+
+        const calculatedNotionalInBase = quantityInBase.times(priceWithSlippage)
+
+        calculatedNotional.value = calculatedNotionalInBase.toFixed()
+
+        feeAmount.value = calculatedNotionalInBase
+          .times(feePercentage.value)
+          .toFixed()
+
+        notional.value = calculatedNotionalInBase
+          .plus(feeAmount.value)
+          .toFixed()
+        totalNotional.value = notional.value
+
+        enoughLiquidity.value = true
+
+        return
+      }
+
       worker.value?.postMessage({
         type: WorkerMessageType.Quantity,
         data: {
@@ -127,6 +168,51 @@ export function useDerivativeDetails({
 
         const calculatedNotionalInBase =
           triggerPriceInBase.times(calculatedQuantity)
+
+        calculatedNotional.value = calculatedNotionalInBase.toFixed()
+
+        feeAmount.value = calculatedNotionalInBase
+          .times(feePercentage.value)
+          .toFixed()
+
+        totalNotional.value = calculatedNotionalInBase
+          .plus(feeAmount.value)
+          .toFixed()
+
+        enoughLiquidity.value = true
+
+        return
+      }
+
+      if (isTriggerOrder.value) {
+        const stopTriggerPriceInBase = new BigNumberInBase(
+          safeAmount(stopTriggerPrice.value)
+        )
+        const slippageInBase = new BigNumberInBase(
+          safeAmount(slippagePercentage.value)
+        )
+
+        const slippageFactor = isBuy.value
+          ? ONE_IN_BASE.plus(slippageInBase)
+          : ONE_IN_BASE.minus(slippageInBase)
+
+        const priceWithSlippage = stopTriggerPriceInBase.times(slippageFactor)
+
+        bestPrice.value = stopTriggerPriceInBase
+        worstPrice.value = priceWithSlippage
+        averagePrice.value = priceWithSlippage
+
+        const calculatedQuantity = priceWithSlippage.isZero()
+          ? ZERO_IN_BASE
+          : notionalInBase.div(priceWithSlippage)
+
+        quantity.value = quantizeNumber(
+          calculatedQuantity,
+          market.value.quantityTensMultiplier
+        ).toFixed()
+
+        const calculatedNotionalInBase =
+          priceWithSlippage.times(calculatedQuantity)
 
         calculatedNotional.value = calculatedNotionalInBase.toFixed()
 
