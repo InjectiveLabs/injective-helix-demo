@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { Status, StatusType, toBigNumber } from '@injectivelabs/utils'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  toBigNumber
+} from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { PointsPeriod } from '@/types'
 
@@ -14,15 +19,24 @@ const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
 const totalPoints = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 const pointsSeason1 = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 const bonusPoints = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 onWalletConnected(() => {
