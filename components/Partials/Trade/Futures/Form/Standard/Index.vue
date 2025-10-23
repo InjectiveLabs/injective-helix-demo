@@ -59,14 +59,6 @@ const estLiquidationPrice = computed(() => {
   })
 })
 
-const enableSlippage = computed(() =>
-  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
-)
-
 onMounted(() => {
   isReady.value = true
 
@@ -211,7 +203,6 @@ function openLeverageModal() {
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
       v-bind="{
-        enableSlippage,
         estLiquidationPrice
       }"
     />

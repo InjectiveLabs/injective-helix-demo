@@ -19,7 +19,6 @@ const modalStore = useSharedModalStore()
 
 withDefaults(
   defineProps<{
-    enableSlippage: boolean
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
@@ -30,6 +29,14 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const isOpen = ref(true)
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
+
+const enableSlippage = computed(() =>
+  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
 
 const isLimit = computed(
   () =>
@@ -134,35 +141,21 @@ const isMakerFee = computed(
 )
 
 watch(
-  [
-    () => derivativeFormValues.value[DerivativesTradeFormField.Amount],
-    () => derivativeFormValues.value[DerivativesTradeFormField.AmountOption],
-    () => derivativeFormValues.value[DerivativesTradeFormField.Type],
-    () => derivativeFormValues.value[DerivativesTradeFormField.Side],
-    () => derivativeFormValues.value[DerivativesTradeFormField.LimitPrice],
-    () => derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice],
-    () => derivativeFormValues.value[DerivativesTradeFormField.PostOnly]
-  ],
-  ([amount, amountOption, type, side, limitPrice, triggerPrice, postOnly]) => {
-    console.log(
-      '===',
-      amount,
-      amountOption,
-      type,
-      side,
-      limitPrice,
-      triggerPrice,
-      postOnly
-    )
-
-    const option = amountOption || TradeAmountOption.Base
+  [() => derivativeFormValues.value],
+  ([formValues]) => {
+    const option =
+      formValues[DerivativesTradeFormField.AmountOption] ||
+      TradeAmountOption.Base
 
     if (option === TradeAmountOption.Base) {
-      detailsQuantity.value = amount || '0'
+      detailsQuantity.value =
+        formValues[DerivativesTradeFormField.Amount] || '0'
     } else {
-      detailsNotional.value = amount || '0'
+      detailsNotional.value =
+        formValues[DerivativesTradeFormField.Amount] || '0'
     }
-  }
+  },
+  { deep: true }
 )
 
 function toggle() {
@@ -347,7 +340,9 @@ function openSlippageModal() {
 
       <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Quantity</p>
+          <CommonHeaderTooltip tooltip="The amount of contracts you're trading">
+            <p class="text-yellow-600/90">Quantity</p>
+          </CommonHeaderTooltip>
 
           <p class="flex space-x-2">
             <SharedAmount
@@ -365,7 +360,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Notional</p>
+          <CommonHeaderTooltip
+            tooltip="The notional value of your position in the quote asset"
+          >
+            <p class="text-yellow-600/90">Notional</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -381,7 +380,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Calculated Notional</p>
+          <CommonHeaderTooltip
+            tooltip="The notional value adjusted for estimated execution price and quantized quantity"
+          >
+            <p class="text-yellow-600/90">Calculated Notional</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -398,7 +401,9 @@ function openSlippageModal() {
         </div>
 
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Fee Amount</p>
+          <CommonHeaderTooltip tooltip="The trading fee charged for this order">
+            <p class="text-yellow-600/90">Fee Amount</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -414,7 +419,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Total Notional</p>
+          <CommonHeaderTooltip
+            tooltip="The total notional value of your position (calculated notional + fees)"
+          >
+            <p class="text-yellow-600/90">Total Notional</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -430,7 +439,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Margin</p>
+          <CommonHeaderTooltip
+            tooltip="The amount of capital required to open this position"
+          >
+            <p class="text-yellow-600/90">Margin</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -446,7 +459,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Margin with Fee</p>
+          <CommonHeaderTooltip
+            tooltip="The total margin including all fees for this order"
+          >
+            <p class="text-yellow-600/90">Margin with Fee</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -467,7 +484,11 @@ function openSlippageModal() {
             v-if="!isTriggerOrder"
             class="flex justify-between items-center text-xs font-medium"
           >
-            <p class="text-yellow-600/90">Est Slippage Percentage</p>
+            <CommonHeaderTooltip
+              tooltip="Estimated slippage percentage based on current market liquidity"
+            >
+              <p class="text-yellow-600/90">Est Slippage Percentage</p>
+            </CommonHeaderTooltip>
             <p class="text-white flex space-x-2">
               <SharedAmount
                 v-bind="{
@@ -484,7 +505,11 @@ function openSlippageModal() {
           </div>
 
           <div class="flex justify-between items-center text-xs font-medium">
-            <p class="text-yellow-600/90">Slippage Tolerance</p>
+            <CommonHeaderTooltip
+              tooltip="Your maximum acceptable slippage percentage for this trade"
+            >
+              <p class="text-yellow-600/90">Slippage Tolerance</p>
+            </CommonHeaderTooltip>
             <p class="flex space-x-2">
               <SharedAmount
                 v-bind="{
@@ -501,7 +526,11 @@ function openSlippageModal() {
           </div>
 
           <div class="flex justify-between items-center text-xs font-medium">
-            <p class="text-yellow-600/90">Slippage Price</p>
+            <CommonHeaderTooltip
+              tooltip="Worst possible execution price considering slippage"
+            >
+              <p class="text-yellow-600/90">Slippage Price</p>
+            </CommonHeaderTooltip>
             <p class="flex space-x-2">
               <SharedAmount
                 v-bind="{
@@ -519,7 +548,11 @@ function openSlippageModal() {
         </template>
         <hr class="border-white/30" />
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Worst Price</p>
+          <CommonHeaderTooltip
+            tooltip="The worst price used to fill the order based on current orderbook depth"
+          >
+            <p class="text-yellow-600/90">Worst Price</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -536,7 +569,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Average Price</p>
+          <CommonHeaderTooltip
+            tooltip="The average price you would pay across the entire order"
+          >
+            <p class="text-yellow-600/90">Average Price</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -551,7 +588,11 @@ function openSlippageModal() {
           </p>
         </div>
         <div class="flex justify-between items-center text-xs font-medium">
-          <p class="text-yellow-600/90">Best Price</p>
+          <CommonHeaderTooltip
+            tooltip="The best price used to fill the order based on current orderbook depth"
+          >
+            <p class="text-yellow-600/90">Best Price</p>
+          </CommonHeaderTooltip>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -570,13 +611,21 @@ function openSlippageModal() {
         <template v-if="!isLimit && !isTriggerOrder">
           <hr class="border-white/30" />
           <div class="flex justify-between items-center text-xs font-medium">
-            <p class="text-yellow-600/90">Enough Liquidity</p>
+            <CommonHeaderTooltip
+              tooltip="Whether there's sufficient liquidity to execute this order"
+            >
+              <p class="text-yellow-600/90">Enough Liquidity</p>
+            </CommonHeaderTooltip>
             <p class="text-white">
               {{ detailsEnoughLiquidity ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
-            <p class="text-yellow-600/90">Slippage Warning</p>
+            <CommonHeaderTooltip
+              tooltip="Whether estimated slippage exceeds your tolerance threshold"
+            >
+              <p class="text-yellow-600/90">Slippage Warning</p>
+            </CommonHeaderTooltip>
             <p class="text-white">
               {{ detailsSlippageWarning ? 'Yes' : 'No' }}
             </p>
