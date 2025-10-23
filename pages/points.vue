@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { Status, StatusType, toBigNumber } from '@injectivelabs/utils'
+import {
+  Status,
+  BigNumber,
+  StatusType,
+  toBigNumber
+} from '@injectivelabs/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { PointsPeriod } from '@/types'
 
@@ -14,23 +19,32 @@ const status = reactive(new Status(StatusType.Loading))
 const fetchStatus = reactive(new Status(StatusType.Idle))
 
 const totalPoints = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.totalPoints || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 const pointsSeason1 = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.pointsSeason1 || 0).toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 const bonusPoints = computed(() =>
-  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(0)
+  toBigNumber(pointsStore.accountPoints?.pointsBonus || '0').toFixed(
+    0,
+    BigNumber.ROUND_DOWN
+  )
 )
 
 onWalletConnected(() => {
   status.setLoading()
 
   Promise.all([
-    // pointsStore.fetchAccountPointsStat(),
-    // pointsStore.fetchAccountDailyPoints()
+    pointsStore.fetchAccountPointsStat(),
+    pointsStore.fetchAccountDailyPoints()
   ])
     .catch($onError)
     .finally(() => status.setIdle())
@@ -42,10 +56,10 @@ useIntervalFn(() => {
   }
 
   return Promise.all([
-    // pointsStore.fetchAccountPointsStat(),
-    // selectedPeriod.value === PointsPeriod.Day
-    //   ? pointsStore.fetchAccountDailyPoints()
-    //   : pointsStore.fetchAccountWeeklyPoints()
+    pointsStore.fetchAccountPointsStat(),
+    selectedPeriod.value === PointsPeriod.Day
+      ? pointsStore.fetchAccountDailyPoints()
+      : pointsStore.fetchAccountWeeklyPoints()
   ])
 }, 60 * 1000)
 
@@ -68,7 +82,7 @@ function fetchAccountPoints() {
 </script>
 
 <template>
-  <div class="pt-12 pb-32 px-8 max-w-[1104px] mx-auto" v-if="false">
+  <div class="pt-12 pb-32 px-8 max-w-[1104px] mx-auto">
     <div>
       <h1 class="text-3xl text-white">
         {{ $t('points.title') }}
@@ -168,23 +182,4 @@ function fetchAccountPoints() {
       </div>
     </div>
   </div>
-
-  <section
-    class="bg-brand-900 text-white flex flex-col items-center justify-center px-4 py-16 min-h-vhMinusHeader"
-  >
-    <div class="mb-12 flex flex-col items-center">
-      <img src="/icon.png" alt="Helix" class="size-24" />
-    </div>
-
-    <h1 class="text-3xl font-semibold mb-4 text-center">
-      {{ $t('maintenance.title') }}
-    </h1>
-    <p class="text-sm text-center">
-      {{ $t('maintenance.description') }}
-    </p>
-
-    <p class="text-center text-sm">
-      {{ $t('maintenance.footer') }}
-    </p>
-  </section>
 </template>
