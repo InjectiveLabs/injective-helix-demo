@@ -765,6 +765,7 @@ export const campaignNameOverrideMap: Record<string, string> = {
 
 // Rule: always put the latest campaign name first so Modals/CompetitionWinner/Index.vue works properly
 export const PAST_LEADERBOARD_CAMPAIGN_NAMES = [
+  FOURTH_CAMPAIGN_NAME,
   THIRD_CAMPAIGN_NAME,
   SECOND_CAMPAIGN_NAME,
   FIRST_CAMPAIGN_NAME
