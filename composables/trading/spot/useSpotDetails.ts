@@ -193,6 +193,10 @@ export function useSpotDetails({
   )
 
   worker.value.addEventListener('message', (ev) => {
+    if (isLimitOrder.value) {
+      return
+    }
+
     const { data, messageType } = ev.data as OrderbookWorkerResult
 
     if (messageType === WorkerMessageResponseType.ReceiveQuantityInfo) {

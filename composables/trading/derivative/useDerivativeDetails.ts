@@ -191,7 +191,6 @@ export function useDerivativeDetails({
       }
 
       if (isTriggerOrder.value) {
-        console.log('=== triggerPrice', triggerPrice.value)
         const triggerPriceInBase = new BigNumberInBase(
           safeAmount(triggerPrice.value)
         )
@@ -304,6 +303,10 @@ export function useDerivativeDetails({
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
   worker.value.addEventListener('message', (ev) => {
+    if (isLimitOrder.value || isTriggerOrder.value) {
+      return
+    }
+
     const { data, messageType } = ev.data as OrderbookWorkerResult
 
     if (messageType === WorkerMessageResponseType.ReceiveQuantityInfo) {
