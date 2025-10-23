@@ -104,8 +104,8 @@ export function useSpotDetails({
 
       const notionalInBase = new BigNumberInBase(safeAmount(value))
 
-      const notionalMinusFee = notionalInBase.minus(
-        notionalInBase.times(feePercentage.value)
+      const notionalMinusFee = notionalInBase.div(
+        ONE_IN_BASE.plus(feePercentage.value)
       )
 
       if (isLimitOrder.value) {
