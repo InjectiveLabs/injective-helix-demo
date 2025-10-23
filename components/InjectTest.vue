@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { UiSpotMarket } from '~/types'
 
 const props = defineProps<{
@@ -24,11 +25,12 @@ const {
   estSlippagePercentage
 } = useSpotDetails({
   slippagePercentage,
-  isPostOnly: computed(() => false),
   limitPrice: computed(() => '0'),
+  isPostOnly: computed(() => false),
   isBuy: computed(() => isBuy.value),
   isLimitOrder: computed(() => false),
-  market: computed(() => props.market)
+  market: computed(() => props.market),
+  takerFeeRate: computed(() => new BigNumberInBase('0.0005'))
 })
 
 const tableData = computed(() => [

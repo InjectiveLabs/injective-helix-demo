@@ -58,6 +58,11 @@ const isTriggerOrder = computed(() =>
   )
 )
 
+const { makerFeeRate, takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: derivativeMarket?.value?.takerFeeRate,
+  marketMakerFeeRate: derivativeMarket?.value?.makerFeeRate
+})
+
 const {
   quantity: detailsQuantity,
   notional: detailsNotional,
@@ -74,6 +79,7 @@ const {
   calculatedNotional: detailsCalculatedNotional,
   estSlippagePercentage: detailsEstSlippagePercentage
 } = useDerivativeDetails({
+  takerFeeRate,
   isTriggerOrder,
   market: computed(() => derivativeMarket.value),
   limitPrice: computed(
@@ -106,11 +112,6 @@ const {
       derivativeFormValues.value[DerivativesTradeFormField.Type] ===
         DerivativeTradeTypes.StopLimit
   )
-})
-
-const { makerFeeRate, takerFeeRate } = useTradeFee({
-  marketTakerFeeRate: derivativeMarket?.value?.takerFeeRate,
-  marketMakerFeeRate: derivativeMarket?.value?.makerFeeRate
 })
 
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(

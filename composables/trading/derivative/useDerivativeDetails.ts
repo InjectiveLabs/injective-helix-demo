@@ -19,6 +19,7 @@ export function useDerivativeDetails({
   isPostOnly,
   limitPrice,
   isLimitOrder,
+  takerFeeRate,
   triggerPrice,
   isTriggerOrder,
   slippagePercentage
@@ -32,6 +33,7 @@ export function useDerivativeDetails({
   isTriggerOrder: ComputedRef<boolean>
   market: ComputedRef<UiDerivativeMarket>
   slippagePercentage: ComputedRef<string>
+  takerFeeRate: ComputedRef<BigNumberInBase>
 }) {
   function safeAmount(value: string) {
     const isInvalid =
@@ -280,7 +282,7 @@ export function useDerivativeDetails({
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInBase(market.value.takerFeeRate)
+    return takerFeeRate.value
   })
 
   const slippageWarning = computed(() =>

@@ -46,6 +46,7 @@ const {
   calculatedNotional: detailsCalculatedNotional,
   estSlippagePercentage: detailsEstSlippagePercentage
 } = useSpotDetails({
+  takerFeeRate,
   market: computed(() => spotMarket.value),
   limitPrice: computed(
     () => spotFormValues.value[SpotTradeFormField.Price] || '0'

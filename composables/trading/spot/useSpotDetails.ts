@@ -18,6 +18,7 @@ export function useSpotDetails({
   limitPrice,
   isPostOnly,
   isLimitOrder,
+  takerFeeRate,
   slippagePercentage
 }: {
   isBuy: ComputedRef<boolean>
@@ -26,6 +27,7 @@ export function useSpotDetails({
   market: ComputedRef<UiSpotMarket>
   isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
+  takerFeeRate: ComputedRef<BigNumberInBase>
 }) {
   function safeAmount(value: string) {
     const isInvalid =
@@ -185,7 +187,7 @@ export function useSpotDetails({
       return ZERO_IN_BASE
     }
 
-    return new BigNumberInBase(market.value.takerFeeRate)
+    return takerFeeRate.value
   })
 
   const slippageWarning = computed(() =>
