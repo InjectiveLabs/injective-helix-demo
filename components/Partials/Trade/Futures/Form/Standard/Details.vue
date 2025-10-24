@@ -27,6 +27,7 @@ withDefaults(
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const isOpen = ref(true)
+const isMinimalistEstSlippageMode = ref(false)
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
@@ -130,6 +131,50 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   }
 )
 
+const formAmount = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
+)
+
+const adaptedEstSlippagePercentage = computed(() => {
+  if (!isMinimalistEstSlippageMode.value) {
+    if (formAmount.value === '0') {
+      return 0
+    }
+
+    if (detailsEstSlippagePercentage.value.lt(0.0005)) {
+      return 0.0005
+    }
+
+    return detailsEstSlippagePercentage.value
+  }
+
+  return detailsEstSlippagePercentage.value
+})
+
+const estSlippageDecimals = computed(() => {
+  if (!isMinimalistEstSlippageMode.value) {
+    if (formAmount.value === '0') {
+      return 0
+    }
+
+    return 4
+  }
+
+  return 2
+})
+
+const showEstSlippage = computed(() => {
+  if (!isMinimalistEstSlippageMode.value) {
+    return detailsEnoughLiquidity.value && !isTriggerOrder.value
+  }
+
+  return (
+    detailsEnoughLiquidity.value &&
+    !isTriggerOrder.value &&
+    detailsEstSlippagePercentage.value.gte(0.01)
+  )
+})
+
 const isMakerFee = computed(
   () =>
     (derivativeFormValues.value[DerivativesTradeFormField.PostOnly] &&
@@ -221,7 +266,7 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <span v-if="detailsEnoughLiquidity && !isTriggerOrder">
+              <span v-if="showEstSlippage">
                 <i18n-t
                   keypath="trade.estSlippage"
                   class="text-xs text-coolGray-400 mx-1"
@@ -229,9 +274,10 @@ function openSlippageModal() {
                   <template #estSlippage>
                     <SharedAmount
                       v-bind="{
-                        useSubscript: false,
+                        noTrailingZeros: false,
                         shouldAbbreviate: false,
-                        amount: detailsEstSlippagePercentage
+                        decimals: estSlippageDecimals,
+                        amount: adaptedEstSlippagePercentage
                       }"
                     />
                   </template>
@@ -340,6 +386,21 @@ function openSlippageModal() {
       </div>
 
       <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
+        <div
+          v-if="!isLimit"
+          class="flex items-center justify-between space-x-2 text-xs"
+        >
+          <p class="text-yellow-600/90">Est. Slippage Mode</p>
+          <div class="flex items-center space-x-2">
+            <label for="isMinimalistEstSlippageMode">{{
+              isMinimalistEstSlippageMode ? 'Drift' : 'HL'
+            }}</label>
+            <input type="checkbox" v-model="isMinimalistEstSlippageMode" />
+          </div>
+        </div>
+
+        <hr class="border-white/30" />
+
         <div class="flex justify-between items-center text-xs font-medium">
           <CommonHeaderTooltip tooltip="The amount of contracts you're trading">
             <p class="text-yellow-600/90">Quantity</p>

@@ -271,10 +271,10 @@ export function useDerivativeDetails({
     }
 
     if (isBuy.value) {
-      return worstPrice.value.div(bestPrice.value).minus(1)
+      return worstPrice.value.div(bestPrice.value).minus(1).times(100)
     }
 
-    return bestPrice.value.div(worstPrice.value).minus(1)
+    return bestPrice.value.div(worstPrice.value).minus(1).times(100)
   })
 
   const feePercentage = computed(() => {
