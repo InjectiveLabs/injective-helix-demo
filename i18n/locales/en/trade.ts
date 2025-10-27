@@ -127,6 +127,7 @@ export default {
     emptyAdvancedOrders: 'No Advanced Orders Found',
     takeProfitTriggerPrice: 'Take Profit Trigger Price',
     slippageTooltip: 'Click to adjust slippage tolerance',
+    increaseSlippageTolerance: 'Increase Slippage Tolerance',
     modifyTakeProfitStopLoss: 'Modify Take Profit / Stop Loss',
     postOnlyWarning: 'Temporarily post-only due to chain upgrade',
     minNotionalError: 'Minimum order value > {minNotional} {symbol}',

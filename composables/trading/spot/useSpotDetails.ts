@@ -1,4 +1,4 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
 import { quantizeNumber } from '@/app/utils/helpers'
 import {
@@ -7,6 +7,7 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
+  SpotDetails,
   UiSpotMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -28,7 +29,7 @@ export function useSpotDetails({
   isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}) {
+}): SpotDetails {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||
@@ -194,6 +195,42 @@ export function useSpotDetails({
     estSlippagePercentage.value.gt(slippagePercentage.value)
   )
 
+  const finalPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return new BigNumberInBase(limitPrice.value)
+    }
+
+    return slippagePrice.value
+  })
+
+  const minimumAmountInQuote = computed(() => {
+    const price = finalPrice.value
+
+    const minQuantity = new BigNumberInBase(10).exponentiatedBy(
+      market.value.quantityTensMultiplier
+    )
+
+    return new BigNumberInBase(
+      price
+        .times(minQuantity)
+        .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
+    )
+  })
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    const priceForNotional = finalPrice.value
+
+    const quantityInBase = new BigNumberInBase(safeAmount(quantity.value))
+
+    if (priceForNotional.isZero() || quantityInBase.isZero()) {
+      return
+    }
+
+    return quantityInBase
+      .times(priceForNotional)
+      .lt(market.value.minNotionalInToken)
+  })
+
   worker.value.addEventListener('message', (ev) => {
     if (isLimitOrder.value) {
       return
@@ -255,17 +292,20 @@ export function useSpotDetails({
   })
 
   return {
-    feeAmount,
-    bestPrice,
-    worstPrice,
-    averagePrice,
-    totalNotional,
+    finalPrice,
     slippagePrice,
-    enoughLiquidity,
     slippageWarning,
-    calculatedNotional,
     notional: _notional,
     quantity: _quantity,
-    estSlippagePercentage
+    minimumAmountInQuote,
+    estSlippagePercentage,
+    isNotionalLessThanMinNotional,
+    feeAmount: computed(() => feeAmount.value),
+    totalNotional: computed(() => totalNotional.value),
+    enoughLiquidity: computed(() => enoughLiquidity.value),
+    calculatedNotional: computed(() => calculatedNotional.value),
+    bestPrice: computed(() => bestPrice.value as BigNumberInBase),
+    worstPrice: computed(() => worstPrice.value as BigNumberInBase),
+    averagePrice: computed(() => averagePrice.value as BigNumberInBase)
   }
 }

@@ -31,15 +31,17 @@ const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
-  useSpotWorstPrice(market)
-
 const props = withDefaults(
   defineProps<{
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
+    hasEnoughLiquidity: boolean
+    hasSlippageWarning: boolean
+    isNotionalLessThanMinNotional: boolean
   }>(),
-  {}
+  {
+    hasEnoughLiquidity: true
+  }
 )
 
 const chartType = ref(ChartViewOption.Chart)
@@ -49,6 +51,9 @@ const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+)
+const isLimitOrder = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
 const orderTypeToSubmit = computed(() => {
@@ -112,11 +117,15 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (!hasEnoughLiquidity.value) {
+  if (!props.hasEnoughLiquidity) {
     return true
   }
 
-  if (isNotionalLessThanMinNotional.value) {
+  if (props.hasSlippageWarning) {
+    return true
+  }
+
+  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 
@@ -296,6 +305,10 @@ function showAutosignCta() {
 
       <span v-else-if="!hasEnoughLiquidity">
         {{ $t('swap.insufficientLiquidity') }}
+      </span>
+
+      <span v-else-if="hasSlippageWarning">
+        {{ $t('trade.increaseSlippageTolerance') }}
       </span>
 
       <span v-else>

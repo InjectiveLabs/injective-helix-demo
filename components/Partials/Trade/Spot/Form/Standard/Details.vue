@@ -10,14 +10,20 @@ import {
   SpotMarketCyTags,
   SpotTradeFormField,
   TradeAmountOption,
-  TradeTypes
+  TradeTypes,
+  SpotDetails
 } from '@/types'
 import { OrderSide } from '@injectivelabs/ts-types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
 const spotMarket = inject(MarketKey) as ComputedRef<UiSpotMarket>
+
+const props = defineProps<{
+  details: SpotDetails
+}>()
 
 const isOpen = ref(true)
 const isMinimalistEstSlippageMode = ref(false)
@@ -236,7 +242,9 @@ function openSlippageModal() {
                   <template #max>
                     <SharedAmount
                       v-bind="{
+                        decimals: 2,
                         useSubscript: true,
+                        noTrailingZeros: false,
                         shouldAbbreviate: false,
                         amount: slippagePercentage
                       }"

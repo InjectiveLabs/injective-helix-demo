@@ -7,9 +7,11 @@ import {
   MarketKey,
   TradeTypes,
   SpotMarketCyTags,
-  SpotTradeFormField
+  SpotTradeFormField,
+  TradeAmountOption
 } from '@/types'
 import type { UiSpotMarket, SpotTradeForm } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const appStore = useAppStore()
 const swapStore = useSwapStore()
@@ -29,15 +31,38 @@ const { value: orderSideValue } = useStringField({
   initialValue: OrderSide.Buy
 })
 
-const {
-  total,
-  quantity,
-  feeAmount,
-  worstPrice,
-  totalWithFee,
-  feePercentage,
-  minimumAmountInQuote
-} = useSpotWorstPrice(market)
+const { takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: market?.value?.takerFeeRate,
+  marketMakerFeeRate: market?.value?.makerFeeRate
+})
+
+const spotDetails = useSpotDetails({
+  takerFeeRate,
+  market: computed(() => market.value),
+  limitPrice: computed(
+    () => spotFormValues.value[SpotTradeFormField.Price] || '0'
+  ),
+  slippagePercentage: computed(
+    () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
+  ),
+  isPostOnly: computed(
+    () => spotFormValues.value[SpotTradeFormField.PostOnly] || false
+  ),
+  isBuy: computed(
+    () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+  ),
+  isLimitOrder: computed(
+    () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+  )
+})
+
+const quantityToBigNumber = computed(
+  () => new BigNumberInBase(spotDetails.quantity.value)
+)
+
+const totalWithFeeToBigNumber = computed(
+  () => new BigNumberInBase(spotDetails.totalNotional.value)
+)
 
 const isSwapEnabled = computed(() =>
   swapStore.routes.some(
@@ -53,11 +78,7 @@ const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
-const isReady = ref(false)
-
 onMounted(() => {
-  isReady.value = true
-
   setFormValues(
     {
       [SpotTradeFormField.Slippage]: appStore.slippageByMarketId(
@@ -75,6 +96,22 @@ function onOrderSideClicked() {
 
   useEventBus(BusEvents.OrderSideToggled).emit()
 }
+
+watch(
+  [() => spotFormValues.value],
+  ([formValues]) => {
+    const option =
+      formValues[SpotTradeFormField.AmountOption] || TradeAmountOption.Base
+    const amount = formValues[SpotTradeFormField.Amount] || '0'
+
+    if (option === TradeAmountOption.Base) {
+      spotDetails.quantity.value = amount
+    } else {
+      spotDetails.notional.value = amount
+    }
+  },
+  { deep: true }
+)
 </script>
 
 <template>
@@ -145,9 +182,11 @@ function onOrderSideClicked() {
 
       <PartialsTradeSpotFormStandardAmountField
         v-bind="{
-          quantity,
-          totalWithFee,
-          minimumAmountInQuote
+          quantity: quantityToBigNumber,
+          totalWithFee: totalWithFeeToBigNumber,
+          minimumAmountInQuote: spotDetails.minimumAmountInQuote.value,
+          isNotionalLessThanMinNotional:
+            spotDetails.isNotionalLessThanMinNotional.value ?? false
         }"
       />
     </div>
@@ -158,22 +197,20 @@ function onOrderSideClicked() {
     />
 
     <PartialsTradeSpotFormStandardDetails
-      v-if="isReady"
       class="my-4"
       v-bind="{
-        total,
-        quantity,
-        feeAmount,
-        worstPrice,
-        totalWithFee,
-        feePercentage
+        details: spotDetails
       }"
     />
 
     <PartialsTradeSpotFormStandardCreateOrder
       v-bind="{
-        quantity,
-        worstPrice
+        quantity: quantityToBigNumber,
+        worstPrice: spotDetails.finalPrice.value,
+        hasEnoughLiquidity: spotDetails.enoughLiquidity.value,
+        hasSlippageWarning: spotDetails.slippageWarning.value,
+        isNotionalLessThanMinNotional:
+          spotDetails.isNotionalLessThanMinNotional.value ?? false
       }"
     />
 

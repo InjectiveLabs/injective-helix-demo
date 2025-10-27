@@ -366,16 +366,16 @@ export function useDerivativeDetails({
 
   return {
     margin,
-    feeAmount,
-    bestPrice,
-    worstPrice,
-    averagePrice,
-    totalNotional,
+    feeAmount: computed(() => feeAmount.value),
+    bestPrice: computed(() => bestPrice.value as BigNumberInBase),
+    worstPrice: computed(() => worstPrice.value as BigNumberInBase),
+    averagePrice: computed(() => averagePrice.value as BigNumberInBase),
+    totalNotional: computed(() => totalNotional.value),
     marginWithFee,
     slippagePrice,
-    enoughLiquidity,
+    enoughLiquidity: computed(() => enoughLiquidity.value),
     slippageWarning,
-    calculatedNotional,
+    calculatedNotional: computed(() => calculatedNotional.value),
     notional: _notional,
     quantity: _quantity,
     estSlippagePercentage
