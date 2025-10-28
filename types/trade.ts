@@ -210,3 +210,24 @@ export type SpotDetails = {
   estSlippagePercentage: ComputedRef<BigNumberInBase>
   isNotionalLessThanMinNotional: ComputedRef<boolean | undefined>
 }
+
+export type DerivativeDetails = {
+  feeAmount: ComputedRef<string>
+  bestPrice: Ref<BigNumberInBase>
+  totalNotional: ComputedRef<string>
+  margin: ComputedRef<BigNumberInBase>
+  enoughLiquidity: ComputedRef<boolean>
+  slippageWarning: ComputedRef<boolean>
+  notional: WritableComputedRef<string>
+  quantity: WritableComputedRef<string>
+  calculatedNotional: ComputedRef<string>
+  finalPrice: ComputedRef<BigNumberInBase>
+  worstPrice: ComputedRef<BigNumberInBase>
+  averagePrice: ComputedRef<BigNumberInBase>
+  feePercentage: ComputedRef<BigNumberInBase>
+  marginWithFee: ComputedRef<BigNumberInBase>
+  slippagePrice: ComputedRef<BigNumberInBase>
+  minimumAmountInQuote: ComputedRef<BigNumberInBase>
+  estSlippagePercentage: ComputedRef<BigNumberInBase>
+  isNotionalLessThanMinNotional: ComputedRef<boolean | undefined>
+}

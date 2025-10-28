@@ -8,6 +8,8 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
+const isReady = ref(false)
+
 const options = computed(() => [
   {
     disabled: false,
@@ -25,6 +27,8 @@ const options = computed(() => [
 ])
 
 onMounted(() => {
+  isReady.value = true
+
   if (
     queryTradingMode.value === TradingInterface.TradingBots &&
     options.value.find(({ value }) => value === TradingInterface.TradingBots)
@@ -51,7 +55,7 @@ onMounted(() => {
       </AppButtonSelect>
     </div>
     <PartialsTradeFuturesFormStandard
-      v-if="queryTradingMode === TradingInterface.Standard"
+      v-if="isReady && queryTradingMode === TradingInterface.Standard"
     />
     <PartialsTradeFuturesFormTradingBots v-else />
   </div>

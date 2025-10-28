@@ -5,16 +5,13 @@ import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
+  TradeTypes,
+  SpotDetails,
   UiSpotMarket,
   SpotTradeForm,
   SpotMarketCyTags,
-  SpotTradeFormField,
-  TradeAmountOption,
-  TradeTypes,
-  SpotDetails
+  SpotTradeFormField
 } from '@/types'
-import { OrderSide } from '@injectivelabs/ts-types'
-import { BigNumberInBase } from '@injectivelabs/utils'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
@@ -38,39 +35,6 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
 const isLimit = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
-
-const {
-  quantity: detailsQuantity,
-  notional: detailsNotional,
-  feeAmount: detailsFeeAmount,
-  bestPrice: detailsBestPrice,
-  worstPrice: detailsWorstPrice,
-  averagePrice: detailsAveragePrice,
-  slippagePrice: detailsSlippagePrice,
-  totalNotional: detailsTotalNotional,
-  enoughLiquidity: detailsEnoughLiquidity,
-  slippageWarning: detailsSlippageWarning,
-  calculatedNotional: detailsCalculatedNotional,
-  estSlippagePercentage: detailsEstSlippagePercentage
-} = useSpotDetails({
-  takerFeeRate,
-  market: computed(() => spotMarket.value),
-  limitPrice: computed(
-    () => spotFormValues.value[SpotTradeFormField.Price] || '0'
-  ),
-  slippagePercentage: computed(
-    () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
-  ),
-  isPostOnly: computed(
-    () => spotFormValues.value[SpotTradeFormField.PostOnly] || false
-  ),
-  isBuy: computed(
-    () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
-  ),
-  isLimitOrder: computed(
-    () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-  )
-})
 
 const { valueToFixed: slippagePercentage } = useSharedBigNumberFormatter(
   computed(() => spotFormValues.value[SpotTradeFormField.Slippage] || 0),
@@ -106,14 +70,14 @@ const adaptedEstSlippagePercentage = computed(() => {
       return 0
     }
 
-    if (detailsEstSlippagePercentage.value.lt(0.0005)) {
+    if (props.details.estSlippagePercentage.value.lt(0.0005)) {
       return 0.0005
     }
 
-    return detailsEstSlippagePercentage.value
+    return props.details.estSlippagePercentage.value
   }
 
-  return detailsEstSlippagePercentage.value
+  return props.details.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
@@ -130,29 +94,14 @@ const estSlippageDecimals = computed(() => {
 
 const showEstSlippage = computed(() => {
   if (!isMinimalistEstSlippageMode.value) {
-    return detailsEnoughLiquidity.value
+    return props.details.enoughLiquidity.value
   }
 
   return (
-    detailsEnoughLiquidity.value && detailsEstSlippagePercentage.value.gte(0.01)
+    props.details.enoughLiquidity.value &&
+    props.details.estSlippagePercentage.value.gte(0.01)
   )
 })
-
-watch(
-  [() => spotFormValues.value],
-  ([formValues]) => {
-    const option =
-      formValues[SpotTradeFormField.AmountOption] || TradeAmountOption.Base
-    const amount = formValues[SpotTradeFormField.Amount] || '0'
-
-    if (option === TradeAmountOption.Base) {
-      detailsQuantity.value = amount
-    } else {
-      detailsNotional.value = amount
-    }
-  },
-  { deep: true }
-)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -192,7 +141,7 @@ function openSlippageModal() {
                 v-bind="{
                   useSubscript: true,
                   shouldAbbreviate: false,
-                  amount: detailsTotalNotional
+                  amount: props.details.totalNotional.value
                 }"
               />
             </span>
@@ -325,7 +274,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsQuantity,
+                amount: props.details.quantity.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -346,7 +295,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsNotional,
+                amount: props.details.notional.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -369,7 +318,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsCalculatedNotional
+                amount: props.details.calculatedNotional.value
               }"
             />
             <span class="text-coolGray-450">
@@ -385,7 +334,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsFeeAmount,
+                amount: props.details.feeAmount.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -408,12 +357,42 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsTotalNotional
+                amount: props.details.totalNotional.value
               }"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
             </span>
+          </p>
+        </div>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="The minimum amount in quote required for this trade"
+          >
+            <p class="text-yellow-600/90">Minimum Amount in Quote</p>
+          </CommonHeaderTooltip>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: props.details.minimumAmountInQuote.value
+              }"
+            />
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="Whether the notional is less than the minimum notional for this market"
+          >
+            <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
+          </CommonHeaderTooltip>
+          <p class="text-white">
+            {{
+              props.details.isNotionalLessThanMinNotional.value ? 'Yes' : 'No'
+            }}
           </p>
         </div>
         <template v-if="!isLimit">
@@ -430,7 +409,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: detailsEstSlippagePercentage
+                  amount: props.details.estSlippagePercentage.value
                 }"
               />%
               <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
@@ -466,7 +445,7 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: detailsSlippagePrice,
+                  amount: props.details.slippagePrice.value,
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
@@ -490,7 +469,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsWorstPrice.toFixed(),
+                amount: props.details.worstPrice.value,
                 decimals: spotMarket.priceDecimals
               }"
             />
@@ -509,8 +488,10 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsAveragePrice.toFixed()
+                decimals: spotMarket.priceDecimals,
+                amount: props.details.averagePrice.value
               }"
             />
             <span class="text-coolGray-450">
@@ -530,7 +511,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsBestPrice.toFixed(),
+                amount: props.details.bestPrice.value,
                 decimals: spotMarket.priceDecimals
               }"
             />
@@ -548,7 +529,7 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Enough Liquidity</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ detailsEnoughLiquidity ? 'Yes' : 'No' }}
+              {{ props.details.enoughLiquidity.value ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
@@ -558,10 +539,27 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Slippage Warning</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ detailsSlippageWarning ? 'Yes' : 'No' }}
+              {{ props.details.slippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="The actual worst price sent to the chain"
+          >
+            <p class="text-yellow-600/90">Final Price</p>
+          </CommonHeaderTooltip>
+          <SharedAmount
+            v-bind="{
+              useSubscript: true,
+              noTrailingZeros: false,
+              shouldAbbreviate: false,
+              decimals: spotMarket.priceDecimals,
+              amount: props.details.finalPrice.value
+            }"
+          />
+        </div>
       </div>
     </AppCollapse>
 

@@ -197,10 +197,13 @@ export function useSpotDetails({
 
   const finalPrice = computed(() => {
     if (isLimitOrder.value) {
-      return new BigNumberInBase(limitPrice.value)
+      return quantizeNumber(
+        new BigNumberInBase(limitPrice.value),
+        market.value.priceDecimals
+      )
     }
 
-    return slippagePrice.value
+    return quantizeNumber(slippagePrice.value, market.value.priceDecimals)
   })
 
   const minimumAmountInQuote = computed(() => {
@@ -210,6 +213,18 @@ export function useSpotDetails({
       market.value.quantityTensMultiplier
     )
 
+    console.log(
+      'Result = ',
+      price.toFixed(6),
+      'x',
+      minQuantity.toFixed(6),
+      '=',
+      new BigNumberInBase(
+        price
+          .times(minQuantity)
+          .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
+      ).toFixed(6)
+    )
     return new BigNumberInBase(
       price
         .times(minQuantity)

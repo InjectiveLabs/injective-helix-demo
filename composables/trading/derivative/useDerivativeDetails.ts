@@ -1,4 +1,4 @@
-import { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
 import { quantizeNumber } from '@/app/utils/helpers'
 import {
@@ -7,6 +7,7 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
+  DerivativeDetails,
   UiDerivativeMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -34,7 +35,7 @@ export function useDerivativeDetails({
   market: ComputedRef<UiDerivativeMarket>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}) {
+}): DerivativeDetails {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||
@@ -304,6 +305,42 @@ export function useDerivativeDetails({
 
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
+  const finalPrice = computed(() => {
+    if (isLimitOrder.value) {
+      return new BigNumberInBase(limitPrice.value)
+    }
+
+    return slippagePrice.value
+  })
+
+  const minimumAmountInQuote = computed(() => {
+    const price = finalPrice.value
+
+    const minQuantity = new BigNumberInBase(10).exponentiatedBy(
+      market.value.quantityTensMultiplier
+    )
+
+    return new BigNumberInBase(
+      price
+        .times(minQuantity)
+        .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
+    )
+  })
+
+  const isNotionalLessThanMinNotional = computed(() => {
+    const priceForNotional = finalPrice.value
+
+    const quantityInBase = new BigNumberInBase(safeAmount(quantity.value))
+
+    if (priceForNotional.isZero() || quantityInBase.isZero()) {
+      return
+    }
+
+    return quantityInBase
+      .times(priceForNotional)
+      .lt(market.value.minNotionalInToken)
+  })
+
   worker.value.addEventListener('message', (ev) => {
     if (isLimitOrder.value || isTriggerOrder.value) {
       return
@@ -366,18 +403,22 @@ export function useDerivativeDetails({
 
   return {
     margin,
-    feeAmount: computed(() => feeAmount.value),
-    bestPrice: computed(() => bestPrice.value as BigNumberInBase),
-    worstPrice: computed(() => worstPrice.value as BigNumberInBase),
-    averagePrice: computed(() => averagePrice.value as BigNumberInBase),
-    totalNotional: computed(() => totalNotional.value),
+    finalPrice,
+    feePercentage,
     marginWithFee,
     slippagePrice,
-    enoughLiquidity: computed(() => enoughLiquidity.value),
     slippageWarning,
-    calculatedNotional: computed(() => calculatedNotional.value),
     notional: _notional,
     quantity: _quantity,
-    estSlippagePercentage
+    minimumAmountInQuote,
+    estSlippagePercentage,
+    isNotionalLessThanMinNotional,
+    feeAmount: computed(() => feeAmount.value),
+    totalNotional: computed(() => totalNotional.value),
+    enoughLiquidity: computed(() => enoughLiquidity.value),
+    calculatedNotional: computed(() => calculatedNotional.value),
+    bestPrice: computed(() => bestPrice.value as BigNumberInBase),
+    worstPrice: computed(() => worstPrice.value as BigNumberInBase),
+    averagePrice: computed(() => averagePrice.value as BigNumberInBase)
   }
 }

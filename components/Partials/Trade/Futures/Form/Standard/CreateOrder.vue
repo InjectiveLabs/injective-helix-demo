@@ -40,8 +40,14 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
-const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
-  useDerivativeWorstPrice(derivativeMarket)
+
+const isLimitOrder = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.Limit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopLimit
+)
 
 const props = withDefaults(
   defineProps<{
@@ -49,8 +55,11 @@ const props = withDefaults(
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
     worstPrice: BigNumberInBase
+    hasEnoughLiquidity: boolean
+    hasSlippageWarning: boolean
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
+    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
@@ -175,11 +184,15 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (!hasEnoughLiquidity.value) {
+  if (!props.hasEnoughLiquidity) {
     return true
   }
 
-  if (isNotionalLessThanMinNotional.value) {
+  if (props.hasSlippageWarning) {
+    return true
+  }
+
+  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 
@@ -492,6 +505,10 @@ function showAutosignCta() {
 
         <span v-else-if="!hasEnoughLiquidity">
           {{ $t('swap.insufficientLiquidity') }}
+        </span>
+
+        <span v-else-if="hasSlippageWarning">
+          {{ $t('trade.increaseSlippageTolerance') }}
         </span>
 
         <span v-else>

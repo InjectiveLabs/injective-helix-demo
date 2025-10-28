@@ -8,10 +8,12 @@ import {
   BusEvents,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
-  DerivativesTradeFormField
+  DerivativesTradeFormField,
+  TradeAmountOption
 } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import { BigNumberInBase } from '@injectivelabs/utils'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
@@ -32,18 +34,70 @@ const { value: orderSide } = useStringField({
   initialValue: TradeDirection.Long
 })
 
-const {
-  margin,
-  quantity,
-  feeAmount,
-  worstPrice,
-  feePercentage,
-  marginWithFee,
-  totalNotional,
-  minimumAmountInQuote
-} = useDerivativeWorstPrice(market)
+const isLimitOrder = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.Limit ||
+    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
+      DerivativeTradeTypes.StopLimit
+)
+
+const isTriggerOrder = computed(() =>
+  [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const { takerFeeRate } = useTradeFee({
+  marketTakerFeeRate: market.value.takerFeeRate,
+  marketMakerFeeRate: market.value.makerFeeRate
+})
+
+const derivativeDetails = useDerivativeDetails({
+  isLimitOrder,
+  takerFeeRate,
+  isTriggerOrder,
+  market: computed(() => market.value),
+  limitPrice: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
+  ),
+  triggerPrice: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
+  ),
+  leverage: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
+  ),
+  slippagePercentage: computed(
+    () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
+  ),
+  isPostOnly: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.PostOnly] || false
+  ),
+  isBuy: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+      TradeDirection.Long
+  )
+})
 
 const isReady = ref(false)
+
+const quantityToBigNumber = computed(
+  () => new BigNumberInBase(derivativeDetails.quantity.value)
+)
+
+const feeAmountToBigNumber = computed(
+  () => new BigNumberInBase(derivativeDetails.feeAmount.value)
+)
+
+const totalNotionalToBigNumber = computed(
+  () => new BigNumberInBase(derivativeDetails.totalNotional.value)
+)
 
 const estLiquidationPrice = computed(() => {
   const isBuy =
@@ -51,11 +105,11 @@ const estLiquidationPrice = computed(() => {
     TradeDirection.Long
 
   return calculateLiquidationPrice({
-    price: worstPrice.value.toFixed(),
-    quantity: quantity.value.toFixed(),
-    notionalWithLeverage: margin.value.toFixed(),
+    market: market.value,
+    quantity: derivativeDetails.quantity.value,
     orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
-    market: market.value
+    price: derivativeDetails.finalPrice.value.toFixed(),
+    notionalWithLeverage: derivativeDetails.margin.value.toFixed()
   })
 })
 
@@ -109,6 +163,24 @@ function resetSelectedPosition() {
 function openLeverageModal() {
   modalStore.openModal(Modal.Leverage)
 }
+
+watch(
+  [() => derivativeFormValues.value],
+  ([formValues]) => {
+    const option =
+      formValues[DerivativesTradeFormField.AmountOption] ||
+      TradeAmountOption.Base
+
+    if (option === TradeAmountOption.Base) {
+      derivativeDetails.quantity.value =
+        formValues[DerivativesTradeFormField.Amount] || '0'
+    } else {
+      derivativeDetails.notional.value =
+        formValues[DerivativesTradeFormField.Amount] || '0'
+    }
+  },
+  { deep: true }
+)
 </script>
 
 <template>
@@ -186,10 +258,12 @@ function openLeverageModal() {
 
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{
-          quantity,
-          worstPrice,
-          marginWithFee,
-          minimumAmountInQuote
+          quantity: quantityToBigNumber,
+          worstPrice: derivativeDetails.finalPrice.value,
+          marginWithFee: derivativeDetails.marginWithFee.value,
+          minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value,
+          isNotionalLessThanMinNotional:
+            derivativeDetails.isNotionalLessThanMinNotional.value ?? false
         }"
       />
     </div>
@@ -203,19 +277,24 @@ function openLeverageModal() {
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
       v-bind="{
-        estLiquidationPrice
+        estLiquidationPrice,
+        details: derivativeDetails
       }"
     />
 
     <PartialsTradeFuturesFormStandardCreateOrder
       v-bind="{
-        margin,
-        quantity,
-        feeAmount,
-        worstPrice,
-        feePercentage,
-        marginWithFee,
-        totalNotional
+        quantity: quantityToBigNumber,
+        feeAmount: feeAmountToBigNumber,
+        margin: derivativeDetails.margin.value,
+        totalNotional: totalNotionalToBigNumber,
+        worstPrice: derivativeDetails.finalPrice.value,
+        feePercentage: derivativeDetails.feePercentage.value,
+        marginWithFee: derivativeDetails.marginWithFee.value,
+        hasEnoughLiquidity: derivativeDetails.enoughLiquidity.value,
+        hasSlippageWarning: derivativeDetails.slippageWarning.value,
+        isNotionalLessThanMinNotional:
+          derivativeDetails.isNotionalLessThanMinNotional.value ?? false
       }"
     />
 
@@ -227,6 +306,8 @@ function openLeverageModal() {
       @on:close="resetSelectedPosition"
     />
 
-    <ModalsLeverage v-bind="{ worstPrice }" />
+    <ModalsLeverage
+      v-bind="{ worstPrice: derivativeDetails.finalPrice.value }"
+    />
   </div>
 </template>

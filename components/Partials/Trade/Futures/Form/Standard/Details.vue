@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { TradeDirection } from '@injectivelabs/ts-types'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
-  DerivativesTradeFormField,
-  TradeAmountOption
+  DerivativesTradeFormField
 } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
-import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import type {
+  DerivativeDetails,
+  UiDerivativeMarket,
+  DerivativesTradeForm
+} from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    details: DerivativeDetails
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
@@ -64,57 +67,6 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketMakerFeeRate: derivativeMarket?.value?.makerFeeRate
 })
 
-const {
-  quantity: detailsQuantity,
-  notional: detailsNotional,
-  margin: detailsMargin,
-  feeAmount: detailsFeeAmount,
-  bestPrice: detailsBestPrice,
-  worstPrice: detailsWorstPrice,
-  averagePrice: detailsAveragePrice,
-  slippagePrice: detailsSlippagePrice,
-  totalNotional: detailsTotalNotional,
-  marginWithFee: detailsMarginWithFee,
-  enoughLiquidity: detailsEnoughLiquidity,
-  slippageWarning: detailsSlippageWarning,
-  calculatedNotional: detailsCalculatedNotional,
-  estSlippagePercentage: detailsEstSlippagePercentage
-} = useDerivativeDetails({
-  takerFeeRate,
-  isTriggerOrder,
-  market: computed(() => derivativeMarket.value),
-  limitPrice: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
-  ),
-  triggerPrice: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
-  ),
-  leverage: computed(
-    () => derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
-  ),
-  slippagePercentage: computed(
-    () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
-  ),
-  isPostOnly: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.PostOnly] || false
-  ),
-  isBuy: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-      TradeDirection.Long
-  ),
-  isLimitOrder: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-        DerivativeTradeTypes.Limit ||
-      derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-        DerivativeTradeTypes.StopLimit
-  )
-})
-
 const { valueToFixed: takerFeeRateToFixed } = useSharedBigNumberFormatter(
   computed(() => takerFeeRate.value.times(100)),
   {
@@ -141,14 +93,14 @@ const adaptedEstSlippagePercentage = computed(() => {
       return 0
     }
 
-    if (detailsEstSlippagePercentage.value.lt(0.0005)) {
+    if (props.details.estSlippagePercentage.value.lt(0.0005)) {
       return 0.0005
     }
 
-    return detailsEstSlippagePercentage.value
+    return props.details.estSlippagePercentage.value
   }
 
-  return detailsEstSlippagePercentage.value
+  return props.details.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
@@ -165,13 +117,13 @@ const estSlippageDecimals = computed(() => {
 
 const showEstSlippage = computed(() => {
   if (!isMinimalistEstSlippageMode.value) {
-    return detailsEnoughLiquidity.value && !isTriggerOrder.value
+    return props.details.enoughLiquidity.value && !isTriggerOrder.value
   }
 
   return (
-    detailsEnoughLiquidity.value &&
+    props.details.enoughLiquidity.value &&
     !isTriggerOrder.value &&
-    detailsEstSlippagePercentage.value.gte(0.01)
+    props.details.estSlippagePercentage.value.gte(0.01)
   )
 })
 
@@ -184,24 +136,6 @@ const isMakerFee = computed(
       DerivativeTradeTypes.StopLimit ||
     derivativeFormValues.value[DerivativesTradeFormField.Type] ===
       DerivativeTradeTypes.StopMarket
-)
-
-watch(
-  [() => derivativeFormValues.value],
-  ([formValues]) => {
-    const option =
-      formValues[DerivativesTradeFormField.AmountOption] ||
-      TradeAmountOption.Base
-
-    if (option === TradeAmountOption.Base) {
-      detailsQuantity.value =
-        formValues[DerivativesTradeFormField.Amount] || '0'
-    } else {
-      detailsNotional.value =
-        formValues[DerivativesTradeFormField.Amount] || '0'
-    }
-  },
-  { deep: true }
 )
 
 function toggle() {
@@ -242,7 +176,7 @@ function openSlippageModal() {
                 v-bind="{
                   useSubscript: true,
                   shouldAbbreviate: false,
-                  amount: detailsMarginWithFee.toFixed()
+                  amount: details.marginWithFee.value.toFixed()
                 }"
               />
             </span>
@@ -318,7 +252,7 @@ function openSlippageModal() {
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
-                amount: detailsMargin.toFixed()
+                amount: details.margin.value.toFixed()
               }"
               class="text-white"
             />
@@ -409,7 +343,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsQuantity,
+                amount: details.quantity.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -430,7 +364,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsNotional,
+                amount: details.notional.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -453,7 +387,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsCalculatedNotional
+                amount: details.calculatedNotional.value
               }"
             />
             <span class="text-coolGray-450">
@@ -469,7 +403,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: detailsFeeAmount,
+                amount: details.feeAmount.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -492,7 +426,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsTotalNotional
+                amount: details.totalNotional.value
               }"
             />
             <span class="text-coolGray-450">
@@ -512,7 +446,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsMargin.toFixed()
+                amount: details.margin.value.toFixed()
               }"
             />
             <span class="text-coolGray-450">
@@ -532,12 +466,42 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsMarginWithFee.toFixed()
+                amount: details.marginWithFee.value.toFixed()
               }"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
+          </p>
+        </div>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="The minimum amount in quote required for this trade"
+          >
+            <p class="text-yellow-600/90">Minimum Amount in Quote</p>
+          </CommonHeaderTooltip>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: props.details.minimumAmountInQuote.value
+              }"
+            />
+          </p>
+        </div>
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="Whether the notional is less than the minimum notional for this market"
+          >
+            <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
+          </CommonHeaderTooltip>
+          <p class="text-white">
+            {{
+              props.details.isNotionalLessThanMinNotional.value ? 'Yes' : 'No'
+            }}
           </p>
         </div>
         <template v-if="!isLimit">
@@ -557,7 +521,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: detailsEstSlippagePercentage
+                  amount: details.estSlippagePercentage.value
                 }"
               />%
               <span class="invisible">{{
@@ -597,7 +561,7 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: detailsSlippagePrice,
+                  amount: details.slippagePrice.value,
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
@@ -621,7 +585,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsWorstPrice.toFixed(),
+                amount: details.worstPrice.value.toFixed(),
                 decimals: derivativeMarket.priceDecimals
               }"
             />
@@ -640,8 +604,10 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsAveragePrice.toFixed()
+                decimals: derivativeMarket.priceDecimals,
+                amount: details.averagePrice.value.toFixed()
               }"
             />
             <span class="text-coolGray-450">
@@ -661,7 +627,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: detailsBestPrice.toFixed(),
+                amount: details.bestPrice.value.toFixed(),
                 decimals: derivativeMarket.priceDecimals
               }"
             />
@@ -679,7 +645,7 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Enough Liquidity</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ detailsEnoughLiquidity ? 'Yes' : 'No' }}
+              {{ details.enoughLiquidity.value ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
@@ -689,7 +655,7 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Slippage Warning</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ detailsSlippageWarning ? 'Yes' : 'No' }}
+              {{ details.slippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>

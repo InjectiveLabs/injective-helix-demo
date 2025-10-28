@@ -39,7 +39,6 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
@@ -47,6 +46,7 @@ const props = withDefaults(
     worstPrice: BigNumberInBase
     marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
+    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
