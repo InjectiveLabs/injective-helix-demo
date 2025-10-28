@@ -213,18 +213,6 @@ export function useSpotDetails({
       market.value.quantityTensMultiplier
     )
 
-    console.log(
-      'Result = ',
-      price.toFixed(6),
-      'x',
-      minQuantity.toFixed(6),
-      '=',
-      new BigNumberInBase(
-        price
-          .times(minQuantity)
-          .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
-      ).toFixed(6)
-    )
     return new BigNumberInBase(
       price
         .times(minQuantity)
