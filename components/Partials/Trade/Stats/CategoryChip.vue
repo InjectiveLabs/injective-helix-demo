@@ -11,11 +11,9 @@ const props = withDefaults(
 )
 
 const isStockMarkets = computed(() =>
-  (
-    jsonStore.helixMarketCategoriesMap.iAssets ||
-    jsonStore.helixMarketCategoriesMap.stocks ||
-    []
-  ).includes(props.market.marketId)
+  (jsonStore.helixMarketCategoriesMap.stocks || []).includes(
+    props.market.marketId
+  )
 )
 </script>
 

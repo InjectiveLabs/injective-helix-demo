@@ -37,11 +37,9 @@ const market = computed(() => {
   const stocksMarkets = derivativeStore.marketsWithSummary.reduce(
     (acc, { market }) => {
       if (
-        (
-          jsonStore?.helixMarketCategoriesMap?.iAssets ||
-          jsonStore?.helixMarketCategoriesMap?.stocks ||
-          []
-        ).includes(market.marketId)
+        (jsonStore?.helixMarketCategoriesMap?.stocks || []).includes(
+          market.marketId
+        )
       ) {
         acc.push(market as UiDerivativeMarket)
       }
