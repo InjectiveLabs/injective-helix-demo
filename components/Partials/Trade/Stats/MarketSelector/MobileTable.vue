@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { rwaMarketsInIAssets } from '@/app/data/market'
+import { rwaMarketsInStocks } from '@/app/data/market'
 import { MarketCyTags, MarketsSelectorTableColumn } from '@/types'
 import type { UTableColumn, TransformedMarketsSelector } from '@/types'
 
@@ -24,7 +24,7 @@ const showRwaTooltip = computed(
   () =>
     jsonStore.helixMarketCategoriesMap.rwa.includes(
       props.market.market.marketId
-    ) || rwaMarketsInIAssets.includes(props.market.market.marketId)
+    ) || rwaMarketsInStocks.includes(props.market.market.marketId)
 )
 
 const filteredColumns = computed(() =>

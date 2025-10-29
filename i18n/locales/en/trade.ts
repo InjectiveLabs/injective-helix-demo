@@ -240,9 +240,9 @@ export default {
         'By proceeding, you will be depositing funds in an application not controlled by or affiliated with Injective. Your use of this application is entirely at your own risk and you agree to hold Injective harmless for any losses you may suffer as a result. Please see the Helix {terms} for full details.'
     },
 
-    iAssetModal: {
+    stocksModal: {
       cta: 'Start Trading',
-      title: 'Unlock the Power of iAssets!',
+      title: 'Unlock the Power of Stocks!',
       description:
         "Be one of the first to trade onchain stock futures with 25x leverage, only on the world's premier decentralized exchange."
     },

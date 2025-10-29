@@ -407,14 +407,14 @@ export enum MarketCategoryType {
   Trending = 'trending',
   Injective = 'injective',
   Layer1 = 'layer-1',
-  iAssets = 'iAssets',
+  Stocks = 'stocks',
   RWA = 'rwa',
   AI = 'ai',
   DeFi = 'deFi'
 }
 
 export enum NoticeBanner {
-  IAssets = 'i-assets',
+  Stocks = 'stocks',
   StockTwits = 'stock-twits',
   NeptuneUsdt = 'neptune-usdt',
   MKRMigration = 'mkr-migration',
@@ -558,11 +558,11 @@ export enum BusEvents {
 export enum Modal {
   Terms = 'terms',
   QrCode = 'qrcode',
+  Stocks = 'stocks',
   Connect = 'connect',
   Onboard = 'onboard',
   DevMode = 'dev-mode',
   Leverage = 'leverage',
-  IAsset = 'iasset-modal',
   JoinGuild = 'join-guild',
   LpRewards = 'lp-rewards',
   AddGrantee = 'add-grantee',
