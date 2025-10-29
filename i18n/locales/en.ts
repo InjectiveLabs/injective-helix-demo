@@ -126,7 +126,7 @@ export default defineI18nLocale(() => ({
         acknowledge_5:
           'You understand the risks associated with using leverage, entering into perpetual contracts, and trading in digital assets.',
         disclaimerNote:
-          'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by both the Helix {0} and the Injective Labs {1}.'
+          'By connecting to a wallet, you acknowledge that you have read, that you agree to, and that you are bound by the Helix Terms & Conditions available {here}.'
       },
 
       postOnlyMode: {
