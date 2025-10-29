@@ -34,12 +34,14 @@ const isRWAMarketOpen = ref(false)
 const status = reactive(new Status(StatusType.Loading))
 
 const market = computed(() => {
-  const iAssetsMarkets = derivativeStore.marketsWithSummary.reduce(
+  const stocksMarkets = derivativeStore.marketsWithSummary.reduce(
     (acc, { market }) => {
       if (
-        (jsonStore?.helixMarketCategoriesMap?.iAssets || []).includes(
-          market.marketId
-        )
+        (
+          jsonStore?.helixMarketCategoriesMap?.iAssets ||
+          jsonStore?.helixMarketCategoriesMap?.stocks ||
+          []
+        ).includes(market.marketId)
       ) {
         acc.push(market as UiDerivativeMarket)
       }
@@ -50,10 +52,10 @@ const market = computed(() => {
   )
 
   if (
-    iAssetsMarkets.length > 0 &&
+    stocksMarkets.length > 0 &&
     route.path.startsWith(TradeSubPagePath.Stocks)
   ) {
-    return iAssetsMarkets[0]
+    return stocksMarkets[0]
   }
 
   return (
@@ -217,6 +219,6 @@ provide(IsRWAMarketOpenKey, isRWAMarketOpen)
     </template>
   </PartialsTradeLayout>
 
-  <ModalsIAssets />
+  <ModalsStocks />
   <ModalsMarketRestricted v-if="market" v-bind="{ market }" />
 </template>

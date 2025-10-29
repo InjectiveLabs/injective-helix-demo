@@ -136,7 +136,7 @@ provide(MarketKey, market)
       </template>
     </PartialsTradeLayout>
 
-    <ModalsIAssets />
+    <ModalsStocks />
     <ModalsMarketNotOnHelix v-if="!market.isVerified" />
     <ModalsMarketRestricted v-bind="{ market, isSpot: true }" />
   </div>

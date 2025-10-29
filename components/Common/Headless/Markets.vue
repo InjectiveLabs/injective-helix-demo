@@ -216,10 +216,12 @@ function verifyMarketIsPartOfType(market: UiMarketWithToken) {
     )
   }
 
-  if (props.activeCategory === MarketCategoryType.iAssets) {
-    return (jsonStore.helixMarketCategoriesMap.iAssets || []).includes(
-      market.marketId
-    )
+  if (props.activeCategory === MarketCategoryType.Stocks) {
+    return (
+      jsonStore.helixMarketCategoriesMap.iAssets ||
+      jsonStore.helixMarketCategoriesMap.stocks ||
+      []
+    ).includes(market.marketId)
   }
 }
 </script>
