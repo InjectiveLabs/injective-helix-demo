@@ -8,14 +8,14 @@ const modalStore = useSharedModalStore()
 const isModalOpen = computed(
   () =>
     IS_MAINNET &&
-    modalStore.modals[Modal.IAsset] &&
-    !appStore.userState.modalsViewed.includes(Modal.IAsset)
+    modalStore.modals[Modal.Stocks] &&
+    !appStore.userState.modalsViewed.includes(Modal.Stocks)
 )
 
 function onModalClose() {
   appStore.setUserState({
     ...appStore.userState,
-    modalsViewed: [...appStore.userState.modalsViewed, Modal.IAsset]
+    modalsViewed: [...appStore.userState.modalsViewed, Modal.Stocks]
   })
 }
 </script>
@@ -27,11 +27,11 @@ function onModalClose() {
 
       <div class="text-center">
         <h2 class="text-lg font-bold mt-8">
-          {{ $t('trade.iAssetModal.title') }}
+          {{ $t('trade.stocksModal.title') }}
         </h2>
 
         <p class="text-sm mt-4 text-coolGray-450">
-          {{ $t('trade.iAssetModal.description') }}
+          {{ $t('trade.stocksModal.description') }}
         </p>
 
         <NuxtLink
@@ -45,7 +45,7 @@ function onModalClose() {
           @click="onModalClose"
         >
           <AppButton class="mt-4 w-full">
-            <span class="text-sm">{{ $t('trade.iAssetModal.cta') }}</span>
+            <span class="text-sm">{{ $t('trade.stocksModal.cta') }}</span>
           </AppButton>
         </NuxtLink>
       </div>

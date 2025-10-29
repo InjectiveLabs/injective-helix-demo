@@ -30,8 +30,8 @@ export default {
       title: 'Introducing Helix 2.0! Discover a whole new trading experience.'
     },
 
-    iAssets: {
-      title: 'Trade iAssets on Helix',
+    stocks: {
+      title: 'Trade Stocks on Helix',
       description:
         'Trade stocks with crypto for faster, cheaper, and more transparent transactions - combining traditional markets with the power of decentralized finance.'
     },

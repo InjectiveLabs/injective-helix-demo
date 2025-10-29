@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { rwaMarketsInIAssets } from '@/app/data/market'
+import { rwaMarketsInStocks } from '@/app/data/market'
 import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
 import {
   Modal,
@@ -39,7 +39,7 @@ const isRwaMarket = computed(
   () =>
     jsonStore.helixMarketCategoriesMap.rwa.includes(
       derivativeMarket.value.marketId
-    ) || rwaMarketsInIAssets.includes(derivativeMarket.value.marketId)
+    ) || rwaMarketsInStocks.includes(derivativeMarket.value.marketId)
 )
 
 const executionPrice = computed(() => {
