@@ -21,7 +21,7 @@ function onWalletConnect() {
     return
   }
 
-  if (appStore.userState.hasAcceptedTerms) {
+  if (!appStore.userState.hasAcceptedTerms) {
     modalStore.openModal(Modal.Terms)
     return
   }
