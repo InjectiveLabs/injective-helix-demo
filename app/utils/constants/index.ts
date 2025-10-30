@@ -41,6 +41,7 @@ export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(0.05) // 5%
 export const BIGGER_PRICE_WARNING_DEVIATION = new BigNumber(30) // 30%
 export const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = new BigNumber(10) // 10%
 export const MAX_SLIPPAGE = new BigNumber(50) // +50% slippage
+export const MIN_SLIPPAGE = new BigNumber(0.01) // +0.01% slippage
 export const DEFAULT_SLIPPAGE = new BigNumber(0.5) // +0.5% slippage
 export const HIGH_SLIPPAGE_THRESHOLD = new BigNumber(5) // +5% slippage
 export const DEFAULT_MAX_SLIPPAGE_FOR_CLOSING_POSITIONS = new BigNumber(100) // +100% slippage
