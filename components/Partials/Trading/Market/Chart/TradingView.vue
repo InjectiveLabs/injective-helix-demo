@@ -9,12 +9,7 @@ import {
   UI_DEFAULT_MIN_DISPLAY_DECIMALS,
   DEFAULT_100_CHART_CANDLE_BAR_SPACING
 } from '@/app/utils/constants'
-import {
-  BusEvents,
-  TradingInterface,
-  TradingChartInterval,
-  ConditionalOrderSide
-} from '@/types'
+import { BusEvents, TradingInterface, TradingChartInterval } from '@/types'
 import type { UiTrade, UiSpotMarket, UiDerivativeMarket } from '@/types'
 import type { SharedUiSpotTrade, SharedUiDerivativeTrade } from '@shared/types'
 import type {
@@ -25,7 +20,6 @@ import type {
 
 const route = useRoute()
 const appStore = useAppStore()
-const derivativeStore = useDerivativeStore()
 const sharedWalletStore = useSharedWalletStore()
 const { t } = useLang()
 
@@ -38,6 +32,8 @@ const props = withDefaults(
     historicalTrades: UiTrade[]
     currentPosition?: PositionV2
     derivativeMarkPrice?: string
+    tpOrder: DerivativeLimitOrder | undefined
+    slOrder: DerivativeLimitOrder | undefined
     market: UiSpotMarket | UiDerivativeMarket
     orders?: SpotLimitOrder[] | DerivativeLimitOrder[]
   }>(),
@@ -46,9 +42,15 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   ready: []
+  'tp-sl:cancel': [value: boolean]
   'interval:change': [value: TradingChartInterval]
   'order:close': [{ order: SpotLimitOrder | DerivativeLimitOrder }]
-  'tp-sl:cancel': [{ isTp: boolean; order: DerivativeLimitOrder | undefined }]
+  'tp-sl:change': [
+    {
+      isTp: boolean
+      newPrice: string
+    }
+  ]
   'order:change': [
     {
       newPrice: string
@@ -72,24 +74,6 @@ const isFromSubaccountTradeStream = ref(false)
 const limitOrderLines = ref<Record<string, any>>({})
 const tradingView = ref<{ view: any }>({ view: undefined })
 
-const tpOrder = computed(() =>
-  derivativeStore.subaccountConditionalOrders.find(
-    (order) =>
-      order.marketId === props.currentPosition?.marketId &&
-      (order.orderType === ConditionalOrderSide.TakeBuy ||
-        order.orderType === ConditionalOrderSide.TakeSell)
-  )
-)
-
-const slOrder = computed(() =>
-  derivativeStore.subaccountConditionalOrders.find(
-    (order) =>
-      order.marketId === props.currentPosition?.marketId &&
-      (order.orderType === ConditionalOrderSide.StopBuy ||
-        order.orderType === ConditionalOrderSide.StopSell)
-  )
-)
-
 watchDebounced(() => props.orders, modifyLimitOrderLines, {
   immediate: true,
   debounce: DEBOUNCE_DEFAULT_PERIOD
@@ -100,12 +84,12 @@ watchDebounced(() => props.derivativeMarkPrice, setupPositionLine, {
   debounce: DEBOUNCE_DEFAULT_PERIOD
 })
 
-watchDebounced(() => tpOrder.value, setupTpOrderline, {
+watchDebounced(() => props.tpOrder, setupTpOrderline, {
   immediate: true,
   debounce: DEBOUNCE_DEFAULT_PERIOD
 })
 
-watchDebounced(() => slOrder.value, setupSlOrderline, {
+watchDebounced(() => props.slOrder, setupSlOrderline, {
   immediate: true,
   debounce: DEBOUNCE_DEFAULT_PERIOD
 })
@@ -393,7 +377,7 @@ function clearLimitOrderlines() {
 
 function modifyLimitOrderLines() {
   nextTick(() => {
-    const chart = tradingView.value.view?.chart()
+    const chart = tradingView.value?.view?.chart()
 
     clearLimitOrderlines()
 
@@ -504,9 +488,9 @@ function setupSlOrderline() {
 
 function setupTpSlBaseOrderline(isTakeProfit?: boolean) {
   nextTick(() => {
-    const chart = tradingView.value.view?.chart()
+    const chart = tradingView.value?.view?.chart()
 
-    const selectedOrder = isTakeProfit ? tpOrder.value : slOrder.value
+    const selectedOrder = isTakeProfit ? props.tpOrder : props.slOrder
     const selectedOrderline = isTakeProfit
       ? tpOrderline.value
       : slOrderline.value
@@ -555,25 +539,46 @@ function setupTpSlBaseOrderline(isTakeProfit?: boolean) {
       .setQuantityBackgroundColor('#14151A')
       .setCancelButtonBorderColor(themeColor)
       .setCancelButtonBackgroundColor('#14151A')
-      .setText(`${isTakeProfit ? t('trade.tp') : t('trade.sl')}  `) // if orderline can't be moved = tradingview removes "|" + there will be excess space, so trailing space = to keep text aligned
+      .setText(`${isTakeProfit ? t('trade.tp') : t('trade.sl')}`)
       .setQuantity(`${triggerPricePrefix} ${formattedTriggerPrice}`)
+
+    orderLine.onMove?.(() => {
+      const newPrice = orderLine.getPrice()
+
+      orderLine.setQuantity(
+        `${triggerPricePrefix} ${newPrice.toFixed(props.market.priceDecimals)}`
+      )
+      orderLine.setCancellable(false)
+      orderLine.setCancelButtonIconColor('#14151A')
+
+      if (isTakeProfit) {
+        tpOrderline.value = orderLine
+        emit('tp-sl:change', { newPrice, isTp: true })
+
+        return
+      }
+
+      slOrderline.value = orderLine
+      emit('tp-sl:change', { newPrice, isTp: false })
+    })
 
     orderLine.onCancel?.(() => {
       toRaw(orderLine).remove()
 
       if (isTakeProfit) {
         tpOrderline.value = undefined
-        emit('tp-sl:cancel', { isTp: true, order: tpOrder.value })
+        emit('tp-sl:cancel', true)
 
         return
       }
 
       slOrderline.value = undefined
-      emit('tp-sl:cancel', { isTp: false, order: slOrder.value })
+      emit('tp-sl:cancel', false)
     })
 
     if (isTakeProfit) {
       tpOrderline.value = orderLine
+
       return
     }
 

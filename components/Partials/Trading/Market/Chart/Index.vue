@@ -4,7 +4,7 @@ import { OrderSide } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
 import { MAX_LIMIT_ORDER_LINES } from '@/app/utils/constants'
 import { getChronosDatafeedEndpoint } from '@/app/utils/helpers'
-import { TradingChartInterval } from '@/types'
+import { TradingChartInterval, ConditionalOrderSide } from '@/types'
 import type {
   SpotLimitOrder,
   DerivativeLimitOrder
@@ -31,18 +31,6 @@ const props = withDefaults(
   }>(),
   {}
 )
-
-const currentPosition = computed(() => {
-  if (props.isSpot) {
-    return undefined
-  }
-
-  return positionStore.positions.find(
-    (position) =>
-      position.marketId === props.market.marketId &&
-      position.subaccountId === accountStore.subaccountId
-  )
-})
 
 const { lastTradedPrice: spotLastTradedPrice } = useSpotLastPrice(
   computed(() => props.market)
@@ -126,6 +114,18 @@ const limitOrders = computed(() => {
   return buyOrders.concat(sellOrders)
 })
 
+const currentPosition = computed(() => {
+  if (props.isSpot) {
+    return undefined
+  }
+
+  return positionStore.positions.find(
+    (position) =>
+      position.marketId === props.market.marketId &&
+      position.subaccountId === accountStore.subaccountId
+  )
+})
+
 const historicalTrades = computed(() => {
   const tradesData = isSpot
     ? spotStore.subaccountTrades
@@ -133,6 +133,24 @@ const historicalTrades = computed(() => {
 
   return tradesData.filter((trade) => trade.marketId === props.market.marketId)
 })
+
+const tpOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      order.marketId === currentPosition.value?.marketId &&
+      (order.orderType === ConditionalOrderSide.TakeBuy ||
+        order.orderType === ConditionalOrderSide.TakeSell)
+  )
+)
+
+const slOrder = computed(() =>
+  derivativeStore.subaccountConditionalOrders.find(
+    (order) =>
+      order.marketId === currentPosition.value?.marketId &&
+      (order.orderType === ConditionalOrderSide.StopBuy ||
+        order.orderType === ConditionalOrderSide.StopSell)
+  )
+)
 
 function onReady() {
   status.setIdle()
@@ -163,13 +181,9 @@ function getFormattedPriceInBigNumber(price: string) {
   return isSpot ? spotPrice : derivativePrice
 }
 
-function onTpSlCancel({
-  isTp,
-  order
-}: {
-  isTp: boolean
-  order?: DerivativeLimitOrder
-}) {
+function onTpSlCancel(isTp?: boolean) {
+  const order = isTp ? tpOrder.value : slOrder.value
+
   if (!order) {
     return
   }
@@ -179,6 +193,7 @@ function onTpSlCancel({
     .then(() => {
       if (isTp) {
         notificationStore.update({ title: t('toast.trade.tpOrderCancelled') })
+
         return
       }
 
@@ -189,6 +204,59 @@ function onTpSlCancel({
 
       if (isTp) {
         tradingChartComponent.value?.setupTpOrderline()
+
+        return
+      }
+
+      tradingChartComponent.value?.setupSlOrderline()
+    })
+}
+
+function onTpSlChange({ isTp, newPrice }: { isTp: boolean; newPrice: string }) {
+  if (!currentPosition.value) {
+    return
+  }
+
+  const newTpPrice = isTp ? newPrice : undefined
+  const newSlPrice = !isTp ? newPrice : undefined
+
+  derivativeStore
+    .submitTpSlOrder({
+      existingTpOrder: tpOrder.value,
+      existingSlOrder: slOrder.value,
+      position: currentPosition.value,
+      stopLossQuantity: new BigNumberInBase(slOrder.value?.quantity || 0),
+      takeProfitQuantity: new BigNumberInBase(tpOrder.value?.quantity || 0),
+      stopLossPrice: newSlPrice ? new BigNumberInBase(newSlPrice) : undefined,
+      takeProfitPrice: newTpPrice ? new BigNumberInBase(newTpPrice) : undefined
+    })
+    .then(() => {
+      const tpSuccessMessage = t('toast.trade.tpSuccessMessage', {
+        price: `${newTpPrice} ${props.market?.quoteToken?.symbol}`
+      })
+
+      const slSuccessMessage = t('toast.trade.slSuccessMessage', {
+        price: `${newSlPrice} ${props.market?.quoteToken?.symbol}`
+      })
+
+      if (newTpPrice) {
+        notificationStore.update({
+          title: tpSuccessMessage
+        })
+
+        return
+      }
+
+      notificationStore.update({
+        title: slSuccessMessage
+      })
+    })
+    .catch((e) => {
+      $onError(e)
+
+      if (isTp) {
+        tradingChartComponent.value?.setupTpOrderline()
+
         return
       }
 
@@ -279,6 +347,8 @@ function onOrderChange({
           symbol,
           isSpot,
           market,
+          tpOrder,
+          slOrder,
           currentPosition,
           datafeedEndpoint,
           historicalTrades,
@@ -289,8 +359,9 @@ function onOrderChange({
             TradingChartInterval.D
         }"
         @ready="onReady"
-        @tp-sl:cancel="onTpSlCancel"
         @order:close="onOrderClose"
+        @tp-sl:change="onTpSlChange"
+        @tp-sl:cancel="onTpSlCancel"
         @order:change="onOrderChange"
         @interval:change="onIntervalChange"
       />
