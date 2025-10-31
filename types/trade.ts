@@ -2,7 +2,6 @@ import type { BigNumberInBase } from '@injectivelabs/utils'
 import type { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import type {
   ExitType,
-  PositionV2,
   DerivativeLimitOrder,
   DerivativeOrderHistory
 } from '@injectivelabs/sdk-ts'
@@ -87,11 +86,6 @@ export type MarketMarkPrice = {
 
 export interface UiDerivativeMarket extends SharedUiDerivativeMarket {
   isVerified: boolean
-}
-
-export interface ChartPosition extends PositionV2 {
-  pnl: BigNumberInBase
-  percentagePnl: string
 }
 
 export type OrderBookNotionalAndType = {

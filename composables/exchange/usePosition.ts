@@ -9,15 +9,19 @@ import {
 } from '@/app/utils/constants'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 
-export function useDerivativePosition(position: Ref<PositionV2>) {
+export function useDerivativePosition(position: Ref<undefined | PositionV2>) {
   const derivativeStore = useDerivativeStore()
 
   const market = computed(() => {
+    if (!position?.value) {
+      return
+    }
+
     return derivativeStore.marketByIdOrSlug(position.value.marketId)
   })
 
   const margin = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -28,7 +32,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const quantity = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -36,7 +40,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const markPriceNotScaled = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -54,7 +58,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const markPrice = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -77,7 +81,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   )
 
   const price = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -88,7 +92,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const liquidationPrice = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -101,7 +105,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const pnl = computed(() => {
-    if (!market.value) {
+    if (!market.value || !position?.value) {
       return ZERO_IN_BASE
     }
 
@@ -111,11 +115,7 @@ export function useDerivativePosition(position: Ref<PositionV2>) {
   })
 
   const percentagePnl = computed(() => {
-    if (!market.value) {
-      return ZERO_IN_BASE
-    }
-
-    if (pnl.value.isNaN()) {
+    if (!market.value || pnl.value.isNaN()) {
       return ZERO_IN_BASE
     }
 

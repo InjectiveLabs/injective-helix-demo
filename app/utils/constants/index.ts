@@ -200,3 +200,5 @@ export const MAX_TOAST_TIMEOUT = 10 * 24 * 60 * 60 * 1000 // 10 days
 
 export const DEPRECATED_WALLET_DOCS_LINK =
   'https://docs.helixapp.com/getting-started/sign-up/google-account-wallet'
+
+export const DEBOUNCE_DEFAULT_PERIOD = 200
