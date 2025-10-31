@@ -44,6 +44,7 @@ const { markPrice } = useDerivativeLastPrice(
 const props = withDefaults(
   defineProps<{
     isLimitOrder: boolean
+    isTriggerOrder: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
@@ -129,14 +130,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isTriggerOrder: [
-      DerivativeTradeTypes.StopLimit,
-      DerivativeTradeTypes.StopMarket
-    ].includes(
-      derivativeFormValues.value[
-        DerivativesTradeFormField.Type
-      ] as DerivativeTradeTypes
-    )
+    isTriggerOrder: props.isTriggerOrder
   })
 )
 
@@ -157,10 +151,6 @@ const takeProfitValue = computed(() =>
 )
 
 const isDisabled = computed(() => {
-  const tradeType = derivativeFormValues.value[
-    DerivativesTradeFormField.Type
-  ] as DerivativeTradeTypes
-
   if (!isPostOnlyEnable.value && jsonStore.isPostUpgradeMode) {
     return true
   }
@@ -190,18 +180,14 @@ const isDisabled = computed(() => {
   }
 
   if (
-    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-      tradeType
-    ) &&
+    props.isLimitOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
   ) {
     return true
   }
 
   if (
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
-      tradeType
-    ) &&
+    props.isTriggerOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
   ) {
     return true

@@ -76,10 +76,6 @@ const isSwapEnabled = computed(() =>
   )
 )
 
-const isLimit = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-)
-
 onMounted(() => {
   setFormValues(
     {
@@ -194,7 +190,7 @@ watch(
     </div>
 
     <PartialsTradeSpotFormStandardAdvancedSettings
-      v-if="isLimit"
+      v-if="isLimitOrder"
       class="mt-4"
     />
 

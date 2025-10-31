@@ -64,6 +64,10 @@ const derivativeDetails = useDerivativeDetails({
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || '0'
   ),
+  isPostOnly: computed(
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.PostOnly] || false
+  ),
   triggerPrice: computed(
     () =>
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
@@ -73,10 +77,6 @@ const derivativeDetails = useDerivativeDetails({
   ),
   slippagePercentage: computed(
     () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
-  ),
-  isPostOnly: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.PostOnly] || false
   ),
   isBuy: computed(
     () =>
@@ -145,11 +145,7 @@ function onTradeTypeChange() {
 }
 
 function onOrderSideChange() {
-  if (
-    ![DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-      orderType.value as DerivativeTradeTypes
-    )
-  ) {
+  if (!isLimitOrder.value) {
     return
   }
 
@@ -239,22 +235,9 @@ watch(
         }}
       </AppButton>
 
-      <PartialsTradeFuturesFormStandardTriggerField
-        v-if="
-          [
-            DerivativeTradeTypes.StopLimit,
-            DerivativeTradeTypes.StopMarket
-          ].includes(orderType as DerivativeTradeTypes)
-        "
-      />
+      <PartialsTradeFuturesFormStandardTriggerField v-if="isTriggerOrder" />
 
-      <PartialsTradeFuturesFormStandardLimitPriceField
-        v-if="
-          [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.Limit].includes(
-            orderType as DerivativeTradeTypes
-          )
-        "
-      />
+      <PartialsTradeFuturesFormStandardLimitPriceField v-if="isLimitOrder" />
 
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{
@@ -308,6 +291,7 @@ watch(
     <PartialsTradeFuturesFormStandardCreateOrder
       v-bind="{
         isLimitOrder,
+        isTriggerOrder,
         quantity: quantityToBigNumber,
         feeAmount: feeAmountToBigNumber,
         margin: derivativeDetails.margin.value,
