@@ -7,7 +7,6 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
-  DerivativeDetails,
   UiDerivativeMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -35,7 +34,7 @@ export function useDerivativeDetails({
   market: ComputedRef<UiDerivativeMarket>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}): DerivativeDetails {
+}) {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||
@@ -305,7 +304,7 @@ export function useDerivativeDetails({
 
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
-  const finalPrice = computed(() => {
+  const executionPrice = computed(() => {
     const price = isLimitOrder.value
       ? new BigNumberInBase(limitPrice.value)
       : slippagePrice.value
@@ -314,7 +313,7 @@ export function useDerivativeDetails({
   })
 
   const minimumAmountInQuote = computed(() => {
-    const price = finalPrice.value
+    const price = executionPrice.value
 
     const minQuantity = new BigNumberInBase(10).exponentiatedBy(
       market.value.quantityTensMultiplier
@@ -328,7 +327,7 @@ export function useDerivativeDetails({
   })
 
   const isNotionalLessThanMinNotional = computed(() => {
-    const priceForNotional = finalPrice.value
+    const priceForNotional = executionPrice.value
 
     const quantityInBase = new BigNumberInBase(safeAmount(quantity.value))
 
@@ -403,10 +402,10 @@ export function useDerivativeDetails({
 
   return {
     margin,
-    finalPrice,
     feePercentage,
     marginWithFee,
     slippagePrice,
+    executionPrice,
     slippageWarning,
     notional: _notional,
     quantity: _quantity,

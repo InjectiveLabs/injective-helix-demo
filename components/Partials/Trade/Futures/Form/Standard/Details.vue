@@ -10,11 +10,7 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 import type { BigNumberInBase } from '@injectivelabs/utils'
-import type {
-  DerivativeDetails,
-  UiDerivativeMarket,
-  DerivativesTradeForm
-} from '@/types'
+import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 import {
   UI_ZERO_DECIMAL,
   MIN_EST_SLIPPAGE,
@@ -27,8 +23,24 @@ const modalStore = useSharedModalStore()
 
 const props = withDefaults(
   defineProps<{
-    details: DerivativeDetails
+    quantity: string
+    notional: string
+    feeAmount: string
+    totalNotional: string
+    margin: BigNumberInBase
+    enoughLiquidity: boolean
+    slippageWarning: boolean
+    calculatedNotional: string
+    bestPrice: BigNumberInBase
+    worstPrice: BigNumberInBase
+    averagePrice: BigNumberInBase
+    marginWithFee: BigNumberInBase
+    slippagePrice: BigNumberInBase
+    executionPrice: BigNumberInBase
     estLiquidationPrice: BigNumberInBase
+    minimumAmountInQuote: BigNumberInBase
+    estSlippagePercentage: BigNumberInBase
+    isNotionalLessThanMinNotional?: boolean
   }>(),
   {}
 )
@@ -97,11 +109,11 @@ const adaptedEstSlippagePercentage = computed(() => {
     return DEFAULT_EST_SLIPPAGE
   }
 
-  if (props.details.estSlippagePercentage.value.lt(0.0005)) {
+  if (props.estSlippagePercentage.lt(0.0005)) {
     return MIN_EST_SLIPPAGE
   }
 
-  return props.details.estSlippagePercentage.value
+  return props.estSlippagePercentage
 })
 
 const estSlippageDecimals = computed(() => {
@@ -113,7 +125,7 @@ const estSlippageDecimals = computed(() => {
 })
 
 const showEstSlippage = computed(
-  () => props.details.enoughLiquidity.value && !isTriggerOrder.value
+  () => props.enoughLiquidity && !isTriggerOrder.value
 )
 
 const isMakerFee = computed(
@@ -164,8 +176,8 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  shouldAbbreviate: false,
-                  amount: details.marginWithFee.value.toFixed()
+                  amount: marginWithFee,
+                  shouldAbbreviate: false
                 }"
               />
             </span>
@@ -239,9 +251,9 @@ function openSlippageModal() {
             <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
+                amount: margin,
                 useSubscript: true,
-                shouldAbbreviate: false,
-                amount: details.margin.value.toFixed()
+                shouldAbbreviate: false
               }"
               class="text-white"
             />
@@ -262,7 +274,7 @@ function openSlippageModal() {
               v-bind="{
                 useSubscript: true,
                 shouldAbbreviate: false,
-                amount: estLiquidationPrice.toFixed(),
+                amount: estLiquidationPrice,
                 decimals: derivativeMarket.priceDecimals
               }"
               class="text-white"
@@ -317,7 +329,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: details.quantity.value,
+                amount: quantity,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -338,7 +350,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: details.notional.value,
+                amount: notional,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -361,7 +373,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: details.calculatedNotional.value
+                amount: calculatedNotional
               }"
             />
             <span class="text-coolGray-450">
@@ -377,7 +389,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: details.feeAmount.value,
+                amount: feeAmount,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -398,9 +410,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                amount: totalNotional,
                 noTrailingZeros: false,
-                shouldAbbreviate: false,
-                amount: details.totalNotional.value
+                shouldAbbreviate: false
               }"
             />
             <span class="text-coolGray-450">
@@ -417,10 +429,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
+                amount: margin,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false,
-                amount: details.margin.value.toFixed()
+                shouldAbbreviate: false
               }"
             />
             <span class="text-coolGray-450">
@@ -438,9 +450,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                amount: marginWithFee,
                 noTrailingZeros: false,
-                shouldAbbreviate: false,
-                amount: details.marginWithFee.value.toFixed()
+                shouldAbbreviate: false
               }"
             />
             <span class="text-coolGray-450">
@@ -461,7 +473,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: props.details.minimumAmountInQuote.value
+                amount: minimumAmountInQuote
               }"
             />
           </p>
@@ -473,9 +485,7 @@ function openSlippageModal() {
             <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
           </CommonHeaderTooltip>
           <p class="text-white">
-            {{
-              props.details.isNotionalLessThanMinNotional.value ? 'Yes' : 'No'
-            }}
+            {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
           </p>
         </div>
         <template v-if="!isLimit">
@@ -495,7 +505,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: details.estSlippagePercentage.value
+                  amount: estSlippagePercentage
                 }"
               />%
               <span class="invisible">{{
@@ -535,7 +545,7 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: details.slippagePrice.value,
+                  amount: slippagePrice,
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
@@ -556,10 +566,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
+                amount: worstPrice,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: details.worstPrice.value.toFixed(),
                 decimals: derivativeMarket.priceDecimals
               }"
             />
@@ -578,10 +588,10 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                amount: averagePrice,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: derivativeMarket.priceDecimals,
-                amount: details.averagePrice.value.toFixed()
+                decimals: derivativeMarket.priceDecimals
               }"
             />
             <span class="text-coolGray-450">
@@ -598,10 +608,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
+                amount: bestPrice,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: details.bestPrice.value.toFixed(),
                 decimals: derivativeMarket.priceDecimals
               }"
             />
@@ -619,7 +629,7 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Enough Liquidity</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ details.enoughLiquidity.value ? 'Yes' : 'No' }}
+              {{ enoughLiquidity ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
@@ -629,10 +639,32 @@ function openSlippageModal() {
               <p class="text-yellow-600/90">Slippage Warning</p>
             </CommonHeaderTooltip>
             <p class="text-white">
-              {{ details.slippageWarning.value ? 'Yes' : 'No' }}
+              {{ slippageWarning ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>
+        <hr class="border-white/30" />
+        <div class="flex justify-between items-center text-xs font-medium">
+          <CommonHeaderTooltip
+            tooltip="The actual worst price sent to the chain"
+          >
+            <p class="text-yellow-600/90">Execution Price</p>
+          </CommonHeaderTooltip>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                amount: executionPrice,
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                decimals: derivativeMarket.priceDecimals
+              }"
+            />
+            <span class="text-coolGray-450">
+              {{ derivativeMarket.quoteToken.symbol }}
+            </span>
+          </p>
+        </div>
       </div>
     </AppCollapse>
 

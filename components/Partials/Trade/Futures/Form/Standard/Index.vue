@@ -108,7 +108,7 @@ const estLiquidationPrice = computed(() => {
     market: market.value,
     quantity: derivativeDetails.quantity.value,
     orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
-    price: derivativeDetails.finalPrice.value.toFixed(),
+    price: derivativeDetails.executionPrice.value.toFixed(),
     notionalWithLeverage: derivativeDetails.margin.value.toFixed()
   })
 })
@@ -259,7 +259,7 @@ watch(
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{
           quantity: quantityToBigNumber,
-          worstPrice: derivativeDetails.finalPrice.value,
+          worstPrice: derivativeDetails.executionPrice.value,
           marginWithFee: derivativeDetails.marginWithFee.value,
           minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value,
           isNotionalLessThanMinNotional:
@@ -278,7 +278,24 @@ watch(
       v-if="isReady"
       v-bind="{
         estLiquidationPrice,
-        details: derivativeDetails
+        margin: derivativeDetails.margin.value,
+        quantity: derivativeDetails.quantity.value,
+        notional: derivativeDetails.notional.value,
+        feeAmount: derivativeDetails.feeAmount.value,
+        bestPrice: derivativeDetails.bestPrice.value,
+        executionPrice: derivativeDetails.executionPrice.value,
+        worstPrice: derivativeDetails.worstPrice.value,
+        averagePrice: derivativeDetails.averagePrice.value,
+        marginWithFee: derivativeDetails.marginWithFee.value,
+        totalNotional: derivativeDetails.totalNotional.value,
+        slippagePrice: derivativeDetails.slippagePrice.value,
+        enoughLiquidity: derivativeDetails.enoughLiquidity.value,
+        slippageWarning: derivativeDetails.slippageWarning.value,
+        calculatedNotional: derivativeDetails.calculatedNotional.value,
+        minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value,
+        estSlippagePercentage: derivativeDetails.estSlippagePercentage.value,
+        isNotionalLessThanMinNotional:
+          derivativeDetails.isNotionalLessThanMinNotional.value ?? false
       }"
     />
 
@@ -288,7 +305,7 @@ watch(
         feeAmount: feeAmountToBigNumber,
         margin: derivativeDetails.margin.value,
         totalNotional: totalNotionalToBigNumber,
-        worstPrice: derivativeDetails.finalPrice.value,
+        worstPrice: derivativeDetails.executionPrice.value,
         feePercentage: derivativeDetails.feePercentage.value,
         marginWithFee: derivativeDetails.marginWithFee.value,
         hasEnoughLiquidity: derivativeDetails.enoughLiquidity.value,
@@ -307,7 +324,7 @@ watch(
     />
 
     <ModalsLeverage
-      v-bind="{ worstPrice: derivativeDetails.finalPrice.value }"
+      v-bind="{ worstPrice: derivativeDetails.executionPrice.value }"
     />
   </div>
 </template>

@@ -7,7 +7,6 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
-  SpotDetails,
   UiSpotMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -29,7 +28,7 @@ export function useSpotDetails({
   isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}): SpotDetails {
+}) {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||
@@ -199,7 +198,7 @@ export function useSpotDetails({
     estSlippagePercentage.value.gt(slippagePercentage.value)
   )
 
-  const finalPrice = computed(() => {
+  const executionPrice = computed(() => {
     const price = isLimitOrder.value
       ? new BigNumberInBase(limitPrice.value)
       : slippagePrice.value
@@ -208,7 +207,7 @@ export function useSpotDetails({
   })
 
   const minimumAmountInQuote = computed(() => {
-    const price = finalPrice.value
+    const price = executionPrice.value
 
     const minQuantity = new BigNumberInBase(10).exponentiatedBy(
       market.value.quantityTensMultiplier
@@ -222,7 +221,7 @@ export function useSpotDetails({
   })
 
   const isNotionalLessThanMinNotional = computed(() => {
-    const priceForNotional = finalPrice.value
+    const priceForNotional = executionPrice.value
 
     const quantityInBase = new BigNumberInBase(safeAmount(quantity.value))
 
@@ -296,8 +295,8 @@ export function useSpotDetails({
   })
 
   return {
-    finalPrice,
     slippagePrice,
+    executionPrice,
     slippageWarning,
     notional: _notional,
     quantity: _quantity,
