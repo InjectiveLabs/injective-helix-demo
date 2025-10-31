@@ -306,11 +306,11 @@ export function useDerivativeDetails({
   const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
 
   const finalPrice = computed(() => {
-    if (isLimitOrder.value) {
-      return new BigNumberInBase(limitPrice.value)
-    }
+    const price = isLimitOrder.value
+      ? new BigNumberInBase(limitPrice.value)
+      : slippagePrice.value
 
-    return slippagePrice.value
+    return quantizeNumber(price, market.value.priceTensMultiplier)
   })
 
   const minimumAmountInQuote = computed(() => {

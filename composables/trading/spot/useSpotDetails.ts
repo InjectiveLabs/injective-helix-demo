@@ -164,11 +164,15 @@ export function useSpotDetails({
   })
 
   const slippagePrice = computed(() => {
+    const slippagePercentageInBase = new BigNumberInBase(
+      safeAmount(slippagePercentage.value)
+    ).div(100)
+
     if (isBuy.value) {
-      return bestPrice.value.times(ONE_IN_BASE.plus(slippagePercentage.value))
+      return bestPrice.value.times(ONE_IN_BASE.plus(slippagePercentageInBase))
     }
 
-    return bestPrice.value.times(ONE_IN_BASE.minus(slippagePercentage.value))
+    return bestPrice.value.times(ONE_IN_BASE.minus(slippagePercentageInBase))
   })
 
   const estSlippagePercentage = computed(() => {
@@ -196,14 +200,11 @@ export function useSpotDetails({
   )
 
   const finalPrice = computed(() => {
-    if (isLimitOrder.value) {
-      return quantizeNumber(
-        new BigNumberInBase(limitPrice.value),
-        market.value.priceDecimals
-      )
-    }
+    const price = isLimitOrder.value
+      ? new BigNumberInBase(limitPrice.value)
+      : slippagePrice.value
 
-    return quantizeNumber(slippagePrice.value, market.value.priceDecimals)
+    return quantizeNumber(price, market.value.priceTensMultiplier)
   })
 
   const minimumAmountInQuote = computed(() => {
