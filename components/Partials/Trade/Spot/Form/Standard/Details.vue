@@ -181,6 +181,9 @@ function openSlippageModal() {
                         decimals: estSlippageDecimals,
                         amount: adaptedEstSlippagePercentage
                       }"
+                      :data-cy="
+                        dataCyTag(SpotMarketCyTags.DisplayedEstimatedSlippage)
+                      "
                     />
                   </template>
                 </i18n-t>
@@ -200,6 +203,9 @@ function openSlippageModal() {
                         shouldAbbreviate: false,
                         amount: slippagePercentage
                       }"
+                      :data-cy="
+                        dataCyTag(SpotMarketCyTags.DisplayedSlippageTolerance)
+                      "
                     />
                   </template>
                 </i18n-t>
@@ -268,6 +274,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: spotMarket.quantityDecimals
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.Quantity)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.baseToken.symbol }}
@@ -288,6 +295,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.Notional)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -308,6 +316,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 amount: calculatedNotional
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.CalculatedNotional)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -327,6 +336,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.FeeAmount)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -347,6 +357,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.TotalNotional)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -368,6 +379,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 amount: minimumAmountInQuote
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.MinimumAmountInQuote)"
             />
           </p>
         </div>
@@ -377,7 +389,10 @@ function openSlippageModal() {
           >
             <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
           </CommonHeaderTooltip>
-          <p class="text-white">
+          <p
+            class="text-white"
+            :data-cy="dataCyTag(SpotMarketCyTags.IsNotionalLessThanMinNotional)"
+          >
             {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
           </p>
         </div>
@@ -397,6 +412,7 @@ function openSlippageModal() {
                   shouldAbbreviate: false,
                   amount: estSlippagePercentage
                 }"
+                :data-cy="dataCyTag(SpotMarketCyTags.EstimatedSlippage)"
               />%
               <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
             </p>
@@ -416,6 +432,7 @@ function openSlippageModal() {
                   shouldAbbreviate: false,
                   amount: slippagePercentage
                 }"
+                :data-cy="dataCyTag(SpotMarketCyTags.SlippageTolerance)"
               />%
               <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
             </p>
@@ -435,6 +452,7 @@ function openSlippageModal() {
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
+                :data-cy="dataCyTag(SpotMarketCyTags.SlippagePrice)"
               />
               <span class="text-coolGray-450">
                 {{ spotMarket.quoteToken.symbol }}
@@ -458,6 +476,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: spotMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.WorstPrice)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -479,6 +498,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: spotMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.AveragePrice)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -500,6 +520,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: spotMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.BestPrice)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
@@ -514,7 +535,10 @@ function openSlippageModal() {
             >
               <p class="text-yellow-600/90">Enough Liquidity</p>
             </CommonHeaderTooltip>
-            <p class="text-white">
+            <p
+              class="text-white"
+              :data-cy="dataCyTag(SpotMarketCyTags.EnoughLiquidity)"
+            >
               {{ enoughLiquidity ? 'Yes' : 'No' }}
             </p>
           </div>
@@ -524,7 +548,10 @@ function openSlippageModal() {
             >
               <p class="text-yellow-600/90">Slippage Warning</p>
             </CommonHeaderTooltip>
-            <p class="text-white">
+            <p
+              class="text-white"
+              :data-cy="dataCyTag(SpotMarketCyTags.SlippageWarning)"
+            >
               {{ slippageWarning ? 'Yes' : 'No' }}
             </p>
           </div>
@@ -545,6 +572,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: spotMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(SpotMarketCyTags.ExecutionPrice)"
             />
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}

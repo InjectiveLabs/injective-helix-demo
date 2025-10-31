@@ -214,6 +214,11 @@ function openSlippageModal() {
                         decimals: estSlippageDecimals,
                         amount: adaptedEstSlippagePercentage
                       }"
+                      :data-cy="
+                        dataCyTag(
+                          PerpetualMarketCyTags.DisplayedEstimatedSlippage
+                        )
+                      "
                     />
                   </template>
                 </i18n-t>
@@ -231,6 +236,11 @@ function openSlippageModal() {
                         shouldAbbreviate: false,
                         amount: slippagePercentage
                       }"
+                      :data-cy="
+                        dataCyTag(
+                          PerpetualMarketCyTags.DisplayedSlippageTolerance
+                        )
+                      "
                     />
                   </template>
                 </i18n-t>
@@ -335,6 +345,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.quantityDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.Quantity)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.baseToken.symbol }}
@@ -355,6 +366,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.Notional)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -375,6 +387,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 amount: calculatedNotional
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.CalculatedNotional)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -394,6 +407,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.FeeAmount)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -414,6 +428,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.TotalNotional)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -434,6 +449,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.Margin)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -454,6 +470,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.MarginWithFee)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -475,6 +492,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 amount: minimumAmountInQuote
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.MinimumAmountInQuote)"
             />
           </p>
         </div>
@@ -484,7 +502,12 @@ function openSlippageModal() {
           >
             <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
           </CommonHeaderTooltip>
-          <p class="text-white">
+          <p
+            class="text-white"
+            :data-cy="
+              dataCyTag(PerpetualMarketCyTags.IsNotionalLessThanMinNotional)
+            "
+          >
             {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
           </p>
         </div>
@@ -507,6 +530,7 @@ function openSlippageModal() {
                   shouldAbbreviate: false,
                   amount: estSlippagePercentage
                 }"
+                :data-cy="dataCyTag(PerpetualMarketCyTags.EstimatedSlippage)"
               />%
               <span class="invisible">{{
                 derivativeMarket.quoteToken.symbol
@@ -528,6 +552,7 @@ function openSlippageModal() {
                   shouldAbbreviate: false,
                   amount: slippagePercentage
                 }"
+                :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageTolerance)"
               />%
               <span class="invisible">{{
                 derivativeMarket.quoteToken.symbol
@@ -549,6 +574,7 @@ function openSlippageModal() {
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
+                :data-cy="dataCyTag(PerpetualMarketCyTags.SlippagePrice)"
               />
               <span class="text-coolGray-450">
                 {{ derivativeMarket.quoteToken.symbol }}
@@ -572,6 +598,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.WorstPrice)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -593,6 +620,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.AveragePrice)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -614,6 +642,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.BestPrice)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
@@ -628,7 +657,10 @@ function openSlippageModal() {
             >
               <p class="text-yellow-600/90">Enough Liquidity</p>
             </CommonHeaderTooltip>
-            <p class="text-white">
+            <p
+              class="text-white"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.EnoughLiquidity)"
+            >
               {{ enoughLiquidity ? 'Yes' : 'No' }}
             </p>
           </div>
@@ -638,7 +670,10 @@ function openSlippageModal() {
             >
               <p class="text-yellow-600/90">Slippage Warning</p>
             </CommonHeaderTooltip>
-            <p class="text-white">
+            <p
+              class="text-white"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWarning)"
+            >
               {{ slippageWarning ? 'Yes' : 'No' }}
             </p>
           </div>
@@ -659,6 +694,7 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.priceDecimals
               }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.ExecutionPrice)"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
