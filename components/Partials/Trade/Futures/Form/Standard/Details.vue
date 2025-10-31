@@ -26,7 +26,9 @@ const props = withDefaults(
     quantity: string
     notional: string
     feeAmount: string
+    isLimitOrder: boolean
     totalNotional: string
+    isTriggerOrder: boolean
     margin: BigNumberInBase
     enoughLiquidity: boolean
     slippageWarning: boolean
@@ -59,24 +61,8 @@ const enableSlippage = computed(() =>
   )
 )
 
-const isLimit = computed(
-  () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit ||
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
-)
-
 const slippagePercentage = computed(
   () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
-)
-
-const isTriggerOrder = computed(() =>
-  [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
 )
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
@@ -125,7 +111,7 @@ const estSlippageDecimals = computed(() => {
 })
 
 const showEstSlippage = computed(
-  () => props.enoughLiquidity && !isTriggerOrder.value
+  () => props.enoughLiquidity && !props.isTriggerOrder
 )
 
 const isMakerFee = computed(
@@ -511,7 +497,7 @@ function openSlippageModal() {
             {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
           </p>
         </div>
-        <template v-if="!isLimit">
+        <template v-if="!isLimitOrder">
           <hr class="border-white/30" />
           <div
             v-if="!isTriggerOrder"
@@ -649,7 +635,7 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
-        <template v-if="!isLimit && !isTriggerOrder">
+        <template v-if="!isLimitOrder && !isTriggerOrder">
           <hr class="border-white/30" />
           <div class="flex justify-between items-center text-xs font-medium">
             <CommonHeaderTooltip

@@ -36,7 +36,12 @@ const { takerFeeRate } = useTradeFee({
   marketMakerFeeRate: market?.value?.makerFeeRate
 })
 
+const isLimitOrder = computed(
+  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
+)
+
 const spotDetails = useSpotDetails({
+  isLimitOrder,
   takerFeeRate,
   market: computed(() => market.value),
   limitPrice: computed(
@@ -50,9 +55,6 @@ const spotDetails = useSpotDetails({
   ),
   isBuy: computed(
     () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
-  ),
-  isLimitOrder: computed(
-    () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
   )
 })
 
@@ -199,15 +201,16 @@ watch(
     <PartialsTradeSpotFormStandardDetails
       class="my-4"
       v-bind="{
+        isLimitOrder,
         quantity: spotDetails.quantity.value,
         notional: spotDetails.notional.value,
         feeAmount: spotDetails.feeAmount.value,
         bestPrice: spotDetails.bestPrice.value,
-        executionPrice: spotDetails.executionPrice.value,
         worstPrice: spotDetails.worstPrice.value,
         averagePrice: spotDetails.averagePrice.value,
         totalNotional: spotDetails.totalNotional.value,
         slippagePrice: spotDetails.slippagePrice.value,
+        executionPrice: spotDetails.executionPrice.value,
         enoughLiquidity: spotDetails.enoughLiquidity.value,
         slippageWarning: spotDetails.slippageWarning.value,
         calculatedNotional: spotDetails.calculatedNotional.value,
@@ -220,6 +223,7 @@ watch(
 
     <PartialsTradeSpotFormStandardCreateOrder
       v-bind="{
+        isLimitOrder,
         quantity: quantityToBigNumber,
         worstPrice: spotDetails.executionPrice.value,
         hasEnoughLiquidity: spotDetails.enoughLiquidity.value,

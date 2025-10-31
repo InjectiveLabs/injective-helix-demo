@@ -41,16 +41,9 @@ const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
 
-const isLimitOrder = computed(
-  () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit ||
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
-)
-
 const props = withDefaults(
   defineProps<{
+    isLimitOrder: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
@@ -100,7 +93,7 @@ const isAuthorized = computed(() => {
     return true
   }
 
-  const msg = isLimitOrder.value
+  const msg = props.isLimitOrder
     ? MsgType.MsgCreateDerivativeLimitOrder
     : MsgType.MsgCreateDerivativeMarketOrder
 

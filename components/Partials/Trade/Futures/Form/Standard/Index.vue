@@ -6,10 +6,10 @@ import {
   Modal,
   MarketKey,
   BusEvents,
+  TradeAmountOption,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
-  DerivativesTradeFormField,
-  TradeAmountOption
+  DerivativesTradeFormField
 } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
@@ -258,6 +258,7 @@ watch(
 
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{
+          isLimitOrder,
           quantity: quantityToBigNumber,
           worstPrice: derivativeDetails.executionPrice.value,
           marginWithFee: derivativeDetails.marginWithFee.value,
@@ -270,25 +271,30 @@ watch(
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
       class="mt-4"
-      v-bind="{ estLiquidationPrice }"
+      v-bind="{
+        isLimitOrder,
+        estLiquidationPrice
+      }"
       @tpsl:add="addTpSl"
     />
 
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
       v-bind="{
+        isLimitOrder,
+        isTriggerOrder,
         estLiquidationPrice,
         margin: derivativeDetails.margin.value,
         quantity: derivativeDetails.quantity.value,
         notional: derivativeDetails.notional.value,
         feeAmount: derivativeDetails.feeAmount.value,
         bestPrice: derivativeDetails.bestPrice.value,
-        executionPrice: derivativeDetails.executionPrice.value,
         worstPrice: derivativeDetails.worstPrice.value,
         averagePrice: derivativeDetails.averagePrice.value,
         marginWithFee: derivativeDetails.marginWithFee.value,
         totalNotional: derivativeDetails.totalNotional.value,
         slippagePrice: derivativeDetails.slippagePrice.value,
+        executionPrice: derivativeDetails.executionPrice.value,
         enoughLiquidity: derivativeDetails.enoughLiquidity.value,
         slippageWarning: derivativeDetails.slippageWarning.value,
         calculatedNotional: derivativeDetails.calculatedNotional.value,
@@ -301,6 +307,7 @@ watch(
 
     <PartialsTradeFuturesFormStandardCreateOrder
       v-bind="{
+        isLimitOrder,
         quantity: quantityToBigNumber,
         feeAmount: feeAmountToBigNumber,
         margin: derivativeDetails.margin.value,

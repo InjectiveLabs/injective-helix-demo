@@ -29,6 +29,7 @@ const props = withDefaults(
     quantity: string
     notional: string
     feeAmount: string
+    isLimitOrder: boolean
     totalNotional: string
     enoughLiquidity: boolean
     slippageWarning: boolean
@@ -53,10 +54,6 @@ const { makerFeeRate, takerFeeRate } = useTradeFee({
   marketTakerFeeRate: spotMarket?.value?.takerFeeRate,
   marketMakerFeeRate: spotMarket?.value?.makerFeeRate
 })
-
-const isLimit = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
-)
 
 const { valueToFixed: slippagePercentage } = useSharedBigNumberFormatter(
   computed(() => spotFormValues.value[SpotTradeFormField.Slippage] || 0),
@@ -156,7 +153,7 @@ function openSlippageModal() {
         </div>
 
         <div
-          v-if="!isLimit"
+          v-if="!isLimitOrder"
           class="flex justify-between items-center text-xs font-medium"
         >
           <p class="text-coolGray-450" @click="openSlippageModal">
@@ -220,7 +217,7 @@ function openSlippageModal() {
         </div>
 
         <div
-          v-if="!isLimit"
+          v-if="!isLimitOrder"
           class="flex justify-between items-center text-xs font-medium"
         >
           <CommonHeaderTooltip
@@ -396,7 +393,7 @@ function openSlippageModal() {
             {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
           </p>
         </div>
-        <template v-if="!isLimit">
+        <template v-if="!isLimitOrder">
           <hr class="border-white/30" />
           <div class="flex justify-between items-center text-xs font-medium">
             <CommonHeaderTooltip
@@ -527,7 +524,7 @@ function openSlippageModal() {
             </span>
           </p>
         </div>
-        <template v-if="!isLimit">
+        <template v-if="!isLimitOrder">
           <hr class="border-white/30" />
           <div class="flex justify-between items-center text-xs font-medium">
             <CommonHeaderTooltip

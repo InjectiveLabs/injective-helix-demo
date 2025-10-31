@@ -33,6 +33,7 @@ const market = inject(MarketKey) as Ref<UiSpotMarket>
 
 const props = withDefaults(
   defineProps<{
+    isLimitOrder: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
     hasEnoughLiquidity: boolean
@@ -51,9 +52,6 @@ const spotFormValues = useFormValues<SpotTradeForm>()
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
-)
-const isLimitOrder = computed(
-  () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
 const orderTypeToSubmit = computed(() => {
@@ -93,7 +91,7 @@ const isAuthorized = computed(() => {
     return true
   }
 
-  const msg = isLimitOrder.value
+  const msg = props.isLimitOrder
     ? MsgType.MsgCreateSpotLimitOrder
     : MsgType.MsgCreateSpotMarketOrder
 
@@ -101,7 +99,7 @@ const isAuthorized = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  if (!isLimitOrder.value && jsonStore.isPostUpgradeMode) {
+  if (!props.isLimitOrder && jsonStore.isPostUpgradeMode) {
     return true
   }
 
@@ -161,7 +159,7 @@ async function submitOrder() {
     return
   }
 
-  if (isLimitOrder.value) {
+  if (props.isLimitOrder) {
     submitLimitOrder()
   } else {
     submitMarketOrder()

@@ -19,6 +19,7 @@ const emit = defineEmits<{
 
 withDefaults(
   defineProps<{
+    isLimitOrder: boolean
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
@@ -26,10 +27,12 @@ withDefaults(
 
 const isOpen = ref(false)
 
-const isLimit = computed(
-  () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-    DerivativeTradeTypes.Limit
+const isMarketOrder = computed(() =>
+  [DerivativeTradeTypes.Market].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
 )
 
 function toggle() {
@@ -58,16 +61,16 @@ function addTpSl(position: PositionV2) {
 
     <AppCollapse
       v-bind="{
-        isOpen: isLimit && jsonStore.isPostUpgradeMode ? true : isOpen
+        isOpen: isLimitOrder && jsonStore.isPostUpgradeMode ? true : isOpen
       }"
     >
       <div class="py-2">
         <PartialsTradeFuturesFormStandardAdvancedSettingsPostOnly
-          v-if="isLimit"
+          v-if="isLimitOrder"
         />
 
         <p
-          v-if="isLimit && jsonStore.isPostUpgradeMode"
+          v-if="isLimitOrder && jsonStore.isPostUpgradeMode"
           class="text-orange-500 text-xs ml-1"
         >
           {{ $t('trade.postOnlyWarning') }}
@@ -76,26 +79,11 @@ function addTpSl(position: PositionV2) {
         <PartialsTradeFuturesFormStandardAdvancedSettingsReduceOnly />
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsBypassWarning
-          v-if="
-            [
-              DerivativeTradeTypes.Limit,
-              DerivativeTradeTypes.StopLimit
-            ].includes(
-              derivativeFormValues[
-                DerivativesTradeFormField.Type
-              ] as DerivativeTradeTypes
-            )
-          "
+          v-if="isLimitOrder"
         />
 
         <PartialsTradeFuturesFormStandardAdvancedSettingsTpSl
-          v-if="
-            [DerivativeTradeTypes.Market].includes(
-              derivativeFormValues[
-                DerivativesTradeFormField.Type
-              ] as DerivativeTradeTypes
-            )
-          "
+          v-if="isMarketOrder"
           v-bind="{ estLiquidationPrice }"
           @tpsl:add="addTpSl"
         />
