@@ -12,6 +12,12 @@ import {
   SpotMarketCyTags,
   SpotTradeFormField
 } from '@/types'
+import {
+  UI_ZERO_DECIMAL,
+  MIN_EST_SLIPPAGE,
+  DEFAULT_EST_SLIPPAGE,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
@@ -23,7 +29,6 @@ const props = defineProps<{
 }>()
 
 const isOpen = ref(true)
-const isMinimalistEstSlippageMode = ref(false)
 
 const spotFormValues = useFormValues<SpotTradeForm>()
 
@@ -65,42 +70,23 @@ const formAmount = computed(
 )
 
 const adaptedEstSlippagePercentage = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    if (formAmount.value === '0') {
-      return 0
-    }
+  if (formAmount.value === '0') {
+    return DEFAULT_EST_SLIPPAGE
+  }
 
-    if (props.details.estSlippagePercentage.value.lt(0.0005)) {
-      return 0.0005
-    }
-
-    return props.details.estSlippagePercentage.value
+  if (props.details.estSlippagePercentage.value.lt(MIN_EST_SLIPPAGE)) {
+    return MIN_EST_SLIPPAGE
   }
 
   return props.details.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    if (formAmount.value === '0') {
-      return 0
-    }
-
-    return 4
+  if (formAmount.value === '0') {
+    return UI_ZERO_DECIMAL
   }
 
-  return 2
-})
-
-const showEstSlippage = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    return props.details.enoughLiquidity.value
-  }
-
-  return (
-    props.details.enoughLiquidity.value &&
-    props.details.estSlippagePercentage.value.gte(0.01)
-  )
+  return UI_DEFAULT_DISPLAY_DECIMALS
 })
 
 function toggle() {
@@ -165,7 +151,7 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <span v-if="showEstSlippage">
+              <span v-if="details.enoughLiquidity.value">
                 <i18n-t
                   keypath="trade.estSlippage"
                   class="text-xs text-coolGray-400 mx-1"
@@ -249,21 +235,6 @@ function openSlippageModal() {
       </div>
 
       <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
-        <div
-          v-if="!isLimit"
-          class="flex items-center justify-between space-x-2 text-xs"
-        >
-          <p class="text-yellow-600/90">Est. Slippage Mode</p>
-          <div class="flex items-center space-x-2">
-            <label for="isMinimalistEstSlippageMode">{{
-              isMinimalistEstSlippageMode ? 'Drift' : 'HL'
-            }}</label>
-            <input type="checkbox" v-model="isMinimalistEstSlippageMode" />
-          </div>
-        </div>
-
-        <hr class="border-white/30" />
-
         <div class="flex justify-between items-center text-xs font-medium">
           <CommonHeaderTooltip
             tooltip="The amount of base asset you're trading"

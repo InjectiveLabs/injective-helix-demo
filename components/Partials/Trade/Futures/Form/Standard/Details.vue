@@ -15,6 +15,12 @@ import type {
   UiDerivativeMarket,
   DerivativesTradeForm
 } from '@/types'
+import {
+  UI_ZERO_DECIMAL,
+  MIN_EST_SLIPPAGE,
+  DEFAULT_EST_SLIPPAGE,
+  UI_DEFAULT_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
@@ -30,7 +36,6 @@ const props = withDefaults(
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const isOpen = ref(true)
-const isMinimalistEstSlippageMode = ref(false)
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
@@ -88,44 +93,28 @@ const formAmount = computed(
 )
 
 const adaptedEstSlippagePercentage = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    if (formAmount.value === '0') {
-      return 0
-    }
+  if (formAmount.value === '0') {
+    return DEFAULT_EST_SLIPPAGE
+  }
 
-    if (props.details.estSlippagePercentage.value.lt(0.0005)) {
-      return 0.0005
-    }
-
-    return props.details.estSlippagePercentage.value
+  if (props.details.estSlippagePercentage.value.lt(0.0005)) {
+    return MIN_EST_SLIPPAGE
   }
 
   return props.details.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    if (formAmount.value === '0') {
-      return 0
-    }
-
-    return 4
+  if (formAmount.value === '0') {
+    return UI_ZERO_DECIMAL
   }
 
-  return 2
+  return UI_DEFAULT_DISPLAY_DECIMALS
 })
 
-const showEstSlippage = computed(() => {
-  if (!isMinimalistEstSlippageMode.value) {
-    return props.details.enoughLiquidity.value && !isTriggerOrder.value
-  }
-
-  return (
-    props.details.enoughLiquidity.value &&
-    !isTriggerOrder.value &&
-    props.details.estSlippagePercentage.value.gte(0.01)
-  )
-})
+const showEstSlippage = computed(
+  () => props.details.enoughLiquidity.value && !isTriggerOrder.value
+)
 
 const isMakerFee = computed(
   () =>
@@ -320,21 +309,6 @@ function openSlippageModal() {
       </div>
 
       <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
-        <div
-          v-if="!isLimit"
-          class="flex items-center justify-between space-x-2 text-xs"
-        >
-          <p class="text-yellow-600/90">Est. Slippage Mode</p>
-          <div class="flex items-center space-x-2">
-            <label for="isMinimalistEstSlippageMode">{{
-              isMinimalistEstSlippageMode ? 'Drift' : 'HL'
-            }}</label>
-            <input type="checkbox" v-model="isMinimalistEstSlippageMode" />
-          </div>
-        </div>
-
-        <hr class="border-white/30" />
-
         <div class="flex justify-between items-center text-xs font-medium">
           <CommonHeaderTooltip tooltip="The amount of contracts you're trading">
             <p class="text-yellow-600/90">Quantity</p>
