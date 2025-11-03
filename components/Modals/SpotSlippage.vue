@@ -2,6 +2,7 @@
 import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
+  MIN_SLIPPAGE,
   MAX_SLIPPAGE,
   DEFAULT_SLIPPAGE,
   HIGH_SLIPPAGE_THRESHOLD
@@ -47,7 +48,7 @@ function onConfirm() {
   const slippageInBigNumber = new BigNumberInBase(tempSlippage.value)
 
   const finalSlippage =
-    slippageInBigNumber.gt(MAX_SLIPPAGE) || slippageInBigNumber.lt(0)
+    slippageInBigNumber.gt(MAX_SLIPPAGE) || slippageInBigNumber.lt(MIN_SLIPPAGE)
       ? DEFAULT_SLIPPAGE.toFixed()
       : tempSlippage.value
 
@@ -92,10 +93,10 @@ function setPreviousSlippage() {
         <AppInputField
           v-model="tempSlippage"
           v-bind="{
-            min: 0,
             decimals: 2,
             noStyle: true,
             alignLeft: true,
+            min: MIN_SLIPPAGE.toNumber(),
             max: MAX_SLIPPAGE.toNumber(),
             wrapperClass:
               'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4'

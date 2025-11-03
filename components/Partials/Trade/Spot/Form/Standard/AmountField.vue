@@ -29,13 +29,12 @@ const { activeSubaccountBalancesWithToken } = useBalance()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const { isNotionalLessThanMinNotional } = useSpotWorstPrice(market)
-
 const props = withDefaults(
   defineProps<{
     quantity: BigNumberInBase
     totalWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
+    isNotionalLessThanMinNotional: boolean
   }>(),
   {
     quantity: undefined,

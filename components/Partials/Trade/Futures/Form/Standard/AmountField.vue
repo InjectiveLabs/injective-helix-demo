@@ -39,14 +39,15 @@ const market = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const { markPrice } = useDerivativeLastPrice(market)
 const { activeSubaccountBalancesWithToken } = useBalance()
-const { isNotionalLessThanMinNotional } = useDerivativeWorstPrice(market)
 
 const props = withDefaults(
   defineProps<{
+    isLimitOrder: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
     marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
+    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
@@ -106,14 +107,6 @@ const activePositionQuantity = computed(() => {
 
 const selectedSymbol = computed(
   () => options.find((item) => item.id === typeValue.value)?.label || ''
-)
-
-const isLimit = computed(
-  () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit ||
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
 )
 
 const isStopMarket = computed(
@@ -226,7 +219,7 @@ function calculateAmountFromPercentage(percentage: number) {
       ? executionPrice.times(1 + Number(slippage) / 100)
       : executionPrice.times(1 - Number(slippage) / 100)
 
-    const totalNotional = isLimit.value
+    const totalNotional = props.isLimitOrder
       ? limitPrice.times(activePositionQuantity.value)
       : executionPriceWithSlippage.times(activePositionQuantity.value)
 
@@ -235,7 +228,7 @@ function calculateAmountFromPercentage(percentage: number) {
 
   let executionPrice
 
-  if (isLimit.value) {
+  if (props.isLimitOrder) {
     executionPrice =
       derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
   }
@@ -263,7 +256,7 @@ function calculateAmountFromPercentage(percentage: number) {
     return maxMargin.times(percentage).div(100).times(leverage)
   }
 
-  if (typeValue.value === TradeAmountOption.Base && isLimit.value) {
+  if (typeValue.value === TradeAmountOption.Base && props.isLimitOrder) {
     return maxMargin
       .times(leverage)
       .div(executionPrice)
@@ -310,7 +303,7 @@ function calculateAmountFromPercentage(percentage: number) {
 async function setFromPercentage(percentage: number) {
   const isBase = typeValue.value === TradeAmountOption.Base
 
-  if (isLimit.value) {
+  if (props.isLimitOrder) {
     const { valid } = await validateLimitField()
 
     if (!valid) {

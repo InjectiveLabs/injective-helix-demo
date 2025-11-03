@@ -500,7 +500,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: 'Tahmini Komisyon İadesi',
       partialFilled: 'Kısmen Dolduruldu',
       proceedAnyway: 'Yine de Devam Et',
-      slippageEstimate: 'Maks: {max}%',
+      maxSlippage: 'Maks: {max}%',
       stopLossLimit: 'Zararı Durdur Limiti',
       searchMarket: 'Piyasa Ara...',
       boostedMarkets: 'Piyasa Ödülleri',

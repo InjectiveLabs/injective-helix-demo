@@ -40,17 +40,20 @@ const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 const { markPrice } = useDerivativeLastPrice(
   computed(() => derivativeMarket?.value)
 )
-const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
-  useDerivativeWorstPrice(derivativeMarket)
 
 const props = withDefaults(
   defineProps<{
+    isLimitOrder: boolean
+    isTriggerOrder: boolean
     margin: BigNumberInBase
     quantity: BigNumberInBase
     feeAmount: BigNumberInBase
     worstPrice: BigNumberInBase
+    hasEnoughLiquidity: boolean
+    hasSlippageWarning: boolean
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
+    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
@@ -91,7 +94,7 @@ const isAuthorized = computed(() => {
     return true
   }
 
-  const msg = isLimitOrder.value
+  const msg = props.isLimitOrder
     ? MsgType.MsgCreateDerivativeLimitOrder
     : MsgType.MsgCreateDerivativeMarketOrder
 
@@ -127,14 +130,7 @@ const orderTypeToSubmit = computed(() =>
     triggerPrice: triggerPrice.value.toFixed(),
     isPostOnly:
       !!derivativeFormValues.value[DerivativesTradeFormField.PostOnly],
-    isTriggerOrder: [
-      DerivativeTradeTypes.StopLimit,
-      DerivativeTradeTypes.StopMarket
-    ].includes(
-      derivativeFormValues.value[
-        DerivativesTradeFormField.Type
-      ] as DerivativeTradeTypes
-    )
+    isTriggerOrder: props.isTriggerOrder
   })
 )
 
@@ -155,10 +151,6 @@ const takeProfitValue = computed(() =>
 )
 
 const isDisabled = computed(() => {
-  const tradeType = derivativeFormValues.value[
-    DerivativesTradeFormField.Type
-  ] as DerivativeTradeTypes
-
   if (!isPostOnlyEnable.value && jsonStore.isPostUpgradeMode) {
     return true
   }
@@ -175,27 +167,27 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (!hasEnoughLiquidity.value) {
+  if (!props.hasEnoughLiquidity) {
     return true
   }
 
-  if (isNotionalLessThanMinNotional.value) {
+  if (props.hasSlippageWarning) {
+    return true
+  }
+
+  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 
   if (
-    [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
-      tradeType
-    ) &&
+    props.isLimitOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
   ) {
     return true
   }
 
   if (
-    [DerivativeTradeTypes.StopLimit, DerivativeTradeTypes.StopMarket].includes(
-      tradeType
-    ) &&
+    props.isTriggerOrder &&
     !derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
   ) {
     return true
@@ -492,6 +484,10 @@ function showAutosignCta() {
 
         <span v-else-if="!hasEnoughLiquidity">
           {{ $t('swap.insufficientLiquidity') }}
+        </span>
+
+        <span v-else-if="hasSlippageWarning">
+          {{ $t('trade.increaseSlippageTolerance') }}
         </span>
 
         <span v-else>

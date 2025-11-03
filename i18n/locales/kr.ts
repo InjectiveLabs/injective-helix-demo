@@ -489,7 +489,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: '예상 수수료 리베이트',
       partialFilled: '부분 체결',
       proceedAnyway: '계속 진행',
-      slippageEstimate: '최대: {max}%',
+      maxSlippage: '최대: {max}%',
       stopLossLimit: '손절매 지정가',
       searchMarket: '마켓 검색...',
       boostedMarkets: '마켓 보상',

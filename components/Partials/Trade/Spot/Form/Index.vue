@@ -14,6 +14,8 @@ const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
 
 const queryTradingMode = useQueryRef('interface', TradingInterface.Standard)
 
+const isReady = ref(false)
+
 const options = computed(() => [
   {
     disabled: false,
@@ -31,6 +33,8 @@ const options = computed(() => [
 ])
 
 onMounted(() => {
+  isReady.value = true
+
   if (
     queryTradingMode.value === TradingInterface.TradingBots &&
     options.value.find(({ value }) => value === TradingInterface.TradingBots)
@@ -62,7 +66,7 @@ onMounted(() => {
 
     <div>
       <PartialsTradeSpotFormStandard
-        v-if="queryTradingMode === TradingInterface.Standard"
+        v-if="isReady && queryTradingMode === TradingInterface.Standard"
       />
 
       <PartialsTradeSpotFormTradingBots v-else />

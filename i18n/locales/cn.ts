@@ -473,7 +473,7 @@ export default defineI18nLocale(() => {
       estFeeRebate: '预估手续费返佣',
       partialFilled: '部分成交',
       proceedAnyway: '仍要执行',
-      slippageEstimate: '最高：{max}%',
+      maxSlippage: '最高：{max}%',
       stopLossLimit: '限价止损',
       searchMarket: '搜索市场...',
       boostedMarkets: '奖励市场',

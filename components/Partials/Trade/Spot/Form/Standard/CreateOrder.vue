@@ -31,15 +31,18 @@ const { $onError } = useNuxtApp()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
-const { isLimitOrder, hasEnoughLiquidity, isNotionalLessThanMinNotional } =
-  useSpotWorstPrice(market)
-
 const props = withDefaults(
   defineProps<{
+    isLimitOrder: boolean
     quantity: BigNumberInBase
     worstPrice: BigNumberInBase
+    hasEnoughLiquidity: boolean
+    hasSlippageWarning: boolean
+    isNotionalLessThanMinNotional: boolean
   }>(),
-  {}
+  {
+    hasEnoughLiquidity: true
+  }
 )
 
 const chartType = ref(ChartViewOption.Chart)
@@ -88,7 +91,7 @@ const isAuthorized = computed(() => {
     return true
   }
 
-  const msg = isLimitOrder.value
+  const msg = props.isLimitOrder
     ? MsgType.MsgCreateSpotLimitOrder
     : MsgType.MsgCreateSpotMarketOrder
 
@@ -96,7 +99,7 @@ const isAuthorized = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  if (!isLimitOrder.value && jsonStore.isPostUpgradeMode) {
+  if (!props.isLimitOrder && jsonStore.isPostUpgradeMode) {
     return true
   }
 
@@ -112,11 +115,15 @@ const isDisabled = computed(() => {
     return true
   }
 
-  if (!hasEnoughLiquidity.value) {
+  if (!props.hasEnoughLiquidity) {
     return true
   }
 
-  if (isNotionalLessThanMinNotional.value) {
+  if (props.hasSlippageWarning) {
+    return true
+  }
+
+  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 
@@ -152,7 +159,7 @@ async function submitOrder() {
     return
   }
 
-  if (isLimitOrder.value) {
+  if (props.isLimitOrder) {
     submitLimitOrder()
   } else {
     submitMarketOrder()
@@ -296,6 +303,10 @@ function showAutosignCta() {
 
       <span v-else-if="!hasEnoughLiquidity">
         {{ $t('swap.insufficientLiquidity') }}
+      </span>
+
+      <span v-else-if="hasSlippageWarning">
+        {{ $t('trade.increaseSlippageTolerance') }}
       </span>
 
       <span v-else>
