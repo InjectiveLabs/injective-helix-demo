@@ -6,7 +6,7 @@ import type { BigNumberInBase } from '@injectivelabs/utils'
 import {
   Modal,
   MarketKey,
-  TradeTypes,
+  SpotDetails,
   UiSpotMarket,
   SpotTradeForm,
   SpotMarketCyTags,
@@ -26,22 +26,8 @@ const spotMarket = inject(MarketKey) as ComputedRef<UiSpotMarket>
 
 const props = withDefaults(
   defineProps<{
-    quantity: string
-    notional: string
-    feeAmount: string
     isLimitOrder: boolean
-    totalNotional: string
-    enoughLiquidity: boolean
-    slippageWarning: boolean
-    calculatedNotional: string
-    bestPrice: BigNumberInBase
-    worstPrice: BigNumberInBase
-    averagePrice: BigNumberInBase
-    slippagePrice: BigNumberInBase
-    executionPrice: BigNumberInBase
-    minimumAmountInQuote: BigNumberInBase
-    estSlippagePercentage: BigNumberInBase
-    isNotionalLessThanMinNotional?: boolean
+    spotDetails: SpotDetails
   }>(),
   {}
 )
@@ -88,11 +74,11 @@ const adaptedEstSlippagePercentage = computed(() => {
     return DEFAULT_EST_SLIPPAGE
   }
 
-  if (props.estSlippagePercentage.lt(MIN_EST_SLIPPAGE)) {
+  if (props.spotDetails.estSlippagePercentage.value.lt(MIN_EST_SLIPPAGE)) {
     return MIN_EST_SLIPPAGE
   }
 
-  return props.estSlippagePercentage
+  return props.spotDetails.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
@@ -140,7 +126,7 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: totalNotional,
+                  amount: spotDetails.totalNotional.value,
                   shouldAbbreviate: false
                 }"
               />
@@ -165,7 +151,7 @@ function openSlippageModal() {
             :popper="{ placement: 'top', strategy: 'fixed' }"
           >
             <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <span v-if="enoughLiquidity">
+              <span v-if="spotDetails.enoughLiquidity.value">
                 <i18n-t
                   keypath="trade.estSlippage"
                   class="text-xs text-coolGray-400 mx-1"
@@ -265,7 +251,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: quantity,
+                amount: spotDetails.quantity.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -287,7 +273,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: notional,
+                amount: spotDetails.notional.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -311,7 +297,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: calculatedNotional
+                amount: spotDetails.calculatedNotional.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.CalculatedNotional)"
             />
@@ -328,7 +314,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: feeAmount,
+                amount: spotDetails.feeAmount.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
@@ -350,7 +336,7 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: totalNotional,
+                amount: spotDetails.totalNotional.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
@@ -374,7 +360,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: minimumAmountInQuote
+                amount: spotDetails.minimumAmountInQuote.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.MinimumAmountInQuote)"
             />
@@ -390,7 +376,7 @@ function openSlippageModal() {
             class="text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.IsNotionalLessThanMinNotional)"
           >
-            {{ isNotionalLessThanMinNotional ? 'Yes' : 'No' }}
+            {{ spotDetails.isNotionalLessThanMinNotional.value ? 'Yes' : 'No' }}
           </p>
         </div>
         <template v-if="!isLimitOrder">
@@ -407,7 +393,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: estSlippagePercentage
+                  amount: spotDetails.estSlippagePercentage.value
                 }"
                 :data-cy="dataCyTag(SpotMarketCyTags.EstimatedSlippage)"
               />%
@@ -445,7 +431,7 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: slippagePrice,
+                  amount: spotDetails.slippagePrice.value,
                   noTrailingZeros: false,
                   shouldAbbreviate: false
                 }"
@@ -467,7 +453,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: worstPrice,
+                amount: spotDetails.worstPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -490,7 +476,7 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: averagePrice,
+                amount: spotDetails.averagePrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
                 decimals: spotMarket.priceDecimals
@@ -511,7 +497,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: bestPrice,
+                amount: spotDetails.bestPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
@@ -536,7 +522,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(SpotMarketCyTags.EnoughLiquidity)"
             >
-              {{ enoughLiquidity ? 'Yes' : 'No' }}
+              {{ spotDetails.enoughLiquidity.value ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
@@ -549,7 +535,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(SpotMarketCyTags.SlippageWarning)"
             >
-              {{ slippageWarning ? 'Yes' : 'No' }}
+              {{ spotDetails.slippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>
@@ -563,7 +549,7 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: executionPrice,
+                amount: spotDetails.executionPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,

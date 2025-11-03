@@ -7,6 +7,7 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
+  DerivativeDetails,
   UiDerivativeMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -34,7 +35,7 @@ export function useDerivativeDetails({
   market: ComputedRef<UiDerivativeMarket>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}) {
+}): DerivativeDetails {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||

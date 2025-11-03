@@ -7,6 +7,7 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
+  SpotDetails,
   UiSpotMarket,
   OrderbookWorkerType,
   OrderbookWorkerResult
@@ -28,7 +29,7 @@ export function useSpotDetails({
   isLimitOrder: ComputedRef<boolean>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}) {
+}): SpotDetails {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||

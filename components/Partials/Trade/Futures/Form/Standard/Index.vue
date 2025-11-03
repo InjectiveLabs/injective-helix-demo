@@ -266,25 +266,8 @@ watch(
       v-bind="{
         isLimitOrder,
         isTriggerOrder,
-        estLiquidationPrice,
-        margin: derivativeDetails.margin.value,
-        quantity: derivativeDetails.quantity.value,
-        notional: derivativeDetails.notional.value,
-        feeAmount: derivativeDetails.feeAmount.value,
-        bestPrice: derivativeDetails.bestPrice.value,
-        worstPrice: derivativeDetails.worstPrice.value,
-        averagePrice: derivativeDetails.averagePrice.value,
-        marginWithFee: derivativeDetails.marginWithFee.value,
-        totalNotional: derivativeDetails.totalNotional.value,
-        slippagePrice: derivativeDetails.slippagePrice.value,
-        executionPrice: derivativeDetails.executionPrice.value,
-        enoughLiquidity: derivativeDetails.enoughLiquidity.value,
-        slippageWarning: derivativeDetails.slippageWarning.value,
-        calculatedNotional: derivativeDetails.calculatedNotional.value,
-        minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value,
-        estSlippagePercentage: derivativeDetails.estSlippagePercentage.value,
-        isNotionalLessThanMinNotional:
-          derivativeDetails.isNotionalLessThanMinNotional.value ?? false
+        derivativeDetails,
+        estLiquidationPrice
       }"
     />
 

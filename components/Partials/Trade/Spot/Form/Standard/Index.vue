@@ -197,23 +197,8 @@ watch(
     <PartialsTradeSpotFormStandardDetails
       class="my-4"
       v-bind="{
-        isLimitOrder,
-        quantity: spotDetails.quantity.value,
-        notional: spotDetails.notional.value,
-        feeAmount: spotDetails.feeAmount.value,
-        bestPrice: spotDetails.bestPrice.value,
-        worstPrice: spotDetails.worstPrice.value,
-        averagePrice: spotDetails.averagePrice.value,
-        totalNotional: spotDetails.totalNotional.value,
-        slippagePrice: spotDetails.slippagePrice.value,
-        executionPrice: spotDetails.executionPrice.value,
-        enoughLiquidity: spotDetails.enoughLiquidity.value,
-        slippageWarning: spotDetails.slippageWarning.value,
-        calculatedNotional: spotDetails.calculatedNotional.value,
-        minimumAmountInQuote: spotDetails.minimumAmountInQuote.value,
-        estSlippagePercentage: spotDetails.estSlippagePercentage.value,
-        isNotionalLessThanMinNotional:
-          spotDetails.isNotionalLessThanMinNotional.value ?? false
+        spotDetails,
+        isLimitOrder
       }"
     />
 
