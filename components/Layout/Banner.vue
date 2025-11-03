@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import { getHubUrl } from '@shared/utils/network'
 import { Wallet } from '@injectivelabs/wallet-base'
-import { NOTIFI_LINK } from '@shared/utils/constant'
 import { format, isBefore, isWithinInterval } from 'date-fns'
 import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { trackUtmStockTwitsBanner } from '@/app/providers/mixpanel/EventTracker'
@@ -9,13 +7,8 @@ import {
   DEFAULT_TRUNCATE_LENGTH,
   DEPRECATED_WALLET_DOCS_LINK
 } from '@/app/utils/constants'
+import type { SharedBanner } from '@shared/types'
 import { TradePage, UtmSource, NoticeBanner, LeaderboardSubPage } from '@/types'
-
-type Banner = {
-  id: string
-  shouldDisplay: boolean
-  shouldPersist?: boolean
-}
 
 const perpSettlePairs = [
   // {
@@ -43,6 +36,7 @@ const notificationStore = useSharedNotificationStore()
 const now = useNow({ interval: 1000 })
 const { t } = useLang()
 const { copy } = useClipboard()
+const { banners: sharedBanners } = useSharedBanner()
 
 const isHideBanner = ref(false)
 const bannersToHide = ref<NoticeBanner[]>([])
@@ -54,7 +48,7 @@ const formattedTurnkeyInjectiveAddress = computed(() =>
   )
 )
 
-const deprecatedWarningBanner = computed<Banner[]>(() => [
+const deprecatedWarningBanner = computed<SharedBanner[]>(() => [
   {
     id: NoticeBanner.DeprecatedWallet,
     shouldDisplay:
@@ -71,7 +65,7 @@ const activePerpSettlePairs = computed(() =>
   )
 )
 
-const mkrMigrationBanner = computed<Banner[]>(() => [
+const mkrMigrationBanner = computed<SharedBanner[]>(() => [
   {
     id: NoticeBanner.MKRMigration,
     shouldDisplay:
@@ -110,7 +104,7 @@ const expiryFutureBanner = computed(() => [
   }
 ])
 
-const perpMarketSettleBanner = computed<Banner[]>(() => [
+const perpMarketSettleBanner = computed<SharedBanner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PerpSettleMarket,
@@ -120,7 +114,7 @@ const perpMarketSettleBanner = computed<Banner[]>(() => [
   }
 ])
 
-const activePreLaunchFuturesBanner = computed<Banner[]>(() => [
+const activePreLaunchFuturesBanner = computed<SharedBanner[]>(() => [
   {
     shouldPersist: true,
     id: NoticeBanner.PreLaunchFutures,
@@ -133,22 +127,7 @@ const activePreLaunchFuturesBanner = computed<Banner[]>(() => [
   }
 ])
 
-const chainUpgradeBanners = computed<Banner[]>(() => [
-  {
-    shouldPersist: true,
-    id: NoticeBanner.PostChainUpgrade,
-    shouldDisplay:
-      jsonStore.isPostUpgradeMode && sharedWalletStore.isUserConnected
-  },
-  {
-    shouldPersist: true,
-    id: NoticeBanner.UpcomingChainUpgrade,
-    shouldDisplay:
-      jsonStore.hasUpcomingChainUpgrade && sharedWalletStore.isUserConnected
-  }
-])
-
-const promotionalBanners = computed<Banner[]>(() => [
+const promotionalBanners = computed<SharedBanner[]>(() => [
   {
     id: NoticeBanner.VolumeVictoryCampaign,
     shouldDisplay:
@@ -171,15 +150,17 @@ const promotionalBanners = computed<Banner[]>(() => [
 
 const bannerToDisplay = computed(
   () =>
-    [
-      ...mkrMigrationBanner.value,
-      ...deprecatedWarningBanner.value,
-      ...expiryFutureBanner.value,
-      ...perpMarketSettleBanner.value,
-      ...activePreLaunchFuturesBanner.value,
-      ...chainUpgradeBanners.value,
-      ...promotionalBanners.value
-    ].filter(
+    (
+      [
+        ...mkrMigrationBanner.value,
+        ...deprecatedWarningBanner.value,
+        ...expiryFutureBanner.value,
+        ...perpMarketSettleBanner.value,
+        ...activePreLaunchFuturesBanner.value,
+        ...sharedBanners.value, // chain upgrade banners
+        ...promotionalBanners.value
+      ] as SharedBanner[]
+    ).filter(
       (banner) =>
         !bannersToHide.value.includes(banner.id as NoticeBanner) &&
         banner.shouldDisplay
@@ -247,14 +228,13 @@ function onClickStockTwitsCta() {
 <template>
   <div
     v-if="bannerToDisplay && !isHideBanner"
-    :class="[
-      jsonStore.isPostUpgradeMode ? 'justify-center' : 'justify-between'
-    ]"
-    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold"
+    class="bg-blue-400 text-blue-900 flex items-center px-3 py-1.5 text-sm relative z-40 font-semibold justify-between"
   >
     <div />
 
-    <template v-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
+    <component v-if="bannerToDisplay.content" :is="bannerToDisplay.content" />
+
+    <template v-else-if="bannerToDisplay.id === NoticeBanner.PerpSettleMarket">
       <span v-if="activePerpSettlePairs?.newExpiryLaunch">
         {{ $t('banners.settlePerpMarketBannerNewLaunch') }}
       </span>
@@ -334,26 +314,6 @@ function onClickStockTwitsCta() {
       </template>
     </i18n-t>
 
-    <div
-      v-if="
-        jsonStore.chainUpgradeConfig.proposalId &&
-        jsonStore.chainUpgradeConfig.proposalMsg &&
-        bannerToDisplay.id === NoticeBanner.UpcomingChainUpgrade
-      "
-      class="flex items-center gap-1"
-    >
-      <p>{{ jsonStore.chainUpgradeConfig.proposalMsg }}</p>
-      <NuxtLink
-        target="_blank"
-        class="hover:opacity-80 underline cursor-pointer"
-        :to="`${getHubUrl()}/proposal/${
-          jsonStore.chainUpgradeConfig.proposalId
-        }`"
-      >
-        {{ $t('banners.findOutMore') }}
-      </NuxtLink>
-    </div>
-
     <i18n-t
       v-if="bannerToDisplay.id === NoticeBanner.StockTwits"
       tag="p"
@@ -367,22 +327,6 @@ function onClickStockTwitsCta() {
           @click="onClickStockTwitsCta"
         >
           {{ $t('common.learnMore') }}
-        </NuxtLink>
-      </template>
-    </i18n-t>
-
-    <i18n-t
-      v-if="bannerToDisplay.id === NoticeBanner.PostChainUpgrade"
-      tag="p"
-      keypath="banners.postOnly"
-    >
-      <template #link>
-        <NuxtLink
-          target="_blank"
-          :to="NOTIFI_LINK"
-          class="hover:opacity-80 underline cursor-pointer"
-        >
-          {{ $t('banners.findOutMore') }}
         </NuxtLink>
       </template>
     </i18n-t>
@@ -435,7 +379,7 @@ function onClickStockTwitsCta() {
 
     <UIcon
       :name="NuxtUiIcons.Close"
-      class="h-4 w-4 min-w-4 hover:text-white"
+      class="h-4 w-4 min-w-4 hover:text-white cursor-pointer"
       @click="onHideBanner"
     />
   </div>

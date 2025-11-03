@@ -423,9 +423,7 @@ export enum NoticeBanner {
   PointsS1Ended = 'points-s1-ended',
   DeprecatedWallet = 'deprecated-wallet',
   PerpSettleMarket = 'perp-settle-market',
-  PostChainUpgrade = 'post-chain-upgrade',
   PreLaunchFutures = 'pre-launch-futures',
-  UpcomingChainUpgrade = 'upcoming-chain-upgrade',
   VolumeVictoryCampaign = 'volume-victory-campaign'
 }
 
