@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia'
-import { alchemyKey } from '@shared/wallet/alchemy'
 import { GeneralException } from '@injectivelabs/exceptions'
 import { fetchGasPrice } from '@shared/Service/app/ethGasPrice'
 import {
-  NETWORK,
   CHAIN_ID,
   DEFAULT_GAS_PRICE,
   ETHEREUM_CHAIN_ID
@@ -274,8 +272,8 @@ export const useAppStore = defineStore('app', {
 
       const hasAcceptedTerms = appStore.userState.hasAcceptedTerms
 
-      const isIAssetBannerViewed = appStore.userState.bannersViewed.find(
-        (item) => item === NoticeBanner.IAssets
+      const isStocksBannerViewed = appStore.userState.bannersViewed.find(
+        (item) => item === NoticeBanner.Stocks
       )
 
       appStore.$patch({
@@ -283,7 +281,7 @@ export const useAppStore = defineStore('app', {
         userState: {
           ...initialState.userState,
           dontShowAgain: appStore.userState.dontShowAgain,
-          bannersViewed: isIAssetBannerViewed ? [NoticeBanner.IAssets] : [],
+          bannersViewed: isStocksBannerViewed ? [NoticeBanner.Stocks] : [],
           preferences: {
             ...appStore.userState.preferences,
             selectedLanguage: appStore.userState.preferences.selectedLanguage

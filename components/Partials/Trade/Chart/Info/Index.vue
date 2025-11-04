@@ -2,6 +2,7 @@
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumber } from '@injectivelabs/utils'
 import { MARKETS_INFO } from '@/app/data/marketInfo'
+import { calculateLeverage } from '@/app/utils/formatters'
 import { IsSpotKey, MarketKey } from '@/types'
 import type { UiDerivativeMarket } from '@/types'
 
@@ -34,9 +35,9 @@ const maxLeverage = computed(() => {
     return ''
   }
 
-  return BigNumber(1)
-    .dividedBy((market.value as UiDerivativeMarket).initialMarginRatio)
-    .dp(0)
+  return calculateLeverage(
+    (market.value as UiDerivativeMarket).initialMarginRatio
+  ).toFixed()
 })
 
 const description = computed(() => {

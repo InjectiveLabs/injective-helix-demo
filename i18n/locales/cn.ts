@@ -619,9 +619,8 @@ export default defineI18nLocale(() => {
         warningText:
           '继续操作即表示您将资金存入一个非 Injective 控制或关联的应用程序。您需自行承担所有使用风险，并同意 Injective 无需为任何可能的损失负责。详情请参阅 Helix 的 {terms}。'
       },
-      iAssetModal: {
+      stocksModal: {
         cta: '开始交易',
-        title: '释放 iAssets 的强大力量！',
         description:
           '率先在全球顶级去中心化交易所交易链上股票期货，支持高达 25 倍杠杆。'
       },
@@ -700,7 +699,6 @@ export default defineI18nLocale(() => {
     },
     markets: {
       vol: '成交量',
-      iAsset: 'iAsset',
       marketId: 'Market ID',
       showLowVol: '显示低交易量市场',
       newMarkets: '🐤 新市场',
@@ -723,8 +721,7 @@ export default defineI18nLocale(() => {
         'layer-1': 'L1',
         deFi: 'DeFi',
         ai: 'AI',
-        rwa: 'RWA',
-        iAssets: 'iAssets'
+        rwa: 'RWA'
       }
     },
     connect: {
@@ -801,11 +798,7 @@ export default defineI18nLocale(() => {
       period: '周期',
       points: '积分',
       volume: '交易量',
-      totalPoints: '总积分',
-      lastUpdatedAt: '最近更新时间：',
-      myTotalPoints: '我在 Helix 的总积分',
       paginationDetails: '{from}-{to} 共 {total}',
-      description: '第一赛季已结束。有关积分的更多信息，请参见',
       leagues: {
         blue: '蓝带',
         black: '黑带',
@@ -836,8 +829,7 @@ export default defineI18nLocale(() => {
         getStarted: '立即开始',
         title: 'Helix 2.0 全新上线！探索焕然一新的交易体验。'
       },
-      iAssets: {
-        title: '在 Helix 上交易 iAssets',
+      stocks: {
         description:
           '使用加密货币交易股票，实现更快、更低成本、更透明的交易方式——融合传统市场与去中心化金融的力量。'
       },

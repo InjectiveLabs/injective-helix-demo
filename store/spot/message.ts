@@ -6,8 +6,8 @@ import {
   MsgCancelSpotOrder,
   MsgBatchUpdateOrders,
   MsgCreateSpotLimitOrder,
-  MsgBatchCancelSpotOrders,
   MsgCreateSpotMarketOrder,
+  MsgBatchCancelSpotOrders,
   spotPriceToChainPriceToFixed,
   spotQuantityToChainQuantityToFixed
 } from '@injectivelabs/sdk-ts'

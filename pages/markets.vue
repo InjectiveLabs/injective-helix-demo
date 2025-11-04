@@ -3,7 +3,6 @@ import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { IS_MAINNET } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { PartialsMarketsIAssetsBanner } from '#components'
 import { MarketCyTags, NoticeBanner, MarketCategoryType } from '@/types'
 
 const route = useRoute()
@@ -70,10 +69,10 @@ function setCategoryFromQuery() {
   return MarketCategoryType.All
 }
 
-function closeIAssetsBanner() {
+function closeStocksBanner() {
   appStore.setUserState({
     ...appStore.userState,
-    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.IAssets]
+    bannersViewed: [...appStore.userState.bannersViewed, NoticeBanner.Stocks]
   })
 }
 </script>
@@ -93,9 +92,9 @@ function closeIAssetsBanner() {
         class="mt-8"
       />
 
-      <PartialsMarketsIAssetsBanner
-        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.IAssets)"
-        @banner:close="closeIAssetsBanner"
+      <PartialsMarketsStocksBanner
+        v-if="!appStore.userState.bannersViewed.includes(NoticeBanner.Stocks)"
+        @banner:close="closeStocksBanner"
       />
 
       <div class="max-w-full mt-4 lg:mb-2">
@@ -118,7 +117,7 @@ function closeIAssetsBanner() {
                   size="xs"
                   :class="[
                     isActive ? 'opacity-100' : 'opacity-50',
-                    value === MarketCategoryType.iAssets ? '' : 'capitalize',
+                    value === MarketCategoryType.Stocks ? '' : 'capitalize',
                     'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'
                   ]"
                 >

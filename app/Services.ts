@@ -24,6 +24,7 @@ import type {
 tokenStaticFactory.mapRegistry(tokens as any)
 
 // Services
+// 'https://testing.abacus.injective.cooking/grpc'
 // https://k8s.mainnet.eu.abacus.injective.network/grpc
 
 export const getAbacusGrpcApi = async () =>

@@ -143,19 +143,19 @@ jobs:
           slack-user-token: ${{ secrets.SLACK_USER_TOKEN }}
 
       # Trigger helix dapp-tests workflow with staging URL and timestamp [Full mode]
-      # - name: Trigger helix dapp-tests workflow
-      #   if: steps.deployment_notification.outputs.message_ts != ''
-      #   run: |
-      #     echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
+      - name: Trigger helix dapp-tests workflow
+        if: steps.deployment_notification.outputs.message_ts != ''
+        run: |
+          echo "Triggering helix dapp-tests workflow with staging URL and timestamp"
 
-      #     gh workflow run "Helix Dapp Tests" \
-      #       --repo InjectiveLabs/dapp-tests \
-      #       --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
-      #       --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
+          gh workflow run "Helix E2E Tests - Testnet" \
+            --repo InjectiveLabs/dapp-tests \
+            --field staging_url="${{ steps.netlify_deploy.outputs.staging_url }}" \
+            --field timestamp="${{ steps.deployment_notification.outputs.message_ts }}"
 
-      #     echo "✅ Successfully triggered dapp-tests workflow"
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          echo "✅ Successfully triggered dapp-tests workflow"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       # Optional: Use the outputs from the action
 
       - name: Deployment Summary

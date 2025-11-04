@@ -60,7 +60,7 @@ onMounted(() => {
   }
 
   if (route.path.startsWith(TradeSubPagePath.Stocks)) {
-    activeCategory.value = MarketCategoryType.iAssets
+    activeCategory.value = MarketCategoryType.Stocks
   }
 })
 
@@ -118,7 +118,7 @@ function resetCategory() {
                     size="xs"
                     :class="[
                       isActive ? 'opacity-100' : 'opacity-50',
-                      category.value === MarketCategoryType.iAssets
+                      category.value === MarketCategoryType.Stocks
                         ? ''
                         : 'capitalize',
                       'bg-opacity-20 text-blue-550 border-0 tracking-wider font-semibold focus-within:ring-0 rounded-md hover:bg-opacity-20 hover:bg-blue-500'

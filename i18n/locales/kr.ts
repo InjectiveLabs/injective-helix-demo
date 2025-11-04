@@ -643,9 +643,8 @@ export default defineI18nLocale(() => {
         warningText:
           '계속 진행하면 Injective가 통제하거나 제휴하지 않은 애플리케이션에 자금을 예치하게 됩니다. 이 애플리케이션의 사용은 전적으로 귀하의 책임이며, 그로 인해 발생할 수 있는 손실에 대해 Injective를 면책하는 데 동의합니다. 자세한 내용은 Helix {terms}를 참조하세요.'
       },
-      iAssetModal: {
+      stocksModal: {
         cta: '트레이딩 시작',
-        title: 'iAssets의 힘을 경험하세요!',
         description:
           '세계 최고의 탈중앙화 거래소에서만 25배 레버리지로 온체인 주식 선물을 거래하는 최초의 사용자가 되어보세요.'
       },
@@ -726,7 +725,6 @@ export default defineI18nLocale(() => {
     },
     markets: {
       vol: 'Vol',
-      iAsset: 'iAsset',
       marketId: '마켓 ID',
       showLowVol: '낮은 거래량 표시',
       newMarkets: '🐤 신규 마켓',
@@ -752,8 +750,7 @@ export default defineI18nLocale(() => {
         'layer-1': 'L1',
         deFi: 'DeFi',
         ai: 'AI',
-        rwa: 'RWA',
-        iAssets: 'iAssets'
+        rwa: 'RWA'
       }
     },
     connect: {
@@ -831,12 +828,7 @@ export default defineI18nLocale(() => {
       period: '기간',
       points: '포인트',
       volume: '거래량',
-      totalPoints: '총 포인트',
-      lastUpdatedAt: '마지막 업데이트 ',
-      myTotalPoints: 'Helix에서의 총 포인트',
       paginationDetails: '{from}-{to} / 총 {total}',
-      description:
-        '시즌 1이 종료되었습니다. 포인트에 대한 자세한 정보는 확인하세요',
       leagues: {
         blue: '블루 벨트',
         black: '블랙 벨트',
@@ -869,8 +861,7 @@ export default defineI18nLocale(() => {
         getStarted: '시작하기',
         title: 'Helix 2.0 소개! 완전히 새로운 트레이딩 경험을 발견하세요.'
       },
-      iAssets: {
-        title: 'Helix에서 iAssets 거래',
+      stocks: {
         description:
           '암호화폐로 주식을 거래하여 더 빠르고 저렴하며 투명한 거래를 경험하세요 - 전통적인 마켓과 탈중앙화 금융의 힘을 결합했습니다.'
       },

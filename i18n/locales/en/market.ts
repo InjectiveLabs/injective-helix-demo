@@ -3,7 +3,7 @@ import { MarketCategoryType } from '@/types'
 export default {
   markets: {
     vol: 'Vol',
-    iAsset: 'iAsset',
+    stocks: 'Stocks',
     marketId: 'Market ID',
     showLowVol: 'Show low vol.',
     newMarkets: '🐤 New Markets',
@@ -30,7 +30,7 @@ export default {
       [MarketCategoryType.DeFi]: 'DeFi',
       [MarketCategoryType.AI]: 'AI',
       [MarketCategoryType.RWA]: 'RWA',
-      [MarketCategoryType.iAssets]: 'iAssets'
+      [MarketCategoryType.Stocks]: 'Stocks'
     }
   }
 }

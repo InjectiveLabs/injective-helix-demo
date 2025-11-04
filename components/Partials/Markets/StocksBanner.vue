@@ -23,7 +23,7 @@ function onTradeNow() {
     class="relative mt-6 bg-[linear-gradient(90deg,#1F1D49,#4C3DFF)] rounded-lg"
   >
     <img
-      src="/images/iassets-banner.webp"
+      src="/images/stocks-banner.webp"
       class="w-24 absolute left-8 bottom-0"
     />
 
@@ -39,10 +39,10 @@ function onTradeNow() {
     >
       <div class="flex-1">
         <h2 class="text-lg lg:text-xl font-bold">
-          {{ $t('banners.iAssets.title') }}
+          {{ $t('banners.stocks.title') }}
         </h2>
         <p class="max-lg:text-sm mt-3 font-medium">
-          {{ $t('banners.iAssets.description') }}
+          {{ $t('banners.stocks.description') }}
         </p>
       </div>
 

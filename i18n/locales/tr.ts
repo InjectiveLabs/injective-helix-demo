@@ -659,9 +659,8 @@ export default defineI18nLocale(() => {
         warningText:
           'İlerlemeniz durumunda, Injective tarafından kontrol edilmeyen veya ilişkili olmayan bir uygulamaya fon yatırmış olacaksınız. Bu uygulamayı kullanmanız tamamen sizin sorumluluğunuzdadır; oluşabilecek kayıplardan Injective sorumlu tutulamaz. Detaylar için Helix {terms} sayfasını inceleyin.'
       },
-      iAssetModal: {
+      stocksModal: {
         cta: 'İşlem Yapmaya Başla',
-        title: 'iAssets Gücünün Kilidini Aç!',
         description:
           'Dünyanın önde gelen merkeziyetsiz borsasında, 25x kaldıraçla zincir üstü hisse senedi vadeli işlemlerinde ilk işlem yapanlardan biri olun.'
       },
@@ -742,7 +741,6 @@ export default defineI18nLocale(() => {
     },
     markets: {
       vol: 'Hacim',
-      iAsset: 'iAsset',
       marketId: 'Piyasa ID',
       showLowVol: 'Düşük hacmi göster',
       newMarkets: '🐤 Yeni Piyasalar',
@@ -768,8 +766,7 @@ export default defineI18nLocale(() => {
         'layer-1': 'L1',
         deFi: 'DeFi',
         ai: 'AI',
-        rwa: 'RWA',
-        iAssets: 'iAssets'
+        rwa: 'RWA'
       }
     },
     connect: {
@@ -849,12 +846,7 @@ export default defineI18nLocale(() => {
       period: 'Dönem',
       points: 'Puanlar',
       volume: 'Hacim',
-      totalPoints: 'Toplam Puan',
-      lastUpdatedAt: 'Son güncelleme: ',
-      myTotalPoints: 'Helix üzerindeki toplam puanım',
       paginationDetails: '{from}-{to} / {total}',
-      description:
-        '1. Sezon sona erdi. Puanlar hakkında daha fazla bilgi için bakınız',
       leagues: {
         blue: 'Mavi Kuşak',
         black: 'Siyah Kuşak',
@@ -888,8 +880,7 @@ export default defineI18nLocale(() => {
         getStarted: 'Başlayın',
         title: 'Helix 2.0 ile tanışın! Yepyeni bir ticaret deneyimi keşfedin.'
       },
-      iAssets: {
-        title: "Helix'te iAssets ile işlem yapın",
+      stocks: {
         description:
           'Hızlı, ucuz ve daha şeffaf işlemler için kripto ile hisse senetleri alım satımı yapın - geleneksel piyasalar ile merkeziyetsiz finansın gücünü birleştiriyor.'
       },
