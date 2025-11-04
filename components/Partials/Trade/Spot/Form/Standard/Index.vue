@@ -40,7 +40,7 @@ const isLimitOrder = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
-const spotDetails = useSpotDetails({
+const tradeDetails = useTradeDetails({
   isLimitOrder,
   takerFeeRate,
   market: computed(() => market.value),
@@ -59,11 +59,11 @@ const spotDetails = useSpotDetails({
 })
 
 const quantityToBigNumber = computed(
-  () => new BigNumberInBase(spotDetails.quantity.value)
+  () => new BigNumberInBase(tradeDetails.quantity.value)
 )
 
 const totalWithFeeToBigNumber = computed(
-  () => new BigNumberInBase(spotDetails.notionalWithFee.value)
+  () => new BigNumberInBase(tradeDetails.notionalWithFee.value)
 )
 
 const isSwapEnabled = computed(() =>
@@ -103,9 +103,9 @@ watch(
     const amount = formValues[SpotTradeFormField.Amount] || '0'
 
     if (option === TradeAmountOption.Base) {
-      spotDetails.quantity.value = amount
+      tradeDetails.quantity.value = amount
     } else {
-      spotDetails.notional.value = amount
+      tradeDetails.notional.value = amount
     }
   },
   { deep: true }
@@ -182,7 +182,7 @@ watch(
         v-bind="{
           quantity: quantityToBigNumber,
           totalWithFee: totalWithFeeToBigNumber,
-          minimumAmountInQuote: spotDetails.minimumAmountInQuote.value
+          minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
         }"
       />
     </div>
@@ -195,7 +195,7 @@ watch(
     <PartialsTradeSpotFormStandardDetails
       class="my-4"
       v-bind="{
-        spotDetails,
+        tradeDetails,
         isLimitOrder
       }"
     />
@@ -204,9 +204,9 @@ watch(
       v-bind="{
         isLimitOrder,
         quantity: quantityToBigNumber,
-        worstPrice: spotDetails.executionPrice.value,
-        hasEnoughLiquidity: spotDetails.enoughLiquidity.value,
-        hasSlippageWarning: spotDetails.hasSlippageWarning.value
+        worstPrice: tradeDetails.executionPrice.value,
+        hasEnoughLiquidity: tradeDetails.enoughLiquidity.value,
+        hasSlippageWarning: tradeDetails.hasSlippageWarning.value
       }"
     />
 

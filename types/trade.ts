@@ -193,32 +193,14 @@ export type SpotGridTradingForm = {
   [SpotGridTradingField.StrategyType]: SpotGridStrategyType
 }
 
-export type SpotDetails = {
-  bestPrice: Ref<BigNumberInBase>
-  feeRate: ComputedRef<BigNumberInBase>
-  enoughLiquidity: ComputedRef<boolean>
-  notional: WritableComputedRef<string>
-  quantity: WritableComputedRef<string>
-  feeAmount: ComputedRef<BigNumberInBase>
-  hasSlippageWarning: ComputedRef<boolean>
-  worstPrice: ComputedRef<BigNumberInBase>
-  averagePrice: ComputedRef<BigNumberInBase>
-  slippagePrice: ComputedRef<BigNumberInBase>
-  executionPrice: ComputedRef<BigNumberInBase>
-  notionalWithFee: ComputedRef<BigNumberInBase>
-  calculatedNotional: ComputedRef<BigNumberInBase>
-  minimumAmountInQuote: ComputedRef<BigNumberInBase>
-  estSlippagePercentage: ComputedRef<BigNumberInBase>
-}
-
-export type DerivativeDetails = {
+export type TradeDetails = {
   margin: ComputedRef<BigNumberInBase>
-  enoughLiquidity: ComputedRef<boolean>
+  feeRate: ComputedRef<BigNumberInBase>
   notional: WritableComputedRef<string>
   quantity: WritableComputedRef<string>
-  feeRate: ComputedRef<BigNumberInBase>
-  bestPrice: ComputedRef<BigNumberInBase>
+  enoughLiquidity: ComputedRef<boolean>
   feeAmount: ComputedRef<BigNumberInBase>
+  bestPrice: ComputedRef<BigNumberInBase>
   hasSlippageWarning: ComputedRef<boolean>
   worstPrice: ComputedRef<BigNumberInBase>
   averagePrice: ComputedRef<BigNumberInBase>

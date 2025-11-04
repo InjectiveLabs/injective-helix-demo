@@ -1,3 +1,4 @@
+import { SharedMarketType } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
@@ -16,29 +17,35 @@ import {
   WorkerMessageResponseType
 } from '@/types'
 import type {
-  SpotDetails,
-  UiSpotMarket,
+  TradeDetails,
+  UiMarketWithToken,
   OrderbookWorkerType,
   OrderbookWorkerResult
 } from '@/types'
 
-export function useSpotDetails({
+export function useTradeDetails({
   isBuy,
   market,
+  leverage,
   limitPrice,
   isPostOnly,
   isLimitOrder,
   takerFeeRate,
+  triggerPrice,
+  isTriggerOrder,
   slippagePercentage
 }: {
   isBuy: ComputedRef<boolean>
+  leverage?: ComputedRef<string>
   limitPrice: ComputedRef<string>
   isPostOnly: ComputedRef<boolean>
-  market: ComputedRef<UiSpotMarket>
   isLimitOrder: ComputedRef<boolean>
+  triggerPrice?: ComputedRef<string>
+  isTriggerOrder?: ComputedRef<boolean>
+  market: ComputedRef<UiMarketWithToken>
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
-}): SpotDetails {
+}): TradeDetails {
   function safeAmount(value: string) {
     const isInvalid =
       new BigNumberInBase(value).isNaN() ||
@@ -52,6 +59,9 @@ export function useSpotDetails({
   const worker = inject(
     OrderbookWorkerKey
   ) as unknown as Ref<OrderbookWorkerType>
+
+  const isSpot = computed(() => market.value.type === SharedMarketType.Spot)
+  const isDerivative = computed(() => !isSpot.value)
 
   const quantity = ref('0')
   const notional = ref('0')
@@ -89,10 +99,38 @@ export function useSpotDetails({
         return
       }
 
+      if (isTriggerOrder?.value) {
+        const quantityInBase = new BigNumberInBase(safeAmount(value))
+        const triggerPriceInBase = new BigNumberInBase(
+          safeAmount(triggerPrice?.value || '0')
+        )
+
+        const priceWithSlippage = calculateSlippagePrice({
+          isBuy: isBuy.value,
+          price: triggerPriceInBase,
+          slippageTolerance: slippageTolerance.value
+        })
+
+        bestPrice.value = triggerPriceInBase
+        worstPrice.value = priceWithSlippage
+        averagePrice.value = priceWithSlippage
+
+        calculatedNotional.value = calculateNotional({
+          price: priceWithSlippage,
+          quantity: quantityInBase
+        })
+
+        notional.value = notionalWithFee.value.toFixed()
+
+        enoughLiquidity.value = true
+
+        return
+      }
+
       worker.value?.postMessage({
         type: WorkerMessageType.Quantity,
         data: {
-          isSpot: true,
+          isSpot: isSpot.value,
           isBuy: isBuy.value,
           quantity: safeAmount(value),
           baseDecimals: market.value.baseToken.decimals,
@@ -145,10 +183,47 @@ export function useSpotDetails({
         return
       }
 
+      if (isTriggerOrder?.value) {
+        const triggerPriceInBase = new BigNumberInBase(
+          safeAmount(triggerPrice?.value || '0')
+        )
+
+        const priceWithSlippage = calculateSlippagePrice({
+          isBuy: isBuy.value,
+          price: triggerPriceInBase,
+          slippageTolerance: slippageTolerance.value
+        })
+
+        bestPrice.value = triggerPriceInBase
+        worstPrice.value = priceWithSlippage
+        averagePrice.value = priceWithSlippage
+
+        const calculatedQuantity = calculateQuantityFromNotional({
+          price: priceWithSlippage,
+          notional: notionalInBase
+        })
+
+        const calculatedQuantityQuantized = quantizeNumber(
+          calculatedQuantity,
+          market.value.quantityTensMultiplier
+        )
+
+        quantity.value = calculatedQuantityQuantized.toFixed()
+
+        calculatedNotional.value = calculateNotional({
+          price: priceWithSlippage,
+          quantity: calculatedQuantityQuantized
+        })
+
+        enoughLiquidity.value = true
+
+        return
+      }
+
       worker.value?.postMessage({
         type: WorkerMessageType.Notional,
         data: {
-          isSpot: true,
+          isSpot: isSpot.value,
           isBuy: isBuy.value,
           notional: notionalMinusFee.toFixed(),
           baseDecimals: market.value.baseToken.decimals,
@@ -201,6 +276,25 @@ export function useSpotDetails({
     estSlippagePercentage.value.gt(slippagePercentage.value)
   )
 
+  const margin = computed(() => {
+    if (!isDerivative.value || !leverage?.value) {
+      return ZERO_IN_BASE
+    }
+
+    const leverageInBase = new BigNumberInBase(safeAmount(leverage.value))
+
+    if (leverageInBase.isZero()) {
+      return ZERO_IN_BASE
+    }
+
+    return quantizeNumber(
+      new BigNumberInBase(calculatedNotional.value).div(leverageInBase),
+      -market.value.quoteToken.decimals
+    )
+  })
+
+  const marginWithFee = computed(() => margin.value.plus(feeAmount.value))
+
   const executionPrice = computed(() => {
     const price = isLimitOrder.value
       ? new BigNumberInBase(limitPrice.value)
@@ -226,7 +320,7 @@ export function useSpotDetails({
   })
 
   worker.value.addEventListener('message', (ev) => {
-    if (isLimitOrder.value) {
+    if (isLimitOrder.value || isTriggerOrder?.value) {
       return
     }
 
@@ -271,8 +365,10 @@ export function useSpotDetails({
   })
 
   return {
+    margin,
     feeRate,
     feeAmount,
+    marginWithFee,
     slippagePrice,
     executionPrice,
     notionalWithFee,

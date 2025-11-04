@@ -5,7 +5,7 @@ import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import {
   Modal,
   MarketKey,
-  DerivativeDetails,
+  TradeDetails,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
   DerivativesTradeFormField
@@ -26,7 +26,7 @@ const props = withDefaults(
   defineProps<{
     isLimitOrder: boolean
     isTriggerOrder: boolean
-    derivativeDetails: DerivativeDetails
+    tradeDetails: TradeDetails
     estLiquidationPrice: BigNumberInBase
   }>(),
   {}
@@ -80,11 +80,11 @@ const adaptedEstSlippagePercentage = computed(() => {
     return DEFAULT_EST_SLIPPAGE
   }
 
-  if (props.derivativeDetails.estSlippagePercentage.value.lt(0.0005)) {
+  if (props.tradeDetails.estSlippagePercentage.value.lt(0.0005)) {
     return MIN_EST_SLIPPAGE
   }
 
-  return props.derivativeDetails.estSlippagePercentage.value
+  return props.tradeDetails.estSlippagePercentage.value
 })
 
 const estSlippageDecimals = computed(() => {
@@ -96,7 +96,7 @@ const estSlippageDecimals = computed(() => {
 })
 
 const showEstSlippage = computed(
-  () => props.derivativeDetails.enoughLiquidity.value && !props.isTriggerOrder
+  () => props.tradeDetails.enoughLiquidity.value && !props.isTriggerOrder
 )
 
 const isMakerFee = computed(
@@ -147,8 +147,8 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: derivativeDetails.marginWithFee.value,
-                  shouldAbbreviate: false
+                  shouldAbbreviate: false,
+                  amount: tradeDetails.marginWithFee.value
                 }"
               />
             </span>
@@ -232,9 +232,9 @@ function openSlippageModal() {
             <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
-                amount: derivativeDetails.margin.value,
                 useSubscript: true,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.margin.value
               }"
               class="text-white"
             />
@@ -310,10 +310,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: derivativeDetails.quantity.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
+                amount: tradeDetails.quantity.value,
                 decimals: derivativeMarket.quantityDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.Quantity)"
@@ -332,10 +332,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: derivativeDetails.notional.value,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.notional.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.Notional)"
             />
@@ -356,7 +356,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: derivativeDetails.calculatedNotional.value
+                amount: tradeDetails.calculatedNotional.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.CalculatedNotional)"
             />
@@ -373,10 +373,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: derivativeDetails.feeAmount.value,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.feeAmount.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.FeeAmount)"
             />
@@ -395,9 +395,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: derivativeDetails.notionalWithFee.value,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.notionalWithFee.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.TotalNotional)"
             />
@@ -415,10 +415,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: derivativeDetails.margin.value,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.margin.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.Margin)"
             />
@@ -437,9 +437,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: derivativeDetails.marginWithFee.value,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.marginWithFee.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.MarginWithFee)"
             />
@@ -461,7 +461,7 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: derivativeDetails.minimumAmountInQuote.value
+                amount: tradeDetails.minimumAmountInQuote.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.MinimumAmountInQuote)"
             />
@@ -480,8 +480,8 @@ function openSlippageModal() {
             "
           >
             {{
-              new BigNumberInBase(derivativeDetails.notional.value).lte(
-                derivativeDetails.minimumAmountInQuote.value
+              new BigNumberInBase(tradeDetails.notional.value).lte(
+                tradeDetails.minimumAmountInQuote.value
               )
                 ? 'Yes'
                 : 'No'
@@ -505,7 +505,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: derivativeDetails.estSlippagePercentage.value
+                  amount: tradeDetails.estSlippagePercentage.value
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.EstimatedSlippage)"
               />%
@@ -547,9 +547,9 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: derivativeDetails.slippagePrice.value,
                   noTrailingZeros: false,
-                  shouldAbbreviate: false
+                  shouldAbbreviate: false,
+                  amount: tradeDetails.slippagePrice.value
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.SlippagePrice)"
               />
@@ -572,8 +572,8 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: derivativeMarket.priceDecimals,
-                amount: derivativeDetails.worstPrice.value
+                amount: tradeDetails.worstPrice.value,
+                decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.WorstPrice)"
             />
@@ -594,8 +594,8 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: derivativeMarket.priceDecimals,
-                amount: derivativeDetails.averagePrice.value
+                amount: tradeDetails.averagePrice.value,
+                decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.AveragePrice)"
             />
@@ -616,8 +616,8 @@ function openSlippageModal() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: derivativeMarket.priceDecimals,
-                amount: derivativeDetails.bestPrice.value
+                amount: tradeDetails.bestPrice.value,
+                decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.BestPrice)"
             />
@@ -638,7 +638,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(PerpetualMarketCyTags.EnoughLiquidity)"
             >
-              {{ derivativeDetails.enoughLiquidity.value ? 'Yes' : 'No' }}
+              {{ tradeDetails.enoughLiquidity.value ? 'Yes' : 'No' }}
             </p>
           </div>
           <div class="flex justify-between items-center text-xs font-medium">
@@ -651,7 +651,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWarning)"
             >
-              {{ derivativeDetails.hasSlippageWarning.value ? 'Yes' : 'No' }}
+              {{ tradeDetails.hasSlippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>
@@ -669,7 +669,7 @@ function openSlippageModal() {
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
                 decimals: derivativeMarket.priceDecimals,
-                amount: derivativeDetails.executionPrice.value
+                amount: tradeDetails.executionPrice.value
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.ExecutionPrice)"
             />

@@ -55,7 +55,7 @@ const { takerFeeRate } = useTradeFee({
   marketMakerFeeRate: market.value.makerFeeRate
 })
 
-const derivativeDetails = useDerivativeDetails({
+const tradeDetails = useTradeDetails({
   isLimitOrder,
   takerFeeRate,
   isTriggerOrder,
@@ -88,15 +88,15 @@ const derivativeDetails = useDerivativeDetails({
 const isReady = ref(false)
 
 const quantityToBigNumber = computed(
-  () => new BigNumberInBase(derivativeDetails.quantity.value)
+  () => new BigNumberInBase(tradeDetails.quantity.value)
 )
 
 const feeAmountToBigNumber = computed(
-  () => new BigNumberInBase(derivativeDetails.feeAmount.value)
+  () => new BigNumberInBase(tradeDetails.feeAmount.value)
 )
 
 const totalNotionalToBigNumber = computed(
-  () => new BigNumberInBase(derivativeDetails.notionalWithFee.value)
+  () => new BigNumberInBase(tradeDetails.notionalWithFee.value)
 )
 
 const estLiquidationPrice = computed(() => {
@@ -106,10 +106,10 @@ const estLiquidationPrice = computed(() => {
 
   return calculateLiquidationPrice({
     market: market.value,
-    quantity: derivativeDetails.quantity.value,
+    quantity: tradeDetails.quantity.value,
     orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
-    price: derivativeDetails.executionPrice.value.toFixed(),
-    notionalWithLeverage: derivativeDetails.margin.value.toFixed()
+    price: tradeDetails.executionPrice.value.toFixed(),
+    notionalWithLeverage: tradeDetails.margin.value.toFixed()
   })
 })
 
@@ -168,10 +168,10 @@ watch(
       TradeAmountOption.Base
 
     if (option === TradeAmountOption.Base) {
-      derivativeDetails.quantity.value =
+      tradeDetails.quantity.value =
         formValues[DerivativesTradeFormField.Amount] || '0'
     } else {
-      derivativeDetails.notional.value =
+      tradeDetails.notional.value =
         formValues[DerivativesTradeFormField.Amount] || '0'
     }
   },
@@ -243,9 +243,9 @@ watch(
         v-bind="{
           isLimitOrder,
           quantity: quantityToBigNumber,
-          worstPrice: derivativeDetails.executionPrice.value,
-          marginWithFee: derivativeDetails.marginWithFee.value,
-          minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value
+          worstPrice: tradeDetails.executionPrice.value,
+          marginWithFee: tradeDetails.marginWithFee.value,
+          minimumAmountInQuote: tradeDetails.minimumAmountInQuote.value
         }"
       />
     </div>
@@ -262,9 +262,9 @@ watch(
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
       v-bind="{
+        tradeDetails,
         isLimitOrder,
         isTriggerOrder,
-        derivativeDetails,
         estLiquidationPrice
       }"
     />
@@ -275,13 +275,13 @@ watch(
         isTriggerOrder,
         quantity: quantityToBigNumber,
         feeAmount: feeAmountToBigNumber,
-        margin: derivativeDetails.margin.value,
+        margin: tradeDetails.margin.value,
         totalNotional: totalNotionalToBigNumber,
-        worstPrice: derivativeDetails.executionPrice.value,
-        feePercentage: derivativeDetails.feeRate.value,
-        marginWithFee: derivativeDetails.marginWithFee.value,
-        hasEnoughLiquidity: derivativeDetails.enoughLiquidity.value,
-        hasSlippageWarning: derivativeDetails.hasSlippageWarning.value
+        worstPrice: tradeDetails.executionPrice.value,
+        feePercentage: tradeDetails.feeRate.value,
+        marginWithFee: tradeDetails.marginWithFee.value,
+        hasEnoughLiquidity: tradeDetails.enoughLiquidity.value,
+        hasSlippageWarning: tradeDetails.hasSlippageWarning.value
       }"
     />
 
@@ -294,7 +294,7 @@ watch(
     />
 
     <ModalsLeverage
-      v-bind="{ worstPrice: derivativeDetails.executionPrice.value }"
+      v-bind="{ worstPrice: tradeDetails.executionPrice.value }"
     />
   </div>
 </template>
