@@ -2,7 +2,7 @@
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
-import type { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   Modal,
   MarketKey,
@@ -126,8 +126,8 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: spotDetails.totalNotional.value,
-                  shouldAbbreviate: false
+                  shouldAbbreviate: false,
+                  amount: spotDetails.notionalWithFee.value
                 }"
               />
             </span>
@@ -336,9 +336,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: spotDetails.totalNotional.value,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: spotDetails.notionalWithFee.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.TotalNotional)"
             />
@@ -376,7 +376,13 @@ function openSlippageModal() {
             class="text-white"
             :data-cy="dataCyTag(SpotMarketCyTags.IsNotionalLessThanMinNotional)"
           >
-            {{ spotDetails.isNotionalLessThanMinNotional.value ? 'Yes' : 'No' }}
+            {{
+              new BigNumberInBase(spotDetails.notional.value).lte(
+                spotDetails.minimumAmountInQuote.value
+              )
+                ? 'Yes'
+                : 'No'
+            }}
           </p>
         </div>
         <template v-if="!isLimitOrder">
@@ -535,7 +541,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(SpotMarketCyTags.SlippageWarning)"
             >
-              {{ spotDetails.slippageWarning.value ? 'Yes' : 'No' }}
+              {{ spotDetails.hasSlippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>

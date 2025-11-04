@@ -38,7 +38,6 @@ const props = withDefaults(
     worstPrice: BigNumberInBase
     hasEnoughLiquidity: boolean
     hasSlippageWarning: boolean
-    isNotionalLessThanMinNotional: boolean
   }>(),
   {
     hasEnoughLiquidity: true
@@ -120,10 +119,6 @@ const isDisabled = computed(() => {
   }
 
   if (props.hasSlippageWarning) {
-    return true
-  }
-
-  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 

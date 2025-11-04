@@ -63,7 +63,7 @@ const quantityToBigNumber = computed(
 )
 
 const totalWithFeeToBigNumber = computed(
-  () => new BigNumberInBase(spotDetails.totalNotional.value)
+  () => new BigNumberInBase(spotDetails.notionalWithFee.value)
 )
 
 const isSwapEnabled = computed(() =>
@@ -182,9 +182,7 @@ watch(
         v-bind="{
           quantity: quantityToBigNumber,
           totalWithFee: totalWithFeeToBigNumber,
-          minimumAmountInQuote: spotDetails.minimumAmountInQuote.value,
-          isNotionalLessThanMinNotional:
-            spotDetails.isNotionalLessThanMinNotional.value ?? false
+          minimumAmountInQuote: spotDetails.minimumAmountInQuote.value
         }"
       />
     </div>
@@ -208,9 +206,7 @@ watch(
         quantity: quantityToBigNumber,
         worstPrice: spotDetails.executionPrice.value,
         hasEnoughLiquidity: spotDetails.enoughLiquidity.value,
-        hasSlippageWarning: spotDetails.slippageWarning.value,
-        isNotionalLessThanMinNotional:
-          spotDetails.isNotionalLessThanMinNotional.value ?? false
+        hasSlippageWarning: spotDetails.hasSlippageWarning.value
       }"
     />
 

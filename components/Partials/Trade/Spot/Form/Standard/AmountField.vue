@@ -34,7 +34,6 @@ const props = withDefaults(
     quantity: BigNumberInBase
     totalWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
-    isNotionalLessThanMinNotional: boolean
   }>(),
   {
     quantity: undefined,
@@ -384,18 +383,8 @@ onMounted(() => {
         </div>
       </template>
     </AppInputField>
-    <div
-      v-if="errorMessage || isNotionalLessThanMinNotional"
-      class="error-message capitalize"
-    >
-      {{
-        errorMessage
-          ? errorMessage
-          : $t('trade.minNotionalError', {
-              minNotional: market.minNotionalInToken,
-              symbol: market.quoteToken.symbol
-            })
-      }}
+    <div v-if="errorMessage" class="error-message capitalize">
+      {{ errorMessage }}
     </div>
     <div
       v-else-if="isShowTensMultiplierNote && amountValue"
