@@ -10,7 +10,7 @@ import {
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
-import type { BigNumberInBase } from '@injectivelabs/utils'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 import {
   UI_ZERO_DECIMAL,
@@ -395,7 +395,7 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: derivativeDetails.totalNotional.value,
+                amount: derivativeDetails.notionalWithFee.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false
               }"
@@ -480,7 +480,9 @@ function openSlippageModal() {
             "
           >
             {{
-              derivativeDetails.isNotionalLessThanMinNotional.value
+              new BigNumberInBase(derivativeDetails.notional.value).lte(
+                derivativeDetails.minimumAmountInQuote.value
+              )
                 ? 'Yes'
                 : 'No'
             }}
@@ -649,7 +651,7 @@ function openSlippageModal() {
               class="text-white"
               :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWarning)"
             >
-              {{ derivativeDetails.slippageWarning.value ? 'Yes' : 'No' }}
+              {{ derivativeDetails.hasSlippageWarning.value ? 'Yes' : 'No' }}
             </p>
           </div>
         </template>

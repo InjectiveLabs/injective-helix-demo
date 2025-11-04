@@ -35,14 +35,14 @@ export function calculateNotionalBeforeFee(params: {
 
 export function calculateSlippagePrice(params: {
   isBuy: boolean
-  basePrice: BigNumberInBase
+  price: BigNumberInBase
   slippageTolerance: BigNumberInBase
 }): BigNumberInBase {
   if (params.isBuy) {
-    return params.basePrice.times(ONE_IN_BASE.plus(params.slippageTolerance))
+    return params.price.times(ONE_IN_BASE.plus(params.slippageTolerance))
   }
 
-  return params.basePrice.times(ONE_IN_BASE.minus(params.slippageTolerance))
+  return params.price.times(ONE_IN_BASE.minus(params.slippageTolerance))
 }
 
 export function calculateEstimatedSlippage(params: {

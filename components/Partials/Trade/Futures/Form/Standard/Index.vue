@@ -96,7 +96,7 @@ const feeAmountToBigNumber = computed(
 )
 
 const totalNotionalToBigNumber = computed(
-  () => new BigNumberInBase(derivativeDetails.totalNotional.value)
+  () => new BigNumberInBase(derivativeDetails.notionalWithFee.value)
 )
 
 const estLiquidationPrice = computed(() => {
@@ -245,9 +245,7 @@ watch(
           quantity: quantityToBigNumber,
           worstPrice: derivativeDetails.executionPrice.value,
           marginWithFee: derivativeDetails.marginWithFee.value,
-          minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value,
-          isNotionalLessThanMinNotional:
-            derivativeDetails.isNotionalLessThanMinNotional.value ?? false
+          minimumAmountInQuote: derivativeDetails.minimumAmountInQuote.value
         }"
       />
     </div>
@@ -280,12 +278,10 @@ watch(
         margin: derivativeDetails.margin.value,
         totalNotional: totalNotionalToBigNumber,
         worstPrice: derivativeDetails.executionPrice.value,
-        feePercentage: derivativeDetails.feePercentage.value,
+        feePercentage: derivativeDetails.feeRate.value,
         marginWithFee: derivativeDetails.marginWithFee.value,
         hasEnoughLiquidity: derivativeDetails.enoughLiquidity.value,
-        hasSlippageWarning: derivativeDetails.slippageWarning.value,
-        isNotionalLessThanMinNotional:
-          derivativeDetails.isNotionalLessThanMinNotional.value ?? false
+        hasSlippageWarning: derivativeDetails.hasSlippageWarning.value
       }"
     />
 

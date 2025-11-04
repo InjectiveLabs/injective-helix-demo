@@ -195,6 +195,7 @@ export type SpotGridTradingForm = {
 
 export type SpotDetails = {
   bestPrice: Ref<BigNumberInBase>
+  feeRate: ComputedRef<BigNumberInBase>
   enoughLiquidity: ComputedRef<boolean>
   notional: WritableComputedRef<string>
   quantity: WritableComputedRef<string>
@@ -211,22 +212,21 @@ export type SpotDetails = {
 }
 
 export type DerivativeDetails = {
-  feeAmount: ComputedRef<string>
-  bestPrice: Ref<BigNumberInBase>
-  totalNotional: ComputedRef<string>
   margin: ComputedRef<BigNumberInBase>
   enoughLiquidity: ComputedRef<boolean>
-  slippageWarning: ComputedRef<boolean>
   notional: WritableComputedRef<string>
   quantity: WritableComputedRef<string>
-  calculatedNotional: ComputedRef<string>
+  feeRate: ComputedRef<BigNumberInBase>
+  bestPrice: ComputedRef<BigNumberInBase>
+  feeAmount: ComputedRef<BigNumberInBase>
+  hasSlippageWarning: ComputedRef<boolean>
   worstPrice: ComputedRef<BigNumberInBase>
   averagePrice: ComputedRef<BigNumberInBase>
-  feePercentage: ComputedRef<BigNumberInBase>
   marginWithFee: ComputedRef<BigNumberInBase>
   slippagePrice: ComputedRef<BigNumberInBase>
   executionPrice: ComputedRef<BigNumberInBase>
+  notionalWithFee: ComputedRef<BigNumberInBase>
+  calculatedNotional: ComputedRef<BigNumberInBase>
   minimumAmountInQuote: ComputedRef<BigNumberInBase>
   estSlippagePercentage: ComputedRef<BigNumberInBase>
-  isNotionalLessThanMinNotional: ComputedRef<boolean | undefined>
 }

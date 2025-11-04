@@ -47,7 +47,6 @@ const props = withDefaults(
     worstPrice: BigNumberInBase
     marginWithFee: BigNumberInBase
     minimumAmountInQuote: BigNumberInBase
-    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
@@ -452,18 +451,6 @@ onMounted(() => {
       class="error-message first-letter:capitalize"
     >
       {{ amountErrorMessage }}
-    </p>
-
-    <p
-      v-else-if="isNotionalLessThanMinNotional"
-      class="error-message first-letter:capitalize"
-    >
-      {{
-        $t('trade.minNotionalError', {
-          symbol: market.quoteToken.symbol,
-          minNotional: market.minNotionalInToken
-        })
-      }}
     </p>
 
     <PartialsTradeCommonFormPercentage @percentage:change="setFromPercentage" />

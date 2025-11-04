@@ -53,7 +53,6 @@ const props = withDefaults(
     hasSlippageWarning: boolean
     totalNotional: BigNumberInBase
     marginWithFee: BigNumberInBase
-    isNotionalLessThanMinNotional: boolean
   }>(),
   {}
 )
@@ -172,10 +171,6 @@ const isDisabled = computed(() => {
   }
 
   if (props.hasSlippageWarning) {
-    return true
-  }
-
-  if (props.isNotionalLessThanMinNotional) {
     return true
   }
 

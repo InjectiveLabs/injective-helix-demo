@@ -7,7 +7,8 @@ import {
   calculateSlippagePrice,
   calculateMinimumNotional,
   calculateEstimatedSlippage,
-  calculateNotionalBeforeFee
+  calculateNotionalBeforeFee,
+  calculateQuantityFromNotional
 } from '@/app/utils/trading/calculations'
 import {
   WorkerMessageType,
@@ -54,6 +55,7 @@ export function useSpotDetails({
 
   const quantity = ref('0')
   const notional = ref('0')
+
   const enoughLiquidity = ref(false)
   const bestPrice = ref(ZERO_IN_BASE)
   const worstPrice = ref(ZERO_IN_BASE)
@@ -75,12 +77,10 @@ export function useSpotDetails({
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
 
-        const calculatedNotionalInBase = calculateNotional({
+        calculatedNotional.value = calculateNotional({
           price: limitPriceInBase,
           quantity: quantityInBase
         })
-
-        calculatedNotional.value = calculatedNotionalInBase
 
         notional.value = notionalWithFee.value.toFixed()
 
@@ -123,9 +123,10 @@ export function useSpotDetails({
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
 
-        const calculatedQuantity = limitPriceInBase.isZero()
-          ? ZERO_IN_BASE
-          : notionalMinusFee.div(limitPriceInBase)
+        const calculatedQuantity = calculateQuantityFromNotional({
+          price: limitPriceInBase,
+          notional: notionalMinusFee
+        })
 
         const calculatedQuantityQuantized = quantizeNumber(
           calculatedQuantity,
@@ -134,12 +135,10 @@ export function useSpotDetails({
 
         quantity.value = calculatedQuantityQuantized.toFixed()
 
-        const calculatedNotionalInBase = calculateNotional({
+        calculatedNotional.value = calculateNotional({
           price: limitPriceInBase,
           quantity: calculatedQuantityQuantized
         })
-
-        calculatedNotional.value = calculatedNotionalInBase
 
         enoughLiquidity.value = true
 
@@ -159,17 +158,17 @@ export function useSpotDetails({
     }
   })
 
-  const slippagePrice = computed(() => {
-    const slippageTolerance = new BigNumberInBase(
-      safeAmount(slippagePercentage.value)
-    ).div(100)
-
-    return calculateSlippagePrice({
-      isBuy: isBuy.value,
-      basePrice: new BigNumberInBase(bestPrice.value),
-      slippageTolerance
-    })
+  const slippageTolerance = computed(() => {
+    return new BigNumberInBase(safeAmount(slippagePercentage.value)).div(100)
   })
+
+  const slippagePrice = computed(() =>
+    calculateSlippagePrice({
+      isBuy: isBuy.value,
+      slippageTolerance: slippageTolerance.value,
+      price: new BigNumberInBase(bestPrice.value)
+    })
+  )
 
   const estSlippagePercentage = computed(() =>
     calculateEstimatedSlippage({
@@ -239,12 +238,10 @@ export function useSpotDetails({
       worstPrice.value = new BigNumberInBase(data.worstPrice)
       averagePrice.value = new BigNumberInBase(data.averagePrice)
 
-      const calculatedNotionalInBase = calculateNotional({
+      calculatedNotional.value = calculateNotional({
         price: new BigNumberInBase(worstPrice.value),
         quantity: new BigNumberInBase(safeAmount(quantity.value))
       })
-
-      calculatedNotional.value = calculatedNotionalInBase
 
       notional.value = notionalWithFee.value.toFixed()
     }
@@ -259,12 +256,10 @@ export function useSpotDetails({
       worstPrice.value = new BigNumberInBase(data.worstPrice)
       averagePrice.value = new BigNumberInBase(data.averagePrice)
 
-      const calculatedNotionalInBase = calculateNotional({
+      calculatedNotional.value = calculateNotional({
         price: new BigNumberInBase(worstPrice.value),
         quantity: new BigNumberInBase(safeAmount(quantity.value))
       })
-
-      calculatedNotional.value = calculatedNotionalInBase
     }
   })
 
@@ -276,6 +271,7 @@ export function useSpotDetails({
   })
 
   return {
+    feeRate,
     feeAmount,
     slippagePrice,
     executionPrice,

@@ -1,6 +1,15 @@
-import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
-import { ONE_IN_BASE, ZERO_IN_BASE } from '@shared/utils/constant'
+import { ZERO_IN_BASE } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import { quantizeNumber } from '@/app/utils/helpers'
+import {
+  calculateNotional,
+  calculateFeeAmount,
+  calculateSlippagePrice,
+  calculateMinimumNotional,
+  calculateEstimatedSlippage,
+  calculateNotionalBeforeFee,
+  calculateQuantityFromNotional
+} from '@/app/utils/trading/calculations'
 import {
   WorkerMessageType,
   OrderbookWorkerKey,
@@ -17,8 +26,8 @@ export function useDerivativeDetails({
   isBuy,
   market,
   leverage,
-  isPostOnly,
   limitPrice,
+  isPostOnly,
   isLimitOrder,
   takerFeeRate,
   triggerPrice,
@@ -52,13 +61,12 @@ export function useDerivativeDetails({
 
   const quantity = ref('0')
   const notional = ref('0')
-  const feeAmount = ref('0')
-  const totalNotional = ref('0')
+
   const enoughLiquidity = ref(false)
-  const calculatedNotional = ref('0')
   const bestPrice = ref(ZERO_IN_BASE)
   const worstPrice = ref(ZERO_IN_BASE)
   const averagePrice = ref(ZERO_IN_BASE)
+  const calculatedNotional = ref(ZERO_IN_BASE)
 
   const _quantity = computed({
     get: () => quantity.value,
@@ -75,18 +83,12 @@ export function useDerivativeDetails({
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
 
-        const calculatedNotionalInBase = quantityInBase.times(limitPriceInBase)
+        calculatedNotional.value = calculateNotional({
+          price: limitPriceInBase,
+          quantity: quantityInBase
+        })
 
-        calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-        feeAmount.value = calculatedNotionalInBase
-          .times(feePercentage.value)
-          .toFixed()
-
-        notional.value = calculatedNotionalInBase
-          .plus(feeAmount.value)
-          .toFixed()
-        totalNotional.value = notional.value
+        notional.value = notionalWithFee.value.toFixed()
 
         enoughLiquidity.value = true
 
@@ -98,32 +100,23 @@ export function useDerivativeDetails({
         const triggerPriceInBase = new BigNumberInBase(
           safeAmount(triggerPrice.value)
         )
-        const slippageInBase = new BigNumberInBase(
-          safeAmount(slippagePercentage.value)
-        ).div(100)
 
-        const slippageFactor = isBuy.value
-          ? ONE_IN_BASE.plus(slippageInBase)
-          : ONE_IN_BASE.minus(slippageInBase)
-
-        const priceWithSlippage = triggerPriceInBase.times(slippageFactor)
+        const priceWithSlippage = calculateSlippagePrice({
+          isBuy: isBuy.value,
+          price: triggerPriceInBase,
+          slippageTolerance: slippageTolerance.value
+        })
 
         bestPrice.value = triggerPriceInBase
         worstPrice.value = priceWithSlippage
         averagePrice.value = priceWithSlippage
 
-        const calculatedNotionalInBase = quantityInBase.times(priceWithSlippage)
+        calculatedNotional.value = calculateNotional({
+          price: priceWithSlippage,
+          quantity: quantityInBase
+        })
 
-        calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-        feeAmount.value = calculatedNotionalInBase
-          .times(feePercentage.value)
-          .toFixed()
-
-        notional.value = calculatedNotionalInBase
-          .plus(feeAmount.value)
-          .toFixed()
-        totalNotional.value = notional.value
+        notional.value = notionalWithFee.value.toFixed()
 
         enoughLiquidity.value = true
 
@@ -136,7 +129,7 @@ export function useDerivativeDetails({
           isSpot: false,
           isBuy: isBuy.value,
           quantity: safeAmount(value),
-          baseDecimals: market.value.quoteToken.decimals,
+          baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals
         }
       })
@@ -150,9 +143,10 @@ export function useDerivativeDetails({
 
       const notionalInBase = new BigNumberInBase(safeAmount(value))
 
-      const notionalMinusFee = notionalInBase.div(
-        ONE_IN_BASE.plus(feePercentage.value)
-      )
+      const notionalMinusFee = calculateNotionalBeforeFee({
+        feeRate: feeRate.value,
+        notional: notionalInBase
+      })
 
       if (isLimitOrder.value) {
         const limitPriceInBase = new BigNumberInBase(
@@ -163,9 +157,10 @@ export function useDerivativeDetails({
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
 
-        const calculatedQuantity = limitPriceInBase.isZero()
-          ? ZERO_IN_BASE
-          : notionalMinusFee.div(limitPriceInBase)
+        const calculatedQuantity = calculateQuantityFromNotional({
+          price: limitPriceInBase,
+          notional: notionalMinusFee
+        })
 
         const calculatedQuantityQuantized = quantizeNumber(
           calculatedQuantity,
@@ -174,19 +169,10 @@ export function useDerivativeDetails({
 
         quantity.value = calculatedQuantityQuantized.toFixed()
 
-        const calculatedNotionalInBase = limitPriceInBase.times(
-          calculatedQuantityQuantized
-        )
-
-        calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-        feeAmount.value = calculatedNotionalInBase
-          .times(feePercentage.value)
-          .toFixed()
-
-        totalNotional.value = calculatedNotionalInBase
-          .plus(feeAmount.value)
-          .toFixed()
+        calculatedNotional.value = calculateNotional({
+          price: limitPriceInBase,
+          quantity: calculatedQuantityQuantized
+        })
 
         enoughLiquidity.value = true
 
@@ -197,23 +183,21 @@ export function useDerivativeDetails({
         const triggerPriceInBase = new BigNumberInBase(
           safeAmount(triggerPrice.value)
         )
-        const slippageInBase = new BigNumberInBase(
-          safeAmount(slippagePercentage.value)
-        ).div(100)
 
-        const slippageFactor = isBuy.value
-          ? ONE_IN_BASE.plus(slippageInBase)
-          : ONE_IN_BASE.minus(slippageInBase)
-
-        const priceWithSlippage = triggerPriceInBase.times(slippageFactor)
+        const priceWithSlippage = calculateSlippagePrice({
+          isBuy: isBuy.value,
+          price: triggerPriceInBase,
+          slippageTolerance: slippageTolerance.value
+        })
 
         bestPrice.value = triggerPriceInBase
         worstPrice.value = priceWithSlippage
         averagePrice.value = priceWithSlippage
 
-        const calculatedQuantity = priceWithSlippage.isZero()
-          ? ZERO_IN_BASE
-          : notionalInBase.div(priceWithSlippage)
+        const calculatedQuantity = calculateQuantityFromNotional({
+          price: priceWithSlippage,
+          notional: notionalInBase
+        })
 
         const calculatedQuantityQuantized = quantizeNumber(
           calculatedQuantity,
@@ -222,19 +206,10 @@ export function useDerivativeDetails({
 
         quantity.value = calculatedQuantityQuantized.toFixed()
 
-        const calculatedNotionalInBase = priceWithSlippage.times(
-          calculatedQuantityQuantized
-        )
-
-        calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-        feeAmount.value = calculatedNotionalInBase
-          .times(feePercentage.value)
-          .toFixed()
-
-        totalNotional.value = calculatedNotionalInBase
-          .plus(feeAmount.value)
-          .toFixed()
+        calculatedNotional.value = calculateNotional({
+          price: priceWithSlippage,
+          quantity: calculatedQuantityQuantized
+        })
 
         enoughLiquidity.value = true
 
@@ -254,31 +229,27 @@ export function useDerivativeDetails({
     }
   })
 
-  const slippagePrice = computed(() => {
-    const slippagePercentageInBase = new BigNumberInBase(
-      safeAmount(slippagePercentage.value)
-    ).div(100)
-
-    if (isBuy.value) {
-      return bestPrice.value.times(ONE_IN_BASE.plus(slippagePercentageInBase))
-    }
-
-    return bestPrice.value.times(ONE_IN_BASE.minus(slippagePercentageInBase))
+  const slippageTolerance = computed(() => {
+    return new BigNumberInBase(safeAmount(slippagePercentage.value)).div(100)
   })
 
-  const estSlippagePercentage = computed(() => {
-    if (bestPrice.value.isZero() || worstPrice.value.isZero()) {
-      return ZERO_IN_BASE
-    }
+  const slippagePrice = computed(() =>
+    calculateSlippagePrice({
+      isBuy: isBuy.value,
+      slippageTolerance: slippageTolerance.value,
+      price: new BigNumberInBase(bestPrice.value)
+    })
+  )
 
-    if (isBuy.value) {
-      return worstPrice.value.div(bestPrice.value).minus(1).times(100)
-    }
+  const estSlippagePercentage = computed(() =>
+    calculateEstimatedSlippage({
+      isBuy: isBuy.value,
+      bestPrice: bestPrice.value as BigNumberInBase,
+      worstPrice: worstPrice.value as BigNumberInBase
+    })
+  )
 
-    return bestPrice.value.div(worstPrice.value).minus(1).times(100)
-  })
-
-  const feePercentage = computed(() => {
+  const feeRate = computed(() => {
     if (isLimitOrder.value && isPostOnly.value) {
       return ZERO_IN_BASE
     }
@@ -286,7 +257,18 @@ export function useDerivativeDetails({
     return takerFeeRate.value
   })
 
-  const slippageWarning = computed(() =>
+  const feeAmount = computed(() =>
+    calculateFeeAmount({
+      feeRate: feeRate.value,
+      value: calculatedNotional.value as BigNumberInBase
+    })
+  )
+
+  const notionalWithFee = computed(() =>
+    calculatedNotional.value.plus(feeAmount.value)
+  )
+
+  const hasSlippageWarning = computed(() =>
     estSlippagePercentage.value.gt(slippagePercentage.value)
   )
 
@@ -314,31 +296,19 @@ export function useDerivativeDetails({
   })
 
   const minimumAmountInQuote = computed(() => {
-    const price = executionPrice.value
+    const calculatedMinimumNotional = calculateMinimumNotional({
+      price: executionPrice.value,
+      priceDecimals: market.value.priceDecimals,
+      quantityTensMultiplier: market.value.quantityTensMultiplier
+    })
 
-    const minQuantity = new BigNumberInBase(10).exponentiatedBy(
-      market.value.quantityTensMultiplier
+    const fixedMarketMinimumNotional = new BigNumberInBase(
+      market.value.minNotionalInToken
     )
 
-    return new BigNumberInBase(
-      price
-        .times(minQuantity)
-        .dp(market.value.priceDecimals, BigNumber.ROUND_UP)
-    )
-  })
-
-  const isNotionalLessThanMinNotional = computed(() => {
-    const priceForNotional = executionPrice.value
-
-    const quantityInBase = new BigNumberInBase(safeAmount(quantity.value))
-
-    if (priceForNotional.isZero() || quantityInBase.isZero()) {
-      return
-    }
-
-    return quantityInBase
-      .times(priceForNotional)
-      .lt(market.value.minNotionalInToken)
+    return calculatedMinimumNotional.gt(fixedMarketMinimumNotional)
+      ? calculatedMinimumNotional
+      : fixedMarketMinimumNotional
   })
 
   worker.value.addEventListener('message', (ev) => {
@@ -354,18 +324,12 @@ export function useDerivativeDetails({
       worstPrice.value = new BigNumberInBase(data.worstPrice)
       averagePrice.value = new BigNumberInBase(data.averagePrice)
 
-      const calculatedNotionalInBase = worstPrice.value.times(
-        safeAmount(quantity.value)
-      )
+      calculatedNotional.value = calculateNotional({
+        price: new BigNumberInBase(worstPrice.value),
+        quantity: new BigNumberInBase(safeAmount(quantity.value))
+      })
 
-      calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-      feeAmount.value = calculatedNotionalInBase
-        .times(feePercentage.value)
-        .toFixed()
-
-      notional.value = calculatedNotionalInBase.plus(feeAmount.value).toFixed()
-      totalNotional.value = notional.value
+      notional.value = notionalWithFee.value.toFixed()
     }
 
     if (messageType === WorkerMessageResponseType.ReceiveNotionalInfo) {
@@ -378,19 +342,10 @@ export function useDerivativeDetails({
       worstPrice.value = new BigNumberInBase(data.worstPrice)
       averagePrice.value = new BigNumberInBase(data.averagePrice)
 
-      const calculatedNotionalInBase = worstPrice.value.times(
-        safeAmount(quantity.value)
-      )
-
-      calculatedNotional.value = calculatedNotionalInBase.toFixed()
-
-      feeAmount.value = calculatedNotionalInBase
-        .times(feePercentage.value)
-        .toFixed()
-
-      totalNotional.value = calculatedNotionalInBase
-        .plus(feeAmount.value)
-        .toFixed()
+      calculatedNotional.value = calculateNotional({
+        price: new BigNumberInBase(worstPrice.value),
+        quantity: new BigNumberInBase(safeAmount(quantity.value))
+      })
     }
   })
 
@@ -403,22 +358,23 @@ export function useDerivativeDetails({
 
   return {
     margin,
-    feePercentage,
+    feeRate,
+    feeAmount,
     marginWithFee,
     slippagePrice,
     executionPrice,
-    slippageWarning,
+    notionalWithFee,
+    hasSlippageWarning,
     notional: _notional,
     quantity: _quantity,
     minimumAmountInQuote,
     estSlippagePercentage,
-    isNotionalLessThanMinNotional,
-    feeAmount: computed(() => feeAmount.value),
-    totalNotional: computed(() => totalNotional.value),
     enoughLiquidity: computed(() => enoughLiquidity.value),
-    calculatedNotional: computed(() => calculatedNotional.value),
     bestPrice: computed(() => bestPrice.value as BigNumberInBase),
     worstPrice: computed(() => worstPrice.value as BigNumberInBase),
-    averagePrice: computed(() => averagePrice.value as BigNumberInBase)
+    averagePrice: computed(() => averagePrice.value as BigNumberInBase),
+    calculatedNotional: computed(
+      () => calculatedNotional.value as BigNumberInBase
+    )
   }
 }
