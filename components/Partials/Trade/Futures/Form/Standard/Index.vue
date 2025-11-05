@@ -146,14 +146,6 @@ function onTradeTypeChange() {
   )
 }
 
-function onOrderSideChange() {
-  if (!isLimitOrder.value) {
-    return
-  }
-
-  useEventBus(BusEvents.OrderSideToggled).emit()
-}
-
 function resetSelectedPosition() {
   selectedPosition.value = undefined
 }
@@ -188,39 +180,13 @@ watch(
       @trade-type:change="onTradeTypeChange"
     />
 
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="side in [TradeDirection.Long, TradeDirection.Short]"
-        :key="side"
-        v-bind="{ value: side }"
-        v-model="orderSide"
-        class="flex-1"
-        :data-cy="`${dataCyTag(PerpetualMarketCyTags.TradeDirection)}-${side}`"
-        @click="onOrderSideChange"
-      >
-        <AppButton
-          :variant="
-            orderSide === side
-              ? side === TradeDirection.Long
-                ? 'success'
-                : 'danger'
-              : side === TradeDirection.Long
-                ? 'success-cta'
-                : 'danger-cta'
-          "
-          :class="[
-            'w-full py-2 leading-relaxed focus-within:ring-0',
-            side === TradeDirection.Long ? 'hover:bg-green-500' : ''
-          ]"
-        >
-          <span>
-            {{ $t(`trade.${side === TradeDirection.Long ? 'buy' : 'sell'}`) }}
-            /
-            {{ $t(`trade.${side === TradeDirection.Long ? 'long' : 'short'}`) }}
-          </span>
-        </AppButton>
-      </AppButtonSelect>
-    </div>
+    <PartialsTradeCommonFormSideSelector
+      v-model="orderSide"
+      class="mt-4"
+      v-bind="{
+        isLimitOrder
+      }"
+    />
 
     <div class="space-y-4 pt-4">
       <AppButton

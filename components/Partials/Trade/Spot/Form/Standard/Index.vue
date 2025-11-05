@@ -89,14 +89,6 @@ onMounted(() => {
   )
 })
 
-function onOrderSideClicked() {
-  if (orderTypeValue.value !== TradeTypes.Limit) {
-    return
-  }
-
-  useEventBus(BusEvents.OrderSideToggled).emit()
-}
-
 watch(
   [() => spotFormValues.value],
   ([formValues]) => {
@@ -148,32 +140,14 @@ watch(
       </div>
     </div>
 
-    <div class="flex mt-4 bg-brand-875 rounded-md">
-      <AppButtonSelect
-        v-for="side in [OrderSide.Buy, OrderSide.Sell]"
-        :key="side"
-        v-bind="{ value: side }"
-        v-model="orderSideValue"
-        class="flex-1"
-        :data-cy="`${dataCyTag(SpotMarketCyTags.SpotTradingSide)}-${side}`"
-        @click="onOrderSideClicked"
-      >
-        <AppButton
-          class="w-full py-2 leading-relaxed focus-within:ring-0"
-          :variant="
-            side === orderSideValue
-              ? side === OrderSide.Buy
-                ? 'success'
-                : 'danger'
-              : side === OrderSide.Buy
-                ? 'success-cta'
-                : 'danger-cta'
-          "
-        >
-          {{ $t(`trade.${side}`) }}
-        </AppButton>
-      </AppButtonSelect>
-    </div>
+    <PartialsTradeCommonFormSideSelector
+      v-model="orderSideValue"
+      is-spot
+      class="mt-4"
+      v-bind="{
+        isLimitOrder
+      }"
+    />
 
     <div class="pt-4 space-y-4">
       <PartialsTradeCommonFormLimitPriceField
