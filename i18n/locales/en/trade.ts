@@ -39,6 +39,8 @@ export default {
     leverage: 'Leverage',
     standard: 'Standard',
     slippage: 'Slippage',
+    tpPrice: 'TP Price',
+    slPrice: 'SL Price',
     addTpSl: 'Add TP/SL',
     tickSize: 'Tick Size',
     stopLoss: 'Stop Loss',

@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { toJpeg } from 'html-to-image'
 import { NuxtUiIcons } from '@shared/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEBOUNCE_DEFAULT_PERIOD } from '@/app/utils/constants'
 import { Modal, BusEvents } from '@/types'
 import type { LeaderboardDuration } from '@/types'
 
@@ -86,7 +87,7 @@ watchDebounced(
       onCloseModal()
     }
   },
-  { debounce: 200, immediate: true }
+  { debounce: DEBOUNCE_DEFAULT_PERIOD, immediate: true }
 )
 </script>
 
