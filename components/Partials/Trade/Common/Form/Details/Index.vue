@@ -3,6 +3,13 @@ import { NuxtUiIcons } from '@shared/types'
 
 const appStore = useAppStore()
 
+withDefaults(
+  defineProps<{
+    isSpot?: boolean
+  }>(),
+  {}
+)
+
 const isOpen = ref(true)
 
 function toggle() {
@@ -35,7 +42,6 @@ function toggle() {
       </div>
     </AppCollapse>
 
-    <ModalsSpotSlippage />
-    <ModalsFuturesSlippage />
+    <ModalsSlippage :isSpot="isSpot" />
   </div>
 </template>

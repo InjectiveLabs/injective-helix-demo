@@ -69,12 +69,12 @@ const isMakerFee = computed(
 )
 
 function openSlippageModal() {
-  modalStore.openModal(Modal.FuturesSlippage)
+  modalStore.openModal(Modal.Slippage)
 }
 </script>
 
 <template>
-  <PartialsTradeCommonFormDetails v-if="derivativeMarket" class="mb-4">
+  <PartialsTradeCommonFormDetails>
     <template #default>
       <PartialsTradeCommonFormDetailsRow>
         <template #label>{{ $t('trade.total') }}</template>

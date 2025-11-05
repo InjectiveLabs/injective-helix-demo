@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   MIN_SLIPPAGE,
@@ -7,13 +6,26 @@ import {
   DEFAULT_SLIPPAGE,
   HIGH_SLIPPAGE_THRESHOLD
 } from '@/app/utils/constants'
-import { Modal, MarketKey, SpotMarketCyTags, SpotTradeFormField } from '@/types'
-import type { UiSpotMarket } from '@/types'
+import {
+  Modal,
+  MarketKey,
+  SpotMarketCyTags,
+  SpotTradeFormField,
+  DerivativesTradeFormField
+} from '@/types'
+import type { UiMarketWithToken } from '@/types'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
-const spotMarket = inject(MarketKey) as Ref<UiSpotMarket>
+const market = inject(MarketKey) as Ref<UiMarketWithToken>
+
+const props = withDefaults(
+  defineProps<{
+    isSpot?: boolean
+  }>(),
+  {}
+)
 
 const defaultSlippage = DEFAULT_SLIPPAGE.toFixed()
 const previousSlippage = ref(defaultSlippage)
@@ -24,24 +36,36 @@ const isHighSlippage = computed(() =>
 
 const currentSlippageValue = computed(
   () =>
-    appStore.userState.marketSlippageIdMap[spotMarket.value.marketId] ||
+    appStore.userState.marketSlippageIdMap[market.value.marketId] ||
     defaultSlippage
 )
 
+const slippageFieldName = computed(() =>
+  props.isSpot
+    ? SpotTradeFormField.Slippage
+    : DerivativesTradeFormField.Slippage
+)
+
+const tempSlippageFieldName = computed(() =>
+  props.isSpot
+    ? SpotTradeFormField.TempSlippage
+    : DerivativesTradeFormField.TempSlippage
+)
+
 const { value: slippage } = useStringField({
-  name: SpotTradeFormField.Slippage,
+  name: slippageFieldName.value,
   initialValue: currentSlippageValue.value
 })
 
 const { value: tempSlippage, errorMessage } = useStringField({
   rule: 'slippage',
-  name: SpotTradeFormField.TempSlippage,
+  name: tempSlippageFieldName.value,
   initialValue: currentSlippageValue.value
 })
 
 function onCancel() {
   tempSlippage.value = previousSlippage.value
-  modalStore.closeModal(Modal.SpotSlippage)
+  modalStore.closeModal(Modal.Slippage)
 }
 
 function onConfirm() {
@@ -58,11 +82,11 @@ function onConfirm() {
     ...appStore.userState,
     marketSlippageIdMap: {
       ...appStore.userState.marketSlippageIdMap,
-      [spotMarket.value.marketId]: finalSlippage
+      [market.value.marketId]: finalSlippage
     }
   })
 
-  modalStore.closeModal(Modal.SpotSlippage)
+  modalStore.closeModal(Modal.Slippage)
 }
 
 function setPreviousSlippage() {
@@ -73,7 +97,7 @@ function setPreviousSlippage() {
 
 <template>
   <AppModal
-    v-model="modalStore.modals[Modal.SpotSlippage]"
+    v-model="modalStore.modals[Modal.Slippage]"
     v-bind="{
       ui: { width: 'sm:min-w-sm sm:max-w-sm' }
     }"
@@ -101,7 +125,11 @@ function setPreviousSlippage() {
             wrapperClass:
               'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4'
           }"
-          :data-cy="dataCyTag(SpotMarketCyTags.SlippageInputField)"
+          :data-cy="
+            props.isSpot
+              ? dataCyTag(SpotMarketCyTags.SlippageInputField)
+              : undefined
+          "
         >
           <template #right>%</template>
         </AppInputField>

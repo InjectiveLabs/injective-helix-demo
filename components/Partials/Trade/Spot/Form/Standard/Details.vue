@@ -56,12 +56,12 @@ const slippageTolerance = computed(
 )
 
 function openSlippageModal() {
-  modalStore.openModal(Modal.SpotSlippage)
+  modalStore.openModal(Modal.Slippage)
 }
 </script>
 
 <template>
-  <PartialsTradeCommonFormDetails v-if="spotMarket" class="mb-4">
+  <PartialsTradeCommonFormDetails is-spot>
     <template #default>
       <PartialsTradeCommonFormDetailsRow>
         <template #label>{{ $t('trade.total') }}</template>

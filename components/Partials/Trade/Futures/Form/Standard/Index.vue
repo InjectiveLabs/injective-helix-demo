@@ -240,6 +240,7 @@ watch(
 
     <PartialsTradeFuturesFormStandardDetails
       v-if="isReady"
+      class="my-4"
       v-bind="{
         tradeDetails,
         isLimitOrder,
