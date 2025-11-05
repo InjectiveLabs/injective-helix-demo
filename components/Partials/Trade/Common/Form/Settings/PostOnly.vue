@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { SpotMarketCyTags, SpotTradeFormField } from '@/types'
+
+const props = withDefaults(
+  defineProps<{
+    cyTag: string
+    formFieldName: string
+  }>(),
+  {}
+)
 
 const jsonStore = useSharedJsonStore()
 
 const { value: postOnlyValue } = useBooleanField({
   rule: '',
-  name: SpotTradeFormField.PostOnly,
+  name: props.formFieldName,
   initialValue: jsonStore.isPostUpgradeMode
 })
 </script>
@@ -16,8 +23,8 @@ const { value: postOnlyValue } = useBooleanField({
     <AppCheckbox
       v-model="postOnlyValue"
       class="w-full text-white"
+      :data-cy="dataCyTag(cyTag)"
       :disabled="jsonStore.isPostUpgradeMode"
-      :data-cy="dataCyTag(SpotMarketCyTags.AdvancedSettingsPostOnly)"
     >
       {{ $t('trade.postOnly') }}
     </AppCheckbox>

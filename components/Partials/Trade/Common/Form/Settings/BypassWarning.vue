@@ -1,18 +1,26 @@
 <script setup lang="ts">
-import { DerivativesTradeFormField, PerpetualMarketCyTags } from '@/types'
+import { dataCyTag } from '@shared/utils'
+
+const props = withDefaults(
+  defineProps<{
+    cyTag: string
+    formFieldName: string
+  }>(),
+  {}
+)
 
 const { value: bypassPriceWarningValue } = useBooleanField({
-  name: DerivativesTradeFormField.BypassPriceWarning,
-  rule: ''
+  rule: '',
+  name: props.formFieldName
 })
 </script>
 
 <template>
   <div>
-    <AppCheckbox 
+    <AppCheckbox
       v-model="bypassPriceWarningValue"
       class="w-full text-white"
-      :data-cy="dataCyTag(PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox)"
+      :data-cy="dataCyTag(cyTag)"
     >
       {{ $t('trade.bypassPriceWarning') }}
     </AppCheckbox>

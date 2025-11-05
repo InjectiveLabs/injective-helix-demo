@@ -65,8 +65,12 @@ function addTpSl(position: PositionV2) {
       }"
     >
       <div class="py-2">
-        <PartialsTradeFuturesFormStandardAdvancedSettingsPostOnly
+        <PartialsTradeCommonFormSettingsPostOnly
           v-if="isLimitOrder"
+          v-bind="{
+            formFieldName: DerivativesTradeFormField.PostOnly,
+            cyTag: PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox
+          }"
         />
 
         <p
@@ -76,13 +80,18 @@ function addTpSl(position: PositionV2) {
           {{ $t('trade.postOnlyWarning') }}
         </p>
 
-        <PartialsTradeFuturesFormStandardAdvancedSettingsReduceOnly />
+        <PartialsTradeFuturesFormStandardSettingsReduceOnly />
 
-        <PartialsTradeFuturesFormStandardAdvancedSettingsBypassWarning
+        <PartialsTradeCommonFormSettingsBypassWarning
           v-if="isLimitOrder"
+          v-bind="{
+            formFieldName: DerivativesTradeFormField.BypassPriceWarning,
+            cyTag:
+              PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox
+          }"
         />
 
-        <PartialsTradeFuturesFormStandardAdvancedSettingsTpSl
+        <PartialsTradeFuturesFormStandardSettingsTpSl
           v-if="isMarketOrder"
           v-bind="{ estLiquidationPrice }"
           @tpsl:add="addTpSl"

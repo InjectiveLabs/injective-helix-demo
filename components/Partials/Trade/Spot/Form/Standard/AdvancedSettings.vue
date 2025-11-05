@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
-import { SpotMarketCyTags } from '@/types'
+import { SpotMarketCyTags, SpotTradeFormField } from '@/types'
 
 const jsonStore = useSharedJsonStore()
 
@@ -33,7 +33,12 @@ function toggle() {
       }"
     >
       <div class="space-y-2 py-2">
-        <PartialsTradeSpotFormStandardAdvancedSettingsPostOnly />
+        <PartialsTradeCommonFormSettingsPostOnly
+          v-bind="{
+            formFieldName: SpotTradeFormField.PostOnly,
+            cyTag: SpotMarketCyTags.AdvancedSettingsPostOnly
+          }"
+        />
 
         <p
           v-if="jsonStore.isPostUpgradeMode"
@@ -42,7 +47,12 @@ function toggle() {
           {{ $t('trade.postOnlyWarning') }}
         </p>
 
-        <PartialsTradeSpotFormStandardAdvancedSettingsBypassWarning />
+        <PartialsTradeCommonFormSettingsBypassWarning
+          v-bind="{
+            formFieldName: SpotTradeFormField.BypassPriceWarning,
+            cyTag: SpotMarketCyTags.AdvancedSettingsBypassWarning
+          }"
+        />
       </div>
     </AppCollapse>
   </div>

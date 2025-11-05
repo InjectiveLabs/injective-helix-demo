@@ -3,53 +3,47 @@ import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { Modal } from '@/types'
 
-const sharedTokenStore = useSharedTokenStore()
 const modalStore = useSharedModalStore()
+const sharedTokenStore = useSharedTokenStore()
 
 const {
   activeSubaccountTotalBalanceInUsd,
   activeSubaccountPositionPnlDenomMap
 } = useBalance()
 
-const { valueToFixed: marginAndPnlToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
-      (sum, { pnlPlusMargin, token }) => {
-        const usdPrice = sharedTokenStore.tokenUsdPrice(token)
-        const usdValue = sharedToBalanceInToken({
-          value: new BigNumberInBase(pnlPlusMargin).times(usdPrice).toFixed(),
-          decimalPlaces: token.decimals
-        })
-
-        return sum.plus(usdValue)
-      },
-      ZERO_IN_BASE
-    )
+const spotBalanceInUsd = computed(() =>
+  new BigNumberInBase(activeSubaccountTotalBalanceInUsd.value).minus(
+    marginAndPnl.value
   )
 )
 
-const { valueToFixed: pnlToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
-      (sum, { pnl, token }) => {
-        const usdPrice = sharedTokenStore.tokenUsdPrice(token)
-        const usdValue = sharedToBalanceInToken({
-          value: new BigNumberInBase(pnl).times(usdPrice).toFixed(),
-          decimalPlaces: token.decimals
-        })
+const marginAndPnl = computed(() =>
+  Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
+    (sum, { pnlPlusMargin, token }) => {
+      const usdPrice = sharedTokenStore.tokenUsdPrice(token)
+      const usdValue = sharedToBalanceInToken({
+        decimalPlaces: token.decimals,
+        value: new BigNumberInBase(pnlPlusMargin).times(usdPrice).toFixed()
+      })
 
-        return sum.plus(usdValue)
-      },
-      ZERO_IN_BASE
-    )
+      return sum.plus(usdValue)
+    },
+    ZERO_IN_BASE
   )
 )
 
-const { valueToFixed: spotBalanceInUsdToFixed } = useSharedBigNumberFormatter(
-  computed(() =>
-    new BigNumberInBase(activeSubaccountTotalBalanceInUsd.value).minus(
-      marginAndPnlToFixed.value
-    )
+const pnl = computed(() =>
+  Object.values(activeSubaccountPositionPnlDenomMap.value).reduce(
+    (sum, { pnl, token }) => {
+      const usdPrice = sharedTokenStore.tokenUsdPrice(token)
+      const usdValue = sharedToBalanceInToken({
+        decimalPlaces: token.decimals,
+        value: new BigNumberInBase(pnl).times(usdPrice).toFixed()
+      })
+
+      return sum.plus(usdValue)
+    },
+    ZERO_IN_BASE
   )
 )
 
@@ -71,7 +65,7 @@ function onDeposit() {
         <SharedAmountUsd
           v-bind="{
             shouldAbbreviate: false,
-            amount: spotBalanceInUsdToFixed
+            amount: spotBalanceInUsd
           }"
           class="text-white"
         >
@@ -87,8 +81,8 @@ function onDeposit() {
       <p class="space-x-1">
         <SharedAmountUsd
           v-bind="{
-            shouldAbbreviate: false,
-            amount: marginAndPnlToFixed
+            amount: marginAndPnl,
+            shouldAbbreviate: false
           }"
           class="text-white"
         >
@@ -104,7 +98,7 @@ function onDeposit() {
       <p class="space-x-1">
         <SharedAmountUsd
           v-bind="{
-            amount: pnlToFixed,
+            amount: pnl,
             shouldAbbreviate: false
           }"
           class="text-white"
