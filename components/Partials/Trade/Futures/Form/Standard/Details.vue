@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dataCyTag } from '@shared/utils'
-import { NuxtUiIcons } from '@shared/types'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
+import { BigNumberInBase } from '@injectivelabs/utils'
 import {
   Modal,
   MarketKey,
@@ -10,17 +10,11 @@ import {
   PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
-import {
-  UI_ZERO_DECIMAL,
-  MIN_EST_SLIPPAGE,
-  DEFAULT_EST_SLIPPAGE,
-  UI_DEFAULT_DISPLAY_DECIMALS
-} from '@/app/utils/constants'
 
-const appStore = useAppStore()
 const modalStore = useSharedModalStore()
+
+const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
 const props = withDefaults(
   defineProps<{
@@ -32,22 +26,10 @@ const props = withDefaults(
   {}
 )
 
-const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
-
-const isOpen = ref(true)
-
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
-const enableSlippage = computed(() =>
-  [DerivativeTradeTypes.Market, DerivativeTradeTypes.StopMarket].includes(
-    derivativeFormValues.value[
-      DerivativesTradeFormField.Type
-    ] as DerivativeTradeTypes
-  )
-)
-
-const slippagePercentage = computed(
-  () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+const slippageTolerance = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
 )
 
 const { makerFeeRate, takerFeeRate } = useTradeFee({
@@ -71,32 +53,12 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
   }
 )
 
-const formAmount = computed(
-  () => derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
-)
-
-const adaptedEstSlippagePercentage = computed(() => {
-  if (formAmount.value === '0') {
-    return DEFAULT_EST_SLIPPAGE
-  }
-
-  if (props.tradeDetails.estSlippagePercentage.value.lt(0.0005)) {
-    return MIN_EST_SLIPPAGE
-  }
-
-  return props.tradeDetails.estSlippagePercentage.value
-})
-
-const estSlippageDecimals = computed(() => {
-  if (formAmount.value === '0') {
-    return UI_ZERO_DECIMAL
-  }
-
-  return UI_DEFAULT_DISPLAY_DECIMALS
-})
-
 const showEstSlippage = computed(
   () => props.tradeDetails.enoughLiquidity.value && !props.isTriggerOrder
+)
+
+const formAmount = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.Amount] || '0'
 )
 
 const isMakerFee = computed(
@@ -110,40 +72,23 @@ const isMakerFee = computed(
       DerivativeTradeTypes.StopMarket
 )
 
-function toggle() {
-  isOpen.value = !isOpen.value
-}
-
 function openSlippageModal() {
   modalStore.openModal(Modal.FuturesSlippage)
 }
 </script>
 
 <template>
-  <div v-if="derivativeMarket" class="mb-4">
-    <div
-      class="flex items-center justify-between cursor-pointer select-none text-white"
-      @click="toggle"
-    >
-      <p class="text-xs font-semibold select-none">{{ $t('trade.details') }}</p>
-      <div class="transition-all" :class="{ 'rotate-180': isOpen }">
-        <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
-      </div>
-    </div>
-
-    <AppCollapse v-bind="{ isOpen }">
-      <div class="py-4 space-y-2">
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.total') }}</p>
-          <div class="flex-1 mx-2" />
-
+  <PartialsTradeCommonFormDetails v-if="derivativeMarket" class="mb-4">
+    <template #default>
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.total') }}</template>
+        <template #value>
           <p
-            class="space-x-2 flex text-white"
+            class="flex space-x-2"
             :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsTotal)"
           >
             <span class="flex space-x-2">
               <span>&asymp;</span>
-
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
@@ -157,78 +102,34 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <div
-          v-if="enableSlippage"
-          class="flex justify-between items-center text-xs font-medium"
-        >
-          <p class="text-coolGray-450" @click="openSlippageModal">
-            {{ $t('trade.slippage') }}
-          </p>
+      <PartialsTradeCommonFormDetailsRow v-if="!isLimitOrder">
+        <template #label>{{ $t('trade.slippage') }}</template>
+        <template #value>
+          <PartialsTradeCommonFormDetailsSlippage
+            v-bind="{
+              formAmount,
+              slippageTolerance,
+              estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
+              showEstSlippage,
+              estSlippageCyTag: dataCyTag(
+                PerpetualMarketCyTags.DisplayedEstimatedSlippage
+              ),
+              slippageToleranceCyTag: dataCyTag(
+                PerpetualMarketCyTags.DisplayedSlippageTolerance
+              )
+            }"
+            @click="openSlippageModal"
+          />
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-          <UPopover
-            mode="hover"
-            :popper="{ placement: 'top', strategy: 'fixed' }"
-          >
-            <p class="text-blue-550 cursor-pointer" @click="openSlippageModal">
-              <span v-if="showEstSlippage">
-                <i18n-t
-                  keypath="trade.estSlippage"
-                  class="text-xs text-coolGray-400 mx-1"
-                >
-                  <template #estSlippage>
-                    <SharedAmount
-                      v-bind="{
-                        noTrailingZeros: false,
-                        shouldAbbreviate: false,
-                        decimals: estSlippageDecimals,
-                        amount: adaptedEstSlippagePercentage
-                      }"
-                      :data-cy="
-                        dataCyTag(
-                          PerpetualMarketCyTags.DisplayedEstimatedSlippage
-                        )
-                      "
-                    />
-                  </template>
-                </i18n-t>
-                /
-              </span>
-              <span>
-                <i18n-t
-                  keypath="trade.maxSlippage"
-                  class="text-xs text-coolGray-400"
-                >
-                  <template #max>
-                    <SharedAmount
-                      v-bind="{
-                        useSubscript: true,
-                        shouldAbbreviate: false,
-                        amount: slippagePercentage
-                      }"
-                      :data-cy="
-                        dataCyTag(
-                          PerpetualMarketCyTags.DisplayedSlippageTolerance
-                        )
-                      "
-                    />
-                  </template>
-                </i18n-t>
-              </span>
-            </p>
-            <template #panel>
-              <p class="text-xs text-coolGray-200 max-w-xs p-1">
-                {{ $t('trade.slippageTooltip') }}
-              </p>
-            </template>
-          </UPopover>
-        </div>
-
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.margin') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2">
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.margin') }}</template>
+        <template #value>
+          <p class="flex space-x-2">
             <SharedAmount
               :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMargin)"
               v-bind="{
@@ -236,18 +137,18 @@ function openSlippageModal() {
                 shouldAbbreviate: false,
                 amount: tradeDetails.margin.value
               }"
-              class="text-white"
             />
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <div class="flex items-center text-xs font-medium">
-          <p class="text-coolGray-450">{{ $t('trade.estLiquidationPrice') }}</p>
-          <div class="flex-1 mx-2" />
-          <p class="space-x-2 flex">
+      <PartialsTradeCommonFormDetailsRow>
+        <template #label>{{ $t('trade.estLiquidationPrice') }}</template>
+        <template #value>
+          <p class="flex space-x-2">
             <SharedAmount
               :data-cy="
                 dataCyTag(PerpetualMarketCyTags.DetailsEstLiquidationPrice)
@@ -258,55 +159,46 @@ function openSlippageModal() {
                 amount: estLiquidationPrice,
                 decimals: derivativeMarket.priceDecimals
               }"
-              class="text-white"
             />
-
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-
-        <template v-if="!isMakerFee">
-          <div class="flex items-center text-xs font-medium">
-            <CommonHeaderTooltip
-              :tooltip="
-                $t('trade.makerTakerRateTooltip', {
-                  makerFeeRate: makerFeeRateToFixed,
-                  takerFeeRate: takerFeeRateToFixed
-                })
-              "
-            >
-              <p class="text-coolGray-450">{{ $t('trade.makerTakerRate') }}</p>
-            </CommonHeaderTooltip>
-            <div class="flex-1 mx-2" />
-            <p
-              v-if="derivativeMarket"
-              class="text-white"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)"
-            >
-              {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
-            </p>
-          </div>
         </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <template v-else>
-          <div class="flex items-center text-xs font-medium">
-            <p class="text-coolGray-450">{{ $t('trade.makerRate') }}</p>
-            <div class="flex-1 mx-2" />
-            <p v-if="derivativeMarket" class="text-white">
-              {{ makerFeeRateToFixed }}%
-            </p>
-          </div>
+      <PartialsTradeCommonFormDetailsRow
+        v-if="!isMakerFee"
+        :tooltip="
+          $t('trade.makerTakerRateTooltip', {
+            makerFeeRate: makerFeeRateToFixed,
+            takerFeeRate: takerFeeRateToFixed
+          })
+        "
+      >
+        <template #label>{{ $t('trade.makerTakerRate') }}</template>
+        <template #value>
+          <p :data-cy="dataCyTag(PerpetualMarketCyTags.DetailsMakerTakerRate)">
+            {{ makerFeeRateToFixed }}% / {{ takerFeeRateToFixed }}%
+          </p>
         </template>
-      </div>
+      </PartialsTradeCommonFormDetailsRow>
 
-      <div v-if="appStore.devMode" class="pt-2 pb-4 space-y-1.5 text-white">
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip tooltip="The amount of contracts you're trading">
-            <p class="text-yellow-600/90">Quantity</p>
-          </CommonHeaderTooltip>
+      <PartialsTradeCommonFormDetailsRow v-else>
+        <template #label>{{ $t('trade.makerRate') }}</template>
+        <template #value>
+          <p>{{ makerFeeRateToFixed }}%</p>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+    </template>
 
+    <template #devMode>
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The amount of contracts you're trading"
+      >
+        <template #label>Quantity</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -322,13 +214,15 @@ function openSlippageModal() {
               {{ derivativeMarket.baseToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The notional value of your position in the quote asset"
-          >
-            <p class="text-yellow-600/90">Notional</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The notional value of your position in the quote asset"
+      >
+        <template #label>Notional</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -343,13 +237,15 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The notional value adjusted for estimated execution price and quantized quantity"
-          >
-            <p class="text-yellow-600/90">Calculated Notional</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The notional value adjusted for estimated execution price and quantized quantity"
+      >
+        <template #label>Calculated Notional</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -364,12 +260,15 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
 
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip tooltip="The trading fee charged for this order">
-            <p class="text-yellow-600/90">Fee Amount</p>
-          </CommonHeaderTooltip>
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The trading fee charged for this order"
+      >
+        <template #label>Fee Amount</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -384,13 +283,15 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The total notional value of your position (calculated notional + fees)"
-          >
-            <p class="text-yellow-600/90">Total Notional</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The total notional value of your position (calculated notional + fees)"
+      >
+        <template #label>Total Notional</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -405,13 +306,15 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The amount of capital required to open this position"
-          >
-            <p class="text-yellow-600/90">Margin</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The amount of capital required to open this position"
+      >
+        <template #label>Margin</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -426,13 +329,15 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The total margin including all fees for this order"
-          >
-            <p class="text-yellow-600/90">Margin with Fee</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The total margin including all fees for this order"
+      >
+        <template #label>Margin with Fee</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -447,14 +352,17 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <hr class="border-white/30" />
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The minimum amount in quote required for this trade"
-          >
-            <p class="text-yellow-600/90">Minimum Amount in Quote</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <hr class="border-white/30" />
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The minimum amount in quote required for this trade"
+      >
+        <template #label>Minimum Amount in Quote</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -466,15 +374,16 @@ function openSlippageModal() {
               :data-cy="dataCyTag(PerpetualMarketCyTags.MinimumAmountInQuote)"
             />
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="Whether the notional is less than the minimum notional for this market"
-          >
-            <p class="text-yellow-600/90">Notional Less Than Min Notional</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="Whether the notional is less than the minimum notional for this market"
+      >
+        <template #label>Notional Less Than Min Notional</template>
+        <template #value>
           <p
-            class="text-white"
             :data-cy="
               dataCyTag(PerpetualMarketCyTags.IsNotionalLessThanMinNotional)
             "
@@ -487,19 +396,19 @@ function openSlippageModal() {
                 : 'No'
             }}
           </p>
-        </div>
-        <template v-if="!isLimitOrder">
-          <hr class="border-white/30" />
-          <div
-            v-if="!isTriggerOrder"
-            class="flex justify-between items-center text-xs font-medium"
-          >
-            <CommonHeaderTooltip
-              tooltip="Estimated slippage percentage based on current market liquidity"
-            >
-              <p class="text-yellow-600/90">Est Slippage Percentage</p>
-            </CommonHeaderTooltip>
-            <p class="text-white flex space-x-2">
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <template v-if="!isLimitOrder">
+        <hr class="border-white/30" />
+        <PartialsTradeCommonFormDetailsRow
+          v-if="!isTriggerOrder"
+          labelClass="text-yellow-600/90"
+          tooltip="Estimated slippage percentage based on current market liquidity"
+        >
+          <template #label>Est Slippage Percentage</template>
+          <template #value>
+            <p class="flex space-x-2">
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
@@ -513,21 +422,22 @@ function openSlippageModal() {
                 derivativeMarket.quoteToken.symbol
               }}</span>
             </p>
-          </div>
+          </template>
+        </PartialsTradeCommonFormDetailsRow>
 
-          <div class="flex justify-between items-center text-xs font-medium">
-            <CommonHeaderTooltip
-              tooltip="Your maximum acceptable slippage percentage for this trade"
-            >
-              <p class="text-yellow-600/90">Slippage Tolerance</p>
-            </CommonHeaderTooltip>
+        <PartialsTradeCommonFormDetailsRow
+          labelClass="text-yellow-600/90"
+          tooltip="Your maximum acceptable slippage percentage for this trade"
+        >
+          <template #label>Slippage Tolerance</template>
+          <template #value>
             <p class="flex space-x-2">
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: slippagePercentage
+                  amount: slippageTolerance
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageTolerance)"
               />%
@@ -535,21 +445,22 @@ function openSlippageModal() {
                 derivativeMarket.quoteToken.symbol
               }}</span>
             </p>
-          </div>
+          </template>
+        </PartialsTradeCommonFormDetailsRow>
 
-          <div class="flex justify-between items-center text-xs font-medium">
-            <CommonHeaderTooltip
-              tooltip="Worst possible execution price considering slippage"
-            >
-              <p class="text-yellow-600/90">Slippage Price</p>
-            </CommonHeaderTooltip>
+        <PartialsTradeCommonFormDetailsRow
+          labelClass="text-yellow-600/90"
+          tooltip="Worst possible execution price considering slippage"
+        >
+          <template #label>Slippage Price</template>
+          <template #value>
             <p class="flex space-x-2">
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
+                  amount: tradeDetails.slippagePrice.value,
                   noTrailingZeros: false,
-                  shouldAbbreviate: false,
-                  amount: tradeDetails.slippagePrice.value
+                  shouldAbbreviate: false
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.SlippagePrice)"
               />
@@ -557,15 +468,18 @@ function openSlippageModal() {
                 {{ derivativeMarket.quoteToken.symbol }}
               </span>
             </p>
-          </div>
-        </template>
-        <hr class="border-white/30" />
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The worst price used to fill the order based on current orderbook depth"
-          >
-            <p class="text-yellow-600/90">Worst Price</p>
-          </CommonHeaderTooltip>
+          </template>
+        </PartialsTradeCommonFormDetailsRow>
+      </template>
+
+      <hr class="border-white/30" />
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The worst price used to fill the order based on current orderbook depth"
+      >
+        <template #label>Worst Price</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -581,20 +495,22 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The average price you would pay across the entire order"
-          >
-            <p class="text-yellow-600/90">Average Price</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The average price you would pay across the entire order"
+      >
+        <template #label>Average Price</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                amount: tradeDetails.averagePrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: tradeDetails.averagePrice.value,
                 decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.AveragePrice)"
@@ -603,20 +519,22 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The best price used to fill the order based on current orderbook depth"
-          >
-            <p class="text-yellow-600/90">Best Price</p>
-          </CommonHeaderTooltip>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The best price used to fill the order based on current orderbook depth"
+      >
+        <template #label>Best Price</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
                 useSubscript: true,
+                amount: tradeDetails.bestPrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: tradeDetails.bestPrice.value,
                 decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.BestPrice)"
@@ -625,43 +543,44 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-        <template v-if="!isLimitOrder && !isTriggerOrder">
-          <hr class="border-white/30" />
-          <div class="flex justify-between items-center text-xs font-medium">
-            <CommonHeaderTooltip
-              tooltip="Whether there's sufficient liquidity to execute this order"
-            >
-              <p class="text-yellow-600/90">Enough Liquidity</p>
-            </CommonHeaderTooltip>
-            <p
-              class="text-white"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.EnoughLiquidity)"
-            >
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <template v-if="!isLimitOrder && !isTriggerOrder">
+        <hr class="border-white/30" />
+        <PartialsTradeCommonFormDetailsRow
+          labelClass="text-yellow-600/90"
+          tooltip="Whether there's sufficient liquidity to execute this order"
+        >
+          <template #label>Enough Liquidity</template>
+          <template #value>
+            <p :data-cy="dataCyTag(PerpetualMarketCyTags.EnoughLiquidity)">
               {{ tradeDetails.enoughLiquidity.value ? 'Yes' : 'No' }}
             </p>
-          </div>
-          <div class="flex justify-between items-center text-xs font-medium">
-            <CommonHeaderTooltip
-              tooltip="Whether estimated slippage exceeds your tolerance threshold"
-            >
-              <p class="text-yellow-600/90">Slippage Warning</p>
-            </CommonHeaderTooltip>
-            <p
-              class="text-white"
-              :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWarning)"
-            >
+          </template>
+        </PartialsTradeCommonFormDetailsRow>
+
+        <PartialsTradeCommonFormDetailsRow
+          labelClass="text-yellow-600/90"
+          tooltip="Whether estimated slippage exceeds your tolerance threshold"
+        >
+          <template #label>Slippage Warning</template>
+          <template #value>
+            <p :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageWarning)">
               {{ tradeDetails.hasSlippageWarning.value ? 'Yes' : 'No' }}
             </p>
-          </div>
-        </template>
-        <hr class="border-white/30" />
-        <div class="flex justify-between items-center text-xs font-medium">
-          <CommonHeaderTooltip
-            tooltip="The actual worst price sent to the chain"
-          >
-            <p class="text-yellow-600/90">Execution Price</p>
-          </CommonHeaderTooltip>
+          </template>
+        </PartialsTradeCommonFormDetailsRow>
+      </template>
+
+      <hr class="border-white/30" />
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The actual worst price sent to the chain"
+      >
+        <template #label>Execution Price</template>
+        <template #value>
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
@@ -677,10 +596,8 @@ function openSlippageModal() {
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
           </p>
-        </div>
-      </div>
-    </AppCollapse>
-
-    <ModalsFuturesSlippage />
-  </div>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+    </template>
+  </PartialsTradeCommonFormDetails>
 </template>
