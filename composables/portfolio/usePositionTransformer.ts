@@ -5,8 +5,8 @@ import { sharedToBalanceInTokenInBase } from '@shared/utils/formatter'
 import { isTradingBotSubaccountId } from '@/app/utils/helpers'
 import { calculateScaledMarkPrice } from '@/app/client/utils/derivatives'
 import { PositionTableColumn, ConditionalOrderSide } from '@/types'
-import type { TransformedPosition } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
+import type { TransformedPosition } from '@/types'
 
 export function usePositionTransformer(
   positionList: ComputedRef<PositionV2[]>
