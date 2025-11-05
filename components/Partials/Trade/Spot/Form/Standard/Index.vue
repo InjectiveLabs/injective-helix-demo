@@ -36,6 +36,8 @@ const { takerFeeRate } = useTradeFee({
   marketMakerFeeRate: market?.value?.makerFeeRate
 })
 
+const { lastTradedPrice } = useSpotLastPrice(computed(() => market.value))
+
 const isLimitOrder = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
@@ -174,8 +176,16 @@ watch(
     </div>
 
     <div class="pt-4 space-y-4">
-      <PartialsTradeSpotFormStandardLimitPriceField
-        v-if="orderTypeValue === TradeTypes.Limit"
+      <PartialsTradeCommonFormLimitPriceField
+        v-if="isLimitOrder"
+        v-bind="{
+          lastTradedPrice,
+          fieldName: SpotTradeFormField.Price,
+          isBuySide: orderSideValue === OrderSide.Buy,
+          cyTag: SpotMarketCyTags.LimitPriceInputField,
+          bypassPriceWarning:
+            spotFormValues[SpotTradeFormField.BypassPriceWarning]
+        }"
       />
 
       <PartialsTradeSpotFormStandardAmountField

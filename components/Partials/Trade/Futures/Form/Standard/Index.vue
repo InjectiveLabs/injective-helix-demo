@@ -50,6 +50,8 @@ const isTriggerOrder = computed(() =>
   )
 )
 
+const { lastTradedPrice } = useDerivativeLastPrice(computed(() => market.value))
+
 const { takerFeeRate } = useTradeFee({
   marketTakerFeeRate: market.value.takerFeeRate,
   marketMakerFeeRate: market.value.makerFeeRate
@@ -237,7 +239,18 @@ watch(
 
       <PartialsTradeFuturesFormStandardTriggerField v-if="isTriggerOrder" />
 
-      <PartialsTradeFuturesFormStandardLimitPriceField v-if="isLimitOrder" />
+      <PartialsTradeCommonFormLimitPriceField
+        v-if="isLimitOrder"
+        v-bind="{
+          isBuySide: orderSide === TradeDirection.Long,
+          fieldName: DerivativesTradeFormField.LimitPrice,
+          cyTag: PerpetualMarketCyTags.LimitpriceInputField,
+          lastTradedPrice,
+          shouldSkipAutoSet: orderType === DerivativeTradeTypes.StopLimit,
+          bypassPriceWarning:
+            derivativeFormValues[DerivativesTradeFormField.BypassPriceWarning]
+        }"
+      />
 
       <PartialsTradeFuturesFormStandardAmountField
         v-bind="{
@@ -277,8 +290,8 @@ watch(
         feeAmount: feeAmountToBigNumber,
         margin: tradeDetails.margin.value,
         totalNotional: totalNotionalToBigNumber,
-        worstPrice: tradeDetails.executionPrice.value,
         feePercentage: tradeDetails.feeRate.value,
+        worstPrice: tradeDetails.executionPrice.value,
         marginWithFee: tradeDetails.marginWithFee.value,
         hasEnoughLiquidity: tradeDetails.enoughLiquidity.value,
         hasSlippageWarning: tradeDetails.hasSlippageWarning.value
