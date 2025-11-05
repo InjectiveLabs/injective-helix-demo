@@ -16,7 +16,7 @@ const modalStore = useSharedModalStore()
 
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     isLimitOrder: boolean
     isTriggerOrder: boolean
@@ -51,10 +51,6 @@ const { valueToFixed: makerFeeRateToFixed } = useSharedBigNumberFormatter(
     shouldTruncate: true,
     decimalPlaces: DEFAULT_ASSET_DECIMALS
   }
-)
-
-const showEstSlippage = computed(
-  () => props.tradeDetails.enoughLiquidity.value && !props.isTriggerOrder
 )
 
 const formAmount = computed(
@@ -113,13 +109,14 @@ function openSlippageModal() {
               formAmount,
               slippageTolerance,
               estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
-              showEstSlippage,
               estSlippageCyTag: dataCyTag(
                 PerpetualMarketCyTags.DisplayedEstimatedSlippage
               ),
               slippageToleranceCyTag: dataCyTag(
                 PerpetualMarketCyTags.DisplayedSlippageTolerance
-              )
+              ),
+              showEstSlippage:
+                tradeDetails.enoughLiquidity.value && !isTriggerOrder
             }"
             @click="openSlippageModal"
           />
@@ -259,6 +256,29 @@ function openSlippageModal() {
             <span class="text-coolGray-450">
               {{ derivativeMarket.quoteToken.symbol }}
             </span>
+          </p>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The fee rate multiplicator used to calculate fees (shown as percentage)"
+      >
+        <template #label>Fee Rate</template>
+        <template #value>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: tradeDetails.feeRate.value.times(100)
+              }"
+              :data-cy="dataCyTag(PerpetualMarketCyTags.FeeRate)"
+            />%
+            <span class="invisible">{{
+              derivativeMarket.quoteToken.symbol
+            }}</span>
           </p>
         </template>
       </PartialsTradeCommonFormDetailsRow>
@@ -458,9 +478,9 @@ function openSlippageModal() {
               <SharedAmount
                 v-bind="{
                   useSubscript: true,
-                  amount: tradeDetails.slippagePrice.value,
                   noTrailingZeros: false,
-                  shouldAbbreviate: false
+                  shouldAbbreviate: false,
+                  amount: tradeDetails.slippagePrice.value
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.SlippagePrice)"
               />
@@ -508,9 +528,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: tradeDetails.averagePrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
+                amount: tradeDetails.averagePrice.value,
                 decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.AveragePrice)"
@@ -532,9 +552,9 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: tradeDetails.bestPrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
+                amount: tradeDetails.bestPrice.value,
                 decimals: derivativeMarket.priceDecimals
               }"
               :data-cy="dataCyTag(PerpetualMarketCyTags.BestPrice)"

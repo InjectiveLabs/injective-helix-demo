@@ -170,10 +170,10 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: tradeDetails.notional.value,
                 useSubscript: true,
                 noTrailingZeros: false,
-                shouldAbbreviate: false
+                shouldAbbreviate: false,
+                amount: tradeDetails.notional.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.Notional)"
             />
@@ -203,6 +203,27 @@ function openSlippageModal() {
             <span class="text-coolGray-450">
               {{ spotMarket.quoteToken.symbol }}
             </span>
+          </p>
+        </template>
+      </PartialsTradeCommonFormDetailsRow>
+
+      <PartialsTradeCommonFormDetailsRow
+        labelClass="text-yellow-600/90"
+        tooltip="The fee rate multiplicator used to calculate fees (shown as percentage)"
+      >
+        <template #label>Fee Rate</template>
+        <template #value>
+          <p class="flex space-x-2">
+            <SharedAmount
+              v-bind="{
+                useSubscript: true,
+                noTrailingZeros: false,
+                shouldAbbreviate: false,
+                amount: tradeDetails.feeRate.value.times(100)
+              }"
+              :data-cy="dataCyTag(SpotMarketCyTags.FeeRate)"
+            />%
+            <span class="invisible">{{ spotMarket.quoteToken.symbol }}</span>
           </p>
         </template>
       </PartialsTradeCommonFormDetailsRow>
@@ -372,11 +393,11 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: tradeDetails.worstPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals,
+                amount: tradeDetails.worstPrice.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.WorstPrice)"
             />
@@ -397,10 +418,10 @@ function openSlippageModal() {
             <SharedAmount
               v-bind="{
                 useSubscript: true,
-                amount: tradeDetails.averagePrice.value,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals,
+                amount: tradeDetails.averagePrice.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.AveragePrice)"
             />
@@ -420,11 +441,11 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: tradeDetails.bestPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals,
+                amount: tradeDetails.bestPrice.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.BestPrice)"
             />
@@ -471,11 +492,11 @@ function openSlippageModal() {
           <p class="flex space-x-2">
             <SharedAmount
               v-bind="{
-                amount: tradeDetails.executionPrice.value,
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                decimals: spotMarket.priceDecimals
+                decimals: spotMarket.priceDecimals,
+                amount: tradeDetails.executionPrice.value
               }"
               :data-cy="dataCyTag(SpotMarketCyTags.ExecutionPrice)"
             />

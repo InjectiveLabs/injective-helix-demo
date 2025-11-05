@@ -57,6 +57,7 @@ export enum TradeCyTags {
 }
 
 export enum SpotMarketCyTags {
+  FeeRate = 'fee-rate',
   Quantity = 'quantity',
   Notional = 'notional',
   BestPrice = 'best-price',
@@ -139,6 +140,7 @@ export enum SpotMarketCyTags {
 
 export enum PerpetualMarketCyTags {
   Margin = 'margin',
+  FeeRate = 'fee-rate',
   Quantity = 'quantity',
   Notional = 'notional',
   BestPrice = 'best-price',
