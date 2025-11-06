@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { TradingInterface, SpotMarketCyTags, UiMarketWithToken } from '@/types'
 

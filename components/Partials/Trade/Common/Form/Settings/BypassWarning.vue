@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
-
 const props = withDefaults(
   defineProps<{
     cyTag: string

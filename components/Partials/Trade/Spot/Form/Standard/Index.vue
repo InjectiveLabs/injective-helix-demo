@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,

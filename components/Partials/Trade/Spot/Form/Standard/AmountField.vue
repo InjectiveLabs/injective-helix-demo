@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { NuxtUiIcons } from '@shared/types'
 import { usdtToken } from '@shared/data/token'
 import { OrderSide } from '@injectivelabs/ts-types'

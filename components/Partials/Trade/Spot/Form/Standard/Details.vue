@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { DEFAULT_ASSET_DECIMALS } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import {

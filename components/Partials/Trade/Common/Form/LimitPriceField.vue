@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { BigNumberInBase } from '@injectivelabs/utils'
 import { MarketKey, BusEvents } from '@/types'
 import type { UiMarketWithToken } from '@/types'
