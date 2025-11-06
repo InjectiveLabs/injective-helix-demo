@@ -146,7 +146,6 @@ watch(
 
     <PartialsTradeCommonFormSideSelector
       v-model="orderSideValue"
-      is-spot
       v-bind="{ isLimitOrder }"
     />
 

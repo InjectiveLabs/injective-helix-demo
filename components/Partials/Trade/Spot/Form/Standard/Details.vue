@@ -60,7 +60,7 @@ function openSlippageModal() {
 </script>
 
 <template>
-  <PartialsTradeCommonFormDetails is-spot>
+  <PartialsTradeCommonFormDetails>
     <template #default>
       <PartialsTradeCommonFormDetailsRow>
         <template #label>{{ $t('trade.total') }}</template>

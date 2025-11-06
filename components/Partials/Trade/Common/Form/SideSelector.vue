@@ -1,25 +1,31 @@
 <script setup lang="ts">
-import { SpotMarketCyTags, PerpetualMarketCyTags, BusEvents } from '@/types'
+import {
+  SpotMarketCyTags,
+  PerpetualMarketCyTags,
+  BusEvents,
+  IsSpotKey
+} from '@/types'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 
 const props = withDefaults(
   defineProps<{
-    isSpot?: boolean
     isLimitOrder?: boolean
   }>(),
   {}
 )
 
+const isSpot = inject(IsSpotKey)
+
 const side = defineModel<string>({ required: true })
 
 const sides = computed(() =>
-  props.isSpot
+  isSpot
     ? [OrderSide.Buy, OrderSide.Sell]
     : [TradeDirection.Long, TradeDirection.Short]
 )
 
 const cyTag = computed(() =>
-  props.isSpot
+  isSpot
     ? SpotMarketCyTags.SpotTradingSide
     : PerpetualMarketCyTags.TradeDirection
 )

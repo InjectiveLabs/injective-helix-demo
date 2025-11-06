@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { IsSpotKey } from '@/types'
 
 const appStore = useAppStore()
 
-withDefaults(
-  defineProps<{
-    isSpot?: boolean
-  }>(),
-  {}
-)
+const isSpot = inject(IsSpotKey)
 
 const isOpen = ref(true)
 
