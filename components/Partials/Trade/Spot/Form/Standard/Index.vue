@@ -173,7 +173,7 @@ watch(
 
     <PartialsTradeSpotFormStandardAdvancedSettings
       v-if="isLimitOrder"
-      class="mt-4"
+      class="my-4"
     />
 
     <PartialsTradeSpotFormStandardDetails

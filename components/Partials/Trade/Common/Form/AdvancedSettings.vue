@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
 
-const appStore = useAppStore()
-
 withDefaults(
   defineProps<{
-    isSpot?: boolean
+    cyTag: string
+    forceOpen?: boolean
   }>(),
   {}
 )
 
-const isOpen = ref(true)
+const isOpen = ref(false)
 
 function toggle() {
   isOpen.value = !isOpen.value
@@ -20,30 +19,26 @@ function toggle() {
 <template>
   <div>
     <div
-      class="flex items-center justify-between cursor-pointer select-none text-white"
+      class="flex justify-between items-center cursor-pointer"
+      :data-cy="dataCyTag(cyTag)"
       @click="toggle"
     >
       <p class="text-xs font-semibold select-none text-white">
-        {{ $t('trade.details') }}
+        {{ $t('trade.advancedSettings') }}
       </p>
       <div class="transition-all" :class="{ 'rotate-180': isOpen }">
         <UIcon :name="NuxtUiIcons.ChevronDown" class="h-3 w-3 min-w-3" />
       </div>
     </div>
 
-    <AppCollapse v-bind="{ isOpen }">
-      <div class="py-4 space-y-2">
+    <AppCollapse
+      v-bind="{
+        isOpen: forceOpen ? true : isOpen
+      }"
+    >
+      <div class="space-y-2 py-2">
         <slot />
       </div>
-
-      <div
-        v-if="appStore.devMode && $slots.devMode"
-        class="pt-2 pb-4 space-y-1.5 text-white"
-      >
-        <slot name="devMode" />
-      </div>
     </AppCollapse>
-
-    <ModalsSlippage :isSpot="isSpot" />
   </div>
 </template>

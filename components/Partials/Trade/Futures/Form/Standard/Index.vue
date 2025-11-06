@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { dataCyTag } from '@shared/utils'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
   Modal,
   MarketKey,
-  BusEvents,
   TradeAmountOption,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
@@ -34,12 +32,20 @@ const { value: orderSide } = useStringField({
   initialValue: TradeDirection.Long
 })
 
-const isLimitOrder = computed(
-  () =>
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.Limit ||
-    derivativeFormValues.value[DerivativesTradeFormField.Type] ===
-      DerivativeTradeTypes.StopLimit
+const isMarketOrder = computed(() =>
+  [DerivativeTradeTypes.Market].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
+)
+
+const isLimitOrder = computed(() =>
+  [DerivativeTradeTypes.Limit, DerivativeTradeTypes.StopLimit].includes(
+    derivativeFormValues.value[
+      DerivativesTradeFormField.Type
+    ] as DerivativeTradeTypes
+  )
 )
 
 const isTriggerOrder = computed(() =>
@@ -230,9 +236,10 @@ watch(
     </div>
 
     <PartialsTradeFuturesFormStandardAdvancedSettings
-      class="mt-4"
+      class="my-4"
       v-bind="{
         isLimitOrder,
+        isMarketOrder,
         estLiquidationPrice
       }"
       @tpsl:add="addTpSl"
