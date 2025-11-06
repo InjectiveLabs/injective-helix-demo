@@ -272,7 +272,7 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity />
+    <PartialsTradeCommonFormAccountEquity class="mt-6" />
 
     <ModalsAddTakeProfitStopLoss
       v-if="selectedPosition"

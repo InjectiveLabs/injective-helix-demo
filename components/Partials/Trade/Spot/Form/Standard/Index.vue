@@ -194,6 +194,6 @@ watch(
       }"
     />
 
-    <PartialsTradeCommonFormAccountEquity />
+    <PartialsTradeCommonFormAccountEquity class="mt-6" />
   </div>
 </template>

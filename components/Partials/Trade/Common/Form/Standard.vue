@@ -9,6 +9,6 @@
     <slot name="advancedSettings" />
     <slot name="details" />
     <slot name="createOrder" />
-    <PartialsTradeCommonFormAccountEquity />
+    <PartialsTradeCommonFormAccountEquity class="mt-6" />
   </div>
 </template>
