@@ -50,7 +50,7 @@ const formAmount = computed(
   () => spotFormValues.value[SpotTradeFormField.Amount] || '0'
 )
 
-const slippageTolerance = computed(
+const slippagePercentage = computed(
   () => spotFormValues.value[SpotTradeFormField.Slippage] || '0'
 )
 
@@ -93,13 +93,13 @@ function openSlippageModal() {
           <PartialsTradeCommonFormDetailsSlippage
             v-bind="{
               formAmount,
-              slippageTolerance,
+              slippagePercentage,
               estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
               showEstSlippage: tradeDetails.enoughLiquidity.value,
               estSlippageCyTag: dataCyTag(
                 SpotMarketCyTags.DisplayedEstimatedSlippage
               ),
-              slippageToleranceCyTag: dataCyTag(
+              slippagePercentageCyTag: dataCyTag(
                 SpotMarketCyTags.DisplayedSlippageTolerance
               )
             }"
@@ -350,7 +350,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: slippageTolerance
+                  amount: slippagePercentage
                 }"
                 :data-cy="dataCyTag(SpotMarketCyTags.SlippageTolerance)"
               />%

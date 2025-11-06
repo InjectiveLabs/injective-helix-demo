@@ -7,6 +7,7 @@ import {
   StatusType,
   BigNumberInBase
 } from '@injectivelabs/utils'
+import { HIGH_SLIPPAGE_THRESHOLD } from '@/app/utils/constants'
 import { calculateWorstPriceFromPriceLevel } from '@/app/utils/helpers'
 import { Modal, BusEvents, PartialLimitField } from '@/types'
 import type { TransformedPosition } from '@/types'
@@ -180,7 +181,7 @@ async function validateSlippage() {
     )
     .times(100)
 
-  return slippagePercentage.gt(5)
+  return slippagePercentage.gt(HIGH_SLIPPAGE_THRESHOLD)
 }
 </script>
 

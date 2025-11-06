@@ -27,7 +27,7 @@ withDefaults(
 
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 
-const slippageTolerance = computed(
+const slippagePercentage = computed(
   () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
 )
 
@@ -106,12 +106,12 @@ function openSlippageModal() {
           <PartialsTradeCommonFormDetailsSlippage
             v-bind="{
               formAmount,
-              slippageTolerance,
+              slippagePercentage,
               estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
               estSlippageCyTag: dataCyTag(
                 PerpetualMarketCyTags.DisplayedEstimatedSlippage
               ),
-              slippageToleranceCyTag: dataCyTag(
+              slippagePercentageCyTag: dataCyTag(
                 PerpetualMarketCyTags.DisplayedSlippageTolerance
               ),
               showEstSlippage:
@@ -456,7 +456,7 @@ function openSlippageModal() {
                   useSubscript: true,
                   noTrailingZeros: false,
                   shouldAbbreviate: false,
-                  amount: slippageTolerance
+                  amount: slippagePercentage
                 }"
                 :data-cy="dataCyTag(PerpetualMarketCyTags.SlippageTolerance)"
               />%

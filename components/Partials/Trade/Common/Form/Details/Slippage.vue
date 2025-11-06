@@ -13,9 +13,9 @@ const props = withDefaults(
     formAmount: string
     showEstSlippage: boolean
     estSlippageCyTag?: string
-    slippageToleranceCyTag?: string
+    slippagePercentageCyTag?: string
     estSlippagePercentage: BigNumberInBase
-    slippageTolerance: BigNumberInBase | string | number
+    slippagePercentage: BigNumberInBase | string | number
   }>(),
   {
     showEstSlippage: true
@@ -79,10 +79,10 @@ function handleClick() {
                 useSubscript: true,
                 noTrailingZeros: false,
                 shouldAbbreviate: false,
-                amount: slippageTolerance,
+                amount: slippagePercentage,
                 decimals: DEFAULT_PERCENTAGE_DECIMALS
               }"
-              :data-cy="slippageToleranceCyTag"
+              :data-cy="slippagePercentageCyTag"
             />
           </template>
         </i18n-t>

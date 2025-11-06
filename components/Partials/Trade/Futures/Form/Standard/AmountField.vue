@@ -4,7 +4,8 @@ import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
   calculateWorstPrice,
-  calculateTotalQuantity
+  calculateTotalQuantity,
+  safeAmount
 } from '@/app/utils/helpers'
 import {
   ONE_IN_BASE,
@@ -22,6 +23,10 @@ import {
   DerivativesTradeFormField
 } from '@/types'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
+import {
+  calculateNotional,
+  calculateSlippagePrice
+} from '@/app/utils/trading/calculations'
 
 const positionStore = usePositionStore()
 const orderbookStore = useOrderbookStore()
@@ -177,8 +182,9 @@ const {
 })
 
 function calculateAmountFromPercentage(percentage: number) {
-  const slippage =
-    derivativeFormValues.value[DerivativesTradeFormField.Slippage] || 0
+  const slippageTolerance = new BigNumberInBase(
+    safeAmount(derivativeFormValues.value[DerivativesTradeFormField.Slippage])
+  ).div(100)
 
   if (
     isReduceOnly.value &&
@@ -204,22 +210,28 @@ function calculateAmountFromPercentage(percentage: number) {
 
     const executionPrice = new BigNumberInBase(
       isStopMarket.value
-        ? derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] ||
-          0
+        ? safeAmount(
+            derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice]
+          )
         : worstPrice
     )
 
     const limitPrice = new BigNumberInBase(
-      derivativeFormValues.value[DerivativesTradeFormField.LimitPrice] || 0
+      safeAmount(
+        derivativeFormValues.value[DerivativesTradeFormField.LimitPrice]
+      )
     )
 
-    const executionPriceWithSlippage = isBuy.value
-      ? executionPrice.times(1 + Number(slippage) / 100)
-      : executionPrice.times(1 - Number(slippage) / 100)
+    const executionPriceWithSlippage = calculateSlippagePrice({
+      slippageTolerance,
+      isBuy: isBuy.value,
+      price: executionPrice
+    })
 
-    const totalNotional = props.isLimitOrder
-      ? limitPrice.times(activePositionQuantity.value)
-      : executionPriceWithSlippage.times(activePositionQuantity.value)
+    const totalNotional = calculateNotional({
+      quantity: new BigNumberInBase(activePositionQuantity.value),
+      price: props.isLimitOrder ? limitPrice : executionPriceWithSlippage
+    })
 
     return totalNotional.times(percentage).div(100)
   }
@@ -241,7 +253,7 @@ function calculateAmountFromPercentage(percentage: number) {
   }
 
   const leverage =
-    derivativeFormValues.value[DerivativesTradeFormField.Leverage] || 1
+    derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
 
   const fee = new BigNumberInBase(market.value.takerFeeRate)
   const feeLeveraged = fee.times(leverage)
@@ -263,13 +275,11 @@ function calculateAmountFromPercentage(percentage: number) {
   }
 
   if (typeValue.value === TradeAmountOption.Base && isStopMarket.value) {
-    const slippagePercentage = isBuy.value
-      ? new BigNumberInBase(1).plus(Number(slippage) / 100)
-      : new BigNumberInBase(1).minus(Number(slippage) / 100)
-
-    const worstPriceWithSlippage = new BigNumberInBase(executionPrice).times(
-      slippagePercentage
-    )
+    const worstPriceWithSlippage = calculateSlippagePrice({
+      slippageTolerance,
+      isBuy: isBuy.value,
+      price: new BigNumberInBase(executionPrice)
+    })
 
     return maxMargin
       .times(leverage)
@@ -285,11 +295,11 @@ function calculateAmountFromPercentage(percentage: number) {
     records
   )
 
-  const slippagePercentage = isBuy.value
-    ? new BigNumberInBase(1).plus(Number(slippage) / 100)
-    : new BigNumberInBase(1).minus(Number(slippage) / 100)
-
-  const worstPriceWithSlippage = worstPrice.times(slippagePercentage)
+  const worstPriceWithSlippage = calculateSlippagePrice({
+    slippageTolerance,
+    price: worstPrice,
+    isBuy: isBuy.value
+  })
 
   return maxMargin
     .times(leverage)
