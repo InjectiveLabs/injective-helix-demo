@@ -103,7 +103,7 @@ type RefetchOrderbookType = {
   messageType: WorkerMessageResponseType.RefetchOrderbook
 }
 
-type ReceiveQuantityInfoType = {
+export type ReceiveQuantityInfoType = {
   messageType: WorkerMessageResponseType.ReceiveQuantityInfo
   data: {
     bestPrice: string
@@ -113,7 +113,7 @@ type ReceiveQuantityInfoType = {
   }
 }
 
-type ReceiveNotionalInfoType = {
+export type ReceiveNotionalInfoType = {
   messageType: WorkerMessageResponseType.ReceiveNotionalInfo
   data: {
     quantity: string
