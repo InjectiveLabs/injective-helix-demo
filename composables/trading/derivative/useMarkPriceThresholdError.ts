@@ -1,7 +1,9 @@
-import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { safeAmount } from '@/app/utils/helpers'
 import { excludedPriceDeviationSlugs } from '@/app/data/market'
-import { UiDerivativeMarket, DerivativeTradeTypes } from '@/types'
+import { calculateNotional } from '@/app/utils/trading/calculations'
+import { DerivativeTradeTypes } from '@/types'
+import type { UiDerivativeMarket } from '@/types'
 
 export function useMarkPriceThresholdError({
   type,
@@ -19,8 +21,8 @@ export function useMarkPriceThresholdError({
   quantity: Ref<BigNumberInBase>
   marginWithFee: Ref<BigNumberInBase>
   triggerPrice: Ref<string | undefined>
-  market: Ref<UiDerivativeMarket | undefined>
-  type: Ref<DerivativeTradeTypes | undefined>
+  market: Ref<undefined | UiDerivativeMarket>
+  type: Ref<undefined | DerivativeTradeTypes>
 }) {
   /**
    * Computes whether the current Mark Price violates margin requirements.
@@ -36,7 +38,9 @@ export function useMarkPriceThresholdError({
    */
 
   const isMarkPriceThresholdError = computed(() => {
-    const markPriceInBigNumber = new BigNumberInBase(markPrice.value || 0)
+    const markPriceInBigNumber = new BigNumberInBase(
+      safeAmount(markPrice.value)
+    )
 
     if (
       !price.value ||
@@ -55,9 +59,10 @@ export function useMarkPriceThresholdError({
       return true
     }
 
-    const notionalWithoutLeverage = price.value.times(
-      quantity.value || ZERO_IN_BASE
-    )
+    const notionalWithoutLeverage = calculateNotional({
+      price: price.value,
+      quantity: quantity.value
+    })
 
     // if notional is price * quantity, that is max exposure
     // Buy Orders subtracts because the margin is used to open the position, and remaining margin needs to be tracked
@@ -73,9 +78,7 @@ export function useMarkPriceThresholdError({
       : new BigNumberInBase(1).plus(market.value.initialMarginRatio)
 
     // calculate thresholdMarkPrice, the minimum or maximum price at which a position can be maintained without violating margin requirements
-    const amountWithInitialMarginRatio = marginRatio.times(
-      quantity.value || ZERO_IN_BASE
-    )
+    const amountWithInitialMarginRatio = marginRatio.times(quantity.value)
     const thresholdMarkPrice = notionalAfterMarginAdjustment.div(
       amountWithInitialMarginRatio
     )
@@ -84,7 +87,7 @@ export function useMarkPriceThresholdError({
       type.value === DerivativeTradeTypes.StopMarket
 
     const triggerPriceToBigNumber = new BigNumberInBase(
-      triggerPrice.value || '0'
+      safeAmount(triggerPrice.value)
     )
 
     // validate mark price against markPriceThreshold
