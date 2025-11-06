@@ -1,16 +1,25 @@
 <script setup lang="ts">
+import { IsSpotKey, PerpetualMarketCyTags, SpotMarketCyTags } from '@/types'
+
 const props = withDefaults(
   defineProps<{
-    cyTag: string
     formFieldName: string
   }>(),
   {}
 )
 
+const isSpot = inject(IsSpotKey)
+
 const { value: bypassPriceWarningValue } = useBooleanField({
   rule: '',
   name: props.formFieldName
 })
+
+const cyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.AdvancedSettingsBypassWarning
+    : PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox
+)
 </script>
 
 <template>

@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { IsSpotKey, PerpetualMarketCyTags, SpotMarketCyTags } from '@/types'
+
 const props = withDefaults(
   defineProps<{
-    cyTag: string
     formFieldName: string
   }>(),
   {}
 )
+
+const isSpot = inject(IsSpotKey)
 
 const jsonStore = useSharedJsonStore()
 
@@ -14,6 +17,12 @@ const { value: postOnlyValue } = useBooleanField({
   name: props.formFieldName,
   initialValue: jsonStore.isPostUpgradeMode
 })
+
+const cyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.AdvancedSettingsPostOnly
+    : PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox
+)
 </script>
 
 <template>

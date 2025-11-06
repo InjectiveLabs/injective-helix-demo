@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { NuxtUiIcons } from '@shared/types'
+import { IsSpotKey, SpotMarketCyTags, PerpetualMarketCyTags } from '@/types'
 
 withDefaults(
   defineProps<{
-    cyTag: string
     forceOpen?: boolean
   }>(),
   {}
 )
 
+const isSpot = inject(IsSpotKey)
+
 const isOpen = ref(false)
+
+const cyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.AdvancedSettings
+    : PerpetualMarketCyTags.AdvancedSettings
+)
 
 function toggle() {
   isOpen.value = !isOpen.value

@@ -2,7 +2,6 @@
 import { OrderSide } from '@injectivelabs/ts-types'
 import {
   MainPage,
-  BusEvents,
   MarketKey,
   TradeTypes,
   SpotMarketCyTags,
@@ -41,7 +40,12 @@ const isLimitOrder = computed(
   () => spotFormValues.value[SpotTradeFormField.Type] === TradeTypes.Limit
 )
 
+const isBuy = computed(
+  () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
+)
+
 const tradeDetails = useTradeDetails({
+  isBuy,
   isLimitOrder,
   takerFeeRate,
   market: computed(() => market.value),
@@ -53,9 +57,6 @@ const tradeDetails = useTradeDetails({
   ),
   isPostOnly: computed(
     () => spotFormValues.value[SpotTradeFormField.PostOnly] || false
-  ),
-  isBuy: computed(
-    () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
   )
 })
 
@@ -65,6 +66,10 @@ const quantityToBigNumber = computed(
 
 const totalWithFeeToBigNumber = computed(
   () => new BigNumberInBase(tradeDetails.notionalWithFee.value)
+)
+
+const bypassPriceWarning = computed(
+  () => spotFormValues.value[SpotTradeFormField.BypassPriceWarning]
 )
 
 const isSwapEnabled = computed(() =>
@@ -148,12 +153,10 @@ watch(
     <PartialsTradeCommonFormLimitPriceField
       v-if="isLimitOrder"
       v-bind="{
+        isBuy,
         lastTradedPrice,
-        fieldName: SpotTradeFormField.Price,
-        isBuySide: orderSideValue === OrderSide.Buy,
-        cyTag: SpotMarketCyTags.LimitPriceInputField,
-        bypassPriceWarning:
-          spotFormValues[SpotTradeFormField.BypassPriceWarning]
+        bypassPriceWarning,
+        fieldName: SpotTradeFormField.Price
       }"
     />
 

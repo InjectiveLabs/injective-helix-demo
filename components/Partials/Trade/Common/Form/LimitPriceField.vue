@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { MarketKey, BusEvents } from '@/types'
+import {
+  MarketKey,
+  BusEvents,
+  IsSpotKey,
+  PerpetualMarketCyTags,
+  SpotMarketCyTags
+} from '@/types'
 import type { UiMarketWithToken } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    cyTag: string
+    isBuy: boolean
     fieldName: string
-    isBuySide: boolean
     shouldSkipAutoSet?: boolean
     bypassPriceWarning?: boolean
     lastTradedPrice: BigNumberInBase
@@ -18,6 +23,7 @@ const props = withDefaults(
 const appStore = useAppStore()
 const orderbookStore = useOrderbookStore()
 
+const isSpot = inject(IsSpotKey)
 const market = inject(MarketKey) as Ref<UiMarketWithToken>
 
 const {
@@ -41,6 +47,12 @@ const {
 })
 
 const hasClickedLimitField = ref(false)
+
+const cyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.LimitPriceInputField
+    : PerpetualMarketCyTags.LimitpriceInputField
+)
 
 onMounted(() => {
   useEventBus(BusEvents.OrderbookPriceClick).on((price: any) => {
@@ -70,7 +82,7 @@ function setLimitPriceToTopOfOrderbook() {
     return
   }
 
-  limitValue.value = props.isBuySide
+  limitValue.value = props.isBuy
     ? orderbookStore.highestBuyPrice
     : orderbookStore.lowestSellPrice
 }

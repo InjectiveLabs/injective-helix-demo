@@ -6,7 +6,6 @@ import {
   MarketKey,
   TradeAmountOption,
   DerivativeTradeTypes,
-  PerpetualMarketCyTags,
   DerivativesTradeFormField
 } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
@@ -64,7 +63,14 @@ const { takerFeeRate } = useTradeFee({
   marketMakerFeeRate: market.value.makerFeeRate
 })
 
+const isBuy = computed(
+  () =>
+    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
+    TradeDirection.Long
+)
+
 const tradeDetails = useTradeDetails({
+  isBuy,
   isLimitOrder,
   takerFeeRate,
   isTriggerOrder,
@@ -88,15 +94,18 @@ const tradeDetails = useTradeDetails({
   ),
   slippagePercentage: computed(
     () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
-  ),
-  isBuy: computed(
-    () =>
-      derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-      TradeDirection.Long
   )
 })
 
 const isReady = ref(false)
+
+const limitPriceShouldSkipAutoSet = computed(
+  () => orderType.value === DerivativeTradeTypes.StopLimit
+)
+
+const bypassPriceWarning = computed(
+  () => derivativeFormValues.value[DerivativesTradeFormField.BypassPriceWarning]
+)
 
 const quantityToBigNumber = computed(
   () => new BigNumberInBase(tradeDetails.quantity.value)
@@ -111,15 +120,11 @@ const totalNotionalToBigNumber = computed(
 )
 
 const estLiquidationPrice = computed(() => {
-  const isBuy =
-    derivativeFormValues.value[DerivativesTradeFormField.Side] ===
-    TradeDirection.Long
-
   return calculateLiquidationPrice({
     market: market.value,
     quantity: tradeDetails.quantity.value,
-    orderType: isBuy ? OrderSide.Buy : OrderSide.Sell,
     price: tradeDetails.executionPrice.value.toFixed(),
+    orderType: isBuy.value ? OrderSide.Buy : OrderSide.Sell,
     notionalWithLeverage: tradeDetails.margin.value.toFixed()
   })
 })
@@ -216,13 +221,11 @@ watch(
     <PartialsTradeCommonFormLimitPriceField
       v-if="isLimitOrder"
       v-bind="{
-        isBuySide: orderSide === TradeDirection.Long,
-        fieldName: DerivativesTradeFormField.LimitPrice,
-        cyTag: PerpetualMarketCyTags.LimitpriceInputField,
+        isBuy,
         lastTradedPrice,
-        shouldSkipAutoSet: orderType === DerivativeTradeTypes.StopLimit,
-        bypassPriceWarning:
-          derivativeFormValues[DerivativesTradeFormField.BypassPriceWarning]
+        bypassPriceWarning,
+        shouldSkipAutoSet: limitPriceShouldSkipAutoSet,
+        fieldName: DerivativesTradeFormField.LimitPrice
       }"
     />
 

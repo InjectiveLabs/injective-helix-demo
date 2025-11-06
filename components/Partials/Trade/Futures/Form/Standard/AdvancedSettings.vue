@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PerpetualMarketCyTags, DerivativesTradeFormField } from '@/types'
+import { DerivativesTradeFormField } from '@/types'
 
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { BigNumberInBase } from '@injectivelabs/utils'
@@ -27,16 +27,12 @@ function addTpSl(position: PositionV2) {
 <template>
   <PartialsTradeCommonFormAdvancedSettings
     v-bind="{
-      cyTag: PerpetualMarketCyTags.AdvancedSettings,
       forceOpen: isLimitOrder && jsonStore.isPostUpgradeMode
     }"
   >
     <PartialsTradeCommonFormSettingsPostOnly
       v-if="isLimitOrder"
-      v-bind="{
-        formFieldName: DerivativesTradeFormField.PostOnly,
-        cyTag: PerpetualMarketCyTags.AdvancedSettingsPostOnlyCheckbox
-      }"
+      :formFieldName="DerivativesTradeFormField.PostOnly"
     />
 
     <p
@@ -50,10 +46,7 @@ function addTpSl(position: PositionV2) {
 
     <PartialsTradeCommonFormSettingsBypassWarning
       v-if="isLimitOrder"
-      v-bind="{
-        formFieldName: DerivativesTradeFormField.BypassPriceWarning,
-        cyTag: PerpetualMarketCyTags.AdvancedSettingsByPassPriceWarningCheckbox
-      }"
+      :formFieldName="DerivativesTradeFormField.BypassPriceWarning"
     />
 
     <PartialsTradeFuturesFormStandardSettingsTpSl
