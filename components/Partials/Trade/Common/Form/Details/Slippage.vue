@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DEFAULT_PERCENTAGE_DECIMALS } from '@shared/utils/constant'
 import {
   UI_ZERO_DECIMAL,
   MIN_EST_SLIPPAGE,
@@ -7,15 +6,15 @@ import {
   UI_DEFAULT_DISPLAY_DECIMALS
 } from '@/app/utils/constants'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { DEFAULT_PERCENTAGE_DECIMALS } from '@shared/utils/constant'
+import { IsSpotKey, SpotMarketCyTags, PerpetualMarketCyTags } from '@/types'
 
 const props = withDefaults(
   defineProps<{
     formAmount: string
     showEstSlippage: boolean
-    estSlippageCyTag?: string
-    slippagePercentageCyTag?: string
+    slippagePercentage: string
     estSlippagePercentage: BigNumberInBase
-    slippagePercentage: BigNumberInBase | string | number
   }>(),
   {
     showEstSlippage: true
@@ -23,6 +22,28 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ click: [] }>()
+
+const isSpot = inject(IsSpotKey)
+
+const estSlippageCyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.DisplayedEstimatedSlippage
+    : PerpetualMarketCyTags.DisplayedEstimatedSlippage
+)
+
+const slippagePercentageCyTag = computed(() =>
+  isSpot
+    ? SpotMarketCyTags.DisplayedSlippageTolerance
+    : PerpetualMarketCyTags.DisplayedSlippageTolerance
+)
+
+const estSlippageDecimals = computed(() => {
+  if (props.formAmount === '0') {
+    return UI_ZERO_DECIMAL
+  }
+
+  return UI_DEFAULT_DISPLAY_DECIMALS
+})
 
 const adaptedEstSlippagePercentage = computed(() => {
   if (props.formAmount === '0') {
@@ -34,14 +55,6 @@ const adaptedEstSlippagePercentage = computed(() => {
   }
 
   return props.estSlippagePercentage
-})
-
-const estSlippageDecimals = computed(() => {
-  if (props.formAmount === '0') {
-    return UI_ZERO_DECIMAL
-  }
-
-  return UI_DEFAULT_DISPLAY_DECIMALS
 })
 
 function handleClick() {
@@ -65,7 +78,7 @@ function handleClick() {
                 decimals: estSlippageDecimals,
                 amount: adaptedEstSlippagePercentage
               }"
-              :data-cy="estSlippageCyTag"
+              :data-cy="dataCyTag(estSlippageCyTag)"
             />
           </template>
         </i18n-t>
@@ -82,7 +95,7 @@ function handleClick() {
                 amount: slippagePercentage,
                 decimals: DEFAULT_PERCENTAGE_DECIMALS
               }"
-              :data-cy="slippagePercentageCyTag"
+              :data-cy="dataCyTag(slippagePercentageCyTag)"
             />
           </template>
         </i18n-t>

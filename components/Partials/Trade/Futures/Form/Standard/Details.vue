@@ -108,12 +108,6 @@ function openSlippageModal() {
               formAmount,
               slippagePercentage,
               estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
-              estSlippageCyTag: dataCyTag(
-                PerpetualMarketCyTags.DisplayedEstimatedSlippage
-              ),
-              slippagePercentageCyTag: dataCyTag(
-                PerpetualMarketCyTags.DisplayedSlippageTolerance
-              ),
               showEstSlippage:
                 tradeDetails.enoughLiquidity.value && !isTriggerOrder
             }"

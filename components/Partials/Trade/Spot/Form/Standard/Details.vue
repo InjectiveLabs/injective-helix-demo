@@ -94,14 +94,8 @@ function openSlippageModal() {
             v-bind="{
               formAmount,
               slippagePercentage,
-              estSlippagePercentage: tradeDetails.estSlippagePercentage.value,
               showEstSlippage: tradeDetails.enoughLiquidity.value,
-              estSlippageCyTag: dataCyTag(
-                SpotMarketCyTags.DisplayedEstimatedSlippage
-              ),
-              slippagePercentageCyTag: dataCyTag(
-                SpotMarketCyTags.DisplayedSlippageTolerance
-              )
+              estSlippagePercentage: tradeDetails.estSlippagePercentage.value
             }"
             @click="openSlippageModal"
           />
