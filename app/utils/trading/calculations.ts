@@ -70,7 +70,12 @@ export function calculateMinimumNotional(params: {
     params.quantityTensMultiplier
   )
 
+  const minNotional = calculateNotional({
+    price: params.price,
+    quantity: new BigNumberInBase(minQuantity)
+  })
+
   return new BigNumberInBase(
-    params.price.times(minQuantity).dp(params.priceDecimals, BigNumber.ROUND_UP)
+    minNotional.dp(params.priceDecimals, BigNumber.ROUND_UP)
   )
 }

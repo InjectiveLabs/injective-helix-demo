@@ -609,3 +609,13 @@ export async function generateOnRamperSignature(
 
   return hashHex
 }
+
+export function safeAmount(value: null | string | undefined) {
+  const isInvalid =
+    value === '' ||
+    value === null ||
+    value === undefined ||
+    new BigNumberInBase(value).isNaN()
+
+  return isInvalid ? '0' : value
+}

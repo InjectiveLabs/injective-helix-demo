@@ -1,7 +1,7 @@
 import { SharedMarketType } from '@shared/types'
 import { ZERO_IN_BASE } from '@shared/utils/constant'
 import { BigNumberInBase } from '@injectivelabs/utils'
-import { quantizeNumber } from '@/app/utils/helpers'
+import { safeAmount, quantizeNumber } from '@/app/utils/helpers'
 import {
   calculateNotional,
   calculateFeeAmount,
@@ -46,22 +46,11 @@ export function useTradeDetails({
   slippagePercentage: ComputedRef<string>
   takerFeeRate: ComputedRef<BigNumberInBase>
 }): TradeDetails {
-  function safeAmount(value: string) {
-    const isInvalid =
-      new BigNumberInBase(value).isNaN() ||
-      value === '' ||
-      value === null ||
-      value === undefined
-
-    return isInvalid ? '0' : value
-  }
-
   const worker = inject(
     OrderbookWorkerKey
   ) as unknown as Ref<OrderbookWorkerType>
 
   const isSpot = computed(() => market.value.type === SharedMarketType.Spot)
-  const isDerivative = computed(() => !isSpot.value)
 
   const quantity = ref('0')
   const notional = ref('0')
@@ -77,8 +66,9 @@ export function useTradeDetails({
     set: (value) => {
       quantity.value = value
 
+      const quantityInBase = new BigNumberInBase(safeAmount(value))
+
       if (isLimitOrder.value) {
-        const quantityInBase = new BigNumberInBase(safeAmount(value))
         const limitPriceInBase = new BigNumberInBase(
           safeAmount(limitPrice.value)
         )
@@ -86,38 +76,22 @@ export function useTradeDetails({
         bestPrice.value = limitPriceInBase
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
-
-        calculatedNotional.value = calculateNotional({
-          price: limitPriceInBase,
-          quantity: quantityInBase
-        })
-
-        notional.value = notionalWithFee.value.toFixed()
-
-        enoughLiquidity.value = true
-
-        return
-      }
-
-      if (isTriggerOrder?.value) {
-        const quantityInBase = new BigNumberInBase(safeAmount(value))
+      } else if (isTriggerOrder?.value) {
         const triggerPriceInBase = new BigNumberInBase(
-          safeAmount(triggerPrice?.value || '0')
+          safeAmount(triggerPrice?.value)
         )
 
-        const priceWithSlippage = calculateSlippagePrice({
-          isBuy: isBuy.value,
-          price: triggerPriceInBase,
-          slippageTolerance: slippageTolerance.value
-        })
-
+        // with Stop-Market, we don't know what the exact price will be,
+        // so we use the trigger price as the best price
         bestPrice.value = triggerPriceInBase
-        worstPrice.value = priceWithSlippage
-        averagePrice.value = priceWithSlippage
+        worstPrice.value = slippagePrice.value
+        averagePrice.value = slippagePrice.value
+      }
 
+      if (isLimitOrder.value || isTriggerOrder?.value) {
         calculatedNotional.value = calculateNotional({
-          price: priceWithSlippage,
-          quantity: quantityInBase
+          quantity: quantityInBase,
+          price: worstPrice.value as BigNumberInBase
         })
 
         notional.value = notionalWithFee.value.toFixed()
@@ -130,9 +104,9 @@ export function useTradeDetails({
       worker.value?.postMessage({
         type: WorkerMessageType.Quantity,
         data: {
-          isSpot: isSpot.value,
           isBuy: isBuy.value,
-          quantity: safeAmount(value),
+          isSpot: isSpot.value,
+          quantity: quantityInBase.toFixed(),
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals
         }
@@ -160,47 +134,22 @@ export function useTradeDetails({
         bestPrice.value = limitPriceInBase
         worstPrice.value = limitPriceInBase
         averagePrice.value = limitPriceInBase
-
-        const calculatedQuantity = calculateQuantityFromNotional({
-          price: limitPriceInBase,
-          notional: notionalMinusFee
-        })
-
-        const calculatedQuantityQuantized = quantizeNumber(
-          calculatedQuantity,
-          market.value.quantityTensMultiplier
+      } else if (isTriggerOrder?.value) {
+        const triggerPriceInBase = new BigNumberInBase(
+          safeAmount(triggerPrice?.value)
         )
 
-        quantity.value = calculatedQuantityQuantized.toFixed()
-
-        calculatedNotional.value = calculateNotional({
-          price: limitPriceInBase,
-          quantity: calculatedQuantityQuantized
-        })
-
-        enoughLiquidity.value = true
-
-        return
+        // with Stop-Market, we don't know what the exact price will be,
+        // so we use the trigger price as the best price
+        bestPrice.value = triggerPriceInBase
+        worstPrice.value = slippagePrice.value
+        averagePrice.value = slippagePrice.value
       }
 
-      if (isTriggerOrder?.value) {
-        const triggerPriceInBase = new BigNumberInBase(
-          safeAmount(triggerPrice?.value || '0')
-        )
-
-        const priceWithSlippage = calculateSlippagePrice({
-          isBuy: isBuy.value,
-          price: triggerPriceInBase,
-          slippageTolerance: slippageTolerance.value
-        })
-
-        bestPrice.value = triggerPriceInBase
-        worstPrice.value = priceWithSlippage
-        averagePrice.value = priceWithSlippage
-
+      if (isLimitOrder.value || isTriggerOrder?.value) {
         const calculatedQuantity = calculateQuantityFromNotional({
-          price: priceWithSlippage,
-          notional: notionalInBase
+          notional: notionalMinusFee,
+          price: worstPrice.value as BigNumberInBase
         })
 
         const calculatedQuantityQuantized = quantizeNumber(
@@ -211,7 +160,7 @@ export function useTradeDetails({
         quantity.value = calculatedQuantityQuantized.toFixed()
 
         calculatedNotional.value = calculateNotional({
-          price: priceWithSlippage,
+          price: worstPrice.value as BigNumberInBase,
           quantity: calculatedQuantityQuantized
         })
 
@@ -223,8 +172,8 @@ export function useTradeDetails({
       worker.value?.postMessage({
         type: WorkerMessageType.Notional,
         data: {
-          isSpot: isSpot.value,
           isBuy: isBuy.value,
+          isSpot: isSpot.value,
           notional: notionalMinusFee.toFixed(),
           baseDecimals: market.value.baseToken.decimals,
           quoteDecimals: market.value.quoteToken.decimals
@@ -233,9 +182,9 @@ export function useTradeDetails({
     }
   })
 
-  const slippageTolerance = computed(() => {
-    return new BigNumberInBase(safeAmount(slippagePercentage.value)).div(100)
-  })
+  const slippageTolerance = computed(() =>
+    new BigNumberInBase(safeAmount(slippagePercentage.value)).div(100)
+  )
 
   const slippagePrice = computed(() =>
     calculateSlippagePrice({
@@ -277,7 +226,7 @@ export function useTradeDetails({
   )
 
   const margin = computed(() => {
-    if (!isDerivative.value || !leverage?.value) {
+    if (isSpot.value || !leverage?.value) {
       return ZERO_IN_BASE
     }
 
