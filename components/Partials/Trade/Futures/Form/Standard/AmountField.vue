@@ -12,7 +12,10 @@ import {
   ZERO_IN_BASE,
   DEFAULT_ASSET_DECIMALS
 } from '@shared/utils/constant'
-import { UI_DEFAULT_MIN_DISPLAY_DECIMALS } from '@/app/utils/constants'
+import {
+  UI_DEFAULT_LEVERAGE,
+  UI_DEFAULT_MIN_DISPLAY_DECIMALS
+} from '@/app/utils/constants'
 import {
   BusEvents,
   MarketKey,
@@ -253,7 +256,8 @@ function calculateAmountFromPercentage(percentage: number) {
   }
 
   const leverage =
-    derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
+    derivativeFormValues.value[DerivativesTradeFormField.Leverage] ||
+    UI_DEFAULT_LEVERAGE
 
   const fee = new BigNumberInBase(market.value.takerFeeRate)
   const feeLeveraged = fee.times(leverage)

@@ -12,6 +12,7 @@ import {
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
@@ -81,7 +82,9 @@ const tradeDetails = useTradeDetails({
       derivativeFormValues.value[DerivativesTradeFormField.TriggerPrice] || '0'
   ),
   leverage: computed(
-    () => derivativeFormValues.value[DerivativesTradeFormField.Leverage] || '1'
+    () =>
+      derivativeFormValues.value[DerivativesTradeFormField.Leverage] ||
+      UI_DEFAULT_LEVERAGE
   ),
   slippagePercentage: computed(
     () => derivativeFormValues.value[DerivativesTradeFormField.Slippage] || '0'
