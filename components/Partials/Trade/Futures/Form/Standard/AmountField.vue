@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtUiIcons } from '@shared/types'
 import { TradeDirection } from '@injectivelabs/ts-types'
 import { BigNumber, BigNumberInBase } from '@injectivelabs/utils'
 import {
@@ -19,7 +18,6 @@ import {
 import {
   BusEvents,
   MarketKey,
-  MarketCyTags,
   TradeAmountOption,
   DerivativeTradeTypes,
   PerpetualMarketCyTags,
@@ -110,10 +108,6 @@ const activePositionQuantity = computed(() => {
     .minus(reduceOnlyOrderAmount)
     .toFixed()
 })
-
-const selectedSymbol = computed(
-  () => options.find((item) => item.id === typeValue.value)?.label || ''
-)
 
 const isStopMarket = computed(
   () =>
@@ -373,43 +367,10 @@ onMounted(() => {
       :data-cy="dataCyTag(PerpetualMarketCyTags.LimitAmountInputField)"
     >
       <template #right>
-        <USelectMenu
+        <PartialsTradeCommonFormAmountFieldTokenSelector
           v-model="typeValue"
-          v-bind="{
-            options,
-            variant: 'none',
-            valueAttribute: 'id',
-            uiMenu: { width: 'w-auto' },
-            popper: { offsetDistance: 12 }
-          }"
-        >
-          <div
-            class="flex items-center gap-2"
-            :data-cy="dataCyTag(MarketCyTags.AmountFieldTokenSelectorDropdown)"
-          >
-            <span>
-              {{ selectedSymbol }}
-            </span>
-
-            <UIcon
-              :name="NuxtUiIcons.ChevronDown"
-              class="size-3 transition-all text-gray-500 -mb-0.5"
-            />
-          </div>
-
-          <template #option="{ option }">
-            <span
-              class="mr-1"
-              :data-cy="
-                option.id === TradeAmountOption.Base
-                  ? dataCyTag(MarketCyTags.TokenSelectorOptionsBaseToken)
-                  : dataCyTag(MarketCyTags.TokenSelectorOptionsQuoteToken)
-              "
-            >
-              {{ option.label }}
-            </span>
-          </template>
-        </USelectMenu>
+          :options="options"
+        />
       </template>
 
       <template #bottom>
