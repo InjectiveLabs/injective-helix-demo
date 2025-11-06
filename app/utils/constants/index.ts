@@ -37,7 +37,6 @@ export const UI_MAX_PAGINATION_LIMIT_COUNT = 50
 
 export const BIG_NUMBER_ROUND_HALF_UP_MODE = BigNumber.ROUND_HALF_UP
 // 6 gwei for Kovan, fetched from gasStation for Mainnet
-export const DEFAULT_PRICE_WARNING_DEVIATION = new BigNumber(0.05) // 5%
 export const BIGGER_PRICE_WARNING_DEVIATION = new BigNumber(30) // 30%
 export const DEFAULT_MARKET_PRICE_WARNING_DEVIATION = new BigNumber(10) // 10%
 export const MAX_SLIPPAGE = new BigNumber(50) // +50% slippage

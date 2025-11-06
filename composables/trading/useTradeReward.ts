@@ -1,5 +1,4 @@
 import { BigNumberInBase } from '@injectivelabs/utils'
-import type { Ref } from 'vue'
 import type { PointsMultiplier } from '@injectivelabs/sdk-ts'
 import type { UiMarketWithToken } from '@/types'
 
