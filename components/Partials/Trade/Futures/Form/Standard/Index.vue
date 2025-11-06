@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { BigNumberInBase } from '@injectivelabs/utils'
+import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 import { OrderSide, TradeDirection } from '@injectivelabs/ts-types'
 import { calculateLiquidationPrice } from '@/app/client/utils/derivatives'
 import {
@@ -10,8 +12,6 @@ import {
 } from '@/types'
 import type { PositionV2 } from '@injectivelabs/sdk-ts'
 import type { UiDerivativeMarket, DerivativesTradeForm } from '@/types'
-import { BigNumberInBase } from '@injectivelabs/utils'
-import { UI_DEFAULT_LEVERAGE } from '@/app/utils/constants'
 
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()

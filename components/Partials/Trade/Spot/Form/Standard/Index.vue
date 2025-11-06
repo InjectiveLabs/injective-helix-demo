@@ -8,8 +8,8 @@ import {
   SpotTradeFormField,
   TradeAmountOption
 } from '@/types'
-import type { UiSpotMarket, SpotTradeForm } from '@/types'
 import { BigNumberInBase } from '@injectivelabs/utils'
+import type { UiSpotMarket, SpotTradeForm } from '@/types'
 
 const appStore = useAppStore()
 const swapStore = useSwapStore()
