@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-base'
-import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
-import { MsgType, OrderSide } from '@injectivelabs/ts-types'
-import { NuxtUiIcons, SharedMarketType } from '@shared/types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { TRADING_MESSAGES } from '@/app/data/trade'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { SharedMarketType } from '@shared/types'
+import { MsgType, OrderSide } from '@injectivelabs/ts-types'
 import {
   BusEvents,
   MarketKey,
   TradeTypes,
-  HelixCtaToast,
-  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   SpotTradeFormField
@@ -28,6 +23,7 @@ const sharedWalletStore = useSharedWalletStore()
 const notificationStore = useSharedNotificationStore()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { showAutosignCta } = useAutosignCta()
 
 const market = inject(MarketKey) as Ref<UiSpotMarket>
 
@@ -48,6 +44,8 @@ const chartType = ref(ChartViewOption.Chart)
 const status = reactive(new Status(StatusType.Idle))
 
 const spotFormValues = useFormValues<SpotTradeForm>()
+
+const tradesCount = computed(() => spotStore.subaccountTradesCount)
 
 const isBuy = computed(
   () => spotFormValues.value[SpotTradeFormField.Side] === OrderSide.Buy
@@ -147,7 +145,7 @@ const mixPanelFields = computed(() => ({
   slippageTolerance: spotFormValues.value[SpotTradeFormField.Slippage] || ''
 }))
 
-async function submitOrder() {
+async function onSubmit() {
   const { valid } = await validate()
 
   if (!valid) {
@@ -176,7 +174,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -216,7 +214,7 @@ function submitLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -236,61 +234,16 @@ function submitLimitOrder() {
       status.setIdle()
     })
 }
-
-function showAutosignCta() {
-  if (
-    ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
-      sharedWalletStore.wallet
-    )
-  ) {
-    return
-  }
-
-  if (!spotStore.subaccountTradesCount) {
-    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
-    notificationStore.success({
-      title: t('toast.portfolio.autoSign.enable.title'),
-      description: t('toast.portfolio.autoSign.enable.description'),
-      icon: NuxtUiIcons.RotateAuto,
-      timeout: MAX_TOAST_TIMEOUT,
-      key: HelixCtaToast.EnableAutoSign,
-      actions: [
-        {
-          label: t('common.enable'),
-          callback: () => {
-            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
-
-            sharedWalletStore
-              .connectAutoSign(
-                TRADING_MESSAGES
-                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
-              )
-              .then(() => {
-                notificationStore.update({
-                  title: t('toast.portfolio.autoSign.enabledToast.title'),
-                  description: t(
-                    'toast.portfolio.autoSign.enabledToast.description'
-                  )
-                })
-              })
-              .catch($onError)
-              .finally(() => status.setIdle())
-          }
-        }
-      ]
-    })
-  }
-}
 </script>
 
 <template>
   <div>
     <AppButton
-      :key="spotFormValues[SpotTradeFormField.Side]"
-      :variant="isBuy ? 'success' : 'danger'"
       class="w-full"
+      :variant="isBuy ? 'success' : 'danger'"
+      :key="spotFormValues[SpotTradeFormField.Side]"
       v-bind="{ status, disabled: isDisabled }"
-      @click="submitOrder"
+      @click="onSubmit"
     >
       <span v-if="!isAuthorized">
         {{ $t('common.unauthorized') }}

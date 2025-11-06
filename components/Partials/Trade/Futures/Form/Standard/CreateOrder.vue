@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { Wallet } from '@injectivelabs/wallet-base'
-import { MAX_TOAST_TIMEOUT } from '@shared/utils/constant'
-import { NuxtUiIcons, SharedMarketType } from '@shared/types'
-import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
 import { Status, StatusType, BigNumberInBase } from '@injectivelabs/utils'
-import { TRADING_MESSAGES } from '@/app/data/trade'
 import { getDerivativeOrderTypeToSubmit } from '@/app/utils/helpers'
 import * as EventTracker from '@/app/providers/mixpanel/EventTracker'
+import { MsgType, TradeDirection } from '@injectivelabs/ts-types'
+import { SharedMarketType } from '@shared/types'
 import {
   Modal,
   BusEvents,
   MarketKey,
-  HelixCtaToast,
-  MixPanelEvent,
   ChartViewOption,
   MixPanelOrderType,
   IsRWAMarketOpenKey,
@@ -33,6 +28,7 @@ const notificationStore = useSharedNotificationStore()
 const derivativeFormValues = useFormValues<DerivativesTradeForm>()
 const { t } = useLang()
 const { $onError } = useNuxtApp()
+const { showAutosignCta } = useAutosignCta()
 
 const isRWAMarketOpen = inject(IsRWAMarketOpenKey) as Ref<boolean>
 const derivativeMarket = inject(MarketKey) as Ref<UiDerivativeMarket>
@@ -99,6 +95,8 @@ const isAuthorized = computed(() => {
 
   return authZStore.hasAuthZPermission(msg)
 })
+
+const tradesCount = computed(() => derivativeStore.subaccountTradesCount)
 
 const isBuy = computed(
   () =>
@@ -191,6 +189,12 @@ const isDisabled = computed(() => {
   return false
 })
 
+onMounted(() => {
+  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
+    chartType.value = chart
+  })
+})
+
 const mixPanelFields = computed(() => ({
   isBuy: isBuy.value,
   chartType: chartType.value,
@@ -205,12 +209,6 @@ const mixPanelFields = computed(() => ({
   slippageTolerance:
     derivativeFormValues.value[DerivativesTradeFormField.Slippage] || ''
 }))
-
-onMounted(() => {
-  useEventBus<ChartViewOption>(BusEvents.UpdateMarketChart).on((chart) => {
-    chartType.value = chart
-  })
-})
 
 function onSubmit() {
   if (!isRWAMarket.value) {
@@ -267,7 +265,7 @@ async function submitLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -306,7 +304,7 @@ function submitMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -349,7 +347,7 @@ function submitStopLimitOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -392,7 +390,7 @@ function submitStopMarketOrder() {
     })
     .then(() => {
       notificationStore.update({ title: t('toast.trade.orderPlaced') })
-      showAutosignCta()
+      showAutosignCta(tradesCount.value)
       resetForm({ values: currentFormValues.value })
     })
     .catch((e) => {
@@ -413,64 +411,19 @@ function submitStopMarketOrder() {
       status.setIdle()
     })
 }
-
-function showAutosignCta() {
-  if (
-    ([Wallet.Magic, Wallet.Turnkey] as Wallet[]).includes(
-      sharedWalletStore.wallet
-    )
-  ) {
-    return
-  }
-
-  if (!derivativeStore.subaccountTradesCount) {
-    EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAPopUp)
-    notificationStore.success({
-      title: t('toast.portfolio.autoSign.enable.title'),
-      description: t('toast.portfolio.autoSign.enable.description'),
-      icon: NuxtUiIcons.RotateAuto,
-      timeout: MAX_TOAST_TIMEOUT,
-      key: HelixCtaToast.EnableAutoSign,
-      actions: [
-        {
-          label: t('common.enable'),
-          callback: () => {
-            EventTracker.trackGenericEvent(MixPanelEvent.AutoSignCTAEnabled)
-
-            sharedWalletStore
-              .connectAutoSign(
-                TRADING_MESSAGES
-                // CONTRACT_EXECUTION_COMPAT_AUTHZ // TODO: Add this when we have authz contract exec support
-              )
-              .then(() => {
-                notificationStore.update({
-                  title: t('toast.portfolio.autoSign.enabledToast.title'),
-                  description: t(
-                    'toast.portfolio.autoSign.enabledToast.description'
-                  )
-                })
-              })
-              .catch($onError)
-              .finally(() => status.setIdle())
-          }
-        }
-      ]
-    })
-  }
-}
 </script>
 
 <template>
   <div>
     <div>
       <AppButton
+        class="w-full"
+        :variant="isBuy ? 'success' : 'danger'"
+        :key="derivativeFormValues[DerivativesTradeFormField.Side]"
         v-bind="{
           status,
           disabled: isDisabled
         }"
-        :key="derivativeFormValues[DerivativesTradeFormField.Side]"
-        :variant="isBuy ? 'success' : 'danger'"
-        class="w-full"
         @click="onSubmit"
       >
         <span v-if="!isAuthorized">
