@@ -290,9 +290,7 @@ onMounted(() => {
     <p class="field-label">{{ $t('trade.amount') }}</p>
 
     <AppInputField
-      v-bind="{
-        decimals
-      }"
+      v-bind="{ decimals }"
       v-model="amountValue"
       :placeholder="
         new BigNumberInBase(1)
