@@ -8,6 +8,7 @@ import {
 } from '@/app/utils/constants'
 import {
   Modal,
+  IsSpotKey,
   MarketKey,
   SpotMarketCyTags,
   SpotTradeFormField,
@@ -18,14 +19,8 @@ import type { UiMarketWithToken } from '@/types'
 const appStore = useAppStore()
 const modalStore = useSharedModalStore()
 
+const isSpot = inject(IsSpotKey)
 const market = inject(MarketKey) as Ref<UiMarketWithToken>
-
-const props = withDefaults(
-  defineProps<{
-    isSpot?: boolean
-  }>(),
-  {}
-)
 
 const defaultSlippage = DEFAULT_SLIPPAGE.toFixed()
 const previousSlippage = ref(defaultSlippage)
@@ -41,13 +36,11 @@ const currentSlippageValue = computed(
 )
 
 const slippageFieldName = computed(() =>
-  props.isSpot
-    ? SpotTradeFormField.Slippage
-    : DerivativesTradeFormField.Slippage
+  isSpot ? SpotTradeFormField.Slippage : DerivativesTradeFormField.Slippage
 )
 
 const tempSlippageFieldName = computed(() =>
-  props.isSpot
+  isSpot
     ? SpotTradeFormField.TempSlippage
     : DerivativesTradeFormField.TempSlippage
 )
@@ -126,9 +119,7 @@ function setPreviousSlippage() {
               'block focus-within:focus-ring transition-all duration-300 border border-[#181E31] rounded-md bg-brand-875 text-sm pl-2 pr-4'
           }"
           :data-cy="
-            props.isSpot
-              ? dataCyTag(SpotMarketCyTags.SlippageInputField)
-              : undefined
+            isSpot ? dataCyTag(SpotMarketCyTags.SlippageInputField) : undefined
           "
         >
           <template #right>%</template>

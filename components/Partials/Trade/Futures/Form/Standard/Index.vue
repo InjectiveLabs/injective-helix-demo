@@ -97,8 +97,6 @@ const tradeDetails = useTradeDetails({
   )
 })
 
-const isReady = ref(false)
-
 const limitPriceShouldSkipAutoSet = computed(
   () => orderType.value === DerivativeTradeTypes.StopLimit
 )
@@ -130,8 +128,6 @@ const estLiquidationPrice = computed(() => {
 })
 
 onMounted(() => {
-  isReady.value = true
-
   setFormValues(
     {
       [DerivativesTradeFormField.Slippage]: appStore.slippageByMarketId(
@@ -249,7 +245,6 @@ watch(
     />
 
     <PartialsTradeFuturesFormStandardDetails
-      v-if="isReady"
       v-bind="{
         tradeDetails,
         isLimitOrder,

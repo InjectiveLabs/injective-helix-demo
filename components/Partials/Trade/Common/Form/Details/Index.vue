@@ -40,6 +40,6 @@ function toggle() {
       </div>
     </AppCollapse>
 
-    <ModalsSlippage :isSpot="isSpot" />
+    <ModalsSlippage />
   </div>
 </template>
